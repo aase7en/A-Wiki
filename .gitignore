@@ -9,6 +9,7 @@ raw/
 exports/
 log.md
 journal/              # journal entries (template stays)
+journal/**
 
 # === GENERATED AT RUNTIME ===
 *.db
