@@ -39,7 +39,7 @@ chmod 600 .claude/lock.txt
 ## Unlock (ทุก terminal session ที่อยากแก้ CLAUDE.md)
 
 ```bash
-cd /Users/aase7en/Desktop/InW-Wiki
+cd REPO_ROOT
 export WIKI_UNLOCK="$(cat .claude/lock.txt)"
 claude    # launch Claude Code in this terminal → env var inherited
 ```
