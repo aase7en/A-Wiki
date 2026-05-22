@@ -1,0 +1,57 @@
+# === SENSITIVE / LOCAL-ONLY ===
+.local/
+.env
+*.api_key
+lock.txt
+
+# === RAW DATA (sync via Google Drive) ===
+raw/
+exports/
+log.md
+journal/2*/          # journal entries (template stays)
+
+# === GENERATED AT RUNTIME ===
+*.db
+*.sqlite
+*.sqlite3
+.wiki-graph.json
+brain-map.canvas    # auto-generated, too large
+handoff.md
+
+# === OS / EDITOR ===
+.DS_Store
+Thumbs.db
+node_modules/
+__pycache__/
+*.pyc
+
+# === OBSIDIAN (device-specific) ===
+.obsidian/workspace*.json
+.obsidian/graph.json
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+.smart-env/
+.autogit/
+conflict-files-obsidian-git.md
+
+# === AGENT RUNTIME ===
+.playwright-mcp/
+.playwright-cli/
+*.png
+waste_submit_*.png
+
+# === TRASH ===
+.trash/
+.clone/
+
+# === CLAUDE HOOKS ===
+.claude/lock.txt
+.claude/settings.local.json
+
+# === PYTHON ===
+__pycache__/
+*.pyc
+*.pyo
+
+# === DEVICE-SPECIFIC MCP ===
+.mcp.json

@@ -1,0 +1,45 @@
+{
+  "name": "A-Wiki Skills",
+  "version": "1.0.0",
+  "description": "Personal knowledge wiki + agent skills collection — merged from InW-Wiki + 9arm-skills",
+  "skills": {
+    "engineering": [
+      "debug-mantra",
+      "post-mortem",
+      "scrutinize"
+    ],
+    "productivity": [
+      "management-talk",
+      "excel-generator"
+    ],
+    "wiki": [
+      "ingest-source",
+      "lint-wiki",
+      "wiki-search-local",
+      "export-notebooklm",
+      "obsidian"
+    ],
+    "automation": [
+      "hook-suggest",
+      "token-optimization",
+      "verify-before-done"
+    ],
+    "research": [
+      "web-research",
+      "ask-notebooklm",
+      "brainstorm-before-build",
+      "internet-skill-finder"
+    ],
+    "domain": [
+      "pharmacy-order-lookup"
+    ],
+    "delegation": [
+      "delegate-subagent",
+      "crew-dispatch",
+      "skill-creator"
+    ]
+  },
+  "deprecated": [
+    "root-cause-first"
+  ]
+}
