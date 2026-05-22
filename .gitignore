@@ -8,7 +8,7 @@ lock.txt
 raw/
 exports/
 log.md
-journal/2*/          # journal entries (template stays)
+journal/              # journal entries (template stays)
 
 # === GENERATED AT RUNTIME ===
 *.db
