@@ -1,58 +1,64 @@
-# === SENSITIVE / LOCAL-ONLY ===
-.local/
+# A-Wiki — Hybrid .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .env
-*.api_key
-lock.txt
 
-# === RAW DATA (sync via Google Drive) ===
-raw/
-exports/
-log.md
-journal/              # journal entries (template stays)
-journal/**
+# AI-generated / cache
+.claude/lock.txt
+.codex/lock.txt
+.gemini/lock.txt
+wiki-index.db
+wiki-graph.json
+.wiki-index.db
+.wiki-graph.json
 
-# === GENERATED AT RUNTIME ===
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Node (ECC tools)
+node_modules/
+npm-debug.log*
+
+# Build / temp
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Test
+test-zone/
+
+# Logs
+*.log
+logs/
+
+# Symlinks (git should ignore these)
+.codex/hooks/
+.gemini/hooks/
+
+# Large files (should be in GDrive A-Wiki-Data not in repo)
+raw/pharmacy/*.json
+raw/pharmacy/*.csv
 *.db
 *.sqlite
 *.sqlite3
-.wiki-graph.json
-brain-map.canvas    # auto-generated, too large
-handoff.md
 
-# === OS / EDITOR ===
-.DS_Store
-Thumbs.db
-node_modules/
-__pycache__/
-*.pyc
+# Obsidian config (user-local)
+.obsidian/workspace.json
+.obsidian/workspace
 
-# === OBSIDIAN (device-specific) ===
-.obsidian/workspace*.json
-.obsidian/graph.json
-.obsidian/plugins/*/main.js
-.obsidian/plugins/*/styles.css
-.smart-env/
-.autogit/
-conflict-files-obsidian-git.md
-
-# === AGENT RUNTIME ===
-.playwright-mcp/
-.playwright-cli/
-*.png
-waste_submit_*.png
-
-# === TRASH ===
-.trash/
-.clone/
-
-# === CLAUDE HOOKS ===
-.claude/lock.txt
-.claude/settings.local.json
-
-# === PYTHON ===
-__pycache__/
-*.pyc
-*.pyo
-
-# === DEVICE-SPECIFIC MCP ===
-.mcp.json
+# Scripts override (user-local)
+scripts/.zshrc
