@@ -92,6 +92,9 @@ data/
 .tmp/
 temp/
 
+# raw/ is a symlink to Google Drive (A-Wiki-Data)
+raw/
+
 # --- Archive / Downloads ---
 *.zip
 *.tar.gz
