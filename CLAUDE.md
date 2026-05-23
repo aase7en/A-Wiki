@@ -83,7 +83,7 @@ A-Wiki/
 | Level | ช่องทาง | ใช้กับงาน |
 |-------|---------|-----------|
 | **-1** | Local FTS5 / knowledge-graph | **ฟรี + ออฟไลน์** — ค้น wiki, neighbors, hubs |
-| **0** | Hook (SessionStart / PreToolUse) | **ฟรี** — งานซ้ำทุก session |
+| **0** | Hook (SessionStart / PreToolUse) + Context Compaction | **ฟรี** — งานซ้ำทุก session, strategic `/compact` |
 | **1** | Free API (OpenRouter free / Gemini Flash) | **ฟรี** — search, lookup, synthesis |
 | **2** | Cheap paid (DeepSeek, Qwen) | **ถูกมาก** — reasoning เบา, table |
 | **3** | Subagent (Claude Haiku / Explore) | **ถูก** — scan ไฟล์เยอะ, lint |
@@ -130,15 +130,23 @@ A-Wiki/
 
 ## ⌨️ Quick Commands
 
+> รายการเต็ม: `docs/protocols/quick-commands.md`
+> Context compaction: `docs/protocols/context-compaction.md`
+> Token optimization skill: `skills/claude-code/token-optimization/SKILL.md`
+
 | Command | Action |
 |---------|--------|
-| `/verify` | Verify-before-done checklist |
+| `/verify <ข้อความ>` | Verify-before-done checklist (delegate to web search) |
 | `/search "query"` | `python3 scripts/search-wiki.py "query"` |
+| `/status` | สรุปสถานะ wiki: จำนวนหน้า, stale, pending |
+| `/today` | สรุปสิ่งที่ทำใน session + commit message แนะนำ |
 | `/lint` | Run wiki health check |
 | `/ingest` | Ingest new source |
 | `/snapshot-nb [domain]` | Export wiki → NotebookLM bundle |
-| `/compact` | Context compaction |
-| `/caveman` | Aggressive token saving mode |
+| `/ask-nb <คำถาม>` | แนะนำ user ถาม NotebookLM ก่อน → paste → action ต่อ |
+| `/compact [focus]` | Context compaction (ประหยัด 40-60%) — ดู `docs/protocols/context-compaction.md` |
+| `/clear` | เคลียร์ context — เปลี่ยน task ใหม่ที่ไม่เกี่ยวกัน (ทำ `/rename <task>` ก่อน) |
+| `/caveman` | Aggressive token saving mode — ตอบสั้น ~60-65% |
 | `/delegate` | Subagent delegation (see `docs/protocols/delegation.md`) |
 
 ---
