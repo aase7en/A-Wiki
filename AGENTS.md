@@ -1,43 +1,84 @@
-# Project Instructions — All AI Agents
+# A-Wiki — Multi-Agent Configuration (Claude / Codex / Gemini)
 
-## Autonomous AI Agent Swarm Repository
+> **Single source of truth**: [`CLAUDE.md`](CLAUDE.md) — schema หลักของระบบ
+> AGENTS.md สำหรับ agent-specific paths + delegation rules
 
-> **MISSION:** Execute with the uncompromising discipline of a Senior Engineer backed by a dynamic, cost-efficient AI swarm.
+---
 
-## 🚫 Solo Wiki — No Branch, No PR
+## 🚫 Solo Wiki — Branch Rules (บังคับทุก agent)
 
-> **commit ตรงลง `main` เท่านั้น** — ห้ามสร้าง branch, ห้ามเปิด PR, ห้ามใช้ worktree isolation
+> **commit ตรงลง `main` เท่านั้น** — ห้ามสร้าง branch, ห้ามเปิด PR, ห้าม worktree isolation
 
-## 🚨 First action every session (Streamlined for Token Saving)
-1. Read `CLAUDE.md` — Active Rules.
-2. Run `bash agent-skills/automations/run-task.sh pre-flight` (Iron Law validation).
-*Note: Do not load legacy or unrelated skills until explicitly invoked.*
+---
 
-## 🛡️ Iron Laws (Applied IMMEDIATELY)
+## 🚨 First action every session
 
-| Law | Rule | Enforcement |
-|-----|------|-------------|
-| #1 | NO production code without a **failing test first** | scrutinize SKILL.md |
-| #2 | NO bug fixing without **root cause investigation first** | debug-mantra 4-step process |
-| #3 | If parallel model violates #1 or #2 → **DISCARD + REWRITE** | Primary Agent as Senior Critic |
+1. Read `CLAUDE.md` (root) — Active Rules
+2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis
+3. Read `wiki/context/session-memory.md` — cross-session TODOs
 
-## 🧠 Swarm Roles
+---
 
-| Role | Model Selection | Responsibility |
-|------|----------------|----------------|
-| **Architect** | OpenRouter free reasoning/CoT model | Planning, root cause, design |
-| **Executioner** | OpenRouter free flash/coder model | Code writing, tests, refactoring |
-| **Senior Critic** | Primary Agent (you) — NOT delegatable | Validate ALL outputs against Iron Laws |
+## Agent-Specific Paths
 
-## 📁 Path conventions per agent
+| Concept | Claude Code | Codex / OpenAI | Gemini CLI |
+|---------|-------------|----------------|------------|
+| Config dir | `.claude/` | `.codex/` | `.gemini/` |
+| Skills | `skills/claude-code/` | `skills/claude-code/` | `skills/claude-code/` |
+| Thai skills | `skills/claude-thai/` | `skills/claude-thai/` | `skills/claude-thai/` |
+| Ecosystem skills | `skills/ecosystem/` | `skills/ecosystem/` | `skills/ecosystem/` |
+| Agent skills (swarm) | `agent-skills/` | `agent-skills/` | `agent-skills/` |
+| Scripts (wiki) | `scripts/wiki/` | `scripts/wiki/` | `scripts/wiki/` |
+| Scripts (swarm) | `scripts/swarm/` | `scripts/swarm/` | `scripts/swarm/` |
+| Hooks | `.claude/hooks/` | `.codex/hooks/` | `.gemini/hooks/` |
 
-| Concept | Claude Code | Codex / OpenAI |
-|---------|-------------|----------------|
-| Config dir | `.claude/` | `.codex/` |
-| Skills (legacy) | `.claude/skills/` (via link-skills.sh) | `.agents/skills/` |
-| **Swarm Skills (NEW)** | `.claude/skills/` (via link-my-skills.sh) | `.codex/skills/` (via link-my-skills.sh) |
+---
 
-## Core Knowledge (safeguarded archive)
+## 🧠 Swarm Roles (Optional — สำหรับ OpenRouter multi-model)
 
-All original wiki content, docs, decisions, and journals are in `core-knowledge/`.
-This is a **read-only archive**. New content lives in `agent-skills/`.
+| Role | Model | Tool | Responsibility |
+|------|-------|------|----------------|
+| **Architect** | OpenRouter free reasoning/CoT | `scripts/swarm/delegate.sh` | Planning, root cause, design |
+| **Executioner** | OpenRouter free flash/coder | `scripts/swarm/delegate.sh` | Code writing, tests, refactoring |
+| **Senior Critic** | Primary Agent (you) | — | Validate ALL outputs — NOT delegatable |
+
+**Trigger**: `bash scripts/swarm/delegate.sh architect "query"` หรือ `bash scripts/swarm/delegate.sh executioner "task"`
+
+---
+
+## 🛡️ Hooks Config
+
+Hooks เหมือนกันทุก agent — ใช้ Python hook runner `scripts/hooks_runner.py`
+
+```
+.claude/hooks/   ← Claude hooks (primary)
+.codex/hooks/    ← Codex hooks (symlink to .claude/hooks/)
+.gemini/hooks/   ← Gemini hooks (symlink to .claude/hooks/)
+```
+
+---
+
+## 🐍 Scripts Index
+
+| Script Path | Function |
+|-------------|----------|
+| `scripts/wiki/gen-index.py` | Regen wiki overviews + FTS5 + graph + canvas |
+| `scripts/wiki/search-wiki.py "query"` | Local FTS5 search (Level -1) |
+| `scripts/wiki/ask-notebooklm.py --domain X` | Cross-file synthesis via Gemini API |
+| `scripts/wiki/query-graph.py --hubs` | Knowledge graph queries |
+| `scripts/swarm/agent-switch.sh` | Switch agent mid-session |
+| `scripts/swarm/delegate.sh` | Delegate to subagent / OpenRouter |
+| `scripts/ecosystem/link-my-skills.sh` | Symlink ecosystem skills |
+
+---
+
+## ❌ Do NOT Delegate (Primary Agent ONLY)
+
+- Reasoning ลึก / decision making
+- การเขียน wiki entity/concept ใหม่
+- การแก้ CLAUDE.md หรือ AGENTS.md
+- งาน sensitive (security review, schema edits)
+
+---
+
+*Last updated: 2026-05-24 — A-Wiki Hybrid v1.0*

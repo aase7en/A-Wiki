@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "type": "file",
+      "path": "Home.md",
+      "title": "🏠 Home"
+    },
+    {
+      "type": "file",
+      "path": "wiki/synthesis/dream-projects.md",
+      "title": "⭐ Dream Projects"
+    },
+    {
+      "type": "file",
+      "path": "profile.md",
+      "title": "👤 Profile"
+    },
+    {
+      "type": "file",
+      "path": "wiki/context/wiki-state.md",
+      "title": "⚡ Wiki State"
+    }
+  ]
+}

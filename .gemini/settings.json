@@ -1,0 +1,28 @@
+{
+  "agent": {
+    "name": "Gemini Wiki Agent",
+    "description": "Gemini CLI agent for A-Wiki ecosystem",
+    "skills": {
+      "claude_code": "../skills/claude-code",
+      "claude_thai": "../skills/claude-thai",
+      "ecosystem": "../skills/ecosystem"
+    },
+    "hooks": "../.claude/hooks",
+    "scripts": {
+      "wiki": "../scripts/wiki",
+      "swarm": "../scripts/swarm",
+      "ecosystem": "../scripts/ecosystem"
+    }
+  },
+  "model": {
+    "provider": "gemini",
+    "name": "gemini-2.5-pro-exp-03-25",
+    "temperature": 0.5,
+    "max_tokens": 8192
+  },
+  "hooks": {
+    "enabled": true,
+    "runner": "../scripts/hooks_runner.py"
+  },
+  "version": "1.0.0"
+}
