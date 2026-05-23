@@ -1,64 +1,121 @@
-# A-Wiki — Hybrid .gitignore
+# ============================================================
+# A-Wiki .gitignore — 2026-05-24
+# ============================================================
+# กฎเหล็ก: ห้ามมีไฟล์ .env / secret / credential ใน git
+# ============================================================
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
+# --- Environment & Secrets ---
 .env
+.env.*
+!.env.example
+*.key
+*.pem
+*.crt
+*.cert
+*credential*
+*secret*
+*password*
+*token*
+*oauth*
+*jwt*
+*secrets*
 
-# AI-generated / cache
-.claude/lock.txt
-.codex/lock.txt
-.gemini/lock.txt
-wiki-index.db
-wiki-graph.json
-.wiki-index.db
-.wiki-graph.json
-
-# OS
+# --- OS ---
 .DS_Store
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# --- IDE / Editor ---
+.idea/
+.vscode/
 *.swp
 *.swo
 *~
+*.sublime-workspace
 
-# IDE
-.idea/
-.vscode/
-*.code-workspace
+# --- Obsidian (full dir — contains plugin configs + secrets) ---
+.obsidian/
+!.obsidian/git.json
 
-# Node (ECC tools)
+# --- Node / JS ---
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+*.tsbuildinfo
+.next/
+.cache/
 
-# Build / temp
-build/
-dist/
+# --- Python ---
+__pycache__/
+*.py[cod]
 *.egg-info/
+dist/
+build/
 *.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.whl
 
-# Test
-test-zone/
+# --- Go ---
+vendor/
+*.test
+*.out
 
-# Logs
+# --- Git / SCM ---
+*.orig
+*.patch
+.git-rewrite/
+
+# --- Build / Output ---
+dist/
+build/
+out/
+target/
+*.d.ts
+
+# --- Logs ---
 *.log
 logs/
 
-# Symlinks (git should ignore these)
-.codex/hooks/
-.gemini/hooks/
-
-# Large files (should be in GDrive A-Wiki-Data not in repo)
-raw/pharmacy/*.json
-raw/pharmacy/*.csv
+# --- Database (local clones) ---
 *.db
 *.sqlite
 *.sqlite3
 
-# Obsidian config (user-local)
-.obsidian/workspace.json
-.obsidian/workspace
+# --- Wiki local data ---
+data/
+.tmp/
+temp/
 
-# Scripts override (user-local)
-scripts/.zshrc
+# --- Archive / Downloads ---
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.iso
+
+# --- Script outputs ---
+out/
+output/
+results/
+
+# --- Docker (if used) ---
+.docker/
+docker-compose.override.yml
+
+# --- Terraform ---
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# --- Agent / AI configs with secrets ---
+.claude*
+.codex*
+.gemini*
+!.clinerules
+!.mcp.json
