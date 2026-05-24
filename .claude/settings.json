@@ -99,6 +99,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/build-pharmacy-db.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks/session_start.py"
           }
         ]
       }

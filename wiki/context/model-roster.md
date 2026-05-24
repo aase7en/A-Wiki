@@ -1,64 +1,53 @@
-# Model Roster — AI Crew Lineup
+# Model Roster — A-Wiki Model Inventory
 
-> **Auto-updated** by `scripts/update-model-roster.sh` | Last updated: 2026-05-20
-> อัปเดตทุก 7 วัน หรือเมื่อ user รัน `bash scripts/update-model-roster.sh`
-> Machine config: `wiki/context/model-roster.conf` (sourced by `scripts/delegate.sh`)
-
----
-
-## Current Champions (2026-05-20)
-
-| Tier | Task | Champion Model | Provider | Cost |
-|------|------|----------------|----------|------|
-| **T1** | search / lookup / summarize | `deepseek/deepseek-chat-v3-0324:free` | DeepSeek | ฟรี |
-| **T1-FB** | fallback T1 | `qwen/qwen3-235b-a22b:free` | Alibaba | ฟรี |
-| **T1-FB2** | fallback T1 | `meta-llama/llama-3.3-70b-instruct:free` | Meta | ฟรี |
-| **T2** | reason / compare / analyze | `deepseek/deepseek-r1:free` | DeepSeek | ฟรี |
-| **T2-FB** | fallback T2 | `qwen/qwen3-235b-a22b:free` | Alibaba | ฟรี |
-| **T2-FB2** | fallback T2 | `openrouter/auto` | OpenRouter | ถูก |
-| **T3** | scan / long-context | `qwen/qwen3-30b-a3b:free` | Alibaba | ฟรี |
-| **T3-FB** | fallback T3 | `openai/gpt-4o-mini` | OpenAI | ถูก |
+> **Source:** Inspired by InW-Wiki `model-roster` script ecosystem.
+> **Purpose:** Track which models are available, benchmarked, and preferred for specific tasks.
 
 ---
 
-## ทำไมใช้ OpenRouter เป็น Gateway เดียว
+## Reference Models (External Repos)
 
-```
-OPENROUTER_API_KEY (1 key)
-    ├── DeepSeek V3-0324:free    — coding, search, general
-    ├── DeepSeek R1:free         — reasoning, math, logic
-    ├── Qwen3-235B:free          — 235B params, ดีที่สุดในบรรดา free
-    ├── Qwen3-30B:free           — เร็วกว่า Qwen3-235B, ดีพอสำหรับ scan
-    ├── Llama 3.3 70B:free       — solid general purpose
-    ├── GPT-4o-mini              — cheap paid, ดีสำหรับ structured output
-    └── 200+ models อื่นๆ
-```
-
----
-
-## Parallel Race Mode
-
-`scripts/delegate.sh race "<prompt>"` รัน top-3 free models พร้อมกัน → ใช้คำตอบแรกที่ตอบกลับ
-
-ดีสำหรับ:
-- คำถามที่ต้องการคำตอบเร็วที่สุด
-- เมื่อไม่รู้ว่า model ไหน rate-limit อยู่
-- High-availability: ถ้า 1 ล้ม ก็ยังมีอีก 2
+| Model / Provider | Source | Strengths | A-Wiki Use Case |
+|---|---|---|---|
+| **claude-code** | A-Wiki primary | Reasoning, architecture, Thai skills, multi-step | All core operations |
+| **claude-thai-skills** | [Boom-Vitt/claude-thai-skills](https://github.com/Boom-Vitt/claude-thai-skills) | Thai language, PDPA, gov forms, addresses | Thai-specific operations |
+| **OmegaWiki** | [skyllwt/OmegaWiki](https://github.com/skyllwt/OmegaWiki) | Wiki knowledge graph, entity extraction | Knowledge graph enrichment |
+| **MiroFish** | [666ghj/MiroFish](https://github.com/666ghj/MiroFish) | Multi-agent workflow | Swarm orchestration reference |
+| **GitNexus** | [abhigyanpatwari/gitnexus](https://github.com/abhigyanpatwari/gitnexus) | Git workflow automation | CI/CD improvement reference |
+| **everything-claude-code** | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | Comprehensive skill collection | Skill library expansion |
+| **LLM-Wiki-Skilled** | [TrueHOOHA/LLM-Wiki-Skilled](https://github.com/TrueHOOHA/LLM-Wiki-Skilled) | Wiki skill system | Skill definition patterns |
+| **LLM-Wiki-Agent-Workflow-Demo** | [WayneChou-bot/LLM-Wiki-Agent-Workflow-Demo](https://github.com/WayneChou-bot/LLM-Wiki-Agent-Workflow-Demo) | Agent workflow patterns | Workflow automation |
+| **ai-modules** | [theafh/ai-modules](https://github.com/theafh/ai-modules) | Knowledge management plugins | Plugin architecture |
+| **long-term-agent-memory** | [eslamgenio/long-term-agent-memory](https://github.com/eslamgenio/long-term-agent-memory) | Memory management | Session memory improvements |
+| **FrameCode-VibeWork** | [Sistema2D/FrameCode-VibeWork](https://github.com/Sistema2D/FrameCode-VibeWork) | Vibe coding framework | Development workflow |
+| **synto / synthadoc** | [kytmanov/synto](https://github.com/kytmanov/synto), [axoviq-ai/synthadoc](https://github.com/axoviq-ai/synthadoc) | Document synthesis | Documentation generation |
+| **link** | [gowtham0992/link](https://github.com/gowtham0992/link) | Knowledge linking | Cross-reference system |
+| **llm-wiki-manager** | [sametbrr/llm-wiki-manager](https://github.com/sametbrr/llm-wiki-manager) | Wiki management | Administration tools |
+| **LLM-WIKI-MCP** | [Electro-resonance/LLM-WIKI-MCP](https://github.com/Electro-resonance/LLM-WIKI-MCP) | MCP integration | MCP server configuration |
+| **9arm-skills** | [thananon/9arm-skills](https://github.com/thananon/9arm-skills) | Additional skill collection | Skill expansion |
+| **obsidian-llm-wiki-local** | [kytmanov/obsidian-llm-wiki-local](https://github.com/kytmanov/obsidian-llm-wiki-local) | Obsidian integration | Obsidian sync reference |
 
 ---
 
-## New Model Alert (run update-model-roster.sh เพื่อ refresh)
+## Task-to-Model Mapping
 
-หน้านี้จะแสดง top-5 free models ล่าสุดที่ OpenRouter มีหลัง update:
-
-```
-[รอ update-model-roster.sh รัน]
-```
+| Task | Recommended Model | Rationale |
+|---|---|---|
+| Architecture/design decisions | claude-code | Strong reasoning, context-aware |
+| Thai language operations | claude-code + claude-thai-skills | Specialized Thai NLP skills |
+| Wiki knowledge graph | claude-code + OmegaWiki patterns | Entity extraction + graph queries |
+| Code generation | claude-code | Best-in-class code generation |
+| Document synthesis | Synto/synthadoc patterns | Specialized doc gen |
+| Memory management | long-term-agent-memory patterns | Cross-session context |
+| CI/CD automation | GitNexus patterns | Git workflow specialization |
+| Obsidian integration | obsidian-llm-wiki-local patterns | Vault sync |
+| MCP integration | LLM-WIKI-MCP patterns | Tool server config |
 
 ---
 
-## Version History
+## Benchmarking Notes
 
-| วันที่ | การเปลี่ยนแปลง |
-|--------|----------------|
-| 2026-05-20 | สร้างครั้งแรก — roster เริ่มต้น |
+- All benchmarking is **informal** — based on observed performance
+- Thai language tasks: claude-code outperforms others for nuanced Thai
+- Long context: claude-code handles 200K tokens effectively
+- For swarm delegation: use OpenRouter models via `delegate.sh`

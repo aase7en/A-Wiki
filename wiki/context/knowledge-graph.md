@@ -1,26 +1,26 @@
 # Knowledge Graph (auto-generated)
 
-_Generated: 2026-05-21_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
+_Generated: 2026-05-24_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
 
 ## Stats
 
-- **Nodes**: 209
-- **Edges**: 980
-- **Broken links**: 2 (run `python3 scripts/query-graph.py --broken`)
-- **Orphans**: 13 (run `python3 scripts/query-graph.py --orphans`)
+- **Nodes**: 368
+- **Edges**: 1107
+- **Broken links**: 45 (run `python3 scripts/query-graph.py --broken`)
+- **Orphans**: 113 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
-- `index.md` (101 edges)
+- `index-iot.md` (118 edges)
+- `index.md` (100 edges)
 - `wiki/entities/iot/esp32.md` (54 edges)
-- `index-iot.md` (46 edges)
 - `wiki/entities/iot/esp32-s3.md` (35 edges)
-- `wiki/entities/iot/dx-lr02-lora.md` (30 edges)
+- `index-pharmacy.md` (32 edges)
+- `wiki/entities/iot/dx-lr02-lora.md` (31 edges)
 - `wiki/entities/iot/grafana.md` (28 edges)
-- `wiki/synthesis/iot-lora-architecture.md` (27 edges)
+- `wiki/synthesis/iot-lora-architecture.md` (28 edges)
 - `wiki/entities/iot/mqtt-protocol.md` (26 edges)
-- `index-ai.md` (25 edges)
-- `wiki/concepts/iot/lora.md` (25 edges)
+- `index-env.md` (25 edges)
 
 ## Query CLI
 

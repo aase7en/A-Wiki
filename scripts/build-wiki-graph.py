@@ -3,16 +3,27 @@
 build-wiki-graph.py — Parse wiki/*.md, extract links, output knowledge graph JSON.
 
 Nodes: each markdown file under wiki/
-Edges: [[wikilink]] + [text](relative.md) link references
+Edges: [[wikilink]] + [text](relative.md) link references + semantic typing
+
+Edge types (5):
+  - wikilink   : generic [[page]] cross-reference
+  - mdlink     : [text](path.md) link
+  - depends    : target is a dependency/import/requirement of source
+                (triggered by: "requires", "depends on", "needs", "install", "import")
+  - extends    : target extends/broadens/specializes the source concept
+                (triggered by: "see also", "related", "further", "more info", "continuation")
+  - implements : target implements a concept described by source
+                (triggered by: "implement", "example", "tutorial", "how to", "guide")
 
 Output: .wiki-graph.json at repo root.
 
 Schema:
 {
-  "generated_at": "2026-05-18",
-  "stats": {"nodes": N, "edges": M, "broken_links": K, "orphans": J, "hubs": [...]},
+  "generated_at": "2026-05-24",
+  "stats": {"nodes": N, "edges": M, "broken_links": K, "orphans": J, "hubs": [...],
+            "edges_by_type": {"wikilink": N, "mdlink": N, ...}},
   "nodes": [{"path": "wiki/...", "title": "...", "domain": "iot"}, ...],
-  "edges": [{"from": "...", "to": "...", "type": "wikilink|mdlink", "broken": false}, ...]
+  "edges": [{"from": "...", "to": "...", "type": "wikilink|mdlink|depends|extends|implements", "broken": false}, ...]
 }
 
 Companion: scripts/query-graph.py for queries.
@@ -45,6 +56,19 @@ FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 # Strip fenced code blocks (``` ... ```) and inline code (`...`) before link extraction
 CODE_FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+
+# Semantic type triggers: key phrases within the surrounding line of the link
+SEMANTIC_TRIGGERS: dict[str, list[re.Pattern]] = {
+    "depends": [
+        re.compile(r"\b(?:requires?|depends?\s+on|needs?\s+|install|import|setup)\b", re.IGNORECASE),
+    ],
+    "extends": [
+        re.compile(r"\b(?:see\s+also|related|further|more\s+info|continuation|read\s+more)\b", re.IGNORECASE),
+    ],
+    "implements": [
+        re.compile(r"\b(?:implement|example|tutorial|how\s+to|guide|walkthrough)\b", re.IGNORECASE),
+    ],
+}
 
 
 def collect_files() -> list[Path]:
@@ -161,6 +185,41 @@ def resolve_mdlink(source: Path, target: str, all_paths: dict[str, Path]) -> Pat
     return all_paths.get(rel)
 
 
+def infer_semantic_type(context_line: str, link_text: str, link_target: str, base_type: str) -> str:
+    """
+    Given the line containing the link, try to infer a semantic edge type.
+    Returns one of: wikilink, mdlink, depends, extends, implements
+    """
+    if base_type == "mdlink":
+        # mdlink preserves its own type classification
+        # But can be upgraded to semantic if triggers match context
+        pass
+
+    # Check trivially: if the link text itself is a trigger phrase
+    text_lower = link_text.lower().strip()
+    if text_lower in ("see also", "see"):
+        return "extends"
+    if text_lower in ("example", "examples", "tutorial", "guide", "walkthrough"):
+        return "implements"
+    if text_lower in ("requirements", "prerequisites", "dependencies", "install"):
+        return "depends"
+
+    # Check context line for trigger phrases
+    for edge_type, patterns in SEMANTIC_TRIGGERS.items():
+        for pat in patterns:
+            if pat.search(context_line):
+                return edge_type
+
+    return base_type
+
+
+def extract_link_context(text: str, match_start: int, match_end: int, window: int = 60) -> str:
+    """Extract surrounding context of a link match."""
+    start = max(0, match_start - window)
+    end = min(len(text), match_end + window)
+    return text[start:end]
+
+
 def build() -> dict:
     files = collect_files()
     path_lookup = {p.relative_to(REPO_ROOT).as_posix(): p for p in files}
@@ -170,6 +229,7 @@ def build() -> dict:
     broken = 0
     in_degree: Counter[str] = Counter()
     out_degree: Counter[str] = Counter()
+    edges_by_type: Counter[str] = Counter()
 
     for fp in files:
         rel = fp.relative_to(REPO_ROOT).as_posix()
@@ -190,11 +250,20 @@ def build() -> dict:
 
         scan_text = strip_code(text)
         seen_edges: set[tuple[str, str, str]] = set()
+
+        # Process wikilinks
         for m in WIKILINK_RE.finditer(scan_text):
             target = m.group(1).strip()
             resolved = resolve_wikilink(target, path_lookup)
             to_rel = resolved.relative_to(REPO_ROOT).as_posix() if resolved else None
-            key = (rel, to_rel or f"?{target}", "wikilink")
+
+            # Extract context for semantic typing
+            ctx = extract_link_context(scan_text, m.start(), m.end())
+            # Get the link text (after | in [[target|text]])
+            link_text = m.group(0).split("|")[-1].rstrip("]]") if "|" in m.group(0) else target
+            etype = infer_semantic_type(ctx, link_text, target, "wikilink")
+
+            key = (rel, to_rel or f"?{target}", etype)
             if key in seen_edges:
                 continue
             seen_edges.add(key)
@@ -202,20 +271,31 @@ def build() -> dict:
             edges.append({
                 "from": rel,
                 "to": to_rel or target,
-                "type": "wikilink",
+                "type": etype,
                 "broken": resolved is None and not external,
                 "external": external,
             })
+            edges_by_type[etype] += 1
             if resolved:
                 in_degree[to_rel] += 1
                 out_degree[rel] += 1
             elif not external:
                 broken += 1
+
+        # Process markdown links
         for m in MDLINK_RE.finditer(scan_text):
             target = m.group(1).strip()
             resolved = resolve_mdlink(fp, target, path_lookup)
             to_rel = resolved.relative_to(REPO_ROOT).as_posix() if resolved else None
-            key = (rel, to_rel or f"?{target}", "mdlink")
+
+            # Extract context for semantic typing
+            ctx = extract_link_context(scan_text, m.start(), m.end())
+            # The link text is the [text] part before the (target)
+            bracket_match = re.search(r"\[([^\]]*)\]", scan_text[max(0, m.start()-200):m.start()])
+            link_text = bracket_match.group(1) if bracket_match else target
+            etype = infer_semantic_type(ctx, link_text, target, "mdlink")
+
+            key = (rel, to_rel or f"?{target}", etype)
             if key in seen_edges:
                 continue
             seen_edges.add(key)
@@ -223,10 +303,11 @@ def build() -> dict:
             edges.append({
                 "from": rel,
                 "to": to_rel or target,
-                "type": "mdlink",
+                "type": etype,
                 "broken": resolved is None and not external,
                 "external": external,
             })
+            edges_by_type[etype] += 1
             if resolved:
                 in_degree[to_rel] += 1
                 out_degree[rel] += 1
@@ -243,6 +324,7 @@ def build() -> dict:
         "stats": {
             "nodes": len(nodes),
             "edges": len(edges),
+            "edges_by_type": dict(edges_by_type),
             "broken_links": broken,
             "orphans": len(orphans),
             "hubs": [{"path": p, "score": s} for p, s in hubs if s > 0],
@@ -264,9 +346,11 @@ def main() -> int:
     out.write_text(json.dumps(graph, ensure_ascii=False, indent=2), encoding="utf-8")
     if not args.quiet:
         s = graph["stats"]
+        ebt = s.get("edges_by_type", {})
+        type_summary = " ".join(f"{k}={v}" for k, v in sorted(ebt.items()))
         print(
-            f"built {out}: {s['nodes']} nodes, {s['edges']} edges, "
-            f"{s['broken_links']} broken, {s['orphans']} orphans"
+            f"built {out}: {s['nodes']} nodes, {s['edges']} edges "
+            f"({type_summary}), {s['broken_links']} broken, {s['orphans']} orphans"
         )
     return 0
 
