@@ -1,39 +1,59 @@
 ---
 type: source
-title: "IoT Architecture Diagram: ESP32 + LoRa + MQTT + Services"
+title: "iot lora gateway architecture"
 slug: iot-lora-gateway-architecture
-date_ingested: 2026-04-18
+date_ingested: 2026-05-24
 original_file: raw/iot-lora-gateway-architecture.md
-tags: [architecture, lora, esp32, esp32-s3, mqtt, telegram, grafana, line-notify, project-plan]
 ---
 
-# IoT Architecture Diagram: ESP32 + LoRa + MQTT + Services
+```yaml
+---
+---
+```
 
-**ประเภท**: Architecture decision diagram (SVG)  
-**วันที่**: 2026-04-18
+# IoT Architecture: ESP32 Sensor + LoRa + Gateway + MQTT + Services
 
-## ประเด็นหลัก
+**Source**: iot_lora_gateway_architecture.svg (architecture diagram)  
+**Date**: 2026-04-18  
+**ประเภท**: Architecture decision document
 
-1. **Architecture ถูกตัดสินใจแล้ว** — เลือก Approach C (LoRa P2P) ไม่ใช่ WiFi direct
-2. **Role ของ hardware ชัดเจน**: ESP32 DevKit = Sensor Node, ESP32-S3 = Gateway
-3. **Services ที่ต้องการ**: Telegram Bot + Line Notify + Grafana (3 services พร้อมกัน)
-4. MQTT Broker = Mosquitto (ยืนยัน choice จาก wiki เดิม)
+## Data Flow (ซ้าย → ขวา)
 
-## สิ่งที่ยังต้องตัดสินใจ
+```
+DHT11 → ESP32 DevKit (LoRa TX node) → DX-LR02 TX
+                                              ↓ LoRa 900MHz (wireless)
+                                       DX-LR02 RX → ESP32-S3 (WiFi Gateway)
+                                                            ↓ WiFi + MQTT
+                                                     MQTT Broker (Mosquitto)
+                                                            ↓
+                                          ┌─────────────────┼─────────────────┐
+                                     Telegram Bot      Line Notify          Grafana
+```
 
-- Mosquitto จะรันที่ไหน? (RPi / VPS / Mac local)
-- InfluxDB: local หรือ cloud? (Grafana ต้องการ data source)
-- Line Notify vs Line Messaging API (Line Notify deprecate แล้วปี 2025)
+## Zones
 
-## ความขัดแย้งกับ wiki เดิม
+### Zone 1: Sensor Node (ไม่มี WiFi)
+- DHT11 → ESP32 DevKit V1 (LoRa TX node)
+- ESP32 DevKit → DX-LR02 (UART)
+- DX-LR02 TX ส่งข้อมูลผ่าน LoRa 900MHz
 
-- synthesis/temperature-monitor-project เสนอ 3 แนวทาง — ตอนนี้ **ยืนยัน Approach C (LoRa)** แล้ว → ต้องอัปเดตหน้านั้น
+### Zone 2: LoRa Gateway (มี WiFi)
+- DX-LR02 RX รับสัญญาณ
+- ESP32-S3 N16R8 รับข้อมูลจาก DX-LR02 ผ่าน UART
+- ESP32-S3 publish ไปยัง MQTT Broker ผ่าน WiFi
 
-## หน้า Wiki ที่ได้รับการอัปเดต
+### Zone 3: Cloud / Services
+- MQTT Broker: Mosquitto
+- Subscribers: Telegram Bot, Line Notify, Grafana (+ InfluxDB)
 
-- [[entities/iot/telegram-bot]] — สร้างใหม่
-- [[entities/iot/line-notify]] — สร้างใหม่
-- [[entities/iot/grafana]] — สร้างใหม่
-- [[entities/iot/influxdb]] — สร้างใหม่
-- [[synthesis/temperature-monitor-project]] — อัปเดต: ยืนยัน approach C
-- [[synthesis/iot-lora-architecture]] — สร้างใหม่ (architecture เต็ม)
+## คำถามที่ระบุใน diagram (onClick prompts)
+
+1. DHT11 วัดอะไร ต่อ pin กับ ESP32 ยังไง?
+2. ESP32 อ่าน DHT11 แล้วส่งผ่าน Serial ไปยัง DX-LR02 ยังไง? ขอ code ตัวอย่าง
+3. DX-LR02 TX mode ตั้งค่า M0/M1/AUX ยังไง?
+4. DX-LR02 RX ส่งต่อไปยัง ESP32-S3 ยังไง?
+5. ESP32-S3 publish MQTT ผ่าน WiFi ยังไง?
+6. ควรรัน Mosquitto ที่ไหน? RPi / VPS / Cloud?
+7. สร้าง Telegram Bot จาก MQTT ยังไง?
+8. Line Notify token หาได้ยังไง?
+9. Grafana + InfluxDB ต้องติดตั้งอะไรบ้าง?

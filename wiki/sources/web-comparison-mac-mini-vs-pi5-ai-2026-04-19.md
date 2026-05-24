@@ -1,21 +1,15 @@
 ---
 type: source
-title: "> ⚠️ PENDING REVIEW — เนื้อหานี้ยังไม่ได้รับการตรวจสอบโดย Claude"
+title: "web comparison mac mini vs pi5 ai 2026 04 19"
 slug: web-comparison-mac-mini-vs-pi5-ai-2026-04-19
 date_ingested: 2026-05-24
 original_file: raw/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md
-tags: [iot, ai]
 ---
 
+```yaml
 ---
-source_type: web-search
-url: comparison-internal-research-2026
-fetched_date: 2026-04-19
-fetched_by: Gemini CLI
-review_status: PENDING — ยังไม่ผ่าน Claude review
-topic: Comparison Mac Mini M4 vs Raspberry Pi 5 for Local AI & Telegram Bot
-domain: ai-tools
 ---
+```
 
 # Comparison: Mac Mini M4 vs Raspberry Pi 5 for Local AI
 

@@ -1,41 +1,78 @@
 ---
 type: source
-title: "MQTT: The Standard Messaging Protocol for IoT"
+title: "mqtt introduction"
 slug: mqtt-introduction
-date_ingested: 2026-04-18
+date_ingested: 2026-05-24
 original_file: raw/mqtt-introduction.md
-tags: [mqtt, protocol, messaging, broker, iot-core]
 ---
+
+```yaml
+---
+---
+```
 
 # MQTT: The Standard Messaging Protocol for IoT
 
-**ประเภท**: article (example — wiki initialization)  
-**วันที่**: 2026-04-18  
-**ผู้เขียน**: ตัวอย่างสำหรับการเริ่มต้น wiki
+**Source**: Example article for wiki initialization  
+**Date**: 2026-04-18
 
-## ประเด็นหลัก
+## What is MQTT?
 
-1. MQTT เป็น publish-subscribe protocol ที่ออกแบบมาเพื่อ IoT โดยเฉพาะ มี overhead ต่ำมาก (fixed header 2 bytes)
-2. ใช้ Broker เป็นศูนย์กลาง ทำให้อุปกรณ์ไม่ต้องคุยกันตรงๆ — scalable และ decoupled
-3. มี 3 ระดับ QoS: fire-and-forget / at-least-once / exactly-once
-4. MQTT 5.0 เพิ่ม features สำคัญ เช่น shared subscriptions, message expiry, user properties
-5. รองรับ TLS บนพอร์ต 8883 และ client certificate authentication
+MQTT (Message Queuing Telemetry Transport) is a lightweight, publish-subscribe network protocol that transports messages between devices. It was designed by Andy Stanford-Clark (IBM) and Arlen Nipper in 1999 for monitoring oil pipelines via satellite. MQTT is now an OASIS standard (v3.1.1 and v5.0).
 
-## ข้อมูลที่น่าสนใจ
+## How MQTT Works
 
-- MQTT เก่าแก่มาก ถูกออกแบบในปี 1999 สำหรับ monitoring pipeline น้ำมันผ่านดาวเทียม
-- ใช้ battery น้อยกว่า HTTP ถึง ~2 เท่า สำหรับ payload ขนาดเล็ก
-- Home Assistant ใช้ MQTT เป็นโปรโตคอลหลัก
-- EMQX อ้างว่ารองรับ 100 ล้าน concurrent connections
+MQTT uses a broker-based architecture:
+- **Broker**: A central server (e.g., Mosquitto, EMQX, HiveMQ) that receives and routes messages
+- **Publisher**: A device that sends messages to a topic
+- **Subscriber**: A device that listens to one or more topics
 
-## ข้อโต้แย้ง / ความขัดแย้ง
+Topics are hierarchical strings, e.g. `home/living-room/temperature`. Wildcards: `+` (single level), `#` (multi-level).
 
-*(wiki ยังใหม่ ยังไม่มีข้อมูลเดิมให้เปรียบเทียบ)*
+## QoS Levels
 
-## หน้า Wiki ที่ได้รับการอัปเดต
+| QoS | Name | Guarantee |
+|-----|------|-----------|
+| 0 | At most once | Fire and forget, may lose messages |
+| 1 | At least once | Guaranteed delivery, may duplicate |
+| 2 | Exactly once | Guaranteed, no duplicates, slowest |
 
-- [[entities/iot/mqtt-protocol]] — สร้างใหม่
-- [[entities/iot/mosquitto]] — สร้างใหม่
-- [[entities/iot/home-assistant]] — สร้างใหม่
-- [[concepts/iot/publish-subscribe]] — สร้างใหม่
-- [[concepts/iot/mqtt-qos]] — สร้างใหม่
+## MQTT vs HTTP
+
+MQTT uses ~2x less battery than HTTP for small payloads. Header overhead: MQTT fixed header is 2 bytes vs HTTP ~500 bytes typical. MQTT maintains persistent TCP connections; HTTP opens/closes per request.
+
+## MQTT 5.0 New Features (2019)
+
+- Reason codes on all ACKs
+- User properties (custom key-value headers)
+- Message expiry interval
+- Shared subscriptions (load balancing)
+- Request/response pattern support
+- Topic aliases
+
+## Security
+
+MQTT supports TLS/SSL on port 8883 (vs plain 1883). Authentication via username/password or client certificates. Authorization is broker-specific (topic-level ACLs).
+
+## Common IoT Use Cases
+
+1. Home automation (Home Assistant uses MQTT heavily)
+2. Industrial sensor monitoring
+3. Fleet tracking (vehicles, assets)
+4. Smart agriculture
+5. Healthcare monitoring
+
+## Popular Brokers
+
+- **Mosquitto** — open source, lightweight, ideal for Raspberry Pi / edge
+- **EMQX** — enterprise-grade, high throughput (100M connections claimed)
+- **HiveMQ** — enterprise, good Kubernetes support
+- **AWS IoT Core** — managed, integrates with AWS ecosystem
+- **Mosquitto** supports MQTT 3.1, 3.1.1, and 5.0
+
+## Client Libraries
+
+- Python: `paho-mqtt`
+- JavaScript: `mqtt.js`, `MQTTX`
+- Arduino/ESP32: `PubSubClient`, `AsyncMqttClient`
+- Go: `paho.mqtt.golang`

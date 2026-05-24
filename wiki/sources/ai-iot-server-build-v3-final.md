@@ -1,11 +1,15 @@
 ---
 type: source
-title: "> Source: `AI_IoT_Server_Build_v3_Final.pdf` (ผู้ใช้ส่งจาก Downloads/ — สร้างโดย"
+title: "ai iot server build v3 final"
 slug: ai-iot-server-build-v3-final
 date_ingested: 2026-05-24
 original_file: raw/ai-iot-server-build-v3-final.md
-tags: [iot, ai]
 ---
+
+```yaml
+---
+---
+```
 
 # Personal AI & IoT Server Build List (v3)
 

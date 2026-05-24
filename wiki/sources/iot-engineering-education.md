@@ -1,23 +1,23 @@
 ---
 type: source
-title: "รายการบทความที่จัดทำขึ้นเพื่อเผยแพร่นี้ เป็นเนื้อหาทางวิชาที่เกี่ยวข้องกับวิศวกร"
+title: "IoT Engineering Education"
 slug: iot-engineering-education
 date_ingested: 2026-05-24
 original_file: raw/IoT Engineering Education.md
-tags: [iot]
 ---
 
+```yaml
 ---
 title: "IoT Engineering Education"
 source: "https://iot-kmutnb.github.io/blogs/"
-author:
-  - "[[RSP]]"
-published:
-created: 2026-04-18
+author: ""
+published: ""
+created: "2026-04-18"
 description: "None"
-tags:
-  - "clippings"
+tags: ""
 ---
+```
+
 ## รายการบทความ
 
 รายการบทความที่จัดทำขึ้นเพื่อเผยแพร่นี้ เป็นเนื้อหาทางวิชาที่เกี่ยวข้องกับวิศวกรรมไฟฟ้า-อิเล็กทรอนิกส์และคอมพิวเตอร์ ซึ่งเกิดจากการศึกษา ค้นคว้า และลงมือปฏิบัติด้วยตนเอง รวมทั้งบางส่วนมาจากประสบการณ์การสอนของผู้เขียนในอดีต และเผยแพร่ในลักษณะอิสระ โดยไม่เกี่ยวข้องหรือสังกัดสถาบันการศึกษา องค์กร หรือหลักสูตรใดเป็นการเฉพาะ
@@ -334,8 +334,6 @@ tags:
 
 ผู้ที่สนใจยังสามารถติดตามข่าวสารในอีกช่องทางหนึ่งผ่านทาง **Facebook Page**  
 → " **IoT Engineering Education** " ([https://fb.me/iot.kmutnb](https://fb.me/iot.kmutnb))
-
-![](https://iot-kmutnb.github.io/blogs/assets/images/qrcode_fb.png)
 
 ---
 

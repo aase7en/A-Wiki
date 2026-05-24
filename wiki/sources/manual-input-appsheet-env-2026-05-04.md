@@ -1,18 +1,16 @@
 ---
 type: source
-title: "> ⚠️ ข้อมูลชุดนี้กำลังถูกรวบรวมเพื่อส่งต่อให้ Claude วิเคราะห์โครงสร้างเพื่อแปลง"
+title: "manual input appsheet env 2026 05 04"
 slug: manual-input-appsheet-env-2026-05-04
 date_ingested: 2026-05-24
 original_file: raw/manual-input-appsheet-env-2026-05-04.md
-tags: [env, appsheet]
 ---
 
+```yaml
 ---
-source_type: manual-input
-topic: appsheet-env-documentation
-date_added: 2026-05-04
-status: COLLECTING
+status: "COLLECTING"
 ---
+```
 
 # AppSheet ENV Documentation (Manual Input)
 

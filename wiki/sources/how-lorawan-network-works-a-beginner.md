@@ -1,23 +1,23 @@
 ---
 type: source
-title: "At its core, a LoRaWAN network (Long Range Wide Area Network) is a communication"
+title: "How LoRaWAN Network Works: A Beginner"
 slug: how-lorawan-network-works-a-beginner
 date_ingested: 2026-05-24
 original_file: raw/How LoRaWAN Network Works A Beginner.md
-tags: [iot, lora]
 ---
 
+```yaml
 ---
 title: "How LoRaWAN Network Works: A Beginner"
 source: "https://www.uniconvergetech.in/blog/how-lorawan-network-works-beginners/"
-author:
-  - "[[UniConverge Technologies]]"
-published: 2025-08-22
-created: 2026-04-18
+author: ""
+published: "2025-08-22"
+created: "2026-04-18"
 description: "Discover how the LoRaWAN network is revolutionizing IoT with its long-range, low-power communication. This beginner’s guide covers everything from architecture and device communication to real-life applications and setup tips. Perfect for anyone looking to explore the potential of LoRaWAN technology!"
-tags:
-  - "clippings"
+tags: ""
 ---
+```
+
 ## What Is a LoRaWAN Network?
 
 At its core, a LoRaWAN network (Long Range Wide Area Network) is a communication protocol specially designed for the Internet of Things (IoT). Its superpower? Connecting thousands of small, energy-efficient devices—like sensors or smart tags—over impressive distances, all while using minimal battery. It’s the secret ingredient that allows a single network to cover a greenhouse, a neighborhood, or even an entire city.
@@ -75,8 +75,6 @@ Think of this as the command center. Here’s where the LoRaWAN network’s data
 ---
 
 ## How LoRaWAN Network Devices Communicate
-
-![ Infographic illustration of LoRaWAN network applications showing smart agriculture, smart cities, industrial IoT, and utility monitoring, all connected through a central LoRaWAN gateway to highlight real-life use cases of the LoRaWAN network.](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfhIQ1a9HuNSpdCJ0ArdKEa00a7UBNK6Rhlimxq-KCBMy31iM0esVsHIe4JG070nq_VTH1THSsztvDNWlytXzWZdAkMkl6SzBo2K8-oV1B9H-8T02HYfijjLVzMs_5cZKZ1zKS0?key=Zn7eORFjLCJC_jzRw0cBdg)
 
 Infographic illustration of LoRaWAN network applications showing smart agriculture, smart cities, industrial IoT, and utility monitoring, all connected through a central LoRaWAN gateway to highlight real-life use cases of the LoRaWAN network.
 
@@ -175,8 +173,6 @@ These features rely on global standards (from the LoRa Alliance), ensuring any c
 ---
 
 ## LoRaWAN Network in Real Life: Proven Value
-
-![ Infographic illustration showing a LoRaWAN network topology where end-devices communicate with multiple gateways, which forward data to a central network server and application server. The diagram visually represents the LoRaWAN network communication flow.](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdEIpSuPGLynYTEtWisjon2ZuYaMtaKvMDwAXuLEfuJDz69nqASndRfsgcScQB8hlct6Elyk8w6M11u7oYiBLzeUtHRHkynE5vn-4Ailj9DRI0TthDnNBbxPy6uPaaVuygoku0M5Q?key=Zn7eORFjLCJC_jzRw0cBdg)
 
 Infographic illustration showing a LoRaWAN network topology where end-devices communicate with multiple gateways, which forward data to a central network server and application server. The diagram visually represents the LoRaWAN network communication flow.
 

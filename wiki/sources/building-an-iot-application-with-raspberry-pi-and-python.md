@@ -1,26 +1,24 @@
 ---
 type: source
-title: "[Mastodon](https://me.dm/@webcluesinfotech)"
+title: "Building an IoT Application with Raspberry Pi and Python"
 slug: building-an-iot-application-with-raspberry-pi-and-python
 date_ingested: 2026-05-24
 original_file: raw/Building an IoT Application with Raspberry Pi and Python.md
-tags: [iot, raspberry-pi]
 ---
 
+```yaml
 ---
 title: "Building an IoT Application with Raspberry Pi and Python"
 source: "https://webcluesinfo.medium.com/building-an-iot-application-with-raspberry-pi-and-python-efe3ef3e0d6b"
-author:
-  - "[[Webclues Infotech Private Limited]]"
-published: 2024-10-29
-created: 2026-04-18
+author: ""
+published: "2024-10-29"
+created: "2026-04-18"
 description: "Building an IoT Application with Raspberry Pi and Python The Internet of Things (IoT) is reshaping how businesses operate, allowing for innovative solutions that enhance efficiency and connectivity …"
-tags:
-  - "clippings"
+tags: ""
 ---
-[Mastodon](https://me.dm/@webcluesinfotech)
+```
 
-![Python development services](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*cvYmypumgC_pDg6WAc0PFg.png)
+[Mastodon](https://me.dm/@webcluesinfotech)
 
 Python development services
 
@@ -165,6 +163,6 @@ If you’re looking to develop a custom IoT solution or need assistance with [**
 
 By following these steps, you can embark on creating a successful IoT project that meets your business needs while exploring the exciting possibilities of technology today.
 
-[![Webclues Infotech Private Limited](https://miro.medium.com/v2/resize:fill:48:48/1*cPaBZFYtMlrTtqfWQWLcvA.png)](https://webcluesinfo.medium.com/?source=post_page---post_author_info--efe3ef3e0d6b---------------------------------------)[742 following](https://webcluesinfo.medium.com/following?source=post_page---post_author_info--efe3ef3e0d6b---------------------------------------)
+[](https://webcluesinfo.medium.com/?source=post_page---post_author_info--efe3ef3e0d6b---------------------------------------)[742 following](https://webcluesinfo.medium.com/following?source=post_page---post_author_info--efe3ef3e0d6b---------------------------------------)
 
 WebClues Infotech is a CMMI Level 5 certified software development company specializing in web and mobile app development. [https://www.webcluesinfotech.com/](https://www.webcluesinfotech.com/)

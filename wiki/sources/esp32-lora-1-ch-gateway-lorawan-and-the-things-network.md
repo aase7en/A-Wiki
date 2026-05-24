@@ -1,36 +1,37 @@
 ---
 type: source
-title: "Contributors: jimblom"
+title: "ESP32 LoRa 1-CH Gateway, LoRaWAN, and the Things Network"
 slug: esp32-lora-1-ch-gateway-lorawan-and-the-things-network
 date_ingested: 2026-05-24
 original_file: raw/ESP32 LoRa 1-CH Gateway, LoRaWAN, and the Things Network.md
-tags: [iot, esp32, lora]
 ---
 
+```yaml
 ---
 title: "ESP32 LoRa 1-CH Gateway, LoRaWAN, and the Things Network"
 source: "https://learn.sparkfun.com/tutorials/esp32-lora-1-ch-gateway-lorawan-and-the-things-network/all"
-author:
-published:
-created: 2026-04-18
-description:
-tags:
-  - "clippings"
+author: ""
+published: ""
+created: "2026-04-18"
+description: ""
+tags: ""
 ---
+```
+
 Contributors: jimblom
 
 ## Introduction
 
 **Note:** Please note that this tutorial is for [SPX-14893](https://www.sparkfun.com/products/14893). If you are using this with latest version \[[WRL-15006](https://www.sparkfun.com/products/15006) \] please refer to the [SparkFun LoRa Gateway 1-Channel Hookup Guide](https://learn.sparkfun.com/tutorials/sparkfun-lora-gateway-1-channel-hookup-guide).
 
-[![](https://cdn.sparkfun.com/assets/custom_pages/2/6/9/sparkx-logo.png)](https://www.sparkfun.com/sparkx)
+[](https://www.sparkfun.com/sparkx)
 
   
 **Experimental Products:** [SparkX products](https://www.sparkfun.com/sparkx) are rapidly produced to bring you the most cutting edge technology as it becomes available. These products are tested but come with no guarantees. Live technical support is not available for SparkX products.
 
 The [ESP32 LoRa 1-CH Gateway](https://www.sparkfun.com/products/14893) combines an ESP32 -- a programmable microcontroller featuring both WiFi and Bluetooth radios -- with an RFM95W LoRa transceiver to create a single-channel LoRa gateway. It's a perfect, low-cost tool for monitoring a dozen-or-so LoRa devices, and relaying their messages up to the cloud.
 
-[![ESP32 LoRa 1-Channel Gateway](https://cdn.sparkfun.com/r/600-600/assets/parts/1/3/1/7/6/14893-ESP32_LoRa_1-Channel_Gateway-01.jpg)](https://www.sparkfun.com/products/14893)
+[](https://www.sparkfun.com/products/14893)
 
 ### ESP32 LoRa 1-Channel Gateway
 
@@ -54,7 +55,7 @@ To power and program the board, you'll need a [micro-B USB cable](https://www.sp
 
 You will need a soldering iron, solder, and [general soldering accessories](https://www.sparkfun.com/categories/49).
 
-[![Solder Lead Free - 100-gram Spool](https://cdn.sparkfun.com/r/140-140/assets/parts/2/8/7/3/09325_9161-Solder_Lead_Free_-_100-gram_Spool-01.jpg)](https://www.sparkfun.com/solder-lead-free-100-gram-spool.html)
+[](https://www.sparkfun.com/solder-lead-free-100-gram-spool.html)
 
 ### Solder Lead Free - 100-gram Spool
 
@@ -62,7 +63,7 @@ TOL-09325
 
 $15.50
 
-[![Weller WLC100 Soldering Station](https://cdn.sparkfun.com/r/140-140/assets/parts/1/2/1/7/3/14228-01.jpg)](https://www.sparkfun.com/products/14228)
+[](https://www.sparkfun.com/products/14228)
 
 ### Weller WLC100 Soldering Station
 
@@ -96,7 +97,7 @@ To allow the board to communicate with other LoRa devices, you'll need to add an
 
 The U.FL connector can be attached to an [SMA to U.FL](https://www.sparkfun.com/products/662) adapter cable, which can then be paired with a [900 MHz Duck Antenna](https://www.sparkfun.com/products/9143).
 
-[![ESP32/LoRa board with wire antenna soldered in](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/14893-ESP32_LoRa_1-Channel_Gateway-06.jpg)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/14893-ESP32_LoRa_1-Channel_Gateway-06.jpg)
+[]()
 
 *3.07" strip of 22-AWG solid-core wire soldered to the ANT pin. Use the hole adjacent to the ANT pin for strain relief!*
 
@@ -111,7 +112,7 @@ In lieu of a U.FL antenna, a strip of [wire](https://www.sparkfun.com/products/1
 
 The board is nominally powered via the on-board **micro-USB** connector. The other end of your USB cable can be plugged into either a computer, [wall adapter](https://www.sparkfun.com/products/12890), or a [USB battery pack](https://www.sparkfun.com/products/14169).
 
-[![Examples power supplies -- USB or 3.3V](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/14893-ESP32_LoRa_1-Channel_Gateway-05.jpg)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/14893-ESP32_LoRa_1-Channel_Gateway-05.jpg)
+[]()
 
 Alternatively, the board can be powered using a **regulated 3.3V power supply**. This supply should be applied to the 3.3V and GND pins.
 
@@ -134,7 +135,7 @@ To add the custom board, begin by downloading the board's variant file here belo
 
 Then unzip the contents into **...{Arduino Sketchbook}/hardware/espressif/esp32/variants**.
 
-[![Variant install location](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/esp32-variant-install-location.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/esp32-variant-install-location.png)
+[]()
 
 *The "sparkx\_esp32\_lora" folder should live in the "variants" folder of your ESP32 hardware directory.*
 
@@ -230,7 +231,7 @@ This custom board file specifies the SPI and built-in LED pins. Without it, you'
 
 Once the custom board has been added to the ESP32 core, open Arduino and select " **SparkX ESP32 LoRa Gateway** " under the **Tools > Board > ESP32** Arduino menu.
 
-[![SparkX ESP32 LoRa board in Arduino](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/arduino-select-sparkx-board.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/arduino-select-sparkx-board.png)
+[]()
 
 ## Single-Channel LoRaWAN Gateway Code
 
@@ -304,7 +305,7 @@ The sketch may take a long time to set up the first time through -- it will form
 
 After the ESP32 has connected, look for it to print out an IP address. Open up your computer's web browser and plug that into the address bar. You should be greeted by the ESP Gateway Config web portal:
 
-[![ESP Gateway Config served by the ESP32](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/esp-gateway-config-web.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/esp-gateway-config-web.png)
+[]()
 
 *Config and log page served by the ESP32.*
 
@@ -381,22 +382,7 @@ We've also modified the enabled channels to only use a single channel with the l
 
 ```c
 // First disable all sub-bands
-for (int b = 0; b < 8; ++b) {
-  LMIC_disableSubBand(b);
-}
-// Then enable the channel(s) you want to use
-LMIC_enableChannel(8); // 903.9 MHz
-```
-
-The spread factor is set near the end of setup() with the `LMIC_setDrTxpow(DR_SF7, 14);` line. This can be replaced with `DR_SF8`, `DR_SF9`, or `DR_SF10` at the default 903.9MHz frequency.
-
-But wait! Before uploading this example, there's one more modification you need to make: your LoRaWAN application, network session, and device keys! For that, and an application server, we recommend The Things Network.
-
-## Routing to The Things Network
-
-The final components to a LoRaWAN network are a server and application. You can set up a LoRaWAN server of your own, but, for prototyping at least, The Things Network is a great, free tool for authenticating and routing your data.
-
-> [!warning] Warning
+for (int b = 0; b  [!warning] Warning
 > **Single-Channel Blues**
 > 
 > At the trade-off of being low-cost, this gateway is only capable of monitoring a single LoRa channel on a limited set of spread factors. Single-channel gateway's don't get much support from LoRaWAN platforms like [The Things Network](https://www.thethingsnetwork.org/docs/gateways/start/single-channel.html), as they are not, necessarily, LoRaWAN-compliant. They are, however, a great way to begin exploring the world of LoRa and LoRaWAN!
@@ -409,7 +395,7 @@ In order to create a device, you first need to create an application to house it
 
 Fill out any ID and description you'd like. The **Application EUI** will automatically be generated when you create the application. You can also pick your preferred handler for the application (e.g. ttn-handler-us-west).
 
-[![Creating a TTN application](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/ttn-application-create.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/ttn-application-create.png)
+[]()
 
 ### Create and Configure a Device
 
@@ -417,11 +403,11 @@ Next create a device in your application. Under the " **Devices** " section, cli
 
 This is again pretty simple. Fill out a unique device ID, click the " **generate** " button under " **Device EUI** " to automatically generate a EUI. Then click " **Register**."
 
-[![Creating a TTN device](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/ttn-device-create.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/ttn-device-create.png)
+[]()
 
 This example sketch only supports **ABP activation**, so you'll need to modify that in the device settings. In the "Device Overview" page, click "Settings". From there, under "Activation Method" click **ABP**. I also recommend **disabling Frame Counter Checks**. The gateway is capable of frame-counter checks, but it can get out of sync -- especially if you have another gateway nearby.
 
-[![Modifying TTN device settings](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/ttn-device-settings.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/ttn-device-settings.png)
+[]()
 
 Save the settings and go back to your " **Device Overview** " page. You should see new keys, including " **Network Session Key** ", " **App Session Key** ", and " **Device Address**." These will need to be plugged into the device sketch and uploaded to the device.
 
@@ -433,7 +419,7 @@ On the " **Device Overview** " page, click the " **code** " symbol (`<>`) next t
 
 The `DEVADDR` variable expects a single 32-bit variable, so copy the " **Device Address** " key as shown and paste that into the `PASTE_DEV_ADDR_HERE` placeholder.
 
-[![Grabbing your device keys](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/ttn-device-keys.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/ttn-device-keys.png)
+[]()
 
 Here's an example of what your three constants should look like once done:
 
@@ -462,7 +448,7 @@ To check if your gateway is receiving the message, you can either check the Seri
 
 If messages are getting through to your gateway, click the " **Data** " tab on your device to check for new messages.
 
-[![TTN device data visible](https://cdn.sparkfun.com/r/600-600/assets/learn_tutorials/8/0/4/ttn-data.png)](https://cdn.sparkfun.com/assets/learn_tutorials/8/0/4/ttn-data.png)
+[]()
 
 The message's payload -- which was encrypted between leaving the device and getting to the router -- should be a series of hex values adding up to "Hello, world".
 
