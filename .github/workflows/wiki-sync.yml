@@ -1,0 +1,29 @@
+name: Wiki Sync
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  synx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt || true
+      - name: Regenerate wiki index
+        run: python scripts/wiki/gen-index.py || echo "Index regeneration skipped (script may not exist yet)"
+      - name: Regenerate wiki graph
+        run: python scripts/wiki/build-wiki-graph.py || echo "Graph regeneration skipped"
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "Wiki Sync Bot"
+          git config --local user.email "wiki-sync@a-wiki.local"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || git commit -m "📝 wiki: auto-sync [skip ci]"
+          git push
