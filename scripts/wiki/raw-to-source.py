@@ -128,43 +128,35 @@ def build_source_page(fm: dict[str, str], body: str, filename: str) -> tuple[str
     Returns (slug, page_content).
     """
     title = fm.get('title', filename.replace('.md', '').replace('-', ' '))
-    slug = make_slug(title)
+    # Prefer explicit slug from raw frontmatter, then generate from title
+    explicit_slug = fm.get('slug', '').strip()
+    if explicit_slug and len(explicit_slug) > 3 and ' ' not in explicit_slug:
+        slug = explicit_slug
+    else:
+        slug = make_slug(title)
     
     # Clean the body
     cleaned_body = clean_body(body)
     
-    # Build frontmatter
+    # Build wiki frontmatter (prefix keys to avoid conflict with raw frontmatter)
     lines = ['---']
     lines.append(f'type: source')
     lines.append(f'title: "{title}"')
     lines.append(f'slug: {slug}')
     lines.append(f'date_ingested: 2026-05-24')
     lines.append(f'original_file: raw/{filename}')
-    
-    # Preserve original tags
-    tags_str = fm.get('tags', '')
-    if tags_str:
-        tags = [t.strip() for t in tags_str.replace('[', '').replace(']', '').split(',') if t.strip()]
-        # Remove quotes from individual tags
-        tags = [t.strip('"').strip("'") for t in tags]
-        lines.append(f'tags: [{", ".join(tags)}]')
-    
     lines.append('---')
     lines.append('')
     
-    # Add the preserved raw frontmatter as blockquote
-    raw_keys = ['title', 'source', 'author', 'published', 'created', 'description']
+    # Preserve raw frontmatter inside a yaml code block
+    raw_keys = ['title', 'source', 'author', 'published', 'created', 'description', 'tags', 'type', 'slug', 'date_extracted', 'date_collected', 'collected_by', 'status']
     raw_lines = ['---']
     for key in raw_keys:
         if key in fm:
             val = fm[key]
-            if key in ('tags',):
-                # Skip — already handled above
-                continue
             raw_lines.append(f'{key}: "{val}"')
     raw_lines.append('---')
     
-    # Add raw frontmatter in a fenced block for reference
     lines.append('```yaml')
     lines.extend(raw_lines)
     lines.append('```')
