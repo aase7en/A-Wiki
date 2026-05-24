@@ -211,16 +211,17 @@ def render_main(pages: dict[str, dict[str, list[dict]]]) -> str:
     # Per-domain counts row
     ent = pages.get("entities", {})
     con = pages.get("concepts", {})
-    out.append("| Domain | Entities | Concepts | File |")
-    out.append("|--------|----------|----------|------|")
+    out.append("| Domain | Entities | Concepts | Context File | Rich Index |")
+    out.append("|--------|----------|----------|--------------|------------|")
     for dom in DOMAIN_ORDER:
         e = len(ent.get(dom, []))
         c = len(con.get(dom, []))
         slug = DOMAIN_FILE_SLUG[dom]
-        out.append(f"| {DOMAIN_TITLES[dom]} | {e} | {c} | `wiki/context/overview-{slug}.md` |")
+        out.append(f"| {DOMAIN_TITLES[dom]} | {e} | {c} | `wiki/context/overview-{slug}.md` | `index-{slug}.md` |")
     out.append("")
     src_count = sum(len(rows) for rows in pages.get("sources", {}).values())
     out.append(f"- **Sources** ({src_count}): `wiki/context/overview-sources.md`")
+    out.append(f"- **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`")
     out.append("")
 
     # Synthesis stays in main — it's cross-domain by definition (typically small)
@@ -327,6 +328,8 @@ def main() -> int:
                     help="Print main wiki-overview to stdout (don't write any file)")
     ap.add_argument("--check", action="store_true",
                     help="Exit 1 if any generated file is out of date (CI mode)")
+    ap.add_argument("--domain", type=str,
+                    help="Regenerate only a single domain overview file (iot|env|ai-tools|pharmacy)")
     args = ap.parse_args()
 
     pages = collect_pages()
@@ -356,12 +359,25 @@ def main() -> int:
         return 0
 
     CONTEXT_DIR.mkdir(parents=True, exist_ok=True)
+
+    if args.domain:
+        # Regenerate only one domain overview
+        slug = args.domain
+        dom = slug if slug in DOMAIN_ORDER else slug
+        # Find the domain key
+        dom_key = slug  # slugs match DOMAIN_ORDER keys
+        path = CONTEXT_DIR / f"overview-{DOMAIN_FILE_SLUG[dom_key]}.md"
+        content = render_domain(dom_key, pages)
+        path.write_text(content, encoding="utf-8")
+        print(f"✓ Wrote single domain file: {path.relative_to(REPO_ROOT)}")
+        return 0
+
     for path, content in outputs.items():
         path.write_text(content, encoding="utf-8")
     total = sum(len(r) for s in pages.values() for r in s.values())
     print(f"✓ Wrote {len(outputs)} files in {CONTEXT_DIR.relative_to(REPO_ROOT)} ({total} pages)")
 
-    # Chain: rebuild local search index + knowledge graph (Phase 2/3 upgrade)
+    # Chain: rebuild local search index + knowledge graph + embeddings (Phase 2-4 upgrade)
     # Best-effort — don't fail gen-index if these aren't installed yet
     import subprocess
     scripts_dir = REPO_ROOT / "scripts"
@@ -373,6 +389,57 @@ def main() -> int:
                 print(f"✓ chained: {chained}")
             except subprocess.CalledProcessError as e:
                 print(f"⚠ {chained} failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+
+    # Chain: auto-synthesis pipeline (Phase 4c)
+    for chained_script in ("raw-to-source.py", "raw-to-synth.py"):
+        sp = scripts_dir / chained_script
+        if sp.exists():
+            try:
+                subprocess.run(
+                    [sys.executable, str(sp), "--apply"] if chained_script == "raw-to-source.py" else [sys.executable, str(sp)],
+                    check=True, capture_output=True
+                )
+                print(f"✓ chained: {chained_script}")
+            except subprocess.CalledProcessError as e:
+                print(f"⚠ raw-to-synth.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+
+    # Chain: arXiv fetch (Phase 4) — Tier 1 search for domain-relevant papers, silent for speed
+    arxiv_fetcher = scripts_dir / "fetch-arxiv.py"
+    if arxiv_fetcher.exists() and not args.check:
+        arxiv_queries = {
+            "iot":       'cat:cs.NI AND (IoT OR LoRa OR "embedded systems" OR "edge computing")',
+            "ai-tools":  'cat:cs.AI AND (LLM OR "large language model" OR "agent benchmark" OR MCP)',
+            "pharmacy":  'cat:cs.CE AND (pharmacy OR drug OR vaccine OR "cold chain")',
+            "env":       'cat:physics.ao-ph AND ("air quality" OR "water quality" OR wastewater OR sensor)',
+        }
+        for domain, query in arxiv_queries.items():
+            try:
+                subprocess.run(
+                    [sys.executable, str(arxiv_fetcher), "--search", query, "--max", "2"],
+                    check=True, capture_output=True, timeout=30
+                )
+            except subprocess.TimeoutExpired:
+                pass  # arXiv API slow, skip silently
+            except subprocess.CalledProcessError:
+                pass  # No results for this domain, skip silently
+
+    # Chain: Skeptical Reviewer (Phase 5) — deterministic health check
+    reviewer = scripts_dir / "review-check.py"
+    if reviewer.exists() and not args.check:
+        try:
+            subprocess.run([sys.executable, str(reviewer)], check=True, capture_output=True)
+            print(f"✓ chained: review-check.py (report → wiki/context/review-report.md)")
+        except subprocess.CalledProcessError as e:
+            print(f"⚠ review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+
+    # Chain: build embeddings (Phase 4a) — local TF-IDF by default, silent
+    emb_builder = scripts_dir / "wiki" / "build-embeddings.py"
+    if emb_builder.exists():
+        try:
+            subprocess.run([sys.executable, str(emb_builder), "--quiet"], check=True, capture_output=True)
+            print(f"✓ chained: wiki/build-embeddings.py")
+        except subprocess.CalledProcessError as e:
+            print(f"⚠ wiki/build-embeddings.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Regenerate wiki/context/knowledge-graph.md from .wiki-graph.json
     graph_json = REPO_ROOT / ".wiki-graph.json"

@@ -16,6 +16,8 @@
 *secret*
 *password*
 *token*
+# แต่ skill token-optimization จำเป็นต้อง track
+!skills/claude-code/token-optimization/
 *oauth*
 *jwt*
 *secrets*

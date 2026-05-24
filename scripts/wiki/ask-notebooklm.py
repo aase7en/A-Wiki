@@ -32,7 +32,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 BUNDLE_DIR = REPO_ROOT / "exports" / "notebooklm"
 DEFAULT_MODEL = "gemini-2.0-flash-exp"
 API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
