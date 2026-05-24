@@ -98,6 +98,32 @@ _track_fail() {
   FAIL_REASONS+=("$reason")
 }
 
+# ─── Cost annotator ───────────────────────────────────────────────────────────
+# Appends a cost estimate line to stdout after the response body.
+# Estimates based on model tier and provider pricing as of 2026-05.
+# Only active when MIN_COST_ANNOTATE=true (off by default).
+MIN_COST_ANNOTATE="${MIN_COST_ANNOTATE:-false}"
+_cost_annotate() {
+  local model_name="$1"
+  $MIN_COST_ANNOTATE || return 0
+  # Rough per-token ranges (input + output, 500 tokens avg)
+  case "$model_name" in
+    *gemini*flash*|*gemini-2.5-flash*)   local cost="~$0.00 (free tier)" ;;
+    *deepseek*r1*|*reasoner*)            local cost="~$0.00014" ;;
+    *deepseek*chat*v3*)                  local cost="~$0.00009" ;;
+    *deepseek*)                          local cost="~$0.00008" ;;
+    *qwen3*235b*|*qwen3-235b*)           local cost="~$0.00 (free)" ;;
+    *llama-3.3*70b*|*llama*3.3*70b*)     local cost="~$0.00 (free/Groq)" ;;
+    *qwen3*30b*|*qwen3-30b*)             local cost="~$0.00 (free)" ;;
+    *gpt-4o-mini*)                       local cost="~$0.00015" ;;
+    *claude*haiku*|*claude-haiku*)       local cost="~$0.00025" ;;
+    *openrouter/auto*)                   local cost="~$0.001 (varies)" ;;
+    *)                                   local cost="~$0.00 (unknown/free)" ;;
+  esac
+  echo ""
+  echo "# [cost-estimate] ${cost}  (model: ${model_name})"
+}
+
 # ─── Response parser + error classifier ───────────────────────────────────────
 # Writes response to stdout (exit 0) or classifies error to LAST_ERROR (exit 1)
 LAST_ERROR=""
@@ -192,6 +218,7 @@ try_groq_model() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _cost_annotate "llama-3.3-70b-versatile(groq)"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -214,6 +241,7 @@ try_anthropic_haiku() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart anthropic 2>"$err_out"; then
+    _cost_annotate "claude-haiku-4-5"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
