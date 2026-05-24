@@ -96,11 +96,24 @@ class TestSyncNow:
     """
 
     def test_sync_clean_noop(self, tmp_git_repo: Path, monkeypatch):
-        """Clean repo with no remote should fail gracefully."""
+        """Clean repo with no local changes syncs without error."""
         os.chdir(tmp_git_repo)
         monkeypatch.setenv("WIKI_DEVICE_NAME", "test-device")
         result = sync_now("test-device")
-        # No remote configured -> push will fail, sync returns False
+        # No local changes -> no push needed -> sync succeeds trivially
+        # (fetch may fail due to no remote, but that doesn't affect result
+        #  when there's nothing to push)
+        assert result
+
+    def test_sync_with_no_remote_but_dirty(self, tmp_git_repo: Path, monkeypatch):
+        """Dirty repo with no remote returns False on push failure."""
+        os.chdir(tmp_git_repo)
+        monkeypatch.setenv("WIKI_DEVICE_NAME", "test-device")
+        # Make a syncable change
+        (tmp_git_repo / "wiki").mkdir(exist_ok=True)
+        (tmp_git_repo / "wiki" / "note.md").write_text("local change\n")
+        result = sync_now("test-device")
+        # Push fails due to no remote -> returns False
         assert not result
 
     def test_sync_with_local_change(self, repos_two_device, monkeypatch):
