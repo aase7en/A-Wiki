@@ -11,9 +11,13 @@ SYNC_PATHS = ["wiki", "log.md", "session-memory.md", "index.md", "index-ai.md", 
 EXCLUDE_DIRS = [".git", ".obsidian", ".claude", ".gemini", ".codex", "raw", "__pycache__", "node_modules"]
 
 def get_device_name():
-    # Detect device name or fallback to hostname
+    # Environment variable overrides everything
+    env_name = os.environ.get("WIKI_DEVICE_NAME", "").strip()
+    if env_name:
+        return env_name
+
+    # Custom device file (e.g. ~/.wiki-device)
     try:
-        # Check custom device file if exists (e.g. ~/.wiki-device)
         home = os.path.expanduser("~")
         device_file = os.path.join(home, ".wiki-device")
         if os.path.exists(device_file):
@@ -21,7 +25,7 @@ def get_device_name():
                 return f.read().strip()
     except Exception:
         pass
-    
+
     # Fallback to hostname
     return socket.gethostname().split(".")[0]
 
