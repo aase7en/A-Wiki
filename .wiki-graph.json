@@ -1,17 +1,17 @@
 {
   "generated_at": "2026-05-24",
   "stats": {
-    "nodes": 368,
-    "edges": 1107,
+    "nodes": 384,
+    "edges": 1077,
     "edges_by_type": {
-      "mdlink": 27,
-      "wikilink": 1002,
+      "mdlink": 36,
+      "wikilink": 965,
       "depends": 27,
-      "implements": 50,
+      "implements": 48,
       "extends": 1
     },
-    "broken_links": 45,
-    "orphans": 113,
+    "broken_links": 41,
+    "orphans": 129,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -23,11 +23,11 @@
       },
       {
         "path": "wiki/entities/iot/esp32.md",
-        "score": 54
+        "score": 53
       },
       {
         "path": "wiki/entities/iot/esp32-s3.md",
-        "score": 35
+        "score": 34
       },
       {
         "path": "index-pharmacy.md",
@@ -35,22 +35,22 @@
       },
       {
         "path": "wiki/entities/iot/dx-lr02-lora.md",
-        "score": 31
+        "score": 30
       },
       {
         "path": "wiki/entities/iot/grafana.md",
-        "score": 28
+        "score": 27
       },
       {
         "path": "wiki/synthesis/iot-lora-architecture.md",
-        "score": 28
-      },
-      {
-        "path": "wiki/entities/iot/mqtt-protocol.md",
-        "score": 26
+        "score": 27
       },
       {
         "path": "index-env.md",
+        "score": 25
+      },
+      {
+        "path": "wiki/entities/iot/mqtt-protocol.md",
         "score": 25
       }
     ],
@@ -65,16 +65,16 @@
       "wiki/context/overview-pharmacy.md",
       "wiki/context/overview-sources.md",
       "wiki/context/review-report.md",
-      "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
+      "wiki/sources/3-dashboard-node-red.md",
       "wiki/sources/ai-iot-server-build-v3-final.md",
-      "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "wiki/sources/arduino-ide-esp32-arduino-2025.md",
       "wiki/sources/arduino-librariesarduino-powermanagement.md",
+      "wiki/sources/arduino-librariesarduinopowermanagement.md",
       "wiki/sources/build-software-better-together.md",
       "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
+      "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
       "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "wiki/sources/dashboard-design-best-practices-and-examples.md",
-      "wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md"
+      "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md"
     ]
   },
   "nodes": [
@@ -370,7 +370,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-05-24 16:41",
+      "title": "Review Report — 2026-05-24 17:05",
       "domain": "context"
     },
     {
@@ -639,13 +639,8 @@
       "domain": "pharmacy"
     },
     {
-      "path": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "title": "1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "title": "10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand",
+      "path": "wiki/sources/3-dashboard-node-red.md",
+      "title": "3-dashboard-node-red",
       "domain": "sources"
     },
     {
@@ -689,18 +684,23 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/arduino-ide-esp32-arduino-2025.md",
+      "title": "arduino-ide-esp32-arduino-2025",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/arduino-ide-esp32-setup.md",
       "title": "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 (2025)",
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "title": "arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป",
+      "path": "wiki/sources/arduino-librariesarduino-powermanagement.md",
+      "title": "arduino-librariesarduino-powermanagement",
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "title": "arduino-librariesarduino-powermanagement",
+      "path": "wiki/sources/arduino-librariesarduinopowermanagement.md",
+      "title": "arduino-librariesarduinopowermanagement",
       "domain": "sources"
     },
     {
@@ -714,8 +714,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
+      "title": "context-claude-code-dev-vibe-coding-thailand",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "title": "create-an-esp32-project-with-platformio-an-guide-for-beginne",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
+      "title": "create-an-esp32-project-with-platformio-an-guide-for-beginners",
       "domain": "sources"
     },
     {
@@ -726,6 +736,11 @@
     {
       "path": "wiki/sources/dashboard-design-best-practices.md",
       "title": "Dashboard Design: Best Practices and Examples",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/datasheet-dx-lr02.md",
+      "title": "datasheet-dx-lr02",
       "domain": "sources"
     },
     {
@@ -814,6 +829,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
+      "title": "esp32-lora-sensor-monitoring-with-web-server-long-range-communication",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/esp32-lora-sensor-webserver.md",
       "title": "ESP32 LoRa Sensor Monitoring with Web Server",
       "domain": "sources"
@@ -844,8 +864,8 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "title": "esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน",
+      "path": "wiki/sources/esp32.md",
+      "title": "esp32",
       "domain": "sources"
     },
     {
@@ -854,8 +874,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/espressif-esp32-s3-iot-engineering-education.md",
+      "title": "Print system information",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
       "title": "espressifesp-idf-espressif-iot-development-framework-officia",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "title": "espressifesp-idf-espressif-iot-development-framework-official-development-framew",
       "domain": "sources"
     },
     {
@@ -866,6 +896,11 @@
     {
       "path": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
       "title": "get-started-esp32-esp-idf-programming-guide-v4-4-documentati",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
+      "title": "get-started-esp32-esp-idf-programming-guide-v44-documentation",
       "domain": "sources"
     },
     {
@@ -889,8 +924,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "title": "heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/hermes-agent-guide-th.md",
       "title": "คู่มือ Hermes Agent (ภาษาไทย)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/hermes-agent.md",
+      "title": "hermes-agent",
       "domain": "sources"
     },
     {
@@ -919,6 +964,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
+      "title": "introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "title": "สรุปสาระสำคัญ: สถาปัตยกรรม IoT, Edge AI และ ESP32-C6 (2026)",
       "domain": "sources"
@@ -930,12 +980,12 @@
     },
     {
       "path": "wiki/sources/iot-lora-gateway-architecture.md",
-      "title": "IoT Architecture Diagram: ESP32 + LoRa + MQTT + Services",
+      "title": "IoT Architecture: ESP32 Sensor + LoRa + Gateway + MQTT + Services",
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "title": "iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม",
+      "path": "wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md",
+      "title": "iot-node-red-mqtt-sql-data-logger-dashboard",
       "domain": "sources"
     },
     {
@@ -949,6 +999,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
+      "title": "iot-visualization-guide-designing-effective-dashboards-monitoring-uis",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/iot-visualization-guide.md",
       "title": "IoT Visualization Guide: Dashboards & Monitoring UIs",
       "domain": "sources"
@@ -959,8 +1014,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
+      "title": "iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md",
+      "title": "lora-arduino-esp8266-esp32-iot-lora-lora",
       "domain": "sources"
     },
     {
@@ -974,6 +1039,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/lora-nb-iot.md",
+      "title": "lora-nb-iot",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/lora-thai-intro.md",
       "title": "#1 LoRa Arduino ESP8266 ESP32 IoT อะไรคือ LoRa ใช้งาน LoRa อย่างไร",
       "domain": "sources"
@@ -981,6 +1051,11 @@
     {
       "path": "wiki/sources/lora-vs-nbiot.md",
       "title": "เครื่องวัดน้ำ LoRa-NB-IoT: เปรียบเทียบ LoRa และ NB-IoT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
+      "title": "lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo",
       "domain": "sources"
     },
     {
@@ -1059,8 +1134,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/raspberry-pi-5-16gb-made-in-uk.md",
+      "title": "raspberry-pi-5-16gb-made-in-uk",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
       "title": "raspberry-pi-and-iot-the-guide-to-understanding-their-role-i",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
+      "title": "raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th",
       "domain": "sources"
     },
     {
@@ -1074,8 +1159,18 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/readme.md",
+      "title": "raw/",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
       "title": "ropgheltec-esp32-lora-v3-proper-working-arduino-library-for",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
+      "title": "ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v",
       "domain": "sources"
     },
     {
@@ -1094,13 +1189,23 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/source-5e4074bd.md",
+      "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies PEP/PrEP)",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "title": "เอสพีดรักสโตร์ 2020 — Drug Catalog",
+      "title": "รายการยา: เอสพีดรักสโตร์ 2020",
       "domain": "sources"
     },
     {
       "path": "wiki/sources/strix-halo-research-2026-05-05.md",
-      "title": "AMD Ryzen AI Max+ 395 (Strix Halo) — Verified Research",
+      "title": "AMD Ryzen AI Max+ 395 (Strix Halo) — Research Notes",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/supabase-2026-aase7en.md",
+      "title": "Supabase — ทำความรู้จัก + ควรใช้กับโปรเจกต์ไหนของคุณ",
       "domain": "sources"
     },
     {
@@ -1159,6 +1264,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "title": "vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/web-appsheet-export-yaml-2026-05-04.md",
       "title": "วิธี Export AppSheet App Definition เป็น YAML / JSON",
       "domain": "sources"
@@ -1181,36 +1291,6 @@
     {
       "path": "wiki/sources/who-rabies-position-2018.md",
       "title": "WHO Rabies Position Paper — April 2018 (Summary)",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "title": "Define the GPIO pin and the number of pixels",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "title": "ข้อมูล-datasheet-ของ-dx-lr02",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/คู่มือ-hermes-agent.md",
-      "title": "คู่มือ-hermes-agent",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "title": "จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "title": "ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "title": "เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย",
       "domain": "sources"
     },
     {
@@ -7171,13 +7251,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "to": "deva_diy",
-      "type": "implements",
-      "broken": true,
-      "external": false
-    },
-    {
       "from": "wiki/sources/arduino-librariesarduino-powermanagement.md",
       "to": "arduino-libraries",
       "type": "wikilink",
@@ -7192,22 +7265,15 @@
       "external": false
     },
     {
-      "from": "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
-      "to": "Webclues Infotech Private Limited",
-      "type": "wikilink",
+      "from": "wiki/sources/arduino-librariesarduinopowermanagement.md",
+      "to": "https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/api.md",
+      "type": "mdlink",
       "broken": true,
       "external": false
     },
     {
       "from": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "to": "Riccardo Medda",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/dashboard-design-best-practices-and-examples.md",
-      "to": "Sarah Shaar",
       "type": "wikilink",
       "broken": true,
       "external": false
@@ -7444,20 +7510,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/esp32-with-lora-using-arduino-ide.md",
-      "to": "Sara Santos",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "to": "Global Byte Shope",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
       "from": "wiki/sources/espem-energy-monitor.md",
       "to": "wiki/entities/iot/pzem-004t.md",
       "type": "wikilink",
@@ -7493,78 +7545,29 @@
       "external": false
     },
     {
+      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "to": "https://github.com/espressif/esp-idf/blob/master/SUPPORT_POLICY.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "to": "https://github.com/espressif/esp-idf/blob/master/COMPATIBILITY.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/sources/freqtrade-pi5.md",
       "to": "wiki/entities/iot/raspberry-pi.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/good-uiux-practices.md",
-      "to": "continuing",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/good-uiux-practices.md",
-      "to": "you accept our",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/esp32.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/esp32-s3.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/arduino-uno-r3.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/dx-lr02-lora.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/18650-battery-shield.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/dht11.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/entities/iot/hc-sr501.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/hardware-inventory-2026-04-18.md",
-      "to": "wiki/concepts/iot/lora.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -7591,6 +7594,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "to": "https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/src/oled/API.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "to": "https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/src/lora/API.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/sources/hermes-agent-guide-th.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "wikilink",
@@ -7602,13 +7619,6 @@
       "to": "wiki/concepts/env/hospital-wastewater-treatment.md",
       "type": "wikilink",
       "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/how-lorawan-network-works-a-beginner.md",
-      "to": "UniConverge Technologies",
-      "type": "wikilink",
-      "broken": true,
       "external": false
     },
     {
@@ -7663,55 +7673,6 @@
     {
       "from": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "to": "wiki/concepts/iot/tinyml.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-engineering-education.md",
-      "to": "RSP",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/entities/iot/telegram-bot.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/entities/iot/line-notify.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/entities/iot/grafana.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/entities/iot/influxdb.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/synthesis/temperature-monitor-project.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/iot-lora-gateway-architecture.md",
-      "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -7802,13 +7763,6 @@
     },
     {
       "from": "wiki/sources/lora-getting-started-with-arduino-esp32-pico.md",
-      "to": "DroneBot Workshop",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/lora-getting-started-with-arduino-esp32-pico.md",
       "to": "https://github.com/sandeepmistry/arduino-LoRa/blob/master/API.md",
       "type": "mdlink",
       "broken": true,
@@ -7866,41 +7820,6 @@
     {
       "from": "wiki/sources/lorawan-network-beginner.md",
       "to": "wiki/entities/iot/the-things-network.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/mqtt-introduction.md",
-      "to": "wiki/entities/iot/mqtt-protocol.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/mqtt-introduction.md",
-      "to": "wiki/entities/iot/mosquitto.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/mqtt-introduction.md",
-      "to": "wiki/entities/iot/home-assistant.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/mqtt-introduction.md",
-      "to": "wiki/concepts/iot/publish-subscribe.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/mqtt-introduction.md",
-      "to": "wiki/concepts/iot/mqtt-qos.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8074,55 +7993,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "to": "wiki/concepts/pharmacy/drug-classification.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "to": "wiki/concepts/pharmacy/ordering-workflow.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "to": "wiki/concepts/pharmacy/fuzzy-match.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "to": "wiki/synthesis/pharmacy-order-checker.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/strix-halo-research-2026-05-05.md",
-      "to": "wiki/synthesis/local-llm-pc-vs-mac-2026.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/strix-halo-research-2026-05-05.md",
-      "to": "wiki/sources/ai-iot-server-build-v3.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/strix-halo-research-2026-05-05.md",
-      "to": "wiki/sources/local-llm-mac-mini-guide.md",
-      "type": "implements",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/sources/telegram-ai-agent-setup.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "wikilink",
@@ -8256,31 +8126,31 @@
       "external": false
     },
     {
+      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "to": "https://github.com/vortigont/espem/blob/master/docs/BUILD.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "to": "https://github.com/vortigont/espem/blob/master/docs/USAGE.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "to": "https://github.com/vortigont/espem/blob/master/CHANGELOG.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/sources/who-rabies-position-2018.md",
       "to": "wiki/concepts/env/rabies-pep-protocol.md",
       "type": "wikilink",
       "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "to": "RSP",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "to": "Y.Chanadej",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "to": "เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.",
-      "type": "wikilink",
-      "broken": true,
       "external": false
     },
     {

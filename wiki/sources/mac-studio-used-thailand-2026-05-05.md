@@ -1,11 +1,15 @@
 ---
 type: source
-title: "> Source: Gemini CLI 1 query (web search) — 2026-05-05"
+title: "mac studio used thailand 2026 05 05"
 slug: mac-studio-used-thailand-2026-05-05
 date_ingested: 2026-05-24
 original_file: raw/mac-studio-used-thailand-2026-05-05.md
-tags: [ai, thai]
 ---
+
+```yaml
+---
+---
+```
 
 # Mac Studio Used Market Thailand — Research Notes
 > Source: Gemini CLI 1 query (web search) — 2026-05-05

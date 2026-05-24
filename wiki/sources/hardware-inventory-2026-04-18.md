@@ -1,52 +1,61 @@
 ---
 type: source
-title: "Hardware Inventory — My IoT Lab (2026-04-18)"
+title: "hardware inventory 2026 04 18"
 slug: hardware-inventory-2026-04-18
-date_ingested: 2026-04-18
+date_ingested: 2026-05-24
 original_file: raw/hardware-inventory-2026-04-18.md
-tags: [inventory, esp32, esp32-s3, arduino, lora, dht11, hardware, personal-lab]
 ---
 
+```yaml
+---
+---
+```
+
 # Hardware Inventory — My IoT Lab
+Date: 2026-04-18
+Source: ถ่ายรูปอุปกรณ์จริง (10 รูป)
 
-**ประเภท**: personal inventory (ถ่ายรูปอุปกรณ์จริง)  
-**วันที่**: 2026-04-18  
-**ผู้เขียน**: เจ้าของ wiki
+## Microcontrollers
+- ESP32 DevKit V1 + Terminal Breakout Board × 1
+- ESP32-S3-N16R8 WROOM + Terminal Breakout (green PCB) × 1
+- Arduino Uno R3 (CH340) × 1
 
-## ประเด็นหลัก
+## Communication Modules
+- DX-LR02-900T22D LoRa 900MHz × 2 (พร้อมเสาอากาศ SMA)
 
-1. Lab มี MCU 3 ตัวต่างสถาปัตยกรรม: ESP32 (classic), ESP32-S3 (USB native), Arduino Uno (AVR)
-2. มี LoRa module 2 ตัว (DX-LR02-900T22D) — เหมาะสำหรับ long-range wireless ที่ไม่พึ่ง WiFi
-3. Power system พร้อม: 18650 × 2 + Battery Shield ให้ 5V/4A และ 3.3V ต่อ MCU โดยตรง
-4. Starter Kit มี sensor ครบสำหรับ beginner: DHT11, PIR, relay, ultrasonic, OLED
-5. โปรเจ็คเป้าหมาย: temperature monitoring → Line/Telegram/Dashboard
+## Power
+- 18650 Battery Shield V3 (5V/4A output, 3V/1A output, USB-A output, Micro-USB input) × 1
+- Vapcell INR18650 M35 3500mAh 3.7V (Max continuous discharge: 10A, Max pulse: 25A/5s) × 2
 
-## อุปกรณ์ที่โดดเด่นที่สุด
+## Adapters
+- DX-SMART DX-PJ15-V1.1 USB Type-C to TTL (TX/RX/NC/GND/5V/3V3/GND) × 2
 
-- **ESP32-S3-N16R8**: 16MB Flash + 8MB PSRAM, USB native, แรงที่สุดในชุด
-- **DX-LR02 LoRa 900MHz**: ถ้าใช้ 2 ตัว สามารถทำ point-to-point LoRa link ได้เลย โดยไม่ต้องมี gateway
-- **Vapcell M35**: high-drain cell (10A continuous) — เกินพอสำหรับ ESP32 (peak ~500mA)
+## Starter Kit Contents (Arduino R3 CH340 Starter Kit)
+- DHT11 Temperature & Humidity Sensor × 1
+- HC-SR501 PIR Motion Sensor × 1
+- 0.96" OLED × 1
+- IIC LCD 1602 × 1
+- SG90 Servo × 1
+- 1-Way Relay Module × 1
+- HC-SR04 Ultrasonic Module × 1
+- 8×8 Red Dot Matrix Screen × 1
+- Joystick Module × 1
+- TTP223B Touch Sensor × 1
+- Soil Humidity Sensor × 1
+- Obstacle Avoidance Module × 1
+- BreadBoard 4.5×3.5cm × 2
+- DuPont Cable F-M × 20
+- DuPont Cable M-M × 40
+- Resistors: 220R/1k/10k × 10 each (30 pcs)
+- LEDs: Green/Blue/Yellow/Red × 5 each (20 pcs)
+- USB Cable × 1
 
-## แนวทางโปรเจ็คที่เป็นไปได้
+## โปรเจ็คเป้าหมาย
+ระบบ monitor อุณหภูมิในห้อง ส่งข้อมูลผ่านมือถือ
+(Line / Telegram / Dashboard กราฟย้อนหลัง)
 
-| โปรเจ็ค | อุปกรณ์ที่ใช้ |
-|---------|------------|
-| Temp monitor → MQTT → Dashboard | ESP32 + DHT11 + WiFi + Mosquitto |
-| Temp monitor แบบ LoRa (ไม่ใช้ WiFi) | ESP32 + DHT11 + DX-LR02 × 2 |
-| Home alert ผ่าน Telegram | ESP32 + WiFi + Bot API |
-| Plant monitor | ESP32-S3 + Soil sensor + DHT11 |
-
-## ข้อโต้แย้ง / ความขัดแย้ง
-
-*(wiki ยังใหม่ ไม่มีข้อมูลเดิมขัดแย้ง)*
-
-## หน้า Wiki ที่ได้รับการอัปเดต
-
-- [[entities/iot/esp32]] — สร้างใหม่ (แทน stub)
-- [[entities/iot/esp32-s3]] — สร้างใหม่
-- [[entities/iot/arduino-uno-r3]] — สร้างใหม่
-- [[entities/iot/dx-lr02-lora]] — สร้างใหม่
-- [[entities/iot/18650-battery-shield]] — สร้างใหม่
-- [[entities/iot/dht11]] — สร้างใหม่
-- [[entities/iot/hc-sr501]] — สร้างใหม่
-- [[concepts/iot/lora]] — สร้างใหม่
+## หมายเหตุจากรูป
+- ESP32 DevKit V1 ติดอยู่บน terminal breakout board พร้อมสาย power (แดง/ดำ)
+- DX-LR02 ×2 ต่ออยู่กับ ESP32 ผ่าน UART (MO/M1/RXD/TXD/AUX/VCC/GND) ดูเหมือนกำลัง test LoRa link
+- 18650 Battery Shield V3 รองรับ 5V 4A (boost converter) และ 3V 1A สำหรับ MCU โดยตรง
+- USB-C to TTL ยี่ห้อ DX-SMART ใช้สำหรับ flash firmware หรือ debug serial

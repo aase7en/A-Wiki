@@ -1,21 +1,15 @@
 ---
 type: source
-title: "> ⚠️ PENDING REVIEW — เนื้อหานี้ยังไม่ได้รับการตรวจสอบโดย Claude"
+title: "web raspberry pi ai bot recommendation 2026"
 slug: web-raspberry-pi-ai-bot-recommendation-2026
 date_ingested: 2026-05-24
 original_file: raw/web-raspberry-pi-ai-bot-recommendation-2026.md
-tags: [iot, raspberry-pi, ai]
 ---
 
+```yaml
 ---
-source_type: web-search
-url: pi-ai-hardware-2026
-fetched_date: 2026-04-19
-fetched_by: Gemini CLI
-review_status: PENDING — ยังไม่ผ่าน Claude review
-topic: Best Raspberry Pi Configuration for Local Wiki AI Bot (2026)
-domain: ai-tools
 ---
+```
 
 # Recommended Raspberry Pi Setup for Wiki AI Bot (2026)
 

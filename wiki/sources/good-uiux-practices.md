@@ -1,25 +1,22 @@
 ---
 type: source
-title: "<iframe src="https://projector.datacamp.com/?auto_play=pause&amp;projector_key=c"
+title: "Good UI/UX practices"
 slug: good-uiux-practices
 date_ingested: 2026-05-24
 original_file: raw/Good UIUX practices.md
-tags: []
 ---
 
+```yaml
 ---
 title: "Good UI/UX practices"
 source: "https://campus.datacamp.com/courses/building-dashboards-with-shinydashboard/adding-design-elements-and-improving-uiux?ex=1"
-author:
-  - "[[continuing]]"
-  - "[[you accept our]]"
-published:
-created: 2026-04-18
+author: ""
+published: ""
+created: "2026-04-18"
 description: "Here is an example of Good UI/UX practices:"
-tags:
-  - "clippings"
+tags: ""
 ---
-<iframe src="https://projector.datacamp.com/?auto_play=pause&amp;projector_key=course_31088_09d0c2339130a1dee4b822c405a806cb&amp;video_hls=https%3A%2F%2Fdatacamp-projector-video-recorder-uploads-prod.s3.amazonaws.com%2Fmp4%2F0e30f9dd-efeb-4681-a0b3-c25ac9aa285e.mp4%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Credential%3DASIAUMJDGTMHYWLQ3OEF%252F20260418%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20260418T131426Z%26X-Amz-Expires%3D1200%26X-Amz-Security-Token%3DIQoJb3JpZ2luX2VjECUaCXVzLWVhc3QtMSJHMEUCIQDMRH3RBC8oyT6y2OUBpykQD3MnNRGoKV9noBG7xY3hngIgFVXqkmiSH3yPJSo5%252F0%252FsEf1R7gyL1swcnKOBhYbduHgqmAUI7v%252F%252F%252F%252F%252F%252F%252F%252F%252F%252FARAEGgwzMDEyNTg0MTQ4NjMiDPmL7488tv4RdqjroyrsBHOSJXnrB7zlrLSohSvTu0QAZPhjgO8pRJhaZUECNXbeNhNPalsvO%252FDXduJTugEYGYpLEY4%252BkDEIkE%252FQ5u9HeCS4XjEIfQxdn8N3tBWxpvBmNwWZJHlopFFmTjBCNgdA%252Fybtjv47Diyw%252Bv8nbVLItGsnpR1BOw9wdfWZwW96ka9btuI1WyVTM1AND3JCVkCPpNHnrO9TW2y6Mk6N2banhBl0RZGYfR5pBOGjKfmI68xgSw4%252BXFPXjqdWN7hsUc26SBWBbofYyCMVemPhXPDpYV2FQVBEHvBtpDN6wST8bz9jTQvbGdP3uCPNWeFFY7sw6yu3G6NbV5ozVskpdUFygC5KGZ3z5VyUCAm7eXfxjTWGCgfzNROXXTlcprMN%252FEGhcVAJHAMGZ8y81BHM5YXx08kS9VAX8iq3q2Sg3LXB3ZHCb%252FxDPU9rAwmrBqttzozdfVSgFDQqw0V4xq5zY0lpIfQ4s1r8WD4lzAgSeQa0yAj%252B9I6M7V%252FroL1UUfubgj%252Frs8je10doUxs7wE629xp2bhvrR1QyeDRgm9WUGV%252FxUg43%252BHTI7afBJ%252FGD0KfYZPG77CUJa5aTdsejy3Js2W1JP3psoD75vw%252FgVqJhVPUCZhJJXwIMe7KJBeiFuPDhYCyGXgLDCKZWI0KBNP6SMixOEPoVWEYDetnsM%252FeoyR3A0BO4kR9ecx0ma1JjgYmBEJNQ9R8pYvXkkc91v94gJW2%252FiinTV9QL2%252B8atbbzHfBP7I5UlE5O5UYURT8olXviRyEjsqUrdrlQp0OMJpkq1TYHqP%252Bj5JFAsMvZq7ovQzb%252Ffonx49Lh40oOFtKGSTOPMOT9jc8GOpkBDlADbNLpUSB0D47umzoTeEr2p2Vmm0JURJnmOoPhN6GvBrg6HJixod%252Ftksmr1h21GNXKFAuP9RaL5cIaps6uaYMS3M4vRXMp%252FA8DRU9wVC8fZBj4ZZvBBEK8ZyKmwoWpWYORBf%252Bml0%252BmI7AU9LPRCEsyUa5oSnKAnR%252FUXdjuEBz3jjX3HceX%252FZhl7EJfvLyaR8Lf1aTAZHSr%26X-Amz-Signature%3D046211cae46d27f6774d2e677369a1e9fd6fe985fddd988310caebe57ee416b6%26X-Amz-SignedHeaders%3Dhost" title="Good UI/UX practices"></iframe>
+```
 
 #### 1\. Good UI/UX practices
 

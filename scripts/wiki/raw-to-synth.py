@@ -81,26 +81,12 @@ def detect_domain(tags_str: str) -> str:
     return "cross-domain"
 
 
-def build_synthesis_stub(source_slug: str, title: str, tags_str: str) -> str:
+def build_synthesis_stub(source_slug: str, title: str, tags_str: str, synth_slug_hint: str = "") -> str:
     """Generate a synthesis page stub."""
     domain = detect_domain(tags_str)
     
-    # Extract key topics from source slug for sensible stub name
-    # Remove common words and SEO noise
-    topics = source_slug.replace('-', ' ').strip()
-    
-    # Generate synthesis slug from source slug
-    # Pattern: if source is "foo-bar-baz" → synthesis is "foo-bar"
-    parts = source_slug.split('-')
-    if len(parts) > 3:
-        synth_slug = '-'.join(parts[:3])
-    else:
-        synth_slug = source_slug
-    
-    # Ensure uniqueness — append hash if needed
-    stub_path = SYNTHESIS_DIR / f'{synth_slug}.md'
-    if stub_path.exists():
-        synth_slug = f'{synth_slug}-guide'
+    # Use provided slug hint, or fallback to source slug truncated
+    slug = synth_slug_hint if synth_slug_hint else source_slug.replace('_', '-').strip('-')[:50]
 
     # Build frontmatter
     fm_lines = ['---']
@@ -147,16 +133,28 @@ def build_synthesis_stub(source_slug: str, title: str, tags_str: str) -> str:
     return '\n'.join(fm_lines)
 
 
+def has_ascii_alpha(s: str) -> bool:
+    """Check if string contains at least 3 ASCII alphabetic characters."""
+    count = sum(1 for c in s if 'a' <= c <= 'z')
+    return count >= 3
+
+
 def make_synthesis_slug(source_slug: str) -> str:
     """Generate synthesis slug from a source slug.
     
     Tries to reduce redundancy while keeping it readable.
     - If source slug has >2 parts, take first 2-3 meaningful segments
     - Strip common suffixes like '-guide', '-documentation', '-with-arduino-ide'
-    - Fallback to source slug truncated
+    - Fallback: hash the source slug if no ASCII alpha (e.g. Thai-only slugs)
     """
     # Clean the source slug
     slug = source_slug.lower().strip('-')
+    
+    # Fallback for non-ASCII (Thai-only) slugs
+    if not has_ascii_alpha(slug):
+        import hashlib
+        h = hashlib.md5(slug.encode()).hexdigest()[:8]
+        return f'synth-{h}'
     
     # Strip common trailing noise
     for suffix in ['-guide', '-documentation', '-with-arduino-ide', '-arduino-library',
@@ -203,6 +201,7 @@ def main() -> int:
     created = 0
     skipped = 0
     errors = 0
+    seen_slugs: set[str] = set()
 
     md_files = sorted(SOURCES_DIR.glob('*.md'))
     
@@ -238,8 +237,16 @@ def main() -> int:
         # Build synthesis slug from the source slug directly (deterministic)
         synth_slug = make_synthesis_slug(source_slug)
         
-        # Generate stub content
-        page_content = build_synthesis_stub(source_slug, title, tags)
+        # Deduplicate synthesis slugs: append -2, -3, etc. for collisions
+        base_slug = synth_slug
+        counter = 2
+        while synth_slug in seen_slugs:
+            synth_slug = f'{base_slug}-{counter}'
+            counter += 1
+        seen_slugs.add(synth_slug)
+        
+        # Generate stub content with consistent slug
+        page_content = build_synthesis_stub(source_slug, title, tags, synth_slug_hint=synth_slug)
         synth_path = SYNTHESIS_DIR / f'{synth_slug}.md'
         
         if args.check:

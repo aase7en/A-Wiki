@@ -1,21 +1,15 @@
 ---
 type: source
-title: "> ⚠️ PENDING REVIEW — เนื้อหานี้สรุปจากข้อมูลปี 2026 เพื่อใช้ในการวิเคราะห์โครงส"
+title: "web appsheet export yaml 2026 05 04"
 slug: web-appsheet-export-yaml-2026-05-04
 date_ingested: 2026-05-24
 original_file: raw/web-appsheet-export-yaml-2026-05-04.md
-tags: [appsheet, webapp]
 ---
 
+```yaml
 ---
-source_type: web-search
-url: https://www.google.com/search?q=AppSheet+export+app+definition+YAML
-fetched_date: 2026-05-04
-fetched_by: Gemini CLI
-review_status: PENDING — ยังไม่ผ่าน Claude review
-topic: AppSheet Export YAML
-domain: iot
 ---
+```
 
 # วิธี Export AppSheet App Definition เป็น YAML / JSON
 

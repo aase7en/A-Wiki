@@ -1,21 +1,15 @@
 ---
 type: source
-title: "> ℹ️ SOURCE: Gemini training data — ไม่มี URL อ้างอิง ข้อมูลเชิงเทคนิคถูกต้อง แต"
+title: "web local llm mac mini 2026 04 19"
 slug: web-local-llm-mac-mini-2026-04-19
 date_ingested: 2026-05-24
 original_file: raw/web-local-llm-mac-mini-2026-04-19.md
-tags: [ai]
 ---
 
+```yaml
 ---
-source_type: gemini-knowledge
-url: null
-fetched_date: 2026-04-19
-fetched_by: Gemini CLI
-review_status: REVIEWED — Claude verified 2026-04-20 (training data, no URL)
-topic: Local LLM on Mac Mini (Performance & Optimization)
-domain: ai-tools
 ---
+```
 
 # Local LLM on Mac Mini: In-depth Guide (2025-2026)
 

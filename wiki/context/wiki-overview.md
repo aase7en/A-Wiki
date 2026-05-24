@@ -16,8 +16,8 @@
 | ENTITIES | 49 |
 | CONCEPTS | 38 |
 | SYNTHESIS | 140 |
-| SOURCES | 115 |
-| **Total** | **342 pages** |
+| SOURCES | 131 |
+| **Total** | **358 pages** |
 
 ---
 
@@ -30,7 +30,7 @@
 | AI Tools | 6 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (115): `wiki/context/overview-sources.md`
+- **Sources** (131): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -182,4 +182,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 342 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 358 pages across 4 sections.*

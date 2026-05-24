@@ -1,10 +1,10 @@
-# Review Report — 2026-05-24 17:05
+# Review Report — 2026-05-24 23:39
 
 ## Summary
 
-- ✓ Passed: 524
+- ✓ Passed: 563
 - ⚠ Warnings: 0
-- ❌ Failures: 1408
+- ❌ Failures: 1632
 
 ---
 
@@ -113,7 +113,58 @@
 - wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
 - wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
 - wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
+- wiki/sources/3-dashboard-node-red.md: missing frontmatter key: tags
 - wiki/sources/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/sources/ai-iot-server-build-v3-final.md: missing frontmatter key: tags
+- wiki/sources/arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
+- wiki/sources/arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
+- wiki/sources/build-software-better-together.md: missing frontmatter key: tags
+- wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki/sources/context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
+- wiki/sources/dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
+- wiki/sources/datasheet-dx-lr02.md: missing frontmatter key: tags
+- wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
+- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
+- wiki/sources/esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
+- wiki/sources/esp32.md: missing frontmatter key: tags
+- wiki/sources/espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
+- wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
+- wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki/sources/good-uiux-practices.md: missing frontmatter key: tags
+- wiki/sources/hardware-inventory-2026-04-18.md: missing frontmatter key: tags
+- wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
+- wiki/sources/hermes-agent.md: missing frontmatter key: tags
+- wiki/sources/how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
+- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
+- wiki/sources/iot-engineering-education.md: missing frontmatter key: tags
+- wiki/sources/iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
+- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
+- wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
+- wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
+- wiki/sources/lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki/sources/lora-nb-iot.md: missing frontmatter key: tags
+- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
+- wiki/sources/mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
+- wiki/sources/manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
+- wiki/sources/mqtt-introduction.md: missing frontmatter key: tags
+- wiki/sources/note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
+- wiki/sources/raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
+- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
+- wiki/sources/raspberry-pi-documentation.md: missing frontmatter key: tags
+- wiki/sources/readme.md: missing frontmatter key: tags
+- wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
+- wiki/sources/source-5e4074bd.md: missing frontmatter key: tags
+- wiki/sources/sp-drugstore-2020-catalog.md: missing frontmatter key: tags
+- wiki/sources/strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki/sources/supabase-2026-aase7en.md: missing frontmatter key: tags
+- wiki/sources/ux-design-in-iot.md: missing frontmatter key: tags
+- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
+- wiki/sources/web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
+- wiki/sources/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
+- wiki/sources/web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
+- wiki/sources/web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
 - wiki/synthesis/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
 - wiki/synthesis/appsheet-to-webapp-pi5.md: missing frontmatter key: title
@@ -137,6 +188,7 @@
 - wiki/synthesis/sunday-estate-webapp.md: missing frontmatter key: tags
 - wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
 - wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki/synthesis/synth-3-dashboard-node-red.md: missing frontmatter key: tags
 - wiki/synthesis/synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
 - wiki/synthesis/synth-ai-agents-integration-guide.md: missing frontmatter key: tags
 - wiki/synthesis/synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
@@ -144,14 +196,19 @@
 - wiki/synthesis/synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
 - wiki/synthesis/synth-air-quality-sensors-dronebot.md: missing frontmatter key: tags
 - wiki/synthesis/synth-appsheet-env-datadict.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
 - wiki/synthesis/synth-arduino-ide-esp32-setup.md: missing frontmatter key: tags
 - wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: missing frontmatter key: tags
 - wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
 - wiki/synthesis/synth-build-software-better-together.md: missing frontmatter key: tags
 - wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
 - wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
+- wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
 - wiki/synthesis/synth-dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
 - wiki/synthesis/synth-dashboard-design-best-practices.md: missing frontmatter key: tags
+- wiki/synthesis/synth-datasheet-dx-lr02.md: missing frontmatter key: tags
 - wiki/synthesis/synth-ddc-cpg-rabies-2564.md: missing frontmatter key: tags
 - wiki/synthesis/synth-drug-aliases-reference.md: missing frontmatter key: tags
 - wiki/synthesis/synth-ds18b20-esp32-randomnerd.md: missing frontmatter key: tags
@@ -169,6 +226,7 @@
 - wiki/synthesis/synth-esp32-lora-arduino-ide.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-lora-gateway-sparkfun.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-lora-sensor-webserver.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-s3-intro-thai.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-tank-level-mqtt.md: missing frontmatter key: tags
@@ -176,33 +234,46 @@
 - wiki/synthesis/synth-esp32-weather-epd.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
 - wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32.md: missing frontmatter key: tags
 - wiki/synthesis/synth-espem-energy-monitor.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
 - wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
 - wiki/synthesis/synth-freqtrade-pi5.md: missing frontmatter key: tags
 - wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
+- wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
 - wiki/synthesis/synth-good-uiux-practices.md: missing frontmatter key: tags
 - wiki/synthesis/synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
 - wiki/synthesis/synth-heltec-libraries.md: missing frontmatter key: tags
 - wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: missing frontmatter key: tags
+- wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
 - wiki/synthesis/synth-hermes-agent-guide-th.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hermes-agent.md: missing frontmatter key: tags
 - wiki/synthesis/synth-hospital-wastewater-treatment.md: missing frontmatter key: tags
 - wiki/synthesis/synth-how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
 - wiki/synthesis/synth-hyperframes-official-docs.md: missing frontmatter key: tags
 - wiki/synthesis/synth-infectious-waste-th-law.md: missing frontmatter key: tags
 - wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: missing frontmatter key: tags
+- wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-engineering-education.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iot-visualization-guide.md: missing frontmatter key: tags
 - wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
 - wiki/synthesis/synth-local-llm-mac-mini-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lora-getting-started-dronebot.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-nb-iot.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lora-thai-intro.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lora-vs-nbiot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lorawan-fuota-rak3172.md: missing frontmatter key: tags
 - wiki/synthesis/synth-lorawan-network-beginner.md: missing frontmatter key: tags
@@ -218,15 +289,21 @@
 - wiki/synthesis/synth-platformio-esp32-guide.md: missing frontmatter key: tags
 - wiki/synthesis/synth-pzem-004t-guide-2025.md: missing frontmatter key: tags
 - wiki/synthesis/synth-rabies-vaccine-guidelines-th-2026-05-02.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
 - wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
 - wiki/synthesis/synth-raspberry-pi-documentation.md: missing frontmatter key: tags
 - wiki/synthesis/synth-raspberry-pi-iot-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-readme.md: missing frontmatter key: tags
 - wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
 - wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md: missing frontmatter key: tags
 - wiki/synthesis/synth-rpi5-16gb-thailand-price.md: missing frontmatter key: tags
 - wiki/synthesis/synth-saovabha-rabies-pep-2565.md: missing frontmatter key: tags
+- wiki/synthesis/synth-source-5e4074bd.md: missing frontmatter key: tags
 - wiki/synthesis/synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
 - wiki/synthesis/synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki/synthesis/synth-supabase-2026-aase7en.md: missing frontmatter key: tags
 - wiki/synthesis/synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
 - wiki/synthesis/synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
 - wiki/synthesis/synth-telegram-ai-router-design.md: missing frontmatter key: tags
@@ -238,6 +315,7 @@
 - wiki/synthesis/synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
 - wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
 - wiki/synthesis/synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
 - wiki/synthesis/synth-web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
@@ -525,6 +603,154 @@
 - wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
 - wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
 - wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
+| `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
+| `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
+| `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
 - wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
@@ -928,6 +1154,18 @@
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
 - wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
@@ -988,28 +1226,21 @@
 - wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
 - wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
 - wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
-- wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md: broken link: [[Webclues Infotech Private Limited]]
 - wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
-- wiki/sources/dashboard-design-best-practices-and-examples.md: broken link: [[Sarah Shaar]]
 - wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
 - wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
 - wiki/sources/drug-aliases-reference.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
 - wiki/sources/drug-aliases-reference.md: broken link: [[index-pharmacy]]
 - wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
-- wiki/sources/esp32-with-lora-using-arduino-ide.md: broken link: [[Sara Santos]]
 - wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
 - wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/sources/esp32.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
 - wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
-- wiki/sources/good-uiux-practices.md: broken link: [[continuing]]
-- wiki/sources/good-uiux-practices.md: broken link: [[you accept our]]
 - wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
-- wiki/sources/how-lorawan-network-works-a-beginner.md: broken link: [[UniConverge Technologies]]
 - wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
 - wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
-- wiki/sources/iot-engineering-education.md: broken link: [[RSP]]
 - wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
 - wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
-- wiki/sources/lora-getting-started-with-arduino-esp32-pico.md: broken link: [[DroneBot Workshop]]
 - wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
 - wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
 - wiki/sources/pharmacy-context.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
@@ -1022,10 +1253,6 @@
 - wiki/sources/pharmacy-ui-instructions.md: broken link: [[index-pharmacy]]
 - wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
 - wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
-- wiki/sources/sp-drugstore-2020-catalog.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki/sources/sp-drugstore-2020-catalog.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki/sources/sp-drugstore-2020-catalog.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki/sources/sp-drugstore-2020-catalog.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
 - wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
 - wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
 - wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
@@ -1451,11 +1678,11 @@
 
 ---
 
-## ✓ Passed Checks (524 total)
+## ✓ Passed Checks (563 total)
 
-- **L1**: 31 passed
-- **L2**: 114 passed
-- **L3**: 288 passed
+- **L1**: 33 passed
+- **L2**: 90 passed
+- **L3**: 349 passed
 - **L4**: 87 passed
 - **L5**: 3 passed
 - **L6**: 1 passed

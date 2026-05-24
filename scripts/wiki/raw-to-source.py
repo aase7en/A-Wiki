@@ -128,9 +128,10 @@ def build_source_page(fm: dict[str, str], body: str, filename: str) -> tuple[str
     Returns (slug, page_content).
     """
     title = fm.get('title', filename.replace('.md', '').replace('-', ' '))
-    # Prefer explicit slug from raw frontmatter, then generate from title
+    # Prefer explicit slug from raw frontmatter, but only if it has ASCII alpha (skip Thai-only slugs)
     explicit_slug = fm.get('slug', '').strip()
-    if explicit_slug and len(explicit_slug) > 3 and ' ' not in explicit_slug:
+    has_ascii = sum(1 for c in explicit_slug if 'a' <= c <= 'z' or 'A' <= c <= 'Z') >= 2
+    if explicit_slug and len(explicit_slug) > 3 and ' ' not in explicit_slug and has_ascii:
         slug = explicit_slug
     else:
         slug = make_slug(title)
@@ -189,6 +190,7 @@ def main() -> int:
     created = 0
     skipped = 0
     errors = 0
+    seen_slugs: set[str] = set()
 
     md_files = sorted(RAW_DIR.glob('*.md'))
     if not md_files:
@@ -206,6 +208,14 @@ def main() -> int:
 
         fm, body = parse_frontmatter(content)
         slug, page_content = build_source_page(fm, body, filename)
+
+        # Deduplicate slugs: append -2, -3, etc. for collisions
+        base_slug = slug
+        counter = 2
+        while slug in seen_slugs:
+            slug = f'{base_slug}-{counter}'
+            counter += 1
+        seen_slugs.add(slug)
 
         source_path = SOURCE_DIR / f'{slug}.md'
         

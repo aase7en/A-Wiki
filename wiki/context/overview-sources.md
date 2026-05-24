@@ -8,12 +8,11 @@
 
 ---
 
-## Stats — 115 sources
+## Stats — 131 sources
 
 | slug | abstract |
 |------|----------|
-| `1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (no abstract) |
-| `10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (no abstract) |
+| `3-dashboard-node-red` | (no abstract) |
 | `CLAUDE` | ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Too… |
 | `agent-frameworks-local-debug-2026` | 1. **แก่นของ agent design มี 2 อย่าง**: System Prompt Design + C… |
 | `ai-agents-integration-guide` | 1. **Symlinks เป็น SSOT** — ใช้ symbolic link ให้ AI หลายตัว (Cl… |
@@ -22,14 +21,18 @@
 | `air-quality-iot-lora-network` | 1. **Distributed network**: Sensor nodes → LoRa → Gateway → RPi… |
 | `air-quality-sensors-dronebot` | 1. **ไม่มี sensor ตัวเดียวที่วัดได้ทุกอย่าง** — ต้องใช้หลายตัวร่… |
 | `appsheet-env-datadict` | เอกสารโครงสร้างแอป AppSheet "ENV" ที่ใช้งานอยู่ในกลุ่มงานอนามัยส… |
+| `arduino-ide-esp32-arduino-2025` | (no abstract) |
 | `arduino-ide-esp32-setup` | 1. **Arduino IDE 2.x** — รุ่นใหม่แนะนำ, เร็วกว่า 1.x, มี autocom… |
-| `arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป` | (no abstract) |
 | `arduino-librariesarduino-powermanagement` | (no abstract) |
+| `arduino-librariesarduinopowermanagement` | (no abstract) |
 | `build-software-better-together` | (no abstract) |
 | `building-an-iot-application-with-raspberry-pi-and-python` | GPIO.setmode(GPIO.BCM) |
+| `context-claude-code-dev-vibe-coding-thailand` | (no abstract) |
 | `create-an-esp32-project-with-platformio-an-guide-for-beginne` | (no abstract) |
+| `create-an-esp32-project-with-platformio-an-guide-for-beginners` | (no abstract) |
 | `dashboard-design-best-practices` | 1. **Dashboard = critical info at a glance** — เหมือน dashboard… |
 | `dashboard-design-best-practices-and-examples` | (no abstract) |
+| `datasheet-dx-lr02` | (no abstract) |
 | `ddc-cpg-rabies-2564` | 1. **ล้างแผล** ด้วยน้ำสะอาด + สบู่อย่างน้อย 15 นาที ใส่ Povidone… |
 | `drug-aliases-reference` | 1. **Drug Aliases** — การแมปชื่อสะกดผิด / ชื่อท้องถิ่น ไปยังชื่อ… |
 | `ds18b20-esp32-randomnerd` | 1. **One-Wire protocol**: DS18B20 ใช้สายข้อมูลเพียง 1 เส้น + 4.7… |
@@ -40,6 +43,7 @@
 | `dx-lr02-serial-guide-v2` | เริ่มที่ 850.15 MHz, ห่างกัน 1 MHz: |
 | `easyloranode-tracker` | 1. **Deep sleep < 15µA**: design เน้น ultra-low power — วัด batt… |
 | `esp-idf-docs` | 1. **ESP-IDF คือ native framework** ของ Espressif — ต่างจาก Ardu… |
+| `esp32` | (no abstract) |
 | `esp32-complete-guide-thai` | 1. **ESP32 = SoC** — รวม Dual-core CPU + WiFi + Bluetooth + peri… |
 | `esp32-hx711-mqtt-github` | 1. **Retrofit scale เดิม** — ถอด control board ของ TANITA ออก แท… |
 | `esp32-hx711-randomnerd` | 1. **Load Cell ทำงานอย่างไร** — strain gauges แปลงแรงกดเป็นสัญญา… |
@@ -47,46 +51,57 @@
 | `esp32-lora-arduino-ide` | 1. **Library มาตรฐาน**: `sandeepmistry/arduino-LoRa` — ใช้กับ RF… |
 | `esp32-lora-gateway-sparkfun` | 1. **Single-channel gateway**: ESP32 + RFM95W สร้าง LoRaWAN gate… |
 | `esp32-lora-sensor-monitoring-with-web-server-long-range-comm` | (no abstract) |
+| `esp32-lora-sensor-monitoring-with-web-server-long-range-communication` | (no abstract) |
 | `esp32-lora-sensor-webserver` | 1. **Project pattern**: LoRa Sender (sensor node) + LoRa Receive… |
 | `esp32-s3-intro-thai` | 1. **Xtensa LX7 dual-core 240MHz** — เร็วกว่า LX6 ของ ESP32 clas… |
 | `esp32-tank-level-mqtt` | 1. **Ultrasonic + MQTT**: ESP32 วัดระยะด้วย HC-SR04 แปลงเป็น % แ… |
 | `esp32-weather-dashboard-16day` | 1. **ใช้ API ฟรีทั้งหมด**: Open-Meteo (forecast), OpenWeatherMap… |
 | `esp32-weather-epd` | 1. **Ultra low power**: ~14µA deep sleep, ~83mA ขณะ refresh — ba… |
 | `esp32-with-lora-using-arduino-ide` | (no abstract) |
-| `esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน` | (no abstract) |
 | `espem-energy-monitor` | 1. **ESP32 + PZEM-004T** — วัด Voltage/Current/Power/Energy/Powe… |
+| `espressif-esp32-s3-iot-engineering-education` | print("System info:") print("- Flash size:", esp.flash_size(), "… |
 | `espressifesp-idf-espressif-iot-development-framework-officia` | (no abstract) |
+| `espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (no abstract) |
 | `freqtrade-pi5` | 1. Freqtrade รองรับ ARM64 (Pi 5) ผ่าน Docker image เฉพาะ `*_pi`… |
 | `get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (no abstract) |
+| `get-started-esp32-esp-idf-programming-guide-v44-documentation` | (no abstract) |
 | `good-uiux-practices` | (no abstract) |
-| `hardware-inventory-2026-04-18` | 1. Lab มี MCU 3 ตัวต่างสถาปัตยกรรม: ESP32 (classic), ESP32-S3 (U… |
+| `hardware-inventory-2026-04-18` | Date: 2026-04-18 Source: ถ่ายรูปอุปกรณ์จริง (10 รูป) |
 | `heltec-libraries` | 1. **Heltec WiFi LoRa 32 v3**: ESP32-S3 + SX1262 + 128×64 OLED —… |
 | `heltecautomationheltec-esp32-arduino-library-for-heltec-esp3` | (no abstract) |
+| `heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based` | (no abstract) |
+| `hermes-agent` | (no abstract) |
 | `hermes-agent-guide-th` | 1. **Hermes Agent** คือ open-source AI agent CLI รันบน Mac/Linux… |
 | `hospital-wastewater-treatment` | 1. โรงพยาบาลต้องบำบัดน้ำเสียก่อนระบายสู่แหล่งน้ำสาธารณะทุกกรณี 2… |
 | `how-lorawan-network-works-a-beginner` | (no abstract) |
 | `hyperframes-official-docs` | 1. HyperFrames เป็น open-source video rendering framework สำหรับ… |
 | `infectious-waste-th-law` | 1. กฎกระทรวงว่าด้วยการกำจัดมูลฝอยติดเชื้อ พ.ศ. 2545 คือกฎหมายหลั… |
 | `introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb` | (no abstract) |
+| `introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5` | (no abstract) |
 | `iot-edge-ai-esp32-c6-2026` | 1. **IoT + Edge AI ในปี 2026** — ระบบ IoT เปลี่ยนจาก cloud-centr… |
 | `iot-engineering-education` | (no abstract) |
-| `iot-lora-gateway-architecture` | 1. **Architecture ถูกตัดสินใจแล้ว** — เลือก Approach C (LoRa P2P… |
-| `iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม` | (no abstract) |
+| `iot-lora-gateway-architecture` | DHT11 → ESP32 DevKit (LoRa TX node) → DX-LR02 TX ↓ LoRa 900MHz (… |
+| `iot-node-red-mqtt-sql-data-logger-dashboard` | (no abstract) |
 | `iot-nodered-mqtt-sql-course` | 1. **Node-RED เป็น middleware หลัก** — รับข้อมูลจาก MQTT → ประมว… |
 | `iot-visualization-guide` | 1. **Sensor to Screen pipeline**: Raw sensor data → Transmit → C… |
 | `iot-visualization-guide-designing-effective-dashboards-monit` | (no abstract) |
+| `iot-visualization-guide-designing-effective-dashboards-monitoring-uis` | (no abstract) |
 | `iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt` | (no abstract) |
+| `iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we` | (no abstract) |
 | `local-llm-mac-mini-guide` | 1. **60% Rule** — weights ของ model ควรใช้ RAM ไม่เกิน 60% เพื่อ… |
+| `lora-arduino-esp8266-esp32-iot-lora-lora` | (no abstract) |
 | `lora-getting-started-dronebot` | 1. **CSS (Chirp Spread Spectrum)**: LoRa ส่งสัญญาณเป็น frequency… |
 | `lora-getting-started-with-arduino-esp32-pico` | (no abstract) |
+| `lora-nb-iot` | (no abstract) |
 | `lora-thai-intro` | 1. **LoRa ในไทย**: ใช้ได้ที่ 433MHz และ 920-925MHz — กสทช. อนุญา… |
 | `lora-vs-nbiot` | 1. **LPWAN 2 ค่าย**: LoRa (unlicensed, private network) vs NB-Io… |
 | `lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step` | (no abstract) |
+| `lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo` | (no abstract) |
 | `lorawan-fuota-rak3172` | 1. **FUOTA**: Firmware Update Over-the-Air ผ่าน LoRaWAN — อัปเดต… |
 | `lorawan-network-beginner` | 1. **LoRa vs LoRaWAN**: LoRa = radio technology (physical layer)… |
 | `mac-studio-used-thailand-2026-05-05` | 1. ราคามือสองผันผวนสูง — เช็ค Facebook Group "ซื้อขาย Mac" ก่อน… |
 | `manual-input-appsheet-env-2026-05-04` | AppSheet_Documentation: # [1] App_Summary: # [1] Short_Name: "EN… |
-| `mqtt-introduction` | 1. MQTT เป็น publish-subscribe protocol ที่ออกแบบมาเพื่อ IoT โดย… |
+| `mqtt-introduction` | MQTT (Message Queuing Telemetry Transport) is a lightweight, pub… |
 | `nodered-dashboard-ui` | 1. **node-red-dashboard package** — ติดตั้งผ่าน Manage Palette,… |
 | `note-taking-research-assistant-powered-by-ai` | (no abstract) |
 | `ollama-pi5` | 1. Ollama รองรับ ARM64 ติดตั้งอัตโนมัติผ่าน install script 2. Pi… |
@@ -96,15 +111,21 @@
 | `platformio-esp32-guide` | 1. **PlatformIO คือ plugin ของ VS Code** — ไม่ใช่ standalone IDE… |
 | `pzem-004t-guide-2025` | 1. **UART wiring**: PZEM-004T ต่อกับ ESP32 ผ่าน GPIO16 (RX) และ… |
 | `rabies-vaccine-guidelines-th-2026-05-02` | 1. **การล้างแผล**: ล้างด้วยน้ำสะอาดและสบู่นานอย่างน้อย 15 นาที +… |
+| `raspberry-pi-5-16gb-made-in-uk` | (no abstract) |
 | `raspberry-pi-and-iot-the-guide-to-understanding-their-role-i` | (no abstract) |
+| `raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th` | (no abstract) |
 | `raspberry-pi-documentation` | (no abstract) |
 | `raspberry-pi-iot-guide` | 1. **RPi เป็น "intelligent gateway"** — เก็บข้อมูลจาก sensor, ปร… |
+| `readme` | This directory stores original source documents ingested from ex… |
 | `ropgheltec-esp32-lora-v3-proper-working-arduino-library-for` | (no abstract) |
+| `ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v` | (no abstract) |
 | `rpi-ai-hat-plus-2-official` | 1. **Hailo-10H NPU** — 40 TOPS (INT4), ออกแบบมาสำหรับ Generative… |
 | `rpi5-16gb-thailand-price` | Pi 5 ถูกออกแบบรองรับ RAM 1GB/2GB/4GB/8GB/16GB แต่ **4GB และ 8GB… |
 | `saovabha-rabies-pep-2565` | 1. **TRC-ID regimen 2-2-2-0-2**: ฉีด ID 2 จุด ที่ D0, D3, D7, D2… |
-| `sp-drugstore-2020-catalog` | 1. **3,760 รายการ** — ครอบคลุมยา + เครื่องสำอาง + อาหารเสริม + ส… |
-| `strix-halo-research-2026-05-05` | 1. **ราคาในไทยมีศูนย์แล้ว** — GMKtec EVO-X2 และ PELADN YO1 (128G… |
+| `source-5e4074bd` | 1. **การล้างแผล**: ล้างด้วยน้ำสะอาดและสบู่นานอย่างน้อย 15 นาที +… |
+| `sp-drugstore-2020-catalog` | (no abstract) |
+| `strix-halo-research-2026-05-05` | ก่อนหน้านี้ผมประเมิน Strix Halo 70B Q4 = 8-12 tok/s — **ผิด** ตั… |
+| `supabase-2026-aase7en` | 1. **PostgreSQL จริง** — ไม่ใช่ NoSQL เลียนแบบ → query ซับซ้อน,… |
 | `supabase-overview-2026-05-02` | 1. **PostgreSQL จริง** — ไม่ใช่ NoSQL เลียนแบบ → query ซับซ้อน,… |
 | `telegram-ai-agent-setup` | 1. มีหลาย framework ที่ใช้ได้: Nanobot, NClaw, Hermes Agent, cus… |
 | `telegram-ai-router-design` | 1. **ปัญหาที่แก้**: ลดการพึ่งพา Claude API เพียงอย่างเดียว โดยใช… |
@@ -116,14 +137,9 @@
 | `vaccine-temp-monitoring-iot` | 1. **Real-time monitoring**: ESP32 + temperature sensor วัดและส่… |
 | `vibe-pocketbase-gemini-plan` | 1. **โครงสร้างโฟลเดอร์ที่แนะนำ** — แบ่ง 4 ส่วนชัดเจน: `.ai/`, `f… |
 | `vortigontespem-energy-monitor-with-dashboardmetrics-collecto` | (no abstract) |
+| `vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con` | (no abstract) |
 | `web-appsheet-export-yaml-2026-05-04` | จากการค้นหาข้อมูล วิธีที่จะดึง "App Definition" (โครงสร้างตาราง,… |
 | `web-comparison-mac-mini-vs-pi5-ai-2026-04-19` | (no abstract) |
 | `web-local-llm-mac-mini-2026-04-19` | ในปี 2026 Mac Mini ที่ใช้ชิป M4 และ M4 Pro กลายเป็นมาตรฐานใหม่สำ… |
 | `web-raspberry-pi-ai-bot-recommendation-2026` | To run a local Wiki AI bot with acceptable latency on a Raspberr… |
 | `who-rabies-position-2018` | 1. **1-week ID PEP regimen**: ID 2 จุด ที่ D0, D3, D7 (ลดจาก 4 ค… |
-| `การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ` | led_pin = 21 num_pixels = 1 |
-| `ข้อมูล-datasheet-ของ-dx-lr02` | (no abstract) |
-| `คู่มือ-hermes-agent` | (no abstract) |
-| `จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk` | (no abstract) |
-| `ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง` | (no abstract) |
-| `เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย` | (no abstract) |

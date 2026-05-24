@@ -1,22 +1,23 @@
 ---
 type: source
-title: "TTGO-T-Beam Arduino Car Tracker - ESP32 + LoRa + GPS + GSM (optional)"
+title: "Build software better, together"
 slug: build-software-better-together
 date_ingested: 2026-05-24
 original_file: raw/Build software better, together.md
-tags: []
 ---
 
+```yaml
 ---
 title: "Build software better, together"
 source: "https://github.com/topics/lorawan-application"
-author:
-published:
-created: 2026-04-18
+author: ""
+published: ""
+created: "2026-04-18"
 description: "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects."
-tags:
-  - "clippings"
+tags: ""
 ---
+```
+
 #
 
 ## lorawan-application
