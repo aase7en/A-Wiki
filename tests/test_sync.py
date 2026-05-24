@@ -109,6 +109,9 @@ class TestSyncNow:
         """Dirty repo with no remote returns False on push failure."""
         os.chdir(tmp_git_repo)
         monkeypatch.setenv("WIKI_DEVICE_NAME", "test-device")
+        # Remove the remote so push fails
+        from sync import run_cmd
+        run_cmd(["git", "remote", "remove", "origin"])
         # Make a syncable change
         (tmp_git_repo / "wiki").mkdir(exist_ok=True)
         (tmp_git_repo / "wiki" / "note.md").write_text("local change\n")
