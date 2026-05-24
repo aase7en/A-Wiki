@@ -40,6 +40,19 @@
 - [ ] **[dream]** 🤖 Personal AI Agent — agent ส่วนตัวที่ใช้ wiki นี้เป็นสมอง, ตอบคำถาม+จัดการชีวิตได้ offline
 - [ ] **[dream]** 📡 IoT Dashboard — dashboard กลางสำหรับ sensor/device บ้านและที่ทำงาน, real-time + alert
 - [ ] **[dream]** 💊 Pharmacy App — แอพจัดการร้านยา Phu Pharmacy: stock, ค้นหายา, order history, LINE notify
+- [ ] **[wiki-brain-inwwiki]** Fix GitHub Actions workflow conflict — ใช้ branch/PR workflow (wiki-sync.yml) แต่กฎ repo คือ commit ตรง main ห้าม branch/PR → ต้องถอด workflow ออก
+- [ ] **[wiki-brain-inwwiki]** Add missing hooks: check-secret-leak, check-bash-no-branch, post-wiki-edit-gen-index
+- [ ] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน
+- [ ] **[wiki-brain-inwwiki]** ทดสอบ ask-notebooklm.py + delegate.sh + sync.py + hooks_runner.py ที่ merge/copy จาก InW-Wiki → verify ทำงานจริง
+- [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
+- [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py, fill-waste-form.py)
+- [ ] **[wiki-brain-inwwiki]** Unified storage layer — SQLite ที่รวม FTS5 + graph + logs → single source of truth
+- [ ] **[wiki-brain-inwwiki]** Dynamic domain tagging — multi-label tags แทน directory-based domains
+- [ ] **[wiki-brain-inwwiki]** Sync daemon — ทดสอบ sync.py --daemon บน multi-device (Mac + Work PC)
+- [ ] **[wiki-brain-inwwiki]** ศึกษา OmegaWiki (skyllwt) — entity relationship diagram + auto-backlinks
+- [ ] **[wiki-brain-inwwiki]** ศึกษา LLM-Wiki-Skilled (TrueHOOHA) — skill orchestration layer
+- [ ] **[wiki-brain-inwwiki]** ศึกษา long-term-agent-memory (eslamgenio) — episodic + semantic memory layer
+- [ ] **[wiki-brain-inwwiki]** Merge review-check.py ไป InW-Wiki — 6-layer health checker automation
 
 ---
 
@@ -64,6 +77,15 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-24] inwwiki-critique — วิเคราะห์ InW-Wiki + 14 repos + บันทึก improvement plan สู่ session-memory
+
+- **Done**: วิเคราะห์ InW-Wiki ครบ — directory, scripts, hooks, edit-protection, delegate.sh, sync.py, ask-notebooklm.py
+- **Done**: วิเคราะห์ 14 repos อ้างอิง — tiered by signal vs redundancy (OmegaWiki 🔥🔥🔥🔥🔥, LLM-Wiki-Skilled, ai-modules, long-term-agent-memory)
+- **Done**: เขียน critique ฉบับเต็ม 13 หัวข้อ → inw-wiki-critique.md
+- **Done**: บันทึก improvement plan ลง session-memory.md → 14 TODO items ใน ## 🔥 Active TODOs (tagged [wiki-brain-inwwiki])
+- **Decision**: Session memory เป็นระบบที่ใช้กับ Cline บน VSCode ได้เลย — Cline อ่าน/เขียน session-memory.md โดยตรงผ่าน read_file / replace_in_file
+- **Open**: งาน P0 ด่วนที่สุด — Fix GitHub Actions workflow + Add missing hooks + Chain FTS5 auto-regen
 
 ### [2026-05-21] wiki-brain multiagent + TODO system — Gemini hooks, done.sh, mobile visibility
 
