@@ -116,6 +116,29 @@ A-Wiki/
 
 ---
 
+## 🪝 Active Hooks (10 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+
+> Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
+> Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
+
+| # | Hook | File | Type | Purpose |
+|---|------|------|:----:|---------|
+| 1 | **Secret Leak** | `check_secret_leak.py` | 🔴 Block | Scan staged diff for API keys/tokens/JWTs |
+| 2 | **Destructive Git** | `check_bash_destructive_git.py` | 🔴 Block | Block `git reset --hard`, `git clean -fd`, etc. |
+| 3 | **No Branch** | `check_bash_no_branch.py` | 🔴 Block | Block `git checkout -b`, `git branch` (main-only policy) |
+| 4 | **CLAUDE.md Lock** | `check_claudemd_lock.py` | 🔴 Block | Prevent CLAUDE.md edit without permission |
+| 5 | **Raw Immutable** | `check_raw_immutable.py` | 🔴 Block | Protect `raw/` from modification |
+| 6 | **API Key Flag** | `check_apikey.py` | 🔴 Block | Block API key literals in bash command flags |
+| 7 | **Delegation Gate** | `check_delegation_gate.py` | 🔴 Block | Block `git push` without session end protocol |
+| 8 | **Post-Wiki Edit** | `post_wiki_edit.py` | ⚡ Async | Auto-run `gen-index.py` after wiki edit |
+| 9 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
+| 10 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
+
+> **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
+> **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`
+
+---
+
 ## ✅ Core Rules
 
 1. **wiki/ เป็นของ AI agent** — สร้าง แก้ไข ดูแลทุกหน้า
