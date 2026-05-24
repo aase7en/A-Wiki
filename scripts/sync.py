@@ -32,7 +32,7 @@ def get_device_name():
 def run_cmd(args, check=True):
     try:
         result = subprocess.run(args, capture_output=True, text=True, check=check)
-        return result.stdout.strip(), result.stderr.strip(), 0
+        return result.stdout.strip(), result.stderr.strip(), result.returncode
     except subprocess.CalledProcessError as e:
         return e.stdout.strip() if e.stdout else "", e.stderr.strip() if e.stderr else "", e.returncode
 
