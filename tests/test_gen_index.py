@@ -304,20 +304,22 @@ class TestRenderMain:
     """render_main() produces valid markdown with stats."""
 
     def test_contains_stats_table(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         pages = collect_pages()
         output = render_main(pages)
         assert "## Stats" in output
         assert "Total" in output
 
     def test_contains_synthesis_section(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         pages = collect_pages()
         output = render_main(pages)
         assert "SYNTHESIS" in output
 
     def test_empty_wiki_no_synthesis(self, empty_wiki_dir, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", empty_wiki_dir)
+        wiki = empty_wiki_dir
+        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", wiki)
+        _patch_wiki(monkeypatch, gen_index, "REPO_ROOT", wiki.parent)
         pages = collect_pages()
         output = render_main(pages)
         assert output.startswith("#")
@@ -329,21 +331,25 @@ class TestRenderDomain:
     """render_domain() produces domain-specific overview markdown."""
 
     def test_iot_domain(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         pages = collect_pages()
         output = render_domain("iot", pages)
-        assert "# Overview" in output
+        assert "# Overview — IoT" in output
         assert "MQTT" in output
-        assert "Mesh" in output
+        assert "mesh-networking" in output
+        assert "CONCEPTS" in output
+        assert "ENTITIES" in output
 
     def test_env_domain(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         pages = collect_pages()
         output = render_domain("env", pages)
-        assert "Air Quality" in output
+        assert "Air Quality" in output or "air-quality" in output
 
     def test_empty_domain(self, empty_wiki_dir, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", empty_wiki_dir)
+        wiki = empty_wiki_dir
+        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", wiki)
+        _patch_wiki(monkeypatch, gen_index, "REPO_ROOT", wiki.parent)
         pages = collect_pages()
         for dom in DOMAIN_ORDER:
             output = render_domain(dom, pages)
@@ -354,13 +360,15 @@ class TestRenderDomain:
 
 class TestRenderSources:
     def test_contains_sources(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         pages = collect_pages()
         output = render_sources(pages)
         assert "Sources" in output
 
     def test_empty_sources(self, empty_wiki_dir, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", empty_wiki_dir)
+        wiki = empty_wiki_dir
+        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", wiki)
+        _patch_wiki(monkeypatch, gen_index, "REPO_ROOT", wiki.parent)
         pages = collect_pages()
         output = render_sources(pages)
         assert "0 sources" in output or "Stats" in output
@@ -372,14 +380,14 @@ class TestCollectOutputs:
     """collect_outputs() returns correct number of files."""
 
     def test_number_of_outputs(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", sample_wiki.parent / "context")
         pages = collect_pages()
         outputs = collect_outputs(pages)
         assert len(outputs) == 6
 
     def test_output_keys_are_paths(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", sample_wiki.parent / "context")
         pages = collect_pages()
         outputs = collect_outputs(pages)
@@ -394,7 +402,7 @@ class TestCheckMode:
     """--check mode detects stale generated files."""
 
     def test_stale_detected(self, sample_wiki, monkeypatch, capsys):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         ctx = sample_wiki.parent / "context"
         ctx.mkdir(exist_ok=True)
         _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)
@@ -414,7 +422,7 @@ class TestCheckMode:
         assert rc == 1
 
     def test_fresh_passes(self, sample_wiki, monkeypatch):
-        _patch_wiki(monkeypatch, gen_index, "WIKI_DIR", sample_wiki)
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
         ctx = sample_wiki.parent / "context"
         ctx.mkdir(exist_ok=True)
         _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)

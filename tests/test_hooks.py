@@ -36,7 +36,10 @@ class TestGetHooks:
         assert "__init__.py" not in hooks
 
     def test_respects_hook_skip_env(self, monkeypatch):
+        import hooks_runner as hr
         monkeypatch.setenv("HOOK_SKIP", "check_apikey.py,post_wiki_edit.py")
+        # HOOK_SKIP is evaluated at import time, so we must patch it directly
+        monkeypatch.setattr(hr, "HOOK_SKIP", {"check_apikey.py", "post_wiki_edit.py"})
         hooks = get_hooks()
         assert "check_apikey.py" not in hooks
         assert "post_wiki_edit.py" not in hooks
@@ -65,11 +68,18 @@ class TestRunHook:
 
     def test_hook_rejects_api_key_in_content(self, hook_input):
         """check_apikey blocks input with API key literals."""
-        hook_input["message"]["content"] = (
-            "curl -X POST https://api.openai.com/v1/chat/completions "
-            "-H 'Authorization: Bearer sk-proj-fake-key-12345'"
-        )
-        passed, msg = run_hook("check_apikey.py", hook_input)
+        # Use a key long enough to trigger the sk-[A-Za-z0-9_-]{20,} pattern
+        long_key = "sk-proj-" + "a" * 20 + "b"
+        api_hook_input = {
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": (
+                    "curl -X POST https://api.openai.com/v1/chat/completions "
+                    f"-H 'Authorization: Bearer {long_key}'"
+                )
+            },
+        }
+        passed, msg = run_hook("check_apikey.py", api_hook_input)
         assert not passed
         assert "API key" in msg or "api_key" in msg.lower()
 
