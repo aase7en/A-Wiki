@@ -99,10 +99,11 @@ class TestSyncNow:
         """Clean repo with no local changes syncs without error."""
         os.chdir(tmp_git_repo)
         monkeypatch.setenv("WIKI_DEVICE_NAME", "test-device")
+        # Remove the remote to test no-remote scenario
+        from sync import run_cmd
+        run_cmd(["git", "remote", "remove", "origin"], check=False)
         result = sync_now("test-device")
-        # No local changes -> no push needed -> sync succeeds trivially
-        # (fetch may fail due to no remote, but that doesn't affect result
-        #  when there's nothing to push)
+        # No local changes and no remote -> sync succeeds trivially
         assert result
 
     def test_sync_with_no_remote_but_dirty(self, tmp_git_repo: Path, monkeypatch):
