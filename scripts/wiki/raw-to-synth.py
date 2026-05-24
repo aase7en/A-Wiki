@@ -147,13 +147,38 @@ def build_synthesis_stub(source_slug: str, title: str, tags_str: str) -> str:
     return '\n'.join(fm_lines)
 
 
-def make_synthesis_slug(title: str) -> str:
-    """Generate synthesis slug from title."""
-    slug = title.lower()
-    slug = re.sub(r'^[\s#\(\)\d.]+', '', slug)
-    slug = re.sub(r'[^a-z0-9\s\-]', '', slug)
-    slug = re.sub(r'\s+', '-', slug)
-    slug = re.sub(r'-{2,}', '-', slug)
+def make_synthesis_slug(source_slug: str) -> str:
+    """Generate synthesis slug from a source slug.
+    
+    Tries to reduce redundancy while keeping it readable.
+    - If source slug has >2 parts, take first 2-3 meaningful segments
+    - Strip common suffixes like '-guide', '-documentation', '-with-arduino-ide'
+    - Fallback to source slug truncated
+    """
+    # Clean the source slug
+    slug = source_slug.lower().strip('-')
+    
+    # Strip common trailing noise
+    for suffix in ['-guide', '-documentation', '-with-arduino-ide', '-arduino-library',
+                   '-esp-idf-programming-guide', '-v44-documentation', '-examples',
+                   '-practices', '-introduction', '-tutorial', '-overview']:
+        if slug.endswith(suffix):
+            slug = slug[:-len(suffix)]
+    
+    parts = slug.split('-')
+    if len(parts) > 4:
+        # Take first 3 parts (likely the core subject)
+        core = parts[:3]
+        # Check if 4th part adds meaningful info (like 'lorawan', 'raspberry')
+        meaningful = {'lorawan', 'raspberry', 'lora', 'esp32', 'esp8266', 'arduino',
+                      'mqtt', 'node', 'dashboard', 'sensor', 'gateway'}
+        for p in parts[3:]:
+            if p in meaningful:
+                core.append(p)
+                break
+        slug = '-'.join(core)
+    
+    # Final cleanup
     slug = slug.strip('-')[:60].rstrip('-')
     return slug if slug else "untitled-synthesis"
 
@@ -210,15 +235,15 @@ def main() -> int:
                 skipped += 1
                 continue
 
-        # Build synthesis slug
-        synth_slug = make_synthesis_slug(title)
+        # Build synthesis slug from the source slug directly (deterministic)
+        synth_slug = make_synthesis_slug(source_slug)
         
         # Generate stub content
         page_content = build_synthesis_stub(source_slug, title, tags)
         synth_path = SYNTHESIS_DIR / f'{synth_slug}.md'
         
         if args.check:
-            print(f'  📄 {synth_slug}.md — would create from source {source_slug}')
+            print(f'  📄 {synth_slug}.md — would create from source {source_slug} ({title[:40]})')
             created += 1
             continue
 
