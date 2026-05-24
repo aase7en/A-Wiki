@@ -95,15 +95,18 @@ class TestSyncNow:
     so we only validate the pull/rebase/commit parts.
     """
 
-    def test_sync_clean_noop(self, tmp_git_repo: Path, monkeypatch):
+    def test_sync_clean_noop(self, tmp_git_repo: Path, monkeypatch, tmp_path: Path):
         """Clean repo with no local changes syncs without error."""
         os.chdir(tmp_git_repo)
         monkeypatch.setenv("WIKI_DEVICE_NAME", "test-device")
-        # Remove the remote to test no-remote scenario
+        # Set up a bare remote so fetch/pull work
         from sync import run_cmd
-        run_cmd(["git", "remote", "remove", "origin"], check=False)
+        bare = tmp_path / "remote"
+        run_cmd(["git", "init", "--bare", str(bare)])
+        run_cmd(["git", "remote", "add", "origin", str(bare)])
+        run_cmd(["git", "push", "--set-upstream", "origin", "main"])
         result = sync_now("test-device")
-        # No local changes and no remote -> sync succeeds trivially
+        # Clean repo -> no push needed -> sync succeeds
         assert result
 
     def test_sync_with_no_remote_but_dirty(self, tmp_git_repo: Path, monkeypatch):
