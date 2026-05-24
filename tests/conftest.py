@@ -61,7 +61,7 @@ def repos_two_device(tmp_path: Path) -> Generator[tuple[Path, Path], None, None]
     a = tmp_path / "device_a"
     b = tmp_path / "device_b"
     init_temp_repo(a)
-    _git("clone", str(a), str(b))
+    _git("clone", str(a), str(b), cwd=str(tmp_path))
     yield a, b
 
 
