@@ -150,10 +150,12 @@ class TestHooksRunnerCLI:
 
     def test_hook_with_api_key_blocks(self):
         """hooks_runner.py check_apikey blocks API key content -> exit 2."""
+        long_key = "sk-proj-" + "a" * 20 + "b"
         payload = {
-            "message": {
-                "content": "Bearer sk-proj-fake-key-abcdef123456"
-            }
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": f"curl -H 'Authorization: Bearer {long_key}' https://api.example.com"
+            },
         }
         proc = subprocess.run(
             [sys.executable, self.RUNNER, "check_apikey"],
