@@ -77,8 +77,12 @@ class TestIsRepoDirty:
 
     def test_modified_sync_path(self, tmp_git_repo: Path):
         os.chdir(tmp_git_repo)
-        readme = tmp_git_repo / "README.md"
-        readme.write_text("modified content\n")
+        # log.md is in SYNC_PATHS — create & modify it
+        log = tmp_git_repo / "log.md"
+        log.write_text("initial content\n")
+        # git sees untracked — mark dirty
+        assert is_repo_dirty()
+        log.write_text("modified content\n")
         assert is_repo_dirty()
 
 
