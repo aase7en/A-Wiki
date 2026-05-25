@@ -54,24 +54,25 @@ def should_trigger(path: str) -> bool:
 def run_index_async():
     """Run gen-index in a background thread (non-blocking)."""
     def _run():
-        for script in [GEN_INDEX, GEN_DOMAIN]:
-            if os.path.isfile(script):
-                try:
-                    result = subprocess.run(
-                        [sys.executable, script],
-                        capture_output=True, text=True, timeout=30,
-                        cwd=os.path.join(SCRIPTS_DIR, ".."),
+        for script, timeout_s in INDEX_SCRIPTS:
+            if not os.path.isfile(script):
+                continue
+            try:
+                result = subprocess.run(
+                    [sys.executable, script],
+                    capture_output=True, text=True, timeout=timeout_s,
+                    cwd=os.path.join(SCRIPTS_DIR, ".."),
+                )
+                if result.returncode != 0:
+                    sys.stderr.write(
+                        f"⚠️ post-wiki-edit: {os.path.basename(script)} "
+                        f"exited with code {result.returncode}\n"
+                        f"{result.stderr.strip()}\n"
                     )
-                    if result.returncode != 0:
-                        sys.stderr.write(
-                            f"⚠️ post-wiki-edit: {os.path.basename(script)} "
-                            f"exited with code {result.returncode}\n"
-                            f"{result.stderr.strip()}\n"
-                        )
-                except subprocess.TimeoutExpired:
-                    sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} timed out\n")
-                except Exception as e:
-                    sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} error: {e}\n")
+            except subprocess.TimeoutExpired:
+                sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} timed out\n")
+            except Exception as e:
+                sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} error: {e}\n")
 
     thread = threading.Thread(target=_run, daemon=True)
     thread.start()

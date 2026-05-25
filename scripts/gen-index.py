@@ -432,14 +432,16 @@ def main() -> int:
         except subprocess.CalledProcessError as e:
             print(f"⚠ review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
-    # Chain: build embeddings (Phase 4a) — local TF-IDF by default, silent
-    emb_builder = scripts_dir / "wiki" / "build-embeddings.py"
-    if emb_builder.exists():
+    # Chain: build sqlite-vec semantic index (fastembed multilingual-e5-small)
+    vec_builder = scripts_dir / "build-vec-index.py"
+    if vec_builder.exists():
         try:
-            subprocess.run([sys.executable, str(emb_builder), "--quiet"], check=True, capture_output=True)
-            print(f"✓ chained: wiki/build-embeddings.py")
+            subprocess.run([sys.executable, str(vec_builder)], check=True, capture_output=True, timeout=300)
+            print(f"✓ chained: build-vec-index.py")
+        except subprocess.TimeoutExpired:
+            print(f"⚠ build-vec-index.py timed out (>5min)", file=sys.stderr)
         except subprocess.CalledProcessError as e:
-            print(f"⚠ wiki/build-embeddings.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+            print(f"⚠ build-vec-index.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Regenerate wiki/context/knowledge-graph.md from .wiki-graph.json
     graph_json = REPO_ROOT / ".wiki-graph.json"
