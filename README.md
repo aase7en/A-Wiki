@@ -102,6 +102,8 @@ python scripts/wiki/query-rag.py "mqtt vs lorawan"
 
 > **macOS note:** if `pip install` succeeded but `build-vec-index.py` fails with an extension-loading error, your Python is from Apple's system or a python.org build with `--disable-loadable-sqlite-extensions`. The `apsw` package bypasses that and is already in `requirements.txt` — re-run `pip install -r requirements.txt`. If it still fails, install Python via Homebrew (`brew install python@3.12`) or pyenv.
 
+---
+
 > **Google Drive `.secrets` file format** (create once, syncs to all your machines):
 > ```
 > export OPENROUTER_API_KEY=sk-or-...

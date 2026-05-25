@@ -22,7 +22,10 @@ import datetime as dt
 import re
 import struct
 import sys
+import warnings
 from pathlib import Path
+
+warnings.filterwarnings("ignore", message=".*mean pooling.*", category=UserWarning)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WIKI_DIR = REPO_ROOT / "wiki"
