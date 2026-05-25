@@ -1,5 +1,29 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-25] session | Phase 4 S7 — pipeline tests + ADR finalization
+
+**Done:**
+- เขียน tests ใหม่ 4 ไฟล์ครอบ Phase 4 pipeline scripts:
+  - `tests/test_ingest_source.py` (24 tests)
+  - `tests/test_synthesize.py` (14 tests)
+  - `tests/test_query_rag.py` (18 tests)
+  - `tests/test_auto_synthesize.py` (12 tests)
+- เพิ่ม "Validation" section ใน `decisions/0006-source-ingestion-synthesis-rag.md`
+- แก้ bug ใน `scripts/wiki/query-rag.py:generate_query_variants` — `list(set(...))[:5]`
+  ทำ original query หลุดได้ → เปลี่ยนเป็น order-preserving dedupe
+- Suite ทั้งหมด: 65 → 133 tests pass (+68)
+
+**Key findings (bugs to address next session):**
+- `scripts/wiki/ingest-source.py:24` — `REPO_ROOT = parent.parent` (ควรเป็น `parent.parent.parent`).
+  ปัจจุบัน `SOURCES_DIR` ชี้ไป `scripts/wiki/sources` แทน `wiki/sources` —
+  142 sources ที่มีอยู่ถูกสร้างด้วยมือ ไม่ใช่จาก script นี้
+- `scripts/wiki/query-rag.py:168,270` — ใช้ `np.float32` แต่ import เป็น `np_dep` →
+  NameError ตอน `build` หรือ search จริง (พบเฉพาะตอน FAISS pipeline ทำงาน)
+- Tests ปัจจุบันหลีกเลี่ยง FAISS / sentence-transformers path เพื่อให้ CI เร็ว;
+  bug ทั้งสองตัวจึงยังไม่ถูก reproduce ในชุด test
+
+---
+
 ## [2026-05-25] session | universal multi-platform AI brain + cross-platform setup
 
 **Done:**

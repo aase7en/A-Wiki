@@ -14,6 +14,9 @@
 > items at the next rollover so the list stays slim. Cancelled work → delete the line.
 > One bullet = one project; tag with `**[project-slug]**` so future-you knows the scope.
 
+- [ ] **[a-wiki-pipeline]** Fix `scripts/wiki/ingest-source.py:24` — `REPO_ROOT = parent.parent` ต้องเป็น `parent.parent.parent` (path bug ทำให้ `SOURCES_DIR` ชี้ผิด)
+- [ ] **[a-wiki-pipeline]** Fix `scripts/wiki/query-rag.py:168,270` — `np.float32` undefined (import เป็น `np_dep`); blocks `build` + search
+- [x] **[a-wiki-pipeline]** Phase 4 S7 done 2026-05-25: เพิ่ม 68 tests, ADR-0006 validation section, fix `generate_query_variants` original-query drop
 - [x] **[sunday-estate-webapp]** รัน Supabase migrations `0001…0013` ใน Studio (`http://umbrel.local:8000`)
 - [x] **[sunday-estate-webapp]** กรอก `prototype/config.js` ใส่ `SUPABASE_URL` + `ANON_KEY` แล้วทดสอบ login จริง
 - [x] **[sunday-estate-webapp]** เปิดเว็บ real mode แล้วสร้างบัญชีจริงบัญชีแรก (จะได้ role `admin` อัตโนมัติ)

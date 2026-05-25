@@ -235,7 +235,14 @@ def generate_query_variants(query: str) -> list[str]:
         variants.append(f"What are key aspects of {query}?")
         variants.append(f"Describe {query}")
 
-    return list(set(variants))[:5]
+    # Dedupe while preserving order — original query stays first
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in variants:
+        if v not in seen:
+            seen.add(v)
+            out.append(v)
+    return out[:5]
 
 
 def search(
