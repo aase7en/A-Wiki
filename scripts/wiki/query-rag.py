@@ -26,9 +26,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DB_PATH = REPO_ROOT / ".wiki-index.db"
 WIKI_DIR = REPO_ROOT / "wiki"
 
-EMBED_MODEL = "intfloat/multilingual-e5-small"
+EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBED_DIM = 384
-QUERY_PREFIX = "query: "  # required by e5 model family
 RRF_K = 60
 FETCH_PER_SOURCE = 50  # rows pulled from each index before fusion
 
@@ -80,7 +79,7 @@ def _connect():
 def _embed_query(text: str) -> list[float]:
     from fastembed import TextEmbedding
     model = TextEmbedding(model_name=EMBED_MODEL)
-    return list(next(iter(model.embed([f"{QUERY_PREFIX}{text}"]))))
+    return list(next(iter(model.embed([text]))))
 
 
 def _read_snippet(path: str, query: str, ctx: int = 220) -> str:
