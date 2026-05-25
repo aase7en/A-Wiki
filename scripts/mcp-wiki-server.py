@@ -336,14 +336,13 @@ TOOLS = {
     },
     "wiki_semantic_search": {
         "fn": tool_wiki_semantic_search,
-        "description": "Hybrid FTS5 + semantic embedding search. 'local' uses TF-IDF (no API key); 'openrouter' uses actual embeddings.",
+        "description": "Hybrid FTS5 + sqlite-vec semantic search over A-Wiki, fused with weighted RRF. Runs fully offline (fastembed multilingual model).",
         "inputSchema": {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "Search query"},
                 "limit": {"type": "integer", "description": "Max results (default 10)", "default": 10},
-                "provider": {"type": "string", "enum": ["local", "openrouter"], "description": "Embedding provider", "default": "local"},
-                "alpha": {"type": "number", "description": "FTS5 weight 0-1 (default 0.7)", "default": 0.7},
+                "alpha": {"type": "number", "description": "FTS weight 0-1 (0=pure vec, 1=pure FTS, default 0.5)", "default": 0.5},
             },
             "required": ["query"],
         },

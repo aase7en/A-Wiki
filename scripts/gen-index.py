@@ -432,7 +432,7 @@ def main() -> int:
         except subprocess.CalledProcessError as e:
             print(f"⚠ review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
-    # Chain: build sqlite-vec semantic index (fastembed multilingual-e5-small)
+    # Chain: build sqlite-vec semantic index (fastembed paraphrase-multilingual-MiniLM-L12-v2)
     vec_builder = scripts_dir / "build-vec-index.py"
     if vec_builder.exists():
         try:
