@@ -64,8 +64,12 @@ def pack_vec(values) -> bytes:
 
 def fts_escape(query: str) -> str:
     """Tokenize a free-text query into FTS5 MATCH syntax: each whitespace-separated
-    word becomes a quoted prefix-match term, joined with OR. Resilient to FTS5
-    operator chars in user input (which would otherwise raise OperationalError)."""
+    word becomes a quoted phrase term, joined with OR. Resilient to FTS5
+    operator chars in user input (which would otherwise raise OperationalError).
+
+    Trade-off: quoted operator words (AND/OR/NOT) are matched as literals — a query
+    of "AND" will only return docs containing the word "and". This is intentional;
+    untrusted input has zero way to break the MATCH expression."""
     tokens = [t for t in re.split(r"\s+", query.strip()) if t]
     if not tokens:
         return '""'
