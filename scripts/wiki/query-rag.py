@@ -165,7 +165,7 @@ def build_index(docs: list[dict[str, Any]]) -> tuple[Any, list[dict[str, Any]]]:
 
     # Build FAISS index (IP = cosine similarity on normalized vectors)
     index = faiss_dep.IndexFlatIP(EMBED_DIM)
-    index.add(np_dep.array(embeddings, dtype=np.float32))
+    index.add(np_dep.array(embeddings, dtype=np_dep.float32))
     log(f"index size: {index.ntotal} vectors")
 
     return index, valid_docs
@@ -274,7 +274,7 @@ def search(
 
     for qv in query_variants:
         q_emb = model.encode([qv], normalize_embeddings=True)
-        scores_matrix, idx_matrix = index.search(np_dep.array(q_emb, dtype=np.float32), top_k * 2)
+        scores_matrix, idx_matrix = index.search(np_dep.array(q_emb, dtype=np_dep.float32), top_k * 2)
 
         for doc_idx, score in zip(idx_matrix[0], scores_matrix[0]):
             if doc_idx < 0:

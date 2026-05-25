@@ -1,5 +1,21 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-25] session | Phase 4 S7 follow-up — fix 2 pipeline bugs
+
+**Done:**
+- Fix `scripts/wiki/ingest-source.py:24` — `REPO_ROOT = parent.parent` → `parent.parent.parent`
+  (path bug ทำให้ `SOURCES_DIR` ชี้ไป `scripts/wiki/sources/` แทน `wiki/sources/`)
+- Fix `scripts/wiki/query-rag.py:168,277` — `np.float32` → `np_dep.float32` (2 sites)
+  (NameError เพราะ numpy ถูก import เป็น `np_dep`; blocks FAISS build + search)
+- Update `wiki/context/session-memory.md` — tick 2 fixed bug TODOs
+- pytest 133/133 pass (รวม `test_delegation_gate_blocks_no_session` ที่เคย flaky)
+
+**Why this session:**
+Bug ทั้งสองถูกพบระหว่างเขียน tests ใน S7 แต่ deferred ไว้เพราะ scope ของ S7 จำกัด
+อยู่ที่ tests + ADR. User ขอให้ "ทำต่อให้จบ" → close out ที่นี่.
+
+---
+
 ## [2026-05-25] session | Phase 4 S7 — pipeline tests + ADR finalization
 
 **Done:**
