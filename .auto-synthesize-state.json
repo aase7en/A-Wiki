@@ -1,0 +1,23 @@
+{
+  "last_run": "2026-05-25T07:05:52.972312",
+  "source_counts": {},
+  "last_source_hashes": {
+    "wiki/sources/ai-tools/langchain-framework.md": "6914582416489362295",
+    "wiki/sources/ai-tools/vector-databases.md": "-4197408113465238994",
+    "wiki/sources/env/air-quality-monitoring.md": "7059175440313928374",
+    "wiki/sources/env/soil-moisture-sensing.md": "-7667660488402403112",
+    "wiki/sources/env/water-quality-parameters.md": "-313259997844843107",
+    "wiki/sources/iot/lorawan-architecture.md": "-5455874037708709659",
+    "wiki/sources/iot/mqtt-protocol-overview.md": "-2294175382329841275",
+    "wiki/sources/it/edge-computing-iot.md": "-7034022005985184920",
+    "wiki/sources/it/network-monitoring-iot.md": "3563995136454168303",
+    "wiki/sources/pharmacy/drug-interaction-checking.md": "-4227764517168962430"
+  },
+  "synthesis_timestamps": {
+    "ai-tools": "2026-05-25T07:05:52.971946",
+    "env": "2026-05-25T07:05:52.971951",
+    "iot": "2026-05-25T07:05:52.971953",
+    "it": "2026-05-25T07:05:52.971954",
+    "pharmacy": "2026-05-25T07:05:52.971954"
+  }
+}
