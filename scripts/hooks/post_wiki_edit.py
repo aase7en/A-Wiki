@@ -32,11 +32,6 @@ INDEX_SCRIPTS = [
     (GEN_DOMAIN, 30),
 ]
 
-# Debounce state (module-level)
-_last_trigger = 0.0
-_debounce_lock = threading.Lock()
-DEBOUNCE_SEC = 2.0
-
 WIKI_PATHS = ("wiki/", "index-", "index.md")
 
 
