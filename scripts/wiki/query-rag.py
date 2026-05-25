@@ -1,358 +1,449 @@
 #!/usr/bin/env python3
 """
-query-rag.py — Hybrid search: combine FTS5 keyword + embedding similarity.
+query-rag.py — GraphRAG semantic query over A-Wiki sources and syntheses.
 
-Two modes:
-  1. --fts5-only   : pure FTS5 (same as search-wiki.py)
-  2. --semantic    : hybrid FTS5 + local TF-IDF cosine similarity
-  3. --provider openrouter : use API embeddings for semantic vector search
+Embeds wiki/sources/ and wiki/synthesis/ documents using sentence-transformers,
+indexes them with FAISS, and supports hybrid search (semantic + tag/concept filter).
 
 Usage:
-    python3 scripts/wiki/query-rag.py "MQTT esp32"
-    python3 scripts/wiki/query-rag.py "MQTT esp32" --semantic
-    python3 scripts/wiki/query-rag.py "MQTT esp32" --provider openrouter
-    python3 scripts/wiki/query-rag.py "temperature sensor" --limit 5 --json
+    python3 scripts/query-rag.py build                           # build/rebuild the index
+    python3 scripts/query-rag.py "water quality iot sensor"      # search with query
+    python3 scripts/query-rag.py "water quality" --domain env    # filter by domain
+    python3 scripts/query-rag.py "edge ML" --top-k 10            # top 10 results
+    python3 scripts/query-rag.py "drug interaction" --tags "clinical-decision-support,pharmacy"
+    python3 scripts/query-rag.py "mqtt vs lorawan" --expand      # query expansion (3 variants)
+    python3 scripts/query-rag.py "air quality" --source-only     # sources only, no syntheses
+    python3 scripts/query-rag.py "emerging contaminants" --synthesis-only
+    python3 scripts/query-rag.py status                           # show index stats
 """
 from __future__ import annotations
 import argparse
+import datetime as dt
 import json
-import math
 import re
-import sqlite3
-import shlex
-import subprocess
 import sys
-import time
-from collections import Counter
+import unicodedata
+from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-DB_PATH = REPO_ROOT / ".wiki-index.db"
-GRAPH_PATH = REPO_ROOT / ".wiki-graph.json"
-EMB_PATH = REPO_ROOT / ".wiki-embeddings.json"
-BUILDER = REPO_ROOT / "scripts" / "build-wiki-index.py"
-EMB_BUILDER = REPO_ROOT / "scripts" / "wiki" / "build-embeddings.py"
+SOURCES_DIR = REPO_ROOT / "wiki" / "sources"
+SYNTHESIS_DIR = REPO_ROOT / "wiki" / "synthesis"
+INDEX_DIR = REPO_ROOT / ".rag-index"
+INDEX_FILE = INDEX_DIR / "index.faiss"
+META_FILE = INDEX_DIR / "metadata.json"
 
-STOPWORDS = set("""
-a an the and or but in on at to for of with by from as is it its are were
-was be been being have has had do does did will would shall should may
-might must can could about into over after before between through during
-without within across among behind below beneath beside beyond down
-inside near off outside top under upon along around
-ที่ ใน ของ และ หรือ แต่ นี้ นั้น มี เป็น คือ ได้ ถูก กับ ไว้ ไป มา
-ไม่ ได้ ไว้ ยัง อยู่ ที่  ซึ่ง อัน  โดย  จาก  แต่  หาก  เมื่อ
-""".split())
-
-TOKEN_RE = re.compile(r"[a-zA-Z\u0E00-\u0E7F]{2,}")
-CODE_FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
-INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
-FRONTMATTER_RE = re.compile(r"^---\s*\n.*?\n---\s*\n", re.DOTALL)
+# Embedding config
+EMBED_MODEL = "all-MiniLM-L6-v2"  # 384-dim, fast, good for semantic similarity
+EMBED_DIM = 384
 
 
-def ensure_db() -> None:
-    if not DB_PATH.exists():
-        subprocess.run([sys.executable, str(BUILDER)], check=True)
+def slugify(text: str) -> str:
+    text = text.lower().strip()
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"[-\s]+", "-", text)
+    return text.strip("-")
 
 
-def ensure_embeddings(mode: str) -> dict:
-    """Load or build embeddings. Returns parsed .wiki-embeddings.json."""
-    if not EMB_PATH.exists():
-        print("Embeddings not found. Building...", file=sys.stderr)
-        args = [sys.executable, str(EMB_BUILDER)]
-        if mode == "openrouter":
-            args.append("--provider")
-            args.append("openrouter")
-        subprocess.run(args, check=True)
-    data = json.loads(EMB_PATH.read_text(encoding="utf-8"))
-    # If mode changed, rebuild
-    if data.get("mode") != mode:
-        print(f"Rebuilding embeddings ({mode} mode)...", file=sys.stderr)
-        args = [sys.executable, str(EMB_BUILDER), "--rebuild"]
-        if mode == "openrouter":
-            args.append("--provider")
-            args.append("openrouter")
-        subprocess.run(args, check=True)
-        data = json.loads(EMB_PATH.read_text(encoding="utf-8"))
-    return data
+def log(msg: str) -> None:
+    print(f"[rag] {msg}", file=sys.stderr)
 
 
-# ── FTS5 (exact copy of logic from search-wiki.py) ────────────────────
+# ─── Document Loading ────────────────────────────────────────────────
+
+def parse_doc_frontmatter(text: str, rel_path: str, doc_type: str) -> dict[str, Any]:
+    """Parse a .md document into a structured entry for indexing."""
+    doc: dict[str, Any] = {
+        "path": rel_path,
+        "title": "Untitled",
+        "type": doc_type,
+        "domain": "general",
+        "tags": [],
+        "concepts": [],
+        "content": "",
+        "quality": "seed",
+    }
+    m = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
+    if m:
+        doc["title"] = m.group(1).strip()
+
+    for line in text.splitlines():
+        line_s = line.strip()
+        kv = re.match(r">\s*\*\*(\w+):\*\*\s*(.+)", line_s)
+        if kv:
+            key = kv.group(1).lower()
+            val = kv.group(2).strip()
+            if key == "type":
+                doc["type"] = val
+            elif key == "domain":
+                doc["domain"] = val
+            elif key == "quality":
+                doc["quality"] = val
+            elif key == "tags":
+                doc["tags"] = [t.strip().lower() for t in val.split(",")]
+
+    # Concepts from body
+    for cm in re.finditer(r"\*\*(.+?)\*\*\s*[—–-]\s*(.+?)(?=\n|$)", text):
+        doc["concepts"].append(cm.group(1).strip())
+
+    # Content: strip metadata header, keep Abstract + body for embedding
+    body = re.sub(r"^# .+\n", "", text, count=1)
+    body = re.sub(r"^>.*$", "", body, flags=re.MULTILINE)
+    body = re.sub(r"^---.*?---", "", body, flags=re.DOTALL)
+    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+    doc["content"] = body
+    doc["content_len"] = len(body)
+
+    return doc
 
 
-def normalize_query(q: str) -> str:
-    q = q.strip()
-    if not q:
-        return q
-    if any(tok in q for tok in (":", " AND ", " OR ", " NEAR(", '"')):
-        return q
-    parts = shlex.split(q)
-    return " ".join(parts)
+def load_all_documents() -> list[dict[str, Any]]:
+    """Load all source and synthesis documents."""
+    docs: list[dict[str, Any]] = []
+
+    # Sources
+    if SOURCES_DIR.is_dir():
+        for domain_dir in sorted(SOURCES_DIR.iterdir()):
+            if not domain_dir.is_dir():
+                continue
+            for md_file in sorted(domain_dir.glob("*.md")):
+                try:
+                    text = md_file.read_text(encoding="utf-8")
+                    rel = str(md_file.relative_to(REPO_ROOT))
+                    doc = parse_doc_frontmatter(text, rel, "source")
+                    docs.append(doc)
+                except Exception as e:
+                    log(f"skip source {md_file}: {e}")
+
+    # Syntheses
+    if SYNTHESIS_DIR.is_dir():
+        for md_file in sorted(SYNTHESIS_DIR.glob("*.md")):
+            try:
+                text = md_file.read_text(encoding="utf-8")
+                rel = str(md_file.relative_to(REPO_ROOT))
+                doc = parse_doc_frontmatter(text, rel, "synthesis")
+                docs.append(doc)
+            except Exception as e:
+                log(f"skip synthesis {md_file}: {e}")
+
+    log(f"loaded {len(docs)} documents ({sum(1 for d in docs if d['type']=='source')} sources, "
+        f"{sum(1 for d in docs if d['type']=='synthesis')} syntheses)")
+    return docs
 
 
-def search_fts5(query: str, limit: int) -> list[tuple]:
-    """Returns list of (path, title, snippet, score)."""
-    ensure_db()
-    conn = sqlite3.connect(DB_PATH)
+# ─── Embedding + Indexing ────────────────────────────────────────────
+
+def build_index(docs: list[dict[str, Any]]) -> tuple[Any, list[dict[str, Any]]]:
+    """Build FAISS index from document embeddings."""
+    np_dep = __import__("numpy", fromlist=["array"])
+    faiss_dep = __import__("faiss", fromlist=["IndexFlatIP"])
     try:
-        sql = (
-            "SELECT path, title, "
-            "snippet(wiki, 3, '«', '»', '…', 16) AS snip, "
-            "bm25(wiki) AS score "
-            "FROM wiki WHERE wiki MATCH ? "
-            "ORDER BY score LIMIT ?"
-        )
-        return conn.execute(sql, (query, limit)).fetchall()
-    finally:
-        conn.close()
+        from sentence_transformers import SentenceTransformer
+    except ImportError:
+        log("ERROR: sentence-transformers not installed. Install with:")
+        log("  pip install sentence-transformers faiss-cpu numpy")
+        sys.exit(1)
 
+    log(f"loading embedding model '{EMBED_MODEL}'...")
+    model = SentenceTransformer(EMBED_MODEL)
 
-# ── Local TF-IDF similarity ───────────────────────────────────────────
-
-
-def tokenize(text: str) -> list[str]:
-    text = FRONTMATTER_RE.sub("", text)
-    text = CODE_FENCE_RE.sub("", text)
-    text = INLINE_CODE_RE.sub("", text)
-    tokens = TOKEN_RE.findall(text.lower())
-    return [t for t in tokens if t not in STOPWORDS and len(t) > 1]
-
-
-def cosine_sim(a: dict[str, float], b: dict[str, float]) -> float:
-    """Cosine similarity between two sparse dict vectors."""
-    dot = 0.0
-    for k, v in a.items():
-        if k in b:
-            dot += v * b[k]
-    return dot
-
-
-def query_local_embeddings(emb_data: dict, query: str, limit: int, alpha: float = 0.7) -> list[tuple]:
-    """Hybrid search: weight FTS5 * alpha + cosine * (1-alpha).
-
-    Returns list of (path, title, snippet, combined_score, fts5_score, cosine_score).
-    """
-    # Get FTS5 results first
-    q_normal = normalize_query(query)
-    try:
-        fts5_results = search_fts5(q_normal, limit * 3)  # overfetch for hybrid mix
-    except sqlite3.OperationalError:
-        fts5_results = []
-
-    # Build query TF-IDF vector
-    num_docs = emb_data["params"]["N"]
-    idf = emb_data.get("idf", {})
-    query_tokens = Counter(tokenize(query))
-    q_vec: dict[str, float] = {}
-    for term, tf in query_tokens.items():
-        q_vec[term] = (1 + math.log(tf)) * idf.get(term, math.log((num_docs + 1) / 1 + 1))
-    q_norm = math.sqrt(sum(v * v for v in q_vec.values()))
-    if q_norm > 0:
-        q_vec = {k: v / q_norm for k, v in q_vec.items()}
-
-    # If query is empty (all stopwords), just return FTS5
-    if not q_vec:
-        results = []
-        for i, (path, title, snip, score) in enumerate(fts5_results[:limit]):
-            results.append((path, title, snip, score, score, 0.0))
-        return results
-
-    vectors = emb_data.get("vectors", {})
-    scored: list[tuple[str, str, str, float, float, float]] = []
-
-    # Build lookup from FTS5 results
-    fts5_map: dict[str, tuple[str, str, float]] = {}
-    fts5_scores: list[float] = []
-    for path, title, snip, score in fts5_results:
-        fts5_map[path] = (title, snip, score)
-        fts5_scores.append(score)
-
-    # Normalize FTS5 scores to [0,1]
-    fts5_min = min(fts5_scores) if fts5_scores else 0
-    fts5_max = max(fts5_scores) if fts5_scores else 1
-    fts5_range = max(fts5_max - fts5_min, 1e-10)
-
-    # Score all pages that have vectors
-    for path, vec in vectors.items():
-        if not vec:
+    # Prepare texts for embedding
+    texts = []
+    valid_docs = []
+    for doc in docs:
+        content = doc.get("content", "").strip()
+        if not content or len(content) < 10:
             continue
-        cosim = cosine_sim(q_vec, vec)
-        if path in fts5_map:
-            title, snip, raw_fts5 = fts5_map[path]
-            fts5_norm = (raw_fts5 - fts5_min) / fts5_range
-            combined = alpha * fts5_norm + (1 - alpha) * cosim
-            scored.append((path, title, snip, combined, raw_fts5, cosim))
-        elif cosim > 0.3:  # include semantically close even if FTS5 missed
-            title = Path(path).stem.replace("-", " ").title()
-            snip = f"[semantic match: similarity {cosim:.3f}]"
-            combined = (1 - alpha) * cosim
-            scored.append((path, title, snip, combined, 0.0, cosim))
+        texts.append(content)
+        valid_docs.append(doc)
 
-    # Sort by combined score descending
-    scored.sort(key=lambda x: -x[3])
-    return scored[:limit]
+    log(f"embedding {len(texts)} documents...")
+    embeddings = model.encode(texts, show_progress_bar=True, normalize_embeddings=True)
+    log(f"embeddings shape: {embeddings.shape}")
+
+    # Build FAISS index (IP = cosine similarity on normalized vectors)
+    index = faiss_dep.IndexFlatIP(EMBED_DIM)
+    index.add(np_dep.array(embeddings, dtype=np.float32))
+    log(f"index size: {index.ntotal} vectors")
+
+    return index, valid_docs
 
 
-# ── API embedding similarity ──────────────────────────────────────────
+def save_index(index: Any, docs: list[dict[str, Any]]) -> None:
+    """Persist FAISS index + metadata to disk."""
+    import pickle
+    INDEX_DIR.mkdir(parents=True, exist_ok=True)
+
+    faiss_dep = __import__("faiss", fromlist=["write_index"])
+    faiss_dep.write_index(index, str(INDEX_FILE))
+
+    # Save metadata
+    meta = {
+        "build_time": dt.datetime.now().isoformat(),
+        "embed_model": EMBED_MODEL,
+        "num_docs": len(docs),
+        "docs": [
+            {
+                "path": d["path"],
+                "title": d["title"],
+                "type": d["type"],
+                "domain": d["domain"],
+                "tags": d["tags"],
+                "concepts": d["concepts"][:8],
+                "quality": d["quality"],
+                "content_len": d["content_len"],
+            }
+            for d in docs
+        ],
+    }
+    META_FILE.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    log(f"saved {len(docs)} docs to {META_FILE}, index to {INDEX_FILE}")
 
 
-def _openrouter_embed(texts: list[str], model: str = "text-embedding-3-small") -> list[list[float]]:
-    import urllib.request
-    import urllib.error
-    import os
+def load_index() -> tuple[Any, list[dict[str, Any]]]:
+    """Load FAISS index + metadata from disk."""
+    if not INDEX_FILE.exists() or not META_FILE.exists():
+        log("ERROR: no index found. Run 'query-rag.py build' first.")
+        sys.exit(1)
 
-    api_key = os.environ.get("OPENROUTER_API_KEY", os.environ.get("GEMINI_API_KEY", ""))
-    if not api_key:
-        raise RuntimeError(
-            "OPENROUTER_API_KEY or GEMINI_API_KEY not set. "
-            "Use --semantic (local) mode instead."
-        )
-
-    url = "https://openrouter.ai/api/v1/embeddings"
-    payload = json.dumps({
-        "model": model,
-        "input": texts,
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
-    data["data"].sort(key=lambda x: x["index"])
-    return [d["embedding"] for d in data["data"]]
+    faiss_dep = __import__("faiss", fromlist=["read_index"])
+    index = faiss_dep.read_index(str(INDEX_FILE))
+    meta = json.loads(META_FILE.read_text(encoding="utf-8"))
+    docs = meta["docs"]
+    log(f"loaded index: {index.ntotal} vectors, {len(docs)} docs (built {meta['build_time']})")
+    return index, docs
 
 
-def dot_product(a: list[float], b: list[float]) -> float:
-    return sum(x * y for x, y in zip(a, b))
+# ─── Query ───────────────────────────────────────────────────────────
+
+def generate_query_variants(query: str) -> list[str]:
+    """Generate query expansion variants."""
+    variants = [query]
+
+    # Add prefix variants
+    prefixes = [
+        "Explain", "What is", "Compare and contrast",
+    ]
+    for p in prefixes:
+        if not query.lower().startswith(p.lower()):
+            variants.append(f"{p} {query}")
+
+    # Add question variant
+    if not query.endswith("?"):
+        variants.append(f"What are key aspects of {query}?")
+        variants.append(f"Describe {query}")
+
+    return list(set(variants))[:5]
 
 
-def query_api_embeddings(emb_data: dict, query: str, limit: int, alpha: float = 0.7) -> list[tuple]:
-    """API-mode hybrid: embed the query, cosine vs all doc vectors."""
-    # Get FTS5 results
-    q_normal = normalize_query(query)
+def search(
+    query: str,
+    index: Any,
+    docs: list[dict[str, Any]],
+    top_k: int = 5,
+    domain: str | None = None,
+    tags: list[str] | None = None,
+    source_only: bool = False,
+    synthesis_only: bool = False,
+    expand: bool = False,
+) -> list[dict[str, Any]]:
+    """Search the index and return ranked results."""
+    np_dep = __import__("numpy", fromlist=["array"])
     try:
-        fts5_results = search_fts5(q_normal, limit * 3)
-    except sqlite3.OperationalError:
-        fts5_results = []
+        from sentence_transformers import SentenceTransformer
+    except ImportError:
+        log("ERROR: sentence-transformers not installed.")
+        sys.exit(1)
 
-    # Embed the query
-    print(f"  embedding query...", file=sys.stderr)
-    try:
-        q_emb = _openrouter_embed([query])[0]
-    except RuntimeError as e:
-        print(f"  API error: {e}. Falling back to local TF-IDF.", file=sys.stderr)
-        return query_local_embeddings(emb_data, query, limit, alpha)
+    model = SentenceTransformer(EMBED_MODEL)
 
-    # Normalize query embedding
-    q_norm = math.sqrt(sum(v * v for v in q_emb))
-    if q_norm > 0:
-        q_emb = [v / q_norm for v in q_emb]
+    # Query expansion
+    query_variants = generate_query_variants(query) if expand else [query]
 
-    vectors = emb_data.get("vectors", {})
-    scored: list[tuple[str, str, str, float, float, float]] = []
+    all_scores: list[tuple[int, float]] = []
+    seen_pairs: set[tuple[int, int]] = set()
 
-    fts5_map: dict[str, tuple[str, str, float]] = {}
-    fts5_scores: list[float] = []
-    for path, title, snip, score in fts5_results:
-        fts5_map[path] = (title, snip, score)
-        fts5_scores.append(score)
+    for qv in query_variants:
+        q_emb = model.encode([qv], normalize_embeddings=True)
+        scores_matrix, idx_matrix = index.search(np_dep.array(q_emb, dtype=np.float32), top_k * 2)
 
-    fts5_min = min(fts5_scores) if fts5_scores else 0
-    fts5_max = max(fts5_scores) if fts5_scores else 1
-    fts5_range = max(fts5_max - fts5_min, 1e-10)
+        for doc_idx, score in zip(idx_matrix[0], scores_matrix[0]):
+            if doc_idx < 0:
+                continue
+            pair_id = (doc_idx, id(qv))
+            if pair_id not in seen_pairs:
+                seen_pairs.add((doc_idx, id(qv)))
+                all_scores.append((doc_idx, float(score)))
 
-    for path, emb in vectors.items():
-        if not emb:
+    # Aggregate scores (max across variants)
+    doc_scores: dict[int, float] = {}
+    for doc_idx, score in all_scores:
+        if doc_idx not in doc_scores or score > doc_scores[doc_idx]:
+            doc_scores[doc_idx] = score
+
+    # Sort by score descending
+    ranked = sorted(doc_scores.items(), key=lambda x: -x[1])
+
+    # Build results with metadata
+    results = []
+    for doc_idx, score in ranked:
+        if len(results) >= top_k:
+            break
+        doc = docs[doc_idx]
+
+        # Apply filters
+        if domain and doc.get("domain", "").lower() != domain.lower():
             continue
-        cosim = dot_product(q_emb, emb)
-        if path in fts5_map:
-            title, snip, raw_fts5 = fts5_map[path]
-            fts5_norm = (raw_fts5 - fts5_min) / fts5_range
-            combined = alpha * fts5_norm + (1 - alpha) * cosim
-            scored.append((path, title, snip, combined, raw_fts5, cosim))
-        elif cosim > 0.4:
-            title = Path(path).stem.replace("-", " ").title()
-            snip = f"[semantic match: similarity {cosim:.3f}]"
-            combined = (1 - alpha) * cosim
-            scored.append((path, title, snip, combined, 0.0, cosim))
+        if tags:
+            doc_tags = set(t.lower() for t in doc.get("tags", []))
+            if not doc_tags & set(t.lower() for t in tags):
+                continue
+        if source_only and doc.get("type") != "source":
+            continue
+        if synthesis_only and doc.get("type") != "synthesis":
+            continue
 
-    scored.sort(key=lambda x: -x[3])
-    return scored[:limit]
+        results.append({
+            "rank": len(results) + 1,
+            "score": round(score, 4),
+            "title": doc["title"],
+            "path": doc["path"],
+            "type": doc.get("type", "unknown"),
+            "domain": doc.get("domain", "general"),
+            "tags": doc.get("tags", []),
+            "concepts": doc.get("concepts", [])[:5],
+            "quality": doc.get("quality", "seed"),
+            "content_len": doc.get("content_len", 0),
+        })
+
+    return results
 
 
-# ── Main ───────────────────────────────────────────────────────────────
+def format_results(results: list[dict[str, Any]], show_content: bool = False) -> str:
+    """Format search results for terminal display."""
+    if not results:
+        return "No results found."
+
+    lines = [f"Found {len(results)} results:\n"]
+    for r in results:
+        score_pct = int(r["score"] * 100)
+        bar = "█" * (score_pct // 10) + "░" * (10 - score_pct // 10)
+        lines.append(
+            f"  [{r['rank']}] {r['title']}\n"
+            f"      Score: {r['score']:.4f} {bar}\n"
+            f"      Path:  {r['path']}\n"
+            f"      Type:  {r['type']} | Domain: {r['domain']} | Quality: {r['quality']}\n"
+        )
+        if r.get("tags"):
+            lines.append(f"      Tags:  {', '.join(r['tags'][:6])}\n")
+        if r.get("concepts"):
+            lines.append(f"      Concepts: {', '.join(r['concepts'][:5])}\n")
+        lines.append("\n")
+
+    return "".join(lines)
 
 
-def main() -> int:
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("query", nargs="?", help="search query")
-    p.add_argument("--limit", type=int, default=10)
-    p.add_argument("--fts5-only", action="store_true", help="pure FTS5 only")
-    p.add_argument("--semantic", action="store_true", help="hybrid FTS5 + local TF-IDF")
-    p.add_argument("--provider", choices=("local", "openrouter"), help="embedding provider")
-    p.add_argument("--alpha", type=float, default=0.7,
-                   help="FTS5 weight (0-1) in hybrid search (default 0.7)")
-    p.add_argument("--json", action="store_true", help="output JSON")
-    args = p.parse_args()
+def format_json(results: list[dict[str, Any]]) -> str:
+    """Format results as JSON."""
+    return json.dumps(results, indent=2, ensure_ascii=False)
 
-    if not args.query:
-        p.error("query required")
 
-    q = normalize_query(args.query)
-    mode = "openrouter" if args.provider == "openrouter" else "local"
+def show_status() -> None:
+    """Display index statistics."""
+    if not META_FILE.exists():
+        print("No index found. Run 'query-rag.py build' first.")
+        return
+    meta = json.loads(META_FILE.read_text(encoding="utf-8"))
+    docs = meta["docs"]
 
-    if args.fts5_only or not (args.semantic or args.provider):
-        # Pure FTS5
-        try:
-            results = search_fts5(q, args.limit)
-        except sqlite3.OperationalError as e:
-            print(f"FTS5 query error: {e}", file=sys.stderr)
-            return 2
+    print(f"GraphRAG Index Status\n")
+    print(f"  Build time:    {meta['build_time']}")
+    print(f"  Embed model:   {meta['embed_model']}")
+    print(f"  Total docs:    {meta['num_docs']}\n")
+
+    # Count by type
+    sources = [d for d in docs if d["type"] == "source"]
+    syntheses = [d for d in docs if d["type"] == "synthesis"]
+    print(f"  Sources:       {len(sources)}")
+    print(f"  Syntheses:     {len(syntheses)}\n")
+
+    # Count by domain
+    domains: dict[str, int] = defaultdict(int)
+    for d in docs:
+        domains[d.get("domain", "unknown")] += 1
+    print("  By domain:")
+    for dom in sorted(domains.keys()):
+        print(f"    {dom:20s}: {domains[dom]}")
+
+    # Tag cloud
+    tag_counts: dict[str, int] = defaultdict(int)
+    for d in docs:
+        for tag in d.get("tags", []):
+            tag_counts[tag.lower()] += 1
+    top_tags = sorted(tag_counts.items(), key=lambda x: -x[1])[:15]
+    if top_tags:
+        print("\n  Top tags:")
+        for tag, count in top_tags:
+            print(f"    {tag:30s}: {count}")
+
+
+# ─── CLI ─────────────────────────────────────────────────────────────
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="GraphRAG query over A-Wiki")
+    parser.add_argument("command", nargs="?", default="status",
+                        help="'build' to index, 'status' for stats, or a search query")
+    parser.add_argument("--top-k", type=int, default=5, help="Number of results (default: 5)")
+    parser.add_argument("--domain", help="Filter by domain (e.g., iot, env, ai-tools)")
+    parser.add_argument("--tags", help="Filter by tags (comma-separated)")
+    parser.add_argument("--source-only", action="store_true", help="Only return source documents")
+    parser.add_argument("--synthesis-only", action="store_true", help="Only return synthesis documents")
+    parser.add_argument("--expand", action="store_true", help="Enable query expansion")
+    parser.add_argument("--json", action="store_true", help="Output JSON")
+    args = parser.parse_args()
+
+    cmd = args.command
+
+    if cmd == "build":
+        log("building GraphRAG index...")
+        docs = load_all_documents()
+        if not docs:
+            log("ERROR: no documents found to index")
+            sys.exit(1)
+        index, valid_docs = build_index(docs)
+        save_index(index, valid_docs)
+        print(f"[rag] Index built: {index.ntotal} vectors across {len(valid_docs)} documents")
+
+    elif cmd == "status":
+        show_status()
+
     else:
-        # Hybrid: load/build embeddings
-        emb_data = ensure_embeddings(mode)
-        if mode == "openrouter":
-            results = query_api_embeddings(emb_data, args.query, args.limit, args.alpha)
+        # Search
+        if not INDEX_FILE.exists():
+            print("No index found. Run 'query-rag.py build' first.")
+            sys.exit(1)
+        index, docs = load_index()
+
+        tags = [t.strip() for t in args.tags.split(",")] if args.tags else None
+        results = search(
+            query=cmd,
+            index=index,
+            docs=docs,
+            top_k=args.top_k,
+            domain=args.domain,
+            tags=tags,
+            source_only=args.source_only,
+            synthesis_only=args.synthesis_only,
+            expand=args.expand,
+        )
+
+        if args.json:
+            print(format_json(results))
         else:
-            results = query_local_embeddings(emb_data, args.query, args.limit, args.alpha)
-
-    if args.json:
-        output = []
-        for r in results:
-            if len(r) == 4:
-                path, title, snip, score = r
-                output.append({"path": path, "title": title, "snippet": snip, "score": score})
-            else:
-                path, title, snip, combined, fts5, cosine = r
-                output.append({
-                    "path": path, "title": title, "snippet": snip,
-                    "score": round(combined, 4),
-                    "fts5_score": round(fts5, 4),
-                    "cosine_score": round(cosine, 4),
-                    "mode": "hybrid",
-                })
-        print(json.dumps(output, ensure_ascii=False, indent=2))
-    else:
-        if not results:
-            print("(no hits)")
-            return 0
-        for i, r in enumerate(results, 1):
-            if len(r) == 4:
-                path, title, snip, score = r
-                snip_clean = " ".join(snip.split())
-                print(f"{i}\t{path}\t{title}\t{snip_clean}")
-            else:
-                path, title, snip, combined, fts5, cosine = r
-                snip_clean = " ".join(snip.split())
-                label = f"H={combined:.3f} (FTS5={fts5:.2f}, Cos={cosine:.3f})"
-                print(f"{i}\t{path}\t{title}\t{snip_clean}\t{label}")
-    return 0
+            print(format_results(results))
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
