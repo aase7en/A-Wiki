@@ -138,33 +138,25 @@ def tool_wiki_search(args: dict) -> dict:
 
 
 def tool_wiki_semantic_search(args: dict) -> dict:
-    """Hybrid FTS5 + semantic search.
+    """Hybrid FTS5 + sqlite-vec semantic search via query-rag.py.
 
     Args:
         query (str): Search query
         limit (int, optional): Max results. Default 10.
-        provider (str, optional): "local" (TF-IDF) or "openrouter". Default "local".
-        alpha (float, optional): FTS5 weight 0-1. Default 0.7.
+        alpha (float, optional): FTS weight 0-1 (0=pure vec, 1=pure FTS). Default 0.5.
     """
     query = args.get("query", "")
     limit = min(args.get("limit", 10), 50)
-    provider = args.get("provider", "local")
-    alpha = args.get("alpha", 0.7)
+    alpha = args.get("alpha", 0.5)
     if not query:
         raise MCPError(-32602, "query is required")
 
-    # Delegate to query-rag.py with --json output
     cmd = [
         sys.executable, str(QUERY_RAG), query,
         "--limit", str(limit),
+        "--alpha", str(alpha),
         "--json",
     ]
-    if provider == "openrouter":
-        cmd.append("--provider")
-        cmd.append("openrouter")
-    else:
-        cmd.append("--semantic")
-    cmd.extend(["--alpha", str(alpha)])
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
@@ -176,7 +168,7 @@ def tool_wiki_semantic_search(args: dict) -> dict:
     except subprocess.TimeoutExpired:
         raise MCPError(-32000, "Semantic search timed out (60s)")
 
-    return {"results": raw, "total": len(raw), "query": query, "provider": provider}
+    return {"results": raw, "total": len(raw), "query": query}
 
 
 def tool_wiki_graph_neighbors(args: dict) -> dict:
@@ -267,10 +259,10 @@ def tool_wiki_get_page(args: dict) -> dict:
 
 
 def tool_wiki_regen_index(args: dict) -> dict:
-    """Rebuild the full wiki index: overviews + FTS5 + graph + embeddings.
+    """Rebuild the full wiki index: overviews + FTS5 + graph + vector embeddings.
 
     Args:
-        no_embeddings (bool, optional): Skip embedding build. Default false.
+        no_embeddings (bool, optional): Skip vector embedding rebuild. Default false.
     """
     no_emb = args.get("no_embeddings", False)
     try:
@@ -280,9 +272,18 @@ def tool_wiki_regen_index(args: dict) -> dict:
         )
         if result.returncode != 0:
             raise MCPError(-32000, f"gen-index.py failed: {result.stderr.strip()}")
-        return {"status": "ok", "output": result.stdout.strip().split("\n")}
+        outputs = [result.stdout.strip()]
+        if not no_emb:
+            vec = subprocess.run(
+                [sys.executable, str(VEC_BUILDER)],
+                capture_output=True, text=True, timeout=300,
+            )
+            if vec.returncode != 0:
+                raise MCPError(-32000, f"build-vec-index.py failed: {vec.stderr.strip()}")
+            outputs.append(vec.stdout.strip())
+        return {"status": "ok", "output": [line for chunk in outputs for line in chunk.split("\n") if line]}
     except subprocess.TimeoutExpired:
-        raise MCPError(-32000, "Index rebuild timed out (120s)")
+        raise MCPError(-32000, "Index rebuild timed out")
 
 
 # ── Resource implementations ──────────────────────────────────────────
