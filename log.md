@@ -1,5 +1,40 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-26] session | sqlite-vec semantic search migration + hybrid RRF query
+
+**Done:**
+- Migrated local embeddings from `.wiki-embeddings.json` (3.2MB TF-IDF JSON) to `wiki_vec` virtual table colocated with FTS5 in `.wiki-index.db` via `sqlite-vec`
+- New scripts: `requirements.txt` (sqlite-vec, fastembed, apsw), `scripts/build-vec-index.py` (fastembed `paraphrase-multilingual-MiniLM-L12-v2`, 384-dim, multilingual incl. Thai)
+- Rewrote `scripts/wiki/query-rag.py` — dropped FAISS/sentence-transformers, now uses sqlite-vec + apsw; hybrid FTS5 + vec query fused via weighted RRF (`--alpha` 0..1, default 0.5). CLI back-compat preserved for MCP
+- Cross-platform via `apsw` (third-party SQLite binding with always-on extension loading) — bypasses `--disable-loadable-sqlite-extensions` of python.org / Apple system Python. Wheels for macOS / Linux / Windows
+- `.claude/hooks/post-wiki-edit-gen-index.sh` now prefers `.venv/bin/python3` over system python; stderr no longer swallowed so missing-deps fail loudly
+- Updated `scripts/mcp-wiki-server.py wiki_semantic_search` schema (removed stale `provider` enum, default alpha 0.5); `wiki_regen_index` chains `build-vec-index.py`
+- Updated `scripts/build-wiki-index.py` to `DROP TABLE wiki` instead of deleting the whole DB file (preserves sibling `wiki_vec` tables on FTS5 rebuild)
+- CLAUDE.md Cost Pyramid Level -1 now reads `Local FTS5 + sqlite-vec + knowledge-graph` (user approved this CLAUDE.md edit explicitly)
+- README.md Step 2 has an "Optional: Local Semantic Search" block with macOS extension-loading note
+- Deleted `.wiki-embeddings.json`, `.rag-index/`, `scripts/wiki/build-embeddings.py` (cutover, not parallel)
+
+**Key findings / Learning:**
+- `intfloat/multilingual-e5-small` from the plan turned out to be unsupported by fastembed (model list mismatch) — switched to `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (also 384-dim, multilingual, no prefix required)
+- macOS python.org Python ships with `enable_load_extension` disabled — `apsw` Python package is the cleanest workaround (extension support always on, ships bundled `.dylib`/`.so`/`.dll`)
+- Skeptical-reviewer subagent caught 4 real bugs the author missed:
+  1. MCP tool schema still advertised the deleted `provider: [local, openrouter]` enum + wrong alpha default
+  2. Double vec-rebuild: `post_wiki_edit.py` chained `build-vec-index.py` AND `gen-index.py` already chained it → race on `wiki_vec` DROP/INSERT
+  3. Stale model-name comment in `gen-index.py`
+  4. Non-atomic rebuild: `DROP TABLE`/`CREATE`/`INSERT` ran outside any transaction → concurrent readers between DROP and first INSERT hit "no such table"
+- All four fixed in the same commit. Lesson: invoke `skeptical-reviewer` (Read/Grep only, free) right after writing any new script — the author bypassed this once this session and got caught
+
+**TODO (carried):**
+- Verify on Linux + Windows: clone repo, `pip install -r requirements.txt`, `python scripts/build-vec-index.py`. Above only verified on macOS
+
+**Verification:**
+- `python scripts/build-vec-index.py --verify` → `ok: 437 embeddings`, no warnings
+- `sqlite3 .wiki-index.db ".tables"` → both `wiki` (FTS5) and `wiki_vec` + `wiki_vec_meta` present
+- 3 smoke queries (English / Thai / hybrid) returned correct top-1 results with both `fts#` and `vec#` ranks blending
+- `gen-index.py` end-to-end chain prints `✓ chained: build-vec-index.py` (proves hook → gen-index → vec build path)
+
+---
+
 ## [2026-05-26] session | Mac remote access — AnyDesk session-denied + gh auth
 
 **Done:**
