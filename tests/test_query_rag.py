@@ -85,11 +85,17 @@ class TestParseDocFrontmatter:
         assert "Broker" in doc["concepts"]
         assert "Topic" in doc["concepts"]
 
-    def test_preserves_doc_type(self, source_doc_text: str):
-        doc = query_rag_mod.parse_doc_frontmatter(source_doc_text, "x.md", "source")
+    def test_doc_type_defaults_when_no_frontmatter_type(self):
+        text = "# A Document\n\n## Abstract\n\nBody.\n"
+        doc = query_rag_mod.parse_doc_frontmatter(text, "x.md", "source")
         assert doc["type"] == "source"
-        doc2 = query_rag_mod.parse_doc_frontmatter(source_doc_text, "x.md", "synthesis")
+        doc2 = query_rag_mod.parse_doc_frontmatter(text, "x.md", "synthesis")
         assert doc2["type"] == "synthesis"
+
+    def test_frontmatter_type_overrides_doc_type_arg(self, source_doc_text: str):
+        # `> **Type:** documentation` in frontmatter wins over the caller's doc_type arg.
+        doc = query_rag_mod.parse_doc_frontmatter(source_doc_text, "x.md", "source")
+        assert doc["type"] == "documentation"
 
     def test_strips_metadata_from_content(self, source_doc_text: str):
         doc = query_rag_mod.parse_doc_frontmatter(source_doc_text, "x.md", "source")
@@ -136,8 +142,9 @@ class TestLoadAllDocuments:
 
         docs = query_rag_mod.load_all_documents()
         assert len(docs) == 2
-        types = {d["type"] for d in docs}
-        assert types == {"source", "synthesis"}
+        paths = {d["path"] for d in docs}
+        assert any("sources/iot/mqtt.md" in p for p in paths)
+        assert any("synthesis/iot-network.md" in p for p in paths)
 
 
 # ── generate_query_variants ────────────────────────────────────────────
