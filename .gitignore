@@ -94,7 +94,9 @@ data/
 .tmp/
 temp/
 
-# raw/ is a symlink to Google Drive (A-Wiki-Data)
+# raw is a symlink (Mac) or junction (Windows) to Google Drive A-Wiki-Data
+# Each machine manages its own local link — never tracked in git
+raw
 raw/
 
 # --- Archive / Downloads ---
@@ -123,4 +125,5 @@ docker-compose.override.yml
 .codex*
 .gemini*
 !.clinerules
-!.mcp.json
+# .mcp.json is machine-specific (repo paths differ per machine) — use .mcp.json.example
+.mcp.json
