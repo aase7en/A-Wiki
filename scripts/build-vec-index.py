@@ -129,29 +129,35 @@ def build(db_path: Path = DB_PATH) -> dict:
     sqlite_vec.load(conn)
 
     cur = conn.cursor()
-    cur.execute("DROP TABLE IF EXISTS wiki_vec")
-    cur.execute("DROP TABLE IF EXISTS wiki_vec_meta")
-    cur.execute(f"CREATE VIRTUAL TABLE wiki_vec USING vec0(embedding float[{EMBED_DIM}])")
-    cur.execute(
-        "CREATE TABLE wiki_vec_meta ("
-        "rowid INTEGER PRIMARY KEY, "
-        "path TEXT UNIQUE NOT NULL, "
-        "updated TEXT NOT NULL)"
-    )
-
     now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-    cur.execute("BEGIN")
-    for i, ((rel, _), emb) in enumerate(zip(docs, embeddings), start=1):
+    # IMMEDIATE so concurrent readers see the old wiki_vec until COMMIT;
+    # otherwise a query-rag.py call between DROP and INSERT hits "no such table".
+    cur.execute("BEGIN IMMEDIATE")
+    try:
+        cur.execute("DROP TABLE IF EXISTS wiki_vec")
+        cur.execute("DROP TABLE IF EXISTS wiki_vec_meta")
+        cur.execute(f"CREATE VIRTUAL TABLE wiki_vec USING vec0(embedding float[{EMBED_DIM}])")
         cur.execute(
-            "INSERT INTO wiki_vec (rowid, embedding) VALUES (?, ?)",
-            (i, pack_vec(emb)),
+            "CREATE TABLE wiki_vec_meta ("
+            "rowid INTEGER PRIMARY KEY, "
+            "path TEXT UNIQUE NOT NULL, "
+            "updated TEXT NOT NULL)"
         )
-        cur.execute(
-            "INSERT INTO wiki_vec_meta (rowid, path, updated) VALUES (?, ?, ?)",
-            (i, rel, now),
-        )
-    cur.execute("COMMIT")
-    conn.close()
+        for i, ((rel, _), emb) in enumerate(zip(docs, embeddings), start=1):
+            cur.execute(
+                "INSERT INTO wiki_vec (rowid, embedding) VALUES (?, ?)",
+                (i, pack_vec(emb)),
+            )
+            cur.execute(
+                "INSERT INTO wiki_vec_meta (rowid, path, updated) VALUES (?, ?, ?)",
+                (i, rel, now),
+            )
+        cur.execute("COMMIT")
+    except Exception:
+        cur.execute("ROLLBACK")
+        raise
+    finally:
+        conn.close()
 
     return {"files_scanned": len(docs), "rows_inserted": len(docs), "db": str(db_path)}
 
