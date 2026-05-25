@@ -55,10 +55,11 @@ def collect_files() -> list[Path]:
 
 def build(db_path: Path = DB_PATH) -> dict:
     files = collect_files()
-    if db_path.exists():
-        db_path.unlink()
     conn = sqlite3.connect(db_path)
     try:
+        # Drop only the FTS5 'wiki' table — leave sibling tables (e.g. wiki_vec
+        # from build-vec-index.py) intact so a partial rebuild doesn't wipe them.
+        conn.execute("DROP TABLE IF EXISTS wiki")
         conn.execute(
             "CREATE VIRTUAL TABLE wiki USING fts5("
             "path UNINDEXED, title, tags, body, "
