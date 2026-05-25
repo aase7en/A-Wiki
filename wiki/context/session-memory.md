@@ -45,7 +45,8 @@
 - [ ] **[dream]** 💊 Pharmacy App — แอพจัดการร้านยา Phu Pharmacy: stock, ค้นหายา, order history, LINE notify
 - [ ] **[wiki-brain-inwwiki]** Fix GitHub Actions workflow conflict — ใช้ branch/PR workflow (wiki-sync.yml) แต่กฎ repo คือ commit ตรง main ห้าม branch/PR → ต้องถอด workflow ออก
 - [ ] **[wiki-brain-inwwiki]** Add missing hooks: check-secret-leak, check-bash-no-branch, post-wiki-edit-gen-index
-- [ ] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน
+- [x] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน (2026-05-26 — FTS5 + sqlite-vec ทั้งคู่ chain แล้ว via gen-index.py)
+- [ ] **[wiki-brain]** Verify Linux/Windows: clone repo + `pip install -r requirements.txt` + `python scripts/build-vec-index.py` (sqlite-vec migration 2026-05-26 บน Mac เท่านั้น)
 - [ ] **[wiki-brain-inwwiki]** ทดสอบ ask-notebooklm.py + delegate.sh + sync.py + hooks_runner.py ที่ merge/copy จาก InW-Wiki → verify ทำงานจริง
 - [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
 - [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py, fill-waste-form.py)
