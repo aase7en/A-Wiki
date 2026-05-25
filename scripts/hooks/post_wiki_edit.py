@@ -10,7 +10,6 @@ Behavior:
   - Only fires on tool_name = WriteToFile or ReplaceInFile
   - Only when file path starts with wiki/ or index-
   - NEVER blocks (exit 0 always) — failures are logged to stderr
-  - Runs gen-index with a 2-second debounce to prevent rapid re-triggers
 
 Exit always 0 (advisory only — does not block).
 """
