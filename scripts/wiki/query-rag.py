@@ -60,9 +60,14 @@ def pack_vec(values) -> bytes:
 
 
 def fts_escape(query: str) -> str:
-    """Quote a query for FTS5 MATCH so user input can't break syntax."""
-    safe = query.replace('"', '""')
-    return f'"{safe}"'
+    """Tokenize a free-text query into FTS5 MATCH syntax: each whitespace-separated
+    word becomes a quoted prefix-match term, joined with OR. Resilient to FTS5
+    operator chars in user input (which would otherwise raise OperationalError)."""
+    tokens = [t for t in re.split(r"\s+", query.strip()) if t]
+    if not tokens:
+        return '""'
+    quoted = [f'"{t.replace(chr(34), chr(34) * 2)}"' for t in tokens]
+    return " OR ".join(quoted)
 
 
 def _connect():
