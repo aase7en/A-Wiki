@@ -44,10 +44,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = REPO_ROOT / ".wiki-index.db"
 GRAPH_PATH = REPO_ROOT / ".wiki-graph.json"
-EMB_PATH = REPO_ROOT / ".wiki-embeddings.json"
 CONTEXT_DIR = REPO_ROOT / "wiki" / "context"
 GEN_INDEX = REPO_ROOT / "scripts" / "gen-index.py"
 BUILDER = REPO_ROOT / "scripts" / "build-wiki-index.py"
+VEC_BUILDER = REPO_ROOT / "scripts" / "build-vec-index.py"
 QUERY_RAG = REPO_ROOT / "scripts" / "wiki" / "query-rag.py"
 
 # ── JSON-RPC helpers ──────────────────────────────────────────────────
