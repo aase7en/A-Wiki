@@ -6,9 +6,9 @@ Adds two tables to .wiki-index.db (next to the FTS5 'wiki' table):
   wiki_vec        : sqlite-vec virtual table holding float[384] embeddings
   wiki_vec_meta   : rowid -> path mapping for joining back to file paths
 
-Embeddings come from fastembed using intfloat/multilingual-e5-small
+Embeddings come from fastembed using paraphrase-multilingual-MiniLM-L12-v2
 (384-dim, multilingual - covers Thai + English content). Model is downloaded
-to the user-cache dir on first run (~80MB) then runs fully offline.
+to the user-cache dir on first run (~120MB) then runs fully offline.
 
 Usage:
     python scripts/build-vec-index.py             # full rebuild
@@ -28,10 +28,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 WIKI_DIR = REPO_ROOT / "wiki"
 DB_PATH = REPO_ROOT / ".wiki-index.db"
 
-EMBED_MODEL = "intfloat/multilingual-e5-small"
+EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBED_DIM = 384
-DOC_PREFIX = "passage: "  # required by e5 model family
-MAX_DOC_CHARS = 4000  # ~1000 tokens, well within e5-small's 512-token limit after tokenization
+MAX_DOC_CHARS = 4000  # ~1000 tokens, fits within model's 128-token limit per chunk
 BATCH_SIZE = 32
 
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
@@ -90,7 +89,7 @@ def collect_docs() -> list[tuple[str, str]]:
         rel = fp.relative_to(REPO_ROOT).as_posix()
         title, body = extract_text(text, fp.stem)
         snippet = (body or "").strip()[:MAX_DOC_CHARS]
-        embed_text = f"{DOC_PREFIX}{title}\n\n{snippet}"
+        embed_text = f"{title}\n\n{snippet}"
         docs.append((rel, embed_text))
     return docs
 
