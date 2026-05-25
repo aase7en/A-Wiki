@@ -136,7 +136,7 @@ def build(db_path: Path = DB_PATH) -> dict:
         "updated TEXT NOT NULL)"
     )
 
-    now = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     cur.execute("BEGIN")
     for i, ((rel, _), emb) in enumerate(zip(docs, embeddings), start=1):
         cur.execute(
