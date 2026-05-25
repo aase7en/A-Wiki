@@ -81,6 +81,15 @@
 
 ## 🗓️ Recent (last 10 sessions, newest top)
 
+### [2026-05-26] mac-remote-access — แก้ AnyDesk session denied + gh auth login (Claude Desktop)
+
+- **Done**: Fix Claude Desktop "GitHub CLI authentication expired" — `gh auth login --hostname github.com --git-protocol https --web` device-code flow, login as `aase7en`, token stored in macOS Keychain (scopes: gist, read:org, repo)
+- **Done**: Diagnose AnyDesk Mac (ID `611965728`) remote-from-phone (ID `1555919398`) failing with "session denied due to access control" — traced via `~/.anydesk/anydesk.trace` log + `system.conf`
+- **Root cause**: ACL checkbox "Restrict client access to the following AnyDesk addresses" was **enabled with empty whitelist** → blocked all incoming. User unticked checkbox → connection works
+- **Decision**: For production remote-from-anywhere use, recommend ACL with phone ID `1555919398` whitelisted + Unattended Password + 2FA (currently all-open + must-accept-on-Mac)
+- **Learning**: AnyDesk error "access control restrictions" can mean ACL-empty-whitelist, not just `interactive_access=0`. Always check `~/.anydesk/anydesk.trace` `Login attempt denied` lines for actual reason
+- **TODO**: macOS Screen Recording / Accessibility / Input Monitoring permissions for AnyDesk still NOT granted (TCC db empty) — phone can connect but may see black screen / can't control until granted
+
 ### [2026-05-25] multi-platform-brain — Universal AI brain + cross-platform setup (PC ที่ทำงาน)
 
 - **Done**: ตรวจสอบ A-Wiki บน Windows PC (`A:\GitHub\A-Wiki`) เทียบ Mac — พบ 3 จุดขาด: raw/, .mcp.json, API keys

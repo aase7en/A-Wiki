@@ -1,5 +1,30 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-26] session | Mac remote access — AnyDesk session-denied + gh auth
+
+**Done:**
+- Fixed Claude Desktop "GitHub CLI authentication expired" → ran `gh auth login --hostname github.com --git-protocol https --web` (device-code flow), logged in as `aase7en`, token stored in macOS Keychain (scopes: gist, read:org, repo)
+- Diagnosed AnyDesk Mac (ID `611965728`) blocking inbound connections from phone (ID `1555919398`) — error "session was denied due to the access control settings of the remote device"
+- Inspected via `~/.anydesk/anydesk.trace` + `~/.anydesk/system.conf` — log showed `Login attempt from 1555919398 denied due to access control restrictions` ×10
+- Found `ad.security.interactive_access=0` in config (UI change didn't save due to padlock locked)
+- **Real root cause** (user discovered): ACL checkbox "Restrict client access to the following AnyDesk addresses" was ticked with **empty whitelist** → blocked everyone. Unticking the checkbox immediately fixed it
+- Earlier (start of session): opened AnyDesk + Screen Recording pref pane to start mac permission setup
+
+**Key findings / Learning:**
+- AnyDesk error "access control restrictions" is ambiguous — can be ACL empty-whitelist OR `interactive_access=0` OR ACL with denylist. Always check `anydesk.trace` `Login attempt denied` lines first
+- AnyDesk Settings padlock 🔒 must be unlocked before UI changes save to `system.conf`
+- `gh` CLI on macOS uses Keychain when no `GH_TOKEN` env var is set — clean separation per user
+
+**TODO (carried):**
+- macOS Screen Recording / Accessibility / Input Monitoring permissions for AnyDesk still NOT granted (TCC db query returned empty) — phone connects now but may see black screen or fail to control mouse/keyboard until granted
+- Production hardening: re-enable ACL with `1555919398` whitelisted + set Unattended Password + enable 2FA (currently all-open + must-accept-on-Mac per session)
+
+**Verification:**
+- `gh auth status` → ✓ Logged in to github.com account aase7en (keyring); `gh api user --jq .login` → aase7en
+- AnyDesk: user confirmed phone connects successfully after unticking ACL checkbox
+
+---
+
 ## [2026-05-25] session | Phase 4 S7 follow-up — fix 2 pipeline bugs
 
 **Done:**
