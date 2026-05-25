@@ -82,6 +82,22 @@
 
 ## 🗓️ Recent (last 10 sessions, newest top)
 
+### [2026-05-26] sqlite-vec migration — hybrid FTS5 + semantic search (Mac, Claude Code)
+
+- **Done**: Migrate local embeddings จาก `.wiki-embeddings.json` (3.2MB TF-IDF JSON) → `wiki_vec` virtual table ใน `.wiki-index.db` ผ่าน sqlite-vec; รวมกับ FTS5 ใน DB เดียว, hybrid query ผ่าน weighted RRF (alpha 0..1, default 0.5)
+- **Done**: New: `requirements.txt` (sqlite-vec, fastembed, apsw), `scripts/build-vec-index.py` (fastembed paraphrase-multilingual-MiniLM-L12-v2, 384-dim, multilingual covers ไทย+อังกฤษ)
+- **Done**: Rewrite `scripts/wiki/query-rag.py` — drop FAISS/sentence-transformers, use sqlite-vec + apsw; keep CLI signature for MCP back-compat
+- **Done**: Cross-platform via `apsw` (third-party SQLite binding) — bypass `--disable-loadable-sqlite-extensions` ของ python.org / Apple system Python builds. Shell hook `.claude/hooks/post-wiki-edit-gen-index.sh` ปรับให้ใช้ `.venv/bin/python3` ถ้ามี (fallback system python3)
+- **Done**: Update `scripts/mcp-wiki-server.py wiki_semantic_search` tool schema (ลบ provider enum, default alpha 0.5), chain `build-vec-index.py` ใน `wiki_regen_index`
+- **Done**: Update `scripts/build-wiki-index.py` — DROP TABLE wiki แทน unlink ทั้งไฟล์ (กัน wipe sibling wiki_vec tables เวลา FTS5 rebuild)
+- **Done**: Skeptical-reviewer subagent pass หา 4 issues จริง: stale MCP tool schema, double vec rebuild via post-hook chain, stale comment, non-atomic DROP/CREATE/INSERT → ทั้งหมดแก้แล้ว
+- **Done**: Smoke tests ผ่าน — pharmacy/drug-interaction (top-1 ตรง), Thai "เซ็นเซอร์คุณภาพอากาศ" (vec จับ ที่ FTS5 พลาดเพราะ tokenizer ไทยอ่อน), MQTT/LoRaWAN (hybrid fts# + vec# ranks ปนกัน). gen-index.py chain end-to-end ทำงาน (437 embeddings)
+- **Decision**: ทิ้ง `.wiki-embeddings.json` + `.rag-index/` + `scripts/wiki/build-embeddings.py` (cutover ไม่ parallel)
+- **Decision**: ตอน planning เลือก `intfloat/multilingual-e5-small` แต่ fastembed ไม่ support → switch เป็น `paraphrase-multilingual-MiniLM-L12-v2` (384-dim, no prefix needed)
+- **Decision**: Update CLAUDE.md Cost Pyramid Level -1 (`Local FTS5 + sqlite-vec + knowledge-graph`) — user อนุญาตชัดเจน
+- **Lesson**: Reviewer สำคัญจริง — ผม "ลืม" เรียก skeptical-reviewer หลังเขียนสคริปต์ใหม่; user ทักว่า A-Wiki swarm protocol ออกแบบไว้ใช้ทำไมไม่ใช้. Compensate โดยเรียก reviewer ตอน Phase 2 cleanup
+- **TODO**: Verify Linux/Windows behavior — clone repo บนเครื่องอื่นแล้วรัน install + build
+
 ### [2026-05-26] mac-remote-access — แก้ AnyDesk session denied + gh auth login (Claude Desktop)
 
 - **Done**: Fix Claude Desktop "GitHub CLI authentication expired" — `gh auth login --hostname github.com --git-protocol https --web` device-code flow, login as `aase7en`, token stored in macOS Keychain (scopes: gist, read:org, repo)
