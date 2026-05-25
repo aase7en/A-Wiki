@@ -1,5 +1,8 @@
 # A-Wiki — Hybrid Agent Wiki (Swarm + Knowledge) — Session Rules
 
+> 📡 **Universal brain**: `AGENTS.md` — สำหรับ Codex · Gemini CLI · Cursor · Windsurf · Cline · GitHub Copilot · Aider
+> CLAUDE.md นี้ = **Claude Code edition** (รวมทุกอย่างจาก AGENTS.md + Claude-specific hooks/commands/sessions)
+>
 > **A-Wiki** = repo หลักของระบบ — รวมพลัง swarm intelligence (A-Wiki) + knowledge wiki (InW-Wiki) + AI ecosystem skills (ECC, 9arm/claude-thai-skills)
 > เบาที่สุด ทรงพลังที่สุด — ทุก layer ทำงานประสาน ไม่ชนกัน ไม่มี loop
 

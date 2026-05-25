@@ -1,0 +1,12 @@
+# Aider config for A-Wiki
+# Reads AGENTS.md as context so Aider understands the full wiki brain
+
+read:
+  - AGENTS.md
+
+# Model selection: check wiki/context/model-roster.conf for current free models
+# Never hard-code — run: bash scripts/update-model-roster.sh to refresh
+# model: openrouter/auto
+
+auto-commits: false
+dirty-commits: false
