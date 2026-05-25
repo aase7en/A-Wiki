@@ -24,13 +24,13 @@ HOOKS_DIR = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS_DIR = os.path.dirname(HOOKS_DIR)
 GEN_INDEX = os.path.join(SCRIPTS_DIR, "gen-index.py")
 GEN_DOMAIN = os.path.join(SCRIPTS_DIR, "gen-domain-indexes.py")
-BUILD_VEC = os.path.join(SCRIPTS_DIR, "build-vec-index.py")
 
-# Scripts are (path, timeout_seconds). Vec rebuild can take ~60s on cold cache.
+# Scripts are (path, timeout_seconds). gen-index.py internally chains
+# build-vec-index.py (allow 300s for first-run model download), so we don't
+# trigger it again here — that would cause a destructive race on wiki_vec.
 INDEX_SCRIPTS = [
-    (GEN_INDEX, 30),
+    (GEN_INDEX, 300),
     (GEN_DOMAIN, 30),
-    (BUILD_VEC, 300),
 ]
 
 # Debounce state (module-level)
