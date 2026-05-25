@@ -89,10 +89,24 @@ setup_mcp() {
   echo "  OK — .mcp.json created (filesystem: $FS_PATH, python: $PYTHON_CMD)"
 }
 
-# ── 3. Build SQLite wiki index ──────────────────────────────────────────────
+# ── 3. Sync API keys from Google Drive → settings.local.json ───────────────
+
+setup_secrets() {
+  echo "[3/4] Syncing API keys from Google Drive .secrets..."
+
+  SYNC_SCRIPT="scripts/import-keys.py"
+  if [[ ! -f "$SYNC_SCRIPT" ]]; then
+    echo "  scripts/import-keys.py not found — skipping"
+    return
+  fi
+
+  python3 "$SYNC_SCRIPT" 2>/dev/null || python "$SYNC_SCRIPT"
+}
+
+# ── 4. Build SQLite wiki index ──────────────────────────────────────────────
 
 setup_index() {
-  echo "[3/3] Building SQLite wiki index (FTS5 search)..."
+  echo "[4/4] Building SQLite wiki index (FTS5 search)..."
 
   if [[ ! -f "scripts/gen-index.py" ]]; then
     echo "  scripts/gen-index.py not found — skipping"
@@ -105,10 +119,10 @@ setup_index() {
 
 setup_raw
 setup_mcp
+setup_secrets
 setup_index
 
 echo ""
 echo "=== Setup complete ==="
-echo "Remaining manual step:"
-echo "  Add API keys to .local/secrets/ (copy from your password manager)"
-echo "  See .env.example for the list of keys needed"
+echo "To re-sync keys after adding new ones to Google Drive .secrets:"
+echo "  python scripts/import-keys.py"
