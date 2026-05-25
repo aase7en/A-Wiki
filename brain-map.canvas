@@ -2763,7 +2763,7 @@
     {
       "id": "group-domain-other",
       "type": "group",
-      "label": "OTHER DOMAIN (11 pages)",
+      "label": "OTHER DOMAIN (12 pages)",
       "x": 0,
       "y": 14580,
       "width": 1020,
@@ -2841,10 +2841,20 @@
       "color": "none"
     },
     {
+      "id": "wiki-_vec-hook-test-md",
+      "type": "file",
+      "file": "wiki/_vec-hook-test.md",
+      "x": 380,
+      "y": 15020,
+      "width": 260,
+      "height": 120,
+      "color": "none"
+    },
+    {
       "id": "log-md",
       "type": "file",
       "file": "log.md",
-      "x": 380,
+      "x": 720,
       "y": 15020,
       "width": 260,
       "height": 120,
@@ -2854,8 +2864,8 @@
       "id": "index-md",
       "type": "file",
       "file": "index.md",
-      "x": 720,
-      "y": 15020,
+      "x": 40,
+      "y": 15200,
       "width": 260,
       "height": 120,
       "color": "none"
@@ -2864,7 +2874,7 @@
       "id": "wiki-CLAUDE-md",
       "type": "file",
       "file": "wiki/CLAUDE.md",
-      "x": 40,
+      "x": 380,
       "y": 15200,
       "width": 260,
       "height": 120,
@@ -2874,7 +2884,7 @@
       "id": "wiki-templates-td-21-power-of-attorney-md",
       "type": "file",
       "file": "wiki/templates/td-21-power-of-attorney.md",
-      "x": 380,
+      "x": 720,
       "y": 15200,
       "width": 260,
       "height": 120,
@@ -4553,6 +4563,22 @@
   ],
   "edges": [
     {
+      "id": "edge-README-md-CLAUDE-md",
+      "fromNode": "README-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "none"
+    },
+    {
+      "id": "edge-README-md-wiki-context-wiki-overview-md",
+      "fromNode": "README-md",
+      "fromSide": "left",
+      "toNode": "wiki-context-wiki-overview-md",
+      "toSide": "right",
+      "color": "none"
+    },
+    {
       "id": "edge-index-ai-tools-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "index-ai-tools-md",
       "fromSide": "right",
@@ -6075,33 +6101,33 @@
     {
       "id": "edge-index-md-wiki-context-wiki-overview-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-context-wiki-overview-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-index-iot-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "index-iot-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
       "id": "edge-index-md-index-env-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "index-env-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-index-pharmacy-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "index-pharmacy-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -6371,17 +6397,17 @@
     {
       "id": "edge-index-md-wiki-entities-env-activated-sludge-system-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-entities-env-activated-sludge-system-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-entities-env-rabies-pep-surveillance-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -6507,33 +6533,33 @@
     {
       "id": "edge-index-md-wiki-concepts-env-infectious-waste-management-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-env-infectious-waste-management-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-concepts-env-hospital-wastewater-treatment-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-env-hospital-wastewater-treatment-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-concepts-env-rabies-pep-protocol-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-env-rabies-pep-protocol-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-concepts-env-water-quality-parameters-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-env-water-quality-parameters-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -6835,33 +6861,33 @@
     {
       "id": "edge-index-md-wiki-templates-td-21-power-of-attorney-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-templates-td-21-power-of-attorney-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-context-knowledge-graph-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-context-knowledge-graph-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-context-wiki-state-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-context-wiki-state-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-context-wiki-guide-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-context-wiki-guide-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -6899,9 +6925,9 @@
     {
       "id": "edge-log-md-wiki-entities-env-rabies-pep-surveillance-md",
       "fromNode": "log-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {
@@ -6937,12 +6963,12 @@
       "color": "none"
     },
     {
-      "id": "edge-README-md-CLAUDE-md",
-      "fromNode": "README-md",
+      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
       "fromSide": "left",
       "toNode": "CLAUDE-md",
       "toSide": "right",
-      "color": "none"
+      "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
@@ -6974,14 +7000,6 @@
       "fromSide": "right",
       "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "toSide": "left",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "2"
     },
     {
@@ -7353,6 +7371,14 @@
       "color": "5"
     },
     {
+      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-entities-iot-pms5003-md",
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
@@ -7406,14 +7432,6 @@
       "fromSide": "right",
       "toNode": "wiki-sources-air-quality-iot-lora-network-md",
       "toSide": "left",
-      "color": "3"
-    },
-    {
-      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "3"
     },
     {
@@ -8473,6 +8491,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-env-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "5"
+    },
+    {
       "id": "edge-wiki-entities-env-activated-sludge-system-md-wiki-concepts-env-water-quality-parameters-md",
       "fromNode": "wiki-entities-env-activated-sludge-system-md",
       "fromSide": "left",
@@ -8502,14 +8528,6 @@
       "fromSide": "right",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
       "toSide": "left",
-      "color": "5"
-    },
-    {
-      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-env-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "5"
     },
     {
@@ -8590,6 +8608,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
       "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "3"
     },
     {
@@ -8734,14 +8760,6 @@
       "fromSide": "right",
       "toNode": "wiki-sources-lorawan-network-beginner-md",
       "toSide": "left",
-      "color": "3"
-    },
-    {
-      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "3"
     },
     {
@@ -10329,6 +10347,14 @@
       "color": "4"
     },
     {
+      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-sources-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromSide": "left",
@@ -10469,14 +10495,6 @@
       "fromNode": "wiki-sources-arduino-ide-esp32-setup-md",
       "fromSide": "left",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "right",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-sources-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },
@@ -11249,6 +11267,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-synthesis-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-pms5003-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
       "fromSide": "bottom",
@@ -11405,14 +11431,6 @@
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromSide": "left",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
-      "toSide": "right",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-synthesis-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },
