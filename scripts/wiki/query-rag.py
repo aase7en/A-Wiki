@@ -20,7 +20,10 @@ import json
 import re
 import struct
 import sys
+import warnings
 from pathlib import Path
+
+warnings.filterwarnings("ignore", message=".*mean pooling.*", category=UserWarning)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DB_PATH = REPO_ROOT / ".wiki-index.db"
