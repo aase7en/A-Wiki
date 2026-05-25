@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-05-24",
+  "generated_at": "2026-05-25",
   "stats": {
-    "nodes": 384,
-    "edges": 1077,
+    "nodes": 446,
+    "edges": 1092,
     "edges_by_type": {
-      "mdlink": 36,
-      "wikilink": 965,
+      "wikilink": 969,
       "depends": 27,
-      "implements": 48,
+      "implements": 49,
+      "mdlink": 46,
       "extends": 1
     },
-    "broken_links": 41,
-    "orphans": 129,
+    "broken_links": 46,
+    "orphans": 191,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -65,27 +65,22 @@
       "wiki/context/overview-pharmacy.md",
       "wiki/context/overview-sources.md",
       "wiki/context/review-report.md",
+      "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
+      "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
       "wiki/sources/3-dashboard-node-red.md",
       "wiki/sources/ai-iot-server-build-v3-final.md",
+      "wiki/sources/ai-tools/langchain-framework.md",
+      "wiki/sources/ai-tools/vector-databases.md",
       "wiki/sources/arduino-ide-esp32-arduino-2025.md",
+      "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
       "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "wiki/sources/arduino-librariesarduinopowermanagement.md",
-      "wiki/sources/build-software-better-together.md",
-      "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
-      "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
-      "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md"
+      "wiki/sources/arduino-librariesarduinopowermanagement.md"
     ]
   },
   "nodes": [
     {
       "path": "CLAUDE.md",
       "title": "A-Wiki — Hybrid Agent Wiki (Swarm + Knowledge) — Session Rules",
-      "domain": "other"
-    },
-    {
-      "path": "README.md",
-      "title": "A-Wiki — The AI Operating System That Ships",
       "domain": "other"
     },
     {
@@ -124,18 +119,23 @@
       "domain": "other"
     },
     {
+      "path": "README.md",
+      "title": "A-Wiki — The AI Operating System That Ships",
+      "domain": "other"
+    },
+    {
       "path": "wiki/CLAUDE.md",
       "title": "ชื่อ Entity",
       "domain": "other"
     },
     {
-      "path": "wiki/concepts/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Concepts",
+      "path": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
+      "title": "Agent Framework Tradeoffs — Lean vs Autonomous",
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
-      "title": "Agent Framework Tradeoffs — Lean vs Autonomous",
+      "path": "wiki/concepts/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Concepts",
       "domain": "ai-tools"
     },
     {
@@ -209,13 +209,13 @@
       "domain": "env"
     },
     {
-      "path": "wiki/concepts/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Concepts",
+      "path": "wiki/concepts/iot/air-quality-index.md",
+      "title": "Air Quality Index (AQI)",
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/iot/air-quality-index.md",
-      "title": "Air Quality Index (AQI)",
+      "path": "wiki/concepts/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Concepts",
       "domain": "iot"
     },
     {
@@ -269,13 +269,13 @@
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/it-support/CLAUDE.md",
-      "title": "IT Support — Domain Rules",
+      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
       "domain": "it-support"
     },
     {
-      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
-      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
+      "path": "wiki/concepts/it-support/CLAUDE.md",
+      "title": "IT Support — Domain Rules",
       "domain": "it-support"
     },
     {
@@ -370,7 +370,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-05-24 17:05",
+      "title": "Review Report — 2026-05-24 23:39",
       "domain": "context"
     },
     {
@@ -424,13 +424,13 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/env/CLAUDE.md",
-      "title": "Scoped Context — Environmental Health Entities",
+      "path": "wiki/entities/env/activated-sludge-system.md",
+      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
       "domain": "env"
     },
     {
-      "path": "wiki/entities/env/activated-sludge-system.md",
-      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
+      "path": "wiki/entities/env/CLAUDE.md",
+      "title": "Scoped Context — Environmental Health Entities",
       "domain": "env"
     },
     {
@@ -441,11 +441,6 @@
     {
       "path": "wiki/entities/iot/18650-battery-shield.md",
       "title": "18650 Battery Shield V3",
-      "domain": "iot"
-    },
-    {
-      "path": "wiki/entities/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -461,6 +456,11 @@
     {
       "path": "wiki/entities/iot/chirpstack.md",
       "title": "ChirpStack",
+      "domain": "iot"
+    },
+    {
+      "path": "wiki/entities/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -639,13 +639,18 @@
       "domain": "pharmacy"
     },
     {
-      "path": "wiki/sources/3-dashboard-node-red.md",
-      "title": "3-dashboard-node-red",
+      "path": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
+      "title": "1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย",
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/CLAUDE.md",
-      "title": "Scoped Context — Source Summaries",
+      "path": "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
+      "title": "10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/3-dashboard-node-red.md",
+      "title": "3-dashboard-node-red",
       "domain": "sources"
     },
     {
@@ -666,6 +671,16 @@
     {
       "path": "wiki/sources/ai-iot-server-build-v3.md",
       "title": "Personal AI & IoT Server Build List (v3)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-tools/langchain-framework.md",
+      "title": "LangChain Framework for LLM Applications",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-tools/vector-databases.md",
+      "title": "Vector Databases for Semantic Search",
       "domain": "sources"
     },
     {
@@ -694,6 +709,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "title": "arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/arduino-librariesarduino-powermanagement.md",
       "title": "arduino-librariesarduino-powermanagement",
       "domain": "sources"
@@ -711,6 +731,11 @@
     {
       "path": "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
       "title": "Set up GPIO mode",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/CLAUDE.md",
+      "title": "Scoped Context — Source Summaries",
       "domain": "sources"
     },
     {
@@ -789,6 +814,21 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/env/air-quality-monitoring.md",
+      "title": "Air Quality Monitoring — Sensor Networks and Standards",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/env/soil-moisture-sensing.md",
+      "title": "Soil Moisture Sensing Technologies",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/env/water-quality-parameters.md",
+      "title": "Water Quality Parameters and Monitoring",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/esp-idf-docs.md",
       "title": "ESP-IDF: Espressif IoT Development Framework",
       "domain": "sources"
@@ -861,6 +901,11 @@
     {
       "path": "wiki/sources/esp32-with-lora-using-arduino-ide.md",
       "title": "esp32-with-lora-using-arduino-ide",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
+      "title": "esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน",
       "domain": "sources"
     },
     {
@@ -969,6 +1014,16 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/iot/lorawan-architecture.md",
+      "title": "LoRaWAN Architecture",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/iot/mqtt-protocol-overview.md",
+      "title": "MQTT Protocol Overview",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "title": "สรุปสาระสำคัญ: สถาปัตยกรรม IoT, Edge AI และ ESP32-C6 (2026)",
       "domain": "sources"
@@ -986,6 +1041,11 @@
     {
       "path": "wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md",
       "title": "iot-node-red-mqtt-sql-data-logger-dashboard",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
+      "title": "iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม",
       "domain": "sources"
     },
     {
@@ -1016,6 +1076,16 @@
     {
       "path": "wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
       "title": "iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/it/edge-computing-iot.md",
+      "title": "Edge Computing Architectures for IoT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/it/network-monitoring-iot.md",
+      "title": "Network Monitoring for IoT Deployments",
       "domain": "sources"
     },
     {
@@ -1106,6 +1176,11 @@
     {
       "path": "wiki/sources/openrouter-api-demo.md",
       "title": "OpenRouter API demo and capabilities",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/pharmacy/drug-interaction-checking.md",
+      "title": "Drug Interaction Checking Systems",
       "domain": "sources"
     },
     {
@@ -1294,8 +1369,43 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/synthesis/CLAUDE.md",
-      "title": "Scoped Context — Synthesis (Cross-domain)",
+      "path": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
+      "title": "Define the GPIO pin and the number of pixels",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
+      "title": "ข้อมูล-datasheet-ของ-dx-lr02",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/คู่มือ-hermes-agent.md",
+      "title": "คู่มือ-hermes-agent",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
+      "title": "จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
+      "title": "ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
+      "title": "เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/synthesis/ai-driven-environmental-modeling.md",
+      "title": "AI-driven Environmental Modeling",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/ai-for-drug-safety.md",
+      "title": "AI for Drug Safety",
       "domain": "synthesis"
     },
     {
@@ -1306,6 +1416,11 @@
     {
       "path": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "title": "แผน: ย้าย AppSheet → Self-hosted Web App บน Raspberry Pi 5",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/CLAUDE.md",
+      "title": "Scoped Context — Synthesis (Cross-domain)",
       "domain": "synthesis"
     },
     {
@@ -1339,6 +1454,21 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/environmental-iot-sensing.md",
+      "title": "Environmental IoT Sensing",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/environmental-monitoring-it.md",
+      "title": "Environmental Monitoring IT",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/environmental-pharmaceutical-risk.md",
+      "title": "Environmental Pharmaceutical Risk",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/fuel-tank-level.md",
       "title": "ระบบ Fuel/Water Tank Level Monitoring (HC-SR04 + ESP32 + MQTT)",
       "domain": "synthesis"
@@ -1349,8 +1479,28 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/healthcare-it-infrastructure.md",
+      "title": "Healthcare IT Infrastructure",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/intelligent-iot-pipelines.md",
+      "title": "Intelligent IoT Pipelines",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/iot-in-pharmacy.md",
+      "title": "IoT in Pharmacy",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/iot-lora-architecture.md",
       "title": "สถาปัตยกรรมโปรเจ็ค: IoT Temperature Monitor (LoRa Gateway)",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/iot-network-infrastructure.md",
+      "title": "IoT Network Infrastructure",
       "domain": "synthesis"
     },
     {
@@ -1409,6 +1559,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-3-dashboard-node-red.md",
+      "title": "ตอน 3 : สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง 📊 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-agent-frameworks-local-debug-2026.md",
       "title": "Insights จากการ debug agent framework บน local LLM (thClaws/Hermes/OpenClaw) — Synthesis",
       "domain": "synthesis"
@@ -1444,6 +1599,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md",
+      "title": "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-arduino-ide-esp32-setup.md",
       "title": "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025 — Synthesis",
       "domain": "synthesis"
@@ -1459,6 +1619,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md",
+      "title": "arduino-libraries/Arduino_PowerManagement — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-build-software-better-together.md",
       "title": "TTGO-T-Beam Arduino Car Tracker - ESP32 + LoRa + GPS + GSM (optional) — Synthesis",
       "domain": "synthesis"
@@ -1469,8 +1634,18 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md",
+      "title": "(10) context ใน Claude Code ใกล้เต็ม dev... - Vibe Coding Thailand — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "title": "![Create an ESP32 Project With PlatformIO: A Guide for Beginners](https://cdn.xi — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
+      "title": "Create an ESP32 Project With PlatformIO: An Guide for Beginners — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1481,6 +1656,11 @@
     {
       "path": "wiki/synthesis/synth-dashboard-design-best-practices.md",
       "title": "Dashboard Design: Best Practices and Examples — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-datasheet-dx-lr02.md",
+      "title": "ข้อมูล datasheet ของ DX LR02  — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1569,6 +1749,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
+      "title": "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-esp32-lora-sensor-webserver.md",
       "title": "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication) — Synthesis",
       "domain": "synthesis"
@@ -1604,13 +1789,28 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-esp32.md",
+      "title": "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-espem-energy-monitor.md",
       "title": "vortigont/espem: Energy Monitor with Dashboard (ESP32 + PZEM-004T) — Synthesis",
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md",
+      "title": "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
       "title": "- [中文版](https://github.com/espressif/esp-idf/blob/master/README_CN.md) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "title": "espressif/esp-idf: Espressif IoT Development Framework. Official development framework for Espressif SoCs. — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1621,6 +1821,11 @@
     {
       "path": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
       "title": "> [!warning] Note — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
+      "title": "Get Started - ESP32 -  — ESP-IDF Programming Guide v4.4 documentation — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1644,7 +1849,17 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "title": "HelTecAutomation/Heltec_ESP32: Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-hermes-agent-guide-th.md",
+      "title": "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-hermes-agent.md",
       "title": "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent — Synthesis",
       "domain": "synthesis"
     },
@@ -1674,6 +1889,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
+      "title": "Introducing the Raspberry Pi AI HAT+ 2: Generative AI on Raspberry Pi 5 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md",
       "title": "สรุปสาระสำคัญ: สถาปัตยกรรม IoT, Edge AI และศักยภาพของ ESP32-C6 (อัปเดตปี 2026) — Synthesis",
       "domain": "synthesis"
@@ -1686,6 +1906,11 @@
     {
       "path": "wiki/synthesis/synth-iot-lora-gateway-architecture.md",
       "title": "IoT Architecture Diagram: ESP32 + LoRa + MQTT + Services — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md",
+      "title": "“IoT Node-RED + MQTT + SQL – ทำ Data Logger & Dashboard แบบอุตสาหกรรม” — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1704,6 +1929,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
+      "title": "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-iot-visualization-guide.md",
       "title": "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs — Synthesis",
       "domain": "synthesis"
@@ -1714,8 +1944,18 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
+      "title": "IoTThinks/EasyLoRaNode_Tracker: A wearable LoRa node with battery for long range wearable projects — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide (2025-2026) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-lora-arduino-esp8266-esp32-iot-lora-lora.md",
+      "title": "#1 LoRa Arduino ESP8266 ESP32 IoT อะไรคือ LoRa ใช้งาน LoRa อย่างไร — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1729,6 +1969,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-lora-nb-iot.md",
+      "title": "เครื่องวัดน้ำ LoRa-nb iot เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริยะ — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-lora-thai-intro.md",
       "title": "#1 LoRa Arduino ESP8266 ESP32 IoT อะไรคือ LoRa ใช้งาน LoRa อย่างไร — Synthesis",
       "domain": "synthesis"
@@ -1736,6 +1981,11 @@
     {
       "path": "wiki/synthesis/synth-lora-vs-nbiot.md",
       "title": "เครื่องวัดน้ำ LoRa-NB-IoT: การวิเคราะห์เปรียบเทียบ LoRa และ NB-IoT — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
+      "title": "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS – Full Step-by-Step Demo — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1814,8 +2064,18 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md",
+      "title": "[จัดส่งฟรี] Raspberry Pi 5 (แรม 16GB) ของแท้ made in UK — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
       "title": "L' **Internet of Things (IoT)** is no longer a trend: it's a reality that's tran — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
+      "title": "Raspberry Pi and IoT: the guide to understanding their role in the Internet of Things — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1829,8 +2089,18 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-readme.md",
+      "title": "README — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
       "title": "[![](https://github.com/ropg/heltec_esp32_lora_v3/raw/main/images/ESP32_LoRa_v3 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
+      "title": "ropg/heltec_esp32_lora_v3: Proper working Arduino library for the Heltec ESP32 LoRa v3 board, as well as for Wireless Stick v3 and Wireless Stick Lite v3. Uses RadioLib — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1849,6 +2119,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-source-5e4074bd.md",
+      "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-sp-drugstore-2020-catalog.md",
       "title": "เอสพีดรักสโตร์ 2020 — Drug Catalog 3,760 รายการ — Synthesis",
       "domain": "synthesis"
@@ -1856,6 +2131,11 @@
     {
       "path": "wiki/synthesis/synth-strix-halo-research-2026-05-05.md",
       "title": "AMD Ryzen AI Max+ 395 (Strix Halo) — Verified Research 2026-05-05 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-supabase-2026-aase7en.md",
+      "title": "Supabase 2026 — ภาพรวม + วิเคราะห์ความเหมาะสมกับโปรเจกต์ของ Aase7en — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -1914,6 +2194,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "title": "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md",
       "title": "> ⚠️ PENDING REVIEW — เนื้อหานี้สรุปจากข้อมูลปี 2026 เพื่อใช้ในการวิเคราะห์โครงส — Synthesis",
       "domain": "synthesis"
@@ -1969,6 +2254,31 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synthesis-ai-tools.md",
+      "title": "AI Tools — Knowledge Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synthesis-env.md",
+      "title": "Environmental Health — Knowledge Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synthesis-iot.md",
+      "title": "IoT — Knowledge Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synthesis-it.md",
+      "title": "IT — Knowledge Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synthesis-pharmacy.md",
+      "title": "Pharmacy — Knowledge Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/temperature-monitor-project.md",
       "title": "แผนโปรเจ็ค: Temperature Monitor → มือถือ",
       "domain": "synthesis"
@@ -2000,34 +2310,6 @@
     }
   ],
   "edges": [
-    {
-      "from": "README.md",
-      "to": "AGENTS.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "agent-skills/README.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "core-knowledge/README.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
     {
       "from": "index-ai-tools.md",
       "to": "wiki/entities/ai-tools/telegram-ai-router.md",
@@ -4129,11 +4411,32 @@
       "external": false
     },
     {
-      "from": "wiki/concepts/ai-tools/CLAUDE.md",
+      "from": "README.md",
+      "to": "AGENTS.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "agent-skills/README.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "core-knowledge/README.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
@@ -4160,6 +4463,13 @@
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -4493,13 +4803,6 @@
       "external": false
     },
     {
-      "from": "wiki/concepts/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/entities/iot/pms5003.md",
       "type": "wikilink",
@@ -4545,6 +4848,13 @@
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -5487,13 +5797,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/env/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/concepts/env/water-quality-parameters.md",
       "type": "wikilink",
@@ -5518,6 +5821,13 @@
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -5588,13 +5898,6 @@
       "from": "wiki/entities/iot/18650-battery-shield.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -5721,6 +6024,13 @@
       "from": "wiki/entities/iot/chirpstack.md",
       "to": "wiki/sources/lorawan-network-beginner.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -7111,13 +7421,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "to": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "type": "wikilink",
@@ -7251,6 +7554,13 @@
       "external": false
     },
     {
+      "from": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "to": "deva_diy",
+      "type": "implements",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/sources/arduino-librariesarduino-powermanagement.md",
       "to": "arduino-libraries",
       "type": "wikilink",
@@ -7269,6 +7579,13 @@
       "to": "https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/api.md",
       "type": "mdlink",
       "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
       "external": false
     },
     {
@@ -7507,6 +7824,13 @@
       "to": "wiki/entities/iot/hc-sr04.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
+      "to": "Global Byte Shope",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {
@@ -8154,10 +8478,24 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
+      "from": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
+      "to": "RSP",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
+      "to": "Y.Chanadej",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
+      "to": "เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {
@@ -8297,6 +8635,13 @@
       "from": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "to": "wiki/entities/env/rabies-pep-surveillance.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -9272,6 +9617,76 @@
       "type": "mdlink",
       "broken": true,
       "external": false
+    },
+    {
+      "from": "wiki/synthesis/synthesis-ai-tools.md",
+      "to": "wiki/sources/ai-tools/langchain-framework.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-ai-tools.md",
+      "to": "wiki/sources/ai-tools/vector-databases.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-env.md",
+      "to": "wiki/sources/env/air-quality-monitoring.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-env.md",
+      "to": "wiki/sources/env/soil-moisture-sensing.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-env.md",
+      "to": "wiki/sources/env/water-quality-parameters.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-iot.md",
+      "to": "wiki/sources/iot/lorawan-architecture.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-iot.md",
+      "to": "wiki/sources/iot/mqtt-protocol-overview.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-it.md",
+      "to": "wiki/sources/it/edge-computing-iot.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-it.md",
+      "to": "wiki/sources/it/network-monitoring-iot.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/synthesis/synthesis-pharmacy.md",
+      "to": "wiki/sources/pharmacy/drug-interaction-checking.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/synthesis/temperature-monitor-project.md",

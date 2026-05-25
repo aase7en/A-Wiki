@@ -5,7 +5,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/aase7en/Desktop/A-Wiki"
+        "/REPLACE/WITH/YOUR/REPO/PATH"
       ],
       "env": {},
       "disabled": false,
@@ -34,7 +34,7 @@
       "autoApprove": []
     },
     "awiki": {
-      "command": "python3",
+      "command": "REPLACE_python3_or_python",
       "args": ["scripts/mcp-wiki-server.py"],
       "env": {},
       "disabled": false,
