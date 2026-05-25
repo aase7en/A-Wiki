@@ -106,7 +106,7 @@ setup_secrets() {
 # ── 4. Build SQLite wiki index ──────────────────────────────────────────────
 
 setup_index() {
-  echo "[4/4] Building SQLite wiki index (FTS5 search)..."
+  echo "[4/5] Building SQLite wiki index (FTS5 search)..."
 
   if [[ ! -f "scripts/gen-index.py" ]]; then
     echo "  scripts/gen-index.py not found — skipping"
@@ -117,12 +117,42 @@ setup_index() {
   echo "  OK — wiki index built"
 }
 
+# ── 5. .codex/ hooks — link to .claude/hooks/ ──────────────────────────────
+
+setup_codex() {
+  echo "[5/5] Setting up .codex/ hooks link..."
+
+  mkdir -p .codex
+
+  if [[ -L ".codex/hooks" || -d ".codex/hooks" ]]; then
+    echo "  .codex/hooks already exists — skipping"
+    return
+  fi
+
+  case "$(uname -s)" in
+    Darwin*)
+      ln -sfn "$(pwd)/.claude/hooks" .codex/hooks
+      echo "  OK — symlink: .codex/hooks -> .claude/hooks"
+      ;;
+    MINGW*|CYGWIN*|MSYS*)
+      powershell.exe -Command "New-Item -ItemType Junction -Path '$(pwd)/.codex/hooks' -Target '$(cygpath -w "$(pwd)/.claude/hooks")'" > /dev/null
+      echo "  OK — junction: .codex/hooks -> .claude/hooks"
+      ;;
+    *)
+      echo "  Unknown OS — please link .codex/hooks -> .claude/hooks manually"
+      ;;
+  esac
+}
+
 setup_raw
 setup_mcp
 setup_secrets
 setup_index
+setup_codex
 
 echo ""
 echo "=== Setup complete ==="
 echo "To re-sync keys after adding new ones to Google Drive .secrets:"
 echo "  python scripts/import-keys.py"
+echo "To refresh free model roster:"
+echo "  bash scripts/update-model-roster.sh"
