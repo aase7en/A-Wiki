@@ -1,5 +1,24 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-25] session | universal multi-platform AI brain + cross-platform setup
+
+**Done:**
+- สร้าง `scripts/setup-local.sh` — cross-platform setup (raw/ junction/symlink, .mcp.json, API key sync, wiki index build, .codex/ hooks)
+- สร้าง `scripts/import-keys.py` — sync API keys จาก Google Drive `.secrets` → `.claude/settings.local.json` env block
+- สร้าง raw/ junction (Windows) → `L:\My Drive\A-Wiki-Data\raw` (57 raw source files)
+- Upgrade `AGENTS.md` → Universal Master Brain รองรับ 20+ AI platforms
+- สร้าง platform config files ใหม่: `GEMINI.md`, `.cursorrules`, `.windsurfrules`, `.clinerules`, `.github/copilot-instructions.md`, `.aider.conf.yml`
+- Update `CLAUDE.md` — เพิ่ม universal brain pointer note (ไม่ลบ content เดิม)
+- Update `README.md` — full rewrite: 4 superpowers, platform support table, wiki brain section, correct setup steps
+
+**Key decisions:**
+- `AGENTS.md` = Universal Master (เลือกใช้แทน BRAIN.md) เพราะเป็น industry standard ที่ 20+ platforms รู้จัก
+- ห้าม hard-code model names ทุกที่ — ใช้ dynamic `wiki/context/model-roster.conf` + `update-model-roster.sh` เท่านั้น (Iron Law จาก model-scouter.md)
+- ไม่ลบ Iron Laws / Cost Pyramid ออกจาก CLAUDE.md — เก็บไว้ครบทั้งสองไฟล์ (CLAUDE.md + AGENTS.md)
+- Cline reads `.clinerules` — already whitelisted ใน `.gitignore` ด้วย `!.clinerules`
+
+---
+
 ## [2026-05-21] feat | waste-form-automation scripts + synthesis page
 
 **Done:**

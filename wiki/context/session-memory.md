@@ -78,6 +78,19 @@
 
 ## 🗓️ Recent (last 10 sessions, newest top)
 
+### [2026-05-25] multi-platform-brain — Universal AI brain + cross-platform setup (PC ที่ทำงาน)
+
+- **Done**: ตรวจสอบ A-Wiki บน Windows PC (`A:\GitHub\A-Wiki`) เทียบ Mac — พบ 3 จุดขาด: raw/, .mcp.json, API keys
+- **Done**: `scripts/setup-local.sh` — cross-platform setup (raw/ junction, .mcp.json, API key sync, wiki index, .codex/ hooks)
+- **Done**: `scripts/import-keys.py` — sync Google Drive `.secrets` → `.claude/settings.local.json` env block (4 keys synced)
+- **Done**: สร้าง raw/ junction Windows → `L:\My Drive\A-Wiki-Data\raw` (57 files)
+- **Done**: ศึกษา agents.md spec + Cline extension → upgrade AGENTS.md เป็น Universal Master Brain
+- **Done**: สร้าง 6 platform config files: GEMINI.md, .cursorrules, .windsurfrules, .clinerules, .github/copilot-instructions.md, .aider.conf.yml
+- **Done**: README.md full rewrite — 4 superpowers, platform support table, wiki brain section, correct setup steps
+- **Decision**: AGENTS.md = Universal Master (ไม่สร้าง BRAIN.md แยก — industry standard)
+- **Decision**: ห้าม hard-code model names ทุกที่ — ใช้ dynamic roster เท่านั้น
+- **Decision**: CLAUDE.md เก็บ content ครบ 100% ไม่ลบออก — AGENTS.md เป็น copy ที่ตัด Claude-specific ออก
+
 ### [2026-05-24] inwwiki-critique — วิเคราะห์ InW-Wiki + 14 repos + บันทึก improvement plan สู่ session-memory
 
 - **Done**: วิเคราะห์ InW-Wiki ครบ — directory, scripts, hooks, edit-protection, delegate.sh, sync.py, ask-notebooklm.py
