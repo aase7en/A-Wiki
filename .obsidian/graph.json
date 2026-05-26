@@ -7,11 +7,41 @@
   "showOrphans": true,
   "collapse-color-groups": true,
   "colorGroups": [
-    { "query": "path:wiki/entities", "color": { "a": 1, "rgb": 4299841 } },
-    { "query": "path:wiki/concepts", "color": { "a": 1, "rgb": 6737151 } },
-    { "query": "path:wiki/synthesis", "color": { "a": 1, "rgb": 16744448 } },
-    { "query": "path:wiki/sources", "color": { "a": 1, "rgb": 8947848 } },
-    { "query": "path:journal", "color": { "a": 1, "rgb": 10079232 } }
+    {
+      "query": "path:wiki/entities",
+      "color": {
+        "a": 1,
+        "rgb": 4299841
+      }
+    },
+    {
+      "query": "path:wiki/concepts",
+      "color": {
+        "a": 1,
+        "rgb": 6737151
+      }
+    },
+    {
+      "query": "path:wiki/synthesis",
+      "color": {
+        "a": 1,
+        "rgb": 16744448
+      }
+    },
+    {
+      "query": "path:wiki/sources",
+      "color": {
+        "a": 1,
+        "rgb": 8947848
+      }
+    },
+    {
+      "query": "path:journal",
+      "color": {
+        "a": 1,
+        "rgb": 10079232
+      }
+    }
   ],
   "collapse-display": true,
   "showArrow": false,
@@ -23,6 +53,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.11235439632606317,
+  "scale": 0.15751894068886785,
   "close": true
 }
