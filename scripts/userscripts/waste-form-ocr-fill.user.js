@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      0.3.0
+// @version      0.4.0
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ
 // @author       A-Wiki / Asse7en
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -261,35 +261,57 @@ Return ONLY the JSON array.`;
   function normalizeText(s) {
     return (s || '').replace(/\s+/g, ' ').trim();
   }
+  function fuzzyEq(a, b) {
+    return normalizeText(a).replace(/[\s:*]/g, '') === normalizeText(b).replace(/[\s:*]/g, '');
+  }
+  function fuzzyIncludes(haystack, needle) {
+    return normalizeText(haystack).replace(/\s/g, '').includes(normalizeText(needle).replace(/\s/g, ''));
+  }
+  function isInOurOverlay(el) {
+    return !!el.closest?.('#waste-ocr-overlay');
+  }
 
+  // ROW MATCH: ฟอร์มนี้เก็บชื่อประเภทขยะใน <input class="fo13"> ของ cell 2 (ไม่ใช่ td.textContent)
+  // qty input อยู่ใน input[name="TRASH_SUB_QTY[]"] ของ cell 3
   function findRowInputByLabel(labelText) {
-    const target = normalizeText(labelText);
-    // 1) exact match (normalized)
-    let tds = $$('td, th').filter(td => normalizeText(td.textContent) === target);
-    // 2) startsWith fallback
-    if (tds.length === 0) {
-      tds = $$('td, th').filter(td => normalizeText(td.textContent).startsWith(target));
+    const trs = $$('tr').filter(tr => !isInOurOverlay(tr));
+    // 1) Primary: หา input.fo13 ที่ value match
+    let matches = [];
+    for (const tr of trs) {
+      const labelInput = tr.querySelector('input.fo13, input[class*="fo13"]');
+      if (!labelInput) continue;
+      const v = labelInput.value || '';
+      if (fuzzyEq(v, labelText)) matches.push({ tr, score: 3 });
+      else if (fuzzyIncludes(v, labelText)) matches.push({ tr, score: 2 });
     }
-    // 3) includes fallback
-    if (tds.length === 0) {
-      tds = $$('td, th').filter(td => normalizeText(td.textContent).includes(target));
-    }
-    for (const td of tds) {
-      const row = td.closest('tr');
-      if (!row) continue;
-      // ลองหา input ที่อยู่หลัง td ของ label
-      const cells = Array.from(row.children);
-      const labelIdx = cells.indexOf(td);
-      const after = labelIdx >= 0 ? cells.slice(labelIdx + 1) : cells;
-      for (const cell of after) {
-        const inp = cell.matches?.(INPUT_SEL) ? cell : cell.querySelector?.(INPUT_SEL);
-        if (inp) return inp;
+    // 2) Fallback: any first text-input in row with value match
+    if (matches.length === 0) {
+      for (const tr of trs) {
+        const firstInput = tr.querySelector('input[type="text"], input:not([type])');
+        if (!firstInput) continue;
+        const v = firstInput.value || '';
+        if (fuzzyEq(v, labelText)) matches.push({ tr, score: 1 });
+        else if (fuzzyIncludes(v, labelText)) matches.push({ tr, score: 0.5 });
       }
-      // fallback: input ตัวแรกใน row
-      const any = row.querySelector(INPUT_SEL);
-      if (any) return any;
     }
-    return null;
+    // 3) Fallback: td.textContent (เผื่อบาง row ใช้ plain text)
+    if (matches.length === 0) {
+      for (const tr of trs) {
+        const tds = Array.from(tr.querySelectorAll('td, th'));
+        if (tds.some(td => fuzzyIncludes(td.textContent, labelText))) {
+          matches.push({ tr, score: 0.3 });
+        }
+      }
+    }
+    if (matches.length === 0) return null;
+    matches.sort((a, b) => b.score - a.score);
+    const tr = matches[0].tr;
+    // Return qty input (TRASH_SUB_QTY[]) — fallback ไปอีก input ที่ไม่ใช่ label
+    return tr.querySelector('input[name="TRASH_SUB_QTY[]"]')
+      || tr.querySelector('input[name*="QTY"]')
+      || tr.querySelector('input.text-center')
+      || Array.from(tr.querySelectorAll(INPUT_SEL)).find(i => !i.classList.contains('fo13'))
+      || null;
   }
 
   function setInputValue(el, value) {
@@ -332,24 +354,49 @@ Return ONLY the JSON array.`;
   }
 
   function findHeaderField(labelSubstr) {
-    // หา label/td/th ที่มีคำว่า labelSubstr → คืน input/select ใกล้ที่สุด
-    const candidates = $$('label, td, th, div').filter(el => el.textContent.trim().startsWith(labelSubstr));
-    for (const el of candidates) {
-      // ลองดูพี่น้องและ parent's next cell
-      const tr = el.closest('tr');
-      if (tr) {
-        const inp = tr.querySelector('input, select');
-        if (inp && !el.contains(inp)) return inp;
+    const target = normalizeText(labelSubstr).replace(/[:*]/g, '').trim();
+
+    // 1) <label for="X"> → find #X
+    const labels = $$('label').filter(l => !isInOurOverlay(l));
+    for (const lab of labels) {
+      const txt = normalizeText(lab.textContent).replace(/[:*]/g, '').trim();
+      if (!txt.startsWith(target) && !txt.includes(target)) continue;
+      const forAttr = lab.getAttribute('for');
+      if (forAttr) {
+        const el = document.getElementById(forAttr);
+        if (el && !isInOurOverlay(el)) return el;
       }
-      const next = el.nextElementSibling;
-      if (next) {
-        const inp = next.matches && next.matches('input, select') ? next : next.querySelector?.('input, select');
-        if (inp) return inp;
+      // No 'for' — look at siblings / parent's children
+      let sib = lab.nextElementSibling;
+      while (sib) {
+        if (sib.matches?.('input, select, textarea') && !isInOurOverlay(sib)) return sib;
+        const inner = sib.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inner && !isInOurOverlay(inner)) return inner;
+        sib = sib.nextElementSibling;
       }
-      const parent = el.parentElement;
-      if (parent) {
-        const inp = parent.querySelector('input, select');
-        if (inp) return inp;
+      // parent group
+      let cur = lab.parentElement;
+      for (let d = 0; d < 3 && cur; d++) {
+        const inp = cur.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inp && !lab.contains(inp) && !isInOurOverlay(inp)) return inp;
+        cur = cur.parentElement;
+      }
+    }
+
+    // 2) Any text leaf (th/td/div/span/p/strong/b) containing label text → walk up parents
+    const all = $$('th, td, div, span, p, strong, b, dt')
+      .filter(el => !isInOurOverlay(el))
+      .filter(el => {
+        const txt = normalizeText(el.textContent).replace(/[:*]/g, '').trim();
+        // ใช้ "starts with" เพื่อหลีกเลี่ยง match container ใหญ่
+        return txt.startsWith(target) && txt.length < target.length + 15;
+      });
+    for (const el of all) {
+      let cur = el;
+      for (let d = 0; d < 5 && cur; d++) {
+        const inp = cur.parentElement?.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inp && !el.contains(inp) && !isInOurOverlay(inp)) return inp;
+        cur = cur.parentElement;
       }
     }
     return null;
@@ -646,21 +693,51 @@ Return ONLY the JSON array.`;
   }
 
   function debugDumpForm() {
-    // ช่วยหา selectors เมื่อ fill ไม่ลง — log td/input/label ในฟอร์ม
     const lines = ['=== Form DOM Dump ==='];
-    const rows = $$('tr');
-    lines.push(`Total <tr>: ${rows.length}`);
+    // --- Table rows (label inputs + qty inputs) ---
+    const rows = $$('tr').filter(tr => !isInOurOverlay(tr));
+    lines.push(`Total <tr> (excl. overlay): ${rows.length}`);
     rows.forEach((tr, i) => {
-      const tds = Array.from(tr.children).map(td => normalizeText(td.textContent).slice(0, 40));
-      const inputs = tr.querySelectorAll(INPUT_SEL);
-      if (inputs.length > 0 || tds.some(t => t.includes('ขยะ'))) {
-        lines.push(`tr[${i}] cells=[${tds.join(' | ')}] inputs=${inputs.length}`);
-        inputs.forEach((inp, j) => {
-          lines.push(`  input[${j}] tag=${inp.tagName} name="${inp.name||''}" id="${inp.id||''}" class="${inp.className||''}"`);
-        });
+      const labelInput = tr.querySelector('input.fo13, input[class*="fo13"]')
+        || tr.querySelector('input[type="text"], input:not([type])');
+      const labelVal = labelInput?.value || '';
+      const qty = tr.querySelector('input[name="TRASH_SUB_QTY[]"]') || tr.querySelector('input[name*="QTY"]');
+      if (labelVal || qty) {
+        lines.push(`tr[${i}] label="${labelVal.slice(0,40)}" qty.name="${qty?.name||'-'}" qty.id="${qty?.id||'-'}"`);
       }
     });
+    // --- Header fields (outside <tr>) ---
+    lines.push('');
+    lines.push('=== Top-level form fields (header) ===');
+    const fields = $$('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea')
+      .filter(el => !isInOurOverlay(el) && el.offsetParent !== null && !el.closest('table'));
+    fields.forEach((el, i) => {
+      const lab = inferLabel(el);
+      lines.push(`field[${i}] <${el.tagName.toLowerCase()}> name="${el.name||''}" id="${el.id||''}" class="${(el.className||'').slice(0,40)}" value="${(el.value||'').slice(0,40)}" label="${lab.slice(0,40)}"`);
+    });
     return lines.join('\n');
+  }
+
+  function inferLabel(el) {
+    if (el.id) {
+      const lab = document.querySelector(`label[for="${el.id}"]`);
+      if (lab) return normalizeText(lab.textContent);
+    }
+    let cur = el;
+    for (let d = 0; d < 5 && cur; d++) {
+      cur = cur.parentElement;
+      if (!cur) break;
+      const lab = cur.querySelector?.('label, .control-label, dt, th');
+      if (lab && !lab.contains(el)) return normalizeText(lab.textContent);
+    }
+    // try previous sibling text
+    let sib = el.previousElementSibling;
+    while (sib) {
+      const t = normalizeText(sib.textContent);
+      if (t) return t;
+      sib = sib.previousElementSibling;
+    }
+    return '';
   }
 
   // --- BOOT ------------------------------------------------------------------
