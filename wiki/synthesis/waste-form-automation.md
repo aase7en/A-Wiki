@@ -112,6 +112,26 @@ python scripts/fill-waste-form.py image.jpg --cookie /path/to/custom-cookie.json
 
 > Cookie หมดอายุตาม session ของเว็บ (ปกติ 1–7 วัน) — ถ้า script error 403/redirect login → รัน `save-waste-cookie.py` ใหม่
 
+## Alternative: Userscript Edition (no-install) [2026-05-26]
+
+Lightweight option ที่ไม่ต้อง Python/Playwright — ใช้ **Tampermonkey userscript** + **Gemini 2.5 Flash** (ฟรี 1500 req/วัน) inject ปุ่ม "📷 OCR & Fill" ลงในหน้า `trash_add` โดยตรง
+
+| Aspect | Python + Playwright | Userscript ✅ ใหม่ |
+|---|---|---|
+| ติดตั้ง | pip + chromium 200MB + save-cookie | Tampermonkey ext + paste 1 ไฟล์ |
+| Login | จัดการ cookie แยก | ใช้ session ที่เปิดอยู่ในเบราว์เซอร์ |
+| OCR | Claude Vision (paid ~$0.003/รูป) | Gemini Flash (ฟรี) |
+| Submit | กรอก + รอ user คลิก submit | กรอก + รอ user คลิก submit (เหมือนกัน) |
+| Cross-platform | Mac/PC + dep diff | ทุก OS ที่มี Chrome |
+
+ไฟล์:
+- `scripts/userscripts/waste-form-ocr-fill.user.js` — userscript ~400 บรรทัด
+- `scripts/userscripts/README.md` — install + debug
+
+DOM strategy: **label-based** ไม่ใช่ name-attribute → robust ต่อ form refactor (หา `<td>` ที่ text = "ขยะทั่วไป OPD" แล้วเอา `<input>` ใน row เดียวกัน)
+
+> Python+Playwright spec ในเอกสารนี้ยังเก็บไว้เป็น fallback หาก userscript ใช้ไม่ได้
+
 ## ข้อจำกัด
 
 | ปัญหา | วิธีรับมือ |
