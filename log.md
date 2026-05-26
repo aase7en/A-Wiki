@@ -1,5 +1,27 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-26] session | Waste form OCR userscript (Tampermonkey + Gemini Flash)
+
+**Done:**
+- สร้าง `scripts/userscripts/waste-form-ocr-fill.user.js` (~400 บรรทัด) — Tampermonkey userscript inject ปุ่ม "📷 OCR & Fill" ที่หน้า `https://10779.gtwoffice.com/env/manage/trash_add`
+- ส่งภาพใบรายงานไป **Gemini 2.5 Flash** (ฟรี 1500 req/วัน) ใช้ system prompt ปรับจาก [wiki/synthesis/garbage-report-ocr.md](wiki/synthesis/garbage-report-ocr.md) (ภาษาอังกฤษ + Thai vocabulary + staff hints)
+- Preview-before-fill: ผู้ใช้แก้ค่าตัวเลขได้ก่อนกด Fill Form; userscript ไม่กด submit เอง
+- DOM strategy: label-based (หา `<td>` text = "ขยะทั่วไป OPD" → คืน `<input>` ใน `<tr>` เดียวกัน) — robust กว่าใช้ name attribute
+- Compound location split: `OPD+ER` → row 8+12 หาร 2; `แผนไทย+ฝังเข็ม` → row 11+18
+- Auto-fill header: เวลาแรกสุดของวัน + Supplies "อบต.อุทัย" + ผู้บันทึก "Aase7en" (option text match)
+- `scripts/userscripts/README.md`: install Tampermonkey → paste userscript → ใส่ GEMINI_API_KEY ครั้งแรก → ใช้งานได้เลย
+- อัปเดต [wiki/synthesis/waste-form-automation.md](wiki/synthesis/waste-form-automation.md): เพิ่ม section "Alternative: Userscript Edition" — เก็บ Python+Playwright เดิมไว้เป็น fallback
+- อัปเดต [wiki/context/session-memory.md](wiki/context/session-memory.md): mark `fill-waste-form.py` ว่า superseded + เพิ่ม TODO ทดสอบ userscript บน Chrome จริง
+
+**Decision:** เปลี่ยน approach จาก Python+Playwright (วางไว้ตั้งแต่ 2026-05-21) → userscript เพราะ user ขอ "เครื่องมือเล็กๆ ไม่ต้องติดตั้ง" + Cost-First Pyramid Level 1 (Gemini ฟรี) แทน Claude Vision (paid)
+
+**Pending verify (TODO ครั้งต่อไป):**
+- ทดสอบบน Chrome จริงที่เครื่อง PC: DOM selectors ตรงไหม, OCR accuracy ≥95% หรือไม่
+- ลองรูป edge case: blur, multi-day, "5+5" weight, location ที่ยังไม่อยู่ใน ROW_LABEL_MAP
+- หาก selectors ไม่ตรง → แก้ `findRowInputByLabel` / `findHeaderField` ใน userscript
+
+---
+
 ## [2026-05-26] session | sqlite-vec semantic search migration + hybrid RRF query
 
 **Done:**
