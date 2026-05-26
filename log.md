@@ -1,5 +1,21 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-26] session | Obsidian graph view filter + color groups
+
+**Done:**
+
+- วิเคราะห์สาเหตุ isolated nodes ใน graph view — 3 กลุ่มหลัก: skills/ (98% no links), synthesis stubs (85%), uncurated sources (48%)
+- อัปเดต `.obsidian/graph.json`: filter ซ่อน `skills/ raw/ exports/ scripts/ tests/ test-zone/ tools/`
+- เพิ่ม color groups แยก knowledge layers: entities (เขียว), concepts (ฟ้า), synthesis (ส้ม), sources (เทา), journal (เขียวมะนาว)
+- ยืนยันว่า isolated nodes ที่เหลือไม่จำเป็นต้องเชื่อมตอนนี้
+- iOS mobile sync: GitSync.md ที่มีอยู่แล้วเพียงพอ ไม่ต้องโหลดแอปเพิ่ม
+
+**Key findings:**
+
+- graph.json filter ใช้ `-path:X` syntax ใน `search` field
+- `showOrphans: true` + ไม่มี filter = เห็น isolated nodes ทั้งหมด ไม่ใช่ bug แต่ทุกอย่างแสดงตามจริง
+- skills/ เป็น procedural tools ไม่ใช่ knowledge nodes — ถูกต้องที่ไม่มี wikilinks
+
 ## [2026-05-26] session | sqlite-vec semantic search migration + hybrid RRF query
 
 **Done:**
