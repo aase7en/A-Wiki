@@ -1,5 +1,105 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-26] session | sqlite-vec semantic search migration + hybrid RRF query
+
+**Done:**
+- Migrated local embeddings from `.wiki-embeddings.json` (3.2MB TF-IDF JSON) to `wiki_vec` virtual table colocated with FTS5 in `.wiki-index.db` via `sqlite-vec`
+- New scripts: `requirements.txt` (sqlite-vec, fastembed, apsw), `scripts/build-vec-index.py` (fastembed `paraphrase-multilingual-MiniLM-L12-v2`, 384-dim, multilingual incl. Thai)
+- Rewrote `scripts/wiki/query-rag.py` — dropped FAISS/sentence-transformers, now uses sqlite-vec + apsw; hybrid FTS5 + vec query fused via weighted RRF (`--alpha` 0..1, default 0.5). CLI back-compat preserved for MCP
+- Cross-platform via `apsw` (third-party SQLite binding with always-on extension loading) — bypasses `--disable-loadable-sqlite-extensions` of python.org / Apple system Python. Wheels for macOS / Linux / Windows
+- `.claude/hooks/post-wiki-edit-gen-index.sh` now prefers `.venv/bin/python3` over system python; stderr no longer swallowed so missing-deps fail loudly
+- Updated `scripts/mcp-wiki-server.py wiki_semantic_search` schema (removed stale `provider` enum, default alpha 0.5); `wiki_regen_index` chains `build-vec-index.py`
+- Updated `scripts/build-wiki-index.py` to `DROP TABLE wiki` instead of deleting the whole DB file (preserves sibling `wiki_vec` tables on FTS5 rebuild)
+- CLAUDE.md Cost Pyramid Level -1 now reads `Local FTS5 + sqlite-vec + knowledge-graph` (user approved this CLAUDE.md edit explicitly)
+- README.md Step 2 has an "Optional: Local Semantic Search" block with macOS extension-loading note
+- Deleted `.wiki-embeddings.json`, `.rag-index/`, `scripts/wiki/build-embeddings.py` (cutover, not parallel)
+
+**Key findings / Learning:**
+- `intfloat/multilingual-e5-small` from the plan turned out to be unsupported by fastembed (model list mismatch) — switched to `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (also 384-dim, multilingual, no prefix required)
+- macOS python.org Python ships with `enable_load_extension` disabled — `apsw` Python package is the cleanest workaround (extension support always on, ships bundled `.dylib`/`.so`/`.dll`)
+- Skeptical-reviewer subagent caught 4 real bugs the author missed:
+  1. MCP tool schema still advertised the deleted `provider: [local, openrouter]` enum + wrong alpha default
+  2. Double vec-rebuild: `post_wiki_edit.py` chained `build-vec-index.py` AND `gen-index.py` already chained it → race on `wiki_vec` DROP/INSERT
+  3. Stale model-name comment in `gen-index.py`
+  4. Non-atomic rebuild: `DROP TABLE`/`CREATE`/`INSERT` ran outside any transaction → concurrent readers between DROP and first INSERT hit "no such table"
+- All four fixed in the same commit. Lesson: invoke `skeptical-reviewer` (Read/Grep only, free) right after writing any new script — the author bypassed this once this session and got caught
+
+**TODO (carried):**
+- Verify on Linux + Windows: clone repo, `pip install -r requirements.txt`, `python scripts/build-vec-index.py`. Above only verified on macOS
+
+**Verification:**
+- `python scripts/build-vec-index.py --verify` → `ok: 437 embeddings`, no warnings
+- `sqlite3 .wiki-index.db ".tables"` → both `wiki` (FTS5) and `wiki_vec` + `wiki_vec_meta` present
+- 3 smoke queries (English / Thai / hybrid) returned correct top-1 results with both `fts#` and `vec#` ranks blending
+- `gen-index.py` end-to-end chain prints `✓ chained: build-vec-index.py` (proves hook → gen-index → vec build path)
+
+---
+
+## [2026-05-26] session | Mac remote access — AnyDesk session-denied + gh auth
+
+**Done:**
+- Fixed Claude Desktop "GitHub CLI authentication expired" → ran `gh auth login --hostname github.com --git-protocol https --web` (device-code flow), logged in as `aase7en`, token stored in macOS Keychain (scopes: gist, read:org, repo)
+- Diagnosed AnyDesk Mac (ID `611965728`) blocking inbound connections from phone (ID `1555919398`) — error "session was denied due to the access control settings of the remote device"
+- Inspected via `~/.anydesk/anydesk.trace` + `~/.anydesk/system.conf` — log showed `Login attempt from 1555919398 denied due to access control restrictions` ×10
+- Found `ad.security.interactive_access=0` in config (UI change didn't save due to padlock locked)
+- **Real root cause** (user discovered): ACL checkbox "Restrict client access to the following AnyDesk addresses" was ticked with **empty whitelist** → blocked everyone. Unticking the checkbox immediately fixed it
+- Earlier (start of session): opened AnyDesk + Screen Recording pref pane to start mac permission setup
+
+**Key findings / Learning:**
+- AnyDesk error "access control restrictions" is ambiguous — can be ACL empty-whitelist OR `interactive_access=0` OR ACL with denylist. Always check `anydesk.trace` `Login attempt denied` lines first
+- AnyDesk Settings padlock 🔒 must be unlocked before UI changes save to `system.conf`
+- `gh` CLI on macOS uses Keychain when no `GH_TOKEN` env var is set — clean separation per user
+
+**TODO (carried):**
+- macOS Screen Recording / Accessibility / Input Monitoring permissions for AnyDesk still NOT granted (TCC db query returned empty) — phone connects now but may see black screen or fail to control mouse/keyboard until granted
+- Production hardening: re-enable ACL with `1555919398` whitelisted + set Unattended Password + enable 2FA (currently all-open + must-accept-on-Mac per session)
+
+**Verification:**
+- `gh auth status` → ✓ Logged in to github.com account aase7en (keyring); `gh api user --jq .login` → aase7en
+- AnyDesk: user confirmed phone connects successfully after unticking ACL checkbox
+
+---
+
+## [2026-05-25] session | Phase 4 S7 follow-up — fix 2 pipeline bugs
+
+**Done:**
+- Fix `scripts/wiki/ingest-source.py:24` — `REPO_ROOT = parent.parent` → `parent.parent.parent`
+  (path bug ทำให้ `SOURCES_DIR` ชี้ไป `scripts/wiki/sources/` แทน `wiki/sources/`)
+- Fix `scripts/wiki/query-rag.py:168,277` — `np.float32` → `np_dep.float32` (2 sites)
+  (NameError เพราะ numpy ถูก import เป็น `np_dep`; blocks FAISS build + search)
+- Update `wiki/context/session-memory.md` — tick 2 fixed bug TODOs
+- pytest 133/133 pass (รวม `test_delegation_gate_blocks_no_session` ที่เคย flaky)
+
+**Why this session:**
+Bug ทั้งสองถูกพบระหว่างเขียน tests ใน S7 แต่ deferred ไว้เพราะ scope ของ S7 จำกัด
+อยู่ที่ tests + ADR. User ขอให้ "ทำต่อให้จบ" → close out ที่นี่.
+
+---
+
+## [2026-05-25] session | Phase 4 S7 — pipeline tests + ADR finalization
+
+**Done:**
+- เขียน tests ใหม่ 4 ไฟล์ครอบ Phase 4 pipeline scripts:
+  - `tests/test_ingest_source.py` (24 tests)
+  - `tests/test_synthesize.py` (14 tests)
+  - `tests/test_query_rag.py` (18 tests)
+  - `tests/test_auto_synthesize.py` (12 tests)
+- เพิ่ม "Validation" section ใน `decisions/0006-source-ingestion-synthesis-rag.md`
+- แก้ bug ใน `scripts/wiki/query-rag.py:generate_query_variants` — `list(set(...))[:5]`
+  ทำ original query หลุดได้ → เปลี่ยนเป็น order-preserving dedupe
+- Suite ทั้งหมด: 65 → 133 tests pass (+68)
+
+**Key findings (bugs to address next session):**
+- `scripts/wiki/ingest-source.py:24` — `REPO_ROOT = parent.parent` (ควรเป็น `parent.parent.parent`).
+  ปัจจุบัน `SOURCES_DIR` ชี้ไป `scripts/wiki/sources` แทน `wiki/sources` —
+  142 sources ที่มีอยู่ถูกสร้างด้วยมือ ไม่ใช่จาก script นี้
+- `scripts/wiki/query-rag.py:168,270` — ใช้ `np.float32` แต่ import เป็น `np_dep` →
+  NameError ตอน `build` หรือ search จริง (พบเฉพาะตอน FAISS pipeline ทำงาน)
+- Tests ปัจจุบันหลีกเลี่ยง FAISS / sentence-transformers path เพื่อให้ CI เร็ว;
+  bug ทั้งสองตัวจึงยังไม่ถูก reproduce ในชุด test
+
+---
+
 ## [2026-05-25] session | universal multi-platform AI brain + cross-platform setup
 
 **Done:**

@@ -10,7 +10,6 @@ Behavior:
   - Only fires on tool_name = WriteToFile or ReplaceInFile
   - Only when file path starts with wiki/ or index-
   - NEVER blocks (exit 0 always) — failures are logged to stderr
-  - Runs gen-index with a 2-second debounce to prevent rapid re-triggers
 
 Exit always 0 (advisory only — does not block).
 """
@@ -25,10 +24,13 @@ SCRIPTS_DIR = os.path.dirname(HOOKS_DIR)
 GEN_INDEX = os.path.join(SCRIPTS_DIR, "gen-index.py")
 GEN_DOMAIN = os.path.join(SCRIPTS_DIR, "gen-domain-indexes.py")
 
-# Debounce state (module-level)
-_last_trigger = 0.0
-_debounce_lock = threading.Lock()
-DEBOUNCE_SEC = 2.0
+# Scripts are (path, timeout_seconds). gen-index.py internally chains
+# build-vec-index.py (allow 300s for first-run model download), so we don't
+# trigger it again here — that would cause a destructive race on wiki_vec.
+INDEX_SCRIPTS = [
+    (GEN_INDEX, 300),
+    (GEN_DOMAIN, 30),
+]
 
 WIKI_PATHS = ("wiki/", "index-", "index.md")
 
@@ -46,24 +48,25 @@ def should_trigger(path: str) -> bool:
 def run_index_async():
     """Run gen-index in a background thread (non-blocking)."""
     def _run():
-        for script in [GEN_INDEX, GEN_DOMAIN]:
-            if os.path.isfile(script):
-                try:
-                    result = subprocess.run(
-                        [sys.executable, script],
-                        capture_output=True, text=True, timeout=30,
-                        cwd=os.path.join(SCRIPTS_DIR, ".."),
+        for script, timeout_s in INDEX_SCRIPTS:
+            if not os.path.isfile(script):
+                continue
+            try:
+                result = subprocess.run(
+                    [sys.executable, script],
+                    capture_output=True, text=True, timeout=timeout_s,
+                    cwd=os.path.join(SCRIPTS_DIR, ".."),
+                )
+                if result.returncode != 0:
+                    sys.stderr.write(
+                        f"⚠️ post-wiki-edit: {os.path.basename(script)} "
+                        f"exited with code {result.returncode}\n"
+                        f"{result.stderr.strip()}\n"
                     )
-                    if result.returncode != 0:
-                        sys.stderr.write(
-                            f"⚠️ post-wiki-edit: {os.path.basename(script)} "
-                            f"exited with code {result.returncode}\n"
-                            f"{result.stderr.strip()}\n"
-                        )
-                except subprocess.TimeoutExpired:
-                    sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} timed out\n")
-                except Exception as e:
-                    sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} error: {e}\n")
+            except subprocess.TimeoutExpired:
+                sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} timed out\n")
+            except Exception as e:
+                sys.stderr.write(f"⚠️ post-wiki-edit: {os.path.basename(script)} error: {e}\n")
 
     thread = threading.Thread(target=_run, daemon=True)
     thread.start()

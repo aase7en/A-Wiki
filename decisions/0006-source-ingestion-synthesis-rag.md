@@ -61,6 +61,29 @@ We implement a three-stage pipeline, each as a standalone Python script under `s
 - **Cons:** Cost, latency, non-deterministic, requires API key. Current rule-based approach is deterministic and auditable.
 - **Why not chosen (yet):** Future enhancement — `synthesize.py` structure allows plugging in an LLM generator.
 
+## Validation
+
+Pipeline ผ่านการตรวจสอบโดย test suite (Phase 4 S7):
+
+- `tests/test_ingest_source.py` — 24 tests: slugify, frontmatter, abstract truncation, concept/link extraction, `create_source_entry` rendering, `ingest_source` integration (invalid domain, empty text, file creation, no-overwrite)
+- `tests/test_synthesize.py` — 14 tests: `parse_source` (title/metadata/abstract/concepts/minimal), `find_bridge_sources` fallback, domain + cross-domain synthesis generation, `write_synthesis` rebuild semantics
+- `tests/test_query_rag.py` — 18 tests: `parse_doc_frontmatter` (title/domain/quality/tags/concepts/content), `load_all_documents`, `generate_query_variants` (original preserved, prefix/question variants), `format_results` + `format_json`
+- `tests/test_auto_synthesize.py` — 12 tests: state load/save round-trip, file hash stability, `analyze_sources` (counts, new-file detection, quality distribution), `check_synthesis_status` (insufficient, needs_update), `print_report`
+
+Heavy paths (FAISS index build, sentence-transformers embedding, subprocess
+shell-outs in `run_synthesis` / `run_index_rebuild`) are validated manually via
+`python3 scripts/wiki/query-rag.py status` and `python3 scripts/wiki/auto-synthesize.py
+--check` to keep CI fast (~2s).
+
+รัน: `python3 -m pytest tests/` — เป้าหมาย: 133 tests pass.
+
+### Bug fixed during validation
+
+- `generate_query_variants` ใช้ `list(set(variants))[:5]` → set ทำให้ original
+  query หลุดออกจากรายการได้ (เพราะ set ไม่รักษา order). แก้เป็น order-preserving
+  dedupe เพื่อให้ original query อยู่ตำแหน่งแรกเสมอ — สำคัญสำหรับ semantic search
+  ที่ exact-match ของ original query เป็น baseline
+
 ## Consequences
 
 ### Positive
