@@ -85,7 +85,7 @@ A-Wiki/
 
 | Level | ช่องทาง | ใช้กับงาน |
 |-------|---------|-----------|
-| **-1** | Local FTS5 / knowledge-graph | **ฟรี + ออฟไลน์** — ค้น wiki, neighbors, hubs |
+| **-1** | Local FTS5 + sqlite-vec + knowledge-graph | **ฟรี + ออฟไลน์** — ค้น wiki (keyword + semantic), neighbors, hubs |
 | **0** | Hook (SessionStart / PreToolUse) + Context Compaction | **ฟรี** — งานซ้ำทุก session, strategic `/compact` |
 | **1** | Free API (OpenRouter free / Gemini Flash) | **ฟรี** — search, lookup, synthesis |
 | **2** | Cheap paid (DeepSeek, Qwen) | **ถูกมาก** — reasoning เบา, table |

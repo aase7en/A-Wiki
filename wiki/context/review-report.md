@@ -1,1878 +1,2031 @@
-# Review Report — 2026-05-25 13:27
+# Review Report — 2026-05-26 01:43
 
 ## Summary
 
-- ✓ Passed: 581
+- ✓ Passed: 590
 - ⚠ Warnings: 0
-- ❌ Failures: 1814
-
----
-
-## ❌ L1: Script Health (if __name__ guard) — Failures
-
-- scripts\wiki\build-wiki-graph.py missing `if __name__ == '__main__'` guard
-- scripts\wiki\build-wiki-index.py missing `if __name__ == '__main__'` guard
-- scripts\wiki\gen-index.py missing `if __name__ == '__main__'` guard
-- scripts\wiki\hooks_runner.py missing `if __name__ == '__main__'` guard
-- scripts\wiki\query-graph.py missing `if __name__ == '__main__'` guard
-- scripts\wiki\search-wiki.py missing `if __name__ == '__main__'` guard
+- ❌ Failures: 1969
 
 ---
 
 ## ❌ L2: Frontmatter Completeness (title, type, tags) — Failures
 
-- wiki\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\multi-agent-failover.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
-- wiki\concepts\env\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- wiki\concepts\env\infectious-waste-management.md: missing frontmatter key: title
-- wiki\concepts\env\rabies-pep-protocol.md: missing frontmatter key: title
-- wiki\concepts\env\water-quality-parameters.md: missing frontmatter key: title
-- wiki\concepts\iot\air-quality-index.md: missing frontmatter key: title
-- wiki\concepts\iot\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\iot\cold-chain-monitoring.md: missing frontmatter key: title
-- wiki\concepts\iot\dashboard-design.md: missing frontmatter key: title
-- wiki\concepts\iot\data-logger.md: missing frontmatter key: title
-- wiki\concepts\iot\lora-p2p.md: missing frontmatter key: title
-- wiki\concepts\iot\lora.md: missing frontmatter key: title
-- wiki\concepts\iot\lorawan.md: missing frontmatter key: title
-- wiki\concepts\iot\modbus.md: missing frontmatter key: title
-- wiki\concepts\iot\mqtt-qos.md: missing frontmatter key: title
-- wiki\concepts\iot\publish-subscribe.md: missing frontmatter key: title
-- wiki\concepts\iot\tinyml.md: missing frontmatter key: title
-- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
-- wiki\concepts\it-support\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\pharmacy\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\concepts\pharmacy\drug-aliases.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\drug-classification.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\drug-validation.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\fuzzy-match.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\ordering-workflow.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\pharmacy-context.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing frontmatter key: title
-- wiki\context\device-session.md: no frontmatter (missing --- delimiter)
-- wiki\context\knowledge-graph.md: no frontmatter (missing --- delimiter)
-- wiki\context\local-sources.md: no frontmatter (missing --- delimiter)
-- wiki\context\model-roster.md: no frontmatter (missing --- delimiter)
-- wiki\context\now.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-ai.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-env.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-iot.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-sources.md: no frontmatter (missing --- delimiter)
-- wiki\context\review-report.md: no frontmatter (missing --- delimiter)
-- wiki\context\session-memory.md: no frontmatter (missing --- delimiter)
-- wiki\context\wiki-guide.md: no frontmatter (missing --- delimiter)
-- wiki\context\wiki-overview.md: no frontmatter (missing --- delimiter)
-- wiki\context\wiki-state.md: no frontmatter (missing --- delimiter)
-- wiki\entities\ai-tools\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\entities\ai-tools\hermes-agent.md: missing frontmatter key: title
-- wiki\entities\ai-tools\hyperframes.md: missing frontmatter key: title
-- wiki\entities\ai-tools\ollama.md: missing frontmatter key: title
-- wiki\entities\ai-tools\pocketbase.md: missing frontmatter key: title
-- wiki\entities\ai-tools\telegram-ai-router.md: missing frontmatter key: title
-- wiki\entities\env\activated-sludge-system.md: missing frontmatter key: title
-- wiki\entities\env\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\entities\env\rabies-pep-surveillance.md: missing frontmatter key: title
-- wiki\entities\iot\18650-battery-shield.md: missing frontmatter key: title
-- wiki\entities\iot\arduino-ide.md: missing frontmatter key: title
-- wiki\entities\iot\arduino-uno-r3.md: missing frontmatter key: title
-- wiki\entities\iot\chirpstack.md: missing frontmatter key: title
-- wiki\entities\iot\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\entities\iot\dht11.md: missing frontmatter key: title
-- wiki\entities\iot\ds18b20.md: missing frontmatter key: title
-- wiki\entities\iot\dx-lr02-lora.md: missing frontmatter key: title
-- wiki\entities\iot\dx-smart-ttl.md: missing frontmatter key: title
-- wiki\entities\iot\emqx.md: missing frontmatter key: title
-- wiki\entities\iot\esp-idf.md: missing frontmatter key: title
-- wiki\entities\iot\esp32-c6.md: missing frontmatter key: title
-- wiki\entities\iot\esp32-s3.md: missing frontmatter key: title
-- wiki\entities\iot\esp32.md: missing frontmatter key: title
-- wiki\entities\iot\grafana.md: missing frontmatter key: title
-- wiki\entities\iot\hc-sr04.md: missing frontmatter key: title
-- wiki\entities\iot\hc-sr501.md: missing frontmatter key: title
-- wiki\entities\iot\home-assistant.md: missing frontmatter key: title
-- wiki\entities\iot\hx711.md: missing frontmatter key: title
-- wiki\entities\iot\influxdb.md: missing frontmatter key: title
-- wiki\entities\iot\line-notify.md: missing frontmatter key: title
-- wiki\entities\iot\load-cell.md: missing frontmatter key: title
-- wiki\entities\iot\mosquitto.md: missing frontmatter key: title
-- wiki\entities\iot\mqtt-protocol.md: missing frontmatter key: title
-- wiki\entities\iot\mysql.md: missing frontmatter key: title
-- wiki\entities\iot\nb-iot.md: missing frontmatter key: title
-- wiki\entities\iot\node-red.md: missing frontmatter key: title
-- wiki\entities\iot\platformio.md: missing frontmatter key: title
-- wiki\entities\iot\pms5003.md: missing frontmatter key: title
-- wiki\entities\iot\pzem-004t.md: missing frontmatter key: title
-- wiki\entities\iot\raspberry-pi.md: missing frontmatter key: title
-- wiki\entities\iot\rfm95-sx1276.md: missing frontmatter key: title
-- wiki\entities\iot\telegram-bot.md: missing frontmatter key: title
-- wiki\entities\iot\the-things-network.md: missing frontmatter key: title
-- wiki\entities\iot\vapcell-m35-18650.md: missing frontmatter key: title
-- wiki\entities\pharmacy\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\entities\pharmacy\drug-database.md: missing frontmatter key: title
-- wiki\entities\pharmacy\drug-matching-system.md: missing frontmatter key: title
-- wiki\entities\pharmacy\pharmacy-business.md: missing frontmatter key: title
-- wiki\entities\pharmacy\sp-drugstore-2020.md: missing frontmatter key: title
-- wiki\sources\3-dashboard-node-red.md: missing frontmatter key: tags
-- wiki\sources\ai-iot-server-build-v3-final.md: missing frontmatter key: tags
-- wiki\sources\ai-tools\langchain-framework.md: no frontmatter (missing --- delimiter)
-- wiki\sources\ai-tools\vector-databases.md: no frontmatter (missing --- delimiter)
-- wiki\sources\arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
-- wiki\sources\arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
-- wiki\sources\build-software-better-together.md: missing frontmatter key: tags
-- wiki\sources\building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
-- wiki\sources\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\sources\context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki\sources\create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
-- wiki\sources\dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
-- wiki\sources\datasheet-dx-lr02.md: missing frontmatter key: tags
-- wiki\sources\env\air-quality-monitoring.md: no frontmatter (missing --- delimiter)
-- wiki\sources\env\soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
-- wiki\sources\env\water-quality-parameters.md: no frontmatter (missing --- delimiter)
-- wiki\sources\esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
-- wiki\sources\esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
-- wiki\sources\esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
-- wiki\sources\esp32.md: missing frontmatter key: tags
-- wiki\sources\espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
-- wiki\sources\espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
-- wiki\sources\get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
-- wiki\sources\good-uiux-practices.md: missing frontmatter key: tags
-- wiki\sources\hardware-inventory-2026-04-18.md: missing frontmatter key: tags
-- wiki\sources\heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
-- wiki\sources\hermes-agent.md: missing frontmatter key: tags
-- wiki\sources\how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
-- wiki\sources\introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
-- wiki\sources\iot\lorawan-architecture.md: no frontmatter (missing --- delimiter)
-- wiki\sources\iot\mqtt-protocol-overview.md: no frontmatter (missing --- delimiter)
-- wiki\sources\iot-engineering-education.md: missing frontmatter key: tags
-- wiki\sources\iot-lora-gateway-architecture.md: missing frontmatter key: tags
-- wiki\sources\iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
-- wiki\sources\iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
-- wiki\sources\iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
-- wiki\sources\it\edge-computing-iot.md: no frontmatter (missing --- delimiter)
-- wiki\sources\it\network-monitoring-iot.md: no frontmatter (missing --- delimiter)
-- wiki\sources\lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
-- wiki\sources\lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
-- wiki\sources\lora-nb-iot.md: missing frontmatter key: tags
-- wiki\sources\lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
-- wiki\sources\mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
-- wiki\sources\manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
-- wiki\sources\mqtt-introduction.md: missing frontmatter key: tags
-- wiki\sources\note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
-- wiki\sources\pharmacy\drug-interaction-checking.md: no frontmatter (missing --- delimiter)
-- wiki\sources\raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
-- wiki\sources\raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
-- wiki\sources\raspberry-pi-documentation.md: missing frontmatter key: tags
-- wiki\sources\readme.md: missing frontmatter key: tags
-- wiki\sources\ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
-- wiki\sources\source-5e4074bd.md: missing frontmatter key: tags
-- wiki\sources\sp-drugstore-2020-catalog.md: missing frontmatter key: tags
-- wiki\sources\strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki\sources\supabase-2026-aase7en.md: missing frontmatter key: tags
-- wiki\sources\ux-design-in-iot.md: missing frontmatter key: tags
-- wiki\sources\vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
-- wiki\sources\web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
-- wiki\sources\web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
-- wiki\sources\web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
-- wiki\sources\web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
-- wiki\synthesis\ai-driven-environmental-modeling.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\ai-for-drug-safety.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\air-quality-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\appsheet-to-webapp-pi5.md: missing frontmatter key: title
-- wiki\synthesis\CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\cold-chain-vaccine.md: missing frontmatter key: title
-- wiki\synthesis\digital-legacy-ai-architecture.md: missing frontmatter key: title
-- wiki\synthesis\dream-projects.md: missing frontmatter key: title
-- wiki\synthesis\dual-ai-workflow.md: missing frontmatter key: title
-- wiki\synthesis\energy-power-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\env-webapp-schema-wastewater.md: missing frontmatter key: title
-- wiki\synthesis\environmental-iot-sensing.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\environmental-monitoring-it.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\environmental-pharmaceutical-risk.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\fuel-tank-level.md: missing frontmatter key: title
-- wiki\synthesis\garbage-report-ocr.md: missing frontmatter key: title
-- wiki\synthesis\healthcare-it-infrastructure.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\intelligent-iot-pipelines.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\iot-in-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\iot-lora-architecture.md: missing frontmatter key: title
-- wiki\synthesis\iot-network-infrastructure.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
-- wiki\synthesis\openrouter-agent-routing.md: missing frontmatter key: title
-- wiki\synthesis\pharmacy-order-checker.md: missing frontmatter key: title
-- wiki\synthesis\pharmacy-project-specs.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\pharmacy-web-app-roadmap.md: missing frontmatter key: title
-- wiki\synthesis\pi4-lora-gateway-server.md: missing frontmatter key: title
-- wiki\synthesis\sunday-estate-frontend-qa-2026-05-18.md: missing frontmatter key: tags
-- wiki\synthesis\sunday-estate-pi5-portainer-runbook.md: missing frontmatter key: tags
-- wiki\synthesis\sunday-estate-webapp.md: missing frontmatter key: tags
-- wiki\synthesis\synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
-- wiki\synthesis\synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki\synthesis\synth-3-dashboard-node-red.md: missing frontmatter key: tags
-- wiki\synthesis\synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ai-agents-integration-guide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ai-iot-server-build-v3.md: missing frontmatter key: tags
-- wiki\synthesis\synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
-- wiki\synthesis\synth-air-quality-sensors-dronebot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-appsheet-env-datadict.md: missing frontmatter key: tags
-- wiki\synthesis\synth-arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
-- wiki\synthesis\synth-arduino-ide-esp32-setup.md: missing frontmatter key: tags
-- wiki\synthesis\synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: missing frontmatter key: tags
-- wiki\synthesis\synth-arduino-librariesarduino-powermanagement.md: missing frontmatter key: tags
-- wiki\synthesis\synth-arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
-- wiki\synthesis\synth-build-software-better-together.md: missing frontmatter key: tags
-- wiki\synthesis\synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
-- wiki\synthesis\synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki\synthesis\synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
-- wiki\synthesis\synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dashboard-design-best-practices.md: missing frontmatter key: tags
-- wiki\synthesis\synth-datasheet-dx-lr02.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ddc-cpg-rabies-2564.md: missing frontmatter key: tags
-- wiki\synthesis\synth-drug-aliases-reference.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ds18b20-esp32-randomnerd.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dx-lr02-at-commands-demo.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dx-lr02-datasheet.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dx-lr02-module-spec-official.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dx-lr02-official-arduino-library.md: missing frontmatter key: tags
-- wiki\synthesis\synth-dx-lr02-serial-guide-v2.md: missing frontmatter key: tags
-- wiki\synthesis\synth-easyloranode-tracker.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp-idf-docs.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-complete-guide-thai.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-hx711-mqtt-github.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-hx711-randomnerd.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-arduino-ide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-gateway-sparkfun.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-lora-sensor-webserver.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-s3-intro-thai.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-tank-level-mqtt.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-weather-dashboard-16day.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-weather-epd.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: missing frontmatter key: tags
-- wiki\synthesis\synth-esp32.md: missing frontmatter key: tags
-- wiki\synthesis\synth-espem-energy-monitor.md: missing frontmatter key: tags
-- wiki\synthesis\synth-espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
-- wiki\synthesis\synth-espressifesp-idf-espressif-iot-development-framework-officia.md: missing frontmatter key: tags
-- wiki\synthesis\synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
-- wiki\synthesis\synth-freqtrade-pi5.md: missing frontmatter key: tags
-- wiki\synthesis\synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
-- wiki\synthesis\synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
-- wiki\synthesis\synth-good-uiux-practices.md: missing frontmatter key: tags
-- wiki\synthesis\synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
-- wiki\synthesis\synth-heltec-libraries.md: missing frontmatter key: tags
-- wiki\synthesis\synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: missing frontmatter key: tags
-- wiki\synthesis\synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
-- wiki\synthesis\synth-hermes-agent-guide-th.md: missing frontmatter key: tags
-- wiki\synthesis\synth-hermes-agent.md: missing frontmatter key: tags
-- wiki\synthesis\synth-hospital-wastewater-treatment.md: missing frontmatter key: tags
-- wiki\synthesis\synth-how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
-- wiki\synthesis\synth-hyperframes-official-docs.md: missing frontmatter key: tags
-- wiki\synthesis\synth-infectious-waste-th-law.md: missing frontmatter key: tags
-- wiki\synthesis\synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: missing frontmatter key: tags
-- wiki\synthesis\synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-edge-ai-esp32-c6-2026.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-engineering-education.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-lora-gateway-architecture.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-nodered-mqtt-sql-course.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-visualization-guide-designing-effective-dashboards-monit.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iot-visualization-guide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: missing frontmatter key: tags
-- wiki\synthesis\synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
-- wiki\synthesis\synth-local-llm-mac-mini-guide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-getting-started-dronebot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-nb-iot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-thai-intro.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lora-vs-nbiot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lorawan-fuota-rak3172.md: missing frontmatter key: tags
-- wiki\synthesis\synth-lorawan-network-beginner.md: missing frontmatter key: tags
-- wiki\synthesis\synth-mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
-- wiki\synthesis\synth-manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
-- wiki\synthesis\synth-mqtt-introduction.md: missing frontmatter key: tags
-- wiki\synthesis\synth-nodered-dashboard-ui.md: missing frontmatter key: tags
-- wiki\synthesis\synth-note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ollama-pi5.md: missing frontmatter key: tags
-- wiki\synthesis\synth-openrouter-api-demo.md: missing frontmatter key: tags
-- wiki\synthesis\synth-pharmacy-context.md: missing frontmatter key: tags
-- wiki\synthesis\synth-pharmacy-ui-instructions.md: missing frontmatter key: tags
-- wiki\synthesis\synth-platformio-esp32-guide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-pzem-004t-guide-2025.md: missing frontmatter key: tags
-- wiki\synthesis\synth-rabies-vaccine-guidelines-th-2026-05-02.md: missing frontmatter key: tags
-- wiki\synthesis\synth-raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
-- wiki\synthesis\synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: missing frontmatter key: tags
-- wiki\synthesis\synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
-- wiki\synthesis\synth-raspberry-pi-documentation.md: missing frontmatter key: tags
-- wiki\synthesis\synth-raspberry-pi-iot-guide.md: missing frontmatter key: tags
-- wiki\synthesis\synth-readme.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
-- wiki\synthesis\synth-rpi-ai-hat-plus-2-official.md: missing frontmatter key: tags
-- wiki\synthesis\synth-rpi5-16gb-thailand-price.md: missing frontmatter key: tags
-- wiki\synthesis\synth-saovabha-rabies-pep-2565.md: missing frontmatter key: tags
-- wiki\synthesis\synth-source-5e4074bd.md: missing frontmatter key: tags
-- wiki\synthesis\synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
-- wiki\synthesis\synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki\synthesis\synth-supabase-2026-aase7en.md: missing frontmatter key: tags
-- wiki\synthesis\synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
-- wiki\synthesis\synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
-- wiki\synthesis\synth-telegram-ai-router-design.md: missing frontmatter key: tags
-- wiki\synthesis\synth-tinyml-esp32-applications.md: missing frontmatter key: tags
-- wiki\synthesis\synth-umbrel-pi5-setup.md: missing frontmatter key: tags
-- wiki\synthesis\synth-uthai-equipment-price-2568.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ux-design-in-iot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-vaccine-cae-anomaly-detection.md: missing frontmatter key: tags
-- wiki\synthesis\synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
-- wiki\synthesis\synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
-- wiki\synthesis\synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
-- wiki\synthesis\synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
-- wiki\synthesis\synth-web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
-- wiki\synthesis\synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
-- wiki\synthesis\synth-web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
-- wiki\synthesis\synth-web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
-- wiki\synthesis\synth-who-rabies-position-2018.md: missing frontmatter key: tags
-- wiki\synthesis\synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ข้อมูล-datasheet-ของ-dx-lr02.md: missing frontmatter key: tags
-- wiki\synthesis\synth-คู่มือ-hermes-agent.md: missing frontmatter key: tags
-- wiki\synthesis\synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md: missing frontmatter key: tags
-- wiki\synthesis\synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: missing frontmatter key: tags
-- wiki\synthesis\synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: missing frontmatter key: tags
-- wiki\synthesis\synthesis-ai-tools.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\synthesis-env.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\synthesis-iot.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\synthesis-it.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\synthesis-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\temperature-monitor-project.md: missing frontmatter key: title
-- wiki\synthesis\vibe-pocketbase-project.md: missing frontmatter key: title
-- wiki\synthesis\waste-form-automation.md: missing frontmatter key: title
-- wiki\synthesis\waste-weight-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\wiki-to-video-pipeline.md: missing frontmatter key: title
-- wiki\templates\td-21-power-of-attorney.md: missing frontmatter key: title
+- wiki/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/_vec-hook-test.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/multi-agent-failover.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
+- wiki/concepts/env/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
+- wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
+- wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
+- wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
+- wiki/concepts/iot/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
+- wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
+- wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
+- wiki/concepts/iot/data-logger.md: missing frontmatter key: title
+- wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
+- wiki/concepts/iot/lora.md: missing frontmatter key: title
+- wiki/concepts/iot/lorawan.md: missing frontmatter key: title
+- wiki/concepts/iot/modbus.md: missing frontmatter key: title
+- wiki/concepts/iot/mqtt-qos.md: missing frontmatter key: title
+- wiki/concepts/iot/publish-subscribe.md: missing frontmatter key: title
+- wiki/concepts/iot/tinyml.md: missing frontmatter key: title
+- wiki/concepts/it-support/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/pharmacy/drug-aliases.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/drug-classification.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/drug-validation.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/fuzzy-match.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/ordering-workflow.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
+- wiki/context/device-session.md: no frontmatter (missing --- delimiter)
+- wiki/context/knowledge-graph.md: no frontmatter (missing --- delimiter)
+- wiki/context/local-sources.md: no frontmatter (missing --- delimiter)
+- wiki/context/model-roster.md: no frontmatter (missing --- delimiter)
+- wiki/context/now.md: no frontmatter (missing --- delimiter)
+- wiki/context/overview-ai.md: no frontmatter (missing --- delimiter)
+- wiki/context/overview-env.md: no frontmatter (missing --- delimiter)
+- wiki/context/overview-iot.md: no frontmatter (missing --- delimiter)
+- wiki/context/overview-pharmacy.md: no frontmatter (missing --- delimiter)
+- wiki/context/overview-sources.md: no frontmatter (missing --- delimiter)
+- wiki/context/review-report.md: no frontmatter (missing --- delimiter)
+- wiki/context/session-memory.md: no frontmatter (missing --- delimiter)
+- wiki/context/wiki-guide.md: no frontmatter (missing --- delimiter)
+- wiki/context/wiki-overview.md: no frontmatter (missing --- delimiter)
+- wiki/context/wiki-state.md: no frontmatter (missing --- delimiter)
+- wiki/entities/ai-tools/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/entities/ai-tools/hermes-agent.md: missing frontmatter key: title
+- wiki/entities/ai-tools/hyperframes.md: missing frontmatter key: title
+- wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
+- wiki/entities/ai-tools/pocketbase.md: missing frontmatter key: title
+- wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
+- wiki/entities/env/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
+- wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
+- wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
+- wiki/entities/iot/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/entities/iot/arduino-ide.md: missing frontmatter key: title
+- wiki/entities/iot/arduino-uno-r3.md: missing frontmatter key: title
+- wiki/entities/iot/chirpstack.md: missing frontmatter key: title
+- wiki/entities/iot/dht11.md: missing frontmatter key: title
+- wiki/entities/iot/ds18b20.md: missing frontmatter key: title
+- wiki/entities/iot/dx-lr02-lora.md: missing frontmatter key: title
+- wiki/entities/iot/dx-smart-ttl.md: missing frontmatter key: title
+- wiki/entities/iot/emqx.md: missing frontmatter key: title
+- wiki/entities/iot/esp-idf.md: missing frontmatter key: title
+- wiki/entities/iot/esp32-c6.md: missing frontmatter key: title
+- wiki/entities/iot/esp32-s3.md: missing frontmatter key: title
+- wiki/entities/iot/esp32.md: missing frontmatter key: title
+- wiki/entities/iot/grafana.md: missing frontmatter key: title
+- wiki/entities/iot/hc-sr04.md: missing frontmatter key: title
+- wiki/entities/iot/hc-sr501.md: missing frontmatter key: title
+- wiki/entities/iot/home-assistant.md: missing frontmatter key: title
+- wiki/entities/iot/hx711.md: missing frontmatter key: title
+- wiki/entities/iot/influxdb.md: missing frontmatter key: title
+- wiki/entities/iot/line-notify.md: missing frontmatter key: title
+- wiki/entities/iot/load-cell.md: missing frontmatter key: title
+- wiki/entities/iot/mosquitto.md: missing frontmatter key: title
+- wiki/entities/iot/mqtt-protocol.md: missing frontmatter key: title
+- wiki/entities/iot/mysql.md: missing frontmatter key: title
+- wiki/entities/iot/nb-iot.md: missing frontmatter key: title
+- wiki/entities/iot/node-red.md: missing frontmatter key: title
+- wiki/entities/iot/platformio.md: missing frontmatter key: title
+- wiki/entities/iot/pms5003.md: missing frontmatter key: title
+- wiki/entities/iot/pzem-004t.md: missing frontmatter key: title
+- wiki/entities/iot/raspberry-pi.md: missing frontmatter key: title
+- wiki/entities/iot/rfm95-sx1276.md: missing frontmatter key: title
+- wiki/entities/iot/telegram-bot.md: missing frontmatter key: title
+- wiki/entities/iot/the-things-network.md: missing frontmatter key: title
+- wiki/entities/iot/vapcell-m35-18650.md: missing frontmatter key: title
+- wiki/entities/pharmacy/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/entities/pharmacy/drug-database.md: missing frontmatter key: title
+- wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
+- wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
+- wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
+- wiki/sources/3-dashboard-node-red.md: missing frontmatter key: tags
+- wiki/sources/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/sources/ai-iot-server-build-v3-final.md: missing frontmatter key: tags
+- wiki/sources/ai-tools/langchain-framework.md: no frontmatter (missing --- delimiter)
+- wiki/sources/ai-tools/vector-databases.md: no frontmatter (missing --- delimiter)
+- wiki/sources/arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
+- wiki/sources/arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
+- wiki/sources/build-software-better-together.md: missing frontmatter key: tags
+- wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki/sources/context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
+- wiki/sources/dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
+- wiki/sources/datasheet-dx-lr02.md: missing frontmatter key: tags
+- wiki/sources/env/air-quality-monitoring.md: no frontmatter (missing --- delimiter)
+- wiki/sources/env/soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
+- wiki/sources/env/water-quality-parameters.md: no frontmatter (missing --- delimiter)
+- wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
+- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
+- wiki/sources/esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
+- wiki/sources/esp32.md: missing frontmatter key: tags
+- wiki/sources/espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
+- wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
+- wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki/sources/good-uiux-practices.md: missing frontmatter key: tags
+- wiki/sources/hardware-inventory-2026-04-18.md: missing frontmatter key: tags
+- wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
+- wiki/sources/hermes-agent.md: missing frontmatter key: tags
+- wiki/sources/how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
+- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
+- wiki/sources/iot/lorawan-architecture.md: no frontmatter (missing --- delimiter)
+- wiki/sources/iot/mqtt-protocol-overview.md: no frontmatter (missing --- delimiter)
+- wiki/sources/iot-engineering-education.md: missing frontmatter key: tags
+- wiki/sources/iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
+- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
+- wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
+- wiki/sources/it/edge-computing-iot.md: no frontmatter (missing --- delimiter)
+- wiki/sources/it/network-monitoring-iot.md: no frontmatter (missing --- delimiter)
+- wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
+- wiki/sources/lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki/sources/lora-nb-iot.md: missing frontmatter key: tags
+- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
+- wiki/sources/mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
+- wiki/sources/manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
+- wiki/sources/mqtt-introduction.md: missing frontmatter key: tags
+- wiki/sources/note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
+- wiki/sources/pharmacy/drug-interaction-checking.md: no frontmatter (missing --- delimiter)
+- wiki/sources/raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
+- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
+- wiki/sources/raspberry-pi-documentation.md: missing frontmatter key: tags
+- wiki/sources/readme.md: missing frontmatter key: tags
+- wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
+- wiki/sources/source-5e4074bd.md: missing frontmatter key: tags
+- wiki/sources/sp-drugstore-2020-catalog.md: missing frontmatter key: tags
+- wiki/sources/strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki/sources/supabase-2026-aase7en.md: missing frontmatter key: tags
+- wiki/sources/ux-design-in-iot.md: missing frontmatter key: tags
+- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
+- wiki/sources/web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
+- wiki/sources/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
+- wiki/sources/web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
+- wiki/sources/web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
+- wiki/synthesis/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/ai-driven-environmental-modeling.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/ai-for-drug-safety.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/appsheet-to-webapp-pi5.md: missing frontmatter key: title
+- wiki/synthesis/cold-chain-vaccine.md: missing frontmatter key: title
+- wiki/synthesis/digital-legacy-ai-architecture.md: missing frontmatter key: title
+- wiki/synthesis/dream-projects.md: missing frontmatter key: title
+- wiki/synthesis/dual-ai-workflow.md: missing frontmatter key: title
+- wiki/synthesis/energy-power-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/env-webapp-schema-wastewater.md: missing frontmatter key: title
+- wiki/synthesis/environmental-iot-sensing.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/environmental-monitoring-it.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/environmental-pharmaceutical-risk.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/fuel-tank-level.md: missing frontmatter key: title
+- wiki/synthesis/garbage-report-ocr.md: missing frontmatter key: title
+- wiki/synthesis/healthcare-it-infrastructure.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/intelligent-iot-pipelines.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/iot-in-pharmacy.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/iot-lora-architecture.md: missing frontmatter key: title
+- wiki/synthesis/iot-network-infrastructure.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
+- wiki/synthesis/openrouter-agent-routing.md: missing frontmatter key: title
+- wiki/synthesis/pharmacy-order-checker.md: missing frontmatter key: title
+- wiki/synthesis/pharmacy-project-specs.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/pharmacy-web-app-roadmap.md: missing frontmatter key: title
+- wiki/synthesis/pi4-lora-gateway-server.md: missing frontmatter key: title
+- wiki/synthesis/sunday-estate-frontend-qa-2026-05-18.md: missing frontmatter key: tags
+- wiki/synthesis/sunday-estate-pi5-portainer-runbook.md: missing frontmatter key: tags
+- wiki/synthesis/sunday-estate-webapp.md: missing frontmatter key: tags
+- wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
+- wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki/synthesis/synth-3-dashboard-node-red.md: missing frontmatter key: tags
+- wiki/synthesis/synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ai-agents-integration-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ai-iot-server-build-v3.md: missing frontmatter key: tags
+- wiki/synthesis/synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
+- wiki/synthesis/synth-air-quality-sensors-dronebot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-appsheet-env-datadict.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-ide-esp32-setup.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md: missing frontmatter key: tags
+- wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
+- wiki/synthesis/synth-build-software-better-together.md: missing frontmatter key: tags
+- wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
+- wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dashboard-design-best-practices.md: missing frontmatter key: tags
+- wiki/synthesis/synth-datasheet-dx-lr02.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ddc-cpg-rabies-2564.md: missing frontmatter key: tags
+- wiki/synthesis/synth-drug-aliases-reference.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ds18b20-esp32-randomnerd.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dx-lr02-at-commands-demo.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dx-lr02-datasheet.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dx-lr02-module-spec-official.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dx-lr02-official-arduino-library.md: missing frontmatter key: tags
+- wiki/synthesis/synth-dx-lr02-serial-guide-v2.md: missing frontmatter key: tags
+- wiki/synthesis/synth-easyloranode-tracker.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp-idf-docs.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-complete-guide-thai.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-hx711-mqtt-github.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-hx711-randomnerd.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-arduino-ide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-gateway-sparkfun.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-lora-sensor-webserver.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-s3-intro-thai.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-tank-level-mqtt.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-weather-dashboard-16day.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-weather-epd.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: missing frontmatter key: tags
+- wiki/synthesis/synth-esp32.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espem-energy-monitor.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md: missing frontmatter key: tags
+- wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
+- wiki/synthesis/synth-freqtrade-pi5.md: missing frontmatter key: tags
+- wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
+- wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki/synthesis/synth-good-uiux-practices.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
+- wiki/synthesis/synth-heltec-libraries.md: missing frontmatter key: tags
+- wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: missing frontmatter key: tags
+- wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hermes-agent-guide-th.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hermes-agent.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hospital-wastewater-treatment.md: missing frontmatter key: tags
+- wiki/synthesis/synth-how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
+- wiki/synthesis/synth-hyperframes-official-docs.md: missing frontmatter key: tags
+- wiki/synthesis/synth-infectious-waste-th-law.md: missing frontmatter key: tags
+- wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: missing frontmatter key: tags
+- wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-engineering-education.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iot-visualization-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: missing frontmatter key: tags
+- wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
+- wiki/synthesis/synth-local-llm-mac-mini-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-getting-started-dronebot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-nb-iot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-thai-intro.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lora-vs-nbiot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lorawan-fuota-rak3172.md: missing frontmatter key: tags
+- wiki/synthesis/synth-lorawan-network-beginner.md: missing frontmatter key: tags
+- wiki/synthesis/synth-mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
+- wiki/synthesis/synth-manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
+- wiki/synthesis/synth-mqtt-introduction.md: missing frontmatter key: tags
+- wiki/synthesis/synth-nodered-dashboard-ui.md: missing frontmatter key: tags
+- wiki/synthesis/synth-note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ollama-pi5.md: missing frontmatter key: tags
+- wiki/synthesis/synth-openrouter-api-demo.md: missing frontmatter key: tags
+- wiki/synthesis/synth-pharmacy-context.md: missing frontmatter key: tags
+- wiki/synthesis/synth-pharmacy-ui-instructions.md: missing frontmatter key: tags
+- wiki/synthesis/synth-platformio-esp32-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-pzem-004t-guide-2025.md: missing frontmatter key: tags
+- wiki/synthesis/synth-rabies-vaccine-guidelines-th-2026-05-02.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-documentation.md: missing frontmatter key: tags
+- wiki/synthesis/synth-raspberry-pi-iot-guide.md: missing frontmatter key: tags
+- wiki/synthesis/synth-readme.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
+- wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md: missing frontmatter key: tags
+- wiki/synthesis/synth-rpi5-16gb-thailand-price.md: missing frontmatter key: tags
+- wiki/synthesis/synth-saovabha-rabies-pep-2565.md: missing frontmatter key: tags
+- wiki/synthesis/synth-source-5e4074bd.md: missing frontmatter key: tags
+- wiki/synthesis/synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
+- wiki/synthesis/synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki/synthesis/synth-supabase-2026-aase7en.md: missing frontmatter key: tags
+- wiki/synthesis/synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
+- wiki/synthesis/synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
+- wiki/synthesis/synth-telegram-ai-router-design.md: missing frontmatter key: tags
+- wiki/synthesis/synth-tinyml-esp32-applications.md: missing frontmatter key: tags
+- wiki/synthesis/synth-umbrel-pi5-setup.md: missing frontmatter key: tags
+- wiki/synthesis/synth-uthai-equipment-price-2568.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ux-design-in-iot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vaccine-cae-anomaly-detection.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
+- wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
+- wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
+- wiki/synthesis/synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
+- wiki/synthesis/synth-web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
+- wiki/synthesis/synth-web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
+- wiki/synthesis/synth-who-rabies-position-2018.md: missing frontmatter key: tags
+- wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md: missing frontmatter key: tags
+- wiki/synthesis/synth-คู่มือ-hermes-agent.md: missing frontmatter key: tags
+- wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md: missing frontmatter key: tags
+- wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: missing frontmatter key: tags
+- wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: missing frontmatter key: tags
+- wiki/synthesis/synthesis-ai-tools.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/synthesis-env.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/synthesis-iot.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/synthesis-it.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/synthesis-pharmacy.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/temperature-monitor-project.md: missing frontmatter key: title
+- wiki/synthesis/vibe-pocketbase-project.md: missing frontmatter key: title
+- wiki/synthesis/waste-form-automation.md: missing frontmatter key: title
+- wiki/synthesis/waste-weight-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/wiki-to-video-pipeline.md: missing frontmatter key: title
+- wiki/templates/td-21-power-of-attorney.md: missing frontmatter key: title
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki\CLAUDE.md: broken link: [[page-name]]
-- wiki\CLAUDE.md: broken link: [[page-name]]
-- wiki\CLAUDE.md: broken link: [[page-name]]
-- wiki\CLAUDE.md: broken link: [[sources/source-slug]]
-- wiki\CLAUDE.md: broken link: [[concept-name]]
-- wiki\CLAUDE.md: broken link: [[sources/source-slug]]
-- wiki\CLAUDE.md: broken link: [[entities/...]]
-- wiki\CLAUDE.md: broken link: [[concepts/...]]
-- wiki\CLAUDE.md: broken link: [[sources/...]]
-- wiki\concepts\ai-tools\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\concepts\ai-tools\session-setup.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\concepts\ai-tools\session-setup.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\concepts\env\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\concepts\env\water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\concepts\iot\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\concepts\it-support\CLAUDE.md: broken link: [[/index-it]]
-- wiki\concepts\it-support\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\concepts\pharmacy\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\concepts\pharmacy\drug-aliases.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\concepts\pharmacy\drug-classification.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\concepts\pharmacy\drug-classification.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\concepts\pharmacy\drug-classification.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\drug-validation.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\concepts\pharmacy\drug-validation.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\concepts\pharmacy\drug-validation.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\concepts\pharmacy\drug-validation.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\concepts\pharmacy\drug-validation.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\concepts\pharmacy\fuzzy-match.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\concepts\pharmacy\fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\concepts\pharmacy\fuzzy-match.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\concepts\pharmacy\ordering-workflow.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\concepts\pharmacy\pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\concepts\pharmacy\pharmacy-context.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\concepts\pharmacy\pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[page-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[concept-name]]
-- wiki\context\review-report.md: broken link: [[sources/source-slug]]
-- wiki\context\review-report.md: broken link: [[entities/...]]
-- wiki\context\review-report.md: broken link: [[concepts/...]]
-- wiki\context\review-report.md: broken link: [[sources/...]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[/index-it]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/CLAUDE.md: broken link: [[page-name]]
+- wiki/CLAUDE.md: broken link: [[page-name]]
+- wiki/CLAUDE.md: broken link: [[page-name]]
+- wiki/CLAUDE.md: broken link: [[sources/source-slug]]
+- wiki/CLAUDE.md: broken link: [[concept-name]]
+- wiki/CLAUDE.md: broken link: [[sources/source-slug]]
+- wiki/CLAUDE.md: broken link: [[entities/...]]
+- wiki/CLAUDE.md: broken link: [[concepts/...]]
+- wiki/CLAUDE.md: broken link: [[sources/...]]
+- wiki/concepts/ai-tools/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/concepts/ai-tools/session-setup.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/concepts/ai-tools/session-setup.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/concepts/env/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/concepts/iot/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/concepts/it-support/CLAUDE.md: broken link: [[/index-it]]
+- wiki/concepts/it-support/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/concepts/pharmacy/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[page-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[concept-name]]
+- wiki/context/review-report.md: broken link: [[sources/source-slug]]
+- wiki/context/review-report.md: broken link: [[entities/...]]
+- wiki/context/review-report.md: broken link: [[concepts/...]]
+- wiki/context/review-report.md: broken link: [[sources/...]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[/index-it]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Webclues Infotech Private Limited]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[Sarah Shaar]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Sara Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[continuing]]
-- wiki\context\review-report.md: broken link: [[you accept our]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[UniConverge Technologies]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[DroneBot Workshop]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Webclues Infotech Private Limited]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[Sarah Shaar]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Sara Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[continuing]]
-- wiki\context\review-report.md: broken link: [[you accept our]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[UniConverge Technologies]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[DroneBot Workshop]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Webclues Infotech Private Limited]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[Sarah Shaar]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Sara Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[continuing]]
-- wiki\context\review-report.md: broken link: [[you accept our]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[UniConverge Technologies]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[DroneBot Workshop]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Webclues Infotech Private Limited]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[Sarah Shaar]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Sara Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[continuing]]
-- wiki\context\review-report.md: broken link: [[you accept our]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[UniConverge Technologies]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[DroneBot Workshop]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Webclues Infotech Private Limited]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[Sarah Shaar]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Sara Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[continuing]]
-- wiki\context\review-report.md: broken link: [[you accept our]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[UniConverge Technologies]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[DroneBot Workshop]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Webclues Infotech Private Limited]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[Sarah Shaar]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Sara Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[continuing]]
+- wiki/context/review-report.md: broken link: [[you accept our]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[UniConverge Technologies]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[DroneBot Workshop]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\review-report.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[index-ai]]
-- wiki\context\review-report.md: broken link: [[deva_diy]]
-- wiki\context\review-report.md: broken link: [[arduino-libraries]]
-- wiki\context\review-report.md: broken link: [[Riccardo Medda]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[Rui Santos]]
-- wiki\context\review-report.md: broken link: [[Global Byte Shope]]
-- wiki\context\review-report.md: broken link: [[espressif]]
-- wiki\context\review-report.md: broken link: [[HelTecAutomation]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[Naush Patuck]]
-- wiki\context\review-report.md: broken link: [[CodeLucky]]
-- wiki\context\review-report.md: broken link: [[IoTThinks]]
-- wiki\context\review-report.md: broken link: [[RAKwireless]]
-- wiki\context\review-report.md: broken link: [[index-ai.md]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[index-pharmacy]]
-- wiki\context\review-report.md: broken link: [[monraspberry.com]]
-- wiki\context\review-report.md: broken link: [[ropg]]
-- wiki\context\review-report.md: broken link: [[vortigont]]
-- wiki\context\review-report.md: broken link: [[RSP]]
-- wiki\context\review-report.md: broken link: [[Y.Chanadej]]
-- wiki\context\review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\context\review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\context\review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\context\review-report.md: broken link: [[journal/README]]
-- wiki\context\review-report.md: broken link: [[decisions/README]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\context\review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\context\review-report.md: broken link: [[profile.md]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\context\review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\context\review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\context\review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\context\review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\context\review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\context\review-report.md: broken link: [[wiki/templates/]]
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\context\review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\context\wiki-overview.md: broken link: [[entities/io… |
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\wiki-overview.md: broken link: [[entities/iot/h… |
+- wiki/context/review-report.md: broken link: [[entities/iot/h… |
 | `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
-- wiki\entities\ai-tools\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\entities\ai-tools\telegram-ai-router.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\entities\env\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\entities\iot\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\entities\pharmacy\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\entities\pharmacy\drug-database.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\entities\pharmacy\drug-database.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\entities\pharmacy\drug-database.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\entities\pharmacy\drug-database.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\entities\pharmacy\drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\entities\pharmacy\drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\entities\pharmacy\drug-matching-system.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\entities\pharmacy\drug-matching-system.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\entities\pharmacy\drug-matching-system.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki\entities\pharmacy\pharmacy-business.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\entities\pharmacy\pharmacy-business.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\entities\pharmacy\pharmacy-business.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\entities\pharmacy\pharmacy-business.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\entities\pharmacy\pharmacy-business.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\entities\pharmacy\sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\entities\pharmacy\sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki\entities\pharmacy\sp-drugstore-2020.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\sources\ai-iot-server-build-v3.md: broken link: [[index-ai]]
-- wiki\sources\arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
-- wiki\sources\arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
-- wiki\sources\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\sources\create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
-- wiki\sources\drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\sources\drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki\sources\drug-aliases-reference.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\sources\drug-aliases-reference.md: broken link: [[index-pharmacy]]
-- wiki\sources\esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
-- wiki\sources\esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
-- wiki\sources\esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\sources\esp32.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki\sources\espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
-- wiki\sources\heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
-- wiki\sources\hyperframes-official-docs.md: broken link: [[index-ai.md]]
-- wiki\sources\introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
-- wiki\sources\iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
-- wiki\sources\iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
-- wiki\sources\lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
-- wiki\sources\openrouter-api-demo.md: broken link: [[index-ai.md]]
-- wiki\sources\pharmacy-context.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\sources\pharmacy-context.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki\sources\pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\sources\pharmacy-context.md: broken link: [[index-pharmacy]]
-- wiki\sources\pharmacy-ui-instructions.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\sources\pharmacy-ui-instructions.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki\sources\pharmacy-ui-instructions.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\sources\pharmacy-ui-instructions.md: broken link: [[index-pharmacy]]
-- wiki\sources\raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
-- wiki\sources\ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
-- wiki\sources\vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
-- wiki\sources\การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
-- wiki\sources\ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
-- wiki\sources\เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\synthesis\CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[journal/README]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[decisions/README]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki\synthesis\dream-projects.md: broken link: [[profile.md]]
-- wiki\synthesis\dual-ai-workflow.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki\synthesis\openrouter-agent-routing.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki\synthesis\pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\synthesis\pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\synthesis\pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\synthesis\pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki\synthesis\pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki\synthesis\pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki\synthesis\pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki\synthesis\pharmacy-web-app-roadmap.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki\synthesis\pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki\synthesis\pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki\synthesis\pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\synthesis\sunday-estate-frontend-qa-2026-05-18.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki\synthesis\sunday-estate-webapp.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki\synthesis\sunday-estate-webapp.md: broken link: [`sunday-estate-webapp/GETTING_STARTED.md`](../../../sunday-estate-webapp/GETTING_STARTED.md)
-- wiki\synthesis\sunday-estate-webapp.md: broken link: [`sunday-estate-webapp/supabase/README.md`](../../../sunday-estate-webapp/supabase/README.md)
-- wiki\synthesis\synthesis-ai-tools.md: broken link: [LangChain Framework for LLM Applications](wiki/sources/ai-tools/langchain-framework.md)
-- wiki\synthesis\synthesis-ai-tools.md: broken link: [Vector Databases for Semantic Search](wiki/sources/ai-tools/vector-databases.md)
-- wiki\synthesis\synthesis-env.md: broken link: [Air Quality Monitoring — Sensor Networks and Standards](wiki/sources/env/air-quality-monitoring.md)
-- wiki\synthesis\synthesis-env.md: broken link: [Soil Moisture Sensing Technologies](wiki/sources/env/soil-moisture-sensing.md)
-- wiki\synthesis\synthesis-env.md: broken link: [Water Quality Parameters and Monitoring](wiki/sources/env/water-quality-parameters.md)
-- wiki\synthesis\synthesis-iot.md: broken link: [LoRaWAN Architecture](wiki/sources/iot/lorawan-architecture.md)
-- wiki\synthesis\synthesis-iot.md: broken link: [MQTT Protocol Overview](wiki/sources/iot/mqtt-protocol-overview.md)
-- wiki\synthesis\synthesis-it.md: broken link: [Edge Computing Architectures for IoT](wiki/sources/it/edge-computing-iot.md)
-- wiki\synthesis\synthesis-it.md: broken link: [Network Monitoring for IoT Deployments](wiki/sources/it/network-monitoring-iot.md)
-- wiki\synthesis\synthesis-pharmacy.md: broken link: [Drug Interaction Checking Systems](wiki/sources/pharmacy/drug-interaction-checking.md)
-- wiki\templates\td-21-power-of-attorney.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[index-ai]]
+- wiki/context/review-report.md: broken link: [[deva_diy]]
+- wiki/context/review-report.md: broken link: [[arduino-libraries]]
+- wiki/context/review-report.md: broken link: [[Riccardo Medda]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[Rui Santos]]
+- wiki/context/review-report.md: broken link: [[Global Byte Shope]]
+- wiki/context/review-report.md: broken link: [[espressif]]
+- wiki/context/review-report.md: broken link: [[HelTecAutomation]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[Naush Patuck]]
+- wiki/context/review-report.md: broken link: [[CodeLucky]]
+- wiki/context/review-report.md: broken link: [[IoTThinks]]
+- wiki/context/review-report.md: broken link: [[RAKwireless]]
+- wiki/context/review-report.md: broken link: [[index-ai.md]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[index-pharmacy]]
+- wiki/context/review-report.md: broken link: [[monraspberry.com]]
+- wiki/context/review-report.md: broken link: [[ropg]]
+- wiki/context/review-report.md: broken link: [[vortigont]]
+- wiki/context/review-report.md: broken link: [[RSP]]
+- wiki/context/review-report.md: broken link: [[Y.Chanadej]]
+- wiki/context/review-report.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/context/review-report.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/context/review-report.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/context/review-report.md: broken link: [[journal/README]]
+- wiki/context/review-report.md: broken link: [[decisions/README]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/context/review-report.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/context/review-report.md: broken link: [[profile.md]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/context/review-report.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/context/review-report.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/context/review-report.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/context/review-report.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/context/review-report.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/context/review-report.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/context/review-report.md: broken link: [[wiki/templates/]]
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/context/review-report.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/context/review-report.md: broken link: [LangChain Framework for LLM Applications](wiki/sources/ai-tools/langchain-framework.md)
+- wiki/context/review-report.md: broken link: [Vector Databases for Semantic Search](wiki/sources/ai-tools/vector-databases.md)
+- wiki/context/review-report.md: broken link: [Air Quality Monitoring — Sensor Networks and Standards](wiki/sources/env/air-quality-monitoring.md)
+- wiki/context/review-report.md: broken link: [Soil Moisture Sensing Technologies](wiki/sources/env/soil-moisture-sensing.md)
+- wiki/context/review-report.md: broken link: [Water Quality Parameters and Monitoring](wiki/sources/env/water-quality-parameters.md)
+- wiki/context/review-report.md: broken link: [LoRaWAN Architecture](wiki/sources/iot/lorawan-architecture.md)
+- wiki/context/review-report.md: broken link: [MQTT Protocol Overview](wiki/sources/iot/mqtt-protocol-overview.md)
+- wiki/context/review-report.md: broken link: [Edge Computing Architectures for IoT](wiki/sources/it/edge-computing-iot.md)
+- wiki/context/review-report.md: broken link: [Network Monitoring for IoT Deployments](wiki/sources/it/network-monitoring-iot.md)
+- wiki/context/review-report.md: broken link: [Drug Interaction Checking Systems](wiki/sources/pharmacy/drug-interaction-checking.md)
+- wiki/context/wiki-overview.md: broken link: [[entities/io… |
+| `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
+| `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
+- wiki/context/wiki-overview.md: broken link: [[entities/iot/h… |
+| `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
+- wiki/entities/ai-tools/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/entities/ai-tools/telegram-ai-router.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/entities/env/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/entities/iot/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/entities/pharmacy/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/sources/drug-aliases-reference]]
+- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/drug-database]]
+- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/sources/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
+- wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
+- wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
+- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
+- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
+- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/sources/drug-aliases-reference.md: broken link: [[index-pharmacy]]
+- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
+- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
+- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/sources/esp32.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
+- wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
+- wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
+- wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
+- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
+- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
+- wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
+- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
+- wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
+- wiki/sources/pharmacy-context.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/sources/pharmacy-context.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
+- wiki/sources/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/sources/pharmacy-context.md: broken link: [[index-pharmacy]]
+- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
+- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/sources/pharmacy-ui-instructions.md: broken link: [[index-pharmacy]]
+- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
+- wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
+- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
+- wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
+- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
+- wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/synthesis/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
+- wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/0001-digital-legacy-strategy]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/0002-git-mirror-redundancy]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[journal/README]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/README]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/synthesis/dream-projects.md: broken link: [[profile.md]]
+- wiki/synthesis/dual-ai-workflow.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
+- wiki/synthesis/openrouter-agent-routing.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
+- wiki/synthesis/pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/synthesis/pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
+- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
+- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
+- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
+- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
+- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
+- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-context]]
+- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
+- wiki/synthesis/sunday-estate-frontend-qa-2026-05-18.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
+- wiki/synthesis/sunday-estate-webapp.md: broken link: [[ai-tools/openrouter-claude-code]]
+- wiki/synthesis/synthesis-ai-tools.md: broken link: [LangChain Framework for LLM Applications](wiki/sources/ai-tools/langchain-framework.md)
+- wiki/synthesis/synthesis-ai-tools.md: broken link: [Vector Databases for Semantic Search](wiki/sources/ai-tools/vector-databases.md)
+- wiki/synthesis/synthesis-env.md: broken link: [Air Quality Monitoring — Sensor Networks and Standards](wiki/sources/env/air-quality-monitoring.md)
+- wiki/synthesis/synthesis-env.md: broken link: [Soil Moisture Sensing Technologies](wiki/sources/env/soil-moisture-sensing.md)
+- wiki/synthesis/synthesis-env.md: broken link: [Water Quality Parameters and Monitoring](wiki/sources/env/water-quality-parameters.md)
+- wiki/synthesis/synthesis-iot.md: broken link: [LoRaWAN Architecture](wiki/sources/iot/lorawan-architecture.md)
+- wiki/synthesis/synthesis-iot.md: broken link: [MQTT Protocol Overview](wiki/sources/iot/mqtt-protocol-overview.md)
+- wiki/synthesis/synthesis-it.md: broken link: [Edge Computing Architectures for IoT](wiki/sources/it/edge-computing-iot.md)
+- wiki/synthesis/synthesis-it.md: broken link: [Network Monitoring for IoT Deployments](wiki/sources/it/network-monitoring-iot.md)
+- wiki/synthesis/synthesis-pharmacy.md: broken link: [Drug Interaction Checking Systems](wiki/sources/pharmacy/drug-interaction-checking.md)
+- wiki/templates/td-21-power-of-attorney.md: broken link: [[wiki/templates/]]
 
 ---
 
 ## ❌ L5: Skill README Check (README.md present) — Failures
 
-- skills\automation/ missing README.md
-- skills\claude-code/ missing README.md
-- skills\claude-code\ask-notebooklm/ missing README.md
-- skills\claude-code\brainstorm-before-build/ missing README.md
-- skills\claude-code\crew-dispatch/ missing README.md
-- skills\claude-code\delegate-subagent/ missing README.md
-- skills\claude-code\excel-generator/ missing README.md
-- skills\claude-code\export-notebooklm/ missing README.md
-- skills\claude-code\hook-suggest/ missing README.md
-- skills\claude-code\ingest-source/ missing README.md
-- skills\claude-code\internet-skill-finder/ missing README.md
-- skills\claude-code\lint-wiki/ missing README.md
-- skills\claude-code\obsidian/ missing README.md
-- skills\claude-code\pharmacy-order-lookup/ missing README.md
-- skills\claude-code\root-cause-first/ missing README.md
-- skills\claude-code\skill-creator/ missing README.md
-- skills\claude-code\token-optimization/ missing README.md
-- skills\claude-code\verify-before-done/ missing README.md
-- skills\claude-code\web-research/ missing README.md
-- skills\claude-code\wiki-search-local/ missing README.md
-- skills\claude-thai/ missing README.md
-- skills\claude-thai\thai-address/ missing README.md
-- skills\claude-thai\thai-customer-service/ missing README.md
-- skills\claude-thai\thai-date-format/ missing README.md
-- skills\claude-thai\thai-festival-card/ missing README.md
-- skills\claude-thai\thai-government-form/ missing README.md
-- skills\claude-thai\thai-id-validate/ missing README.md
-- skills\claude-thai\thai-invoice/ missing README.md
-- skills\claude-thai\thai-pdpa/ missing README.md
-- skills\claude-thai\thai-resume/ missing README.md
-- skills\claude-thai\thai-social-caption/ missing README.md
-- skills\claude-thai\thai-text-processing/ missing README.md
-- skills\claude-thai\thai-translate/ missing README.md
-- skills\delegation/ missing README.md
-- skills\delegation\crew-dispatch/ missing README.md
-- skills\delegation\delegate-subagent/ missing README.md
-- skills\delegation\skill-creator/ missing README.md
-- skills\deprecated/ missing README.md
-- skills\deprecated\root-cause-first/ missing README.md
-- skills\domain/ missing README.md
-- skills\domain\excel-generator/ missing README.md
-- skills\domain\pharmacy-order-lookup/ missing README.md
-- skills\ecosystem/ missing README.md
-- skills\ecosystem\accessibility/ missing README.md
-- skills\ecosystem\agent-architecture-audit/ missing README.md
-- skills\ecosystem\agent-eval/ missing README.md
-- skills\ecosystem\agent-harness-construction/ missing README.md
-- skills\ecosystem\agent-introspection-debugging/ missing README.md
-- skills\ecosystem\agent-payment-x402/ missing README.md
-- skills\ecosystem\agent-sort/ missing README.md
-- skills\ecosystem\agentic-engineering/ missing README.md
-- skills\ecosystem\agentic-os/ missing README.md
-- skills\ecosystem\ai-first-engineering/ missing README.md
-- skills\ecosystem\ai-regression-testing/ missing README.md
-- skills\ecosystem\android-clean-architecture/ missing README.md
-- skills\ecosystem\angular-developer/ missing README.md
-- skills\ecosystem\api-connector-builder/ missing README.md
-- skills\ecosystem\api-design/ missing README.md
-- skills\ecosystem\architecture-decision-records/ missing README.md
-- skills\ecosystem\article-writing/ missing README.md
-- skills\ecosystem\automation-audit-ops/ missing README.md
-- skills\ecosystem\autonomous-agent-harness/ missing README.md
-- skills\ecosystem\autonomous-loops/ missing README.md
-- skills\ecosystem\backend-patterns/ missing README.md
-- skills\ecosystem\benchmark/ missing README.md
-- skills\ecosystem\blender-motion-state-inspection/ missing README.md
-- skills\ecosystem\blueprint/ missing README.md
-- skills\ecosystem\brand-voice/ missing README.md
-- skills\ecosystem\browser-qa/ missing README.md
-- skills\ecosystem\bun-runtime/ missing README.md
-- skills\ecosystem\canary-watch/ missing README.md
-- skills\ecosystem\carrier-relationship-management/ missing README.md
-- skills\ecosystem\cisco-ios-patterns/ missing README.md
-- skills\ecosystem\ck/ missing README.md
-- skills\ecosystem\claude-devfleet/ missing README.md
-- skills\ecosystem\click-path-audit/ missing README.md
-- skills\ecosystem\clickhouse-io/ missing README.md
-- skills\ecosystem\code-tour/ missing README.md
-- skills\ecosystem\codebase-onboarding/ missing README.md
-- skills\ecosystem\coding-standards/ missing README.md
-- skills\ecosystem\compose-multiplatform-patterns/ missing README.md
-- skills\ecosystem\configure-ecc/ missing README.md
-- skills\ecosystem\connections-optimizer/ missing README.md
-- skills\ecosystem\content-engine/ missing README.md
-- skills\ecosystem\content-hash-cache-pattern/ missing README.md
-- skills\ecosystem\context-budget/ missing README.md
-- skills\ecosystem\continuous-agent-loop/ missing README.md
-- skills\ecosystem\continuous-learning/ missing README.md
-- skills\ecosystem\continuous-learning-v2/ missing README.md
-- skills\ecosystem\cost-aware-llm-pipeline/ missing README.md
-- skills\ecosystem\cost-tracking/ missing README.md
-- skills\ecosystem\council/ missing README.md
-- skills\ecosystem\cpp-coding-standards/ missing README.md
-- skills\ecosystem\cpp-testing/ missing README.md
-- skills\ecosystem\crosspost/ missing README.md
-- skills\ecosystem\csharp-testing/ missing README.md
-- skills\ecosystem\customer-billing-ops/ missing README.md
-- skills\ecosystem\customs-trade-compliance/ missing README.md
-- skills\ecosystem\dart-flutter-patterns/ missing README.md
-- skills\ecosystem\dashboard-builder/ missing README.md
-- skills\ecosystem\data-scraper-agent/ missing README.md
-- skills\ecosystem\database-migrations/ missing README.md
-- skills\ecosystem\deep-research/ missing README.md
-- skills\ecosystem\defi-amm-security/ missing README.md
-- skills\ecosystem\deployment-patterns/ missing README.md
-- skills\ecosystem\design-system/ missing README.md
-- skills\ecosystem\django-celery/ missing README.md
-- skills\ecosystem\django-patterns/ missing README.md
-- skills\ecosystem\django-security/ missing README.md
-- skills\ecosystem\django-tdd/ missing README.md
-- skills\ecosystem\django-verification/ missing README.md
-- skills\ecosystem\dmux-workflows/ missing README.md
-- skills\ecosystem\docker-patterns/ missing README.md
-- skills\ecosystem\documentation-lookup/ missing README.md
-- skills\ecosystem\dotnet-patterns/ missing README.md
-- skills\ecosystem\e2e-testing/ missing README.md
-- skills\ecosystem\ecc-guide/ missing README.md
-- skills\ecosystem\ecc-tools-cost-audit/ missing README.md
-- skills\ecosystem\email-ops/ missing README.md
-- skills\ecosystem\energy-procurement/ missing README.md
-- skills\ecosystem\enterprise-agent-ops/ missing README.md
-- skills\ecosystem\error-handling/ missing README.md
-- skills\ecosystem\eval-harness/ missing README.md
-- skills\ecosystem\evm-token-decimals/ missing README.md
-- skills\ecosystem\exa-search/ missing README.md
-- skills\ecosystem\fal-ai-media/ missing README.md
-- skills\ecosystem\fastapi-patterns/ missing README.md
-- skills\ecosystem\finance-billing-ops/ missing README.md
-- skills\ecosystem\flox-environments/ missing README.md
-- skills\ecosystem\flutter-dart-code-review/ missing README.md
-- skills\ecosystem\foundation-models-on-device/ missing README.md
-- skills\ecosystem\frontend-design-direction/ missing README.md
-- skills\ecosystem\frontend-patterns/ missing README.md
-- skills\ecosystem\frontend-slides/ missing README.md
-- skills\ecosystem\fsharp-testing/ missing README.md
-- skills\ecosystem\gan-style-harness/ missing README.md
-- skills\ecosystem\gateguard/ missing README.md
-- skills\ecosystem\git-workflow/ missing README.md
-- skills\ecosystem\github-ops/ missing README.md
-- skills\ecosystem\golang-patterns/ missing README.md
-- skills\ecosystem\golang-testing/ missing README.md
-- skills\ecosystem\google-workspace-ops/ missing README.md
-- skills\ecosystem\healthcare-cdss-patterns/ missing README.md
-- skills\ecosystem\healthcare-emr-patterns/ missing README.md
-- skills\ecosystem\healthcare-eval-harness/ missing README.md
-- skills\ecosystem\healthcare-phi-compliance/ missing README.md
-- skills\ecosystem\hermes-imports/ missing README.md
-- skills\ecosystem\hexagonal-architecture/ missing README.md
-- skills\ecosystem\hipaa-compliance/ missing README.md
-- skills\ecosystem\homelab-network-readiness/ missing README.md
-- skills\ecosystem\homelab-network-setup/ missing README.md
-- skills\ecosystem\homelab-pihole-dns/ missing README.md
-- skills\ecosystem\homelab-vlan-segmentation/ missing README.md
-- skills\ecosystem\homelab-wireguard-vpn/ missing README.md
-- skills\ecosystem\hookify-rules/ missing README.md
-- skills\ecosystem\inventory-demand-planning/ missing README.md
-- skills\ecosystem\investor-materials/ missing README.md
-- skills\ecosystem\investor-outreach/ missing README.md
-- skills\ecosystem\ios-icon-gen/ missing README.md
-- skills\ecosystem\iterative-retrieval/ missing README.md
-- skills\ecosystem\java-coding-standards/ missing README.md
-- skills\ecosystem\jira-integration/ missing README.md
-- skills\ecosystem\jpa-patterns/ missing README.md
-- skills\ecosystem\knowledge-ops/ missing README.md
-- skills\ecosystem\kotlin-coroutines-flows/ missing README.md
-- skills\ecosystem\kotlin-exposed-patterns/ missing README.md
-- skills\ecosystem\kotlin-ktor-patterns/ missing README.md
-- skills\ecosystem\kotlin-patterns/ missing README.md
-- skills\ecosystem\kotlin-testing/ missing README.md
-- skills\ecosystem\laravel-patterns/ missing README.md
-- skills\ecosystem\laravel-plugin-discovery/ missing README.md
-- skills\ecosystem\laravel-security/ missing README.md
-- skills\ecosystem\laravel-tdd/ missing README.md
-- skills\ecosystem\laravel-verification/ missing README.md
-- skills\ecosystem\lead-intelligence/ missing README.md
-- skills\ecosystem\liquid-glass-design/ missing README.md
-- skills\ecosystem\llm-trading-agent-security/ missing README.md
-- skills\ecosystem\logistics-exception-management/ missing README.md
-- skills\ecosystem\make-interfaces-feel-better/ missing README.md
-- skills\ecosystem\manim-video/ missing README.md
-- skills\ecosystem\market-research/ missing README.md
-- skills\ecosystem\mcp-server-patterns/ missing README.md
-- skills\ecosystem\messages-ops/ missing README.md
-- skills\ecosystem\mle-workflow/ missing README.md
-- skills\ecosystem\motion-advanced/ missing README.md
-- skills\ecosystem\motion-foundations/ missing README.md
-- skills\ecosystem\motion-patterns/ missing README.md
-- skills\ecosystem\motion-ui/ missing README.md
-- skills\ecosystem\mysql-patterns/ missing README.md
-- skills\ecosystem\nanoclaw-repl/ missing README.md
-- skills\ecosystem\nestjs-patterns/ missing README.md
-- skills\ecosystem\netmiko-ssh-automation/ missing README.md
-- skills\ecosystem\network-bgp-diagnostics/ missing README.md
-- skills\ecosystem\network-config-validation/ missing README.md
-- skills\ecosystem\network-interface-health/ missing README.md
-- skills\ecosystem\nextjs-turbopack/ missing README.md
-- skills\ecosystem\nodejs-keccak256/ missing README.md
-- skills\ecosystem\nutrient-document-processing/ missing README.md
-- skills\ecosystem\nuxt4-patterns/ missing README.md
-- skills\ecosystem\openclaw-persona-forge/ missing README.md
-- skills\ecosystem\opensource-pipeline/ missing README.md
-- skills\ecosystem\perl-patterns/ missing README.md
-- skills\ecosystem\perl-security/ missing README.md
-- skills\ecosystem\perl-testing/ missing README.md
-- skills\ecosystem\plan-orchestrate/ missing README.md
-- skills\ecosystem\plankton-code-quality/ missing README.md
-- skills\ecosystem\postgres-patterns/ missing README.md
-- skills\ecosystem\prisma-patterns/ missing README.md
-- skills\ecosystem\product-capability/ missing README.md
-- skills\ecosystem\product-lens/ missing README.md
-- skills\ecosystem\production-audit/ missing README.md
-- skills\ecosystem\production-scheduling/ missing README.md
-- skills\ecosystem\project-flow-ops/ missing README.md
-- skills\ecosystem\prompt-optimizer/ missing README.md
-- skills\ecosystem\python-patterns/ missing README.md
-- skills\ecosystem\python-testing/ missing README.md
-- skills\ecosystem\pytorch-patterns/ missing README.md
-- skills\ecosystem\quality-nonconformance/ missing README.md
-- skills\ecosystem\quarkus-patterns/ missing README.md
-- skills\ecosystem\quarkus-security/ missing README.md
-- skills\ecosystem\quarkus-tdd/ missing README.md
-- skills\ecosystem\quarkus-verification/ missing README.md
-- skills\ecosystem\ralphinho-rfc-pipeline/ missing README.md
-- skills\ecosystem\recsys-pipeline-architect/ missing README.md
-- skills\ecosystem\redis-patterns/ missing README.md
-- skills\ecosystem\regex-vs-llm-structured-text/ missing README.md
-- skills\ecosystem\remotion-video-creation/ missing README.md
-- skills\ecosystem\repo-scan/ missing README.md
-- skills\ecosystem\research-ops/ missing README.md
-- skills\ecosystem\returns-reverse-logistics/ missing README.md
-- skills\ecosystem\rules-distill/ missing README.md
-- skills\ecosystem\rust-patterns/ missing README.md
-- skills\ecosystem\rust-testing/ missing README.md
-- skills\ecosystem\safety-guard/ missing README.md
-- skills\ecosystem\santa-method/ missing README.md
-- skills\ecosystem\scientific-db-pubmed-database/ missing README.md
-- skills\ecosystem\scientific-db-uspto-database/ missing README.md
-- skills\ecosystem\scientific-pkg-gget/ missing README.md
-- skills\ecosystem\scientific-thinking-literature-review/ missing README.md
-- skills\ecosystem\scientific-thinking-scholar-evaluation/ missing README.md
-- skills\ecosystem\search-first/ missing README.md
-- skills\ecosystem\security-bounty-hunter/ missing README.md
-- skills\ecosystem\security-review/ missing README.md
-- skills\ecosystem\security-scan/ missing README.md
-- skills\ecosystem\seo/ missing README.md
-- skills\ecosystem\skill-comply/ missing README.md
-- skills\ecosystem\skill-scout/ missing README.md
-- skills\ecosystem\skill-stocktake/ missing README.md
-- skills\ecosystem\social-graph-ranker/ missing README.md
-- skills\ecosystem\springboot-patterns/ missing README.md
-- skills\ecosystem\springboot-security/ missing README.md
-- skills\ecosystem\springboot-tdd/ missing README.md
-- skills\ecosystem\springboot-verification/ missing README.md
-- skills\ecosystem\strategic-compact/ missing README.md
-- skills\ecosystem\swift-actor-persistence/ missing README.md
-- skills\ecosystem\swift-concurrency-6-2/ missing README.md
-- skills\ecosystem\swift-protocol-di-testing/ missing README.md
-- skills\ecosystem\swiftui-patterns/ missing README.md
-- skills\ecosystem\tdd-workflow/ missing README.md
-- skills\ecosystem\team-builder/ missing README.md
-- skills\ecosystem\terminal-ops/ missing README.md
-- skills\ecosystem\tinystruct-patterns/ missing README.md
-- skills\ecosystem\token-budget-advisor/ missing README.md
-- skills\ecosystem\ui-demo/ missing README.md
-- skills\ecosystem\ui-to-vue/ missing README.md
-- skills\ecosystem\uncloud/ missing README.md
-- skills\ecosystem\unified-notifications-ops/ missing README.md
-- skills\ecosystem\verification-loop/ missing README.md
-- skills\ecosystem\video-editing/ missing README.md
-- skills\ecosystem\videodb/ missing README.md
-- skills\ecosystem\vite-patterns/ missing README.md
-- skills\ecosystem\windows-desktop-e2e/ missing README.md
-- skills\ecosystem\workspace-surface-audit/ missing README.md
-- skills\ecosystem\x-api/ missing README.md
-- skills\engineering\debug-mantra/ missing README.md
-- skills\engineering\post-mortem/ missing README.md
-- skills\engineering\scrutinize/ missing README.md
-- skills\in-progress/ missing README.md
-- skills\productivity\management-talk/ missing README.md
-- skills\research/ missing README.md
-- skills\wiki/ missing README.md
-- skills\wiki\export-notebooklm/ missing README.md
-- skills\wiki\ingest-source/ missing README.md
-- skills\wiki\lint-wiki/ missing README.md
-- skills\wiki\obsidian/ missing README.md
-- skills\wiki\wiki-search-local/ missing README.md
+- skills/automation/ missing README.md
+- skills/automation/hook-suggest/ missing README.md
+- skills/automation/token-optimization/ missing README.md
+- skills/automation/verify-before-done/ missing README.md
+- skills/claude-code/ missing README.md
+- skills/claude-code/ask-notebooklm/ missing README.md
+- skills/claude-code/brainstorm-before-build/ missing README.md
+- skills/claude-code/crew-dispatch/ missing README.md
+- skills/claude-code/delegate-subagent/ missing README.md
+- skills/claude-code/excel-generator/ missing README.md
+- skills/claude-code/export-notebooklm/ missing README.md
+- skills/claude-code/hook-suggest/ missing README.md
+- skills/claude-code/ingest-source/ missing README.md
+- skills/claude-code/internet-skill-finder/ missing README.md
+- skills/claude-code/lint-wiki/ missing README.md
+- skills/claude-code/obsidian/ missing README.md
+- skills/claude-code/pharmacy-order-lookup/ missing README.md
+- skills/claude-code/root-cause-first/ missing README.md
+- skills/claude-code/skill-creator/ missing README.md
+- skills/claude-code/token-optimization/ missing README.md
+- skills/claude-code/verify-before-done/ missing README.md
+- skills/claude-code/web-research/ missing README.md
+- skills/claude-code/wiki-search-local/ missing README.md
+- skills/claude-thai/ missing README.md
+- skills/claude-thai/thai-address/ missing README.md
+- skills/claude-thai/thai-customer-service/ missing README.md
+- skills/claude-thai/thai-date-format/ missing README.md
+- skills/claude-thai/thai-festival-card/ missing README.md
+- skills/claude-thai/thai-government-form/ missing README.md
+- skills/claude-thai/thai-id-validate/ missing README.md
+- skills/claude-thai/thai-invoice/ missing README.md
+- skills/claude-thai/thai-pdpa/ missing README.md
+- skills/claude-thai/thai-resume/ missing README.md
+- skills/claude-thai/thai-social-caption/ missing README.md
+- skills/claude-thai/thai-text-processing/ missing README.md
+- skills/claude-thai/thai-translate/ missing README.md
+- skills/delegation/ missing README.md
+- skills/delegation/crew-dispatch/ missing README.md
+- skills/delegation/delegate-subagent/ missing README.md
+- skills/delegation/skill-creator/ missing README.md
+- skills/deprecated/ missing README.md
+- skills/deprecated/root-cause-first/ missing README.md
+- skills/domain/ missing README.md
+- skills/domain/excel-generator/ missing README.md
+- skills/domain/pharmacy-order-lookup/ missing README.md
+- skills/ecosystem/ missing README.md
+- skills/ecosystem/accessibility/ missing README.md
+- skills/ecosystem/agent-architecture-audit/ missing README.md
+- skills/ecosystem/agent-eval/ missing README.md
+- skills/ecosystem/agent-harness-construction/ missing README.md
+- skills/ecosystem/agent-introspection-debugging/ missing README.md
+- skills/ecosystem/agent-payment-x402/ missing README.md
+- skills/ecosystem/agent-sort/ missing README.md
+- skills/ecosystem/agentic-engineering/ missing README.md
+- skills/ecosystem/agentic-os/ missing README.md
+- skills/ecosystem/ai-first-engineering/ missing README.md
+- skills/ecosystem/ai-regression-testing/ missing README.md
+- skills/ecosystem/android-clean-architecture/ missing README.md
+- skills/ecosystem/angular-developer/ missing README.md
+- skills/ecosystem/api-connector-builder/ missing README.md
+- skills/ecosystem/api-design/ missing README.md
+- skills/ecosystem/architecture-decision-records/ missing README.md
+- skills/ecosystem/article-writing/ missing README.md
+- skills/ecosystem/automation-audit-ops/ missing README.md
+- skills/ecosystem/autonomous-agent-harness/ missing README.md
+- skills/ecosystem/autonomous-loops/ missing README.md
+- skills/ecosystem/backend-patterns/ missing README.md
+- skills/ecosystem/benchmark/ missing README.md
+- skills/ecosystem/blender-motion-state-inspection/ missing README.md
+- skills/ecosystem/blueprint/ missing README.md
+- skills/ecosystem/brand-voice/ missing README.md
+- skills/ecosystem/browser-qa/ missing README.md
+- skills/ecosystem/bun-runtime/ missing README.md
+- skills/ecosystem/canary-watch/ missing README.md
+- skills/ecosystem/carrier-relationship-management/ missing README.md
+- skills/ecosystem/cisco-ios-patterns/ missing README.md
+- skills/ecosystem/ck/ missing README.md
+- skills/ecosystem/claude-devfleet/ missing README.md
+- skills/ecosystem/click-path-audit/ missing README.md
+- skills/ecosystem/clickhouse-io/ missing README.md
+- skills/ecosystem/code-tour/ missing README.md
+- skills/ecosystem/codebase-onboarding/ missing README.md
+- skills/ecosystem/coding-standards/ missing README.md
+- skills/ecosystem/compose-multiplatform-patterns/ missing README.md
+- skills/ecosystem/configure-ecc/ missing README.md
+- skills/ecosystem/connections-optimizer/ missing README.md
+- skills/ecosystem/content-engine/ missing README.md
+- skills/ecosystem/content-hash-cache-pattern/ missing README.md
+- skills/ecosystem/context-budget/ missing README.md
+- skills/ecosystem/continuous-agent-loop/ missing README.md
+- skills/ecosystem/continuous-learning/ missing README.md
+- skills/ecosystem/continuous-learning-v2/ missing README.md
+- skills/ecosystem/cost-aware-llm-pipeline/ missing README.md
+- skills/ecosystem/cost-tracking/ missing README.md
+- skills/ecosystem/council/ missing README.md
+- skills/ecosystem/cpp-coding-standards/ missing README.md
+- skills/ecosystem/cpp-testing/ missing README.md
+- skills/ecosystem/crosspost/ missing README.md
+- skills/ecosystem/csharp-testing/ missing README.md
+- skills/ecosystem/customer-billing-ops/ missing README.md
+- skills/ecosystem/customs-trade-compliance/ missing README.md
+- skills/ecosystem/dart-flutter-patterns/ missing README.md
+- skills/ecosystem/dashboard-builder/ missing README.md
+- skills/ecosystem/data-scraper-agent/ missing README.md
+- skills/ecosystem/database-migrations/ missing README.md
+- skills/ecosystem/deep-research/ missing README.md
+- skills/ecosystem/defi-amm-security/ missing README.md
+- skills/ecosystem/deployment-patterns/ missing README.md
+- skills/ecosystem/design-system/ missing README.md
+- skills/ecosystem/django-celery/ missing README.md
+- skills/ecosystem/django-patterns/ missing README.md
+- skills/ecosystem/django-security/ missing README.md
+- skills/ecosystem/django-tdd/ missing README.md
+- skills/ecosystem/django-verification/ missing README.md
+- skills/ecosystem/dmux-workflows/ missing README.md
+- skills/ecosystem/docker-patterns/ missing README.md
+- skills/ecosystem/documentation-lookup/ missing README.md
+- skills/ecosystem/dotnet-patterns/ missing README.md
+- skills/ecosystem/e2e-testing/ missing README.md
+- skills/ecosystem/ecc-guide/ missing README.md
+- skills/ecosystem/ecc-tools-cost-audit/ missing README.md
+- skills/ecosystem/email-ops/ missing README.md
+- skills/ecosystem/energy-procurement/ missing README.md
+- skills/ecosystem/enterprise-agent-ops/ missing README.md
+- skills/ecosystem/error-handling/ missing README.md
+- skills/ecosystem/eval-harness/ missing README.md
+- skills/ecosystem/evm-token-decimals/ missing README.md
+- skills/ecosystem/exa-search/ missing README.md
+- skills/ecosystem/fal-ai-media/ missing README.md
+- skills/ecosystem/fastapi-patterns/ missing README.md
+- skills/ecosystem/finance-billing-ops/ missing README.md
+- skills/ecosystem/flox-environments/ missing README.md
+- skills/ecosystem/flutter-dart-code-review/ missing README.md
+- skills/ecosystem/foundation-models-on-device/ missing README.md
+- skills/ecosystem/frontend-design-direction/ missing README.md
+- skills/ecosystem/frontend-patterns/ missing README.md
+- skills/ecosystem/frontend-slides/ missing README.md
+- skills/ecosystem/fsharp-testing/ missing README.md
+- skills/ecosystem/gan-style-harness/ missing README.md
+- skills/ecosystem/gateguard/ missing README.md
+- skills/ecosystem/git-workflow/ missing README.md
+- skills/ecosystem/github-ops/ missing README.md
+- skills/ecosystem/golang-patterns/ missing README.md
+- skills/ecosystem/golang-testing/ missing README.md
+- skills/ecosystem/google-workspace-ops/ missing README.md
+- skills/ecosystem/healthcare-cdss-patterns/ missing README.md
+- skills/ecosystem/healthcare-emr-patterns/ missing README.md
+- skills/ecosystem/healthcare-eval-harness/ missing README.md
+- skills/ecosystem/healthcare-phi-compliance/ missing README.md
+- skills/ecosystem/hermes-imports/ missing README.md
+- skills/ecosystem/hexagonal-architecture/ missing README.md
+- skills/ecosystem/hipaa-compliance/ missing README.md
+- skills/ecosystem/homelab-network-readiness/ missing README.md
+- skills/ecosystem/homelab-network-setup/ missing README.md
+- skills/ecosystem/homelab-pihole-dns/ missing README.md
+- skills/ecosystem/homelab-vlan-segmentation/ missing README.md
+- skills/ecosystem/homelab-wireguard-vpn/ missing README.md
+- skills/ecosystem/hookify-rules/ missing README.md
+- skills/ecosystem/inventory-demand-planning/ missing README.md
+- skills/ecosystem/investor-materials/ missing README.md
+- skills/ecosystem/investor-outreach/ missing README.md
+- skills/ecosystem/ios-icon-gen/ missing README.md
+- skills/ecosystem/iterative-retrieval/ missing README.md
+- skills/ecosystem/java-coding-standards/ missing README.md
+- skills/ecosystem/jira-integration/ missing README.md
+- skills/ecosystem/jpa-patterns/ missing README.md
+- skills/ecosystem/knowledge-ops/ missing README.md
+- skills/ecosystem/kotlin-coroutines-flows/ missing README.md
+- skills/ecosystem/kotlin-exposed-patterns/ missing README.md
+- skills/ecosystem/kotlin-ktor-patterns/ missing README.md
+- skills/ecosystem/kotlin-patterns/ missing README.md
+- skills/ecosystem/kotlin-testing/ missing README.md
+- skills/ecosystem/laravel-patterns/ missing README.md
+- skills/ecosystem/laravel-plugin-discovery/ missing README.md
+- skills/ecosystem/laravel-security/ missing README.md
+- skills/ecosystem/laravel-tdd/ missing README.md
+- skills/ecosystem/laravel-verification/ missing README.md
+- skills/ecosystem/lead-intelligence/ missing README.md
+- skills/ecosystem/liquid-glass-design/ missing README.md
+- skills/ecosystem/llm-trading-agent-security/ missing README.md
+- skills/ecosystem/logistics-exception-management/ missing README.md
+- skills/ecosystem/make-interfaces-feel-better/ missing README.md
+- skills/ecosystem/manim-video/ missing README.md
+- skills/ecosystem/market-research/ missing README.md
+- skills/ecosystem/mcp-server-patterns/ missing README.md
+- skills/ecosystem/messages-ops/ missing README.md
+- skills/ecosystem/mle-workflow/ missing README.md
+- skills/ecosystem/motion-advanced/ missing README.md
+- skills/ecosystem/motion-foundations/ missing README.md
+- skills/ecosystem/motion-patterns/ missing README.md
+- skills/ecosystem/motion-ui/ missing README.md
+- skills/ecosystem/mysql-patterns/ missing README.md
+- skills/ecosystem/nanoclaw-repl/ missing README.md
+- skills/ecosystem/nestjs-patterns/ missing README.md
+- skills/ecosystem/netmiko-ssh-automation/ missing README.md
+- skills/ecosystem/network-bgp-diagnostics/ missing README.md
+- skills/ecosystem/network-config-validation/ missing README.md
+- skills/ecosystem/network-interface-health/ missing README.md
+- skills/ecosystem/nextjs-turbopack/ missing README.md
+- skills/ecosystem/nodejs-keccak256/ missing README.md
+- skills/ecosystem/nutrient-document-processing/ missing README.md
+- skills/ecosystem/nuxt4-patterns/ missing README.md
+- skills/ecosystem/openclaw-persona-forge/ missing README.md
+- skills/ecosystem/opensource-pipeline/ missing README.md
+- skills/ecosystem/perl-patterns/ missing README.md
+- skills/ecosystem/perl-security/ missing README.md
+- skills/ecosystem/perl-testing/ missing README.md
+- skills/ecosystem/plan-orchestrate/ missing README.md
+- skills/ecosystem/plankton-code-quality/ missing README.md
+- skills/ecosystem/postgres-patterns/ missing README.md
+- skills/ecosystem/prisma-patterns/ missing README.md
+- skills/ecosystem/product-capability/ missing README.md
+- skills/ecosystem/product-lens/ missing README.md
+- skills/ecosystem/production-audit/ missing README.md
+- skills/ecosystem/production-scheduling/ missing README.md
+- skills/ecosystem/project-flow-ops/ missing README.md
+- skills/ecosystem/prompt-optimizer/ missing README.md
+- skills/ecosystem/python-patterns/ missing README.md
+- skills/ecosystem/python-testing/ missing README.md
+- skills/ecosystem/pytorch-patterns/ missing README.md
+- skills/ecosystem/quality-nonconformance/ missing README.md
+- skills/ecosystem/quarkus-patterns/ missing README.md
+- skills/ecosystem/quarkus-security/ missing README.md
+- skills/ecosystem/quarkus-tdd/ missing README.md
+- skills/ecosystem/quarkus-verification/ missing README.md
+- skills/ecosystem/ralphinho-rfc-pipeline/ missing README.md
+- skills/ecosystem/recsys-pipeline-architect/ missing README.md
+- skills/ecosystem/redis-patterns/ missing README.md
+- skills/ecosystem/regex-vs-llm-structured-text/ missing README.md
+- skills/ecosystem/remotion-video-creation/ missing README.md
+- skills/ecosystem/repo-scan/ missing README.md
+- skills/ecosystem/research-ops/ missing README.md
+- skills/ecosystem/returns-reverse-logistics/ missing README.md
+- skills/ecosystem/rules-distill/ missing README.md
+- skills/ecosystem/rust-patterns/ missing README.md
+- skills/ecosystem/rust-testing/ missing README.md
+- skills/ecosystem/safety-guard/ missing README.md
+- skills/ecosystem/santa-method/ missing README.md
+- skills/ecosystem/scientific-db-pubmed-database/ missing README.md
+- skills/ecosystem/scientific-db-uspto-database/ missing README.md
+- skills/ecosystem/scientific-pkg-gget/ missing README.md
+- skills/ecosystem/scientific-thinking-literature-review/ missing README.md
+- skills/ecosystem/scientific-thinking-scholar-evaluation/ missing README.md
+- skills/ecosystem/search-first/ missing README.md
+- skills/ecosystem/security-bounty-hunter/ missing README.md
+- skills/ecosystem/security-review/ missing README.md
+- skills/ecosystem/security-scan/ missing README.md
+- skills/ecosystem/seo/ missing README.md
+- skills/ecosystem/skill-comply/ missing README.md
+- skills/ecosystem/skill-scout/ missing README.md
+- skills/ecosystem/skill-stocktake/ missing README.md
+- skills/ecosystem/social-graph-ranker/ missing README.md
+- skills/ecosystem/springboot-patterns/ missing README.md
+- skills/ecosystem/springboot-security/ missing README.md
+- skills/ecosystem/springboot-tdd/ missing README.md
+- skills/ecosystem/springboot-verification/ missing README.md
+- skills/ecosystem/strategic-compact/ missing README.md
+- skills/ecosystem/swift-actor-persistence/ missing README.md
+- skills/ecosystem/swift-concurrency-6-2/ missing README.md
+- skills/ecosystem/swift-protocol-di-testing/ missing README.md
+- skills/ecosystem/swiftui-patterns/ missing README.md
+- skills/ecosystem/tdd-workflow/ missing README.md
+- skills/ecosystem/team-builder/ missing README.md
+- skills/ecosystem/terminal-ops/ missing README.md
+- skills/ecosystem/tinystruct-patterns/ missing README.md
+- skills/ecosystem/token-budget-advisor/ missing README.md
+- skills/ecosystem/ui-demo/ missing README.md
+- skills/ecosystem/ui-to-vue/ missing README.md
+- skills/ecosystem/uncloud/ missing README.md
+- skills/ecosystem/unified-notifications-ops/ missing README.md
+- skills/ecosystem/verification-loop/ missing README.md
+- skills/ecosystem/video-editing/ missing README.md
+- skills/ecosystem/videodb/ missing README.md
+- skills/ecosystem/vite-patterns/ missing README.md
+- skills/ecosystem/windows-desktop-e2e/ missing README.md
+- skills/ecosystem/workspace-surface-audit/ missing README.md
+- skills/ecosystem/x-api/ missing README.md
+- skills/engineering/debug-mantra/ missing README.md
+- skills/engineering/post-mortem/ missing README.md
+- skills/engineering/scrutinize/ missing README.md
+- skills/productivity/management-talk/ missing README.md
+- skills/research/ missing README.md
+- skills/research/ask-notebooklm/ missing README.md
+- skills/research/brainstorm-before-build/ missing README.md
+- skills/research/internet-skill-finder/ missing README.md
+- skills/research/web-research/ missing README.md
+- skills/wiki/ missing README.md
+- skills/wiki/export-notebooklm/ missing README.md
+- skills/wiki/ingest-source/ missing README.md
+- skills/wiki/lint-wiki/ missing README.md
+- skills/wiki/obsidian/ missing README.md
+- skills/wiki/wiki-search-local/ missing README.md
 
 ---
 
 ## ❌ L6: Quality Floor (body length, TL;DR) — Failures
 
-- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing TL;DR line
-- wiki\concepts\ai-tools\CLAUDE.md: missing TL;DR line
-- wiki\concepts\ai-tools\context-management.md: missing TL;DR line
-- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing TL;DR line
-- wiki\concepts\ai-tools\local-llm-routing.md: missing TL;DR line
-- wiki\concepts\ai-tools\multi-agent-failover.md: missing TL;DR line
-- wiki\concepts\ai-tools\openrouter-api.md: missing TL;DR line
-- wiki\concepts\ai-tools\session-setup.md: missing TL;DR line
-- wiki\concepts\ai-tools\symlinks-ssot.md: missing TL;DR line
-- wiki\concepts\ai-tools\vibe-coding.md: missing TL;DR line
-- wiki\concepts\env\CLAUDE.md: missing TL;DR line
-- wiki\concepts\env\hospital-wastewater-treatment.md: missing TL;DR line
-- wiki\concepts\env\infectious-waste-management.md: missing TL;DR line
-- wiki\concepts\env\rabies-pep-protocol.md: missing TL;DR line
-- wiki\concepts\env\water-quality-parameters.md: missing TL;DR line
-- wiki\concepts\iot\air-quality-index.md: missing TL;DR line
-- wiki\concepts\iot\CLAUDE.md: missing TL;DR line
-- wiki\concepts\iot\cold-chain-monitoring.md: missing TL;DR line
-- wiki\concepts\iot\dashboard-design.md: missing TL;DR line
-- wiki\concepts\iot\data-logger.md: missing TL;DR line
-- wiki\concepts\iot\lora-p2p.md: missing TL;DR line
-- wiki\concepts\iot\lora.md: missing TL;DR line
-- wiki\concepts\iot\lorawan.md: missing TL;DR line
-- wiki\concepts\iot\modbus.md: missing TL;DR line
-- wiki\concepts\iot\mqtt-qos.md: missing TL;DR line
-- wiki\concepts\iot\publish-subscribe.md: missing TL;DR line
-- wiki\concepts\iot\tinyml.md: missing TL;DR line
-- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
-- wiki\concepts\it-support\CLAUDE.md: missing TL;DR line
-- wiki\concepts\pharmacy\CLAUDE.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-aliases.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-classification.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-validation.md: missing TL;DR line
-- wiki\concepts\pharmacy\fuzzy-match.md: missing TL;DR line
-- wiki\concepts\pharmacy\ordering-workflow.md: missing TL;DR line
-- wiki\concepts\pharmacy\pharmacy-context.md: missing TL;DR line
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing TL;DR line
-- wiki\entities\ai-tools\CLAUDE.md: missing TL;DR line
-- wiki\entities\ai-tools\hermes-agent.md: missing TL;DR line
-- wiki\entities\ai-tools\hyperframes.md: missing TL;DR line
-- wiki\entities\ai-tools\ollama.md: missing TL;DR line
-- wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
-- wiki\entities\ai-tools\telegram-ai-router.md: missing TL;DR line
-- wiki\entities\env\activated-sludge-system.md: missing TL;DR line
-- wiki\entities\env\CLAUDE.md: missing TL;DR line
-- wiki\entities\env\rabies-pep-surveillance.md: missing TL;DR line
-- wiki\entities\iot\18650-battery-shield.md: missing TL;DR line
-- wiki\entities\iot\arduino-ide.md: missing TL;DR line
-- wiki\entities\iot\arduino-uno-r3.md: missing TL;DR line
-- wiki\entities\iot\chirpstack.md: missing TL;DR line
-- wiki\entities\iot\CLAUDE.md: missing TL;DR line
-- wiki\entities\iot\dht11.md: missing TL;DR line
-- wiki\entities\iot\ds18b20.md: missing TL;DR line
-- wiki\entities\iot\dx-lr02-lora.md: missing TL;DR line
-- wiki\entities\iot\dx-smart-ttl.md: missing TL;DR line
-- wiki\entities\iot\emqx.md: missing TL;DR line
-- wiki\entities\iot\esp-idf.md: missing TL;DR line
-- wiki\entities\iot\esp32-c6.md: missing TL;DR line
-- wiki\entities\iot\esp32-s3.md: missing TL;DR line
-- wiki\entities\iot\esp32.md: missing TL;DR line
-- wiki\entities\iot\grafana.md: missing TL;DR line
-- wiki\entities\iot\hc-sr04.md: missing TL;DR line
-- wiki\entities\iot\hc-sr501.md: missing TL;DR line
-- wiki\entities\iot\home-assistant.md: missing TL;DR line
-- wiki\entities\iot\hx711.md: missing TL;DR line
-- wiki\entities\iot\influxdb.md: missing TL;DR line
-- wiki\entities\iot\line-notify.md: missing TL;DR line
-- wiki\entities\iot\load-cell.md: missing TL;DR line
-- wiki\entities\iot\mosquitto.md: missing TL;DR line
-- wiki\entities\iot\mqtt-protocol.md: missing TL;DR line
-- wiki\entities\iot\mysql.md: missing TL;DR line
-- wiki\entities\iot\nb-iot.md: missing TL;DR line
-- wiki\entities\iot\node-red.md: missing TL;DR line
-- wiki\entities\iot\platformio.md: missing TL;DR line
-- wiki\entities\iot\pms5003.md: missing TL;DR line
-- wiki\entities\iot\pzem-004t.md: missing TL;DR line
-- wiki\entities\iot\raspberry-pi.md: missing TL;DR line
-- wiki\entities\iot\rfm95-sx1276.md: missing TL;DR line
-- wiki\entities\iot\telegram-bot.md: missing TL;DR line
-- wiki\entities\iot\the-things-network.md: missing TL;DR line
-- wiki\entities\iot\vapcell-m35-18650.md: missing TL;DR line
-- wiki\entities\pharmacy\CLAUDE.md: missing TL;DR line
-- wiki\entities\pharmacy\drug-database.md: missing TL;DR line
-- wiki\entities\pharmacy\drug-matching-system.md: missing TL;DR line
-- wiki\entities\pharmacy\pharmacy-business.md: missing TL;DR line
-- wiki\entities\pharmacy\sp-drugstore-2020.md: missing TL;DR line
+- wiki/concepts/ai-tools/CLAUDE.md: missing TL;DR line
+- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing TL;DR line
+- wiki/concepts/ai-tools/context-management.md: missing TL;DR line
+- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing TL;DR line
+- wiki/concepts/ai-tools/local-llm-routing.md: missing TL;DR line
+- wiki/concepts/ai-tools/multi-agent-failover.md: missing TL;DR line
+- wiki/concepts/ai-tools/openrouter-api.md: missing TL;DR line
+- wiki/concepts/ai-tools/session-setup.md: missing TL;DR line
+- wiki/concepts/ai-tools/symlinks-ssot.md: missing TL;DR line
+- wiki/concepts/ai-tools/vibe-coding.md: missing TL;DR line
+- wiki/concepts/env/CLAUDE.md: missing TL;DR line
+- wiki/concepts/env/hospital-wastewater-treatment.md: missing TL;DR line
+- wiki/concepts/env/infectious-waste-management.md: missing TL;DR line
+- wiki/concepts/env/rabies-pep-protocol.md: missing TL;DR line
+- wiki/concepts/env/water-quality-parameters.md: missing TL;DR line
+- wiki/concepts/iot/CLAUDE.md: missing TL;DR line
+- wiki/concepts/iot/air-quality-index.md: missing TL;DR line
+- wiki/concepts/iot/cold-chain-monitoring.md: missing TL;DR line
+- wiki/concepts/iot/dashboard-design.md: missing TL;DR line
+- wiki/concepts/iot/data-logger.md: missing TL;DR line
+- wiki/concepts/iot/lora-p2p.md: missing TL;DR line
+- wiki/concepts/iot/lora.md: missing TL;DR line
+- wiki/concepts/iot/lorawan.md: missing TL;DR line
+- wiki/concepts/iot/modbus.md: missing TL;DR line
+- wiki/concepts/iot/mqtt-qos.md: missing TL;DR line
+- wiki/concepts/iot/publish-subscribe.md: missing TL;DR line
+- wiki/concepts/iot/tinyml.md: missing TL;DR line
+- wiki/concepts/it-support/CLAUDE.md: missing TL;DR line
+- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
+- wiki/concepts/pharmacy/CLAUDE.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-aliases.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-classification.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-validation.md: missing TL;DR line
+- wiki/concepts/pharmacy/fuzzy-match.md: missing TL;DR line
+- wiki/concepts/pharmacy/ordering-workflow.md: missing TL;DR line
+- wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
+- wiki/entities/ai-tools/CLAUDE.md: missing TL;DR line
+- wiki/entities/ai-tools/hermes-agent.md: missing TL;DR line
+- wiki/entities/ai-tools/hyperframes.md: missing TL;DR line
+- wiki/entities/ai-tools/ollama.md: missing TL;DR line
+- wiki/entities/ai-tools/pocketbase.md: missing TL;DR line
+- wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
+- wiki/entities/env/CLAUDE.md: missing TL;DR line
+- wiki/entities/env/activated-sludge-system.md: missing TL;DR line
+- wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
+- wiki/entities/iot/18650-battery-shield.md: missing TL;DR line
+- wiki/entities/iot/CLAUDE.md: missing TL;DR line
+- wiki/entities/iot/arduino-ide.md: missing TL;DR line
+- wiki/entities/iot/arduino-uno-r3.md: missing TL;DR line
+- wiki/entities/iot/chirpstack.md: missing TL;DR line
+- wiki/entities/iot/dht11.md: missing TL;DR line
+- wiki/entities/iot/ds18b20.md: missing TL;DR line
+- wiki/entities/iot/dx-lr02-lora.md: missing TL;DR line
+- wiki/entities/iot/dx-smart-ttl.md: missing TL;DR line
+- wiki/entities/iot/emqx.md: missing TL;DR line
+- wiki/entities/iot/esp-idf.md: missing TL;DR line
+- wiki/entities/iot/esp32-c6.md: missing TL;DR line
+- wiki/entities/iot/esp32-s3.md: missing TL;DR line
+- wiki/entities/iot/esp32.md: missing TL;DR line
+- wiki/entities/iot/grafana.md: missing TL;DR line
+- wiki/entities/iot/hc-sr04.md: missing TL;DR line
+- wiki/entities/iot/hc-sr501.md: missing TL;DR line
+- wiki/entities/iot/home-assistant.md: missing TL;DR line
+- wiki/entities/iot/hx711.md: missing TL;DR line
+- wiki/entities/iot/influxdb.md: missing TL;DR line
+- wiki/entities/iot/line-notify.md: missing TL;DR line
+- wiki/entities/iot/load-cell.md: missing TL;DR line
+- wiki/entities/iot/mosquitto.md: missing TL;DR line
+- wiki/entities/iot/mqtt-protocol.md: missing TL;DR line
+- wiki/entities/iot/mysql.md: missing TL;DR line
+- wiki/entities/iot/nb-iot.md: missing TL;DR line
+- wiki/entities/iot/node-red.md: missing TL;DR line
+- wiki/entities/iot/platformio.md: missing TL;DR line
+- wiki/entities/iot/pms5003.md: missing TL;DR line
+- wiki/entities/iot/pzem-004t.md: missing TL;DR line
+- wiki/entities/iot/raspberry-pi.md: missing TL;DR line
+- wiki/entities/iot/rfm95-sx1276.md: missing TL;DR line
+- wiki/entities/iot/telegram-bot.md: missing TL;DR line
+- wiki/entities/iot/the-things-network.md: missing TL;DR line
+- wiki/entities/iot/vapcell-m35-18650.md: missing TL;DR line
+- wiki/entities/pharmacy/CLAUDE.md: missing TL;DR line
+- wiki/entities/pharmacy/drug-database.md: missing TL;DR line
+- wiki/entities/pharmacy/drug-matching-system.md: missing TL;DR line
+- wiki/entities/pharmacy/pharmacy-business.md: missing TL;DR line
+- wiki/entities/pharmacy/sp-drugstore-2020.md: missing TL;DR line
 
 ---
 
-## ✓ Passed Checks (581 total)
+## ✓ Passed Checks (590 total)
 
-- **L1**: 32 passed
+- **L1**: 40 passed
 - **L2**: 90 passed
-- **L3**: 368 passed
+- **L3**: 369 passed
 - **L4**: 87 passed
 - **L5**: 3 passed
 - **L6**: 1 passed

@@ -1,0 +1,16 @@
+# A-Wiki local search dependencies
+# Requires Python >=3.9,<3.13 (fastembed wheel coverage)
+# Cross-platform: macOS (Intel + ARM64), Linux (x86_64 + ARM64), Windows (x86_64)
+#
+# Install:  pip install -r requirements.txt
+# Build:    python scripts/build-vec-index.py
+#
+# macOS note: Apple's system Python disables sqlite extension loading.
+# Use Homebrew, pyenv, or python.org build if the extension probe fails.
+
+sqlite-vec>=0.1.6
+fastembed>=0.4.0
+# apsw: third-party SQLite binding that always supports loadable extensions.
+# Needed because Python's stdlib sqlite3 has enable_load_extension disabled
+# on macOS python.org / Apple system builds and some Linux distros.
+apsw>=3.45.0

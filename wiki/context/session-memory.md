@@ -14,6 +14,9 @@
 > items at the next rollover so the list stays slim. Cancelled work → delete the line.
 > One bullet = one project; tag with `**[project-slug]**` so future-you knows the scope.
 
+- [x] **[a-wiki-pipeline]** Fix `scripts/wiki/ingest-source.py:24` — `parent.parent` → `parent.parent.parent` (2026-05-25)
+- [x] **[a-wiki-pipeline]** Fix `scripts/wiki/query-rag.py:168,277` — `np.float32` → `np_dep.float32` (2 sites, 2026-05-25)
+- [x] **[a-wiki-pipeline]** Phase 4 S7 done 2026-05-25: เพิ่ม 68 tests, ADR-0006 validation section, fix `generate_query_variants` original-query drop
 - [x] **[sunday-estate-webapp]** รัน Supabase migrations `0001…0013` ใน Studio (`http://umbrel.local:8000`)
 - [x] **[sunday-estate-webapp]** กรอก `prototype/config.js` ใส่ `SUPABASE_URL` + `ANON_KEY` แล้วทดสอบ login จริง
 - [x] **[sunday-estate-webapp]** เปิดเว็บ real mode แล้วสร้างบัญชีจริงบัญชีแรก (จะได้ role `admin` อัตโนมัติ)
@@ -42,7 +45,8 @@
 - [ ] **[dream]** 💊 Pharmacy App — แอพจัดการร้านยา Phu Pharmacy: stock, ค้นหายา, order history, LINE notify
 - [ ] **[wiki-brain-inwwiki]** Fix GitHub Actions workflow conflict — ใช้ branch/PR workflow (wiki-sync.yml) แต่กฎ repo คือ commit ตรง main ห้าม branch/PR → ต้องถอด workflow ออก
 - [ ] **[wiki-brain-inwwiki]** Add missing hooks: check-secret-leak, check-bash-no-branch, post-wiki-edit-gen-index
-- [ ] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน
+- [x] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน (2026-05-26 — FTS5 + sqlite-vec ทั้งคู่ chain แล้ว via gen-index.py)
+- [ ] **[wiki-brain]** Verify Linux/Windows: clone repo + `pip install -r requirements.txt` + `python scripts/build-vec-index.py` (sqlite-vec migration 2026-05-26 บน Mac เท่านั้น)
 - [ ] **[wiki-brain-inwwiki]** ทดสอบ ask-notebooklm.py + delegate.sh + sync.py + hooks_runner.py ที่ merge/copy จาก InW-Wiki → verify ทำงานจริง
 - [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
 - [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py, fill-waste-form.py)
@@ -77,6 +81,31 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-26] sqlite-vec migration — hybrid FTS5 + semantic search (Mac, Claude Code)
+
+- **Done**: Migrate local embeddings จาก `.wiki-embeddings.json` (3.2MB TF-IDF JSON) → `wiki_vec` virtual table ใน `.wiki-index.db` ผ่าน sqlite-vec; รวมกับ FTS5 ใน DB เดียว, hybrid query ผ่าน weighted RRF (alpha 0..1, default 0.5)
+- **Done**: New: `requirements.txt` (sqlite-vec, fastembed, apsw), `scripts/build-vec-index.py` (fastembed paraphrase-multilingual-MiniLM-L12-v2, 384-dim, multilingual covers ไทย+อังกฤษ)
+- **Done**: Rewrite `scripts/wiki/query-rag.py` — drop FAISS/sentence-transformers, use sqlite-vec + apsw; keep CLI signature for MCP back-compat
+- **Done**: Cross-platform via `apsw` (third-party SQLite binding) — bypass `--disable-loadable-sqlite-extensions` ของ python.org / Apple system Python builds. Shell hook `.claude/hooks/post-wiki-edit-gen-index.sh` ปรับให้ใช้ `.venv/bin/python3` ถ้ามี (fallback system python3)
+- **Done**: Update `scripts/mcp-wiki-server.py wiki_semantic_search` tool schema (ลบ provider enum, default alpha 0.5), chain `build-vec-index.py` ใน `wiki_regen_index`
+- **Done**: Update `scripts/build-wiki-index.py` — DROP TABLE wiki แทน unlink ทั้งไฟล์ (กัน wipe sibling wiki_vec tables เวลา FTS5 rebuild)
+- **Done**: Skeptical-reviewer subagent pass หา 4 issues จริง: stale MCP tool schema, double vec rebuild via post-hook chain, stale comment, non-atomic DROP/CREATE/INSERT → ทั้งหมดแก้แล้ว
+- **Done**: Smoke tests ผ่าน — pharmacy/drug-interaction (top-1 ตรง), Thai "เซ็นเซอร์คุณภาพอากาศ" (vec จับ ที่ FTS5 พลาดเพราะ tokenizer ไทยอ่อน), MQTT/LoRaWAN (hybrid fts# + vec# ranks ปนกัน). gen-index.py chain end-to-end ทำงาน (437 embeddings)
+- **Decision**: ทิ้ง `.wiki-embeddings.json` + `.rag-index/` + `scripts/wiki/build-embeddings.py` (cutover ไม่ parallel)
+- **Decision**: ตอน planning เลือก `intfloat/multilingual-e5-small` แต่ fastembed ไม่ support → switch เป็น `paraphrase-multilingual-MiniLM-L12-v2` (384-dim, no prefix needed)
+- **Decision**: Update CLAUDE.md Cost Pyramid Level -1 (`Local FTS5 + sqlite-vec + knowledge-graph`) — user อนุญาตชัดเจน
+- **Lesson**: Reviewer สำคัญจริง — ผม "ลืม" เรียก skeptical-reviewer หลังเขียนสคริปต์ใหม่; user ทักว่า A-Wiki swarm protocol ออกแบบไว้ใช้ทำไมไม่ใช้. Compensate โดยเรียก reviewer ตอน Phase 2 cleanup
+- **TODO**: Verify Linux/Windows behavior — clone repo บนเครื่องอื่นแล้วรัน install + build
+
+### [2026-05-26] mac-remote-access — แก้ AnyDesk session denied + gh auth login (Claude Desktop)
+
+- **Done**: Fix Claude Desktop "GitHub CLI authentication expired" — `gh auth login --hostname github.com --git-protocol https --web` device-code flow, login as `aase7en`, token stored in macOS Keychain (scopes: gist, read:org, repo)
+- **Done**: Diagnose AnyDesk Mac (ID `611965728`) remote-from-phone (ID `1555919398`) failing with "session denied due to access control" — traced via `~/.anydesk/anydesk.trace` log + `system.conf`
+- **Root cause**: ACL checkbox "Restrict client access to the following AnyDesk addresses" was **enabled with empty whitelist** → blocked all incoming. User unticked checkbox → connection works
+- **Decision**: For production remote-from-anywhere use, recommend ACL with phone ID `1555919398` whitelisted + Unattended Password + 2FA (currently all-open + must-accept-on-Mac)
+- **Learning**: AnyDesk error "access control restrictions" can mean ACL-empty-whitelist, not just `interactive_access=0`. Always check `~/.anydesk/anydesk.trace` `Login attempt denied` lines for actual reason
+- **TODO**: macOS Screen Recording / Accessibility / Input Monitoring permissions for AnyDesk still NOT granted (TCC db empty) — phone can connect but may see black screen / can't control until granted
 
 ### [2026-05-25] multi-platform-brain — Universal AI brain + cross-platform setup (PC ที่ทำงาน)
 

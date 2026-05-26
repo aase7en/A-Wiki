@@ -90,6 +90,20 @@ This single command does everything:
 | **[4/5] Wiki index** | Builds SQLite FTS5 search index from all 420+ wiki pages |
 | **[5/5] .codex/ hooks** | Links `.codex/hooks/` → `.claude/hooks/` so Codex uses the same enforcement hooks |
 
+#### Optional: Local Semantic Search (sqlite-vec + fastembed)
+
+Adds embedding-based search alongside FTS5 — same `.wiki-index.db`, hybrid query via [scripts/wiki/query-rag.py](scripts/wiki/query-rag.py). Pure offline once the model is cached. Cross-platform (macOS / Linux / Windows wheels).
+
+```bash
+pip install -r requirements.txt          # sqlite-vec, fastembed, apsw
+python scripts/build-vec-index.py        # ~80MB model + ~30s embed on first run
+python scripts/wiki/query-rag.py "mqtt vs lorawan"
+```
+
+> **macOS note:** if `pip install` succeeded but `build-vec-index.py` fails with an extension-loading error, your Python is from Apple's system or a python.org build with `--disable-loadable-sqlite-extensions`. The `apsw` package bypasses that and is already in `requirements.txt` — re-run `pip install -r requirements.txt`. If it still fails, install Python via Homebrew (`brew install python@3.12`) or pyenv.
+
+---
+
 > **Google Drive `.secrets` file format** (create once, syncs to all your machines):
 > ```
 > export OPENROUTER_API_KEY=sk-or-...
