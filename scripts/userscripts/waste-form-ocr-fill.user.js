@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      0.4.0
+// @version      0.6.1
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ
 // @author       A-Wiki / Asse7en
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -22,24 +22,29 @@
   const GEMINI_URL = (key) =>
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
 
-  // Hardcoded constants ตาม wiki/synthesis/waste-form-automation.md
-  const SUPPLIES_DEFAULT = 'อบต.อุทัย';
-  const RECORDER_DEFAULT = 'ศุภศิษฎิ์ คงสุวรรณ';
+  // Explicit form field IDs [verified 2026-05-26 via DOM dump]
+  const FIELD_IDS = {
+    date: 'TRASH_DATE',      // datepicker (BE format DD/MM/YYYY+543)
+    time: 'TRASH_TIME',      // masked time input
+    year: 'TRASH_YEAR',      // select (BE year)
+    supplies: 'TRASH_SUP',   // Select2: js-example-basic-s
+    recorder: 'TRASH_USER',  // Select2: js-example-basic-s
+  };
 
-  // Location → form row mapping (label-based)
-  // คีย์ของ label ใช้คำสำคัญใน label ของแต่ละแถว (ดูใน screenshot)
-  const ROW_LABEL_MAP = {
-    OPD: ['ขยะทั่วไป OPD'],
-    Ward: ['ขยะทั่วไป Ward'],
-    ER: ['ขยะทั่วไป ER'],
-    โรงครัว: ['ขยะทั่วไป โรงครัว'],
-    เวช: ['ขยะทั่วไป เวช'],
-    ฝังเข็ม: ['ขยะทั่วไป ฝังเข็ม'],
-    แผนไทย: ['ขยะทั่วไป แพทย์แผนไทย', 'ขยะทั่วไป แผนไทย'],
-    บริหาร: ['ขยะทั่วไป บริหาร'],
-    ห้องช่าง: ['ขยะทั่วไป ห้องช่าง'],
-    ซักฟอก: ['ขยะทั่วไป ซักฟอก'],
-    แฟลต: ['ขยะทั่วไป แฟลต'],
+  // Location → row index (1-25, the Nth TRASH_SUB_QTY[] input)
+  // Reference: wiki/synthesis/waste-form-automation.md
+  const LOCATION_TO_ROW = {
+    OPD: 12,        // ขยะทั่วไป OPD
+    Ward: 14,       // ขยะทั่วไป Ward
+    ER: 8,          // ขยะทั่วไป ER
+    โรงครัว: 9,     // ขยะทั่วไป โรงครัว
+    บริหาร: 10,     // ขยะทั่วไป บริหาร
+    ฝังเข็ม: 11,    // ขยะทั่วไป ฝังเข็ม
+    เวช: 13,        // ขยะทั่วไป เวชฯ
+    ห้องช่าง: 15,
+    ซักฟอก: 16,
+    แฟลต: 17,
+    แผนไทย: 18,     // ขยะทั่วไป แพทย์แผนไทย
   };
 
   // Compound locations → split equally across rows
@@ -47,6 +52,20 @@
     'OPD+ER': ['OPD', 'ER'],
     'แผนไทย+ฝังเข็ม': ['แผนไทย', 'ฝังเข็ม'],
   };
+
+  // --- USER SETTINGS (persisted) --------------------------------------------
+  function getSettings() {
+    return GM_getValue('ocr_settings', { suppliesValue: '', recorderValue: '', customHints: '' });
+  }
+  function saveSettings(s) { GM_setValue('ocr_settings', s); }
+  function getRowOverrides() {
+    return GM_getValue('ocr_row_overrides', {}); // {location: rowIdx}
+  }
+  function saveRowOverrides(o) { GM_setValue('ocr_row_overrides', o); }
+  function resolveRowIdx(location) {
+    const overrides = getRowOverrides();
+    return overrides[location] ?? LOCATION_TO_ROW[location];
+  }
 
   // --- SYSTEM PROMPT (ภาษาอังกฤษเพื่อประหยัด token ตาม CLAUDE.md) ---------------
   const SYSTEM_PROMPT = `You extract data from Thai hospital waste-report forms (handwritten).
@@ -72,6 +91,12 @@ Staff hints (use as confirmation only):
 
 Add a final object {"_meta": {"confidence": 0..1, "unclear": [...]}} if quality is low.
 Return ONLY the JSON array.`;
+
+  function buildSystemPrompt() {
+    const hints = (getSettings().customHints || '').trim();
+    if (!hints) return SYSTEM_PROMPT;
+    return SYSTEM_PROMPT + `\n\nADDITIONAL USER CORRECTIONS (apply these — they override defaults):\n${hints}`;
+  }
 
   // --- UTIL ------------------------------------------------------------------
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -171,7 +196,7 @@ Return ONLY the JSON array.`;
   function geminiCall(apiKey, base64Data, mimeType) {
     return new Promise((resolve, reject) => {
       const body = {
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        system_instruction: { parts: [{ text: buildSystemPrompt() }] },
         contents: [{
           role: 'user',
           parts: [
@@ -241,13 +266,14 @@ Return ONLY the JSON array.`;
       }
     }
 
-    // 4. map location → row label keys
+    // 4. map location → row index (1-25)
     const result = [];
     for (const [loc, kg] of Object.entries(byLocation)) {
-      const labels = ROW_LABEL_MAP[loc];
-      if (!labels) { warn('unknown location:', loc); continue; }
-      result.push({ location: loc, labels, kg: Math.round(kg * 100) / 100 });
+      const rowIdx = resolveRowIdx(loc);
+      if (!rowIdx) { warn('unknown location:', loc); continue; }
+      result.push({ location: loc, rowIdx, kg: Math.round(kg * 100) / 100 });
     }
+    result.sort((a, b) => a.rowIdx - b.rowIdx);
 
     // 5. earliest time + dates seen
     const times = filtered.map(r => r.time).filter(Boolean).sort();
@@ -271,8 +297,14 @@ Return ONLY the JSON array.`;
     return !!el.closest?.('#waste-ocr-overlay');
   }
 
-  // ROW MATCH: ฟอร์มนี้เก็บชื่อประเภทขยะใน <input class="fo13"> ของ cell 2 (ไม่ใช่ td.textContent)
-  // qty input อยู่ใน input[name="TRASH_SUB_QTY[]"] ของ cell 3
+  // ROW MATCH (v0.5): นับ TRASH_SUB_QTY[] เป็น index 1-25 ตามลำดับ DOM
+  function findRowQtyInputByIdx(idx) {
+    if (!idx) return null;
+    const qtyInputs = $$('input[name="TRASH_SUB_QTY[]"]').filter(i => !isInOurOverlay(i));
+    return qtyInputs[idx - 1] || null;
+  }
+
+  // (legacy — kept for debug only)
   function findRowInputByLabel(labelText) {
     const trs = $$('tr').filter(tr => !isInOurOverlay(tr));
     // 1) Primary: หา input.fo13 ที่ value match
@@ -314,17 +346,26 @@ Return ONLY the JSON array.`;
       || null;
   }
 
+  function isSelect2(el) {
+    return el && (el.classList?.contains('js-example-basic-s') || el.classList?.contains('select2-hidden-accessible'));
+  }
+
   function setInputValue(el, value) {
     if (!el) return false;
     value = String(value);
+    const $jq = window.jQuery || window.$;
+    // Special: Select2 widget — must use jQuery API
+    if (el.tagName === 'SELECT' && isSelect2(el) && $jq) {
+      try { $jq(el).val(value).trigger('change'); return true; } catch {}
+    }
     try { el.focus?.(); } catch {}
-    // 1) Native setter (React-safe)
+    // Native setter (React-safe)
     const proto = el.tagName === 'SELECT' ? HTMLSelectElement.prototype
                 : el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype
                 : HTMLInputElement.prototype;
     const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
     try { if (setter) setter.call(el, value); else el.value = value; } catch { el.value = value; }
-    // 2) Dispatch full event sequence
+    // Event sequence
     const fire = (type, EventCls = Event, init = { bubbles: true }) => {
       try { el.dispatchEvent(new EventCls(type, init)); } catch {}
     };
@@ -332,25 +373,31 @@ Return ONLY the JSON array.`;
     fire('input');
     fire('keyup', KeyboardEvent);
     fire('change');
-    // 3) jQuery fallback (forms ที่ bind ผ่าน $.on('change'))
-    const $jq = window.jQuery || window.$;
     if ($jq) {
       try { $jq(el).val(value).trigger('input').trigger('change').trigger('keyup'); } catch {}
     }
-    try { el.blur?.(); } catch {}
+    // Avoid blur for datepicker (may reset value)
+    if (!el.classList?.contains('datepicker')) {
+      try { el.blur?.(); } catch {}
+    }
     return true;
   }
 
   function selectOptionByText(selectEl, textPart) {
     if (!selectEl) return false;
+    let found = null;
     for (const opt of selectEl.options) {
-      if (opt.text.trim() === textPart || opt.text.trim().includes(textPart)) {
-        selectEl.value = opt.value;
-        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+      const t = normalizeText(opt.text);
+      const tgt = normalizeText(textPart);
+      if (t === tgt) { found = opt; break; }
+      if (!found && t.includes(tgt)) found = opt;
     }
-    return false;
+    if (!found) return false;
+    return setInputValue(selectEl, found.value);
+  }
+  function selectOptionByValue(selectEl, value) {
+    if (!selectEl || value == null || value === '') return false;
+    return setInputValue(selectEl, String(value));
   }
 
   function findHeaderField(labelSubstr) {
@@ -404,55 +451,63 @@ Return ONLY the JSON array.`;
 
   function fillForm(plan, options) {
     const report = [];
-    // Header: วันที่บันทึก (BE format DD/MM/YYYY+543)
-    if (options.fillHeader && options.dateISO) {
-      const dateBE = thaiDateBE(options.dateISO);
-      const dateEl = findHeaderField('วันที่บันทึก') || findHeaderField('วันที่');
-      if (dateEl) { setInputValue(dateEl, dateBE); report.push(`วันที่บันทึก = ${dateBE}`); }
-      else report.push('⚠ ไม่พบช่องวันที่บันทึก');
-      // ปี (BE)
-      const yearEl = findHeaderField('ปี');
-      if (yearEl) {
-        const yBE = String(parseInt(options.dateISO.slice(0,4), 10) + 543);
-        if (yearEl.tagName === 'SELECT') {
-          if (selectOptionByText(yearEl, yBE)) report.push(`ปี = ${yBE}`);
-        } else {
-          setInputValue(yearEl, yBE); report.push(`ปี = ${yBE}`);
-        }
-      }
-    }
-    // Header: เวลา
-    if (plan.earliestTime && options.fillHeader) {
-      const timeEl = findHeaderField('เวลา');
-      if (timeEl) { setInputValue(timeEl, plan.earliestTime); report.push(`เวลา = ${plan.earliestTime}`); }
-      else report.push('⚠ ไม่พบช่องเวลา');
-    }
-    // Header: Supplies (select)
+    const settings = getSettings();
+
     if (options.fillHeader) {
-      const sup = findHeaderField('Supplies');
-      if (sup && sup.tagName === 'SELECT') {
-        if (selectOptionByText(sup, SUPPLIES_DEFAULT)) report.push(`Supplies = ${SUPPLIES_DEFAULT}`);
-        else report.push(`⚠ Supplies: ไม่พบ option "${SUPPLIES_DEFAULT}"`);
-      }
-      const rec = findHeaderField('ผู้บันทึก');
-      if (rec && rec.tagName === 'SELECT') {
-        if (selectOptionByText(rec, RECORDER_DEFAULT)) report.push(`ผู้บันทึก = ${RECORDER_DEFAULT}`);
-        else report.push(`⚠ ผู้บันทึก: ไม่พบ option "${RECORDER_DEFAULT}"`);
-      }
-    }
-    // Weight rows
-    for (const r of plan.rows) {
-      let filled = false;
-      for (const lbl of r.labels) {
-        const inp = findRowInputByLabel(lbl);
-        if (inp) {
-          setInputValue(inp, String(r.kg));
-          report.push(`✓ "${lbl}" = ${r.kg} kg`);
-          filled = true;
-          break;
+      // วันที่บันทึก (Thai bootstrap-datepicker — ต้องเรียก plugin API)
+      if (options.dateISO) {
+        const dateBE = thaiDateBE(options.dateISO);
+        const dateEl = document.getElementById(FIELD_IDS.date);
+        if (dateEl) {
+          const ok = setDatepickerValue(dateEl, dateBE);
+          report.push(`${ok ? '✓' : '⚠'} วันที่บันทึก = ${dateBE}${ok ? '' : ' (set แล้วแต่ค่าใน input = "'+dateEl.value+'")'}`);
+        } else report.push(`✗ ไม่พบ #${FIELD_IDS.date}`);
+        // ปี (BE select)
+        const yearEl = document.getElementById(FIELD_IDS.year);
+        const yBE = String(parseInt(options.dateISO.slice(0, 4), 10) + 543);
+        if (yearEl) {
+          if (yearEl.tagName === 'SELECT' ? selectOptionByText(yearEl, yBE) : setInputValue(yearEl, yBE)) {
+            report.push(`✓ ปี = ${yBE}`);
+          } else report.push(`⚠ ปี: ไม่พบ option ${yBE}`);
         }
       }
-      if (!filled) report.push(`✗ ไม่พบช่องของ ${r.location} (labels tried: ${r.labels.join(' | ')})`);
+      // เวลา (masked input)
+      if (plan.earliestTime) {
+        const timeEl = document.getElementById(FIELD_IDS.time);
+        if (timeEl) { setInputValue(timeEl, plan.earliestTime); report.push(`✓ เวลา = ${plan.earliestTime}`); }
+        else report.push(`✗ ไม่พบ #${FIELD_IDS.time}`);
+      }
+      // Supplies (Select2 — ใช้ value จาก settings)
+      const supEl = document.getElementById(FIELD_IDS.supplies);
+      if (supEl) {
+        if (settings.suppliesValue && selectOptionByValue(supEl, settings.suppliesValue)) {
+          const txt = supEl.options[supEl.selectedIndex]?.text;
+          report.push(`✓ Supplies = ${txt}`);
+        } else {
+          report.push(`⚠ Supplies: ไม่ได้ตั้งค่าใน Settings (ใช้ค่าฟอร์มเดิม)`);
+        }
+      }
+      // ผู้บันทึก (Select2 — ใช้ value จาก settings)
+      const recEl = document.getElementById(FIELD_IDS.recorder);
+      if (recEl) {
+        if (settings.recorderValue && selectOptionByValue(recEl, settings.recorderValue)) {
+          const txt = recEl.options[recEl.selectedIndex]?.text;
+          report.push(`✓ ผู้บันทึก = ${txt}`);
+        } else {
+          report.push(`⚠ ผู้บันทึก: ไม่ได้ตั้งค่าใน Settings`);
+        }
+      }
+    }
+
+    // Weight rows — ใช้ row index (1-25)
+    for (const r of plan.rows) {
+      const inp = findRowQtyInputByIdx(r.rowIdx);
+      if (inp) {
+        setInputValue(inp, String(r.kg));
+        report.push(`✓ row ${r.rowIdx} (${r.location}) = ${r.kg} kg`);
+      } else {
+        report.push(`✗ ไม่พบ qty input ของ row ${r.rowIdx} (${r.location})`);
+      }
     }
     return report;
   }
@@ -510,7 +565,10 @@ Return ONLY the JSON array.`;
     overlay.id = 'waste-ocr-overlay';
     overlay.innerHTML = `
       <div id="waste-ocr-modal">
-        <h2>📷 OCR ใบรายงานขยะ → กรอกฟอร์ม</h2>
+        <h2>📷 OCR ใบรายงานขยะ → กรอกฟอร์ม
+          <button class="waste-ocr-btn waste-ocr-secondary" data-act="toggle-settings" style="float:right;padding:4px 10px;font-size:12px">⚙ Settings</button>
+        </h2>
+        <div id="waste-ocr-settings" style="display:none"></div>
         <div id="waste-ocr-cache-banner"></div>
         <div id="waste-ocr-drop">ลากรูปวางที่นี่ หรือคลิกเลือกไฟล์ (.jpg / .png)
           <input type="file" accept="image/*" style="display:none" />
@@ -523,6 +581,15 @@ Return ONLY the JSON array.`;
       </div>`;
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
     overlay.querySelector('[data-act="close"]').addEventListener('click', () => overlay.remove());
+    overlay.querySelector('[data-act="toggle-settings"]').addEventListener('click', () => {
+      const panel = overlay.querySelector('#waste-ocr-settings');
+      if (panel.style.display === 'none') {
+        renderSettingsPanel(panel);
+        panel.style.display = 'block';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
 
     const drop = overlay.querySelector('#waste-ocr-drop');
     const fileInput = drop.querySelector('input[type="file"]');
@@ -563,6 +630,223 @@ Return ONLY the JSON array.`;
         banner.innerHTML = '';
       });
     }
+  }
+
+  // --- Searchable dropdown (พิมพ์ค้นหาได้) ---
+  // options: [{value, text}], onChange(newValue)
+  function makeSearchableDropdown(host, options, initialValue, onChange) {
+    const initial = options.find(o => String(o.value) === String(initialValue));
+    let selectedValue = initialValue;
+    host.innerHTML = `
+      <div class="sd-wrap" style="position:relative">
+        <input class="sd-input" type="text" value="${(initial?.text||'').replace(/"/g,'&quot;')}"
+               placeholder="พิมพ์ค้นหา ชื่อ/นามสกุล…" autocomplete="off"
+               style="width:100%;padding:6px 8px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box" />
+        <div class="sd-list" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;
+                                    border:1px solid #ccc;max-height:240px;overflow-y:auto;z-index:100001;
+                                    border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.15)"></div>
+      </div>`;
+    const input = host.querySelector('.sd-input');
+    const list = host.querySelector('.sd-list');
+    let activeIdx = -1, currentFiltered = [];
+
+    function renderList(filter = '') {
+      const f = normalizeText(filter).toLowerCase();
+      currentFiltered = !f
+        ? options.slice(0, 100)
+        : options.filter(o => normalizeText(o.text).toLowerCase().includes(f)).slice(0, 100);
+      list.innerHTML = currentFiltered.length
+        ? currentFiltered.map((o, i) => {
+            const isSel = String(o.value) === String(selectedValue);
+            return `<div class="sd-item" data-i="${i}"
+                style="padding:6px 10px;cursor:pointer;${isSel?'background:#e7e0f5;font-weight:600':''}">${o.text}</div>`;
+          }).join('')
+        : '<div style="padding:8px;color:#999">ไม่พบ</div>';
+      list.querySelectorAll('.sd-item').forEach(el => {
+        el.addEventListener('mousedown', (e) => { e.preventDefault(); pickIdx(+el.dataset.i); });
+        el.addEventListener('mouseenter', () => {
+          list.querySelectorAll('.sd-item').forEach(x => x.style.background = '');
+          el.style.background = '#f0e6ff';
+        });
+      });
+      activeIdx = -1;
+    }
+    function pickIdx(i) {
+      const o = currentFiltered[i];
+      if (!o) return;
+      selectedValue = o.value;
+      input.value = o.text;
+      list.style.display = 'none';
+      onChange?.(selectedValue);
+    }
+    input.addEventListener('focus', () => { renderList(input.value); list.style.display = 'block'; });
+    input.addEventListener('input', () => { renderList(input.value); list.style.display = 'block'; });
+    input.addEventListener('blur', () => { setTimeout(() => { list.style.display = 'none'; }, 200); });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, currentFiltered.length - 1); highlightActive(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); highlightActive(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (activeIdx >= 0) pickIdx(activeIdx); }
+      else if (e.key === 'Escape') { list.style.display = 'none'; }
+    });
+    function highlightActive() {
+      list.querySelectorAll('.sd-item').forEach((el, i) => {
+        el.style.background = i === activeIdx ? '#f0e6ff' : (String(currentFiltered[i].value) === String(selectedValue) ? '#e7e0f5' : '');
+        if (i === activeIdx) el.scrollIntoView({ block: 'nearest' });
+      });
+    }
+    renderList();
+    return { getValue: () => selectedValue };
+  }
+
+  // --- Datepicker update (Thai bootstrap-datepicker + fallbacks + verbose diag) ---
+  function setDatepickerValue(el, valueBE) {
+    const $jq = window.jQuery || window.$;
+    if (!el) return false;
+
+    log('=== datepicker debug ===');
+    log('  target id:', el.id, '| current value:', el.value, '| want:', valueBE);
+    log('  jQuery loaded:', !!$jq, 'ver:', $jq?.fn?.jquery);
+    if ($jq) {
+      try {
+        const data = $jq(el).data();
+        log('  $.data keys:', Object.keys(data));
+        const dpData = data.datepicker || data.kalendae || data.tDatepicker;
+        if (dpData) log('  picker instance keys:', Object.keys(dpData).slice(0, 20));
+      } catch {}
+      const dpFns = Object.keys($jq.fn || {}).filter(k =>
+        /date|pick|kalend|calend/i.test(k));
+      log('  $.fn datepicker-like:', dpFns);
+    }
+
+    let success = false;
+
+    // 1) Plugin API ('update' → 'setDate' string → 'setDate' Date)
+    if ($jq && $jq.fn?.datepicker) {
+      for (const m of ['update', 'setDate']) {
+        try {
+          $jq(el).datepicker(m, valueBE);
+          log(`  $(.).datepicker('${m}', '${valueBE}') → el.value=${el.value}`);
+          if (el.value === valueBE) { success = true; break; }
+        } catch (e) { warn(`  datepicker.${m} threw:`, e.message); }
+      }
+      if (!success) {
+        try {
+          const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(valueBE);
+          if (m) {
+            const ce = new Date(+m[3] - 543, +m[2] - 1, +m[1]);
+            $jq(el).datepicker('setDate', ce);
+            log(`  setDate(new Date(CE)) → el.value=${el.value}`);
+            if (el.value === valueBE) success = true;
+          }
+        } catch (e) { warn('  setDate(Date) threw:', e.message); }
+      }
+      if (!success) {
+        try {
+          $jq(el).val(valueBE).trigger('changeDate');
+          log(`  trigger('changeDate') → el.value=${el.value}`);
+          if (el.value === valueBE) success = true;
+        } catch (e) { warn('  changeDate threw:', e.message); }
+      }
+    }
+
+    // 2) Native value + events
+    if (!success) {
+      try {
+        el.focus?.();
+        el.value = valueBE;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        if ($jq) $jq(el).val(valueBE).trigger('change');
+        log(`  native set → el.value=${el.value}`);
+        if (el.value === valueBE) success = true;
+      } catch (e) { warn('  native threw:', e.message); }
+    }
+
+    // 3) Force-set: ค้างค่าไว้ 800ms กัน picker reset
+    if (!success) {
+      log('  ⚠ all methods failed — starting force-set interval (800ms)');
+      const start = Date.now();
+      const iv = setInterval(() => {
+        if (Date.now() - start > 800) {
+          clearInterval(iv);
+          log(`  force-set ended, final el.value=${el.value}`);
+          return;
+        }
+        if (el.value !== valueBE) {
+          el.value = valueBE;
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, 40);
+    }
+    log('=== datepicker done, success:', success, '===');
+    return success;
+  }
+
+  function renderSettingsPanel(panel) {
+    const settings = getSettings();
+    const supEl = document.getElementById(FIELD_IDS.supplies);
+    const recEl = document.getElementById(FIELD_IDS.recorder);
+    const overrides = getRowOverrides();
+    const overrideText = Object.keys(overrides).length
+      ? Object.entries(overrides).map(([loc, idx]) => `${loc}→${idx}`).join(', ')
+      : '(ไม่มี — ใช้ค่า default)';
+
+    const readOptions = (selectEl) => selectEl
+      ? Array.from(selectEl.options).filter(o => o.value !== '').map(o => ({ value: o.value, text: o.text }))
+      : [];
+    const supOptions = readOptions(supEl);
+    const recOptions = readOptions(recEl);
+
+    panel.innerHTML = `
+      <div style="background:#f5f0ff;border:1px solid #d0c0ee;padding:12px;border-radius:8px;margin-bottom:10px">
+        <div style="font-weight:600;margin-bottom:8px">⚙ Settings (เก็บใน Tampermonkey storage)</div>
+
+        <div style="margin-bottom:10px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">Supplies (อบต. / หน่วยงาน):</label>
+          <div id="set-supplies-host"></div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">ผู้บันทึก (พิมพ์ค้นหา ชื่อ/นามสกุล):</label>
+          <div id="set-recorder-host"></div>
+        </div>
+
+        <div style="margin-bottom:8px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">
+            🧠 Custom OCR hints (สอน Gemini ให้แม่นขึ้น — ต่อท้าย system prompt):
+          </label>
+          <textarea id="set-hints" rows="5" placeholder="ตัวอย่าง:&#10;- ลายมือ 'อ้อย' มักอ่านเป็น 'บอย' — ให้อ่านเป็น 'อ้อย'&#10;- น้ำหนัก 12 บางครั้งอ่านเป็น 17 — ตรวจซ้ำเลข 1-2-7&#10;- location 'จิตเวช' → ใช้คำว่า 'เวช'"
+            style="width:100%;padding:6px;font-family:monospace;font-size:12px;box-sizing:border-box">${(settings.customHints || '').replace(/</g,'&lt;')}</textarea>
+        </div>
+
+        <div style="margin-bottom:8px;font-size:12px;color:#666">
+          Row overrides (ปุ่ม Fill จะเซฟอัตโนมัติเมื่อแก้ Row # ใน preview): <code>${overrideText}</code>
+          ${Object.keys(overrides).length ? '<button class="waste-ocr-btn waste-ocr-danger" data-act="clear-overrides" style="padding:3px 8px;font-size:11px;margin-left:6px">ล้าง</button>' : ''}
+        </div>
+
+        <div class="waste-ocr-row">
+          <button class="waste-ocr-btn waste-ocr-primary" data-act="save-settings">💾 บันทึก settings</button>
+          <span id="set-saved-msg" style="color:#28a745;font-size:12px;display:none">✓ บันทึกแล้ว</span>
+        </div>
+      </div>`;
+
+    const supDD = makeSearchableDropdown(panel.querySelector('#set-supplies-host'), supOptions, settings.suppliesValue);
+    const recDD = makeSearchableDropdown(panel.querySelector('#set-recorder-host'), recOptions, settings.recorderValue);
+
+    panel.querySelector('[data-act="save-settings"]').addEventListener('click', () => {
+      saveSettings({
+        suppliesValue: supDD.getValue(),
+        recorderValue: recDD.getValue(),
+        customHints: panel.querySelector('#set-hints').value,
+      });
+      const msg = panel.querySelector('#set-saved-msg');
+      msg.style.display = 'inline';
+      setTimeout(() => { msg.style.display = 'none'; }, 2000);
+    });
+    panel.querySelector('[data-act="clear-overrides"]')?.addEventListener('click', () => {
+      saveRowOverrides({});
+      renderSettingsPanel(panel);
+    });
   }
 
   async function handleFile(file, overlay, apiKey) {
@@ -645,7 +929,7 @@ Return ONLY the JSON array.`;
     function renderDay(dateISO) {
       const dayPlan = aggregateRows(arr, dateISO);
       const rowsHtml = dayPlan.rows.map((r, i) =>
-        `<tr><td>${r.location}</td><td>${r.labels[0]}</td><td><input type="number" step="0.01" data-i="${i}" value="${r.kg}" /></td></tr>`
+        `<tr><td>${r.location}</td><td><input type="number" min="1" max="25" data-row="${i}" value="${r.rowIdx}" style="width:50px" /></td><td><input type="number" step="0.01" data-i="${i}" value="${r.kg}" /></td></tr>`
       ).join('');
       const filledNote = filled[dateISO] ? `<span style="color:#28a745">✓ กรอกแล้วเมื่อ ${cacheAgeText(filled[dateISO])}</span>` : '';
       previewEl.innerHTML = `
@@ -653,8 +937,8 @@ Return ONLY the JSON array.`;
           วันที่: <b>${thaiDateBE(dateISO)}</b> (CE ${dateISO}) · เวลาแรก: <b>${dayPlan.earliestTime || '-'}</b> · ${dayPlan.totalRows} entry · ${filledNote}
         </div>
         <table id="waste-ocr-preview">
-          <thead><tr><th>Location</th><th>Form label</th><th>kg (แก้ได้)</th></tr></thead>
-          <tbody>${rowsHtml || '<tr><td colspan="3">— ไม่มี row ที่ match ROW_LABEL_MAP —</td></tr>'}</tbody>
+          <thead><tr><th>Location</th><th>Row #</th><th>kg (แก้ได้)</th></tr></thead>
+          <tbody>${rowsHtml || '<tr><td colspan="3">— ไม่มี row ที่ match LOCATION_TO_ROW —</td></tr>'}</tbody>
         </table>`;
       return dayPlan;
     }
@@ -673,13 +957,28 @@ Return ONLY the JSON array.`;
       status.textContent = 'ลากรูปใหม่วางด้านบน';
     });
     content.querySelector('[data-act="fill"]').addEventListener('click', () => {
+      // อ่าน kg + rowIdx ที่ user แก้ใน preview
       content.querySelectorAll('input[data-i]').forEach(inp => {
         const i = +inp.dataset.i;
         currentDayPlan.rows[i].kg = parseFloat(inp.value) || 0;
       });
+      const overrides = getRowOverrides();
+      let savedOverride = false;
+      content.querySelectorAll('input[data-row]').forEach(inp => {
+        const i = +inp.dataset.row;
+        const newIdx = parseInt(inp.value, 10);
+        if (!newIdx) return;
+        if (newIdx !== currentDayPlan.rows[i].rowIdx) {
+          overrides[currentDayPlan.rows[i].location] = newIdx;
+          currentDayPlan.rows[i].rowIdx = newIdx;
+          savedOverride = true;
+        }
+      });
+      if (savedOverride) saveRowOverrides(overrides);
       const fillHeader = content.querySelector('#ocr-fill-header').checked;
       const dateISO = sel.value;
       const report = fillForm(currentDayPlan, { fillHeader, dateISO });
+      if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
       const logEl = content.querySelector('#waste-ocr-log');
       logEl.style.display = 'block';
       logEl.textContent = report.join('\n');
