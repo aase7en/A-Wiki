@@ -1,5 +1,60 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-27] session | OCR Knowledge Hub + Drive Symlink setup
+
+**Done:**
+- ✅ **Merged worktree branch** `claude/loving-ramanujan-f6defe` → main (log.md conflict resolved, userscript files brought to main repo)
+- ✅ **`scripts/setup-drive-link.sh`**: script ตั้งค่า `drive/` symlink ชี้ไปที่ personal storage ของแต่ละ user — auto-detect Google Drive path (Win/Mac/Linux) + fallback `.drive-path` config + init folder structure
+- ✅ **`scripts/drive_path.py`**: Python utility สำหรับ resolve drive root path (symlink → .drive-path → ~/.a-wiki-data)
+- ✅ **`wiki/context/ocr-learning-log.md`**: หน้าใหม่สำหรับ log OCR corrections สะสม — tracked ใน git → ทุก device/editor sync ได้ทันที
+- ✅ **`wiki/synthesis/waste-form-automation.md`**: เพิ่ม 2 section — Telegram Bot (future architecture) + Drive Symlink Workflow
+- ✅ **`scripts/userscripts/README.md`**: เพิ่ม Drive backup + share instructions
+- ✅ **`.gitignore`**: เพิ่ม `drive` และ `.drive-path` rules
+- ✅ **`wiki/context/session-memory.md`**: mark [env-webapp] userscript TODO done + เพิ่ม Telegram + Drive setup TODOs
+
+**Architecture decisions:**
+- `drive/` symlink = per-user personal storage (not committed) — แต่ละคน setup เองด้วย `bash scripts/setup-drive-link.sh`
+- OCR knowledge (system prompt, correction log) = อยู่ใน A-Wiki git → universal ทุก device/editor
+- userscript + Drive path = เฉพาะบุคคล, share ผ่าน Drive link ได้
+
+---
+
+## [2026-05-27] session | Waste form OCR userscript v0.8.1 verification & finalization
+
+**Done:**
+- ✅ **Verified v0.8.1 production-ready**: User confirmed via screenshot — form save → reload shows `30/04/2569` (BE date) correctly stored and displayed
+- ✅ **Datepicker CE/BE conversion working**: Fixed in v0.8.1 with focus+blur+open+Escape re-render cycle to force picker display update after CE value set
+- ✅ **All core features operational**: OCR reads images, Settings dropdowns searchable (type-to-filter), cache system stores multi-day data, row mapping complete (OPD→12, Ward→14, ER→8, etc.), header auto-fill works (วันที่, เวลา, Supplies, ผู้บันทึก)
+- ✅ **Marked TODO [env-webapp] as done** in session-memory.md — userscript tested + verified on Chrome with save/reload confirmation
+- ✅ **Documentation complete**: `scripts/userscripts/waste-form-ocr-fill.user.js` (v0.8.1), `scripts/userscripts/README.md`, `wiki/synthesis/waste-form-automation.md` (has "Alternative: Userscript Edition" section)
+
+**Status**: 🎉 **Feature Complete** — Ready for daily production use. User can:
+1. Install Tampermonkey extension
+2. Paste userscript file
+3. Set GEMINI_API_KEY once (free 1500 req/day)
+4. Upload waste report images → preview → fill → submit
+
+**Architecture decision upheld**: Tampermonkey userscript (no OS install) + Gemini 2.5 Flash (free tier) vs. original Python+Playwright plan. Cost-First Pyramid Level 1 (free API) achieved.
+
+---
+
+## [2026-05-26] session | Waste form OCR userscript (Tampermonkey + Gemini Flash)
+
+**Done:**
+- สร้าง `scripts/userscripts/waste-form-ocr-fill.user.js` (~400 บรรทัด) — Tampermonkey userscript inject ปุ่ม "📷 OCR & Fill" ที่หน้า `https://10779.gtwoffice.com/env/manage/trash_add`
+- ส่งภาพใบรายงานไป **Gemini 2.5 Flash** (ฟรี 1500 req/วัน) ใช้ system prompt ปรับจาก [wiki/synthesis/garbage-report-ocr.md](wiki/synthesis/garbage-report-ocr.md) (ภาษาอังกฤษ + Thai vocabulary + staff hints)
+- Preview-before-fill: ผู้ใช้แก้ค่าตัวเลขได้ก่อนกด Fill Form; userscript ไม่กด submit เอง
+- DOM strategy: label-based (หา `<td>` text = "ขยะทั่วไป OPD" → คืน `<input>` ใน `<tr>` เดียวกัน) — robust กว่าใช้ name attribute
+- Compound location split: `OPD+ER` → row 8+12 หาร 2; `แผนไทย+ฝังเข็ม` → row 11+18
+- Auto-fill header: เวลาแรกสุดของวัน + Supplies "อบต.อุทัย" + ผู้บันทึก "Aase7en" (option text match)
+- `scripts/userscripts/README.md`: install Tampermonkey → paste userscript → ใส่ GEMINI_API_KEY ครั้งแรก → ใช้งานได้เลย
+- อัปเดต [wiki/synthesis/waste-form-automation.md](wiki/synthesis/waste-form-automation.md): เพิ่ม section "Alternative: Userscript Edition"
+- อัปเดต [wiki/context/session-memory.md](wiki/context/session-memory.md): mark `fill-waste-form.py` superseded + เพิ่ม TODO ทดสอบ userscript
+
+**Decision:** เปลี่ยน approach จาก Python+Playwright → userscript + Cost-First Pyramid Level 1 (Gemini ฟรี)
+
+---
+
 ## [2026-05-26] session | Obsidian graph view filter + color groups
 
 **Done:**

@@ -99,6 +99,12 @@ temp/
 raw
 raw/
 
+# drive/ — personal data storage symlink (per-user, created by setup-drive-link.sh)
+# Each user points this to their own Google Drive / NAS / local storage
+# Run: bash scripts/setup-drive-link.sh  to configure
+drive
+.drive-path
+
 # --- Archive / Downloads ---
 *.zip
 *.tar.gz
