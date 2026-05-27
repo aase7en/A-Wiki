@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      0.2.0
-// @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ
+// @version      0.9.0
+// @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ + Location editable + learning-prompt feedback
 // @author       A-Wiki / Asse7en
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
 // @match        https://*.gtwoffice.com/env/manage/trash_add*
@@ -22,24 +22,29 @@
   const GEMINI_URL = (key) =>
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
 
-  // Hardcoded constants ตาม wiki/synthesis/waste-form-automation.md
-  const SUPPLIES_DEFAULT = 'อบต.อุทัย';
-  const RECORDER_DEFAULT = 'ศุภศิษฎิ์ คงสุวรรณ';
+  // Explicit form field IDs [verified 2026-05-26 via DOM dump]
+  const FIELD_IDS = {
+    date: 'TRASH_DATE',      // datepicker (BE format DD/MM/YYYY+543)
+    time: 'TRASH_TIME',      // masked time input
+    year: 'TRASH_YEAR',      // select (BE year)
+    supplies: 'TRASH_SUP',   // Select2: js-example-basic-s
+    recorder: 'TRASH_USER',  // Select2: js-example-basic-s
+  };
 
-  // Location → form row mapping (label-based)
-  // คีย์ของ label ใช้คำสำคัญใน label ของแต่ละแถว (ดูใน screenshot)
-  const ROW_LABEL_MAP = {
-    OPD: ['ขยะทั่วไป OPD'],
-    Ward: ['ขยะทั่วไป Ward'],
-    ER: ['ขยะทั่วไป ER'],
-    โรงครัว: ['ขยะทั่วไป โรงครัว'],
-    เวช: ['ขยะทั่วไป เวช'],
-    ฝังเข็ม: ['ขยะทั่วไป ฝังเข็ม'],
-    แผนไทย: ['ขยะทั่วไป แพทย์แผนไทย', 'ขยะทั่วไป แผนไทย'],
-    บริหาร: ['ขยะทั่วไป บริหาร'],
-    ห้องช่าง: ['ขยะทั่วไป ห้องช่าง'],
-    ซักฟอก: ['ขยะทั่วไป ซักฟอก'],
-    แฟลต: ['ขยะทั่วไป แฟลต'],
+  // Location → row index (1-25, the Nth TRASH_SUB_QTY[] input)
+  // Reference: wiki/synthesis/waste-form-automation.md
+  const LOCATION_TO_ROW = {
+    OPD: 12,        // ขยะทั่วไป OPD
+    Ward: 14,       // ขยะทั่วไป Ward
+    ER: 8,          // ขยะทั่วไป ER
+    โรงครัว: 9,     // ขยะทั่วไป โรงครัว
+    บริหาร: 10,     // ขยะทั่วไป บริหาร
+    ฝังเข็ม: 11,    // ขยะทั่วไป ฝังเข็ม
+    เวช: 13,        // ขยะทั่วไป เวชฯ
+    ห้องช่าง: 15,
+    ซักฟอก: 16,
+    แฟลต: 17,
+    แผนไทย: 18,     // ขยะทั่วไป แพทย์แผนไทย
   };
 
   // Compound locations → split equally across rows
@@ -47,6 +52,20 @@
     'OPD+ER': ['OPD', 'ER'],
     'แผนไทย+ฝังเข็ม': ['แผนไทย', 'ฝังเข็ม'],
   };
+
+  // --- USER SETTINGS (persisted) --------------------------------------------
+  function getSettings() {
+    return GM_getValue('ocr_settings', { suppliesValue: '', recorderValue: '', customHints: '' });
+  }
+  function saveSettings(s) { GM_setValue('ocr_settings', s); }
+  function getRowOverrides() {
+    return GM_getValue('ocr_row_overrides', {}); // {location: rowIdx}
+  }
+  function saveRowOverrides(o) { GM_setValue('ocr_row_overrides', o); }
+  function resolveRowIdx(location) {
+    const overrides = getRowOverrides();
+    return overrides[location] ?? LOCATION_TO_ROW[location];
+  }
 
   // --- SYSTEM PROMPT (ภาษาอังกฤษเพื่อประหยัด token ตาม CLAUDE.md) ---------------
   const SYSTEM_PROMPT = `You extract data from Thai hospital waste-report forms (handwritten).
@@ -73,6 +92,12 @@ Staff hints (use as confirmation only):
 Add a final object {"_meta": {"confidence": 0..1, "unclear": [...]}} if quality is low.
 Return ONLY the JSON array.`;
 
+  function buildSystemPrompt() {
+    const hints = (getSettings().customHints || '').trim();
+    if (!hints) return SYSTEM_PROMPT;
+    return SYSTEM_PROMPT + `\n\nADDITIONAL USER CORRECTIONS (apply these — they override defaults):\n${hints}`;
+  }
+
   // --- UTIL ------------------------------------------------------------------
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -94,6 +119,137 @@ Return ONLY the JSON array.`;
     alert('ล้าง API key แล้ว — รอบหน้าจะถามใหม่');
   }
 
+  // --- CACHE (last OCR result, 24h TTL) -------------------------------------
+  const CACHE_KEY = 'last_ocr_cache';
+  const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+  function saveCache(arr, fileName) {
+    GM_setValue(CACHE_KEY, {
+      ts: Date.now(),
+      fileName: fileName || 'unknown',
+      rows: arr,
+      filled: {}, // {dateISO: timestamp} — track which days have been filled this session
+    });
+  }
+  function loadCache() {
+    const entry = GM_getValue(CACHE_KEY, null);
+    if (!entry || !entry.rows) return null;
+    if (Date.now() - entry.ts > CACHE_TTL_MS) return null;
+    return entry;
+  }
+  function markFilled(dateISO) {
+    const entry = loadCache();
+    if (!entry) return;
+    entry.filled = entry.filled || {};
+    entry.filled[dateISO] = Date.now();
+    GM_setValue(CACHE_KEY, entry);
+  }
+  function clearCache() {
+    GM_setValue(CACHE_KEY, null);
+  }
+  function cacheAgeText(ts) {
+    const min = Math.floor((Date.now() - ts) / 60000);
+    if (min < 1) return 'เมื่อสักครู่';
+    if (min < 60) return `${min} นาทีก่อน`;
+    const hr = Math.floor(min / 60);
+    return `${hr} ชม.${min % 60 ? ' '+(min%60)+' นาที' : ''}ก่อน`;
+  }
+
+  // --- LEARNING PROMPT (สำหรับส่งให้ A-Wiki AI Agent) -----------------------
+  // เปรียบเทียบค่า OCR-original กับค่าที่ user แก้ → สร้าง prompt markdown
+  // user copy แล้ว paste เข้า Claude Code → agent อัปเดต wiki/context/ocr-learning-log.md
+  function buildLearningPrompt(dayPlan, meta, dateISO, fileName, originalOcrRaw) {
+    const nowIso = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    const diffs = [];
+
+    const rowsTable = dayPlan.rows.map((r, i) => {
+      const locChanged = r.location !== r._originalLocation;
+      const kgChanged = Math.abs((r.kg || 0) - (r._originalKg || 0)) > 0.001;
+      const rowChanged = r.rowIdx !== r._originalRowIdx;
+      const change = [
+        locChanged ? `location: ${r._originalLocation}→${r.location}` : null,
+        kgChanged ? `kg: ${r._originalKg}→${r.kg}` : null,
+        rowChanged ? `row#: ${r._originalRowIdx}→${r.rowIdx}` : null,
+      ].filter(Boolean).join('; ') || '—';
+      if (locChanged || kgChanged || rowChanged) {
+        diffs.push({ i, r, locChanged, kgChanged, rowChanged });
+      }
+      return `| ${i + 1} | ${r.location} | ${r.rowIdx ?? '?'} | ${r.kg} | ${r._originalLocation} | ${r._originalKg} | ${change} |`;
+    }).join('\n');
+
+    const logEntries = diffs.flatMap(d => {
+      const lines = [];
+      if (d.locChanged) lines.push(`| ${dateISO} | location | ${d.r._originalLocation} | ${d.r.location} | row ${d.r.rowIdx} (${fileName}) |`);
+      if (d.kgChanged) lines.push(`| ${dateISO} | weight | ${d.r._originalKg} | ${d.r.kg} | row ${d.r.rowIdx} = ${d.r.location} (${fileName}) |`);
+      if (d.rowChanged) lines.push(`| ${dateISO} | row-mapping | ${d.r._originalLocation}→row${d.r._originalRowIdx} | ${d.r.location}→row${d.r.rowIdx} | user override |`);
+      return lines;
+    }).join('\n') || '_(ไม่มี correction — OCR ถูกต้องทั้งใบ)_';
+
+    const confLine = meta && meta.confidence != null ? `**OCR confidence**: ${meta.confidence}\n` : '';
+    const unclearLine = meta && meta.unclear && meta.unclear.length ? `**OCR unclear notes**: ${meta.unclear.join('; ')}\n` : '';
+
+    return `# Waste OCR Correction Feedback — ${nowIso}
+
+**Image**: ${fileName || '(unknown)'}
+**Target date**: ${dateISO}
+${confLine}${unclearLine}**Corrections**: ${diffs.length}
+
+## Per-row comparison (user-final vs OCR)
+
+| # | Location (final) | Row # | kg (final) | OCR Location | OCR kg | Change |
+|---|---|---|---|---|---|---|
+${rowsTable}
+
+## Action requested
+
+อัปเดต \`wiki/context/ocr-learning-log.md\` → Corrections Log โดยเพิ่มแถว:
+
+${logEntries}
+
+ถ้าผิดซ้ำๆ → พิจารณาอัปเดต SYSTEM_PROMPT vocabulary ใน \`scripts/userscripts/waste-form-ocr-fill.user.js\`
+(หรือเพิ่ม Custom OCR hints ผ่านปุ่ม ⚙ Settings ของ userscript)
+
+## Raw OCR (debug)
+
+\`\`\`json
+${JSON.stringify(originalOcrRaw, null, 2)}
+\`\`\`
+`;
+  }
+
+  // --- DATE HELPERS (Thai BE ↔ ISO CE) --------------------------------------
+  function thaiDateBE(iso) {
+    // "2026-04-30" → "30/04/2569"
+    if (!iso) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return iso;
+    const [, y, mo, d] = m;
+    return `${d}/${mo}/${+y + 543}`;
+  }
+  function thaiDateCE(iso) {
+    // "2026-04-30" → "30/04/2026" (dd/mm/yyyy CE — format ที่ picker เก็บภายใน)
+    if (!iso) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return iso;
+    const [, y, mo, d] = m;
+    return `${d}/${mo}/${y}`;
+  }
+  function parseAnyDate(s) {
+    // accept "2026-04-30" or "30/04/2569" or "30/04/2026"
+    if (!s) return null;
+    s = s.trim();
+    let m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+    if (m) return s;
+    m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
+    if (m) {
+      let [, d, mo, y] = m;
+      y = +y;
+      if (y > 2400) y -= 543; // BE → CE
+      return `${y}-${String(+mo).padStart(2,'0')}-${String(+d).padStart(2,'0')}`;
+    }
+    return null;
+  }
+
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const r = new FileReader();
@@ -110,7 +266,7 @@ Return ONLY the JSON array.`;
   function geminiCall(apiKey, base64Data, mimeType) {
     return new Promise((resolve, reject) => {
       const body = {
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        system_instruction: { parts: [{ text: buildSystemPrompt() }] },
         contents: [{
           role: 'user',
           parts: [
@@ -123,20 +279,39 @@ Return ONLY the JSON array.`;
       GM_xmlhttpRequest({
         method: 'POST',
         url: GEMINI_URL(apiKey),
+        timeout: 60000,
         headers: { 'Content-Type': 'application/json' },
         data: JSON.stringify(body),
         onload: (resp) => {
           try {
+            if (resp.status < 200 || resp.status >= 300) {
+              return reject(new Error(`HTTP ${resp.status}: ${resp.responseText?.slice(0, 200)}`));
+            }
             const j = JSON.parse(resp.responseText);
             if (j.error) return reject(new Error(j.error.message || 'Gemini error'));
             const text = j.candidates?.[0]?.content?.parts?.[0]?.text || '';
             const clean = text.replace(/^```json\s*|\s*```$/g, '').trim();
+            if (!clean) return reject(new Error('Empty response from Gemini'));
             resolve(JSON.parse(clean));
-          } catch (e) { reject(e); }
+          } catch (e) { reject(new Error('Parse error: ' + e.message)); }
         },
         onerror: (e) => reject(new Error('Network error: ' + (e?.error || 'unknown'))),
+        ontimeout: () => reject(new Error('Timeout after 60s')),
       });
     });
+  }
+
+  async function geminiCallRetry(apiKey, base64Data, mimeType, maxRetry = 2) {
+    let lastErr;
+    for (let i = 0; i <= maxRetry; i++) {
+      try { return await geminiCall(apiKey, base64Data, mimeType); }
+      catch (e) {
+        lastErr = e;
+        warn(`Gemini attempt ${i+1}/${maxRetry+1} failed:`, e.message);
+        if (i < maxRetry) await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+      }
+    }
+    throw lastErr;
   }
 
   // --- AGGREGATION -----------------------------------------------------------
@@ -161,13 +336,14 @@ Return ONLY the JSON array.`;
       }
     }
 
-    // 4. map location → row label keys
+    // 4. map location → row index (1-25)
     const result = [];
     for (const [loc, kg] of Object.entries(byLocation)) {
-      const labels = ROW_LABEL_MAP[loc];
-      if (!labels) { warn('unknown location:', loc); continue; }
-      result.push({ location: loc, labels, kg: Math.round(kg * 100) / 100 });
+      const rowIdx = resolveRowIdx(loc);
+      if (!rowIdx) { warn('unknown location:', loc); continue; }
+      result.push({ location: loc, rowIdx, kg: Math.round(kg * 100) / 100 });
     }
+    result.sort((a, b) => a.rowIdx - b.rowIdx);
 
     // 5. earliest time + dates seen
     const times = filtered.map(r => r.time).filter(Boolean).sort();
@@ -175,218 +351,237 @@ Return ONLY the JSON array.`;
     return { rows: result, earliestTime: times[0] || null, dates, totalRows: filtered.length };
   }
 
-  // --- FORM SCAN -------------------------------------------------------------
-  // Scan form once, return { locKey: { rowNumber, label } } + inputRows array.
-  // rowNumber = 1-based index across all <tr> in the table that hold an editable input.
-  function scanFormForRowIndices() {
-    const map = {};
-    let table = null;
-    let inputRows = [];
+  // --- FORM FILL -------------------------------------------------------------
+  const INPUT_SEL = 'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]';
 
-    for (const loc of Object.keys(ROW_LABEL_MAP)) {
-      for (const lbl of ROW_LABEL_MAP[loc]) {
-        const exact = $$('td, th').find(t => t.textContent.trim() === lbl);
-        const partial = exact || $$('td, th').find(t => t.textContent.trim().includes(lbl));
-        if (!partial) continue;
-        const tr = partial.closest('tr');
-        if (!tr) continue;
-        if (!table) {
-          table = tr.closest('table');
-          if (table) {
-            inputRows = Array.from(table.querySelectorAll('tr')).filter(r =>
-              r.querySelector('input[type="text"], input[type="number"], input:not([type])'));
-          }
-        }
-        const idx = inputRows.indexOf(tr);
-        if (idx >= 0) { map[loc] = { rowNumber: idx + 1, label: lbl }; break; }
+  function normalizeText(s) {
+    return (s || '').replace(/\s+/g, ' ').trim();
+  }
+  function fuzzyEq(a, b) {
+    return normalizeText(a).replace(/[\s:*]/g, '') === normalizeText(b).replace(/[\s:*]/g, '');
+  }
+  function fuzzyIncludes(haystack, needle) {
+    return normalizeText(haystack).replace(/\s/g, '').includes(normalizeText(needle).replace(/\s/g, ''));
+  }
+  function isInOurOverlay(el) {
+    return !!el.closest?.('#waste-ocr-overlay');
+  }
+
+  // ROW MATCH (v0.5): นับ TRASH_SUB_QTY[] เป็น index 1-25 ตามลำดับ DOM
+  function findRowQtyInputByIdx(idx) {
+    if (!idx) return null;
+    const qtyInputs = $$('input[name="TRASH_SUB_QTY[]"]').filter(i => !isInOurOverlay(i));
+    return qtyInputs[idx - 1] || null;
+  }
+
+  // (legacy — kept for debug only)
+  function findRowInputByLabel(labelText) {
+    const trs = $$('tr').filter(tr => !isInOurOverlay(tr));
+    // 1) Primary: หา input.fo13 ที่ value match
+    let matches = [];
+    for (const tr of trs) {
+      const labelInput = tr.querySelector('input.fo13, input[class*="fo13"]');
+      if (!labelInput) continue;
+      const v = labelInput.value || '';
+      if (fuzzyEq(v, labelText)) matches.push({ tr, score: 3 });
+      else if (fuzzyIncludes(v, labelText)) matches.push({ tr, score: 2 });
+    }
+    // 2) Fallback: any first text-input in row with value match
+    if (matches.length === 0) {
+      for (const tr of trs) {
+        const firstInput = tr.querySelector('input[type="text"], input:not([type])');
+        if (!firstInput) continue;
+        const v = firstInput.value || '';
+        if (fuzzyEq(v, labelText)) matches.push({ tr, score: 1 });
+        else if (fuzzyIncludes(v, labelText)) matches.push({ tr, score: 0.5 });
       }
     }
-    return { map, table, inputRows };
+    // 3) Fallback: td.textContent (เผื่อบาง row ใช้ plain text)
+    if (matches.length === 0) {
+      for (const tr of trs) {
+        const tds = Array.from(tr.querySelectorAll('td, th'));
+        if (tds.some(td => fuzzyIncludes(td.textContent, labelText))) {
+          matches.push({ tr, score: 0.3 });
+        }
+      }
+    }
+    if (matches.length === 0) return null;
+    matches.sort((a, b) => b.score - a.score);
+    const tr = matches[0].tr;
+    // Return qty input (TRASH_SUB_QTY[]) — fallback ไปอีก input ที่ไม่ใช่ label
+    return tr.querySelector('input[name="TRASH_SUB_QTY[]"]')
+      || tr.querySelector('input[name*="QTY"]')
+      || tr.querySelector('input.text-center')
+      || Array.from(tr.querySelectorAll(INPUT_SEL)).find(i => !i.classList.contains('fo13'))
+      || null;
   }
 
-  function fillInputRow(inputRows, rowNumber, value) {
-    const tr = inputRows && inputRows[rowNumber - 1];
-    if (!tr) return false;
-    const input = tr.querySelector('input[type="text"], input[type="number"], input:not([type])');
-    if (!input) return false;
-    return setInputValue(input, value);
-  }
-
-  // --- FORM FILL -------------------------------------------------------------
-  function findRowInputByLabel(labelText) {
-    // หา <td> ที่ text ตรงกับ labelText (case-insensitive trim) แล้วคืน input ใน row เดียวกัน
-    const tds = $$('td, th').filter(td => td.textContent.trim() === labelText);
-    for (const td of tds) {
-      const row = td.closest('tr');
-      if (!row) continue;
-      const input = row.querySelector('input[type="text"], input[type="number"], input:not([type])');
-      if (input) return input;
-    }
-    // partial match fallback
-    const tdsPartial = $$('td, th').filter(td => td.textContent.trim().includes(labelText));
-    for (const td of tdsPartial) {
-      const row = td.closest('tr');
-      if (!row) continue;
-      const input = row.querySelector('input[type="text"], input[type="number"], input:not([type])');
-      if (input) return input;
-    }
-    return null;
+  function isSelect2(el) {
+    return el && (el.classList?.contains('js-example-basic-s') || el.classList?.contains('select2-hidden-accessible'));
   }
 
   function setInputValue(el, value) {
     if (!el) return false;
-    const proto = el.tagName === 'SELECT' ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
+    value = String(value);
+    const $jq = window.jQuery || window.$;
+    // Special: Select2 widget — must use jQuery API
+    if (el.tagName === 'SELECT' && isSelect2(el) && $jq) {
+      try { $jq(el).val(value).trigger('change'); return true; } catch {}
+    }
+    try { el.focus?.(); } catch {}
+    // Native setter (React-safe)
+    const proto = el.tagName === 'SELECT' ? HTMLSelectElement.prototype
+                : el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype
+                : HTMLInputElement.prototype;
     const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
-    if (setter) setter.call(el, value); else el.value = value;
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
+    try { if (setter) setter.call(el, value); else el.value = value; } catch { el.value = value; }
+    // Event sequence
+    const fire = (type, EventCls = Event, init = { bubbles: true }) => {
+      try { el.dispatchEvent(new EventCls(type, init)); } catch {}
+    };
+    fire('keydown', KeyboardEvent);
+    fire('input');
+    fire('keyup', KeyboardEvent);
+    fire('change');
+    if ($jq) {
+      try { $jq(el).val(value).trigger('input').trigger('change').trigger('keyup'); } catch {}
+    }
+    // Avoid blur for datepicker (may reset value)
+    if (!el.classList?.contains('datepicker')) {
+      try { el.blur?.(); } catch {}
+    }
     return true;
   }
 
   function selectOptionByText(selectEl, textPart) {
     if (!selectEl) return false;
+    let found = null;
     for (const opt of selectEl.options) {
-      if (opt.text.trim() === textPart || opt.text.trim().includes(textPart)) {
-        selectEl.value = opt.value;
-        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
-      }
+      const t = normalizeText(opt.text);
+      const tgt = normalizeText(textPart);
+      if (t === tgt) { found = opt; break; }
+      if (!found && t.includes(tgt)) found = opt;
     }
-    return false;
+    if (!found) return false;
+    return setInputValue(selectEl, found.value);
+  }
+  function selectOptionByValue(selectEl, value) {
+    if (!selectEl || value == null || value === '') return false;
+    return setInputValue(selectEl, String(value));
   }
 
   function findHeaderField(labelSubstr) {
-    // หา label/td/th ที่มีคำว่า labelSubstr → คืน input/select ใกล้ที่สุด
-    const candidates = $$('label, td, th, div').filter(el => el.textContent.trim().startsWith(labelSubstr));
-    for (const el of candidates) {
-      // ลองดูพี่น้องและ parent's next cell
-      const tr = el.closest('tr');
-      if (tr) {
-        const inp = tr.querySelector('input, select');
-        if (inp && !el.contains(inp)) return inp;
+    const target = normalizeText(labelSubstr).replace(/[:*]/g, '').trim();
+
+    // 1) <label for="X"> → find #X
+    const labels = $$('label').filter(l => !isInOurOverlay(l));
+    for (const lab of labels) {
+      const txt = normalizeText(lab.textContent).replace(/[:*]/g, '').trim();
+      if (!txt.startsWith(target) && !txt.includes(target)) continue;
+      const forAttr = lab.getAttribute('for');
+      if (forAttr) {
+        const el = document.getElementById(forAttr);
+        if (el && !isInOurOverlay(el)) return el;
       }
-      const next = el.nextElementSibling;
-      if (next) {
-        const inp = next.matches && next.matches('input, select') ? next : next.querySelector?.('input, select');
-        if (inp) return inp;
+      // No 'for' — look at siblings / parent's children
+      let sib = lab.nextElementSibling;
+      while (sib) {
+        if (sib.matches?.('input, select, textarea') && !isInOurOverlay(sib)) return sib;
+        const inner = sib.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inner && !isInOurOverlay(inner)) return inner;
+        sib = sib.nextElementSibling;
       }
-      const parent = el.parentElement;
-      if (parent) {
-        const inp = parent.querySelector('input, select');
-        if (inp) return inp;
+      // parent group
+      let cur = lab.parentElement;
+      for (let d = 0; d < 3 && cur; d++) {
+        const inp = cur.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inp && !lab.contains(inp) && !isInOurOverlay(inp)) return inp;
+        cur = cur.parentElement;
+      }
+    }
+
+    // 2) Any text leaf (th/td/div/span/p/strong/b) containing label text → walk up parents
+    const all = $$('th, td, div, span, p, strong, b, dt')
+      .filter(el => !isInOurOverlay(el))
+      .filter(el => {
+        const txt = normalizeText(el.textContent).replace(/[:*]/g, '').trim();
+        // ใช้ "starts with" เพื่อหลีกเลี่ยง match container ใหญ่
+        return txt.startsWith(target) && txt.length < target.length + 15;
+      });
+    for (const el of all) {
+      let cur = el;
+      for (let d = 0; d < 5 && cur; d++) {
+        const inp = cur.parentElement?.querySelector?.('input:not([type="hidden"]), select, textarea');
+        if (inp && !el.contains(inp) && !isInOurOverlay(inp)) return inp;
+        cur = cur.parentElement;
       }
     }
     return null;
   }
 
-  function fillForm(plan, options) {
+  async function fillForm(plan, options) {
     const report = [];
-    // Header: เวลา
-    if (plan.earliestTime && options.fillHeader) {
-      const timeEl = findHeaderField('เวลา');
-      if (timeEl) { setInputValue(timeEl, plan.earliestTime); report.push(`เวลา = ${plan.earliestTime}`); }
-      else report.push('⚠ ไม่พบช่องเวลา');
-    }
-    // Header: Supplies (select)
+    const settings = getSettings();
+
     if (options.fillHeader) {
-      const sup = findHeaderField('Supplies');
-      if (sup && sup.tagName === 'SELECT') {
-        if (selectOptionByText(sup, SUPPLIES_DEFAULT)) report.push(`Supplies = ${SUPPLIES_DEFAULT}`);
-        else report.push(`⚠ Supplies: ไม่พบ option "${SUPPLIES_DEFAULT}"`);
+      // วันที่บันทึก (datepicker เก็บ value เป็น dd/mm/yyyy CE — แสดง BE)
+      if (options.dateISO) {
+        const dateBE = thaiDateBE(options.dateISO);
+        const dateCE = thaiDateCE(options.dateISO);
+        const dateEl = document.getElementById(FIELD_IDS.date);
+        if (dateEl) {
+          const ok = await setDatepickerValue(dateEl, dateCE, dateBE);
+          if (ok) report.push(`✓ วันที่บันทึก = ${dateBE} (เก็บภายในเป็น ${dateCE})`);
+          else report.push(`⚠ วันที่บันทึก ไม่ติด (ค่าตอนนี้ "${dateEl.value}") — โปรดคลิกช่องแล้วเลือก ${dateBE} เอง`);
+        } else report.push(`✗ ไม่พบ #${FIELD_IDS.date}`);
+        // ปี (BE select)
+        const yearEl = document.getElementById(FIELD_IDS.year);
+        const yBE = String(parseInt(options.dateISO.slice(0, 4), 10) + 543);
+        if (yearEl) {
+          if (yearEl.tagName === 'SELECT' ? selectOptionByText(yearEl, yBE) : setInputValue(yearEl, yBE)) {
+            report.push(`✓ ปี = ${yBE}`);
+          } else report.push(`⚠ ปี: ไม่พบ option ${yBE}`);
+        }
       }
-      const rec = findHeaderField('ผู้บันทึก');
-      if (rec && rec.tagName === 'SELECT') {
-        if (selectOptionByText(rec, RECORDER_DEFAULT)) report.push(`ผู้บันทึก = ${RECORDER_DEFAULT}`);
-        else report.push(`⚠ ผู้บันทึก: ไม่พบ option "${RECORDER_DEFAULT}"`);
+      // เวลา (masked input)
+      if (plan.earliestTime) {
+        const timeEl = document.getElementById(FIELD_IDS.time);
+        if (timeEl) { setInputValue(timeEl, plan.earliestTime); report.push(`✓ เวลา = ${plan.earliestTime}`); }
+        else report.push(`✗ ไม่พบ #${FIELD_IDS.time}`);
+      }
+      // Supplies (Select2 — ใช้ value จาก settings)
+      const supEl = document.getElementById(FIELD_IDS.supplies);
+      if (supEl) {
+        if (settings.suppliesValue && selectOptionByValue(supEl, settings.suppliesValue)) {
+          const txt = supEl.options[supEl.selectedIndex]?.text;
+          report.push(`✓ Supplies = ${txt}`);
+        } else {
+          report.push(`⚠ Supplies: ไม่ได้ตั้งค่าใน Settings (ใช้ค่าฟอร์มเดิม)`);
+        }
+      }
+      // ผู้บันทึก (Select2 — ใช้ value จาก settings)
+      const recEl = document.getElementById(FIELD_IDS.recorder);
+      if (recEl) {
+        if (settings.recorderValue && selectOptionByValue(recEl, settings.recorderValue)) {
+          const txt = recEl.options[recEl.selectedIndex]?.text;
+          report.push(`✓ ผู้บันทึก = ${txt}`);
+        } else {
+          report.push(`⚠ ผู้บันทึก: ไม่ได้ตั้งค่าใน Settings`);
+        }
       }
     }
-    // Weight rows — prefer rowNumber-based fill (user-correctable), fallback to label
-    const inputRows = options.inputRows || [];
+
+    // Weight rows — ใช้ row index (1-25)
     for (const r of plan.rows) {
-      let filled = false;
-      if (r.rowNumber && inputRows.length) {
-        if (fillInputRow(inputRows, r.rowNumber, String(r.kg))) {
-          report.push(`✓ Row ${r.rowNumber} (${r.location}) = ${r.kg} kg`);
-          filled = true;
-        }
+      const inp = findRowQtyInputByIdx(r.rowIdx);
+      if (inp) {
+        setInputValue(inp, String(r.kg));
+        report.push(`✓ row ${r.rowIdx} (${r.location}) = ${r.kg} kg`);
+      } else {
+        report.push(`✗ ไม่พบ qty input ของ row ${r.rowIdx} (${r.location})`);
       }
-      if (!filled) {
-        const labels = r.labels || ROW_LABEL_MAP[r.location] || [];
-        for (const lbl of labels) {
-          const inp = findRowInputByLabel(lbl);
-          if (inp) {
-            setInputValue(inp, String(r.kg));
-            report.push(`✓ "${lbl}" = ${r.kg} kg (label fallback)`);
-            filled = true;
-            break;
-          }
-        }
-      }
-      if (!filled) report.push(`✗ ไม่พบช่องของ ${r.location} (row#=${r.rowNumber || '?'})`);
     }
     return report;
-  }
-
-  // --- LEARNING PROMPT -------------------------------------------------------
-  // Build a Markdown prompt describing OCR vs user-corrected values.
-  // Designed to be pasted into Claude Code / A-Wiki to update wiki/context/ocr-learning-log.md.
-  function buildLearningPrompt(dayPlan, meta, date, fileName, originalOcrRaw) {
-    const nowIso = new Date().toISOString().slice(0, 16).replace('T', ' ');
-    const diffs = [];
-
-    const rowsTable = dayPlan.rows.map((r, i) => {
-      const locChanged = r.location !== r._originalLocation;
-      const kgChanged = Math.abs((r.kg || 0) - (r._originalKg || 0)) > 0.001;
-      const rowChanged = r.rowNumber !== r._originalRowNumber;
-      const change = [
-        locChanged ? `location: ${r._originalLocation}→${r.location}` : null,
-        kgChanged ? `kg: ${r._originalKg}→${r.kg}` : null,
-        rowChanged ? `row#: ${r._originalRowNumber}→${r.rowNumber}` : null,
-      ].filter(Boolean).join('; ') || '—';
-      if (locChanged || kgChanged || rowChanged) {
-        diffs.push({ i, r, locChanged, kgChanged, rowChanged });
-      }
-      return `| ${i + 1} | ${r.location} | ${r.rowNumber ?? '?'} | ${r.kg} | ${r._originalLocation} | ${r._originalKg} | ${change} |`;
-    }).join('\n');
-
-    const logEntries = diffs.flatMap(d => {
-      const lines = [];
-      if (d.locChanged) lines.push(`| ${date} | location | ${d.r._originalLocation} | ${d.r.location} | row ${d.r.rowNumber} (${fileName}) |`);
-      if (d.kgChanged) lines.push(`| ${date} | weight | ${d.r._originalKg} | ${d.r.kg} | row ${d.r.rowNumber} = ${d.r.location} (${fileName}) |`);
-      if (d.rowChanged) lines.push(`| ${date} | row-mapping | ${d.r._originalLocation}→row${d.r._originalRowNumber} | ${d.r.location}→row${d.r.rowNumber} | user manual override |`);
-      return lines;
-    }).join('\n') || '_(ไม่มี correction — OCR ถูกต้องทั้งใบ)_';
-
-    const confLine = meta && meta.confidence != null ? `**OCR confidence**: ${meta.confidence}\n` : '';
-    const unclearLine = meta && meta.unclear && meta.unclear.length ? `**OCR unclear notes**: ${meta.unclear.join('; ')}\n` : '';
-
-    return `# Waste OCR Correction Feedback — ${nowIso}
-
-**Image**: ${fileName || '(unknown)'}
-**Target date**: ${date}
-${confLine}${unclearLine}**Corrections**: ${diffs.length}
-
-## Per-row comparison (user-final vs OCR)
-
-| # | Location (final) | Row # | kg (final) | OCR Location | OCR kg | Change |
-|---|---|---|---|---|---|---|
-${rowsTable}
-
-## Action requested
-
-อัปเดต \`wiki/context/ocr-learning-log.md\` → Corrections Log โดยเพิ่มแถว:
-
-${logEntries}
-
-ถ้า location/weight ที่ผิดซ้ำๆ → พิจารณาอัปเดต SYSTEM_PROMPT vocabulary ใน
-\`wiki/synthesis/garbage-report-ocr.md\` และ \`scripts/userscripts/waste-form-ocr-fill.user.js\`
-
-## Raw OCR (debug)
-
-\`\`\`json
-${JSON.stringify(originalOcrRaw, null, 2)}
-\`\`\`
-`;
   }
 
   // --- UI --------------------------------------------------------------------
@@ -408,6 +603,7 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
   #waste-ocr-preview th, #waste-ocr-preview td { padding: 6px 8px; border: 1px solid #ddd; text-align: left; }
   #waste-ocr-preview th { background: #f5f0ff; }
   #waste-ocr-preview input { width: 80px; padding: 3px; }
+  #waste-ocr-preview select { padding: 3px 6px; }
   #waste-ocr-log { background: #f7f7f9; padding: 10px; border-radius: 6px; font-family: monospace;
     font-size: 12px; max-height: 200px; overflow: auto; white-space: pre-wrap; }
   .waste-ocr-row { display: flex; gap: 8px; margin: 10px 0; align-items: center; }
@@ -442,7 +638,11 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     overlay.id = 'waste-ocr-overlay';
     overlay.innerHTML = `
       <div id="waste-ocr-modal">
-        <h2>📷 OCR ใบรายงานขยะ → กรอกฟอร์ม</h2>
+        <h2>📷 OCR ใบรายงานขยะ → กรอกฟอร์ม
+          <button class="waste-ocr-btn waste-ocr-secondary" data-act="toggle-settings" style="float:right;padding:4px 10px;font-size:12px">⚙ Settings</button>
+        </h2>
+        <div id="waste-ocr-settings" style="display:none"></div>
+        <div id="waste-ocr-cache-banner"></div>
         <div id="waste-ocr-drop">ลากรูปวางที่นี่ หรือคลิกเลือกไฟล์ (.jpg / .png)
           <input type="file" accept="image/*" style="display:none" />
         </div>
@@ -454,6 +654,15 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       </div>`;
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
     overlay.querySelector('[data-act="close"]').addEventListener('click', () => overlay.remove());
+    overlay.querySelector('[data-act="toggle-settings"]').addEventListener('click', () => {
+      const panel = overlay.querySelector('#waste-ocr-settings');
+      if (panel.style.display === 'none') {
+        renderSettingsPanel(panel);
+        panel.style.display = 'block';
+      } else {
+        panel.style.display = 'none';
+      }
+    });
 
     const drop = overlay.querySelector('#waste-ocr-drop');
     const fileInput = drop.querySelector('input[type="file"]');
@@ -471,22 +680,355 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     });
 
     document.body.appendChild(overlay);
+
+    // เช็ค cache → ถ้ามี แสดง banner + auto-load
+    const cache = loadCache();
+    if (cache) {
+      const dates = [...new Set(cache.rows.filter(r => r && !r._meta).map(r => r.date).filter(Boolean))].sort();
+      const banner = overlay.querySelector('#waste-ocr-cache-banner');
+      banner.innerHTML = `
+        <div style="background:#e7f5e7;border:1px solid #b6dab6;padding:10px;border-radius:6px;margin-bottom:8px">
+          <b>💾 พบ OCR ล่าสุด</b> · ${cache.fileName} · ${cacheAgeText(cache.ts)} · ${dates.length} วัน
+          <div class="waste-ocr-row" style="margin-top:6px">
+            <button class="waste-ocr-btn waste-ocr-primary" data-act="use-cache">ใช้ของเดิม</button>
+            <button class="waste-ocr-btn waste-ocr-danger" data-act="clear-cache">ล้าง cache</button>
+            <span style="font-size:12px;color:#666">หรืออัปโหลดรูปใหม่ด้านล่าง (จะแทน cache)</span>
+          </div>
+        </div>`;
+      banner.querySelector('[data-act="use-cache"]').addEventListener('click', () => {
+        showDayPicker(overlay, cache.rows, cache.fileName);
+      });
+      banner.querySelector('[data-act="clear-cache"]').addEventListener('click', () => {
+        clearCache();
+        banner.innerHTML = '';
+      });
+    }
+  }
+
+  // --- Searchable dropdown (พิมพ์ค้นหาได้) ---
+  // options: [{value, text}], onChange(newValue)
+  function makeSearchableDropdown(host, options, initialValue, onChange) {
+    const initial = options.find(o => String(o.value) === String(initialValue));
+    let selectedValue = initialValue;
+    host.innerHTML = `
+      <div class="sd-wrap" style="position:relative">
+        <input class="sd-input" type="text" value="${(initial?.text||'').replace(/"/g,'&quot;')}"
+               placeholder="พิมพ์ค้นหา ชื่อ/นามสกุล…" autocomplete="off"
+               style="width:100%;padding:6px 8px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box" />
+        <div class="sd-list" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;
+                                    border:1px solid #ccc;max-height:240px;overflow-y:auto;z-index:100001;
+                                    border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.15)"></div>
+      </div>`;
+    const input = host.querySelector('.sd-input');
+    const list = host.querySelector('.sd-list');
+    let activeIdx = -1, currentFiltered = [];
+
+    function renderList(filter = '') {
+      const f = normalizeText(filter).toLowerCase();
+      currentFiltered = !f
+        ? options.slice(0, 100)
+        : options.filter(o => normalizeText(o.text).toLowerCase().includes(f)).slice(0, 100);
+      list.innerHTML = currentFiltered.length
+        ? currentFiltered.map((o, i) => {
+            const isSel = String(o.value) === String(selectedValue);
+            return `<div class="sd-item" data-i="${i}"
+                style="padding:6px 10px;cursor:pointer;${isSel?'background:#e7e0f5;font-weight:600':''}">${o.text}</div>`;
+          }).join('')
+        : '<div style="padding:8px;color:#999">ไม่พบ</div>';
+      list.querySelectorAll('.sd-item').forEach(el => {
+        el.addEventListener('mousedown', (e) => { e.preventDefault(); pickIdx(+el.dataset.i); });
+        el.addEventListener('mouseenter', () => {
+          list.querySelectorAll('.sd-item').forEach(x => x.style.background = '');
+          el.style.background = '#f0e6ff';
+        });
+      });
+      activeIdx = -1;
+    }
+    function pickIdx(i) {
+      const o = currentFiltered[i];
+      if (!o) return;
+      selectedValue = o.value;
+      input.value = o.text;
+      list.style.display = 'none';
+      onChange?.(selectedValue);
+    }
+    input.addEventListener('focus', () => { renderList(input.value); list.style.display = 'block'; });
+    input.addEventListener('input', () => { renderList(input.value); list.style.display = 'block'; });
+    input.addEventListener('blur', () => { setTimeout(() => { list.style.display = 'none'; }, 200); });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, currentFiltered.length - 1); highlightActive(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); highlightActive(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (activeIdx >= 0) pickIdx(activeIdx); }
+      else if (e.key === 'Escape') { list.style.display = 'none'; }
+    });
+    function highlightActive() {
+      list.querySelectorAll('.sd-item').forEach((el, i) => {
+        el.style.background = i === activeIdx ? '#f0e6ff' : (String(currentFiltered[i].value) === String(selectedValue) ? '#e7e0f5' : '');
+        if (i === activeIdx) el.scrollIntoView({ block: 'nearest' });
+      });
+    }
+    renderList();
+    return { getValue: () => selectedValue };
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function findVueInstance(el) {
+    // Vue 2 attaches __vue__ to root DOM of each component
+    let cur = el;
+    while (cur) {
+      if (cur.__vue__) return { vue: cur.__vue__, version: 2 };
+      if (cur.__vueParentComponent) return { vue: cur.__vueParentComponent, version: 3 };
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function nativeSet(el, value) {
+    const proto = el.tagName === 'SELECT' ? HTMLSelectElement.prototype
+                : el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype
+                : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+    if (setter) setter.call(el, value); else el.value = value;
+  }
+
+  // --- Datepicker (เก็บ value เป็น dd/mm/yyyy CE — Vue convert เป็น BE สำหรับ display) ---
+  async function setDatepickerValue(el, valueCE, valueBE) {
+    if (!el) return false;
+    log('=== datepicker debug ===');
+    log('  target id:', el.id, '| current:', el.value, '| want CE:', valueCE, '| display BE:', valueBE);
+
+    const wasReadonly = el.hasAttribute('readonly') || el.readOnly;
+    log('  readonly?', wasReadonly, '| data-date-format:', el.getAttribute('data-date-format'));
+
+    if (wasReadonly) { el.removeAttribute('readonly'); el.readOnly = false; }
+    nativeSet(el, valueCE);
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: valueCE }));
+    el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+    log(`  [CE set] after input event → el.value=${el.value}`);
+
+    const found = findVueInstance(el);
+    if (found) {
+      log(`  Vue ${found.version} instance found, keys:`, Object.keys(found.vue).slice(0, 15));
+      const v = found.vue;
+      for (const prop of ['value', 'date', 'inputValue', 'selectedDate', 'modelValue', 'localValue']) {
+        if (prop in v && v[prop] !== undefined) {
+          try {
+            log(`  trying vue.${prop} = '${valueCE}' (was '${v[prop]}')`);
+            v[prop] = valueCE;
+          } catch (e) { warn(`  vue.${prop} set threw:`, e.message); }
+        }
+      }
+      try { v.$emit?.('input', valueCE); v.$emit?.('change', valueCE); } catch {}
+    } else {
+      log('  no Vue instance found on el or ancestors');
+    }
+
+    // Delayed check (ค่า value อยู่ในรูปแบบ CE — display เป็น BE)
+    await sleep(100);
+    log(`  [after 100ms] el.value=${el.value}`);
+    await sleep(900);
+    log(`  [after 1000ms] el.value=${el.value}`);
+
+    // ตรวจ display element ที่แสดง BE (text node ใน Vue-rendered display)
+    let displayOK = false;
+    const dateRegex = /\b\d{2}\/\d{2}\/25\d{2}\b/;
+    const textNodes = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(n) {
+        if (!n.nodeValue || !dateRegex.test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
+        if (n.parentElement?.closest('#waste-ocr-overlay')) return NodeFilter.FILTER_REJECT;
+        const tag = n.parentElement?.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    let tn;
+    while ((tn = walker.nextNode())) textNodes.push(tn);
+    if (textNodes.length > 0) {
+      log(`  ${textNodes.length} text node(s) with BE date:`);
+      textNodes.forEach((n, i) => {
+        const matched = (n.nodeValue.match(dateRegex)||[])[0];
+        log(`    text[${i}] "${matched}" in <${n.parentElement?.tagName?.toLowerCase()}> class="${(n.parentElement?.className||'').slice(0,40)}"`);
+        if (matched === valueBE) displayOK = true;
+      });
+    }
+
+    const valueOK = el.value === valueCE || el.value.includes(valueCE.split('/').slice(0,2).join('/'));
+    log(`  value check: el.value="${el.value}" matches CE? ${valueOK}`);
+    log(`  display check: BE "${valueBE}" appears in text nodes? ${displayOK}`);
+
+    if (valueOK) {
+      log('=== datepicker done, success: true (CE format) ===');
+      if (wasReadonly) el.setAttribute('readonly', '');
+      return true;
+    }
+
+    // Fallback: ลองส่ง BE ดู (เผื่อ picker บางตัวรับ BE)
+    log('  CE didn\'t stick — trying BE format as fallback');
+    nativeSet(el, valueBE);
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: valueBE }));
+    el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+    await sleep(500);
+    log(`  [BE attempt after 500ms] el.value=${el.value}`);
+    if (el.value === valueBE || el.value === valueCE) {
+      log('=== datepicker done, success: true (BE fallback) ===');
+      if (wasReadonly) el.setAttribute('readonly', '');
+      return true;
+    }
+
+    // C) คลิกเปิด picker → คลิกวันที่
+    log('  trying picker UI click fallback');
+    if (wasReadonly) el.setAttribute('readonly', '');
+    const ok = await clickPickerSelectDate(el, valueBE);
+    log('=== datepicker done, success:', ok, ', final el.value:', el.value, '===');
+    return ok;
+  }
+
+  // Click strategy: เปิด picker → หา « » buttons → คลิก day cell
+  async function clickPickerSelectDate(inputEl, valueBE) {
+    const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(valueBE);
+    if (!m) return false;
+    const [, dStr, moStr, yBEStr] = m;
+    const day = +dStr, month = +moStr, beYear = +yBEStr;
+    const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                        'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const targetMonthName = monthNames[month - 1];
+
+    // เปิด picker
+    inputEl.click();
+    inputEl.focus();
+    await sleep(250);
+
+    // หา picker DOM — ค้นหา element ที่มีเดือนไทย + ปี BE และ visible
+    let picker = null;
+    const allDivs = $$('div, table, section').filter(el => !isInOurOverlay(el) && el.offsetParent !== null);
+    for (const d of allDivs) {
+      const txt = normalizeText(d.textContent);
+      if (monthNames.some(mn => txt.includes(mn)) && /256\d|257\d/.test(txt) && txt.length < 800) {
+        picker = d;
+        log('  picker candidate found, classList:', d.className, 'tag:', d.tagName);
+        break;
+      }
+    }
+    if (!picker) { warn('  picker not found after click — date field may not be a popover picker'); return false; }
+
+    // Navigate to target month/year
+    for (let step = 0; step < 80; step++) {
+      const headerEl = picker.querySelector('.picker-switch, .datepicker-switch, [class*="switch"], th.dow ~ th, thead th, .header, .title')
+                    || Array.from(picker.querySelectorAll('*')).find(e => monthNames.some(mn => e.textContent.trim().startsWith(mn)));
+      const headerText = headerEl?.textContent?.trim() || '';
+      if (headerText.includes(targetMonthName) && headerText.includes(String(beYear))) {
+        log(`  reached month: ${headerText}`);
+        break;
+      }
+      const headerYear = parseInt(headerText.match(/256\d|257\d/)?.[0] || '0', 10);
+      const headerMonthIdx = monthNames.findIndex(mn => headerText.includes(mn));
+      const curOrdinal = headerYear * 12 + (headerMonthIdx + 1);
+      const tgtOrdinal = beYear * 12 + month;
+      const nextBtn = picker.querySelector('.next, [class*="next"], button[aria-label*="next" i], .fa-chevron-right, .fa-angle-right')?.closest('button, a, td, th, span, div');
+      const prevBtn = picker.querySelector('.prev, [class*="prev"], button[aria-label*="prev" i], .fa-chevron-left, .fa-angle-left')?.closest('button, a, td, th, span, div');
+      const btn = tgtOrdinal > curOrdinal ? nextBtn : prevBtn;
+      if (!btn) { warn('  nav buttons not found in picker'); return false; }
+      btn.click();
+      await sleep(60);
+    }
+
+    // คลิก day cell
+    const dayCells = $$('td, .day, [class*="day"], button', picker).filter(c =>
+      c.textContent.trim() === String(day) &&
+      !c.classList.contains('old') && !c.classList.contains('new') &&
+      !c.classList.contains('disabled') && !c.classList.contains('off')
+    );
+    if (dayCells.length === 0) { warn('  day cell', day, 'not found'); return false; }
+    dayCells[0].click();
+    await sleep(150);
+    log('  clicked day', day, 'final el.value:', inputEl.value);
+    return inputEl.value === valueBE || inputEl.value.startsWith(String(day).padStart(2, '0'));
+  }
+
+  function renderSettingsPanel(panel) {
+    const settings = getSettings();
+    const supEl = document.getElementById(FIELD_IDS.supplies);
+    const recEl = document.getElementById(FIELD_IDS.recorder);
+    const overrides = getRowOverrides();
+    const overrideText = Object.keys(overrides).length
+      ? Object.entries(overrides).map(([loc, idx]) => `${loc}→${idx}`).join(', ')
+      : '(ไม่มี — ใช้ค่า default)';
+
+    const readOptions = (selectEl) => selectEl
+      ? Array.from(selectEl.options).filter(o => o.value !== '').map(o => ({ value: o.value, text: o.text }))
+      : [];
+    const supOptions = readOptions(supEl);
+    const recOptions = readOptions(recEl);
+
+    panel.innerHTML = `
+      <div style="background:#f5f0ff;border:1px solid #d0c0ee;padding:12px;border-radius:8px;margin-bottom:10px">
+        <div style="font-weight:600;margin-bottom:8px">⚙ Settings (เก็บใน Tampermonkey storage)</div>
+
+        <div style="margin-bottom:10px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">Supplies (อบต. / หน่วยงาน):</label>
+          <div id="set-supplies-host"></div>
+        </div>
+
+        <div style="margin-bottom:10px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">ผู้บันทึก (พิมพ์ค้นหา ชื่อ/นามสกุล):</label>
+          <div id="set-recorder-host"></div>
+        </div>
+
+        <div style="margin-bottom:8px">
+          <label style="display:block;font-size:13px;margin-bottom:3px">
+            🧠 Custom OCR hints (สอน Gemini ให้แม่นขึ้น — ต่อท้าย system prompt):
+          </label>
+          <textarea id="set-hints" rows="5" placeholder="ตัวอย่าง:&#10;- ลายมือ 'อ้อย' มักอ่านเป็น 'บอย' — ให้อ่านเป็น 'อ้อย'&#10;- น้ำหนัก 12 บางครั้งอ่านเป็น 17 — ตรวจซ้ำเลข 1-2-7&#10;- location 'จิตเวช' → ใช้คำว่า 'เวช'"
+            style="width:100%;padding:6px;font-family:monospace;font-size:12px;box-sizing:border-box">${(settings.customHints || '').replace(/</g,'&lt;')}</textarea>
+        </div>
+
+        <div style="margin-bottom:8px;font-size:12px;color:#666">
+          Row overrides (ปุ่ม Fill จะเซฟอัตโนมัติเมื่อแก้ Row # ใน preview): <code>${overrideText}</code>
+          ${Object.keys(overrides).length ? '<button class="waste-ocr-btn waste-ocr-danger" data-act="clear-overrides" style="padding:3px 8px;font-size:11px;margin-left:6px">ล้าง</button>' : ''}
+        </div>
+
+        <div class="waste-ocr-row">
+          <button class="waste-ocr-btn waste-ocr-primary" data-act="save-settings">💾 บันทึก settings</button>
+          <span id="set-saved-msg" style="color:#28a745;font-size:12px;display:none">✓ บันทึกแล้ว</span>
+        </div>
+      </div>`;
+
+    const supDD = makeSearchableDropdown(panel.querySelector('#set-supplies-host'), supOptions, settings.suppliesValue);
+    const recDD = makeSearchableDropdown(panel.querySelector('#set-recorder-host'), recOptions, settings.recorderValue);
+
+    panel.querySelector('[data-act="save-settings"]').addEventListener('click', () => {
+      saveSettings({
+        suppliesValue: supDD.getValue(),
+        recorderValue: recDD.getValue(),
+        customHints: panel.querySelector('#set-hints').value,
+      });
+      const msg = panel.querySelector('#set-saved-msg');
+      msg.style.display = 'inline';
+      setTimeout(() => { msg.style.display = 'none'; }, 2000);
+    });
+    panel.querySelector('[data-act="clear-overrides"]')?.addEventListener('click', () => {
+      saveRowOverrides({});
+      renderSettingsPanel(panel);
+    });
   }
 
   async function handleFile(file, overlay, apiKey) {
     const status = overlay.querySelector('#waste-ocr-status');
     const content = overlay.querySelector('#waste-ocr-content');
+    const banner = overlay.querySelector('#waste-ocr-cache-banner');
     status.textContent = `กำลังส่งไป Gemini (${file.name}, ${(file.size/1024).toFixed(0)} KB)…`;
     content.innerHTML = '';
+    if (banner) banner.innerHTML = '';
 
     try {
       const b64 = await fileToBase64(file);
       const mime = file.type || 'image/jpeg';
-      const ocrRaw = await geminiCall(apiKey, b64, mime);
+      const ocrRaw = await geminiCallRetry(apiKey, b64, mime);
       log('OCR raw:', ocrRaw);
 
       const arr = Array.isArray(ocrRaw) ? ocrRaw : (ocrRaw.rows || []);
-      const meta = arr.find(r => r._meta)?._meta;
       const plan = aggregateRows(arr);
 
       if (plan.totalRows === 0) {
@@ -494,150 +1036,253 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         return;
       }
 
-      // ถ้ามีหลายวันให้เลือก
-      let dateChoice = plan.dates[0];
-      if (plan.dates.length > 1) {
-        dateChoice = prompt(
-          `รูปนี้มี ${plan.dates.length} วัน: ${plan.dates.join(', ')}\nจะกรอกของวันที่ไหน? (YYYY-MM-DD)`,
-          plan.dates[plan.dates.length - 1]
-        );
-        if (!dateChoice) { status.textContent = 'ยกเลิก'; return; }
-      }
-      const dayPlan = aggregateRows(arr, dateChoice);
-      renderPreview(content, overlay, dayPlan, meta, dateChoice, arr, file.name);
-      status.textContent = `อ่านได้ ${plan.totalRows} แถว, วันที่ ${dateChoice} — ตรวจค่า preview ก่อนกรอก`;
+      // เก็บ cache → ใช้ซ้ำได้หลายวันโดยไม่ต้อง OCR ใหม่
+      saveCache(arr, file.name);
+      log('cached', plan.dates.length, 'days');
+
+      showDayPicker(overlay, arr, file.name);
     } catch (e) {
       console.error(e);
       status.textContent = '❌ Error: ' + e.message;
     }
   }
 
-  function renderPreview(content, overlay, dayPlan, meta, date, originalOcrRaw, fileName) {
-    // Scan form once: map location → rowNumber; cache input rows for fill + override
-    const { map: locRowMap, inputRows } = scanFormForRowIndices();
+  function showDayPicker(overlay, arr, fileName) {
+    const status = overlay.querySelector('#waste-ocr-status');
+    const content = overlay.querySelector('#waste-ocr-content');
+    const meta = arr.find(r => r._meta)?._meta;
+    const dates = [...new Set(arr.filter(r => r && !r._meta).map(r => r.date).filter(Boolean))].sort();
 
-    // Snapshot OCR-original values per row + compute initial rowNumber from form
-    dayPlan.rows.forEach(r => {
-      r.rowNumber = locRowMap[r.location]?.rowNumber ?? null;
-      r._originalLocation = r.location;
-      r._originalKg = r.kg;
-      r._originalRowNumber = r.rowNumber;
-    });
+    if (dates.length === 0) {
+      status.textContent = '⚠ ไม่มีวันที่ใน OCR result';
+      return;
+    }
 
-    const allLocationKeys = Object.keys(ROW_LABEL_MAP);
-    const metaWarn = meta ? `<div style="color:#b54;margin:6px 0">⚠ confidence=${meta.confidence}${meta.unclear?.length ? ', unclear: '+meta.unclear.join(', '):''}</div>` : '';
+    const cache = loadCache() || { filled: {} };
+    const filled = cache.filled || {};
+    const locationKeys = Object.keys(LOCATION_TO_ROW);
 
-    const rowsHtml = dayPlan.rows.map((r, i) => {
-      const opts = allLocationKeys.map(k =>
-        `<option value="${k}"${k === r.location ? ' selected' : ''}>${k}</option>`
-      ).join('');
-      const rowVal = r.rowNumber ?? '';
-      return `<tr>
-        <td><select class="ocr-loc" data-i="${i}" style="width:120px">${opts}</select></td>
-        <td><input type="number" class="ocr-row" data-i="${i}" value="${rowVal}" min="1" style="width:60px" /></td>
-        <td><input type="number" step="0.01" class="ocr-kg" data-i="${i}" value="${r.kg}" /></td>
-      </tr>`;
+    const optionsHtml = dates.map(d => {
+      const isFilled = filled[d] ? ' ✓ (กรอกแล้ว)' : '';
+      return `<option value="${d}">${thaiDateBE(d)}${isFilled}</option>`;
     }).join('');
 
+    const metaWarn = meta ? `<div style="color:#b54;margin:6px 0">⚠ confidence=${meta.confidence}${meta.unclear?.length ? ', unclear: '+meta.unclear.join(', '):''}</div>` : '';
+
+    status.textContent = `📦 ${fileName} · ${dates.length} วันใน cache — เลือกวันแล้วกด Fill`;
     content.innerHTML = `
       ${metaWarn}
-      <div style="font-size:13px;color:#555;margin-bottom:6px">วันที่: <b>${date}</b> · เวลาแรก: <b>${dayPlan.earliestTime || '-'}</b> · ${dayPlan.totalRows} entry</div>
-      <table id="waste-ocr-preview">
-        <thead><tr><th>Location</th><th>Row #</th><th>kg (แก้ได้)</th></tr></thead>
-        <tbody>${rowsHtml || '<tr><td colspan="3">— ไม่มี row ที่ match ROW_LABEL_MAP —</td></tr>'}</tbody>
-      </table>
-      <div style="font-size:11px;color:#888;margin-top:-4px">เปลี่ยน Location → Row # คำนวณใหม่อัตโนมัติ · แก้ Row # เองได้เพื่อ override</div>
+      <div class="waste-ocr-row" style="background:#f5f0ff;padding:10px;border-radius:6px">
+        <label style="font-weight:600">เลือกวัน:</label>
+        <select id="ocr-day-select" style="padding:6px 10px;font-size:14px;flex:1">
+          ${optionsHtml}
+        </select>
+      </div>
+      <div id="ocr-day-preview"></div>
       <div class="waste-ocr-row">
-        <label><input type="checkbox" id="ocr-fill-header" checked /> กรอก header (เวลา / Supplies / ผู้บันทึก)</label>
+        <label><input type="checkbox" id="ocr-fill-header" checked /> กรอก header (วันที่ / ปี / เวลา / Supplies / ผู้บันทึก)</label>
       </div>
       <div class="waste-ocr-row">
         <button class="waste-ocr-btn waste-ocr-primary" data-act="fill">✓ Fill Form</button>
-        <button class="waste-ocr-btn waste-ocr-secondary" data-act="cancel">Cancel</button>
+        <button class="waste-ocr-btn waste-ocr-secondary" data-act="debug">🔍 Debug DOM</button>
+        <button class="waste-ocr-btn waste-ocr-secondary" data-act="reupload">⟳ Re-upload</button>
       </div>
       <div id="waste-ocr-log" style="display:none"></div>
-      <div id="waste-ocr-learning" style="display:none;margin-top:12px;border-top:1px solid #ddd;padding-top:10px">
+      <div id="waste-ocr-learning" style="display:none;margin-top:12px;border-top:1px solid #ddd;padding-top:10px"></div>`;
+
+    const sel = content.querySelector('#ocr-day-select');
+    const previewEl = content.querySelector('#ocr-day-preview');
+    const learnDiv = content.querySelector('#waste-ocr-learning');
+
+    function renderDay(dateISO) {
+      const dayPlan = aggregateRows(arr, dateISO);
+      // Snapshot OCR-original values (ก่อนที่ user จะแก้) — ใช้ใน learning prompt
+      dayPlan.rows.forEach(r => {
+        r._originalLocation = r.location;
+        r._originalKg = r.kg;
+        r._originalRowIdx = r.rowIdx;
+      });
+
+      const rowsHtml = dayPlan.rows.map((r, i) => {
+        const opts = locationKeys.map(k =>
+          `<option value="${k}"${k === r.location ? ' selected' : ''}>${k}</option>`
+        ).join('');
+        return `<tr>
+          <td><select class="ocr-loc" data-i="${i}" style="width:110px">${opts}</select></td>
+          <td><input type="number" min="1" max="25" data-row="${i}" value="${r.rowIdx}" style="width:50px" /></td>
+          <td><input type="number" step="0.01" data-i="${i}" value="${r.kg}" /></td>
+        </tr>`;
+      }).join('');
+
+      const filledNote = filled[dateISO] ? `<span style="color:#28a745">✓ กรอกแล้วเมื่อ ${cacheAgeText(filled[dateISO])}</span>` : '';
+      previewEl.innerHTML = `
+        <div style="font-size:13px;color:#555;margin:6px 0">
+          วันที่: <b>${thaiDateBE(dateISO)}</b> (CE ${dateISO}) · เวลาแรก: <b>${dayPlan.earliestTime || '-'}</b> · ${dayPlan.totalRows} entry · ${filledNote}
+        </div>
+        <table id="waste-ocr-preview">
+          <thead><tr><th>Location</th><th>Row #</th><th>kg (แก้ได้)</th></tr></thead>
+          <tbody>${rowsHtml || '<tr><td colspan="3">— ไม่มี row ที่ match LOCATION_TO_ROW —</td></tr>'}</tbody>
+        </table>
+        <div style="font-size:11px;color:#888;margin-top:-4px">เปลี่ยน Location → Row # คำนวณใหม่อัตโนมัติจาก mapping (+ row override ถ้ามี) · แก้ Row # เองได้เพื่อ override</div>`;
+
+      // Reset learning prompt เมื่อเปลี่ยนวัน
+      learnDiv.style.display = 'none';
+      learnDiv.innerHTML = '';
+
+      // Bind Location change → auto-update Row # + dayPlan state
+      previewEl.querySelectorAll('.ocr-loc').forEach(s => {
+        s.addEventListener('change', (e) => {
+          const i = +e.target.dataset.i;
+          const newLoc = e.target.value;
+          dayPlan.rows[i].location = newLoc;
+          const newIdx = resolveRowIdx(newLoc);
+          const rowInput = previewEl.querySelector(`input[data-row="${i}"]`);
+          if (rowInput && newIdx) {
+            rowInput.value = newIdx;
+            dayPlan.rows[i].rowIdx = newIdx;
+          }
+        });
+      });
+
+      return dayPlan;
+    }
+
+    let currentDayPlan = renderDay(sel.value);
+    sel.addEventListener('change', () => { currentDayPlan = renderDay(sel.value); });
+
+    content.querySelector('[data-act="debug"]').addEventListener('click', () => {
+      const logEl = content.querySelector('#waste-ocr-log');
+      logEl.style.display = 'block';
+      logEl.textContent = debugDumpForm();
+    });
+    content.querySelector('[data-act="reupload"]').addEventListener('click', () => {
+      // เคลียร์ content + ให้ user ลากรูปใหม่
+      content.innerHTML = '';
+      status.textContent = 'ลากรูปใหม่วางด้านบน';
+    });
+    content.querySelector('[data-act="fill"]').addEventListener('click', async () => {
+      // อ่าน kg + rowIdx + location ที่ user แก้ใน preview
+      previewEl.querySelectorAll('input[data-i]').forEach(inp => {
+        const i = +inp.dataset.i;
+        currentDayPlan.rows[i].kg = parseFloat(inp.value) || 0;
+      });
+      previewEl.querySelectorAll('.ocr-loc').forEach(s => {
+        const i = +s.dataset.i;
+        currentDayPlan.rows[i].location = s.value;
+      });
+      const overrides = getRowOverrides();
+      let savedOverride = false;
+      previewEl.querySelectorAll('input[data-row]').forEach(inp => {
+        const i = +inp.dataset.row;
+        const newIdx = parseInt(inp.value, 10);
+        if (!newIdx) return;
+        if (newIdx !== currentDayPlan.rows[i].rowIdx) {
+          overrides[currentDayPlan.rows[i].location] = newIdx;
+          currentDayPlan.rows[i].rowIdx = newIdx;
+          savedOverride = true;
+        }
+      });
+      if (savedOverride) saveRowOverrides(overrides);
+      const fillHeader = content.querySelector('#ocr-fill-header').checked;
+      const dateISO = sel.value;
+      const fillBtn = content.querySelector('[data-act="fill"]');
+      fillBtn.disabled = true; fillBtn.textContent = '⏳ กำลังกรอก…';
+      const report = await fillForm(currentDayPlan, { fillHeader, dateISO });
+      fillBtn.disabled = false; fillBtn.textContent = '✓ Fill Form';
+      if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
+      const logEl = content.querySelector('#waste-ocr-log');
+      logEl.style.display = 'block';
+      logEl.textContent = report.join('\n');
+      markFilled(dateISO);
+      // อัปเดต dropdown แสดง ✓
+      const opt = sel.querySelector(`option[value="${dateISO}"]`);
+      if (opt && !opt.textContent.includes('✓')) opt.textContent = `${thaiDateBE(dateISO)} ✓ (กรอกแล้ว)`;
+
+      // --- LEARNING PROMPT (สำหรับส่งให้ A-Wiki AI Agent) ---
+      const learnText = buildLearningPrompt(currentDayPlan, meta, dateISO, fileName, arr);
+      learnDiv.innerHTML = `
         <h3 style="margin:0 0 6px;font-size:14px">📚 Learning Prompt — สำหรับส่งให้ A-Wiki AI Agent</h3>
         <div style="font-size:11px;color:#666;margin-bottom:6px">Copy แล้ว paste เข้า Claude Code (cwd ใน A-Wiki) เพื่อให้ Agent อัปเดต <code>wiki/context/ocr-learning-log.md</code></div>
         <textarea id="ocr-learning-text" style="width:100%;height:200px;font-family:monospace;font-size:11px;box-sizing:border-box" readonly></textarea>
         <div class="waste-ocr-row">
-          <button class="waste-ocr-btn waste-ocr-primary" data-act="copy-learning">📋 Copy</button>
-          <button class="waste-ocr-btn waste-ocr-secondary" data-act="download-learning">⬇ Download .md</button>
-        </div>
-      </div>`;
-
-    // Location dropdown → auto-update Row # via locRowMap
-    content.querySelectorAll('.ocr-loc').forEach(sel => {
-      sel.addEventListener('change', (e) => {
-        const i = +e.target.dataset.i;
-        const newLoc = e.target.value;
-        dayPlan.rows[i].location = newLoc;
-        const auto = locRowMap[newLoc]?.rowNumber;
-        const rowInput = content.querySelector(`.ocr-row[data-i="${i}"]`);
-        if (rowInput) {
-          rowInput.value = auto ?? '';
-          dayPlan.rows[i].rowNumber = auto ?? null;
-        }
-      });
-    });
-
-    // Manual Row # override
-    content.querySelectorAll('.ocr-row').forEach(inp => {
-      inp.addEventListener('input', (e) => {
-        const i = +e.target.dataset.i;
-        const v = parseInt(e.target.value, 10);
-        dayPlan.rows[i].rowNumber = Number.isFinite(v) && v > 0 ? v : null;
-      });
-    });
-
-    content.querySelector('[data-act="cancel"]').addEventListener('click', () => overlay.remove());
-    content.querySelector('[data-act="fill"]').addEventListener('click', () => {
-      // Pull latest values from all inputs (in case input event missed)
-      content.querySelectorAll('.ocr-kg').forEach(inp => {
-        const i = +inp.dataset.i;
-        dayPlan.rows[i].kg = parseFloat(inp.value) || 0;
-      });
-      content.querySelectorAll('.ocr-loc').forEach(sel => {
-        const i = +sel.dataset.i;
-        dayPlan.rows[i].location = sel.value;
-      });
-      content.querySelectorAll('.ocr-row').forEach(inp => {
-        const i = +inp.dataset.i;
-        const v = parseInt(inp.value, 10);
-        dayPlan.rows[i].rowNumber = Number.isFinite(v) && v > 0 ? v : null;
-      });
-
-      const fillHeader = content.querySelector('#ocr-fill-header').checked;
-      const report = fillForm(dayPlan, { fillHeader, inputRows });
-      const logEl = content.querySelector('#waste-ocr-log');
-      logEl.style.display = 'block';
-      logEl.textContent = report.join('\n');
-
-      // Always build learning prompt — even when no edits (low-conf or just to confirm OCR was correct)
-      const learnText = buildLearningPrompt(dayPlan, meta, date, fileName, originalOcrRaw);
-      const learnDiv = content.querySelector('#waste-ocr-learning');
-      const ta = content.querySelector('#ocr-learning-text');
+          <button class="waste-ocr-btn waste-ocr-primary" data-act="copy-learn">📋 Copy</button>
+          <button class="waste-ocr-btn waste-ocr-secondary" data-act="download-learn">⬇ Download .md</button>
+        </div>`;
+      const ta = learnDiv.querySelector('#ocr-learning-text');
       ta.value = learnText;
       learnDiv.style.display = 'block';
 
-      content.querySelector('[data-act="copy-learning"]').onclick = () => {
+      learnDiv.querySelector('[data-act="copy-learn"]').onclick = () => {
         ta.removeAttribute('readonly');
         ta.select();
         try { document.execCommand('copy'); } catch (e) { warn(e); }
         ta.setAttribute('readonly', 'true');
         if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(() => {});
       };
-      content.querySelector('[data-act="download-learning"]').onclick = () => {
+      learnDiv.querySelector('[data-act="download-learn"]').onclick = () => {
         const blob = new Blob([learnText], { type: 'text/markdown;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ocr-correction-${date}-${Date.now()}.md`;
+        a.download = `ocr-correction-${dateISO}-${Date.now()}.md`;
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
       };
+
+      // re-render preview เพื่ออัปเดต filled note (จะ reset learnDiv — แต่เราเพิ่ง set ไว้ ก่อน renderDay ทับ)
+      // ดังนั้นข้าม renderDay หลัง Fill เพื่อเก็บ learning prompt ไว้
+      // (filled note จะอัปเดตรอบหน้าเมื่อ user เปลี่ยนวันหรือเปิดใหม่)
     });
+  }
+
+  function debugDumpForm() {
+    const lines = ['=== Form DOM Dump ==='];
+    // --- Table rows (label inputs + qty inputs) ---
+    const rows = $$('tr').filter(tr => !isInOurOverlay(tr));
+    lines.push(`Total <tr> (excl. overlay): ${rows.length}`);
+    rows.forEach((tr, i) => {
+      const labelInput = tr.querySelector('input.fo13, input[class*="fo13"]')
+        || tr.querySelector('input[type="text"], input:not([type])');
+      const labelVal = labelInput?.value || '';
+      const qty = tr.querySelector('input[name="TRASH_SUB_QTY[]"]') || tr.querySelector('input[name*="QTY"]');
+      if (labelVal || qty) {
+        lines.push(`tr[${i}] label="${labelVal.slice(0,40)}" qty.name="${qty?.name||'-'}" qty.id="${qty?.id||'-'}"`);
+      }
+    });
+    // --- Header fields (outside <tr>) ---
+    lines.push('');
+    lines.push('=== Top-level form fields (header) ===');
+    const fields = $$('input:not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea')
+      .filter(el => !isInOurOverlay(el) && el.offsetParent !== null && !el.closest('table'));
+    fields.forEach((el, i) => {
+      const lab = inferLabel(el);
+      lines.push(`field[${i}] <${el.tagName.toLowerCase()}> name="${el.name||''}" id="${el.id||''}" class="${(el.className||'').slice(0,40)}" value="${(el.value||'').slice(0,40)}" label="${lab.slice(0,40)}"`);
+    });
+    return lines.join('\n');
+  }
+
+  function inferLabel(el) {
+    if (el.id) {
+      const lab = document.querySelector(`label[for="${el.id}"]`);
+      if (lab) return normalizeText(lab.textContent);
+    }
+    let cur = el;
+    for (let d = 0; d < 5 && cur; d++) {
+      cur = cur.parentElement;
+      if (!cur) break;
+      const lab = cur.querySelector?.('label, .control-label, dt, th');
+      if (lab && !lab.contains(el)) return normalizeText(lab.textContent);
+    }
+    // try previous sibling text
+    let sib = el.previousElementSibling;
+    while (sib) {
+      const t = normalizeText(sib.textContent);
+      if (t) return t;
+      sib = sib.previousElementSibling;
+    }
+    return '';
   }
 
   // --- BOOT ------------------------------------------------------------------
