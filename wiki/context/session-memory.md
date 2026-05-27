@@ -51,7 +51,7 @@
 - [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
 - [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py) — `fill-waste-form.py` superseded by `scripts/userscripts/waste-form-ocr-fill.user.js` (Tampermonkey + Gemini Flash, 2026-05-26)
 - [x] **[env-webapp]** ทดสอบ `scripts/userscripts/waste-form-ocr-fill.user.js` บน Chrome จริงที่ trash_add — v0.8.1 verified ✅ (2026-05-27 user screenshot confirmed BE date save/reload)
-- [ ] **[env-webapp]** Setup `drive/` symlink บน PC ที่ทำงาน: `bash scripts/setup-drive-link.sh` → backup userscript ไป Drive
+- [ ] **[env-webapp]** Setup `drive/` symlink บน Mac ที่บ้าน + PC ที่ทำงาน: `bash scripts/setup-drive-link.sh` → backup userscript ไป Drive (รันต่อเครื่อง)
 - [ ] **[env-webapp]** Telegram Bot future: ออกแบบ architecture ไว้ใน waste-form-automation.md — implement เมื่อพร้อม (Raspberry Pi 5 + Bot token)
 - [ ] **[wiki-brain-inwwiki]** Unified storage layer — SQLite ที่รวม FTS5 + graph + logs → single source of truth
 - [ ] **[wiki-brain-inwwiki]** Dynamic domain tagging — multi-label tags แทน directory-based domains
