@@ -28,8 +28,16 @@ import subprocess
 
 HOOKS_DIR = os.path.join(os.path.dirname(__file__), "hooks")
 HOOK_TIMEOUT = int(os.environ.get("HOOK_TIMEOUT", "5"))
+def _norm_skip(name: str) -> str:
+    """Normalize a skip entry: accept dashes/underscores, with/without .py."""
+    name = name.strip().replace("-", "_")
+    if name and not name.endswith(".py"):
+        name = name + ".py"
+    return name
+
+
 HOOK_SKIP = set(
-    h.strip()
+    _norm_skip(h)
     for h in os.environ.get("HOOK_SKIP", "").split(",")
     if h.strip()
 )
@@ -77,13 +85,20 @@ def run_hook(hook_name, input_data):
 
 
 def main():
-    # Support: hooks_runner.py <hook_name> (w/ or w/o .py suffix)
+    # Support: hooks_runner.py <hook_name> (w/ or w/o .py suffix, dashes or underscores)
     # If no hook_name given, run ALL hooks
     specific_hook = None
     if len(sys.argv) > 1 and not sys.argv[1].startswith("-"):
         specific_hook = sys.argv[1]
         if not specific_hook.endswith(".py"):
             specific_hook = specific_hook + ".py"
+        # Normalize: settings.json may invoke with dashes (check-foo-bar)
+        # while filenames use underscores (check_foo_bar.py). Try the
+        # underscored form when the dashed file doesn't exist.
+        if not os.path.isfile(os.path.join(HOOKS_DIR, specific_hook)):
+            alt = specific_hook.replace("-", "_")
+            if os.path.isfile(os.path.join(HOOKS_DIR, alt)):
+                specific_hook = alt
 
     try:
         input_data = json.load(sys.stdin)
