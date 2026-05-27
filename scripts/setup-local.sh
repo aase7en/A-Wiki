@@ -14,45 +14,15 @@ echo ""
 # ── 1. raw → Google Drive junction/symlink ──────────────────────────────────
 
 setup_raw() {
-  echo "[1/3] Setting up raw/ link to Google Drive..."
-
-  if [[ -L "raw" || -d "raw" ]]; then
-    echo "  raw already exists ($(file raw 2>/dev/null || echo 'directory'))"
-    return
+  echo "[1/3] Setting up drive/ + raw/ links via setup-cloud-link.sh..."
+  # Delegate to multi-provider script. Uses --auto for non-interactive setup.
+  # If drive/ not yet linked, this will also handle that (multi-provider auto-pick).
+  if bash "$(dirname "$0")/setup-cloud-link.sh" --auto; then
+    echo "  OK — cloud links configured"
+  else
+    echo "  WARN: cloud link setup failed — run 'bash scripts/setup-cloud-link.sh' manually" >&2
+    return 0  # non-fatal, continue with other setup steps
   fi
-  if [[ -f "raw" ]]; then
-    echo "  Removing stale raw file..."
-    rm -f raw
-  fi
-
-  case "$(uname -s)" in
-    Darwin*)
-      # macOS — Google Drive via CloudStorage
-      GDRIVE_PATH="/Users/$(whoami)/Library/CloudStorage"
-      RAW_TARGET=$(find "$GDRIVE_PATH" -maxdepth 3 -name "A-Wiki-Data" -type d 2>/dev/null | head -1)
-      if [[ -z "$RAW_TARGET" ]]; then
-        echo "  ERROR: Cannot find A-Wiki-Data in Google Drive ($GDRIVE_PATH)"
-        echo "  Please create symlink manually: ln -s /path/to/A-Wiki-Data/raw raw"
-        return 1
-      fi
-      ln -sfn "$RAW_TARGET/raw" raw
-      echo "  OK — symlink: raw -> $RAW_TARGET/raw"
-      ;;
-    MINGW*|CYGWIN*|MSYS*)
-      # Windows/Git Bash — Google Drive at L:\My Drive\A-Wiki-Data
-      GDRIVE_WIN="L:/My Drive/A-Wiki-Data/raw"
-      if [[ ! -d "$GDRIVE_WIN" ]]; then
-        echo "  ERROR: Cannot find Google Drive at $GDRIVE_WIN"
-        echo "  Ensure Google Drive is mounted at L: and A-Wiki-Data folder exists"
-        return 1
-      fi
-      powershell.exe -Command "New-Item -ItemType Junction -Path '$(pwd)/raw' -Target '$(cygpath -w "$GDRIVE_WIN")'" > /dev/null
-      echo "  OK — junction: raw -> $GDRIVE_WIN"
-      ;;
-    *)
-      echo "  Unknown OS — please create raw link manually"
-      ;;
-  esac
 }
 
 # ── 2. .mcp.json — generate from example ───────────────────────────────────

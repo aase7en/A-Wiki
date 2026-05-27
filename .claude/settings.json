@@ -82,6 +82,10 @@
           },
           {
             "type": "command",
+            "command": "python3 scripts/hooks/check_drive_link.py"
+          },
+          {
+            "type": "command",
             "command": "bash .claude/hooks/wiki-context-check.sh"
           },
           {
