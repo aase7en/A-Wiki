@@ -112,6 +112,70 @@ python scripts/fill-waste-form.py image.jpg --cookie /path/to/custom-cookie.json
 
 > Cookie หมดอายุตาม session ของเว็บ (ปกติ 1–7 วัน) — ถ้า script error 403/redirect login → รัน `save-waste-cookie.py` ใหม่
 
+## Alternative: Userscript Edition (no-install) [2026-05-26]
+
+Lightweight option ที่ไม่ต้อง Python/Playwright — ใช้ **Tampermonkey userscript** + **Gemini 2.5 Flash** (ฟรี 1500 req/วัน) inject ปุ่ม "📷 OCR & Fill" ลงในหน้า `trash_add` โดยตรง
+
+| Aspect | Python + Playwright | Userscript ✅ ใหม่ |
+|---|---|---|
+| ติดตั้ง | pip + chromium 200MB + save-cookie | Tampermonkey ext + paste 1 ไฟล์ |
+| Login | จัดการ cookie แยก | ใช้ session ที่เปิดอยู่ในเบราว์เซอร์ |
+| OCR | Claude Vision (paid ~$0.003/รูป) | Gemini Flash (ฟรี) |
+| Submit | กรอก + รอ user คลิก submit | กรอก + รอ user คลิก submit (เหมือนกัน) |
+| Cross-platform | Mac/PC + dep diff | ทุก OS ที่มี Chrome |
+
+ไฟล์:
+- `scripts/userscripts/waste-form-ocr-fill.user.js` — userscript ~400 บรรทัด
+- `scripts/userscripts/README.md` — install + debug
+
+DOM strategy: **label-based** ไม่ใช่ name-attribute → robust ต่อ form refactor (หา `<td>` ที่ text = "ขยะทั่วไป OPD" แล้วเอา `<input>` ใน row เดียวกัน)
+
+> Python+Playwright spec ในเอกสารนี้ยังเก็บไว้เป็น fallback หาก userscript ใช้ไม่ได้
+
+## Future: Telegram Bot Edition [planned — 2026-05-27]
+
+ส่งรูปใบขยะ → Telegram → bot กรอกฟอร์มอัตโนมัติ ไม่ต้องเปิด Chrome เลย
+
+```
+[ส่งรูปใบรายงาน → Telegram Bot]
+        ↓ Telegram Bot API webhook
+[Python backend บน Raspberry Pi 5 (internal network โรงพยาบาล)]
+        ↓ OCR via Gemini Flash
+              └─ system prompt จาก wiki/synthesis/garbage-report-ocr.md
+              └─ hints ใน drive/ocr-feedback/hints.json (learning loop)
+        ↓ Aggregate + Playwright กรอก trash_add
+        ↓ screenshot ยืนยัน
+[ตอบกลับ Telegram: ✅ กรอกแล้ว + screenshot]
+```
+
+Files ที่จะสร้างเมื่อพร้อม implement:
+- `scripts/telegram-bot/waste-bot.py` — Telegram webhook handler  
+- `scripts/telegram-bot/ocr-fill-pipeline.py` — OCR → aggregate → fill
+- `drive/individual-tasks/telegram-bot-config.json` — Bot token + chat ID (ไม่เข้า git)
+
+**Prerequisites**: Raspberry Pi 5 ใน network โรงพยาบาล + Telegram Bot token + Python 3.11+
+
+> OCR system prompt + correction hints จาก `wiki/context/ocr-learning-log.md` จะใช้ใน bot นี้ด้วย — ความรู้ที่ sync ผ่าน git ทำให้ bot แม่นยำขึ้นตลอดเวลา
+
+## Drive Symlink Workflow [2026-05-27]
+
+A-Wiki มี `drive/` symlink ชี้ไปยัง personal storage ของแต่ละคน (Google Drive หรืออื่น):
+
+```bash
+# ตั้งค่า (ครั้งแรกครั้งเดียว)
+bash scripts/setup-drive-link.sh
+# → drive/ → L:\My Drive\A-Wiki-Data (Windows) / Mac path / fallback
+
+# Backup userscript
+cp scripts/userscripts/waste-form-ocr-fill.user.js drive/personal-tools/userscripts/
+
+# OCR results
+drive/waste-reports/YYYY-MM/    ← photos + JSON results
+drive/ocr-feedback/             ← correction data (learning loop)
+```
+
+แต่ละคนที่ clone A-Wiki setup `drive/` ของตัวเองแยกกัน — git ไม่รู้เรื่อง `drive/` (อยู่ใน `.gitignore`)
+
 ## ข้อจำกัด
 
 | ปัญหา | วิธีรับมือ |
