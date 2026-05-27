@@ -161,14 +161,25 @@ cmd_setup() {
     # Try symlink first
     echo ""
     if ln -s "$drive_path" "$LINK_TARGET" 2>/dev/null; then
-        ok "drive/ → $drive_path"
+        ok "drive/ → $drive_path  (symlink)"
     else
-        # Windows may need Developer Mode or admin for symlinks
-        warn "Symlink creation failed."
-        echo "   This usually means Windows needs Developer Mode enabled, or run as admin."
-        echo "   Using .drive-path config file as fallback..."
-        echo "$drive_path" > "$DRIVE_PATH_FILE"
-        ok ".drive-path → $drive_path  (scripts will read this automatically)"
+        # Windows: try directory junction via PowerShell (no admin / Developer Mode needed)
+        # PowerShell is more reliable than mklink from bash (avoids path escaping issues)
+        local win_target win_drive
+        win_target="$(cygpath -w "$LINK_TARGET" 2>/dev/null || echo "${LINK_TARGET//\//\\}")"
+        win_drive="$(cygpath -w "$drive_path" 2>/dev/null || echo "${drive_path//\//\\}")"
+
+        if powershell -NoProfile -Command \
+            "New-Item -ItemType Junction -Path '$win_target' -Target '$win_drive' -ErrorAction Stop" \
+            > /dev/null 2>&1; then
+            ok "drive/ → $drive_path  (Windows junction)"
+        else
+            # Final fallback: .drive-path config file
+            warn "Junction creation also failed. Using .drive-path config file instead."
+            echo "   Scripts will resolve the path via .drive-path automatically."
+            echo "$drive_path" > "$DRIVE_PATH_FILE"
+            ok ".drive-path → $drive_path  (config fallback)"
+        fi
     fi
 
     # Init folder structure
