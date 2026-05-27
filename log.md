@@ -1,5 +1,24 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-27] session | Waste form OCR userscript v0.8.1 verification & finalization
+
+**Done:**
+- ✅ **Verified v0.8.1 production-ready**: User confirmed via screenshot — form save → reload shows `30/04/2569` (BE date) correctly stored and displayed
+- ✅ **Datepicker CE/BE conversion working**: Fixed in v0.8.1 with focus+blur+open+Escape re-render cycle to force picker display update after CE value set
+- ✅ **All core features operational**: OCR reads images, Settings dropdowns searchable (type-to-filter), cache system stores multi-day data, row mapping complete (OPD→12, Ward→14, ER→8, etc.), header auto-fill works (วันที่, เวลา, Supplies, ผู้บันทึก)
+- ✅ **Marked TODO [env-webapp] as done** in session-memory.md — userscript tested + verified on Chrome with save/reload confirmation
+- ✅ **Documentation complete**: `scripts/userscripts/waste-form-ocr-fill.user.js` (v0.8.1), `scripts/userscripts/README.md`, `wiki/synthesis/waste-form-automation.md` (has "Alternative: Userscript Edition" section)
+
+**Status**: 🎉 **Feature Complete** — Ready for daily production use. User can:
+1. Install Tampermonkey extension
+2. Paste userscript file
+3. Set GEMINI_API_KEY once (free 1500 req/day)
+4. Upload waste report images → preview → fill → submit
+
+**Architecture decision upheld**: Tampermonkey userscript (no OS install) + Gemini 2.5 Flash (free tier) vs. original Python+Playwright plan. Cost-First Pyramid Level 1 (free API) achieved.
+
+---
+
 ## [2026-05-26] session | Waste form OCR userscript (Tampermonkey + Gemini Flash)
 
 **Done:**
