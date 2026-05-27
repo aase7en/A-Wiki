@@ -29,15 +29,17 @@ def main():
 
     # Locate repo root
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-    raw_dir = os.path.abspath(os.path.join(repo_root, "raw"))
+    # Use realpath (not abspath) to resolve junctions/symlinks on Windows and Mac.
+    # This ensures drive/raw/ (alias) is treated identically to raw/ (canonical).
+    raw_dir = os.path.realpath(os.path.join(repo_root, "raw"))
 
-    # Normalize path
+    # Normalize path — realpath resolves any junction/symlink in the path
     if os.path.isabs(file_path):
-        abs_file_path = os.path.abspath(file_path)
+        abs_file_path = os.path.realpath(file_path)
     else:
-        abs_file_path = os.path.abspath(os.path.join(repo_root, file_path))
+        abs_file_path = os.path.realpath(os.path.join(repo_root, file_path))
 
-    # Check if file path is under raw/
+    # Check if file path is under raw/ (works for both raw/ and drive/raw/ aliases)
     try:
         # If raw_dir is a common path prefix, it means abs_file_path is inside it
         if os.path.commonpath([raw_dir, abs_file_path]) == raw_dir:
