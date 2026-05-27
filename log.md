@@ -1,21 +1,21 @@
 # Wiki Log — My IoT Wiki
 
-## [2026-05-27] session | OCR Knowledge Hub + Drive Symlink setup
+## [2026-05-27] session | OCR Knowledge Hub + Drive Symlink + Security Fix
 
 **Done:**
-- ✅ **Merged worktree branch** `claude/loving-ramanujan-f6defe` → main (log.md conflict resolved, userscript files brought to main repo)
-- ✅ **`scripts/setup-drive-link.sh`**: script ตั้งค่า `drive/` symlink ชี้ไปที่ personal storage ของแต่ละ user — auto-detect Google Drive path (Win/Mac/Linux) + fallback `.drive-path` config + init folder structure
-- ✅ **`scripts/drive_path.py`**: Python utility สำหรับ resolve drive root path (symlink → .drive-path → ~/.a-wiki-data)
-- ✅ **`wiki/context/ocr-learning-log.md`**: หน้าใหม่สำหรับ log OCR corrections สะสม — tracked ใน git → ทุก device/editor sync ได้ทันที
-- ✅ **`wiki/synthesis/waste-form-automation.md`**: เพิ่ม 2 section — Telegram Bot (future architecture) + Drive Symlink Workflow
-- ✅ **`scripts/userscripts/README.md`**: เพิ่ม Drive backup + share instructions
-- ✅ **`.gitignore`**: เพิ่ม `drive` และ `.drive-path` rules
-- ✅ **`wiki/context/session-memory.md`**: mark [env-webapp] userscript TODO done + เพิ่ม Telegram + Drive setup TODOs
+- ✅ **Merged worktree branch** → main (log.md conflict resolved, userscript v0.8.1 + wiki docs)
+- ✅ **`scripts/setup-drive-link.sh`**: junction `drive/` → Google Drive ของแต่ละ user (PowerShell `New-Item Junction`, auto-detect Win/Mac/Linux)
+- ✅ **`scripts/drive_path.py`**: Python utility resolve drive root (junction → .drive-path → fallback)
+- ✅ **`wiki/context/ocr-learning-log.md`**: OCR correction log ใน git — ทุก device sync ได้
+- ✅ **Drive junction สร้างสำเร็จ**: `A:\GitHub\A-Wiki\drive\` → `L:\My Drive\A-Wiki-Data\`
+- ✅ **Userscript backup**: `drive\personal-tools\userscripts\` sync Google Drive แล้ว
+- ✅ **Security fix** `check_raw_immutable.py`: `abspath()` → `realpath()` ปิดช่องโหว่ `drive/raw/` bypass Iron Law #4
 
-**Architecture decisions:**
-- `drive/` symlink = per-user personal storage (not committed) — แต่ละคน setup เองด้วย `bash scripts/setup-drive-link.sh`
-- OCR knowledge (system prompt, correction log) = อยู่ใน A-Wiki git → universal ทุก device/editor
-- userscript + Drive path = เฉพาะบุคคล, share ผ่าน Drive link ได้
+**Key findings:**
+- Windows junction ต้องใช้ PowerShell `New-Item -ItemType Junction` — mklink จาก bash มีปัญหา path escaping
+- `drive/raw/` เป็น alias ของ `raw/` (จุดเดียวกันใน Drive) — `realpath()` แก้ได้, `abspath()` แก้ไม่ได้
+
+**Commits:** `a481fee` · `e4ccd76` · `4ce512d`
 
 ---
 
