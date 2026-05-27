@@ -50,7 +50,7 @@
 - [ ] **[wiki-brain-inwwiki]** ทดสอบ ask-notebooklm.py + delegate.sh + sync.py + hooks_runner.py ที่ merge/copy จาก InW-Wiki → verify ทำงานจริง
 - [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
 - [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py) — `fill-waste-form.py` superseded by `scripts/userscripts/waste-form-ocr-fill.user.js` (Tampermonkey + Gemini Flash, 2026-05-26)
-- [ ] **[env-webapp]** ทดสอบ `scripts/userscripts/waste-form-ocr-fill.user.js` บน Chrome จริงที่ trash_add — verify DOM selectors + OCR accuracy ≥95% ก่อนใช้ production
+- [x] **[env-webapp]** ทดสอบ `scripts/userscripts/waste-form-ocr-fill.user.js` บน Chrome จริงที่ trash_add — verify DOM selectors + OCR accuracy ≥95% ก่อนใช้ production (verified 2026-05-27: datepicker CE/BE conversion ทำงาน, form fill complete, save→reload shows correct BE date)
 - [ ] **[wiki-brain-inwwiki]** Unified storage layer — SQLite ที่รวม FTS5 + graph + logs → single source of truth
 - [ ] **[wiki-brain-inwwiki]** Dynamic domain tagging — multi-label tags แทน directory-based domains
 - [ ] **[wiki-brain-inwwiki]** Sync daemon — ทดสอบ sync.py --daemon บน multi-device (Mac + Work PC)
