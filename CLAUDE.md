@@ -119,7 +119,7 @@ A-Wiki/
 
 ---
 
-## 🪝 Active Hooks (10 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (11 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
@@ -133,9 +133,10 @@ A-Wiki/
 | 5 | **Raw Immutable** | `check_raw_immutable.py` | 🔴 Block | Protect `raw/` from modification |
 | 6 | **API Key Flag** | `check_apikey.py` | 🔴 Block | Block API key literals in bash command flags |
 | 7 | **Delegation Gate** | `check_delegation_gate.py` | 🔴 Block | Block `git push` without session end protocol |
-| 8 | **Post-Wiki Edit** | `post_wiki_edit.py` | ⚡ Async | Auto-run `gen-index.py` after wiki edit |
-| 9 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
-| 10 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
+| 8 | **Drive Link Check** | `check_drive_link.py` | 📋 Warn | SessionStart: verify `drive/` + `raw/` symlinks intact (non-blocking, ~25ms) |
+| 9 | **Post-Wiki Edit** | `post_wiki_edit.py` | ⚡ Async | Auto-run `gen-index.py` after wiki edit |
+| 10 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
+| 11 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`
@@ -151,6 +152,56 @@ A-Wiki/
 5. **Plan ก่อน implement เสมอ** — ถ้างานกระทบ >3 ไฟล์ → ระบุ: "จะแก้ [files] — ทำอะไรในแต่ละไฟล์"
 6. **Commit ตรงลง main เท่านั้น** — ห้าม branch, ห้าม PR, ห้าม worktree
 7. **ใช้ภาษาไทย** ในการสื่อสาร (เว้นแต่ถูกขอให้ใช้ภาษาอื่น)
+
+---
+
+## 🛠️ Setup & Development Commands
+
+### ครั้งแรกต่อเครื่อง (One-time per machine — cross-platform Mac/Linux/WSL/Git Bash)
+
+```bash
+bash scripts/setup-cloud-link.sh        # multi-provider link: drive/ + raw/
+                                        #   Google Drive / iCloud / Dropbox / OneDrive
+                                        #   Interactive menu (auto-detect candidates)
+pip install -r requirements.txt         # Python >=3.9,<3.13 (sqlite-vec wheel)
+python3 scripts/build-wiki-index.py     # FTS5 index → .wiki-index.db
+python3 scripts/build-vec-index.py      # vector index (after FTS5)
+```
+
+> **macOS warning:** Apple system Python ปิด sqlite extension loading — ใช้ Homebrew:
+> `brew install python@3.11 && pip3.11 install -r requirements.txt`
+
+### Cloud Storage Links (drive/ + raw/)
+
+```bash
+bash scripts/setup-cloud-link.sh --status    # show current state
+bash scripts/setup-cloud-link.sh --auto      # non-interactive (pick first detected)
+bash scripts/setup-cloud-link.sh --provider {google|icloud|dropbox|onedrive|local}
+bash scripts/setup-cloud-link.sh --path "/explicit/path"
+bash scripts/setup-cloud-link.sh --unlink    # remove both symlinks
+bash scripts/setup-cloud-link.sh --migrate   # move existing raw/ content to drive/raw/
+```
+
+- `drive/` → ผู้ใช้แต่ละคน link ไป cloud storage ของตัวเอง (gitignored)
+- `raw/` → relative symlink `→ drive/raw` (portable, repo-move-safe)
+- SessionStart hook [check_drive_link.py](scripts/hooks/check_drive_link.py) เตือนถ้า link พัง (non-blocking, ~25ms)
+- Idempotent — re-run ปลอดภัย, ไม่ silently switch Google account ถ้ามีหลายบัญชี
+
+### ค้นหา wiki (แทน grep — ประหยัด token)
+
+```bash
+python3 scripts/search-wiki.py "query"            # FTS5 full-text search
+python3 scripts/query-graph.py "node-name"        # knowledge graph neighbors
+python3 scripts/search-wiki.py "q" --rebuild      # rebuild then search
+```
+
+### Tests
+
+```bash
+pytest tests/                                     # all tests
+pytest tests/test_hooks.py -v                     # hooks only
+python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json  # manual hook test
+```
 
 ---
 
