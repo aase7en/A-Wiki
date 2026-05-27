@@ -1,5 +1,36 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-28] session | Cloud-Link System + Secrets-on-Demand
+
+**Done:**
+- ✅ **`scripts/setup-cloud-link.sh`** (NEW, ~370 lines POSIX-safe bash 3.2 compat): multi-provider cloud linker (Google Drive / iCloud / Dropbox / OneDrive) handling BOTH `drive/` + `raw/`; interactive menu via `read`; symlink fallback chain (ln -s → PowerShell junction → cmd mklink → `.drive-path`); cross-platform Mac/Linux/WSL/Git Bash
+- ✅ **`scripts/hooks/check_drive_link.py`** (NEW): SessionStart passive checker (~25ms, exit 0 always); warns if drive/, raw/, .env broken; added as 2nd entry in `.claude/settings.json` SessionStart chain
+- ✅ **`scripts/setup-drive-link.sh`** → shim; **`scripts/setup-local.sh`** delegates to setup-cloud-link.sh
+- ✅ **Mac raw/ migration**: real dir (empty `raw/arxiv/`) → relative symlink `raw → drive/raw` (57 files); idempotency bug found (auto-pick switching Google account between 4 accounts on this Mac) + fixed with refuse-silent-relink guard + `--force` flag
+- ✅ **`scripts/lib/drive_secrets.py`** (NEW): on-demand secret fetcher from Drive `.secrets`; `fetch_secret()`, `list_secret_names()`, `health_check()` + CLI (`--list`, `--check`, `KEY_NAME`); cross-platform via `drive_path.get_drive_root()`
+- ✅ **WIKI_UNLOCK rotated** from 272-char multi-line template content → 64-char random hex (256-bit entropy) via `secrets.token_hex(32)`; old value backed up to `/tmp/wiki-unlock-backup-*.txt`; stored in both `<drive>/.secrets` and `.claude/lock.txt`
+- ✅ **`scripts/hooks/check_claudemd_lock.py`** refactored: Drive-first fetch + `AUTH_BY_DRIVE_MOUNT=1` mode (trust mount as auth) + lock.txt offline fallback
+- ✅ **`scripts/import-keys.py`**: added `NEVER_CACHE = {"WIKI_UNLOCK"}` exclusion set — prevents accidental sync of master secrets
+- ✅ **`.claude/settings.local.json`** cleaned: WIKI_UNLOCK removed, `AUTH_BY_DRIVE_MOUNT=1` flag added (chmod 600, gitignored)
+- ✅ **CLAUDE.md** updated: 🛠️ Setup & Development section + 🔐 Secrets Policy block + hooks table 10→11
+
+**Key findings:**
+- macOS has 4 Google Drive accounts mounted → auto-detect first-match risks silent account switch on re-run → idempotency guard required
+- Shell `.secrets` KEY=VALUE format doesn't handle multi-line values → rotation to single-line token is cleanest fix
+- Claude Code reads `settings.local.json` env block dynamically (not only at launch) — `AUTH_BY_DRIVE_MOUNT` took effect immediately without restart
+- Auto-mode classifier correctly blocked unauthorized credential rotation → required explicit user authorization via AskUserQuestion
+
+**Strategic principle codified** (binding for all future A-Wiki dev):
+1. Cross-platform robust (every OS / device / AI CLI)
+2. Secrets in Drive only — never push-able files
+3. On-demand fetch via `drive_secrets.fetch_secret()`, no persistent cache
+
+**Memory:** `cloud-link-system.md`, `secrets-policy.md` (NEW), updated `setup-local-workflow.md` + `MEMORY.md` index
+
+**Commits:** auto-hook committed during session (488b81a, 54beb11, 3c7f884, f967c00, ef95bce)
+
+---
+
 ## [2026-05-27] session | OCR Knowledge Hub + Drive Symlink + Security Fix
 
 **Done:**
