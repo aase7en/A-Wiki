@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      0.6.1
+// @version      0.8.1
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ
 // @author       A-Wiki / Asse7en
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -163,6 +163,14 @@ Return ONLY the JSON array.`;
     if (!m) return iso;
     const [, y, mo, d] = m;
     return `${d}/${mo}/${+y + 543}`;
+  }
+  function thaiDateCE(iso) {
+    // "2026-04-30" → "30/04/2026" (dd/mm/yyyy CE — format ที่ picker เก็บภายใน)
+    if (!iso) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return iso;
+    const [, y, mo, d] = m;
+    return `${d}/${mo}/${y}`;
   }
   function parseAnyDate(s) {
     // accept "2026-04-30" or "30/04/2569" or "30/04/2026"
@@ -449,18 +457,20 @@ Return ONLY the JSON array.`;
     return null;
   }
 
-  function fillForm(plan, options) {
+  async function fillForm(plan, options) {
     const report = [];
     const settings = getSettings();
 
     if (options.fillHeader) {
-      // วันที่บันทึก (Thai bootstrap-datepicker — ต้องเรียก plugin API)
+      // วันที่บันทึก (datepicker เก็บ value เป็น dd/mm/yyyy CE — แสดง BE)
       if (options.dateISO) {
         const dateBE = thaiDateBE(options.dateISO);
+        const dateCE = thaiDateCE(options.dateISO);
         const dateEl = document.getElementById(FIELD_IDS.date);
         if (dateEl) {
-          const ok = setDatepickerValue(dateEl, dateBE);
-          report.push(`${ok ? '✓' : '⚠'} วันที่บันทึก = ${dateBE}${ok ? '' : ' (set แล้วแต่ค่าใน input = "'+dateEl.value+'")'}`);
+          const ok = await setDatepickerValue(dateEl, dateCE, dateBE);
+          if (ok) report.push(`✓ วันที่บันทึก = ${dateBE} (เก็บภายในเป็น ${dateCE})`);
+          else report.push(`⚠ วันที่บันทึก ไม่ติด (ค่าตอนนี้ "${dateEl.value}") — โปรดคลิกช่องแล้วเลือก ${dateBE} เอง`);
         } else report.push(`✗ ไม่พบ #${FIELD_IDS.date}`);
         // ปี (BE select)
         const yearEl = document.getElementById(FIELD_IDS.year);
@@ -698,88 +708,206 @@ Return ONLY the JSON array.`;
     return { getValue: () => selectedValue };
   }
 
-  // --- Datepicker update (Thai bootstrap-datepicker + fallbacks + verbose diag) ---
-  function setDatepickerValue(el, valueBE) {
-    const $jq = window.jQuery || window.$;
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function findVueInstance(el) {
+    // Vue 2 attaches __vue__ to root DOM of each component
+    let cur = el;
+    while (cur) {
+      if (cur.__vue__) return { vue: cur.__vue__, version: 2 };
+      if (cur.__vueParentComponent) return { vue: cur.__vueParentComponent, version: 3 };
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  function nativeSet(el, value) {
+    const proto = el.tagName === 'SELECT' ? HTMLSelectElement.prototype
+                : el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype
+                : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+    if (setter) setter.call(el, value); else el.value = value;
+  }
+
+  // --- Datepicker (เก็บ value เป็น dd/mm/yyyy CE — Vue convert เป็น BE สำหรับ display) ---
+  async function setDatepickerValue(el, valueCE, valueBE) {
     if (!el) return false;
-
     log('=== datepicker debug ===');
-    log('  target id:', el.id, '| current value:', el.value, '| want:', valueBE);
-    log('  jQuery loaded:', !!$jq, 'ver:', $jq?.fn?.jquery);
-    if ($jq) {
-      try {
-        const data = $jq(el).data();
-        log('  $.data keys:', Object.keys(data));
-        const dpData = data.datepicker || data.kalendae || data.tDatepicker;
-        if (dpData) log('  picker instance keys:', Object.keys(dpData).slice(0, 20));
-      } catch {}
-      const dpFns = Object.keys($jq.fn || {}).filter(k =>
-        /date|pick|kalend|calend/i.test(k));
-      log('  $.fn datepicker-like:', dpFns);
-    }
+    log('  target id:', el.id, '| current:', el.value, '| want CE:', valueCE, '| display BE:', valueBE);
 
-    let success = false;
+    const wasReadonly = el.hasAttribute('readonly') || el.readOnly;
+    log('  readonly?', wasReadonly, '| data-date-format:', el.getAttribute('data-date-format'));
 
-    // 1) Plugin API ('update' → 'setDate' string → 'setDate' Date)
-    if ($jq && $jq.fn?.datepicker) {
-      for (const m of ['update', 'setDate']) {
-        try {
-          $jq(el).datepicker(m, valueBE);
-          log(`  $(.).datepicker('${m}', '${valueBE}') → el.value=${el.value}`);
-          if (el.value === valueBE) { success = true; break; }
-        } catch (e) { warn(`  datepicker.${m} threw:`, e.message); }
-      }
-      if (!success) {
-        try {
-          const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(valueBE);
-          if (m) {
-            const ce = new Date(+m[3] - 543, +m[2] - 1, +m[1]);
-            $jq(el).datepicker('setDate', ce);
-            log(`  setDate(new Date(CE)) → el.value=${el.value}`);
-            if (el.value === valueBE) success = true;
-          }
-        } catch (e) { warn('  setDate(Date) threw:', e.message); }
-      }
-      if (!success) {
-        try {
-          $jq(el).val(valueBE).trigger('changeDate');
-          log(`  trigger('changeDate') → el.value=${el.value}`);
-          if (el.value === valueBE) success = true;
-        } catch (e) { warn('  changeDate threw:', e.message); }
-      }
-    }
+    if (wasReadonly) { el.removeAttribute('readonly'); el.readOnly = false; }
+    nativeSet(el, valueCE);
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: valueCE }));
+    el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+    log(`  [CE set] after input event → el.value=${el.value}`);
 
-    // 2) Native value + events
-    if (!success) {
-      try {
-        el.focus?.();
-        el.value = valueBE;
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-        if ($jq) $jq(el).val(valueBE).trigger('change');
-        log(`  native set → el.value=${el.value}`);
-        if (el.value === valueBE) success = true;
-      } catch (e) { warn('  native threw:', e.message); }
-    }
-
-    // 3) Force-set: ค้างค่าไว้ 800ms กัน picker reset
-    if (!success) {
-      log('  ⚠ all methods failed — starting force-set interval (800ms)');
-      const start = Date.now();
-      const iv = setInterval(() => {
-        if (Date.now() - start > 800) {
-          clearInterval(iv);
-          log(`  force-set ended, final el.value=${el.value}`);
-          return;
+    const found = findVueInstance(el);
+    if (found) {
+      log(`  Vue ${found.version} instance found, keys:`, Object.keys(found.vue).slice(0, 15));
+      const v = found.vue;
+      for (const prop of ['value', 'date', 'inputValue', 'selectedDate', 'modelValue', 'localValue']) {
+        if (prop in v && v[prop] !== undefined) {
+          try {
+            log(`  trying vue.${prop} = '${valueCE}' (was '${v[prop]}')`);
+            v[prop] = valueCE;
+          } catch (e) { warn(`  vue.${prop} set threw:`, e.message); }
         }
-        if (el.value !== valueBE) {
-          el.value = valueBE;
-          el.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      }, 40);
+      }
+      try { v.$emit?.('input', valueCE); v.$emit?.('change', valueCE); } catch {}
+    } else {
+      log('  no Vue instance found on el or ancestors');
     }
-    log('=== datepicker done, success:', success, '===');
-    return success;
+
+    await sleep(100);
+    log(`  [after 100ms] el.value=${el.value}`);
+
+    // กระตุ้น picker re-render (CE → BE display) ผ่าน focus+blur
+    log('  triggering picker re-render via focus+blur');
+    try { el.focus(); } catch {}
+    await sleep(80);
+    try { el.blur(); } catch {}
+    await sleep(100);
+    log(`  [after focus+blur] el.value=${el.value}`);
+
+    // ถ้า display ยังไม่เป็น BE → ลอง open+close picker
+    let valueIsBE = (el.value === valueBE);
+    if (!valueIsBE) {
+      log('  display still CE — trying open picker + Escape to close');
+      try { el.click(); } catch {}
+      await sleep(250);
+      // ส่ง Escape เพื่อปิด picker (ต้องส่งหลายที่เพราะ key handler อาจอยู่ที่ document)
+      for (const target of [el, document, document.body]) {
+        try {
+          target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, which: 27, bubbles: true }));
+        } catch {}
+      }
+      // ถ้า picker ไม่ปิดจาก Esc — คลิกข้างนอก
+      await sleep(150);
+      try { document.body.click(); } catch {}
+      await sleep(200);
+      log(`  [after open+close] el.value=${el.value}`);
+      valueIsBE = (el.value === valueBE);
+    }
+
+    // ตรวจ display element ที่แสดง BE (text node)
+    let displayOK = false;
+    const dateRegex = /\b\d{2}\/\d{2}\/25\d{2}\b/;
+    const textNodes = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(n) {
+        if (!n.nodeValue || !dateRegex.test(n.nodeValue)) return NodeFilter.FILTER_REJECT;
+        if (n.parentElement?.closest('#waste-ocr-overlay')) return NodeFilter.FILTER_REJECT;
+        const tag = n.parentElement?.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    let tn;
+    while ((tn = walker.nextNode())) textNodes.push(tn);
+    if (textNodes.length > 0) {
+      log(`  ${textNodes.length} text node(s) with BE date:`);
+      textNodes.forEach((n, i) => {
+        const matched = (n.nodeValue.match(dateRegex)||[])[0];
+        log(`    text[${i}] "${matched}" in <${n.parentElement?.tagName?.toLowerCase()}> class="${(n.parentElement?.className||'').slice(0,40)}"`);
+        if (matched === valueBE) displayOK = true;
+      });
+    }
+
+    const valueOK = el.value === valueCE || el.value === valueBE
+                  || el.value.includes(valueCE.split('/').slice(0,2).join('/'));
+    log(`  value check: el.value="${el.value}" matches CE/BE? ${valueOK}`);
+    log(`  display check: BE "${valueBE}" appears? ${displayOK || valueIsBE}`);
+
+    if (valueOK || valueIsBE || displayOK) {
+      log('=== datepicker done, success: true ===');
+      if (wasReadonly) el.setAttribute('readonly', '');
+      return true;
+    }
+
+    // Fallback: ลองส่ง BE ดู (เผื่อ picker บางตัวรับ BE)
+    log('  CE didn\'t stick — trying BE format as fallback');
+    nativeSet(el, valueBE);
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: valueBE }));
+    el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+    await sleep(500);
+    log(`  [BE attempt after 500ms] el.value=${el.value}`);
+    if (el.value === valueBE || el.value === valueCE) {
+      log('=== datepicker done, success: true (BE fallback) ===');
+      if (wasReadonly) el.setAttribute('readonly', '');
+      return true;
+    }
+
+    // C) คลิกเปิด picker → คลิกวันที่
+    log('  trying picker UI click fallback');
+    if (wasReadonly) el.setAttribute('readonly', '');
+    const ok = await clickPickerSelectDate(el, valueBE);
+    log('=== datepicker done, success:', ok, ', final el.value:', el.value, '===');
+    return ok;
+  }
+
+  // Click strategy: เปิด picker → หา « » buttons → คลิก day cell
+  async function clickPickerSelectDate(inputEl, valueBE) {
+    const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(valueBE);
+    if (!m) return false;
+    const [, dStr, moStr, yBEStr] = m;
+    const day = +dStr, month = +moStr, beYear = +yBEStr;
+    const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                        'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const targetMonthName = monthNames[month - 1];
+
+    // เปิด picker
+    inputEl.click();
+    inputEl.focus();
+    await sleep(250);
+
+    // หา picker DOM — ค้นหา element ที่มีเดือนไทย + ปี BE และ visible
+    let picker = null;
+    const allDivs = $$('div, table, section').filter(el => !isInOurOverlay(el) && el.offsetParent !== null);
+    for (const d of allDivs) {
+      const txt = normalizeText(d.textContent);
+      if (monthNames.some(mn => txt.includes(mn)) && /256\d|257\d/.test(txt) && txt.length < 800) {
+        picker = d;
+        log('  picker candidate found, classList:', d.className, 'tag:', d.tagName);
+        break;
+      }
+    }
+    if (!picker) { warn('  picker not found after click — date field may not be a popover picker'); return false; }
+
+    // Navigate to target month/year
+    for (let step = 0; step < 80; step++) {
+      const headerEl = picker.querySelector('.picker-switch, .datepicker-switch, [class*="switch"], th.dow ~ th, thead th, .header, .title')
+                    || Array.from(picker.querySelectorAll('*')).find(e => monthNames.some(mn => e.textContent.trim().startsWith(mn)));
+      const headerText = headerEl?.textContent?.trim() || '';
+      if (headerText.includes(targetMonthName) && headerText.includes(String(beYear))) {
+        log(`  reached month: ${headerText}`);
+        break;
+      }
+      const headerYear = parseInt(headerText.match(/256\d|257\d/)?.[0] || '0', 10);
+      const headerMonthIdx = monthNames.findIndex(mn => headerText.includes(mn));
+      const curOrdinal = headerYear * 12 + (headerMonthIdx + 1);
+      const tgtOrdinal = beYear * 12 + month;
+      const nextBtn = picker.querySelector('.next, [class*="next"], button[aria-label*="next" i], .fa-chevron-right, .fa-angle-right')?.closest('button, a, td, th, span, div');
+      const prevBtn = picker.querySelector('.prev, [class*="prev"], button[aria-label*="prev" i], .fa-chevron-left, .fa-angle-left')?.closest('button, a, td, th, span, div');
+      const btn = tgtOrdinal > curOrdinal ? nextBtn : prevBtn;
+      if (!btn) { warn('  nav buttons not found in picker'); return false; }
+      btn.click();
+      await sleep(60);
+    }
+
+    // คลิก day cell
+    const dayCells = $$('td, .day, [class*="day"], button', picker).filter(c =>
+      c.textContent.trim() === String(day) &&
+      !c.classList.contains('old') && !c.classList.contains('new') &&
+      !c.classList.contains('disabled') && !c.classList.contains('off')
+    );
+    if (dayCells.length === 0) { warn('  day cell', day, 'not found'); return false; }
+    dayCells[0].click();
+    await sleep(150);
+    log('  clicked day', day, 'final el.value:', inputEl.value);
+    return inputEl.value === valueBE || inputEl.value.startsWith(String(day).padStart(2, '0'));
   }
 
   function renderSettingsPanel(panel) {
@@ -956,7 +1084,7 @@ Return ONLY the JSON array.`;
       content.innerHTML = '';
       status.textContent = 'ลากรูปใหม่วางด้านบน';
     });
-    content.querySelector('[data-act="fill"]').addEventListener('click', () => {
+    content.querySelector('[data-act="fill"]').addEventListener('click', async () => {
       // อ่าน kg + rowIdx ที่ user แก้ใน preview
       content.querySelectorAll('input[data-i]').forEach(inp => {
         const i = +inp.dataset.i;
@@ -977,7 +1105,10 @@ Return ONLY the JSON array.`;
       if (savedOverride) saveRowOverrides(overrides);
       const fillHeader = content.querySelector('#ocr-fill-header').checked;
       const dateISO = sel.value;
-      const report = fillForm(currentDayPlan, { fillHeader, dateISO });
+      const fillBtn = content.querySelector('[data-act="fill"]');
+      fillBtn.disabled = true; fillBtn.textContent = '⏳ กำลังกรอก…';
+      const report = await fillForm(currentDayPlan, { fillHeader, dateISO });
+      fillBtn.disabled = false; fillBtn.textContent = '✓ Fill Form';
       if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
       const logEl = content.querySelector('#waste-ocr-log');
       logEl.style.display = 'block';
