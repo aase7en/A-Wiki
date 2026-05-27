@@ -52,6 +52,10 @@
 - [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py) — `fill-waste-form.py` superseded by `scripts/userscripts/waste-form-ocr-fill.user.js` (Tampermonkey + Gemini Flash, 2026-05-26)
 - [x] **[env-webapp]** ทดสอบ `scripts/userscripts/waste-form-ocr-fill.user.js` บน Chrome จริงที่ trash_add — v0.8.1 verified ✅ (2026-05-27 user screenshot confirmed BE date save/reload)
 - [x] **[env-webapp]** Setup `drive/` symlink บน Mac ที่บ้าน + PC ที่ทำงาน: `bash scripts/setup-drive-link.sh` → backup userscript ไป Drive (รันต่อเครื่อง)
+- [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
+- [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
+- [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน PC ที่ทำงาน (Windows Git Bash): `git pull`, set `AUTH_BY_DRIVE_MOUNT=1`, verify Edit CLAUDE.md works without manual WIKI_UNLOCK export
+- [ ] **[a-wiki-infra]** Test cloud-link บน WSL / Linux Docker — verify symlink fallback chain works on systems without macOS Cloud Storage
 - [ ] **[env-webapp]** Telegram Bot future: ออกแบบ architecture ไว้ใน waste-form-automation.md — implement เมื่อพร้อม (Raspberry Pi 5 + Bot token)
 - [ ] **[wiki-brain-inwwiki]** Unified storage layer — SQLite ที่รวม FTS5 + graph + logs → single source of truth
 - [ ] **[wiki-brain-inwwiki]** Dynamic domain tagging — multi-label tags แทน directory-based domains
