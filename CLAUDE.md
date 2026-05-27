@@ -157,6 +157,25 @@ A-Wiki/
 
 ## 🛠️ Setup & Development Commands
 
+### 🔐 Secrets Policy (binding)
+
+**ห้ามเก็บ secret/password/API key ใน `.claude/settings.local.json`, repo files, หรือที่อื่น**
+นอกจาก Drive `.secrets` (cloud-synced, ไม่ push ขึ้น GitHub). Hook/script ใดที่ต้องใช้ secret
+ดึงผ่าน `scripts/lib/drive_secrets.py::fetch_secret()` **on-demand** ทุกครั้ง.
+
+```python
+from drive_secrets import fetch_secret
+api_key = fetch_secret("OPENROUTER_API_KEY")   # reads Drive .secrets at call time
+```
+
+| Secret type | Source | Consumption |
+|-------------|--------|-------------|
+| API keys (high-freq) | Drive `.secrets` | Cached via `import-keys.py` (acceptable) |
+| WIKI_UNLOCK + master tokens | Drive `.secrets` | **On-demand only** — `NEVER_CACHE` set |
+| Config flags (not secrets) | settings.local.json | OK to cache (e.g., `AUTH_BY_DRIVE_MOUNT=1`) |
+
+CLI: `python3 scripts/lib/drive_secrets.py --check` (health) / `--list` / `KEY_NAME` (echo value)
+
 ### ครั้งแรกต่อเครื่อง (One-time per machine — cross-platform Mac/Linux/WSL/Git Bash)
 
 ```bash
