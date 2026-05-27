@@ -97,6 +97,7 @@ A-Wiki/
 3. **If parallel model violates #1 or #2 → DISCARD and REWRITE**
 4. **raw/ is immutable** — never edit or delete (hook-protected)
 5. **Config files (AGENTS.md, CLAUDE.md) must not be edited without explicit permission**
+6. **External-editor source-of-truth protection** — files iterated in tools outside git (Tampermonkey userscripts, browser snippets) require `USERSCRIPT_SYNC_OK=<version>` env var matching the file's `// @version` header before any Edit/Write. Enforced by `scripts/hooks/check_external_editor_drift.py`. Rationale: 2026-05-27 incident — git baseline was v0.1.0 but Tampermonkey copy was v0.8.0; editing git directly would have downgraded the live tool and destroyed 7 iterations of work.
 
 ---
 
