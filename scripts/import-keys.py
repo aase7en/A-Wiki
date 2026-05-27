@@ -22,6 +22,12 @@ GDRIVE_PATHS = [
 
 SETTINGS_PATH = REPO_ROOT / ".claude" / "settings.local.json"
 
+# Secrets that MUST NEVER be cached in settings.local.json — always fetched
+# on-demand via scripts/lib/drive_secrets.py::fetch_secret(). High-sensitivity
+# values (master passwords, unlock tokens) live ONLY in Drive .secrets.
+# See: cloud-link-system memory, secrets-policy memory
+NEVER_CACHE = {"WIKI_UNLOCK"}
+
 
 def find_secrets_file():
     for p in GDRIVE_PATHS:
@@ -44,7 +50,7 @@ def parse_secrets(path: Path) -> dict:
         k, _, v = line.partition("=")
         k = k.strip()
         v = v.strip().strip('"').strip("'")  # strip optional quotes
-        if k:
+        if k and k not in NEVER_CACHE:
             keys[k] = v
     return keys
 
