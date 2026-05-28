@@ -36,6 +36,12 @@ EMBED_DIM = 384
 MAX_DOC_CHARS = 4000  # ~1000 tokens, fits within model's 128-token limit per chunk
 BATCH_SIZE = 32
 
+# Backend registry — see wiki/entities/ai-tools/turbovec.md for when to switch.
+# Default 'sqlite-vec' is the only battle-tested path; 'turbovec' is opt-in,
+# requires `pip install -r requirements-optional.txt`, and is meant for >5k entries.
+SUPPORTED_BACKENDS = ("sqlite-vec", "turbovec")
+TURBOVEC_PATH = REPO_ROOT / ".wiki-vec-turbovec.idx"
+
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 TAGS_LINE_RE = re.compile(r"^tags?:\s*(.+)$", re.MULTILINE | re.IGNORECASE)
@@ -162,6 +168,41 @@ def build(db_path: Path = DB_PATH) -> dict:
     return {"files_scanned": len(docs), "rows_inserted": len(docs), "db": str(db_path)}
 
 
+def build_turbovec(idx_path: Path = TURBOVEC_PATH) -> dict:
+    """Opt-in 16x-compression backend. See wiki/entities/ai-tools/turbovec.md."""
+    try:
+        from turbovec import TurboQuantIndex  # type: ignore
+    except ImportError:
+        sys.exit(
+            "turbovec not installed. Run:\n"
+            "  pip install -r requirements-optional.txt\n"
+            "(See wiki/entities/ai-tools/turbovec.md for when to use this backend.)"
+        )
+    from fastembed import TextEmbedding
+
+    docs = collect_docs()
+    if not docs:
+        print("warn: no wiki markdown files found", file=sys.stderr)
+        return {"files_scanned": 0, "rows_inserted": 0, "idx": str(idx_path)}
+
+    print(f"loading model {EMBED_MODEL} ...", file=sys.stderr)
+    model = TextEmbedding(model_name=EMBED_MODEL)
+    print(f"embedding {len(docs)} documents ...", file=sys.stderr)
+    texts = [d[1] for d in docs]
+    embeddings = list(model.embed(texts, batch_size=BATCH_SIZE))
+
+    print(f"building turbovec index (4-bit, dim={EMBED_DIM}) ...", file=sys.stderr)
+    index = TurboQuantIndex(dim=EMBED_DIM, bit_width=4)
+    index.add(embeddings)
+    index.write(str(idx_path))
+
+    # Sidecar path mapping (turbovec doesn't store metadata)
+    meta_path = idx_path.with_suffix(".paths.txt")
+    meta_path.write_text("\n".join(rel for rel, _ in docs), encoding="utf-8")
+
+    return {"files_scanned": len(docs), "rows_inserted": len(docs), "idx": str(idx_path)}
+
+
 def verify(db_path: Path = DB_PATH) -> int:
     import apsw
     import sqlite_vec
@@ -189,15 +230,40 @@ def verify(db_path: Path = DB_PATH) -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Build sqlite-vec semantic index.")
+    p = argparse.ArgumentParser(description="Build wiki semantic index.")
     p.add_argument("--verify", action="store_true", help="check freshness only")
+    p.add_argument(
+        "--backend",
+        choices=SUPPORTED_BACKENDS,
+        default="sqlite-vec",
+        help="vector backend. 'sqlite-vec' (default) is offline+CPU-friendly; "
+             "'turbovec' is opt-in (requires requirements-optional.txt) and gives "
+             "16x compression — use only when wiki >5k entries. "
+             "See wiki/entities/ai-tools/turbovec.md.",
+    )
     args = p.parse_args()
-    probe_or_die()
+
+    if args.backend == "sqlite-vec":
+        probe_or_die()
+        if args.verify:
+            return verify()
+        stats = build()
+        print(
+            f"built {stats['db']}: {stats['rows_inserted']} embeddings "
+            f"from {stats['files_scanned']} files"
+        )
+        return 0
+
+    # turbovec path — opt-in, see wiki/entities/ai-tools/turbovec.md
     if args.verify:
-        return verify()
-    stats = build()
+        if not TURBOVEC_PATH.exists():
+            print(f"missing: {TURBOVEC_PATH}", file=sys.stderr)
+            return 1
+        print(f"ok: {TURBOVEC_PATH} exists")
+        return 0
+    stats = build_turbovec()
     print(
-        f"built {stats['db']}: {stats['rows_inserted']} embeddings "
+        f"built {stats['idx']}: {stats['rows_inserted']} embeddings "
         f"from {stats['files_scanned']} files"
     )
     return 0

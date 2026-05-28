@@ -85,7 +85,7 @@ A-Wiki/
 
 | Level | ช่องทาง | ใช้กับงาน |
 |-------|---------|-----------|
-| **-1** | Local FTS5 + sqlite-vec + knowledge-graph | **ฟรี + ออฟไลน์** — ค้น wiki (keyword + semantic), neighbors, hubs |
+| **-1** | Local FTS5 + sqlite-vec + knowledge-graph (+ GitNexus code-graph เมื่อ MCP active) | **ฟรี + ออฟไลน์** — ค้น wiki (keyword + semantic), neighbors, hubs, code call graph |
 | **0** | Hook (SessionStart / PreToolUse) + Context Compaction | **ฟรี** — งานซ้ำทุก session, strategic `/compact` |
 | **1** | Free API (OpenRouter free / Gemini Flash) | **ฟรี** — search, lookup, synthesis |
 | **2** | Cheap paid (DeepSeek, Qwen) | **ถูกมาก** — reasoning เบา, table |
@@ -97,15 +97,22 @@ A-Wiki/
 
 ---
 
-## 🔗 Repository Integration (ECC + 9arm + InW-Wiki)
+## 🔗 Repository Integration
 
-| Repo | Integration | Purpose |
-|------|-------------|---------|
-| **affaan-m/everything-claude-code** | `skills/ecosystem/` | ECC skill library — tool integrations, automations |
-| **Boom-Vitt/claude-thai-skills** | `skills/claude-thai/` | Thai language skills — fuzzy-search, thai-ocr, line-bot |
-| **Aase7en-InW-Wiki** (legacy) | Merged into `wiki/` + `skills/claude-code/` | Original knowledge base + wiki skills |
+| Repo | Local path | Integration mode | Purpose |
+|------|-----------|------------------|---------|
+| **affaan-m/ECC** | `skills/ecosystem/` (232 dirs) | remote `ecc` + `scripts/refresh-ecosystem.sh` | 63 agents + 249 skills; harness optimization → [[ecc]] |
+| **Boom-Vitt/claude-thai-skills** | `skills/claude-thai/` (12 skills) | merged | Thai language skills — fuzzy-search, thai-ocr, line-bot |
+| **Aase7en-InW-Wiki** (legacy) | `wiki/` + `skills/claude-code/` | merged (frozen) | Original knowledge base + wiki skills |
+| **thananon/9arm-skills** | `agent-skills/_upstream/9arm-skills/` + local fork in `agent-skills/engineering/`, `productivity/` | remote `9arm` + `scripts/refresh-9arm.sh` | debug-mantra, scrutinize, post-mortem, management-talk → [[9arm-skills]] |
+| **agentsmd/agents.md** | spec only (no path) | compliance audit | AGENTS.md format standard (21.8k★) → [[agents-md-spec]] |
+| **abhigyanpatwari/GitNexus** | external MCP via `npx` | `.mcp.json.example` + `scripts/setup-gitnexus.sh` | Code knowledge graph (16 MCP tools) — PolyForm Noncommercial → [[gitnexus]] |
+| **RyanCodrai/turbovec** | `requirements-optional.txt` (opt-in) | `--backend turbovec` in `scripts/build-vec-index.py` | Alt vector backend, 16x compression, future-scale → [[turbovec]] |
+| **millionco/react-doctor** | global Claude skill (no repo path) | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis for dream projects → [[react-doctor]] |
 
-**Symlink**: `bash agent-skills/extensibility/symlink-connector.md` หรือ `bash scripts/link-my-skills.sh`
+**Symlink agent-skills/** into agent harnesses: `bash scripts/link-my-skills.sh`
+**Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
+**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec}.md`
 
 ---
 

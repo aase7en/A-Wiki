@@ -1,0 +1,10 @@
+# A-Wiki optional dependencies — NOT installed by default.
+# Install with: pip install -r requirements-optional.txt
+#
+# Each package is opt-in for a specific use-case. See the linked wiki page
+# for when to enable it.
+
+# turbovec — 16x-compression vector index. Opt-in alternative to sqlite-vec.
+# Enable when wiki >5k entries. Default backend (sqlite-vec, in requirements.txt)
+# stays untouched. See: wiki/entities/ai-tools/turbovec.md
+turbovec>=0.1.0

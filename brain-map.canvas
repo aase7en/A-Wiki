@@ -1993,18 +1993,28 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (17 pages)",
+      "label": "AI-TOOLS DOMAIN (23 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
-      "height": 1140,
+      "height": 1500,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-agents-md-spec-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/agents-md-spec.md",
+      "x": 2880,
+      "y": 80,
+      "width": 260,
+      "height": 120,
       "color": "2"
     },
     {
       "id": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
-      "x": 2880,
+      "x": 3220,
       "y": 80,
       "width": 260,
       "height": 120,
@@ -2014,8 +2024,28 @@
       "id": "wiki-concepts-ai-tools-context-management-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/context-management.md",
-      "x": 3220,
+      "x": 3560,
       "y": 80,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-ecc-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/ecc.md",
+      "x": 2880,
+      "y": 260,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-gitnexus-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/gitnexus.md",
+      "x": 3220,
+      "y": 260,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2025,7 +2055,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/hermes-agent.md",
       "x": 3560,
-      "y": 80,
+      "y": 260,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2035,7 +2065,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
       "x": 2880,
-      "y": 260,
+      "y": 440,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2045,7 +2075,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/hyperframes.md",
       "x": 3220,
-      "y": 260,
+      "y": 440,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2055,7 +2085,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/local-llm-routing.md",
       "x": 3560,
-      "y": 260,
+      "y": 440,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2065,7 +2095,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/multi-agent-failover.md",
       "x": 2880,
-      "y": 440,
+      "y": 620,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2075,7 +2105,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/ollama.md",
       "x": 3220,
-      "y": 440,
+      "y": 620,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2085,7 +2115,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-claude-code.md",
       "x": 3560,
-      "y": 440,
+      "y": 620,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2095,7 +2125,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-api.md",
       "x": 2880,
-      "y": 620,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2105,7 +2135,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/pocketbase.md",
       "x": 3220,
-      "y": 620,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2115,7 +2145,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/CLAUDE.md",
       "x": 3560,
-      "y": 620,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2125,7 +2155,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/CLAUDE.md",
       "x": 2880,
-      "y": 800,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2135,7 +2165,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/session-setup.md",
       "x": 3220,
-      "y": 800,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2145,7 +2175,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/symlinks-ssot.md",
       "x": 3560,
-      "y": 800,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2155,7 +2185,7 @@
       "type": "file",
       "file": "wiki/entities/ai-tools/telegram-ai-router.md",
       "x": 2880,
-      "y": 980,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2165,7 +2195,37 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/vibe-coding.md",
       "x": 3220,
-      "y": 980,
+      "y": 1160,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-react-doctor-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/react-doctor.md",
+      "x": 3560,
+      "y": 1160,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-9arm-skills-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/9arm-skills.md",
+      "x": 2880,
+      "y": 1340,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-turbovec-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/turbovec.md",
+      "x": 3220,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -4562,6 +4622,54 @@
     }
   ],
   "edges": [
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-9arm-skills-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-agents-md-spec-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-agents-md-spec-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-gitnexus-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-gitnexus-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-turbovec-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-turbovec-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-react-doctor-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-react-doctor-md",
+      "toSide": "left",
+      "color": "none"
+    },
     {
       "id": "edge-README-md-CLAUDE-md",
       "fromNode": "README-md",
@@ -7021,17 +7129,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-context-management-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-context-management-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-session-setup-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7117,9 +7225,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8283,10 +8391,66 @@
       "color": "4"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "fromSide": "top",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
       "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
       "fromSide": "left",
       "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-agents-md-spec-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-entities-ai-tools-agents-md-spec-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-9arm-skills-md",
+      "fromNode": "wiki-entities-ai-tools-ecc-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-agents-md-spec-md",
+      "fromNode": "wiki-entities-ai-tools-ecc-md",
+      "fromSide": "top",
+      "toNode": "wiki-entities-ai-tools-agents-md-spec-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-turbovec-md",
+      "fromNode": "wiki-entities-ai-tools-gitnexus-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-turbovec-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-context-knowledge-graph-md",
+      "fromNode": "wiki-entities-ai-tools-gitnexus-md",
+      "fromSide": "left",
+      "toNode": "wiki-context-knowledge-graph-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-entities-ai-tools-gitnexus-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
       "toSide": "right",
       "color": "2"
     },
@@ -8456,6 +8620,14 @@
       "fromSide": "bottom",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
       "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-react-doctor-md-wiki-synthesis-sunday-estate-webapp-md",
+      "fromNode": "wiki-entities-ai-tools-react-doctor-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-sunday-estate-webapp-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10381,9 +10553,9 @@
     {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
