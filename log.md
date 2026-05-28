@@ -1,5 +1,27 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
+
+**Done:**
+- ✅ **6 wiki pages** in `wiki/entities/ai-tools/`: `gitnexus.md`, `turbovec.md`, `react-doctor.md`, `9arm-skills.md`, `agents-md-spec.md`, `ecc.md` — each with frontmatter + `[[wikilinks]]` + license/risk notes
+- ✅ **Repository Integration table** expanded 3 → 8 rows in both `CLAUDE.md:100` + `AGENTS.md:149` (with `[[wikilink]]` references); Cost Pyramid Level -1 now lists "+ GitNexus code-graph"
+- ✅ **GitNexus MCP integration**: entry in `.mcp.json.example` + `scripts/setup-gitnexus.sh` (idempotent: appends `.gitnexus/` to `.gitignore`, runs `npx gitnexus analyze`); license = PolyForm Noncommercial (personal/wiki OK, Sunday Estate commercial = need license)
+- ✅ **GitNexus enabled in `.mcp.json`** (`disabled: false`) — Node v24.15.0 confirmed, `.gitnexus/` cache built; CLI tested: `query "fetch_secret"` returned correct hits in `check_claudemd_lock.py`, `import-keys.py`, `sync.py` in 404ms (hybrid BM25 + vector + symbol_lookup)
+- ✅ **turbovec opt-in** backend: `--backend {sqlite-vec,turbovec}` flag in `scripts/build-vec-index.py` with lazy import + `requirements-optional.txt` for `turbovec>=0.1.0` — default unchanged, deferred until wiki >5k entries
+- ✅ **react-doctor opt-in**: `setup_react_doctor()` block in `scripts/setup-local.sh` guarded by `INSTALL_REACT_DOCTOR=1`; skill installed at `.agents/skills/react-doctor/SKILL.md`
+- ✅ **9arm-skills + ECC remotes**: `git remote add 9arm/ecc`; `scripts/refresh-9arm.sh` + `scripts/refresh-ecosystem.sh` use `git archive | tar -x` (no clean-tree requirement, no subtree complexity); 9arm upstream materialized at `agent-skills/_upstream/9arm-skills/`
+- ✅ **agents.md spec compliance**: badge + spec link added to `AGENTS.md` header (`[![AGENTS.md](https://img.shields.io/badge/AGENTS.md-spec-blue)](https://agents.md)`)
+- ✅ **Wiki graph regen**: 447 → 453 nodes (+6), 1096 → 1126 edges (+30) via `gen-index.py` chain (build-wiki-index, build-wiki-graph, build-canvas, raw-to-source, raw-to-synth, review-check)
+
+**Key findings:**
+- A-Wiki's `agent-skills/engineering/{debug-mantra,scrutinize,post-mortem}` + `productivity/management-talk` are **forks** of `thananon/9arm-skills` with Iron Law enforcement blocks added (e.g., "IRON LAW #2 ENFORCED HERE" in debug-mantra) — `git subtree add` would have **destroyed these mods** → switched to remote+archive pattern instead; upstream now tracked at `_upstream/` for diff/cherry-pick without touching forks
+- GitNexus query "fetch_secret" surfaced the cross-file call graph that `grep` cannot: `_get_expected_password() → fetch_secret()` (via import) and tied tests in `test_sync.py` — confirms code-level graph genuinely complements wiki-level graph (`.wiki-graph.json`)
+- GitNexus does NOT index env-var strings (`WIKI_UNLOCK` → "Target not found") or module-level imports (`drive_secrets` → "Symbol not found"); must query function/class symbols by exact name (e.g., `_get_expected_password`)
+- `disabled: true` in `.mcp.json` shipped as default for GitNexus (opt-in) → user must explicitly flip to `false` after running `setup-gitnexus.sh` to avoid Claude Code startup errors on machines without Node.js
+- Apple system Python's sqlite extension-loading ban does NOT affect this user — they use python.org Python 3.12 framework install, so sqlite-vec works fine; turbovec however requires Rust toolchain which is absent — defer install until needed
+
+---
+
 ## [2026-05-28] session | Cloud-Link System + Secrets-on-Demand
 
 **Done:**

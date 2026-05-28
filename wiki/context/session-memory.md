@@ -54,6 +54,10 @@
 - [x] **[env-webapp]** Setup `drive/` symlink บน Mac ที่บ้าน + PC ที่ทำงาน: `bash scripts/setup-drive-link.sh` → backup userscript ไป Drive (รันต่อเครื่อง)
 - [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
 - [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
+- [x] **[a-wiki-infra]** 6-Repo Integration (2026-05-28): GitNexus MCP enabled (Node v24, .gitnexus/ built, query tested); 9arm+ECC git remotes + refresh scripts (archive-based, not subtree); turbovec opt-in via `--backend` flag + `requirements-optional.txt`; react-doctor opt-in via INSTALL_REACT_DOCTOR env; agents.md spec badge; CLAUDE.md+AGENTS.md Repository Integration 3→8 rows; 6 wiki pages at `wiki/entities/ai-tools/`; wiki graph 447→453 nodes
+- [ ] **[a-wiki-infra]** Restart Claude Code session to load gitnexus MCP — verify `mcp__gitnexus__*` tools appear in next session
+- [ ] **[dream]** Run `bash scripts/setup-gitnexus.sh` inside Sunday Estate / Pharmacy / IoT repos (one-time per repo) — code-graph benefits scale with codebase size
+- [ ] **[a-wiki-infra]** Investigate why GitNexus did not index `scripts/lib/drive_secrets.py` (the `fetch_secret` symbol was queryable as caller but `context "fetch_secret"` returned "not found") — may need GitNexus config tweak to include `lib/` subdirs
 - [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน PC ที่ทำงาน (Windows Git Bash): `git pull`, set `AUTH_BY_DRIVE_MOUNT=1`, verify Edit CLAUDE.md works without manual WIKI_UNLOCK export
 - [ ] **[a-wiki-infra]** Test cloud-link บน WSL / Linux Docker — verify symlink fallback chain works on systems without macOS Cloud Storage
 - [ ] **[env-webapp]** Telegram Bot future: ออกแบบ architecture ไว้ใน waste-form-automation.md — implement เมื่อพร้อม (Raspberry Pi 5 + Bot token)
