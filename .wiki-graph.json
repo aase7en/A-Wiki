@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-05-26",
+  "generated_at": "2026-05-28",
   "stats": {
     "nodes": 447,
-    "edges": 1093,
+    "edges": 1096,
     "edges_by_type": {
-      "mdlink": 47,
+      "mdlink": 50,
       "wikilink": 969,
       "depends": 27,
       "implements": 49,
       "extends": 1
     },
-    "broken_links": 47,
+    "broken_links": 46,
     "orphans": 192,
     "hubs": [
       {
@@ -55,11 +55,11 @@
       }
     ],
     "orphans_list": [
-      "wiki/_vec-hook-test.md",
       "wiki/context/device-session.md",
       "wiki/context/local-sources.md",
       "wiki/context/model-roster.md",
       "wiki/context/now.md",
+      "wiki/context/ocr-learning-log.md",
       "wiki/context/overview-ai.md",
       "wiki/context/overview-env.md",
       "wiki/context/overview-iot.md",
@@ -126,11 +126,6 @@
     {
       "path": "wiki/CLAUDE.md",
       "title": "ชื่อ Entity",
-      "domain": "other"
-    },
-    {
-      "path": "wiki/_vec-hook-test.md",
-      "title": "Vec Hook Test",
       "domain": "other"
     },
     {
@@ -349,6 +344,11 @@
       "domain": "context"
     },
     {
+      "path": "wiki/context/ocr-learning-log.md",
+      "title": "OCR Learning Log — ใบรายงานขยะโรงพยาบาล",
+      "domain": "context"
+    },
+    {
       "path": "wiki/context/overview-ai.md",
       "title": "Overview — AI Tools",
       "domain": "context"
@@ -375,7 +375,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-05-25 13:27",
+      "title": "Review Report — 2026-05-26 01:43",
       "domain": "context"
     },
     {
@@ -4451,6 +4451,27 @@
       "external": false
     },
     {
+      "from": "log.md",
+      "to": "wiki/synthesis/garbage-report-ocr.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "log.md",
+      "to": "wiki/synthesis/waste-form-automation.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "log.md",
+      "to": "wiki/context/session-memory.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/ai-tools/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
@@ -5378,8 +5399,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": true,
-      "external": false
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
