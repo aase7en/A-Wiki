@@ -114,11 +114,33 @@ setup_codex() {
   esac
 }
 
+# ── 6. (optional) react-doctor — Claude Code skill for React audits ────────
+# Off by default. Enable with: INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh
+# A-Wiki itself has no React; this benefits dream projects (Sunday Estate, etc.).
+# See: wiki/entities/ai-tools/react-doctor.md
+
+setup_react_doctor() {
+  if [[ "${INSTALL_REACT_DOCTOR:-0}" != "1" ]]; then
+    return 0
+  fi
+  echo "[6] Installing react-doctor as Claude Code skill (INSTALL_REACT_DOCTOR=1)..."
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "  WARN: npx not found — install Node.js 18+ first" >&2
+    return 0
+  fi
+  npx -y react-doctor@latest install || {
+    echo "  WARN: react-doctor install failed — re-run manually if needed" >&2
+    return 0
+  }
+  echo "  OK — react-doctor skill registered (~/.claude/skills/)"
+}
+
 setup_raw
 setup_mcp
 setup_secrets
 setup_index
 setup_codex
+setup_react_doctor
 
 echo ""
 echo "=== Setup complete ==="
@@ -126,3 +148,5 @@ echo "To re-sync keys after adding new ones to Google Drive .secrets:"
 echo "  python scripts/import-keys.py"
 echo "To refresh free model roster:"
 echo "  bash scripts/update-model-roster.sh"
+echo "To install react-doctor skill (for dream projects with React):"
+echo "  INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh"

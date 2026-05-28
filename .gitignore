@@ -133,3 +133,7 @@ docker-compose.override.yml
 !.clinerules
 # .mcp.json is machine-specific (repo paths differ per machine) — use .mcp.json.example
 .mcp.json
+
+# --- GitNexus (code-graph cache, per-machine, can be large) ---
+# See: wiki/entities/ai-tools/gitnexus.md
+.gitnexus/

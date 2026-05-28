@@ -1,16 +1,16 @@
 {
   "generated_at": "2026-05-28",
   "stats": {
-    "nodes": 447,
-    "edges": 1096,
+    "nodes": 453,
+    "edges": 1126,
     "edges_by_type": {
+      "wikilink": 999,
       "mdlink": 50,
-      "wikilink": 969,
       "depends": 27,
       "implements": 49,
       "extends": 1
     },
-    "broken_links": 46,
+    "broken_links": 59,
     "orphans": 192,
     "hubs": [
       {
@@ -375,7 +375,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-05-26 01:43",
+      "title": "Review Report — 2026-05-28 19:32",
       "domain": "context"
     },
     {
@@ -399,8 +399,28 @@
       "domain": "context"
     },
     {
+      "path": "wiki/entities/ai-tools/9arm-skills.md",
+      "title": "thananon/9arm-skills",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/CLAUDE.md",
       "title": "Scoped Context — AI Tools Entities",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/agents-md-spec.md",
+      "title": "AGENTS.md Specification",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/ecc.md",
+      "title": "ECC — Everything Claude Code",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/gitnexus.md",
+      "title": "GitNexus",
       "domain": "ai-tools"
     },
     {
@@ -424,8 +444,18 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/react-doctor.md",
+      "title": "react-doctor",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/telegram-ai-router.md",
       "title": "Telegram AI Router Bot",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/turbovec.md",
+      "title": "turbovec",
       "domain": "ai-tools"
     },
     {
@@ -2315,6 +2345,48 @@
     }
   ],
   "edges": [
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/9arm-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/agents-md-spec.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/gitnexus.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/turbovec.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/react-doctor.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
     {
       "from": "README.md",
       "to": "AGENTS.md",
@@ -5627,10 +5699,129 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/9arm-skills.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/9arm-skills.md",
+      "to": "claude-skills",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/9arm-skills.md",
+      "to": "git-subtree-workflow",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/agents-md-spec.md",
+      "to": "claude-skills",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/agents-md-spec.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/agents-md-spec.md",
+      "to": ".cursorrules",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/entities/ai-tools/agents-md-spec.md",
+      "to": ".codex/",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/entities/ai-tools/agents-md-spec.md",
+      "to": ".gemini/",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/entities/ai-tools/ecc.md",
+      "to": "wiki/entities/ai-tools/9arm-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ecc.md",
+      "to": "claude-thai-skills",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ecc.md",
+      "to": "wiki/entities/ai-tools/agents-md-spec.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ecc.md",
+      "to": "claude-skills",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gitnexus.md",
+      "to": "mcp",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gitnexus.md",
+      "to": "wiki/entities/ai-tools/turbovec.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gitnexus.md",
+      "to": "wiki/context/knowledge-graph.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gitnexus.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gitnexus.md",
+      "to": "claude-skills",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {
@@ -5781,6 +5972,34 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/react-doctor.md",
+      "to": "claude-skills",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/react-doctor.md",
+      "to": "wiki/synthesis/sunday-estate-webapp.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/react-doctor.md",
+      "to": "pharmacy-app",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/react-doctor.md",
+      "to": "iot-dashboard",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/telegram-ai-router.md",
       "to": "wiki/concepts/ai-tools/local-llm-routing.md",
       "type": "extends",
@@ -5827,6 +6046,27 @@
       "to": "wiki/sources/telegram-ai-router-design.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/turbovec.md",
+      "to": "sqlite-vec",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/turbovec.md",
+      "to": "embedding-models",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/turbovec.md",
+      "to": "vector-search",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {

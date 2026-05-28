@@ -1,6 +1,9 @@
 # A-Wiki — Universal AI Brain (AGENTS.md)
 
+[![AGENTS.md](https://img.shields.io/badge/AGENTS.md-spec-blue)](https://agents.md) ![Format: spec v1](https://img.shields.io/badge/format-spec_v1-green)
+
 > **AGENTS.md** = Universal master config — read by Codex, Jules, Copilot, Cline, Cursor, Windsurf, Aider, DeepSeek, OpenRouter, Zed, Warp, and any AI coding agent.
+> Follows the open [agents.md](https://github.com/agentsmd/agents.md) spec (21.8k★) — sections below cover the spec's minimum (Dev environment / Testing / PR) plus A-Wiki extensions (Iron Laws, Cost Pyramid, Swarm, Repository Integration).
 >
 > **Platform-specific extensions**: `CLAUDE.md` (Claude Code) · `GEMINI.md` (Gemini CLI)
 >
@@ -145,13 +148,22 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 
 ## 🔗 Repository Integration
 
-| Repo | Integration | Purpose |
-|------|-------------|---------|
-| **affaan-m/everything-claude-code** | `skills/ecosystem/` | ECC skill library |
-| **Boom-Vitt/claude-thai-skills** | `skills/claude-thai/` | Thai language skills |
-| **Aase7en-InW-Wiki** (legacy) | Merged into `wiki/` + `skills/claude-code/` | Original knowledge base |
+> A-Wiki ผสาน skills/tools จากหลาย upstream — ดู `wiki/entities/ai-tools/` สำหรับ deep-dive แต่ละตัว.
+> **Spec**: ไฟล์นี้ตาม [agents.md](https://github.com/agentsmd/agents.md) v1.
+
+| Repo | Local path | Integration mode | Purpose |
+|------|-----------|------------------|---------|
+| affaan-m/ECC | `skills/ecosystem/` | remote + `scripts/refresh-ecosystem.sh` | 63 agents + 249 skills |
+| Boom-Vitt/claude-thai-skills | `skills/claude-thai/` | merged | Thai skills |
+| Aase7en-InW-Wiki | `wiki/` + `skills/claude-code/` | merged (frozen) | Legacy knowledge base |
+| thananon/9arm-skills | `agent-skills/_upstream/9arm-skills/` + fork in `agent-skills/{engineering,productivity}/` | remote + `scripts/refresh-9arm.sh` | debug-mantra, scrutinize, post-mortem, management-talk |
+| agentsmd/agents.md | spec only | compliance | this file follows the spec |
+| abhigyanpatwari/GitNexus | external MCP | `.mcp.json.example` + `scripts/setup-gitnexus.sh` | Code knowledge graph for A-Wiki + dream projects |
+| RyanCodrai/turbovec | `requirements-optional.txt` | `--backend turbovec` in `scripts/build-vec-index.py` | Alt vector backend (16x compression, future-scale) |
+| millionco/react-doctor | global Claude skill | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis (dream projects) |
 
 **Symlink setup**: `bash scripts/link-my-skills.sh`
+**Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
 
 ---
 

@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **6**
+- Entities: **12**
 - Concepts: **11**
 
 ---
@@ -19,12 +19,18 @@
 
 | slug | abstract |
 |------|----------|
+| `9arm-skills` | repo จาก **thananon (9arm)** — รวม Claude Code skills 100% Shell… |
 | `CLAUDE` | primary: Claude Code (Anthropic) — wiki agent, reasoning, synthe… |
+| `agents-md-spec` | AGENTS.md เป็น **open format** สำหรับ guide AI coding agent — เป… |
+| `ecc` | ECC = open-source plugin/framework optimize agent workflow acros… |
+| `gitnexus` | GitNexus สร้าง **knowledge graph ระดับโค้ด** ของ repo (functions… |
 | `hermes-agent` | Hermes Agent คือ open-source AI agent framework ที่รันผ่าน CLI ส… |
 | `hyperframes` | HyperFrames คือ framework สำหรับเขียนวิดีโอด้วย HTML/CSS และ ani… |
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |
 | `pocketbase` | PocketBase คือ open-source backend framework ที่รวม SQLite datab… |
+| `react-doctor` | react-doctor scan codebase React (Next.js, Vite, TanStack, RN, E… |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวที่รันบน Mac Mini ที่บ้าน ทำหน้าที่เป็น gate… |
+| `turbovec` | turbovec implement **TurboQuant** (Google Research) — quantize e… |
 
 ---
 
