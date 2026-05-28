@@ -161,6 +161,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | abhigyanpatwari/GitNexus | external MCP | `.mcp.json.example` + `scripts/setup-gitnexus.sh` | Code knowledge graph for A-Wiki + dream projects |
 | RyanCodrai/turbovec | `requirements-optional.txt` | `--backend turbovec` in `scripts/build-vec-index.py` | Alt vector backend (16x compression, future-scale) |
 | millionco/react-doctor | global Claude skill | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis (dream projects) |
+| zarazhangrui/frontend-slides | `skills/ecosystem/frontend-slides/` (synced direct v2.1.0) | manual sparse-clone (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
 
 **Symlink setup**: `bash scripts/link-my-skills.sh`
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`

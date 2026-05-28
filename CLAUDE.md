@@ -109,10 +109,11 @@ A-Wiki/
 | **abhigyanpatwari/GitNexus** | external MCP via `npx` | `.mcp.json.example` + `scripts/setup-gitnexus.sh` | Code knowledge graph (16 MCP tools) — PolyForm Noncommercial → [[gitnexus]] |
 | **RyanCodrai/turbovec** | `requirements-optional.txt` (opt-in) | `--backend turbovec` in `scripts/build-vec-index.py` | Alt vector backend, 16x compression, future-scale → [[turbovec]] |
 | **millionco/react-doctor** | global Claude skill (no repo path) | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis for dream projects → [[react-doctor]] |
+| **zarazhangrui/frontend-slides** | `skills/ecosystem/frontend-slides/` (v2.1.0, MIT) | manual sparse-clone from upstream (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
 
 **Symlink agent-skills/** into agent harnesses: `bash scripts/link-my-skills.sh`
 **Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
-**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec}.md`
+**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec,frontend-slides}.md`
 
 ---
 

@@ -93,6 +93,19 @@
 
 ## 🗓️ Recent (last 10 sessions, newest top)
 
+### [2026-05-28] frontend-slides upstream sync + integration (Mac, Claude Code Opus 4.7)
+
+- **Done**: ตรวจสอบ + adopt `zarazhangrui/frontend-slides` (19.4k★ MIT) — สังเกตว่า A-Wiki มี skill นี้อยู่แล้วผ่าน ECC vendor route แต่ **stale** เพราะ ECC ยังไม่ได้ pull v2.1.0 ของ upstream (2026-05-26 commit `24e420e`)
+- **Done**: Security audit ผ่าน — zero deps, ไม่มี eval/exec/Function/XMLHttp/network exfil. innerHTML 1 จุดใน `bold-template-pack/deck-stage.js:365` = controlled template literal สำหรับ UI overlay. URL ทั้งหมดเป็น Google Fonts / Fontshare / jsdelivr Chinese fonts CDN
+- **Done**: Sparse-clone จาก upstream ตรง — sync `SKILL.md` + `STYLE_PRESETS.md` + `animation-patterns.md` + `html-template.md` + `viewport-base.css` + `scripts/{extract-pptx.py,export-pdf.sh}` + `LICENSE` + **NEW `bold-template-pack/`** (34 templates, 1.8MB, `deck-stage.js` web component)
+- **Done**: Skip `scripts/deploy.sh` (Vercel — ขัด offline-first), skip `plugins/` + `.claude-plugin/marketplace.json` (A-Wiki ใช้ skill route ไม่ใช่ plugin marketplace)
+- **Done**: SKILL.md frontmatter augmented — `origin: zarazhangrui/frontend-slides`, `upstream_version: 2.1.0`, `license: MIT`, `last_verified: 2026-05-28`
+- **Done**: Architectural change ใน upstream — SKILL.md จาก clamp/viewport-flex (เก่า ~6.5KB) → **fixed 1920×1080 stage scaled uniformly + bold-template-pack progressive disclosure** (ใหม่ ~28KB). Mobile = letterbox/pillarbox แทน reflow
+- **Done**: Create `wiki/entities/ai-tools/frontend-slides.md` (entity page ตาม template ecc.md) + update `AGENTS.md` integration table
+- **TODO**: Update CLAUDE.md integration table (ติด hook lock — รออนุญาตจาก user รอบหน้า)
+- **Decision**: ใช้ upstream ตรงสำหรับ skill นี้ เพราะ ECC vendor lag. Refresh policy: re-sparse-clone จาก zarazhangrui repo (ไม่ผ่าน `refresh-ecosystem.sh`)
+- **Lesson**: ก่อน adopt external repo — ตรวจว่า skill มีอยู่แล้วผ่าน vendor route ไหม และ vendor sync ทันไหม. ในเคสนี้ direct upstream > vendor pipeline
+
 ### [2026-05-26] sqlite-vec migration — hybrid FTS5 + semantic search (Mac, Claude Code)
 
 - **Done**: Migrate local embeddings จาก `.wiki-embeddings.json` (3.2MB TF-IDF JSON) → `wiki_vec` virtual table ใน `.wiki-index.db` ผ่าน sqlite-vec; รวมกับ FTS5 ใน DB เดียว, hybrid query ผ่าน weighted RRF (alpha 0..1, default 0.5)
