@@ -98,9 +98,9 @@
 ### [2026-05-29] a-wiki-platform-hardening-baseline (Work PC, Codex)
 
 - **Done**: Step 0 audit + roadmap created at `docs/runbooks/a-wiki-platform-hardening-plan.md`; confirmed Work PC external data layer uses `drive/` junction to `L:\My Drive\A-Wiki-Data` and `raw/` junction to `L:\My Drive\A-Wiki-Data\raw`; Google Drive folders present: `raw/`, `.obsidian/`, `waste-reports/`, `personal-tools/`, `ocr-feedback/`, `individual-tasks/`, `.secrets`.
-- **Findings**: Critical gaps are local plaintext API keys in ignored `.codex/config.toml` (must migrate + rotate), missing `check_secret_leak.py` despite hook references, Windows junction false warnings in `check_drive_link.py`, invalid `scripts/wiki/gen-index.py` shim on Windows, AGENTS command drift (`--dry-run` vs actual `--check`), hook parity gaps across Claude/Codex/Gemini/Antigravity/Cursor/Windsurf/Cline/Copilot, and noisy `review-check.py` results.
+- **Findings**: Critical gaps are local plaintext API keys in ignored `.codex/config.toml` (must migrate + rotate), missing `check_secret_leak.py` despite hook references, missing `scripts/lib/drive_secrets.py` despite Drive-first secret docs/imports, Windows junction false warnings in `check_drive_link.py`, invalid `scripts/wiki/gen-index.py` shim on Windows, AGENTS command drift (`--dry-run` vs actual `--check`), hook parity gaps across Claude/Codex/Gemini/Antigravity/Cursor/Windsurf/Cline/Copilot, and noisy `review-check.py` results.
 - **Decision**: Treat Google Drive `A-Wiki-Data` as first-class external data layer, not an optional side folder. Every future platform/device health check must verify both git repo state and external data state.
-- **Next**: Step 1 = implement real secret leak hook + tests, remove need for plaintext Codex keys, and ask user to rotate exposed keys after migration.
+- **Next**: Step 1 = implement real secret leak hook + tests, restore Drive secrets helper, remove need for plaintext Codex keys, and ask user to rotate exposed keys after migration.
 
 ### [2026-05-28] frontend-slides upstream sync + integration (Mac, Claude Code Opus 4.7)
 
