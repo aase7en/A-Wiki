@@ -97,8 +97,8 @@
 
 ### [2026-05-29] a-wiki-hardening-step-3-script-entrypoints (Work PC, Codex)
 
-- **Done**: Replaced invalid `scripts/wiki/*.py` shim files with Python compatibility wrappers for `gen-index.py`, `hooks_runner.py`, `search-wiki.py`, `query-graph.py`, `build-wiki-index.py`, and `build-wiki-graph.py`; fixed Windows console encoding for search/review/gen-index chain output; updated stale docs from `--dry-run` to `--check`.
-- **Verify**: `python -m pytest tests/test_gen_index.py tests/test_drive_link_health.py tests/test_external_data_health.py -q` passed 42 tests; `python scripts/gen-index.py` now chains through review-check; `python scripts/gen-index.py --check`, `python scripts/wiki/gen-index.py --check`, and `python scripts/wiki/search-wiki.py test` passed on Work PC.
+- **Done**: Replaced invalid `scripts/wiki/*.py` shim files with Python compatibility wrappers for `gen-index.py`, `hooks_runner.py`, `search-wiki.py`, `query-graph.py`, `build-wiki-index.py`, and `build-wiki-graph.py`; fixed Windows console encoding for search/review/gen-index chain output; excluded generated context outputs from review-check input to stop report self-feedback churn; updated stale docs from `--dry-run` to `--check`.
+- **Verify**: `python -m pytest tests/test_gen_index.py tests/test_drive_link_health.py tests/test_external_data_health.py tests/test_review_check.py -q` passed 43 tests; `python scripts/gen-index.py` now chains through review-check; `python scripts/gen-index.py --check`, `python scripts/wiki/gen-index.py --check`, and `python scripts/wiki/search-wiki.py test` passed on Work PC.
 - **Next**: Step 4 = portable agent preflight command for every platform/tool; include venv/dependency detection because `build-vec-index.py` still warns when `apsw` is missing on this machine.
 
 ### [2026-05-29] a-wiki-hardening-step-2-external-data-health (Work PC, Codex)

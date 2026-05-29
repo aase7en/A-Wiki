@@ -71,10 +71,11 @@
 - `scripts/wiki/gen-index.py` now executes root `scripts/gen-index.py` in the wrapper namespace so tests that monkeypatch module globals still work.
 - `scripts/wiki/search-wiki.py` now forces UTF-8 stdout when possible, avoiding Windows console `cp874` encode failures.
 - `scripts/gen-index.py` now prints ASCII-safe chain status on Windows, and `scripts/review-check.py` reconfigures stdout/stderr to UTF-8 so the gen-index chain no longer trips over review output.
+- `scripts/review-check.py` now excludes generated context outputs from its own review input and writes date-only report headings, preventing review-report/wiki-overview self-feedback churn across repeated `gen-index.py` runs.
 - Updated stale docs from `python scripts/wiki/gen-index.py --dry-run` to `python scripts/gen-index.py --check`.
 
 **Verification:**
-- `python -m pytest tests/test_gen_index.py tests/test_drive_link_health.py tests/test_external_data_health.py -q` -> 42 passed.
+- `python -m pytest tests/test_gen_index.py tests/test_drive_link_health.py tests/test_external_data_health.py tests/test_review_check.py -q` -> 43 passed.
 - `python scripts/gen-index.py` -> passed through FTS5, graph, canvas, source/synth, review-check, and knowledge-graph regen; `build-vec-index.py` still warns because this machine lacks `apsw`.
 - `python scripts/gen-index.py --check` -> passed.
 - `python scripts/wiki/search-wiki.py test` -> search output renders on Work PC.
