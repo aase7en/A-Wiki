@@ -125,6 +125,20 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Handoff Priority Plan
+
+**Done:**
+- Added `docs/runbooks/a-wiki-handoff-priority-plan.md` for device/agent handoff.
+- Recorded remaining work by priority: P0 secret rotation, P1 Mac verification, P1 Codex config template sync, P2 dependency bootstrap, P2 review noise reduction, P3 sync/docs.
+- Verified Work PC guardrails before handoff: `python scripts/agent-preflight.py` clean, `python scripts/lib/drive_secrets.py --check` readable without values, and secret hook accepts clean payload.
+
+**Still missing:**
+- User must rotate API keys in provider dashboards; agents must not print or handle the raw values in chat.
+- Mac must run preflight after pulling `origin/main`.
+- `.codex/*` still needs a tracked template/setup sync path because the real config is ignored.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**

@@ -113,6 +113,19 @@ The target state is:
 
 ## Remediation Work Plan
 
+## Priority Handoff Plan
+
+When switching device or agent, read `docs/runbooks/a-wiki-handoff-priority-plan.md` first.
+
+Current priority order:
+
+1. **P0 Secret Safety** — repo guardrails are done; user key rotation is still pending.
+2. **P1 Cross-Device Verification** — Work PC passes; Mac verification is pending.
+3. **P1 Codex Local Config Sync** — Work PC local `.codex` config repaired; tracked template/setup sync is pending.
+4. **P2 Dependency Bootstrap Reliability** — `apsw` and GitNexus repair paths are pending.
+5. **P2 Review Noise Reduction** — profiles/actionable reports are pending.
+6. **P3 Sync Reliability + Platform Docs** — final playbook and doc sweep are pending.
+
 ### Step 1: Secret Safety Baseline
 
 Purpose: stop plaintext secret exposure and make secret leak prevention real.
