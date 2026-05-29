@@ -43,6 +43,26 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Hardening Step 2 External Data Health
+
+**Done:**
+- Reworked `scripts/hooks/check_drive_link.py` to support POSIX symlinks, Windows Junction/ReparsePoint directories, `.drive-path` fallback, and permission-safe path probes.
+- Updated `scripts/drive_path.py` so shared helpers resolve Windows Junction targets instead of treating `drive/` as a plain repo directory.
+- Added `scripts/health_external_data.py` as a portable external data health report for all agents/platforms.
+- Added tests in `tests/test_drive_link_health.py` and `tests/test_external_data_health.py`.
+
+**Verification on Work PC:**
+- `python -m pytest tests/test_drive_link_health.py tests/test_external_data_health.py -q` -> 5 passed.
+- `python scripts/hooks/check_drive_link.py` -> cloud links OK.
+- `python scripts/drive_path.py` -> Drive root resolves to `L:\My Drive\A-Wiki-Data`.
+- `python scripts/health_external_data.py` -> required folders OK, raw file count 54, `.secrets` present without printing values.
+
+**Remaining:**
+- Verify the same commands on MacBook after pulling `origin/main`.
+- Continue Step 3: normalize script entry points and fix stale `--dry-run` docs.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**

@@ -249,7 +249,7 @@ Acceptance criteria:
 |---|---|---|---|
 | 0. Baseline audit + plan | Done | 2026-05-29 | Found secret config risk, missing secret hook, missing `scripts/lib/drive_secrets.py`, Windows junction false warnings, invalid script shim, doc command drift, hook parity gaps, review noise, external data under-documentation. |
 | 1. Secret Safety Baseline | Code complete; user rotation pending | 2026-05-29 | Added `check_secret_leak.py`, restored `scripts/lib/drive_secrets.py`, added tests, sanitized local ignored `.codex/config.toml`; user still needs to rotate keys that were previously exposed in local plaintext config. |
-| 2. Cross-Platform Link Health | Pending | - | Needed for Work PC/Mac Google Drive reliability. |
+| 2. Cross-Platform Link Health | Done on Work PC; Mac verification pending | 2026-05-29 | `check_drive_link.py` and `drive_path.py` now support Windows Junction/ReparsePoint; added `scripts/health_external_data.py`; Work PC resolves `L:\My Drive\A-Wiki-Data`, reports 54 raw files, and does not print secrets. |
 | 3. Script Entry Point Normalization | Pending | - | Needed before trusting tests/docs. |
 | 4. Portable Agent Preflight | Pending | - | Gives every platform one common starting point. |
 | 5. Hook Parity and Policy Cleanup | Pending | - | Aligns Claude/Codex/Gemini behavior. |
