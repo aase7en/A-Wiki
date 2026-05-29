@@ -1993,7 +1993,7 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (23 pages)",
+      "label": "AI-TOOLS DOMAIN (24 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
@@ -2041,10 +2041,20 @@
       "color": "2"
     },
     {
+      "id": "wiki-entities-ai-tools-frontend-slides-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/frontend-slides.md",
+      "x": 3220,
+      "y": 260,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
       "id": "wiki-entities-ai-tools-gitnexus-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/gitnexus.md",
-      "x": 3220,
+      "x": 3560,
       "y": 260,
       "width": 260,
       "height": 120,
@@ -2054,8 +2064,8 @@
       "id": "wiki-entities-ai-tools-hermes-agent-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hermes-agent.md",
-      "x": 3560,
-      "y": 260,
+      "x": 2880,
+      "y": 440,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2064,7 +2074,7 @@
       "id": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
-      "x": 2880,
+      "x": 3220,
       "y": 440,
       "width": 260,
       "height": 120,
@@ -2074,7 +2084,7 @@
       "id": "wiki-entities-ai-tools-hyperframes-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hyperframes.md",
-      "x": 3220,
+      "x": 3560,
       "y": 440,
       "width": 260,
       "height": 120,
@@ -2084,8 +2094,8 @@
       "id": "wiki-concepts-ai-tools-local-llm-routing-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/local-llm-routing.md",
-      "x": 3560,
-      "y": 440,
+      "x": 2880,
+      "y": 620,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2094,7 +2104,7 @@
       "id": "wiki-concepts-ai-tools-multi-agent-failover-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/multi-agent-failover.md",
-      "x": 2880,
+      "x": 3220,
       "y": 620,
       "width": 260,
       "height": 120,
@@ -2104,7 +2114,7 @@
       "id": "wiki-entities-ai-tools-ollama-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/ollama.md",
-      "x": 3220,
+      "x": 3560,
       "y": 620,
       "width": 260,
       "height": 120,
@@ -2114,8 +2124,8 @@
       "id": "wiki-concepts-ai-tools-openrouter-claude-code-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-claude-code.md",
-      "x": 3560,
-      "y": 620,
+      "x": 2880,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2124,7 +2134,7 @@
       "id": "wiki-concepts-ai-tools-openrouter-api-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-api.md",
-      "x": 2880,
+      "x": 3220,
       "y": 800,
       "width": 260,
       "height": 120,
@@ -2134,7 +2144,7 @@
       "id": "wiki-entities-ai-tools-pocketbase-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/pocketbase.md",
-      "x": 3220,
+      "x": 3560,
       "y": 800,
       "width": 260,
       "height": 120,
@@ -2144,8 +2154,8 @@
       "id": "wiki-concepts-ai-tools-CLAUDE-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/CLAUDE.md",
-      "x": 3560,
-      "y": 800,
+      "x": 2880,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2154,7 +2164,7 @@
       "id": "wiki-entities-ai-tools-CLAUDE-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/CLAUDE.md",
-      "x": 2880,
+      "x": 3220,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -2164,7 +2174,7 @@
       "id": "wiki-concepts-ai-tools-session-setup-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/session-setup.md",
-      "x": 3220,
+      "x": 3560,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -2174,8 +2184,8 @@
       "id": "wiki-concepts-ai-tools-symlinks-ssot-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/symlinks-ssot.md",
-      "x": 3560,
-      "y": 980,
+      "x": 2880,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2184,7 +2194,7 @@
       "id": "wiki-entities-ai-tools-telegram-ai-router-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/telegram-ai-router.md",
-      "x": 2880,
+      "x": 3220,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2194,7 +2204,7 @@
       "id": "wiki-concepts-ai-tools-vibe-coding-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/vibe-coding.md",
-      "x": 3220,
+      "x": 3560,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2204,8 +2214,8 @@
       "id": "wiki-entities-ai-tools-react-doctor-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/react-doctor.md",
-      "x": 3560,
-      "y": 1160,
+      "x": 2880,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2214,7 +2224,7 @@
       "id": "wiki-entities-ai-tools-9arm-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/9arm-skills.md",
-      "x": 2880,
+      "x": 3220,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -2224,7 +2234,7 @@
       "id": "wiki-entities-ai-tools-turbovec-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/turbovec.md",
-      "x": 3220,
+      "x": 3560,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -4671,19 +4681,11 @@
       "color": "none"
     },
     {
-      "id": "edge-README-md-CLAUDE-md",
-      "fromNode": "README-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "none"
-    },
-    {
-      "id": "edge-README-md-wiki-context-wiki-overview-md",
-      "fromNode": "README-md",
-      "fromSide": "top",
-      "toNode": "wiki-context-wiki-overview-md",
-      "toSide": "bottom",
+      "id": "edge-CLAUDE-md-wiki-entities-ai-tools-frontend-slides-md",
+      "fromNode": "CLAUDE-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -7095,27 +7097,35 @@
       "color": "none"
     },
     {
-      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
+      "id": "edge-README-md-CLAUDE-md",
+      "fromNode": "README-md",
       "fromSide": "left",
       "toNode": "CLAUDE-md",
       "toSide": "right",
-      "color": "2"
+      "color": "none"
+    },
+    {
+      "id": "edge-README-md-wiki-context-wiki-overview-md",
+      "fromNode": "README-md",
+      "fromSide": "top",
+      "toNode": "wiki-context-wiki-overview-md",
+      "toSide": "bottom",
+      "color": "none"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7135,11 +7145,19 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-context-management-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-context-management-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-session-setup-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7153,9 +7171,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7185,17 +7203,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-entities-ai-tools-ollama-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-ollama-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -7209,25 +7227,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-sources-telegram-ai-router-design-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -7241,41 +7259,41 @@
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-api-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-api-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-concepts-ai-tools-openrouter-api-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-sources-local-llm-mac-mini-guide-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-local-llm-mac-mini-guide-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7289,17 +7307,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-session-setup-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -7313,33 +7331,33 @@
     {
       "id": "edge-wiki-concepts-ai-tools-session-setup-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-session-setup-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-multi-agent-failover-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-sources-ai-agents-integration-guide-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-ai-agents-integration-guide-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -7361,25 +7379,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7503,14 +7521,6 @@
       "color": "5"
     },
     {
-      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "3"
-    },
-    {
       "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-entities-iot-pms5003-md",
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
@@ -7564,6 +7574,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-air-quality-iot-lora-network-md",
       "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "3"
     },
     {
@@ -8393,16 +8411,8 @@
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "top",
-      "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "bottom",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
       "fromSide": "left",
-      "toNode": "CLAUDE-md",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
       "toSide": "right",
       "color": "2"
     },
@@ -8415,11 +8425,19 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-entities-ai-tools-ecc-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8428,6 +8446,14 @@
       "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-agents-md-spec-md",
       "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8457,9 +8483,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8473,9 +8499,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-sources-hermes-agent-guide-th-md",
       "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-hermes-agent-guide-th-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8489,9 +8515,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8537,9 +8563,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-sources-hyperframes-official-docs-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-hyperframes-official-docs-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8553,25 +8579,25 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-ollama-pi5-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-ollama-pi5-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8585,9 +8611,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-ollama-pi5-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-ollama-pi5-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8617,9 +8643,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8633,17 +8659,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8657,17 +8683,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8681,18 +8707,10 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-sources-telegram-ai-router-design-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
-    },
-    {
-      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-env-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "5"
     },
     {
       "id": "edge-wiki-entities-env-activated-sludge-system-md-wiki-concepts-env-water-quality-parameters-md",
@@ -8724,6 +8742,14 @@
       "fromSide": "right",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
       "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-env-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "5"
     },
     {
@@ -8804,14 +8830,6 @@
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
       "toSide": "left",
-      "color": "3"
-    },
-    {
-      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "3"
     },
     {
@@ -8956,6 +8974,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-lorawan-network-beginner-md",
       "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "3"
     },
     {
@@ -10543,14 +10569,6 @@
       "color": "4"
     },
     {
-      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-sources-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "6"
-    },
-    {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromSide": "top",
@@ -10561,9 +10579,9 @@
     {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -10577,9 +10595,9 @@
     {
       "id": "edge-wiki-sources-ai-agents-integration-guide-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-sources-ai-agents-integration-guide-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -10601,9 +10619,9 @@
     {
       "id": "edge-wiki-sources-ai-iot-server-build-v3-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-sources-ai-iot-server-build-v3-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -10691,6 +10709,14 @@
       "fromNode": "wiki-sources-arduino-ide-esp32-setup-md",
       "fromSide": "left",
       "toNode": "wiki-entities-iot-esp32-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-sources-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },
@@ -10969,9 +10995,9 @@
     {
       "id": "edge-wiki-sources-hermes-agent-guide-th-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-hermes-agent-guide-th-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -10985,9 +11011,9 @@
     {
       "id": "edge-wiki-sources-hyperframes-official-docs-md-wiki-entities-ai-tools-hyperframes-md",
       "fromNode": "wiki-sources-hyperframes-official-docs-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-hyperframes-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -11089,9 +11115,9 @@
     {
       "id": "edge-wiki-sources-local-llm-mac-mini-guide-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-local-llm-mac-mini-guide-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -11185,9 +11211,9 @@
     {
       "id": "edge-wiki-sources-ollama-pi5-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-sources-ollama-pi5-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -11337,17 +11363,17 @@
     {
       "id": "edge-wiki-sources-telegram-ai-agent-setup-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-telegram-ai-agent-setup-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-telegram-ai-agent-setup-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-sources-telegram-ai-agent-setup-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -11361,17 +11387,17 @@
     {
       "id": "edge-wiki-sources-telegram-ai-router-design-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-telegram-ai-router-design-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-telegram-ai-router-design-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-sources-telegram-ai-router-design-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -11433,17 +11459,17 @@
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-pocketbase-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -11459,14 +11485,6 @@
       "fromNode": "wiki-sources-who-rabies-position-2018-md",
       "fromSide": "left",
       "toNode": "wiki-concepts-env-rabies-pep-protocol-md",
-      "toSide": "right",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-synthesis-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },
@@ -11627,6 +11645,14 @@
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromSide": "left",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-synthesis-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },

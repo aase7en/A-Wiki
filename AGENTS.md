@@ -183,7 +183,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 
 | Script | Function |
 |--------|----------|
-| `scripts/wiki/gen-index.py` | Regen wiki overviews + FTS5 + graph + canvas |
+| `scripts/gen-index.py` | Regen wiki overviews + FTS5 + graph + canvas |
 | `scripts/wiki/search-wiki.py "query"` | Local FTS5 search (Level -1, free) |
 | `scripts/wiki/ask-notebooklm.py --domain X` | Cross-file synthesis via Gemini API |
 | `scripts/wiki/query-graph.py --hubs` | Knowledge graph queries |
@@ -204,7 +204,7 @@ python -m pytest tests/                      # run all tests
 python -m pytest tests/test_sync.py -v       # specific test file
 
 # Wiki health check
-python scripts/wiki/gen-index.py --dry-run   # validate wiki structure
+python scripts/gen-index.py --check          # validate wiki structure
 python scripts/wiki/search-wiki.py "test"    # verify FTS5 index works
 
 # Hook runner test

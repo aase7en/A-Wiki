@@ -369,13 +369,13 @@ def main() -> int:
         path = CONTEXT_DIR / f"overview-{DOMAIN_FILE_SLUG[dom_key]}.md"
         content = render_domain(dom_key, pages)
         path.write_text(content, encoding="utf-8")
-        print(f"✓ Wrote single domain file: {path.relative_to(REPO_ROOT)}")
+        print(f"[OK] Wrote single domain file: {path.relative_to(REPO_ROOT)}")
         return 0
 
     for path, content in outputs.items():
         path.write_text(content, encoding="utf-8")
     total = sum(len(r) for s in pages.values() for r in s.values())
-    print(f"✓ Wrote {len(outputs)} files in {CONTEXT_DIR.relative_to(REPO_ROOT)} ({total} pages)")
+    print(f"[OK] Wrote {len(outputs)} files in {CONTEXT_DIR.relative_to(REPO_ROOT)} ({total} pages)")
 
     # Chain: rebuild local search index + knowledge graph + embeddings (Phase 2-4 upgrade)
     # Best-effort — don't fail gen-index if these aren't installed yet
@@ -386,9 +386,9 @@ def main() -> int:
         if sp.exists():
             try:
                 subprocess.run([sys.executable, str(sp)], check=True, capture_output=True)
-                print(f"✓ chained: {chained}")
+                print(f"[OK] chained: {chained}")
             except subprocess.CalledProcessError as e:
-                print(f"⚠ {chained} failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+                print(f"[WARN] {chained} failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Chain: auto-synthesis pipeline (Phase 4c)
     for chained_script in ("raw-to-source.py", "raw-to-synth.py"):
@@ -399,9 +399,9 @@ def main() -> int:
                     [sys.executable, str(sp), "--apply"] if chained_script == "raw-to-source.py" else [sys.executable, str(sp)],
                     check=True, capture_output=True
                 )
-                print(f"✓ chained: {chained_script}")
+                print(f"[OK] chained: {chained_script}")
             except subprocess.CalledProcessError as e:
-                print(f"⚠ raw-to-synth.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+                print(f"[WARN] raw-to-synth.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Chain: arXiv fetch (Phase 4) — Tier 1 search for domain-relevant papers, silent for speed
     arxiv_fetcher = scripts_dir / "fetch-arxiv.py"
@@ -428,20 +428,20 @@ def main() -> int:
     if reviewer.exists() and not args.check:
         try:
             subprocess.run([sys.executable, str(reviewer)], check=True, capture_output=True)
-            print(f"✓ chained: review-check.py (report → wiki/context/review-report.md)")
+            print(f"[OK] chained: review-check.py (report -> wiki/context/review-report.md)")
         except subprocess.CalledProcessError as e:
-            print(f"⚠ review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+            print(f"[WARN] review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Chain: build sqlite-vec semantic index (fastembed paraphrase-multilingual-MiniLM-L12-v2)
     vec_builder = scripts_dir / "build-vec-index.py"
     if vec_builder.exists():
         try:
             subprocess.run([sys.executable, str(vec_builder)], check=True, capture_output=True, timeout=300)
-            print(f"✓ chained: build-vec-index.py")
+            print(f"[OK] chained: build-vec-index.py")
         except subprocess.TimeoutExpired:
-            print(f"⚠ build-vec-index.py timed out (>5min)", file=sys.stderr)
+            print(f"[WARN] build-vec-index.py timed out (>5min)", file=sys.stderr)
         except subprocess.CalledProcessError as e:
-            print(f"⚠ build-vec-index.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+            print(f"[WARN] build-vec-index.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Regenerate wiki/context/knowledge-graph.md from .wiki-graph.json
     graph_json = REPO_ROOT / ".wiki-graph.json"
@@ -482,9 +482,9 @@ def main() -> int:
                 "",
             ]
             (CONTEXT_DIR / "knowledge-graph.md").write_text("\n".join(lines), encoding="utf-8")
-            print(f"✓ regenerated: wiki/context/knowledge-graph.md")
+            print(f"[OK] regenerated: wiki/context/knowledge-graph.md")
         except Exception as e:
-            print(f"⚠ knowledge-graph.md regen failed: {e}", file=sys.stderr)
+            print(f"[WARN] knowledge-graph.md regen failed: {e}", file=sys.stderr)
 
     return 0
 

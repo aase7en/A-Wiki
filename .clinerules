@@ -93,7 +93,7 @@ bash scripts/swarm/delegate.sh executioner "implement X"
 | `python scripts/wiki/search-wiki.py "q"` | FTS5 wiki search (Level -1) |
 | `bash scripts/swarm/delegate.sh "q"` | Delegate to free model |
 | `bash scripts/update-model-roster.sh` | Refresh free model list |
-| `python scripts/wiki/gen-index.py` | Rebuild wiki index + FTS5 |
+| `python scripts/gen-index.py` | Rebuild wiki index + FTS5 |
 | `python scripts/wiki/query-graph.py --hubs` | Knowledge graph hubs |
 | `bash scripts/setup-local.sh` | Full machine setup (run once) |
 
