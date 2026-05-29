@@ -11,7 +11,8 @@
 1. Read `AGENTS.md` — Universal A-Wiki brain (Iron Laws, Cost Pyramid, Directory, Scripts)
 2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. Read `wiki/context/session-memory.md` — cross-session decisions + TODOs
-4. *(optional)* Check `wiki/context/model-roster.conf` — current free model availability
+4. Run `python scripts/agent-preflight.py` — portable safety check when Gemini hooks are unavailable
+5. *(optional)* Check `wiki/context/model-roster.conf` — current free model availability
 
 ---
 

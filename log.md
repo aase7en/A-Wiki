@@ -88,6 +88,23 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Hardening Step 4 Portable Agent Preflight
+
+**Done:**
+- Added `scripts/agent-preflight.py` as the shared start-of-session health check for Claude, Codex, Gemini, Cursor, Cline, Windsurf, Copilot, and mobile/manual workflows.
+- Preflight checks: current branch is `main`, `origin/main` reachability, working tree summary, Drive-backed `A-Wiki-Data` folders + `.secrets`, generated wiki context freshness, core hook files, and platform instruction drift.
+- Added `tests/test_agent_preflight.py`.
+- Added one-line preflight invocation to platform instruction files and AGENTS script index.
+
+**Verification:**
+- `python -m pytest tests/test_agent_preflight.py tests/test_gen_index.py tests/test_review_check.py tests/test_drive_link_health.py tests/test_external_data_health.py -q` planned for final Step 4 verification.
+- `python scripts/agent-preflight.py` should return OK/FAIL with WARN allowed for dirty working tree during active edits.
+
+**Next:**
+- Step 5: hook parity and policy cleanup, especially `stop-auto-commit.sh` branch merge behavior and hook command path drift.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**

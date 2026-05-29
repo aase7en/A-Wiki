@@ -2,6 +2,7 @@
 
 > **FIRST: Read `AGENTS.md`** in the repo root — complete A-Wiki brain specification
 > (Iron Laws, Cost Pyramid, Swarm Intelligence, Directory Structure, Scripts Index)
+> Start-of-session safety check: run `python scripts/agent-preflight.py`.
 
 ---
 

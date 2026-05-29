@@ -131,6 +131,7 @@ A-Wiki/
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
+> Portable fallback: run `python scripts/agent-preflight.py` when hooks are missing, after switching devices, or before significant work.
 
 | # | Hook | File | Type | Purpose |
 |---|------|------|:----:|---------|
