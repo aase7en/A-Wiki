@@ -1,10 +1,10 @@
-# Review Report — 2026-05-29 16:03
+# Review Report — 2026-05-29
 
 ## Summary
 
-- ✓ Passed: 602
+- ✓ Passed: 595
 - ⚠ Warnings: 3
-- ❌ Failures: 914
+- ❌ Failures: 904
 
 ---
 
@@ -50,20 +50,12 @@
 - wiki\concepts\pharmacy\pharmacy-context.md: missing frontmatter key: title
 - wiki\concepts\pharmacy\ui-design-pharmacy.md: missing frontmatter key: title
 - wiki\context\device-session.md: no frontmatter (missing --- delimiter)
-- wiki\context\knowledge-graph.md: no frontmatter (missing --- delimiter)
 - wiki\context\local-sources.md: no frontmatter (missing --- delimiter)
 - wiki\context\model-roster.md: no frontmatter (missing --- delimiter)
 - wiki\context\now.md: no frontmatter (missing --- delimiter)
 - wiki\context\ocr-learning-log.md: missing frontmatter key: title
-- wiki\context\overview-ai.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-env.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-iot.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki\context\overview-sources.md: no frontmatter (missing --- delimiter)
-- wiki\context\review-report.md: no frontmatter (missing --- delimiter)
 - wiki\context\session-memory.md: no frontmatter (missing --- delimiter)
 - wiki\context\wiki-guide.md: no frontmatter (missing --- delimiter)
-- wiki\context\wiki-overview.md: no frontmatter (missing --- delimiter)
 - wiki\context\wiki-state.md: no frontmatter (missing --- delimiter)
 - wiki\entities\ai-tools\9arm-skills.md: missing frontmatter key: title
 - wiki\entities\ai-tools\agents-md-spec.md: missing frontmatter key: title
@@ -427,11 +419,6 @@
 - wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
 - wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
 - wiki\concepts\pharmacy\ui-design-pharmacy.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki\context\wiki-overview.md: broken link: [[entities/io… |
-| `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
-| `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]]
-- wiki\context\wiki-overview.md: broken link: [[entities/iot/h… |
-| `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]]
 - wiki\entities\ai-tools\9arm-skills.md: broken link: [[claude-skills]]
 - wiki\entities\ai-tools\9arm-skills.md: broken link: [[git-subtree-workflow]]
 - wiki\entities\ai-tools\agents-md-spec.md: broken link: [[claude-skills]]
@@ -953,11 +940,11 @@
 
 ---
 
-## ✓ Passed Checks (602 total)
+## ✓ Passed Checks (595 total)
 
 - **L1**: 46 passed
 - **L2**: 90 passed
-- **L3**: 370 passed
+- **L3**: 363 passed
 - **L4**: 91 passed
 - **L5**: 4 passed
 - **L6**: 1 passed

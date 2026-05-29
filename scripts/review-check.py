@@ -31,6 +31,30 @@ REPORT_PATH = CONTEXT_DIR / "review-report.md"
 
 RESULT_ICONS = {"pass": "✓", "warn": "⚠", "fail": "❌"}
 
+GENERATED_CONTEXT_FILES = {
+    "knowledge-graph.md",
+    "overview-ai.md",
+    "overview-env.md",
+    "overview-iot.md",
+    "overview-pharmacy.md",
+    "overview-sources.md",
+    "review-report.md",
+    "wiki-overview.md",
+}
+
+
+def should_review_wiki_file(path: Path) -> bool:
+    """Generated context files are outputs, not review inputs."""
+    try:
+        rel = path.relative_to(WIKI_DIR)
+    except ValueError:
+        return False
+    return not (len(rel.parts) == 2 and rel.parts[0] == "context" and rel.name in GENERATED_CONTEXT_FILES)
+
+
+def iter_review_wiki_files():
+    return (md for md in sorted(WIKI_DIR.rglob("*.md")) if should_review_wiki_file(md))
+
 
 def check_script_guard(path: Path) -> bool:
     """L1: Check .py has `if __name__` guard or is import-only."""
@@ -121,7 +145,7 @@ def check_orphan(path: Path) -> bool:
     slug = path.stem
     if slug in ("index", "README", "Home"):
         return False  # root pages exempt
-    for other in WIKI_DIR.rglob("*.md"):
+    for other in iter_review_wiki_files():
         if other.resolve() == path.resolve():
             continue
         text = other.read_text(encoding="utf-8", errors="replace")
@@ -184,7 +208,7 @@ def run_l2() -> tuple[list[str], list[str], list[str]]:
     passed: list[str] = []
     warned: list[str] = []
     failed: list[str] = []
-    for md in sorted(WIKI_DIR.rglob("*.md")):
+    for md in iter_review_wiki_files():
         if md.name == "README.md":
             continue
         rel = str(md.relative_to(REPO_ROOT))
@@ -202,7 +226,7 @@ def run_l3() -> tuple[list[str], list[str], list[str]]:
     passed: list[str] = []
     warned: list[str] = []
     failed: list[str] = []
-    for md in sorted(WIKI_DIR.rglob("*.md")):
+    for md in iter_review_wiki_files():
         rel = str(md.relative_to(REPO_ROOT))
         issues = check_wiki_links(md)
         if not issues:
@@ -218,7 +242,7 @@ def run_l4() -> tuple[list[str], list[str], list[str]]:
     passed: list[str] = []
     warned: list[str] = []
     failed: list[str] = []
-    for md in sorted(WIKI_DIR.rglob("*.md")):
+    for md in iter_review_wiki_files():
         parts = md.relative_to(WIKI_DIR).parts
         if len(parts) < 3:
             continue
@@ -264,7 +288,7 @@ def run_l6() -> tuple[list[str], list[str], list[str]]:
     passed: list[str] = []
     warned: list[str] = []
     failed: list[str] = []
-    for md in sorted(WIKI_DIR.rglob("*.md")):
+    for md in iter_review_wiki_files():
         parts = md.relative_to(WIKI_DIR).parts
         if len(parts) < 3:
             continue
@@ -296,7 +320,7 @@ def write_report(
     layer_names: dict[str, str],
 ) -> str:
     """Write review-report.md and return it as a string."""
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = datetime.now().strftime("%Y-%m-%d")
     lines: list[str] = [
         f"# Review Report — {now}",
         "",
