@@ -56,6 +56,35 @@ def is_push_command(tokens: list) -> bool:
     return False
 
 
+def command_has_session_commit(tokens: list) -> bool:
+    """Return True when the same Bash command includes a session commit."""
+    separators = {";", "&&", "||", "|", "&"}
+    current = []
+    for t in tokens + [";"]:
+        if t in separators:
+            if current and current[0] == "git":
+                i = 1
+                while i < len(current) and current[i].startswith("-"):
+                    i += 1
+                if i < len(current) and current[i] == "commit":
+                    message_parts: list[str] = []
+                    j = i + 1
+                    while j < len(current):
+                        if current[j] in {"-m", "--message"} and j + 1 < len(current):
+                            message_parts.append(current[j + 1])
+                            j += 2
+                            continue
+                        if current[j].startswith("--message="):
+                            message_parts.append(current[j].split("=", 1)[1])
+                        j += 1
+                    if any(SESSION_COMMIT_PATTERN.search(part) for part in message_parts):
+                        return True
+            current = []
+        else:
+            current.append(t)
+    return False
+
+
 def get_staged_files() -> set:
     """Return set of staged file paths."""
     try:
@@ -112,9 +141,22 @@ def main():
     session_files_staged = any(f in staged for f in SESSION_FILES)
     last_commit_msg = get_most_recent_commit_message()
     has_session_commit = bool(SESSION_COMMIT_PATTERN.search(last_commit_msg))
+    current_command_has_session_commit = command_has_session_commit(tokens)
+
+    # A compound command that commits and pushes in one shot must carry a
+    # session(...) commit message. Do not infer safety from dirty working-tree
+    # session files because the commit may omit them.
+    if "commit" in tokens and not current_command_has_session_commit and not session_files_staged:
+        block_msg = (
+            "🛑 BLOCKED: git commit + push without session(...) commit message\n\n"
+            "ใช้ commit message รูปแบบ `session(YYYY-MM-DD): ...` หรือ stage "
+            "log/session-memory ก่อน push\n"
+        )
+        sys.stderr.write(block_msg)
+        sys.exit(2)
 
     # Allow if session files are staged OR last commit was a session commit
-    if session_files_staged or has_session_commit:
+    if session_files_staged or has_session_commit or current_command_has_session_commit:
         sys.exit(0)
 
     # Also check if log.md or session-memory.md was modified recently via status

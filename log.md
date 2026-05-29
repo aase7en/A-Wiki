@@ -1,5 +1,28 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] session | Lightweight SkillOpt + model intel integration
+
+**Done:**
+- Added `scripts/update-ai-model-intel.sh` for Gemini-grounded AI model/agent routing intel, cached in gitignored `.tmp/model-intel/latest.md` by default.
+- Added `scripts/refresh-skillopt.sh` to link Microsoft SkillOpt upstream through a lightweight `agent-skills/_upstream/skillopt` snapshot path, excluding heavy WebUI/assets/data unless explicitly requested.
+- Added `scripts/install-skillopt-local.sh` for optional runnable SkillOpt install into ignored local paths `.tmp/skillopt-src` and `.venv-skillopt`.
+- Updated `scripts/hooks/session_start.py` so SessionStart can refresh model intel without blocking startup or dirtying the repo.
+- Updated `scripts/setup-local.sh` and `docs/runbooks/setup-new-machine.md` for clone-friendly setup across machines with different Google Drive paths.
+- Restored broken `scripts/wiki/*` compatibility wrappers from malformed symlinks to real Python files, and added `pytest.ini` so root `pytest` only collects A-Wiki tests instead of upstream vendor tests.
+- Restored legacy `query-rag.py` helper API expected by tests while keeping hybrid FTS5 + sqlite-vec CLI behavior.
+- Tightened `check_delegation_gate.py` so compound `git commit && git push` commands must use `session(...)` commit messages or stage session files.
+
+**Verification:**
+- `python3 -m pytest tests/test_model_intel_and_skillopt.py -q` -> 4 passed.
+- `python3 -m pytest -q` -> 156 passed.
+- `bash -n` passed for new/updated shell scripts.
+
+**Design decision:**
+- Current model news/intel is local cache, not `wiki/context/`, because volatile generated data should not dirty git every session.
+- Heavy/private/raw files remain in `drive/` / `A-Wiki-Data`; SkillOpt runnable install is optional and local-only.
+
+---
+
 ## [2026-05-29] session | Work PC AUTH_BY_DRIVE_MOUNT enabled
 
 **Done:**

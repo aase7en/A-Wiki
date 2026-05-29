@@ -71,6 +71,46 @@ def check_api_keys(repo_root):
         sys.stderr.write(f"⚡ API keys not set: {', '.join(missing)}\n")
 
 
+def maybe_update_model_intel(repo_root):
+    """Refresh current model/agent routing intel into a gitignored cache."""
+    if os.environ.get("AWIKI_MODEL_INTEL_ON_START", "1") == "0":
+        return
+
+    script = os.path.join(repo_root, "scripts", "update-ai-model-intel.sh")
+    if not os.path.exists(script):
+        return
+
+    timeout_raw = os.environ.get("AWIKI_MODEL_INTEL_TIMEOUT", "35")
+    try:
+        timeout = max(5, int(timeout_raw))
+    except ValueError:
+        timeout = 35
+
+    try:
+        result = subprocess.run(
+            ["bash", script, "--offline-ok"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        sys.stderr.write("⚠️ model intel refresh timed out — using cached roster\n")
+        return
+    except Exception as e:
+        sys.stderr.write(f"⚠️ model intel refresh error: {e}\n")
+        return
+
+    message = (result.stderr or result.stdout or "").strip()
+    if result.returncode == 0:
+        if message:
+            sys.stderr.write(f"🧭 {message.splitlines()[-1]}\n")
+        return
+
+    if message:
+        sys.stderr.write(f"⚠️ model intel refresh skipped: {message.splitlines()[-1]}\n")
+
+
 def show_todos(repo_root):
     """Show active TODOs from session-memory.md."""
     session_file = os.path.join(repo_root, "wiki", "context", "session-memory.md")
@@ -114,6 +154,7 @@ def main():
     git_pull(repo_root)
     check_wiki_freshness(repo_root)
     check_api_keys(repo_root)
+    maybe_update_model_intel(repo_root)
     show_todos(repo_root)
 
     sys.exit(0)

@@ -1,58 +1,101 @@
-# Runbook: Setup Wiki บนเครื่องใหม่
+# Runbook: Setup A-Wiki บนเครื่องใหม่
 
-> **วัตถุประสงค์**: ติดตั้ง InW-Wiki บนเครื่อง Mac/Windows ใหม่
-> **Last updated**: 2026-05-17
+> **วัตถุประสงค์**: clone A-Wiki ให้ใช้ได้บน Mac/Windows/Linux โดยเก็บไฟล์หนัก ไฟล์ดิบ และ secrets ไว้ใน cloud data folder นอก git
+> **Last updated**: 2026-05-30
 
 ---
 
 ## Prerequisites
 
 - Git
-- VS Code + Claude Code CLI (optional)
+- Python 3.10+ recommended
+- Node.js 18+ optional สำหรับ MCP/GitNexus/agent tooling
+- Google Drive Desktop หรือ cloud storage อื่นที่มีโฟลเดอร์ `A-Wiki-Data`
 
 ---
 
-## ขั้นตอน
-
-### 1. Clone repository
+## 1. Clone
 
 ```bash
-git clone https://github.com/aase7en/Aase7en-InW-Wiki.git
-cd Aase7en-InW-Wiki
-```
-
-### 2. ติดตั้ง dotfiles (optional)
-
-```bash
-bash scripts/install-dotfiles.sh
-```
-
-### 3. ตั้งค่า Git mirror (optional)
-
-```bash
-bash scripts/setup-git-mirror.sh
-```
-
-### 4. ตั้งค่า Edit Protection (CLAUDE.md lock)
-
-```bash
-cp .claude/lock.example .claude/lock.txt
-# แก้ .claude/lock.txt → ลบ comment ออก เหลือ password บรรทัดเดียว
-chmod 600 .claude/lock.txt
-```
-
-### 5. ตรวจสอบ
-
-```bash
-git status
-python3 scripts/gen-index.py   # regenerate wiki-overview.md
+git clone https://github.com/aase7en/A-Wiki.git
+cd A-Wiki
 ```
 
 ---
 
-## Verification
+## 2. One-command local setup
 
 ```bash
-# ตรวจว่า git metadata เป็น repo ปกติ
-test -d .git && git status --short --branch
-# ควรได้: ## main...origin/main
+bash scripts/setup-local.sh
+```
+
+สคริปต์นี้จะทำงานแบบเบาและ cross-platform:
+
+| Step | ทำอะไร | เขียนลง git ไหม |
+|---|---|---|
+| `setup-cloud-link.sh --auto` | สร้าง `drive/` และ `raw/` link ไป `A-Wiki-Data` | ไม่ |
+| `.mcp.json` | สร้าง config ตาม path เครื่องนี้ | ไม่ |
+| `import-keys.py` | sync env keys จาก `drive/.secrets` | ไม่ |
+| `gen-index.py` | rebuild local wiki index | เฉพาะ generated context/index ตามระบบ |
+| Codex hooks | link `.codex/hooks` | ไม่ |
+| model intel cache | เตรียม `.tmp/model-intel/` | ไม่ |
+
+Mac ส่วนตัวอาจเจอ path แบบนี้:
+
+```text
+/Users/aase7en/Library/CloudStorage/GoogleDrive-aase7en@sunday-estate.com/My Drive/A-Wiki-Data
+```
+
+เครื่องที่ทำงานไม่จำเป็นต้อง path ตรงกัน ให้ใช้ตัวตรวจ/ตั้งค่าแทน:
+
+```bash
+bash scripts/setup-cloud-link.sh --status
+bash scripts/setup-cloud-link.sh --provider google
+bash scripts/setup-cloud-link.sh --path "/explicit/cloud/path"
+```
+
+---
+
+## 3. Optional installs
+
+| ต้องการ | คำสั่ง |
+|---|---|
+| Refresh free model roster จาก OpenRouter | `bash scripts/update-model-roster.sh` |
+| Refresh current model/agent intel ด้วย Gemini grounding | `bash scripts/update-ai-model-intel.sh --force --print` |
+| Snapshot Microsoft SkillOpt upstream แบบเบา | `bash scripts/refresh-skillopt.sh` |
+| Install runnable SkillOpt local-only | `INSTALL_SKILLOPT=1 bash scripts/setup-local.sh` |
+| Install react-doctor สำหรับ React project | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` |
+
+SkillOpt local install จะอยู่ที่:
+
+```text
+.tmp/skillopt-src
+.venv-skillopt
+```
+
+ทั้งสอง path ถูก ignore เพื่อไม่ทำให้ A-Wiki หนัก
+
+---
+
+## 4. Verify
+
+```bash
+python3 scripts/agent-preflight.py
+bash scripts/setup-cloud-link.sh --status
+python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py -q
+```
+
+ควรเห็น:
+
+- branch เป็น `main`
+- `drive/` ชี้ไป cloud data folder
+- `raw/` ชี้ไป `drive/raw`
+- `.secrets` มีอยู่ใน Drive แต่ไม่ print ค่า secret
+
+---
+
+## Rules
+
+- ห้าม commit `raw/`, `drive/`, `.tmp/`, `.venv-skillopt`, `.mcp.json`, `.codex/`, `.claude/`
+- ไฟล์หนัก/ดิบ/ส่วนตัว/secrets อยู่ใน `A-Wiki-Data` เท่านั้น
+- งานง่ายให้เริ่มจาก local search/graph และ free model roster ก่อนเสมอ
