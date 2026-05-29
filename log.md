@@ -1,5 +1,26 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-29] session | A-Wiki Platform Hardening Baseline
+
+**Done:**
+- Created `docs/runbooks/a-wiki-platform-hardening-plan.md` as the living remediation plan for cross-platform/device/software reliability.
+- Confirmed Work PC external data model: `drive/` is a junction to `L:\My Drive\A-Wiki-Data`; `raw/` is a junction to `L:\My Drive\A-Wiki-Data\raw`.
+- Confirmed external data folders exist in Google Drive: `raw/`, `.obsidian/`, `waste-reports/`, `personal-tools`, `ocr-feedback`, `individual-tasks`, `.secrets`.
+- Added `a-wiki-hardening` TODO and latest session brief to `wiki/context/session-memory.md`.
+
+**Key findings:**
+- Local ignored `.codex/config.toml` contains plaintext API keys. Even though it is not tracked, it must be migrated away from plaintext local config and the exposed keys should be rotated.
+- `check-secret-leak` is referenced in Claude/Codex hook config but `scripts/hooks/check_secret_leak.py` is missing.
+- `scripts/hooks/check_drive_link.py` misclassifies Windows Junctions as real directories, causing false warnings for the valid Work PC Google Drive setup.
+- `scripts/wiki/gen-index.py` is not valid Python on Windows, while docs/tests point at it.
+- `AGENTS.md` documents `--dry-run` for gen-index validation, but actual `scripts/gen-index.py` supports `--check`.
+- Hook parity is uneven across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, Windsurf, Cline, Copilot, Obsidian, and mobile workflows.
+
+**Next:**
+- Step 1 in the hardening plan: implement secret leak hook + tests, migrate local Codex secret loading to safer Drive/env flow, then rotate exposed keys.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**
