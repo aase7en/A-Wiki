@@ -1,5 +1,20 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-29] session | Work PC AUTH_BY_DRIVE_MOUNT enabled
+
+**Done:**
+- เปิดใช้ Secrets-on-Demand auto-unlock บน Work PC: เพิ่ม `"AUTH_BY_DRIVE_MOUNT": "1"` ใน `.claude/settings.local.json` env block (gitignored — local-only).
+- ยืนยัน Drive junction `drive/` → `L:\My Drive\A-Wiki-Data` healthy: มี `.secrets/`, `raw/`, `.obsidian/`, `waste-reports/`, `personal-tools/`, `ocr-feedback/`, `individual-tasks/` ครบ.
+- ยืนยัน path legacy `C:\Users\aase7\A-Wiki-Data\` เป็นโฟลเดอร์ว่าง (อ้างถึงแค่ใน permissions เก่าๆ ของ settings.local.json) — ไม่ต้องลบ ไม่กระทบ.
+
+**Key findings:**
+- Session ถัดไปบนเครื่องนี้: Claude Code จะ auto-read secrets จาก Drive `.secrets` โดยไม่ต้อง paste `WIKI_UNLOCK` manually.
+- รูปแบบเดียวกันใช้ได้กับเครื่องอื่น แค่ปรับ path ของ Drive (Mac: `~/Library/CloudStorage/GoogleDrive-.../My Drive/A-Wiki-Data`) — repo อ้างผ่าน `drive/` symlink/junction ที่ portable.
+
+**Next:** Work PC พร้อมใช้แล้ว — กลับบ้านแล้ว verify รูปแบบเดียวกันบน Mac (อยู่ใน [a-wiki-handoff] P1 อยู่แล้ว).
+
+---
+
 ## [2026-05-29] session | A-Wiki Platform Hardening Baseline
 
 **Done:**
