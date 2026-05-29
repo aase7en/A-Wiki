@@ -252,7 +252,7 @@ Acceptance criteria:
 | 2. Cross-Platform Link Health | Done on Work PC; Mac verification pending | 2026-05-29 | `check_drive_link.py` and `drive_path.py` now support Windows Junction/ReparsePoint; added `scripts/health_external_data.py`; Work PC resolves `L:\My Drive\A-Wiki-Data`, reports 54 raw files, and does not print secrets. |
 | 3. Script Entry Point Normalization | Done | 2026-05-29 | Replaced Python shims under `scripts/wiki/` with real compatibility wrappers, fixed Windows console encoding for search/review/gen-index chain output, excluded generated context from review-check self-input, and updated stale gen-index docs from `--dry-run` to `--check`. |
 | 4. Portable Agent Preflight | Done on Work PC; Mac verification pending | 2026-05-29 | Added `scripts/agent-preflight.py`, tests, and one-line invocation across platform instruction files; checks branch, origin/main reachability, working tree, Drive data, generated context freshness, core hooks, and instruction drift. |
-| 5. Hook Parity and Policy Cleanup | Pending | - | Aligns Claude/Codex/Gemini behavior. |
+| 5. Hook Parity and Policy Cleanup | Core policy done on Work PC; Mac verification pending | 2026-05-29 | `stop-auto-commit.sh` now refuses non-main instead of merging branches; `.codex/hooks.json` uses portable relative hook paths; preflight audits hook command paths. |
 | 6. Review Noise Reduction | Pending | - | Makes health reports actionable. |
 | 7. Cross-Device Sync Reliability | Pending | - | Covers Mac/PC/mobile usage. |
 | 8. Platform Instruction Refresh | Pending | - | Final doc sweep after behavior is fixed. |

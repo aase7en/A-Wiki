@@ -43,3 +43,43 @@ def test_instruction_drift_passes_when_documented(monkeypatch, tmp_path):
     result = agent_preflight.check_instruction_drift()
 
     assert result.level == "OK"
+
+
+def test_hook_command_audit_blocks_absolute_paths(monkeypatch, tmp_path):
+    config = tmp_path / ".codex" / "hooks.json"
+    config.parent.mkdir()
+    config.write_text(
+        '{"hooks":[{"command":"bash \'A:\\\\GitHub\\\\A-Wiki\\\\.codex\\\\hooks\\\\stop-auto-commit.sh\'"}]}',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(agent_preflight, "HOOK_CONFIGS", [".codex/hooks.json"])
+
+    result = agent_preflight.check_hook_config_commands()
+
+    assert result.level == "FAIL"
+    assert "non-portable absolute path" in result.detail
+
+
+def test_hook_command_audit_passes_relative_existing_paths(monkeypatch, tmp_path):
+    hook = tmp_path / ".codex" / "hooks" / "stop-auto-commit.sh"
+    hook.parent.mkdir(parents=True)
+    hook.write_text("#!/usr/bin/env bash\n", encoding="utf-8")
+    config = tmp_path / ".codex" / "hooks.json"
+    config.write_text('{"hooks":[{"command":"bash .codex/hooks/stop-auto-commit.sh"}]}', encoding="utf-8")
+    monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(agent_preflight, "HOOK_CONFIGS", [".codex/hooks.json"])
+
+    result = agent_preflight.check_hook_config_commands()
+
+    assert result.level == "OK"
+
+
+def test_hook_command_audit_warns_for_missing_local_config(monkeypatch, tmp_path):
+    monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(agent_preflight, "HOOK_CONFIGS", [".codex/hooks.json"])
+
+    result = agent_preflight.check_hook_config_commands()
+
+    assert result.level == "WARN"
+    assert "local config missing" in result.detail
