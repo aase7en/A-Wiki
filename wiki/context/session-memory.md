@@ -56,7 +56,7 @@
 - [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
 - [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
 - [x] **[a-wiki-infra]** 6-Repo Integration (2026-05-28): GitNexus MCP enabled (Node v24, .gitnexus/ built, query tested); 9arm+ECC git remotes + refresh scripts (archive-based, not subtree); turbovec opt-in via `--backend` flag + `requirements-optional.txt`; react-doctor opt-in via INSTALL_REACT_DOCTOR env; agents.md spec badge; CLAUDE.md+AGENTS.md Repository Integration 3→8 rows; 6 wiki pages at `wiki/entities/ai-tools/`; wiki graph 447→453 nodes
-- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 code complete + user key rotation pending; Step 2 done on Work PC + Mac verify pending; Step 3 done; Step 4 done on Work PC + Mac verify pending; next Step 5 hook parity, Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
+- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 code complete + user key rotation pending; Step 2 done on Work PC + Mac verify pending; Step 3 done; Step 4 done on Work PC + Mac verify pending; Step 5 core policy done on Work PC + Mac/Gemini verify pending; next Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
 - [ ] **[a-wiki-infra]** Restart Claude Code session to load gitnexus MCP — verify `mcp__gitnexus__*` tools appear in next session
 - [ ] **[dream]** Run `bash scripts/setup-gitnexus.sh` inside Sunday Estate / Pharmacy / IoT repos (one-time per repo) — code-graph benefits scale with codebase size
 - [ ] **[a-wiki-infra]** Investigate why GitNexus did not index `scripts/lib/drive_secrets.py` (the `fetch_secret` symbol was queryable as caller but `context "fetch_secret"` returned "not found") — may need GitNexus config tweak to include `lib/` subdirs
@@ -94,6 +94,12 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-29] a-wiki-hardening-step-5-hook-policy (Work PC, Codex)
+
+- **Done**: Rewrote tracked Claude `stop-auto-commit.sh` and local Codex stop hook to refuse non-`main` sessions instead of merging branches; replaced Windows-only absolute local `.codex/hooks.json` hook paths with relative paths; added hook path audit to `scripts/agent-preflight.py` with WARN for missing local configs.
+- **Verify**: `python -m pytest tests/test_agent_preflight.py tests/test_hook_policy.py -q` passed; `python scripts/agent-preflight.py --skip-remote` reports hook command paths OK while worktree is dirty.
+- **Next**: Finish Step 5 by adding a tracked template/setup sync path for ignored `.codex/*` and checking Gemini/Antigravity hook parity where `.gemini/settings.json` exists; then Step 6 review noise profiles.
 
 ### [2026-05-29] a-wiki-hardening-step-4-agent-preflight (Work PC, Codex)
 

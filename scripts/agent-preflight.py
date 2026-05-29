@@ -8,6 +8,8 @@ Run this at the start of a session when lifecycle hooks are missing or suspect:
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -53,6 +55,11 @@ PREFLIGHT_DOCS = [
     ".cursorrules",
     ".windsurfrules",
     ".github/copilot-instructions.md",
+]
+
+HOOK_CONFIGS = [
+    ".claude/settings.json",
+    ".codex/hooks.json",
 ]
 
 
@@ -142,6 +149,51 @@ def check_hooks() -> CheckResult:
     return CheckResult("OK", "core hooks", f"{len(REQUIRED_HOOKS)} required hook(s) present")
 
 
+def collect_hook_commands(value) -> list[str]:
+    commands: list[str] = []
+    if isinstance(value, dict):
+        command = value.get("command")
+        if isinstance(command, str):
+            commands.append(command)
+        for child in value.values():
+            commands.extend(collect_hook_commands(child))
+    elif isinstance(value, list):
+        for child in value:
+            commands.extend(collect_hook_commands(child))
+    return commands
+
+
+def command_path_refs(command: str) -> list[str]:
+    return re.findall(r"(?:scripts|\.claude|\.codex)[\\/][^'\"\s]+", command)
+
+
+def check_hook_config_commands() -> CheckResult:
+    issues: list[str] = []
+    missing_configs: list[str] = []
+    for rel in HOOK_CONFIGS:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            missing_configs.append(rel)
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            issues.append(f"{rel} invalid JSON: {exc.msg}")
+            continue
+        for command in collect_hook_commands(data):
+            if re.search(r"[A-Za-z]:[\\/]", command):
+                issues.append(f"{rel} has non-portable absolute path: {command}")
+            for ref in command_path_refs(command):
+                cleaned = ref.strip("'\"").replace("\\", "/")
+                if not (REPO_ROOT / cleaned).exists():
+                    issues.append(f"{rel} points to missing path: {cleaned}")
+    if issues:
+        return CheckResult("FAIL", "hook command paths", "; ".join(issues[:5]))
+    if missing_configs:
+        return CheckResult("WARN", "hook command paths", "local config missing: " + ", ".join(missing_configs))
+    return CheckResult("OK", "hook command paths", f"{len(HOOK_CONFIGS)} config file(s) resolve")
+
+
 def check_instruction_drift() -> CheckResult:
     missing_files = []
     missing_preflight = []
@@ -171,6 +223,7 @@ def run_checks(skip_remote: bool = False) -> list[CheckResult]:
         check_external_data(),
         check_generated_index(),
         check_hooks(),
+        check_hook_config_commands(),
         check_instruction_drift(),
     ]
 

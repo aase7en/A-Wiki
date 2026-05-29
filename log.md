@@ -105,6 +105,26 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Hardening Step 5 Hook Parity Core Policy
+
+**Done:**
+- Rewrote `.claude/hooks/stop-auto-commit.sh` and `.codex/hooks/stop-auto-commit.sh` to refuse non-`main` sessions instead of checking out/merging branches automatically.
+- Replaced Windows-only absolute paths in `.codex/hooks.json` with repo-relative hook commands so Codex hooks can resolve on Mac/PC after pull.
+- Extended `scripts/agent-preflight.py` with hook command path auditing for `.claude/settings.json` and `.codex/hooks.json`.
+- Preflight treats missing local hook configs (for example ignored `.codex/hooks.json`) as WARN rather than FAIL, because platform-local configs may not exist on every device.
+- Added tests for hook path audit and main-only stop hook policy.
+
+**Verification:**
+- `python -m pytest tests/test_agent_preflight.py tests/test_hook_policy.py -q` passed.
+- `python scripts/agent-preflight.py --skip-remote` reports hook command paths OK while worktree is dirty.
+
+**Next:**
+- Finish Step 5 by checking Gemini/Antigravity hook parity if `.gemini/settings.json` exists on each machine.
+- Step 6: reduce review-check noise into actionable profiles.
+- Follow-up: `.codex/*` is ignored, so Codex hook parity still needs a tracked template or setup sync path.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**
