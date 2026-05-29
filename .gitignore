@@ -21,6 +21,8 @@
 *oauth*
 *jwt*
 *secrets*
+!scripts/lib/drive_secrets.py
+!scripts/hooks/check_secret_leak.py
 
 # --- OS ---
 .DS_Store

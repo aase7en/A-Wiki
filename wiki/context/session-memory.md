@@ -56,7 +56,7 @@
 - [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
 - [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
 - [x] **[a-wiki-infra]** 6-Repo Integration (2026-05-28): GitNexus MCP enabled (Node v24, .gitnexus/ built, query tested); 9arm+ECC git remotes + refresh scripts (archive-based, not subtree); turbovec opt-in via `--backend` flag + `requirements-optional.txt`; react-doctor opt-in via INSTALL_REACT_DOCTOR env; agents.md spec badge; CLAUDE.md+AGENTS.md Repository Integration 3→8 rows; 6 wiki pages at `wiki/entities/ai-tools/`; wiki graph 447→453 nodes
-- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 secret safety, Step 2 cross-platform drive/raw health, Step 3 script entrypoints, Step 4 portable preflight, Step 5 hook parity, Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
+- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 code complete + user key rotation pending; next Step 2 cross-platform drive/raw health, Step 3 script entrypoints, Step 4 portable preflight, Step 5 hook parity, Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
 - [ ] **[a-wiki-infra]** Restart Claude Code session to load gitnexus MCP — verify `mcp__gitnexus__*` tools appear in next session
 - [ ] **[dream]** Run `bash scripts/setup-gitnexus.sh` inside Sunday Estate / Pharmacy / IoT repos (one-time per repo) — code-graph benefits scale with codebase size
 - [ ] **[a-wiki-infra]** Investigate why GitNexus did not index `scripts/lib/drive_secrets.py` (the `fetch_secret` symbol was queryable as caller but `context "fetch_secret"` returned "not found") — may need GitNexus config tweak to include `lib/` subdirs
@@ -94,6 +94,13 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-29] a-wiki-hardening-step-1-secret-safety (Work PC, Codex)
+
+- **Done**: Added real `scripts/hooks/check_secret_leak.py`, restored `scripts/lib/drive_secrets.py` + `scripts/lib/__init__.py`, added tests in `tests/test_hooks.py` and `tests/test_drive_vault.py`, added `.gitignore` exceptions for tracked secret helper/hook files, and sanitized ignored local `.codex/config.toml` so it no longer stores plaintext API keys.
+- **Verify**: `python -m pytest tests/test_hooks.py tests/test_drive_vault.py -q` passed 22 tests; `python scripts/lib/drive_secrets.py --check` confirmed Drive `.secrets` readable without printing values; regex scan over `.codex`, scripts, tests, docs, AGENTS/CLAUDE/GEMINI found no live-looking key literals; `git diff --check` passed.
+- **Remaining**: User should rotate the API keys that were previously exposed in local plaintext `.codex/config.toml`.
+- **Next**: Step 2 = fix cross-platform `drive/` + `raw/` health, especially Windows Junction detection in `check_drive_link.py`.
 
 ### [2026-05-29] a-wiki-platform-hardening-baseline (Work PC, Codex)
 

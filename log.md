@@ -22,6 +22,27 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Hardening Step 1 Secret Safety
+
+**Done:**
+- Added `scripts/hooks/check_secret_leak.py` so Claude/Codex hook references now resolve to a real blocking hook.
+- Restored `scripts/lib/drive_secrets.py` and `scripts/lib/__init__.py` for Drive-backed secret fetching without printing values in health/list modes.
+- Added tests in `tests/test_hooks.py` and `tests/test_drive_vault.py`.
+- Added `.gitignore` exceptions for the tracked helper/hook files despite the broad `*secret*` ignore rule.
+- Sanitized local ignored `.codex/config.toml` so Codex no longer stores plaintext API keys on this Work PC.
+
+**Verification:**
+- `python -m pytest tests/test_hooks.py tests/test_drive_vault.py -q` → 22 passed.
+- `python scripts/lib/drive_secrets.py --check` → Drive `.secrets` readable, reports key count only.
+- Secret regex scan over `.codex`, scripts, tests, docs, AGENTS/CLAUDE/GEMINI found no live-looking key literals.
+- `git diff --check` passed.
+
+**Remaining:**
+- User should rotate the API keys that were previously present in local plaintext `.codex/config.toml`.
+- Continue Step 2: cross-platform `drive/` + `raw/` health, especially Windows Junction detection.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**
