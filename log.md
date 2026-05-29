@@ -63,6 +63,29 @@
 
 ---
 
+## [2026-05-29] session | A-Wiki Hardening Step 3 Script Entry Points
+
+**Done:**
+- Replaced invalid Python shim files under `scripts/wiki/` with real compatibility wrappers:
+  `gen-index.py`, `hooks_runner.py`, `search-wiki.py`, `query-graph.py`, `build-wiki-index.py`, `build-wiki-graph.py`.
+- `scripts/wiki/gen-index.py` now executes root `scripts/gen-index.py` in the wrapper namespace so tests that monkeypatch module globals still work.
+- `scripts/wiki/search-wiki.py` now forces UTF-8 stdout when possible, avoiding Windows console `cp874` encode failures.
+- `scripts/gen-index.py` now prints ASCII-safe chain status on Windows, and `scripts/review-check.py` reconfigures stdout/stderr to UTF-8 so the gen-index chain no longer trips over review output.
+- Updated stale docs from `python scripts/wiki/gen-index.py --dry-run` to `python scripts/gen-index.py --check`.
+
+**Verification:**
+- `python -m pytest tests/test_gen_index.py tests/test_drive_link_health.py tests/test_external_data_health.py -q` -> 42 passed.
+- `python scripts/gen-index.py` -> passed through FTS5, graph, canvas, source/synth, review-check, and knowledge-graph regen; `build-vec-index.py` still warns because this machine lacks `apsw`.
+- `python scripts/gen-index.py --check` -> passed.
+- `python scripts/wiki/search-wiki.py test` -> search output renders on Work PC.
+- `python scripts/wiki/gen-index.py --check` -> passed.
+
+**Next:**
+- Step 4: add portable agent preflight so every platform can start with one common health command.
+- Track `apsw` install/venv bootstrap under Step 4/6 so semantic vector rebuild works on all devices without manual package drift.
+
+---
+
 ## [2026-05-28] session | 6-Repo Integration (GitNexus + agents.md + 9arm + ECC + turbovec + react-doctor)
 
 **Done:**
