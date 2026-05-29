@@ -56,6 +56,7 @@
 - [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
 - [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
 - [x] **[a-wiki-infra]** 6-Repo Integration (2026-05-28): GitNexus MCP enabled (Node v24, .gitnexus/ built, query tested); 9arm+ECC git remotes + refresh scripts (archive-based, not subtree); turbovec opt-in via `--backend` flag + `requirements-optional.txt`; react-doctor opt-in via INSTALL_REACT_DOCTOR env; agents.md spec badge; CLAUDE.md+AGENTS.md Repository Integration 3→8 rows; 6 wiki pages at `wiki/entities/ai-tools/`; wiki graph 447→453 nodes
+- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 secret safety, Step 2 cross-platform drive/raw health, Step 3 script entrypoints, Step 4 portable preflight, Step 5 hook parity, Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
 - [ ] **[a-wiki-infra]** Restart Claude Code session to load gitnexus MCP — verify `mcp__gitnexus__*` tools appear in next session
 - [ ] **[dream]** Run `bash scripts/setup-gitnexus.sh` inside Sunday Estate / Pharmacy / IoT repos (one-time per repo) — code-graph benefits scale with codebase size
 - [ ] **[a-wiki-infra]** Investigate why GitNexus did not index `scripts/lib/drive_secrets.py` (the `fetch_secret` symbol was queryable as caller but `context "fetch_secret"` returned "not found") — may need GitNexus config tweak to include `lib/` subdirs
@@ -93,6 +94,13 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-29] a-wiki-platform-hardening-baseline (Work PC, Codex)
+
+- **Done**: Step 0 audit + roadmap created at `docs/runbooks/a-wiki-platform-hardening-plan.md`; confirmed Work PC external data layer uses `drive/` junction to `L:\My Drive\A-Wiki-Data` and `raw/` junction to `L:\My Drive\A-Wiki-Data\raw`; Google Drive folders present: `raw/`, `.obsidian/`, `waste-reports/`, `personal-tools/`, `ocr-feedback/`, `individual-tasks/`, `.secrets`.
+- **Findings**: Critical gaps are local plaintext API keys in ignored `.codex/config.toml` (must migrate + rotate), missing `check_secret_leak.py` despite hook references, Windows junction false warnings in `check_drive_link.py`, invalid `scripts/wiki/gen-index.py` shim on Windows, AGENTS command drift (`--dry-run` vs actual `--check`), hook parity gaps across Claude/Codex/Gemini/Antigravity/Cursor/Windsurf/Cline/Copilot, and noisy `review-check.py` results.
+- **Decision**: Treat Google Drive `A-Wiki-Data` as first-class external data layer, not an optional side folder. Every future platform/device health check must verify both git repo state and external data state.
+- **Next**: Step 1 = implement real secret leak hook + tests, remove need for plaintext Codex keys, and ask user to rotate exposed keys after migration.
 
 ### [2026-05-28] frontend-slides upstream sync + integration (Mac, Claude Code Opus 4.7)
 
