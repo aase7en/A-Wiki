@@ -2,6 +2,7 @@
 
 > This project uses A-Wiki as its knowledge brain.
 > Full specification: read `AGENTS.md` in the repo root.
+> Start-of-session safety check: run `python scripts/agent-preflight.py`.
 
 ## About This Project
 

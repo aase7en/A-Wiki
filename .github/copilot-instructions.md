@@ -2,6 +2,7 @@
 
 > Full brain specification: see **`AGENTS.md`** in the repo root.
 > This file provides a quick summary — AGENTS.md has the complete context.
+> Start-of-session safety check: run `python scripts/agent-preflight.py`.
 
 ---
 

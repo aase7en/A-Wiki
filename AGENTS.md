@@ -40,6 +40,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 1. Read `agent-skills/README.md` — Iron Laws + Swarm Architecture
 2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. Read `wiki/context/session-memory.md` — cross-session decisions + TODOs
+4. Run `python scripts/agent-preflight.py` — portable safety check when hooks are missing or before significant work
 
 **Load on demand** (do NOT load every session):
 - `wiki/context/overview-{iot,env,ai,pharmacy}.md` — by domain
@@ -189,6 +190,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | `scripts/wiki/query-graph.py --hubs` | Knowledge graph queries |
 | `scripts/swarm/agent-switch.sh` | Switch agent mid-session |
 | `scripts/swarm/delegate.sh` | Delegate to free model / subagent |
+| `scripts/agent-preflight.py` | Portable cross-platform safety check |
 | `scripts/update-model-roster.sh` | Refresh free model list from OpenRouter |
 | `scripts/import-keys.py` | Sync API keys from Google Drive → settings |
 | `scripts/setup-local.sh` | Full machine setup (run once after clone) |
