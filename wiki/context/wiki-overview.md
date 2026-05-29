@@ -13,11 +13,11 @@
 
 | Type | Count |
 |------|-------|
-| ENTITIES | 3 |
-| CONCEPTS | 1 |
-| SYNTHESIS | 1 |
-| SOURCES | 1 |
-| **Total** | **6 pages** |
+| ENTITIES | 56 |
+| CONCEPTS | 38 |
+| SYNTHESIS | 181 |
+| SOURCES | 152 |
+| **Total** | **427 pages** |
 
 ---
 
@@ -25,12 +25,12 @@
 
 | Domain | Entities | Concepts | Context File | Rich Index |
 |--------|----------|----------|--------------|------------|
-| IoT | 2 | 1 | `wiki/context/overview-iot.md` | `index-iot.md` |
-| Environmental Health | 1 | 0 | `wiki/context/overview-env.md` | `index-env.md` |
-| AI Tools | 0 | 0 | `wiki/context/overview-ai.md` | `index-ai.md` |
-| Pharmacy | 0 | 0 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
+| IoT | 35 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
+| Environmental Health | 3 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
+| AI Tools | 13 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
+| Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (1): `wiki/context/overview-sources.md`
+- **Sources** (152): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -39,8 +39,188 @@
 
 | slug | abstract |
 |------|----------|
-| `iot-air-quality` | Combining IoT sensors with environmental monitoring. |
+| `CLAUDE` | 1. **frontmatter บังคับ**: `type: synthesis`, `tags`, `sources`,… |
+| `ai-driven-environmental-modeling` | Machine learning for air quality forecasting, water quality pred… |
+| `ai-for-drug-safety` | LLM and graph-based approaches to drug interaction prediction an… |
+| `air-quality-monitoring` | ใช้ [[entities/iot/pms5003]] วัด PM2.5/PM10 ต่อกับ [[entities/io… |
+| `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
+| `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]] (One-Wire, ±0.5°C, waterproof) วัดอ… |
+| `digital-legacy-ai-architecture` | ** สร้าง AI ที่ "เป็นเรา" และ persist หลังเราจากไป ด้วย 5-layer… |
+| `dream-projects` | ดู [[synthesis/iot-lora-architecture]] สำหรับ full architecture |
+| `dual-ai-workflow` | จะใช้ Gemini CLI และ Claude ร่วมกันอย่างไรให้ประหยัด credit สูงส… |
+| `energy-power-monitoring` | ใช้ [[entities/iot/pzem-004t]] ต่อกับ [[entities/iot/esp32]] ผ่า… |
+| `env-webapp-schema-wastewater` | "ออกแบบ database schema สำหรับแทน AppSheet ข้อมูลคุณภาพน้ำ โดยให… |
+| `environmental-iot-sensing` | IoT sensors for air, water, and soil quality monitoring — combin… |
+| `environmental-monitoring-it` | Network architecture and data pipelines for large-scale environm… |
+| `environmental-pharmaceutical-risk` | Environmental monitoring of pharmaceutical contaminants (antibio… |
+| `fuel-tank-level` | ใช้ [[entities/iot/hc-sr04]] (ultrasonic distance) ติดตั้งบนปากถ… |
+| `garbage-report-ocr` | "จะสร้างระบบอ่านภาพใบรายงานขยะทั่วไปของโรงพยาบาล (internal form)… |
+| `healthcare-it-infrastructure` | Network observability and edge computing applied to pharmacy inf… |
+| `intelligent-iot-pipelines` | Edge ML inference, RAG for sensor troubleshooting, and vector se… |
+| `iot-in-pharmacy` | Connected medical dispensing, cold chain monitoring, and smart i… |
+| `iot-lora-architecture` | [DHT11] │ single-wire [ESP32 DevKit V1] ← Sensor Node (ไม่ต้องมี… |
+| `iot-network-infrastructure` | Network protocols (MQTT, LoRaWAN) and edge computing architectur… |
+| `local-llm-pc-vs-mac-2026` | ในงบ ~100,000฿ สำหรับงาน Local LLM 24/7 + IoT monitor + AI agent… |
+| `openrouter-agent-routing` | หน้านี้วิเคราะห์การใช้ OpenRouter เป็นส่วนหนึ่งของ AI routing ar… |
+| `pharmacy-order-checker` | "จะสร้างระบบ AI ที่ช่วยตรวจสอบรายการยาที่ลูกน้องส่งมาทาง Line ได… |
+| `pharmacy-project-specs` | สร้างระบบ AI Assistant ที่ช่วยให้คุณศุภศิษฎิ์ (เจ้าของร้านภูฟาร์… |
+| `pharmacy-web-app-roadmap` | สร้าง **FastAPI + React web app** บน **Raspberry Pi 5** พร้อมการ… |
+| `pi4-lora-gateway-server` | [ESP32 Node A] → DX-LR02 TX ~~LoRa~~ [ESP32 Node B] → DX-LR02 TX… |
+| `sunday-estate-frontend-qa-2026-05-18` | User test production UI ที่ `http://umbrel.local:8090` หลัง depl… |
+| `sunday-estate-pi5-portainer-runbook` | จะ redeploy / verify / debug stack `sunday-estate` บน Pi5 ผ่าน P… |
+| `sunday-estate-webapp` | ระบบจัดการธุรกิจอสังหาริมทรัพย์ของ **Sunday Estate Co., Ltd.** —… |
+| `synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (awaiting human summary) |
+| `synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (awaiting human summary) |
+| `synth-3-dashboard-node-red` | (awaiting human summary) |
+| `synth-agent-frameworks-local-debug-2026` | _To be filled in by human review._ |
+| `synth-ai-agents-integration-guide` | _To be filled in by human review._ |
+| `synth-ai-iot-server-build-v3` | _To be filled in by human review._ |
+| `synth-ai-iot-server-build-v3-final` | _To be filled in by human review._ |
+| `synth-air-quality-iot-lora-network` | _To be filled in by human review._ |
+| `synth-air-quality-sensors-dronebot` | _To be filled in by human review._ |
+| `synth-appsheet-env-datadict` | _To be filled in by human review._ |
+| `synth-arduino-ide-esp32-arduino-2025` | (awaiting human summary) |
+| `synth-arduino-ide-esp32-setup` | _To be filled in by human review._ |
+| `synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป` | (awaiting human summary) |
+| `synth-arduino-librariesarduino-powermanagement` | (awaiting human summary) |
+| `synth-arduino-librariesarduinopowermanagement` | (awaiting human summary) |
+| `synth-build-software-better-together` | (awaiting human summary) |
+| `synth-building-an-iot-application-with-raspberry-pi-and-python` | GPIO.setmode(GPIO.BCM) # Define pin number sensor_pin = 4 |
+| `synth-context-claude-code-dev-vibe-coding-thailand` | (awaiting human summary) |
+| `synth-create-an-esp32-project-with-platformio-an-guide-for-beginne` | (awaiting human summary) |
+| `synth-create-an-esp32-project-with-platformio-an-guide-for-beginners` | (awaiting human summary) |
+| `synth-dashboard-design-best-practices` | _To be filled in by human review._ |
+| `synth-dashboard-design-best-practices-and-examples` | (awaiting human summary) |
+| `synth-datasheet-dx-lr02` | (awaiting human summary) |
+| `synth-ddc-cpg-rabies-2564` | _To be filled in by human review._ |
+| `synth-drug-aliases-reference` | _To be filled in by human review._ |
+| `synth-ds18b20-esp32-randomnerd` | _To be filled in by human review._ |
+| `synth-dx-lr02-at-commands-demo` | _To be filled in by human review._ |
+| `synth-dx-lr02-datasheet` | _To be filled in by human review._ |
+| `synth-dx-lr02-module-spec-official` | _To be filled in by human review._ |
+| `synth-dx-lr02-official-arduino-library` | _To be filled in by human review._ |
+| `synth-dx-lr02-serial-guide-v2` | _To be filled in by human review._ |
+| `synth-easyloranode-tracker` | _To be filled in by human review._ |
+| `synth-esp-idf-docs` | _To be filled in by human review._ |
+| `synth-esp32` | (awaiting human summary) |
+| `synth-esp32-complete-guide-thai` | _To be filled in by human review._ |
+| `synth-esp32-hx711-mqtt-github` | _To be filled in by human review._ |
+| `synth-esp32-hx711-randomnerd` | _To be filled in by human review._ |
+| `synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network` | (awaiting human summary) |
+| `synth-esp32-lora-arduino-ide` | _To be filled in by human review._ |
+| `synth-esp32-lora-gateway-sparkfun` | _To be filled in by human review._ |
+| `synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm` | (awaiting human summary) |
+| `synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication` | (awaiting human summary) |
+| `synth-esp32-lora-sensor-webserver` | _To be filled in by human review._ |
+| `synth-esp32-s3-intro-thai` | _To be filled in by human review._ |
+| `synth-esp32-tank-level-mqtt` | _To be filled in by human review._ |
+| `synth-esp32-weather-dashboard-16day` | _To be filled in by human review._ |
+| `synth-esp32-weather-epd` | _To be filled in by human review._ |
+| `synth-esp32-with-lora-using-arduino-ide` | (awaiting human summary) |
+| `synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน` | (awaiting human summary) |
+| `synth-espem-energy-monitor` | _To be filled in by human review._ |
+| `synth-espressif-esp32-s3-iot-engineering-education` | print("System info:") print("- Flash size:", esp.flash_size(), "… |
+| `synth-espressifesp-idf-espressif-iot-development-framework-officia` | (awaiting human summary) |
+| `synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (awaiting human summary) |
+| `synth-freqtrade-pi5` | _To be filled in by human review._ |
+| `synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (awaiting human summary) |
+| `synth-get-started-esp32-esp-idf-programming-guide-v44-documentation` | (awaiting human summary) |
+| `synth-good-uiux-practices` | (awaiting human summary) |
+| `synth-hardware-inventory-2026-04-18` | _To be filled in by human review._ |
+| `synth-heltec-libraries` | _To be filled in by human review._ |
+| `synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3` | (awaiting human summary) |
+| `synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based` | (awaiting human summary) |
+| `synth-hermes-agent` | (awaiting human summary) |
+| `synth-hermes-agent-guide-th` | _To be filled in by human review._ |
+| `synth-hospital-wastewater-treatment` | _To be filled in by human review._ |
+| `synth-how-lorawan-network-works-a-beginner` | (awaiting human summary) |
+| `synth-hyperframes-official-docs` | _To be filled in by human review._ |
+| `synth-infectious-waste-th-law` | _To be filled in by human review._ |
+| `synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb` | (awaiting human summary) |
+| `synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5` | (awaiting human summary) |
+| `synth-iot-edge-ai-esp32-c6-2026` | _To be filled in by human review._ |
+| `synth-iot-engineering-education` | (awaiting human summary) |
+| `synth-iot-lora-gateway-architecture` | _To be filled in by human review._ |
+| `synth-iot-node-red-mqtt-sql-data-logger-dashboard` | (awaiting human summary) |
+| `synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม` | (awaiting human summary) |
+| `synth-iot-nodered-mqtt-sql-course` | _To be filled in by human review._ |
+| `synth-iot-visualization-guide` | _To be filled in by human review._ |
+| `synth-iot-visualization-guide-designing-effective-dashboards-monit` | (awaiting human summary) |
+| `synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis` | (awaiting human summary) |
+| `synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt` | (awaiting human summary) |
+| `synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we` | (awaiting human summary) |
+| `synth-local-llm-mac-mini-guide` | _To be filled in by human review._ |
+| `synth-lora-arduino-esp8266-esp32-iot-lora-lora` | (awaiting human summary) |
+| `synth-lora-getting-started-dronebot` | _To be filled in by human review._ |
+| `synth-lora-getting-started-with-arduino-esp32-pico` | (awaiting human summary) |
+| `synth-lora-nb-iot` | (awaiting human summary) |
+| `synth-lora-thai-intro` | _To be filled in by human review._ |
+| `synth-lora-vs-nbiot` | _To be filled in by human review._ |
+| `synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step` | (awaiting human summary) |
+| `synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo` | (awaiting human summary) |
+| `synth-lorawan-fuota-rak3172` | _To be filled in by human review._ |
+| `synth-lorawan-network-beginner` | _To be filled in by human review._ |
+| `synth-mac-studio-used-thailand-2026-05-05` | _To be filled in by human review._ |
+| `synth-manual-input-appsheet-env-2026-05-04` | _To be filled in by human review._ |
+| `synth-mqtt-introduction` | _To be filled in by human review._ |
+| `synth-nodered-dashboard-ui` | _To be filled in by human review._ |
+| `synth-note-taking-research-assistant-powered-by-ai` | (awaiting human summary) |
+| `synth-ollama-pi5` | _To be filled in by human review._ |
+| `synth-openrouter-api-demo` | _To be filled in by human review._ |
+| `synth-pharmacy-context` | _To be filled in by human review._ |
+| `synth-pharmacy-ui-instructions` | _To be filled in by human review._ |
+| `synth-platformio-esp32-guide` | _To be filled in by human review._ |
+| `synth-pzem-004t-guide-2025` | _To be filled in by human review._ |
+| `synth-rabies-vaccine-guidelines-th-2026-05-02` | _To be filled in by human review._ |
+| `synth-raspberry-pi-5-16gb-made-in-uk` | (awaiting human summary) |
+| `synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i` | (awaiting human summary) |
+| `synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th` | (awaiting human summary) |
+| `synth-raspberry-pi-documentation` | (awaiting human summary) |
+| `synth-raspberry-pi-iot-guide` | _To be filled in by human review._ |
+| `synth-readme` | _(Extract from source sections)_ |
+| `synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for` | (awaiting human summary) |
+| `synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v` | (awaiting human summary) |
+| `synth-rpi-ai-hat-plus-2-official` | _To be filled in by human review._ |
+| `synth-rpi5-16gb-thailand-price` | _To be filled in by human review._ |
+| `synth-saovabha-rabies-pep-2565` | _To be filled in by human review._ |
+| `synth-source-5e4074bd` | _To be filled in by human review._ |
+| `synth-sp-drugstore-2020-catalog` | _To be filled in by human review._ |
+| `synth-strix-halo-research-2026-05-05` | _To be filled in by human review._ |
+| `synth-supabase-2026-aase7en` | _To be filled in by human review._ |
+| `synth-supabase-overview-2026-05-02` | _To be filled in by human review._ |
+| `synth-telegram-ai-agent-setup` | _To be filled in by human review._ |
+| `synth-telegram-ai-router-design` | _To be filled in by human review._ |
+| `synth-tinyml-esp32-applications` | _To be filled in by human review._ |
+| `synth-umbrel-pi5-setup` | _To be filled in by human review._ |
+| `synth-uthai-equipment-price-2568` | _To be filled in by human review._ |
+| `synth-ux-design-in-iot` | (awaiting human summary) |
+| `synth-vaccine-cae-anomaly-detection` | _To be filled in by human review._ |
+| `synth-vaccine-temp-monitoring-iot` | _To be filled in by human review._ |
+| `synth-vibe-pocketbase-gemini-plan` | _To be filled in by human review._ |
+| `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto` | (awaiting human summary) |
+| `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con` | (awaiting human summary) |
+| `synth-web-appsheet-export-yaml-2026-05-04` | _To be filled in by human review._ |
+| `synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19` | _To be filled in by human review._ |
+| `synth-web-local-llm-mac-mini-2026-04-19` | _To be filled in by human review._ |
+| `synth-web-raspberry-pi-ai-bot-recommendation-2026` | _To be filled in by human review._ |
+| `synth-who-rabies-position-2018` | _To be filled in by human review._ |
+| `synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ` | led_pin = 21 num_pixels = 1 # Create a NeoPixel object |
+| `synth-ข้อมูล-datasheet-ของ-dx-lr02` | (awaiting human summary) |
+| `synth-คู่มือ-hermes-agent` | (awaiting human summary) |
+| `synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk` | (awaiting human summary) |
+| `synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง` | (awaiting human summary) |
+| `synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย` | (awaiting human summary) |
+| `synthesis-ai-tools` | This synthesis aggregates 2 curated source entries in the **AI T… |
+| `synthesis-env` | This synthesis aggregates 3 curated source entries in the **Envi… |
+| `synthesis-iot` | This synthesis aggregates 2 curated source entries in the **IoT*… |
+| `synthesis-it` | This synthesis aggregates 2 curated source entries in the **IT**… |
+| `synthesis-pharmacy` | This synthesis aggregates 1 curated source entries in the **Phar… |
+| `temperature-monitor-project` | ด้วย hardware ที่มีอยู่ใน lab สามารถทำได้ **3 แนวทาง** (~~Approa… |
+| `vibe-pocketbase-project` | "จะสร้าง web application แทน Excel สำหรับจัดการข้อมูลโดยใช้ Vibe… |
+| `waste-form-automation` | "จะ automate การกรอกฟอร์มน้ำหนักขยะทั่วไปบนเว็บโรงพยาบาลจากภาพถ่… |
+| `waste-weight-monitoring` | ใช้ [[entities/iot/load-cell]] (strain gauge) + [[entities/iot/h… |
+| `wiki-to-video-pipeline` | จะใช้ [[entities/ai-tools/hyperframes]] ร่วมกับ InW-Wiki และ Hyp… |
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 6 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 427 pages across 4 sections.*

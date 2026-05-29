@@ -314,7 +314,8 @@ def render_sources(pages: dict[str, dict[str, list[dict]]]) -> str:
 
 def collect_outputs(pages: dict[str, dict[str, list[dict]]]) -> dict[Path, str]:
     """Return mapping of output_path → rendered content for all files this script writes."""
-    outputs: dict[Path, str] = {MAIN_OUTPUT: render_main(pages)}
+    main_output = CONTEXT_DIR / "wiki-overview.md"
+    outputs: dict[Path, str] = {main_output: render_main(pages)}
     for dom in DOMAIN_ORDER:
         slug = DOMAIN_FILE_SLUG[dom]
         outputs[CONTEXT_DIR / f"overview-{slug}.md"] = render_domain(dom, pages)
@@ -336,7 +337,7 @@ def main() -> int:
     outputs = collect_outputs(pages)
 
     if args.stdout:
-        sys.stdout.write(outputs[MAIN_OUTPUT])
+        sys.stdout.write(outputs[CONTEXT_DIR / "wiki-overview.md"])
         return 0
 
     if args.check:

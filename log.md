@@ -72,6 +72,7 @@
 - `scripts/wiki/search-wiki.py` now forces UTF-8 stdout when possible, avoiding Windows console `cp874` encode failures.
 - `scripts/gen-index.py` now prints ASCII-safe chain status on Windows, and `scripts/review-check.py` reconfigures stdout/stderr to UTF-8 so the gen-index chain no longer trips over review output.
 - `scripts/review-check.py` now excludes generated context outputs from its own review input and writes date-only report headings, preventing review-report/wiki-overview self-feedback churn across repeated `gen-index.py` runs.
+- `scripts/gen-index.py` now derives `wiki-overview.md` from the current `CONTEXT_DIR` at runtime, preventing tests that monkeypatch `CONTEXT_DIR` from writing sample output into the real repo.
 - Updated stale docs from `python scripts/wiki/gen-index.py --dry-run` to `python scripts/gen-index.py --check`.
 
 **Verification:**
