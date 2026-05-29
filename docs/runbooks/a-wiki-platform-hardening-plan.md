@@ -248,7 +248,7 @@ Acceptance criteria:
 | Step | Status | Date | Notes |
 |---|---|---|---|
 | 0. Baseline audit + plan | Done | 2026-05-29 | Found secret config risk, missing secret hook, missing `scripts/lib/drive_secrets.py`, Windows junction false warnings, invalid script shim, doc command drift, hook parity gaps, review noise, external data under-documentation. |
-| 1. Secret Safety Baseline | Pending | - | Highest priority. |
+| 1. Secret Safety Baseline | Code complete; user rotation pending | 2026-05-29 | Added `check_secret_leak.py`, restored `scripts/lib/drive_secrets.py`, added tests, sanitized local ignored `.codex/config.toml`; user still needs to rotate keys that were previously exposed in local plaintext config. |
 | 2. Cross-Platform Link Health | Pending | - | Needed for Work PC/Mac Google Drive reliability. |
 | 3. Script Entry Point Normalization | Pending | - | Needed before trusting tests/docs. |
 | 4. Portable Agent Preflight | Pending | - | Gives every platform one common starting point. |

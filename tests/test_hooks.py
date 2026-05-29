@@ -171,6 +171,63 @@ class TestHooksRunnerCLI:
         )
         assert proc.returncode == 2, f"expected exit 2, got {proc.returncode}"
 
+    def test_secret_leak_hook_blocks_command_literal(self):
+        """check_secret_leak blocks real-looking secrets in command text."""
+        long_key = "sk-proj-" + "a" * 24
+        payload = {
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": f"curl -H 'Authorization: Bearer {long_key}' https://api.example.com"
+            },
+        }
+        proc = subprocess.run(
+            [sys.executable, self.RUNNER, "check_secret_leak"],
+            input=json.dumps(payload),
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 2, proc.stderr
+        assert "secret" in proc.stderr.lower()
+
+    def test_secret_leak_hook_allows_placeholders(self):
+        """Documentation placeholders should not trip the secret scanner."""
+        payload = {
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": "echo 'OPENROUTER_API_KEY=sk-or-... GEMINI_API_KEY=AIza...'"
+            },
+        }
+        proc = subprocess.run(
+            [sys.executable, self.RUNNER, "check_secret_leak"],
+            input=json.dumps(payload),
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_secret_leak_hook_blocks_staged_diff(self, tmp_path):
+        """A git commit command should scan staged diff before allowing commit."""
+        subprocess.run(["git", "init"], cwd=tmp_path, check=True, capture_output=True, text=True)
+        subprocess.run(["git", "config", "user.email", "test@a-wiki.local"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test Runner"], cwd=tmp_path, check=True)
+        secret_file = tmp_path / "leak.txt"
+        secret_file.write_text("OPENROUTER_API_KEY=sk-or-v1-" + "a" * 32 + "\n", encoding="utf-8")
+        subprocess.run(["git", "add", "leak.txt"], cwd=tmp_path, check=True)
+
+        payload = {
+            "tool_name": "Bash",
+            "tool_input": {"command": "git commit -m test"},
+        }
+        proc = subprocess.run(
+            [sys.executable, self.RUNNER, "check_secret_leak"],
+            input=json.dumps(payload),
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 2, proc.stderr
+        assert "staged" in proc.stderr.lower()
+
     def test_all_hooks_run_successfully(self, hook_input):
         """Running all hooks with clean input should pass."""
         proc = subprocess.run(
