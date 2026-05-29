@@ -28,6 +28,8 @@ warnings.filterwarnings("ignore", message=".*mean pooling.*", category=UserWarni
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DB_PATH = REPO_ROOT / ".wiki-index.db"
 WIKI_DIR = REPO_ROOT / "wiki"
+SOURCES_DIR = WIKI_DIR / "sources"
+SYNTHESIS_DIR = WIKI_DIR / "synthesis"
 
 EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBED_DIM = 384
@@ -75,6 +77,77 @@ def fts_escape(query: str) -> str:
         return '""'
     quoted = [f'"{t.replace(chr(34), chr(34) * 2)}"' for t in tokens]
     return " OR ".join(quoted)
+
+
+def parse_doc_frontmatter(text: str, path: str, doc_type: str) -> dict:
+    """Parse A-Wiki's legacy blockquote metadata format for tests/tools."""
+    title_match = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
+    title = title_match.group(1).strip() if title_match else Path(path).stem
+
+    meta: dict[str, str] = {}
+    body_lines: list[str] = []
+    for line in text.splitlines():
+        match = re.match(r"^>\s+\*\*([^*]+):\*\*\s*(.*)$", line.strip())
+        if match:
+            meta[match.group(1).strip().lower()] = match.group(2).strip()
+            continue
+        body_lines.append(line)
+
+    tags = [
+        tag.strip().lower()
+        for tag in re.split(r"[,;]", meta.get("tags", ""))
+        if tag.strip()
+    ]
+    concepts = [
+        match.group(1).strip()
+        for match in re.finditer(r"^-\s+\*\*([^*]+)\*\*", text, re.MULTILINE)
+    ]
+    content = "\n".join(body_lines).strip()
+
+    return {
+        "path": path,
+        "title": title,
+        "type": meta.get("type") or doc_type,
+        "domain": meta.get("domain", ""),
+        "quality": meta.get("quality", ""),
+        "tags": tags,
+        "concepts": concepts,
+        "content": content,
+        "content_len": len(content),
+    }
+
+
+def load_all_documents() -> list[dict]:
+    """Load source and synthesis markdown docs without building vector indexes."""
+    docs: list[dict] = []
+    for base, doc_type in ((SOURCES_DIR, "source"), (SYNTHESIS_DIR, "synthesis")):
+        if not base.exists():
+            continue
+        for path in sorted(base.rglob("*.md")):
+            try:
+                rel = str(path.relative_to(REPO_ROOT))
+                text = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            docs.append(parse_doc_frontmatter(text, rel, doc_type))
+    return docs
+
+
+def generate_query_variants(query: str, limit: int = 5) -> list[str]:
+    """Return a small deterministic set of query rewrites for legacy callers."""
+    query = query.strip()
+    if not query:
+        return []
+    variants = [query]
+    prefixes = ["Explain", "What is", "Compare and contrast", "Describe"]
+    lower = query.lower()
+    for prefix in prefixes:
+        if lower.startswith(prefix.lower() + " "):
+            continue
+        variants.append(f"{prefix} {query}")
+        if len(variants) >= limit:
+            break
+    return variants[:limit]
 
 
 def _connect():
@@ -176,21 +249,37 @@ def hybrid_search(query: str, limit: int, alpha: float) -> list[dict]:
 
 def format_results(results: list[dict]) -> str:
     if not results:
-        return "no results"
+        return "No results found."
     lines = []
     for r in results:
         bits = []
-        if r["fts_rank"] is not None:
+        if r.get("fts_rank") is not None:
             bits.append(f"fts#{r['fts_rank'] + 1}")
-        if r["vec_rank"] is not None:
+        if r.get("vec_rank") is not None:
             bits.append(f"vec#{r['vec_rank'] + 1}")
         tag = f" [{' '.join(bits)}]" if bits else ""
         lines.append(f"[{r['rank']}] {r['title']}{tag}")
         lines.append(f"    {r['path']}  score={r['score']:.4f}")
-        if r["snippet"]:
+
+        meta_parts = []
+        for key in ("type", "domain", "quality"):
+            if r.get(key):
+                meta_parts.append(str(r[key]))
+        if r.get("tags"):
+            meta_parts.append("tags=" + ", ".join(r["tags"]))
+        if r.get("concepts"):
+            meta_parts.append("concepts=" + ", ".join(r["concepts"]))
+        if meta_parts:
+            lines.append("    " + " | ".join(meta_parts))
+
+        if r.get("snippet"):
             lines.append(f"    {r['snippet']}")
         lines.append("")
     return "\n".join(lines)
+
+
+def format_json(results: list[dict]) -> str:
+    return json.dumps(results, ensure_ascii=False, indent=2)
 
 
 def main() -> int:
@@ -228,7 +317,7 @@ def main() -> int:
 
     results = hybrid_search(args.query, args.limit, args.alpha)
     if args.json:
-        print(json.dumps(results, ensure_ascii=False, indent=2))
+        print(format_json(results))
     else:
         print(format_results(results))
     return 0

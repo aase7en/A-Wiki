@@ -14,7 +14,7 @@ echo ""
 # ── 1. raw → Google Drive junction/symlink ──────────────────────────────────
 
 setup_raw() {
-  echo "[1/3] Setting up drive/ + raw/ links via setup-cloud-link.sh..."
+  echo "[1/7] Setting up drive/ + raw/ links via setup-cloud-link.sh..."
   # Delegate to multi-provider script. Uses --auto for non-interactive setup.
   # If drive/ not yet linked, this will also handle that (multi-provider auto-pick).
   if bash "$(dirname "$0")/setup-cloud-link.sh" --auto; then
@@ -28,7 +28,7 @@ setup_raw() {
 # ── 2. .mcp.json — generate from example ───────────────────────────────────
 
 setup_mcp() {
-  echo "[2/3] Setting up .mcp.json..."
+  echo "[2/7] Setting up .mcp.json..."
 
   if [[ -f ".mcp.json" ]]; then
     echo "  .mcp.json already exists — skipping"
@@ -62,7 +62,7 @@ setup_mcp() {
 # ── 3. Sync API keys from Google Drive → settings.local.json ───────────────
 
 setup_secrets() {
-  echo "[3/4] Syncing API keys from Google Drive .secrets..."
+  echo "[3/7] Syncing API keys from Google Drive .secrets..."
 
   SYNC_SCRIPT="scripts/import-keys.py"
   if [[ ! -f "$SYNC_SCRIPT" ]]; then
@@ -76,7 +76,7 @@ setup_secrets() {
 # ── 4. Build SQLite wiki index ──────────────────────────────────────────────
 
 setup_index() {
-  echo "[4/5] Building SQLite wiki index (FTS5 search)..."
+  echo "[4/7] Building SQLite wiki index (FTS5 search)..."
 
   if [[ ! -f "scripts/gen-index.py" ]]; then
     echo "  scripts/gen-index.py not found — skipping"
@@ -90,7 +90,7 @@ setup_index() {
 # ── 5. .codex/ hooks — link to .claude/hooks/ ──────────────────────────────
 
 setup_codex() {
-  echo "[5/5] Setting up .codex/ hooks link..."
+  echo "[5/7] Setting up .codex/ hooks link..."
 
   mkdir -p .codex
 
@@ -114,6 +114,28 @@ setup_codex() {
   esac
 }
 
+# ── 6. Model intel cache — optional Gemini grounded refresh ────────────────
+# Off by default during setup to avoid network/API surprises. SessionStart will
+# refresh it later when GEMINI_API_KEY or GOOGLE_AI_STUDIO_KEY is available.
+# Enable now with: AWIKI_REFRESH_MODEL_INTEL=1 bash scripts/setup-local.sh
+
+setup_model_intel() {
+  echo "[6/7] Preparing AI model intel cache..."
+  mkdir -p .tmp/model-intel
+  if [[ "${AWIKI_REFRESH_MODEL_INTEL:-0}" != "1" ]]; then
+    echo "  skipped live refresh — set AWIKI_REFRESH_MODEL_INTEL=1 to run now"
+    return 0
+  fi
+  if [[ ! -f "scripts/update-ai-model-intel.sh" ]]; then
+    echo "  scripts/update-ai-model-intel.sh not found — skipping"
+    return 0
+  fi
+  bash scripts/update-ai-model-intel.sh --offline-ok || {
+    echo "  WARN: model intel refresh failed — session can still use cached/static roster" >&2
+    return 0
+  }
+}
+
 # ── 6. (optional) react-doctor — Claude Code skill for React audits ────────
 # Off by default. Enable with: INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh
 # A-Wiki itself has no React; this benefits dream projects (Sunday Estate, etc.).
@@ -123,7 +145,7 @@ setup_react_doctor() {
   if [[ "${INSTALL_REACT_DOCTOR:-0}" != "1" ]]; then
     return 0
   fi
-  echo "[6] Installing react-doctor as Claude Code skill (INSTALL_REACT_DOCTOR=1)..."
+  echo "[optional] Installing react-doctor as Claude Code skill (INSTALL_REACT_DOCTOR=1)..."
   if ! command -v npx >/dev/null 2>&1; then
     echo "  WARN: npx not found — install Node.js 18+ first" >&2
     return 0
@@ -135,11 +157,32 @@ setup_react_doctor() {
   echo "  OK — react-doctor skill registered (~/.claude/skills/)"
 }
 
+# ── 7. (optional) SkillOpt — local install only, not committed ─────────────
+# Enable with: INSTALL_SKILLOPT=1 bash scripts/setup-local.sh
+
+setup_skillopt() {
+  echo "[7/7] SkillOpt optional integration..."
+  if [[ "${INSTALL_SKILLOPT:-0}" != "1" ]]; then
+    echo "  skipped install — set INSTALL_SKILLOPT=1 to install into .venv-skillopt"
+    return 0
+  fi
+  if [[ ! -f "scripts/install-skillopt-local.sh" ]]; then
+    echo "  scripts/install-skillopt-local.sh not found — skipping"
+    return 0
+  fi
+  bash scripts/install-skillopt-local.sh || {
+    echo "  WARN: SkillOpt install failed — inspect network/Python dependencies and retry" >&2
+    return 0
+  }
+}
+
 setup_raw
 setup_mcp
 setup_secrets
 setup_index
 setup_codex
+setup_model_intel
+setup_skillopt
 setup_react_doctor
 
 echo ""
@@ -148,5 +191,11 @@ echo "To re-sync keys after adding new ones to Google Drive .secrets:"
 echo "  python scripts/import-keys.py"
 echo "To refresh free model roster:"
 echo "  bash scripts/update-model-roster.sh"
+echo "To refresh current model/agent intel cache:"
+echo "  bash scripts/update-ai-model-intel.sh --force --print"
+echo "To snapshot Microsoft SkillOpt upstream metadata/core prompts:"
+echo "  bash scripts/refresh-skillopt.sh"
+echo "To install runnable SkillOpt locally:"
+echo "  INSTALL_SKILLOPT=1 bash scripts/setup-local.sh"
 echo "To install react-doctor skill (for dream projects with React):"
 echo "  INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh"
