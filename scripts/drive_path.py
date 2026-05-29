@@ -1,40 +1,66 @@
 """
-drive_path.py — Utility to resolve the personal data storage path.
-
-Usage in other scripts:
-    from scripts.drive_path import get_drive_root
-    drive = get_drive_root()
-    results_dir = drive / "waste-reports" / "2026-05"
+Resolve the external A-Wiki data storage path.
 
 Resolution order:
-    1. A-Wiki/drive/  (symlink created by setup-drive-link.sh)
-    2. A-Wiki/.drive-path  (fallback config when symlink not possible)
-    3. ~/.a-wiki-data  (last resort — unsynced local folder)
+1. A-Wiki/drive/ as symlink or Windows Junction/ReparsePoint.
+2. A-Wiki/drive/ as a real directory.
+3. A-Wiki/.drive-path fallback config.
+4. ~/.a-wiki-data unsynced fallback.
 """
-
 from __future__ import annotations
+
+import os
+import stat
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def is_reparse_point(path: Path) -> bool:
+    """Return True for Windows junctions/symlinks without target access."""
+    try:
+        attrs = path.stat(follow_symlinks=False).st_file_attributes
+    except (AttributeError, OSError):
+        return False
+    return bool(attrs & stat.FILE_ATTRIBUTE_REPARSE_POINT)
+
+
+def resolve_link_target(path: Path) -> Path:
+    """Resolve symlinks and Windows junctions with a safe fallback."""
+    try:
+        return Path(os.path.realpath(str(path)))
+    except OSError:
+        return path
+
+
+def path_exists(path: Path) -> bool:
+    try:
+        return path.exists()
+    except OSError:
+        return False
 
 
 def get_drive_root() -> Path:
     """Return the personal data storage root path, always as an existing Path."""
-    repo_root = Path(__file__).resolve().parent.parent
-
-    # 1. Symlink or real directory called drive/
-    link = repo_root / "drive"
-    if link.is_symlink() or link.is_dir():
-        target = link.resolve() if link.is_symlink() else link
-        if target.exists():
+    link = REPO_ROOT / "drive"
+    if link.is_symlink() or is_reparse_point(link):
+        target = resolve_link_target(link)
+        if path_exists(target):
             return target
 
-    # 2. .drive-path config file (fallback for Windows without symlink support)
-    cfg = repo_root / ".drive-path"
-    if cfg.exists():
+    try:
+        is_dir = link.is_dir()
+    except OSError:
+        is_dir = False
+    if is_dir and path_exists(link):
+        return link
+
+    cfg = REPO_ROOT / ".drive-path"
+    if path_exists(cfg):
         p = Path(cfg.read_text(encoding="utf-8").strip())
-        if p.exists():
+        if path_exists(p):
             return p
 
-    # 3. Last-resort fallback
     fallback = Path.home() / ".a-wiki-data"
     fallback.mkdir(parents=True, exist_ok=True)
     return fallback
