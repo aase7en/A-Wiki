@@ -104,6 +104,13 @@ The target state is:
     - Risk: handoff confusion between old InW-Wiki and current A-Wiki.
     - Required fix: replace with platform-neutral storage statement.
 
+11. Secrets-on-demand helper is referenced but missing from the repo.
+    - `scripts/hooks/check_claudemd_lock.py` imports `scripts/lib/drive_secrets.py`.
+    - `scripts/import-keys.py` comments also describe `scripts/lib/drive_secrets.py::fetch_secret()`.
+    - Current Work PC repo has no `scripts/lib/` directory.
+    - Risk: Drive-first secret fetching silently falls back or fails differently per machine; docs overstate the available implementation.
+    - Required fix: restore/add `scripts/lib/drive_secrets.py`, ensure `.gitignore` does not accidentally exclude it, and test it without printing secret values.
+
 ## Remediation Work Plan
 
 ### Step 1: Secret Safety Baseline
@@ -115,8 +122,9 @@ Tasks:
 1. Implement `scripts/hooks/check_secret_leak.py`.
 2. Add tests in `tests/test_hooks.py` for command text, staged diff, and allowlisted examples.
 3. Replace local Codex plaintext key loading with Drive `.secrets` or user environment import flow.
-4. Document that exposed keys must be rotated after migration.
-5. Verify `python -m pytest tests/test_hooks.py -v`.
+4. Restore/add `scripts/lib/drive_secrets.py` and tests for secret-name listing / health checks without printing values.
+5. Document that exposed keys must be rotated after migration.
+6. Verify `python -m pytest tests/test_hooks.py -v`.
 
 Acceptance criteria:
 
@@ -239,7 +247,7 @@ Acceptance criteria:
 
 | Step | Status | Date | Notes |
 |---|---|---|---|
-| 0. Baseline audit + plan | Done | 2026-05-29 | Found secret config risk, missing secret hook, Windows junction false warnings, invalid script shim, doc command drift, hook parity gaps, review noise, external data under-documentation. |
+| 0. Baseline audit + plan | Done | 2026-05-29 | Found secret config risk, missing secret hook, missing `scripts/lib/drive_secrets.py`, Windows junction false warnings, invalid script shim, doc command drift, hook parity gaps, review noise, external data under-documentation. |
 | 1. Secret Safety Baseline | Pending | - | Highest priority. |
 | 2. Cross-Platform Link Health | Pending | - | Needed for Work PC/Mac Google Drive reliability. |
 | 3. Script Entry Point Normalization | Pending | - | Needed before trusting tests/docs. |

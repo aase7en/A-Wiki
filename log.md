@@ -11,13 +11,14 @@
 **Key findings:**
 - Local ignored `.codex/config.toml` contains plaintext API keys. Even though it is not tracked, it must be migrated away from plaintext local config and the exposed keys should be rotated.
 - `check-secret-leak` is referenced in Claude/Codex hook config but `scripts/hooks/check_secret_leak.py` is missing.
+- `scripts/hooks/check_claudemd_lock.py` and `scripts/import-keys.py` reference `scripts/lib/drive_secrets.py`, but `scripts/lib/` is missing from the Work PC repo; this makes the Drive-first secrets-on-demand layer inconsistent across machines.
 - `scripts/hooks/check_drive_link.py` misclassifies Windows Junctions as real directories, causing false warnings for the valid Work PC Google Drive setup.
 - `scripts/wiki/gen-index.py` is not valid Python on Windows, while docs/tests point at it.
 - `AGENTS.md` documents `--dry-run` for gen-index validation, but actual `scripts/gen-index.py` supports `--check`.
 - Hook parity is uneven across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, Windsurf, Cline, Copilot, Obsidian, and mobile workflows.
 
 **Next:**
-- Step 1 in the hardening plan: implement secret leak hook + tests, migrate local Codex secret loading to safer Drive/env flow, then rotate exposed keys.
+- Step 1 in the hardening plan: implement secret leak hook + tests, restore Drive secrets helper, migrate local Codex secret loading to safer Drive/env flow, then rotate exposed keys.
 
 ---
 
