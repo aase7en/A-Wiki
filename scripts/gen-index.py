@@ -23,6 +23,7 @@ Usage:
 from __future__ import annotations
 import argparse
 import datetime as dt
+import os
 import re
 import sys
 from collections import defaultdict
@@ -331,6 +332,8 @@ def main() -> int:
                     help="Exit 1 if any generated file is out of date (CI mode)")
     ap.add_argument("--domain", type=str,
                     help="Regenerate only a single domain overview file (iot|env|ai-tools|pharmacy)")
+    ap.add_argument("--fetch-arxiv", action="store_true",
+                    help="Also refresh arXiv source suggestions (network; can be slow)")
     args = ap.parse_args()
 
     pages = collect_pages()
@@ -406,7 +409,8 @@ def main() -> int:
 
     # Chain: arXiv fetch (Phase 4) — Tier 1 search for domain-relevant papers, silent for speed
     arxiv_fetcher = scripts_dir / "fetch-arxiv.py"
-    if arxiv_fetcher.exists() and not args.check:
+    fetch_arxiv = args.fetch_arxiv or os.environ.get("AWIKI_GEN_INDEX_FETCH_ARXIV") == "1"
+    if arxiv_fetcher.exists() and fetch_arxiv and not args.check:
         arxiv_queries = {
             "iot":       'cat:cs.NI AND (IoT OR LoRa OR "embedded systems" OR "edge computing")',
             "ai-tools":  'cat:cs.AI AND (LLM OR "large language model" OR "agent benchmark" OR MCP)',

@@ -1,0 +1,24 @@
+{
+  "suite": "hook-safety",
+  "description": "Completion and hook safety skills must protect verification, memory, and destructive git operations.",
+  "cases": [
+    {
+      "id": "verify-before-done",
+      "skill": "skills/claude-code/verify-before-done/SKILL.md",
+      "required": [
+        "NO \"DONE\" WITHOUT 4-POINT SELF-CHECK",
+        "Test / lint / build pass",
+        "Memory + log updated"
+      ]
+    },
+    {
+      "id": "destructive-git",
+      "skill": "skills/claude-code/verify-before-done/SKILL.md",
+      "required": [
+        "git status FIRST",
+        "เสนอ stash ก่อน",
+        "รอ user confirm"
+      ]
+    }
+  ]
+}

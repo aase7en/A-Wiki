@@ -13,6 +13,7 @@
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROSTER_CONF="$REPO_ROOT/wiki/context/model-roster.conf"
+POLICY_SCRIPT="$REPO_ROOT/scripts/model-router-policy.py"
 
 # ─── Key check ────────────────────────────────────────────────────────────────
 if [ -z "${OPENROUTER_API_KEY:-}" ]; then
@@ -32,13 +33,14 @@ API_RESPONSE=$(curl -sS --max-time 15 \
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf '$TEMP_DIR'" EXIT
 
-# ─── Python: parse, rank, generate roster (read from stdin) ──────────────────
-# We pipe the API response + inline Python to produce the roster
-echo "$API_RESPONSE" | python3 -c '
+# ─── Python: parse, rank, generate roster ────────────────────────────────────
+printf '%s' "$API_RESPONSE" > "$TEMP_DIR/models.json"
+python3 - "$TEMP_DIR/models.json" > "$TEMP_DIR/new_roster.conf" <<'PY' || {
 import json, sys
 from datetime import date
 
-raw = sys.stdin.read()
+with open(sys.argv[1], "r", encoding="utf-8") as fh:
+    raw = fh.read()
 data = json.loads(raw)
 models = data.get("data", [])
 
@@ -65,6 +67,11 @@ for m in models:
 
 free_models.sort(key=lambda x: -x["score"])
 
+def free_id(model_id):
+    if model_id.endswith(":free"):
+        return model_id
+    return model_id + ":free"
+
 tier1_candidates = [m for m in free_models if m["context"] >= 64000]
 tier2_candidates = [m for m in free_models if "reasoning" in m["id"].lower() or "r1" in m["id"].lower()]
 tier3_candidates = [m for m in free_models if m["context"] >= 128000]
@@ -87,9 +94,9 @@ lines.append("")
 # Tier 1
 lines.append("# Tier 1: Search / Lookup / Summarize")
 if tier1_candidates:
-    lines.append(f"TIER1_PRIMARY=\"{tier1_candidates[0][\"id\"]}:free\"")
+    lines.append(f"TIER1_PRIMARY=\"{free_id(tier1_candidates[0]['id'])}\"")
     for i, m in enumerate(tier1_candidates[1:4]):
-        lines.append(f"TIER1_FALLBACK{i+1}=\"{m['id']}:free\"")
+        lines.append(f"TIER1_FALLBACK{i+1}=\"{free_id(m['id'])}\"")
 else:
     lines.append(f"TIER1_PRIMARY=\"{FALLBACK_T1_PRIMARY}\"")
     for i, fb in enumerate(FALLBACK_T1_FB):
@@ -99,10 +106,10 @@ lines.append("")
 # Tier 2
 lines.append("# Tier 2: Reason / Compare / Analyze")
 if tier2_candidates:
-    lines.append(f"TIER2_PRIMARY=\"{tier2_candidates[0]['id']}:free\"")
+    lines.append(f"TIER2_PRIMARY=\"{free_id(tier2_candidates[0]['id'])}\"")
     remaining = tier2_candidates[1:3] if len(tier2_candidates) >= 3 else free_models[1:3] if len(free_models) >= 3 else []
     for i, m in enumerate(remaining[:2]):
-        lines.append(f"TIER2_FALLBACK{i+1}=\"{m['id']}:free\"")
+        lines.append(f"TIER2_FALLBACK{i+1}=\"{free_id(m['id'])}\"")
 else:
     lines.append(f"TIER2_PRIMARY=\"{FALLBACK_T2_PRIMARY}\"")
     for i, fb in enumerate(FALLBACK_T2_FB):
@@ -112,9 +119,9 @@ lines.append("")
 # Tier 3
 lines.append("# Tier 3: Scan / Long context")
 if tier3_candidates:
-    lines.append(f"TIER3_PRIMARY=\"{tier3_candidates[0]['id']}:free\"")
+    lines.append(f"TIER3_PRIMARY=\"{free_id(tier3_candidates[0]['id'])}\"")
     if len(tier3_candidates) > 1:
-        lines.append(f"TIER3_FALLBACK1=\"{tier3_candidates[1]['id']}:free\"")
+        lines.append(f"TIER3_FALLBACK1=\"{free_id(tier3_candidates[1]['id'])}\"")
     else:
         lines.append(f"TIER3_FALLBACK1=\"{FALLBACK_T3_FB[0]}\"")
 else:
@@ -125,7 +132,7 @@ lines.append("")
 
 # Race
 if free_models:
-    race_ids = [m["id"] + ":free" for m in free_models[:3]]
+    race_ids = [free_id(m["id"]) for m in free_models[:3]]
     lines.append("# Race models (parallel)")
     lines.append(f"RACE_MODELS=\"{' '.join(race_ids)}\"")
 else:
@@ -134,7 +141,7 @@ else:
 
 for line in lines:
     print(line)
-' 2>&1 > "$TEMP_DIR/new_roster.conf" || {
+PY
   echo "❌ Python roster generation failed" >&2
   exit 1
 }
@@ -153,4 +160,10 @@ fi
 
 cp "$TEMP_DIR/new_roster.conf" "$ROSTER_CONF"
 echo "✅ Model roster updated: $ROSTER_CONF" >&2
+
+if [ -f "$POLICY_SCRIPT" ]; then
+  python3 "$POLICY_SCRIPT" --quiet >/dev/null 2>&1 \
+    && echo "✅ Model router policy refreshed" >&2 \
+    || echo "⚠️  Model router policy refresh failed — delegate.sh will fallback to roster" >&2
+fi
 exit 0

@@ -174,4 +174,10 @@ PY
 
 mv "$TMP_MD" "$OUT"
 echo "model intel updated: $OUT" >&2
+
+POLICY_SCRIPT="$REPO_ROOT/scripts/model-router-policy.py"
+if [ -f "$POLICY_SCRIPT" ]; then
+  python3 "$POLICY_SCRIPT" --quiet >/dev/null 2>&1 \
+    || echo "model router policy refresh failed; delegate.sh will fallback to roster" >&2
+fi
 [ "$PRINT" = "1" ] && cat "$OUT"

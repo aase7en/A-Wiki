@@ -9,12 +9,12 @@ if [ ! -f "$SESSION_FILE" ]; then
     exit 0
 fi
 
-# Extract most recent todo list (last --- block with TODO/Next items)
+# Extract only unchecked items from the canonical Active TODOs block.
 TODOS=$(awk '
-    /^---/ { in_block = 1; next }
-    /^---/ && in_block { in_block = 0; next }
-    in_block && /TODO|Next|Action|Pending|☐|□|\[ \]/ { print $0 }
-' "$SESSION_FILE" 2>/dev/null | head -20)
+    /^## .*Active TODOs/ { in_block = 1; next }
+    in_block && /^## / { in_block = 0 }
+    in_block && /^- \[ \] / { print $0 }
+' "$SESSION_FILE" 2>/dev/null | head -"${AWIKI_TODO_LIMIT:-12}")
 
 if [ -n "$TODOS" ]; then
     echo "📋 Active TODOs (from session-memory.md):"

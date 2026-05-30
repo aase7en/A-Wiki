@@ -57,9 +57,11 @@ Claude Code web จะใช้ permission ที่ตั้งไว้ใน 
 
 1b. **อัปเดต `## 🔥 Active TODOs` ใน `wiki/context/session-memory.md`**:
    - **เพิ่ม** `- [ ] **[project-slug]** description` สำหรับงานค้างที่ต้องตามต่อข้าม session
-   - **Tick** `- [x]` หรือ **ลบบรรทัด** สำหรับงานที่ทำเสร็จแล้วใน session นี้
-   - SessionStart hook ของทุก agent (Claude Code / Codex / Gemini) จะอ่าน block นี้และแสดง `- [ ]` ที่เหลือเมื่อเริ่ม session ใหม่ — ทำให้ไม่ลืม project ที่ค้าง
-   - Cancelled project = ลบบรรทัดเลย; ทำเสร็จแล้ว = `[x]` ไว้รอบหนึ่งให้ดูภาพรวม session นี้ แล้ว session ถัดไปค่อยลบ
+   - **ลบบรรทัด** สำหรับงานที่ทำเสร็จแล้วใน session นี้ แล้วสรุปผลไว้ใน `log.md`
+   - SessionStart hook ของทุก agent (Claude Code / Codex / Gemini) จะอ่านเฉพาะ `- [ ]` ใน block นี้ — ทำให้ไม่ลืมงานค้างที่ต้องเห็นทุก session
+   - รักษา active list ให้ไม่เกิน 12 รายการ; งาน project/dream ที่ยังไม่ต้องโชว์ทุก session ให้ย้ายไป `wiki/context/project-backlog.md`
+   - Cancelled project = ลบบรรทัดเลย
+   - ตรวจสุขภาพด้วย `python3 scripts/todo-health.py`
 
 2. **บันทึกลง log.md** ในรูปแบบ:
    ```

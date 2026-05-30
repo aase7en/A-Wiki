@@ -1,0 +1,28 @@
+{
+  "suite": "ingest-source",
+  "description": "Source ingestion must protect raw data and update wiki memory.",
+  "cases": [
+    {
+      "id": "raw-immutable",
+      "skill": "skills/claude-code/ingest-source/SKILL.md",
+      "required": [
+        "raw/ เป็น immutable",
+        "ห้ามแก้ไข source ต้นฉบับ",
+        "wiki/sources/<slug>.md"
+      ],
+      "forbidden": [
+        "git add raw/",
+        "แก้ raw/"
+      ]
+    },
+    {
+      "id": "memory-updates",
+      "skill": "skills/claude-code/ingest-source/SKILL.md",
+      "required": [
+        "python3 scripts/gen-index.py",
+        "log.md",
+        "wiki/context/wiki-overview.md"
+      ]
+    }
+  ]
+}

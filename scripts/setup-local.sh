@@ -92,12 +92,13 @@ setup_index() {
 setup_codex() {
   echo "[5/7] Setting up .codex/ hooks link..."
 
-  mkdir -p .codex
-
-  if [[ -L ".codex/hooks" || -d ".codex/hooks" ]]; then
-    echo "  .codex/hooks already exists — skipping"
+  if [[ -f "scripts/setup-codex-hooks.sh" ]]; then
+    bash scripts/setup-codex-hooks.sh
+    echo "  OK — Codex Desktop hooks configured"
     return
   fi
+
+  mkdir -p .codex
 
   case "$(uname -s)" in
     Darwin*)
@@ -134,6 +135,16 @@ setup_model_intel() {
     echo "  WARN: model intel refresh failed — session can still use cached/static roster" >&2
     return 0
   }
+}
+
+setup_model_router_policy() {
+  echo "  Refreshing local model router policy..."
+  if [[ -f "scripts/model-router-policy.py" ]]; then
+    python3 scripts/model-router-policy.py --quiet || {
+      echo "  WARN: model router policy refresh failed — delegate.sh will fallback to roster" >&2
+      return 0
+    }
+  fi
 }
 
 # ── 6. (optional) react-doctor — Claude Code skill for React audits ────────
@@ -182,6 +193,7 @@ setup_secrets
 setup_index
 setup_codex
 setup_model_intel
+setup_model_router_policy
 setup_skillopt
 setup_react_doctor
 
@@ -199,3 +211,9 @@ echo "To install runnable SkillOpt locally:"
 echo "  INSTALL_SKILLOPT=1 bash scripts/setup-local.sh"
 echo "To install react-doctor skill (for dream projects with React):"
 echo "  INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh"
+echo "To verify this clone is ready for real A-Wiki work:"
+echo "  python3 scripts/verify-awiki-ready.py"
+echo "To inspect A-Wiki-owned skill quality:"
+echo "  python3 scripts/skill-quality-report.py"
+echo "To inspect SessionStart TODO hygiene:"
+echo "  python3 scripts/todo-health.py"

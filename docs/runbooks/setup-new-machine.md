@@ -62,8 +62,12 @@ bash scripts/setup-cloud-link.sh --path "/explicit/cloud/path"
 |---|---|
 | Refresh free model roster จาก OpenRouter | `bash scripts/update-model-roster.sh` |
 | Refresh current model/agent intel ด้วย Gemini grounding | `bash scripts/update-ai-model-intel.sh --force --print` |
+| Rebuild local model router policy | `python3 scripts/model-router-policy.py` |
 | Snapshot Microsoft SkillOpt upstream แบบเบา | `bash scripts/refresh-skillopt.sh` |
 | Install runnable SkillOpt local-only | `INSTALL_SKILLOPT=1 bash scripts/setup-local.sh` |
+| Run deterministic A-Wiki skill evals | `bash scripts/skillopt/run-awiki-evals.sh` |
+| Run A-Wiki-owned skill quality report | `python3 scripts/skill-quality-report.py` |
+| Check SessionStart TODO hygiene | `python3 scripts/todo-health.py` |
 | Install react-doctor สำหรับ React project | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` |
 
 SkillOpt local install จะอยู่ที่:
@@ -81,6 +85,7 @@ SkillOpt local install จะอยู่ที่:
 
 ```bash
 python3 scripts/agent-preflight.py
+python3 scripts/verify-awiki-ready.py
 bash scripts/setup-cloud-link.sh --status
 python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py -q
 ```
@@ -91,6 +96,9 @@ python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py 
 - `drive/` ชี้ไป cloud data folder
 - `raw/` ชี้ไป `drive/raw`
 - `.secrets` มีอยู่ใน Drive แต่ไม่ print ค่า secret
+- `.tmp/model-router-policy.conf` generate ได้
+- deterministic skill evals ผ่าน
+- skill quality report ไม่มี FAIL
 
 ---
 

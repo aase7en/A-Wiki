@@ -9,70 +9,14 @@
 
 ## 🔥 Active TODOs (cross-session)
 
-> SessionStart hook reads this block and prints **`- [ ]`** items (unchecked).
-> When a task is done, change `[ ]` → `[x]`; the SESSION END Protocol prunes ticked
-> items at the next rollover so the list stays slim. Cancelled work → delete the line.
-> One bullet = one project; tag with `**[project-slug]**` so future-you knows the scope.
+> SessionStart hook reads only unchecked **`- [ ]`** items in this block.
+> Keep this list small (target ≤12). Move project/dream backlog to `wiki/context/project-backlog.md`.
+> Done = delete or move to `log.md`; cancelled = delete.
 
-- [x] **[a-wiki-pipeline]** Fix `scripts/wiki/ingest-source.py:24` — `parent.parent` → `parent.parent.parent` (2026-05-25)
-- [x] **[a-wiki-pipeline]** Fix `scripts/wiki/query-rag.py:168,277` — `np.float32` → `np_dep.float32` (2 sites, 2026-05-25)
-- [x] **[a-wiki-pipeline]** Phase 4 S7 done 2026-05-25: เพิ่ม 68 tests, ADR-0006 validation section, fix `generate_query_variants` original-query drop
-- [x] **[sunday-estate-webapp]** รัน Supabase migrations `0001…0013` ใน Studio (`http://umbrel.local:8000`)
-- [x] **[sunday-estate-webapp]** กรอก `prototype/config.js` ใส่ `SUPABASE_URL` + `ANON_KEY` แล้วทดสอบ login จริง
-- [x] **[sunday-estate-webapp]** เปิดเว็บ real mode แล้วสร้างบัญชีจริงบัญชีแรก (จะได้ role `admin` อัตโนมัติ)
-- [x] **[sunday-estate-webapp]** `docker compose up -d --build fastapi nginx` บน Pi5 + ตั้ง `OPENROUTER_API_KEY`
-- [x] **[sunday-estate-webapp]** Settings → AI & OCR Models → กด "Refresh from OpenRouter" ครั้งแรก
-- [x] **[sunday-estate-webapp]** Verify production UI ที่ `http://umbrel.local:8090`: login admin → Settings AI model → test AI chat/OCR
-- [ ] **[sunday-estate-webapp]** Cloudflare Tunnel: stack compose has `cloudflared` but no `se-cloudflared` container; domain `app.sundayestate.co.th` is DNS `NXDOMAIN`; still needs real Cloudflare zone/tunnel credentials + enable `public` profile
-- [ ] **[sunday-estate-site]** 🎬 M1 v2 shipped (commit `73f335b`, https://github.com/aase7en/sunday-estate-site private) — cinematic 5-act scroll journey landing onepage (Outset → Land → Build → Trust → Home). Stack: Next.js 16 + motion v12 + Tailwind v4 + IBM Plex Sans Thai. Brand tokens ported from `sunday-estate-webapp/prototype/colors_and_type.css`. Plan file (local-only): `~/.claude/plans/a-wiki-project-fizzy-lagoon.md`. **Resume**: `cd ~/Desktop && git clone git@github.com:aase7en/sunday-estate-site.git && cd sunday-estate-site && pnpm install && pnpm dev`. Then continue with M2 (i18n TH/EN + full Services + 32 Objectives accordion + e-GP detail + responsive polish for Act 5 narrow viewports).
-- [x] **[sunday-estate-webapp]** Manual UI verify: hard refresh + verify core runbook UI, OCR PDF editable fields, admin invitations GET route, Portainer stack/env read-only checks (passed 2026-05-18; destructive actions not clicked)
-- [x] **[sunday-estate-webapp]** Migration `0016_payment_notifications.sql` + storage bucket `payment-slips` (commit `be5b49d`)
-- [x] **[sunday-estate-webapp]** Migration `0017_events.sql` (Calendar NewEventModal) — commit `be5b49d`
-- [x] **[sunday-estate-webapp]** Migration `0018_invitations_and_integrations.sql` — commit `be5b49d`
-- [x] **[sunday-estate-webapp]** FastAPI `backend/routers/admin.py` → `/api/admin/invite` — commit `be5b49d`
-- [x] **[sunday-estate-webapp]** Apply migrations 0016/0017/0018 ใน Supabase Studio (user รันเสร็จ 2026-05-18)
-- [x] **[sunday-estate-webapp]** Fix `email-validator` missing in requirements.txt — commit `73860a0` (Claude พบสาเหตุ se-fastapi unhealthy หลัง Portainer Pull-and-redeploy)
-- [x] **[sunday-estate-webapp]** Pi5 git pull webapp + Portainer "Pull and redeploy" stack `sunday-estate` ใหม่ (commit `73860a0`) → verify `curl http://umbrel.local:8090/api/health`
-- [ ] **[sunday-estate-webapp]** Verify admin invite POST/send end-to-end with logged-in admin (GET `/api/admin/invitations` passed 200; `SUPABASE_SERVICE_KEY` env confirmed in Portainer without exposing value)
-- [x] **[hyperframes]** ติดตั้ง `ffmpeg` บนเครื่อง local ก่อน render video pipeline
-- [x] **[obsidian]** เปิด Obsidian → enable plugin **Automatic Linker** (v4.3.1)
-- [ ] **[wiki-brain]** ทดสอบ `bash scripts/delegate.sh search "test"` บนเครื่องจริง (Mac/PC) — cloud container block outbound ทำให้ทดสอบในนี้ไม่ได้
-- [ ] **[wiki-brain]** รัน `bash scripts/update-model-roster.sh` ครั้งแรกบนเครื่องจริง — scout free models จาก OpenRouter (ต้องมี OPENROUTER_API_KEY)
-- [x] **[wiki-brain]** รัน `python3 scripts/gen-index.py` — rebuild FTS5 + knowledge graph หลัง wiki เพิ่มหน้าหลายรอบ
-- [ ] **[wiki-brain]** เพิ่ม `GEMINI_API_KEY` ใน Project Settings (ปัจจุบันใช้ `GOOGLE_AI_STUDIO_KEY` alias — ใช้งานได้แล้ว แต่ชื่อ canonical ดีกว่า)
-- [ ] **[dream]** 🏠 Sunday Estate — ปิด Cloudflare Tunnel ให้ production-ready, domain `app.sundayestate.co.th` ใช้งานได้จริง
-- [ ] **[dream]** 🤖 Personal AI Agent — agent ส่วนตัวที่ใช้ wiki นี้เป็นสมอง, ตอบคำถาม+จัดการชีวิตได้ offline
-- [ ] **[dream]** 📡 IoT Dashboard — dashboard กลางสำหรับ sensor/device บ้านและที่ทำงาน, real-time + alert
-- [ ] **[dream]** 💊 Pharmacy App — แอพจัดการร้านยา Phu Pharmacy: stock, ค้นหายา, order history, LINE notify
-- [ ] **[wiki-brain-inwwiki]** Fix GitHub Actions workflow conflict — ใช้ branch/PR workflow (wiki-sync.yml) แต่กฎ repo คือ commit ตรง main ห้าม branch/PR → ต้องถอด workflow ออก
-- [ ] **[wiki-brain-inwwiki]** Add missing hooks: check-secret-leak, check-bash-no-branch, post-wiki-edit-gen-index
-- [x] **[wiki-brain-inwwiki]** Chain FTS5 auto-regen ใน gen-index.py → regen search index อัตโนมัติทุกครั้งที่ wiki เปลี่ยน (2026-05-26 — FTS5 + sqlite-vec ทั้งคู่ chain แล้ว via gen-index.py)
-- [ ] **[wiki-brain]** Verify Linux/Windows: clone repo + `pip install -r requirements.txt` + `python scripts/build-vec-index.py` (sqlite-vec migration 2026-05-26 บน Mac เท่านั้น)
-- [ ] **[wiki-brain-inwwiki]** ทดสอบ ask-notebooklm.py + delegate.sh + sync.py + hooks_runner.py ที่ merge/copy จาก InW-Wiki → verify ทำงานจริง
-- [ ] **[wiki-brain-inwwiki]** เพิ่ม Cost Pyramid enforcement ใน CLAUDE.md → บังคับ Level -1 (FTS5 + query-graph) ก่อนทุกงาน
-- [ ] **[wiki-brain-inwwiki]** Copy pharmacy scripts จาก InW-Wiki (pharmacy_lookup.py, build_pharmacy_db.py, compare_delivery.py) — `fill-waste-form.py` superseded by `scripts/userscripts/waste-form-ocr-fill.user.js` (Tampermonkey + Gemini Flash, 2026-05-26)
-- [x] **[env-webapp]** ทดสอบ `scripts/userscripts/waste-form-ocr-fill.user.js` บน Chrome จริงที่ trash_add — v0.8.1 verified ✅ (2026-05-27 user screenshot confirmed BE date save/reload)
-- [x] **[env-webapp]** Setup `drive/` symlink บน Mac ที่บ้าน + PC ที่ทำงาน: `bash scripts/setup-drive-link.sh` → backup userscript ไป Drive (รันต่อเครื่อง)
-- [x] **[a-wiki-infra]** Cloud-Link System (2026-05-28): `setup-cloud-link.sh` multi-provider linker + `check_drive_link.py` SessionStart hook; Mac raw/ migrated → drive/raw (57 files); idempotency bug found+fixed (4 Google accounts → no silent switch)
-- [x] **[a-wiki-infra]** Secrets-on-Demand System (2026-05-28): `scripts/lib/drive_secrets.py` + WIKI_UNLOCK rotated to 64-char hex + AUTH_BY_DRIVE_MOUNT flag + NEVER_CACHE enforcement in import-keys.py
-- [x] **[a-wiki-infra]** 6-Repo Integration (2026-05-28): GitNexus MCP enabled (Node v24, .gitnexus/ built, query tested); 9arm+ECC git remotes + refresh scripts (archive-based, not subtree); turbovec opt-in via `--backend` flag + `requirements-optional.txt`; react-doctor opt-in via INSTALL_REACT_DOCTOR env; agents.md spec badge; CLAUDE.md+AGENTS.md Repository Integration 3→8 rows; 6 wiki pages at `wiki/entities/ai-tools/`; wiki graph 447→453 nodes
-- [ ] **[a-wiki-hardening]** Execute `docs/runbooks/a-wiki-platform-hardening-plan.md` step-by-step: Step 1 code complete + user key rotation pending; Step 2 done on Work PC + Mac verify pending; Step 3 done; Step 4 done on Work PC + Mac verify pending; Step 5 core policy done on Work PC + Mac/Gemini verify pending; next Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
-- [ ] **[a-wiki-handoff]** Before switching devices/agents, read `docs/runbooks/a-wiki-handoff-priority-plan.md`; next priority is P0 user key rotation + P1 Mac preflight, then P1 Codex local config template sync.
-- [x] **[a-wiki-infra]** Work PC AUTH_BY_DRIVE_MOUNT enabled (2026-05-29): `.claude/settings.local.json` env adds `"AUTH_BY_DRIVE_MOUNT": "1"`; Drive junction `L:\My Drive\A-Wiki-Data` verified healthy (.secrets/raw/.obsidian/waste-reports/personal-tools/ocr-feedback/individual-tasks present); next session auto-unlocks without manual WIKI_UNLOCK.
-- [ ] **[a-wiki-infra]** Mac: enable same `"AUTH_BY_DRIVE_MOUNT": "1"` in `.claude/settings.local.json` env block — verify Drive path is `~/Library/CloudStorage/GoogleDrive-.../My Drive/A-Wiki-Data` and `drive/` symlink points there.
-- [ ] **[a-wiki-infra]** Restart Claude Code session to load gitnexus MCP — verify `mcp__gitnexus__*` tools appear in next session
-- [ ] **[dream]** Run `bash scripts/setup-gitnexus.sh` inside Sunday Estate / Pharmacy / IoT repos (one-time per repo) — code-graph benefits scale with codebase size
-- [ ] **[a-wiki-infra]** Investigate why GitNexus did not index `scripts/lib/drive_secrets.py` (the `fetch_secret` symbol was queryable as caller but `context "fetch_secret"` returned "not found") — may need GitNexus config tweak to include `lib/` subdirs
-- [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน PC ที่ทำงาน (Windows Git Bash): `git pull`, set `AUTH_BY_DRIVE_MOUNT=1`, verify Edit CLAUDE.md works without manual WIKI_UNLOCK export
-- [ ] **[a-wiki-infra]** Test cloud-link บน WSL / Linux Docker — verify symlink fallback chain works on systems without macOS Cloud Storage
-- [ ] **[env-webapp]** Telegram Bot future: ออกแบบ architecture ไว้ใน waste-form-automation.md — implement เมื่อพร้อม (Raspberry Pi 5 + Bot token)
-- [ ] **[wiki-brain-inwwiki]** Unified storage layer — SQLite ที่รวม FTS5 + graph + logs → single source of truth
-- [ ] **[wiki-brain-inwwiki]** Dynamic domain tagging — multi-label tags แทน directory-based domains
-- [ ] **[wiki-brain-inwwiki]** Sync daemon — ทดสอบ sync.py --daemon บน multi-device (Mac + Work PC)
-- [ ] **[wiki-brain-inwwiki]** ศึกษา OmegaWiki (skyllwt) — entity relationship diagram + auto-backlinks
-- [ ] **[wiki-brain-inwwiki]** ศึกษา LLM-Wiki-Skilled (TrueHOOHA) — skill orchestration layer
-- [ ] **[wiki-brain-inwwiki]** ศึกษา long-term-agent-memory (eslamgenio) — episodic + semantic memory layer
-- [ ] **[wiki-brain-inwwiki]** Merge review-check.py ไป InW-Wiki — 6-layer health checker automation
+- [ ] **[wiki-brain]** เพิ่ม `GEMINI_API_KEY` canonical ใน Project Settings; ตอนนี้ `GOOGLE_AI_STUDIO_KEY` alias ใช้งานได้แล้ว
+- [ ] **[wiki-brain]** Verify Linux/Windows clone + `pip install -r requirements.txt` + `python scripts/build-vec-index.py`
+- [ ] **[a-wiki-hardening]** Continue platform hardening Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
+- [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน Work PC และ WSL/Linux Docker หลัง pull รอบล่าสุด
 
 ---
 
@@ -97,6 +41,15 @@
 ---
 
 ## 🗓️ Recent (last 10 sessions, newest top)
+
+### [2026-05-30] p2-todo-hygiene-model-routing (Mac, Codex)
+
+- **Done**: Fixed `scripts/update-model-roster.sh` embedded Python generation; roster refresh now completes against OpenRouter and refreshes `.tmp/model-router-policy.conf`.
+- **Done**: Fixed shell quoting in `scripts/model-router-policy.py` so model-intel summaries containing backticks or `$()` do not execute during `source`.
+- **Done**: Verified `bash scripts/delegate.sh search ...` works with current free-model keys.
+- **Done**: Added `scripts/todo-health.py`, wired it into `scripts/verify-awiki-ready.py`, and moved non-session project/dream backlog to `wiki/context/project-backlog.md`.
+- **Done**: Made arXiv refresh in `scripts/gen-index.py` opt-in (`--fetch-arxiv` or `AWIKI_GEN_INDEX_FETCH_ARXIV=1`) so normal index regeneration does not wait on four network calls.
+- **Next**: P2 remaining debt is mostly warning cleanup: add eval coverage/frontmatter for high-value skills, then continue platform hardening Step 6-8.
 
 ### [2026-05-29] a-wiki-handoff-priority-plan (Work PC, Codex)
 

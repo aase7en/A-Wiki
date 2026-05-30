@@ -13,6 +13,7 @@ Source: A-Wiki Phase 1 — Hook Pipeline Activation
 import sys
 import json
 import os
+import re
 import subprocess
 from datetime import datetime, timedelta
 
@@ -121,22 +122,28 @@ def show_todos(repo_root):
         with open(session_file, "r", encoding="utf-8") as f:
             content = f.read()
 
-        # Extract last TODO block (after --- marker)
-        parts = content.split("---")
-        if len(parts) < 2:
-            return
-
-        last_block = parts[-1]
-        todo_lines = [
-            line.strip()
-            for line in last_block.splitlines()
-            if any(marker in line for marker in ["TODO", "Next", "Action", "Pending", "☐", "□", "[ ]"])
-        ]
+        todo_lines = []
+        in_active = False
+        todo_pattern = re.compile(r"^- \[ \] ")
+        for raw_line in content.splitlines():
+            if raw_line.startswith("## ") and "Active TODOs" in raw_line:
+                in_active = True
+                continue
+            if in_active and raw_line.startswith("## "):
+                break
+            if in_active and todo_pattern.match(raw_line.strip()):
+                todo_lines.append(raw_line.strip())
 
         if todo_lines:
             sys.stderr.write("📋 Active TODOs (from session-memory.md):\n")
-            for line in todo_lines[:10]:
+            try:
+                limit = max(1, int(os.environ.get("AWIKI_TODO_LIMIT", "12")))
+            except ValueError:
+                limit = 12
+            for line in todo_lines[:limit]:
                 sys.stderr.write(f"  {line}\n")
+            if len(todo_lines) > limit:
+                sys.stderr.write(f"  … +{len(todo_lines) - limit} more in wiki/context/project-backlog.md\n")
             sys.stderr.write("\n")
     except Exception:
         pass

@@ -433,3 +433,9 @@ class TestCheckMode:
         monkeypatch.setattr("sys.argv", ["gen-index.py", "--check"])
         rc = gen_index.main()
         assert rc == 0
+
+    def test_arxiv_fetch_is_opt_in_to_keep_default_fast(self):
+        text = (REPO_ROOT / "scripts" / "gen-index.py").read_text(encoding="utf-8")
+
+        assert "--fetch-arxiv" in text
+        assert "AWIKI_GEN_INDEX_FETCH_ARXIV" in text
