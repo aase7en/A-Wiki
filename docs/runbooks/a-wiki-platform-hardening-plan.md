@@ -268,7 +268,7 @@ Acceptance criteria:
 | 5. Hook Parity and Policy Cleanup | Core policy done on Work PC; Mac verification pending | 2026-05-29 | `stop-auto-commit.sh` now refuses non-main instead of merging branches; `.codex/hooks.json` uses portable relative hook paths; preflight audits hook command paths. |
 | 6. Review Noise Reduction | Done | 2026-05-30 | Added `review-check.py --profile {content,generated,protocol,full}`, top actionable summary, generated-report self-scan exclusion, improved link resolver for `wiki/` and repo paths, and switched `gen-index.py` chain to `--profile content`; generated profile strict passes, content strict now reports a realistic 44 link failures plus downgraded metadata warnings. |
 | 7. Cross-Device Sync Reliability | Done on Mac; Work PC/WSL verify pending | 2026-05-30 | Updated `sync.py` tracked sync surfaces for current A-Wiki paths, added preflight handoff warning, documented one-active-editor workflow in `docs/runbooks/mobile-obsidian-workflow.md`, and updated setup runbook. Mac verification passed; Work PC/WSL still need `python3 scripts/sync.py --now` and `python3 scripts/verify-cross-platform.py --build-vec` after pull. |
-| 8. Platform Instruction Refresh | Pending | - | Final doc sweep after behavior is fixed. |
+| 8. Platform Instruction Refresh | Mostly done; AGENTS/CLAUDE protected | 2026-05-30 | Refreshed Gemini, Cursor, Windsurf, Cline, Copilot, and Antigravity instructions with first 3 commands and External Data Layer; removed stale InW-Wiki Antigravity path. `AGENTS.md`/`CLAUDE.md` remain unchanged because Iron Law requires explicit permission to edit protected config files. |
 
 ## Rule for Future Steps
 
