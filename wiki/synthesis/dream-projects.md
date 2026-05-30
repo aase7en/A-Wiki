@@ -40,6 +40,7 @@ updated: 2026-04-29 (AI cost strategy + Mac Mini AI server)
 | 2 | Web app บำบัดน้ำเสียประจำวัน | FastAPI + React + PostgreSQL | 🔵 อยู่ในแผน | แทน AppSheet เดิม |
 | 3 | Web app สอบสวนโรค (Epidemiology) | FastAPI + React + PostgreSQL | 🔵 อยู่ในแผน | — |
 | 4 | Migrate AppSheet → Web App | FastAPI + React + PostgreSQL + Pi 5 | 🔵 รอ Pi 5 setup | migrate ทั้งหมดในครั้งเดียว |
+| 5 | 8-Bit Trading RPG | Phaser + WebSocket + paper trading | 🔵 blueprint พร้อม | [[synthesis/8-bit-trading-rpg-blueprint]] |
 
 ---
 
@@ -85,10 +86,10 @@ updated: 2026-04-29 (AI cost strategy + Mac Mini AI server)
 | Category | วางแผน 🔵 | กำลังทำ 🟡 | พัก 💤 | เสร็จ ✅ |
 |----------|-----------|------------|--------|---------|
 | IoT โรงพยาบาล | 3 | 4 | 0 | 0 |
-| Software/Web App | 4 | 0 | 0 | 0 |
+| Software/Web App | 5 | 0 | 0 | 0 |
 | AI/Automation | 2 | 2 | 1 | 0 |
 | Home Server | 1 | 1 | 0 | 0 |
-| **รวม** | **10** | **7** | **1** | **0** |
+| **รวม** | **11** | **7** | **1** | **0** |
 
 ---
 
