@@ -127,7 +127,7 @@ A-Wiki/
 
 ---
 
-## 🪝 Active Hooks (11 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (12 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
@@ -146,6 +146,7 @@ A-Wiki/
 | 9 | **Post-Wiki Edit** | `post_wiki_edit.py` | ⚡ Async | Auto-run `gen-index.py` after wiki edit |
 | 10 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
 | 11 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
+| 12 | **Source Provenance** | `check_source_original_file.py` | 🔴 Block | Block Write/Edit `wiki/sources/<slug>.md` ถ้า `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีจริง (grandfather Edit บน legacy broken sources) |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`

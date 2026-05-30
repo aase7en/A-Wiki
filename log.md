@@ -1,5 +1,20 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] hook | check_source_original_file
+
+**Done:**
+- เพิ่ม blocking hook `scripts/hooks/check_source_original_file.py` — กัน Write/Edit `wiki/sources/<slug>.md` ที่ `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีอยู่จริง
+- Grandfather clause: Edit/MultiEdit บน source เก่าที่ "broken อยู่แล้ว" → pass (กันไม่ให้แตะ typo ก็ block) — ปกป้องเฉพาะ regression
+- Register ใน `.claude/settings.json` PreToolUse (Edit|Write|MultiEdit) หลัง check-raw-immutable
+- Tighten `skills/claude-code/ingest-source/SKILL.md` เพิ่ม **Step 0** บังคับ "save to raw/ FIRST" ก่อน step อื่น
+- เพิ่ม 8 pytest cases ใน `tests/test_hooks.py::TestCheckSourceOriginalFile` → 28/28 pass (rest of hook chain ยังเขียว)
+- Backward-compat audit: 142 sources บนดิสก์ — **37 ตัวมี original_file: non-compliant** (URL/web-search/paste/broken path) แต่ grandfather clause ปล่อย Edit ผ่านอยู่; user จะค่อยๆ ทำความสะอาดได้ภายหลัง
+- Memory `[[ingest-flow-raw-first]]` อัปเดต — note enforcement live แล้ว
+
+**Why:** User ตั้งคำถาม "ทำอย่างไรไม่ให้เกิดอีก — บังคับได้ไหม?" หลัง Velxio ingest พลาด. CLAUDE.md ไม่ได้ bloated (314 บรรทัด — healthy) — gap จริงคือ skill ไม่มี Step 0 + ไม่มี mechanical gate
+
+Plan: [[~/.claude/plans/ingest-lazy-treehouse]]
+
 ## [2026-05-30] ingest | Velxio simulator
 
 **Done:**

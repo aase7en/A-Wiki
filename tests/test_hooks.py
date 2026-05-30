@@ -236,3 +236,128 @@ class TestHooksRunnerCLI:
             capture_output=True, text=True,
         )
         assert proc.returncode == 0, proc.stderr
+
+
+# ── check_source_original_file ─────────────────────────────────────────
+
+class TestCheckSourceOriginalFile:
+    """Provenance gate — blocks Write/Edit to wiki/sources/<slug>.md
+    unless `original_file:` points to an existing raw/<file>.
+    Added 2026-05-30 — see .claude/plans/ingest-lazy-treehouse.md
+    """
+
+    HOOK = "check_source_original_file.py"
+
+    def _write_payload(self, file_path: str, content: str) -> dict:
+        return {
+            "tool_name": "Write",
+            "tool_input": {"file_path": file_path, "content": content},
+        }
+
+    def test_blocks_null_original_file(self):
+        payload = self._write_payload(
+            "wiki/sources/dummy-test.md",
+            "---\ntype: source\noriginal_file: null\n---\n\n# Dummy\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert not passed
+        assert "original_file" in msg
+
+    def test_blocks_missing_original_file_key(self):
+        payload = self._write_payload(
+            "wiki/sources/dummy-test.md",
+            "---\ntype: source\ntitle: x\n---\n\n# Dummy\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert not passed
+        assert "no `original_file:` key" in msg or "original_file" in msg
+
+    def test_blocks_nonexistent_raw_target(self):
+        payload = self._write_payload(
+            "wiki/sources/dummy-test.md",
+            "---\noriginal_file: raw/does-not-exist-anywhere.md\n---\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert not passed
+        assert "missing file" in msg or "does not exist" in msg.lower() or "original_file" in msg
+
+    def test_blocks_non_raw_path(self):
+        payload = self._write_payload(
+            "wiki/sources/dummy-test.md",
+            "---\noriginal_file: /tmp/foo.md\n---\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert not passed
+        assert "raw/" in msg
+
+    def test_passes_existing_raw_file(self):
+        # velxio raw file is created and verified earlier in the same plan
+        velxio = REPO_ROOT / "raw" / "velxio-arduino-esp32-pi-simulator.md"
+        if not velxio.is_file():
+            pytest.skip("velxio raw file not present on this machine")
+        payload = self._write_payload(
+            "wiki/sources/dummy-test.md",
+            "---\noriginal_file: raw/velxio-arduino-esp32-pi-simulator.md\n---\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert passed, f"unexpected block: {msg}"
+
+    def test_passes_meta_file_in_sources_dir(self):
+        """wiki/sources/CLAUDE.md is a meta file, not a source entry — skip."""
+        payload = self._write_payload(
+            "wiki/sources/CLAUDE.md",
+            "# Sources rules\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert passed, f"unexpected block on meta file: {msg}"
+
+    def test_passes_path_outside_sources(self):
+        payload = self._write_payload(
+            "wiki/entities/iot/foo.md",
+            "---\noriginal_file: null\n---\n",
+        )
+        passed, msg = run_hook(self.HOOK, payload)
+        assert passed, f"unexpected block outside sources: {msg}"
+
+    def test_passes_non_edit_tool(self):
+        payload = {"tool_name": "Bash", "tool_input": {"command": "ls"}}
+        passed, msg = run_hook(self.HOOK, payload)
+        assert passed
+
+    def test_grandfather_clause_for_legacy_broken_source(self):
+        """Edit on an existing legacy source that was ALREADY non-compliant
+        (e.g., original_file points to a URL) should PASS — the hook only
+        blocks regressions, not edits to grandfathered legacy data.
+
+        Picks a real legacy source known to fail the strict check on disk.
+        Skips if no such legacy source exists (clean repo)."""
+        import os, re
+        sources_dir = REPO_ROOT / "wiki" / "sources"
+        legacy_candidate = None
+        for fname in sorted(os.listdir(sources_dir)):
+            if not fname.endswith(".md") or fname.startswith("index"):
+                continue
+            if fname in ("CLAUDE.md", "README.md"):
+                continue
+            text = (sources_dir / fname).read_text(encoding="utf-8")
+            m = re.search(r"^original_file:\s*(.*)$", text, re.MULTILINE)
+            if m and not m.group(1).strip().startswith("raw/"):
+                legacy_candidate = fname
+                break
+        if legacy_candidate is None:
+            pytest.skip("no legacy non-compliant source on disk to test grandfather")
+        fp = f"wiki/sources/{legacy_candidate}"
+        proc = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "hooks" / "check_source_original_file.py")],
+            input=json.dumps({
+                "tool_name": "Edit",
+                "tool_input": {
+                    "file_path": fp,
+                    "old_string": "the",  # any string likely present
+                    "new_string": "the",  # no-op
+                },
+            }),
+            capture_output=True, text=True,
+            cwd=REPO_ROOT,
+        )
+        assert proc.returncode == 0, f"grandfather clause failed for {fp}: {proc.stderr}"
