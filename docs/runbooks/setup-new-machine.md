@@ -83,7 +83,34 @@ SkillOpt local install จะอยู่ที่:
 
 ---
 
-## 4. Verify
+## 4. GitHub Actions setup
+
+สำหรับ repo fork หรือ clone ที่จะใช้ GitHub Actions ให้ตั้งค่า repository secret เท่าที่จำเป็น:
+
+| Secret | ใช้ทำอะไร | ถ้าไม่มี |
+|---|---|---|
+| `OPENROUTER_API_KEY` | ให้ weekly model roster scout ดึงรายชื่อ free model ล่าสุด | workflow ไม่ fail แต่ report จะเป็น `skipped` |
+
+Workflow สำคัญ:
+
+| Workflow | Trigger | หน้าที่ |
+|---|---|---|
+| `A-Wiki CI` | push ไป `main` + manual | ตรวจ privacy, syntax, tests, readiness smoke |
+| `A-Wiki Cross-Platform Smoke` | manual + weekly | ทดสอบ fake external data layer บน Ubuntu/macOS/Windows |
+| `A-Wiki Model Roster Refresh` | manual + ทุกวันจันทร์ | เทียบ free model roster ล่าสุดกับ `wiki/context/model-roster.conf`, upload report, เปิด/อัปเดต issue ถ้า roster เปลี่ยน |
+
+Manual run:
+
+```bash
+gh workflow run model-roster-refresh.yml -f create_issue=false
+gh run list --workflow model-roster-refresh.yml --limit 1
+```
+
+หมายเหตุ: workflow model roster ไม่ auto-commit เพราะการเปลี่ยน model routing กระทบ agent ทั้งระบบ ต้อง review diff ก่อน merge ลง `main`
+
+---
+
+## 5. Verify
 
 ```bash
 python3 scripts/agent-preflight.py
@@ -104,7 +131,7 @@ python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py 
 - deterministic skill evals ผ่าน
 - skill quality report ไม่มี FAIL
 
-## 5. Cross-device sync
+## 6. Cross-device sync
 
 ก่อนสลับเครื่องหรือเปิด Obsidian แก้ไฟล์ ให้ปิด session เก่าก่อน แล้ว sync:
 

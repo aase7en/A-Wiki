@@ -14,6 +14,7 @@
 
 [![A-Wiki CI](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml)
 [![Cross-Platform Smoke](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml)
+[![Model Roster Refresh](https://github.com/aase7en/A-Wiki/actions/workflows/model-roster-refresh.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/model-roster-refresh.yml)
 
 **A-Wiki doesn't give your AI Agent a "better prompt." It gives it a spine.**
 
@@ -28,7 +29,7 @@
 | Superpower | What It Does | Your Win |
 |---|---|---|
 | **🌐 Works With Every AI Tool** | One config file per platform — Claude Code, Codex, Gemini CLI, Cursor, Windsurf, Cline, GitHub Copilot, Aider, and any tool that reads `AGENTS.md`. Your brain is platform-agnostic. | **No lock-in.** Switch AI tools or run them in parallel — they all share the same Iron Laws, wiki, and swarm protocol. |
-| **🔍 Dynamic Token Scouting** | Auto-hunts OpenRouter Free tier and promotional endpoints at runtime via `update-model-roster.sh` — routing boilerplate work to free models and reserving expensive tokens for reasoning that actually matters. | **Massive cost reduction.** You pay for thinking, not for generating getters and setters. |
+| **🔍 Dynamic Token Scouting** | Auto-hunts OpenRouter Free tier and promotional endpoints via `update-model-roster.sh` plus a weekly GitHub Actions scout — routing boilerplate work to free models and reserving expensive tokens for reasoning that actually matters. | **Massive cost reduction.** You pay for thinking, not for generating getters and setters. |
 | **🛡️ Iron Law Process Enforcement** | Hard-blocks any code path that tries to commit production code without a failing test first. Blocks any bug fix that hasn't completed root-cause analysis. If a parallel swarm model violates either rule, its output is **discarded and rewritten** on sight. | **Zero technical debt injection.** The kind of discipline you'd expect from a principal engineer doing code review at 2 AM. |
 | **🧠 Cross-Device Knowledge Brain** | A 420+ page structured wiki (entities, concepts, synthesis, sources) with offline FTS5 search, knowledge graph, and auto-synced session memory via Google Drive — so your AI picks up exactly where you left off on any machine. | **True continuity.** Walk away from any machine. Resume on any other. Your agent already knows exactly where you stopped. |
 
@@ -141,6 +142,7 @@ python scripts/verify-cross-platform.py
 - `A-Wiki CI` runs on every push to `main`.
 - `A-Wiki Cross-Platform Smoke` runs manually or weekly across Ubuntu, macOS, and Windows.
 - The Linux job additionally runs `verify-cross-platform.py --build-vec`.
+- `A-Wiki Model Roster Refresh` runs every Monday and manually on demand. It checks whether OpenRouter's free model roster changed, uploads a report artifact, and opens/updates an issue for review instead of auto-committing routing changes.
 
 ---
 
@@ -203,6 +205,21 @@ cat wiki/context/model-roster.conf
 # Route a task to the best available free model
 bash scripts/swarm/delegate.sh "summarize this module"
 ```
+
+### Weekly Model Roster Scout
+
+The GitHub Actions workflow [`model-roster-refresh.yml`](.github/workflows/model-roster-refresh.yml) runs every Monday. Its job is to protect the Cost Pyramid:
+
+| Step | What it does |
+|---|---|
+| 1 | Reads `OPENROUTER_API_KEY` from GitHub Secrets if available |
+| 2 | Runs `scripts/update-model-roster.sh --ci-ok --no-backup --report ...` |
+| 3 | Builds a candidate `wiki/context/model-roster.conf` from current free OpenRouter models |
+| 4 | Compares the candidate against the tracked roster |
+| 5 | Uploads a Markdown report/artifact for audit |
+| 6 | Opens or updates a GitHub issue when routing changes need human/Primary Agent review |
+
+It intentionally does **not** auto-commit changes. Model routing affects every agent, so roster updates should be reviewed before landing on `main`.
 
 ---
 
@@ -311,6 +328,7 @@ A-Wiki/
 | [agent-skills/README.md](agent-skills/README.md) | Full skill catalog with enforcement details |
 | [wiki/context/wiki-overview.md](wiki/context/wiki-overview.md) | Wiki stats, domain index, session memory |
 | [scripts/setup-local.sh](scripts/setup-local.sh) | First-time machine setup script |
+| [docs/runbooks/setup-new-machine.md](docs/runbooks/setup-new-machine.md) | Cross-platform onboarding runbook for Mac, Windows, Linux, and GitHub Actions |
 | [LICENSE](LICENSE) | MIT — use it, fork it, ship it |
 
 ---
