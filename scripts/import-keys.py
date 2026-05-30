@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-"""
-import-keys.py — Load API keys from Google Drive .secrets → settings.local.json env block
+"""Load cacheable API keys from Drive `.secrets` into settings.local.json."""
+from __future__ import annotations
 
-Reads:  <GDRIVE>/A-Wiki-Data/.secrets   (KEY=VALUE format)
-Writes: .claude/settings.local.json     (merges into "env" block)
-
-Run: python scripts/sync-secrets.py
-"""
+import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -36,7 +31,7 @@ def find_secrets_file():
     return None
 
 
-def parse_secrets(path: Path) -> dict:
+def parse_secrets(path: Path) -> dict[str, str]:
     keys = {}
     for line in path.read_text(encoding="utf-8").splitlines():
         line = line.strip()
@@ -61,39 +56,75 @@ def load_settings(path: Path) -> dict:
     return {}
 
 
-def save_settings(path: Path, data: dict):
+def save_settings(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def main():
-    secrets_path = find_secrets_file()
-    if not secrets_path:
-        print("ERROR: .secrets file not found in any Google Drive location")
-        print("Searched:")
-        for p in GDRIVE_PATHS:
-            print(f"  {p}")
-        sys.exit(1)
+def redact_path(path: Path) -> str:
+    """Return a non-personal path label for status output."""
+    try:
+        rel = path.relative_to(REPO_ROOT)
+        return str(rel)
+    except ValueError:
+        return "Drive .secrets"
 
+
+def sync_settings(secrets_path: Path, *, dry_run: bool = False) -> tuple[int, list[str]]:
     secrets = parse_secrets(secrets_path)
     if not secrets:
-        print(f"ERROR: No KEY=VALUE entries found in {secrets_path}")
-        sys.exit(1)
+        raise ValueError("No cacheable KEY=VALUE entries found")
+
+    if dry_run:
+        return len(secrets), sorted(secrets)
 
     settings = load_settings(SETTINGS_PATH)
     existing_env = settings.get("env", {})
-
-    merged = {**existing_env, **secrets}
-    settings["env"] = merged
-
+    settings["env"] = {**existing_env, **secrets}
     save_settings(SETTINGS_PATH, settings)
+    return len(secrets), sorted(secrets)
 
-    print(f"OK — synced {len(secrets)} keys from {secrets_path}")
-    for k in secrets:
-        masked = secrets[k][:8] + "..." if len(secrets[k]) > 8 else "***"
-        print(f"  {k} = {masked}")
-    print(f"Written to: {SETTINGS_PATH}")
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Sync cacheable A-Wiki API keys from Drive .secrets into local settings."
+    )
+    parser.add_argument("--check", action="store_true", help="check availability without writing settings")
+    parser.add_argument("--list", action="store_true", help="list cacheable key names only")
+    parser.add_argument("--dry-run", action="store_true", help="parse and report key count without writing")
+    args = parser.parse_args()
+
+    secrets_path = find_secrets_file()
+    if not secrets_path:
+        print("ERROR: .secrets file not found")
+        print("Searched:")
+        for p in candidate_secret_paths():
+            print(f"  {redact_path(p)}")
+        return 1
+
+    try:
+        count, names = sync_settings(secrets_path, dry_run=args.check or args.list or args.dry_run)
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
+
+    if args.list:
+        for name in names:
+            print(name)
+        return 0
+
+    if args.check:
+        print(f"OK — {redact_path(secrets_path)} readable: {count} cacheable key name(s)")
+        return 0
+
+    if args.dry_run:
+        print(f"OK — dry run parsed {count} cacheable key name(s); settings not modified")
+        return 0
+
+    print(f"OK — synced {count} cacheable key name(s) into .claude/settings.local.json")
+    print("Secret values are intentionally not printed.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
