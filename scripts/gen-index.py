@@ -381,6 +381,62 @@ def main() -> int:
     total = sum(len(r) for s in pages.values() for r in s.values())
     print(f"[OK] Wrote {len(outputs)} files in {CONTEXT_DIR.relative_to(REPO_ROOT)} ({total} pages)")
 
+    # Refresh hardcoded counts + "Last updated" dates in nested CLAUDE.md scoped
+    # contexts so they don't drift behind the actual file tree. Touches only the
+    # specific patterns shown below — leaves prose untouched. Safe because
+    # nested CLAUDE.md is NOT protected by check_claudemd_lock (root only).
+    _today = dt.date.today().isoformat()
+    _date_pat = re.compile(r"(>\s*\*\*Last updated\*\*:\s*)\d{4}-\d{2}-\d{2}")
+    nested_targets = [
+        # (path, pattern, replacement-with-{n})
+        ("wiki/sources/CLAUDE.md", re.compile(r"Sources ที่มีอยู่ \(\d+ files\)"), "Sources ที่มีอยู่ ({n} files)"),
+        ("wiki/entities/iot/CLAUDE.md", re.compile(r"\(\d+ entities\)"), "({n} entities)"),
+        ("wiki/concepts/iot/CLAUDE.md", re.compile(r"\(\d+ concepts\)"), "({n} concepts)"),
+    ]
+    # Compute live counts directly from disk (excludes meta files). Walks
+    # recursively so domain subdirs (e.g., wiki/sources/iot/*.md) are counted.
+    _meta_names = {"CLAUDE.md", "README.md", "AGENTS.md", "GEMINI.md"}
+    def _md_count(rel: str) -> int:
+        d = REPO_ROOT / rel
+        if not d.is_dir():
+            return 0
+        return sum(
+            1 for p in d.rglob("*.md")
+            if p.name not in _meta_names and not p.name.startswith("index")
+        )
+    counts = {
+        "wiki/sources/CLAUDE.md": _md_count("wiki/sources"),
+        "wiki/entities/iot/CLAUDE.md": _md_count("wiki/entities/iot"),
+        "wiki/concepts/iot/CLAUDE.md": _md_count("wiki/concepts/iot"),
+    }
+    nested_dirs_for_date_only = [
+        "wiki/entities/env/CLAUDE.md",
+        "wiki/entities/ai-tools/CLAUDE.md",
+        "wiki/entities/pharmacy/CLAUDE.md",
+    ]
+    refreshed = 0
+    for rel, pat, repl in nested_targets:
+        p = REPO_ROOT / rel
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8")
+        new = pat.sub(repl.format(n=counts[rel]), text)
+        new = _date_pat.sub(rf"\g<1>{_today}", new)
+        if new != text:
+            p.write_text(new, encoding="utf-8")
+            refreshed += 1
+    for rel in nested_dirs_for_date_only:
+        p = REPO_ROOT / rel
+        if not p.exists():
+            continue
+        text = p.read_text(encoding="utf-8")
+        new = _date_pat.sub(rf"\g<1>{_today}", text)
+        if new != text:
+            p.write_text(new, encoding="utf-8")
+            refreshed += 1
+    if refreshed:
+        print(f"[OK] Refreshed {refreshed} nested CLAUDE.md scoped contexts")
+
     # Chain: rebuild local search index + knowledge graph + embeddings (Phase 2-4 upgrade)
     # Best-effort — don't fail gen-index if these aren't installed yet
     import subprocess

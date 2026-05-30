@@ -8,12 +8,12 @@
 # Scoped Context — Source Summaries
 
 > **โดเมน**: Source documents — summaries of raw/ content  
-> **Last updated**: 2026-05-09  
+> **Last updated**: 2026-05-30  
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน sources/**
 
 ---
 
-## Sources ที่มีอยู่ (64 files)
+## Sources ที่มีอยู่ (152 files)
 
 ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Tools, Pharmacy
 
