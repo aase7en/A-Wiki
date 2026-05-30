@@ -67,7 +67,7 @@ jobs:
       - name: Prepare local generated config
         run: |
           bash scripts/setup-codex-hooks.sh
-          python scripts/gen-index.py
+          python scripts/build-wiki-index.py
 
       - name: Cross-platform verifier
         run: python scripts/verify-cross-platform.py

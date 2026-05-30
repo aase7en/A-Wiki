@@ -58,7 +58,7 @@ jobs:
       - name: Prepare local generated config
         run: |
           bash scripts/setup-codex-hooks.sh
-          python scripts/gen-index.py
+          python scripts/build-wiki-index.py
 
       - name: Privacy and syntax checks
         run: |
@@ -70,4 +70,3 @@ jobs:
 
       - name: Readiness smoke
         run: python scripts/verify-awiki-ready.py --skip-remote --skip-evals
-
