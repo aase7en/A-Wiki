@@ -372,6 +372,7 @@ setup_drive() {
         current="$(resolve_drive_path)"
         if [ "$current" = "$drive_path" ]; then
             ok "drive/ already linked correctly → $current"
+            echo "$current" > "$DRIVE_PATH_FILE"
             # Still ensure folder structure exists (cheap mkdir -p)
             [ -d "$current" ] && init_drive_structure "$current"
             return 0
@@ -390,9 +391,6 @@ setup_drive() {
         mkdir -p "$drive_path"
     fi
 
-    # Remove stale config
-    [ -f "$DRIVE_PATH_FILE" ] && rm "$DRIVE_PATH_FILE"
-
     # If drive/ exists as real dir (not symlink), refuse — too risky to delete
     if [ -d "$DRIVE_LINK" ] && [ ! -L "$DRIVE_LINK" ]; then
         err "drive/ is a real directory (not symlink). Remove it manually first."
@@ -400,6 +398,7 @@ setup_drive() {
     fi
 
     create_link "$drive_path" "$DRIVE_LINK" "drive"
+    echo "$drive_path" > "$DRIVE_PATH_FILE"
     init_drive_structure "$drive_path"
 }
 
