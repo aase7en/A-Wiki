@@ -17,20 +17,25 @@ MODE="${1:-full}"
 HANDOFF="handoff.md"
 DATE=$(date "+%Y-%m-%d %H:%M")
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=scripts/lib/personal_paths.sh
+. "$REPO_ROOT/scripts/lib/personal_paths.sh"
+LOG_FILE="$(awiki_log_path "$REPO_ROOT" || true)"
+SESSION_FILE="$(awiki_session_memory_path "$REPO_ROOT" || true)"
 
 # ---- Gather state ----
 
 UNCOMMITTED=$(git status --short 2>/dev/null || echo "(git unavailable)")
 [ -z "$UNCOMMITTED" ] && UNCOMMITTED="(clean — nothing uncommitted)"
 
-LAST_LOG=$(grep "^## \[" log.md 2>/dev/null | head -1 | sed 's/^## //' || echo "(none)")
+LAST_LOG=$(grep "^## \[" "$LOG_FILE" 2>/dev/null | head -1 | sed 's/^## //' || echo "(none)")
 
 # Extract open TODOs from "## 🔥 Active TODOs" block (mirror show-active-todos.sh)
 PENDING=$(awk '
   /^## 🔥 Active TODOs/ { flag=1; next }
   /^## / { if (flag) exit }
   { if (flag) print }
-' wiki/context/session-memory.md 2>/dev/null \
+' "$SESSION_FILE" 2>/dev/null \
   | grep -E '^[[:space:]]*-[[:space:]]*\[[[:space:]]\]' \
   | sed -E 's/^[[:space:]]*-[[:space:]]*\[[[:space:]]\][[:space:]]*/  • /' || echo "")
 [ -z "$PENDING" ] && PENDING="  • (ไม่มี TODO ค้าง)"
@@ -42,7 +47,7 @@ LAST_BRIEF=$(awk '
   in_block && /^### \[/ { exit }
   in_block && /^## / { exit }
   in_block { print }
-' wiki/context/session-memory.md 2>/dev/null || true)
+' "$SESSION_FILE" 2>/dev/null || true)
 [ -z "$LAST_BRIEF" ] && LAST_BRIEF="(ไม่มี narrative — session-memory.md ยังไม่มี ## 🗓️ Recent block)"
 
 # ---- Determine task type & agent recommendation ----

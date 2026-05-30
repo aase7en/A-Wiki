@@ -12,7 +12,6 @@ SYNC_PATHS = [
     "docs",
     "decisions",
     "journal",
-    "log.md",
     "index.md",
     "index-ai.md",
     "index-env.md",

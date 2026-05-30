@@ -42,7 +42,7 @@ WIKI_DIR = REPO_ROOT / "wiki"
 OUTPUT = REPO_ROOT / ".wiki-graph.json"
 
 # Root-level pages that are wiki-linkable (referenced from inside wiki/)
-ROOT_PAGES = ("CLAUDE.md", "README.md", "profile.md", "log.md", "index.md")
+ROOT_PAGES = ("CLAUDE.md", "README.md", "profile.md", "index.md")
 
 # Skip these source dirs from outgoing-link extraction — content is auto-generated
 # (truncated table cells in context overviews) so wikilinks there are noise.

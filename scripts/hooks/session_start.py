@@ -16,6 +16,13 @@ import os
 import re
 import subprocess
 from datetime import datetime, timedelta
+from pathlib import Path
+
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
+from scripts.lib.personal_paths import session_memory_path
 
 
 def git_pull(repo_root):
@@ -114,8 +121,8 @@ def maybe_update_model_intel(repo_root):
 
 def show_todos(repo_root):
     """Show active TODOs from session-memory.md."""
-    session_file = os.path.join(repo_root, "wiki", "context", "session-memory.md")
-    if not os.path.exists(session_file):
+    session_file = session_memory_path(Path(repo_root))
+    if session_file is None:
         return
 
     try:
@@ -156,7 +163,7 @@ def main():
         input_data = {}
 
     # Only run on SessionStart-like events (or always — lightweight enough)
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    repo_root = REPO_ROOT
 
     git_pull(repo_root)
     check_wiki_freshness(repo_root)

@@ -14,11 +14,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
 
-GDRIVE_PATHS = [
-    Path("L:/My Drive/A-Wiki-Data/.secrets"),                                    # Windows
-    Path.home() / "Library/CloudStorage" / "GoogleDrive-aase7en@sunday-estate.com" / "My Drive" / "A-Wiki-Data" / ".secrets",  # Mac (work account)
-    Path.home() / "Library/CloudStorage" / "GoogleDrive-a.richbusinessman@gmail.com" / "My Drive" / "A-Wiki-Data" / ".secrets",  # Mac (personal account)
-]
+# Reuse drive_secrets.py auto-detection so there's exactly one place that knows
+# how to find .secrets across Google Drive / OneDrive / Dropbox / iCloud on
+# macOS / Linux / WSL / Windows. No hardcoded account names.
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+from drive_secrets import candidate_secret_paths  # noqa: E402
 
 SETTINGS_PATH = REPO_ROOT / ".claude" / "settings.local.json"
 
@@ -30,7 +30,7 @@ NEVER_CACHE = {"WIKI_UNLOCK"}
 
 
 def find_secrets_file():
-    for p in GDRIVE_PATHS:
+    for p in candidate_secret_paths():
         if p.exists():
             return p
     return None

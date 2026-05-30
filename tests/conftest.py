@@ -77,10 +77,11 @@ def monkeypatch_env(monkeypatch: pytest.MonkeyPatch) -> None:
 def sample_sync_paths() -> list[str]:
     """The default SYNC_PATHS from sync.py (as strings)."""
     return [
-        "wiki", "log.md", "session-memory.md", "index.md",
+        "wiki", "docs", "decisions", "journal", "index.md",
         "index-ai.md", "index-env.md", "index-iot.md", "index-it.md",
         "index-pharmacy.md", "CLAUDE.md", "GEMINI.md", "AGENTS.md",
-        "brain-map.canvas",
+        ".clinerules", ".cursorrules", ".windsurfrules",
+        ".github/copilot-instructions.md", "brain-map.canvas",
     ]
 
 

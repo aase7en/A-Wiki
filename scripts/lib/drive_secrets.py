@@ -23,36 +23,84 @@ except Exception:  # pragma: no cover - defensive fallback for standalone use
     get_drive_root = None
 
 
+def _glob_cloudstorage_drive() -> list[Path]:
+    """Auto-detect Google Drive / iCloud / OneDrive / Dropbox roots holding
+    `A-Wiki-Data/.secrets`. No hardcoded account names — works for any user.
+
+    Searched cloud provider patterns (per platform):
+      macOS:   ~/Library/CloudStorage/{GoogleDrive,OneDrive,Dropbox}-*/My Drive/A-Wiki-Data
+               ~/Library/Mobile Documents/com~apple~CloudDocs/A-Wiki-Data  (iCloud)
+      Linux:   ~/GoogleDrive/A-Wiki-Data, ~/OneDrive/A-Wiki-Data, ~/Dropbox/A-Wiki-Data
+      Windows: %USERPROFILE%/{Google Drive,OneDrive,Dropbox}/A-Wiki-Data
+    """
+    home = Path.home()
+    hits: list[Path] = []
+
+    # macOS CloudStorage (any GoogleDrive-* / OneDrive-* / Dropbox-* account)
+    cloudstorage = home / "Library" / "CloudStorage"
+    if cloudstorage.is_dir():
+        for provider in ("GoogleDrive-*", "OneDrive-*", "Dropbox-*"):
+            for acct in cloudstorage.glob(provider):
+                # Google Drive root nests under "My Drive"; others typically at acct root
+                for sub in (acct / "My Drive" / "A-Wiki-Data", acct / "A-Wiki-Data"):
+                    if sub.is_dir():
+                        hits.append(sub / ".secrets")
+
+    # macOS iCloud
+    icloud = home / "Library" / "Mobile Documents" / "com~apple~CloudDocs" / "A-Wiki-Data"
+    if icloud.is_dir():
+        hits.append(icloud / ".secrets")
+
+    # Linux / WSL conventional paths
+    for rel in ("GoogleDrive", "OneDrive", "Dropbox"):
+        cand = home / rel / "A-Wiki-Data" / ".secrets"
+        if cand.parent.is_dir():
+            hits.append(cand)
+
+    # Windows USERPROFILE conventional paths (Git Bash / WSL using $USERPROFILE)
+    userprofile = os.environ.get("USERPROFILE")
+    if userprofile:
+        wp = Path(userprofile)
+        for rel in ("Google Drive", "OneDrive", "Dropbox"):
+            cand = wp / rel / "A-Wiki-Data" / ".secrets"
+            if cand.parent.is_dir():
+                hits.append(cand)
+
+    return hits
+
+
 def candidate_secret_paths() -> list[Path]:
-    """Return likely `.secrets` file locations, cheapest/local first."""
+    """Return likely `.secrets` file locations, cheapest/local first.
+
+    Resolution order (cheapest → most expensive scan):
+      1. `A_WIKI_DRIVE_PATH` env var — explicit user override (highest priority)
+      2. `<repo>/drive/.secrets` via `get_drive_root()` — the configured symlink
+      3. `<repo>/drive/.secrets` direct (in case symlink helper unavailable)
+      4. Glob auto-detect across known cloud providers (no hardcoded accounts)
+      5. Windows mapped-drive fallback (`L:/My Drive/A-Wiki-Data/.secrets`)
+    """
     paths: list[Path] = []
 
+    # 1. Explicit override — for users with non-standard layouts
+    override = os.environ.get("A_WIKI_DRIVE_PATH")
+    if override:
+        paths.append(Path(override) / ".secrets")
+
+    # 2. Configured drive/ symlink — fast path for properly-set-up machines
     if get_drive_root is not None:
         try:
             paths.append(get_drive_root() / ".secrets")
         except Exception:
             pass
 
-    paths.extend(
-        [
-            REPO_ROOT / "drive" / ".secrets",
-            Path("L:/My Drive/A-Wiki-Data/.secrets"),
-            Path.home()
-            / "Library"
-            / "CloudStorage"
-            / "GoogleDrive-aase7en@sunday-estate.com"
-            / "My Drive"
-            / "A-Wiki-Data"
-            / ".secrets",
-            Path.home()
-            / "Library"
-            / "CloudStorage"
-            / "GoogleDrive-a.richbusinessman@gmail.com"
-            / "My Drive"
-            / "A-Wiki-Data"
-            / ".secrets",
-        ]
-    )
+    # 3. Direct drive/ probe (helper-less fallback)
+    paths.append(REPO_ROOT / "drive" / ".secrets")
+
+    # 4. Auto-detect across cloud providers (no hardcoded user accounts)
+    paths.extend(_glob_cloudstorage_drive())
+
+    # 5. Windows mapped-drive convention (kept for back-compat; not user-specific)
+    paths.append(Path("L:/My Drive/A-Wiki-Data/.secrets"))
 
     seen: set[str] = set()
     unique: list[Path] = []

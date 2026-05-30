@@ -36,14 +36,15 @@ bash scripts/setup-local.sh
 | `setup-cloud-link.sh --auto` | สร้าง `drive/` และ `raw/` link ไป `A-Wiki-Data` | ไม่ |
 | `.mcp.json` | สร้าง config ตาม path เครื่องนี้ | ไม่ |
 | `import-keys.py` | sync env keys จาก `drive/.secrets` | ไม่ |
+| private journal | สร้าง/เชื่อม `log.md` และ `wiki/context/session-memory.md` จาก `drive/personal/journal/` หรือ `.example` | ไม่ |
 | `gen-index.py` | rebuild local wiki index | เฉพาะ generated context/index ตามระบบ |
 | Codex hooks | link `.codex/hooks` | ไม่ |
 | model intel cache | เตรียม `.tmp/model-intel/` | ไม่ |
 
-Mac ส่วนตัวอาจเจอ path แบบนี้:
+Mac ส่วนตัวอาจเจอ path ลักษณะนี้:
 
 ```text
-/Users/aase7en/Library/CloudStorage/GoogleDrive-aase7en@sunday-estate.com/My Drive/A-Wiki-Data
+$HOME/Library/CloudStorage/GoogleDrive-<account>/My Drive/A-Wiki-Data
 ```
 
 เครื่องที่ทำงานไม่จำเป็นต้อง path ตรงกัน ให้ใช้ตัวตรวจ/ตั้งค่าแทน:

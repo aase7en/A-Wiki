@@ -3,7 +3,7 @@
 // @namespace    a-wiki
 // @version      0.9.0
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ + Location editable + learning-prompt feedback
-// @author       A-Wiki / Asse7en
+// @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
 // @match        https://*.gtwoffice.com/env/manage/trash_add*
 // @grant        GM_xmlhttpRequest

@@ -3,9 +3,13 @@
 # Runs as part of SessionStart hook
 # Source: A-Wiki Phase 1 — Hook Pipeline Activation
 
-SESSION_FILE="wiki/context/session-memory.md"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=scripts/lib/personal_paths.sh
+. "$REPO_ROOT/scripts/lib/personal_paths.sh"
 
-if [ ! -f "$SESSION_FILE" ]; then
+SESSION_FILE="$(awiki_session_memory_path "$REPO_ROOT" || true)"
+
+if [ -z "$SESSION_FILE" ] || [ ! -f "$SESSION_FILE" ]; then
     exit 0
 fi
 
