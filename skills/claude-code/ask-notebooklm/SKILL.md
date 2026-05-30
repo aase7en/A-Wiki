@@ -1,3 +1,8 @@
+---
+name: ask-notebooklm
+description: Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient.
+---
+
 # Skill: Ask NotebookLM (via Gemini API)
 
 **Trigger**: user ถามคำถามที่ต้อง synthesize >3-5 หน้าใน domain เดียว, ขอ overview, เปรียบเทียบหลายแหล่ง — และไม่ต้องการ paste กลับเองจาก NotebookLM Pro

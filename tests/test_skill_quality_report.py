@@ -70,6 +70,25 @@ def test_eval_coverage_reads_awiki_suites(monkeypatch, tmp_path):
     assert skill in covered
 
 
+def test_allow_long_frontmatter_suppresses_soft_length_warning(tmp_path):
+    skill = tmp_path / "skills" / "domain" / "long" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text(
+        "---\n"
+        "name: long-skill\n"
+        "description: Long but intentionally comprehensive.\n"
+        "allow_long: true\n"
+        "---\n\n"
+        "# Long Skill\n\n"
+        + ("content\n" * 3000),
+        encoding="utf-8",
+    )
+
+    result = skill_quality_report.analyze_skill(skill, eval_covered={skill.resolve()})
+
+    assert "too-long-soft" not in result.issues
+
+
 def test_script_mentions_core_skill_roots():
     text = SCRIPT.read_text(encoding="utf-8")
 

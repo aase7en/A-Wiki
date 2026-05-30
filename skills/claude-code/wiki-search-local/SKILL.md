@@ -1,3 +1,8 @@
+---
+name: wiki-search-local
+description: Search A-Wiki through local FTS5 before higher-cost model or web routes.
+---
+
 # Skill: Wiki Search Local (FTS5)
 
 **Trigger**: ก่อนใช้ Grep/Read สแกน wiki หลายไฟล์, หรือเมื่อ user ถามว่า "มีหน้าไหนพูดถึง X", "ค้นใน wiki", "หาเรื่อง..."

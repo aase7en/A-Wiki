@@ -152,9 +152,10 @@ def analyze_skill(path: Path, eval_covered: set[Path]) -> SkillQuality:
     if not covered:
         issues.append("no-eval-coverage")
 
-    if len(text) > HARD_MAX_CHARS:
+    allow_long = str(meta.get("allow_long", "")).lower() in {"1", "true", "yes"}
+    if len(text) > HARD_MAX_CHARS and not allow_long:
         issues.append("too-long-hard")
-    elif len(text) > SOFT_MAX_CHARS:
+    elif len(text) > SOFT_MAX_CHARS and not allow_long:
         issues.append("too-long-soft")
 
     issues.extend(dangerous_patterns(text))
