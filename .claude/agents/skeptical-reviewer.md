@@ -44,7 +44,7 @@ If `CLAUDE.md`, `.claude/settings.json`, or `wiki/context/wiki-overview.md` chan
 - Did hook list in settings.json get the new entry registered correctly (matcher + path)?
 
 ### 6. Logic obvious-misses
-Skim for: off-by-one, regex that catches more than intended, paths assumed absolute when they should be relative, missing `cd` to REPO_ROOT, hardcoded `/Users/aase7en/...` instead of `$REPO_ROOT`.
+Skim for: off-by-one, regex that catches more than intended, paths assumed absolute when they should be relative, missing `cd` to REPO_ROOT, hardcoded user home paths instead of `$REPO_ROOT`.
 
 ## Report Format
 

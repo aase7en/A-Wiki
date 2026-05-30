@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 153 sources
+## Stats — 152 sources
 
 | slug | abstract |
 |------|----------|
@@ -138,7 +138,6 @@
 | `source-5e4074bd` | 1. **การล้างแผล**: ล้างด้วยน้ำสะอาดและสบู่นานอย่างน้อย 15 นาที +… |
 | `sp-drugstore-2020-catalog` | (no abstract) |
 | `strix-halo-research-2026-05-05` | ก่อนหน้านี้ผมประเมิน Strix Halo 70B Q4 = 8-12 tok/s — **ผิด** ตั… |
-| `supabase-2026-aase7en` | 1. **PostgreSQL จริง** — ไม่ใช่ NoSQL เลียนแบบ → query ซับซ้อน,… |
 | `supabase-overview-2026-05-02` | 1. **PostgreSQL จริง** — ไม่ใช่ NoSQL เลียนแบบ → query ซับซ้อน,… |
 | `telegram-ai-agent-setup` | 1. มีหลาย framework ที่ใช้ได้: Nanobot, NClaw, Hermes Agent, cus… |
 | `telegram-ai-router-design` | 1. **ปัญหาที่แก้**: ลดการพึ่งพา Claude API เพียงอย่างเดียว โดยใช… |

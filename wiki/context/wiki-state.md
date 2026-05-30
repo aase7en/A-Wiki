@@ -43,7 +43,7 @@ Sensor → ESP32 → LoRa(DX-LR02) → ESP32-S3 → MQTT → Mosquitto(Pi4)
 
 ## Active Projects
 
-- **Sunday Estate Webapp** 🔥 — FastAPI + React + Supabase self-host บน Pi5. Production live at `http://umbrel.local:8090`. 4 TODOs: Cloudflare Tunnel, Pi5 redeploy ×2, SUPABASE_SECRET_KEY check → ดู [[synthesis/sunday-estate-webapp]]
+- **Private Webapp** 🔥 — FastAPI + React + Supabase self-host บน Pi5. รายละเอียด domain/repo อยู่ใน private journal/Drive
 - **IoT LoRa Architecture** — Phase 1: hardware test | ESP32 + DX-LR02
 - **Pharmacy Web App** — FastAPI + React บน Pi5, drug validation + OCR → ดู [[synthesis/pharmacy-web-app-roadmap]]
 - **Pi5 Projects** — planned: Telegram AI agent → Ollama local → Freqtrade trading bot

@@ -83,7 +83,7 @@ npm install -g @anthropic-ai/claude-code
 1. https://openrouter.ai → Sign up → Keys → Create Key
 2. **เก็บ key ใน file แยก** (ห้ามใส่ใน `.zshrc` ตรงๆ ป้องกัน leak):
 ```bash
-echo 'sk-or-v1-XXXXXXXXXXXXXXXXX' > ~/.openrouter-key
+echo 'OPENROUTER_API_KEY=your-openrouter-key' > ~/.openrouter-key
 chmod 600 ~/.openrouter-key   # เฉพาะเจ้าของอ่านได้
 ```
 
@@ -93,7 +93,7 @@ chmod 600 ~/.openrouter-key   # เฉพาะเจ้าของอ่าน
 export OPENROUTER_API_KEY="$(cat ~/.openrouter-key 2>/dev/null)"
 
 # Wiki paths
-WIKI_DRIVE='/Users/aase7en/Library/CloudStorage/GoogleDrive.../Aase7en-InW-Wiki'
+WIKI_DRIVE="$HOME/Library/CloudStorage/GoogleDrive-<account>/My Drive/A-Wiki-Data"
 WIKI_CLEAN="$HOME/Code/wiki-clean"
 
 # Multi-model launchers

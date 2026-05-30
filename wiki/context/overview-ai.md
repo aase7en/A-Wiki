@@ -47,6 +47,6 @@
 | `multi-agent-failover` | ระบบสลับ agent อัตโนมัติเมื่อ Claude Code Sonnet ชน rate limit (… |
 | `openrouter-api` | หน้านี้เป็น overview ของ OpenRouter ในฐานะ unified API gateway ส… |
 | `openrouter-claude-code` | ** Claude Code = "หน้ากาก" (terminal UI + tool integration) เปลี… |
-| `session-setup` | Wiki นี้ใช้ **folder `/Users/aase7en/Desktop/InW-Wiki` เป็น work… |
+| `session-setup` | Wiki นี้ใช้ **working copy ที่ clone จาก GitHub** เป็น repo หลัก… |
 | `symlinks-ssot` | Symbolic Link (Symlink) คือ "ทางลัด" ระดับ OS ที่ชี้ไปยังไฟล์/โฟ… |
 | `vibe-coding` | Vibe Coding คือ methodology การพัฒนา software ที่ใช้ AI (LLM) เป… |

@@ -38,9 +38,9 @@ Wiki + journal + decisions = digital DNA ของเรา (ดู [[decisions/
 
 ```bash
 # Setup (ครั้งเดียว)
-git remote set-url --add --push origin git@github.com:aase7en/Aase7en-InW-Wiki.git
-git remote set-url --add --push origin git@gitlab.com:aase7en/Aase7en-InW-Wiki.git
-git remote set-url --add --push origin git@codeberg.org:aase7en/Aase7en-InW-Wiki.git
+git remote set-url --add --push origin git@github.com:<owner>/<repo>.git
+git remote set-url --add --push origin git@gitlab.com:<owner>/<repo>.git
+git remote set-url --add --push origin git@codeberg.org:<owner>/<repo>.git
 
 # ใช้งานปกติ
 git push origin main   # → push ขึ้นทั้ง 3 host

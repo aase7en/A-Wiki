@@ -3,7 +3,7 @@
 > **วัตถุประสงค์**: เมื่อ Google Drive sync ทำให้ `.git/` เสียหาย หรือเกิด `.git (1)/` conflict
 > **Last updated**: 2026-05-17
 
-> **Legacy only**: Wiki หลักปัจจุบันอยู่ที่ `/Users/aase7en/Desktop/InW-Wiki` และไม่ใช้ Google Drive sync แล้ว. ใช้ runbook นี้เฉพาะกรณีกู้ repo เก่าที่เคยอยู่ใน Google Drive เท่านั้น.
+> **Legacy only**: Wiki หลักปัจจุบันควรเป็น Git working copy ปกติ และไม่ควรวาง `.git/` ไว้ใน Google Drive sync. ใช้ runbook นี้เฉพาะกรณีกู้ repo เก่าที่เคยอยู่ใน Google Drive เท่านั้น.
 
 ---
 

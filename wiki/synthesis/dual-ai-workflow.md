@@ -77,7 +77,7 @@ updated: 2026-04-19
 
 ### Ingest ไฟล์ใหม่
 ```
-อ่านไฟล์ /Users/aase7en/Desktop/My-IoT-Wiki/raw/[ชื่อไฟล์].md
+อ่านไฟล์ raw/[ชื่อไฟล์].md จาก repo ปัจจุบัน
 สรุปประเด็นหลัก และสร้าง source page ใน wiki/sources/[slug].md
 ตาม template ใน GEMINI.md
 แล้วเพิ่ม log entry ใน log.md และ handoff.md
@@ -85,20 +85,20 @@ updated: 2026-04-19
 
 ### อัปเดต entity page
 ```
-อ่าน /Users/aase7en/Desktop/My-IoT-Wiki/wiki/entities/iot/[ชื่อ].md
+อ่าน wiki/entities/iot/[ชื่อ].md จาก repo ปัจจุบัน
 เพิ่มข้อมูล [X] ในหัวข้อ [Y]
 อัปเดต updated date เป็น 2026-XX-XX
 ```
 
 ### ถามข้อมูลจาก wiki
 ```
-อ่าน /Users/aase7en/Desktop/My-IoT-Wiki/wiki/context/wiki-overview.md
+อ่าน wiki/context/wiki-overview.md จาก repo ปัจจุบัน
 แล้วตอบ: [คำถาม]
 ```
 
 ### บันทึก handoff หลังเสร็จงาน
 ```
-เขียน entry ใหม่ใน /Users/aase7en/Desktop/My-IoT-Wiki/handoff.md
+เขียน entry ใหม่ใน handoff.md ของ repo ปัจจุบัน
 สรุปสิ่งที่ทำในวันนี้ และงานที่ค้างไว้สำหรับ Claude
 ```
 
