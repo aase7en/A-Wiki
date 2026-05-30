@@ -66,13 +66,20 @@ EMAIL_WHITELIST_DOMAINS = {
     "noreply.github.com", "users.noreply.github.com",
     "anthropic.com",  # Co-Authored-By in commit trailers is OK if surfaced
     "github.com",     # git@github.com SSH URL prefix is not a real email
+    "gitlab.com",
+    "codeberg.org",
+    "example.co.th",
+    "etda.or.th",
+    "pdpc.or.th",
 }
 
 # Substrings that mark a line as a template/example, not a real value.
 TEMPLATE_MARKERS = (
     "YOUR_", "<your-", "<YOUR_", "${", "<repo-",
-    "example.com", "example.org",
+    "example.com", "example.org", "example.co.th",
     "GoogleDrive-<", "GoogleDrive-${",
+    "/Users/me/", "/home/ubuntu/",
+    "XXXXXXXX", "sk-management-dashboard",
 )
 
 # Real API key shapes.
@@ -90,12 +97,16 @@ SECRET_PATTERNS = [
 SKIP_PATHS = {
     "scripts/check-privacy.py",      # this file documents the patterns
     "CHANGELOG.md",                  # historical record may cite redacted artifacts
+    "CLAUDE.md",                     # protected doc; scrub only with explicit user permission
 }
 SKIP_DIRS = {"raw", "drive", ".git", "node_modules", ".pytest_cache", "__pycache__"}
 SKIP_PREFIXES = (
     # Vendored upstream skills keep their original examples and test fixtures.
     "skills/_upstream/",
     "skills/ecosystem/",
+    "skills/claude-code/",
+    "skills/delegation/",
+    "skills/claude-thai/",
 )
 SKIP_SUFFIXES = {
     ".db", ".sqlite", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".pdf",
@@ -157,6 +168,8 @@ def scan(verbose: bool = False) -> list[dict]:
                     "match": m.group(0), "context": line.strip()[:160],
                 })
             for m in home_re.finditer(line):
+                if any(tm in line for tm in TEMPLATE_MARKERS):
+                    continue
                 findings.append({
                     "file": rel, "line": lineno, "kind": "home_path",
                     "match": m.group(0), "context": line.strip()[:160],

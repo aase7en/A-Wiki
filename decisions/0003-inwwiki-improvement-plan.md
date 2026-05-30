@@ -9,7 +9,7 @@
 
 ## Context
 
-After a comprehensive audit of `/Users/aase7en/Desktop/InW-Wiki` — a sister wiki with shared ancestry (same CLAUDE.md base, same `wiki/` entity/concept structure, same 224 wiki pages) — we identified **9 critical gaps** where A-Wiki lags behind in safety, automation, and knowledge infrastructure.
+After a comprehensive audit of a legacy sister wiki with shared ancestry (same CLAUDE.md base, same `wiki/` entity/concept structure, same 224 wiki pages) — we identified **9 critical gaps** where A-Wiki lags behind in safety, automation, and knowledge infrastructure.
 
 InW-Wiki has evolved independently with:
 - 2,296 total files (vs A-Wiki's 989)
@@ -183,7 +183,7 @@ wiki/context/device-session.md— Multi-device session tracking
 
 ## References
 
-- [InW-Wiki](https://github.com/aase7en/InW-Wiki) — Sister wiki with full implementation
+- Legacy sister wiki — full implementation reference kept private
 - [OmegaWiki](https://github.com/skyllwt/OmegaWiki) — Graph visualization approach
 - [LLM-WIKI-MCP](https://github.com/Electro-resonance/LLM-WIKI-MCP) — MCP protocol for wikis
 - [MiroFish](https://github.com/666ghj/MiroFish) — GraphRAG + agent memory injection (61.7K ★)

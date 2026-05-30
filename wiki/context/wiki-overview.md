@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 57 |
 | CONCEPTS | 38 |
-| SYNTHESIS | 182 |
-| SOURCES | 153 |
-| **Total** | **430 pages** |
+| SYNTHESIS | 178 |
+| SOURCES | 152 |
+| **Total** | **425 pages** |
 
 ---
 
@@ -30,7 +30,7 @@
 | AI Tools | 13 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (153): `wiki/context/overview-sources.md`
+- **Sources** (152): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -66,9 +66,6 @@
 | `pharmacy-project-specs` | สร้างระบบ AI Assistant ที่ช่วยให้คุณศุภศิษฎิ์ (เจ้าของร้านภูฟาร์… |
 | `pharmacy-web-app-roadmap` | สร้าง **FastAPI + React web app** บน **Raspberry Pi 5** พร้อมการ… |
 | `pi4-lora-gateway-server` | [ESP32 Node A] → DX-LR02 TX ~~LoRa~~ [ESP32 Node B] → DX-LR02 TX… |
-| `sunday-estate-frontend-qa-2026-05-18` | User test production UI ที่ `http://umbrel.local:8090` หลัง depl… |
-| `sunday-estate-pi5-portainer-runbook` | จะ redeploy / verify / debug stack `sunday-estate` บน Pi5 ผ่าน P… |
-| `sunday-estate-webapp` | ระบบจัดการธุรกิจอสังหาริมทรัพย์ของ **Sunday Estate Co., Ltd.** —… |
 | `synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (awaiting human summary) |
 | `synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (awaiting human summary) |
 | `synth-3-dashboard-node-red` | (awaiting human summary) |
@@ -186,7 +183,6 @@
 | `synth-source-5e4074bd` | _To be filled in by human review._ |
 | `synth-sp-drugstore-2020-catalog` | _To be filled in by human review._ |
 | `synth-strix-halo-research-2026-05-05` | _To be filled in by human review._ |
-| `synth-supabase-2026-aase7en` | _To be filled in by human review._ |
 | `synth-supabase-overview-2026-05-02` | _To be filled in by human review._ |
 | `synth-telegram-ai-agent-setup` | _To be filled in by human review._ |
 | `synth-telegram-ai-router-design` | _To be filled in by human review._ |
@@ -224,4 +220,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 430 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 425 pages across 4 sections.*

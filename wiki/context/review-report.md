@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 480
-- ⚠ Warnings: 414
+- ✓ Passed: 476
+- ⚠ Warnings: 409
 - ❌ Failures: 44
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/iot/data-logger.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/iot/lora.md: missing frontmatter key: title
-- … 438 more issue(s) below
+- … 433 more issue(s) below
 
 ---
 
@@ -51,6 +51,7 @@
 - wiki/entities/ai-tools/gitnexus.md: broken link: [[mcp]]
 - wiki/entities/ai-tools/gitnexus.md: broken link: [[claude-skills]]
 - wiki/entities/ai-tools/react-doctor.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/react-doctor.md: broken link: [[private-webapp]]
 - wiki/entities/ai-tools/react-doctor.md: broken link: [[pharmacy-app]]
 - wiki/entities/ai-tools/react-doctor.md: broken link: [[iot-dashboard]]
 - wiki/entities/ai-tools/turbovec.md: broken link: [[sqlite-vec]]
@@ -79,7 +80,6 @@
 - wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 - wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
 - wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki/synthesis/sunday-estate-webapp.md: broken link: [[ai-tools/openrouter-claude-code]]
 
 ---
 
@@ -225,7 +225,6 @@
 - wiki/sources/source-5e4074bd.md: missing frontmatter key: tags
 - wiki/sources/sp-drugstore-2020-catalog.md: missing frontmatter key: tags
 - wiki/sources/strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki/sources/supabase-2026-aase7en.md: missing frontmatter key: tags
 - wiki/sources/ux-design-in-iot.md: missing frontmatter key: tags
 - wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
 - wiki/sources/web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
@@ -258,9 +257,6 @@
 - wiki/synthesis/pharmacy-project-specs.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/pharmacy-web-app-roadmap.md: missing frontmatter key: title
 - wiki/synthesis/pi4-lora-gateway-server.md: missing frontmatter key: title
-- wiki/synthesis/sunday-estate-frontend-qa-2026-05-18.md: missing frontmatter key: tags
-- wiki/synthesis/sunday-estate-pi5-portainer-runbook.md: missing frontmatter key: tags
-- wiki/synthesis/sunday-estate-webapp.md: missing frontmatter key: tags
 - wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
 - wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
 - wiki/synthesis/synth-3-dashboard-node-red.md: missing frontmatter key: tags
@@ -378,7 +374,6 @@
 - wiki/synthesis/synth-source-5e4074bd.md: missing frontmatter key: tags
 - wiki/synthesis/synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
 - wiki/synthesis/synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki/synthesis/synth-supabase-2026-aase7en.md: missing frontmatter key: tags
 - wiki/synthesis/synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
 - wiki/synthesis/synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
 - wiki/synthesis/synth-telegram-ai-router-design.md: missing frontmatter key: tags
@@ -507,10 +502,10 @@
 
 ---
 
-## ✓ Passed Checks (480 total)
+## ✓ Passed Checks (476 total)
 
 - **L2**: 91 passed
-- **L3**: 388 passed
+- **L3**: 384 passed
 - **L6**: 1 passed
 
 ---

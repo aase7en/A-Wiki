@@ -10,11 +10,11 @@ updated: 2026-05-17
 
 ## ทำไมถึงต้องมี checklist นี้
 
-Wiki นี้ใช้ **folder `/Users/aase7en/Desktop/InW-Wiki` เป็น working copy หลัก**, ใช้ **GitHub เป็น sync หลัก**, และเก็บไฟล์ใหญ่แบบ **local-only/manual backup**:
-- **GitHub** — เก็บ wiki, index, config, และ `raw/*.md` ที่เป็น text source
-- **Local-only/manual backup** — เก็บไฟล์ใหญ่ใต้ `raw/` เช่น PDF, รูปภาพ, CSV, JSON ที่ gitignore ไว้
+Wiki นี้ใช้ **working copy ที่ clone จาก GitHub** เป็น repo หลัก และใช้ external data layer สำหรับข้อมูลส่วนตัว/ไฟล์ใหญ่:
+- **GitHub** — เก็บ wiki, index, config, scripts, และ template ที่ใช้เริ่มเครื่องใหม่
+- **External data layer** — เก็บ `raw/`, `.secrets`, journal ส่วนตัว, userscript backup และไฟล์ใหญ่ผ่าน `drive/` symlink/junction
 
-Google Drive ไม่ใช่ dependency ของ Wiki นี้แล้ว และไม่ควรใช้ sync โฟลเดอร์ Wiki หลัก
+Google Drive หรือ cloud provider อื่นเป็น dependency ของข้อมูลดิบ ไม่ใช่ที่อยู่ของ `.git/` หลัก
 
 ---
 
@@ -24,7 +24,7 @@ Google Drive ไม่ใช่ dependency ของ Wiki นี้แล้ว 
 
 **ทาง Terminal:**
 ```bash
-cd '/Users/aase7en/Desktop/InW-Wiki'
+cd /path/to/A-Wiki
 git pull
 ```
 
@@ -42,9 +42,9 @@ test -d .git && git status --short --branch
 # ควรได้: ## main...origin/main
 ```
 
-สถานะที่ถูกต้องตอนนี้คือ `.git/` เป็น **directory** อยู่ใน `/Users/aase7en/Desktop/InW-Wiki`
+สถานะที่ถูกต้องคือ `.git/` เป็น **directory** อยู่ใน working copy ปัจจุบัน
 
-ถ้า `.git` เป็น pointer ไป `/Users/aase7en/git-data/Aase7en-InW-Wiki.git` แปลว่าเจอ legacy setup จากยุค Google Drive redirect; ยังใช้ได้ แต่ไม่ใช่ preferred setup ของ Wiki นี้แล้ว
+ถ้า `.git` เป็น pointer ไป path ภายนอก แปลว่าเจอ legacy setup จากยุค Google Drive redirect; ยังใช้ได้บางกรณี แต่ไม่ใช่ preferred setup ของ Wiki นี้แล้ว
 
 ### ขั้นตอนที่ 3 — ตรวจ local-only raw files เมื่อจำเป็น
 

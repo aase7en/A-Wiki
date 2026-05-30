@@ -99,7 +99,7 @@ The target state is:
    - Required fix: document External Data Layer in AGENTS/GEMINI/Codex-facing docs and add health checks.
 
 10. `session-memory.md` still contains stale path assumptions.
-    - Sticky note says main wiki path is `/Users/aase7en/Desktop/InW-Wiki`.
+   - Sticky note used to assume a user-specific legacy wiki path.
     - Current Work PC path is `A:\GitHub\A-Wiki`.
     - Risk: handoff confusion between old InW-Wiki and current A-Wiki.
     - Required fix: replace with platform-neutral storage statement.
