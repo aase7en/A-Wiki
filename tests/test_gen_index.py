@@ -439,3 +439,8 @@ class TestCheckMode:
 
         assert "--fetch-arxiv" in text
         assert "AWIKI_GEN_INDEX_FETCH_ARXIV" in text
+
+    def test_review_check_chain_uses_content_profile(self):
+        text = (REPO_ROOT / "scripts" / "gen-index.py").read_text(encoding="utf-8")
+
+        assert '"--profile", "content"' in text

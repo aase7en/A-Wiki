@@ -432,8 +432,8 @@ def main() -> int:
     reviewer = scripts_dir / "review-check.py"
     if reviewer.exists() and not args.check:
         try:
-            subprocess.run([sys.executable, str(reviewer)], check=True, capture_output=True)
-            print(f"[OK] chained: review-check.py (report -> wiki/context/review-report.md)")
+            subprocess.run([sys.executable, str(reviewer), "--profile", "content"], check=True, capture_output=True)
+            print(f"[OK] chained: review-check.py --profile content (report -> wiki/context/review-report.md)")
         except subprocess.CalledProcessError as e:
             print(f"[WARN] review-check.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
