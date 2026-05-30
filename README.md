@@ -15,6 +15,7 @@
 [![A-Wiki CI](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml)
 [![Cross-Platform Smoke](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml)
 [![Model Roster Refresh](https://github.com/aase7en/A-Wiki/actions/workflows/model-roster-refresh.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/model-roster-refresh.yml)
+[![Weekly Health Digest](https://github.com/aase7en/A-Wiki/actions/workflows/wiki-health-digest.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/wiki-health-digest.yml)
 
 **A-Wiki doesn't give your AI Agent a "better prompt." It gives it a spine.**
 
@@ -143,6 +144,7 @@ python scripts/verify-cross-platform.py
 - `A-Wiki Cross-Platform Smoke` runs manually or weekly across Ubuntu, macOS, and Windows.
 - The Linux job additionally runs `verify-cross-platform.py --build-vec`.
 - `A-Wiki Model Roster Refresh` runs every Monday and manually on demand. It checks whether OpenRouter's free model roster changed, uploads a report artifact, and opens/updates an issue for review instead of auto-committing routing changes.
+- `A-Wiki Weekly Health Digest` runs every Wednesday and manually on demand. It publishes a repo/wiki health report artifact without touching real `drive/` data or committing generated files.
 
 ---
 
@@ -329,6 +331,9 @@ A-Wiki/
 | [wiki/context/wiki-overview.md](wiki/context/wiki-overview.md) | Wiki stats, domain index, session memory |
 | [scripts/setup-local.sh](scripts/setup-local.sh) | First-time machine setup script |
 | [docs/runbooks/setup-new-machine.md](docs/runbooks/setup-new-machine.md) | Cross-platform onboarding runbook for Mac, Windows, Linux, and GitHub Actions |
+| [docs/runbooks/upstream-refresh.md](docs/runbooks/upstream-refresh.md) | Version tracking and upstream refresh runbook |
+| [CHANGELOG.md](CHANGELOG.md) / [VERSION](VERSION) | Current capability version and release history |
+| [scripts/wiki-health-digest.py](scripts/wiki-health-digest.py) | Weekly repo/wiki health digest generator |
 | [LICENSE](LICENSE) | MIT — use it, fork it, ship it |
 
 ---

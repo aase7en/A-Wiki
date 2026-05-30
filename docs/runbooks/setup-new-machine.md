@@ -98,11 +98,13 @@ Workflow สำคัญ:
 | `A-Wiki CI` | push ไป `main` + manual | ตรวจ privacy, syntax, tests, readiness smoke |
 | `A-Wiki Cross-Platform Smoke` | manual + weekly | ทดสอบ fake external data layer บน Ubuntu/macOS/Windows |
 | `A-Wiki Model Roster Refresh` | manual + ทุกวันจันทร์ | เทียบ free model roster ล่าสุดกับ `wiki/context/model-roster.conf`, upload report, เปิด/อัปเดต issue ถ้า roster เปลี่ยน |
+| `A-Wiki Weekly Health Digest` | manual + ทุกวันพุธ | สร้าง report สุขภาพ repo/wiki เป็น artifact โดยไม่ auto-commit |
 
 Manual run:
 
 ```bash
 gh workflow run model-roster-refresh.yml -f create_issue=false
+gh workflow run wiki-health-digest.yml
 gh run list --workflow model-roster-refresh.yml --limit 1
 ```
 
