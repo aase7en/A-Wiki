@@ -1,5 +1,13 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] ingest | Velxio simulator
+
+**Done:**
+- Ingested https://globalbyteshop.com/blogs/projects/velxio-arduino-esp32-raspberry-pi-simulator via WebFetch
+- Created [[sources/velxio-arduino-esp32-pi-simulator]] — open-source web simulator (Beta), Wokwi-alternative, self-hostable Docker
+- Created [[entities/iot/velxio]] (category: project) — 19 boards / 5 architectures (AVR8, RP2040, RISC-V, Xtensa, Cortex-A53), 48+ components, heterogeneous board simulation = USP
+- Cross-linked: arduino-uno-r3, esp32, esp32-s3, arduino-ide, platformio, esp-idf
+
 ## [2026-05-30] session | Hardening Step 8 platform instruction refresh
 
 **Done:**

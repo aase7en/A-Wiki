@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **35**
+- Entities: **36**
 - Concepts: **12**
 
 ---
@@ -54,6 +54,7 @@
 | `telegram-bot` | Telegram Bot API ฟรี ไม่มี rate limit ที่น่ากังวลสำหรับ IoT scal… |
 | `the-things-network` | TTN เป็น cloud platform ที่ให้บริการ LoRaWAN Network Server ฟรีส… |
 | `vapcell-m35-18650` | แบตเตอรี่ลิเธียมไอออน ขนาด 18650 ความจุสูง 3500mAh เหมาะสำหรับ I… |
+| `velxio` | Velxio เป็น simulator ในเบราว์เซอร์สำหรับ Arduino / ESP32 / Rasp… |
 
 ---
 
