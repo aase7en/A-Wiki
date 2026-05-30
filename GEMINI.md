@@ -32,6 +32,17 @@ Then read:
 
 ---
 
+## Brain Improvement Gate
+
+Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy, follow `docs/protocols/brain-improvement-gate.md`.
+
+- Prove a clear A-Wiki improvement.
+- Use the lightest reusable shape: hook, skill, plugin, GitHub Action, symlink, script, protocol, local index, or multi-model parallel flow.
+- Preserve Cost-first, cross-platform, cross-device, and public-safe external data rules.
+- Package repeated workflows instead of leaving them as chat-only reminders.
+
+---
+
 ## Model Selection (Dynamic — never hard-code!)
 
 Model availability changes daily — free models become paid, new ones appear, old ones get deprecated.

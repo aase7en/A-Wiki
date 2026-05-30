@@ -23,6 +23,17 @@ python3 scripts/verify-awiki-ready.py --skip-evals
 
 ---
 
+## Brain Improvement Gate
+
+Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy, follow `docs/protocols/brain-improvement-gate.md`.
+
+- Clear gain for A-Wiki as a second brain
+- Lightweight reusable shape first: hook, skill, plugin, GitHub Action, symlink, script, protocol, local index, or multi-model parallel workflow
+- Cost-first, cross-platform, cross-device
+- Private/raw/secrets stay in gitignored `drive/`/`raw/`
+
+---
+
 ## About This Project
 
 **A-Wiki** = Hybrid swarm intelligence + knowledge wiki brain.

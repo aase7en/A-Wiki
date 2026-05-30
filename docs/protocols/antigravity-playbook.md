@@ -19,6 +19,16 @@ python3 scripts/verify-awiki-ready.py --skip-evals
 
 ---
 
+## Brain Improvement Gate
+
+Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy, follow `docs/protocols/brain-improvement-gate.md`.
+
+- Clear gain for A-Wiki as a second brain.
+- Lightweight reusable shape first: hook, skill, plugin, GitHub Action, symlink, script, protocol, local index, or multi-model parallel workflow.
+- Preserve Cost-first, cross-platform, cross-device, and public-safe external data rules.
+
+---
+
 ## 1. Multi-Agent & Parallel Delegation (`invoke_subagent`)
 
 Antigravity equips you with the ability to define and invoke subagents to run tasks in the background.

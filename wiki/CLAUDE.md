@@ -1,5 +1,6 @@
 > **อ่านเมื่อทำงานใน `wiki/`** — auto-loaded by Claude Code เมื่อ cwd อยู่ใน wiki/ หรือ subdirectory
 > สำหรับรายละเอียด delegation/notebooklm/knowledge-currency → ดู `docs/protocols/`
+> ถ้าการแก้ wiki เปลี่ยนความสามารถของ A-Wiki brain, agent workflow, skills, hooks, scripts, sync, หรือ policy ข้อมูลส่วนตัว → อ่าน `docs/protocols/brain-improvement-gate.md` ก่อน
 
 ---
 

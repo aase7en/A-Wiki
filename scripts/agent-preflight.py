@@ -205,6 +205,7 @@ def check_hook_config_commands() -> CheckResult:
 def check_instruction_drift() -> CheckResult:
     missing_files = []
     missing_preflight = []
+    missing_brain_gate = []
     for rel in PREFLIGHT_DOCS:
         path = REPO_ROOT / rel
         if not path.is_file():
@@ -213,14 +214,18 @@ def check_instruction_drift() -> CheckResult:
         text = path.read_text(encoding="utf-8", errors="replace")
         if "scripts/agent-preflight.py" not in text:
             missing_preflight.append(rel)
-    if missing_files or missing_preflight:
+        if "brain-improvement-gate" not in text:
+            missing_brain_gate.append(rel)
+    if missing_files or missing_preflight or missing_brain_gate:
         parts = []
         if missing_files:
             parts.append("missing files: " + ", ".join(missing_files))
         if missing_preflight:
             parts.append("missing preflight line: " + ", ".join(missing_preflight))
+        if missing_brain_gate:
+            parts.append("missing brain gate line: " + ", ".join(missing_brain_gate))
         return CheckResult("FAIL", "platform instruction drift", "; ".join(parts))
-    return CheckResult("OK", "platform instruction drift", "preflight documented across platform files")
+    return CheckResult("OK", "platform instruction drift", "preflight + brain gate documented across platform files")
 
 
 def run_checks(skip_remote: bool = False) -> list[CheckResult]:

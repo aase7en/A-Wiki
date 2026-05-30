@@ -42,8 +42,23 @@ def test_instruction_drift_detects_missing_preflight_line(monkeypatch, tmp_path)
     assert "missing preflight line" in result.detail
 
 
-def test_instruction_drift_passes_when_documented(monkeypatch, tmp_path):
+def test_instruction_drift_detects_missing_brain_gate_line(monkeypatch, tmp_path):
     (tmp_path / "AGENTS.md").write_text("python scripts/agent-preflight.py\n", encoding="utf-8")
+    monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(agent_preflight, "PREFLIGHT_DOCS", ["AGENTS.md"])
+
+    result = agent_preflight.check_instruction_drift()
+
+    assert result.level == "FAIL"
+    assert "missing brain gate line" in result.detail
+
+
+def test_instruction_drift_passes_when_documented(monkeypatch, tmp_path):
+    (tmp_path / "AGENTS.md").write_text(
+        "python scripts/agent-preflight.py\n"
+        "docs/protocols/brain-improvement-gate.md\n",
+        encoding="utf-8",
+    )
     monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(agent_preflight, "PREFLIGHT_DOCS", ["AGENTS.md"])
 
