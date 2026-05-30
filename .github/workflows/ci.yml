@@ -1,0 +1,73 @@
+name: A-Wiki CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: awiki-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Fast repo verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+          python -m pip install -r requirements.txt
+
+      - name: Prepare fake external data layer
+        run: |
+          bash scripts/setup-cloud-link.sh --provider local --force
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from drive_path import get_drive_root
+
+          root = get_drive_root()
+          (root / "raw").mkdir(parents=True, exist_ok=True)
+          (root / "raw" / "ci-smoke.md").write_text("# CI smoke source\n", encoding="utf-8")
+          (root / ".secrets").write_text(
+              "OPENROUTER_API_KEY=sk-or-v1-example\n"
+              "GEMINI_API_KEY=AIza-example\n",
+              encoding="utf-8",
+          )
+          PY
+          bash scripts/setup-cloud-link.sh --status
+          python scripts/lib/drive_secrets.py --check
+
+      - name: Prepare local generated config
+        run: |
+          bash scripts/setup-codex-hooks.sh
+          python scripts/gen-index.py
+
+      - name: Privacy and syntax checks
+        run: |
+          python scripts/check-privacy.py
+          bash -n scripts/setup-local.sh scripts/setup-cloud-link.sh scripts/update-model-roster.sh scripts/delegate.sh scripts/swarm/delegate.sh
+
+      - name: Unit tests
+        run: python -m pytest -q
+
+      - name: Readiness smoke
+        run: python scripts/verify-awiki-ready.py --skip-remote --skip-evals
+

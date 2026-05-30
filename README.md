@@ -12,6 +12,9 @@
 
 # A-Wiki — The AI Operating System That Ships
 
+[![A-Wiki CI](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/ci.yml)
+[![Cross-Platform Smoke](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml/badge.svg)](https://github.com/aase7en/A-Wiki/actions/workflows/cross-platform.yml)
+
 **A-Wiki doesn't give your AI Agent a "better prompt." It gives it a spine.**
 
 > Most AI coding assistants behave like a caffeinated junior dev on the last day of a sprint — rushing, patching symptoms, and burning your token budget on boilerplate.
@@ -59,7 +62,7 @@ Before onboarding, your machine must have:
 | **AI Client** | At least one from the Platform Support table below | see table |
 
 > **Windows:** All shell scripts use Bash. Use **Git Bash** (not PowerShell, not CMD).
-> **Google Drive (optional):** Mount at `L:\My Drive\A-Wiki-Data\` (Windows) or `~/Library/CloudStorage/` (Mac) for raw source sync and API key storage.
+> **External data layer:** `drive/` points to each user's own cloud/local `A-Wiki-Data` path. Do not hardcode personal Google Drive account paths.
 
 ---
 
@@ -84,11 +87,14 @@ This single command does everything:
 
 | Sub-step | What Happens |
 |---|---|
-| **[1/5] raw/ link** | Creates symlink (Mac) or junction (Windows) pointing to Google Drive raw sources |
-| **[2/5] .mcp.json** | Generates from `.mcp.json.example` with your machine's correct paths |
-| **[3/5] API keys** | Reads `L:\My Drive\A-Wiki-Data\.secrets` → injects into `.claude/settings.local.json` |
-| **[4/5] Wiki index** | Builds SQLite FTS5 search index from all 420+ wiki pages |
-| **[5/5] .codex/ hooks** | Links `.codex/hooks/` → `.claude/hooks/` so Codex uses the same enforcement hooks |
+| **[1/8] drive/ + raw/** | Creates symlink/junction/fallback pointing to your external `A-Wiki-Data` |
+| **[2/8] .mcp.json** | Generates from `.mcp.json.example` with your machine's correct paths |
+| **[3/8] API keys** | Reads `drive/.secrets` → injects cacheable keys into local settings without printing values |
+| **[4/8] Private journal** | Creates/links local `log.md` and `wiki/context/session-memory.md` from Drive or `.example` |
+| **[5/8] Wiki index** | Builds SQLite FTS5 search index from all wiki pages |
+| **[6/8] Codex hooks** | Generates local `.codex/hooks.json` with portable relative commands |
+| **[7/8] Model router** | Prepares local model-intel/router cache |
+| **[8/8] Optional tools** | SkillOpt/react-doctor install only when explicitly enabled |
 
 #### Optional: Local Semantic Search (sqlite-vec + fastembed)
 
@@ -120,6 +126,21 @@ Open your preferred AI client in the repo directory. The brain loads automatical
 - **Gemini CLI** → reads `GEMINI.md`
 - **Codex** → reads `AGENTS.md`
 - **All platforms** → Iron Laws, Cost Pyramid, Swarm Protocol, Wiki access
+
+### CI / Cross-Platform Proof
+
+GitHub Actions runs a fake external data layer so tests never touch your real Google Drive secrets:
+
+```bash
+python scripts/check-privacy.py
+python -m pytest -q
+python scripts/verify-awiki-ready.py --skip-remote --skip-evals
+python scripts/verify-cross-platform.py
+```
+
+- `A-Wiki CI` runs on every push to `main`.
+- `A-Wiki Cross-Platform Smoke` runs manually or weekly across Ubuntu, macOS, and Windows.
+- The Linux job additionally runs `verify-cross-platform.py --build-vec`.
 
 ---
 

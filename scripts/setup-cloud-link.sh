@@ -215,8 +215,10 @@ init_drive_structure() {
     mkdir -p "$drive/ocr-feedback"
     mkdir -p "$drive/individual-tasks"
     mkdir -p "$drive/raw"
-    mkdir -p "$drive/.secrets"
-    info "  folders ready: waste-reports/, personal-tools/, ocr-feedback/, individual-tasks/, raw/, .secrets/"
+    if [ -d "$drive/.secrets" ]; then
+        warn "  $drive/.secrets is a directory; replace it with a KEY=VALUE file when adding secrets"
+    fi
+    info "  folders ready: waste-reports/, personal-tools/, ocr-feedback/, individual-tasks/, raw/"
 }
 
 # ── Resolve current drive path (for raw/ setup that depends on drive/) ───────
