@@ -227,6 +227,12 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | `scripts/ecosystem/link-my-skills.sh` | Symlink ecosystem skills |
 | `scripts/check-privacy.py` | Pre-publish scan for personal paths, codenames, and secrets |
 | `scripts/verify-cross-platform.py` | Verify clone health across Mac/Linux/WSL-style environments |
+| `scripts/verify-next-machine.py` | One-command Work PC/WSL/fresh-clone verification |
+| `scripts/sync-smoke.py` | Non-destructive sync workflow smoke test using temp repos |
+| `scripts/setup-dream-gitnexus.sh` | Batch GitNexus setup for explicit external project paths |
+| `scripts/build_pharmacy_db.py` | Build ignored pharmacy SQLite runtime DB from Drive/raw JSON |
+| `scripts/pharmacy_lookup.py` | Pharmacy order lookup against local SQLite FTS5 DB |
+| `scripts/compare_delivery.py` | Compare pharmacy order list with delivery JSON |
 
 ---
 

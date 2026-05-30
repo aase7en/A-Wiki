@@ -69,6 +69,7 @@ bash scripts/setup-cloud-link.sh --path "/explicit/cloud/path"
 | Run deterministic A-Wiki skill evals | `bash scripts/skillopt/run-awiki-evals.sh` |
 | Run A-Wiki-owned skill quality report | `python3 scripts/skill-quality-report.py` |
 | Check SessionStart TODO hygiene | `python3 scripts/todo-health.py` |
+| Verify this machine end-to-end | `python3 scripts/verify-next-machine.py --build-vec` |
 | Install react-doctor สำหรับ React project | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` |
 
 SkillOpt local install จะอยู่ที่:
@@ -88,6 +89,7 @@ SkillOpt local install จะอยู่ที่:
 python3 scripts/agent-preflight.py
 python3 scripts/verify-awiki-ready.py
 python3 scripts/verify-cross-platform.py --build-vec
+python3 scripts/verify-next-machine.py --build-vec
 bash scripts/setup-cloud-link.sh --status
 python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py -q
 ```

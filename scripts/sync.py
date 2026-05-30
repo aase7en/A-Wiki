@@ -83,7 +83,7 @@ def sync_now(device):
     
     if dirty:
         print("Local changes detected. Stashing...")
-        run_cmd(["git", "stash", "push", "-m", f"sync-stash-{device}"])
+        run_cmd(["git", "stash", "push", "-u", "-m", f"sync-stash-{device}"])
         stashed = True
         
     # 3. Pull from remote with rebase
