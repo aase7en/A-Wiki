@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 152 sources
+## Stats — 153 sources
 
 | slug | abstract |
 |------|----------|
@@ -142,6 +142,7 @@
 | `telegram-ai-agent-setup` | 1. มีหลาย framework ที่ใช้ได้: Nanobot, NClaw, Hermes Agent, cus… |
 | `telegram-ai-router-design` | 1. **ปัญหาที่แก้**: ลดการพึ่งพา Claude API เพียงอย่างเดียว โดยใช… |
 | `tinyml-esp32-applications` | 1. **TinyML คืออะไร**: ML บน microcontroller ทำให้ inference เกิ… |
+| `trading-rpg-project-brief-2026-05-30` | 1. เป้าหมายคือเปลี่ยน trading dashboard ให้เป็น **8-bit investme… |
 | `umbrel-pi5-setup` | 1. Umbrel OS ติดตั้งบน NVMe โดยตรง (ต้องใช้ v1.2.0+) 2. Bitcoin… |
 | `uthai-equipment-price-2568` | 1. แบ่งครุภัณฑ์เป็น **12 หมวดหลัก** ครอบคลุม ก่อสร้าง / เกษตร /… |
 | `ux-design-in-iot` | (no abstract) |

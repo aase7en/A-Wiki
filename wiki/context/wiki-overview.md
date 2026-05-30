@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 58 |
 | CONCEPTS | 38 |
-| SYNTHESIS | 178 |
-| SOURCES | 152 |
-| **Total** | **426 pages** |
+| SYNTHESIS | 180 |
+| SOURCES | 153 |
+| **Total** | **429 pages** |
 
 ---
 
@@ -30,7 +30,7 @@
 | AI Tools | 14 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (152): `wiki/context/overview-sources.md`
+- **Sources** (153): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -39,6 +39,7 @@
 
 | slug | abstract |
 |------|----------|
+| `8-bit-trading-rpg-blueprint` | "จะออกแบบเว็บบอทเทรด Forex/Crypto/หุ้น ให้เป็น 8-Bit Investment… |
 | `CLAUDE` | 1. **frontmatter บังคับ**: `type: synthesis`, `tags`, `sources`,… |
 | `ai-driven-environmental-modeling` | Machine learning for air quality forecasting, water quality pred… |
 | `ai-for-drug-safety` | LLM and graph-based approaches to drug interaction prediction an… |
@@ -187,6 +188,7 @@
 | `synth-telegram-ai-agent-setup` | _To be filled in by human review._ |
 | `synth-telegram-ai-router-design` | _To be filled in by human review._ |
 | `synth-tinyml-esp32-applications` | _To be filled in by human review._ |
+| `synth-trading-rpg-project-brief-2026-05-30` | [verified 2026-05-30] User brief proposes an 8-bit RPG layer for… |
 | `synth-umbrel-pi5-setup` | _To be filled in by human review._ |
 | `synth-uthai-equipment-price-2568` | _To be filled in by human review._ |
 | `synth-ux-design-in-iot` | (awaiting human summary) |
@@ -220,4 +222,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 426 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 429 pages across 4 sections.*
