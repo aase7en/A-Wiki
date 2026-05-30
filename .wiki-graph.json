@@ -1,12 +1,12 @@
 {
   "generated_at": "2026-05-30",
   "stats": {
-    "nodes": 452,
-    "edges": 1163,
+    "nodes": 453,
+    "edges": 1170,
     "edges_by_type": {
-      "wikilink": 1037,
-      "mdlink": 47,
-      "depends": 27,
+      "wikilink": 1041,
+      "mdlink": 49,
+      "depends": 28,
       "implements": 51,
       "extends": 1
     },
@@ -451,6 +451,11 @@
     {
       "path": "wiki/entities/ai-tools/react-doctor.md",
       "title": "react-doctor",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/social-media-skills.md",
+      "title": "Social Media Skills — Creator Workflow Source",
       "domain": "ai-tools"
     },
     {
@@ -2423,6 +2428,27 @@
       "type": "mdlink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/setup-new-machine.md",
+      "type": "depends",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/upstream-refresh.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CHANGELOG.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "index-ai-tools.md",
@@ -6230,6 +6256,34 @@
       "to": "iot-dashboard",
       "type": "wikilink",
       "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/synthesis/dual-ai-workflow.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/synthesis/openrouter-agent-routing.md",
+      "type": "wikilink",
+      "broken": false,
       "external": false
     },
     {

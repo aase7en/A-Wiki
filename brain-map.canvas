@@ -1973,11 +1973,11 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (24 pages)",
+      "label": "AI-TOOLS DOMAIN (25 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
-      "height": 1500,
+      "height": 1680,
       "color": "2"
     },
     {
@@ -2161,10 +2161,20 @@
       "color": "2"
     },
     {
+      "id": "wiki-entities-ai-tools-social-media-skills-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/social-media-skills.md",
+      "x": 2880,
+      "y": 1160,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
       "id": "wiki-concepts-ai-tools-symlinks-ssot-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/symlinks-ssot.md",
-      "x": 2880,
+      "x": 3220,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2174,7 +2184,7 @@
       "id": "wiki-entities-ai-tools-telegram-ai-router-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/telegram-ai-router.md",
-      "x": 3220,
+      "x": 3560,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2184,8 +2194,8 @@
       "id": "wiki-concepts-ai-tools-vibe-coding-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/vibe-coding.md",
-      "x": 3560,
-      "y": 1160,
+      "x": 2880,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2194,7 +2204,7 @@
       "id": "wiki-entities-ai-tools-react-doctor-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/react-doctor.md",
-      "x": 2880,
+      "x": 3220,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -2204,7 +2214,7 @@
       "id": "wiki-entities-ai-tools-9arm-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/9arm-skills.md",
-      "x": 3220,
+      "x": 3560,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -2214,8 +2224,8 @@
       "id": "wiki-entities-ai-tools-turbovec-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/turbovec.md",
-      "x": 3560,
-      "y": 1340,
+      "x": 2880,
+      "y": 1520,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -7367,9 +7377,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7535,17 +7545,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-multi-agent-failover-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -7559,9 +7569,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-pocketbase-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -7575,25 +7585,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8655,9 +8665,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8703,9 +8713,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8767,9 +8777,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8815,9 +8825,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8841,6 +8851,38 @@
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
       "fromSide": "left",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
+      "fromSide": "top",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-synthesis-dual-ai-workflow-md",
+      "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-dual-ai-workflow-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-synthesis-openrouter-agent-routing-md",
+      "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-openrouter-agent-routing-md",
       "toSide": "right",
       "color": "2"
     },
@@ -8887,9 +8929,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-ollama-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ollama-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -11759,9 +11801,9 @@
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
