@@ -13,7 +13,7 @@
 > Keep this list small (target ≤12). Move project/dream backlog to `wiki/context/project-backlog.md`.
 > Done = delete or move to `log.md`; cancelled = delete.
 
-- [ ] **[a-wiki-hardening]** Continue platform hardening Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
+- [ ] **[a-wiki-hardening]** Continue platform hardening Step 7 sync reliability, Step 8 platform docs
 - [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน Work PC และ WSL/Linux Docker หลัง pull รอบล่าสุด
 
 ---
@@ -51,7 +51,14 @@
 - **Done**: Installed `requirements.txt` into current Python, verified `apsw`, and rebuilt sqlite-vec embeddings successfully.
 - **Done**: Added `scripts/verify-cross-platform.py --build-vec` for Mac/Linux/Windows clone verification; Mac pass confirmed.
 - **Done**: Skill quality now reports 39 OK, 0 WARN, 0 FAIL after adding owned-skill eval coverage and missing frontmatter.
-- **Next**: Continue platform hardening Step 6 review noise, Step 7 sync reliability, Step 8 platform docs; verify Work PC/WSL with `python3 scripts/verify-cross-platform.py --build-vec`.
+- **Next**: Continue platform hardening Step 7 sync reliability, then Step 8 platform docs; verify Work PC/WSL with `python3 scripts/verify-cross-platform.py --build-vec`.
+
+### [2026-05-30] hardening-step-6-review-noise (Mac, Codex)
+
+- **Done**: Added `review-check.py --profile content|generated|protocol|full`, top actionable issue summary, generated report self-scan exclusion, and better link resolution for `wiki/`/repo-prefixed paths and non-file URL schemes.
+- **Done**: `gen-index.py` now chains `review-check.py --profile content` so generated health reports stay actionable by default.
+- **Verify**: `python3 scripts/review-check.py --profile generated --strict` passed with 0 failures; `python3 scripts/review-check.py --strict --profile content` now reports 44 real link failures instead of hundreds of mixed false positives.
+- **Next**: Step 7 sync reliability, then Step 8 platform instruction refresh.
 
 ### [2026-05-29] a-wiki-handoff-priority-plan (Work PC, Codex)
 

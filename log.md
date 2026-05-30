@@ -1,5 +1,22 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] session | Hardening Step 6 review noise reduction
+
+**Done:**
+- Added `review-check.py --profile content|generated|protocol|full`.
+- Added top actionable issue summary to `wiki/context/review-report.md`.
+- Downgraded content-profile frontmatter/TL;DR debt to warnings so link failures stay visible.
+- Excluded `review-report.md` from generated-profile self-scan.
+- Improved wiki link resolution for `wiki/`-prefixed paths, repo-root paths, anchors, non-file URL schemes, and clipped generated multiline links.
+- Updated `gen-index.py` to chain `review-check.py --profile content` by default.
+
+**Verification:**
+- `python3 -m pytest tests/test_review_check.py -q` -> 7 passed.
+- `python3 scripts/review-check.py --profile generated --strict` -> 0 failures.
+- `python3 scripts/review-check.py --strict --profile content` -> 44 link failures remain, now focused on real content links rather than generated-file noise.
+
+---
+
 ## [2026-05-30] session | P2 TODO hygiene and delegation smoke fix
 
 **Done:**

@@ -1,17 +1,90 @@
 # Review Report — 2026-05-30
 
+**Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
+
 ## Summary
 
-- ✓ Passed: 604
-- ⚠ Warnings: 3
-- ❌ Failures: 909
+- ✓ Passed: 476
+- ⚠ Warnings: 411
+- ❌ Failures: 44
+
+## Top Actionable Issues
+
+- ⚠ **L2** wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/multi-agent-failover.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/data-logger.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/iot/lora.md: missing frontmatter key: title
+- … 435 more issue(s) below
 
 ---
 
-## ❌ L2: Frontmatter Completeness (title, type, tags) — Failures
+## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki/CLAUDE.md: no frontmatter (missing --- delimiter)
-- wiki/concepts/ai-tools/CLAUDE.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/entities/ai-tools/9arm-skills.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/9arm-skills.md: broken link: [[git-subtree-workflow]]
+- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/ecc.md: broken link: [[claude-thai-skills]]
+- wiki/entities/ai-tools/ecc.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/frontend-slides.md: broken link: [[liquid-glass-design]]
+- wiki/entities/ai-tools/frontend-slides.md: broken link: [[motion-patterns]]
+- wiki/entities/ai-tools/frontend-slides.md: broken link: [[ui-to-vue]]
+- wiki/entities/ai-tools/frontend-slides.md: broken link: [[frontend-design-direction]]
+- wiki/entities/ai-tools/frontend-slides.md: broken link: [[remotion-video-creation]]
+- wiki/entities/ai-tools/gitnexus.md: broken link: [[mcp]]
+- wiki/entities/ai-tools/gitnexus.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/react-doctor.md: broken link: [[claude-skills]]
+- wiki/entities/ai-tools/react-doctor.md: broken link: [[pharmacy-app]]
+- wiki/entities/ai-tools/react-doctor.md: broken link: [[iot-dashboard]]
+- wiki/entities/ai-tools/turbovec.md: broken link: [[sqlite-vec]]
+- wiki/entities/ai-tools/turbovec.md: broken link: [[embedding-models]]
+- wiki/entities/ai-tools/turbovec.md: broken link: [[vector-search]]
+- wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
+- wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
+- wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
+- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
+- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
+- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
+- wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
+- wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
+- wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
+- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
+- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
+- wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
+- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
+- wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
+- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
+- wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
+- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
+- wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
+- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
+- wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki/synthesis/sunday-estate-webapp.md: broken link: [[ai-tools/openrouter-claude-code]]
+
+---
+
+## ⚠ L2: Frontmatter Completeness (title, type, tags) — Warnings
+
 - wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
 - wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
 - wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
@@ -22,12 +95,10 @@
 - wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
 - wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
-- wiki/concepts/env/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
 - wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
 - wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
 - wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
-- wiki/concepts/iot/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
 - wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
 - wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
@@ -39,9 +110,7 @@
 - wiki/concepts/iot/mqtt-qos.md: missing frontmatter key: title
 - wiki/concepts/iot/publish-subscribe.md: missing frontmatter key: title
 - wiki/concepts/iot/tinyml.md: missing frontmatter key: title
-- wiki/concepts/it-support/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/concepts/pharmacy/drug-aliases.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/drug-classification.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/drug-validation.md: missing frontmatter key: title
@@ -49,17 +118,7 @@
 - wiki/concepts/pharmacy/ordering-workflow.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
-- wiki/context/device-session.md: no frontmatter (missing --- delimiter)
-- wiki/context/local-sources.md: no frontmatter (missing --- delimiter)
-- wiki/context/model-roster.md: no frontmatter (missing --- delimiter)
-- wiki/context/now.md: no frontmatter (missing --- delimiter)
-- wiki/context/ocr-learning-log.md: missing frontmatter key: title
-- wiki/context/project-backlog.md: no frontmatter (missing --- delimiter)
-- wiki/context/session-memory.md: no frontmatter (missing --- delimiter)
-- wiki/context/wiki-guide.md: no frontmatter (missing --- delimiter)
-- wiki/context/wiki-state.md: no frontmatter (missing --- delimiter)
 - wiki/entities/ai-tools/9arm-skills.md: missing frontmatter key: title
-- wiki/entities/ai-tools/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
 - wiki/entities/ai-tools/frontend-slides.md: missing frontmatter key: title
@@ -71,11 +130,9 @@
 - wiki/entities/ai-tools/react-doctor.md: missing frontmatter key: title
 - wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
 - wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
-- wiki/entities/env/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
 - wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
 - wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
-- wiki/entities/iot/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/entities/iot/arduino-ide.md: missing frontmatter key: title
 - wiki/entities/iot/arduino-uno-r3.md: missing frontmatter key: title
 - wiki/entities/iot/chirpstack.md: missing frontmatter key: title
@@ -109,13 +166,11 @@
 - wiki/entities/iot/telegram-bot.md: missing frontmatter key: title
 - wiki/entities/iot/the-things-network.md: missing frontmatter key: title
 - wiki/entities/iot/vapcell-m35-18650.md: missing frontmatter key: title
-- wiki/entities/pharmacy/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/entities/pharmacy/drug-database.md: missing frontmatter key: title
 - wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
 - wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
 - wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
 - wiki/sources/3-dashboard-node-red.md: missing frontmatter key: tags
-- wiki/sources/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/sources/ai-iot-server-build-v3-final.md: missing frontmatter key: tags
 - wiki/sources/ai-tools/langchain-framework.md: no frontmatter (missing --- delimiter)
 - wiki/sources/ai-tools/vector-databases.md: no frontmatter (missing --- delimiter)
@@ -176,7 +231,6 @@
 - wiki/sources/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
 - wiki/sources/web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
 - wiki/sources/web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
-- wiki/synthesis/CLAUDE.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/ai-driven-environmental-modeling.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/ai-for-drug-safety.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
@@ -361,487 +415,8 @@
 
 ---
 
-## ❌ L3: Link Integrity (wiki links resolve) — Failures
+## ⚠ L6: Quality Floor (body length, TL;DR) — Warnings
 
-- wiki/CLAUDE.md: broken link: [[page-name]]
-- wiki/CLAUDE.md: broken link: [[page-name]]
-- wiki/CLAUDE.md: broken link: [[page-name]]
-- wiki/CLAUDE.md: broken link: [[sources/source-slug]]
-- wiki/CLAUDE.md: broken link: [[concept-name]]
-- wiki/CLAUDE.md: broken link: [[sources/source-slug]]
-- wiki/CLAUDE.md: broken link: [[entities/...]]
-- wiki/CLAUDE.md: broken link: [[concepts/...]]
-- wiki/CLAUDE.md: broken link: [[sources/...]]
-- wiki/concepts/ai-tools/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[wiki/concepts/ai-tools/session-setup]]
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki/concepts/ai-tools/session-setup.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki/concepts/ai-tools/session-setup.md: broken link: [[wiki/entities/ai-tools/hermes-agent]]
-- wiki/concepts/env/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/concepts/iot/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/concepts/it-support/CLAUDE.md: broken link: [[/index-it]]
-- wiki/concepts/it-support/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#cost-first-decision-pyramid)
-- wiki/concepts/pharmacy/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[raw/pharmacy/sp_drugs_full_3760.json]]
-- wiki/concepts/pharmacy/drug-aliases.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki/concepts/pharmacy/drug-classification.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/concepts/pharmacy/drug-validation.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/drug-classification]]
-- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki/concepts/pharmacy/fuzzy-match.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/fuzzy-match]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/sources/sp-drugstore-2020-catalog]]
-- wiki/concepts/pharmacy/ordering-workflow.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/ordering-workflow]]
-- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/concepts/pharmacy/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[git-subtree-workflow]]
-- wiki/entities/ai-tools/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[.cursorrules]]
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[.codex/]]
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[.gemini/]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-thai-skills]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[liquid-glass-design]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[motion-patterns]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[ui-to-vue]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[frontend-design-direction]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[remotion-video-creation]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[mcp]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[pharmacy-app]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[iot-dashboard]]
-- wiki/entities/ai-tools/telegram-ai-router.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[sqlite-vec]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[embedding-models]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[vector-search]]
-- wiki/entities/env/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/entities/iot/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/entities/pharmacy/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/entities/pharmacy/drug-database.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/entities/pharmacy/drug-matching-system.md: broken link: [[wiki/sources/drug-aliases-reference]]
-- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/entities/pharmacy/pharmacy-business.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/entities/pharmacy/drug-database]]
-- wiki/entities/pharmacy/sp-drugstore-2020.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/sources/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
-- wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
-- wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
-- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
-- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/concepts/pharmacy/drug-validation]]
-- wiki/sources/drug-aliases-reference.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/sources/drug-aliases-reference.md: broken link: [[index-pharmacy]]
-- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
-- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
-- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki/sources/esp32.md: broken link: [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
-- wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
-- wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
-- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
-- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
-- wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
-- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
-- wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
-- wiki/sources/pharmacy-context.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki/sources/pharmacy-context.md: broken link: [[wiki/entities/pharmacy/sp-drugstore-2020]]
-- wiki/sources/pharmacy-context.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/sources/pharmacy-context.md: broken link: [[index-pharmacy]]
-- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/synthesis/pharmacy-web-app-roadmap]]
-- wiki/sources/pharmacy-ui-instructions.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/sources/pharmacy-ui-instructions.md: broken link: [[index-pharmacy]]
-- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
-- wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
-- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
-- wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
-- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
-- wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki/synthesis/CLAUDE.md: broken link: [Cost-First Pyramid](/CLAUDE.md#-cost-first-decision-pyramid-บังคับคิดก่อนทุกงาน)
-- wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/0001-digital-legacy-strategy]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/0002-git-mirror-redundancy]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[journal/README]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[decisions/README]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/local-llm-routing]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/sources/local-llm-mac-mini-guide]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/concepts/ai-tools/openrouter-claude-code]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[wiki/entities/ai-tools/telegram-ai-router]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki/synthesis/dream-projects.md: broken link: [[profile.md]]
-- wiki/synthesis/dual-ai-workflow.md: broken link: [[wiki/synthesis/openrouter-agent-routing]]
-- wiki/synthesis/openrouter-agent-routing.md: broken link: [[wiki/synthesis/dual-ai-workflow]]
-- wiki/synthesis/pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/synthesis/pharmacy-order-checker.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/pharmacy-context]]
-- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/concepts/pharmacy/drug-aliases]]
-- wiki/synthesis/pharmacy-project-specs.md: broken link: [[wiki/synthesis/pharmacy-order-checker]]
-- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/pharmacy-business]]
-- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/concepts/pharmacy/ui-design-pharmacy]]
-- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/entities/pharmacy/drug-matching-system]]
-- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-context]]
-- wiki/synthesis/pharmacy-web-app-roadmap.md: broken link: [[wiki/sources/pharmacy-ui-instructions]]
-- wiki/synthesis/sunday-estate-frontend-qa-2026-05-18.md: broken link: [[../../log#2026-05-17 sunday-estate-production-verified]]
-- wiki/synthesis/sunday-estate-webapp.md: broken link: [[ai-tools/openrouter-claude-code]]
-- wiki/synthesis/synthesis-ai-tools.md: broken link: [LangChain Framework for LLM Applications](wiki/sources/ai-tools/langchain-framework.md)
-- wiki/synthesis/synthesis-ai-tools.md: broken link: [Vector Databases for Semantic Search](wiki/sources/ai-tools/vector-databases.md)
-- wiki/synthesis/synthesis-env.md: broken link: [Air Quality Monitoring — Sensor Networks and Standards](wiki/sources/env/air-quality-monitoring.md)
-- wiki/synthesis/synthesis-env.md: broken link: [Soil Moisture Sensing Technologies](wiki/sources/env/soil-moisture-sensing.md)
-- wiki/synthesis/synthesis-env.md: broken link: [Water Quality Parameters and Monitoring](wiki/sources/env/water-quality-parameters.md)
-- wiki/synthesis/synthesis-iot.md: broken link: [LoRaWAN Architecture](wiki/sources/iot/lorawan-architecture.md)
-- wiki/synthesis/synthesis-iot.md: broken link: [MQTT Protocol Overview](wiki/sources/iot/mqtt-protocol-overview.md)
-- wiki/synthesis/synthesis-it.md: broken link: [Edge Computing Architectures for IoT](wiki/sources/it/edge-computing-iot.md)
-- wiki/synthesis/synthesis-it.md: broken link: [Network Monitoring for IoT Deployments](wiki/sources/it/network-monitoring-iot.md)
-- wiki/synthesis/synthesis-pharmacy.md: broken link: [Drug Interaction Checking Systems](wiki/sources/pharmacy/drug-interaction-checking.md)
-- wiki/templates/td-21-power-of-attorney.md: broken link: [[wiki/templates/]]
-
----
-
-## ❌ L5: Skill README Check (README.md present) — Failures
-
-- skills/_upstream/ missing README.md
-- skills/automation/ missing README.md
-- skills/automation/hook-suggest/ missing README.md
-- skills/automation/token-optimization/ missing README.md
-- skills/automation/verify-before-done/ missing README.md
-- skills/claude-code/ missing README.md
-- skills/claude-code/ask-notebooklm/ missing README.md
-- skills/claude-code/brainstorm-before-build/ missing README.md
-- skills/claude-code/crew-dispatch/ missing README.md
-- skills/claude-code/delegate-subagent/ missing README.md
-- skills/claude-code/excel-generator/ missing README.md
-- skills/claude-code/export-notebooklm/ missing README.md
-- skills/claude-code/hook-suggest/ missing README.md
-- skills/claude-code/ingest-source/ missing README.md
-- skills/claude-code/internet-skill-finder/ missing README.md
-- skills/claude-code/lint-wiki/ missing README.md
-- skills/claude-code/obsidian/ missing README.md
-- skills/claude-code/pharmacy-order-lookup/ missing README.md
-- skills/claude-code/root-cause-first/ missing README.md
-- skills/claude-code/skill-creator/ missing README.md
-- skills/claude-code/token-optimization/ missing README.md
-- skills/claude-code/verify-before-done/ missing README.md
-- skills/claude-code/web-research/ missing README.md
-- skills/claude-code/wiki-search-local/ missing README.md
-- skills/claude-thai/ missing README.md
-- skills/claude-thai/thai-address/ missing README.md
-- skills/claude-thai/thai-customer-service/ missing README.md
-- skills/claude-thai/thai-date-format/ missing README.md
-- skills/claude-thai/thai-festival-card/ missing README.md
-- skills/claude-thai/thai-government-form/ missing README.md
-- skills/claude-thai/thai-id-validate/ missing README.md
-- skills/claude-thai/thai-invoice/ missing README.md
-- skills/claude-thai/thai-pdpa/ missing README.md
-- skills/claude-thai/thai-resume/ missing README.md
-- skills/claude-thai/thai-social-caption/ missing README.md
-- skills/claude-thai/thai-text-processing/ missing README.md
-- skills/claude-thai/thai-translate/ missing README.md
-- skills/delegation/ missing README.md
-- skills/delegation/crew-dispatch/ missing README.md
-- skills/delegation/delegate-subagent/ missing README.md
-- skills/delegation/skill-creator/ missing README.md
-- skills/deprecated/ missing README.md
-- skills/deprecated/root-cause-first/ missing README.md
-- skills/domain/ missing README.md
-- skills/domain/excel-generator/ missing README.md
-- skills/domain/pharmacy-order-lookup/ missing README.md
-- skills/ecosystem/ missing README.md
-- skills/ecosystem/accessibility/ missing README.md
-- skills/ecosystem/agent-architecture-audit/ missing README.md
-- skills/ecosystem/agent-eval/ missing README.md
-- skills/ecosystem/agent-harness-construction/ missing README.md
-- skills/ecosystem/agent-introspection-debugging/ missing README.md
-- skills/ecosystem/agent-payment-x402/ missing README.md
-- skills/ecosystem/agent-sort/ missing README.md
-- skills/ecosystem/agentic-engineering/ missing README.md
-- skills/ecosystem/agentic-os/ missing README.md
-- skills/ecosystem/ai-first-engineering/ missing README.md
-- skills/ecosystem/ai-regression-testing/ missing README.md
-- skills/ecosystem/android-clean-architecture/ missing README.md
-- skills/ecosystem/angular-developer/ missing README.md
-- skills/ecosystem/api-connector-builder/ missing README.md
-- skills/ecosystem/api-design/ missing README.md
-- skills/ecosystem/architecture-decision-records/ missing README.md
-- skills/ecosystem/article-writing/ missing README.md
-- skills/ecosystem/automation-audit-ops/ missing README.md
-- skills/ecosystem/autonomous-agent-harness/ missing README.md
-- skills/ecosystem/autonomous-loops/ missing README.md
-- skills/ecosystem/backend-patterns/ missing README.md
-- skills/ecosystem/benchmark/ missing README.md
-- skills/ecosystem/blender-motion-state-inspection/ missing README.md
-- skills/ecosystem/blueprint/ missing README.md
-- skills/ecosystem/brand-voice/ missing README.md
-- skills/ecosystem/browser-qa/ missing README.md
-- skills/ecosystem/bun-runtime/ missing README.md
-- skills/ecosystem/canary-watch/ missing README.md
-- skills/ecosystem/carrier-relationship-management/ missing README.md
-- skills/ecosystem/cisco-ios-patterns/ missing README.md
-- skills/ecosystem/ck/ missing README.md
-- skills/ecosystem/claude-devfleet/ missing README.md
-- skills/ecosystem/click-path-audit/ missing README.md
-- skills/ecosystem/clickhouse-io/ missing README.md
-- skills/ecosystem/code-tour/ missing README.md
-- skills/ecosystem/codebase-onboarding/ missing README.md
-- skills/ecosystem/coding-standards/ missing README.md
-- skills/ecosystem/compose-multiplatform-patterns/ missing README.md
-- skills/ecosystem/configure-ecc/ missing README.md
-- skills/ecosystem/connections-optimizer/ missing README.md
-- skills/ecosystem/content-engine/ missing README.md
-- skills/ecosystem/content-hash-cache-pattern/ missing README.md
-- skills/ecosystem/context-budget/ missing README.md
-- skills/ecosystem/continuous-agent-loop/ missing README.md
-- skills/ecosystem/continuous-learning/ missing README.md
-- skills/ecosystem/continuous-learning-v2/ missing README.md
-- skills/ecosystem/cost-aware-llm-pipeline/ missing README.md
-- skills/ecosystem/cost-tracking/ missing README.md
-- skills/ecosystem/council/ missing README.md
-- skills/ecosystem/cpp-coding-standards/ missing README.md
-- skills/ecosystem/cpp-testing/ missing README.md
-- skills/ecosystem/crosspost/ missing README.md
-- skills/ecosystem/csharp-testing/ missing README.md
-- skills/ecosystem/customer-billing-ops/ missing README.md
-- skills/ecosystem/customs-trade-compliance/ missing README.md
-- skills/ecosystem/dart-flutter-patterns/ missing README.md
-- skills/ecosystem/dashboard-builder/ missing README.md
-- skills/ecosystem/data-scraper-agent/ missing README.md
-- skills/ecosystem/database-migrations/ missing README.md
-- skills/ecosystem/deep-research/ missing README.md
-- skills/ecosystem/defi-amm-security/ missing README.md
-- skills/ecosystem/deployment-patterns/ missing README.md
-- skills/ecosystem/design-system/ missing README.md
-- skills/ecosystem/django-celery/ missing README.md
-- skills/ecosystem/django-patterns/ missing README.md
-- skills/ecosystem/django-security/ missing README.md
-- skills/ecosystem/django-tdd/ missing README.md
-- skills/ecosystem/django-verification/ missing README.md
-- skills/ecosystem/dmux-workflows/ missing README.md
-- skills/ecosystem/docker-patterns/ missing README.md
-- skills/ecosystem/documentation-lookup/ missing README.md
-- skills/ecosystem/dotnet-patterns/ missing README.md
-- skills/ecosystem/e2e-testing/ missing README.md
-- skills/ecosystem/ecc-guide/ missing README.md
-- skills/ecosystem/ecc-tools-cost-audit/ missing README.md
-- skills/ecosystem/email-ops/ missing README.md
-- skills/ecosystem/energy-procurement/ missing README.md
-- skills/ecosystem/enterprise-agent-ops/ missing README.md
-- skills/ecosystem/error-handling/ missing README.md
-- skills/ecosystem/eval-harness/ missing README.md
-- skills/ecosystem/evm-token-decimals/ missing README.md
-- skills/ecosystem/exa-search/ missing README.md
-- skills/ecosystem/fal-ai-media/ missing README.md
-- skills/ecosystem/fastapi-patterns/ missing README.md
-- skills/ecosystem/finance-billing-ops/ missing README.md
-- skills/ecosystem/flox-environments/ missing README.md
-- skills/ecosystem/flutter-dart-code-review/ missing README.md
-- skills/ecosystem/foundation-models-on-device/ missing README.md
-- skills/ecosystem/frontend-design-direction/ missing README.md
-- skills/ecosystem/frontend-patterns/ missing README.md
-- skills/ecosystem/frontend-slides/ missing README.md
-- skills/ecosystem/fsharp-testing/ missing README.md
-- skills/ecosystem/gan-style-harness/ missing README.md
-- skills/ecosystem/gateguard/ missing README.md
-- skills/ecosystem/git-workflow/ missing README.md
-- skills/ecosystem/github-ops/ missing README.md
-- skills/ecosystem/golang-patterns/ missing README.md
-- skills/ecosystem/golang-testing/ missing README.md
-- skills/ecosystem/google-workspace-ops/ missing README.md
-- skills/ecosystem/healthcare-cdss-patterns/ missing README.md
-- skills/ecosystem/healthcare-emr-patterns/ missing README.md
-- skills/ecosystem/healthcare-eval-harness/ missing README.md
-- skills/ecosystem/healthcare-phi-compliance/ missing README.md
-- skills/ecosystem/hermes-imports/ missing README.md
-- skills/ecosystem/hexagonal-architecture/ missing README.md
-- skills/ecosystem/hipaa-compliance/ missing README.md
-- skills/ecosystem/homelab-network-readiness/ missing README.md
-- skills/ecosystem/homelab-network-setup/ missing README.md
-- skills/ecosystem/homelab-pihole-dns/ missing README.md
-- skills/ecosystem/homelab-vlan-segmentation/ missing README.md
-- skills/ecosystem/homelab-wireguard-vpn/ missing README.md
-- skills/ecosystem/hookify-rules/ missing README.md
-- skills/ecosystem/inventory-demand-planning/ missing README.md
-- skills/ecosystem/investor-materials/ missing README.md
-- skills/ecosystem/investor-outreach/ missing README.md
-- skills/ecosystem/ios-icon-gen/ missing README.md
-- skills/ecosystem/iterative-retrieval/ missing README.md
-- skills/ecosystem/java-coding-standards/ missing README.md
-- skills/ecosystem/jira-integration/ missing README.md
-- skills/ecosystem/jpa-patterns/ missing README.md
-- skills/ecosystem/knowledge-ops/ missing README.md
-- skills/ecosystem/kotlin-coroutines-flows/ missing README.md
-- skills/ecosystem/kotlin-exposed-patterns/ missing README.md
-- skills/ecosystem/kotlin-ktor-patterns/ missing README.md
-- skills/ecosystem/kotlin-patterns/ missing README.md
-- skills/ecosystem/kotlin-testing/ missing README.md
-- skills/ecosystem/laravel-patterns/ missing README.md
-- skills/ecosystem/laravel-plugin-discovery/ missing README.md
-- skills/ecosystem/laravel-security/ missing README.md
-- skills/ecosystem/laravel-tdd/ missing README.md
-- skills/ecosystem/laravel-verification/ missing README.md
-- skills/ecosystem/lead-intelligence/ missing README.md
-- skills/ecosystem/liquid-glass-design/ missing README.md
-- skills/ecosystem/llm-trading-agent-security/ missing README.md
-- skills/ecosystem/logistics-exception-management/ missing README.md
-- skills/ecosystem/make-interfaces-feel-better/ missing README.md
-- skills/ecosystem/manim-video/ missing README.md
-- skills/ecosystem/market-research/ missing README.md
-- skills/ecosystem/mcp-server-patterns/ missing README.md
-- skills/ecosystem/messages-ops/ missing README.md
-- skills/ecosystem/mle-workflow/ missing README.md
-- skills/ecosystem/motion-advanced/ missing README.md
-- skills/ecosystem/motion-foundations/ missing README.md
-- skills/ecosystem/motion-patterns/ missing README.md
-- skills/ecosystem/motion-ui/ missing README.md
-- skills/ecosystem/mysql-patterns/ missing README.md
-- skills/ecosystem/nanoclaw-repl/ missing README.md
-- skills/ecosystem/nestjs-patterns/ missing README.md
-- skills/ecosystem/netmiko-ssh-automation/ missing README.md
-- skills/ecosystem/network-bgp-diagnostics/ missing README.md
-- skills/ecosystem/network-config-validation/ missing README.md
-- skills/ecosystem/network-interface-health/ missing README.md
-- skills/ecosystem/nextjs-turbopack/ missing README.md
-- skills/ecosystem/nodejs-keccak256/ missing README.md
-- skills/ecosystem/nutrient-document-processing/ missing README.md
-- skills/ecosystem/nuxt4-patterns/ missing README.md
-- skills/ecosystem/openclaw-persona-forge/ missing README.md
-- skills/ecosystem/opensource-pipeline/ missing README.md
-- skills/ecosystem/perl-patterns/ missing README.md
-- skills/ecosystem/perl-security/ missing README.md
-- skills/ecosystem/perl-testing/ missing README.md
-- skills/ecosystem/plan-orchestrate/ missing README.md
-- skills/ecosystem/plankton-code-quality/ missing README.md
-- skills/ecosystem/postgres-patterns/ missing README.md
-- skills/ecosystem/prisma-patterns/ missing README.md
-- skills/ecosystem/product-capability/ missing README.md
-- skills/ecosystem/product-lens/ missing README.md
-- skills/ecosystem/production-audit/ missing README.md
-- skills/ecosystem/production-scheduling/ missing README.md
-- skills/ecosystem/project-flow-ops/ missing README.md
-- skills/ecosystem/prompt-optimizer/ missing README.md
-- skills/ecosystem/python-patterns/ missing README.md
-- skills/ecosystem/python-testing/ missing README.md
-- skills/ecosystem/pytorch-patterns/ missing README.md
-- skills/ecosystem/quality-nonconformance/ missing README.md
-- skills/ecosystem/quarkus-patterns/ missing README.md
-- skills/ecosystem/quarkus-security/ missing README.md
-- skills/ecosystem/quarkus-tdd/ missing README.md
-- skills/ecosystem/quarkus-verification/ missing README.md
-- skills/ecosystem/ralphinho-rfc-pipeline/ missing README.md
-- skills/ecosystem/recsys-pipeline-architect/ missing README.md
-- skills/ecosystem/redis-patterns/ missing README.md
-- skills/ecosystem/regex-vs-llm-structured-text/ missing README.md
-- skills/ecosystem/remotion-video-creation/ missing README.md
-- skills/ecosystem/repo-scan/ missing README.md
-- skills/ecosystem/research-ops/ missing README.md
-- skills/ecosystem/returns-reverse-logistics/ missing README.md
-- skills/ecosystem/rules-distill/ missing README.md
-- skills/ecosystem/rust-patterns/ missing README.md
-- skills/ecosystem/rust-testing/ missing README.md
-- skills/ecosystem/safety-guard/ missing README.md
-- skills/ecosystem/santa-method/ missing README.md
-- skills/ecosystem/scientific-db-pubmed-database/ missing README.md
-- skills/ecosystem/scientific-db-uspto-database/ missing README.md
-- skills/ecosystem/scientific-pkg-gget/ missing README.md
-- skills/ecosystem/scientific-thinking-literature-review/ missing README.md
-- skills/ecosystem/scientific-thinking-scholar-evaluation/ missing README.md
-- skills/ecosystem/search-first/ missing README.md
-- skills/ecosystem/security-bounty-hunter/ missing README.md
-- skills/ecosystem/security-review/ missing README.md
-- skills/ecosystem/security-scan/ missing README.md
-- skills/ecosystem/seo/ missing README.md
-- skills/ecosystem/skill-comply/ missing README.md
-- skills/ecosystem/skill-scout/ missing README.md
-- skills/ecosystem/skill-stocktake/ missing README.md
-- skills/ecosystem/social-graph-ranker/ missing README.md
-- skills/ecosystem/springboot-patterns/ missing README.md
-- skills/ecosystem/springboot-security/ missing README.md
-- skills/ecosystem/springboot-tdd/ missing README.md
-- skills/ecosystem/springboot-verification/ missing README.md
-- skills/ecosystem/strategic-compact/ missing README.md
-- skills/ecosystem/swift-actor-persistence/ missing README.md
-- skills/ecosystem/swift-concurrency-6-2/ missing README.md
-- skills/ecosystem/swift-protocol-di-testing/ missing README.md
-- skills/ecosystem/swiftui-patterns/ missing README.md
-- skills/ecosystem/tdd-workflow/ missing README.md
-- skills/ecosystem/team-builder/ missing README.md
-- skills/ecosystem/terminal-ops/ missing README.md
-- skills/ecosystem/tinystruct-patterns/ missing README.md
-- skills/ecosystem/token-budget-advisor/ missing README.md
-- skills/ecosystem/ui-demo/ missing README.md
-- skills/ecosystem/ui-to-vue/ missing README.md
-- skills/ecosystem/uncloud/ missing README.md
-- skills/ecosystem/unified-notifications-ops/ missing README.md
-- skills/ecosystem/verification-loop/ missing README.md
-- skills/ecosystem/video-editing/ missing README.md
-- skills/ecosystem/videodb/ missing README.md
-- skills/ecosystem/vite-patterns/ missing README.md
-- skills/ecosystem/windows-desktop-e2e/ missing README.md
-- skills/ecosystem/workspace-surface-audit/ missing README.md
-- skills/ecosystem/x-api/ missing README.md
-- skills/engineering/debug-mantra/ missing README.md
-- skills/engineering/post-mortem/ missing README.md
-- skills/engineering/scrutinize/ missing README.md
-- skills/productivity/management-talk/ missing README.md
-- skills/research/ missing README.md
-- skills/research/ask-notebooklm/ missing README.md
-- skills/research/brainstorm-before-build/ missing README.md
-- skills/research/internet-skill-finder/ missing README.md
-- skills/research/web-research/ missing README.md
-- skills/wiki/ missing README.md
-- skills/wiki/export-notebooklm/ missing README.md
-- skills/wiki/ingest-source/ missing README.md
-- skills/wiki/lint-wiki/ missing README.md
-- skills/wiki/obsidian/ missing README.md
-- skills/wiki/wiki-search-local/ missing README.md
-
----
-
-## ❌ L6: Quality Floor (body length, TL;DR) — Failures
-
-- wiki/concepts/ai-tools/CLAUDE.md: missing TL;DR line
 - wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing TL;DR line
 - wiki/concepts/ai-tools/context-management.md: missing TL;DR line
 - wiki/concepts/ai-tools/hooks-skills-plugins.md: missing TL;DR line
@@ -851,12 +426,10 @@
 - wiki/concepts/ai-tools/session-setup.md: missing TL;DR line
 - wiki/concepts/ai-tools/symlinks-ssot.md: missing TL;DR line
 - wiki/concepts/ai-tools/vibe-coding.md: missing TL;DR line
-- wiki/concepts/env/CLAUDE.md: missing TL;DR line
 - wiki/concepts/env/hospital-wastewater-treatment.md: missing TL;DR line
 - wiki/concepts/env/infectious-waste-management.md: missing TL;DR line
 - wiki/concepts/env/rabies-pep-protocol.md: missing TL;DR line
 - wiki/concepts/env/water-quality-parameters.md: missing TL;DR line
-- wiki/concepts/iot/CLAUDE.md: missing TL;DR line
 - wiki/concepts/iot/air-quality-index.md: missing TL;DR line
 - wiki/concepts/iot/cold-chain-monitoring.md: missing TL;DR line
 - wiki/concepts/iot/dashboard-design.md: missing TL;DR line
@@ -868,9 +441,7 @@
 - wiki/concepts/iot/mqtt-qos.md: missing TL;DR line
 - wiki/concepts/iot/publish-subscribe.md: missing TL;DR line
 - wiki/concepts/iot/tinyml.md: missing TL;DR line
-- wiki/concepts/it-support/CLAUDE.md: missing TL;DR line
 - wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
-- wiki/concepts/pharmacy/CLAUDE.md: missing TL;DR line
 - wiki/concepts/pharmacy/drug-aliases.md: missing TL;DR line
 - wiki/concepts/pharmacy/drug-classification.md: missing TL;DR line
 - wiki/concepts/pharmacy/drug-validation.md: missing TL;DR line
@@ -879,7 +450,6 @@
 - wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
 - wiki/entities/ai-tools/9arm-skills.md: missing TL;DR line
-- wiki/entities/ai-tools/CLAUDE.md: missing TL;DR line
 - wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
 - wiki/entities/ai-tools/ecc.md: missing TL;DR line
 - wiki/entities/ai-tools/frontend-slides.md: missing TL;DR line
@@ -891,11 +461,9 @@
 - wiki/entities/ai-tools/react-doctor.md: missing TL;DR line
 - wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
 - wiki/entities/ai-tools/turbovec.md: missing TL;DR line
-- wiki/entities/env/CLAUDE.md: missing TL;DR line
 - wiki/entities/env/activated-sludge-system.md: missing TL;DR line
 - wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
 - wiki/entities/iot/18650-battery-shield.md: missing TL;DR line
-- wiki/entities/iot/CLAUDE.md: missing TL;DR line
 - wiki/entities/iot/arduino-ide.md: missing TL;DR line
 - wiki/entities/iot/arduino-uno-r3.md: missing TL;DR line
 - wiki/entities/iot/chirpstack.md: missing TL;DR line
@@ -929,7 +497,6 @@
 - wiki/entities/iot/telegram-bot.md: missing TL;DR line
 - wiki/entities/iot/the-things-network.md: missing TL;DR line
 - wiki/entities/iot/vapcell-m35-18650.md: missing TL;DR line
-- wiki/entities/pharmacy/CLAUDE.md: missing TL;DR line
 - wiki/entities/pharmacy/drug-database.md: missing TL;DR line
 - wiki/entities/pharmacy/drug-matching-system.md: missing TL;DR line
 - wiki/entities/pharmacy/pharmacy-business.md: missing TL;DR line
@@ -937,21 +504,10 @@
 
 ---
 
-## ⚠ L4: Orphan Detection (entity/concept incoming links) — Warnings
+## ✓ Passed Checks (476 total)
 
-- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md appears orphaned (no incoming links)
-- wiki/entities/ai-tools/react-doctor.md appears orphaned (no incoming links)
-- wiki/entities/iot/chirpstack.md appears orphaned (no incoming links)
-
----
-
-## ✓ Passed Checks (604 total)
-
-- **L1**: 54 passed
 - **L2**: 90 passed
-- **L3**: 364 passed
-- **L4**: 91 passed
-- **L5**: 4 passed
+- **L3**: 385 passed
 - **L6**: 1 passed
 
 ---
