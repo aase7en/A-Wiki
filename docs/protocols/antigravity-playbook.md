@@ -1,6 +1,21 @@
 # Antigravity Integration Playbook
 
-This document defines how AI agents running in the **Antigravity** environment interact with the InW-Wiki. It serves as an extension to [`CLAUDE.md`](file:///a:/GitHub/Aase7en-InW-Wiki/CLAUDE.md) for Antigravity-specific features.
+This document defines how AI agents running in the **Antigravity** environment interact with A-Wiki. It extends the universal instructions in `AGENTS.md`.
+
+## First 3 Commands
+
+```bash
+git pull --ff-only origin main
+python3 scripts/agent-preflight.py
+python3 scripts/verify-awiki-ready.py --skip-evals
+```
+
+## External Data Layer
+
+- Heavy/raw/private files live outside git in Google Drive `A-Wiki-Data`.
+- `drive/` and `raw/` are machine-local links created by `bash scripts/setup-local.sh`.
+- Verify OS-specific setup with `python3 scripts/verify-cross-platform.py --build-vec`.
+- Never edit or commit `raw/`, `drive/`, `.tmp/`, `.mcp.json`, `.codex/`, or `.claude/`.
 
 ---
 

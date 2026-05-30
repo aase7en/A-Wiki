@@ -8,11 +8,27 @@
 
 ## First Action Every Session
 
-1. Read `AGENTS.md` — Universal A-Wiki brain (Iron Laws, Cost Pyramid, Directory, Scripts)
-2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
-3. Read `wiki/context/session-memory.md` — cross-session decisions + TODOs
-4. Run `python scripts/agent-preflight.py` — portable safety check when Gemini hooks are unavailable
-5. *(optional)* Check `wiki/context/model-roster.conf` — current free model availability
+First 3 commands:
+
+```bash
+git pull --ff-only origin main
+python3 scripts/agent-preflight.py
+python3 scripts/verify-awiki-ready.py --skip-evals
+```
+
+Then read:
+
+1. `AGENTS.md` — Universal A-Wiki brain (Iron Laws, Cost Pyramid, Directory, Scripts)
+2. `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
+3. `wiki/context/session-memory.md` — cross-session decisions + TODOs
+4. *(optional)* `wiki/context/model-roster.conf` — current free model availability
+
+## External Data Layer
+
+- Heavy/raw/private files live outside git in Google Drive `A-Wiki-Data`.
+- Local repo links: `drive/` and `raw/` point to that external folder per machine.
+- Setup/verify: `bash scripts/setup-local.sh` then `python3 scripts/verify-cross-platform.py --build-vec`.
+- Never edit or commit `raw/`, `drive/`, `.tmp/`, `.mcp.json`, `.codex/`, or `.claude/`.
 
 ---
 

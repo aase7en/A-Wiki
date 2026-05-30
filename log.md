@@ -1,5 +1,18 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] session | Hardening Step 8 platform instruction refresh
+
+**Done:**
+- Added first 3 commands and External Data Layer guidance to Gemini, Cursor, Windsurf, Cline, Copilot, and Antigravity instructions.
+- Removed stale InW-Wiki Antigravity reference/path.
+- Recorded that `AGENTS.md` and `CLAUDE.md` remain protected and need explicit named permission before edits.
+
+**Verification:**
+- Platform instruction grep confirms no stale InW-Wiki path in refreshed files.
+- `scripts/agent-preflight.py` still checks platform instruction drift.
+
+---
+
 ## [2026-05-30] session | Hardening Step 7 cross-device sync reliability
 
 **Done:**

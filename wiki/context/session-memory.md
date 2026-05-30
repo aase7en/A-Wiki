@@ -13,7 +13,7 @@
 > Keep this list small (target ≤12). Move project/dream backlog to `wiki/context/project-backlog.md`.
 > Done = delete or move to `log.md`; cancelled = delete.
 
-- [ ] **[a-wiki-hardening]** Continue platform hardening Step 8 platform docs
+- [ ] **[a-wiki-hardening]** Optional final protected-doc refresh: edit `AGENTS.md` / `CLAUDE.md` only after explicit named permission
 - [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน Work PC และ WSL/Linux Docker หลัง pull รอบล่าสุด
 
 ---
@@ -67,6 +67,13 @@
 - **Done**: Added `docs/runbooks/mobile-obsidian-workflow.md` and updated setup-new-machine with `sync.py --now` / daemon guidance.
 - **Verify**: Mac tests/preflight pass; Work PC/WSL still need live `sync.py --now` and `verify-cross-platform.py --build-vec` after pull.
 - **Next**: Step 8 platform instruction refresh.
+
+### [2026-05-30] hardening-step-8-platform-docs (Mac, Codex)
+
+- **Done**: Refreshed Gemini, Cursor, Windsurf, Cline, Copilot, and Antigravity instructions with first 3 commands and External Data Layer.
+- **Done**: Removed stale InW-Wiki reference/path from Antigravity playbook.
+- **Held**: `AGENTS.md` and `CLAUDE.md` were not edited because protected config files require explicit named permission.
+- **Next**: Optional protected-doc refresh if user explicitly permits editing `AGENTS.md` / `CLAUDE.md`.
 
 ### [2026-05-29] a-wiki-handoff-priority-plan (Work PC, Codex)
 
