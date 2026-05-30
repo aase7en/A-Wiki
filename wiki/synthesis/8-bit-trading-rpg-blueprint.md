@@ -144,6 +144,18 @@ This page adds a reusable "financial game product" pattern to A-Wiki:
 
 Start with **Crypto-only paper trading + Phaser office scene + one NPC bot**. Do not build Forex/stocks execution, multiplayer, marketplace, or live RL in Phase 1.
 
+## Phase 1 realized — *Tide & Tally* (anime-pirate edition)
+
+[verified 2026-05-31] Phase 1 prototype shipped at `~/Desktop/sunday-estate-webapp/game/` (React + Vite + TypeScript + Phaser + Zustand, isolated sub-project — does not touch the existing `prototype/`, backend, nginx, or docker). It **honors and tightens** this blueprint:
+
+- **Theme reframed** from "office/Wall-Street" → **original anime-pirate adventure** (ship deck = dashboard, crew NPC = bot, seas = markets). No existing anime IP — all names invented (working title *Tide & Tally — Corsairs of the Storm Sea*).
+- **Even safer than the blueprint MVP**: Phase 1 is **mock-data only** — no Freqtrade/CCXT connector, no keys, no order path, no Buy/Sell. The only inbound shape is the blueprint's light `MarketEvent` (`botId, status, pnlPct, drawdownPct, riskState, animationHint, timestamp`).
+- **Vertical slice**: 1 Phaser ship-deck scene + parallax ocean + **3 crew bots** (not 1) + click→status panel + mock WebSocket driving PnL/mood live + captain progression.
+- **Discipline-based rewards** implemented as designed: EXP + Discipline Points accrue only from low-drawdown, non-danger ticks; **0 from raw profit or trade frequency**. Unlock conditions structurally cannot gate on profit.
+- **NPC coaching** = canned Thai lines keyed to mood (no live LLM yet, cost-first); explains risk, never executes.
+- **Deferred to Phase 2**: Three.js rotating globe (Phase 1 uses a 2D region map; 4 other seas locked), the four other markets' data, live LLM dialogue, any real connector/execution, multiplayer.
+- **Verified**: 81 passing tests (test-first for all pure logic), `tsc -b` clean, `vite build` green, dev server renders the live slice (crew walk, mood/PnL update in real time, status panel, region map, upgrade tree).
+
 ## แหล่งข้อมูล
 
 - [[sources/trading-rpg-project-brief-2026-05-30]]
