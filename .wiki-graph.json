@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-05-30",
   "stats": {
-    "nodes": 457,
+    "nodes": 458,
     "edges": 1148,
     "edges_by_type": {
       "wikilink": 1020,
@@ -11,7 +11,7 @@
       "extends": 1
     },
     "broken_links": 64,
-    "orphans": 193,
+    "orphans": 194,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -2236,6 +2236,11 @@
     {
       "path": "wiki/synthesis/synth-vaccine-temp-monitoring-iot.md",
       "title": "Vaccine Temperature Monitoring System using IoT (ESP32 + GSM) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
+      "title": "Velxio — Open-Source Arduino/ESP32/Raspberry Pi Simulator — Synthesis",
       "domain": "synthesis"
     },
     {
