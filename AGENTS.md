@@ -102,6 +102,7 @@ A-Wiki/
 4. **raw/ is immutable** — never edit or delete (hook-protected)
 5. **Config files (AGENTS.md, CLAUDE.md) must not be edited without explicit permission**
 6. **External-editor source-of-truth protection** — files iterated in tools outside git (Tampermonkey userscripts, browser snippets) require `USERSCRIPT_SYNC_OK=<version>` env var matching the file's `// @version` header before any Edit/Write. Enforced by `scripts/hooks/check_external_editor_drift.py`. Rationale: 2026-05-27 incident — git baseline was v0.1.0 but Tampermonkey copy was v0.8.0; editing git directly would have downgraded the live tool and destroyed 7 iterations of work.
+7. **Source provenance — `raw/` first, always** — when ingesting any URL/article/pasted text, the raw content MUST be saved to `raw/<slug>.<ext>` (auto-syncs to Google Drive via the `raw → drive/raw` symlink) BEFORE creating `wiki/sources/<slug>.md`. The source's `original_file:` frontmatter field is mandatory and must point at a real file under `raw/`. Enforced by `scripts/hooks/check_source_original_file.py` (PreToolUse Write/Edit/MultiEdit blocker). Grandfather clause: edits to legacy sources that were already non-compliant pass — only regressions and new Writes are blocked. Override (emergencies only): `HOOK_SKIP=check_source_original_file`. Rationale: 2026-05-30 Velxio ingest skipped raw-save, lost provenance, had to be corrected in-session. See [[ingest-flow-raw-first]] memory.
 
 ---
 
