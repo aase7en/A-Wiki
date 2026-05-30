@@ -13,11 +13,11 @@
 
 | Type | Count |
 |------|-------|
-| ENTITIES | 56 |
+| ENTITIES | 57 |
 | CONCEPTS | 38 |
 | SYNTHESIS | 181 |
-| SOURCES | 152 |
-| **Total** | **427 pages** |
+| SOURCES | 153 |
+| **Total** | **429 pages** |
 
 ---
 
@@ -25,12 +25,12 @@
 
 | Domain | Entities | Concepts | Context File | Rich Index |
 |--------|----------|----------|--------------|------------|
-| IoT | 35 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
+| IoT | 36 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
 | Environmental Health | 3 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
 | AI Tools | 13 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (152): `wiki/context/overview-sources.md`
+- **Sources** (153): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -223,4 +223,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 427 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 429 pages across 4 sections.*

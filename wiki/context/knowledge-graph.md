@@ -4,8 +4,8 @@ _Generated: 2026-05-30_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 ## Stats
 
-- **Nodes**: 455
-- **Edges**: 1133
+- **Nodes**: 457
+- **Edges**: 1148
 - **Broken links**: 64 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 193 (run `python3 scripts/query-graph.py --orphans`)
 
@@ -13,10 +13,10 @@ _Generated: 2026-05-30_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 - `index-iot.md` (118 edges)
 - `index.md` (100 edges)
-- `wiki/entities/iot/esp32.md` (53 edges)
-- `wiki/entities/iot/esp32-s3.md` (34 edges)
+- `wiki/entities/iot/esp32.md` (54 edges)
+- `wiki/entities/iot/esp32-s3.md` (35 edges)
 - `index-pharmacy.md` (32 edges)
-- `wiki/entities/iot/dx-lr02-lora.md` (30 edges)
+- `wiki/entities/iot/dx-lr02-lora.md` (31 edges)
 - `wiki/entities/iot/grafana.md` (27 edges)
 - `wiki/synthesis/iot-lora-architecture.md` (27 edges)
 - `index-env.md` (25 edges)

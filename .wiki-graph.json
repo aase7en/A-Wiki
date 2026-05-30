@@ -1,12 +1,12 @@
 {
   "generated_at": "2026-05-30",
   "stats": {
-    "nodes": 455,
-    "edges": 1133,
+    "nodes": 457,
+    "edges": 1148,
     "edges_by_type": {
-      "wikilink": 1006,
+      "wikilink": 1020,
       "mdlink": 50,
-      "depends": 27,
+      "depends": 28,
       "implements": 49,
       "extends": 1
     },
@@ -23,11 +23,11 @@
       },
       {
         "path": "wiki/entities/iot/esp32.md",
-        "score": 53
+        "score": 54
       },
       {
         "path": "wiki/entities/iot/esp32-s3.md",
-        "score": 34
+        "score": 35
       },
       {
         "path": "index-pharmacy.md",
@@ -35,7 +35,7 @@
       },
       {
         "path": "wiki/entities/iot/dx-lr02-lora.md",
-        "score": 30
+        "score": 31
       },
       {
         "path": "wiki/entities/iot/grafana.md",
@@ -656,6 +656,11 @@
     {
       "path": "wiki/entities/iot/vapcell-m35-18650.md",
       "title": "Vapcell INR18650 M35",
+      "domain": "iot"
+    },
+    {
+      "path": "wiki/entities/iot/velxio.md",
+      "title": "Velxio",
       "domain": "iot"
     },
     {
@@ -1371,6 +1376,11 @@
     {
       "path": "wiki/sources/vaccine-temp-monitoring-iot.md",
       "title": "Vaccine Temperature Monitoring System using IoT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "title": "Velxio — Arduino/ESP32/Raspberry Pi Simulator",
       "domain": "sources"
     },
     {
@@ -4480,6 +4490,20 @@
       "from": "index.md",
       "to": "wiki/entities/iot/dx-lr02-lora.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "log.md",
+      "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "log.md",
+      "to": "wiki/entities/iot/velxio.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -7599,6 +7623,76 @@
       "external": false
     },
     {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/arduino-uno-r3.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/esp32.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/pms5003.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/pzem-004t.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/dx-lr02-lora.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/esp-idf.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/arduino-ide.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/platformio.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/entities/iot/esp32-s3.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/pharmacy/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
@@ -8728,6 +8822,27 @@
     {
       "from": "wiki/sources/vaccine-temp-monitoring-iot.md",
       "to": "wiki/concepts/iot/cold-chain-monitoring.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "to": "wiki/entities/iot/arduino-ide.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "to": "wiki/entities/iot/platformio.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "to": "wiki/entities/iot/velxio.md",
       "type": "wikilink",
       "broken": false,
       "external": false

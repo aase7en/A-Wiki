@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 152 sources
+## Stats — 153 sources
 
 | slug | abstract |
 |------|----------|
@@ -149,6 +149,7 @@
 | `vaccine-cae-anomaly-detection` | 1. **Convolutional Autoencoder (CAE)** รันบน ESP32 โดยตรง — ตรวจ… |
 | `vaccine-temp-monitoring-iot` | 1. **Real-time monitoring**: ESP32 + temperature sensor วัดและส่… |
 | `vector-databases` | Vector databases store and query high-dimensional embeddings pro… |
+| `velxio-arduino-esp32-pi-simulator` | 1. **Web-based hardware simulator** — เขียน/ทดสอบ firmware โดยไม… |
 | `vibe-pocketbase-gemini-plan` | 1. **โครงสร้างโฟลเดอร์ที่แนะนำ** — แบ่ง 4 ส่วนชัดเจน: `.ai/`, `f… |
 | `vortigontespem-energy-monitor-with-dashboardmetrics-collecto` | (no abstract) |
 | `vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con` | (no abstract) |

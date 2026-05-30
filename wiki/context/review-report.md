@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 476
-- ⚠ Warnings: 411
+- ✓ Passed: 480
+- ⚠ Warnings: 414
 - ❌ Failures: 44
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/iot/data-logger.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/iot/lora.md: missing frontmatter key: title
-- … 435 more issue(s) below
+- … 438 more issue(s) below
 
 ---
 
@@ -166,6 +166,7 @@
 - wiki/entities/iot/telegram-bot.md: missing frontmatter key: title
 - wiki/entities/iot/the-things-network.md: missing frontmatter key: title
 - wiki/entities/iot/vapcell-m35-18650.md: missing frontmatter key: title
+- wiki/entities/iot/velxio.md: missing frontmatter key: title
 - wiki/entities/pharmacy/drug-database.md: missing frontmatter key: title
 - wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
 - wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
@@ -387,6 +388,7 @@
 - wiki/synthesis/synth-ux-design-in-iot.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vaccine-cae-anomaly-detection.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
+- wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
 - wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
@@ -497,6 +499,7 @@
 - wiki/entities/iot/telegram-bot.md: missing TL;DR line
 - wiki/entities/iot/the-things-network.md: missing TL;DR line
 - wiki/entities/iot/vapcell-m35-18650.md: missing TL;DR line
+- wiki/entities/iot/velxio.md: missing TL;DR line
 - wiki/entities/pharmacy/drug-database.md: missing TL;DR line
 - wiki/entities/pharmacy/drug-matching-system.md: missing TL;DR line
 - wiki/entities/pharmacy/pharmacy-business.md: missing TL;DR line
@@ -504,10 +507,10 @@
 
 ---
 
-## ✓ Passed Checks (476 total)
+## ✓ Passed Checks (480 total)
 
-- **L2**: 90 passed
-- **L3**: 385 passed
+- **L2**: 91 passed
+- **L3**: 388 passed
 - **L6**: 1 passed
 
 ---
