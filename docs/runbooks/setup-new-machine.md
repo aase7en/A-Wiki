@@ -101,6 +101,23 @@ python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py 
 - deterministic skill evals ผ่าน
 - skill quality report ไม่มี FAIL
 
+## 5. Cross-device sync
+
+ก่อนสลับเครื่องหรือเปิด Obsidian แก้ไฟล์ ให้ปิด session เก่าก่อน แล้ว sync:
+
+```bash
+python3 scripts/sync.py --now
+git status --short
+```
+
+ถ้าจะใช้ daemon mode ให้เปิดแค่เครื่องเดียว:
+
+```bash
+python3 scripts/sync.py --daemon --interval 30 --debounce 10
+```
+
+อ่าน workflow แยกสำหรับ mobile/Obsidian ที่ `docs/runbooks/mobile-obsidian-workflow.md`
+
 ---
 
 ## Rules

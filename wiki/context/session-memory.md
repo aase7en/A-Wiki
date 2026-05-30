@@ -13,7 +13,7 @@
 > Keep this list small (target ≤12). Move project/dream backlog to `wiki/context/project-backlog.md`.
 > Done = delete or move to `log.md`; cancelled = delete.
 
-- [ ] **[a-wiki-hardening]** Continue platform hardening Step 7 sync reliability, Step 8 platform docs
+- [ ] **[a-wiki-hardening]** Continue platform hardening Step 8 platform docs
 - [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน Work PC และ WSL/Linux Docker หลัง pull รอบล่าสุด
 
 ---
@@ -59,6 +59,14 @@
 - **Done**: `gen-index.py` now chains `review-check.py --profile content` so generated health reports stay actionable by default.
 - **Verify**: `python3 scripts/review-check.py --profile generated --strict` passed with 0 failures; `python3 scripts/review-check.py --strict --profile content` now reports 44 real link failures instead of hundreds of mixed false positives.
 - **Next**: Step 7 sync reliability, then Step 8 platform instruction refresh.
+
+### [2026-05-30] hardening-step-7-sync-reliability (Mac, Codex)
+
+- **Done**: Updated `scripts/sync.py` sync surfaces for current A-Wiki paths (`wiki/`, `docs/`, platform instruction files, indexes) and removed legacy root `session-memory.md`.
+- **Done**: Added cross-device handoff warning to `scripts/agent-preflight.py`.
+- **Done**: Added `docs/runbooks/mobile-obsidian-workflow.md` and updated setup-new-machine with `sync.py --now` / daemon guidance.
+- **Verify**: Mac tests/preflight pass; Work PC/WSL still need live `sync.py --now` and `verify-cross-platform.py --build-vec` after pull.
+- **Next**: Step 8 platform instruction refresh.
 
 ### [2026-05-29] a-wiki-handoff-priority-plan (Work PC, Codex)
 

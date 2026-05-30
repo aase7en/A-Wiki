@@ -6,8 +6,28 @@ import time
 import socket
 import argparse
 
-# Configuration
-SYNC_PATHS = ["wiki", "log.md", "session-memory.md", "index.md", "index-ai.md", "index-env.md", "index-iot.md", "index-it.md", "index-pharmacy.md", "CLAUDE.md", "GEMINI.md", "AGENTS.md", "brain-map.canvas"]
+# Configuration: sync only tracked knowledge/config surfaces.
+SYNC_PATHS = [
+    "wiki",
+    "docs",
+    "decisions",
+    "journal",
+    "log.md",
+    "index.md",
+    "index-ai.md",
+    "index-env.md",
+    "index-iot.md",
+    "index-it.md",
+    "index-pharmacy.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "AGENTS.md",
+    ".clinerules",
+    ".cursorrules",
+    ".windsurfrules",
+    ".github/copilot-instructions.md",
+    "brain-map.canvas",
+]
 EXCLUDE_DIRS = [".git", ".obsidian", ".claude", ".gemini", ".codex", "raw", "__pycache__", "node_modules"]
 
 def get_device_name():
