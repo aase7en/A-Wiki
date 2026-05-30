@@ -1,5 +1,19 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] session | Hardening Step 7 cross-device sync reliability
+
+**Done:**
+- Updated `scripts/sync.py` sync surfaces to current A-Wiki paths and removed legacy root `session-memory.md`.
+- Added a cross-device handoff warning to `scripts/agent-preflight.py`.
+- Added `docs/runbooks/mobile-obsidian-workflow.md` for AI-agent vs Obsidian vs mobile workflows.
+- Updated `docs/runbooks/setup-new-machine.md` with `sync.py --now` and daemon-mode guidance.
+
+**Verification:**
+- Unit tests for sync/preflight updated.
+- Mac live sync still needs care because `.obsidian/graph.json` is dirty and intentionally left out of the Step 6 commit.
+
+---
+
 ## [2026-05-30] session | Hardening Step 6 review noise reduction
 
 **Done:**

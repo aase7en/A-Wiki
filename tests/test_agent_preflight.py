@@ -24,6 +24,13 @@ def test_exit_code_fails_only_on_fail():
     assert agent_preflight.exit_code(results) == 1
 
 
+def test_session_handoff_warning_is_present():
+    result = agent_preflight.check_session_handoff()
+
+    assert result.level == "WARN"
+    assert "sync.py --now" in result.detail
+
+
 def test_instruction_drift_detects_missing_preflight_line(monkeypatch, tmp_path):
     (tmp_path / "AGENTS.md").write_text("no preflight here\n", encoding="utf-8")
     monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)

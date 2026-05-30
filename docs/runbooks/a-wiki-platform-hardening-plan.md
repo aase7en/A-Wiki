@@ -267,7 +267,7 @@ Acceptance criteria:
 | 4. Portable Agent Preflight | Done on Work PC; Mac verification pending | 2026-05-29 | Added `scripts/agent-preflight.py`, tests, and one-line invocation across platform instruction files; checks branch, origin/main reachability, working tree, Drive data, generated context freshness, core hooks, and instruction drift. |
 | 5. Hook Parity and Policy Cleanup | Core policy done on Work PC; Mac verification pending | 2026-05-29 | `stop-auto-commit.sh` now refuses non-main instead of merging branches; `.codex/hooks.json` uses portable relative hook paths; preflight audits hook command paths. |
 | 6. Review Noise Reduction | Done | 2026-05-30 | Added `review-check.py --profile {content,generated,protocol,full}`, top actionable summary, generated-report self-scan exclusion, improved link resolver for `wiki/` and repo paths, and switched `gen-index.py` chain to `--profile content`; generated profile strict passes, content strict now reports a realistic 44 link failures plus downgraded metadata warnings. |
-| 7. Cross-Device Sync Reliability | Pending | - | Covers Mac/PC/mobile usage. |
+| 7. Cross-Device Sync Reliability | Done on Mac; Work PC/WSL verify pending | 2026-05-30 | Updated `sync.py` tracked sync surfaces for current A-Wiki paths, added preflight handoff warning, documented one-active-editor workflow in `docs/runbooks/mobile-obsidian-workflow.md`, and updated setup runbook. Mac verification passed; Work PC/WSL still need `python3 scripts/sync.py --now` and `python3 scripts/verify-cross-platform.py --build-vec` after pull. |
 | 8. Platform Instruction Refresh | Pending | - | Final doc sweep after behavior is fixed. |
 
 ## Rule for Future Steps

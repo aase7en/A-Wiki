@@ -115,6 +115,14 @@ def check_worktree() -> CheckResult:
     return CheckResult("WARN", "working tree", f"{len(lines)} changed path(s)")
 
 
+def check_session_handoff() -> CheckResult:
+    return CheckResult(
+        "WARN",
+        "cross-device handoff",
+        "close old AI/Obsidian sessions before editing on another device; run python3 scripts/sync.py --now first",
+    )
+
+
 def check_external_data() -> CheckResult:
     drive_root = get_drive_root()
     missing = [name for name in EXPECTED_DRIVE_FOLDERS if not (drive_root / name).is_dir()]
@@ -220,6 +228,7 @@ def run_checks(skip_remote: bool = False) -> list[CheckResult]:
         check_branch(),
         check_remote(skip_remote=skip_remote),
         check_worktree(),
+        check_session_handoff(),
         check_external_data(),
         check_generated_index(),
         check_hooks(),

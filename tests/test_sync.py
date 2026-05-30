@@ -15,7 +15,7 @@ from typing import Generator
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
-from sync import get_device_name, is_repo_dirty, sync_now
+from sync import SYNC_PATHS, get_device_name, is_repo_dirty, sync_now
 
 
 # ── get_device_name ────────────────────────────────────────────────────
@@ -84,6 +84,12 @@ class TestIsRepoDirty:
         assert is_repo_dirty()
         log.write_text("modified content\n")
         assert is_repo_dirty()
+
+    def test_sync_paths_use_current_session_memory_location(self):
+        assert "wiki" in SYNC_PATHS
+        assert "session-memory.md" not in SYNC_PATHS
+        assert "docs" in SYNC_PATHS
+        assert ".github/copilot-instructions.md" in SYNC_PATHS
 
 
 # ── sync_now (integration-level) ───────────────────────────────────────
