@@ -1,6 +1,7 @@
 ---
 name: excel-generator
 description: Professional Excel spreadsheet creation with a focus on aesthetics and data analysis. Use when creating spreadsheets for organizing, analyzing, and presenting structured data in a clear and professional format.
+allow_long: true
 ---
 
 # Excel Generator Skill

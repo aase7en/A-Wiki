@@ -13,8 +13,6 @@
 > Keep this list small (target ≤12). Move project/dream backlog to `wiki/context/project-backlog.md`.
 > Done = delete or move to `log.md`; cancelled = delete.
 
-- [ ] **[wiki-brain]** เพิ่ม `GEMINI_API_KEY` canonical ใน Project Settings; ตอนนี้ `GOOGLE_AI_STUDIO_KEY` alias ใช้งานได้แล้ว
-- [ ] **[wiki-brain]** Verify Linux/Windows clone + `pip install -r requirements.txt` + `python scripts/build-vec-index.py`
 - [ ] **[a-wiki-hardening]** Continue platform hardening Step 6 review noise, Step 7 sync reliability, Step 8 platform docs
 - [ ] **[a-wiki-infra]** Test cloud-link + drive_secrets บน Work PC และ WSL/Linux Docker หลัง pull รอบล่าสุด
 
@@ -49,7 +47,11 @@
 - **Done**: Verified `bash scripts/delegate.sh search ...` works with current free-model keys.
 - **Done**: Added `scripts/todo-health.py`, wired it into `scripts/verify-awiki-ready.py`, and moved non-session project/dream backlog to `wiki/context/project-backlog.md`.
 - **Done**: Made arXiv refresh in `scripts/gen-index.py` opt-in (`--fetch-arxiv` or `AWIKI_GEN_INDEX_FETCH_ARXIV=1`) so normal index regeneration does not wait on four network calls.
-- **Next**: P2 remaining debt is mostly warning cleanup: add eval coverage/frontmatter for high-value skills, then continue platform hardening Step 6-8.
+- **Done**: Added canonical local `GEMINI_API_KEY` alias in `.claude/settings.local.json` without printing the secret.
+- **Done**: Installed `requirements.txt` into current Python, verified `apsw`, and rebuilt sqlite-vec embeddings successfully.
+- **Done**: Added `scripts/verify-cross-platform.py --build-vec` for Mac/Linux/Windows clone verification; Mac pass confirmed.
+- **Done**: Skill quality now reports 39 OK, 0 WARN, 0 FAIL after adding owned-skill eval coverage and missing frontmatter.
+- **Next**: Continue platform hardening Step 6 review noise, Step 7 sync reliability, Step 8 platform docs; verify Work PC/WSL with `python3 scripts/verify-cross-platform.py --build-vec`.
 
 ### [2026-05-29] a-wiki-handoff-priority-plan (Work PC, Codex)
 

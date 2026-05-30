@@ -20,6 +20,24 @@
 
 ---
 
+## [2026-05-30] session | Finish P2 skill quality and cross-platform verify
+
+**Done:**
+- Installed `requirements.txt` into the current Python so `apsw`, `sqlite_vec`, and `fastembed` are available.
+- Rebuilt sqlite-vec index successfully: 446 embeddings from 446 files.
+- Added canonical local `GEMINI_API_KEY` in `.claude/settings.local.json` by copying the existing `GOOGLE_AI_STUDIO_KEY` value without printing the secret.
+- Added `evals/awiki/owned-skill-coverage.json` to cover A-Wiki-owned skills in deterministic evals.
+- Added missing skill frontmatter for NotebookLM, crew dispatch, token optimization, wiki local search, and delegation crew dispatch.
+- Added `allow_long: true` support in `scripts/skill-quality-report.py` for intentionally comprehensive skills, with test coverage.
+- Added `scripts/verify-cross-platform.py` and documented `python3 scripts/verify-cross-platform.py --build-vec` for Mac/Linux/Windows clone checks.
+
+**Verification:**
+- `bash scripts/skillopt/run-awiki-evals.sh` -> 5 suites passed, including 35-case owned-skill coverage.
+- `python3 scripts/skill-quality-report.py` -> 39 OK, 0 WARN, 0 FAIL.
+- `python3 scripts/verify-cross-platform.py --build-vec` -> passed on Mac, including sqlite-vec rebuild.
+
+---
+
 ## [2026-05-30] session | Sunday Estate prototype cinematic intro (Phase 1 → 2.4)
 
 **Project:** `~/Desktop/sunday-estate-webapp/prototype/` — landing-demo.html

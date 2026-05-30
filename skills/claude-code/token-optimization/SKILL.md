@@ -1,3 +1,8 @@
+---
+name: token-optimization
+description: Reduce context cost with compaction, clearing, and focused reload decisions before large wiki or agent tasks.
+---
+
 # Skill: Token Optimization
 
 **Trigger**: ใช้เมื่อ user พูดว่า "ประหยัด token", "session หนัก/ช้า", "compact", "เริ่ม task ใหม่", หรือก่อน ingest source ขนาดใหญ่ (>1,000 บรรทัด)

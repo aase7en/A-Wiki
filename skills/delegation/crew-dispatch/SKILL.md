@@ -1,3 +1,8 @@
+---
+name: crew-dispatch
+description: Split multi-dimensional A-Wiki questions into parallel delegated subtasks while keeping primary-agent validation.
+---
+
 # Skill: Crew Dispatch (Sanji's Kitchen)
 
 > Vegapunk (Claude Sonnet) วิเคราะห์คำถาม → แตกเป็น subtasks → dispatch ให้ลูกเรือ parallel

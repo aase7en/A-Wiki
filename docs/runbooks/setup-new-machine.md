@@ -86,6 +86,7 @@ SkillOpt local install จะอยู่ที่:
 ```bash
 python3 scripts/agent-preflight.py
 python3 scripts/verify-awiki-ready.py
+python3 scripts/verify-cross-platform.py --build-vec
 bash scripts/setup-cloud-link.sh --status
 python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py -q
 ```
