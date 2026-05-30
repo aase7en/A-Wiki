@@ -23,10 +23,19 @@
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROSTER_CONF="$REPO_ROOT/wiki/context/model-roster.conf"
+POLICY_SCRIPT="$REPO_ROOT/scripts/model-router-policy.py"
+POLICY_CONF="${MODEL_ROUTER_POLICY_CONF:-$REPO_ROOT/.tmp/model-router-policy.conf}"
 UPDATE_SCRIPT="$REPO_ROOT/scripts/update-model-roster.sh"
 
-# ─── Load dynamic roster (graceful if missing) ────────────────────────────────
-if [ -f "$ROSTER_CONF" ]; then source "$ROSTER_CONF" 2>/dev/null || true; fi
+# ─── Load local router policy (graceful if missing) ──────────────────────────
+if [ -f "$POLICY_SCRIPT" ]; then
+  python3 "$POLICY_SCRIPT" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
+fi
+if [ -f "$POLICY_CONF" ]; then
+  source "$POLICY_CONF" 2>/dev/null || true
+elif [ -f "$ROSTER_CONF" ]; then
+  source "$ROSTER_CONF" 2>/dev/null || true
+fi
 
 # ─── API key aliases (normalize alternate names → canonical names) ─────────────
 # GOOGLE_AI_STUDIO_KEY is the name shown in Google AI Studio UI → alias to GEMINI_API_KEY
@@ -324,8 +333,12 @@ show_failure_and_heal() {
     if [ -n "${OPENROUTER_API_KEY:-}" ] && [ -x "$UPDATE_SCRIPT" ]; then
       bash "$UPDATE_SCRIPT" >/dev/null 2>&1 && {
         echo "✅ Roster updated — retrying with new models..." >&2
-        # Reload updated roster
-        [ -f "$ROSTER_CONF" ] && source "$ROSTER_CONF" 2>/dev/null || true
+        # Reload updated router policy
+        if [ -f "$POLICY_SCRIPT" ]; then
+          python3 "$POLICY_SCRIPT" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
+        fi
+        [ -f "$POLICY_CONF" ] && source "$POLICY_CONF" 2>/dev/null || true
+        [ ! -f "$POLICY_CONF" ] && [ -f "$ROSTER_CONF" ] && source "$ROSTER_CONF" 2>/dev/null || true
         return 2  # signal: retry
       } || echo "⚠️  Scout failed (network?) — using cached roster" >&2
     else

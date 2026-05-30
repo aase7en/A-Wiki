@@ -20,6 +20,26 @@ def test_session_start_exposes_model_intel_hook():
     assert hasattr(session_start, "maybe_update_model_intel")
 
 
+def test_session_start_todos_only_reads_active_unchecked_block(tmp_path, capsys):
+    session_dir = tmp_path / "wiki" / "context"
+    session_dir.mkdir(parents=True)
+    (session_dir / "session-memory.md").write_text(
+        "## 🔥 Active TODOs (cross-session)\n\n"
+        "- [ ] **[keep]** active item\n"
+        "- [x] **[done]** checked item\n"
+        "\n## Recent\n\n"
+        "- [ ] **[old]** old item\n",
+        encoding="utf-8",
+    )
+
+    session_start.show_todos(str(tmp_path))
+
+    captured = capsys.readouterr()
+    assert "[keep]" in captured.err
+    assert "[done]" not in captured.err
+    assert "[old]" not in captured.err
+
+
 def test_update_model_intel_script_is_drive_safe_and_grounded():
     script = REPO_ROOT / "scripts" / "update-ai-model-intel.sh"
     text = script.read_text(encoding="utf-8")

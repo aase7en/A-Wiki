@@ -1,0 +1,28 @@
+{
+  "suite": "wiki-search-local",
+  "description": "Local-first wiki search skill must preserve Cost Pyramid Level -1 behavior.",
+  "cases": [
+    {
+      "id": "local-first-cli",
+      "skill": "skills/claude-code/wiki-search-local/SKILL.md",
+      "required": [
+        "Cost Pyramid",
+        "Level **-1**",
+        "python3 scripts/search-wiki.py",
+        "--json"
+      ],
+      "forbidden": [
+        "use WebFetch first",
+        "always use web search first"
+      ]
+    },
+    {
+      "id": "rebuild-guidance",
+      "skill": "skills/claude-code/wiki-search-local/SKILL.md",
+      "required": [
+        "--rebuild",
+        "Index อาจ stale"
+      ]
+    }
+  ]
+}

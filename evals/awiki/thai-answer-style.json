@@ -1,0 +1,34 @@
+{
+  "suite": "thai-answer-style",
+  "description": "Thai response/translation skills must preserve register and technical term guidance.",
+  "cases": [
+    {
+      "id": "register-first",
+      "skill": "skills/claude-thai/thai-translate/SKILL.md",
+      "required": [
+        "Register matrix",
+        "pick BEFORE translating",
+        "ครับ / ค่ะ"
+      ]
+    },
+    {
+      "id": "technical-terms",
+      "skill": "skills/claude-thai/thai-translate/SKILL.md",
+      "required": [
+        "Keep English",
+        "API",
+        "deploy",
+        "ทับศัพท์"
+      ]
+    },
+    {
+      "id": "high-stakes-escalation",
+      "skill": "skills/claude-thai/thai-translate/SKILL.md",
+      "required": [
+        "Legal contracts",
+        "Medical records",
+        "Royal Institute"
+      ]
+    }
+  ]
+}

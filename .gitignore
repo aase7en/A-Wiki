@@ -97,6 +97,7 @@ logs/
 data/
 .tmp/
 temp/
+wiki/context/model-roster.conf.bak
 
 # raw is a symlink (Mac) or junction (Windows) to Google Drive A-Wiki-Data
 # Each machine manages its own local link — never tracked in git

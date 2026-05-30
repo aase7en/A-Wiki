@@ -1,8 +1,67 @@
 # Wiki Log — My IoT Wiki
 
+## [2026-05-30] session | P2 TODO hygiene and delegation smoke fix
+
+**Done:**
+- Fixed `scripts/update-model-roster.sh` roster generation so OpenRouter free-model scout runs successfully again.
+- Fixed `scripts/model-router-policy.py` shell quoting so cached Gemini model intel cannot break `source .tmp/model-router-policy.conf`.
+- Verified `bash scripts/delegate.sh search ...` works with the current free-model keys.
+- Added `scripts/todo-health.py` and wired it into `scripts/verify-awiki-ready.py`.
+- Slimmed `wiki/context/session-memory.md` Active TODOs from a mixed backlog into 4 operational items.
+- Moved project/dream carry-over into `wiki/context/project-backlog.md`.
+- Updated SessionStart TODO extraction to read only unchecked items from the canonical Active TODOs block.
+
+**Verification:**
+- `bash scripts/update-model-roster.sh` -> roster updated and router policy refreshed.
+- `DELEGATE_TIMEOUT=20 bash scripts/delegate.sh search ...` -> smoke response returned.
+- `python3 scripts/gen-index.py` -> completed; arXiv fetch is now opt-in to avoid slow default network waits; sqlite-vec rebuild warned because `apsw` is not installed in the current interpreter.
+- `python3 -m pytest -q` -> 181 passed.
+- `python3 scripts/verify-awiki-ready.py` -> all readiness checks OK.
+
+---
+
+## [2026-05-30] session | Sunday Estate prototype cinematic intro (Phase 1 → 2.4)
+
+**Project:** `~/Desktop/sunday-estate-webapp/prototype/` — landing-demo.html
+**Pushed:** commits `bb54f64` → `4399b73` → `5fc87dc` on `aase7en/sunday-estate-webapp:main`
+
+**Done:**
+- Shipped 5-act cinematic scroll journey above the existing prototype Hero (Outset → Land → Build → Trust → Home). Sticky stage + crossfade architecture ported from `sunday-estate-site/components/journey/Journey.tsx` via Framer Motion v11 UMD (v12 ESM-only blocks browser-CDN use).
+- 5 Nano Banana Pro assets dropped + cropped 12% bottom-right to remove Gemini watermark. Act 1 + Act 5 are video loops (mp4 + poster), Acts 2-4 are stills. Total assets ~16MB.
+- Reversible intro: scroll up from Hero replays intro in reverse (no localStorage clear needed). Initial mount uses `useLayoutEffect` to jump-to-Hero on revisit pre-paint; `history.scrollRestoration = "manual"` suppresses browser fight.
+- Floating context-aware navigator button (`src/navigator.js`, vanilla) — 3 states intro/landing/footer, theme-aware hover (light gold / dark warm-gold / modern violet+brand-glow), survives hash-bypass.
+- Text dispersion v2 (`src/text-dispersion.js`): viewport-sized canvas + hybrid `fillText` base + `destination-out` feathered erase + particles within 126px spotlight. Particle baseSize 0.6px (dust feel), gold colour with warm centre, dispersionStrength 80 for "flee" feel.
+- Critical bug fixes during the iteration: Acts 2-5 invisible (sticky broken by ancestor `overflow:hidden`), wide-viewport horizontal text clipping, vertical tone-mark clipping (Act 3 "เมื่อ"), kicker "ที่" rendering as "ทื" (per-codepoint splitting → fixed via `Intl.Segmenter` grapheme clusters), Phase 2.4 first-cut text disappearance (flex-item-with-no-flow-children collapse), Act 5 video blur (re-encoded CRF 18 + lanczos upscale to 1920×1078).
+
+**Verification:**
+- Untouched-file lint clean throughout: `landing.css`, `colors_and_type.css`, `styles.css`, `src/landing.jsx`, `src/ui.jsx`, `src/data.jsx` never modified.
+- Manual smoke tests passed at each phase (Mac, Chrome at localhost:8090).
+- All cache busters bumped consistently (`cinematic-intro.css?v=10`, `cinematic-intro.jsx?v=9`, `text-dispersion.js?v=3`).
+
+**Design decisions:**
+- Hybrid fillText + particle render chosen over particle-only because resting state must look like crisp HTML text — only the small spotlight area transforms.
+- Always-mounted intro + auto-scroll on revisit chosen over display:none-after-first-watch — the user values rewatchability; 500svh of extra body height is an accepted cost.
+- Paragraph colour pinned to `#fff2b7` in all 5 acts (was inheriting motion ink animation which clashed on Act 5's warm-cream bg).
+- Navigator button placed in a separate vanilla `navigator.js` so it survives hash-bypass when cinematic intro doesn't mount.
+
+**Carry-over / next session:**
+- Phase 3 still untouched: cursor dot follow-through (port `useLandingCursor` pattern), Logo materialisation slide-up, Magnetic CTA at Act 5 (port `MagneticButton.tsx`), Marquee tease, lang switching to read existing `se_landing_theme` key.
+- Act 1 video could also benefit from CRF 18 re-encode if quality bothers eye (currently 963KB at lower quality, deferred).
+- Future: bundle prototype with esbuild to drop Babel standalone + use Motion v12 ESM (enables Claude desktop preview panel to render correctly — currently file:// breaks multi-`.jsx` fetch).
+
+---
+
 ## [2026-05-30] session | Lightweight SkillOpt + model intel integration
 
 **Done:**
+- Added deterministic A-Wiki skill eval harness at `scripts/skillopt/awiki_eval.py` plus baseline suites under `evals/awiki/` for wiki search, ingest source, Thai style, and hook safety.
+- Added `scripts/skillopt/awiki_skillopt_adapter.py` as a candidate gate for SkillOpt/best_skill.md output: accept only non-regressing candidates against current skill baselines.
+- Added `scripts/skillopt/run-awiki-evals.sh` to run all local/free skill eval suites.
+- Added `scripts/setup-codex-hooks.sh` and ran it locally so Codex Desktop hooks use portable relative commands in `.codex/hooks.json` (22 commands, 0 absolute path).
+- Added `scripts/model-router-policy.py` to merge `wiki/context/model-roster.conf` with volatile `.tmp/model-intel/latest.md` into gitignored `.tmp/model-router-policy.conf`; `scripts/swarm/delegate.sh` and `scripts/delegate.sh` now load this policy before falling back to the roster.
+- Wired `update-model-roster.sh`, `update-ai-model-intel.sh`, and `setup-local.sh` to refresh the local router policy after model roster/intel updates.
+- Added `scripts/verify-awiki-ready.py` as the P2 post-clone readiness gate covering agent preflight, `.wiki-index.db`, Codex hooks, model router policy, heavy/private path ignores, and deterministic skill evals.
+- Added `scripts/skill-quality-report.py` as the P2 skill dashboard for A-Wiki-owned skills, skipping vendor snapshots and reporting frontmatter/eval coverage/length/dangerous pattern issues.
 - Added `scripts/update-ai-model-intel.sh` for Gemini-grounded AI model/agent routing intel, cached in gitignored `.tmp/model-intel/latest.md` by default.
 - Added `scripts/refresh-skillopt.sh` to link Microsoft SkillOpt upstream through a lightweight `agent-skills/_upstream/skillopt` snapshot path, excluding heavy WebUI/assets/data unless explicitly requested.
 - Added `scripts/install-skillopt-local.sh` for optional runnable SkillOpt install into ignored local paths `.tmp/skillopt-src` and `.venv-skillopt`.
@@ -13,8 +72,14 @@
 - Tightened `check_delegation_gate.py` so compound `git commit && git push` commands must use `session(...)` commit messages or stage session files.
 
 **Verification:**
+- `python3 -m pytest tests/test_awiki_eval.py -q` -> 5 passed.
+- `python3 -m pytest tests/test_model_router_policy.py -q` -> 4 passed.
+- `python3 -m pytest tests/test_verify_awiki_ready.py -q` -> 5 passed.
+- `bash scripts/skillopt/run-awiki-evals.sh` -> all 4 suites passed.
 - `python3 -m pytest tests/test_model_intel_and_skillopt.py -q` -> 4 passed.
-- `python3 -m pytest -q` -> 156 passed.
+- `python3 -m pytest -q` -> 175 passed.
+- `python3 scripts/verify-awiki-ready.py` -> all readiness checks OK.
+- `python3 scripts/skill-quality-report.py` -> 39 skills, 3 OK, 36 WARN, 0 FAIL.
 - `bash -n` passed for new/updated shell scripts.
 
 **Design decision:**
