@@ -1,0 +1,20 @@
+# Wiki Log — Template
+
+> **This is a template.** Your real `log.md` lives at `drive/personal/journal/log.md`
+> (gitignored, syncs to your Google Drive). Copy this file to `log.md` on first
+> run if you want a fresh log inside the repo, or symlink to your personal copy:
+>
+> ```
+> ln -sf drive/personal/journal/log.md log.md
+> ```
+
+## [YYYY-MM-DD] session | <topic>
+
+**Done:**
+- ...
+
+**TODO:**
+- ...
+
+**Key findings:**
+- ...

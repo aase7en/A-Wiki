@@ -1,0 +1,18 @@
+# Session Memory — Template
+
+> **This is a template.** Your real `session-memory.md` lives at
+> `drive/personal/journal/wiki-context-session-memory.md` (gitignored).
+>
+> The SessionStart hook in `.claude/settings.json` reads this file to surface
+> recent decisions + active TODOs at the top of each new session.
+
+## Active TODOs
+
+- [ ] **[area]** description
+
+## Recent decisions (last 10 sessions)
+
+### YYYY-MM-DD — <topic>
+- Decision: ...
+- Why: ...
+- Affected: ...

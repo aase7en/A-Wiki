@@ -13,11 +13,18 @@
 
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-MEMORY="$REPO_ROOT/wiki/context/session-memory.md"
+# shellcheck source=scripts/lib/personal_paths.sh
+. "$REPO_ROOT/scripts/lib/personal_paths.sh"
+MEMORY="$(awiki_session_memory_path "$REPO_ROOT" || true)"
 
 if [ $# -lt 1 ]; then
   echo "Usage: bash scripts/done.sh \"<search pattern>\"" >&2
-  echo "  Fuzzy-matches against open TODO items in wiki/context/session-memory.md" >&2
+  echo "  Fuzzy-matches against open TODO items in local session-memory" >&2
+  exit 1
+fi
+
+if [ -z "$MEMORY" ] || [ ! -f "$MEMORY" ]; then
+  echo "❌ No local session-memory found. Run: bash scripts/setup-local.sh" >&2
   exit 1
 fi
 

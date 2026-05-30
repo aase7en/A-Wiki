@@ -73,10 +73,56 @@ setup_secrets() {
   python3 "$SYNC_SCRIPT" 2>/dev/null || python "$SYNC_SCRIPT"
 }
 
-# ── 4. Build SQLite wiki index ──────────────────────────────────────────────
+# ── 4. Private journal files — local only, never committed ─────────────────
+
+setup_private_journal() {
+  echo "[4/8] Setting up private journal files..."
+  mkdir -p wiki/context
+
+  mkdir -p drive/personal/journal 2>/dev/null || true
+
+  ensure_private_file() {
+    local local_path="$1"
+    local drive_path="$2"
+    local example_path="$3"
+
+    if [[ -e "$local_path" ]]; then
+      echo "  $local_path already exists — skipping"
+      return 0
+    fi
+
+    if [[ -f "$drive_path" ]]; then
+      case "$(uname -s)" in
+        Darwin*|Linux*)
+          ln -s "$drive_path" "$local_path"
+          echo "  OK — linked $local_path -> $drive_path"
+          ;;
+        *)
+          cp "$drive_path" "$local_path"
+          echo "  OK — copied $drive_path -> $local_path"
+          ;;
+      esac
+      return 0
+    fi
+
+    if [[ -f "$example_path" ]]; then
+      cp "$example_path" "$local_path"
+      echo "  OK — created $local_path from $example_path"
+    else
+      echo "  WARN: missing template $example_path" >&2
+    fi
+  }
+
+  ensure_private_file "log.md" "drive/personal/journal/log.md" "log.md.example"
+  ensure_private_file "wiki/context/session-memory.md" \
+    "drive/personal/journal/wiki-context-session-memory.md" \
+    "wiki/context/session-memory.md.example"
+}
+
+# ── 5. Build SQLite wiki index ──────────────────────────────────────────────
 
 setup_index() {
-  echo "[4/7] Building SQLite wiki index (FTS5 search)..."
+  echo "[5/8] Building SQLite wiki index (FTS5 search)..."
 
   if [[ ! -f "scripts/gen-index.py" ]]; then
     echo "  scripts/gen-index.py not found — skipping"
@@ -87,10 +133,10 @@ setup_index() {
   echo "  OK — wiki index built"
 }
 
-# ── 5. .codex/ hooks — link to .claude/hooks/ ──────────────────────────────
+# ── 6. .codex/ hooks — link to .claude/hooks/ ──────────────────────────────
 
 setup_codex() {
-  echo "[5/7] Setting up .codex/ hooks link..."
+  echo "[6/8] Setting up .codex/ hooks link..."
 
   if [[ -f "scripts/setup-codex-hooks.sh" ]]; then
     bash scripts/setup-codex-hooks.sh
@@ -115,13 +161,13 @@ setup_codex() {
   esac
 }
 
-# ── 6. Model intel cache — optional Gemini grounded refresh ────────────────
+# ── 7. Model intel cache — optional Gemini grounded refresh ────────────────
 # Off by default during setup to avoid network/API surprises. SessionStart will
 # refresh it later when GEMINI_API_KEY or GOOGLE_AI_STUDIO_KEY is available.
 # Enable now with: AWIKI_REFRESH_MODEL_INTEL=1 bash scripts/setup-local.sh
 
 setup_model_intel() {
-  echo "[6/7] Preparing AI model intel cache..."
+  echo "[7/8] Preparing AI model intel cache..."
   mkdir -p .tmp/model-intel
   if [[ "${AWIKI_REFRESH_MODEL_INTEL:-0}" != "1" ]]; then
     echo "  skipped live refresh — set AWIKI_REFRESH_MODEL_INTEL=1 to run now"
@@ -168,11 +214,11 @@ setup_react_doctor() {
   echo "  OK — react-doctor skill registered (~/.claude/skills/)"
 }
 
-# ── 7. (optional) SkillOpt — local install only, not committed ─────────────
+# ── 8. (optional) SkillOpt — local install only, not committed ─────────────
 # Enable with: INSTALL_SKILLOPT=1 bash scripts/setup-local.sh
 
 setup_skillopt() {
-  echo "[7/7] SkillOpt optional integration..."
+  echo "[8/8] SkillOpt optional integration..."
   if [[ "${INSTALL_SKILLOPT:-0}" != "1" ]]; then
     echo "  skipped install — set INSTALL_SKILLOPT=1 to install into .venv-skillopt"
     return 0
@@ -190,6 +236,7 @@ setup_skillopt() {
 setup_raw
 setup_mcp
 setup_secrets
+setup_private_journal
 setup_index
 setup_codex
 setup_model_intel

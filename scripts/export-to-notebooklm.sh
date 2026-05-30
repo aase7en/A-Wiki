@@ -67,7 +67,7 @@ bundle_domain() {
   {
     printf '# Wiki Snapshot — %s domain\n\n' "${domain}"
     printf '**Snapshot**: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    printf '**Repo**: aase7en/aase7en-inw-wiki\n'
+    printf '**Repo**: %s\n' "$(git config --get remote.origin.url 2>/dev/null | sed -E 's#.*[:/]([^/]+/[^/.]+)(\.git)?$#\1#' || echo 'local-only')"
     printf '**Commit**: %s\n' "$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
     printf '**Generator**: scripts/export-to-notebooklm.sh\n\n'
     printf '> ใช้กับ NotebookLM Pro: upload ไฟล์นี้เป็น single source ใน notebook ของ domain %s\n' "${domain}"

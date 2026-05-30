@@ -11,7 +11,12 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SESSION_MEMORY = REPO_ROOT / "wiki" / "context" / "session-memory.md"
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.lib.personal_paths import session_memory_path
+
+DEFAULT_SESSION_MEMORY = session_memory_path(REPO_ROOT) or REPO_ROOT / "wiki" / "context" / "session-memory.md"
 DEFAULT_BACKLOG = REPO_ROOT / "wiki" / "context" / "project-backlog.md"
 
 

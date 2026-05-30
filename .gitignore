@@ -110,6 +110,20 @@ raw/
 drive
 .drive-path
 
+# --- Personal / per-user artifacts (untracked since v2026.05.0 for public-clone safety) ---
+# Session journals, NotebookLM exports, and other operational logs belong on
+# the user's machine, not in the public repo. See SECURITY.md.
+personal/
+drive/personal/
+log.md
+session-memory.md
+wiki/context/session-memory.md
+inw-wiki-critique.md
+exports/notebooklm/
+core-knowledge/exports/
+*.local.md
+.A-Wiki-config
+
 # --- Archive / Downloads ---
 *.zip
 *.tar.gz

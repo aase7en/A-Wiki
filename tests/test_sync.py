@@ -77,16 +77,17 @@ class TestIsRepoDirty:
 
     def test_modified_sync_path(self, tmp_git_repo: Path):
         os.chdir(tmp_git_repo)
-        # log.md is in SYNC_PATHS — create & modify it
-        log = tmp_git_repo / "log.md"
-        log.write_text("initial content\n")
+        note = tmp_git_repo / "wiki" / "note.md"
+        note.parent.mkdir(exist_ok=True)
+        note.write_text("initial content\n")
         # git sees untracked — mark dirty
         assert is_repo_dirty()
-        log.write_text("modified content\n")
+        note.write_text("modified content\n")
         assert is_repo_dirty()
 
     def test_sync_paths_use_current_session_memory_location(self):
         assert "wiki" in SYNC_PATHS
+        assert "log.md" not in SYNC_PATHS
         assert "session-memory.md" not in SYNC_PATHS
         assert "docs" in SYNC_PATHS
         assert ".github/copilot-instructions.md" in SYNC_PATHS
