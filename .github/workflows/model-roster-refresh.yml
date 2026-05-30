@@ -1,0 +1,112 @@
+name: A-Wiki Model Roster Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_issue:
+        description: "Create or update an issue when the roster changes"
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+  schedule:
+    - cron: "41 2 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: model-roster-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Scout free model roster
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh roster candidate
+        id: roster
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp/model-roster
+          bash scripts/update-model-roster.sh \
+            --ci-ok \
+            --no-backup \
+            --report .tmp/model-roster/report.md
+
+          changed=false
+          if git diff --quiet -- wiki/context/model-roster.conf; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            changed=true
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff -- wiki/context/model-roster.conf > .tmp/model-roster/model-roster.diff
+          fi
+
+          {
+            echo "## Model roster refresh"
+            echo ""
+            cat .tmp/model-roster/report.md
+            echo ""
+            echo "Changed: $changed"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload roster report
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-roster-refresh-report
+          path: |
+            .tmp/model-roster/report.md
+            .tmp/model-roster/model-roster.diff
+            wiki/context/model-roster.conf
+          if-no-files-found: ignore
+
+      - name: Create or update change issue
+        if: steps.roster.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.create_issue == 'true')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          title="A-Wiki model roster refresh available"
+          existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')"
+          body_file=".tmp/model-roster/issue-body.md"
+          {
+            echo "A scheduled model roster scout found changes in \`wiki/context/model-roster.conf\`."
+            echo ""
+            echo "Review the attached workflow artifact, then refresh locally with:"
+            echo ""
+            echo '```bash'
+            echo 'bash scripts/update-model-roster.sh'
+            echo 'python scripts/model-router-policy.py --json'
+            echo 'python -m pytest tests/test_model_intel_and_skillopt.py -q'
+            echo '```'
+            echo ""
+            echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo ""
+            echo "## Diff"
+            echo '```diff'
+            sed -n '1,220p' .tmp/model-roster/model-roster.diff
+            echo '```'
+          } > "$body_file"
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file "$body_file"
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+          fi

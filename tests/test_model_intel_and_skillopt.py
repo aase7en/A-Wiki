@@ -50,6 +50,30 @@ def test_update_model_intel_script_is_drive_safe_and_grounded():
     assert "wiki/context/model-intel" not in text
 
 
+def test_model_roster_refresh_script_is_ci_safe():
+    script = REPO_ROOT / "scripts" / "update-model-roster.sh"
+    text = script.read_text(encoding="utf-8")
+
+    assert "--ci-ok" in text
+    assert "--report PATH" in text
+    assert "write_report" in text
+    assert "OPENROUTER_API_KEY not set. Skipped live model roster query." in text
+    assert "model-roster.conf.bak" in text
+
+
+def test_model_roster_refresh_workflow_reports_without_auto_commit():
+    workflow = REPO_ROOT / ".github" / "workflows" / "model-roster-refresh.yml"
+    text = workflow.read_text(encoding="utf-8")
+
+    assert "schedule:" in text
+    assert "OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}" in text
+    assert "--ci-ok" in text
+    assert "actions/upload-artifact@v4" in text
+    assert "gh issue create" in text
+    assert "git commit" not in text
+    assert "git push" not in text
+
+
 def test_skillopt_refresh_keeps_upstream_snapshot_lightweight():
     script = REPO_ROOT / "scripts" / "refresh-skillopt.sh"
     text = script.read_text(encoding="utf-8")

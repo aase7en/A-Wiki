@@ -4,7 +4,7 @@
 # Queries OpenRouter API for free models, ranks by quality (context length, 
 # reasoning flag, community score), and writes top picks to model-roster.conf.
 #
-# Usage:  scripts/update-model-roster.sh
+# Usage:  scripts/update-model-roster.sh [--report PATH] [--ci-ok] [--no-backup]
 # Requires: OPENROUTER_API_KEY env var
 # Output:  wiki/context/model-roster.conf (sourced by scripts/delegate.sh)
 #
@@ -14,10 +14,84 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ROSTER_CONF="$REPO_ROOT/wiki/context/model-roster.conf"
 POLICY_SCRIPT="$REPO_ROOT/scripts/model-router-policy.py"
+REPORT_PATH=""
+CI_OK=0
+NO_BACKUP=0
+
+usage() {
+  cat <<'EOF'
+Usage: bash scripts/update-model-roster.sh [--report PATH] [--ci-ok] [--no-backup]
+
+Queries OpenRouter for currently free models and updates wiki/context/model-roster.conf.
+
+Options:
+  --report PATH   Write a compact Markdown report for GitHub Actions summaries/artifacts
+  --ci-ok         Convert missing key or transient API/network failures into exit 0
+  --no-backup     Do not create model-roster.conf.bak
+  -h, --help      Show this help
+
+Environment:
+  OPENROUTER_API_KEY  Required unless --ci-ok is used for degraded CI reporting
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --report)
+      [ $# -lt 2 ] && { echo "--report requires a path" >&2; exit 3; }
+      REPORT_PATH="$2"; shift 2 ;;
+    --ci-ok) CI_OK=1; shift ;;
+    --no-backup) NO_BACKUP=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown flag: $1" >&2; usage >&2; exit 3 ;;
+  esac
+done
+
+write_report() {
+  local status="$1"
+  local message="$2"
+  local candidate="${3:-}"
+  [ -n "$REPORT_PATH" ] || return 0
+  mkdir -p "$(dirname "$REPORT_PATH")"
+  {
+    echo "# A-Wiki Model Roster Refresh"
+    echo ""
+    echo "- Status: $status"
+    echo "- Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "- Roster: $ROSTER_CONF"
+    echo "- Message: $message"
+    echo ""
+    if [ -f "$ROSTER_CONF" ]; then
+      echo "## Current roster"
+      echo '```conf'
+      sed -n '1,80p' "$ROSTER_CONF"
+      echo '```'
+      echo ""
+    fi
+    if [ -n "$candidate" ] && [ -f "$candidate" ]; then
+      echo "## Candidate roster"
+      echo '```conf'
+      sed -n '1,80p' "$candidate"
+      echo '```'
+    fi
+  } > "$REPORT_PATH"
+}
+
+finish_failure() {
+  local code="$1"
+  local message="$2"
+  echo "$message" >&2
+  write_report "failed" "$message"
+  [ "$CI_OK" = "1" ] && exit 0
+  exit "$code"
+}
 
 # ─── Key check ────────────────────────────────────────────────────────────────
 if [ -z "${OPENROUTER_API_KEY:-}" ]; then
-  echo "❌ OPENROUTER_API_KEY not set. Cannot query model roster." >&2
+  message="OPENROUTER_API_KEY not set. Skipped live model roster query."
+  echo "❌ $message" >&2
+  write_report "skipped" "$message"
+  [ "$CI_OK" = "1" ] && exit 0
   exit 2
 fi
 
@@ -26,8 +100,7 @@ echo "🔍 Scouting OpenRouter for available free models..." >&2
 API_RESPONSE=$(curl -sS --max-time 15 \
   "https://openrouter.ai/api/v1/models" \
   -H "Authorization: Bearer $OPENROUTER_API_KEY" 2>/dev/null) || {
-  echo "❌ Failed to fetch models from OpenRouter API (network error)" >&2
-  exit 1
+  finish_failure 1 "Failed to fetch models from OpenRouter API (network error)"
 }
 
 TEMP_DIR=$(mktemp -d)
@@ -142,24 +215,28 @@ else:
 for line in lines:
     print(line)
 PY
-  echo "❌ Python roster generation failed" >&2
-  exit 1
+  finish_failure 1 "Python roster generation failed"
 }
 
 # Validate: must have at least TIER1_PRIMARY
 if ! grep -q 'TIER1_PRIMARY=' "$TEMP_DIR/new_roster.conf" 2>/dev/null; then
-  echo "❌ Generated roster is malformed — keeping existing" >&2
-  exit 1
+  finish_failure 1 "Generated roster is malformed; keeping existing"
 fi
 
 # Backup existing roster if it exists
-if [ -f "$ROSTER_CONF" ]; then
+if [ -f "$ROSTER_CONF" ] && [ "$NO_BACKUP" != "1" ]; then
   cp "$ROSTER_CONF" "${ROSTER_CONF}.bak"
   echo "📦 Backed up existing roster → ${ROSTER_CONF}.bak" >&2
 fi
 
-cp "$TEMP_DIR/new_roster.conf" "$ROSTER_CONF"
-echo "✅ Model roster updated: $ROSTER_CONF" >&2
+if [ -f "$ROSTER_CONF" ] && cmp -s "$TEMP_DIR/new_roster.conf" "$ROSTER_CONF"; then
+  write_report "unchanged" "Live OpenRouter roster matches the tracked roster." "$TEMP_DIR/new_roster.conf"
+  echo "✅ Model roster unchanged: $ROSTER_CONF" >&2
+else
+  write_report "updated" "Live OpenRouter roster produced a changed candidate." "$TEMP_DIR/new_roster.conf"
+  cp "$TEMP_DIR/new_roster.conf" "$ROSTER_CONF"
+  echo "✅ Model roster updated: $ROSTER_CONF" >&2
+fi
 
 if [ -f "$POLICY_SCRIPT" ]; then
   python3 "$POLICY_SCRIPT" --quiet >/dev/null 2>&1 \
