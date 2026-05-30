@@ -33,7 +33,10 @@ def _git(*args: str, cwd: str) -> subprocess.CompletedProcess:
 def init_temp_repo(path: Path) -> None:
     """Initialise a bare-bones git repo at *path* with one commit."""
     path.mkdir(parents=True, exist_ok=True)
-    _git("init", cwd=str(path))
+    result = _git("init", "-b", "main", cwd=str(path))
+    if result.returncode != 0:
+        _git("init", cwd=str(path))
+        _git("checkout", "-b", "main", cwd=str(path))
     _git("config", "user.email", "test@a-wiki.local", cwd=str(path))
     _git("config", "user.name", "Test Runner", cwd=str(path))
     readme = path / "README.md"
