@@ -194,13 +194,29 @@ def main() -> None:
 
     def _block(reason: str) -> None:
         slug = os.path.basename(file_path)
+        # Fresh-clone hint: if raw/ symlink itself is broken, the real fix
+        # is to run setup-cloud-link.sh — not to "save raw first".
+        raw_link = os.path.join(repo_root, "raw")
+        link_hint = ""
+        if os.path.islink(raw_link) and not os.path.exists(raw_link):
+            link_hint = (
+                "\n   ⚠️  raw/ symlink is BROKEN (target not reachable).\n"
+                "      → run: bash scripts/setup-cloud-link.sh\n"
+                "      (then re-try the ingest)\n"
+            )
+        elif not os.path.exists(raw_link):
+            link_hint = (
+                "\n   ⚠️  raw/ does not exist on this machine.\n"
+                "      → run: bash scripts/setup-cloud-link.sh   (one-time per device)\n"
+            )
         _emit(
             "🚫 [check_source_original_file] Blocked "
             f"{tool_name} to wiki/sources/{slug}\n"
             f"   reason: {reason}\n"
             "   fix: 1) save raw fetched content to raw/<slug>.md first\n"
             "        2) set frontmatter: original_file: raw/<slug>.md\n"
-            "   why: provenance is mandatory per wiki/sources/CLAUDE.md\n"
+            "   why: provenance is mandatory per wiki/sources/CLAUDE.md"
+            f"{link_hint}\n"
             "   override (emergency): HOOK_SKIP=check_source_original_file"
         )
         sys.exit(2)
