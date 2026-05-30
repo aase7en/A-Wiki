@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **13**
+- Entities: **14**
 - Concepts: **11**
 
 ---
@@ -30,6 +30,7 @@
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |
 | `pocketbase` | PocketBase คือ open-source backend framework ที่รวม SQLite datab… |
 | `react-doctor` | react-doctor scan codebase React (Next.js, Vite, TanStack, RN, E… |
+| `social-media-skills` | A-Wiki รับเฉพาะ workflow ที่คุ้มจาก `social-media-skills` มาทำเป… |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวที่รันบน Mac Mini ที่บ้าน ทำหน้าที่เป็น gate… |
 | `turbovec` | turbovec implement **TurboQuant** (Google Research) — quantize e… |
 

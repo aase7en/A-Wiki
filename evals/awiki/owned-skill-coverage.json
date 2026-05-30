@@ -28,6 +28,11 @@
       "required": ["Ask NotebookLM", "Gemini API"]
     },
     {
+      "id": "awiki-creator-layer",
+      "skill": "skills/claude-code/awiki-creator-layer/SKILL.md",
+      "required": ["A-Wiki Creator Layer", "drive/personal/creator", "Thai-first"]
+    },
+    {
       "id": "brainstorm-before-build",
       "skill": "skills/claude-code/brainstorm-before-build/SKILL.md",
       "required": ["brainstorm-before-build"]

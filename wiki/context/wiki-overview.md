@@ -13,11 +13,11 @@
 
 | Type | Count |
 |------|-------|
-| ENTITIES | 57 |
+| ENTITIES | 58 |
 | CONCEPTS | 38 |
 | SYNTHESIS | 178 |
 | SOURCES | 152 |
-| **Total** | **425 pages** |
+| **Total** | **426 pages** |
 
 ---
 
@@ -27,7 +27,7 @@
 |--------|----------|----------|--------------|------------|
 | IoT | 36 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
 | Environmental Health | 3 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
-| AI Tools | 13 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
+| AI Tools | 14 | 11 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
 - **Sources** (152): `wiki/context/overview-sources.md`
@@ -220,4 +220,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 425 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 426 pages across 4 sections.*
