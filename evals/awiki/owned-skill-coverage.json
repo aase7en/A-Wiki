@@ -33,6 +33,11 @@
       "required": ["A-Wiki Creator Layer", "drive/personal/creator", "Thai-first"]
     },
     {
+      "id": "awiki-brain-improvement-gate",
+      "skill": "skills/claude-code/awiki-brain-improvement-gate/SKILL.md",
+      "required": ["A-Wiki Brain Improvement Gate", "brain-improvement-gate", "Cost-first"]
+    },
+    {
       "id": "brainstorm-before-build",
       "skill": "skills/claude-code/brainstorm-before-build/SKILL.md",
       "required": ["brainstorm-before-build"]

@@ -18,6 +18,7 @@
 - `wiki/context/overview-{iot,env,ai,pharmacy}.md` — ตาม domain ที่ถาม
 - `wiki/context/knowledge-graph.md` — auto-gen relationships
 - `agent-skills/swarm-intelligence/model-scouter.md` — free model routing
+- `docs/protocols/brain-improvement-gate.md` — ก่อนแก้ระบบสมอง, agent rules, skills, hooks, plugins, scripts, sync, หรือ public-safe data policy
 
 ---
 
@@ -186,6 +187,17 @@ python3 scripts/lib/drive_secrets.py --check
 5. **Plan ก่อน implement เสมอ** — ถ้างานกระทบ >3 ไฟล์ → ระบุ: "จะแก้ [files] — ทำอะไรในแต่ละไฟล์"
 6. **Commit ตรงลง main เท่านั้น** — ห้าม branch, ห้าม PR, ห้าม worktree
 7. **ใช้ภาษาไทย** ในการสื่อสาร (เว้นแต่ถูกขอให้ใช้ภาษาอื่น)
+
+## 🧠 Brain Improvement Gate
+
+ก่อนแก้ เพิ่ม ลบ ติดตั้ง หรือรับสิ่งใดเข้ามาที่กระทบ A-Wiki ในฐานะ second brain ให้ผ่าน `docs/protocols/brain-improvement-gate.md` ก่อน:
+
+- ต้องทำให้ A-Wiki เก่งขึ้นชัดเจน: ค้นดีขึ้น, จำดีขึ้น, ปลอดภัยขึ้น, agent ใช้ต่อได้, หรือ automation เบาลงจริง
+- เลือกรูปแบบเบาก่อน: hook, skill, plugin, GitHub Action, symlink, script, protocol, local index, หรือ multi-model parallel
+- ยึด Cost-first: local/hook/free ก่อน paid/primary model และ primary agent เป็น validator
+- ต้อง cross-platform + cross-device: ห้าม hardcode path ส่วนตัว; ใช้ `drive/`, `raw/`, หรือ `A_WIKI_DRIVE_PATH`
+- repo ต้อง public-safe: secrets/raw/private/analytics/customer/personal data อยู่ใน gitignored external layer
+- ถ้าใช้ซ้ำได้ ให้มัดเป็น package/reusable unit แทนคำเตือนใน chat
 
 ---
 

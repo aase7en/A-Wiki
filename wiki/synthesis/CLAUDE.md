@@ -10,6 +10,7 @@
 > **โดเมน**: Cross-domain analysis  
 > **Last updated**: 2026-05-09  
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน synthesis/**
+> ถ้าการแก้ synthesis workflow เปลี่ยนความสามารถของ A-Wiki brain, agent workflow, skills, hooks, scripts, หรือ public-safe policy → อ่าน `docs/protocols/brain-improvement-gate.md` ก่อน
 
 ---
 

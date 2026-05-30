@@ -51,6 +51,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 - `wiki/context/knowledge-graph.md` — auto-gen relationships
 - `wiki/context/model-roster.conf` — current free model availability
 - `agent-skills/swarm-intelligence/model-scouter.md` — free model routing
+- `docs/protocols/brain-improvement-gate.md` — before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy
 
 ---
 
@@ -207,6 +208,17 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 4. **Confidence markers required**: `[training]` / `[verified YYYY-MM-DD]` / `[wiki]` / `[notebooklm YYYY-MM-DD]`
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
 6. **Commit directly to main only** — NO branch, NO PR, NO worktree
+
+## 🧠 Brain Improvement Gate
+
+Before any agent edits, adds, removes, installs, or adopts anything that affects A-Wiki as a second brain, it must pass `docs/protocols/brain-improvement-gate.md`:
+
+- Clear gain: makes A-Wiki smarter, safer, more searchable, more reusable, or more agent-capable in a way likely to be used.
+- Lightweight shape first: prefer hook, skill, plugin, GitHub Action, symlink, script, protocol, local index, or multi-model parallel workflow over heavy always-loaded context.
+- Cost-first: local/search/hook/free routes before expensive primary-agent work; primary agent validates outputs.
+- Cross-platform + cross-device: no hardcoded personal paths; preserve `drive/` and `raw/` external data layer.
+- Public-safe: secrets, raw files, private notes, analytics, customer data, and personal data stay in gitignored `drive/`/`raw/`.
+- Package when reusable: repeated workflows should become an installable/reusable unit, not a one-off chat reminder.
 
 ---
 
