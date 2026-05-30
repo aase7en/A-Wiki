@@ -26,20 +26,17 @@
 
 | Area | Next action |
 |---|---|
-| Cross-platform | Verify Linux/Windows clone + `pip install -r requirements.txt` + `python scripts/build-vec-index.py` |
-| Legacy wiki carry-over | ทดสอบ `ask-notebooklm.py`, `delegate.sh`, `sync.py`, `hooks_runner.py` ที่ merge/copy จาก legacy wiki |
-| Cost Pyramid | เพิ่ม Cost Pyramid enforcement ใน platform docs ที่ยังไม่ครบ โดยไม่แก้ `CLAUDE.md` เว้นแต่ user อนุญาต |
-| Pharmacy scripts | Copy/port `pharmacy_lookup.py`, `build_pharmacy_db.py`, `compare_delivery.py` จาก InW-Wiki ถ้ายังใช้จริง |
-| Storage | Unified storage layer: SQLite รวม FTS5 + graph + logs เป็น single source of truth |
-| Tagging | Dynamic domain tagging: multi-label tags แทน directory-based domains |
-| Sync | ทดสอบ `sync.py --daemon` บน multi-device Mac + Work PC |
+| Cross-platform | Repo-side verifier done: run `python3 scripts/verify-next-machine.py --build-vec` after pull on each machine |
+| Legacy wiki carry-over | Core scripts/evals/hooks verified; pharmacy scripts ported; remaining carry-over only when a real use case appears |
+| Storage | Future architecture: unified SQLite รวม FTS5 + graph + logs เป็น single source of truth |
+| Tagging | Future architecture: dynamic domain tagging / multi-label tags แทน directory-only domains |
 | Research | ศึกษา OmegaWiki, LLM-Wiki-Skilled, long-term-agent-memory เพื่อออกแบบ entity/memory layer รอบต่อไป |
 
 ## External Repo Setup Backlog
 
 | Repo/project | Next action |
 |---|---|
-| Private business / Pharmacy / IoT repos | Run `bash scripts/setup-gitnexus.sh` ครั้งเดียวต่อ repo เพื่อได้ code graph |
+| Private business / Pharmacy / IoT repos | Use `AWIKI_DREAM_REPOS="/path/a:/path/b" bash scripts/setup-dream-gitnexus.sh` |
 | GitNexus | Investigate why `scripts/lib/drive_secrets.py` symbol indexing ไม่ครบ; `fetch_secret` queryable as caller แต่ context ไม่เจอ |
 
 ## Parking Lot

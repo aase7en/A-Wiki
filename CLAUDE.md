@@ -282,6 +282,24 @@ python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json  # manual hoo
 
 ---
 
+## 🧪 Machine Verification Shortcuts
+
+```bash
+python3 scripts/verify-next-machine.py --build-vec   # Work PC / WSL / fresh clone
+python3 scripts/sync-smoke.py                        # temp-repo sync test only
+AWIKI_DREAM_REPOS="/path/a:/path/b" bash scripts/setup-dream-gitnexus.sh
+```
+
+Pharmacy runtime scripts:
+
+```bash
+python3 scripts/build_pharmacy_db.py
+printf 'betadine: 1\n' | python3 scripts/pharmacy_lookup.py --json
+python3 scripts/compare_delivery.py --help
+```
+
+---
+
 ## 🔚 SESSION END PROTOCOL
 
 1. สรุป ≤10 bullet (done / todo / key findings)
