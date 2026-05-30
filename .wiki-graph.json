@@ -2,15 +2,15 @@
   "generated_at": "2026-05-30",
   "stats": {
     "nodes": 458,
-    "edges": 1148,
+    "edges": 1150,
     "edges_by_type": {
-      "wikilink": 1020,
+      "wikilink": 1022,
       "mdlink": 50,
       "depends": 28,
       "implements": 49,
       "extends": 1
     },
-    "broken_links": 64,
+    "broken_links": 66,
     "orphans": 194,
     "hubs": [
       {
@@ -4500,6 +4500,13 @@
     },
     {
       "from": "log.md",
+      "to": "~/.claude/plans/ingest-lazy-treehouse",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "log.md",
       "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
       "type": "wikilink",
       "broken": false,
@@ -4510,6 +4517,13 @@
       "to": "wiki/entities/iot/velxio.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "log.md",
+      "to": "ingest-flow-raw-first",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {

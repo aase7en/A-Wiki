@@ -12,9 +12,29 @@ description: Use this skill when the user sends a new source (file in raw/, URL,
 
 ## ขั้นตอน
 
-### 1. อ่าน source ทั้งหมด
-- ถ้า source อยู่ใน `raw/` → อ่านจาก path ที่ผู้ใช้ระบุ
-- ถ้า source เป็น URL → ใช้ WebFetch / แจ้ง user ให้ paste
+### 0. Pre-flight — ensure source is in `raw/` FIRST (mandatory)
+
+> 🚫 **ข้ามขั้นนี้ไม่ได้** — hook `check_source_original_file` จะ block การ Write
+> `wiki/sources/<slug>.md` ถ้า `original_file:` ไม่ชี้ไปไฟล์จริงใต้ `raw/`
+> (since 2026-05-30 — ดู [[ingest-flow-raw-first]])
+
+ตรวจสอบและจัด source เข้า `raw/` ก่อนสร้าง source summary:
+
+| สิ่งที่ user ส่ง | ทำอะไร |
+|------------------|--------|
+| Path ใน `raw/` แล้ว | ✅ ผ่าน — ไปต่อ Step 1 |
+| **URL** | `WebFetch` → **save markdown ลง `raw/<slug>.md` ทันที** พร้อม frontmatter: `source_url`, `fetched_at: YYYY-MM-DD`, `fetched_via: WebFetch`, ถ้าเป็น model-filtered ให้ใส่ `note:` แจ้งด้วย |
+| **Paste text** | ขอ slug จาก user → save ลง `raw/<slug>.md` พร้อม `pasted_at:`, `language:` |
+| **Binary/PDF/CSV** | save ลง `raw/<slug>.<ext>` (gitignored อัตโนมัติ) — ดู Step 5 large-file flow |
+
+**ทำไม**: `raw/` คือ symlink → Google Drive A-Wiki-Data/raw — ออกแบบให้รองรับไฟล์ดิบ
+หนักๆ + เก็บ provenance permanent. ถ้าข้าม:
+- เสีย provenance หากต้นทาง (URL/paste) หาย
+- ขัด rule "frontmatter บังคับ" ใน `wiki/sources/CLAUDE.md`
+- โดน hook block ทันที (exit 2) → ทำต่อไม่ได้
+
+### 1. อ่าน source จาก `raw/`
+- อ่าน `raw/<slug>.<ext>` ที่เพิ่ง save ใน Step 0
 - ถ้า source ยาว >2,000 บรรทัด → delegate `general-purpose` subagent สรุป
 - สรุปประเด็นหลัก → ถามผู้ใช้ว่าต้องการเน้นอะไรเป็นพิเศษ
 
