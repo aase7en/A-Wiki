@@ -8,6 +8,13 @@
 - Created [[entities/iot/velxio]] (category: project) — 19 boards / 5 architectures (AVR8, RP2040, RISC-V, Xtensa, Cortex-A53), 48+ components, heterogeneous board simulation = USP
 - Cross-linked: arduino-uno-r3, esp32, esp32-s3, arduino-ide, platformio, esp-idf
 
+**Correction (same session, after user caught the flow violation):**
+- ลืม save raw — ingest แรกข้าม step 1 ของ documented flow
+- Re-fetched + saved `raw/velxio-arduino-esp32-pi-simulator.md` → auto-synced to GDrive A-Wiki-Data/raw (3478 bytes verified)
+- Fixed source frontmatter: `original_file: null` → `raw/velxio-arduino-esp32-pi-simulator.md`
+- Saved feedback memory [[ingest-flow-raw-first]] กันพลาดอีก
+- Confirmed design: raw/ symlink-chain → GDrive ทำงานถูก; Obsidian Graph exclude raw/ ด้วย `-path:raw` ใน .obsidian/graph.json (ตั้งใจ — Graph สำหรับ synthesized knowledge เท่านั้น)
+
 ## [2026-05-30] session | Hardening Step 8 platform instruction refresh
 
 **Done:**

@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 57 |
 | CONCEPTS | 38 |
-| SYNTHESIS | 181 |
+| SYNTHESIS | 182 |
 | SOURCES | 153 |
-| **Total** | **429 pages** |
+| **Total** | **430 pages** |
 
 ---
 
@@ -196,6 +196,7 @@
 | `synth-ux-design-in-iot` | (awaiting human summary) |
 | `synth-vaccine-cae-anomaly-detection` | _To be filled in by human review._ |
 | `synth-vaccine-temp-monitoring-iot` | _To be filled in by human review._ |
+| `synth-velxio-arduino-esp32-pi-simulator` | _To be filled in by human review._ |
 | `synth-vibe-pocketbase-gemini-plan` | _To be filled in by human review._ |
 | `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto` | (awaiting human summary) |
 | `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con` | (awaiting human summary) |
@@ -223,4 +224,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 429 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 430 pages across 4 sections.*

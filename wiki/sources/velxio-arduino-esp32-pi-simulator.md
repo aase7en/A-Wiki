@@ -3,7 +3,7 @@ type: source
 title: "Velxio — Open-Source Arduino/ESP32/Raspberry Pi Simulator"
 slug: velxio-arduino-esp32-pi-simulator
 date_ingested: 2026-05-30
-original_file: null
+original_file: raw/velxio-arduino-esp32-pi-simulator.md
 url: https://globalbyteshop.com/blogs/projects/velxio-arduino-esp32-raspberry-pi-simulator
 tags: [iot, simulator, arduino, esp32, raspberry-pi, open-source, wokwi-alternative]
 ---
