@@ -137,6 +137,7 @@ This page adds a reusable "financial game product" pattern to A-Wiki:
 
 - [[sources/trading-rpg-project-brief-2026-05-30]] keeps the original product idea and verified repo shortlist
 - [[sources/freqtrade-pi5]] remains the practical crypto bot runtime reference
+- [[synthesis/pixellab-asset-pipeline-for-trading-rpg]] defines the AI asset pipeline for characters, NPC bot crew, ship deck props, and animations
 - [[entities/iot/raspberry-pi]] keeps the hardware capacity warning for Pi 5
 - [[concepts/iot/dashboard-design]] supplies dashboard UX principles that can be remapped into RPG feedback
 
@@ -146,7 +147,7 @@ Start with **Crypto-only paper trading + Phaser office scene + one NPC bot**. Do
 
 ## Phase 1 realized — *Tide & Tally* (anime-pirate edition)
 
-[verified 2026-05-31] Phase 1 prototype shipped at `~/Desktop/sunday-estate-webapp/game/` (React + Vite + TypeScript + Phaser + Zustand, isolated sub-project — does not touch the existing `prototype/`, backend, nginx, or docker). It **honors and tightens** this blueprint:
+[verified 2026-05-31] Phase 1 prototype shipped as an isolated local game sub-project (React + Vite + TypeScript + Phaser + Zustand; separate from backend, nginx, and docker surfaces). It **honors and tightens** this blueprint:
 
 - **Theme reframed** from "office/Wall-Street" → **original anime-pirate adventure** (ship deck = dashboard, crew NPC = bot, seas = markets). No existing anime IP — all names invented (working title *Tide & Tally — Corsairs of the Storm Sea*).
 - **Even safer than the blueprint MVP**: Phase 1 is **mock-data only** — no Freqtrade/CCXT connector, no keys, no order path, no Buy/Sell. The only inbound shape is the blueprint's light `MarketEvent` (`botId, status, pnlPct, drawdownPct, riskState, animationHint, timestamp`).
