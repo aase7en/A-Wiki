@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-30",
+  "generated_at": "2026-06-01",
   "stats": {
-    "nodes": 456,
-    "edges": 1182,
+    "nodes": 459,
+    "edges": 1188,
     "edges_by_type": {
-      "wikilink": 1051,
+      "wikilink": 1056,
       "mdlink": 49,
-      "depends": 28,
+      "depends": 29,
       "implements": 51,
       "extends": 3
     },
@@ -375,7 +375,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-05-30",
+      "title": "Review Report — 2026-06-01",
       "domain": "context"
     },
     {
@@ -1244,6 +1244,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "title": "PixelLab API v2 OpenAPI Spec",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/platformio-esp32-guide.md",
       "title": "Create an ESP32 Project With PlatformIO: A Guide for Beginners",
       "domain": "sources"
@@ -1591,6 +1596,11 @@
     {
       "path": "wiki/synthesis/pi4-lora-gateway-server.md",
       "title": "Raspberry Pi 4 เป็น LoRa Gateway + Server เครื่องเดียว",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "title": "PixelLab Asset Pipeline for Trading RPG",
       "domain": "synthesis"
     },
     {
@@ -2091,6 +2101,11 @@
     {
       "path": "wiki/synthesis/synth-pharmacy-ui-instructions.md",
       "title": "Pharmacy App UI Design Instructions (v3) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "title": "PixelLab API v2 OpenAPI Spec — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -8892,6 +8907,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/platformio-esp32-guide.md",
       "to": "wiki/entities/iot/platformio.md",
       "type": "wikilink",
@@ -9209,6 +9238,13 @@
     {
       "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "to": "wiki/sources/freqtrade-pi5.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -10271,10 +10307,31 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
       "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
       "type": "mdlink",
       "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "depends",
+      "broken": false,
       "external": false
     },
     {
