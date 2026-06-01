@@ -1,0 +1,100 @@
+<style>
+  .dv-summary { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .dv-sec { font-weight:700; margin:22px 0 8px; display:flex; align-items:center; gap:8px; }
+  .dv-card { padding:0; overflow-x:auto; }
+  tr.row-diff td  { background: color-mix(in srgb, var(--warn) 9%, transparent); }
+  tr.row-miss td  { background: color-mix(in srgb, var(--fail) 9%, transparent); }
+  tr.row-extra td { background: color-mix(in srgb, var(--low) 9%, transparent); }
+  .qty-bad { color: var(--fail); font-weight:700; }
+  .qty-ok  { font-weight:700; }
+  .note-cell { font-size:12px; color:var(--warn); }
+</style>
+
+<section class="card reveal">
+  <div class="dv-summary" id="summary"></div>
+</section>
+
+<div class="dv-sec">✅ ได้รับครบ <span class="badge ok" id="c-recv">0</span></div>
+<div class="card reveal dv-card">
+  <table id="tbl-recv"><thead><tr>
+    <th>สั่ง</th><th>ในใบส่ง</th><th>SCH</th><th>จำนวน</th><th>ราคา/หน่วย</th>
+  </tr></thead><tbody></tbody></table>
+</div>
+
+<div id="diff-wrap" hidden>
+  <div class="dv-sec">⚠️ ต่างกัน (qty/ชื่อ) <span class="badge warn" id="c-diff">0</span></div>
+  <div class="card reveal dv-card">
+    <table id="tbl-diff"><thead><tr>
+      <th>สั่ง</th><th>ในใบส่ง</th><th>สั่ง×</th><th>ส่ง×</th><th>หมายเหตุ</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div id="miss-wrap" hidden>
+  <div class="dv-sec">❌ ไม่ได้รับ <span class="badge fail" id="c-miss">0</span></div>
+  <div class="card reveal dv-card">
+    <table id="tbl-miss"><thead><tr><th>สั่ง</th><th>จำนวนที่สั่ง</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div id="extra-wrap" hidden>
+  <div class="dv-sec">➕ ส่งเกิน/พิเศษ <span class="badge low" id="c-extra">0</span></div>
+  <div class="card reveal dv-card">
+    <table id="tbl-extra"><thead><tr><th>ในใบส่ง</th><th>SCH</th><th>จำนวน</th><th>ราคา/หน่วย</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var recv=D.received||[], diff=D.diff||[], miss=D.not_received||[], extra=D.extra||[];
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+document.getElementById("summary").innerHTML =
+  '<strong>เปรียบเทียบ order vs ใบส่งสินค้า</strong>'+
+  ' &nbsp; <span class="badge ok">'+recv.length+' ✅ ครบ</span>'+
+  ' <span class="badge warn">'+diff.length+' ⚠️ ต่าง</span>'+
+  ' <span class="badge fail">'+miss.length+' ❌ ไม่ได้รับ</span>'+
+  ' <span class="badge low">'+extra.length+' ➕ เกิน</span>';
+
+document.getElementById("c-recv").textContent=recv.length;
+document.querySelector("#tbl-recv tbody").innerHTML = recv.map(function(r){
+  return '<tr><td>'+esc(r.drug)+'</td><td>'+esc(r.delivered_name)+'</td><td><code>'+esc(r.sch_code)+'</code></td>'+
+    '<td class="qty-ok">×'+esc(r.delivered_qty)+' '+esc(r.unit||"")+'</td><td>'+esc(r.unit_price)+'</td></tr>';
+}).join("") || '<tr><td colspan="5" class="muted">—</td></tr>';
+
+if(diff.length){
+  document.getElementById("diff-wrap").hidden=false;
+  document.getElementById("c-diff").textContent=diff.length;
+  document.querySelector("#tbl-diff tbody").innerHTML = diff.map(function(r){
+    var qtyBad = r.order_qty && r.order_qty!==r.delivered_qty;
+    return '<tr class="row-diff"><td>'+esc(r.drug)+'</td><td>'+esc(r.delivered_name)+'</td>'+
+      '<td>×'+esc(r.order_qty)+'</td>'+
+      '<td class="'+(qtyBad?'qty-bad':'qty-ok')+'">×'+esc(r.delivered_qty)+'</td>'+
+      '<td class="note-cell">'+esc(r.note||"")+'</td></tr>';
+  }).join("");
+}
+
+if(miss.length){
+  document.getElementById("miss-wrap").hidden=false;
+  document.getElementById("c-miss").textContent=miss.length;
+  document.querySelector("#tbl-miss tbody").innerHTML = miss.map(function(r){
+    return '<tr class="row-miss"><td>'+esc(r.drug)+'</td><td class="qty-bad">×'+esc(r.order_qty)+'</td></tr>';
+  }).join("");
+}
+
+if(extra.length){
+  document.getElementById("extra-wrap").hidden=false;
+  document.getElementById("c-extra").textContent=extra.length;
+  document.querySelector("#tbl-extra tbody").innerHTML = extra.map(function(r){
+    return '<tr class="row-extra"><td>'+esc(r.name)+'</td><td><code>'+esc(r.sch_code)+'</code></td>'+
+      '<td>×'+esc(r.qty)+' '+esc(r.unit||"")+'</td><td>'+esc(r.unit_price||"")+'</td></tr>';
+  }).join("");
+}
+
+window.AWIKI_EXPORT = function(){
+  return {
+    qty_mismatches: diff.filter(function(r){ return r.order_qty && r.order_qty!==r.delivered_qty; })
+      .map(function(r){ return {drug:r.drug, ordered:r.order_qty, delivered:r.delivered_qty}; }),
+    missing: miss.map(function(r){ return r.drug; }),
+    extra: extra.map(function(r){ return r.name; })
+  };
+};

@@ -1,0 +1,74 @@
+<style>
+  .audit-controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:0 0 12px; }
+  .audit-controls input { font:inherit; padding:7px 11px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text); min-width:240px; }
+  #tbl-audit td { vertical-align:top; }
+  #tbl-audit td.path code { font-size:12px; color:var(--accent-2); }
+  #tbl-audit td.snippet { color:var(--muted); font-size:13px; max-width:520px; }
+</style>
+
+<section class="card reveal">
+  <div class="audit-controls">
+    <strong id="audit-title"></strong>
+    <span style="flex:1"></span>
+    <input id="filter" placeholder="กรองทุกคอลัมน์…">
+    <span class="muted" id="count"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table id="tbl-audit"><thead><tr id="head-row"></tr></thead><tbody></tbody></table>
+  </div>
+</section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var rows = (D.rows || []).slice();
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+// Derive columns: explicit D.columns, else from first row keys
+var columns = D.columns;
+if(!columns || !columns.length){
+  columns = rows.length ? Object.keys(rows[0]).map(function(k){ return {key:k, label:k, num: typeof rows[0][k]==="number"}; }) : [];
+}
+
+document.getElementById("audit-title").textContent = D.title || (D.mode ? ("Audit — "+D.mode) : "Audit table");
+
+// Build header
+document.getElementById("head-row").innerHTML = columns.map(function(c){
+  return '<th data-k="'+esc(c.key)+'" style="cursor:pointer">'+esc(c.label||c.key)+'</th>';
+}).join("");
+
+var sortKey=null, sortDir=1, query="";
+function visibleRows(){
+  var q=query.toLowerCase();
+  return rows.filter(function(r){
+    return !q || columns.some(function(c){ return String(r[c.key]||"").toLowerCase().indexOf(q)>=0; });
+  }).sort(function(a,b){
+    if(!sortKey) return 0;
+    var x=a[sortKey], y=b[sortKey];
+    if(typeof x==="number" && typeof y==="number") return (x-y)*sortDir;
+    return String(x).localeCompare(String(y))*sortDir;
+  });
+}
+function render(){
+  var tb=document.querySelector("#tbl-audit tbody"); tb.innerHTML="";
+  var rs=visibleRows();
+  rs.forEach(function(r){
+    var tr=document.createElement("tr");
+    tr.innerHTML = columns.map(function(c){
+      var v=r[c.key];
+      var cls = c.key==="path" ? "path" : (c.key==="snippet" ? "snippet" : "");
+      if(c.key==="path") return '<td class="path"><code>'+esc(v)+'</code></td>';
+      if(typeof v==="number") return '<td>'+(Math.round(v*100)/100)+'</td>';
+      return '<td class="'+cls+'">'+esc(v)+'</td>';
+    }).join("");
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent = rs.length+" / "+rows.length+" แถว";
+}
+document.querySelectorAll("#tbl-audit th").forEach(function(th){
+  th.addEventListener("click", function(){
+    var k=th.getAttribute("data-k");
+    sortDir=(sortKey===k)?-sortDir:1; sortKey=k; render();
+  });
+});
+document.getElementById("filter").addEventListener("input", function(e){ query=e.target.value; render(); });
+window.AWIKI_EXPORT = function(){ return { mode: D.mode, selected_paths: visibleRows().map(function(r){ return r.path; }).filter(Boolean) }; };
+render();

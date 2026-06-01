@@ -1,0 +1,30 @@
+{
+  "mode": "search",
+  "title": "Search: iot",
+  "columns": [
+    { "key": "score", "label": "Rank", "num": true },
+    { "key": "title", "label": "Title" },
+    { "key": "path", "label": "Path" },
+    { "key": "snippet", "label": "Snippet" }
+  ],
+  "rows": [
+    {
+      "path": "wiki/concepts/iot/cold-chain-monitoring.md",
+      "title": "Cold Chain Monitoring",
+      "snippet": "Cold chain monitoring คือระบบ IoT ที่ติดตามอุณหภูมิตลอดห่วงโซ่ความเย็น…",
+      "score": 9.41
+    },
+    {
+      "path": "wiki/entities/iot/nb-iot.md",
+      "title": "NB-IoT (Narrowband IoT)",
+      "snippet": "NB-IoT — ผู้พัฒนา 3GPP, ความถี่ licensed cellular band…",
+      "score": 8.83
+    },
+    {
+      "path": "wiki/synthesis/iot-network-infrastructure.md",
+      "title": "IoT Network Infrastructure",
+      "snippet": "Cross-domain synthesis: IoT ⟷ IT, generated 2026-05-25…",
+      "score": 7.20
+    }
+  ]
+}

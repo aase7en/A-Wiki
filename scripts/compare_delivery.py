@@ -506,6 +506,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Compare order list vs delivery invoice")
     ap.add_argument("--delivery", required=True, help="Path to delivery JSON file")
     ap.add_argument("--export",   action="store_true", help="Export comparison Excel")
+    ap.add_argument("--json",     action="store_true", dest="as_json",
+                    help="Emit comparison as JSON (for render-html delivery surface)")
     ap.add_argument("file",       nargs="?",    help="Order list file (default: stdin)")
     args = ap.parse_args()
 
@@ -517,12 +519,21 @@ if __name__ == "__main__":
 
     order_items, merges = dedup_items(lines)
 
+    result = compare(order_items, delivery)
+
+    if args.as_json:
+        # Clean JSON only — no text/merge noise on stdout so it can pipe into render.py
+        payload = dict(result)
+        payload["merges"] = merges
+        payload["order_count"] = len(order_items)
+        print(json.dumps(payload, ensure_ascii=False))
+        sys.exit(0)
+
     if merges:
         print(f"\n🔁  รวมรายการซ้ำ {len(merges)} กลุ่ม:")
         for m in merges:
             print("    {}  ×{} → ×{}".format(m["drug"][:40], "+".join(str(q) for q in m["orig_qtys"]), m["merged_qty"]))
 
-    result = compare(order_items, delivery)
     print_summary(result, len(order_items))
 
     if args.export:

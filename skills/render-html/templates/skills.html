@@ -1,0 +1,94 @@
+<style>
+  .sk-summary { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .sk-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+  .sk-controls button { font:inherit; font-size:12px; padding:5px 12px; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface-2); color:var(--muted); }
+  .sk-controls button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .issue-tag { font-size:11px; background:color-mix(in srgb,var(--fail) 16%,transparent); color:var(--fail); border-radius:5px; padding:1px 7px; margin-right:4px; display:inline-block; }
+  td.sk-name { font-weight:600; }
+  td.sk-path code { font-size:12px; color:var(--muted); }
+</style>
+
+<section class="card reveal">
+  <div class="sk-summary" id="summary"></div>
+  <div class="sk-controls" id="filters">
+    <button data-f="all" class="active">ทั้งหมด</button>
+    <button data-f="FAIL">FAIL</button>
+    <button data-f="WARN">WARN</button>
+    <button data-f="OK">OK</button>
+    <span class="muted" id="count" style="margin-left:8px"></span>
+  </div>
+  <div style="overflow-x:auto">
+    <table id="tbl"><thead><tr>
+      <th data-k="level">สถานะ</th>
+      <th data-k="name">Skill</th>
+      <th data-k="issues">ปัญหา</th>
+      <th data-k="chars" data-num="1">ขนาด</th>
+      <th data-k="eval_covered">มี eval</th>
+      <th data-k="path">Path</th>
+    </tr></thead><tbody></tbody></table>
+  </div>
+</section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var skills = (D.skills || []).slice();
+var summary = D.summary || {};
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+var worst = summary.FAIL>0 ? "fail" : (summary.WARN>0 ? "warn" : "ok");
+document.getElementById("summary").innerHTML =
+  '<span class="badge '+worst+'" style="font-size:13px">'+worst.toUpperCase()+'</span>'+
+  '<strong style="font-size:16px">Skill Quality</strong>'+
+  '<span style="flex:1"></span>'+
+  '<span class="badge ok">'+(summary.OK||0)+' OK</span>'+
+  '<span class="badge warn">'+(summary.WARN||0)+' WARN</span>'+
+  '<span class="badge fail">'+(summary.FAIL||0)+' FAIL</span>';
+
+var order={FAIL:0,WARN:1,OK:2};
+var activeFilter="all", sortKey=null, sortDir=1;
+function rows(){
+  var rs = skills.filter(function(s){ return activeFilter==="all" || s.level===activeFilter; });
+  rs.sort(function(a,b){
+    if(sortKey){
+      var x=a[sortKey], y=b[sortKey];
+      if(typeof x==="number"&&typeof y==="number") return (x-y)*sortDir;
+      return String(x).localeCompare(String(y))*sortDir;
+    }
+    // default: worst level first
+    return (order[a.level]==null?9:order[a.level]) - (order[b.level]==null?9:order[b.level]);
+  });
+  return rs;
+}
+function render(){
+  var tb=document.querySelector("#tbl tbody"); tb.innerHTML="";
+  var rs=rows();
+  rs.forEach(function(s){
+    var lvl=(s.level||"").toLowerCase();
+    var issues=(s.issues||[]).map(function(i){ return '<span class="issue-tag">'+esc(i)+'</span>'; }).join("") || '<span class="muted">—</span>';
+    var tr=document.createElement("tr");
+    tr.innerHTML =
+      '<td><span class="badge '+lvl+'">'+esc(s.level)+'</span></td>'+
+      '<td class="sk-name">'+esc(s.name)+'</td>'+
+      '<td>'+issues+'</td>'+
+      '<td>'+esc(s.chars)+'</td>'+
+      '<td>'+(s.eval_covered?'✅':'<span class="muted">—</span>')+'</td>'+
+      '<td class="sk-path"><code>'+esc(s.path)+'</code></td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent = rs.length+" / "+skills.length+" skills";
+}
+document.querySelectorAll("#filters button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("#filters button").forEach(function(x){ x.classList.remove("active"); });
+    b.classList.add("active"); activeFilter=b.getAttribute("data-f"); render();
+  });
+});
+document.querySelectorAll("#tbl th").forEach(function(th){
+  th.style.cursor="pointer";
+  th.addEventListener("click", function(){
+    var k=th.getAttribute("data-k"); sortDir=(sortKey===k)?-sortDir:1; sortKey=k; render();
+  });
+});
+window.AWIKI_EXPORT = function(){
+  return { needs_fix: skills.filter(function(s){ return s.level!=="OK"; }).map(function(s){ return {name:s.name, level:s.level, issues:s.issues}; }) };
+};
+render();
