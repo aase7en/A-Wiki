@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-06-01T12:30:00+07:00",
+  "mode": "trading-rpg-ops",
+  "summary": {
+    "active_agents": 4,
+    "attention": 2,
+    "blocked": 1,
+    "risk": "watch"
+  },
+  "lanes": [
+    {
+      "id": "market-scout",
+      "title": "Market Scout",
+      "role": "free-model news and signal triage",
+      "state": "reading",
+      "risk": "normal",
+      "token_ratio": 0.18,
+      "events": [
+        {"type": "toolStart", "label": "Summarizing BTC macro watchlist", "at": "12:25"},
+        {"type": "turnEnd", "label": "Returned watch-only tags", "at": "12:27"}
+      ]
+    },
+    {
+      "id": "risk-guard",
+      "title": "Risk Guard",
+      "role": "drawdown and exposure gate",
+      "state": "waiting",
+      "risk": "watch",
+      "token_ratio": 0.09,
+      "events": [
+        {"type": "riskChanged", "label": "Breakout Gunner drawdown crossed watch threshold", "at": "12:28"}
+      ]
+    },
+    {
+      "id": "executioner",
+      "title": "Executioner",
+      "role": "paper-trade adapter only",
+      "state": "blocked",
+      "risk": "danger",
+      "token_ratio": 0.31,
+      "events": [
+        {"type": "permissionRequest", "label": "Live execution disabled by phase policy", "at": "12:29"}
+      ]
+    },
+    {
+      "id": "critic",
+      "title": "Senior Critic",
+      "role": "primary validation, not delegatable",
+      "state": "reviewing",
+      "risk": "normal",
+      "token_ratio": 0.44,
+      "events": [
+        {"type": "toolStart", "label": "Checking reward rules do not incentivize trade frequency", "at": "12:30"}
+      ]
+    }
+  ],
+  "decisions": [
+    {"id": "pause-breakout", "label": "Pause Breakout Gunner", "default": true},
+    {"id": "request-news-digest", "label": "Request cheap-agent news digest", "default": false},
+    {"id": "keep-paper-only", "label": "Keep paper-only mode", "default": true}
+  ]
+}

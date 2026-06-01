@@ -1,0 +1,129 @@
+<style>
+  .agent-hero { display:grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap:14px; align-items:stretch; }
+  .agent-title { margin:0 0 6px; font-size:28px; }
+  .agent-summary { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:10px; }
+  .agent-stat { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:12px; }
+  .agent-stat span { display:block; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.6px; }
+  .agent-stat strong { display:block; font-size:24px; line-height:1.2; margin-top:4px; }
+  .agent-board { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-top:18px; }
+  .agent-lane { position:relative; overflow:hidden; min-height:260px; }
+  .agent-lane::before { content:""; position:absolute; inset:0 0 auto; height:4px; background:var(--ok); }
+  .agent-lane[data-risk="watch"]::before { background:var(--warn); }
+  .agent-lane[data-risk="danger"]::before { background:var(--fail); }
+  .agent-head { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+  .agent-avatar {
+    width:44px; height:44px; border-radius:8px; display:grid; place-items:center;
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 65%, transparent), color-mix(in srgb, var(--accent-2) 55%, transparent));
+    color:#fff; font-weight:800; flex:0 0 auto;
+  }
+  .agent-head h2 { margin:0; font-size:18px; }
+  .agent-role { color:var(--muted); font-size:13px; margin-top:2px; }
+  .agent-meta { display:flex; gap:7px; flex-wrap:wrap; margin:10px 0 12px; }
+  .agent-fuel { height:8px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); overflow:hidden; margin:8px 0 12px; }
+  .agent-fuel > span { display:block; height:100%; background:var(--accent-2); width:0; }
+  .agent-events { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+  .agent-events li { border-left:2px solid var(--border); padding-left:9px; color:var(--muted); font-size:13px; }
+  .agent-events strong { color:var(--text); font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+  .decision-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .decision-row { display:flex; gap:9px; align-items:center; padding:8px 10px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; }
+  .decision-row input { width:16px; height:16px; }
+  .agent-filter { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .agent-filter select { font:inherit; color:var(--text); background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:7px 10px; }
+  @media (max-width: 760px) {
+    .agent-hero { grid-template-columns: 1fr; }
+    .agent-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+
+<section class="agent-hero">
+  <div class="card reveal">
+    <h1 class="agent-title">Visual Agent Ops</h1>
+    <p class="muted" id="agent-subtitle"></p>
+    <div class="agent-filter">
+      <label for="risk-filter" class="muted">Risk</label>
+      <select id="risk-filter">
+        <option value="">All</option>
+        <option value="normal">Normal</option>
+        <option value="watch">Watch</option>
+        <option value="danger">Danger</option>
+      </select>
+      <span class="muted" id="agent-count"></span>
+    </div>
+  </div>
+  <aside class="card reveal">
+    <h2 style="margin-top:0">Operator Decisions</h2>
+    <div id="decision-list" class="decision-list"></div>
+  </aside>
+</section>
+
+<section class="agent-summary reveal" id="agent-summary"></section>
+<section class="agent-board" id="agent-ops-board"></section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var lanes = (D.lanes || []).slice();
+var riskFilter = "";
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+function badge(value){
+  var cls = value === "danger" || value === "blocked" ? "fail" : (value === "watch" || value === "waiting" ? "warn" : "ok");
+  return '<span class="badge '+cls+'">'+esc(value || "unknown")+'</span>';
+}
+function initials(title){
+  return String(title || "?").split(/\s+/).filter(Boolean).slice(0,2).map(function(x){return x.charAt(0).toUpperCase();}).join("") || "?";
+}
+function renderSummary(){
+  var s = D.summary || {};
+  var items = [
+    ["Active", s.active_agents == null ? lanes.length : s.active_agents],
+    ["Attention", s.attention == null ? 0 : s.attention],
+    ["Blocked", s.blocked == null ? 0 : s.blocked],
+    ["Risk", s.risk || "normal"]
+  ];
+  document.getElementById("agent-summary").innerHTML = items.map(function(item){
+    return '<div class="agent-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong></div>';
+  }).join("");
+}
+function visibleLanes(){
+  return lanes.filter(function(l){ return !riskFilter || l.risk === riskFilter; });
+}
+function renderBoard(){
+  var board = document.getElementById("agent-ops-board");
+  var rows = visibleLanes();
+  document.getElementById("agent-count").textContent = rows.length + " / " + lanes.length + " lanes";
+  board.innerHTML = rows.map(function(lane){
+    var ratio = Math.max(0, Math.min(1, Number(lane.token_ratio || 0)));
+    var events = (lane.events || []).map(function(ev){
+      return '<li><strong>'+esc(ev.type)+'</strong> <span>'+esc(ev.at || "")+'</span><br>'+esc(ev.label || "")+'</li>';
+    }).join("");
+    return '<article class="card agent-lane reveal" data-risk="'+esc(lane.risk || "normal")+'">'+
+      '<div class="agent-head"><div class="agent-avatar">'+esc(initials(lane.title))+'</div><div><h2>'+esc(lane.title)+'</h2><div class="agent-role">'+esc(lane.role || "")+'</div></div></div>'+
+      '<div class="agent-meta">'+badge(lane.state)+badge(lane.risk)+'</div>'+
+      '<div class="muted">Token budget</div><div class="agent-fuel" title="'+Math.round(ratio*100)+'%"><span style="width:'+Math.round(ratio*100)+'%"></span></div>'+
+      '<ul class="agent-events">'+events+'</ul>'+
+    '</article>';
+  }).join("");
+  if(window.AWIKI_OBSERVE){ board.querySelectorAll(".reveal").forEach(function(el){ window.AWIKI_OBSERVE(el); }); }
+}
+function renderDecisions(){
+  var list = document.getElementById("decision-list");
+  var decisions = D.decisions || [];
+  list.innerHTML = decisions.length ? decisions.map(function(d){
+    return '<label class="decision-row"><input type="checkbox" data-decision="'+esc(d.id)+'" '+(d.default ? "checked" : "")+'> <span>'+esc(d.label || d.id)+'</span></label>';
+  }).join("") : '<p class="muted">No operator decisions queued.</p>';
+}
+document.getElementById("agent-subtitle").textContent = (D.mode || "agent-ops") + (D.generated_at ? " · " + D.generated_at : "");
+document.getElementById("risk-filter").addEventListener("change", function(e){ riskFilter = e.target.value; renderBoard(); });
+window.AWIKI_EXPORT = function(){
+  var approved = [];
+  document.querySelectorAll("[data-decision]").forEach(function(input){
+    if(input.checked) approved.push(input.getAttribute("data-decision"));
+  });
+  return {
+    mode: D.mode || "agent-ops",
+    risk_filter: riskFilter || null,
+    approved_decisions: approved,
+    visible_lanes: visibleLanes().map(function(l){ return l.id; })
+  };
+};
+renderSummary();
+renderDecisions();
+renderBoard();
