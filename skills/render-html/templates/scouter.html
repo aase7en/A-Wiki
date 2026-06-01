@@ -1,0 +1,82 @@
+<section class="card" id="reco"></section>
+<div class="card">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+    <strong>Scouted models</strong>
+    <span class="muted" id="count"></span>
+    <span style="flex:1"></span>
+    <input id="filter" placeholder="filter id / provider / strength…"
+           style="font:inherit;padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);min-width:220px">
+  </div>
+  <table id="tbl">
+    <thead><tr>
+      <th data-k="id">Model</th>
+      <th data-k="provider">Provider</th>
+      <th data-k="tier">Tier</th>
+      <th data-k="context_window" data-num="1">Context</th>
+      <th data-k="speed">Speed</th>
+      <th data-k="strength">Strength</th>
+      <th data-k="rate_limit">Rate limit</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="muted" style="margin:10px 2px 0;font-size:12px">Click a header to sort. Recommendations are highlighted.</p>
+</div>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var models = (D.available_models || []).slice();
+var reco = D.recommendation || {};
+var COLS = ["id","provider","tier","context_window","speed","strength","rate_limit"];
+var recoIds = {};
+["architect","executioner"].forEach(function(r){ if(reco[r]) recoIds[reco[r]] = r; });
+
+function fmtCtx(n){ if(typeof n!=="number") return n||""; return n>=1000 ? Math.round(n/1000)+"K" : n; }
+function role(id){ return recoIds[id]; }
+
+var sortKey=null, sortDir=1, query="";
+function rows(){
+  var q=query.toLowerCase();
+  return models.filter(function(m){
+    return !q || COLS.some(function(c){ return String(m[c]||"").toLowerCase().indexOf(q)>=0; });
+  }).sort(function(a,b){
+    if(!sortKey) return 0;
+    var x=a[sortKey], y=b[sortKey];
+    if(typeof x==="number"&&typeof y==="number") return (x-y)*sortDir;
+    return String(x).localeCompare(String(y))*sortDir;
+  });
+}
+function render(){
+  var tb=document.querySelector("#tbl tbody"); tb.innerHTML="";
+  var rs=rows();
+  rs.forEach(function(m){
+    var tr=document.createElement("tr");
+    var r=role(m.id);
+    if(r) tr.style.background="color-mix(in srgb, var(--accent) 14%, transparent)";
+    tr.innerHTML =
+      '<td><code>'+m.id+'</code>'+(r?' <span class="badge low">'+r+'</span>':'')+'</td>'+
+      '<td>'+(m.provider||'')+'</td>'+
+      '<td><span class="badge ok">'+(m.tier||'')+'</span></td>'+
+      '<td>'+fmtCtx(m.context_window)+'</td>'+
+      '<td>'+(m.speed||'')+'</td>'+
+      '<td>'+(m.strength||'')+'</td>'+
+      '<td class="muted">'+(m.rate_limit||'')+'</td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent = rs.length+" of "+models.length+" shown";
+}
+function renderReco(){
+  var el=document.getElementById("reco");
+  el.innerHTML='<strong>Swarm allocation</strong> &nbsp; '+
+    ["architect","executioner","critic"].map(function(r){
+      return '<span class="badge low" style="margin-right:6px">'+r+'</span> <code>'+(reco[r]||'—')+'</code>';
+    }).join(' &nbsp;·&nbsp; ');
+}
+document.querySelectorAll("#tbl th").forEach(function(th){
+  th.style.cursor="pointer";
+  th.addEventListener("click", function(){
+    var k=th.getAttribute("data-k");
+    sortDir = (sortKey===k)? -sortDir : 1; sortKey=k; render();
+  });
+});
+document.getElementById("filter").addEventListener("input", function(e){ query=e.target.value; render(); });
+window.AWIKI_EXPORT = function(){ return { selected: rows().map(function(m){return m.id;}), recommendation: reco }; };
+renderReco(); render();

@@ -1,0 +1,61 @@
+<section class="card" id="head"></section>
+<section class="card" id="timeline-card" hidden>
+  <strong>Timeline</strong>
+  <ol id="timeline" style="margin:12px 0 0;padding-left:18px"></ol>
+</section>
+<section id="findings"></section>
+<section class="card" id="actions-card" hidden>
+  <strong>Action items</strong>
+  <ul id="actions" style="margin:12px 0 0"></ul>
+</section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+
+var head=document.getElementById("head");
+head.innerHTML =
+  '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+    '<h1 style="margin:0;font-size:22px">'+esc(D.title||"Report")+'</h1>'+
+    (D.kind?'<span class="badge low">'+esc(D.kind)+'</span>':'')+
+    (D.severity?'<span class="badge '+esc(D.severity)+'">'+esc(D.severity)+'</span>':'')+
+  '</div>'+
+  (D.summary?'<p class="muted" style="margin:10px 0 0">'+esc(D.summary)+'</p>':'')+
+  (D.root_cause?'<p style="margin:12px 0 0"><strong>Root cause:</strong> '+esc(D.root_cause)+'</p>':'');
+
+if(Array.isArray(D.timeline)&&D.timeline.length){
+  document.getElementById("timeline-card").hidden=false;
+  document.getElementById("timeline").innerHTML = D.timeline.map(function(t){
+    return '<li><code>'+esc(t.time)+'</code> — '+esc(t.event)+'</li>';
+  }).join("");
+}
+
+var order={high:0,medium:1,low:2};
+var findings=(D.findings||[]).slice().sort(function(a,b){
+  return (order[a.severity]==null?9:order[a.severity])-(order[b.severity]==null?9:order[b.severity]);
+});
+document.getElementById("findings").innerHTML = findings.map(function(f){
+  var loc = f.file ? '<code>'+esc(f.file)+(f.line?':'+f.line:'')+'</code>' : '';
+  var diff="";
+  if(f.diff){
+    diff='<div style="margin-top:10px;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-family:ui-monospace,monospace;font-size:13px">';
+    if(f.diff.before) diff+='<div style="background:color-mix(in srgb,var(--fail) 14%,transparent);padding:6px 10px;white-space:pre-wrap">- '+esc(f.diff.before)+'</div>';
+    if(f.diff.after) diff+='<div style="background:color-mix(in srgb,var(--ok) 14%,transparent);padding:6px 10px;white-space:pre-wrap">+ '+esc(f.diff.after)+'</div>';
+    diff+='</div>';
+  }
+  return '<div class="card">'+
+    '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+
+      '<span class="badge '+esc(f.severity)+'">'+esc(f.severity)+'</span>'+
+      '<strong>'+esc(f.title)+'</strong>'+
+      '<span style="flex:1"></span>'+loc+
+    '</div>'+
+    (f.detail?'<p class="muted" style="margin:8px 0 0">'+esc(f.detail)+'</p>':'')+
+    diff+
+  '</div>';
+}).join("");
+
+if(Array.isArray(D.action_items)&&D.action_items.length){
+  document.getElementById("actions-card").hidden=false;
+  document.getElementById("actions").innerHTML = D.action_items.map(function(a){
+    return '<li>'+esc(a)+'</li>';
+  }).join("");
+}

@@ -1,0 +1,37 @@
+<section class="card" id="summary"></section>
+<section class="card">
+  <strong>Stats</strong>
+  <div id="stats" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px"></div>
+</section>
+<section class="card">
+  <strong>Checks</strong>
+  <table style="margin-top:12px"><thead><tr><th>Status</th><th>Check</th><th>Detail</th></tr></thead>
+  <tbody id="checks"></tbody></table>
+</section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+var s=D.summary||{};
+var worst = s.fail>0 ? "fail" : (s.warn>0 ? "warn" : "ok");
+document.getElementById("summary").innerHTML =
+  '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">'+
+    '<span class="badge '+worst+'" style="font-size:13px">'+worst.toUpperCase()+'</span>'+
+    '<strong style="font-size:18px">Health '+(D.version?'v'+esc(D.version):'')+'</strong>'+
+    '<span style="flex:1"></span>'+
+    '<span class="badge ok">'+(s.ok||0)+' OK</span>'+
+    '<span class="badge warn">'+(s.warn||0)+' WARN</span>'+
+    '<span class="badge fail">'+(s.fail||0)+' FAIL</span>'+
+  '</div>';
+
+var stats=D.stats||{};
+document.getElementById("stats").innerHTML = Object.keys(stats).map(function(k){
+  return '<div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 16px;min-width:96px">'+
+    '<div style="font-size:22px;font-weight:700">'+esc(stats[k])+'</div>'+
+    '<div class="muted" style="font-size:12px">'+esc(k.replace(/_/g," "))+'</div></div>';
+}).join("");
+
+document.getElementById("checks").innerHTML = (D.checks||[]).map(function(c){
+  var lvl=(c.level||"").toLowerCase();
+  return '<tr><td><span class="badge '+lvl+'">'+esc(c.level)+'</span></td>'+
+    '<td>'+esc(c.name)+'</td><td class="muted">'+esc(c.detail)+'</td></tr>';
+}).join("");

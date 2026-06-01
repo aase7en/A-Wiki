@@ -1,0 +1,46 @@
+{
+  "scouted_at": "2026-06-01 10:00 UTC+7",
+  "available_models": [
+    {
+      "id": "deepseek/deepseek-r1:free",
+      "provider": "openrouter",
+      "tier": "free",
+      "context_window": 163840,
+      "speed": "medium",
+      "strength": "reasoning",
+      "rate_limit": "20 req/min"
+    },
+    {
+      "id": "google/gemini-2.0-flash-exp:free",
+      "provider": "openrouter",
+      "tier": "free",
+      "context_window": 1048576,
+      "speed": "fast",
+      "strength": "chat",
+      "rate_limit": "15 req/min"
+    },
+    {
+      "id": "qwen/qwen-2.5-coder-32b-instruct:free",
+      "provider": "openrouter",
+      "tier": "free",
+      "context_window": 32768,
+      "speed": "fast",
+      "strength": "coding",
+      "rate_limit": "30 req/min"
+    },
+    {
+      "id": "llama-3.3-70b-versatile",
+      "provider": "groq",
+      "tier": "free",
+      "context_window": 131072,
+      "speed": "fast",
+      "strength": "chat",
+      "rate_limit": "30 req/min"
+    }
+  ],
+  "recommendation": {
+    "architect": "deepseek/deepseek-r1:free",
+    "executioner": "qwen/qwen-2.5-coder-32b-instruct:free",
+    "critic": "primary-agent"
+  }
+}

@@ -1,0 +1,5 @@
+# Ephemeral HTML artifacts (durability: hours/days) live here.
+# Source-of-truth stays in Markdown/JSON elsewhere — these are regenerated on demand.
+# Keep the folder tracked (via this file) but ignore every generated artifact.
+*
+!.gitignore
