@@ -36,6 +36,41 @@
       "description": "Interactive data-journalist view of a plan .md file — progressive disclosure, phase approval cards, round-trip JSON decision to agent",
       "required_keys": ["sections", "phases"],
       "data_source": "skills/render-html/scripts/parse_plan.py <plan.md>"
+    },
+    "pharmacy": {
+      "template": "pharmacy.html",
+      "title": "Pharmacy Order Review",
+      "description": "Drug-order lookup review: confidence-coded matches, items needing confirmation, not-found list — confirm the order before sending",
+      "required_keys": ["matched"],
+      "data_source": "scripts/pharmacy_lookup.py --json"
+    },
+    "delivery": {
+      "template": "delivery.html",
+      "title": "Delivery Reconciliation",
+      "description": "Order vs delivery invoice diff — qty mismatches, missing and extra items highlighted",
+      "required_keys": ["received", "diff", "not_received", "extra"],
+      "data_source": "scripts/compare_delivery.py --json --delivery <file>"
+    },
+    "audit": {
+      "template": "audit.html",
+      "title": "A-Wiki Audit Table",
+      "description": "Sortable/filterable table for search results or lint findings (orphan/stale/contradiction)",
+      "required_keys": ["rows"],
+      "data_source": "scripts/search-wiki.py --json | scripts/lint output"
+    },
+    "skills": {
+      "template": "skills.html",
+      "title": "Skill Quality Dashboard",
+      "description": "Skill-quality report: OK/WARN/FAIL summary + per-skill issues, sortable to prioritise fixes",
+      "required_keys": ["skills"],
+      "data_source": "scripts/skill-quality-report.py --json"
+    },
+    "status": {
+      "template": "health.html",
+      "title": "A-Wiki Status",
+      "description": "Alias of the health surface — wiki status overview (stats, checks, freshness)",
+      "required_keys": ["checks"],
+      "data_source": "scripts/wiki-health-digest.py --json"
     }
   }
 }

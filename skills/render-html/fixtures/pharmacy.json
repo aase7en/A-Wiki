@@ -1,0 +1,73 @@
+{
+  "matched": [
+    {
+      "ordered": "betadine: 1",
+      "drug": "betadine",
+      "matched": "BETADINE 15ml",
+      "name_th": "เบตาดีน",
+      "category_code": "D08",
+      "category": "ยาแอนติเซพติค ฆ่าเชื้อโรค",
+      "strength": "15ml",
+      "unit": "ขวด",
+      "source": "SP",
+      "where_to_buy": "",
+      "note": "",
+      "confidence": 0.92,
+      "qty": "1",
+      "status": "✅"
+    },
+    {
+      "ordered": "paracetamol: 2",
+      "drug": "paracetamol",
+      "matched": "XEBRAMOL drop 15ml paracetamol",
+      "name_th": "",
+      "category_code": "N02",
+      "category": "ยาแก้ปวด",
+      "strength": "15ml",
+      "unit": "ขวด",
+      "source": "SP",
+      "where_to_buy": "",
+      "note": "",
+      "confidence": 0.78,
+      "qty": "2",
+      "status": "✅"
+    },
+    {
+      "ordered": "amoxicillin: 3",
+      "drug": "amoxicillin",
+      "matched": "Clavamox Drop (Amoxicillin+Clavulanate) 15ml",
+      "name_th": "",
+      "category_code": "J01",
+      "category": "ยาต้านแบคทีเรีย",
+      "strength": "15ml",
+      "unit": "ขวด",
+      "source": "SP",
+      "where_to_buy": "",
+      "note": "",
+      "confidence": 0.92,
+      "qty": "3",
+      "status": "✅"
+    }
+  ],
+  "candidates": [
+    {
+      "ordered": "vitc: 4",
+      "drug": "vitc",
+      "matched": "Vitamin C 500mg tab",
+      "name_th": "วิตามินซี",
+      "category_code": "A11",
+      "category": "วิตามิน",
+      "strength": "500mg",
+      "unit": "เม็ด",
+      "source": "SP",
+      "confidence": 0.64,
+      "qty": "4",
+      "status": "⚠️ ต้องยืนยัน",
+      "top3": [[0.64, "Vitamin C 500mg tab"], [0.58, "Vitamin C 1000mg eff"], [0.51, "Cebion Vit C syrup"]],
+      "note": ""
+    }
+  ],
+  "not_found": [
+    { "ordered": "zzznotadrug999: 5", "drug": "zzznotadrug999", "qty": "5", "status": "❌ ไม่พบ" }
+  ]
+}

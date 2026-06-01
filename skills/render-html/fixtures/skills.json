@@ -1,0 +1,11 @@
+{
+  "summary": { "OK": 38, "WARN": 2, "FAIL": 1, "total": 41 },
+  "skills": [
+    { "level": "FAIL", "path": "skills/ecosystem/broken-skill/SKILL.md", "name": "broken-skill", "chars": 210, "eval_covered": false, "issues": ["missing-description", "no-eval-coverage", "too-short"] },
+    { "level": "WARN", "path": "agent-skills/engineering/debug-mantra/SKILL.md", "name": "debug-mantra", "chars": 5124, "eval_covered": false, "issues": ["no-eval-coverage"] },
+    { "level": "WARN", "path": "skills/claude-thai/thai-ocr/SKILL.md", "name": "thai-ocr", "chars": 3201, "eval_covered": false, "issues": ["no-eval-coverage"] },
+    { "level": "OK", "path": "skills/render-html/SKILL.md", "name": "render-html", "chars": 4120, "eval_covered": true, "issues": [] },
+    { "level": "OK", "path": "agent-skills/engineering/scrutinize/SKILL.md", "name": "scrutinize", "chars": 5029, "eval_covered": true, "issues": [] },
+    { "level": "OK", "path": "agent-skills/engineering/post-mortem/SKILL.md", "name": "post-mortem", "chars": 2794, "eval_covered": true, "issues": [] }
+  ]
+}

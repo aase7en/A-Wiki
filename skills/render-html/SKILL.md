@@ -23,6 +23,11 @@ After you produce structured output the user must **read, compare, or decide on*
 | `health` | `scripts/wiki-health-digest.py --json` | at-a-glance OK/WARN/FAIL dashboard |
 | `graph` | `.wiki-graph.json` | interactive force view of hubs & links |
 | `plan` | `.claude/plans/*.md` via `parse_plan.py` | data-journalist view: progressive sections + phase Approve/Skip cards + round-trip JSON decision |
+| `pharmacy` | `scripts/pharmacy_lookup.py --json` | drug-order review: confidence-coded matches, items needing confirmation, not-found — confirm before sending |
+| `delivery` | `scripts/compare_delivery.py --json --delivery <f>` | order vs invoice diff: qty mismatches, missing & extra items color-coded |
+| `audit` | `scripts/search-wiki.py --json` (wrap `{rows, mode}`) / lint findings | generic sortable/filterable table |
+| `skills` | `scripts/skill-quality-report.py --json` | OK/WARN/FAIL dashboard, filter to prioritise fixes |
+| `status` | `scripts/wiki-health-digest.py --json` | alias of `health` |
 
 ## How to run
 
@@ -36,6 +41,23 @@ python3 skills/render-html/scripts/render.py graph   --in .wiki-graph.json
 # plan viewer — parse a .md plan file then render (pipe in one shot)
 python3 skills/render-html/scripts/parse_plan.py ~/.claude/plans/my-plan.md | \
   python3 skills/render-html/scripts/render.py plan --in -
+
+# pharmacy order review
+printf 'betadine: 1\n' | python3 scripts/pharmacy_lookup.py --json | \
+  python3 skills/render-html/scripts/render.py pharmacy --in -
+
+# delivery reconciliation
+python3 scripts/compare_delivery.py --json --delivery deliv.json < order.txt | \
+  python3 skills/render-html/scripts/render.py delivery --in -
+
+# skill-quality dashboard
+python3 scripts/skill-quality-report.py --json | \
+  python3 skills/render-html/scripts/render.py skills --in -
+
+# audit table (search results — wrap the bare list in {rows, mode})
+python3 scripts/search-wiki.py "iot" --json | \
+  python3 -c "import json,sys; print(json.dumps({'mode':'search','rows':json.load(sys.stdin)}))" | \
+  python3 skills/render-html/scripts/render.py audit --in -
 
 # pipe JSON via stdin
 echo '{...}' | python3 skills/render-html/scripts/render.py scouter

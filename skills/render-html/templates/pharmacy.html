@@ -1,0 +1,153 @@
+<style>
+  .ph-summary { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
+  .ph-controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+  .ph-controls input { font:inherit; padding:7px 11px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); color:var(--text); min-width:200px; }
+  .conf-bar { display:inline-block; width:46px; height:8px; border-radius:999px; background:var(--surface-2); overflow:hidden; vertical-align:middle; }
+  .conf-bar > span { display:block; height:100%; }
+  .sec-title { font-weight:700; margin:22px 0 8px; display:flex; align-items:center; gap:8px; }
+  .pill-count { font-size:12px; padding:2px 9px; border-radius:999px; }
+  tr.confirm-row td { background: color-mix(in srgb, var(--warn) 8%, transparent); }
+  .top3 { font-size:11px; color:var(--muted); margin-top:3px; }
+</style>
+
+<section class="card reveal">
+  <div class="ph-summary" id="summary"></div>
+  <div class="ph-controls">
+    <input id="filter" placeholder="กรอง: ชื่อยา / category / source…">
+    <span class="muted" id="count"></span>
+  </div>
+</section>
+
+<div class="sec-title">✅ ยืนยันได้ <span class="badge ok pill-count" id="c-matched">0</span></div>
+<div class="card reveal" style="padding:0;overflow-x:auto">
+  <table id="tbl-matched">
+    <thead><tr>
+      <th data-k="ordered">สั่ง</th>
+      <th data-k="matched">ยาที่จับคู่</th>
+      <th data-k="category">หมวด</th>
+      <th data-k="strength">ขนาด</th>
+      <th data-k="qty" data-num="1">จำนวน</th>
+      <th data-k="confidence" data-num="1">ความมั่นใจ</th>
+      <th data-k="source">แหล่ง</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<div id="confirm-wrap" hidden>
+  <div class="sec-title">⚠️ ต้องยืนยัน <span class="badge warn pill-count" id="c-confirm">0</span></div>
+  <div class="card reveal" style="padding:0;overflow-x:auto">
+    <table id="tbl-confirm">
+      <thead><tr>
+        <th>สั่ง</th><th>ตัวเลือกที่ใกล้สุด</th><th>หมวด</th><th data-num="1">จำนวน</th><th data-num="1">ความมั่นใจ</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="notfound-wrap" hidden>
+  <div class="sec-title">❌ ไม่พบ <span class="badge fail pill-count" id="c-notfound">0</span></div>
+  <div class="card reveal">
+    <ul id="notfound-list" style="margin:0;padding-left:18px"></ul>
+  </div>
+</div>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var matched = (D.matched || []).slice();
+var candidates = D.candidates || [];
+var notFound = D.not_found || [];
+function esc(s){ return String(s==null?"":s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+
+function confColor(c){
+  if(c >= 0.9) return "var(--ok)";
+  if(c >= 0.7) return "var(--warn)";
+  return "var(--fail)";
+}
+function confCell(c){
+  var pct = Math.round((c||0)*100);
+  return '<span class="conf-bar"><span style="width:'+pct+'%;background:'+confColor(c)+'"></span></span> '+pct+'%';
+}
+
+// Summary
+document.getElementById("summary").innerHTML =
+  '<strong>สรุปออเดอร์</strong>'+
+  ' &nbsp; <span class="badge ok">'+matched.length+' ✅ ยืนยันได้</span>'+
+  ' <span class="badge warn">'+candidates.length+' ⚠️ ต้องยืนยัน</span>'+
+  ' <span class="badge fail">'+notFound.length+' ❌ ไม่พบ</span>';
+document.getElementById("c-matched").textContent = matched.length;
+
+var sortKey=null, sortDir=1, query="";
+function matchedRows(){
+  var q=query.toLowerCase();
+  return matched.filter(function(m){
+    return !q || ["matched","category","source","drug","ordered"].some(function(k){ return String(m[k]||"").toLowerCase().indexOf(q)>=0; });
+  }).sort(function(a,b){
+    if(!sortKey) return 0;
+    var x=a[sortKey], y=b[sortKey];
+    if(sortKey==="qty"||sortKey==="confidence"){ x=parseFloat(x)||0; y=parseFloat(y)||0; return (x-y)*sortDir; }
+    return String(x).localeCompare(String(y))*sortDir;
+  });
+}
+function renderMatched(){
+  var tb=document.querySelector("#tbl-matched tbody"); tb.innerHTML="";
+  var rs=matchedRows();
+  rs.forEach(function(m){
+    var tr=document.createElement("tr");
+    tr.innerHTML =
+      '<td><code>'+esc(m.ordered)+'</code></td>'+
+      '<td>'+esc(m.matched)+(m.name_th?' <span class="muted">('+esc(m.name_th)+')</span>':'')+'</td>'+
+      '<td>'+esc(m.category)+'</td>'+
+      '<td>'+esc(m.strength)+' '+esc(m.unit||"")+'</td>'+
+      '<td><strong>'+esc(m.qty)+'</strong></td>'+
+      '<td>'+confCell(m.confidence)+'</td>'+
+      '<td><span class="badge ok">'+esc(m.source)+'</span></td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById("count").textContent = rs.length+" / "+matched.length+" แสดงอยู่";
+}
+document.querySelectorAll("#tbl-matched th").forEach(function(th){
+  th.style.cursor="pointer";
+  th.addEventListener("click", function(){
+    var k=th.getAttribute("data-k"); if(!k) return;
+    sortDir=(sortKey===k)?-sortDir:1; sortKey=k; renderMatched();
+  });
+});
+document.getElementById("filter").addEventListener("input", function(e){ query=e.target.value; renderMatched(); });
+
+// Candidates (ต้องยืนยัน)
+if(candidates.length){
+  document.getElementById("confirm-wrap").hidden=false;
+  document.getElementById("c-confirm").textContent=candidates.length;
+  var ctb=document.querySelector("#tbl-confirm tbody");
+  candidates.forEach(function(c){
+    var top3 = (c.top3||[]).map(function(t){ return esc(t[1])+' ('+Math.round(t[0]*100)+'%)'; }).join(' · ');
+    var tr=document.createElement("tr"); tr.className="confirm-row";
+    tr.innerHTML =
+      '<td><code>'+esc(c.ordered)+'</code></td>'+
+      '<td>'+esc(c.matched)+(top3?'<div class="top3">'+top3+'</div>':'')+'</td>'+
+      '<td>'+esc(c.category)+'</td>'+
+      '<td><strong>'+esc(c.qty)+'</strong></td>'+
+      '<td>'+confCell(c.confidence)+'</td>';
+    ctb.appendChild(tr);
+  });
+}
+
+// Not found
+if(notFound.length){
+  document.getElementById("notfound-wrap").hidden=false;
+  document.getElementById("c-notfound").textContent=notFound.length;
+  document.getElementById("notfound-list").innerHTML = notFound.map(function(n){
+    return '<li><code>'+esc(n.ordered)+'</code> <span class="muted">— '+esc(n.status||"ไม่พบ")+'</span></li>';
+  }).join("");
+}
+
+// Round-trip: confirmed order (matched + any candidates the user keeps)
+window.AWIKI_EXPORT = function(){
+  return {
+    confirmed: matched.map(function(m){ return { drug:m.drug, matched:m.matched, qty:m.qty, source:m.source }; }),
+    needs_confirmation: candidates.map(function(c){ return { drug:c.drug, qty:c.qty }; }),
+    not_found: notFound.map(function(n){ return n.drug; })
+  };
+};
+renderMatched();

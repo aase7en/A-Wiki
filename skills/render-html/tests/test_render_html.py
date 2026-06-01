@@ -39,7 +39,7 @@ def _embedded_data(html: str) -> dict:
     return json.loads(raw)
 
 
-SURFACES = ["scouter", "report", "health", "plan"]
+SURFACES = ["scouter", "report", "health", "plan", "pharmacy", "audit", "skills", "delivery"]
 
 
 def test_registry_has_every_template():
@@ -164,3 +164,28 @@ def test_plan_surface_has_phase_cards():
     html = render.render("plan", data)
     # Phase decision panel must be present
     assert "awiki-phase" in html or "phase-card" in html
+
+
+# ── compare_delivery --json (written BEFORE the flag exists — Iron Law #1) ────
+
+def test_compare_delivery_json_flag(tmp_path):
+    """compare_delivery.py --json must emit the compare() dict as JSON, no text noise."""
+    delivery = {
+        "items": [
+            {"seq": 1, "sch_code": "A1", "name": "Betadine 15ml", "qty": 1, "unit": "ขวด", "unit_price": 35},
+            {"seq": 2, "sch_code": "A2", "name": "Paracetamol 500mg", "qty": 5, "unit": "เม็ด", "unit_price": 1},
+        ]
+    }
+    dfile = tmp_path / "delivery.json"
+    dfile.write_text(json.dumps(delivery, ensure_ascii=False), encoding="utf-8")
+
+    script = REPO_ROOT / "scripts" / "compare_delivery.py"
+    result = subprocess.run(
+        [sys.executable, str(script), "--json", "--delivery", str(dfile)],
+        input="betadine: 1\nparacetamol: 2\nzzzmissing: 3\n",
+        capture_output=True, text=True, timeout=20,
+    )
+    assert result.returncode == 0, f"stderr: {result.stderr}"
+    parsed = json.loads(result.stdout)  # must be clean JSON (no print noise)
+    for key in ("received", "diff", "not_received", "extra"):
+        assert key in parsed, f"missing key {key}"

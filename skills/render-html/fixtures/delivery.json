@@ -1,0 +1,35 @@
+{
+  "received": [
+    {
+      "drug": "betadine",
+      "order_qty": 1,
+      "sch_code": "A1",
+      "delivered_name": "BETADINE 15ml",
+      "delivered_qty": 1,
+      "unit": "ขวด",
+      "unit_price": 35,
+      "score": 0.92
+    }
+  ],
+  "diff": [
+    {
+      "drug": "paracetamol",
+      "order_qty": 5,
+      "sch_code": "A2",
+      "delivered_name": "Paracetamol 500mg",
+      "delivered_qty": 3,
+      "unit": "เม็ด",
+      "unit_price": 1,
+      "score": 0.92,
+      "note": "สั่ง 5 ส่ง 3"
+    }
+  ],
+  "not_received": [
+    { "drug": "zzzmissing", "order_qty": 2, "best_score": 0.0 }
+  ],
+  "extra": [
+    { "seq": 3, "sch_code": "A3", "name": "Vitamin C 1000mg", "qty": 2, "unit": "เม็ด", "unit_price": 5 }
+  ],
+  "merges": [],
+  "order_count": 3
+}
