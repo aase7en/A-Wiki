@@ -5,7 +5,7 @@ slug: pixellab-phaser-asset-convention
 tags: [pixellab, phaser, asset-pipeline, spritesheet, manifest, naming-convention, trading-rpg]
 sources: [pixellab-api-v2-openapi-2026-06-01, trading-rpg-project-brief-2026-05-30]
 created: 2026-06-01
-updated: 2026-06-01
+updated: 2026-06-02
 quality_score: 9/10
 domain: ai-tools
 ---
@@ -289,6 +289,21 @@ builder จะ validate ให้ก่อน generate:
 - spritesheet ต้องมี `frameWidth` และ `frameHeight` เป็น positive integer
 - animation ที่ระบุ `sheet` ต้องชี้ sheet ที่มีจริงใน `files.spritesheets`
 - ห้ามซ้ำ `asset_key`, preload key, หรือ animation key ใน pack เดียวกัน
+
+ถ้าต้องการรายงานภาพรวมก่อนส่งต่อให้เกมหรือ artist ใช้ `scripts/game/report_phaser_asset_pack.py`:
+
+```bash
+python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files
+```
+
+reporter จะสรุปสถานะเป็น `READY` หรือ `BLOCKED` พร้อมจำนวน manifests, preload entries, animations, issues, warnings และตาราง manifest แต่ละไฟล์. ใช้ `--check-files` เมื่อต้องการตรวจว่า spritesheet path ใน manifest มีไฟล์จริงใต้ `--root`; ใช้ `--format json` ถ้าต้องการส่งต่อให้ automation; ใช้ `--fail-on-issues` ใน CI หรือก่อน copy เข้า project เพื่อให้ exit code เป็น `2` เมื่อ pack ยัง blocked.
+
+จุดต่างระหว่าง validator กับ reporter:
+
+| Tool | Use when | Output |
+|---|---|---|
+| `build_phaser_asset_manifest.py` | ต้อง generate payload จริงและ fail-fast เมื่อ schema/pack ผิด | Phaser payload JSON |
+| `report_phaser_asset_pack.py` | ต้อง inspect readiness, ส่งรายงานให้คนอ่าน, หรือตรวจไฟล์จริงก่อน handoff | Markdown/JSON report |
 
 ใช้ `scripts/game/build_phaser_loader_ts.py` เพื่อแปลง payload นี้ต่อเป็น TypeScript module:
 

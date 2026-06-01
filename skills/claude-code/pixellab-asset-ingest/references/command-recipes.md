@@ -20,6 +20,32 @@ python3 scripts/game/write_phaser_manifest_template.py \
 python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root .
 ```
 
+## Report asset-pack readiness
+
+Human-readable report:
+
+```bash
+python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files
+```
+
+Machine-readable report:
+
+```bash
+python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests \
+  --root . \
+  --check-files \
+  --format json
+```
+
+Fail CI or handoff when the pack has blocking issues:
+
+```bash
+python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests \
+  --root . \
+  --check-files \
+  --fail-on-issues
+```
+
 ## Generate loader TS only
 
 ```bash
