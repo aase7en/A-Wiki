@@ -246,6 +246,20 @@ this.anims.create({
 
 ## Helper script
 
+เริ่ม asset ใหม่เร็วสุด:
+
+```bash
+python3 scripts/game/write_phaser_manifest_template.py \
+  game-assets/manifests/characters/captain-trader-01.json \
+  --asset-key character.captain.captain-trader-01.base.8dir.64 \
+  --action idle \
+  --action walk \
+  --tag captain \
+  --tag hero
+```
+
+คำสั่งนี้จะสร้าง starter manifest ที่ infer `texture_key`, `frame_size`, sprite-sheet paths, และ animation keys ให้ก่อน แล้วค่อยเติม `source.endpoint`, `resource_id`, `job_id`, และ path จริงหลัง export จาก PixelLab
+
 ใช้ `scripts/game/build_phaser_asset_manifest.py` เพื่อแปลง manifest JSON เป็น Phaser-friendly preload/animation payload:
 
 ```bash
@@ -290,7 +304,8 @@ python3 scripts/game/bootstrap_phaser_asset_pack.py game-assets/manifests \
   --module-name trading_rpg_assets \
   --scene-name TradingRpgAssetScene \
   --scene-key trading-rpg-assets \
-  --module-import ./trading_rpg_assets
+  --module-import ./trading_rpg_assets \
+  --copy-to-project path/to/your-game/src/generated
 ```
 
 output จะได้ 3 ไฟล์พร้อมใช้:
@@ -298,6 +313,8 @@ output จะได้ 3 ไฟล์พร้อมใช้:
 - `game-assets/generated/trading_rpg_assets.json`
 - `game-assets/generated/trading_rpg_assets.ts`
 - `game-assets/generated/TradingRpgAssetScene.ts`
+
+ถ้าใส่ `--copy-to-project` เพิ่ม จะ copy ไฟล์ทั้ง 3 ไปยังโฟลเดอร์โปรเจกต์จริง และเขียน `index.ts` barrel ให้ด้วย
 
 ถ้าต้องการแยกทีละขั้นเพื่อ debug หรือ customize ระหว่างทาง ค่อยใช้ manual chain ด้านล่าง:
 
