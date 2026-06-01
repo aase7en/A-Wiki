@@ -1,14 +1,14 @@
 {
   "generated_at": "2026-06-01",
   "stats": {
-    "nodes": 460,
-    "edges": 1196,
+    "nodes": 461,
+    "edges": 1202,
     "edges_by_type": {
-      "wikilink": 1062,
+      "wikilink": 1064,
       "mdlink": 49,
-      "depends": 30,
+      "depends": 33,
       "implements": 51,
-      "extends": 4
+      "extends": 5
     },
     "broken_links": 65,
     "orphans": 169,
@@ -1606,6 +1606,11 @@
     {
       "path": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "title": "PixelLab Asset Pipeline for Trading RPG",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "title": "PixelLab to Phaser Asset Convention",
       "domain": "synthesis"
     },
     {
@@ -9270,8 +9275,15 @@
     },
     {
       "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "to": "wiki/entities/iot/raspberry-pi.md",
-      "type": "wikilink",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10355,6 +10367,13 @@
     },
     {
       "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
       "type": "wikilink",
       "broken": false,
@@ -10363,6 +10382,34 @@
     {
       "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "type": "wikilink",
       "broken": false,
       "external": false

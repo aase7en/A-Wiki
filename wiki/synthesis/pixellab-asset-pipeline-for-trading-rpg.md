@@ -72,6 +72,12 @@ One Piece, Luffy, existing anime character, copyrighted logo, watermark, realist
 5. Use Pixelorama cleanup for edge noise, palette drift, and broken frames.
 6. Store generated asset metadata in a local manifest, not inside prompt history.
 
+## Asset packaging convention
+
+- Use [[synthesis/pixellab-phaser-asset-convention]] as the default naming, folder, manifest, and Phaser import contract.
+- Keep binary exports outside markdown notes; keep only the stable asset key, source endpoint, resource id, and approved file paths in the manifest.
+- Do not import review objects directly into Phaser. Curate them first through the object review flow, then assign stable `texture_key` and animation keys.
+
 ## Secret handling
 
 - Store `PIXELLAB_API_TOKEN` only in external `drive/.secrets`, local shell env, macOS Keychain, or the MCP client secret store.
@@ -89,5 +95,6 @@ For the first playable prototype, use PixelLab MCP rather than raw REST API. Kee
 
 - [[sources/pixellab-api-v2-openapi-2026-06-01]]
 - [[sources/trading-rpg-project-brief-2026-05-30]]
+- [[synthesis/pixellab-phaser-asset-convention]]
 - PixelLab MCP docs: https://api.pixellab.ai/mcp/docs
 - PixelLab API v2 LLM docs: https://api.pixellab.ai/v2/llms.txt

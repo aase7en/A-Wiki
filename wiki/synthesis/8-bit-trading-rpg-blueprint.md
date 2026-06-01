@@ -138,6 +138,7 @@ This page adds a reusable "financial game product" pattern to A-Wiki:
 - [[sources/trading-rpg-project-brief-2026-05-30]] keeps the original product idea and verified repo shortlist
 - [[sources/freqtrade-pi5]] remains the practical crypto bot runtime reference
 - [[synthesis/pixellab-asset-pipeline-for-trading-rpg]] defines the AI asset pipeline for characters, NPC bot crew, ship deck props, and animations
+- [[synthesis/pixellab-phaser-asset-convention]] defines naming, folder, manifest, and Phaser import rules so generated assets stay manageable
 - [[entities/iot/raspberry-pi]] keeps the hardware capacity warning for Pi 5
 - [[concepts/iot/dashboard-design]] supplies dashboard UX principles that can be remapped into RPG feedback
 
