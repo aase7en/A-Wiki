@@ -55,9 +55,11 @@ def test_bootstrap_outputs_have_expected_names_and_content(tmp_path):
     assert result["payload_path"].name == "trading_rpg_assets.json"
     assert result["loader_path"].name == "trading_rpg_assets.ts"
     assert result["scene_path"].name == "TradingRpgAssetScene.ts"
+    assert result["readme_path"].name == "README.md"
     assert json.loads(result["payload_path"].read_text(encoding="utf-8"))["summary"]["manifest_count"] == 1
     assert "preloadPhaserAssets" in result["loader_path"].read_text(encoding="utf-8")
     assert "TradingRpgAssetScene" in result["scene_path"].read_text(encoding="utf-8")
+    assert "Preload entries: 1" in result["readme_path"].read_text(encoding="utf-8")
 
 
 def test_cli_generates_three_files(tmp_path):
@@ -91,6 +93,7 @@ def test_cli_generates_three_files(tmp_path):
     assert (out_dir / "trading_rpg_assets.json").exists()
     assert (out_dir / "trading_rpg_assets.ts").exists()
     assert (out_dir / "TradingRpgAssetScene.ts").exists()
+    assert (out_dir / "README.md").exists()
 
 
 def test_bootstrap_can_copy_outputs_into_project_dir_and_write_barrel(tmp_path):
@@ -113,7 +116,9 @@ def test_bootstrap_can_copy_outputs_into_project_dir_and_write_barrel(tmp_path):
     assert result["project_payload_path"] == project_dir / "trading_rpg_assets.json"
     assert result["project_loader_path"] == project_dir / "trading_rpg_assets.ts"
     assert result["project_scene_path"] == project_dir / "TradingRpgAssetScene.ts"
+    assert result["project_readme_path"] == project_dir / "README.md"
     barrel = project_dir / "index.ts"
     assert barrel.exists()
     assert 'export * from "./trading_rpg_assets";' in barrel.read_text(encoding="utf-8")
     assert 'export * from "./TradingRpgAssetScene";' in barrel.read_text(encoding="utf-8")
+    assert "Generated Phaser Asset Pack" in result["project_readme_path"].read_text(encoding="utf-8")
