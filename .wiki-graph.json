@@ -1,14 +1,14 @@
 {
   "generated_at": "2026-06-01",
   "stats": {
-    "nodes": 459,
-    "edges": 1188,
+    "nodes": 460,
+    "edges": 1196,
     "edges_by_type": {
-      "wikilink": 1056,
+      "wikilink": 1062,
       "mdlink": 49,
-      "depends": 29,
+      "depends": 30,
       "implements": 51,
-      "extends": 3
+      "extends": 4
     },
     "broken_links": 65,
     "orphans": 169,
@@ -1596,6 +1596,11 @@
     {
       "path": "wiki/synthesis/pi4-lora-gateway-server.md",
       "title": "Raspberry Pi 4 เป็น LoRa Gateway + Server เครื่องเดียว",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "title": "PixelLab API Endpoint Matrix",
       "domain": "synthesis"
     },
     {
@@ -8921,6 +8926,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/platformio-esp32-guide.md",
       "to": "wiki/entities/iot/platformio.md",
       "type": "wikilink",
@@ -10307,6 +10326,34 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "to": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
       "type": "wikilink",
@@ -10329,7 +10376,21 @@
     },
     {
       "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
       "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
       "type": "depends",
       "broken": false,
       "external": false
