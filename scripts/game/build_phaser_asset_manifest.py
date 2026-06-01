@@ -12,6 +12,14 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+class ManifestValidationError(ValueError):
+    """Raised when one or more asset manifests cannot produce valid Phaser output."""
+
+    def __init__(self, issues: list[str]) -> None:
+        super().__init__("\n".join(issues))
+        self.issues = issues
+
+
 def rel(path: Path, root: Path) -> str:
     try:
         return str(path.relative_to(root))
@@ -32,6 +40,45 @@ def load_manifest(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"manifest must be a JSON object: {path}")
     return data
+
+
+def validate_manifest(path: Path, manifest: dict[str, Any]) -> list[str]:
+    issues: list[str] = []
+    asset_key = str(manifest.get("asset_key") or "")
+    phaser = manifest.get("phaser") or {}
+    files = manifest.get("files") or {}
+    spritesheets = files.get("spritesheets") or {}
+    animations = phaser.get("animations") or []
+    frame_config = phaser.get("frame_config") or {}
+    texture_key = str(phaser.get("texture_key") or "")
+
+    prefix = rel(path, REPO_ROOT)
+    if not asset_key:
+        issues.append(f"{prefix}: missing asset_key")
+    if (spritesheets or animations) and not texture_key:
+        issues.append(f"{prefix}: phaser.texture_key is required when spritesheets or animations exist")
+    if spritesheets:
+        for field in ("frameWidth", "frameHeight"):
+            value = frame_config.get(field)
+            if not isinstance(value, int) or value <= 0:
+                issues.append(f"{prefix}: phaser.frame_config.{field} must be a positive integer")
+    if not isinstance(spritesheets, dict):
+        issues.append(f"{prefix}: files.spritesheets must be an object")
+        spritesheets = {}
+    if not isinstance(animations, list):
+        issues.append(f"{prefix}: phaser.animations must be a list")
+        animations = []
+
+    for index, animation in enumerate(animations):
+        if not isinstance(animation, dict):
+            issues.append(f"{prefix}: phaser.animations[{index}] must be an object")
+            continue
+        if not animation.get("key"):
+            issues.append(f"{prefix}: phaser.animations[{index}].key is required")
+        sheet = animation.get("sheet")
+        if sheet and sheet not in spritesheets:
+            issues.append(f"{prefix}: animation {animation.get('key', index)!r} references missing sheet {sheet!r}")
+    return issues
 
 
 def build_preload_entries(manifest: dict[str, Any]) -> list[dict[str, Any]]:
@@ -79,13 +126,41 @@ def build_animation_entries(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     return entries
 
 
-def build_export(files: list[Path], root: Path) -> dict[str, Any]:
+def find_duplicates(values: list[str]) -> set[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for value in values:
+        if value in seen:
+            duplicates.add(value)
+        seen.add(value)
+    return duplicates
+
+
+def validate_export(payload: dict[str, Any]) -> list[str]:
+    issues: list[str] = []
+    asset_keys = [item.get("asset_key", "") for item in payload.get("manifests", []) if item.get("asset_key")]
+    preload_keys = [item.get("key", "") for item in payload.get("preload", []) if item.get("key")]
+    animation_keys = [item.get("key", "") for item in payload.get("animations", []) if item.get("key")]
+
+    for duplicate in sorted(find_duplicates(asset_keys)):
+        issues.append(f"duplicate asset_key: {duplicate}")
+    for duplicate in sorted(find_duplicates(preload_keys)):
+        issues.append(f"duplicate preload key: {duplicate}")
+    for duplicate in sorted(find_duplicates(animation_keys)):
+        issues.append(f"duplicate animation key: {duplicate}")
+    return issues
+
+
+def build_export(files: list[Path], root: Path, validate: bool = True) -> dict[str, Any]:
     manifests: list[dict[str, Any]] = []
     preload: list[dict[str, Any]] = []
     animations: list[dict[str, Any]] = []
+    issues: list[str] = []
 
     for path in files:
         manifest = load_manifest(path)
+        if validate:
+            issues.extend(validate_manifest(path, manifest))
         manifests.append(
             {
                 "path": rel(path, root),
@@ -97,7 +172,7 @@ def build_export(files: list[Path], root: Path) -> dict[str, Any]:
         preload.extend(build_preload_entries(manifest))
         animations.extend(build_animation_entries(manifest))
 
-    return {
+    payload = {
         "summary": {
             "manifest_count": len(files),
             "preload_count": len(preload),
@@ -107,17 +182,28 @@ def build_export(files: list[Path], root: Path) -> dict[str, Any]:
         "preload": preload,
         "animations": animations,
     }
+    if validate:
+        issues.extend(validate_export(payload))
+        if issues:
+            raise ManifestValidationError(issues)
+    return payload
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build Phaser preload/animation JSON from asset manifests.")
     parser.add_argument("target", help="Manifest JSON file or directory containing manifest JSON files.")
     parser.add_argument("--root", default=str(REPO_ROOT), help="Root path used to relativize output paths.")
+    parser.add_argument("--no-validate", action="store_true", help="Skip manifest and duplicate-key validation.")
     args = parser.parse_args(argv)
 
     target = Path(args.target).resolve()
     root = Path(args.root).resolve()
-    payload = build_export(discover_manifest_files(target), root=root)
+    try:
+        payload = build_export(discover_manifest_files(target), root=root, validate=not args.no_validate)
+    except ManifestValidationError as exc:
+        for issue in exc.issues:
+            print(f"[ERROR] {issue}", file=sys.stderr)
+        return 2
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
 

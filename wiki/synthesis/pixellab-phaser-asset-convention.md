@@ -280,6 +280,14 @@ payload ที่ได้จะมี 3 ส่วน:
 
 **เจตนา:** ให้ฝั่งเกมหรือ generator script นำ JSON นี้ไปสร้าง `preload()` และ `anims.create()` ต่อได้ โดยไม่ต้อง parse manifest schema ซ้ำหลายรอบ
 
+builder จะ validate ให้ก่อน generate:
+
+- `asset_key` ต้องมี
+- ถ้ามี spritesheet/animation ต้องมี `phaser.texture_key`
+- spritesheet ต้องมี `frameWidth` และ `frameHeight` เป็น positive integer
+- animation ที่ระบุ `sheet` ต้องชี้ sheet ที่มีจริงใน `files.spritesheets`
+- ห้ามซ้ำ `asset_key`, preload key, หรือ animation key ใน pack เดียวกัน
+
 ใช้ `scripts/game/build_phaser_loader_ts.py` เพื่อแปลง payload นี้ต่อเป็น TypeScript module:
 
 ```bash
@@ -313,8 +321,9 @@ output จะได้ 3 ไฟล์พร้อมใช้:
 - `game-assets/generated/trading_rpg_assets.json`
 - `game-assets/generated/trading_rpg_assets.ts`
 - `game-assets/generated/TradingRpgAssetScene.ts`
+- `game-assets/generated/README.md`
 
-ถ้าใส่ `--copy-to-project` เพิ่ม จะ copy ไฟล์ทั้ง 3 ไปยังโฟลเดอร์โปรเจกต์จริง และเขียน `index.ts` barrel ให้ด้วย
+ถ้าใส่ `--copy-to-project` เพิ่ม จะ copy generated files ไปยังโฟลเดอร์โปรเจกต์จริง และเขียน `index.ts` barrel ให้ด้วย
 
 ถ้าต้องการแยกทีละขั้นเพื่อ debug หรือ customize ระหว่างทาง ค่อยใช้ manual chain ด้านล่าง:
 

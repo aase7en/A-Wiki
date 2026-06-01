@@ -121,3 +121,48 @@ def test_cli_emits_json_for_directory(tmp_path):
     payload = json.loads(result.stdout)
     assert payload["summary"]["manifest_count"] == 1
     assert payload["animations"][0]["key"] == "captain-trader-01:idle:south"
+
+
+def test_validation_rejects_animation_that_references_missing_sheet(tmp_path):
+    manifest = tmp_path / "manifests" / "captain.json"
+    write_manifest(
+        manifest,
+        {
+            "asset_key": "character.captain.captain-trader-01.base.8dir.64",
+            "files": {"spritesheets": {"idle": "idle.png"}},
+            "phaser": {
+                "texture_key": "character.captain.captain-trader-01",
+                "frame_config": {"frameWidth": 64, "frameHeight": 64},
+                "animations": [{"key": "captain-trader-01:walk:south", "sheet": "walk"}],
+            },
+        },
+    )
+
+    try:
+        build_phaser_asset_manifest.build_export([manifest], root=tmp_path)
+    except build_phaser_asset_manifest.ManifestValidationError as exc:
+        assert "missing sheet 'walk'" in str(exc)
+    else:
+        raise AssertionError("expected ManifestValidationError")
+
+
+def test_validation_rejects_duplicate_preload_keys(tmp_path):
+    one = tmp_path / "manifests" / "one.json"
+    two = tmp_path / "manifests" / "two.json"
+    base = {
+        "files": {"spritesheets": {"idle": "idle.png"}},
+        "phaser": {
+            "texture_key": "character.captain.same",
+            "frame_config": {"frameWidth": 64, "frameHeight": 64},
+            "animations": [],
+        },
+    }
+    write_manifest(one, {"asset_key": "character.captain.one.base.8dir.64", **base})
+    write_manifest(two, {"asset_key": "character.captain.two.base.8dir.64", **base})
+
+    try:
+        build_phaser_asset_manifest.build_export([one, two], root=tmp_path)
+    except build_phaser_asset_manifest.ManifestValidationError as exc:
+        assert "duplicate preload key: character.captain.same.idle" in str(exc)
+    else:
+        raise AssertionError("expected ManifestValidationError")
