@@ -72,6 +72,23 @@ def test_analyze_pack_reports_duplicate_animation_keys(tmp_path):
     assert "duplicate animation key: captain-trader-01:idle:south" in report["issues"]
 
 
+def test_analyze_pack_reports_invalid_nested_shape_without_crashing(tmp_path):
+    manifest = tmp_path / "manifests" / "broken.json"
+    write_manifest(
+        manifest,
+        {
+            "asset_key": "character.captain.broken.base.8dir.64",
+            "files": {"spritesheets": {"idle": "assets/missing.png"}},
+            "phaser": ["not", "an", "object"],
+        },
+    )
+
+    report = report_phaser_asset_pack.analyze_pack(tmp_path / "manifests", root=tmp_path)
+
+    assert report["status"] == "blocked"
+    assert any("invalid manifest object shape" in issue for issue in report["issues"])
+
+
 def test_format_markdown_includes_status_and_manifest_table(tmp_path):
     manifest = tmp_path / "manifests" / "captain.json"
     write_manifest(manifest, valid_manifest(tmp_path))

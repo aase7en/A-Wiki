@@ -39,23 +39,46 @@ def analyze_pack(target: Path, root: Path, check_files: bool = False) -> dict[st
     issues: list[str] = []
     warnings: list[str] = []
     manifest_rows: list[dict[str, Any]] = []
-    payload = build_manifest.build_export(files, root=root, validate=False)
+    preload_keys: list[str] = []
+    animation_keys: list[str] = []
+    asset_keys: list[str] = []
 
     if not files:
         issues.append(f"{target}: no manifest JSON files found")
 
     for path in files:
-        manifest = build_manifest.load_manifest(path)
-        issues.extend(build_manifest.validate_manifest(path, manifest))
-        phaser = manifest.get("phaser") or {}
-        spritesheets = ((manifest.get("files") or {}).get("spritesheets") or {})
-        animations = phaser.get("animations") or []
+        try:
+            manifest = build_manifest.load_manifest(path)
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            issues.append(f"{build_manifest.rel(path, root)}: cannot load manifest: {exc}")
+            continue
+
+        try:
+            issues.extend(build_manifest.validate_manifest(path, manifest))
+        except AttributeError as exc:
+            issues.append(f"{build_manifest.rel(path, root)}: invalid manifest object shape: {exc}")
+
+        files_block = manifest.get("files") if isinstance(manifest.get("files"), dict) else {}
+        phaser = manifest.get("phaser") if isinstance(manifest.get("phaser"), dict) else {}
+        spritesheets = files_block.get("spritesheets") if isinstance(files_block.get("spritesheets"), dict) else {}
+        animations = phaser.get("animations") if isinstance(phaser.get("animations"), list) else []
+        texture_key = str(phaser.get("texture_key") or "")
+        asset_key = str(manifest.get("asset_key") or "")
+        if asset_key:
+            asset_keys.append(asset_key)
+        if texture_key:
+            for sheet_name in spritesheets:
+                preload_keys.append(f"{texture_key}.{sheet_name}")
+        for animation in animations:
+            if isinstance(animation, dict) and animation.get("key"):
+                animation_keys.append(str(animation["key"]))
+
         manifest_rows.append(
             {
                 "path": build_manifest.rel(path, root),
-                "asset_key": manifest.get("asset_key", ""),
+                "asset_key": asset_key,
                 "asset_type": manifest.get("asset_type", ""),
-                "texture_key": phaser.get("texture_key", ""),
+                "texture_key": texture_key,
                 "spritesheets": len(spritesheets) if isinstance(spritesheets, dict) else 0,
                 "animations": len(animations) if isinstance(animations, list) else 0,
             }
@@ -72,12 +95,19 @@ def analyze_pack(target: Path, root: Path, check_files: bool = False) -> dict[st
                         f"{build_manifest.rel(path, root)}: missing asset file for sheet {sheet_name!r}: {asset_path}"
                     )
 
-    issues.extend(build_manifest.validate_export(payload))
+    for duplicate in sorted(build_manifest.find_duplicates(asset_keys)):
+        issues.append(f"duplicate asset_key: {duplicate}")
+    for duplicate in sorted(build_manifest.find_duplicates(preload_keys)):
+        issues.append(f"duplicate preload key: {duplicate}")
+    for duplicate in sorted(build_manifest.find_duplicates(animation_keys)):
+        issues.append(f"duplicate animation key: {duplicate}")
     status = "ready" if not issues else "blocked"
     return {
         "status": status,
         "summary": {
-            **payload.get("summary", {}),
+            "manifest_count": len(files),
+            "preload_count": len(preload_keys),
+            "animation_count": len(animation_keys),
             "issue_count": len(issues),
             "warning_count": len(warnings),
             "check_files": check_files,
