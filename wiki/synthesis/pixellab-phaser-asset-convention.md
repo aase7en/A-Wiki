@@ -244,6 +244,28 @@ this.anims.create({
 2. Normalize sizes and naming immediately after export
 3. Keep tile manifest separate from character/object manifests because import rules differ
 
+## Helper script
+
+ใช้ `scripts/game/build_phaser_asset_manifest.py` เพื่อแปลง manifest JSON เป็น Phaser-friendly preload/animation payload:
+
+```bash
+python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root .
+```
+
+ถ้าต้องการเจาะไฟล์เดียว:
+
+```bash
+python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests/characters/captain-trader-01.json --root .
+```
+
+payload ที่ได้จะมี 3 ส่วน:
+
+- `manifests`: สรุป manifest ที่อ่านเข้า
+- `preload`: รายการ `spritesheet` พร้อม `key`, `path`, และ `frame_config`
+- `animations`: รายการ animation config ที่ resolve `texture_key` แล้วจาก `phaser.texture_key` + `sheet`
+
+**เจตนา:** ให้ฝั่งเกมหรือ generator script นำ JSON นี้ไปสร้าง `preload()` และ `anims.create()` ต่อได้ โดยไม่ต้อง parse manifest schema ซ้ำหลายรอบ
+
 ## Anti-patterns
 
 - เอา prompt text ยาวๆ ไปเป็น filename
@@ -254,7 +276,7 @@ this.anims.create({
 
 ## Decision
 
-สำหรับ A-Wiki และ Trading RPG prototype ให้ใช้ **stable asset key + binary folder + tracked manifest** เป็นมาตรฐาน. ถ้า asset เริ่มมีจำนวนมาก ให้เขียน helper script ภายหลังเพื่อ generate Phaser preload/animation registration จาก manifest แทนการ hand-code ทุกไฟล์.
+สำหรับ A-Wiki และ Trading RPG prototype ให้ใช้ **stable asset key + binary folder + tracked manifest** เป็นมาตรฐาน. เมื่อ asset เริ่มโต ให้ใช้ helper script generate preload/animation payload จาก manifest แทนการ hand-code ทุกไฟล์.
 
 ## Related pages
 
