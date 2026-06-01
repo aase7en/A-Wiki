@@ -281,6 +281,25 @@ output จะมี:
 
 แนวนี้เหมาะกับ v1 เพราะ deterministic, diff-able, และยังไม่บังคับโครงเกมเกินจำเป็น
 
+ถ้าต้องการ scene stub ที่ใช้ helper module นี้ทันที ให้ใช้ `scripts/game/build_phaser_scene_stub_ts.py`:
+
+```bash
+python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root . > /tmp/trading_rpg_assets.json
+python3 scripts/game/build_phaser_loader_ts.py /tmp/trading_rpg_assets.json --module-name trading_rpg_assets > trading_rpg_assets.ts
+python3 scripts/game/build_phaser_scene_stub_ts.py /tmp/trading_rpg_assets.json \
+  --scene-name TradingRpgAssetScene \
+  --scene-key trading-rpg-assets \
+  --module-import ./trading_rpg_assets > TradingRpgAssetScene.ts
+```
+
+scene stub ที่ได้จะ:
+
+- `preload()` เรียก `preloadPhaserAssets(this)`
+- `create()` เรียก `registerPhaserAnimations(this)`
+- ถ้ามี asset/animation อย่างน้อย 1 ตัว จะวาง preview sprite กลางจอและเล่น animation แรกให้อัตโนมัติ
+
+แนวนี้เหมาะกับการ bootstrap vertical slice ของเกมก่อน แล้วค่อย refactor scene structure ภายหลัง
+
 ## Anti-patterns
 
 - เอา prompt text ยาวๆ ไปเป็น filename
