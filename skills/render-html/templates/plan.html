@@ -1,0 +1,318 @@
+<style>
+  /* Plan viewer overrides */
+  body { padding-bottom: 0; }
+  /* Zone A — Lede progress bar */
+  #plan-lede {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 10px 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    font-size: 13px; color: var(--muted); position: sticky; top: 56px; z-index: 9;
+  }
+  #plan-lede .plan-title { font-weight: 700; color: var(--text); font-size: 14px; max-width: 480px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #plan-lede .sp { flex:1; }
+  /* Progress ring */
+  .ring-wrap { position: relative; width: 34px; height: 34px; flex-shrink: 0; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-track { fill: none; stroke: var(--border); stroke-width: 3; }
+  .ring-fill { fill: none; stroke: var(--accent-2); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset .4s var(--ease); }
+  .ring-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--accent-2); }
+  /* Zone B — Sections */
+  .plan-section { margin-bottom: 14px; }
+  .plan-section-head {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    padding: 14px 18px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; user-select: none; transition: background .15s;
+  }
+  .plan-section-head:hover { background: var(--surface-2); }
+  .plan-section-head .snum {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .plan-section-head .stitle { font-weight: 600; flex: 1; }
+  .plan-section-head .schev { color: var(--muted); font-size: 13px; transition: transform .25s; }
+  .plan-section-body {
+    padding: 0 18px; background: var(--surface); border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 12px 12px;
+    max-height: 0; overflow: hidden; transition: max-height .35s var(--ease), padding .25s;
+  }
+  .plan-section.open .plan-section-body { max-height: 3000px; padding: 14px 18px; }
+  .plan-section.open .schev { transform: rotate(180deg); }
+  .plan-section.always-open .plan-section-head { cursor: default; }
+  /* Body content rendering */
+  .sec-body { font-size: 14px; line-height: 1.7; color: var(--muted); }
+  .sec-body p { margin: 0 0 8px; }
+  .sec-body code { background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: 1px 5px; font-size: 12px; color: var(--accent-2); }
+  .sec-body pre {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; overflow-x: auto; font-size: 12px; line-height: 1.55;
+    position: relative; margin: 10px 0;
+  }
+  .sec-body pre .copy-btn {
+    position: absolute; top: 7px; right: 8px;
+    font: 11px/1 inherit; padding: 3px 8px; border-radius: 6px; cursor: pointer;
+    color: var(--muted); background: var(--surface); border: 1px solid var(--border);
+  }
+  .sec-body pre .copy-btn:hover { color: var(--text); }
+  .sec-body ul, .sec-body ol { margin: 0 0 8px; padding-left: 18px; }
+  .sec-body li { margin-bottom: 4px; }
+  .sec-body strong { color: var(--text); }
+  /* Zone C — Phase decision panel */
+  #plan-phases {
+    position: sticky; bottom: 0; z-index: 9;
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 14px 22px 18px;
+  }
+  #plan-phases.hidden { display: none; }
+  .phase-panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .phase-panel-head strong { font-size: 13px; }
+  #phase-progress { font-size: 12px; color: var(--muted); }
+  .phase-cards { display: flex; gap: 10px; flex-wrap: wrap; }
+  .phase-card {
+    flex: 1; min-width: 180px; max-width: 280px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 12px;
+    transition: border-color .2s, background .2s;
+  }
+  .phase-card.approved { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--surface)); }
+  .phase-card.skipped  { border-color: var(--border); opacity: .55; }
+  .phase-card .ph-name { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .phase-card .ph-detail { font-size: 11px; color: var(--muted); line-height: 1.4; margin-bottom: 8px; min-height: 28px; }
+  .phase-card .ph-btns { display: flex; gap: 6px; }
+  .ph-btn {
+    font: 11px/1 inherit; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted);
+    transition: all .15s;
+  }
+  .ph-btn.approve { border-color: var(--ok); color: var(--ok); }
+  .ph-btn.approve:hover, .ph-btn.approve.active { background: var(--ok); color: #000; border-color: var(--ok); }
+  .ph-btn.skip:hover, .ph-btn.skip.active { background: var(--surface-2); color: var(--text); }
+  .badge-status { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; text-transform: uppercase; margin-left: auto; }
+  .badge-status.pending  { background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted); }
+  .badge-status.approved { background: color-mix(in srgb, var(--ok) 22%, transparent); color: var(--ok); }
+  .badge-status.skipped  { background: color-mix(in srgb, var(--border) 60%, transparent); color: var(--muted); }
+  /* Send decision */
+  .decision-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  #decision-notes {
+    flex: 1; min-width: 200px; font: 13px inherit; padding: 7px 10px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+  }
+  #btn-send {
+    font: 600 13px inherit; padding: 8px 18px; border-radius: 8px; cursor: pointer;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; border: none;
+    transition: opacity .15s;
+  }
+  #btn-send:hover { opacity: .85; }
+</style>
+
+<!-- Zone A: Lede bar -->
+<div id="plan-lede">
+  <div class="ring-wrap" id="ring-wrap">
+    <svg width="34" height="34" viewBox="0 0 34 34">
+      <circle class="ring-track" cx="17" cy="17" r="14"/>
+      <circle class="ring-fill" id="ring-fill" cx="17" cy="17" r="14" stroke-dasharray="87.96" stroke-dashoffset="87.96"/>
+    </svg>
+    <div class="ring-label" id="ring-label">0%</div>
+  </div>
+  <div class="plan-title" id="plan-title-lede"></div>
+  <span class="sp"></span>
+  <a href="#plan-phases" style="font-size:12px;color:var(--accent-2);text-decoration:none">ไปที่ Phase ↓</a>
+</div>
+
+<!-- Zone B: Narrative scroll -->
+<div id="plan-sections" style="margin-bottom:8px"></div>
+
+<!-- Zone C: Phase decision panel -->
+<div id="plan-phases">
+  <div class="phase-panel-head">
+    <strong>Phase Approval</strong>
+    <span id="phase-progress" class="muted"></span>
+  </div>
+  <div class="phase-cards" id="phase-cards"></div>
+  <div class="decision-row">
+    <input id="decision-notes" type="text" placeholder="Notes / คำถามสำหรับ Claude (optional)…">
+    <button id="btn-send" type="button">Send Decision to Claude ↗</button>
+  </div>
+</div>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var sections = D.sections || [];
+var phases = D.phases ? D.phases.map(function(p){ return Object.assign({}, p); }) : [];
+var verifyCmds = D.verify_cmds || [];
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+// ── Markdown-lite renderer (enough for plan body text) ─────────────────────
+function renderMd(md){
+  var lines = md.split("\n");
+  var out = [], inPre = false, inUl = false;
+  for(var i=0;i<lines.length;i++){
+    var l = lines[i];
+    if(/^```/.test(l)){
+      if(!inPre){
+        out.push('<pre><button class="copy-btn" onclick="copyPre(this)">Copy</button><code>');
+        inPre=true;
+      } else {
+        out.push('</code></pre>'); inPre=false;
+      }
+      continue;
+    }
+    if(inPre){ out.push(esc(l)); continue; }
+    if(/^\s*[-*]\s/.test(l)){
+      if(!inUl) out.push('<ul>');
+      inUl=true;
+      var item = l.replace(/^\s*[-*]\s+/,"");
+      out.push('<li>'+inlineMd(item)+'</li>');
+      continue;
+    }
+    if(inUl){ out.push('</ul>'); inUl=false; }
+    if(l.trim()==="") { out.push(""); continue; }
+    out.push('<p>'+inlineMd(l)+'</p>');
+  }
+  if(inUl) out.push('</ul>');
+  if(inPre) out.push('</code></pre>');
+  return out.join("\n");
+}
+function inlineMd(s){
+  return esc(s)
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g,'<em>$1</em>');
+}
+function copyPre(btn){
+  var code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(function(){
+    var t=btn.textContent; btn.textContent="Copied ✓";
+    setTimeout(function(){btn.textContent=t;},1200);
+  });
+}
+
+// ── Progress ring state (must be declared before section loop calls markRead) ─
+var readSet = new Set();
+var CIRCUM = 87.96;
+function markRead(i){
+  readSet.add(i);
+  var pct = Math.round(readSet.size/Math.max(1,sections.length)*100);
+  var offset = CIRCUM*(1-readSet.size/Math.max(1,sections.length));
+  document.getElementById("ring-fill").style.strokeDashoffset = offset;
+  document.getElementById("ring-label").textContent = pct+"%";
+}
+
+// ── Build Zone B: sections ─────────────────────────────────────────────────
+var sectionEls = [];
+var CONTEXT_IDX = 0;
+var container = document.getElementById("plan-sections");
+
+document.getElementById("plan-title-lede").textContent = D.title || "Plan";
+
+sections.forEach(function(sec, i){
+  var isContext = i===CONTEXT_IDX;
+  var div = document.createElement("div");
+  div.className = "plan-section reveal" + (isContext?" always-open open":"");
+  div.setAttribute("data-idx", i);
+
+  var rendered = renderMd(sec.body||"");
+  div.innerHTML =
+    '<div class="plan-section-head">'+(isContext?'':'') +
+      '<div class="snum">'+(i+1)+'</div>'+
+      '<div class="stitle">'+esc(sec.heading)+'</div>'+
+      (isContext?'':'<span class="schev">▾</span>')+
+    '</div>'+
+    '<div class="plan-section-body"><div class="sec-body">'+rendered+'</div></div>';
+
+  if(!isContext){
+    div.querySelector(".plan-section-head").addEventListener("click", function(){
+      var wasOpen = div.classList.contains("open");
+      div.classList.toggle("open", !wasOpen);
+      if(!wasOpen) markRead(i);
+    });
+  } else {
+    markRead(0);
+  }
+  container.appendChild(div);
+  sectionEls.push(div);
+  if(window.AWIKI_OBSERVE) window.AWIKI_OBSERVE(div);
+});
+
+// ── Auto-mark sections as read when scrolled into view ────────────────────
+if("IntersectionObserver" in window){
+  var readIo = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var idx = parseInt(e.target.getAttribute("data-idx")||"0",10);
+        markRead(idx);
+      }
+    });
+  },{threshold:0.5});
+  sectionEls.forEach(function(el){ readIo.observe(el); });
+}
+
+// ── Build Zone C: phase cards ──────────────────────────────────────────────
+var cardsEl = document.getElementById("phase-cards");
+if(!phases.length){ document.getElementById("plan-phases").classList.add("hidden"); }
+
+function renderPhaseProgress(){
+  var approved = phases.filter(function(p){return p.status==="approved";}).length;
+  var total = phases.length;
+  document.getElementById("phase-progress").textContent = approved+"/"+total+" approved";
+}
+
+phases.forEach(function(ph, i){
+  var card = document.createElement("div");
+  card.className = "phase-card reveal";
+  card.id = "awiki-phase-"+ph.id;
+  card.innerHTML =
+    '<div style="display:flex;align-items:center;margin-bottom:4px">'+
+      '<div class="ph-name">'+esc(ph.name)+'</div>'+
+      '<span class="badge-status pending" id="badge-'+i+'">PENDING</span>'+
+    '</div>'+
+    '<div class="ph-detail">'+esc(ph.detail)+'</div>'+
+    '<div class="ph-btns">'+
+      '<button class="ph-btn approve" onclick="setPhase('+i+',\'approved\')">Approve ✓</button>'+
+      '<button class="ph-btn skip" onclick="setPhase('+i+',\'skipped\')">Skip ✗</button>'+
+    '</div>';
+  cardsEl.appendChild(card);
+  if(window.AWIKI_OBSERVE) window.AWIKI_OBSERVE(card);
+});
+renderPhaseProgress();
+
+window.setPhase = function(i, status){
+  phases[i].status = status;
+  var card = document.getElementById("awiki-phase-"+phases[i].id);
+  card.className = "phase-card " + (status==="approved"?"approved":"skipped");
+  var badge = document.getElementById("badge-"+i);
+  badge.className = "badge-status "+status;
+  badge.textContent = status.toUpperCase();
+  var btns = card.querySelectorAll(".ph-btn");
+  btns[0].classList.toggle("active", status==="approved");
+  btns[1].classList.toggle("active", status==="skipped");
+  renderPhaseProgress();
+};
+
+// ── Send Decision round-trip ───────────────────────────────────────────────
+window.AWIKI_EXPORT = function(){
+  return {
+    plan_title: D.title,
+    approved: phases.filter(function(p){return p.status==="approved";}).map(function(p){return p.id;}),
+    skipped:  phases.filter(function(p){return p.status==="skipped"; }).map(function(p){return p.id;}),
+    pending:  phases.filter(function(p){return p.status==="pending"; }).map(function(p){return p.id;}),
+    notes: document.getElementById("decision-notes").value.trim()
+  };
+};
+document.getElementById("btn-send").addEventListener("click", function(){
+  var payload = JSON.stringify(window.AWIKI_EXPORT(), null, 2);
+  navigator.clipboard.writeText(payload).then(function(){
+    var b = document.getElementById("btn-send");
+    var t = b.textContent; b.textContent = "Copied ✓ — paste to Claude";
+    setTimeout(function(){ b.textContent = t; }, 2200);
+  }, function(){
+    window.prompt("Copy this decision JSON and paste to Claude:", payload);
+  });
+});
+
+// Stagger card entrance by index
+document.querySelectorAll(".phase-card.reveal").forEach(function(el, i){
+  el.style.animationDelay = Math.min(i*80, 400)+"ms";
+});
+document.querySelectorAll(".plan-section.reveal").forEach(function(el, i){
+  el.style.animationDelay = Math.min(i*60, 300)+"ms";
+});

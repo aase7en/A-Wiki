@@ -1,6 +1,6 @@
 ---
 name: render-html
-description: Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph) into a self-contained, interactive HTML artifact so a human actually reviews it instead of skimming a wall of Markdown. Use after producing JSON/structured output that the user must read, compare, or act on. NOT for source-of-truth docs (CLAUDE.md, wiki pages, ADRs) — those stay Markdown.
+description: Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTML artifact so a human actually reviews it instead of skimming a wall of Markdown. Use after producing JSON/structured output that the user must read, compare, or decide on. NOT for source-of-truth docs (CLAUDE.md, wiki pages, ADRs) — those stay Markdown.
 origin: A-Wiki (local)
 last_verified: 2026-06-01
 ---
@@ -22,6 +22,7 @@ After you produce structured output the user must **read, compare, or decide on*
 | `report` | post-mortem / scrutinize / code-review output | severity badges, colored diffs, timeline |
 | `health` | `scripts/wiki-health-digest.py --json` | at-a-glance OK/WARN/FAIL dashboard |
 | `graph` | `.wiki-graph.json` | interactive force view of hubs & links |
+| `plan` | `.claude/plans/*.md` via `parse_plan.py` | data-journalist view: progressive sections + phase Approve/Skip cards + round-trip JSON decision |
 
 ## How to run
 
@@ -31,6 +32,10 @@ python3 skills/render-html/scripts/render.py scouter --in scout.json
 python3 skills/render-html/scripts/render.py report  --in report.json --out exports/html/pm.html
 python3 skills/render-html/scripts/render.py health  --in <(python3 scripts/wiki-health-digest.py --json)
 python3 skills/render-html/scripts/render.py graph   --in .wiki-graph.json
+
+# plan viewer — parse a .md plan file then render (pipe in one shot)
+python3 skills/render-html/scripts/parse_plan.py ~/.claude/plans/my-plan.md | \
+  python3 skills/render-html/scripts/render.py plan --in -
 
 # pipe JSON via stdin
 echo '{...}' | python3 skills/render-html/scripts/render.py scouter
