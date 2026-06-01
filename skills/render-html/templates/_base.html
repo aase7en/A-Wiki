@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #171a21;
+    --surface-2: #1f232c;
+    --border: #2b313c;
+    --text: #e6e9ef;
+    --muted: #9aa4b2;
+    --accent: #7c5cff;
+    --accent-2: #28d6c8;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --fail: #f85149;
+    --high: #f85149;
+    --medium: #d29922;
+    --low: #58a6ff;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f7f9; --surface: #ffffff; --surface-2: #f0f2f5; --border: #d8dde4;
+      --text: #1a1d23; --muted: #5a6573;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 15px/1.55 -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", system-ui, sans-serif;
+    padding: 0 0 64px;
+  }
+  header.awiki-bar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 14px 22px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  header.awiki-bar .brand { font-weight: 700; letter-spacing: .3px; }
+  header.awiki-bar .surface-tag {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+    background: rgba(255,255,255,.18); padding: 2px 9px; border-radius: 999px;
+  }
+  header.awiki-bar .gen { font-size: 12px; opacity: .85; }
+  header.awiki-bar .spacer { flex: 1; }
+  button.awiki-btn {
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: #fff; background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.4); border-radius: 8px; padding: 6px 12px;
+    transition: background .15s;
+  }
+  button.awiki-btn:hover { background: rgba(255,255,255,.3); }
+  main { max-width: 1180px; margin: 26px auto; padding: 0 22px; }
+  h1, h2, h3 { line-height: 1.25; }
+  a { color: var(--accent-2); }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px; margin: 0 0 18px;
+  }
+  .muted { color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+  .badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; }
+  .badge.high, .badge.fail { background: color-mix(in srgb, var(--fail) 22%, transparent); color: var(--fail); }
+  .badge.medium, .badge.warn { background: color-mix(in srgb, var(--warn) 22%, transparent); color: var(--warn); }
+  .badge.low, .badge.ok { background: color-mix(in srgb, var(--ok) 22%, transparent); color: var(--ok); }
+  @media print { header.awiki-bar { position: static; } button.awiki-btn { display: none; } }
+</style>
+</head>
+<body>
+<header class="awiki-bar">
+  <span class="brand">A&#8209;Wiki</span>
+  <span class="surface-tag">__SURFACE__</span>
+  <span class="gen">generated __GENERATED_AT__</span>
+  <span class="spacer"></span>
+  <button class="awiki-btn" id="awiki-copy" type="button">Copy as JSON</button>
+  <button class="awiki-btn" id="awiki-print" type="button">Print / PDF</button>
+</header>
+<main id="awiki-root">
+__ADAPTER__
+</main>
+<script type="application/json" id="awiki-data">__DATA_JSON__</script>
+<script>
+  window.AWIKI_DATA = JSON.parse(document.getElementById("awiki-data").textContent);
+  (function () {
+    var copy = document.getElementById("awiki-copy");
+    copy.addEventListener("click", function () {
+      var payload = window.AWIKI_EXPORT ? window.AWIKI_EXPORT() : window.AWIKI_DATA;
+      var text = JSON.stringify(payload, null, 2);
+      navigator.clipboard.writeText(text).then(function () {
+        var old = copy.textContent; copy.textContent = "Copied ✓";
+        setTimeout(function () { copy.textContent = old; }, 1400);
+      }, function () {
+        window.prompt("Copy this JSON back to the agent:", text);
+      });
+    });
+    document.getElementById("awiki-print").addEventListener("click", function () { window.print(); });
+  })();
+</script>
+<script>
+__ADAPTER_SCRIPT__
+</script>
+</body>
+</html>

@@ -208,6 +208,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 4. **Confidence markers required**: `[training]` / `[verified YYYY-MM-DD]` / `[wiki]` / `[notebooklm YYYY-MM-DD]`
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
 6. **Commit directly to main only** — NO branch, NO PR, NO worktree
+7. **Output format**: Markdown for git-tracked, long-lived, diff-reviewed files (CLAUDE.md, wiki, ADRs); HTML for ephemeral interactive artifacts (dashboards, reports, code-review, model comparison) via the `render-html` skill. See `docs/protocols/md-vs-html-output.md`.
 
 ## 🧠 Brain Improvement Gate
 

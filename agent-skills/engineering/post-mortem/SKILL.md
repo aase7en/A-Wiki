@@ -56,3 +56,9 @@ Engineer-to-engineer. Code identifiers are first-class. Blameless. No hedging.
 - **Blameless** — describe gaps and bugs, never people.
 - **State validation coverage honestly.**
 - **Get sign-off before posting to JIRA.**
+
+## Optional — render as HTML for review
+
+For a post-mortem the user must actually read (severity badges, colored before/after diffs, timeline),
+emit the record as JSON and render it: `python3 skills/render-html/scripts/render.py report --in pm.json`
+(schema: `skills/render-html/fixtures/report.json`). Markdown record stays the source-of-truth.

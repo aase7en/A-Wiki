@@ -1,0 +1,34 @@
+{
+  "_comment": "A-Wiki render-html surface registry. Add a new surface = add one template file + one entry here. No core renderer change needed.",
+  "version": 1,
+  "surfaces": {
+    "scouter": {
+      "template": "scouter.html",
+      "title": "Model Scouter — Free-Model Roster",
+      "description": "Sortable/filterable comparison of scouted free/cheap models",
+      "required_keys": ["available_models"],
+      "data_source": "agent-skills/swarm-intelligence/model-scouter.md JSON output"
+    },
+    "report": {
+      "template": "report.html",
+      "title": "Engineering Report",
+      "description": "Post-mortem / code-review with severity badges, diffs, and timeline",
+      "required_keys": ["findings"],
+      "data_source": "post-mortem / scrutinize / code-review agent output"
+    },
+    "health": {
+      "template": "health.html",
+      "title": "A-Wiki Health Digest",
+      "description": "Dashboard of wiki health checks, stats, and TODOs",
+      "required_keys": ["checks"],
+      "data_source": "scripts/wiki-health-digest.py --json"
+    },
+    "graph": {
+      "template": "graph.html",
+      "title": "A-Wiki Knowledge Graph",
+      "description": "Interactive force-directed view of wiki nodes and links",
+      "required_keys": ["nodes", "edges"],
+      "data_source": ".wiki-graph.json (scripts/build-wiki-graph.py)"
+    }
+  }
+}

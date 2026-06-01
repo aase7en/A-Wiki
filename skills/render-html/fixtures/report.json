@@ -1,0 +1,49 @@
+{
+  "title": "Post-mortem: hooks_runner race on async post_wiki_edit",
+  "kind": "post-mortem",
+  "severity": "high",
+  "summary": "post_wiki_edit fired gen-index.py twice concurrently after a batch wiki edit, corrupting wiki-overview.md mid-write. Root cause: missing lock file. Fixed by an flock guard.",
+  "root_cause": "post_wiki_edit.py spawned gen-index.py without a mutex; two near-simultaneous wiki writes raced on the same output file.",
+  "timeline": [
+    { "time": "10:02", "event": "Batch edit of 6 wiki pages committed" },
+    { "time": "10:02", "event": "post_wiki_edit hook fired twice (one per Write tool call)" },
+    { "time": "10:03", "event": "wiki-overview.md left half-written; SessionStart read stale stats" }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "scripts/hooks/post_wiki_edit.py",
+      "line": 41,
+      "title": "No mutex around gen-index spawn",
+      "detail": "Concurrent invocations both write wiki/context/wiki-overview.md with no lock.",
+      "diff": {
+        "before": "subprocess.Popen([sys.executable, GEN_INDEX])",
+        "after": "with flock(LOCK):\n    subprocess.Popen([sys.executable, GEN_INDEX])"
+      }
+    },
+    {
+      "severity": "medium",
+      "file": "scripts/gen-index.py",
+      "line": 448,
+      "title": "Non-atomic write of overview file",
+      "detail": "Writes directly to target path instead of temp+rename.",
+      "diff": {
+        "before": "path.write_text(out)",
+        "after": "tmp.write_text(out); tmp.replace(path)"
+      }
+    },
+    {
+      "severity": "low",
+      "file": "scripts/hooks/post_wiki_edit.py",
+      "line": 12,
+      "title": "Hook logs nothing on spawn",
+      "detail": "No breadcrumb makes races invisible in post-mortem.",
+      "diff": null
+    }
+  ],
+  "action_items": [
+    "Add flock guard in post_wiki_edit.py",
+    "Make gen-index.py writes atomic (temp + rename)",
+    "Add a test that fires the hook twice concurrently"
+  ]
+}

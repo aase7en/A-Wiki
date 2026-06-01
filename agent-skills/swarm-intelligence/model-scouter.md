@@ -57,6 +57,10 @@ The Primary Agent MUST query model availability before beginning any session inv
 }
 ```
 
+> **Optional — render for review:** when presenting the roster to the user, pipe this JSON into the
+> `render-html` skill for a sortable/filterable dashboard instead of raw JSON:
+> `python3 skills/render-html/scripts/render.py scouter --in scout.json`
+
 ## Critical Constraints
 
 - **Scouting shall not exceed 30 seconds.** If no free models found within timeout, fall back to cheapest available.

@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-06-01T03:00:00Z",
+  "version": "1.2.0",
+  "summary": { "fail": 0, "warn": 1, "ok": 4 },
+  "stats": {
+    "wiki_markdown": 451,
+    "entities": 58,
+    "concepts": 38,
+    "sources": 154,
+    "synthesis": 182,
+    "context": 17
+  },
+  "checks": [
+    { "level": "OK", "name": "version tracking", "detail": "1.2.0" },
+    { "level": "OK", "name": "context freshness", "detail": "wiki-overview.md=0.1d, knowledge-graph.md=0.1d" },
+    { "level": "OK", "name": "privacy scan", "detail": "no tracked personal data detected" },
+    { "level": "WARN", "name": "TODO health", "detail": "5/12 active TODO(s), 1 stale" },
+    { "level": "OK", "name": "git status", "detail": "clean" }
+  ]
+}

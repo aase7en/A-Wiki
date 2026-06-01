@@ -187,6 +187,7 @@ python3 scripts/lib/drive_secrets.py --check
 5. **Plan ก่อน implement เสมอ** — ถ้างานกระทบ >3 ไฟล์ → ระบุ: "จะแก้ [files] — ทำอะไรในแต่ละไฟล์"
 6. **Commit ตรงลง main เท่านั้น** — ห้าม branch, ห้าม PR, ห้าม worktree
 7. **ใช้ภาษาไทย** ในการสื่อสาร (เว้นแต่ถูกขอให้ใช้ภาษาอื่น)
+8. **Output format**: Markdown สำหรับไฟล์ใน git ที่อยู่นาน/ต้อง diff (CLAUDE.md, wiki, ADR); HTML สำหรับ artifact ชั่วคราวแบบ interactive (dashboard, report, code-review, model comparison) ผ่าน `render-html` skill → ดู `docs/protocols/md-vs-html-output.md`
 
 ## 🧠 Brain Improvement Gate
 
