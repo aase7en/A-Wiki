@@ -51,7 +51,23 @@ If the source asset is a review object, do not import it directly. Keep only pro
 
 ### 3. Validate before generating code
 
-Run the manifest builder before writing project files:
+Run the asset-pack reporter before writing project files:
+
+```bash
+python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files
+```
+
+Use the report to decide whether the pack is ready:
+
+| Status | Meaning |
+|---|---|
+| `READY` | No blocking issues; safe to generate/bootstrap |
+| `BLOCKED` | Fix issues before copying generated files into a game project |
+| warnings only | Usually acceptable for drafts, but report them clearly |
+
+Use `--format json` for automation and `--fail-on-issues` for CI/pre-handoff checks.
+
+Then run the manifest builder when you need the Phaser payload:
 
 ```bash
 python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root .
@@ -127,6 +143,7 @@ Use these before reporting done:
 
 ```bash
 python3 -m pytest tests/test_build_phaser_asset_manifest.py \
+  tests/test_report_phaser_asset_pack.py \
   tests/test_build_phaser_loader_ts.py \
   tests/test_build_phaser_scene_stub_ts.py \
   tests/test_bootstrap_phaser_asset_pack.py \

@@ -43,6 +43,7 @@
       "required": [
         "PixelLab Asset Ingest",
         "write_phaser_manifest_template.py",
+        "report_phaser_asset_pack.py",
         "bootstrap_phaser_asset_pack.py",
         "Do not put secret tokens"
       ]
