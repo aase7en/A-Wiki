@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-06-02",
   "stats": {
-    "nodes": 461,
+    "nodes": 462,
     "edges": 1202,
     "edges_by_type": {
       "wikilink": 1064,
@@ -11,7 +11,7 @@
       "extends": 5
     },
     "broken_links": 65,
-    "orphans": 169,
+    "orphans": 170,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -68,13 +68,13 @@
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
       "wiki/context/session-memory.md",
+      "wiki/context/wiki-capability-map.md",
       "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
       "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
       "wiki/sources/3-dashboard-node-red.md",
       "wiki/sources/ai-iot-server-build-v3-final.md",
       "wiki/sources/ai-tools/langchain-framework.md",
-      "wiki/sources/ai-tools/vector-databases.md",
-      "wiki/sources/arduino-ide-esp32-arduino-2025.md"
+      "wiki/sources/ai-tools/vector-databases.md"
     ]
   },
   "nodes": [
@@ -381,6 +381,11 @@
     {
       "path": "wiki/context/session-memory.md",
       "title": "Session Memory",
+      "domain": "context"
+    },
+    {
+      "path": "wiki/context/wiki-capability-map.md",
+      "title": "Wiki Capability Map",
       "domain": "context"
     },
     {
