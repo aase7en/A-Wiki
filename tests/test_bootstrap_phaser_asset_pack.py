@@ -91,3 +91,29 @@ def test_cli_generates_three_files(tmp_path):
     assert (out_dir / "trading_rpg_assets.json").exists()
     assert (out_dir / "trading_rpg_assets.ts").exists()
     assert (out_dir / "TradingRpgAssetScene.ts").exists()
+
+
+def test_bootstrap_can_copy_outputs_into_project_dir_and_write_barrel(tmp_path):
+    manifests = tmp_path / "game-assets" / "manifests"
+    write_manifest(manifests / "captain.json", sample_manifest())
+    out_dir = tmp_path / "generated"
+    project_dir = tmp_path / "project-src"
+
+    result = bootstrap_phaser_asset_pack.bootstrap_pack(
+        target=manifests,
+        out_dir=out_dir,
+        root=tmp_path,
+        module_name="trading_rpg_assets",
+        scene_name="TradingRpgAssetScene",
+        scene_key="trading-rpg-assets",
+        module_import="./trading_rpg_assets",
+        copy_to_project=project_dir,
+    )
+
+    assert result["project_payload_path"] == project_dir / "trading_rpg_assets.json"
+    assert result["project_loader_path"] == project_dir / "trading_rpg_assets.ts"
+    assert result["project_scene_path"] == project_dir / "TradingRpgAssetScene.ts"
+    barrel = project_dir / "index.ts"
+    assert barrel.exists()
+    assert 'export * from "./trading_rpg_assets";' in barrel.read_text(encoding="utf-8")
+    assert 'export * from "./TradingRpgAssetScene";' in barrel.read_text(encoding="utf-8")

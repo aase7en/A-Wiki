@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import importlib.util
 import json
 import sys
@@ -37,6 +38,7 @@ def bootstrap_pack(
     scene_name: str,
     scene_key: str,
     module_import: str,
+    copy_to_project: Path | None = None,
 ) -> dict[str, Path]:
     files = build_manifest.discover_manifest_files(target)
     payload = build_manifest.build_export(files, root=root)
@@ -58,11 +60,33 @@ def bootstrap_pack(
     loader_path.write_text(loader_text, encoding="utf-8")
     scene_path.write_text(scene_text, encoding="utf-8")
 
-    return {
+    result = {
         "payload_path": payload_path,
         "loader_path": loader_path,
         "scene_path": scene_path,
     }
+    if copy_to_project is not None:
+        copy_to_project.mkdir(parents=True, exist_ok=True)
+        project_payload_path = copy_to_project / payload_path.name
+        project_loader_path = copy_to_project / loader_path.name
+        project_scene_path = copy_to_project / scene_path.name
+        shutil.copy2(payload_path, project_payload_path)
+        shutil.copy2(loader_path, project_loader_path)
+        shutil.copy2(scene_path, project_scene_path)
+        barrel_path = copy_to_project / "index.ts"
+        barrel_path.write_text(
+            f'export * from "./{loader_path.stem}";\nexport * from "./{scene_path.stem}";\n',
+            encoding="utf-8",
+        )
+        result.update(
+            {
+                "project_payload_path": project_payload_path,
+                "project_loader_path": project_loader_path,
+                "project_scene_path": project_scene_path,
+                "project_barrel_path": barrel_path,
+            }
+        )
+    return result
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -74,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scene-name", default="GeneratedAssetScene", help="TypeScript class name for generated scene stub.")
     parser.add_argument("--scene-key", default="generated-asset-scene", help="Phaser scene key.")
     parser.add_argument("--module-import", default="./phaser_assets", help="Import path used by generated scene stub.")
+    parser.add_argument("--copy-to-project", help="Optional directory that receives copies of the generated files plus index.ts barrel.")
     args = parser.parse_args(argv)
 
     result = bootstrap_pack(
@@ -84,11 +109,18 @@ def main(argv: list[str] | None = None) -> int:
         scene_name=args.scene_name,
         scene_key=args.scene_key,
         module_import=args.module_import,
+        copy_to_project=Path(args.copy_to_project).resolve() if args.copy_to_project else None,
     )
     print(f"[OK] payload -> {result['payload_path']}")
     print(f"[OK] loader  -> {result['loader_path']}")
     print(f"[OK] scene   -> {result['scene_path']}")
+    if "project_loader_path" in result:
+        print(f"[OK] project payload -> {result['project_payload_path']}")
+        print(f"[OK] project loader  -> {result['project_loader_path']}")
+        print(f"[OK] project scene   -> {result['project_scene_path']}")
+        print(f"[OK] project barrel  -> {result['project_barrel_path']}")
     return 0
+
 
 
 if __name__ == "__main__":
