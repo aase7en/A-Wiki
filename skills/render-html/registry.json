@@ -29,6 +29,13 @@
       "description": "Interactive force-directed view of wiki nodes and links",
       "required_keys": ["nodes", "edges"],
       "data_source": ".wiki-graph.json (scripts/build-wiki-graph.py)"
+    },
+    "plan": {
+      "template": "plan.html",
+      "title": "A-Wiki Plan Viewer",
+      "description": "Interactive data-journalist view of a plan .md file — progressive disclosure, phase approval cards, round-trip JSON decision to agent",
+      "required_keys": ["sections", "phases"],
+      "data_source": "skills/render-html/scripts/parse_plan.py <plan.md>"
     }
   }
 }

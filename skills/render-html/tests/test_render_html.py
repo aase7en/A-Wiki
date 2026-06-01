@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -19,7 +20,8 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = SKILL_ROOT.parents[1]
 sys.path.insert(0, str(SKILL_ROOT / "scripts"))
 
-import render  # noqa: E402  (path injected above)
+import render       # noqa: E402
+import parse_plan   # noqa: E402
 
 
 def _load(name: str) -> dict:
@@ -37,7 +39,7 @@ def _embedded_data(html: str) -> dict:
     return json.loads(raw)
 
 
-SURFACES = ["scouter", "report", "health"]
+SURFACES = ["scouter", "report", "health", "plan"]
 
 
 def test_registry_has_every_template():
@@ -91,3 +93,74 @@ def test_graph_surface_renders_repo_graph():
     html = render.render("graph", data)
     assert html.lstrip().lower().startswith("<!doctype html")
     assert 'id="awiki-data"' in html
+
+
+# ── parse-plan tests (written BEFORE parse_plan.py exists — Iron Law #1) ──────
+
+# Plan files live in the global ~/.claude/plans/, not in the repo
+_GLOBAL_PLANS = Path.home() / ".claude" / "plans"
+PLAN_MD = _GLOBAL_PLANS / "a-wiki-parallel-gem.md"
+
+
+def test_parse_plan_returns_required_keys():
+    if not PLAN_MD.is_file():
+        pytest.skip("plan file not present")
+    data = parse_plan.parse(str(PLAN_MD))
+    assert isinstance(data["title"], str) and data["title"]
+    assert isinstance(data["sections"], list) and len(data["sections"]) >= 1
+    assert isinstance(data["phases"], list)
+    assert isinstance(data["verify_cmds"], list)
+    assert data["generated_from"] == str(PLAN_MD)
+
+
+def test_parse_plan_sections_have_heading_and_body():
+    if not PLAN_MD.is_file():
+        pytest.skip("plan file not present")
+    data = parse_plan.parse(str(PLAN_MD))
+    for sec in data["sections"]:
+        assert "heading" in sec and sec["heading"]
+        assert "body" in sec
+
+
+def test_parse_plan_phases_have_id_name_detail_status():
+    if not PLAN_MD.is_file():
+        pytest.skip("plan file not present")
+    data = parse_plan.parse(str(PLAN_MD))
+    if not data["phases"]:
+        pytest.skip("plan has no phases")
+    for ph in data["phases"]:
+        assert "id" in ph and "name" in ph and "detail" in ph
+        assert ph["status"] == "pending"
+
+
+def test_parse_plan_cli_outputs_valid_json():
+    if not PLAN_MD.is_file():
+        pytest.skip("plan file not present")
+    result = subprocess.run(
+        [sys.executable, str(SKILL_ROOT / "scripts" / "parse_plan.py"), str(PLAN_MD)],
+        capture_output=True, text=True, timeout=15,
+    )
+    assert result.returncode == 0, f"stderr: {result.stderr}"
+    parsed = json.loads(result.stdout)
+    assert "sections" in parsed
+
+
+def test_plan_surface_renders_from_fixture():
+    data = _load("plan.json")
+    html = render.render("plan", data)
+    assert html.lstrip().lower().startswith("<!doctype html")
+    assert 'id="awiki-copy"' in html
+    assert _embedded_data(html) == data
+
+
+def test_plan_surface_has_reveal_animation_class():
+    data = _load("plan.json")
+    html = render.render("plan", data)
+    assert 'class="reveal' in html or "reveal" in html
+
+
+def test_plan_surface_has_phase_cards():
+    data = _load("plan.json")
+    html = render.render("plan", data)
+    # Phase decision panel must be present
+    assert "awiki-phase" in html or "phase-card" in html

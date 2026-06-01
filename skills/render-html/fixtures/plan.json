@@ -1,0 +1,37 @@
+{
+  "title": "แผน: Plan Viewer — Data Journalist Interactive Surface",
+  "generated_from": "skills/render-html/fixtures/plan.json",
+  "sections": [
+    {
+      "heading": "Context — ทำไมต้องทำ",
+      "body": "ผู้ใช้ถามว่า: ถ้าฉันสั่งทำงานแล้วมีการวางแผน ฉันจะเห็นและ action โต้ตอบได้ง่ายขึ้นไหม?\n\nปัจจุบัน plan files คือข้อความ Markdown ยาว 150+ บรรทัด — ถ้าต้องอ่านทั้งหมดก่อนตัดสินใจจะเสีย cognitive load สูงและหลุดจาก loop"
+    },
+    {
+      "heading": "หลักการออกแบบ",
+      "body": "Brain Gate ผ่านแล้ว:\n- Zero new Python dep (stdlib regex only)\n- IntersectionObserver (native browser, zero cost when offscreen)\n- Animation: fade + slide-up 20px, 0.45s — purposeful not decorative"
+    },
+    {
+      "heading": "สถาปัตยกรรม",
+      "body": "```\n.md plan file → parse-plan.py → JSON → render.py plan → exports/html/plan-*.html\n```\n\nRound-trip: Phase cards → Approve/Skip → Copy JSON → paste back to agent"
+    },
+    {
+      "heading": "Phased Rollout",
+      "body": "- **Phase A (foundation):** เพิ่ม .reveal + @keyframes ใน _base.html\n- **Phase B (parser):** parse-plan.py + TDD + fixture\n- **Phase C (adapter):** plan.html — Zone A/B/C, IntersectionObserver, phase cards\n- **Phase D (register):** registry.json + SKILL.md + full test run"
+    },
+    {
+      "heading": "Verification",
+      "body": "```bash\npython3 -m pytest skills/render-html/tests/test_render_html.py -v\npython3 skills/render-html/scripts/parse_plan.py /path/to/plan.md | python3 skills/render-html/scripts/render.py plan --in -\nopen exports/html/plan-*.html\n```"
+    }
+  ],
+  "phases": [
+    { "id": 0, "name": "Phase A", "detail": "เพิ่ม .reveal + @keyframes animation utility ใน _base.html", "status": "pending" },
+    { "id": 1, "name": "Phase B", "detail": "parse-plan.py + TDD + fixture (Iron Law #1 — test ก่อน code)", "status": "pending" },
+    { "id": 2, "name": "Phase C", "detail": "plan.html adapter — Zone A/B/C, IntersectionObserver, phase approval cards", "status": "pending" },
+    { "id": 3, "name": "Phase D", "detail": "registry.json + SKILL.md update + full test run + commit + push", "status": "pending" }
+  ],
+  "verify_cmds": [
+    "python3 -m pytest skills/render-html/tests/test_render_html.py -v",
+    "python3 skills/render-html/scripts/parse_plan.py /path/to/plan.md | python3 skills/render-html/scripts/render.py plan --in -",
+    "open exports/html/plan-*.html"
+  ]
+}
