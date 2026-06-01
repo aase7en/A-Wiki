@@ -281,7 +281,25 @@ output จะมี:
 
 แนวนี้เหมาะกับ v1 เพราะ deterministic, diff-able, และยังไม่บังคับโครงเกมเกินจำเป็น
 
-ถ้าต้องการ scene stub ที่ใช้ helper module นี้ทันที ให้ใช้ `scripts/game/build_phaser_scene_stub_ts.py`:
+ถ้าต้องการ one-command path ให้ใช้ `scripts/game/bootstrap_phaser_asset_pack.py`:
+
+```bash
+python3 scripts/game/bootstrap_phaser_asset_pack.py game-assets/manifests \
+  --out-dir game-assets/generated \
+  --root . \
+  --module-name trading_rpg_assets \
+  --scene-name TradingRpgAssetScene \
+  --scene-key trading-rpg-assets \
+  --module-import ./trading_rpg_assets
+```
+
+output จะได้ 3 ไฟล์พร้อมใช้:
+
+- `game-assets/generated/trading_rpg_assets.json`
+- `game-assets/generated/trading_rpg_assets.ts`
+- `game-assets/generated/TradingRpgAssetScene.ts`
+
+ถ้าต้องการแยกทีละขั้นเพื่อ debug หรือ customize ระหว่างทาง ค่อยใช้ manual chain ด้านล่าง:
 
 ```bash
 python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root . > /tmp/trading_rpg_assets.json
