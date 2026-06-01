@@ -38,6 +38,16 @@
       "required": ["A-Wiki Brain Improvement Gate", "brain-improvement-gate", "Cost-first"]
     },
     {
+      "id": "pixellab-asset-ingest",
+      "skill": "skills/claude-code/pixellab-asset-ingest/SKILL.md",
+      "required": [
+        "PixelLab Asset Ingest",
+        "write_phaser_manifest_template.py",
+        "bootstrap_phaser_asset_pack.py",
+        "Do not put secret tokens"
+      ]
+    },
+    {
       "id": "brainstorm-before-build",
       "skill": "skills/claude-code/brainstorm-before-build/SKILL.md",
       "required": ["brainstorm-before-build"]
