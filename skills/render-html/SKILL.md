@@ -27,6 +27,7 @@ After you produce structured output the user must **read, compare, or decide on*
 | `delivery` | `scripts/compare_delivery.py --json --delivery <f>` | order vs invoice diff: qty mismatches, missing & extra items color-coded |
 | `audit` | `scripts/search-wiki.py --json` (wrap `{rows, mode}`) / lint findings | generic sortable/filterable table |
 | `skills` | `scripts/skill-quality-report.py --json` | OK/WARN/FAIL dashboard, filter to prioritise fixes |
+| `agents` | Agent visual event protocol JSON | visual ops board for A-Wiki swarm agents, trading RPG bot crew, risk state, token budget, and operator decisions |
 | `status` | `scripts/wiki-health-digest.py --json` | alias of `health` |
 
 ## How to run
@@ -53,6 +54,9 @@ python3 scripts/compare_delivery.py --json --delivery deliv.json < order.txt | \
 # skill-quality dashboard
 python3 scripts/skill-quality-report.py --json | \
   python3 skills/render-html/scripts/render.py skills --in -
+
+# visual agent / trading-RPG ops board
+python3 skills/render-html/scripts/render.py agents --in skills/render-html/fixtures/agents.json
 
 # audit table (search results — wrap the bare list in {rows, mode})
 python3 scripts/search-wiki.py "iot" --json | \

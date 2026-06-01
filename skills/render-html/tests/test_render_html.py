@@ -39,7 +39,7 @@ def _embedded_data(html: str) -> dict:
     return json.loads(raw)
 
 
-SURFACES = ["scouter", "report", "health", "plan", "pharmacy", "audit", "skills", "delivery"]
+SURFACES = ["scouter", "report", "health", "plan", "pharmacy", "audit", "skills", "delivery", "agents"]
 
 
 def test_registry_has_every_template():
@@ -164,6 +164,15 @@ def test_plan_surface_has_phase_cards():
     html = render.render("plan", data)
     # Phase decision panel must be present
     assert "awiki-phase" in html or "phase-card" in html
+
+
+def test_agents_surface_has_ops_board_and_round_trip_decision():
+    data = _load("agents.json")
+    html = render.render("agents", data)
+    assert 'id="agent-ops-board"' in html
+    assert "Visual Agent Ops" in html
+    assert "AWIKI_EXPORT" in html
+    assert _embedded_data(html) == data
 
 
 # ── compare_delivery --json (written BEFORE the flag exists — Iron Law #1) ────
