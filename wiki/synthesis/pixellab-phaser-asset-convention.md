@@ -246,6 +246,8 @@ this.anims.create({
 
 ## Helper script
 
+ถ้า agent ต้องทำ workflow นี้ซ้ำ ให้ใช้ skill `skills/claude-code/pixellab-asset-ingest/SKILL.md` เป็นตัวนำทางก่อน แล้วค่อยใช้ command ด้านล่างตาม state ของ asset.
+
 เริ่ม asset ใหม่เร็วสุด:
 
 ```bash
