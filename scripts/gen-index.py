@@ -339,6 +339,22 @@ def main() -> int:
     pages = collect_pages()
     outputs = collect_outputs(pages)
 
+    # Optional generated capability map. It scans skills/scripts/protocols and is
+    # kept outside collect_pages() because it is not wiki-content metadata.
+    cap_builder = REPO_ROOT / "scripts" / "wiki" / "build-capability-map.py"
+    if cap_builder.exists():
+        import subprocess
+        try:
+            cap = subprocess.run(
+                [sys.executable, str(cap_builder), "--out", "-"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            outputs[CONTEXT_DIR / "wiki-capability-map.md"] = cap.stdout
+        except subprocess.CalledProcessError as e:
+            print(f"[WARN] build-capability-map.py failed: {e.stderr[:200]}", file=sys.stderr)
+
     if args.stdout:
         sys.stdout.write(outputs[CONTEXT_DIR / "wiki-overview.md"])
         return 0
@@ -439,7 +455,6 @@ def main() -> int:
 
     # Chain: rebuild local search index + knowledge graph + embeddings (Phase 2-4 upgrade)
     # Best-effort — don't fail gen-index if these aren't installed yet
-    import subprocess
     scripts_dir = REPO_ROOT / "scripts"
     for chained in ("build-wiki-index.py", "build-wiki-graph.py", "build-canvas.py"):
         sp = scripts_dir / chained
