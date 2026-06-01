@@ -266,6 +266,21 @@ payload ที่ได้จะมี 3 ส่วน:
 
 **เจตนา:** ให้ฝั่งเกมหรือ generator script นำ JSON นี้ไปสร้าง `preload()` และ `anims.create()` ต่อได้ โดยไม่ต้อง parse manifest schema ซ้ำหลายรอบ
 
+ใช้ `scripts/game/build_phaser_loader_ts.py` เพื่อแปลง payload นี้ต่อเป็น TypeScript module:
+
+```bash
+python3 scripts/game/build_phaser_asset_manifest.py game-assets/manifests --root . \
+  | python3 scripts/game/build_phaser_loader_ts.py - --module-name trading_rpg_assets
+```
+
+output จะมี:
+
+- `preloadPhaserAssets(scene)`
+- `registerPhaserAnimations(scene)`
+- `trading_rpg_assetsSummary`
+
+แนวนี้เหมาะกับ v1 เพราะ deterministic, diff-able, และยังไม่บังคับโครงเกมเกินจำเป็น
+
 ## Anti-patterns
 
 - เอา prompt text ยาวๆ ไปเป็น filename
