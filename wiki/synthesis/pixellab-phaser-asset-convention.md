@@ -246,6 +246,27 @@ this.anims.create({
 
 ## Helper script
 
+### Generate a scene/background image (pixflux)
+
+[verified 2026-06-02] สำหรับ background/scene art (เช่น ship deck) ใช้ `scripts/game/pixellab_generate_image.py` — wrapper บาง ๆ ของ `POST /create-image-pixflux` (synchronous, คืน base64 PNG, max 400×400):
+
+```bash
+PIXELLAB_API_TOKEN=$(python3 scripts/lib/drive_secrets.py PIXELLAB_API_TOKEN) \
+python3 scripts/game/pixellab_generate_image.py \
+  --description "high top-down three-quarter view of a wooden pirate galleon, bare plank deck, no sails" \
+  --negative "lion figurehead, grassy deck, tree, sunflower, people, text" \
+  --view "high top-down" --size 200 --no-background --seed 73411 \
+  --upscale 2048 --out scenes/bg_ship_deck_clear_2048_v001.png
+```
+
+กฎที่เรียนรู้มา:
+- token ดึง on-demand จาก Drive secrets (`PIXELLAB_API_TOKEN`) — ไม่เก็บใน manifest/TS/log
+- `no_background` transparency เชื่อถือได้เฉพาะ `--size ≤ 200` (เกินนั้น API คืน opaque); generate เล็กแล้ว `--upscale` ด้วย NEAREST เพื่อ fill texture ใหญ่โดยคงความคม pixel
+- ตั้ง texture key ให้ stable เพื่อให้ asset registry ฝั่งเกม **ไม่ต้องแก้** เมื่อ regenerate art (เช่น `gm_ship_deck_clear` / `gm_ship_masts_overlay` / `gm_ship_overview` ใน Tide & Tally — เปลี่ยนแค่ไฟล์ PNG)
+- python.org build บน macOS ต้องใช้ `certifi` CA bundle (script จัดการให้แล้ว) ไม่งั้น SSL verify fail
+
+### Manifest-driven character/object packs
+
 ถ้า agent ต้องทำ workflow นี้ซ้ำ ให้ใช้ skill `skills/claude-code/pixellab-asset-ingest/SKILL.md` เป็นตัวนำทางก่อน แล้วค่อยใช้ command ด้านล่างตาม state ของ asset.
 
 เริ่ม asset ใหม่เร็วสุด:
