@@ -23,10 +23,20 @@ import base64
 import json
 import os
 import sys
+import ssl
 import urllib.request
 import urllib.error
 
 API_URL = "https://api.pixellab.ai/v2/create-image-pixflux"
+
+
+def ssl_context() -> ssl.SSLContext:
+    """Prefer certifi's CA bundle; some python.org builds ship without system roots."""
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except Exception:
+        return ssl.create_default_context()
 
 
 def fetch_token() -> str:
@@ -83,7 +93,7 @@ def main() -> int:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
+        with urllib.request.urlopen(req, timeout=180, context=ssl_context()) as resp:
             body = json.loads(resp.read())
     except urllib.error.HTTPError as exc:
         sys.exit(f"HTTP {exc.code}: {exc.read().decode()[:500]}")
