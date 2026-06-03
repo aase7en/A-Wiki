@@ -18,6 +18,13 @@ references live in `A-Wiki/game-assets/references/pixel-wealth-quest/`.
   `python3 scripts/game/normalize_pwq_anims.py --pwq-root "$PWQ_ROOT"`.
 - **Room furniture/floor** are programmatic placeholders (`src/phaser/textures.ts`)
   with stable keys — swap in PixelLab PNGs later with no code change.
+- **Farm assets (Phase 2a)** live in
+  `public/assets/farm/`: `farm-grass-tile-v001.png`,
+  `farm-soil-plot-v001.png`, `crop-carrot-sprout-v001.png`,
+  `crop-carrot-ready-v001.png`. Current `FarmScene` uses a green
+  programmatic floor plus PixelLab plot/crop overlays. `farm-soil-plot-v001.png`
+  is loaded as a candidate but not displayed because PixelLab returned a packed
+  veggie sheet rather than a clean soil tile.
 
 ## Later — when to use the manifest pipeline
 

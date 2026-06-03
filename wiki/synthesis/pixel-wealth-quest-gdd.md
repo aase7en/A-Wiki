@@ -48,8 +48,10 @@ updated: 2026-06-03
 - **กระปุกออมสิน** → The Latte Factor (ทบต้น 8%/ปี → projection 10/20/30 ปี)
 - **กรอบรูปครอบครัว** (รูปจริงของน้องซันเดย์) → ข้อความสร้างแรงจูงใจการออม
 
-### ระบบนอกบ้าน (Cozy Compounding Farm) — [wiki · Phase 2]
-ฟาร์ม top-down ติดทะเล: ปลูกผัก → โตตามเวลา (ทบต้นเชิงภาพ) → เก็บเกี่ยว → ขายได้ **เหรียญในเกม** → จ้าง **Worker-Bot** (= เทรดบอท) มาทำงานฟาร์มอัตโนมัติ (1 บอท = 1 งาน) → ต่อสู้ความผันผวนตลาด (พายุ = เหตุการณ์ตลาด)
+### ระบบนอกบ้าน (Cozy Compounding Farm) — [verified 2026-06-03 · Phase 2a built]
+ฟาร์ม top-down: ประตูห้อง → ฟาร์ม → ประตูฟาร์มกลับห้อง. ผู้เล่นคลิกแปลงว่างเพื่อปลูก **แครอตทบต้น**, เวลาในฟาร์ม tick ตาม scene, crop โตเป็น `seed → sprout → ready`, แล้วคลิกเก็บเกี่ยว/ขายได้ **+24 เหรียญในเกม**. Logic อยู่ใน `src/logic/farm.ts` และ store action อยู่ใน `src/state/store.ts` จึงต่อ Phase 2b Worker-Bot ได้โดยไม่ผูกกับ Phaser.
+
+ขั้นต่อไปของฟาร์ม: ใช้เหรียญจ้าง **Worker-Bot** (= เทรดบอท) มาทำงานฟาร์มอัตโนมัติ (1 บอท = 1 งาน) → ต่อสู้ความผันผวนตลาด (พายุ = เหตุการณ์ตลาด).
 
 ---
 
@@ -116,7 +118,13 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 ### น้องซันเดย์ Animation — [verified 2026-06-03 · Phase 1.5 built]
 PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08-4432-bb43-3627f69e12ac` และ action frames south-facing 7 ชุด: idle, walk, run, sit, lie, eat, cry. `normalize_pwq_anims.py` แปลง raw export เป็น `anim_clean/` + `src/phaser/playerAnims.ts`; Phaser preload/register แล้วเล่นจริงใน `RoomScene`. ข้อจำกัดตั้งใจ: walk/run แบบ animated ใช้เฉพาะ down/toward-camera movement ก่อน, ทิศอื่น fallback static 8-dir เพื่อไม่ใช้ south animation ผิดทิศ.
 
-### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2]
+### Farm Economy — [verified 2026-06-03 · Phase 2a built]
+- `src/data/farm.seed.ts`: layout ฟาร์ม 10x8, spawn/door, 4 plots, `DEFAULT_CROP` = `carrot`, growth 6 ticks, sell price 24 coins.
+- `src/logic/farm.ts`: pure test-first `plantPlot`, `refreshPlotStage`, `harvestPlot`, `refreshPlots`, `replacePlot`.
+- `src/phaser/scenes/FarmScene.ts`: top-down grid via `cellToScreenTopDown`, green programmatic floor, PixelLab plot/crop overlays, plant/harvest pointer zones, 1-second farm tick, Room<->Farm transition.
+- PixelLab Phase 2a spend: 4 pixflux PNGs in `public/assets/farm/` for about `$0.029`; `farm-soil-plot-v001.png` is kept as candidate because it returned as a veggie sprite sheet rather than clean soil.
+
+### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
 - **1 บอท = 1 งานฟาร์ม** (รดน้ำ/พรวนดิน/ตัดไม้/เลี้ยงสัตว์)
 - คลิกบอท → panel status + **กำไรขาดทุน (P&L)** (mock → real read-only)
@@ -136,8 +144,10 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 |---|---|---|
 | **0 Foundations** | ✅ [verified 2026-06-03] | ingest น้องซันเดย์ (8 ทิศ + family) · scaffold โมดูล (build เขียว) · GDD นี้ · ADR · game-assets/manifests |
 | **1 Room + Portfolio** | ✅ [verified 2026-06-03] | ห้อง iso เดินได้ · คลิกเฟอร์นิเจอร์ · Portfolio + Latte Factor + Family panel · ธีม parchment · mock feed seam |
-| **1.5 Animation Reconcile** | ✅ [verified 2026-06-03] | PixelLab character wrapper + normalize script · 51 clean action frames · `PLAYER_ANIMS`/Phaser Sprite integration · 37 unit tests เขียว |
-| **2 Farm + Worker-Bots + News Bird** | ⬜ | ดู roadmap ในแผน + HANDOFF |
+| **1.5 Animation Reconcile** | ✅ [verified 2026-06-03] | PixelLab character wrapper + normalize script · 51 clean action frames · `PLAYER_ANIMS`/Phaser Sprite integration |
+| **2a Farm + Economy** | ✅ [verified 2026-06-03] | FarmScene top-down · Room↔Farm door · pure farm logic · plant/grow/harvest/sell · coins HUD · 42 unit tests เขียว |
+| **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
+| **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
 | **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir walk/run หลัง visual QA |
 | **4 Sea + ลิงก์ Tide & Tally** | ⬜ | รวม roster บอท 2 เกม |
 | **5 Feed จริง read-only + ขาย** | ⬜ | compliance gate, packaging |
