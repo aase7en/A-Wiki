@@ -5,7 +5,7 @@ slug: pixel-wealth-quest-gdd
 tags: [game-design, gamification, finance, pixel-art, phaser, pixellab, tide-and-tally, nong-sunday, cozy-game]
 sources: [trading-rpg-project-brief-2026-05-30]
 created: 2026-06-03
-updated: 2026-06-03
+updated: 2026-06-04
 ---
 
 # Pixel Wealth Quest — Game Design Document
@@ -43,7 +43,7 @@ updated: 2026-06-03
 > **หลักชนะ:** เปลี่ยน "ความน่าเบื่อของ dashboard การเงิน" ให้เป็น **behavioral feedback** ที่ cozy และเสพติดเชิงบวก — รางวัลผูกกับ *วินัย/ความสม่ำเสมอ* ไม่ใช่การเทรดบ่อยหรือกำไรวันเดียว
 
 ### ระบบในบ้าน (Cozy House Rooms) — [verified 2026-06-03 · Phase 2a.1 built]
-บ้านภายในเป็นหลายห้องแบบชีวิตจริง ไม่ใช่ห้องเดียว: **ห้องรับแขก+TV**, **ห้องทำงาน**, **ห้องนอน**, **ห้องครัว+โต๊ะกินข้าว**. ผู้เล่นเดินชน **ประตูโปร่งแสง** เพื่อเปลี่ยนห้องและ spawn ถูกฝั่งทางเข้า/ออก. Logic room graph อยู่ใน `src/data/room.seed.ts` + `src/logic/house.ts`; state เก็บ `houseRoomId` + `playerCell`.
+บ้านภายในเป็นหลายห้องแบบชีวิตจริง ไม่ใช่ห้องเดียว: **ห้องรับแขก+TV**, **ห้องทำงาน**, **ห้องนอน**, **ห้องครัว+โต๊ะกินข้าว**, และ **ห้องน้ำ**. ผู้เล่นเดินชน **ประตู/จุดวาร์ปโปร่งแสง** เพื่อเปลี่ยนห้องและ spawn ถูกฝั่งทางเข้า/ออก. [verified 2026-06-04] มี regression test กันเคส spawn ทับประตูย้อนกลับ และ `RoomScene` มี cooldown สั้น ๆ หลังเปลี่ยนห้องเพื่อกันเด้งกลับทันที. Logic room graph อยู่ใน `src/data/room.seed.ts` + `src/logic/house.ts`; state เก็บ `houseRoomId` + `playerCell`.
 
 Hotspots ในบ้าน:
 - **TV / โต๊ะทำงาน** → Portfolio dashboard (มูลค่าพอร์ต, day change, allocation)
@@ -126,10 +126,10 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 - `src/phaser/scenes/FarmScene.ts`: top-down grid via `cellToScreenTopDown`, green programmatic floor, PixelLab plot/crop overlays, plant/harvest pointer zones, 1-second farm tick, Room<->Farm transition.
 - PixelLab Phase 2a spend: 4 pixflux PNGs in `public/assets/farm/` for about `$0.029`; `farm-soil-plot-v001.png` is kept as candidate because it returned as a veggie sprite sheet rather than clean soil.
 
-### House Room Navigation — [verified 2026-06-03 · Phase 2a.1 built]
-- 4 room backgrounds in `public/assets/room/`: `room-living-tv-iso-v001.png`, `room-office-iso-v001.png`, `room-bedroom-child-iso-v002.png` (bedroom), `room-kitchen-iso-v001.png`.
+### House Room Navigation — [verified 2026-06-04 · Phase 2a.1-2a.4 built]
+- 5 playable room backgrounds in `public/assets/room/`: living room, office, child bedroom, kitchen, and bathroom. Current active set uses wide straight-on images: `room-living-tv-wide-v002.png`, `room-office-wide-v002.png`, `room-bedroom-child-wide-v003.png`, `room-kitchen-wide-v002.png`, `room-bathroom-wide-v001.png`.
 - Bedroom art was regenerated as a child room: reading desk + lamp, toy shelf, teddy/soft doll, wall frames, no computer/TV; family-photo frame overlay still opens the large photo modal.
-- `HOUSE_ROOMS` defines door cells and target spawn cells. Verified routes: living→office→living, living→kitchen→living, living→bedroom→living, living→Farm→living.
+- `HOUSE_ROOMS` defines door cells/fractional zones and target spawn points. Verified routes: living→office→living, living→kitchen→living, living→bathroom→living, living→bedroom→living, living→Farm→living. The living-room bottom middle now contains kitchen + bathroom routes; the baked back-wall door remains the Farm exit.
 - UI polish: larger player scale, larger readable Plex Sans Thai HUD, translucent pulsing door markers with labels.
 - PixelLab Phase 2a.1 spend: 3 pixflux room PNGs for about `$0.0287`; later child-bedroom polish spent about `$0.0230` and kept `room-bedroom-child-iso-v002.png`. Balance after bedroom polish was about `$4.8235`.
 
@@ -137,6 +137,9 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 Phase 2a.3 แก้ปัญหา “ห้องนอนเป็นมุมมองแนวนอน แต่ control ยังเดินเฉียงแบบ iso grid” โดยเปลี่ยน `RoomScene` เป็น **continuous free movement** บนแกนจอจริง: กดขึ้น = เดินขึ้น, ลง = ลง, ซ้าย/ขวา = ซ้าย/ขวา, กดเฉียง = normalized diagonal แบบ joystick. Logic ทดสอบได้อยู่ใน `src/logic/roomFreeMovement.ts`. ห้องทั้ง 4 ถูก regenerate เป็นมุมกล้องเดียวกันแบบ wide straight-on cutaway: `room-living-tv-wide-v002.png`, `room-office-wide-v002.png`, `room-bedroom-child-wide-v003.png`, `room-kitchen-wide-v002.png`. การวาร์ปใช้ fractional door zones ที่วางบน **ประตูที่วาดอยู่ในภาพห้องเอง** พร้อม marker/label โปร่งแสงเท่านั้น; ลบ generated standalone door overlay แล้วเพราะ style ไม่เข้ากับภาพห้อง.
 
 Follow-up: ประตูบานกลางขวาบนผนังหลังของห้องรับแขกถูกเปลี่ยนเป็นทางออกไป **ฟาร์ม** (`living-farm`) และลบจุดฟาร์มล่างโซฟาที่ไม่ตรงกับประตูจริงแล้ว.
+
+### Household Dogs — [verified 2026-06-04 · Phase 2a.4 built]
+จากเดิมหมา 3 ตัวถูก bake เป็น sprite กลุ่มเดียว ตอนนี้แยกเป็น 3 actor (`black`, `red`, `cream`) ใน `PET_DOGS` และ `PetPack` ให้เดินอิสระคนละจังหวะในบ้าน/ฟาร์ม. Asset อยู่ที่ `public/assets/character/pets/individual/{black,red,cream}/` รวม 48 PNG (3 ตัว x 8 ทิศ x 2 walking frames). ข้อจำกัด: เฟรมชุดนี้ derive จากภาพกลุ่มเดิม จึงอาจมี artifact บางมุม; ถ้าต้อง production-grade ให้ยิง PixelLab character แยก 3 ตัวจาก reference หน้าตรง.
 
 ### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
@@ -163,6 +166,7 @@ Follow-up: ประตูบานกลางขวาบนผนังหล
 | **2a.1 House Rooms + Door UX** | ✅ [verified 2026-06-03] | 4 house rooms · transparent door markers · correct room spawn routing · bigger player/readable font · 46 unit tests เขียว |
 | **2a.2 House/Pets + 8-dir Walk** | ✅ [verified 2026-06-03] | modern solar house v002 · 3-dog pet pack wandering · น้องซันเดย์ walk animates all 8 directions · 53 unit tests เขียว |
 | **2a.3 Room Perspective + Free Movement** | ✅ [verified 2026-06-03] | 4 wide rooms same camera · living back-wall door exits to farm · joystick-like continuous control · 60 unit tests เขียว |
+| **2a.4 Door/Bathroom/Pet Reconcile** | ✅ [verified 2026-06-04] | กันเด้งกลับหลังเปลี่ยนห้อง · เพิ่มห้องน้ำ · living ลงล่างไปครัว/ห้องน้ำ · หมา 3 ตัวเดินแยก · 64 unit tests เขียว |
 | **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
 | **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
 | **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir run/emotes หลัง visual QA |
