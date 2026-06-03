@@ -18,7 +18,7 @@ updated: 2026-06-03
 
 ## สรุป
 
-[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `sunday-estate-webapp/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **ห้อง cozy → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ Sunday Estate).
+[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `sunday-estate-webapp/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **บ้านหลายห้อง → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ Sunday Estate).
 
 **กฎเหล็ก (Iron Law) — ไม่ต่อรอง:** เกมเป็น **visualization/reward layer เท่านั้น** — ไม่ถือ API key, ไม่ส่ง order, ไม่ทำ trade. ตัวเลขการเงินทั้งหมดเป็น **mock** ก่อน แล้วต่อ **feed จริงแบบ read-only** ภายหลังหลัง compliance (สืบทอดจาก [[8-bit-trading-rpg-blueprint]]).
 
@@ -28,7 +28,7 @@ updated: 2026-06-03
 
 ### โลกเดียวที่เดินต่อกัน (Unified World)
 ```
-[ห้อง cozy: in]  →ประตู→  [ฟาร์มติดทะเล: out]  →ขอบฟ้า→  [เรือโจรสลัด = Tide & Tally]
+[บ้านหลายห้อง: in]  →ประตู→  [ฟาร์มติดทะเล: out]  →ขอบฟ้า→  [เรือโจรสลัด = Tide & Tally]
  Portfolio/ออม          ปลูก-ขาย-จ้างบอท              บอทออก "ล่องเทรด" (อนาคต)
 ```
 
@@ -42,10 +42,12 @@ updated: 2026-06-03
 
 > **หลักชนะ:** เปลี่ยน "ความน่าเบื่อของ dashboard การเงิน" ให้เป็น **behavioral feedback** ที่ cozy และเสพติดเชิงบวก — รางวัลผูกกับ *วินัย/ความสม่ำเสมอ* ไม่ใช่การเทรดบ่อยหรือกำไรวันเดียว
 
-### ระบบในบ้าน (Cozy Indoor Studio) — [verified 2026-06-03 · Phase 1 built]
-ห้อง isometric ที่ผู้เล่น (น้องซันเดย์) เดินได้ (grid + collision), คลิกเฟอร์นิเจอร์เปิด panel parchment:
-- **โต๊ะทำงาน** → Portfolio dashboard (มูลค่าพอร์ต, day change, allocation)
-- **กระปุกออมสิน** → The Latte Factor (ทบต้น 8%/ปี → projection 10/20/30 ปี)
+### ระบบในบ้าน (Cozy House Rooms) — [verified 2026-06-03 · Phase 2a.1 built]
+บ้านภายในเป็นหลายห้องแบบชีวิตจริง ไม่ใช่ห้องเดียว: **ห้องรับแขก+TV**, **ห้องทำงาน**, **ห้องนอน**, **ห้องครัว+โต๊ะกินข้าว**. ผู้เล่นเดินชน **ประตูโปร่งแสง** เพื่อเปลี่ยนห้องและ spawn ถูกฝั่งทางเข้า/ออก. Logic room graph อยู่ใน `src/data/room.seed.ts` + `src/logic/house.ts`; state เก็บ `houseRoomId` + `playerCell`.
+
+Hotspots ในบ้าน:
+- **TV / โต๊ะทำงาน** → Portfolio dashboard (มูลค่าพอร์ต, day change, allocation)
+- **ครัว / โต๊ะกินข้าว / ชั้นความรู้** → The Latte Factor (ทบต้น 8%/ปี → projection 10/20/30 ปี)
 - **กรอบรูปครอบครัว** (รูปจริงของน้องซันเดย์) → ข้อความสร้างแรงจูงใจการออม
 
 ### ระบบนอกบ้าน (Cozy Compounding Farm) — [verified 2026-06-03 · Phase 2a built]
@@ -124,6 +126,12 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 - `src/phaser/scenes/FarmScene.ts`: top-down grid via `cellToScreenTopDown`, green programmatic floor, PixelLab plot/crop overlays, plant/harvest pointer zones, 1-second farm tick, Room<->Farm transition.
 - PixelLab Phase 2a spend: 4 pixflux PNGs in `public/assets/farm/` for about `$0.029`; `farm-soil-plot-v001.png` is kept as candidate because it returned as a veggie sprite sheet rather than clean soil.
 
+### House Room Navigation — [verified 2026-06-03 · Phase 2a.1 built]
+- 4 room backgrounds in `public/assets/room/`: `room-living-tv-iso-v001.png`, `room-office-iso-v001.png`, `room-interior-iso-v001.png` (bedroom), `room-kitchen-iso-v001.png`.
+- `HOUSE_ROOMS` defines door cells and target spawn cells. Verified routes: living→office→living, living→kitchen→living, living→bedroom→living, living→Farm→living.
+- UI polish: larger player scale, larger readable Plex Sans Thai HUD, translucent pulsing door markers with labels.
+- PixelLab Phase 2a.1 spend: 3 pixflux room PNGs for about `$0.0287`; balance before batch was about `$4.8752`.
+
 ### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
 - **1 บอท = 1 งานฟาร์ม** (รดน้ำ/พรวนดิน/ตัดไม้/เลี้ยงสัตว์)
@@ -145,7 +153,8 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 | **0 Foundations** | ✅ [verified 2026-06-03] | ingest น้องซันเดย์ (8 ทิศ + family) · scaffold โมดูล (build เขียว) · GDD นี้ · ADR · game-assets/manifests |
 | **1 Room + Portfolio** | ✅ [verified 2026-06-03] | ห้อง iso เดินได้ · คลิกเฟอร์นิเจอร์ · Portfolio + Latte Factor + Family panel · ธีม parchment · mock feed seam |
 | **1.5 Animation Reconcile** | ✅ [verified 2026-06-03] | PixelLab character wrapper + normalize script · 51 clean action frames · `PLAYER_ANIMS`/Phaser Sprite integration |
-| **2a Farm + Economy** | ✅ [verified 2026-06-03] | FarmScene top-down · Room↔Farm door · pure farm logic · plant/grow/harvest/sell · coins HUD · 42 unit tests เขียว |
+| **2a Farm + Economy** | ✅ [verified 2026-06-03] | FarmScene top-down · Room↔Farm door · pure farm logic · plant/grow/harvest/sell · coins HUD |
+| **2a.1 House Rooms + Door UX** | ✅ [verified 2026-06-03] | 4 house rooms · transparent door markers · correct room spawn routing · bigger player/readable font · 46 unit tests เขียว |
 | **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
 | **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
 | **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir walk/run หลัง visual QA |
