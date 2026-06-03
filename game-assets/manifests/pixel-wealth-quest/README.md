@@ -16,8 +16,11 @@ references live in `A-Wiki/game-assets/references/pixel-wealth-quest/`.
   `public/assets/character/nong-sunday/anim_clean/` for idle, walk, run, sit,
   lie, eat, cry. Regenerate from raw PixelLab exports with:
   `python3 scripts/game/normalize_pwq_anims.py --pwq-root "$PWQ_ROOT"`.
-- **Room furniture/floor** are programmatic placeholders (`src/phaser/textures.ts`)
-  with stable keys — swap in PixelLab PNGs later with no code change.
+- **House rooms (Phase 2a.1)** use baked room backdrops in
+  `public/assets/room/`: `room-living-tv-iso-v001.png`,
+  `room-office-iso-v001.png`, `room-interior-iso-v001.png` (bedroom), and
+  `room-kitchen-iso-v001.png`. `RoomScene` uses invisible hotspot zones over
+  these images plus translucent door markers from `src/data/room.seed.ts`.
 - **Farm assets (Phase 2a)** live in
   `public/assets/farm/`: `farm-grass-tile-v001.png`,
   `farm-soil-plot-v001.png`, `crop-carrot-sprout-v001.png`,
