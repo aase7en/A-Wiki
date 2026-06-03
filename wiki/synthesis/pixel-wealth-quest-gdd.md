@@ -117,8 +117,8 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 ### The Latte Factor — [verified 2026-06-03 · Phase 1 built]
 กรอกค่าใช้จ่ายฟุ่มเฟือยรายวัน → แปลงเป็นเงินออม/ปี → ทบต้น **8%/ปี** → แสดง projection 10/20/30 ปี. (เช่น ฿120/วัน → ~฿4.96M ใน 30 ปี). Logic บริสุทธิ์ test-first (`logic/compounding.ts`, `logic/latteFactor.ts`).
 
-### น้องซันเดย์ Animation — [verified 2026-06-03 · Phase 1.5 built]
-PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08-4432-bb43-3627f69e12ac` และ action frames south-facing 7 ชุด: idle, walk, run, sit, lie, eat, cry. `normalize_pwq_anims.py` แปลง raw export เป็น `anim_clean/` + `src/phaser/playerAnims.ts`; Phaser preload/register แล้วเล่นจริงใน `RoomScene`. ข้อจำกัดตั้งใจ: walk/run แบบ animated ใช้เฉพาะ down/toward-camera movement ก่อน, ทิศอื่น fallback static 8-dir เพื่อไม่ใช้ south animation ผิดทิศ.
+### น้องซันเดย์ Animation — [verified 2026-06-03 · Phase 1.5 + 2a.2 built]
+PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08-4432-bb43-3627f69e12ac` และ action frames south-facing 7 ชุด: idle, walk, run, sit, lie, eat, cry. `normalize_pwq_anims.py` แปลง raw export เป็น `anim_clean/` + `src/phaser/playerAnims.ts`; Phaser preload/register แล้วเล่นจริงใน `RoomScene` และ `FarmScene`. Phase 2a.2 เพิ่ม **8-direction walk cycle** ครบ front/front-right/right/back-right/back/back-left/left/front-left; เมื่อตัวละครเดินเปลี่ยนช่อง ขาจะขยับตามทิศเดินจริง. ข้อจำกัดที่ยังเหลือ: run/sit/lie/eat/cry ยังเป็น south/front-facing; running ใช้ 8-dir walk cycle ที่ tween เร็วขึ้นจนกว่าจะคุ้มยิง run 8 ทิศ.
 
 ### Farm Economy — [verified 2026-06-03 · Phase 2a built]
 - `src/data/farm.seed.ts`: layout ฟาร์ม 10x8, spawn/door, 4 plots, `DEFAULT_CROP` = `carrot`, growth 6 ticks, sell price 24 coins.
@@ -156,9 +156,10 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 | **1.5 Animation Reconcile** | ✅ [verified 2026-06-03] | PixelLab character wrapper + normalize script · 51 clean action frames · `PLAYER_ANIMS`/Phaser Sprite integration |
 | **2a Farm + Economy** | ✅ [verified 2026-06-03] | FarmScene top-down · Room↔Farm door · pure farm logic · plant/grow/harvest/sell · coins HUD |
 | **2a.1 House Rooms + Door UX** | ✅ [verified 2026-06-03] | 4 house rooms · transparent door markers · correct room spawn routing · bigger player/readable font · 46 unit tests เขียว |
+| **2a.2 House/Pets + 8-dir Walk** | ✅ [verified 2026-06-03] | modern solar house v002 · 3-dog pet pack wandering · น้องซันเดย์ walk animates all 8 directions · 53 unit tests เขียว |
 | **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
 | **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
-| **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir walk/run หลัง visual QA |
+| **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir run/emotes หลัง visual QA |
 | **4 Sea + ลิงก์ Tide & Tally** | ⬜ | รวม roster บอท 2 เกม |
 | **5 Feed จริง read-only + ขาย** | ⬜ | compliance gate, packaging |
 
