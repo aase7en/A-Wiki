@@ -13,9 +13,9 @@ sys.modules[spec.name] = normalize_pwq_anims
 spec.loader.exec_module(normalize_pwq_anims)
 
 
-def write_frame(anim_dir: Path, action_slug: str, index: int) -> None:
+def write_frame(anim_dir: Path, action_slug: str, index: int, direction: str = "south") -> None:
     anim_dir.mkdir(parents=True, exist_ok=True)
-    (anim_dir / f"nong-sunday_animations_{action_slug}-abc123_south_frame_{index:03d}.png").write_bytes(b"png")
+    (anim_dir / f"nong-sunday_animations_{action_slug}-abc123_{direction}_frame_{index:03d}.png").write_bytes(b"png")
 
 
 def test_normalize_animation_frames_creates_clean_files_and_ts_module(tmp_path):
@@ -35,3 +35,39 @@ def test_normalize_animation_frames_creates_clean_files_and_ts_module(tmp_path):
     assert "export const PLAYER_ANIM_ACTIONS" in ts
     assert "idle_south_000.png" in ts
     assert "walk_south_002.png" in ts
+
+
+def test_normalize_animation_frames_keeps_walk_frames_per_direction(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for direction in ("south", "north-east"):
+        for i in range(2):
+            write_frame(anim_dir, "walking_moving_arms_and_legs", i, direction=direction)
+
+    result = normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    assert result == {"walk": 4}
+    clean_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean"
+    assert (clean_dir / "walk_south_001.png").exists()
+    assert (clean_dir / "walk_north-east_001.png").exists()
+    ts = (pwq_root / "src" / "phaser" / "playerAnims.ts").read_text(encoding="utf-8")
+    assert "PLAYER_MOVE_ANIMS" in ts
+    assert "pwq_player_walk_front" in ts
+    assert "pwq_player_walk_back_right" in ts
+
+
+def test_normalize_prefers_walk_export_with_more_directions(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for i in range(3):
+        write_frame(anim_dir, "walking_moving_old", i, direction="south")
+    for direction in ("south", "east", "west"):
+        for i in range(2):
+            write_frame(anim_dir, "walking_moving_new", i, direction=direction)
+
+    result = normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    assert result == {"walk": 6}
+    clean_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean"
+    assert (clean_dir / "walk_south_001.png").exists()
+    assert not (clean_dir / "walk_south_002.png").exists()
