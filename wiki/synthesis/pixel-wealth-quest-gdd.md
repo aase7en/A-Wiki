@@ -133,6 +133,9 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 - UI polish: larger player scale, larger readable Plex Sans Thai HUD, translucent pulsing door markers with labels.
 - PixelLab Phase 2a.1 spend: 3 pixflux room PNGs for about `$0.0287`; later child-bedroom polish spent about `$0.0230` and kept `room-bedroom-child-iso-v002.png`. Balance after bedroom polish was about `$4.8235`.
 
+### Room Perspective + Free Movement — [verified 2026-06-03 · Phase 2a.3 built]
+Phase 2a.3 แก้ปัญหา “ห้องนอนเป็นมุมมองแนวนอน แต่ control ยังเดินเฉียงแบบ iso grid” โดยเปลี่ยน `RoomScene` เป็น **continuous free movement** บนแกนจอจริง: กดขึ้น = เดินขึ้น, ลง = ลง, ซ้าย/ขวา = ซ้าย/ขวา, กดเฉียง = normalized diagonal แบบ joystick. Logic ทดสอบได้อยู่ใน `src/logic/roomFreeMovement.ts`. ห้องทั้ง 4 ถูก regenerate เป็นมุมกล้องเดียวกันแบบ wide straight-on cutaway: `room-living-tv-wide-v002.png`, `room-office-wide-v002.png`, `room-bedroom-child-wide-v003.png`, `room-kitchen-wide-v002.png`; เพิ่ม `door-wood-interior-v001.png` เป็น door asset overlay ทุกจุดวาร์ป เพื่อให้ผู้เล่นเห็นประตูจริงตรงกับ transition zone.
+
 ### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
 - **1 บอท = 1 งานฟาร์ม** (รดน้ำ/พรวนดิน/ตัดไม้/เลี้ยงสัตว์)
@@ -157,6 +160,7 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 | **2a Farm + Economy** | ✅ [verified 2026-06-03] | FarmScene top-down · Room↔Farm door · pure farm logic · plant/grow/harvest/sell · coins HUD |
 | **2a.1 House Rooms + Door UX** | ✅ [verified 2026-06-03] | 4 house rooms · transparent door markers · correct room spawn routing · bigger player/readable font · 46 unit tests เขียว |
 | **2a.2 House/Pets + 8-dir Walk** | ✅ [verified 2026-06-03] | modern solar house v002 · 3-dog pet pack wandering · น้องซันเดย์ walk animates all 8 directions · 53 unit tests เขียว |
+| **2a.3 Room Perspective + Free Movement** | ✅ [verified 2026-06-03] | 4 wide rooms same camera · real door asset overlays · joystick-like continuous control · 58 unit tests เขียว |
 | **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
 | **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
 | **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir run/emotes หลัง visual QA |
