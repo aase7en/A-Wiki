@@ -1,0 +1,37 @@
+from __future__ import annotations
+
+import importlib.util
+import sys
+from pathlib import Path
+
+
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "game" / "normalize_pwq_anims.py"
+spec = importlib.util.spec_from_file_location("normalize_pwq_anims", SCRIPT)
+assert spec and spec.loader
+normalize_pwq_anims = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = normalize_pwq_anims
+spec.loader.exec_module(normalize_pwq_anims)
+
+
+def write_frame(anim_dir: Path, action_slug: str, index: int) -> None:
+    anim_dir.mkdir(parents=True, exist_ok=True)
+    (anim_dir / f"nong-sunday_animations_{action_slug}-abc123_south_frame_{index:03d}.png").write_bytes(b"png")
+
+
+def test_normalize_animation_frames_creates_clean_files_and_ts_module(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for i in range(2):
+      write_frame(anim_dir, "standing_still_gentle_idle_breathing", i)
+    for i in range(3):
+      write_frame(anim_dir, "walking_moving_arms_and_legs", i)
+
+    result = normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    assert result == {"idle": 2, "walk": 3}
+    assert (pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean" / "idle_south_000.png").exists()
+    assert (pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean" / "walk_south_002.png").exists()
+    ts = (pwq_root / "src" / "phaser" / "playerAnims.ts").read_text(encoding="utf-8")
+    assert "export const PLAYER_ANIM_ACTIONS" in ts
+    assert "idle_south_000.png" in ts
+    assert "walk_south_002.png" in ts

@@ -85,7 +85,7 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 
 | ความต้องการ (Gemini) | Endpoint | สถานะใน repo |
 |---|---|---|
-| ตัวละคร/บอท 8 ทิศ + animation | `/create-character-v3`, `/create-character-with-8-directions`, `/animate-character` | async — **ยังไม่ wrap** (Phase 3); น้องซันเดย์ Phase 1 ใช้ reference sheet ที่ slice แล้ว |
+| ตัวละคร/บอท 8 ทิศ + animation | `/create-character-v3`, `/create-character-with-8-directions`, `/animate-character` | ✅ wrap แล้ว: `scripts/game/pixellab_character.py`; น้องซันเดย์ clean 8 rotations + south-facing idle/walk/run/sit/lie/eat/cry integrated in Phase 1.5 |
 | ฉาก/พื้นผิว (scene art) | `/create-image-pixflux` (sync ≤400px) | ✅ wrap แล้ว: `scripts/game/pixellab_generate_image.py` (+ `--upscale` NEAREST) |
 | กระเบื้อง iso/พื้นดิน | `/create-isometric-tile`, `/create-tiles-pro` | async — Phase 2 (Phase 1 ใช้ placeholder + pixflux) |
 | ATM/กระปุก/map objects | `/map-objects`, `/create-8-direction-object` | async — Phase 2/3 |
@@ -93,7 +93,7 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 
 **Secret:** `PIXELLAB_API_TOKEN` ดึง on-demand จาก Drive secrets (`scripts/lib/drive_secrets.py`) — ไม่ hardcode/commit. **Workflow มาตรฐาน:** skill `skills/claude-code/pixellab-asset-ingest/SKILL.md` + [[pixellab-phaser-asset-convention]] + [[pixellab-api-endpoint-matrix]] + [[pixellab-asset-pipeline-for-trading-rpg]].
 
-**งบ:** เริ่ม $5 (Phase 1 ~5–7 gen เพราะ reuse เยอะ) → ขยายถึง $20 ตอน Phase 3 (animate น้องซันเดย์: เดิน/วิ่ง/นั่ง/นอน/กิน/ร้องไห้).
+**งบ:** เริ่ม $5 และใช้จริงต่ำมากเพราะ reuse หนัก. Phase 1.5 ใช้ jobs ที่ Claude ยิงไว้แล้ว (transcript ระบุประมาณ $0.065 USD หลัง trial generations) → ยิงเพิ่มเฉพาะเมื่อ visual QA ต้องการ 8-dir walk/run หรือ props ใหม่.
 
 ---
 
@@ -112,6 +112,9 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 
 ### The Latte Factor — [verified 2026-06-03 · Phase 1 built]
 กรอกค่าใช้จ่ายฟุ่มเฟือยรายวัน → แปลงเป็นเงินออม/ปี → ทบต้น **8%/ปี** → แสดง projection 10/20/30 ปี. (เช่น ฿120/วัน → ~฿4.96M ใน 30 ปี). Logic บริสุทธิ์ test-first (`logic/compounding.ts`, `logic/latteFactor.ts`).
+
+### น้องซันเดย์ Animation — [verified 2026-06-03 · Phase 1.5 built]
+PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08-4432-bb43-3627f69e12ac` และ action frames south-facing 7 ชุด: idle, walk, run, sit, lie, eat, cry. `normalize_pwq_anims.py` แปลง raw export เป็น `anim_clean/` + `src/phaser/playerAnims.ts`; Phaser preload/register แล้วเล่นจริงใน `RoomScene`. ข้อจำกัดตั้งใจ: walk/run แบบ animated ใช้เฉพาะ down/toward-camera movement ก่อน, ทิศอื่น fallback static 8-dir เพื่อไม่ใช้ south animation ผิดทิศ.
 
 ### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
@@ -132,9 +135,10 @@ Phaser 3.80 (HTML5 + iso grid) · React 18 (HUD overlay) · Zustand vanilla (sto
 | Phase | สถานะ | สาระ |
 |---|---|---|
 | **0 Foundations** | ✅ [verified 2026-06-03] | ingest น้องซันเดย์ (8 ทิศ + family) · scaffold โมดูล (build เขียว) · GDD นี้ · ADR · game-assets/manifests |
-| **1 Room + Portfolio** | ✅ ส่วนใหญ่ [verified 2026-06-03] | ห้อง iso เดินได้ · คลิกเฟอร์นิเจอร์ · Portfolio + Latte Factor + Family panel · 34 unit tests เขียว · ธีม parchment · mock feed seam |
+| **1 Room + Portfolio** | ✅ [verified 2026-06-03] | ห้อง iso เดินได้ · คลิกเฟอร์นิเจอร์ · Portfolio + Latte Factor + Family panel · ธีม parchment · mock feed seam |
+| **1.5 Animation Reconcile** | ✅ [verified 2026-06-03] | PixelLab character wrapper + normalize script · 51 clean action frames · `PLAYER_ANIMS`/Phaser Sprite integration · 37 unit tests เขียว |
 | **2 Farm + Worker-Bots + News Bird** | ⬜ | ดู roadmap ในแผน + HANDOFF |
-| **3 Debt Dungeon + animation** | ⬜ | สร้าง character-endpoint wrapper, animate น้องซันเดย์ |
+| **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir walk/run หลัง visual QA |
 | **4 Sea + ลิงก์ Tide & Tally** | ⬜ | รวม roster บอท 2 เกม |
 | **5 Feed จริง read-only + ขาย** | ⬜ | compliance gate, packaging |
 

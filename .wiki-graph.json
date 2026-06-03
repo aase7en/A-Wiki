@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-02",
+  "generated_at": "2026-06-03",
   "stats": {
-    "nodes": 462,
-    "edges": 1202,
+    "nodes": 463,
+    "edges": 1208,
     "edges_by_type": {
-      "wikilink": 1064,
+      "wikilink": 1069,
       "mdlink": 49,
       "depends": 33,
       "implements": 51,
-      "extends": 5
+      "extends": 6
     },
     "broken_links": 65,
     "orphans": 170,
@@ -375,7 +375,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-02",
+      "title": "Review Report — 2026-06-03",
       "domain": "context"
     },
     {
@@ -1601,6 +1601,11 @@
     {
       "path": "wiki/synthesis/pi4-lora-gateway-server.md",
       "title": "Raspberry Pi 4 เป็น LoRa Gateway + Server เครื่องเดียว",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "title": "Pixel Wealth Quest — Game Design Document",
       "domain": "synthesis"
     },
     {
@@ -10338,6 +10343,48 @@
     {
       "from": "wiki/synthesis/pi4-lora-gateway-server.md",
       "to": "wiki/sources/dx-lr02-datasheet.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
       "type": "wikilink",
       "broken": false,
       "external": false

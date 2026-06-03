@@ -8,26 +8,34 @@ references live in `A-Wiki/game-assets/references/pixel-wealth-quest/`.
 
 - **น้องซันเดย์ (player)** uses **direct directional frame paths** (crew-style, like
   Tide & Tally's `frames_256/`) via `src/phaser/playerFrames.ts` — NOT the
-  manifest→bootstrap pipeline yet. 8 frames sliced from the rotation sheet; index
-  at `public/assets/character/nong-sunday/nong-sunday.frames.json`.
+  manifest→bootstrap pipeline yet. Clean 8 rotations from PixelLab
+  `create-character-v3` are indexed at
+  `public/assets/character/nong-sunday/nong-sunday.frames.json`.
+- **น้องซันเดย์ animations (Phase 1.5)** use direct normalized paths via
+  `src/phaser/playerAnims.ts`: 51 south/front-facing frames in
+  `public/assets/character/nong-sunday/anim_clean/` for idle, walk, run, sit,
+  lie, eat, cry. Regenerate from raw PixelLab exports with:
+  `python3 scripts/game/normalize_pwq_anims.py --pwq-root "$PWQ_ROOT"`.
 - **Room furniture/floor** are programmatic placeholders (`src/phaser/textures.ts`)
   with stable keys — swap in PixelLab PNGs later with no code change.
 
-## Phase 3 (animated character) — when to use the manifest pipeline
+## Later — when to use the manifest pipeline
 
-When น้องซันเดย์ gets animated actions (walk/run/sit/lie/eat/cry) via the PixelLab
-`/create-character-v3` + `/animate-character` endpoints, author manifests here and
-run the pipeline (see `skills/claude-code/pixellab-asset-ingest/SKILL.md`):
+If PWQ outgrows direct frame paths (for example 8-dir walk/run sheets or multiple
+characters), author manifests here and run the pipeline (see
+`skills/claude-code/pixellab-asset-ingest/SKILL.md`). Use `PWQ_ROOT` instead of
+hardcoded personal paths:
 
 ```bash
+export PWQ_ROOT=/path/to/sunday-estate-webapp/pixel-wealth-quest
 python3 scripts/game/write_phaser_manifest_template.py \
   game-assets/manifests/pixel-wealth-quest/nong-sunday.json \
   --asset-key character.player.nong-sunday.base.8dir.192x256 --action idle --action walk --tag player
 # …fill provenance, then:
 python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests/pixel-wealth-quest \
-  --root /Users/aase7en/Desktop/sunday-estate-webapp/pixel-wealth-quest/public --check-files
+  --root "$PWQ_ROOT/public" --check-files
 python3 scripts/game/bootstrap_phaser_asset_pack.py game-assets/manifests/pixel-wealth-quest \
   --out-dir game-assets/generated/pixel-wealth-quest --root . \
   --module-name pwq_assets --scene-name PwqAssetScene --scene-key pwq-assets --module-import ./pwq_assets \
-  --copy-to-project /Users/aase7en/Desktop/sunday-estate-webapp/pixel-wealth-quest/src/generated
+  --copy-to-project "$PWQ_ROOT/src/generated"
 ```
