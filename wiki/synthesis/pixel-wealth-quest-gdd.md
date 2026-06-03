@@ -127,10 +127,11 @@ PixelLab สร้าง clean 8 rotations จาก `character_id=58be20a8-ee08
 - PixelLab Phase 2a spend: 4 pixflux PNGs in `public/assets/farm/` for about `$0.029`; `farm-soil-plot-v001.png` is kept as candidate because it returned as a veggie sprite sheet rather than clean soil.
 
 ### House Room Navigation — [verified 2026-06-03 · Phase 2a.1 built]
-- 4 room backgrounds in `public/assets/room/`: `room-living-tv-iso-v001.png`, `room-office-iso-v001.png`, `room-interior-iso-v001.png` (bedroom), `room-kitchen-iso-v001.png`.
+- 4 room backgrounds in `public/assets/room/`: `room-living-tv-iso-v001.png`, `room-office-iso-v001.png`, `room-bedroom-child-iso-v002.png` (bedroom), `room-kitchen-iso-v001.png`.
+- Bedroom art was regenerated as a child room: reading desk + lamp, toy shelf, teddy/soft doll, wall frames, no computer/TV; family-photo frame overlay still opens the large photo modal.
 - `HOUSE_ROOMS` defines door cells and target spawn cells. Verified routes: living→office→living, living→kitchen→living, living→bedroom→living, living→Farm→living.
 - UI polish: larger player scale, larger readable Plex Sans Thai HUD, translucent pulsing door markers with labels.
-- PixelLab Phase 2a.1 spend: 3 pixflux room PNGs for about `$0.0287`; balance before batch was about `$4.8752`.
+- PixelLab Phase 2a.1 spend: 3 pixflux room PNGs for about `$0.0287`; later child-bedroom polish spent about `$0.0230` and kept `room-bedroom-child-iso-v002.png`. Balance after bedroom polish was about `$4.8235`.
 
 ### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
 - ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)

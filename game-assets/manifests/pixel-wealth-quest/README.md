@@ -18,9 +18,11 @@ references live in `A-Wiki/game-assets/references/pixel-wealth-quest/`.
   `python3 scripts/game/normalize_pwq_anims.py --pwq-root "$PWQ_ROOT"`.
 - **House rooms (Phase 2a.1)** use baked room backdrops in
   `public/assets/room/`: `room-living-tv-iso-v001.png`,
-  `room-office-iso-v001.png`, `room-interior-iso-v001.png` (bedroom), and
-  `room-kitchen-iso-v001.png`. `RoomScene` uses invisible hotspot zones over
-  these images plus translucent door markers from `src/data/room.seed.ts`.
+  `room-office-iso-v001.png`, `room-bedroom-child-iso-v002.png` (bedroom), and
+  `room-kitchen-iso-v001.png`. The bedroom is a child room with reading
+  desk/lamp, toy shelf, teddy/soft doll, and no computer/TV. `RoomScene` uses
+  invisible hotspot zones over these images plus translucent door markers from
+  `src/data/room.seed.ts`.
 - **Farm assets (Phase 2a)** live in
   `public/assets/farm/`: `farm-grass-tile-v001.png`,
   `farm-soil-plot-v001.png`, `crop-carrot-sprout-v001.png`,
