@@ -131,7 +131,7 @@ def _collect_urls(node, prefix=""):  # walk nested dict/list for http(s) string 
     return found
 
 
-def poll(job_id: str, token: str, timeout: int = 300, interval: int = 5) -> dict:
+def poll(job_id: str, token: str, timeout: int = 900, interval: int = 5) -> dict:
     waited = 0
     while waited < timeout:
         job = _request("GET", f"/background-jobs/{job_id}", token)
