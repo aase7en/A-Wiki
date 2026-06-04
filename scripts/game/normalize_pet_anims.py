@@ -94,15 +94,26 @@ def action_for_slug(slug: str) -> str | None:
     return None
 
 
-def best_export_for_action(per_hash: dict[str, dict[str, list[tuple[int, Path]]]]) -> tuple[str, dict[str, list[tuple[int, Path]]]]:
-    """Pick the hash bucket with the most directions, then most frames."""
-    def score(item: tuple[str, dict[str, list[tuple[int, Path]]]]) -> tuple[int, int, str]:
-        h, by_dir = item
-        dir_count = len(by_dir)
-        frame_count = max((len(v) for v in by_dir.values()), default=0)
-        return (dir_count, frame_count, h)
-    h, by_dir = max(per_hash.items(), key=score)
-    return h, by_dir
+def merge_exports_for_action(per_hash: dict[str, dict[str, list[tuple[int, Path]]]]) -> dict[str, list[tuple[int, Path]]]:
+    """Union all hash buckets — pick the hash with most frames per direction.
+
+    PixelLab often splits an 8-direction walk across multiple hashes (e.g. one
+    hash holds cardinals, another holds diagonals). Picking a single hash drops
+    half the directions; merging by-direction recovers the full set.
+    """
+    merged: dict[str, list[tuple[int, Path]]] = {}
+    # For each direction, pick the hash with the highest frame count.
+    all_dirs: set[str] = set()
+    for by_dir in per_hash.values():
+        all_dirs.update(by_dir.keys())
+    for d in all_dirs:
+        best: list[tuple[int, Path]] = []
+        for by_dir in per_hash.values():
+            if d in by_dir and len(by_dir[d]) > len(best):
+                best = by_dir[d]
+        if best:
+            merged[d] = best
+    return merged
 
 
 def render_pet_anims_ts(
@@ -274,7 +285,7 @@ def normalize_pet_frames(pwq_root: str | Path) -> dict[str, dict[str, int]]:
         per_dog_dir_anims[dog_id] = {}
         summary[dog_id] = {}
         for action, by_hash in per_action_hash.items():
-            best_hash, by_dir = best_export_for_action(by_hash)
+            by_dir = merge_exports_for_action(by_hash)
             per_dir_paths: dict[str, list[str]] = {}
             total_frames = 0
             for px_dir, frames in by_dir.items():
