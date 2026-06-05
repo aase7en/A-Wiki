@@ -23,7 +23,9 @@ from pathlib import Path
 
 
 ACTION_ORDER = ["idle", "walk", "run", "sit", "lie", "eat", "cry"]
-MOVE_ACTION_ORDER = ["walk"]
+MOVE_ACTION_ORDER = ["walk", "run"]
+WALK_LEFT_USES_SW = True
+DIRECTIONAL_RUN_USES_WALK = True
 ACTION_MAP = {
     "standing_still": "idle",
     "walking_moving": "walk",
@@ -59,9 +61,9 @@ def default_pwq_root() -> Path:
         return Path(os.environ["PWQ_ROOT"]).expanduser()
 
     awiki_root = Path(__file__).resolve().parents[2]
-    sibling = awiki_root.parent / "sunday-estate-webapp" / "pixel-wealth-quest"
-    if sibling.exists():
-        return sibling
+    for sibling in awiki_root.parent.glob("*/pixel-wealth-quest"):
+        if sibling.is_dir():
+            return sibling
     return Path.cwd()
 
 
@@ -210,6 +212,12 @@ def normalize_animation_frames(pwq_root: str | Path) -> dict[str, int]:
                     dst_name = f"{action}_{pixel_dir}_{index:03d}.png"
                     shutil.copyfile(src, clean_dir / dst_name)
                     move_anims[action].setdefault(dir8, []).append(f"{PUBLIC_BASE}/{dst_name}")
+            if action == "walk" and WALK_LEFT_USES_SW and move_anims[action].get("front_left"):
+                move_anims[action]["left"] = list(move_anims[action]["front_left"])
+
+    if DIRECTIONAL_RUN_USES_WALK and move_anims["run"].get("front"):
+        for dir8, paths in move_anims["walk"].items():
+            move_anims["run"].setdefault(dir8, list(paths))
 
     ts_out.parent.mkdir(parents=True, exist_ok=True)
     ts_out.write_text(render_player_anims_ts(anims, move_anims), encoding="utf-8")
@@ -224,7 +232,7 @@ def normalize_animation_frames(pwq_root: str | Path) -> dict[str, int]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Normalize Nong Sunday PixelLab animation frames")
-    parser.add_argument("--pwq-root", default=None, help="Path to sunday-estate-webapp/pixel-wealth-quest")
+    parser.add_argument("--pwq-root", default=None, help="Path to <product-repo>/pixel-wealth-quest")
     args = parser.parse_args()
 
     root = Path(args.pwq_root).expanduser() if args.pwq_root else default_pwq_root()

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03",
+  "generated_at": "2026-06-05",
   "stats": {
-    "nodes": 463,
+    "nodes": 464,
     "edges": 1208,
     "edges_by_type": {
       "wikilink": 1069,
@@ -11,7 +11,7 @@
       "extends": 6
     },
     "broken_links": 65,
-    "orphans": 170,
+    "orphans": 171,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -375,7 +375,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-03",
+      "title": "Review Report — 2026-06-05",
       "domain": "context"
     },
     {
@@ -1621,6 +1621,11 @@
     {
       "path": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "title": "PixelLab to Phaser Asset Convention",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/sunday-invest-moon-roadmap.md",
+      "title": "Sunday Invest Moon — Roadmap (cross-agent handoff)",
       "domain": "synthesis"
     },
     {

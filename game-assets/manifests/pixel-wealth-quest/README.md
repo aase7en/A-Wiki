@@ -1,7 +1,7 @@
 # Pixel Wealth Quest — asset manifests
 
 Tracked recipes for PWQ assets. Binary PNGs live in the product
-(`sunday-estate-webapp/pixel-wealth-quest/public/assets/`); pristine source
+(`<product-repo>/pixel-wealth-quest/public/assets/`); pristine source
 references live in `A-Wiki/game-assets/references/pixel-wealth-quest/`.
 
 ## Status (2026-06-03)
@@ -39,7 +39,7 @@ characters), author manifests here and run the pipeline (see
 hardcoded personal paths:
 
 ```bash
-export PWQ_ROOT=/path/to/sunday-estate-webapp/pixel-wealth-quest
+export PWQ_ROOT=/path/to/<product-repo>/pixel-wealth-quest
 python3 scripts/game/write_phaser_manifest_template.py \
   game-assets/manifests/pixel-wealth-quest/nong-sunday.json \
   --asset-key character.player.nong-sunday.base.8dir.192x256 --action idle --action walk --tag player

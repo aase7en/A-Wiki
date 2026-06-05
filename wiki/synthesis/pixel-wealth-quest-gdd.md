@@ -10,15 +10,17 @@ updated: 2026-06-04
 
 # Pixel Wealth Quest — Game Design Document
 
+> [verified 2026-06-05] Renamed user-facing product labels to **Sunday Invest Moon** in Phase 2c.1. The legacy `pixel-wealth-quest/` directory slug and this historical GDD filename remain unchanged to avoid breaking paths.
+
 ## คำถามที่ตอบ
 
 "จะออกแบบ *Pixel Wealth Quest* — เกม pixel-art cozy ที่แปลงพฤติกรรมการออม/ลงทุนจริงให้เป็น gamification loop — เป็นโมดูลในเว็บบริษัท Sunday Estate อย่างไร โดย reuse ของที่มีอยู่ (Tide & Tally + PixelLab pipeline + A-Wiki) ให้มากที่สุด เบา ปลอดภัย และต่อยอดขายได้?"
 
-> เอกสารนี้ประมวลผลจาก prompt ต้นฉบับ (`~/Downloads/gemini-code-1780419550203.md`) แล้วปรับให้ตรงสถานะจริงของโค้ดเบส (ดู [[8-bit-trading-rpg-blueprint]]). แผน execution เต็ม + handoff อยู่ที่ `pixel-wealth-quest/HANDOFF.md` (repo `sunday-estate-webapp`).
+> เอกสารนี้ประมวลผลจาก prompt ต้นฉบับ (`~/Downloads/gemini-code-1780419550203.md`) แล้วปรับให้ตรงสถานะจริงของโค้ดเบส (ดู [[8-bit-trading-rpg-blueprint]]). แผน execution เต็ม + handoff อยู่ที่ `pixel-wealth-quest/HANDOFF.md` ใน product repo.
 
 ## สรุป
 
-[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `sunday-estate-webapp/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **บ้านหลายห้อง → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ Sunday Estate).
+[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `<product-repo>/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **บ้านหลายห้อง → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ Sunday Estate).
 
 **กฎเหล็ก (Iron Law) — ไม่ต่อรอง:** เกมเป็น **visualization/reward layer เท่านั้น** — ไม่ถือ API key, ไม่ส่ง order, ไม่ทำ trade. ตัวเลขการเงินทั้งหมดเป็น **mock** ก่อน แล้วต่อ **feed จริงแบบ read-only** ภายหลังหลัง compliance (สืบทอดจาก [[8-bit-trading-rpg-blueprint]]).
 
@@ -63,7 +65,7 @@ Hotspots ในบ้าน:
 | Repo | บทบาท |
 |---|---|
 | **A-Wiki** (`github.com/aase7en/A-Wiki`) | สมอง: PixelLab scripts (`scripts/game/`), asset pipeline, GDD/wiki, drive secrets, **news generator** |
-| **sunday-estate-webapp** (`github.com/aase7en/sunday-estate-webapp`) | ผลิตภัณฑ์: `prototype/` (เว็บบริษัท), `game/` (Tide & Tally), **`pixel-wealth-quest/`** (โมดูลใหม่) |
+| **product webapp repo** (`<owner>/<product-repo>`) | ผลิตภัณฑ์: `prototype/` (เว็บบริษัท), `game/` (Tide & Tally), **`pixel-wealth-quest/`** (โมดูลใหม่) |
 
 ### บทบาท repo ในเอกสาร Gemini (ตัดสินใจจริง)
 | Repo อ้างอิง | บทบาทที่ตั้งใจ | ตัดสินใจ |
@@ -141,17 +143,17 @@ Follow-up: ประตูบานกลางขวาบนผนังหล
 ### Household Dogs — [verified 2026-06-04 · Phase 2a.4 built]
 จากเดิมหมา 3 ตัวถูก bake เป็น sprite กลุ่มเดียว ตอนนี้แยกเป็น 3 actor (`black`, `red`, `cream`) ใน `PET_DOGS` และ `PetPack` ให้เดินอิสระคนละจังหวะในบ้าน/ฟาร์ม. Asset อยู่ที่ `public/assets/character/pets/individual/{black,red,cream}/` รวม 48 PNG (3 ตัว x 8 ทิศ x 2 walking frames). ข้อจำกัด: เฟรมชุดนี้ derive จากภาพกลุ่มเดิม จึงอาจมี artifact บางมุม; ถ้าต้อง production-grade ให้ยิง PixelLab character แยก 3 ตัวจาก reference หน้าตรง.
 
-### Worker-Bot Economy / Bot Trading Command Center — [wiki · Phase 2b]
-- ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** (reuse 9 บอท NPC 8-ทิศจาก Tide & Tally)
-- **1 บอท = 1 งานฟาร์ม** (รดน้ำ/พรวนดิน/ตัดไม้/เลี้ยงสัตว์)
-- คลิกบอท → panel status + **กำไรขาดทุน (P&L)** (mock → real read-only)
-- บอทตัวเดียวกันมีตัวตนคู่ (ลูกจ้างฟาร์ม + เทรดบอท) = **สะพานเชื่อม Tide & Tally**
+### Worker-Bot Economy / Bot Trading Command Center — [verified 2026-06-05 · roadmap Phase 2d built]
+- ปลูก/ขายผัก → เหรียญ → **จ้าง Worker-Bot** ด้วย mock/local economy เท่านั้น
+- **1 บอท = 1 งานฟาร์ม** และ 1 แปลงเป้าหมาย: till/plant/water/harvest/tend ผ่าน pure `workerBotFarmTick`
+- คลิกบอท → responsive hire/assign/status panel; P&L/trading bot status ยังเป็น mock visualization แยกจาก Worker-Bot state
+- บอทมีตัวตนเป็นลูกจ้างฟาร์มก่อน ส่วน trading-bot/feed จริงยังต้องผ่าน read-only/compliance gate ในอนาคต
 
-### The Debt Dungeon — [wiki · Phase 3]
-เปรียบเทียบสินทรัพย์ vs หนี้สินตามเวลา: หนี้ดี (ผ่อนเพื่อสร้างสินทรัพย์) = เครื่องผลิตเหรียญ; หนี้เสีย = ปรสิตสีแดงดูดพลังเมือง.
+### The Debt Dungeon — [verified 2026-06-05 · roadmap Phase 3 built]
+เปรียบเทียบสินทรัพย์ vs ภาระหนี้ตามเวลาแบบไม่ตีตราผู้เล่น: หนี้สร้างสินทรัพย์ = ภาระที่มี asset backing; หนี้ดอกเบี้ยสูง = แรงกดดันที่ต้องทำให้เห็นผลของดอกเบี้ย. Phase 3 เพิ่ม mock liabilities + pure projection, derived store state, read-only HUD panel, encounter cards, deterministic NPC coach lines, และ Farm portal. Runtime QA ผ่าน desktop/iPhone/iPad โดยไม่มี horizontal overflow และไม่มีปุ่มสมัคร/กู้/จ่ายเงินจริง.
 
-### News Bird (Morning Briefing) — [wiki · Phase 2c, ~80% reuse]
-นก `news_gull_courier` บินมา **8 โมงเช้า** (in-game time) ส่งจดหมาย parchment = สรุปข่าว **ธุรกิจ/การเงิน/ลงทุน/เทคโนโลยี/คริปโต** จาก **Gemini Flash ฟรี** (ต่อยอด `generate-briefing.mjs` + เพิ่ม web-search) ผ่าน safety gate. (มี: นก, จดหมาย UI, `advisor.ts`, fallback chain, `latest.json`).
+### News Bird (Morning Briefing) — [verified 2026-06-05 · roadmap Phase 2e built]
+นก `news_gull_courier` ส่งจดหมาย parchment เวลา **8 โมงเช้า** ตาม in-game clock. Client อ่านเฉพาะ static `/briefings/latest.json` หรือ fallback canned ที่ safety-gate แล้ว; ไม่มี API key, generation request, หรือคำสั่งซื้อขายใน bundle. `npm run briefing:generate` เป็น author-time tool นอก Vite สำหรับสร้าง dated JSON + `latest.json` และ preserve last good file เมื่อไม่มี key. Runtime smoke พิสูจน์ 08:00 → gull visible → click opens letter → 3 cards render → console clean.
 
 ---
 
@@ -167,14 +169,14 @@ Follow-up: ประตูบานกลางขวาบนผนังหล
 | **2a.2 House/Pets + 8-dir Walk** | ✅ [verified 2026-06-03] | modern solar house v002 · 3-dog pet pack wandering · น้องซันเดย์ walk animates all 8 directions · 53 unit tests เขียว |
 | **2a.3 Room Perspective + Free Movement** | ✅ [verified 2026-06-03] | 4 wide rooms same camera · living back-wall door exits to farm · joystick-like continuous control · 60 unit tests เขียว |
 | **2a.4 Door/Bathroom/Pet Reconcile** | ✅ [verified 2026-06-04] | กันเด้งกลับหลังเปลี่ยนห้อง · เพิ่มห้องน้ำ · living ลงล่างไปครัว/ห้องน้ำ · หมา 3 ตัวเดินแยก · 64 unit tests เขียว |
-| **2b Worker-Bots** | ⬜ | hire/assign bot logic + status/P&L panel |
-| **2c News Bird** | ⬜ | gull courier + briefing safety gate + free model generator |
-| **3 Debt Dungeon + animation polish** | ⬜ | Debt mechanic, NPC coach, optional 8-dir run/emotes หลัง visual QA |
-| **4 Sea + ลิงก์ Tide & Tally** | ⬜ | รวม roster บอท 2 เกม |
+| **2b/2d Worker-Bots** | ✅ [verified 2026-06-05] | hire/assign logic, farm automation, sprites, responsive status UI |
+| **2c/2e News Bird** | ✅ [verified 2026-06-05] | gull courier, safe briefing domain/feed/UI, author-time generator, runtime smoke |
+| **3 Debt Dungeon + animation polish** | ✅ [verified 2026-06-05] | Debt domain/projection, store/HUD, encounter cards, NPC coach, Farm portal, responsive QA; optional animation polish remains future polish |
+| **4 Sea + ลิงก์ Tide & Tally** | 🟨 [started 2026-06-05] | Read-only future visual bridge contract built; UI/portal still next |
 | **5 Feed จริง read-only + ขาย** | ⬜ | compliance gate, packaging |
 
 ## แหล่งข้อมูล / Related
 - [[8-bit-trading-rpg-blueprint]] — architecture + Iron Law ต้นทาง
 - [[pixellab-phaser-asset-convention]] · [[pixellab-asset-pipeline-for-trading-rpg]] · [[pixellab-api-endpoint-matrix]]
 - [[sources/trading-rpg-project-brief-2026-05-30]]
-- Implementation + handoff: `sunday-estate-webapp/pixel-wealth-quest/` + `HANDOFF.md`
+- Implementation + handoff: `<product-repo>/pixel-wealth-quest/` + `HANDOFF.md`

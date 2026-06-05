@@ -64,10 +64,10 @@ def default_pwq_root() -> Path:
     if os.environ.get("PWQ_ROOT"):
         return Path(os.environ["PWQ_ROOT"]).expanduser()
     here = Path(__file__).resolve()
-    # A-Wiki/scripts/game/normalize_pet_anims.py → A-Wiki/.. /sunday-estate-webapp/pixel-wealth-quest
-    cand = here.parents[2] / "sunday-estate-webapp" / "pixel-wealth-quest"
-    if cand.exists():
-        return cand
+    # Common local layout: A-Wiki and the product repo are siblings.
+    for cand in here.parents[2].parent.glob("*/pixel-wealth-quest"):
+        if cand.is_dir():
+            return cand
     raise SystemExit("PWQ_ROOT not set and default not found")
 
 
