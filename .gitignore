@@ -90,6 +90,8 @@ logs/
 
 # --- Database (local clones) ---
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 
