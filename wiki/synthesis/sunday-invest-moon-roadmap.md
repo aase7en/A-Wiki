@@ -874,6 +874,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [ ] User explicitly asks for commit/stage/push, or this ticket remains pending
 - [ ] Intended files are separated from unrelated pre-existing changes before staging
 - [ ] Verification summary is included in commit message or handoff
+> 2026-06-05 codex-poppy-javis: Review-only audit performed without staging/committing. A-Wiki was clean on `main...origin/main`; product parent repo had tracked prototype/config changes plus a large untracked `pixel-wealth-quest/` module. `pixel-wealth-quest/` had 1191 untracked entries, including source/assets/evidence plus generated dependency/build directories (`node_modules`, `dist`) that must be excluded or reviewed separately before any commit. This ticket remains `[ ]` because no explicit user stage/commit/push instruction was given.
 
 ---
 
