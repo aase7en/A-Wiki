@@ -58,8 +58,8 @@ updated: 2026-06-05
 
 ## RESUME HERE
 
-**Next ticket**: **Implementation slice complete — no open roadmap tickets**
-**Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md; pixel-wealth-quest/ROADMAP.md; pixel-wealth-quest/HANDOFF.md`
+**Next ticket**: **Polish P1.2 — PixelLab/Gemini farm/title animation asset batch**
+**Last touched**: `pixel-wealth-quest/src/{phaser,components,state,styles}; pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md; A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -881,6 +881,47 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 ---
 
+## Polish P1 — User Runtime Polish Goal (2026-06-05)
+
+### Ticket P1.1 — Responsive/title/movement/living-room/farm first pass  · `[~]`
+**Goal**: Address the user's runtime polish list before the larger PixelLab/Gemini asset generation pass.
+**Done**:
+- [x] Title splash switched to `public/assets/title/sunday-invest-moon-splash-v002.jpg` from `/Users/aase7en/Downloads/Gemini_Generated_Image_bveo9ebveo9ebveo.png`; original archived at `A-Wiki/game-assets/references/sunday-invest-moon/title/splash-v002.png`.
+- [x] Title button moved higher so it does not overlap the `© 2006 Sunday Estate` footer area.
+- [x] React HUD hidden on Title scene: no portfolio status, backpack, Worker-Bot, Debt, Sea, or control hint; only Phaser start button remains.
+- [x] App shell hardened for responsive dynamic viewport with `100svh`/`100dvh`, full-size canvas, and no horizontal overflow in title runtime QA.
+- [x] Living-room dogs are stationary by passing `wander:false` to `PetPack`; Farm dogs still wander.
+- [x] Player action strip changed from Thai text chips to icon chips with the same accessible labels, translucent AssistiveTouch-like styling, and floating pop placement.
+- [x] Run action no longer auto-runs randomly; it enables a temporary `วิ่ง x2` status chip and doubles click/keyboard movement speed.
+- [x] Click-to-move path tween duration now scales by cell distance, so diagonal steps are not artificially fast.
+- [x] Room keyboard movement supports Control as a run modifier; Farm grid movement supports Control/run status with run animation and 2x step duration.
+- [x] Farm camera zooms in (`1.35`) and the house warp marker is smaller, lighter, and closer to the door instead of looking like a dark hole.
+- [x] Added farm/shop/background/prop/season prompt pack: `pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md`.
+**Still open**:
+- [ ] PixelLab/Gemini asset batch for title flowers/tree wind/Nong Sunday lying sky pose/3 dogs wagging title pose.
+- [ ] PixelLab farm prop batch: big tree, bushes, flowers, log, rock, cloud, water current, dirt path, plus more Harvest-Moon-style decorations.
+- [ ] Seasonal system: random season changes every 5 real minutes with generated/tinted animation assets.
+- [ ] News Bird upgrade: flapping-wing bird fly-by, dropped newspaper object, click newspaper on ground opens briefing.
+- [ ] TV One Piece-style animation needs final visual QA; code path exists in `RoomScene.playTvCartoon()`, but browser coordinate testing was unreliable due canvas position scaling.
+> 2026-06-05 codex-poppy-javis: Implemented P1.1 first pass test-first where practical. Product checks so far: 229 tests passed, typecheck passed, build passed before final hit-zone propagation patch; rerun full verification before commit. Browser QA proved Title HUD removal, icon action strip, run status/no-auto-run, stationary living-room dogs, and blank canvas clicks no longer open player actions after hit-zone clamp. **RESUME** -> P1.2.
+
+### Ticket P1.2 — PixelLab/Gemini farm/title animation asset batch  · `[ ]`
+**Goal**: Generate/import the actual art assets requested by the user and wire cheap Phaser animation loops.
+**Files likely touched**:
+- `public/assets/title/ambient/`
+- `public/assets/farm/decor/`
+- `src/phaser/scenes/TitleScene.ts`
+- `src/phaser/scenes/FarmScene.ts`
+- `src/phaser/scenes/PreloadScene.ts`
+- `docs/asset-prompts/sunday-invest-moon-farm-prompts.md`
+**Done when**:
+- [ ] PixelLab balance captured before/after.
+- [ ] Title page has animated flowers/trees, lying-smiling/blinking Nong Sunday, and 3 stationary tail-wag dogs matching the original title art style.
+- [ ] Farm map has reusable animated decor assets and a clear shop/background art plan or first implementation.
+- [ ] Runtime screenshots and tests/typecheck/build are recorded.
+
+---
+
 ## Cross-cutting reuse map (every ticket pulls from here)
 
 | Need | Reuse from | File |
@@ -981,4 +1022,5 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 > 2026-06-05 codex-poppy-javis: 5.6 done — ran full sale-ready mock preflight, captured release screenshots, verified feed scan/223 tests/build/React Doctor 100/A-Wiki sync+privacy clean/console clean. RESUME HERE = 5.7 prototype iframe integration smoke.
 > 2026-06-05 codex-poppy-javis: 5.7 done — fixed parent prototype FallbackMap key warning + Driver.js onboarding steps, smoke-tested Super User nav to PWQ iframe with src override to 5173, and verified iframe HUD visible with console 0 errors. RESUME HERE = 6.1 changed-file inventory + final handoff audit.
 > 2026-06-05 codex-poppy-javis: 6.1 done — captured dirty-tree inventory, stopped the prototype static server on 8000, left pre-existing PWQ dev server on 5173 running, and marked implementation slice complete pending explicit user commit/stage instruction. RESUME HERE = 6.2 optional stage/commit review only if user asks.
+> 2026-06-05 codex-poppy-javis: Started user runtime polish goal P1.1 — swapped title splash to v002, hid HUD on title, improved responsive viewport, froze living-room dogs, converted action strip to icons, changed run to status/speed boost only, slowed/scaled click-to-move, zoomed farm, softened house warp, and added farm asset prompt pack. RESUME HERE = P1.2 PixelLab/Gemini asset batch.
 ```
