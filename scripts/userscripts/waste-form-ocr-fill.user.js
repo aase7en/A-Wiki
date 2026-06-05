@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      0.9.0
+// @version      0.9.9
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ + Location editable + learning-prompt feedback
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -55,9 +55,143 @@
 
   // --- USER SETTINGS (persisted) --------------------------------------------
   function getSettings() {
-    return GM_getValue('ocr_settings', { suppliesValue: '', recorderValue: '', customHints: '' });
+    return GM_getValue('ocr_settings', { suppliesValue: '', recorderValue: '', customHints: '', autoHints: [] });
   }
   function saveSettings(s) { GM_setValue('ocr_settings', s); }
+  const OCR_TEACHING_HISTORY_KEY = 'ocr_teaching_history';
+  const OCR_TEACHING_HISTORY_MAX = 120;
+  const OCR_TEACHING_PROMPT_MAX = 30;
+
+  function getOcrTeachingHistory() {
+    const history = GM_getValue(OCR_TEACHING_HISTORY_KEY, []);
+    return Array.isArray(history) ? history : [];
+  }
+
+  function saveOcrTeachingHistory(history) {
+    GM_setValue(OCR_TEACHING_HISTORY_KEY, history.slice(0, OCR_TEACHING_HISTORY_MAX));
+  }
+
+  function clearOcrTeachingHistory() {
+    GM_setValue(OCR_TEACHING_HISTORY_KEY, []);
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function makeTeachingEntry(field, original, corrected, row, context, extra = {}) {
+    return {
+      ts: new Date().toISOString(),
+      date: context.dateISO || row.date || null,
+      file: context.fileName || null,
+      row_number: row.row_number || null,
+      location: row.location || row._originalLocation || null,
+      field,
+      original: original == null || original === '' ? '-' : String(original),
+      corrected: corrected == null || corrected === '' ? '-' : String(corrected),
+      note: (context.note || '').trim() || null,
+      ...extra,
+    };
+  }
+
+  function correctionEntriesFromRows(rawRows, context = {}) {
+    const entries = [];
+    rawRows.forEach(r => {
+      const originalDate = Object.prototype.hasOwnProperty.call(r, '_originalDate') ? r._originalDate : r.date;
+      const originalLocation = Object.prototype.hasOwnProperty.call(r, '_originalLocation') ? r._originalLocation : r.location;
+      const originalSecondary = Object.prototype.hasOwnProperty.call(r, '_originalSecondaryLocation') ? r._originalSecondaryLocation : (r.secondary_location || '');
+      const originalTime = Object.prototype.hasOwnProperty.call(r, '_originalTime') ? r._originalTime : r.time;
+      const originalRecorder = Object.prototype.hasOwnProperty.call(r, '_originalRecorder') ? r._originalRecorder : r.recorder;
+      const originalWeightExpr = Object.prototype.hasOwnProperty.call(r, '_originalWeightExpr') ? r._originalWeightExpr : (r.weight_expr || '');
+      const correctedWeight = r.weight_expr || r.weight_kg;
+
+      if ((r.date || '') !== (originalDate || '')) {
+        entries.push(makeTeachingEntry('date', originalDate, r.date, r, context));
+      }
+      if (r.location !== originalLocation) {
+        entries.push(makeTeachingEntry('location', originalLocation, r.location, r, context));
+      }
+      if ((r.secondary_location || '') !== (originalSecondary || '')) {
+        entries.push(makeTeachingEntry('secondary_location', originalSecondary, r.secondary_location, r, context));
+      }
+      if (r._originalKg != null && (Math.abs((r.weight_kg || 0) - (r._originalKg || 0)) > 0.001 || (r.weight_expr || '') !== (originalWeightExpr || ''))) {
+        entries.push(makeTeachingEntry('weight', r._originalKg, correctedWeight, r, context, r.weight_expr ? { computed: r.weight_kg } : {}));
+      }
+      if ((r.time || '') !== (originalTime || '')) {
+        entries.push(makeTeachingEntry('time', originalTime, r.time, r, context));
+      }
+      if ((r.recorder || '') !== (originalRecorder || '')) {
+        entries.push(makeTeachingEntry('recorder', originalRecorder, r.recorder, r, context));
+      }
+    });
+    return entries;
+  }
+
+  function recordOcrTeachingHistory(rawRows, context = {}) {
+    const entries = correctionEntriesFromRows(rawRows, context);
+    if (!entries.length) return 0;
+    const history = [...entries, ...getOcrTeachingHistory()];
+    saveOcrTeachingHistory(history);
+    return entries.length;
+  }
+
+  function formatTeachingHistoryForPrompt() {
+    const history = getOcrTeachingHistory().slice(0, OCR_TEACHING_PROMPT_MAX);
+    if (!history.length) return '';
+    return history.map(h => {
+      const bits = [
+        h.date ? `date ${h.date}` : null,
+        h.row_number ? `raw row ${h.row_number}` : null,
+        h.location ? `location ${h.location}` : null,
+      ].filter(Boolean).join(', ');
+      const computed = h.computed != null ? ` (computed ${h.computed})` : '';
+      return `- ${h.field}: read "${h.original}" but corrected to "${h.corrected}"${computed}${bits ? ` (${bits})` : ''}.${h.note ? ` Note: ${h.note}` : ''}`;
+    }).join('\n');
+  }
+
+  function formatTeachingHistoryForDisplay(limit = 30) {
+    const history = getOcrTeachingHistory().slice(0, limit);
+    if (!history.length) {
+      return '<div style="font-size:12px;color:#666;padding:8px;background:#fafafa;border:1px solid #eee;border-radius:6px">ยังไม่มี OCR teaching history — เมื่อแก้ข้อมูลในตาราง 1 แล้วกด Fill ระบบจะบันทึกบทเรียนไว้ตรงนี้</div>';
+    }
+    const rows = history.map(h => `<tr>
+      <td style="padding:4px 6px;border:1px solid #ddd;white-space:nowrap">${escHtml((h.ts || '').slice(0, 10))}</td>
+      <td style="padding:4px 6px;border:1px solid #ddd">${escHtml(h.field)}</td>
+      <td style="padding:4px 6px;border:1px solid #ddd">${escHtml(h.original)}</td>
+      <td style="padding:4px 6px;border:1px solid #ddd">${escHtml(h.corrected)}${h.computed != null ? ` <span style="color:#666">(= ${escHtml(h.computed)})</span>` : ''}</td>
+      <td style="padding:4px 6px;border:1px solid #ddd">${escHtml(h.location || '-')}</td>
+      <td style="padding:4px 6px;border:1px solid #ddd">${escHtml(h.note || '')}</td>
+    </tr>`).join('');
+    return `<div style="font-size:12px;color:#444;margin:6px 0">ล่าสุด ${history.length} จากทั้งหมด ${getOcrTeachingHistory().length} รายการ</div>
+      <div style="max-height:220px;overflow:auto;border:1px solid #ddd;border-radius:6px">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead style="position:sticky;top:0;background:#f7f7f9">
+            <tr>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">Date</th>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">Field</th>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">AI read</th>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">Corrected</th>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">Location</th>
+              <th style="padding:4px 6px;border:1px solid #ddd;text-align:left">Note</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function buildTwoDigitYearHint() {
+    const currentCE = new Date().getFullYear();
+    const currentBE = currentCE + 543;
+    const ce2 = String(currentCE).slice(-2);
+    const be2 = String(currentBE).slice(-2);
+    return `DATE YEAR RULE: Resolve ambiguous two-digit year using the current year context. Current CE year is ${currentCE}; current Thai Buddhist Era year is ${currentBE}. If handwritten year is "${be2}", interpret it as BE ${currentBE} and convert output date to CE ${currentCE}. If handwritten year is "${ce2}", consider that the recorder may be using CE ${currentCE}.`;
+  }
+
   function getRowOverrides() {
     return GM_getValue('ocr_row_overrides', {}); // {location: rowIdx}
   }
@@ -73,19 +207,21 @@ Return ONLY a JSON array. One object per row. No markdown fences.
 
 Schema per row:
   row_number   integer
-  date         "YYYY-MM-DD" (convert Thai Buddhist Era: subtract 543; if cell is "น"/"ง"/dash, copy from row above)
+  date         "YYYY-MM-DD" (convert Thai Buddhist Era: subtract 543; if cell is '"', '-', 'น', 'ง', or dash, copy from row above)
   time         string as written, e.g. "15:00" or "07:35น."  (null if blank)
-  weight_kg    number; if cell is "5+5" return the SUM (10). null if blank.
+  weight_kg    number; if cell is "5+5" return the SUM (10). Double check digits 2↔9, 6↔5, 1↔4, 8↔9, 4↔3, 2↔1 in tens place. OPD weight is usually 10-39, rarely 40+. null if blank.
+  weight_expr  optional string; if the handwritten weight is an addition expression like "5+5", keep that expression here while weight_kg is the computed numeric sum.
   location     normalize to one of: OPD | Ward | ER | OPD+ER | โรงครัว | เวช | ฝังเข็ม | แผนไทย+ฝังเข็ม | แผนไทย
+  secondary_location optional; null unless one handwritten row clearly combines exactly two departments under one weight. Use one of: OPD | Ward | ER | โรงครัว | เวช | ฝังเข็ม | แผนไทย
   recorder     staff name(s) as written (multiple joined with "+"), null if blank
 
 Known confusions to avoid:
-  วอร์ด ≠ จอดรถ      (it's Ward)
+  วอร์ด ≠ จอดรถ      (it's Ward) Note: if recorder is อ้อย but weight <=10 in the evening, it might be Ward, cross-check!
   เวช  ≠ ลาว        (it's เวชกรรม)
   แผนไทย+ฝังเข็ม ≠ แผนไทย+ฝ่ายแม่
 
 Staff hints (use as confirmation only):
-  OPD afternoon → อ้อย+อ้อย ;  Ward → ปลา+เพ็ญ or เพ็ญ+ปลา
+  OPD afternoon → อ้อย+อ้อย (Recorder อ้อย is usually OPD) ;  Ward → ปลา+เพ็ญ or เพ็ญ+ปลา
   แผนไทย+ฝังเข็ม → หนึ่ง+เพ็ญ ;  ER → กลอยใจ or ณฐอร (เพ็ญ covers night 19:30+)
   โรงครัว → ก
 
@@ -93,9 +229,21 @@ Add a final object {"_meta": {"confidence": 0..1, "unclear": [...]}} if quality 
 Return ONLY the JSON array.`;
 
   function buildSystemPrompt() {
-    const hints = (getSettings().customHints || '').trim();
-    if (!hints) return SYSTEM_PROMPT;
-    return SYSTEM_PROMPT + `\n\nADDITIONAL USER CORRECTIONS (apply these — they override defaults):\n${hints}`;
+    const s = getSettings();
+    const hints = (s.customHints || '').trim();
+    let prompt = SYSTEM_PROMPT;
+    prompt += `\n\n${buildTwoDigitYearHint()}`;
+    if (hints) {
+      prompt += `\n\nADDITIONAL USER CORRECTIONS (apply these — they override defaults):\n${hints}`;
+    }
+    if (s.autoHints && s.autoHints.length > 0) {
+      prompt += `\n\nAUTO-LEARNED PAST CORRECTIONS (Avoid repeating these mistakes):\n` + s.autoHints.map(h => `- ${h}`).join('\n');
+    }
+    const teachingHistory = formatTeachingHistoryForPrompt();
+    if (teachingHistory) {
+      prompt += `\n\nWASTE OCR TEACHING HISTORY (domain-specific corrections from past human edits; apply these patterns when reading future Thai hospital waste weight forms):\n${teachingHistory}`;
+    }
+    return prompt;
   }
 
   // --- UTIL ------------------------------------------------------------------
@@ -104,6 +252,27 @@ Return ONLY the JSON array.`;
 
   function log(...args) { console.log('[waste-ocr]', ...args); }
   function warn(...args) { console.warn('[waste-ocr]', ...args); }
+
+  function parseWeightInput(value) {
+    if (value == null || value === '') return { value: null, expr: null };
+    if (typeof value === 'number') return Number.isFinite(value) ? { value, expr: null } : { value: null, expr: null };
+
+    const text = String(value).trim();
+    if (!text) return { value: null, expr: null };
+
+    const normalized = text.replace(/\s+/g, '');
+    if (normalized.includes('+')) {
+      const parts = normalized.split('+');
+      if (parts.length > 1 && parts.every(p => /^\d+(?:\.\d+)?$/.test(p))) {
+        const sum = parts.reduce((total, p) => total + Number(p), 0);
+        return { value: Math.round(sum * 100) / 100, expr: normalized };
+      }
+      return { value: null, expr: normalized };
+    }
+
+    const numberValue = Number(normalized);
+    return Number.isFinite(numberValue) ? { value: numberValue, expr: null } : { value: null, expr: null };
+  }
 
   function getApiKey() {
     let key = GM_getValue('GEMINI_API_KEY', '');
@@ -158,32 +327,45 @@ Return ONLY the JSON array.`;
   // --- LEARNING PROMPT (สำหรับส่งให้ A-Wiki AI Agent) -----------------------
   // เปรียบเทียบค่า OCR-original กับค่าที่ user แก้ → สร้าง prompt markdown
   // user copy แล้ว paste เข้า Claude Code → agent อัปเดต wiki/context/ocr-learning-log.md
-  function buildLearningPrompt(dayPlan, meta, dateISO, fileName, originalOcrRaw) {
+  function buildLearningPrompt(rawRows, meta, dateISO, fileName, originalOcrRaw) {
     const nowIso = new Date().toISOString().slice(0, 16).replace('T', ' ');
     const diffs = [];
 
-    const rowsTable = dayPlan.rows.map((r, i) => {
+    const rowsTable = rawRows.map((r, i) => {
       const locChanged = r.location !== r._originalLocation;
-      const kgChanged = Math.abs((r.kg || 0) - (r._originalKg || 0)) > 0.001;
-      const rowChanged = r.rowIdx !== r._originalRowIdx;
+      const secondaryLocChanged = (r.secondary_location || '') !== (r._originalSecondaryLocation || '');
+      const dateChanged = (r.date || '') !== (r._originalDate || '');
+      const originalWeightExpr = Object.prototype.hasOwnProperty.call(r, '_originalWeightExpr') ? r._originalWeightExpr : (r.weight_expr || '');
+      const kgDisplay = r.weight_expr ? `${r.weight_expr} (= ${r.weight_kg || 0})` : (r.weight_kg || 0);
+      const kgChanged = Math.abs((r.weight_kg || 0) - (r._originalKg || 0)) > 0.001 || (r.weight_expr || '') !== (originalWeightExpr || '');
+      const timeChanged = (r.time || '') !== (r._originalTime || '');
+      const recorderChanged = (r.recorder || '') !== (r._originalRecorder || '');
       const change = [
+        dateChanged ? `date: ${r._originalDate || '-'}→${r.date || '-'}` : null,
         locChanged ? `location: ${r._originalLocation}→${r.location}` : null,
-        kgChanged ? `kg: ${r._originalKg}→${r.kg}` : null,
-        rowChanged ? `row#: ${r._originalRowIdx}→${r.rowIdx}` : null,
+        secondaryLocChanged ? `secondary_location: ${r._originalSecondaryLocation || '-'}→${r.secondary_location || '-'}` : null,
+        kgChanged ? `kg: ${r._originalKg}→${kgDisplay}` : null,
+        timeChanged ? `time: ${r._originalTime || '-'}→${r.time || '-'}` : null,
+        recorderChanged ? `recorder: ${r._originalRecorder || '-'}→${r.recorder || '-'}` : null,
       ].filter(Boolean).join('; ') || '—';
-      if (locChanged || kgChanged || rowChanged) {
-        diffs.push({ i, r, locChanged, kgChanged, rowChanged });
+      if (dateChanged || locChanged || secondaryLocChanged || kgChanged || timeChanged || recorderChanged) {
+        diffs.push({ i, r, dateChanged, locChanged, secondaryLocChanged, kgChanged, timeChanged, recorderChanged });
       }
-      return `| ${i + 1} | ${r.location} | ${r.rowIdx ?? '?'} | ${r.kg} | ${r._originalLocation} | ${r._originalKg} | ${change} |`;
+      return `| ${r.row_number || i + 1} | ${r.time || '-'} | ${r.location} | ${r.secondary_location || '-'} | ${r.recorder || '-'} | ${kgDisplay} | ${r._originalLocation} | ${r._originalSecondaryLocation || '-'} | ${r._originalRecorder || '-'} | ${r._originalKg || 0} | ${change} |`;
     }).join('\n');
 
     const logEntries = diffs.flatMap(d => {
       const lines = [];
-      if (d.locChanged) lines.push(`| ${dateISO} | location | ${d.r._originalLocation} | ${d.r.location} | row ${d.r.rowIdx} (${fileName}) |`);
-      if (d.kgChanged) lines.push(`| ${dateISO} | weight | ${d.r._originalKg} | ${d.r.kg} | row ${d.r.rowIdx} = ${d.r.location} (${fileName}) |`);
-      if (d.rowChanged) lines.push(`| ${dateISO} | row-mapping | ${d.r._originalLocation}→row${d.r._originalRowIdx} | ${d.r.location}→row${d.r.rowIdx} | user override |`);
+      if (d.dateChanged) lines.push(`| ${dateISO} | date | ${d.r._originalDate || '-'} | ${d.r.date || '-'} | raw row ${d.r.row_number || '?'} = ${d.r.location} (${fileName}) |`);
+      if (d.locChanged) lines.push(`| ${dateISO} | location | ${d.r._originalLocation} | ${d.r.location} | raw row ${d.r.row_number || '?'} (${fileName}) |`);
+      if (d.secondaryLocChanged) lines.push(`| ${dateISO} | secondary_location | ${d.r._originalSecondaryLocation || '-'} | ${d.r.secondary_location || '-'} | raw row ${d.r.row_number || '?'} = ${d.r.location} (${fileName}) |`);
+      if (d.kgChanged) lines.push(`| ${dateISO} | weight | ${d.r._originalKg} | ${d.r.weight_expr ? `${d.r.weight_expr} (= ${d.r.weight_kg || 0})` : d.r.weight_kg} | raw row ${d.r.row_number || '?'} = ${d.r.location} (${fileName}) |`);
+      if (d.timeChanged) lines.push(`| ${dateISO} | time | ${d.r._originalTime || '-'} | ${d.r.time || '-'} | raw row ${d.r.row_number || '?'} = ${d.r.location} (${fileName}) |`);
+      if (d.recorderChanged) lines.push(`| ${dateISO} | recorder | ${d.r._originalRecorder || '-'} | ${d.r.recorder || '-'} | raw row ${d.r.row_number || '?'} = ${d.r.location} (${fileName}) |`);
       return lines;
     }).join('\n') || '_(ไม่มี correction — OCR ถูกต้องทั้งใบ)_';
+    const correctionCount = diffs.reduce((total, d) =>
+      total + [d.dateChanged, d.locChanged, d.secondaryLocChanged, d.kgChanged, d.timeChanged, d.recorderChanged].filter(Boolean).length, 0);
 
     const confLine = meta && meta.confidence != null ? `**OCR confidence**: ${meta.confidence}\n` : '';
     const unclearLine = meta && meta.unclear && meta.unclear.length ? `**OCR unclear notes**: ${meta.unclear.join('; ')}\n` : '';
@@ -192,12 +374,12 @@ Return ONLY the JSON array.`;
 
 **Image**: ${fileName || '(unknown)'}
 **Target date**: ${dateISO}
-${confLine}${unclearLine}**Corrections**: ${diffs.length}
+${confLine}${unclearLine}**Corrections**: ${correctionCount}
 
 ## Per-row comparison (user-final vs OCR)
 
-| # | Location (final) | Row # | kg (final) | OCR Location | OCR kg | Change |
-|---|---|---|---|---|---|---|
+| Row | Time | Location (final) | Secondary Location | Recorder (final) | kg (final) | OCR Location | OCR Secondary | OCR Recorder | OCR kg | Change |
+|---|---|---|---|---|---|---|---|---|---|---|
 ${rowsTable}
 
 ## Action requested
@@ -325,15 +507,12 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     // 3. accumulate {location: total_kg}
     const byLocation = {};
     for (const r of filtered) {
-      if (r.weight_kg == null || r.location == null) continue;
-      const w = Number(r.weight_kg) || 0;
-      const locs = COMPOUND_LOCATIONS[r.location];
-      if (locs) {
-        const split = w / locs.length;
-        for (const sub of locs) byLocation[sub] = (byLocation[sub] || 0) + split;
-      } else {
-        byLocation[r.location] = (byLocation[r.location] || 0) + w;
-      }
+      if ((r.weight_kg == null && !r.weight_expr) || r.location == null) continue;
+      const w = parseWeightInput(r.weight_expr || r.weight_kg).value || 0;
+      const locs = [...(COMPOUND_LOCATIONS[r.location] || [r.location])];
+      if (r.secondary_location && !locs.includes(r.secondary_location)) locs.push(r.secondary_location);
+      const split = w / locs.length;
+      for (const sub of locs) byLocation[sub] = (byLocation[sub] || 0) + split;
     }
 
     // 4. map location → row index (1-25)
@@ -349,6 +528,22 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     const times = filtered.map(r => r.time).filter(Boolean).sort();
     const dates = [...new Set(filtered.map(r => r.date).filter(Boolean))].sort();
     return { rows: result, earliestTime: times[0] || null, dates, totalRows: filtered.length };
+  }
+
+  function applyRawRowEdit(rawRows, rowIndex, field, value) {
+    const row = rawRows[rowIndex];
+    if (!row) return aggregateRows(rawRows, null);
+    if (field === 'weight_kg') {
+      const parsed = parseWeightInput(value);
+      row.weight_kg = parsed.value;
+      if (parsed.expr) row.weight_expr = parsed.expr;
+      else delete row.weight_expr;
+    } else if (field === 'secondary_location') {
+      row.secondary_location = value || null;
+    } else {
+      row[field] = value;
+    }
+    return aggregateRows(rawRows, null);
   }
 
   // --- FORM FILL -------------------------------------------------------------
@@ -989,6 +1184,14 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
           ${Object.keys(overrides).length ? '<button class="waste-ocr-btn waste-ocr-danger" data-act="clear-overrides" style="padding:3px 8px;font-size:11px;margin-left:6px">ล้าง</button>' : ''}
         </div>
 
+        <div style="margin:10px 0;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <div style="font-weight:600;font-size:13px">OCR teaching history (ดูว่า AI ถูกสอนอะไรไปแล้ว)</div>
+            <button class="waste-ocr-btn waste-ocr-danger" data-act="clear-teaching-history" style="padding:3px 8px;font-size:11px">ล้าง history</button>
+          </div>
+          <div id="ocr-teaching-history-view">${formatTeachingHistoryForDisplay()}</div>
+        </div>
+
         <div class="waste-ocr-row">
           <button class="waste-ocr-btn waste-ocr-primary" data-act="save-settings">💾 บันทึก settings</button>
           <span id="set-saved-msg" style="color:#28a745;font-size:12px;display:none">✓ บันทึกแล้ว</span>
@@ -1003,6 +1206,7 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         suppliesValue: supDD.getValue(),
         recorderValue: recDD.getValue(),
         customHints: panel.querySelector('#set-hints').value,
+        autoHints: settings.autoHints || [],
       });
       const msg = panel.querySelector('#set-saved-msg');
       msg.style.display = 'inline';
@@ -1010,6 +1214,11 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     });
     panel.querySelector('[data-act="clear-overrides"]')?.addEventListener('click', () => {
       saveRowOverrides({});
+      renderSettingsPanel(panel);
+    });
+    panel.querySelector('[data-act="clear-teaching-history"]')?.addEventListener('click', () => {
+      if (!confirm('ล้าง OCR teaching history ทั้งหมด? Gemini จะไม่ได้ใช้บทเรียนเก่าเหล่านี้ใน prompt รอบถัดไป')) return;
+      clearOcrTeachingHistory();
       renderSettingsPanel(panel);
     });
   }
@@ -1094,61 +1303,208 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     const previewEl = content.querySelector('#ocr-day-preview');
     const learnDiv = content.querySelector('#waste-ocr-learning');
 
+    // --- NEW: Two-table UI (v0.9.2) ---
+    // Table 1: Raw OCR rows (editable per-line)
+    // Table 2: Aggregated summary (auto-calculated, read-only except Row#)
     function renderDay(dateISO) {
-      const dayPlan = aggregateRows(arr, dateISO);
-      // Snapshot OCR-original values (ก่อนที่ user จะแก้) — ใช้ใน learning prompt
-      dayPlan.rows.forEach(r => {
-        r._originalLocation = r.location;
-        r._originalKg = r.kg;
-        r._originalRowIdx = r.rowIdx;
-      });
+      // Get raw OCR rows for this date (before aggregation)
+      const rawRows = arr.filter(r => r && r.row_number != null && !r._meta && r.date === dateISO);
+      // Deep-clone so user edits don't mutate the original arr
+      const clonedRawRows = JSON.parse(JSON.stringify(rawRows));
 
-      const rowsHtml = dayPlan.rows.map((r, i) => {
+      // Snapshot OCR-original values for learning
+      clonedRawRows.forEach(r => {
+        r._originalDate = r.date;
+        r._originalLocation = r.location;
+        r._originalSecondaryLocation = r.secondary_location || '';
+        r._originalKg = r.weight_kg;
+        r._originalWeightExpr = r.weight_expr || '';
+        r._originalTime = r.time;
+        r._originalRecorder = r.recorder;
+      });
+      let correctedDateISO = dateISO;
+
+      function syncRawRowsFromDom() {
+        const dateEl = previewEl.querySelector('#ocr-record-date');
+        const parsedDate = parseAnyDate(dateEl?.value || correctedDateISO);
+        if (parsedDate) {
+          correctedDateISO = parsedDate;
+          clonedRawRows.forEach(r => { r.date = correctedDateISO; });
+        }
+        clonedRawRows.forEach((_, i) => {
+          const kgEl = previewEl.querySelector(`.ocr-raw-kg[data-i="${i}"]`);
+          const locEl = previewEl.querySelector(`.ocr-raw-loc[data-i="${i}"]`);
+          const secEl = previewEl.querySelector(`.ocr-raw-secondary-loc[data-i="${i}"]`);
+          const timeEl = previewEl.querySelector(`.ocr-raw-time[data-i="${i}"]`);
+          const recEl = previewEl.querySelector(`.ocr-raw-rec[data-i="${i}"]`);
+          if (kgEl) applyRawRowEdit(clonedRawRows, i, 'weight_kg', kgEl.value);
+          if (locEl) applyRawRowEdit(clonedRawRows, i, 'location', locEl.value);
+          if (secEl) applyRawRowEdit(clonedRawRows, i, 'secondary_location', secEl.value);
+          if (timeEl) applyRawRowEdit(clonedRawRows, i, 'time', timeEl.value);
+          if (recEl) applyRawRowEdit(clonedRawRows, i, 'recorder', recEl.value);
+        });
+      }
+
+      // --- Aggregated table updater ---
+      function rebuildAggTable() {
+        // Re-aggregate from the current visible raw table values.
+        syncRawRowsFromDom();
+        const plan = aggregateRows(clonedRawRows, null);
+        const aggTbody = content.querySelector('#waste-ocr-agg-tbody');
+        if (!aggTbody) return plan;
+        const aggHtml = plan.rows.map(r => `<tr style="border-bottom:1px solid #d4edda">
+          <td style="padding:5px 8px">${r.location}</td>
+          <td style="padding:5px 4px"><input type="number" min="1" max="25" class="ocr-agg-row" data-loc="${r.location}" value="${r.rowIdx}" style="width:50px;padding:2px;border:1px solid #ccc;border-radius:3px" /></td>
+          <td style="padding:5px 8px;font-weight:bold;color:#28a745">${r.kg.toFixed(2)}</td>
+        </tr>`).join('');
+        aggTbody.innerHTML = aggHtml || '<tr><td colspan="3" style="text-align:center;color:#999">— ไม่มี row ที่ match —</td></tr>';
+
+        // Bind Row# override in agg table
+        content.querySelectorAll('.ocr-agg-row').forEach(inp => {
+          inp.addEventListener('change', (e) => {
+            const loc = e.target.dataset.loc;
+            const overrides = getRowOverrides();
+            overrides[loc] = parseInt(e.target.value, 10);
+            saveRowOverrides(overrides);
+          });
+        });
+        return plan;
+      }
+
+      const filledNote = filled[dateISO] ? `<span style="color:#28a745">✓ กรอกแล้วเมื่อ ${cacheAgeText(filled[dateISO])}</span>` : '';
+
+      // --- Build Raw Table HTML ---
+      const rawHtml = clonedRawRows.map((r, i) => {
         const opts = locationKeys.map(k =>
           `<option value="${k}"${k === r.location ? ' selected' : ''}>${k}</option>`
         ).join('');
-        return `<tr>
-          <td><select class="ocr-loc" data-i="${i}" style="width:110px">${opts}</select></td>
-          <td><input type="number" min="1" max="25" data-row="${i}" value="${r.rowIdx}" style="width:50px" /></td>
-          <td><input type="number" step="0.01" data-i="${i}" value="${r.kg}" /></td>
+        const secondaryOpts = [''].concat(locationKeys).map(k =>
+          `<option value="${k}"${k === (r.secondary_location || '') ? ' selected' : ''}>${k || '-'}</option>`
+        ).join('');
+        return `<tr style="border-bottom:1px solid #e8ddf5">
+          <td style="text-align:center;padding:4px;color:#6f42c1;font-weight:600">${r.row_number || i + 1}</td>
+          <td style="padding:4px"><input type="text" class="ocr-raw-time" data-i="${i}" value="${r.time || ''}" style="width:52px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
+          <td style="padding:4px"><input type="text" inputmode="decimal" class="ocr-raw-kg" data-i="${i}" value="${r.weight_expr || (r.weight_kg != null ? r.weight_kg : '')}" style="width:52px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
+          <td style="padding:4px"><select class="ocr-raw-loc" data-i="${i}" style="width:92px;padding:2px;border:1px solid #ccc;border-radius:3px;font-size:12px">${opts}</select></td>
+          <td style="padding:4px"><select class="ocr-raw-secondary-loc" data-i="${i}" style="width:92px;padding:2px;border:1px solid #ccc;border-radius:3px;font-size:12px">${secondaryOpts}</select></td>
+          <td style="padding:4px"><input type="text" class="ocr-raw-rec" data-i="${i}" value="${r.recorder || ''}" style="width:65px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
         </tr>`;
       }).join('');
 
-      const filledNote = filled[dateISO] ? `<span style="color:#28a745">✓ กรอกแล้วเมื่อ ${cacheAgeText(filled[dateISO])}</span>` : '';
       previewEl.innerHTML = `
         <div style="font-size:13px;color:#555;margin:6px 0">
-          วันที่: <b>${thaiDateBE(dateISO)}</b> (CE ${dateISO}) · เวลาแรก: <b>${dayPlan.earliestTime || '-'}</b> · ${dayPlan.totalRows} entry · ${filledNote}
+          วันที่: <b>${thaiDateBE(dateISO)}</b> (CE ${dateISO}) · ${clonedRawRows.length} entry · ${filledNote}
         </div>
-        <table id="waste-ocr-preview">
-          <thead><tr><th>Location</th><th>Row #</th><th>kg (แก้ได้)</th></tr></thead>
-          <tbody>${rowsHtml || '<tr><td colspan="3">— ไม่มี row ที่ match LOCATION_TO_ROW —</td></tr>'}</tbody>
+        <div class="waste-ocr-row" style="background:#fff8e1;padding:8px;border:1px solid #f1d27a;border-radius:6px;align-items:flex-start">
+          <label style="font-weight:600;min-width:90px;margin-top:5px">วันที่บันทึก:</label>
+          <input type="date" id="ocr-record-date" value="${dateISO}" style="padding:5px 8px;border:1px solid #ccc;border-radius:4px" />
+          <div style="font-size:11px;color:#7a5a00;line-height:1.35">แก้วันที่ตรงนี้ถ้า OCR/ผู้จดเขียนวันที่ผิด ระบบจะใช้วันที่นี้กรอก header และบันทึกเป็น OCR teaching history</div>
+        </div>
+        <div style="margin:6px 0 10px">
+          <label style="font-weight:600;font-size:13px;display:block;margin-bottom:3px">หมายเหตุสอน AI / บริบทข้อผิดพลาด:</label>
+          <textarea id="ocr-teaching-note" rows="2" placeholder="เช่น ผู้จดเขียนปีผิด ไม่ใช่ความผิดของ AI, เลข 69 หมายถึง พ.ศ.2569, ลายมือทำให้ 5 ดูเหมือน 15" style="width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid #ccc;border-radius:5px;font-size:12px"></textarea>
+        </div>
+
+        <div style="font-weight:600;margin-top:8px;font-size:14px;color:#6f42c1">📝 1. ข้อมูลที่ AI อ่านได้ (แก้ไขได้ทีละบรรทัด)</div>
+        <div style="max-height:220px;overflow-y:auto;margin:4px 0 10px;border:1px solid #d0c0ee;border-radius:6px">
+          <table id="waste-ocr-raw-table" style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead style="position:sticky;top:0;background:#f5f0ff;box-shadow:0 1px 0 #ccc;z-index:1">
+              <tr>
+                <th style="padding:5px 4px;width:35px">Row</th>
+                <th style="padding:5px 4px;width:60px">เวลา</th>
+                <th style="padding:5px 4px;width:55px">kg</th>
+                <th style="padding:5px 4px;width:95px">แผนก</th>
+                <th style="padding:5px 4px;width:95px">แผนกเสริม</th>
+                <th style="padding:5px 4px;width:70px">ผู้จด</th>
+              </tr>
+            </thead>
+            <tbody>${rawHtml || '<tr><td colspan="5" style="text-align:center;color:#999;padding:12px">— ไม่มีข้อมูล —</td></tr>'}</tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:#888;margin-top:-6px;margin-bottom:8px">แก้ค่าด้านบน → ตารางสรุปด้านล่างจะอัปเดตอัตโนมัติทันที</div>
+
+        <div style="font-weight:600;margin-top:10px;font-size:14px;color:#28a745">📊 2. สรุปรวม แผนก/วัน (พร้อมกรอก)</div>
+        <table id="waste-ocr-agg-table" style="width:100%;border-collapse:collapse;font-size:13px;margin:4px 0;border:1px solid #b6dab6;border-radius:6px;overflow:hidden">
+          <thead style="background:#e7f5e7">
+            <tr>
+              <th style="text-align:left;padding:5px 8px">Location</th>
+              <th style="text-align:left;padding:5px 4px;width:65px">Form Row #</th>
+              <th style="text-align:left;padding:5px 8px;width:80px">Total kg</th>
+            </tr>
+          </thead>
+          <tbody id="waste-ocr-agg-tbody"></tbody>
         </table>
-        <div style="font-size:11px;color:#888;margin-top:-4px">เปลี่ยน Location → Row # คำนวณใหม่อัตโนมัติจาก mapping (+ row override ถ้ามี) · แก้ Row # เองได้เพื่อ override</div>`;
+        <div style="font-size:11px;color:#888;margin-top:-2px">ข้อมูลนี้จะถูกใช้กรอกลงฟอร์มเมื่อกด Fill · แก้ Form Row # ได้เพื่อ override</div>
+      `;
 
       // Reset learning prompt เมื่อเปลี่ยนวัน
       learnDiv.style.display = 'none';
       learnDiv.innerHTML = '';
 
-      // Bind Location change → auto-update Row # + dayPlan state
-      previewEl.querySelectorAll('.ocr-loc').forEach(s => {
-        s.addEventListener('change', (e) => {
-          const i = +e.target.dataset.i;
-          const newLoc = e.target.value;
-          dayPlan.rows[i].location = newLoc;
-          const newIdx = resolveRowIdx(newLoc);
-          const rowInput = previewEl.querySelector(`input[data-row="${i}"]`);
-          if (rowInput && newIdx) {
-            rowInput.value = newIdx;
-            dayPlan.rows[i].rowIdx = newIdx;
-          }
+      const dateInput = previewEl.querySelector('#ocr-record-date');
+      dateInput.addEventListener('input', (e) => {
+        const parsed = parseAnyDate(e.target.value);
+        if (!parsed) return;
+        correctedDateISO = parsed;
+        clonedRawRows.forEach(r => { r.date = correctedDateISO; });
+        rebuildAggTable();
+      });
+
+      const rawTableEl = previewEl.querySelector('#waste-ocr-raw-table');
+      const rawEditSelector = '.ocr-raw-kg, .ocr-raw-loc, .ocr-raw-secondary-loc, .ocr-raw-time, .ocr-raw-rec';
+      ['input', 'change', 'blur'].forEach(type => {
+        rawTableEl.addEventListener(type, (e) => {
+          if (e.target?.matches?.(rawEditSelector)) rebuildAggTable();
         });
       });
 
-      return dayPlan;
+      // --- Bind raw table edits → auto-update agg table ---
+      previewEl.querySelectorAll('.ocr-raw-kg').forEach(inp => {
+        inp.addEventListener('input', (e) => {
+          const i = +e.target.dataset.i;
+          applyRawRowEdit(clonedRawRows, i, 'weight_kg', e.target.value);
+          rebuildAggTable();
+        });
+      });
+      previewEl.querySelectorAll('.ocr-raw-loc').forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          const i = +e.target.dataset.i;
+          clonedRawRows[i].location = e.target.value;
+          rebuildAggTable();
+        });
+      });
+      previewEl.querySelectorAll('.ocr-raw-secondary-loc').forEach(sel => {
+        sel.addEventListener('change', (e) => {
+          const i = +e.target.dataset.i;
+          clonedRawRows[i].secondary_location = e.target.value || null;
+          rebuildAggTable();
+        });
+      });
+      previewEl.querySelectorAll('.ocr-raw-time').forEach(inp => {
+        inp.addEventListener('input', (e) => {
+          clonedRawRows[+e.target.dataset.i].time = e.target.value;
+        });
+      });
+      previewEl.querySelectorAll('.ocr-raw-rec').forEach(inp => {
+        inp.addEventListener('input', (e) => {
+          clonedRawRows[+e.target.dataset.i].recorder = e.target.value;
+        });
+      });
+
+      // Initial render of agg table
+      rebuildAggTable();
+
+      // Return accessors (instead of raw dayPlan) so fill handler can read latest state
+      return {
+        getRawRows: () => { syncRawRowsFromDom(); return clonedRawRows; },
+        getDayPlan: () => { syncRawRowsFromDom(); return aggregateRows(clonedRawRows, null); },
+        getDateISO: () => correctedDateISO,
+        getTeachingNote: () => (previewEl.querySelector('#ocr-teaching-note')?.value || '').trim(),
+      };
     }
 
-    let currentDayPlan = renderDay(sel.value);
-    sel.addEventListener('change', () => { currentDayPlan = renderDay(sel.value); });
+    let currentDayResult = renderDay(sel.value);
+    sel.addEventListener('change', () => { currentDayResult = renderDay(sel.value); });
 
     content.querySelector('[data-act="debug"]').addEventListener('click', () => {
       const logEl = content.querySelector('#waste-ocr-log');
@@ -1156,53 +1512,58 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       logEl.textContent = debugDumpForm();
     });
     content.querySelector('[data-act="reupload"]').addEventListener('click', () => {
-      // เคลียร์ content + ให้ user ลากรูปใหม่
       content.innerHTML = '';
       status.textContent = 'ลากรูปใหม่วางด้านบน';
     });
     content.querySelector('[data-act="fill"]').addEventListener('click', async () => {
-      // อ่าน kg + rowIdx + location ที่ user แก้ใน preview
-      previewEl.querySelectorAll('input[data-i]').forEach(inp => {
-        const i = +inp.dataset.i;
-        currentDayPlan.rows[i].kg = parseFloat(inp.value) || 0;
-      });
-      previewEl.querySelectorAll('.ocr-loc').forEach(s => {
-        const i = +s.dataset.i;
-        currentDayPlan.rows[i].location = s.value;
-      });
+      // Read current state from the two-table UI
+      const rawRows = currentDayResult.getRawRows();
+      const dayPlan = currentDayResult.getDayPlan();
+      const correctedDateISO = currentDayResult.getDateISO() || sel.value;
+      const teachingNote = currentDayResult.getTeachingNote();
+
+      // Save any Row# overrides from agg table
       const overrides = getRowOverrides();
       let savedOverride = false;
-      previewEl.querySelectorAll('input[data-row]').forEach(inp => {
-        const i = +inp.dataset.row;
+      content.querySelectorAll('.ocr-agg-row').forEach(inp => {
+        const loc = inp.dataset.loc;
         const newIdx = parseInt(inp.value, 10);
         if (!newIdx) return;
-        if (newIdx !== currentDayPlan.rows[i].rowIdx) {
-          overrides[currentDayPlan.rows[i].location] = newIdx;
-          currentDayPlan.rows[i].rowIdx = newIdx;
+        const existingIdx = resolveRowIdx(loc);
+        if (newIdx !== existingIdx) {
+          overrides[loc] = newIdx;
           savedOverride = true;
         }
       });
       if (savedOverride) saveRowOverrides(overrides);
+      // Re-resolve row indices after saving overrides
+      if (savedOverride) {
+        dayPlan.rows.forEach(r => {
+          r.rowIdx = resolveRowIdx(r.location);
+        });
+      }
+
       const fillHeader = content.querySelector('#ocr-fill-header').checked;
-      const dateISO = sel.value;
+      const dateISO = correctedDateISO;
+      const savedTeachingCount = recordOcrTeachingHistory(rawRows, { dateISO, fileName, note: teachingNote });
       const fillBtn = content.querySelector('[data-act="fill"]');
       fillBtn.disabled = true; fillBtn.textContent = '⏳ กำลังกรอก…';
-      const report = await fillForm(currentDayPlan, { fillHeader, dateISO });
+      const report = await fillForm(dayPlan, { fillHeader, dateISO });
       fillBtn.disabled = false; fillBtn.textContent = '✓ Fill Form';
       if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
+      if (savedTeachingCount) report.unshift(`🧠 บันทึก OCR teaching history ${savedTeachingCount} รายการ — Gemini จะใช้เป็นบทเรียนรอบถัดไป`);
       const logEl = content.querySelector('#waste-ocr-log');
       logEl.style.display = 'block';
       logEl.textContent = report.join('\n');
       markFilled(dateISO);
-      // อัปเดต dropdown แสดง ✓
-      const opt = sel.querySelector(`option[value="${dateISO}"]`);
+      const opt = sel.querySelector(`option[value="${dateISO}"]`) || sel.options[sel.selectedIndex];
       if (opt && !opt.textContent.includes('✓')) opt.textContent = `${thaiDateBE(dateISO)} ✓ (กรอกแล้ว)`;
 
       // --- LEARNING PROMPT (สำหรับส่งให้ A-Wiki AI Agent) ---
-      const learnText = buildLearningPrompt(currentDayPlan, meta, dateISO, fileName, arr);
+      const learnText = buildLearningPrompt(rawRows, meta, dateISO, fileName, arr);
       learnDiv.innerHTML = `
         <h3 style="margin:0 0 6px;font-size:14px">📚 Learning Prompt — สำหรับส่งให้ A-Wiki AI Agent</h3>
-        <div style="font-size:11px;color:#666;margin-bottom:6px">Copy แล้ว paste เข้า Claude Code (cwd ใน A-Wiki) เพื่อให้ Agent อัปเดต <code>wiki/context/ocr-learning-log.md</code></div>
+        <div style="font-size:11px;color:#666;margin-bottom:6px">🧠 OCR teaching history ถูกบันทึกอัตโนมัติแล้ว ${savedTeachingCount} รายการ และจะถูกส่งให้ Gemini ในรอบ OCR ถัดไป</div>
         <textarea id="ocr-learning-text" style="width:100%;height:200px;font-family:monospace;font-size:11px;box-sizing:border-box" readonly></textarea>
         <div class="waste-ocr-row">
           <button class="waste-ocr-btn waste-ocr-primary" data-act="copy-learn">📋 Copy</button>
@@ -1230,10 +1591,6 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         a.remove();
         URL.revokeObjectURL(url);
       };
-
-      // re-render preview เพื่ออัปเดต filled note (จะ reset learnDiv — แต่เราเพิ่ง set ไว้ ก่อน renderDay ทับ)
-      // ดังนั้นข้าม renderDay หลัง Fill เพื่อเก็บ learning prompt ไว้
-      // (filled note จะอัปเดตรอบหน้าเมื่อ user เปลี่ยนวันหรือเปิดใหม่)
     });
   }
 
