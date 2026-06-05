@@ -166,11 +166,11 @@ def check_heavy_paths_ignored() -> ReadyCheck:
     if not gitignore.is_file():
         return ReadyCheck("FAIL", "heavy/private path ignore", ".gitignore missing")
     text = gitignore.read_text(encoding="utf-8", errors="replace")
-    required = ["raw", "raw/", "drive", ".tmp/", ".venv-*"]
+    required = ["raw", "raw/", "drive", ".tmp/", ".venv-*", "*.db-shm", "*.db-wal"]
     missing = [item for item in required if item not in text]
     if missing:
         return ReadyCheck("FAIL", "heavy/private path ignore", "missing: " + ", ".join(missing))
-    return ReadyCheck("OK", "heavy/private path ignore", "raw/ drive/ .tmp/ .venv-* ignored")
+    return ReadyCheck("OK", "heavy/private path ignore", "raw/ drive/ .tmp/ .venv-* SQLite sidecars ignored")
 
 
 def run_checks(skip_remote: bool = False, skip_evals: bool = False) -> list[ReadyCheck]:

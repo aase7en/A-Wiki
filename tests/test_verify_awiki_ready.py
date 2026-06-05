@@ -26,7 +26,10 @@ def test_exit_code_fails_only_on_fail():
 
 def test_heavy_path_ignore_check_requires_gitignore(monkeypatch, tmp_path):
     monkeypatch.setattr(verify_awiki_ready, "REPO_ROOT", tmp_path)
-    (tmp_path / ".gitignore").write_text("raw\nraw/\ndrive\n.tmp/\n.venv-*\n", encoding="utf-8")
+    (tmp_path / ".gitignore").write_text(
+        "raw\nraw/\ndrive\n.tmp/\n.venv-*\n*.db-shm\n*.db-wal\n",
+        encoding="utf-8",
+    )
 
     result = verify_awiki_ready.check_heavy_paths_ignored()
 
@@ -41,6 +44,17 @@ def test_heavy_path_ignore_check_fails_when_missing(monkeypatch, tmp_path):
 
     assert result.level == "FAIL"
     assert ".tmp/" in result.detail
+
+
+def test_heavy_path_ignore_check_requires_sqlite_sidecars(monkeypatch, tmp_path):
+    monkeypatch.setattr(verify_awiki_ready, "REPO_ROOT", tmp_path)
+    (tmp_path / ".gitignore").write_text("raw\nraw/\ndrive\n.tmp/\n.venv-*\n", encoding="utf-8")
+
+    result = verify_awiki_ready.check_heavy_paths_ignored()
+
+    assert result.level == "FAIL"
+    assert "*.db-shm" in result.detail
+    assert "*.db-wal" in result.detail
 
 
 def test_codex_hooks_relative_check_blocks_absolute_paths(monkeypatch, tmp_path):
