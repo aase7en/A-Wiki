@@ -70,13 +70,14 @@ def test_shopee_handoff_checklist_tracks_done_and_remaining_work():
         "[x] Read A-Wiki session context",
         "[x] Run preflight",
         "[x] Identify existing dirty working tree paths",
+        "[x] Stage only Shopee docs/runtime tests",
+        "[x] Commit with `docs(shopee): add buyer assistant safety runbook`",
+        "[x] Push with `git push origin main`",
         "[ ] Re-check Shopee Thailand Terms",
         "[ ] Confirm written permission or official API scope",
         "[ ] Build private runtime outside tracked git",
         "[ ] Run mock fixture tests",
         "[ ] Run real cheap-item rehearsal",
-        "[ ] Stage only Shopee docs/runtime tests",
-        "git push origin main",
     ]
 
     for phrase in required_phrases:

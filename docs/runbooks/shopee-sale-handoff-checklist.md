@@ -14,6 +14,9 @@
   - `tests/test_waste_ocr_userscript.py`
 - [x] Confirm A-Wiki policy: commit directly to `main`, no branch, no PR.
 - [x] Confirm live background purchase must fail closed without written permission and official API scope.
+- [x] Stage only Shopee docs/runtime tests.
+- [x] Commit with `docs(shopee): add buyer assistant safety runbook`.
+- [x] Push with `git push origin main`.
 
 ## Remaining Work
 
@@ -28,9 +31,6 @@
 - [ ] Run real cheap-item rehearsal after the user supplies a test link.
 - [ ] Verify sanitized audit logs contain no secret or personal data.
 - [ ] Run full A-Wiki verification.
-- [ ] Stage only Shopee docs/runtime tests.
-- [ ] Commit with `docs(shopee): add buyer assistant safety runbook`.
-- [ ] Push with `git push origin main`.
 
 ## Agent Handoff Notes
 
@@ -42,6 +42,8 @@
 
 ## Verification Commands
 
+Use these commands for the next Shopee-related doc/runtime change:
+
 ```bash
 python scripts/agent-preflight.py
 python -m pytest tests/test_shopee_buyer_assistant_docs.py -v
@@ -49,7 +51,4 @@ python -m pytest tests/
 python scripts/check-privacy.py
 python scripts/gen-index.py --check
 git status --short
-git add docs/protocols/shopee-automation-safety.md docs/runbooks/shopee-sale-buyer-assistant.md docs/runbooks/shopee-sale-handoff-checklist.md tests/test_shopee_buyer_assistant_docs.py
-git commit -m "docs(shopee): add buyer assistant safety runbook"
-git push origin main
 ```
