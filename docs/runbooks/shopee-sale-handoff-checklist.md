@@ -25,6 +25,9 @@
 - [ ] Confirm written permission or official API scope for buyer-side automated purchase.
 - [ ] Store permission evidence privately under `drive/private-tools/shopee-buyer-assistant/evidence/`.
 - [ ] Build private runtime outside tracked git.
+- [ ] Build Tampermonkey confirm helper at `drive/private-tools/shopee-buyer-assistant/shopee-confirm-helper.user.js`.
+- [ ] Install confirm helper into Chrome Tampermonkey on MacBook Pro M1.
+- [ ] Dry-run confirm helper against local mock HTML before sale day.
 - [ ] Configure macOS Keychain or gitignored private config for secrets.
 - [ ] Add a local `STOP_SHOPEE_BOT` kill switch.
 - [ ] Run mock fixture tests.

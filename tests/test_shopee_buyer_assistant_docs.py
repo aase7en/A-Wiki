@@ -76,6 +76,9 @@ def test_shopee_handoff_checklist_tracks_done_and_remaining_work():
         "[ ] Re-check Shopee Thailand Terms",
         "[ ] Confirm written permission or official API scope",
         "[ ] Build private runtime outside tracked git",
+        "[ ] Build Tampermonkey confirm helper at `drive/private-tools/shopee-buyer-assistant/shopee-confirm-helper.user.js`",
+        "[ ] Install confirm helper into Chrome Tampermonkey on MacBook Pro M1",
+        "[ ] Dry-run confirm helper against local mock HTML before sale day",
         "[ ] Run mock fixture tests",
         "[ ] Run real cheap-item rehearsal",
     ]
