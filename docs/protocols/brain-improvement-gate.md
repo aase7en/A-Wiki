@@ -23,6 +23,7 @@
 | Repeated reminder | Hook or preflight check |
 | Reusable agent workflow | Skill package under `skills/` |
 | Cross-agent rule | Protocol doc + pointer in platform instruction files |
+| Plan/resume across agents | `docs/protocols/cross-agent-plan-handoff.md` + local `handoff.md` |
 | Private/heavy data | `drive/` symlink + `.gitignore` |
 | Raw source/provenance | `raw/` first, then `wiki/sources/` |
 | Web/latest knowledge | Verified source + date; delegate/search before answering |

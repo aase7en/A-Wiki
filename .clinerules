@@ -34,6 +34,14 @@ Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, 
 
 ---
 
+## Cross-Agent Plan Handoff
+
+- Before multi-step work or Plan Mode output, follow `docs/protocols/cross-agent-plan-handoff.md`
+- Split work into resumable chunks with ID/status/files/verify/handoff note
+- Read/update local `handoff.md` before pause, limit, or Agent/IDE switch
+
+---
+
 ## About This Project
 
 **A-Wiki** = Hybrid swarm intelligence + knowledge wiki brain.
@@ -68,6 +76,7 @@ Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, 
 - Always update `log.md` after significant edits
 - Always update `wiki/context/wiki-overview.md` after adding new pages
 - Plan before implementing: if change affects >3 files, list them first
+- For Plan Mode or multi-step work, chunk the plan and checkpoint local `handoff.md`
 
 ---
 

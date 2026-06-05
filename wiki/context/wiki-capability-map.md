@@ -10,7 +10,7 @@
 | Wiki pages | 436 |
 | Owned skills | 42 |
 | Script capabilities | 13 |
-| Protocols/runbooks | 28 |
+| Protocols/runbooks | 33 |
 | HTML surfaces | 11 |
 
 ## Wiki Knowledge Surface
@@ -113,6 +113,7 @@
 | A-Wiki Brain Improvement Gate | docs/protocols | `docs/protocols/brain-improvement-gate.md` |
 | Context Compaction Protocol | docs/protocols | `docs/protocols/context-compaction.md` |
 | Straw Hat Wiki Crew Protocol | docs/protocols | `docs/protocols/crew.md` |
+| Cross-Agent Plan Handoff Protocol | docs/protocols | `docs/protocols/cross-agent-plan-handoff.md` |
 | Delegation Protocols — Free Models, Subagent, Auto-Delegate | docs/protocols | `docs/protocols/delegation.md` |
 | Device Detection Protocol | docs/protocols | `docs/protocols/device-detection.md` |
 | Domains | docs/protocols | `docs/protocols/domains.md` |
@@ -124,6 +125,7 @@
 | PWQ Read-only Feed Contract | docs/protocols | `docs/protocols/pwq-read-only-feed-contract.md` |
 | Quick Commands — คำสั่งลัดทุก session | docs/protocols | `docs/protocols/quick-commands.md` |
 | 🕵️ Skeptical Reviewer Protocol | docs/protocols | `docs/protocols/review.md` |
+| Shopee Automation Safety | docs/protocols | `docs/protocols/shopee-automation-safety.md` |
 | A-Wiki Handoff Priority Plan | docs/runbooks | `docs/runbooks/a-wiki-handoff-priority-plan.md` |
 | A-Wiki Platform Hardening Plan | docs/runbooks | `docs/runbooks/a-wiki-platform-hardening-plan.md` |
 | Gap Closure Plan — A-Wiki Improvement Roadmap | docs/runbooks | `docs/runbooks/gap-closure-plan.md` |
@@ -134,6 +136,9 @@
 | Runbook: กู้คืนเมื่อ Drive Sync พัง | docs/runbooks | `docs/runbooks/recover-drive-conflict.md` |
 | Runbook: Refresh NotebookLM Snapshot | docs/runbooks | `docs/runbooks/refresh-notebooklm.md` |
 | Runbook: Setup A-Wiki บนเครื่องใหม่ | docs/runbooks | `docs/runbooks/setup-new-machine.md` |
+| Shopee Confirm Helper — Tampermonkey (manual-confirm) | docs/runbooks | `docs/runbooks/shopee-confirm-helper-tampermonkey.md` |
+| Shopee Sale Buyer Assistant Runbook | docs/runbooks | `docs/runbooks/shopee-sale-buyer-assistant.md` |
+| Shopee Sale Handoff Checklist | docs/runbooks | `docs/runbooks/shopee-sale-handoff-checklist.md` |
 | Runbook: Version and Upstream Refresh | docs/runbooks | `docs/runbooks/upstream-refresh.md` |
 
 ## Operating Rule

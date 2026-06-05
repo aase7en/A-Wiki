@@ -19,6 +19,7 @@
 - `wiki/context/knowledge-graph.md` — auto-gen relationships
 - `agent-skills/swarm-intelligence/model-scouter.md` — free model routing
 - `docs/protocols/brain-improvement-gate.md` — ก่อนแก้ระบบสมอง, agent rules, skills, hooks, plugins, scripts, sync, หรือ public-safe data policy
+- `docs/protocols/cross-agent-plan-handoff.md` — เมื่อเปิด Plan Mode, งานหลาย step, ใกล้ limit, หรือสลับ Agent/IDE; ใช้ local `handoff.md`
 
 ---
 
@@ -189,6 +190,7 @@ python3 scripts/lib/drive_secrets.py --check
 6. **Commit ตรงลง main เท่านั้น** — ห้าม branch, ห้าม PR, ห้าม worktree
 7. **ใช้ภาษาไทย** ในการสื่อสาร (เว้นแต่ถูกขอให้ใช้ภาษาอื่น)
 8. **Output format**: Markdown สำหรับไฟล์ใน git ที่อยู่นาน/ต้อง diff (CLAUDE.md, wiki, ADR); HTML สำหรับ artifact ชั่วคราวแบบ interactive (dashboard, report, code-review, model comparison) ผ่าน `render-html` skill → ดู `docs/protocols/md-vs-html-output.md`
+9. **Cross-agent plan handoff** — ทุก Plan Mode / งานหลาย step ต้องแตกเป็น chunk เล็กที่ resume ได้ และ checkpoint ลง local `handoff.md` ก่อนใกล้ limit, pause, หรือสลับ Agent/IDE. ดู `docs/protocols/cross-agent-plan-handoff.md`
 
 ## 🧠 Brain Improvement Gate
 

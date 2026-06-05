@@ -52,6 +52,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 - `wiki/context/model-roster.conf` — current free model availability
 - `agent-skills/swarm-intelligence/model-scouter.md` — free model routing
 - `docs/protocols/brain-improvement-gate.md` — before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy
+- `docs/protocols/cross-agent-plan-handoff.md` — when planning, hitting limits, or switching Agent/IDE; use local `handoff.md`
 
 ---
 
@@ -209,6 +210,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
 6. **Commit directly to main only** — NO branch, NO PR, NO worktree
 7. **Output format**: Markdown for git-tracked, long-lived, diff-reviewed files (CLAUDE.md, wiki, ADRs); HTML for ephemeral interactive artifacts (dashboards, reports, code-review, model comparison) via the `render-html` skill. See `docs/protocols/md-vs-html-output.md`.
+8. **Cross-agent plan handoff** — any Plan Mode / multi-step plan must be chunked into resumable units and checkpointed in local `handoff.md` before limits, pauses, or Agent/IDE switches. See `docs/protocols/cross-agent-plan-handoff.md`.
 
 ## 🧠 Brain Improvement Gate
 

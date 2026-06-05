@@ -43,6 +43,16 @@ Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, 
 
 ---
 
+## Cross-Agent Plan Handoff
+
+When planning, doing multi-step work, nearing a limit, or switching Agent/IDE, follow `docs/protocols/cross-agent-plan-handoff.md`.
+
+- Split plans into small resumable chunks with ID, status, files, verify command, and handoff note.
+- Read/update local `handoff.md`; its public-safe schema is `handoff.md.example`.
+- Continue from `## Resume Here` instead of restarting completed chunks.
+
+---
+
 ## Model Selection (Dynamic — never hard-code!)
 
 Model availability changes daily — free models become paid, new ones appear, old ones get deprecated.
