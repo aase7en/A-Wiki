@@ -14,10 +14,10 @@ updated: 2026-06-05
 >
 > **Source-of-truth policy**:
 > 1. Edit only `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md` — canonical, git-tracked, FTS5-indexed (`python3 scripts/wiki/search-wiki.py "sunday invest moon"`).
-> 2. `sunday-estate-webapp/pixel-wealth-quest/ROADMAP.md` is a product-repo mirror for agents working there. Do not edit it independently.
+> 2. `<product-repo>/pixel-wealth-quest/ROADMAP.md` is a product-repo mirror for agents working there. Do not edit it independently.
 > 3. After every roadmap edit, run `python3 scripts/game/sync_sunday_invest_moon_roadmap.py --sync`, then run the same command without `--sync` to verify both copies match.
 >
-> **Code module**: `sunday-estate-webapp/pixel-wealth-quest/` · **GDD**: `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` (rename header to Sunday Invest Moon when Phase 2c.1 ships).
+> **Code module**: `<product-repo>/pixel-wealth-quest/` · **GDD**: `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` (rename header to Sunday Invest Moon when Phase 2c.1 ships).
 
 ---
 
@@ -26,7 +26,7 @@ updated: 2026-06-05
 1. Read `## RESUME HERE`; it overrides stale TODOs in `HANDOFF.md`, chat transcripts, and local Claude plan files.
 2. Read only the named ticket plus `Context`, `Cross-cutting reuse map`, and `Iron-Law guardrails`.
 3. From A-Wiki, run `python3 scripts/agent-preflight.py` and `python3 scripts/game/sync_sunday_invest_moon_roadmap.py`.
-4. From `sunday-estate-webapp`, confirm `git status --short --branch` before editing because another Agent may have unfinished work.
+4. From `<product-repo>`, confirm `git status --short --branch` before editing because another Agent may have unfinished work.
 5. Claim the ticket by changing its status to `[~]` in the canonical roadmap and syncing the mirror before implementation.
 
 `~/.claude/plans/...` is archival input only. It is machine-local and must never be treated as the current handoff source.
@@ -60,7 +60,7 @@ updated: 2026-06-05
 
 **Next ticket**: **6.2 — Optional stage/commit review (requires explicit user instruction)**
 **Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md; pixel-wealth-quest/HANDOFF.md`
-**Branch policy**: commit straight to `main` of both repos (A-Wiki + sunday-estate-webapp) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
+**Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
 
@@ -107,8 +107,8 @@ Foundation. Every later phase depends on this.
 - `Gemini_Generated_Image_251ghe251ghe251g.png` — splash background (lawn + sign + characters)
 - `Gemini_Generated_Image_cy1pv5cy1pv5cy1p.png` — sign logo, transparent
 **Destinations**:
-- Product: `sunday-estate-webapp/pixel-wealth-quest/public/assets/title/sunday-invest-moon-splash-v001.jpg` (downscaled 1280×720 + JPEG q85 = 208 KB)
-- Product: `sunday-estate-webapp/pixel-wealth-quest/public/assets/title/sunday-invest-moon-logo-v001.png` (88 KB, transparent)
+- Product: `<product-repo>/pixel-wealth-quest/public/assets/title/sunday-invest-moon-splash-v001.jpg` (downscaled 1280×720 + JPEG q85 = 208 KB)
+- Product: `<product-repo>/pixel-wealth-quest/public/assets/title/sunday-invest-moon-logo-v001.png` (88 KB, transparent)
 - Archive (A-Wiki): `game-assets/references/sunday-invest-moon/title/{splash,logo}-v001.png` (full-res originals 6.1 MB + 88 KB)
 **Done when**:
 - [x] Files exist at the destinations
@@ -120,30 +120,30 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.2 — Rename "Pixel Wealth Quest" → "Sunday Invest Moon" (user-facing only)  · `[x]`
 **Goal**: Every label the user sees says "Sunday Invest Moon". The directory slug `pixel-wealth-quest/` does NOT change (would break iframe URL + dozens of import paths).
-**Files to touch** (use `grep -rln "Pixel Wealth Quest" sunday-estate-webapp/ A-Wiki/wiki/` to verify the full set):
-- `sunday-estate-webapp/prototype/src/data.jsx` — nav entry `pwq: { th, en }`
-- `sunday-estate-webapp/prototype/src/app.jsx` — `PwqFrame` title
-- `sunday-estate-webapp/pixel-wealth-quest/index.html` — `<title>`
-- `sunday-estate-webapp/pixel-wealth-quest/src/App.tsx` — visible headings
-- `sunday-estate-webapp/pixel-wealth-quest/HANDOFF.md` — update game name section
+**Files to touch** (use `grep -rln "Pixel Wealth Quest" <product-repo>/ A-Wiki/wiki/` to verify the full set):
+- `<product-repo>/prototype/src/data.jsx` — nav entry `pwq: { th, en }`
+- `<product-repo>/prototype/src/app.jsx` — `PwqFrame` title
+- `<product-repo>/pixel-wealth-quest/index.html` — `<title>`
+- `<product-repo>/pixel-wealth-quest/src/App.tsx` — visible headings
+- `<product-repo>/pixel-wealth-quest/HANDOFF.md` — update game name section
 - `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` — add "Renamed to **Sunday Invest Moon** in Phase 2c.1" note
-- New copy: `sunday-estate-webapp/pixel-wealth-quest/ROADMAP.md` ← copy this file
+- New copy: `<product-repo>/pixel-wealth-quest/ROADMAP.md` ← copy this file
 - New copy: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md` ← copy this file
 **Tagline**: "AI Market Ventures" · **Footer**: "© 2006 Sunday Estate Co.,Ltd"
 **Done when**:
 - [x] No user-visible label still says "Pixel Wealth Quest"
 - [x] `grep -rln "Pixel Wealth Quest"` only matches internal comments / legacy ADR / historical headers
-- [x] `npm --prefix sunday-estate-webapp/pixel-wealth-quest run typecheck` green
+- [x] `npm --prefix <product-repo>/pixel-wealth-quest run typecheck` green
 > 2026-06-05 codex-poppy-javis: Renamed nav, iframe, and document-title labels; added tagline/footer plus `branding.test.ts`. Verified 66 tests, typecheck/build, prototype JSX parse, React Doctor 100/100. Browser localhost QA was blocked by Browser URL policy. **RESUME** → 2c.1.3.
 
 ---
 
 ### Ticket 2c.1.3 — TitleScene + "เริ่มเกม" button  · `[x]`
 **Goal**: Game opens to a title screen. One button starts the room.
-**New file**: `sunday-estate-webapp/pixel-wealth-quest/src/phaser/scenes/TitleScene.ts`
+**New file**: `<product-repo>/pixel-wealth-quest/src/phaser/scenes/TitleScene.ts`
 - `preload`: `this.load.image('sim_title_splash', 'assets/title/sunday-invest-moon-splash-v001.jpg')`
 - `create`: full-bleed image (cover), then a DOM/HTML button "เริ่มเกม" centred-bottom. Click → `scene.start('Room')`.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/phaser/PhaserGame.ts` — scene array becomes `[BootScene, PreloadScene, TitleScene, RoomScene, FarmScene]`. `PreloadScene.create()` → `scene.start('Title')` (was `'Room'`).
+**Edit**: `<product-repo>/pixel-wealth-quest/src/phaser/PhaserGame.ts` — scene array becomes `[BootScene, PreloadScene, TitleScene, RoomScene, FarmScene]`. `PreloadScene.create()` → `scene.start('Title')` (was `'Room'`).
 **Reuse**: existing `Phaser.Scale.RESIZE` config (no change). Style the button using `var(--sim-wood)` for bg, `var(--sim-cream)` text, `var(--sim-wood-dark)` border.
 **Done when**:
 - [x] Opening the iframe shows splash + button
@@ -156,8 +156,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.4 — Top-left HUD logo chip  · `[x]`
 **Goal**: While playing, the small wooden sign sits top-left of the HUD.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/components/HudOverlay.tsx` — add `<img className="sim-hud-logo" src="assets/title/sunday-invest-moon-logo-v001.png" alt="Sunday Invest Moon" />`
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/hud.css` — `.sim-hud-logo { position: absolute; top: 12px; left: 12px; width: clamp(80px, 12vw, 140px); image-rendering: pixelated; z-index: 10; pointer-events: none; }`
+**Edit**: `<product-repo>/pixel-wealth-quest/src/components/HudOverlay.tsx` — add `<img className="sim-hud-logo" src="assets/title/sunday-invest-moon-logo-v001.png" alt="Sunday Invest Moon" />`
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/hud.css` — `.sim-hud-logo { position: absolute; top: 12px; left: 12px; width: clamp(80px, 12vw, 140px); image-rendering: pixelated; z-index: 10; pointer-events: none; }`
 **Done when**:
 - [x] Logo visible top-left in Room + Farm
 - [x] Logo does not block click zones (`pointer-events: none`)
@@ -168,8 +168,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.5 — Theme tokens (add `--sim-*` palette)  · `[x]`
 **Goal**: New lawn-green/wood-brown palette available app-wide as CSS vars, without removing existing parchment tokens.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/tokens.css` — append the `--sim-*` block from the "Theme palette (locked)" section of this file.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/hud.css` — change `.pwq-chip` bg to `var(--sim-wood)`, text to `var(--sim-cream)`, border to `var(--sim-wood-dark)`. **Keep** `.pwq-family`, `.pwq-panel` on parchment (text readability).
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/tokens.css` — append the `--sim-*` block from the "Theme palette (locked)" section of this file.
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/hud.css` — change `.pwq-chip` bg to `var(--sim-wood)`, text to `var(--sim-cream)`, border to `var(--sim-wood-dark)`. **Keep** `.pwq-family`, `.pwq-panel` on parchment (text readability).
 **Done when**:
 - [x] HUD chip reads warm wood-brown, not parchment
 - [x] FamilyPanel still parchment-style
@@ -180,8 +180,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.6 — Responsive shell (mobile breakpoints)  · `[x]`
 **Goal**: PWQ usable on iPhone 12 (390×844) and iPad (768×1024).
-**Pattern to copy**: `sunday-estate-webapp/game/src/styles/hud.css` (Tide & Tally), lines ~144–750 (`@media (max-width: 920px)`, `@media (orientation: portrait)` blocks). Adapt to PWQ class names (`.pwq-*`, `.sim-*`).
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/index.html` — confirm `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` present.
+**Pattern to copy**: `<product-repo>/game/src/styles/hud.css` (Tide & Tally), lines ~144–750 (`@media (max-width: 920px)`, `@media (orientation: portrait)` blocks). Adapt to PWQ class names (`.pwq-*`, `.sim-*`).
+**Edit**: `<product-repo>/pixel-wealth-quest/index.html` — confirm `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` present.
 **Add**: `src/logic/platform.ts` (test-first) — `isTouchDevice()` returning `'ontouchstart' in window || navigator.maxTouchPoints > 0`. Used in Phase 2c.2 to swap on-screen control hints. Tests in `src/logic/platform.test.ts`.
 **Done when**:
 - [x] Runtime resize 390×844 → no horizontal scroll, no overlap
@@ -544,9 +544,9 @@ Standard checks before marking RESUME HERE to the next phase:
 python3 scripts/game/sync_sunday_invest_moon_roadmap.py
 
 # 1. Static
-npm --prefix sunday-estate-webapp/pixel-wealth-quest run typecheck
-npm --prefix sunday-estate-webapp/pixel-wealth-quest test
-npx react-doctor@latest sunday-estate-webapp/pixel-wealth-quest --verbose --diff
+npm --prefix <product-repo>/pixel-wealth-quest run typecheck
+npm --prefix <product-repo>/pixel-wealth-quest test
+npx react-doctor@latest <product-repo>/pixel-wealth-quest --verbose --diff
 
 # 2. Runtime
 # (via mcp__Claude_Preview__ tools, in your IDE if available)
@@ -825,7 +825,7 @@ Promoted from `HANDOFF.md` historical Phase 5 backlog after Phase 4 Sea bridge c
 - [x] Checklist covers build/test/typecheck/React Doctor/feed scan/privacy scan and screenshot evidence
 - [x] Checklist says release artifact remains mock/read-only unless a separate backend contract is approved
 - [x] `RESUME HERE` moves to the next concrete packaging or deploy ticket
-> 2026-06-05 codex-poppy-javis: Added `docs/runbooks/pwq-sale-ready-mock-build.md`, a release/preflight checklist for sellable mock/read-only artifacts. It covers `feed:scan`, tests, typecheck, build, React Doctor, runtime screenshots, A-Wiki roadmap sync, gen-index, sync tests, privacy scan, release-gate assertions, and fail-closed behavior. Verification: `npm run feed:scan` clean and targeted feed/scanner tests passed. `python3 scripts/check-privacy.py -v` currently fails on 12 codename findings across 4 pre-existing files (`sunday-estate`/`aase7en` path/repo references), so release packaging is not public-safe yet. **RESUME** -> 5.5.
+> 2026-06-05 codex-poppy-javis: Added `docs/runbooks/pwq-sale-ready-mock-build.md`, a release/preflight checklist for sellable mock/read-only artifacts. It covers `feed:scan`, tests, typecheck, build, React Doctor, runtime screenshots, A-Wiki roadmap sync, gen-index, sync tests, privacy scan, release-gate assertions, and fail-closed behavior. Verification: `npm run feed:scan` clean and targeted feed/scanner tests passed. `python3 scripts/check-privacy.py -v` currently fails on 12 codename findings across 4 pre-existing files (`<product-repo>`/`<repo-owner>` path/repo references), so release packaging is not public-safe yet. **RESUME** -> 5.5.
 
 ### Ticket 5.5 — Public-safe privacy cleanup for release preflight  · `[x]`
 **Goal**: Resolve or document the current `check-privacy.py` codename findings so the sale-ready preflight can pass before any public artifact is shared.
@@ -865,7 +865,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [x] `git status --short` is captured for A-Wiki and the product repo
 - [x] Any running dev/static helper servers are listed or stopped if no longer needed
 - [x] Final RESUME HERE points to the next concrete task or clearly says the implementation slice is complete
-> 2026-06-05 codex-poppy-javis: Captured git status for A-Wiki and parent product repo. A-Wiki has many modified/generated context files and pre-existing protected docs (including `CLAUDE.md` and per-domain `CLAUDE.md` files) plus new roadmap/protocol/runbook/test/script files; do not revert unrelated existing changes. Product parent repo shows modified prototype files (`index.html`, `src/maps.jsx`, `src/onboarding.js` plus older modified `app.jsx`, `data.jsx`, `shell.jsx`, `.claude/launch.json`) and untracked `pixel-wealth-quest/`, `game/`, `AGENTS.md`, `CLAUDE.md`, `.claude/skills/`. Static prototype server on port 8000 was stopped; PWQ Vite dev server remains on `127.0.0.1:5173` (pre-existing server PID 76471). **RESUME** -> 6.2 only if the user explicitly asks for staging/commit/review.
+> 2026-06-05 codex-poppy-javis: Captured final git/server audit. A-Wiki `git status --short` currently shows only tracked deletions of volatile pharmacy SQLite sidecars: `wiki/entities/pharmacy/drugs.db-shm` and `wiki/entities/pharmacy/drugs.db-wal`. Parent product repo shows modified prototype files (`index.html`, `src/maps.jsx`, `src/onboarding.js` plus older modified `app.jsx`, `data.jsx`, `shell.jsx`, `.claude/launch.json`) and large untracked `pixel-wealth-quest/`, `game/`, `AGENTS.md`, `CLAUDE.md`, `.claude/skills/`. Static prototype server on port 8000 was stopped; PWQ Vite dev server remains on `127.0.0.1:5173` (pre-existing server PID 76471). **RESUME** -> 6.2 only if the user explicitly asks for staging/commit/review.
 
 ### Ticket 6.2 — Optional stage/commit review (requires explicit user instruction)  · `[ ]`
 **Goal**: If and only if the user asks to commit, inspect the dirty tree carefully, stage only the intended files, and commit atomically per repo policy.
@@ -888,7 +888,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 | Grid + iso projection | `cellToScreenIso`, `screenDepth` | `logic/grid.ts` |
 | Anim preload + register | `preloadPet/PlayerAnimations` | `petAnims.ts`, `playerAnims.ts` |
 | Theme tokens (parent SOT) | `prototype/colors_and_type.css` | parent shell |
-| Mobile responsive css | Tide & Tally | `sunday-estate-webapp/game/src/styles/hud.css` |
+| Mobile responsive css | Tide & Tally | `<product-repo>/game/src/styles/hud.css` |
 | Portrait-lock + viewport | Tide & Tally | `game/src/components/RotateDeviceGate.tsx` |
 | Inventory grid layout | `GearRack` (Tide & Tally) | `game/src/components/GearRack.tsx` |
 | Scene transition | `scene.start('Room')` | `PreloadScene.ts` ~line 47 |

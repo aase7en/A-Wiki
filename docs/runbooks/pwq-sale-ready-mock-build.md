@@ -24,7 +24,7 @@ The release artifact must not include:
 
 ## Product Preflight
 
-From `sunday-estate-webapp/pixel-wealth-quest/`:
+From `<product-repo>/pixel-wealth-quest/`:
 
 ```bash
 npm run feed:scan
