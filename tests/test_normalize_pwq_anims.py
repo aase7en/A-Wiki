@@ -71,3 +71,38 @@ def test_normalize_prefers_walk_export_with_more_directions(tmp_path):
     clean_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean"
     assert (clean_dir / "walk_south_001.png").exists()
     assert not (clean_dir / "walk_south_002.png").exists()
+
+
+def test_normalize_maps_walk_left_to_south_west_art(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for direction in ("south", "west", "south-west"):
+        for i in range(2):
+            write_frame(anim_dir, "walking_moving_arms_and_legs", i, direction=direction)
+
+    normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    ts = (pwq_root / "src" / "phaser" / "playerAnims.ts").read_text(encoding="utf-8")
+    left_line = next(line for line in ts.splitlines() if line.strip().startswith("left:"))
+    assert "walk_south-west_000.png" in left_line
+    assert "walk_west_000.png" not in left_line
+
+
+def test_normalize_builds_directional_run_fallbacks_from_walk_art(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for direction in ("south", "east"):
+        for i in range(2):
+            write_frame(anim_dir, "walking_moving_arms_and_legs", i, direction=direction)
+    for i in range(2):
+        write_frame(anim_dir, "running_fast_arms_and_legs_pumping", i)
+
+    normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    ts = (pwq_root / "src" / "phaser" / "playerAnims.ts").read_text(encoding="utf-8")
+    assert 'export const PLAYER_MOVE_ACTIONS = ["walk", "run"] as const' in ts
+    run_section = ts.split("  run: {", maxsplit=2)[-1].split("  },", maxsplit=1)[0]
+    front_line = next(line for line in run_section.splitlines() if line.strip().startswith("front:"))
+    right_line = next(line for line in run_section.splitlines() if line.strip().startswith("right:"))
+    assert "run_south_000.png" in front_line
+    assert "walk_east_000.png" in right_line

@@ -13,6 +13,10 @@ Usage:
     --size 256 --no-background --upscale 2048 \
     --out /path/to/out.png [--seed 12345] [--view "high top-down"]
 
+  python3 scripts/game/pixellab_generate_image.py \
+    --description "pixel art icon of a tiny garden sprinkler" \
+    --icon --out /path/to/icon.png
+
 Token policy: see CLAUDE.md Secrets Policy. The token is fetched per call and
 never written to disk, manifests, or stdout.
 """
@@ -57,6 +61,35 @@ def fetch_token() -> str:
     return tok.strip()
 
 
+def build_payload(
+    *,
+    description: str,
+    negative: str,
+    size: int,
+    no_background: bool,
+    view: str | None,
+    text_guidance: float,
+    seed: int | None,
+    icon: bool,
+) -> dict:
+    effective_size = 64 if icon else size
+    payload = {
+        "description": description,
+        "image_size": {"width": effective_size, "height": effective_size},
+        "text_guidance_scale": text_guidance,
+        "no_background": True if icon else no_background,
+    }
+    if icon:
+        payload["detail"] = "medium detail"
+    if negative:
+        payload["negative_description"] = negative
+    if view:
+        payload["view"] = view
+    if seed is not None:
+        payload["seed"] = seed
+    return payload
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--description", required=True)
@@ -67,21 +100,20 @@ def main() -> int:
     ap.add_argument("--text-guidance", type=float, default=8.0)
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--upscale", type=int, default=0, help="nearest-neighbour upscale to NxN (0=off)")
+    ap.add_argument("--icon", action="store_true", help="force a 64x64 transparent medium-detail icon")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
-    payload = {
-        "description": args.description,
-        "image_size": {"width": args.size, "height": args.size},
-        "text_guidance_scale": args.text_guidance,
-        "no_background": bool(args.no_background),
-    }
-    if args.negative:
-        payload["negative_description"] = args.negative
-    if args.view:
-        payload["view"] = args.view
-    if args.seed is not None:
-        payload["seed"] = args.seed
+    payload = build_payload(
+        description=args.description,
+        negative=args.negative,
+        size=args.size,
+        no_background=args.no_background,
+        view=args.view,
+        text_guidance=args.text_guidance,
+        seed=args.seed,
+        icon=args.icon,
+    )
 
     req = urllib.request.Request(
         API_URL,
@@ -112,7 +144,8 @@ def main() -> int:
         im = Image.open(args.out).convert("RGBA")
         im = im.resize((args.upscale, args.upscale), Image.NEAREST)
         im.save(args.out)
-    print(json.dumps({"out": args.out, "gen_size": args.size, "upscaled_to": args.upscale or args.size, "usage": usage}))
+    gen_size = payload["image_size"]["width"]
+    print(json.dumps({"out": args.out, "gen_size": gen_size, "upscaled_to": args.upscale or gen_size, "usage": usage}))
     return 0
 
 

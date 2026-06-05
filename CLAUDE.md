@@ -149,6 +149,7 @@ python3 scripts/lib/drive_secrets.py --check
 4. **raw/ is immutable** — ห้ามแก้ไขหรือลบ (hook-protected)
 5. **CLAUDE.md ห้ามแก้โดยไม่ได้รับอนุญาต** — soft + hard lock
 6. **Private/heavy data stays in `drive/`** — ห้าม hardcode user/account cloud paths; use `drive/` or `A_WIKI_DRIVE_PATH`
+7. **Bot trading client is MOCK/visualization-only** — ห้ามเก็บ secret, sign request, หรือ execute order ใน client; ดู `docs/protocols/bot-trading-iron-law.md`
 
 ---
 
