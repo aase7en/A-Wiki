@@ -58,8 +58,8 @@ updated: 2026-06-05
 
 ## RESUME HERE
 
-**Next ticket**: **6.2 — Optional stage/commit review (requires explicit user instruction)**
-**Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md; pixel-wealth-quest/HANDOFF.md`
+**Next ticket**: **Implementation slice complete — no open roadmap tickets**
+**Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md; pixel-wealth-quest/ROADMAP.md; pixel-wealth-quest/HANDOFF.md`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -867,16 +867,17 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [x] Final RESUME HERE points to the next concrete task or clearly says the implementation slice is complete
 > 2026-06-05 codex-poppy-javis: Captured final git/server audit. A-Wiki `git status --short` currently shows only tracked deletions of volatile pharmacy SQLite sidecars: `wiki/entities/pharmacy/drugs.db-shm` and `wiki/entities/pharmacy/drugs.db-wal`. Parent product repo shows modified prototype files (`index.html`, `src/maps.jsx`, `src/onboarding.js` plus older modified `app.jsx`, `data.jsx`, `shell.jsx`, `.claude/launch.json`) and large untracked `pixel-wealth-quest/`, `game/`, `AGENTS.md`, `CLAUDE.md`, `.claude/skills/`. Static prototype server on port 8000 was stopped; PWQ Vite dev server remains on `127.0.0.1:5173` (pre-existing server PID 76471). **RESUME** -> 6.2 only if the user explicitly asks for staging/commit/review.
 
-### Ticket 6.2 — Optional stage/commit review (requires explicit user instruction)  · `[ ]`
+### Ticket 6.2 — Optional stage/commit review (requires explicit user instruction)  · `[x]`
 **Goal**: If and only if the user asks to commit, inspect the dirty tree carefully, stage only the intended files, and commit atomically per repo policy.
 **Files**: no default edits.
 **Done when**:
-- [ ] User explicitly asks for commit/stage/push, or this ticket remains pending
-- [ ] Intended files are separated from unrelated pre-existing changes before staging
-- [ ] Verification summary is included in commit message or handoff
+- [x] User explicitly asks for commit/stage/push, or this ticket remains pending
+- [x] Intended files are separated from unrelated pre-existing changes before staging
+- [x] Verification summary is included in commit message or handoff
 > 2026-06-05 codex-poppy-javis: Review-only audit performed without staging/committing. A-Wiki was clean on `main...origin/main`; product parent repo had tracked prototype/config changes plus a large untracked `pixel-wealth-quest/` module. `pixel-wealth-quest/` had 1191 untracked entries, including source/assets/evidence plus generated dependency/build directories (`node_modules`, `dist`) that must be excluded or reviewed separately before any commit. This ticket remains `[ ]` because no explicit user stage/commit/push instruction was given.
 > 2026-06-05 codex-poppy-javis: Added A-Wiki readiness cleanup for SQLite sidecars discovered during continued review: `.gitignore` now ignores `*.db-shm` and `*.db-wal`, and `verify-awiki-ready.py` tests require those patterns. This keeps `gen-index`/pharmacy SQLite runtime files from polluting handoff status while leaving real DB policy unchanged.
 > 2026-06-05 codex-poppy-javis: Added product-module `.gitignore` coverage for local Playwright/evidence outputs (`.playwright-cli/`, `output/`). `node_modules/` and `dist/` were already ignored. Future commit review should stage source/assets/docs intentionally and leave generated runtime evidence out unless explicitly requested.
+> 2026-06-05 codex-poppy-javis: User explicitly authorized stage/commit. Staged the Sunday Invest Moon product module plus parent prototype integration/smoke-fix files; intentionally left unrelated parent `.claude/launch.json`, `game/`, `AGENTS.md`, `CLAUDE.md`, and `.claude/skills/` out of the commit. Verification before staging: `npm run feed:scan`, `npm test -- --run` (223 passed), `npm run typecheck`, `npm run build`, and `npx react-doctor@latest --verbose --diff` (100/100).
 
 ---
 
