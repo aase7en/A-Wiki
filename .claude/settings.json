@@ -134,6 +134,10 @@
           {
             "type": "command",
             "command": "python scripts/hooks_runner.py check-external-editor-drift"
+          },
+          {
+            "type": "command",
+            "command": "python scripts/hooks_runner.py check-output-format"
           }
         ]
       },

@@ -154,7 +154,7 @@ python3 scripts/lib/drive_secrets.py --check
 
 ---
 
-## 🪝 Active Hooks (12 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (13 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
@@ -174,6 +174,7 @@ python3 scripts/lib/drive_secrets.py --check
 | 10 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
 | 11 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
 | 12 | **Source Provenance** | `check_source_original_file.py` | 🔴 Block | Block Write/Edit `wiki/sources/<slug>.md` ถ้า `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีจริง (grandfather Edit บน legacy broken sources) |
+| 13 | **Output Format Guard** | `check_output_format.py` | 🔴 Block/📋 Warn | Block `.html` ลง source-of-truth (wiki/docs/CLAUDE.md/AGENTS.md) หรือนอก exports/html/; เตือน render-don't-dump สำหรับ .md ตารางใหญ่+report keywords |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`
@@ -189,7 +190,7 @@ python3 scripts/lib/drive_secrets.py --check
 5. **Plan ก่อน implement เสมอ** — ถ้างานกระทบ >3 ไฟล์ → ระบุ: "จะแก้ [files] — ทำอะไรในแต่ละไฟล์"
 6. **Commit ตรงลง main เท่านั้น** — ห้าม branch, ห้าม PR, ห้าม worktree
 7. **ใช้ภาษาไทย** ในการสื่อสาร (เว้นแต่ถูกขอให้ใช้ภาษาอื่น)
-8. **Output format**: Markdown สำหรับไฟล์ใน git ที่อยู่นาน/ต้อง diff (CLAUDE.md, wiki, ADR); HTML สำหรับ artifact ชั่วคราวแบบ interactive (dashboard, report, code-review, model comparison) ผ่าน `render-html` skill → ดู `docs/protocols/md-vs-html-output.md`
+8. **Output format (3-layer)**: Layer 1 durable (CLAUDE.md, wiki, ADR, docs) = **Markdown** เสมอ; Layer 2 machine↔machine = **CSV/JSONL/JSON** (กระชับสุด, ห้าม HTML); Layer 3 human review = compact JSON → `render-html` → leaf HTML ใน `exports/html/` (gitignored, agent ไม่อ่านกลับ). **Render, don't dump** — ห้าม dump รายงาน/ตารางยาวลง chat, emit JSON → render → คืน path + สรุป 1-3 บรรทัด. HTML กิน ~2.1× token ของ MD เมื่อ agent อ่าน — ประหยัดได้ก็ต่อเมื่อเป็น leaf ที่ไม่ถูก re-ingest เท่านั้น. บังคับใช้โดย `check_output_format.py` hook → ดู `docs/protocols/md-vs-html-output.md`
 9. **Cross-agent plan handoff** — ทุก Plan Mode / งานหลาย step ต้องแตกเป็น chunk เล็กที่ resume ได้ และ checkpoint ลง local `handoff.md` ก่อนใกล้ limit, pause, หรือสลับ Agent/IDE. ดู `docs/protocols/cross-agent-plan-handoff.md`
 
 ## 🧠 Brain Improvement Gate
