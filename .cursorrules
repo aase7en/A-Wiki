@@ -28,6 +28,12 @@ Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, 
 - Cost-first, cross-platform, cross-device
 - Private/raw/secrets stay in gitignored `drive/`/`raw/`
 
+## Cross-Agent Plan Handoff
+
+- Before multi-step work or Plan Mode output, follow `docs/protocols/cross-agent-plan-handoff.md`
+- Split work into resumable chunks with ID/status/files/verify/handoff note
+- Read/update local `handoff.md` before pause, limit, or Agent/IDE switch
+
 ## About This Project
 
 A-Wiki = Hybrid swarm intelligence + knowledge wiki brain.
@@ -51,6 +57,7 @@ A-Wiki = Hybrid swarm intelligence + knowledge wiki brain.
   `[training]` / `[verified YYYY-MM-DD]` / `[wiki]` / `[notebooklm YYYY-MM-DD]`
 - Update `log.md` and `wiki/context/` after every significant edit
 - Plan before implementing — if change affects >3 files, list them first
+- For Plan Mode or multi-step work, chunk the plan and checkpoint local `handoff.md`
 
 ## Cost Pyramid (always start at lowest level)
 

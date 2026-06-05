@@ -1,0 +1,65 @@
+# Cross-Agent Handoff
+
+> Local working copy: `handoff.md` (gitignored).
+> Template/schema: `handoff.md.example` (tracked).
+> Protocol: `docs/protocols/cross-agent-plan-handoff.md`.
+
+<!-- HANDOFF-AUTO-START — managed by scripts/agent-switch.sh, DO NOT EDIT MANUALLY -->
+
+## Current Handoff State
+
+**Exported**: not exported yet | **Branch**: unknown | **Triggered by**: template
+
+### Task Context
+
+**Type**: general
+**Last log entry**: none
+
+### Uncommitted Changes
+
+```text
+(not exported yet)
+```
+
+### Pending TODO
+
+- (not exported yet)
+
+### Last Session Brief
+
+(not exported yet)
+
+### Agent Recommendation
+
+Run `bash scripts/swarm/agent-switch.sh` to refresh this section.
+
+<!-- HANDOFF-AUTO-END -->
+
+## Resume Here
+
+- **Next action**: Replace this line with the one next task.
+- **Canonical source**: Link the exact roadmap/protocol/wiki page if one exists.
+- **Do not redo**: List completed chunks that should not be restarted.
+
+## Task Board
+
+| ID | Status | Goal | Files | Verify | Handoff note |
+|---|---|---|---|---|---|
+| P1.1 | todo | Define the smallest next result | `path/to/file` | `command` | Context needed by next agent |
+
+## Evidence
+
+| Time | Chunk | Evidence |
+|---|---|---|
+| YYYY-MM-DD HH:MM | P1.1 | Command/test/review result |
+
+## Blocked
+
+| Chunk | Blocker | Needed input |
+|---|---|---|
+| - | - | - |
+
+## Notes For Next Agent
+
+- Keep this file public-safe: no secrets, raw/private content, customer data, cookies, or tokens.
+- If context is long, summarize decisions here and point to durable tracked files instead of pasting conversation history.

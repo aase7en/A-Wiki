@@ -1,18 +1,23 @@
 ---
 type: concept
+title: Multi-Agent Failover System
 tags: [ai-tools, multi-agent, failover, rate-limit, workflow]
 sources: []
 created: 2026-05-16
-updated: 2026-05-16
-last_verified: 2026-05-16
-verify_tool: training
+updated: 2026-06-05
+last_verified: 2026-06-05
+verify_tool: wiki
 ---
 
 # Multi-Agent Failover System
 
+> TL;DR: A-Wiki มีระบบ failover ข้าม agent อยู่แล้วผ่าน `scripts/swarm/agent-switch.sh` และ local `handoff.md`; กฎกลางล่าสุดคือ `docs/protocols/cross-agent-plan-handoff.md` ให้ทุก Plan Mode แตกงานเป็น chunk เล็กพร้อม resume point ก่อนชน limit หรือสลับ IDE/Agent. [wiki]
+
 ## นิยาม
 
 ระบบสลับ agent อัตโนมัติเมื่อ Claude Code Sonnet ชน rate limit (5hr rolling หรือ daily limit) โดยไม่สูญเสีย context งาน — ทุก agent อ่าน `handoff.md` เป็นอันดับแรก และใช้ wiki schema เดียวกัน
+
+ตั้งแต่ 2026-06-05 กฎนี้ถูกขยายจาก "failover เมื่อชน limit" เป็น "cross-agent plan handoff" สำหรับทุก agent: Codex, Claude Code, Gemini CLI, Cursor, Windsurf, Cline, Copilot, Antigravity, Ollama/Hermes-style local agents และ agent อื่นในอนาคต. [wiki]
 
 ## ทำไมถึงสำคัญ
 
@@ -118,6 +123,8 @@ install Cline extension → ใส่ Claude API key (แยกจาก Claude 
 ---
 
 ## Failover Protocol (ขั้นตอน)
+
+กฎละเอียดปัจจุบันอยู่ที่ `docs/protocols/cross-agent-plan-handoff.md`: ทุก Plan Mode / multi-step plan ต้องแตกเป็น chunk มี ID, status, files, verify command, และ handoff note แล้ว checkpoint ลง local `handoff.md`. [wiki]
 
 ### เมื่อ Claude ชน limit
 

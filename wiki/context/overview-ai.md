@@ -45,7 +45,7 @@
 | `context-management` | แนวทางจัดการ context window ของ Claude Code ระหว่าง session เพื่… |
 | `hooks-skills-plugins` | สามกลไกหลักที่ขยายพฤติกรรมของ Claude Code โดยไม่ต้องแก้ตัว AI เอ… |
 | `local-llm-routing` | การตัดสินใจโดยอัตโนมัติว่า query ควรส่งไปประมวลผลที่ **local mod… |
-| `multi-agent-failover` | ระบบสลับ agent อัตโนมัติเมื่อ Claude Code Sonnet ชน rate limit (… |
+| `multi-agent-failover` | A-Wiki มีระบบ failover ข้าม agent อยู่แล้วผ่าน `scripts/swarm/ag… |
 | `openrouter-api` | หน้านี้เป็น overview ของ OpenRouter ในฐานะ unified API gateway ส… |
 | `openrouter-claude-code` | ** Claude Code = "หน้ากาก" (terminal UI + tool integration) เปลี… |
 | `session-setup` | Wiki นี้ใช้ **working copy ที่ clone จาก GitHub** เป็น repo หลัก… |

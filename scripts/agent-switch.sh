@@ -15,6 +15,7 @@ set -euo pipefail
 
 MODE="${1:-full}"
 HANDOFF="handoff.md"
+HANDOFF_TEMPLATE="handoff.md.example"
 DATE=$(date "+%Y-%m-%d %H:%M")
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -137,8 +138,12 @@ When done: summarize what you suggested so Claude can pick up seamlessly.
 # ---- Rewrite handoff.md (preserve everything outside sentinels) ----
 
 if [ ! -f "$HANDOFF" ]; then
-  echo "[agent-switch] ERROR: $HANDOFF not found" >&2
-  exit 1
+  if [ -f "$HANDOFF_TEMPLATE" ]; then
+    cp "$HANDOFF_TEMPLATE" "$HANDOFF"
+  else
+    echo "[agent-switch] ERROR: $HANDOFF not found and $HANDOFF_TEMPLATE is missing" >&2
+    exit 1
+  fi
 fi
 
 # Use python3 for reliable sentinel replacement (awk can choke on special chars)

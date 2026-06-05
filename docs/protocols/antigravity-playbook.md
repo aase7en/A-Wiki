@@ -29,6 +29,16 @@ Before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, 
 
 ---
 
+## Cross-Agent Plan Handoff
+
+Before Plan Mode output, multi-step work, subagent dispatch, context limit risk, or switching Agent/IDE, follow `docs/protocols/cross-agent-plan-handoff.md`.
+
+- Split the plan into resumable chunks with ID, status, files, verify command, and handoff note.
+- Read/update local `handoff.md`; its tracked schema is `handoff.md.example`.
+- Antigravity subagents should receive only one chunk at a time and return evidence for the handoff.
+
+---
+
 ## 1. Multi-Agent & Parallel Delegation (`invoke_subagent`)
 
 Antigravity equips you with the ability to define and invoke subagents to run tasks in the background.
