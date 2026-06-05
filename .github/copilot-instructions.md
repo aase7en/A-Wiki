@@ -100,3 +100,19 @@ Start at Level -1, move up only when necessary:
 ---
 
 *A-Wiki GitHub Copilot Edition — 2026-05-25*
+
+
+## Output Format (3-Layer Rule)
+
+**Render, don't dump**: never paste verbose reports/tables into chat.
+
+| Layer | Format | Where |
+|---|---|---|
+| 1. Durable knowledge (wiki/, CLAUDE.md, ADRs) | Markdown (git, diffable) | tracked git |
+| 2. Machine↔machine data (agent re-ingests) | CSV/JSONL/JSON — never HTML | stdin/stdout |
+| 3. Human review (one-time, browser) | JSON → render-html → exports/html/ (gitignored) | never re-ingested |
+
+HTML costs ~2.1× Markdown tokens when read by an agent — use it only as a terminal leaf.
+Enforced by: `scripts/hooks/check_output_format.py` | Verify: `python3 scripts/format-cost.py --demo`
+Full protocol: `docs/protocols/md-vs-html-output.md`
+

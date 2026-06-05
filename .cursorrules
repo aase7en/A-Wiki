@@ -81,3 +81,11 @@ Check current free models: `cat wiki/context/model-roster.conf`
 - Create git branches or open PRs
 - Hard-code API keys or model names anywhere
 - Skip writing a failing test before adding production code
+
+
+# Output Format (3-Layer Rule)
+# Render, don't dump: Layer 1 (wiki/,docs/) = Markdown; Layer 2 (agent data) = CSV/JSONL/JSON;
+# Layer 3 (human review) = JSON → render-html → exports/html/ (gitignored, never re-ingested).
+# HTML costs ~2.1× MD tokens when read — leaf artifact only.
+# Enforced: scripts/hooks/check_output_format.py | docs/protocols/md-vs-html-output.md
+

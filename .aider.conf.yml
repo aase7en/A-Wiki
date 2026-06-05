@@ -10,3 +10,10 @@ read:
 
 auto-commits: false
 dirty-commits: false
+
+# Output Format (3-Layer Rule)
+# Layer 1 durable (wiki/, ADRs, docs/) = Markdown (git-diffable, never HTML)
+# Layer 2 machine data (agent re-ingests) = CSV/JSONL/JSON (most compact, never HTML)
+# Layer 3 human review = JSON -> render-html -> exports/html/ (gitignored, agent never reads back)
+# HTML costs ~2.1x MD tokens when read. Render, don't dump.
+# Enforced: scripts/hooks/check_output_format.py | docs/protocols/md-vs-html-output.md

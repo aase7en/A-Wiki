@@ -209,7 +209,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 4. **Confidence markers required**: `[training]` / `[verified YYYY-MM-DD]` / `[wiki]` / `[notebooklm YYYY-MM-DD]`
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
 6. **Commit directly to main only** — NO branch, NO PR, NO worktree
-7. **Output format**: Markdown for git-tracked, long-lived, diff-reviewed files (CLAUDE.md, wiki, ADRs); HTML for ephemeral interactive artifacts (dashboards, reports, code-review, model comparison) via the `render-html` skill. See `docs/protocols/md-vs-html-output.md`.
+7. **Output format (3-layer)** — Layer 1 durable knowledge (CLAUDE.md, AGENTS.md, wiki/, ADRs, docs/) = **Markdown**, git-diffable, re-readable. Layer 2 machine↔machine data = most **compact**: CSV/TSV > JSONL > JSON (never HTML — HTML costs ~2.1× Markdown tokens to read). Layer 3 human review = emit compact JSON → `render-html` → gitignored leaf HTML in `exports/html/` that agents **never re-ingest**; round-trip via Copy-as-JSON. **Render, don't dump**: never paste verbose reports/tables into chat — emit JSON, render, return the file path + 1–3 line summary. The only token saving from HTML is externalizing presentation out of the context window. Enforced on file writes by `scripts/hooks/check_output_format.py`. Verify: `python3 scripts/format-cost.py --demo`. See `docs/protocols/md-vs-html-output.md`.
 8. **Cross-agent plan handoff** — any Plan Mode / multi-step plan must be chunked into resumable units and checkpointed in local `handoff.md` before limits, pauses, or Agent/IDE switches. See `docs/protocols/cross-agent-plan-handoff.md`.
 
 ## 🧠 Brain Improvement Gate
