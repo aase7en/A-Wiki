@@ -39,6 +39,13 @@ def test_sync_roadmap_creates_parent_and_exact_mirror(tmp_path: Path):
     assert mirror.read_bytes() == canonical.read_bytes()
 
 
+def test_default_mirror_uses_pwq_root_env(tmp_path: Path, monkeypatch):
+    product_root = tmp_path / "product" / "pixel-wealth-quest"
+    monkeypatch.setenv("PWQ_ROOT", str(product_root))
+
+    assert sync_sunday_invest_moon_roadmap.default_mirror() == product_root / "ROADMAP.md"
+
+
 def test_cli_check_fails_on_drift_then_sync_repairs_it(tmp_path: Path):
     canonical = tmp_path / "canonical.md"
     mirror = tmp_path / "ROADMAP.md"

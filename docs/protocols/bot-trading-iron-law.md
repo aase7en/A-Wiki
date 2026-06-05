@@ -61,8 +61,8 @@ Before changing any trading-related client or adapter:
 
 ```bash
 # Product
-npm --prefix ../sunday-estate-webapp/pixel-wealth-quest test -- --run
-npm --prefix ../sunday-estate-webapp/pixel-wealth-quest run typecheck
+npm --prefix ../<product-repo>/pixel-wealth-quest test -- --run
+npm --prefix ../<product-repo>/pixel-wealth-quest run typecheck
 
 # A-Wiki
 python3 scripts/check-privacy.py
