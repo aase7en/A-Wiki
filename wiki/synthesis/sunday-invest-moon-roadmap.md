@@ -876,6 +876,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [ ] Verification summary is included in commit message or handoff
 > 2026-06-05 codex-poppy-javis: Review-only audit performed without staging/committing. A-Wiki was clean on `main...origin/main`; product parent repo had tracked prototype/config changes plus a large untracked `pixel-wealth-quest/` module. `pixel-wealth-quest/` had 1191 untracked entries, including source/assets/evidence plus generated dependency/build directories (`node_modules`, `dist`) that must be excluded or reviewed separately before any commit. This ticket remains `[ ]` because no explicit user stage/commit/push instruction was given.
 > 2026-06-05 codex-poppy-javis: Added A-Wiki readiness cleanup for SQLite sidecars discovered during continued review: `.gitignore` now ignores `*.db-shm` and `*.db-wal`, and `verify-awiki-ready.py` tests require those patterns. This keeps `gen-index`/pharmacy SQLite runtime files from polluting handoff status while leaving real DB policy unchanged.
+> 2026-06-05 codex-poppy-javis: Added product-module `.gitignore` coverage for local Playwright/evidence outputs (`.playwright-cli/`, `output/`). `node_modules/` and `dist/` were already ignored. Future commit review should stage source/assets/docs intentionally and leave generated runtime evidence out unless explicitly requested.
 
 ---
 
