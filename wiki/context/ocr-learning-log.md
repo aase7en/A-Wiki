@@ -46,12 +46,12 @@ updated: 2026-05-27
 
 ## Pending System Prompt Improvements
 
-- [ ] **กะดึก ER**: เพิ่ม STAFF CONTEXT — เพ็ญ cover ER กะดึก (19:30น.+) บางครั้ง recorder = เพ็ญ แม้ location = ER
-- [ ] **weight "5+5"**: ชี้แจงให้ชัด — อาจหมายถึง "ชั่ง 2 รอบ รวมกัน" หรือ "ตักแยก 2 ถุง" → Aggregation rule ใน userscript ปัจจุบัน: sum = 10
-- [ ] **ditto mark variations**: บางใบใช้ `"`, บางใบใช้ `-`, บางใบใช้ `น` หรือ `ง` → ทดสอบเพิ่ม
-- [ ] **น้ำหนักตัวเลขคล้ายกัน**: เพิ่ม double-check rule: 2↔9, 6↔5, 1↔4, 8↔9, 4↔3, 2↔1 (หลักสิบ) (โดยเฉพาะค่า >20 กก. หรือ <1 กก.)
-- [ ] **🔥 OPD row 12 weight hotspot** (พ.ค. 2569 ผิด 3 ครั้งติด): OCR มัก over-read หลักสิบ (4_ แทน 3_, 2_ แทน 1_) ที่ตำแหน่ง OPD แถวบ่าย — เพิ่ม contextual hint ว่าค่า OPD ปกติอยู่ในช่วง 10-39 ไม่ใช่ 40+
-- [ ] **🔥 Ward ↔ OPD location confusion**: row 27 (S__25362495.jpg) OCR อ่าน Ward เป็น OPD ทำให้ userscript ตกหล่น — เพิ่ม recorder-based disambiguation: `อ้อย` มัก = OPD แต่ถ้าน้ำหนัก ≤10 ตอนเย็น อาจเป็น Ward (cross-check กับ recorder อื่นบนใบ)
+- [x] **กะดึก ER**: เพิ่ม STAFF CONTEXT — เพ็ญ cover ER กะดึก (19:30น.+) บางครั้ง recorder = เพ็ญ แม้ location = ER
+- [x] **weight "5+5"**: ชี้แจงให้ชัด — อาจหมายถึง "ชั่ง 2 รอบ รวมกัน" หรือ "ตักแยก 2 ถุง" → Aggregation rule ใน userscript ปัจจุบัน: sum = 10
+- [x] **ditto mark variations**: บางใบใช้ `"`, บางใบใช้ `-`, บางใบใช้ `น` หรือ `ง` → ทดสอบเพิ่ม
+- [x] **น้ำหนักตัวเลขคล้ายกัน**: เพิ่ม double-check rule: 2↔9, 6↔5, 1↔4, 8↔9, 4↔3, 2↔1 (หลักสิบ) (โดยเฉพาะค่า >20 กก. หรือ <1 กก.)
+- [x] **🔥 OPD row 12 weight hotspot** (พ.ค. 2569 ผิด 3 ครั้งติด): OCR มัก over-read หลักสิบ (4_ แทน 3_, 2_ แทน 1_) ที่ตำแหน่ง OPD แถวบ่าย — เพิ่ม contextual hint ว่าค่า OPD ปกติอยู่ในช่วง 10-39 ไม่ใช่ 40+
+- [x] **🔥 Ward ↔ OPD location confusion**: row 27 (S__25362495.jpg) OCR อ่าน Ward เป็น OPD ทำให้ userscript ตกหล่น — เพิ่ม recorder-based disambiguation: `อ้อย` มัก = OPD แต่ถ้าน้ำหนัก ≤10 ตอนเย็น อาจเป็น Ward (cross-check กับ recorder อื่นบนใบ)
 
 ---
 
