@@ -101,6 +101,28 @@ class TestRunHook:
         assert not passed
         assert "session" in msg.lower() or "protocol" in msg.lower()
 
+    def test_delegation_gate_allows_chunk_checkpoint(self, hook_input):
+        """check_delegation_gate allows push with a chunk(...) handoff commit."""
+        gate_input = {
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": "git commit -m 'chunk(P1.2): add gate [next: P1.3]' && git push origin main"
+            },
+        }
+        passed, msg = run_hook("check_delegation_gate.py", gate_input)
+        assert passed, f"chunk checkpoint push was blocked: {msg}"
+
+    def test_delegation_gate_allows_step_alias(self, hook_input):
+        """check_delegation_gate accepts the step(...) alias for checkpoints."""
+        gate_input = {
+            "tool_name": "Bash",
+            "tool_input": {
+                "command": "git commit -m 'step(DOC-1): write protocol [next: done]' && git push"
+            },
+        }
+        passed, msg = run_hook("check_delegation_gate.py", gate_input)
+        assert passed, f"step checkpoint push was blocked: {msg}"
+
     def test_delegation_gate_passes_with_end_session(self, hook_input):
         """check_delegation_gate passes when session end marker present."""
         # The hook checks git state in the actual repo, so we need to ensure

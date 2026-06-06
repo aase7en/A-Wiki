@@ -49,10 +49,55 @@ bash scripts/swarm/agent-switch.sh
 
 The script bootstraps `handoff.md` from the example if needed.
 
+## Per-Sub-Step Commit Checkpoint
+
+When building any system, plan and design first, split into small chunks, and
+**commit each completed sub-step to `main`** so the work is durable and another
+agent (VS Code + Cline, Antigravity, Manus, Codex, Gemini CLI, Cursor) can
+resume after a rate limit, pause, or tool switch.
+
+Because `handoff.md` and `session-memory.md` are gitignored, the **commit log on
+`origin/main` is the tracked, public-safe breadcrumb**. The next agent runs
+`git log --oneline` to see exactly where to resume.
+
+### Commit message convention
+
+```text
+chunk(<ID>): <one concrete result> [next: <ID>]
+```
+
+- `<ID>` is the stable chunk ID from the Task Board (`P1.2`, `DOC-1`, `BUG-3`).
+- `[next: <ID>]` names the single next chunk, or `[next: done]` when the plan is
+  complete. This is what a resuming agent reads first.
+- Keep the message public-safe: chunk ID + goal only — no secrets, tokens,
+  cookies, raw/private content, or machine paths (enforced by the secret-leak
+  and privacy hooks).
+- Use `step(<ID>): ...` as an accepted alias.
+
+### Commit vs push cadence
+
+| Action | When |
+|---|---|
+| `git commit -m "chunk(<ID>): ..."` | After **every** completed sub-step (local, cheap, no token cost) |
+| `git push origin main` | At a handoff boundary: **pause, near rate limit, or switching Agent/IDE/device** |
+
+Commit often so nothing is lost; push at handoff boundaries so a resuming agent
+can pull the latest. A normal session still closes with the full
+**SESSION END PROTOCOL** (`session(YYYY-MM-DD): ...` commit + `log.md` +
+`session-memory.md`).
+
+### Hook interaction
+
+The Delegation Gate (`scripts/hooks/check_delegation_gate.py`) allows `git push`
+when the commit message matches `session(...)`, `chunk(...)`, or `step(...)`. A
+`chunk(...)` push does **not** require a full session-end update — that is the
+point of a mid-work handoff. Still run a final `session(...)` commit at true
+session end so cross-session memory stays intact.
+
 ## Resume Order For The Next Agent
 
 1. Read platform rules: `AGENTS.md` plus the current tool file (`CLAUDE.md`, `GEMINI.md`, `.clinerules`, etc.).
-2. Read `handoff.md`.
+2. Read `handoff.md` if present locally; otherwise run `git log --oneline -10` and read the latest `chunk(<ID>): ... [next: <ID>]` — that `[next: <ID>]` is where you resume.
 3. Read only the referenced canonical file, such as a project roadmap, `wiki/context/session-memory.md`, or a specific protocol.
 4. Continue from `## Resume Here`; do not restart old completed chunks.
 5. After finishing a chunk, update `handoff.md` before doing unrelated work.

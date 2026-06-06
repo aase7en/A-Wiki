@@ -37,6 +37,16 @@ SESSION_FILES = [
 # If a commit message contains this pattern, session is considered logged
 SESSION_COMMIT_PATTERN = re.compile(r"session\(", re.IGNORECASE)
 
+# Per-sub-step checkpoint commits for cross-agent handoff. These carry the
+# resume breadcrumb (chunk ID + next step) in the commit log itself, so another
+# agent can `git pull` and continue without the gitignored handoff.md.
+# Allowed to push without a full session-end.
+# See docs/protocols/cross-agent-plan-handoff.md §Per-Sub-Step Commit Checkpoint.
+CHECKPOINT_COMMIT_PATTERN = re.compile(r"\b(?:chunk|step)\(", re.IGNORECASE)
+
+# Union of all commit-message prefixes that are allowed to push.
+ALLOWED_PUSH_PATTERN = re.compile(r"\b(?:session|chunk|step)\(", re.IGNORECASE)
+
 
 def is_push_command(tokens: list) -> bool:
     """Check if the bash tokens represent a git push."""
@@ -77,7 +87,7 @@ def command_has_session_commit(tokens: list) -> bool:
                         if current[j].startswith("--message="):
                             message_parts.append(current[j].split("=", 1)[1])
                         j += 1
-                    if any(SESSION_COMMIT_PATTERN.search(part) for part in message_parts):
+                    if any(ALLOWED_PUSH_PATTERN.search(part) for part in message_parts):
                         return True
             current = []
         else:
@@ -140,7 +150,7 @@ def main():
     staged = get_staged_files()
     session_files_staged = any(f in staged for f in SESSION_FILES)
     last_commit_msg = get_most_recent_commit_message()
-    has_session_commit = bool(SESSION_COMMIT_PATTERN.search(last_commit_msg))
+    has_session_commit = bool(ALLOWED_PUSH_PATTERN.search(last_commit_msg))
     current_command_has_session_commit = command_has_session_commit(tokens)
 
     # A compound command that commits and pushes in one shot must carry a
@@ -148,9 +158,10 @@ def main():
     # session files because the commit may omit them.
     if "commit" in tokens and not current_command_has_session_commit and not session_files_staged:
         block_msg = (
-            "🛑 BLOCKED: git commit + push without session(...) commit message\n\n"
-            "ใช้ commit message รูปแบบ `session(YYYY-MM-DD): ...` หรือ stage "
-            "log/session-memory ก่อน push\n"
+            "🛑 BLOCKED: git commit + push without session(...)/chunk(...) commit message\n\n"
+            "ใช้ commit message รูปแบบ `session(YYYY-MM-DD): ...` (session end) "
+            "หรือ `chunk(<ID>): <goal> [next: <ID>]` (per-sub-step handoff) "
+            "หรือ stage log/session-memory ก่อน push\n"
         )
         sys.stderr.write(block_msg)
         sys.exit(2)
@@ -196,6 +207,9 @@ def main():
         f"  2. บันทึกลง log.md (format: ## [YYYY-MM-DD] session | <หัวข้อ>)\n"
         f"  3. อัปเดต wiki/context/session-memory.md\n"
         f"  4. รัน: git add . && git commit -m \"session(DATE): ...\" && git push\n\n"
+        f"หรือถ้าเป็น cross-agent handoff ระหว่างทำงาน (pause/limit/switch):\n"
+        f"  git commit -m \"chunk(<ID>): <goal> [next: <ID>]\" && git push\n"
+        f"  ดู docs/protocols/cross-agent-plan-handoff.md §Per-Sub-Step Commit Checkpoint\n\n"
         f"ดู CLAUDE.md §SESSION END PROTOCOL สำหรับรายละเอียด\n"
     )
     sys.stderr.write(block_msg)
