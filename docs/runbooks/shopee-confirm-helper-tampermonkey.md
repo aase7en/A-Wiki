@@ -48,7 +48,9 @@ If any of these is needed in the future, the safety protocol requires written pe
 3. Open Tampermonkey dashboard → **Utilities** → **Import from file** → select `drive/private-tools/shopee-buyer-assistant/shopee-confirm-helper.user.js`.
 4. Confirm install. The userscript appears in the dashboard and is enabled.
 5. Log into `https://shopee.co.th` in the same Chrome profile.
-6. Visit `https://shopee.co.th/product/30330278/50007410508` once before sale day to confirm the overlay appears at top-right.
+6. Visit the product once before sale day to confirm the overlay appears at top-right.
+
+> **URL formats.** Shopee redirects the short form `https://shopee.co.th/product/30330278/50007410508` to the canonical "pretty" form `https://shopee.co.th/<slug>-i.30330278.50007410508`. A human can open either, but Tampermonkey evaluates `@match` against the **final, redirected** URL, so the userscript must match the `...-i.30330278.50007410508` form. As of v1.1.0 the script carries three `@match` lines covering `/product/<shop>/<item>`, `*i.30330278.50007410508*`, and `*30330278*50007410508*`. If you only see the overlay on one form, re-import the latest file.
 
 The script does not prompt for any secret. There is no API key, no token, no cookie copy step.
 
@@ -134,7 +136,7 @@ If anything looks wrong, click the overlay STOP button. The script clears its ti
 
 | Symptom | Action |
 |---|---|
-| Overlay not visible | Confirm Tampermonkey is enabled (icon in toolbar). Reload the tab. Check the `@match` URL matches the page exactly |
+| Overlay not visible | (1) Check the address bar — if it shows the `...-i.30330278.50007410508` pretty form, confirm the installed script is **v1.1.0+** (older builds only matched `/product/...` and silently never ran). Re-import the file via Utilities → Import from file → overwrite. (2) Confirm Tampermonkey is enabled (toolbar icon shows a badge count on the page). (3) Reload the tab. (4) Confirm the Tampermonkey master switch is on |
 | Script keeps refreshing past 12:05 | Mac clock is wrong or timezone is off. Verify with `date`. The script trusts the system clock via `Intl.DateTimeFormat` with `Asia/Bangkok` |
 | TRIGGERED fires on the wrong price | The DOM price node may have changed. Inspect the price element, copy its text, confirm it matches the regex `/฿\s*66(?:\.\d{1,2})?\b/`. Update the script's price selector if Shopee changed the layout |
 | STOP on CAPTCHA does not fire | Add the new challenge marker text to the STOP keyword list in the script. Open Tampermonkey dashboard, edit, save, reload Shopee |
