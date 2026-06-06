@@ -44,11 +44,14 @@ If any of these is needed in the future, the safety protocol requires written pe
 ## Install on MacBook Pro M1
 
 1. Install Tampermonkey for Chrome from the Chrome Web Store.
-2. Ensure `drive/` symlink is healthy: `bash scripts/setup-cloud-link.sh --status`.
-3. Open Tampermonkey dashboard → **Utilities** → **Import from file** → select `drive/private-tools/shopee-buyer-assistant/shopee-confirm-helper.user.js`.
-4. Confirm install. The userscript appears in the dashboard and is enabled.
-5. Log into `https://shopee.co.th` in the same Chrome profile.
-6. Visit the product once before sale day to confirm the overlay appears at top-right.
+2. **Enable Chrome Developer Mode** at `chrome://extensions` (top-right toggle). Chrome 2024+ silently refuses to run Tampermonkey userscripts without it — the script never injects and no overlay appears, with no error.
+3. Ensure `drive/` symlink is healthy: `bash scripts/setup-cloud-link.sh --status`.
+4. **Install (most reliable method):** open the userscript file directly in Chrome so Tampermonkey intercepts it and shows its install page:
+   `open -a "Google Chrome" "file://$PWD/drive/private-tools/shopee-buyer-assistant/shopee-confirm-helper.user.js"`
+   Click **Install** (or **Reinstall/Update** if a previous version exists). The header shows the version — confirm it is the latest. Prefer this over Utilities → Import from file, which silently no-ops if an older copy is already installed.
+5. Confirm install. The userscript appears in the dashboard and is enabled.
+6. Log into `https://shopee.co.th` in the same Chrome profile.
+7. Visit the product once before sale day to confirm the overlay appears at top-right. The Tampermonkey toolbar icon shows a badge count of `1` on the matched page when the script is live.
 
 > **URL formats.** Shopee redirects the short form `https://shopee.co.th/product/30330278/50007410508` to the canonical "pretty" form `https://shopee.co.th/<slug>-i.30330278.50007410508`. A human can open either, but Tampermonkey evaluates `@match` against the **final, redirected** URL, so the userscript must match the `...-i.30330278.50007410508` form. As of v1.1.0 the script carries three `@match` lines covering `/product/<shop>/<item>`, `*i.30330278.50007410508*`, and `*30330278*50007410508*`. If you only see the overlay on one form, re-import the latest file.
 
@@ -139,6 +142,7 @@ If anything looks wrong, click the overlay STOP button. The script clears its ti
 | Overlay not visible | (1) Check the address bar — if it shows the `...-i.30330278.50007410508` pretty form, confirm the installed script is **v1.1.0+** (older builds only matched `/product/...` and silently never ran). Re-import the file via Utilities → Import from file → overwrite. (2) Confirm Tampermonkey is enabled (toolbar icon shows a badge count on the page). (3) Reload the tab. (4) Confirm the Tampermonkey master switch is on |
 | Script keeps refreshing past 12:05 | Mac clock is wrong or timezone is off. Verify with `date`. The script trusts the system clock via `Intl.DateTimeFormat` with `Asia/Bangkok` |
 | TRIGGERED fires on the wrong price | The DOM price node may have changed. Inspect the price element, copy its text, confirm it matches the regex `/฿\s*66(?:\.\d{1,2})?\b/`. Update the script's price selector if Shopee changed the layout |
+| TRIGGERED never fires even at ฿66 | Shopee may split `฿` and `66` across separate elements. v1.1.2+ adds a fallback that tests the joined `innerText` of the product region, so adjacent `฿`+number still matches. If still missing, widen the `root` selector in `findTargetPriceNode` |
 | STOP on CAPTCHA does not fire | Add the new challenge marker text to the STOP keyword list in the script. Open Tampermonkey dashboard, edit, save, reload Shopee |
 | Audio does not play | Chrome blocks autoplay until the tab has user interaction. Click anywhere in the tab once at 11:58 |
 | Buy button not highlighted | Shopee changed the button class. Inspect the buy button, update the selector in the script. Never replace the highlight with an auto-click |
