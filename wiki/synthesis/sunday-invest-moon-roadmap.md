@@ -58,7 +58,7 @@ updated: 2026-06-05
 
 ## RESUME HERE
 
-**Next ticket**: **Polish P1.3 — TV cartoon visual render/click-target QA**
+**Next ticket**: **No implementation ticket remains — optional stage/commit review requires explicit user instruction**
 **Last touched**: `pixel-wealth-quest/src/phaser/scenes/RoomScene.ts; pixel-wealth-quest/src/phaser/playerMovementScenes.test.ts; pixel-wealth-quest/src/{phaser,components,state,styles}; pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md; A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
@@ -883,7 +883,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 ## Polish P1 — User Runtime Polish Goal (2026-06-05)
 
-### Ticket P1.1 — Responsive/title/movement/living-room/farm first pass  · `[~]`
+### Ticket P1.1 — Responsive/title/movement/living-room/farm first pass  · `[x]`
 **Goal**: Address the user's runtime polish list before the larger PixelLab/Gemini asset generation pass.
 **Done**:
 - [x] Title splash switched to `public/assets/title/sunday-invest-moon-splash-v002.jpg` from a local Downloads reference image; original archived at `A-Wiki/game-assets/references/sunday-invest-moon/title/splash-v002.png`.
@@ -902,7 +902,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [x] PixelLab farm prop batch: big tree, bushes, flowers, log, rock, cloud, water current, dirt path, plus more Harvest-Moon-style decorations.
 - [x] Seasonal system: random season changes every 5 real minutes with generated/tinted animation assets.
 - [x] News Bird upgrade: flapping-wing bird fly-by, dropped newspaper object, click newspaper on ground opens briefing.
-- [ ] TV One Piece-style animation still needs final visual render/click-target QA. Code path exists in `RoomScene.playTvCartoon()`, and 2026-06-06 added a regression hardening patch for depth/readable text plus stale-cleanup isolation, but browser screenshot still did not visibly show the overlay on the TV after dev-hook invocation.
+- [x] TV One Piece-style animation final visual render/click-target QA.
 > 2026-06-05 codex-poppy-javis: Implemented P1.1 first pass test-first where practical. Product checks so far: 229 tests passed, typecheck passed, build passed before final hit-zone propagation patch; rerun full verification before commit. Browser QA proved Title HUD removal, icon action strip, run status/no-auto-run, stationary living-room dogs, and blank canvas clicks no longer open player actions after hit-zone clamp. **RESUME** -> P1.2.
 
 ### Ticket P1.2 — PixelLab/Gemini farm/title animation asset batch  · `[x]`
@@ -921,17 +921,18 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [x] Runtime screenshots and tests/typecheck/build are recorded.
 > 2026-06-06 codex-poppy-javis: Closed P1.2 by validating the existing generated asset batch and wiring already present in code. PixelLab balance before/after stayed `$3.47672558737464` because no new generation was needed this pass. Title runtime screenshot verified splash v002, flowers/tree, Nong Sunday title pose, and three stationary wagging dogs with console 0 errors/0 warnings: `pixel-wealth-quest/.playwright-cli/page-2026-06-06T03-00-52-415Z.png`. Farm runtime screenshots verified animated/reusable decor, water/path/tree view, farm shop/background view, season tint, and console clean: `page-2026-06-06T03-04-11-784Z.png`, `page-2026-06-06T03-04-41-213Z.png`. Product verification passed: `npm run feed:scan`, `npm test -- --run` (232 passed before TV hardening; targeted TV/decor test 8 passed after patch), `npm run typecheck`, `npm run build`, and `npx react-doctor@latest --verbose --diff` (100/100). Added TV hardening in `RoomScene.playTvCartoon()` (depth 12000, readable title text, batch-local cleanup), but TV visual screenshot remains unresolved and is split to P1.3. **RESUME** -> P1.3 TV cartoon visual render/click-target QA.
 
-### Ticket P1.3 — TV cartoon visual render/click-target QA  · `[ ]`
+### Ticket P1.3 — TV cartoon visual render/click-target QA  · `[x]`
 **Goal**: Make the living-room TV cartoon visibly render on the baked TV screen and prove the normal click target opens it without using a dev hook.
 **Files likely touched**:
 - `src/phaser/scenes/RoomScene.ts`
 - `src/phaser/playerMovementScenes.test.ts`
 - optional room hotspot calibration in `src/data/room.seed.ts`
 **Done when**:
-- [ ] A real browser screenshot shows the One Piece-style TV overlay visibly on the living-room TV.
-- [ ] A normal canvas click on the TV hotspot triggers the overlay; dev-hook invocation is not the only proof.
-- [ ] Console remains 0 errors/0 warnings.
-- [ ] Targeted test plus full product checks pass.
+- [x] A real browser screenshot shows the One Piece-style TV overlay visibly on the living-room TV.
+- [x] A normal canvas click on the TV hotspot triggers the overlay; dev-hook invocation is not the only proof.
+- [x] Console remains 0 errors/0 warnings.
+- [x] Targeted test plus full product checks pass.
+> 2026-06-06 codex-poppy-javis: Closed P1.3. Atomic Playwright normal canvas click at the runtime TV hotspot created 7 TV cartoon objects and captured visible overlay on the living-room TV: `pixel-wealth-quest/.playwright-cli/tv-normal-click-atomic-2026-06-06.png`. Console after the normal-click proof stayed 0 errors / 0 warnings. Product verification after the TV hardening patch passed: `npm run feed:scan`, `npm test -- --run` (233 passed), `npm run typecheck`, `npm run build`, and React Doctor 100/100. No implementation ticket remains after P1.3; next action is optional stage/commit review only if the user explicitly asks.
 
 ---
 
