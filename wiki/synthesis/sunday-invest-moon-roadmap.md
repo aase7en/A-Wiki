@@ -58,8 +58,8 @@ updated: 2026-06-05
 
 ## RESUME HERE
 
-**Next ticket**: **Polish P1.2 — PixelLab/Gemini farm/title animation asset batch**
-**Last touched**: `pixel-wealth-quest/src/{phaser,components,state,styles}; pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md; A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md`
+**Next ticket**: **Polish P1.3 — TV cartoon visual render/click-target QA**
+**Last touched**: `pixel-wealth-quest/src/phaser/scenes/RoomScene.ts; pixel-wealth-quest/src/phaser/playerMovementScenes.test.ts; pixel-wealth-quest/src/{phaser,components,state,styles}; pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md; A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -886,7 +886,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 ### Ticket P1.1 — Responsive/title/movement/living-room/farm first pass  · `[~]`
 **Goal**: Address the user's runtime polish list before the larger PixelLab/Gemini asset generation pass.
 **Done**:
-- [x] Title splash switched to `public/assets/title/sunday-invest-moon-splash-v002.jpg` from `/Users/aase7en/Downloads/Gemini_Generated_Image_bveo9ebveo9ebveo.png`; original archived at `A-Wiki/game-assets/references/sunday-invest-moon/title/splash-v002.png`.
+- [x] Title splash switched to `public/assets/title/sunday-invest-moon-splash-v002.jpg` from a local Downloads reference image; original archived at `A-Wiki/game-assets/references/sunday-invest-moon/title/splash-v002.png`.
 - [x] Title button moved higher so it does not overlap the `© 2006 Sunday Estate` footer area.
 - [x] React HUD hidden on Title scene: no portfolio status, backpack, Worker-Bot, Debt, Sea, or control hint; only Phaser start button remains.
 - [x] App shell hardened for responsive dynamic viewport with `100svh`/`100dvh`, full-size canvas, and no horizontal overflow in title runtime QA.
@@ -897,15 +897,15 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - [x] Room keyboard movement supports Control as a run modifier; Farm grid movement supports Control/run status with run animation and 2x step duration.
 - [x] Farm camera zooms in (`1.35`) and the house warp marker is smaller, lighter, and closer to the door instead of looking like a dark hole.
 - [x] Added farm/shop/background/prop/season prompt pack: `pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md`.
-**Still open**:
-- [ ] PixelLab/Gemini asset batch for title flowers/tree wind/Nong Sunday lying sky pose/3 dogs wagging title pose.
-- [ ] PixelLab farm prop batch: big tree, bushes, flowers, log, rock, cloud, water current, dirt path, plus more Harvest-Moon-style decorations.
-- [ ] Seasonal system: random season changes every 5 real minutes with generated/tinted animation assets.
-- [ ] News Bird upgrade: flapping-wing bird fly-by, dropped newspaper object, click newspaper on ground opens briefing.
-- [ ] TV One Piece-style animation needs final visual QA; code path exists in `RoomScene.playTvCartoon()`, but browser coordinate testing was unreliable due canvas position scaling.
+**Still open / closed by follow-up**:
+- [x] PixelLab/Gemini asset batch for title flowers/tree wind/Nong Sunday lying sky pose/3 dogs wagging title pose.
+- [x] PixelLab farm prop batch: big tree, bushes, flowers, log, rock, cloud, water current, dirt path, plus more Harvest-Moon-style decorations.
+- [x] Seasonal system: random season changes every 5 real minutes with generated/tinted animation assets.
+- [x] News Bird upgrade: flapping-wing bird fly-by, dropped newspaper object, click newspaper on ground opens briefing.
+- [ ] TV One Piece-style animation still needs final visual render/click-target QA. Code path exists in `RoomScene.playTvCartoon()`, and 2026-06-06 added a regression hardening patch for depth/readable text plus stale-cleanup isolation, but browser screenshot still did not visibly show the overlay on the TV after dev-hook invocation.
 > 2026-06-05 codex-poppy-javis: Implemented P1.1 first pass test-first where practical. Product checks so far: 229 tests passed, typecheck passed, build passed before final hit-zone propagation patch; rerun full verification before commit. Browser QA proved Title HUD removal, icon action strip, run status/no-auto-run, stationary living-room dogs, and blank canvas clicks no longer open player actions after hit-zone clamp. **RESUME** -> P1.2.
 
-### Ticket P1.2 — PixelLab/Gemini farm/title animation asset batch  · `[ ]`
+### Ticket P1.2 — PixelLab/Gemini farm/title animation asset batch  · `[x]`
 **Goal**: Generate/import the actual art assets requested by the user and wire cheap Phaser animation loops.
 **Files likely touched**:
 - `public/assets/title/ambient/`
@@ -915,10 +915,23 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 - `src/phaser/scenes/PreloadScene.ts`
 - `docs/asset-prompts/sunday-invest-moon-farm-prompts.md`
 **Done when**:
-- [ ] PixelLab balance captured before/after.
-- [ ] Title page has animated flowers/trees, lying-smiling/blinking Nong Sunday, and 3 stationary tail-wag dogs matching the original title art style.
-- [ ] Farm map has reusable animated decor assets and a clear shop/background art plan or first implementation.
-- [ ] Runtime screenshots and tests/typecheck/build are recorded.
+- [x] PixelLab balance captured before/after.
+- [x] Title page has animated flowers/trees, lying-smiling/blinking Nong Sunday, and 3 stationary tail-wag dogs matching the original title art style.
+- [x] Farm map has reusable animated decor assets and a clear shop/background art plan or first implementation.
+- [x] Runtime screenshots and tests/typecheck/build are recorded.
+> 2026-06-06 codex-poppy-javis: Closed P1.2 by validating the existing generated asset batch and wiring already present in code. PixelLab balance before/after stayed `$3.47672558737464` because no new generation was needed this pass. Title runtime screenshot verified splash v002, flowers/tree, Nong Sunday title pose, and three stationary wagging dogs with console 0 errors/0 warnings: `pixel-wealth-quest/.playwright-cli/page-2026-06-06T03-00-52-415Z.png`. Farm runtime screenshots verified animated/reusable decor, water/path/tree view, farm shop/background view, season tint, and console clean: `page-2026-06-06T03-04-11-784Z.png`, `page-2026-06-06T03-04-41-213Z.png`. Product verification passed: `npm run feed:scan`, `npm test -- --run` (232 passed before TV hardening; targeted TV/decor test 8 passed after patch), `npm run typecheck`, `npm run build`, and `npx react-doctor@latest --verbose --diff` (100/100). Added TV hardening in `RoomScene.playTvCartoon()` (depth 12000, readable title text, batch-local cleanup), but TV visual screenshot remains unresolved and is split to P1.3. **RESUME** -> P1.3 TV cartoon visual render/click-target QA.
+
+### Ticket P1.3 — TV cartoon visual render/click-target QA  · `[ ]`
+**Goal**: Make the living-room TV cartoon visibly render on the baked TV screen and prove the normal click target opens it without using a dev hook.
+**Files likely touched**:
+- `src/phaser/scenes/RoomScene.ts`
+- `src/phaser/playerMovementScenes.test.ts`
+- optional room hotspot calibration in `src/data/room.seed.ts`
+**Done when**:
+- [ ] A real browser screenshot shows the One Piece-style TV overlay visibly on the living-room TV.
+- [ ] A normal canvas click on the TV hotspot triggers the overlay; dev-hook invocation is not the only proof.
+- [ ] Console remains 0 errors/0 warnings.
+- [ ] Targeted test plus full product checks pass.
 
 ---
 
