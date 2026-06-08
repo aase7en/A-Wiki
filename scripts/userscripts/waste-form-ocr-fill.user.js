@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      1.1.1
+// @version      1.1.2
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม + บันทึกอัตโนมัติ + เปิดฟอร์มถัดไป
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -1383,14 +1383,15 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     const filled = cache.filled || {};
     const locationKeys = Object.keys(LOCATION_TO_ROW);
 
+    const filledCount = dates.filter(d => filled[d]).length;
     const optionsHtml = dates.map(d => {
-      const isFilled = filled[d] ? ' ✓ (กรอกแล้ว)' : '';
-      return `<option value="${d}">${thaiDateBE(d)}${isFilled}</option>`;
+      const isFilled = filled[d];
+      return `<option value="${d}" ${isFilled ? 'style="color:#888"' : ''}>${isFilled ? '✅' : '⬜'} ${thaiDateBE(d)}${isFilled ? ' (กรอกแล้ว)' : ''}</option>`;
     }).join('');
 
     const metaWarn = meta ? `<div style="color:#b54;margin:6px 0">⚠ confidence=${meta.confidence}${meta.unclear?.length ? ', unclear: '+meta.unclear.join(', '):''}</div>` : '';
 
-    status.textContent = `📦 ${fileName} · ${dates.length} วันใน cache — เลือกวันแล้วกด Fill`;
+    status.textContent = `📦 ${fileName} · ${dates.length} วัน (กรอกแล้ว ${filledCount}/${dates.length}) — เลือกวันแล้วกด Fill`;
     content.innerHTML = `
       ${metaWarn}
       <div class="waste-ocr-row" style="background:#f5f0ff;padding:10px;border-radius:6px">
@@ -1685,6 +1686,7 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
 
       const autoContinue = content.querySelector('#ocr-auto-continue')?.checked;
       if (autoContinue) {
+        markFilled(dateISO); // บันทึก filled ก่อน navigate — ให้หน้าถัดไปเห็น ✓
         GM_setValue('ocr_auto_open_add', true);
         report.push('⏳ กำลังบันทึก...');
         const logEl2 = content.querySelector('#waste-ocr-log');
