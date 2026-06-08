@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      1.1.0
+// @version      1.1.1
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม + บันทึกอัตโนมัติ + เปิดฟอร์มถัดไป
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -1796,6 +1796,7 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
   if (/\/env\/manage\/trash$/.test(location.pathname)) {
     if (GM_getValue('ocr_auto_open_add', false)) {
       GM_setValue('ocr_auto_open_add', false);
+      GM_setValue('ocr_auto_open_overlay', true); // สั่งให้ trash_add หน้าถัดไปเปิด overlay อัตโนมัติ
       sleep(700).then(() => {
         const addBtn = Array.from(document.querySelectorAll('a, button'))
           .find(el => el.textContent?.trim().includes('เพิ่มข้อมูล'));
@@ -1810,6 +1811,17 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
     const tryInject = () => { try { injectButton(); } catch (e) { warn(e); } };
     tryInject();
     new MutationObserver(tryInject).observe(document.body, { childList: true, subtree: false });
+
+    // auto-open overlay ถ้ามาจาก auto-continue flow
+    if (GM_getValue('ocr_auto_open_overlay', false)) {
+      GM_setValue('ocr_auto_open_overlay', false);
+      sleep(400).then(() => {
+        const ocrBtn = document.querySelector('#waste-ocr-btn');
+        if (ocrBtn) { ocrBtn.click(); log('auto-continue: opened OCR overlay'); }
+        else warn('auto-continue: #waste-ocr-btn not found');
+      });
+    }
+
     log('userscript loaded');
   }
 })();
