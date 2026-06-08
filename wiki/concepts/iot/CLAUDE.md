@@ -8,7 +8,7 @@
 # Scoped Context — IoT Concepts
 
 > **โดเมน**: Internet of Things (IoT) — Concepts
-> **Last updated**: 2026-06-06
+> **Last updated**: 2026-06-08
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน concepts/iot/ เท่านั้น**
 
 ---
