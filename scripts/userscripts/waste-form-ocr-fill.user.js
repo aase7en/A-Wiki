@@ -1,11 +1,13 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      1.0.0
-// @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม trash_add อัตโนมัติ + weight validation + pattern learning v2
+// @version      1.1.0
+// @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม + บันทึกอัตโนมัติ + เปิดฟอร์มถัดไป
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
 // @match        https://*.gtwoffice.com/env/manage/trash_add*
+// @match        https://10779.gtwoffice.com/env/manage/trash
+// @match        https://*.gtwoffice.com/env/manage/trash
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -402,6 +404,14 @@ Return ONLY the JSON array.`;
   }
   function clearCache() {
     GM_setValue(CACHE_KEY, null);
+  }
+
+  function clickSaveButton() {
+    const btn = Array.from(document.querySelectorAll('button, input[type="submit"]'))
+      .find(el => !el.closest('#waste-ocr-overlay') &&
+                  (el.textContent?.includes('บันทึก') || el.value?.includes('บันทึก')));
+    if (btn) { btn.click(); return true; }
+    return false;
   }
   function cacheAgeText(ts) {
     const min = Math.floor((Date.now() - ts) / 60000);
@@ -1394,6 +1404,9 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         <label><input type="checkbox" id="ocr-fill-header" checked /> กรอก header (วันที่ / ปี / เวลา / Supplies / ผู้บันทึก)</label>
       </div>
       <div class="waste-ocr-row">
+        <label><input type="checkbox" id="ocr-auto-continue" checked /> บันทึกอัตโนมัติ &amp; เปิดฟอร์มถัดไป</label>
+      </div>
+      <div class="waste-ocr-row">
         <button class="waste-ocr-btn waste-ocr-primary" data-act="fill">✓ Fill Form</button>
         <button class="waste-ocr-btn waste-ocr-secondary" data-act="debug">🔍 Debug DOM</button>
         <button class="waste-ocr-btn waste-ocr-secondary" data-act="reupload">⟳ Re-upload</button>
@@ -1669,6 +1682,24 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       fillBtn.disabled = false; fillBtn.textContent = '✓ Fill Form';
       if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
       if (savedTeachingCount) report.unshift(`🧠 บันทึก OCR teaching history ${savedTeachingCount} รายการ — Gemini จะใช้เป็นบทเรียนรอบถัดไป`);
+
+      const autoContinue = content.querySelector('#ocr-auto-continue')?.checked;
+      if (autoContinue) {
+        GM_setValue('ocr_auto_open_add', true);
+        report.push('⏳ กำลังบันทึก...');
+        const logEl2 = content.querySelector('#waste-ocr-log');
+        logEl2.style.display = 'block';
+        logEl2.textContent = report.join('\n');
+        await sleep(300);
+        const saved = clickSaveButton();
+        if (!saved) {
+          report.push('⚠ ไม่พบปุ่มบันทึก — กรุณากดบันทึกเอง');
+          GM_setValue('ocr_auto_open_add', false);
+          logEl2.textContent = report.join('\n');
+        }
+        return;
+      }
+
       const logEl = content.querySelector('#waste-ocr-log');
       logEl.style.display = 'block';
       logEl.textContent = report.join('\n');
@@ -1760,10 +1791,25 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
   }
 
   // --- BOOT ------------------------------------------------------------------
-  injectStyle();
-  // form อาจ render หลัง load — ลอง inject ซ้ำได้
-  const tryInject = () => { try { injectButton(); } catch (e) { warn(e); } };
-  tryInject();
-  new MutationObserver(tryInject).observe(document.body, { childList: true, subtree: false });
-  log('userscript loaded');
+
+  // หน้า list (trash) — ตรวจ flag แล้วคลิก เพิ่มข้อมูล อัตโนมัติ
+  if (/\/env\/manage\/trash$/.test(location.pathname)) {
+    if (GM_getValue('ocr_auto_open_add', false)) {
+      GM_setValue('ocr_auto_open_add', false);
+      sleep(700).then(() => {
+        const addBtn = Array.from(document.querySelectorAll('a, button'))
+          .find(el => el.textContent?.trim().includes('เพิ่มข้อมูล'));
+        if (addBtn) { addBtn.click(); log('auto-continue: clicked เพิ่มข้อมูล'); }
+        else warn('auto-continue: เพิ่มข้อมูล button not found');
+      });
+    }
+    log('userscript loaded (list page — no overlay)');
+  } else {
+    // หน้า trash_add — inject overlay ตามปกติ
+    injectStyle();
+    const tryInject = () => { try { injectButton(); } catch (e) { warn(e); } };
+    tryInject();
+    new MutationObserver(tryInject).observe(document.body, { childList: true, subtree: false });
+    log('userscript loaded');
+  }
 })();
