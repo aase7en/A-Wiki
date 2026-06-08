@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      1.1.3
+// @version      1.1.4
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม + บันทึกอัตโนมัติ + เปิดฟอร์มถัดไป
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
