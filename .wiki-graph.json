@@ -1,17 +1,17 @@
 {
   "generated_at": "2026-06-08",
   "stats": {
-    "nodes": 467,
-    "edges": 1225,
+    "nodes": 483,
+    "edges": 1277,
     "edges_by_type": {
-      "wikilink": 1086,
+      "wikilink": 1137,
       "depends": 33,
       "implements": 51,
       "mdlink": 49,
-      "extends": 6
+      "extends": 7
     },
-    "broken_links": 70,
-    "orphans": 170,
+    "broken_links": 65,
+    "orphans": 173,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -124,8 +124,23 @@
       "domain": "other"
     },
     {
+      "path": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "title": "A2A Protocol",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "title": "Agent Framework Tradeoffs — Lean vs Autonomous",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "title": "Agent Memory Systems",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "title": "Agent Planning Loops",
       "domain": "ai-tools"
     },
     {
@@ -154,13 +169,33 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "title": "LLM Evaluation Frameworks",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "title": "RAG Architecture",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/concepts/ai-tools/local-llm-routing.md",
       "title": "Local LLM Routing (Auto Model Switching)",
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "title": "MCP Architecture",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/concepts/ai-tools/multi-agent-failover.md",
       "title": "Multi-Agent Failover System",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "title": "Multi-Agent Theory",
       "domain": "ai-tools"
     },
     {
@@ -176,6 +211,11 @@
     {
       "path": "wiki/concepts/ai-tools/session-setup.md",
       "title": "Session Setup — ขั้นตอนก่อนเริ่ม Wiki Session",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "title": "Swarm Optimization, BFT, MARL & Failure Modes",
       "domain": "ai-tools"
     },
     {
@@ -385,7 +425,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-06",
+      "title": "Review Report — 2026-06-08",
       "domain": "context"
     },
     {
@@ -724,13 +764,38 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/ai-engineering-agent-patterns.md",
+      "title": "Agent Engineering Patterns — Phase 14",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/ai-engineering-glossary.md",
       "title": "AI Engineering Glossary (Source Summary)",
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/ai-engineering-llm.md",
+      "title": "LLM Engineering — Phase 11",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-engineering-multi-agent.md",
+      "title": "Multi-Agent Theory — Phase 16 (Subtopics 01-13)",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/ai-engineering-myths.md",
       "title": "AI Myths Busted (Source Summary)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-engineering-swarm-optimization.md",
+      "title": "Swarm Optimization + Case Studies — Phase 16 (Subtopics 14-25)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-engineering-tools-protocols.md",
+      "title": "Tools & Protocols — Phase 13",
       "domain": "sources"
     },
     {
@@ -1666,6 +1731,21 @@
     {
       "path": "wiki/synthesis/synth-ai-agents-integration-guide.md",
       "title": "คู่มือการบูรณาการ AI Agents ขั้นสูง: Symlink, Hooks, Skills, Plugins และ NotebookLM — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ai-engineering-agent-patterns.md",
+      "title": "Agent Engineering Patterns — rohitg00/ai-engineering-from-scratch Phase 14 (subtopics 01, 02, 07, 12) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ai-engineering-glossary.md",
+      "title": "AI Engineering Glossary — rohitg00/ai-engineering-from-scratch — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ai-engineering-multi-agent.md",
+      "title": "Multi-Agent Theory — rohitg00/ai-engineering-from-scratch Phase 16 (subtopics 01-13) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -4831,6 +4911,41 @@
       "external": true
     },
     {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/sources/ai-engineering-tools-protocols.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "implements",
@@ -4859,6 +4974,83 @@
       "external": false
     },
     {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/sources/ai-engineering-agent-patterns.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "wiki/sources/ai-engineering-agent-patterns.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/ai-tools/ai-glossary.md",
       "to": "wiki/concepts/ai-tools/ai-myths.md",
       "type": "wikilink",
@@ -4867,16 +5059,16 @@
     },
     {
       "from": "wiki/concepts/ai-tools/ai-glossary.md",
-      "to": "concepts/ai-tools/multi-agent-theory",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {
       "from": "wiki/concepts/ai-tools/ai-glossary.md",
-      "to": "concepts/ai-tools/llm-rag-architecture",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {
@@ -4909,16 +5101,16 @@
     },
     {
       "from": "wiki/concepts/ai-tools/ai-myths.md",
-      "to": "concepts/ai-tools/multi-agent-theory",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {
       "from": "wiki/concepts/ai-tools/ai-myths.md",
-      "to": "concepts/ai-tools/llm-rag-architecture",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {
@@ -4992,6 +5184,62 @@
       "external": false
     },
     {
+      "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "to": "wiki/sources/ai-engineering-llm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/sources/ai-engineering-llm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/ai-tools/local-llm-routing.md",
       "to": "wiki/entities/ai-tools/telegram-ai-router.md",
       "type": "wikilink",
@@ -5020,6 +5268,41 @@
       "external": false
     },
     {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/sources/ai-engineering-tools-protocols.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/ai-tools/multi-agent-failover.md",
       "to": "wiki/concepts/ai-tools/openrouter-claude-code.md",
       "type": "wikilink",
@@ -5043,6 +5326,55 @@
     {
       "from": "wiki/concepts/ai-tools/multi-agent-failover.md",
       "to": "wiki/concepts/ai-tools/local-llm-routing.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/sources/ai-engineering-multi-agent.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -5113,6 +5445,48 @@
     {
       "from": "wiki/concepts/ai-tools/session-setup.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/sources/ai-engineering-swarm-optimization.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/sources/ai-engineering-multi-agent.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8233,6 +8607,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/ai-engineering-agent-patterns.md",
+      "to": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-agent-patterns.md",
+      "to": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/ai-engineering-glossary.md",
       "to": "wiki/concepts/ai-tools/ai-glossary.md",
       "type": "wikilink",
@@ -8241,9 +8629,9 @@
     },
     {
       "from": "wiki/sources/ai-engineering-glossary.md",
-      "to": "concepts/ai-tools/multi-agent-theory",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {
@@ -8252,6 +8640,41 @@
       "type": "wikilink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-llm.md",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-llm.md",
+      "to": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-multi-agent.md",
+      "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-multi-agent.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-multi-agent.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/sources/ai-engineering-myths.md",
@@ -8263,6 +8686,27 @@
     {
       "from": "wiki/sources/ai-engineering-myths.md",
       "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-swarm-optimization.md",
+      "to": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-tools-protocols.md",
+      "to": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-tools-protocols.md",
+      "to": "wiki/concepts/ai-tools/a2a-protocol.md",
       "type": "wikilink",
       "broken": false,
       "external": false
