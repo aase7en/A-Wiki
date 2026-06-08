@@ -17,9 +17,9 @@ last_updated_by: claude-sonnet-4-6
 
 ## 🎯 Resume Here (สำหรับ agent ที่รับช่วงต่อ)
 
-> **Next chunk**: `ai-eng-P2a` — Multi-Agent Theory (subtopics 01-13)
-> อ่านไฟล์นี้จาก top → หา `[ ]` ตัวแรกใน Task Board → ทำตาม Per-Chunk Instructions
-> **ห้ามทำ `[x]` chunks ซ้ำ**
+> **Status**: ✅ **ALL CHUNKS DONE** (P1a, P1b, P2a, P2b, P3, P4, P5 completed 2026-06-08)
+> P6 (Ethics & Safety) deferred intentionally — ดู Skipped Phases section
+> ไม่มีงานค้าง
 
 ---
 
@@ -29,11 +29,11 @@ last_updated_by: claude-sonnet-4-6
 |-------|--------|----------|------|---------------|--------|
 | `ai-eng-P1a` | [x] | 🔴 P1 | Ingest glossary/terms.md | `wiki/sources/ai-engineering-glossary.md`, `wiki/concepts/ai-tools/ai-glossary.md` | `search-wiki.py "embedding"` |
 | `ai-eng-P1b` | [x] | 🔴 P1 | Ingest glossary/myths.md | `wiki/sources/ai-engineering-myths.md`, `wiki/concepts/ai-tools/ai-myths.md` | `search-wiki.py "hallucination myth"` |
-| `ai-eng-P2a` | [ ] | 🔴 P1 | Multi-agent theory (subtopics 01-13) | `raw/ai-engineering-multi-agent.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/multi-agent-theory.md` | `search-wiki.py "FIPA"` |
-| `ai-eng-P2b` | [ ] | 🔴 P1 | Swarm optimization + case studies (subtopics 14-25) | `wiki/concepts/ai-tools/swarm-optimization.md` | `search-wiki.py "PSO"` |
-| `ai-eng-P3` | [ ] | 🟡 P2 | Agent engineering patterns (phase 14) | `raw/ai-engineering-agent-patterns.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/agent-planning-loops.md`, `wiki/concepts/ai-tools/agent-memory-systems.md` | `search-wiki.py "planning loop"` |
-| `ai-eng-P4` | [ ] | 🟡 P2 | LLM engineering (phase 11) | `raw/ai-engineering-llm.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/llm-rag-architecture.md`, `wiki/concepts/ai-tools/llm-eval-frameworks.md` | `search-wiki.py "RAG architecture"` |
-| `ai-eng-P5` | [ ] | 🟡 P2 | Tools & protocols (phase 13) | `raw/ai-engineering-tools-protocols.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/mcp-architecture.md`, `wiki/concepts/ai-tools/a2a-protocol.md` | `search-wiki.py "A2A protocol"` |
+| `ai-eng-P2a` | [x] | 🔴 P1 | Multi-agent theory (subtopics 01-13) | `raw/ai-engineering-multi-agent.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/multi-agent-theory.md` | `search-wiki.py "FIPA"` |
+| `ai-eng-P2b` | [x] | 🔴 P1 | Swarm optimization + case studies (subtopics 14-25) | `wiki/concepts/ai-tools/swarm-optimization.md` | `search-wiki.py "PSO"` |
+| `ai-eng-P3` | [x] | 🟡 P2 | Agent engineering patterns (phase 14) | `raw/ai-engineering-agent-patterns.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/agent-planning-loops.md`, `wiki/concepts/ai-tools/agent-memory-systems.md` | `search-wiki.py "planning loop"` |
+| `ai-eng-P4` | [x] | 🟡 P2 | LLM engineering (phase 11) | `raw/ai-engineering-llm.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/llm-rag-architecture.md`, `wiki/concepts/ai-tools/llm-eval-frameworks.md` | `search-wiki.py "RAG architecture"` |
+| `ai-eng-P5` | [x] | 🟡 P2 | Tools & protocols (phase 13) | `raw/ai-engineering-tools-protocols.md`, `wiki/sources/...`, `wiki/concepts/ai-tools/mcp-architecture.md`, `wiki/concepts/ai-tools/a2a-protocol.md` | `search-wiki.py "A2A protocol"` |
 | `ai-eng-P6` | [ ] | ⚪ P3 | Ethics & safety (phase 18) | tbd | — |
 
 ---
@@ -85,7 +85,7 @@ git checkout main
 
 ---
 
-### [ ] [ai-eng-P2a] Multi-Agent Theory (subtopics 01-13)
+### ✅ [ai-eng-P2a] Multi-Agent Theory (subtopics 01-13) — DONE
 - **Source paths** (fetch each README.md):
   - `phases/16-multi-agent-and-swarms/01-why-multi-agent/`
   - `phases/16-multi-agent-and-swarms/02-fipa-acl-heritage/`
@@ -108,7 +108,7 @@ git checkout main
 
 ---
 
-### [ ] [ai-eng-P2b] Swarm Optimization + Case Studies (subtopics 14-25)
+### ✅ [ai-eng-P2b] Swarm Optimization + Case Studies (subtopics 14-25) — DONE
 - **Source paths**:
   - `phases/16-multi-agent-and-swarms/14-consensus-and-bft/`
   - `phases/16-multi-agent-and-swarms/15-voting-debate-topology/`
@@ -124,7 +124,7 @@ git checkout main
 
 ---
 
-### [ ] [ai-eng-P3] Agent Engineering Patterns (phase 14)
+### ✅ [ai-eng-P3] Agent Engineering Patterns (phase 14) — DONE
 - **Source path**: `phases/14-agent-engineering/` (fetch directory listing first, then key README.md files)
 - **Create**:
   - `raw/ai-engineering-agent-patterns.md`
@@ -136,7 +136,7 @@ git checkout main
 
 ---
 
-### [ ] [ai-eng-P4] LLM Engineering (phase 11)
+### ✅ [ai-eng-P4] LLM Engineering (phase 11) — DONE
 - **Source path**: `phases/11-llm-engineering/` (fetch directory listing first, then key README.md files)
 - **Create**:
   - `raw/ai-engineering-llm.md`
@@ -148,7 +148,7 @@ git checkout main
 
 ---
 
-### [ ] [ai-eng-P5] Tools & Protocols (phase 13)
+### ✅ [ai-eng-P5] Tools & Protocols (phase 13) — DONE
 - **Source path**: `phases/13-tools-and-protocols/` (fetch directory listing first, then key README.md files)
 - **Create**:
   - `raw/ai-engineering-tools-protocols.md`
@@ -196,4 +196,4 @@ python3 scripts/search-wiki.py "RAG"           # verify
 | `15-autonomous-systems` | Partially covered in P3 |
 | `17-infrastructure-and-production` | Partially covered ใน existing wiki |
 
-*Last updated: 2026-06-08 by claude-sonnet-4-6*
+*Last updated: 2026-06-08 by claude-sonnet-4-6 — ALL CHUNKS COMPLETE (P1a, P1b, P2a, P2b, P3, P4, P5)*
