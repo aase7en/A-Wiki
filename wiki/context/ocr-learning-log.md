@@ -30,6 +30,7 @@ updated: 2026-05-27
 | 2026-05-08 | weight | 47 | 33 | row 12 = OPD (S__25362495.jpg) — 4↔3 + 7↔3 (double-digit อ่านผิดทั้งคู่) |
 | 2026-05-09 | weight | 23 | 13 | row 12 = OPD (S__25362495.jpg) — 2↔1 หลักสิบอ่านผิดอีก (รูปแบบซ้ำ row 12 OPD) |
 | 2026-05-09 | location | OPD | Ward | row 27 = 10 kg, recorder อ้อย (S__25362495.jpg) — userscript ตกหล่น row นี้เพราะ OCR อ่าน Ward เป็น OPD |
+| 2026-05-02 | location | เวช | ฝังเข็ม | row 11 (IMG_4520.jpg) — เวช ↔ ฝังเข็ม ลายมือใกล้เคียง (mirror: ฝังเข็ม อ่านเป็น เวช ก็เกิดได้เช่นกัน) |
 
 ---
 
@@ -39,6 +40,7 @@ updated: 2026-05-27
 |---|---|---|---|
 | เม.ย. 2569 | ไม่ทราบ | — | — |
 | พ.ค. 2569 | ไม่ทราบ | 13 fields | ~88% (ประมาณ) |
+| มิ.ย. 2569 | — | — | รอข้อมูล (learning loop v2 เริ่ม 2026-06-08) |
 
 > ยังไม่มีข้อมูลที่แม่นยำ — จะนับได้เมื่อ userscript บันทึก feedback อัตโนมัติ
 
@@ -52,6 +54,8 @@ updated: 2026-05-27
 - [x] **น้ำหนักตัวเลขคล้ายกัน**: เพิ่ม double-check rule: 2↔9, 6↔5, 1↔4, 8↔9, 4↔3, 2↔1 (หลักสิบ) (โดยเฉพาะค่า >20 กก. หรือ <1 กก.)
 - [x] **🔥 OPD row 12 weight hotspot** (พ.ค. 2569 ผิด 3 ครั้งติด): OCR มัก over-read หลักสิบ (4_ แทน 3_, 2_ แทน 1_) ที่ตำแหน่ง OPD แถวบ่าย — เพิ่ม contextual hint ว่าค่า OPD ปกติอยู่ในช่วง 10-39 ไม่ใช่ 40+
 - [x] **🔥 Ward ↔ OPD location confusion**: row 27 (S__25362495.jpg) OCR อ่าน Ward เป็น OPD ทำให้ userscript ตกหล่น — เพิ่ม recorder-based disambiguation: `อ้อย` มัก = OPD แต่ถ้าน้ำหนัก ≤10 ตอนเย็น อาจเป็น Ward (cross-check กับ recorder อื่นบนใบ)
+- [ ] **Pattern consolidation auto-inject**: เมื่อ correction เดิมซ้ำ ≥ 3 ครั้ง → ยกขึ้นเป็น CONFIRMED RULE ใน system prompt (v1.0.0 userscript)
+- [ ] **Post-OCR weight range validation**: แสดง ⚠ สีแดงใน raw table ถ้า kg นอก range ปกติของแต่ละ location (OPD 5–40, Ward 2–22, ER 1–20, โรงครัว 10–80)
 
 ---
 
