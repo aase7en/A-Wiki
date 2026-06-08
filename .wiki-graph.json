@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-06-06",
+  "generated_at": "2026-06-08",
   "stats": {
-    "nodes": 464,
-    "edges": 1208,
+    "nodes": 467,
+    "edges": 1225,
     "edges_by_type": {
-      "wikilink": 1069,
-      "mdlink": 49,
+      "wikilink": 1086,
       "depends": 33,
       "implements": 51,
+      "mdlink": 49,
       "extends": 6
     },
-    "broken_links": 65,
-    "orphans": 171,
+    "broken_links": 70,
+    "orphans": 170,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -67,25 +67,20 @@
       "wiki/context/overview-sources.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory.md",
       "wiki/context/wiki-capability-map.md",
       "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
       "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
       "wiki/sources/3-dashboard-node-red.md",
       "wiki/sources/ai-iot-server-build-v3-final.md",
       "wiki/sources/ai-tools/langchain-framework.md",
-      "wiki/sources/ai-tools/vector-databases.md"
+      "wiki/sources/ai-tools/vector-databases.md",
+      "wiki/sources/arduino-ide-esp32-arduino-2025.md"
     ]
   },
   "nodes": [
     {
       "path": "CLAUDE.md",
       "title": "A-Wiki — Hybrid Agent Wiki (Swarm + Knowledge) — Session Rules",
-      "domain": "other"
-    },
-    {
-      "path": "README.md",
-      "title": "A-Wiki — The AI Operating System That Ships",
       "domain": "other"
     },
     {
@@ -119,18 +114,33 @@
       "domain": "other"
     },
     {
+      "path": "README.md",
+      "title": "A-Wiki — The AI Operating System That Ships",
+      "domain": "other"
+    },
+    {
       "path": "wiki/CLAUDE.md",
       "title": "ชื่อ Entity",
       "domain": "other"
     },
     {
-      "path": "wiki/concepts/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Concepts",
+      "path": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
+      "title": "Agent Framework Tradeoffs — Lean vs Autonomous",
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
-      "title": "Agent Framework Tradeoffs — Lean vs Autonomous",
+      "path": "wiki/concepts/ai-tools/ai-glossary.md",
+      "title": "AI Engineering Glossary",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/ai-myths.md",
+      "title": "AI Myths — ความเชื่อผิดๆ ที่พบบ่อย",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Concepts",
       "domain": "ai-tools"
     },
     {
@@ -204,13 +214,13 @@
       "domain": "env"
     },
     {
-      "path": "wiki/concepts/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Concepts",
+      "path": "wiki/concepts/iot/air-quality-index.md",
+      "title": "Air Quality Index (AQI)",
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/iot/air-quality-index.md",
-      "title": "Air Quality Index (AQI)",
+      "path": "wiki/concepts/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Concepts",
       "domain": "iot"
     },
     {
@@ -264,13 +274,13 @@
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/it-support/CLAUDE.md",
-      "title": "IT Support — Domain Rules",
+      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
       "domain": "it-support"
     },
     {
-      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
-      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
+      "path": "wiki/concepts/it-support/CLAUDE.md",
+      "title": "IT Support — Domain Rules",
       "domain": "it-support"
     },
     {
@@ -379,11 +389,6 @@
       "domain": "context"
     },
     {
-      "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
-      "domain": "context"
-    },
-    {
       "path": "wiki/context/wiki-capability-map.md",
       "title": "Wiki Capability Map",
       "domain": "context"
@@ -409,13 +414,13 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Entities",
+      "path": "wiki/entities/ai-tools/agents-md-spec.md",
+      "title": "AGENTS.md Specification",
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/ai-tools/agents-md-spec.md",
-      "title": "AGENTS.md Specification",
+      "path": "wiki/entities/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Entities",
       "domain": "ai-tools"
     },
     {
@@ -474,13 +479,13 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/env/CLAUDE.md",
-      "title": "Scoped Context — Environmental Health Entities",
+      "path": "wiki/entities/env/activated-sludge-system.md",
+      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
       "domain": "env"
     },
     {
-      "path": "wiki/entities/env/activated-sludge-system.md",
-      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
+      "path": "wiki/entities/env/CLAUDE.md",
+      "title": "Scoped Context — Environmental Health Entities",
       "domain": "env"
     },
     {
@@ -491,11 +496,6 @@
     {
       "path": "wiki/entities/iot/18650-battery-shield.md",
       "title": "18650 Battery Shield V3",
-      "domain": "iot"
-    },
-    {
-      "path": "wiki/entities/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -511,6 +511,11 @@
     {
       "path": "wiki/entities/iot/chirpstack.md",
       "title": "ChirpStack",
+      "domain": "iot"
+    },
+    {
+      "path": "wiki/entities/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -709,11 +714,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/CLAUDE.md",
-      "title": "Scoped Context — Source Summaries",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "title": "Agent Framework Insights — thClaws / Hermes / OpenClaw บน Local LLM",
       "domain": "sources"
@@ -721,6 +721,16 @@
     {
       "path": "wiki/sources/ai-agents-integration-guide.md",
       "title": "คู่มือการบูรณาการ AI Agents ขั้นสูง",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-engineering-glossary.md",
+      "title": "AI Engineering Glossary (Source Summary)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/ai-engineering-myths.md",
+      "title": "AI Myths Busted (Source Summary)",
       "domain": "sources"
     },
     {
@@ -791,6 +801,11 @@
     {
       "path": "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
       "title": "Set up GPIO mode",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/CLAUDE.md",
+      "title": "Scoped Context — Source Summaries",
       "domain": "sources"
     },
     {
@@ -1469,11 +1484,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/CLAUDE.md",
-      "title": "Scoped Context — Synthesis (Cross-domain)",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/ai-driven-environmental-modeling.md",
       "title": "AI-driven Environmental Modeling",
       "domain": "synthesis"
@@ -1491,6 +1501,11 @@
     {
       "path": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "title": "แผน: ย้าย AppSheet → Self-hosted Web App บน Raspberry Pi 5",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/CLAUDE.md",
+      "title": "Scoped Context — Synthesis (Cross-domain)",
       "domain": "synthesis"
     },
     {
@@ -2448,62 +2463,6 @@
       "type": "wikilink",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "AGENTS.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "GEMINI.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "agent-skills/README.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "wiki/context/wiki-overview.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/setup-new-machine.md",
-      "type": "depends",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/upstream-refresh.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "CHANGELOG.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "index-ai-tools.md",
@@ -4816,11 +4775,60 @@
       "external": false
     },
     {
-      "from": "wiki/concepts/ai-tools/CLAUDE.md",
+      "from": "README.md",
+      "to": "AGENTS.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "GEMINI.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "agent-skills/README.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "wiki/context/wiki-overview.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/setup-new-machine.md",
+      "type": "depends",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/upstream-refresh.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CHANGELOG.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
@@ -4847,6 +4855,97 @@
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "concepts/ai-tools/multi-agent-theory",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "concepts/ai-tools/llm-rag-architecture",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "wiki/concepts/ai-tools/openrouter-api.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "concepts/ai-tools/multi-agent-theory",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "concepts/ai-tools/llm-rag-architecture",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "agent-skills/swarm-intelligence/agile-swarm",
+      "type": "wikilink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "wiki/sources/ai-engineering-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -5180,13 +5279,6 @@
       "external": false
     },
     {
-      "from": "wiki/concepts/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/entities/iot/pms5003.md",
       "type": "wikilink",
@@ -5232,6 +5324,13 @@
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -5992,13 +6091,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/entities/ai-tools/agents-md-spec.md",
       "to": "claude-skills",
       "type": "wikilink",
@@ -6032,6 +6124,13 @@
       "type": "wikilink",
       "broken": false,
       "external": true
+    },
+    {
+      "from": "wiki/entities/ai-tools/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
     },
     {
       "from": "wiki/entities/ai-tools/ecc.md",
@@ -6412,13 +6511,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/env/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/concepts/env/water-quality-parameters.md",
       "type": "wikilink",
@@ -6443,6 +6535,13 @@
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -6513,13 +6612,6 @@
       "from": "wiki/entities/iot/18650-battery-shield.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -6646,6 +6738,13 @@
       "from": "wiki/entities/iot/chirpstack.md",
       "to": "wiki/sources/lorawan-network-beginner.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -8106,13 +8205,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "to": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "type": "wikilink",
@@ -8136,6 +8228,41 @@
     {
       "from": "wiki/sources/ai-agents-integration-guide.md",
       "to": "wiki/concepts/ai-tools/symlinks-ssot.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-glossary.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-glossary.md",
+      "to": "concepts/ai-tools/multi-agent-theory",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-glossary.md",
+      "to": "wiki/concepts/ai-tools/openrouter-api.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-myths.md",
+      "to": "wiki/concepts/ai-tools/ai-myths.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-engineering-myths.md",
+      "to": "wiki/concepts/ai-tools/ai-glossary.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8271,6 +8398,13 @@
       "to": "https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/api.md",
       "type": "mdlink",
       "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
       "external": false
     },
     {
@@ -9310,13 +9444,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/air-quality-monitoring.md",
       "to": "wiki/entities/iot/pms5003.md",
       "type": "wikilink",
@@ -9453,6 +9580,13 @@
       "from": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "to": "wiki/entities/env/rabies-pep-surveillance.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },

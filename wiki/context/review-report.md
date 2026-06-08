@@ -1,509 +1,521 @@
-# Review Report — 2026-06-06
+# Review Report — 2026-06-08
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 501
-- ⚠ Warnings: 407
-- ❌ Failures: 44
+- ✓ Passed: 505
+- ⚠ Warnings: 412
+- ❌ Failures: 51
 
 ## Top Actionable Issues
 
-- ⚠ **L2** wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/data-logger.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/lora.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/iot/lorawan.md: missing frontmatter key: title
-- … 431 more issue(s) below
+- ⚠ **L2** wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\env\infectious-waste-management.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\env\rabies-pep-protocol.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\env\water-quality-parameters.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\iot\air-quality-index.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\iot\cold-chain-monitoring.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\iot\dashboard-design.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\iot\data-logger.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\iot\lora-p2p.md: missing frontmatter key: title
+- … 443 more issue(s) below
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
-- wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[git-subtree-workflow]]
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-thai-skills]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[liquid-glass-design]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[motion-patterns]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[ui-to-vue]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[frontend-design-direction]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[remotion-video-creation]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[mcp]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[private-webapp]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[pharmacy-app]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[iot-dashboard]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[sqlite-vec]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[embedding-models]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[vector-search]]
-- wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
-- wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
-- wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
-- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
-- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
-- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
-- wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
-- wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
-- wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
-- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
-- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
-- wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
-- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
-- wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
-- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
-- wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
-- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
-- wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
-- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
-- wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
-- wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
+- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[concepts/ai-tools/llm-rag-architecture]]
+- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
+- wiki\concepts\ai-tools\ai-myths.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
+- wiki\concepts\ai-tools\ai-myths.md: broken link: [[concepts/ai-tools/llm-rag-architecture]]
+- wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
+- wiki\concepts\env\water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki\entities\ai-tools\9arm-skills.md: broken link: [[claude-skills]]
+- wiki\entities\ai-tools\9arm-skills.md: broken link: [[git-subtree-workflow]]
+- wiki\entities\ai-tools\agents-md-spec.md: broken link: [[claude-skills]]
+- wiki\entities\ai-tools\ecc.md: broken link: [[claude-thai-skills]]
+- wiki\entities\ai-tools\ecc.md: broken link: [[claude-skills]]
+- wiki\entities\ai-tools\frontend-slides.md: broken link: [[liquid-glass-design]]
+- wiki\entities\ai-tools\frontend-slides.md: broken link: [[motion-patterns]]
+- wiki\entities\ai-tools\frontend-slides.md: broken link: [[ui-to-vue]]
+- wiki\entities\ai-tools\frontend-slides.md: broken link: [[frontend-design-direction]]
+- wiki\entities\ai-tools\frontend-slides.md: broken link: [[remotion-video-creation]]
+- wiki\entities\ai-tools\gitnexus.md: broken link: [[mcp]]
+- wiki\entities\ai-tools\gitnexus.md: broken link: [[claude-skills]]
+- wiki\entities\ai-tools\react-doctor.md: broken link: [[claude-skills]]
+- wiki\entities\ai-tools\react-doctor.md: broken link: [[private-webapp]]
+- wiki\entities\ai-tools\react-doctor.md: broken link: [[pharmacy-app]]
+- wiki\entities\ai-tools\react-doctor.md: broken link: [[iot-dashboard]]
+- wiki\entities\ai-tools\turbovec.md: broken link: [[sqlite-vec]]
+- wiki\entities\ai-tools\turbovec.md: broken link: [[embedding-models]]
+- wiki\entities\ai-tools\turbovec.md: broken link: [[vector-search]]
+- wiki\sources\ai-engineering-glossary.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
+- wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
+- wiki\sources\ai-iot-server-build-v3.md: broken link: [[index-ai]]
+- wiki\sources\arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
+- wiki\sources\arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
+- wiki\sources\create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
+- wiki\sources\esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
+- wiki\sources\esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
+- wiki\sources\espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
+- wiki\sources\heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
+- wiki\sources\hyperframes-official-docs.md: broken link: [[index-ai.md]]
+- wiki\sources\introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
+- wiki\sources\iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
+- wiki\sources\iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
+- wiki\sources\lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
+- wiki\sources\openrouter-api-demo.md: broken link: [[index-ai.md]]
+- wiki\sources\raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
+- wiki\sources\ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
+- wiki\sources\vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
+- wiki\sources\การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
+- wiki\sources\ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
+- wiki\sources\เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
+- wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
+- wiki\synthesis\digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
 
 ---
 
 ## ⚠ L2: Frontmatter Completeness (title, type, tags) — Warnings
 
-- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
-- wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
-- wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
-- wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
-- wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
-- wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
-- wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
-- wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
-- wiki/concepts/iot/data-logger.md: missing frontmatter key: title
-- wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
-- wiki/concepts/iot/lora.md: missing frontmatter key: title
-- wiki/concepts/iot/lorawan.md: missing frontmatter key: title
-- wiki/concepts/iot/modbus.md: missing frontmatter key: title
-- wiki/concepts/iot/mqtt-qos.md: missing frontmatter key: title
-- wiki/concepts/iot/publish-subscribe.md: missing frontmatter key: title
-- wiki/concepts/iot/tinyml.md: missing frontmatter key: title
-- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/drug-aliases.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/drug-classification.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/drug-validation.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/fuzzy-match.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/ordering-workflow.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
-- wiki/entities/ai-tools/9arm-skills.md: missing frontmatter key: title
-- wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
-- wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
-- wiki/entities/ai-tools/frontend-slides.md: missing frontmatter key: title
-- wiki/entities/ai-tools/gitnexus.md: missing frontmatter key: title
-- wiki/entities/ai-tools/hermes-agent.md: missing frontmatter key: title
-- wiki/entities/ai-tools/hyperframes.md: missing frontmatter key: title
-- wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
-- wiki/entities/ai-tools/pocketbase.md: missing frontmatter key: title
-- wiki/entities/ai-tools/react-doctor.md: missing frontmatter key: title
-- wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
-- wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
-- wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
-- wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
-- wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
-- wiki/entities/iot/arduino-ide.md: missing frontmatter key: title
-- wiki/entities/iot/arduino-uno-r3.md: missing frontmatter key: title
-- wiki/entities/iot/chirpstack.md: missing frontmatter key: title
-- wiki/entities/iot/dht11.md: missing frontmatter key: title
-- wiki/entities/iot/ds18b20.md: missing frontmatter key: title
-- wiki/entities/iot/dx-lr02-lora.md: missing frontmatter key: title
-- wiki/entities/iot/dx-smart-ttl.md: missing frontmatter key: title
-- wiki/entities/iot/emqx.md: missing frontmatter key: title
-- wiki/entities/iot/esp-idf.md: missing frontmatter key: title
-- wiki/entities/iot/esp32-c6.md: missing frontmatter key: title
-- wiki/entities/iot/esp32-s3.md: missing frontmatter key: title
-- wiki/entities/iot/esp32.md: missing frontmatter key: title
-- wiki/entities/iot/grafana.md: missing frontmatter key: title
-- wiki/entities/iot/hc-sr04.md: missing frontmatter key: title
-- wiki/entities/iot/hc-sr501.md: missing frontmatter key: title
-- wiki/entities/iot/home-assistant.md: missing frontmatter key: title
-- wiki/entities/iot/hx711.md: missing frontmatter key: title
-- wiki/entities/iot/influxdb.md: missing frontmatter key: title
-- wiki/entities/iot/line-notify.md: missing frontmatter key: title
-- wiki/entities/iot/load-cell.md: missing frontmatter key: title
-- wiki/entities/iot/mosquitto.md: missing frontmatter key: title
-- wiki/entities/iot/mqtt-protocol.md: missing frontmatter key: title
-- wiki/entities/iot/mysql.md: missing frontmatter key: title
-- wiki/entities/iot/nb-iot.md: missing frontmatter key: title
-- wiki/entities/iot/node-red.md: missing frontmatter key: title
-- wiki/entities/iot/platformio.md: missing frontmatter key: title
-- wiki/entities/iot/pms5003.md: missing frontmatter key: title
-- wiki/entities/iot/pzem-004t.md: missing frontmatter key: title
-- wiki/entities/iot/raspberry-pi.md: missing frontmatter key: title
-- wiki/entities/iot/rfm95-sx1276.md: missing frontmatter key: title
-- wiki/entities/iot/telegram-bot.md: missing frontmatter key: title
-- wiki/entities/iot/the-things-network.md: missing frontmatter key: title
-- wiki/entities/iot/vapcell-m35-18650.md: missing frontmatter key: title
-- wiki/entities/iot/velxio.md: missing frontmatter key: title
-- wiki/entities/pharmacy/drug-database.md: missing frontmatter key: title
-- wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
-- wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
-- wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
-- wiki/sources/3-dashboard-node-red.md: missing frontmatter key: tags
-- wiki/sources/ai-iot-server-build-v3-final.md: missing frontmatter key: tags
-- wiki/sources/ai-tools/langchain-framework.md: no frontmatter (missing --- delimiter)
-- wiki/sources/ai-tools/vector-databases.md: no frontmatter (missing --- delimiter)
-- wiki/sources/arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
-- wiki/sources/arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
-- wiki/sources/build-software-better-together.md: missing frontmatter key: tags
-- wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
-- wiki/sources/context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
-- wiki/sources/dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
-- wiki/sources/datasheet-dx-lr02.md: missing frontmatter key: tags
-- wiki/sources/env/air-quality-monitoring.md: no frontmatter (missing --- delimiter)
-- wiki/sources/env/soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
-- wiki/sources/env/water-quality-parameters.md: no frontmatter (missing --- delimiter)
-- wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
-- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
-- wiki/sources/esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
-- wiki/sources/esp32.md: missing frontmatter key: tags
-- wiki/sources/espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
-- wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
-- wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
-- wiki/sources/good-uiux-practices.md: missing frontmatter key: tags
-- wiki/sources/hardware-inventory-2026-04-18.md: missing frontmatter key: tags
-- wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
-- wiki/sources/hermes-agent.md: missing frontmatter key: tags
-- wiki/sources/how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
-- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
-- wiki/sources/iot/lorawan-architecture.md: no frontmatter (missing --- delimiter)
-- wiki/sources/iot/mqtt-protocol-overview.md: no frontmatter (missing --- delimiter)
-- wiki/sources/iot-engineering-education.md: missing frontmatter key: tags
-- wiki/sources/iot-lora-gateway-architecture.md: missing frontmatter key: tags
-- wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
-- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
-- wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
-- wiki/sources/it/edge-computing-iot.md: no frontmatter (missing --- delimiter)
-- wiki/sources/it/network-monitoring-iot.md: no frontmatter (missing --- delimiter)
-- wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
-- wiki/sources/lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
-- wiki/sources/lora-nb-iot.md: missing frontmatter key: tags
-- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
-- wiki/sources/mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
-- wiki/sources/manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
-- wiki/sources/mqtt-introduction.md: missing frontmatter key: tags
-- wiki/sources/note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
-- wiki/sources/pharmacy/drug-interaction-checking.md: no frontmatter (missing --- delimiter)
-- wiki/sources/raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
-- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
-- wiki/sources/raspberry-pi-documentation.md: missing frontmatter key: tags
-- wiki/sources/readme.md: missing frontmatter key: tags
-- wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
-- wiki/sources/source-5e4074bd.md: missing frontmatter key: tags
-- wiki/sources/sp-drugstore-2020-catalog.md: missing frontmatter key: tags
-- wiki/sources/strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki/sources/ux-design-in-iot.md: missing frontmatter key: tags
-- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
-- wiki/sources/web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
-- wiki/sources/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
-- wiki/sources/web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
-- wiki/sources/web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
-- wiki/synthesis/ai-driven-environmental-modeling.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/ai-for-drug-safety.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
-- wiki/synthesis/appsheet-to-webapp-pi5.md: missing frontmatter key: title
-- wiki/synthesis/cold-chain-vaccine.md: missing frontmatter key: title
-- wiki/synthesis/digital-legacy-ai-architecture.md: missing frontmatter key: title
-- wiki/synthesis/dream-projects.md: missing frontmatter key: title
-- wiki/synthesis/dual-ai-workflow.md: missing frontmatter key: title
-- wiki/synthesis/energy-power-monitoring.md: missing frontmatter key: title
-- wiki/synthesis/env-webapp-schema-wastewater.md: missing frontmatter key: title
-- wiki/synthesis/environmental-iot-sensing.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/environmental-monitoring-it.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/environmental-pharmaceutical-risk.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/fuel-tank-level.md: missing frontmatter key: title
-- wiki/synthesis/garbage-report-ocr.md: missing frontmatter key: title
-- wiki/synthesis/healthcare-it-infrastructure.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/intelligent-iot-pipelines.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/iot-in-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/iot-lora-architecture.md: missing frontmatter key: title
-- wiki/synthesis/iot-network-infrastructure.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
-- wiki/synthesis/openrouter-agent-routing.md: missing frontmatter key: title
-- wiki/synthesis/pharmacy-order-checker.md: missing frontmatter key: title
-- wiki/synthesis/pharmacy-project-specs.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/pharmacy-web-app-roadmap.md: missing frontmatter key: title
-- wiki/synthesis/pi4-lora-gateway-server.md: missing frontmatter key: title
-- wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
-- wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki/synthesis/synth-3-dashboard-node-red.md: missing frontmatter key: tags
-- wiki/synthesis/synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ai-agents-integration-guide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ai-iot-server-build-v3.md: missing frontmatter key: tags
-- wiki/synthesis/synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
-- wiki/synthesis/synth-air-quality-sensors-dronebot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-appsheet-env-datadict.md: missing frontmatter key: tags
-- wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
-- wiki/synthesis/synth-arduino-ide-esp32-setup.md: missing frontmatter key: tags
-- wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: missing frontmatter key: tags
-- wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md: missing frontmatter key: tags
-- wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
-- wiki/synthesis/synth-build-software-better-together.md: missing frontmatter key: tags
-- wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
-- wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
-- wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
-- wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dashboard-design-best-practices.md: missing frontmatter key: tags
-- wiki/synthesis/synth-datasheet-dx-lr02.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ddc-cpg-rabies-2564.md: missing frontmatter key: tags
-- wiki/synthesis/synth-drug-aliases-reference.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ds18b20-esp32-randomnerd.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dx-lr02-at-commands-demo.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dx-lr02-datasheet.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dx-lr02-module-spec-official.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dx-lr02-official-arduino-library.md: missing frontmatter key: tags
-- wiki/synthesis/synth-dx-lr02-serial-guide-v2.md: missing frontmatter key: tags
-- wiki/synthesis/synth-easyloranode-tracker.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp-idf-docs.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-complete-guide-thai.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-hx711-mqtt-github.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-hx711-randomnerd.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-arduino-ide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-gateway-sparkfun.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-lora-sensor-webserver.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-s3-intro-thai.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-tank-level-mqtt.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-weather-dashboard-16day.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-weather-epd.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: missing frontmatter key: tags
-- wiki/synthesis/synth-esp32.md: missing frontmatter key: tags
-- wiki/synthesis/synth-espem-energy-monitor.md: missing frontmatter key: tags
-- wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
-- wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md: missing frontmatter key: tags
-- wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
-- wiki/synthesis/synth-freqtrade-pi5.md: missing frontmatter key: tags
-- wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
-- wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
-- wiki/synthesis/synth-good-uiux-practices.md: missing frontmatter key: tags
-- wiki/synthesis/synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
-- wiki/synthesis/synth-heltec-libraries.md: missing frontmatter key: tags
-- wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: missing frontmatter key: tags
-- wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
-- wiki/synthesis/synth-hermes-agent-guide-th.md: missing frontmatter key: tags
-- wiki/synthesis/synth-hermes-agent.md: missing frontmatter key: tags
-- wiki/synthesis/synth-hospital-wastewater-treatment.md: missing frontmatter key: tags
-- wiki/synthesis/synth-how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
-- wiki/synthesis/synth-hyperframes-official-docs.md: missing frontmatter key: tags
-- wiki/synthesis/synth-infectious-waste-th-law.md: missing frontmatter key: tags
-- wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: missing frontmatter key: tags
-- wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-engineering-education.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-lora-gateway-architecture.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iot-visualization-guide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: missing frontmatter key: tags
-- wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
-- wiki/synthesis/synth-local-llm-mac-mini-guide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-getting-started-dronebot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-nb-iot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-thai-intro.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lora-vs-nbiot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lorawan-fuota-rak3172.md: missing frontmatter key: tags
-- wiki/synthesis/synth-lorawan-network-beginner.md: missing frontmatter key: tags
-- wiki/synthesis/synth-mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
-- wiki/synthesis/synth-manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
-- wiki/synthesis/synth-mqtt-introduction.md: missing frontmatter key: tags
-- wiki/synthesis/synth-nodered-dashboard-ui.md: missing frontmatter key: tags
-- wiki/synthesis/synth-note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ollama-pi5.md: missing frontmatter key: tags
-- wiki/synthesis/synth-openrouter-api-demo.md: missing frontmatter key: tags
-- wiki/synthesis/synth-pharmacy-context.md: missing frontmatter key: tags
-- wiki/synthesis/synth-pharmacy-ui-instructions.md: missing frontmatter key: tags
-- wiki/synthesis/synth-platformio-esp32-guide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-pzem-004t-guide-2025.md: missing frontmatter key: tags
-- wiki/synthesis/synth-rabies-vaccine-guidelines-th-2026-05-02.md: missing frontmatter key: tags
-- wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
-- wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: missing frontmatter key: tags
-- wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
-- wiki/synthesis/synth-raspberry-pi-documentation.md: missing frontmatter key: tags
-- wiki/synthesis/synth-raspberry-pi-iot-guide.md: missing frontmatter key: tags
-- wiki/synthesis/synth-readme.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
-- wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md: missing frontmatter key: tags
-- wiki/synthesis/synth-rpi5-16gb-thailand-price.md: missing frontmatter key: tags
-- wiki/synthesis/synth-saovabha-rabies-pep-2565.md: missing frontmatter key: tags
-- wiki/synthesis/synth-source-5e4074bd.md: missing frontmatter key: tags
-- wiki/synthesis/synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
-- wiki/synthesis/synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
-- wiki/synthesis/synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
-- wiki/synthesis/synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
-- wiki/synthesis/synth-telegram-ai-router-design.md: missing frontmatter key: tags
-- wiki/synthesis/synth-tinyml-esp32-applications.md: missing frontmatter key: tags
-- wiki/synthesis/synth-umbrel-pi5-setup.md: missing frontmatter key: tags
-- wiki/synthesis/synth-uthai-equipment-price-2568.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ux-design-in-iot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-vaccine-cae-anomaly-detection.md: missing frontmatter key: tags
-- wiki/synthesis/synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
-- wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md: missing frontmatter key: tags
-- wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
-- wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
-- wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
-- wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
-- wiki/synthesis/synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
-- wiki/synthesis/synth-web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
-- wiki/synthesis/synth-web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
-- wiki/synthesis/synth-who-rabies-position-2018.md: missing frontmatter key: tags
-- wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md: missing frontmatter key: tags
-- wiki/synthesis/synth-คู่มือ-hermes-agent.md: missing frontmatter key: tags
-- wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md: missing frontmatter key: tags
-- wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: missing frontmatter key: tags
-- wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: missing frontmatter key: tags
-- wiki/synthesis/synthesis-ai-tools.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/synthesis-env.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/synthesis-iot.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/synthesis-it.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/synthesis-pharmacy.md: no frontmatter (missing --- delimiter)
-- wiki/synthesis/temperature-monitor-project.md: missing frontmatter key: title
-- wiki/synthesis/vibe-pocketbase-project.md: missing frontmatter key: title
-- wiki/synthesis/waste-form-automation.md: missing frontmatter key: title
-- wiki/synthesis/waste-weight-monitoring.md: missing frontmatter key: title
-- wiki/synthesis/wiki-to-video-pipeline.md: missing frontmatter key: title
-- wiki/templates/td-21-power-of-attorney.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
+- wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
+- wiki\concepts\env\infectious-waste-management.md: missing frontmatter key: title
+- wiki\concepts\env\rabies-pep-protocol.md: missing frontmatter key: title
+- wiki\concepts\env\water-quality-parameters.md: missing frontmatter key: title
+- wiki\concepts\iot\air-quality-index.md: missing frontmatter key: title
+- wiki\concepts\iot\cold-chain-monitoring.md: missing frontmatter key: title
+- wiki\concepts\iot\dashboard-design.md: missing frontmatter key: title
+- wiki\concepts\iot\data-logger.md: missing frontmatter key: title
+- wiki\concepts\iot\lora-p2p.md: missing frontmatter key: title
+- wiki\concepts\iot\lora.md: missing frontmatter key: title
+- wiki\concepts\iot\lorawan.md: missing frontmatter key: title
+- wiki\concepts\iot\modbus.md: missing frontmatter key: title
+- wiki\concepts\iot\mqtt-qos.md: missing frontmatter key: title
+- wiki\concepts\iot\publish-subscribe.md: missing frontmatter key: title
+- wiki\concepts\iot\tinyml.md: missing frontmatter key: title
+- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\drug-aliases.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\drug-classification.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\drug-validation.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\fuzzy-match.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\ordering-workflow.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\pharmacy-context.md: missing frontmatter key: title
+- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing frontmatter key: title
+- wiki\entities\ai-tools\9arm-skills.md: missing frontmatter key: title
+- wiki\entities\ai-tools\agents-md-spec.md: missing frontmatter key: title
+- wiki\entities\ai-tools\ecc.md: missing frontmatter key: title
+- wiki\entities\ai-tools\frontend-slides.md: missing frontmatter key: title
+- wiki\entities\ai-tools\gitnexus.md: missing frontmatter key: title
+- wiki\entities\ai-tools\hermes-agent.md: missing frontmatter key: title
+- wiki\entities\ai-tools\hyperframes.md: missing frontmatter key: title
+- wiki\entities\ai-tools\ollama.md: missing frontmatter key: title
+- wiki\entities\ai-tools\pocketbase.md: missing frontmatter key: title
+- wiki\entities\ai-tools\react-doctor.md: missing frontmatter key: title
+- wiki\entities\ai-tools\telegram-ai-router.md: missing frontmatter key: title
+- wiki\entities\ai-tools\turbovec.md: missing frontmatter key: title
+- wiki\entities\env\activated-sludge-system.md: missing frontmatter key: title
+- wiki\entities\env\rabies-pep-surveillance.md: missing frontmatter key: title
+- wiki\entities\iot\18650-battery-shield.md: missing frontmatter key: title
+- wiki\entities\iot\arduino-ide.md: missing frontmatter key: title
+- wiki\entities\iot\arduino-uno-r3.md: missing frontmatter key: title
+- wiki\entities\iot\chirpstack.md: missing frontmatter key: title
+- wiki\entities\iot\dht11.md: missing frontmatter key: title
+- wiki\entities\iot\ds18b20.md: missing frontmatter key: title
+- wiki\entities\iot\dx-lr02-lora.md: missing frontmatter key: title
+- wiki\entities\iot\dx-smart-ttl.md: missing frontmatter key: title
+- wiki\entities\iot\emqx.md: missing frontmatter key: title
+- wiki\entities\iot\esp-idf.md: missing frontmatter key: title
+- wiki\entities\iot\esp32-c6.md: missing frontmatter key: title
+- wiki\entities\iot\esp32-s3.md: missing frontmatter key: title
+- wiki\entities\iot\esp32.md: missing frontmatter key: title
+- wiki\entities\iot\grafana.md: missing frontmatter key: title
+- wiki\entities\iot\hc-sr04.md: missing frontmatter key: title
+- wiki\entities\iot\hc-sr501.md: missing frontmatter key: title
+- wiki\entities\iot\home-assistant.md: missing frontmatter key: title
+- wiki\entities\iot\hx711.md: missing frontmatter key: title
+- wiki\entities\iot\influxdb.md: missing frontmatter key: title
+- wiki\entities\iot\line-notify.md: missing frontmatter key: title
+- wiki\entities\iot\load-cell.md: missing frontmatter key: title
+- wiki\entities\iot\mosquitto.md: missing frontmatter key: title
+- wiki\entities\iot\mqtt-protocol.md: missing frontmatter key: title
+- wiki\entities\iot\mysql.md: missing frontmatter key: title
+- wiki\entities\iot\nb-iot.md: missing frontmatter key: title
+- wiki\entities\iot\node-red.md: missing frontmatter key: title
+- wiki\entities\iot\platformio.md: missing frontmatter key: title
+- wiki\entities\iot\pms5003.md: missing frontmatter key: title
+- wiki\entities\iot\pzem-004t.md: missing frontmatter key: title
+- wiki\entities\iot\raspberry-pi.md: missing frontmatter key: title
+- wiki\entities\iot\rfm95-sx1276.md: missing frontmatter key: title
+- wiki\entities\iot\telegram-bot.md: missing frontmatter key: title
+- wiki\entities\iot\the-things-network.md: missing frontmatter key: title
+- wiki\entities\iot\vapcell-m35-18650.md: missing frontmatter key: title
+- wiki\entities\iot\velxio.md: missing frontmatter key: title
+- wiki\entities\pharmacy\drug-database.md: missing frontmatter key: title
+- wiki\entities\pharmacy\drug-matching-system.md: missing frontmatter key: title
+- wiki\entities\pharmacy\pharmacy-business.md: missing frontmatter key: title
+- wiki\entities\pharmacy\sp-drugstore-2020.md: missing frontmatter key: title
+- wiki\sources\3-dashboard-node-red.md: missing frontmatter key: tags
+- wiki\sources\ai-iot-server-build-v3-final.md: missing frontmatter key: tags
+- wiki\sources\ai-tools\langchain-framework.md: no frontmatter (missing --- delimiter)
+- wiki\sources\ai-tools\vector-databases.md: no frontmatter (missing --- delimiter)
+- wiki\sources\arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
+- wiki\sources\arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
+- wiki\sources\build-software-better-together.md: missing frontmatter key: tags
+- wiki\sources\building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki\sources\context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki\sources\create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
+- wiki\sources\dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
+- wiki\sources\datasheet-dx-lr02.md: missing frontmatter key: tags
+- wiki\sources\env\air-quality-monitoring.md: no frontmatter (missing --- delimiter)
+- wiki\sources\env\soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
+- wiki\sources\env\water-quality-parameters.md: no frontmatter (missing --- delimiter)
+- wiki\sources\esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
+- wiki\sources\esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
+- wiki\sources\esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
+- wiki\sources\esp32.md: missing frontmatter key: tags
+- wiki\sources\espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
+- wiki\sources\espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
+- wiki\sources\get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki\sources\good-uiux-practices.md: missing frontmatter key: tags
+- wiki\sources\hardware-inventory-2026-04-18.md: missing frontmatter key: tags
+- wiki\sources\heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
+- wiki\sources\hermes-agent.md: missing frontmatter key: tags
+- wiki\sources\how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
+- wiki\sources\introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
+- wiki\sources\iot\lorawan-architecture.md: no frontmatter (missing --- delimiter)
+- wiki\sources\iot\mqtt-protocol-overview.md: no frontmatter (missing --- delimiter)
+- wiki\sources\iot-engineering-education.md: missing frontmatter key: tags
+- wiki\sources\iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki\sources\iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
+- wiki\sources\iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
+- wiki\sources\iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
+- wiki\sources\it\edge-computing-iot.md: no frontmatter (missing --- delimiter)
+- wiki\sources\it\network-monitoring-iot.md: no frontmatter (missing --- delimiter)
+- wiki\sources\lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
+- wiki\sources\lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki\sources\lora-nb-iot.md: missing frontmatter key: tags
+- wiki\sources\lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
+- wiki\sources\mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
+- wiki\sources\manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
+- wiki\sources\mqtt-introduction.md: missing frontmatter key: tags
+- wiki\sources\note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
+- wiki\sources\pharmacy\drug-interaction-checking.md: no frontmatter (missing --- delimiter)
+- wiki\sources\raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
+- wiki\sources\raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
+- wiki\sources\raspberry-pi-documentation.md: missing frontmatter key: tags
+- wiki\sources\readme.md: missing frontmatter key: tags
+- wiki\sources\ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
+- wiki\sources\source-5e4074bd.md: missing frontmatter key: tags
+- wiki\sources\sp-drugstore-2020-catalog.md: missing frontmatter key: tags
+- wiki\sources\strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki\sources\ux-design-in-iot.md: missing frontmatter key: tags
+- wiki\sources\vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
+- wiki\sources\web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
+- wiki\sources\web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
+- wiki\sources\web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
+- wiki\sources\web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
+- wiki\synthesis\ai-driven-environmental-modeling.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\ai-for-drug-safety.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\air-quality-monitoring.md: missing frontmatter key: title
+- wiki\synthesis\appsheet-to-webapp-pi5.md: missing frontmatter key: title
+- wiki\synthesis\cold-chain-vaccine.md: missing frontmatter key: title
+- wiki\synthesis\digital-legacy-ai-architecture.md: missing frontmatter key: title
+- wiki\synthesis\dream-projects.md: missing frontmatter key: title
+- wiki\synthesis\dual-ai-workflow.md: missing frontmatter key: title
+- wiki\synthesis\energy-power-monitoring.md: missing frontmatter key: title
+- wiki\synthesis\env-webapp-schema-wastewater.md: missing frontmatter key: title
+- wiki\synthesis\environmental-iot-sensing.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\environmental-monitoring-it.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\environmental-pharmaceutical-risk.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\fuel-tank-level.md: missing frontmatter key: title
+- wiki\synthesis\garbage-report-ocr.md: missing frontmatter key: title
+- wiki\synthesis\healthcare-it-infrastructure.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\intelligent-iot-pipelines.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\iot-in-pharmacy.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\iot-lora-architecture.md: missing frontmatter key: title
+- wiki\synthesis\iot-network-infrastructure.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
+- wiki\synthesis\openrouter-agent-routing.md: missing frontmatter key: title
+- wiki\synthesis\pharmacy-order-checker.md: missing frontmatter key: title
+- wiki\synthesis\pharmacy-project-specs.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\pharmacy-web-app-roadmap.md: missing frontmatter key: title
+- wiki\synthesis\pi4-lora-gateway-server.md: missing frontmatter key: title
+- wiki\synthesis\synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md: missing frontmatter key: tags
+- wiki\synthesis\synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki\synthesis\synth-3-dashboard-node-red.md: missing frontmatter key: tags
+- wiki\synthesis\synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-agents-integration-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-engineering-glossary.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-iot-server-build-v3.md: missing frontmatter key: tags
+- wiki\synthesis\synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
+- wiki\synthesis\synth-air-quality-sensors-dronebot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-appsheet-env-datadict.md: missing frontmatter key: tags
+- wiki\synthesis\synth-arduino-ide-esp32-arduino-2025.md: missing frontmatter key: tags
+- wiki\synthesis\synth-arduino-ide-esp32-setup.md: missing frontmatter key: tags
+- wiki\synthesis\synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: missing frontmatter key: tags
+- wiki\synthesis\synth-arduino-librariesarduino-powermanagement.md: missing frontmatter key: tags
+- wiki\synthesis\synth-arduino-librariesarduinopowermanagement.md: missing frontmatter key: tags
+- wiki\synthesis\synth-build-software-better-together.md: missing frontmatter key: tags
+- wiki\synthesis\synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
+- wiki\synthesis\synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
+- wiki\synthesis\synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
+- wiki\synthesis\synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dashboard-design-best-practices-and-examples.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dashboard-design-best-practices.md: missing frontmatter key: tags
+- wiki\synthesis\synth-datasheet-dx-lr02.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ddc-cpg-rabies-2564.md: missing frontmatter key: tags
+- wiki\synthesis\synth-drug-aliases-reference.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ds18b20-esp32-randomnerd.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dx-lr02-at-commands-demo.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dx-lr02-datasheet.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dx-lr02-module-spec-official.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dx-lr02-official-arduino-library.md: missing frontmatter key: tags
+- wiki\synthesis\synth-dx-lr02-serial-guide-v2.md: missing frontmatter key: tags
+- wiki\synthesis\synth-easyloranode-tracker.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp-idf-docs.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-complete-guide-thai.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-hx711-mqtt-github.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-hx711-randomnerd.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-arduino-ide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-gateway-sparkfun.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-lora-sensor-webserver.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-s3-intro-thai.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-tank-level-mqtt.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-weather-dashboard-16day.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-weather-epd.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-with-lora-using-arduino-ide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: missing frontmatter key: tags
+- wiki\synthesis\synth-esp32.md: missing frontmatter key: tags
+- wiki\synthesis\synth-espem-energy-monitor.md: missing frontmatter key: tags
+- wiki\synthesis\synth-espressif-esp32-s3-iot-engineering-education.md: missing frontmatter key: tags
+- wiki\synthesis\synth-espressifesp-idf-espressif-iot-development-framework-officia.md: missing frontmatter key: tags
+- wiki\synthesis\synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md: missing frontmatter key: tags
+- wiki\synthesis\synth-freqtrade-pi5.md: missing frontmatter key: tags
+- wiki\synthesis\synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
+- wiki\synthesis\synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki\synthesis\synth-good-uiux-practices.md: missing frontmatter key: tags
+- wiki\synthesis\synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
+- wiki\synthesis\synth-heltec-libraries.md: missing frontmatter key: tags
+- wiki\synthesis\synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: missing frontmatter key: tags
+- wiki\synthesis\synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md: missing frontmatter key: tags
+- wiki\synthesis\synth-hermes-agent-guide-th.md: missing frontmatter key: tags
+- wiki\synthesis\synth-hermes-agent.md: missing frontmatter key: tags
+- wiki\synthesis\synth-hospital-wastewater-treatment.md: missing frontmatter key: tags
+- wiki\synthesis\synth-how-lorawan-network-works-a-beginner.md: missing frontmatter key: tags
+- wiki\synthesis\synth-hyperframes-official-docs.md: missing frontmatter key: tags
+- wiki\synthesis\synth-infectious-waste-th-law.md: missing frontmatter key: tags
+- wiki\synthesis\synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: missing frontmatter key: tags
+- wiki\synthesis\synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-edge-ai-esp32-c6-2026.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-engineering-education.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-lora-gateway-architecture.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-node-red-mqtt-sql-data-logger-dashboard.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-nodered-mqtt-sql-course.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-visualization-guide-designing-effective-dashboards-monit.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iot-visualization-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: missing frontmatter key: tags
+- wiki\synthesis\synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md: missing frontmatter key: tags
+- wiki\synthesis\synth-local-llm-mac-mini-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-arduino-esp8266-esp32-iot-lora-lora.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-getting-started-dronebot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-getting-started-with-arduino-esp32-pico.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-nb-iot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-thai-intro.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lora-vs-nbiot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lorawan-fuota-rak3172.md: missing frontmatter key: tags
+- wiki\synthesis\synth-lorawan-network-beginner.md: missing frontmatter key: tags
+- wiki\synthesis\synth-mac-studio-used-thailand-2026-05-05.md: missing frontmatter key: tags
+- wiki\synthesis\synth-manual-input-appsheet-env-2026-05-04.md: missing frontmatter key: tags
+- wiki\synthesis\synth-mqtt-introduction.md: missing frontmatter key: tags
+- wiki\synthesis\synth-nodered-dashboard-ui.md: missing frontmatter key: tags
+- wiki\synthesis\synth-note-taking-research-assistant-powered-by-ai.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ollama-pi5.md: missing frontmatter key: tags
+- wiki\synthesis\synth-openrouter-api-demo.md: missing frontmatter key: tags
+- wiki\synthesis\synth-pharmacy-context.md: missing frontmatter key: tags
+- wiki\synthesis\synth-pharmacy-ui-instructions.md: missing frontmatter key: tags
+- wiki\synthesis\synth-platformio-esp32-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-pzem-004t-guide-2025.md: missing frontmatter key: tags
+- wiki\synthesis\synth-rabies-vaccine-guidelines-th-2026-05-02.md: missing frontmatter key: tags
+- wiki\synthesis\synth-raspberry-pi-5-16gb-made-in-uk.md: missing frontmatter key: tags
+- wiki\synthesis\synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: missing frontmatter key: tags
+- wiki\synthesis\synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md: missing frontmatter key: tags
+- wiki\synthesis\synth-raspberry-pi-documentation.md: missing frontmatter key: tags
+- wiki\synthesis\synth-raspberry-pi-iot-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-readme.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md: missing frontmatter key: tags
+- wiki\synthesis\synth-rpi-ai-hat-plus-2-official.md: missing frontmatter key: tags
+- wiki\synthesis\synth-rpi5-16gb-thailand-price.md: missing frontmatter key: tags
+- wiki\synthesis\synth-saovabha-rabies-pep-2565.md: missing frontmatter key: tags
+- wiki\synthesis\synth-source-5e4074bd.md: missing frontmatter key: tags
+- wiki\synthesis\synth-sp-drugstore-2020-catalog.md: missing frontmatter key: tags
+- wiki\synthesis\synth-strix-halo-research-2026-05-05.md: missing frontmatter key: tags
+- wiki\synthesis\synth-supabase-overview-2026-05-02.md: missing frontmatter key: tags
+- wiki\synthesis\synth-telegram-ai-agent-setup.md: missing frontmatter key: tags
+- wiki\synthesis\synth-telegram-ai-router-design.md: missing frontmatter key: tags
+- wiki\synthesis\synth-tinyml-esp32-applications.md: missing frontmatter key: tags
+- wiki\synthesis\synth-umbrel-pi5-setup.md: missing frontmatter key: tags
+- wiki\synthesis\synth-uthai-equipment-price-2568.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ux-design-in-iot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-vaccine-cae-anomaly-detection.md: missing frontmatter key: tags
+- wiki\synthesis\synth-vaccine-temp-monitoring-iot.md: missing frontmatter key: tags
+- wiki\synthesis\synth-velxio-arduino-esp32-pi-simulator.md: missing frontmatter key: tags
+- wiki\synthesis\synth-vibe-pocketbase-gemini-plan.md: missing frontmatter key: tags
+- wiki\synthesis\synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: missing frontmatter key: tags
+- wiki\synthesis\synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md: missing frontmatter key: tags
+- wiki\synthesis\synth-web-appsheet-export-yaml-2026-05-04.md: missing frontmatter key: tags
+- wiki\synthesis\synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md: missing frontmatter key: tags
+- wiki\synthesis\synth-web-local-llm-mac-mini-2026-04-19.md: missing frontmatter key: tags
+- wiki\synthesis\synth-web-raspberry-pi-ai-bot-recommendation-2026.md: missing frontmatter key: tags
+- wiki\synthesis\synth-who-rabies-position-2018.md: missing frontmatter key: tags
+- wiki\synthesis\synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ข้อมูล-datasheet-ของ-dx-lr02.md: missing frontmatter key: tags
+- wiki\synthesis\synth-คู่มือ-hermes-agent.md: missing frontmatter key: tags
+- wiki\synthesis\synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: missing frontmatter key: tags
+- wiki\synthesis\synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: missing frontmatter key: tags
+- wiki\synthesis\synthesis-ai-tools.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\synthesis-env.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\synthesis-iot.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\synthesis-it.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\synthesis-pharmacy.md: no frontmatter (missing --- delimiter)
+- wiki\synthesis\temperature-monitor-project.md: missing frontmatter key: title
+- wiki\synthesis\vibe-pocketbase-project.md: missing frontmatter key: title
+- wiki\synthesis\waste-form-automation.md: missing frontmatter key: title
+- wiki\synthesis\waste-weight-monitoring.md: missing frontmatter key: title
+- wiki\synthesis\wiki-to-video-pipeline.md: missing frontmatter key: title
+- wiki\templates\td-21-power-of-attorney.md: missing frontmatter key: title
 
 ---
 
 ## ⚠ L6: Quality Floor (body length, TL;DR) — Warnings
 
-- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing TL;DR line
-- wiki/concepts/ai-tools/context-management.md: missing TL;DR line
-- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing TL;DR line
-- wiki/concepts/ai-tools/local-llm-routing.md: missing TL;DR line
-- wiki/concepts/ai-tools/openrouter-api.md: missing TL;DR line
-- wiki/concepts/ai-tools/session-setup.md: missing TL;DR line
-- wiki/concepts/ai-tools/symlinks-ssot.md: missing TL;DR line
-- wiki/concepts/ai-tools/vibe-coding.md: missing TL;DR line
-- wiki/concepts/env/hospital-wastewater-treatment.md: missing TL;DR line
-- wiki/concepts/env/infectious-waste-management.md: missing TL;DR line
-- wiki/concepts/env/rabies-pep-protocol.md: missing TL;DR line
-- wiki/concepts/env/water-quality-parameters.md: missing TL;DR line
-- wiki/concepts/iot/air-quality-index.md: missing TL;DR line
-- wiki/concepts/iot/cold-chain-monitoring.md: missing TL;DR line
-- wiki/concepts/iot/dashboard-design.md: missing TL;DR line
-- wiki/concepts/iot/data-logger.md: missing TL;DR line
-- wiki/concepts/iot/lora-p2p.md: missing TL;DR line
-- wiki/concepts/iot/lora.md: missing TL;DR line
-- wiki/concepts/iot/lorawan.md: missing TL;DR line
-- wiki/concepts/iot/modbus.md: missing TL;DR line
-- wiki/concepts/iot/mqtt-qos.md: missing TL;DR line
-- wiki/concepts/iot/publish-subscribe.md: missing TL;DR line
-- wiki/concepts/iot/tinyml.md: missing TL;DR line
-- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
-- wiki/concepts/pharmacy/drug-aliases.md: missing TL;DR line
-- wiki/concepts/pharmacy/drug-classification.md: missing TL;DR line
-- wiki/concepts/pharmacy/drug-validation.md: missing TL;DR line
-- wiki/concepts/pharmacy/fuzzy-match.md: missing TL;DR line
-- wiki/concepts/pharmacy/ordering-workflow.md: missing TL;DR line
-- wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
-- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
-- wiki/entities/ai-tools/9arm-skills.md: missing TL;DR line
-- wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
-- wiki/entities/ai-tools/ecc.md: missing TL;DR line
-- wiki/entities/ai-tools/frontend-slides.md: missing TL;DR line
-- wiki/entities/ai-tools/gitnexus.md: missing TL;DR line
-- wiki/entities/ai-tools/hermes-agent.md: missing TL;DR line
-- wiki/entities/ai-tools/hyperframes.md: missing TL;DR line
-- wiki/entities/ai-tools/ollama.md: missing TL;DR line
-- wiki/entities/ai-tools/pocketbase.md: missing TL;DR line
-- wiki/entities/ai-tools/react-doctor.md: missing TL;DR line
-- wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
-- wiki/entities/ai-tools/turbovec.md: missing TL;DR line
-- wiki/entities/env/activated-sludge-system.md: missing TL;DR line
-- wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
-- wiki/entities/iot/18650-battery-shield.md: missing TL;DR line
-- wiki/entities/iot/arduino-ide.md: missing TL;DR line
-- wiki/entities/iot/arduino-uno-r3.md: missing TL;DR line
-- wiki/entities/iot/chirpstack.md: missing TL;DR line
-- wiki/entities/iot/dht11.md: missing TL;DR line
-- wiki/entities/iot/ds18b20.md: missing TL;DR line
-- wiki/entities/iot/dx-lr02-lora.md: missing TL;DR line
-- wiki/entities/iot/dx-smart-ttl.md: missing TL;DR line
-- wiki/entities/iot/emqx.md: missing TL;DR line
-- wiki/entities/iot/esp-idf.md: missing TL;DR line
-- wiki/entities/iot/esp32-c6.md: missing TL;DR line
-- wiki/entities/iot/esp32-s3.md: missing TL;DR line
-- wiki/entities/iot/esp32.md: missing TL;DR line
-- wiki/entities/iot/grafana.md: missing TL;DR line
-- wiki/entities/iot/hc-sr04.md: missing TL;DR line
-- wiki/entities/iot/hc-sr501.md: missing TL;DR line
-- wiki/entities/iot/home-assistant.md: missing TL;DR line
-- wiki/entities/iot/hx711.md: missing TL;DR line
-- wiki/entities/iot/influxdb.md: missing TL;DR line
-- wiki/entities/iot/line-notify.md: missing TL;DR line
-- wiki/entities/iot/load-cell.md: missing TL;DR line
-- wiki/entities/iot/mosquitto.md: missing TL;DR line
-- wiki/entities/iot/mqtt-protocol.md: missing TL;DR line
-- wiki/entities/iot/mysql.md: missing TL;DR line
-- wiki/entities/iot/nb-iot.md: missing TL;DR line
-- wiki/entities/iot/node-red.md: missing TL;DR line
-- wiki/entities/iot/platformio.md: missing TL;DR line
-- wiki/entities/iot/pms5003.md: missing TL;DR line
-- wiki/entities/iot/pzem-004t.md: missing TL;DR line
-- wiki/entities/iot/raspberry-pi.md: missing TL;DR line
-- wiki/entities/iot/rfm95-sx1276.md: missing TL;DR line
-- wiki/entities/iot/telegram-bot.md: missing TL;DR line
-- wiki/entities/iot/the-things-network.md: missing TL;DR line
-- wiki/entities/iot/vapcell-m35-18650.md: missing TL;DR line
-- wiki/entities/iot/velxio.md: missing TL;DR line
-- wiki/entities/pharmacy/drug-database.md: missing TL;DR line
-- wiki/entities/pharmacy/drug-matching-system.md: missing TL;DR line
-- wiki/entities/pharmacy/pharmacy-business.md: missing TL;DR line
-- wiki/entities/pharmacy/sp-drugstore-2020.md: missing TL;DR line
+- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing TL;DR line
+- wiki\concepts\ai-tools\ai-glossary.md: missing TL;DR line
+- wiki\concepts\ai-tools\ai-myths.md: missing TL;DR line
+- wiki\concepts\ai-tools\context-management.md: missing TL;DR line
+- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing TL;DR line
+- wiki\concepts\ai-tools\local-llm-routing.md: missing TL;DR line
+- wiki\concepts\ai-tools\openrouter-api.md: missing TL;DR line
+- wiki\concepts\ai-tools\session-setup.md: missing TL;DR line
+- wiki\concepts\ai-tools\symlinks-ssot.md: missing TL;DR line
+- wiki\concepts\ai-tools\vibe-coding.md: missing TL;DR line
+- wiki\concepts\env\hospital-wastewater-treatment.md: missing TL;DR line
+- wiki\concepts\env\infectious-waste-management.md: missing TL;DR line
+- wiki\concepts\env\rabies-pep-protocol.md: missing TL;DR line
+- wiki\concepts\env\water-quality-parameters.md: missing TL;DR line
+- wiki\concepts\iot\air-quality-index.md: missing TL;DR line
+- wiki\concepts\iot\cold-chain-monitoring.md: missing TL;DR line
+- wiki\concepts\iot\dashboard-design.md: missing TL;DR line
+- wiki\concepts\iot\data-logger.md: missing TL;DR line
+- wiki\concepts\iot\lora-p2p.md: missing TL;DR line
+- wiki\concepts\iot\lora.md: missing TL;DR line
+- wiki\concepts\iot\lorawan.md: missing TL;DR line
+- wiki\concepts\iot\modbus.md: missing TL;DR line
+- wiki\concepts\iot\mqtt-qos.md: missing TL;DR line
+- wiki\concepts\iot\publish-subscribe.md: missing TL;DR line
+- wiki\concepts\iot\tinyml.md: missing TL;DR line
+- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
+- wiki\concepts\pharmacy\drug-aliases.md: missing TL;DR line
+- wiki\concepts\pharmacy\drug-classification.md: missing TL;DR line
+- wiki\concepts\pharmacy\drug-validation.md: missing TL;DR line
+- wiki\concepts\pharmacy\fuzzy-match.md: missing TL;DR line
+- wiki\concepts\pharmacy\ordering-workflow.md: missing TL;DR line
+- wiki\concepts\pharmacy\pharmacy-context.md: missing TL;DR line
+- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing TL;DR line
+- wiki\entities\ai-tools\9arm-skills.md: missing TL;DR line
+- wiki\entities\ai-tools\agents-md-spec.md: missing TL;DR line
+- wiki\entities\ai-tools\ecc.md: missing TL;DR line
+- wiki\entities\ai-tools\frontend-slides.md: missing TL;DR line
+- wiki\entities\ai-tools\gitnexus.md: missing TL;DR line
+- wiki\entities\ai-tools\hermes-agent.md: missing TL;DR line
+- wiki\entities\ai-tools\hyperframes.md: missing TL;DR line
+- wiki\entities\ai-tools\ollama.md: missing TL;DR line
+- wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
+- wiki\entities\ai-tools\react-doctor.md: missing TL;DR line
+- wiki\entities\ai-tools\telegram-ai-router.md: missing TL;DR line
+- wiki\entities\ai-tools\turbovec.md: missing TL;DR line
+- wiki\entities\env\activated-sludge-system.md: missing TL;DR line
+- wiki\entities\env\rabies-pep-surveillance.md: missing TL;DR line
+- wiki\entities\iot\18650-battery-shield.md: missing TL;DR line
+- wiki\entities\iot\arduino-ide.md: missing TL;DR line
+- wiki\entities\iot\arduino-uno-r3.md: missing TL;DR line
+- wiki\entities\iot\chirpstack.md: missing TL;DR line
+- wiki\entities\iot\dht11.md: missing TL;DR line
+- wiki\entities\iot\ds18b20.md: missing TL;DR line
+- wiki\entities\iot\dx-lr02-lora.md: missing TL;DR line
+- wiki\entities\iot\dx-smart-ttl.md: missing TL;DR line
+- wiki\entities\iot\emqx.md: missing TL;DR line
+- wiki\entities\iot\esp-idf.md: missing TL;DR line
+- wiki\entities\iot\esp32-c6.md: missing TL;DR line
+- wiki\entities\iot\esp32-s3.md: missing TL;DR line
+- wiki\entities\iot\esp32.md: missing TL;DR line
+- wiki\entities\iot\grafana.md: missing TL;DR line
+- wiki\entities\iot\hc-sr04.md: missing TL;DR line
+- wiki\entities\iot\hc-sr501.md: missing TL;DR line
+- wiki\entities\iot\home-assistant.md: missing TL;DR line
+- wiki\entities\iot\hx711.md: missing TL;DR line
+- wiki\entities\iot\influxdb.md: missing TL;DR line
+- wiki\entities\iot\line-notify.md: missing TL;DR line
+- wiki\entities\iot\load-cell.md: missing TL;DR line
+- wiki\entities\iot\mosquitto.md: missing TL;DR line
+- wiki\entities\iot\mqtt-protocol.md: missing TL;DR line
+- wiki\entities\iot\mysql.md: missing TL;DR line
+- wiki\entities\iot\nb-iot.md: missing TL;DR line
+- wiki\entities\iot\node-red.md: missing TL;DR line
+- wiki\entities\iot\platformio.md: missing TL;DR line
+- wiki\entities\iot\pms5003.md: missing TL;DR line
+- wiki\entities\iot\pzem-004t.md: missing TL;DR line
+- wiki\entities\iot\raspberry-pi.md: missing TL;DR line
+- wiki\entities\iot\rfm95-sx1276.md: missing TL;DR line
+- wiki\entities\iot\telegram-bot.md: missing TL;DR line
+- wiki\entities\iot\the-things-network.md: missing TL;DR line
+- wiki\entities\iot\vapcell-m35-18650.md: missing TL;DR line
+- wiki\entities\iot\velxio.md: missing TL;DR line
+- wiki\entities\pharmacy\drug-database.md: missing TL;DR line
+- wiki\entities\pharmacy\drug-matching-system.md: missing TL;DR line
+- wiki\entities\pharmacy\pharmacy-business.md: missing TL;DR line
+- wiki\entities\pharmacy\sp-drugstore-2020.md: missing TL;DR line
 
 ---
 
-## ✓ Passed Checks (501 total)
+## ✓ Passed Checks (505 total)
 
-- **L2**: 103 passed
-- **L3**: 395 passed
+- **L2**: 105 passed
+- **L3**: 397 passed
 - **L6**: 3 passed
 
 ---
