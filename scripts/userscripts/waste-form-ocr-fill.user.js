@@ -45,6 +45,7 @@
     ซักฟอก: 16,
     แฟลต: 17,
     แผนไทย: 18,     // ขยะทั่วไป แพทย์แผนไทย
+    บ่อบำบัด: 5,   // ขยะทั่วไปบ่อบำบัด [verified 2026-06-08 gtwoffice row 5]
   };
 
   // Compound locations → split equally across rows
@@ -53,6 +54,26 @@
     'แผนไทย+ฝังเข็ม': ['แผนไทย', 'ฝังเข็ม'],
   };
 
+  // Post-OCR weight range hints (ใช้ตรวจสอบหลัง Gemini ตอบ — ไม่ block fill แค่แสดง ⚠)
+  const WEIGHT_RANGE_HINTS = {
+    OPD:       { min: 5,  max: 40,  label: 'OPD ปกติ 10–39' },
+    Ward:      { min: 2,  max: 22,  label: 'Ward ปกติ 3–20' },
+    ER:        { min: 1,  max: 20,  label: 'ER ปกติ' },
+    โรงครัว:  { min: 10, max: 80,  label: 'โรงครัว' },
+    บ่อบำบัด: { min: 0.5,max: 20,  label: 'บ่อบำบัด' },
+  };
+
+  function getWeightWarning(location, kg) {
+    if (kg == null || kg === '') return null;
+    const num = typeof kg === 'number' ? kg : Number(kg);
+    if (!Number.isFinite(num)) return null;
+    const hint = WEIGHT_RANGE_HINTS[location];
+    if (!hint) return null;
+    if (num > hint.max) return `⚠ ${num} ดูสูงเกิน (${hint.label})`;
+    if (num < hint.min) return `⚠ ${num} ดูต่ำเกิน (${hint.label})`;
+    return null;
+  }
+
   // --- USER SETTINGS (persisted) --------------------------------------------
   function getSettings() {
     return GM_getValue('ocr_settings', { suppliesValue: '', recorderValue: '', customHints: '', autoHints: [] });
@@ -60,7 +81,7 @@
   function saveSettings(s) { GM_setValue('ocr_settings', s); }
   const OCR_TEACHING_HISTORY_KEY = 'ocr_teaching_history';
   const OCR_TEACHING_HISTORY_MAX = 120;
-  const OCR_TEACHING_PROMPT_MAX = 30;
+  const OCR_TEACHING_PROMPT_MAX = 15;
 
   function getOcrTeachingHistory() {
     const history = GM_getValue(OCR_TEACHING_HISTORY_KEY, []);
@@ -153,6 +174,57 @@
     }).join('\n');
   }
 
+  function buildConsolidatedRules() {
+    const history = getOcrTeachingHistory();
+    const counter = {};
+    for (const h of history) {
+      const key = `${h.field}|${h.original}→${h.corrected}`;
+      if (!counter[key]) counter[key] = { count: 0, sample: h };
+      counter[key].count++;
+    }
+    const confirmed = [], suspected = [];
+    for (const { count, sample } of Object.values(counter)) {
+      const loc = sample.location ? ` (especially at ${sample.location})` : '';
+      const line = `- ${sample.field}: when written "${sample.original}" always read as "${sample.corrected}"${loc}`;
+      if (count >= 3) confirmed.push(line);
+      else if (count >= 2) suspected.push(line);
+    }
+    return { confirmed, suspected };
+  }
+
+  function exportTeachingHistoryAsWikiMarkdown() {
+    const { confirmed, suspected } = buildConsolidatedRules();
+    const history = getOcrTeachingHistory();
+    const today = new Date().toISOString().slice(0, 10);
+
+    const confirmedMd = confirmed.length
+      ? confirmed.map(l => `| ${today} | (consolidated ≥3×) | ${l} |`).join('\n')
+      : '_(ยังไม่มี confirmed rules — ต้องการ correction เดิมซ้ำ ≥ 3 ครั้ง)_';
+
+    const rawRows = history.slice(0, 50).map(h => {
+      const loc = h.location || '-';
+      const ctx = [h.date || '', `row ${h.row_number || '?'}`, loc, h.file || ''].filter(Boolean).join(', ');
+      return `| ${(h.ts || '').slice(0, 10)} | ${h.field} | ${h.original} | ${h.corrected} | ${ctx} |`;
+    }).join('\n');
+
+    return `## Corrections Log (exported ${today} — paste into wiki/context/ocr-learning-log.md)
+
+### Confirmed Rules (≥ 3 corrections same pattern)
+
+${confirmedMd}
+
+### Suspected Rules (2 corrections same pattern)
+
+${suspected.length ? suspected.map(l => l).join('\n') : '_(ยังไม่มี)_'}
+
+### Raw Corrections (top 50 most recent)
+
+| วันที่ | Field | OCR อ่านว่า | ค่าจริง | บริบท |
+|---|---|---|---|---|
+${rawRows || '_(ไม่มี history)_'}
+`;
+  }
+
   function formatTeachingHistoryForDisplay(limit = 30) {
     const history = getOcrTeachingHistory().slice(0, limit);
     if (!history.length) {
@@ -211,7 +283,7 @@ Schema per row:
   time         string as written, e.g. "15:00" or "07:35น."  (null if blank)
   weight_kg    number; if cell is "5+5" return the SUM (10). Double check digits 2↔9, 6↔5, 1↔4, 8↔9, 4↔3, 2↔1 in tens place. OPD weight is usually 10-39, rarely 40+. null if blank.
   weight_expr  optional string; if the handwritten weight is an addition expression like "5+5", keep that expression here while weight_kg is the computed numeric sum.
-  location     normalize to one of: OPD | Ward | ER | OPD+ER | โรงครัว | เวช | ฝังเข็ม | แผนไทย+ฝังเข็ม | แผนไทย
+  location     normalize to one of: OPD | Ward | ER | OPD+ER | โรงครัว | เวช | ฝังเข็ม | แผนไทย+ฝังเข็ม | แผนไทย | บ่อบำบัด
   secondary_location optional; null unless one handwritten row clearly combines exactly two departments under one weight. Use one of: OPD | Ward | ER | โรงครัว | เวช | ฝังเข็ม | แผนไทย
   recorder     staff name(s) as written (multiple joined with "+"), null if blank
 
@@ -231,14 +303,29 @@ Return ONLY the JSON array.`;
   function buildSystemPrompt() {
     const s = getSettings();
     const hints = (s.customHints || '').trim();
+    const { confirmed, suspected } = buildConsolidatedRules();
+
     let prompt = SYSTEM_PROMPT;
+
+    // Confirmed rules (≥3 occurrences) — high-priority, placed right after base prompt
+    if (confirmed.length > 0) {
+      prompt += `\n\nCONFIRMED CORRECTION RULES (learned from ≥3 repeated human corrections — treat as hard rules):\n${confirmed.join('\n')}`;
+    }
+
     prompt += `\n\n${buildTwoDigitYearHint()}`;
+
     if (hints) {
       prompt += `\n\nADDITIONAL USER CORRECTIONS (apply these — they override defaults):\n${hints}`;
     }
     if (s.autoHints && s.autoHints.length > 0) {
       prompt += `\n\nAUTO-LEARNED PAST CORRECTIONS (Avoid repeating these mistakes):\n` + s.autoHints.map(h => `- ${h}`).join('\n');
     }
+
+    // Suspected rules (2 occurrences)
+    if (suspected.length > 0) {
+      prompt += `\n\nSUSPECTED PATTERNS (seen twice — apply with caution):\n${suspected.join('\n')}`;
+    }
+
     const teachingHistory = formatTeachingHistoryForPrompt();
     if (teachingHistory) {
       prompt += `\n\nWASTE OCR TEACHING HISTORY (domain-specific corrections from past human edits; apply these patterns when reading future Thai hospital waste weight forms):\n${teachingHistory}`;
@@ -1187,7 +1274,14 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         <div style="margin:10px 0;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
             <div style="font-weight:600;font-size:13px">OCR teaching history (ดูว่า AI ถูกสอนอะไรไปแล้ว)</div>
-            <button class="waste-ocr-btn waste-ocr-danger" data-act="clear-teaching-history" style="padding:3px 8px;font-size:11px">ล้าง history</button>
+            <div style="display:flex;gap:4px">
+              <button class="waste-ocr-btn waste-ocr-secondary" data-act="export-wiki" style="padding:3px 8px;font-size:11px">📤 Export to Wiki</button>
+              <button class="waste-ocr-btn waste-ocr-danger" data-act="clear-teaching-history" style="padding:3px 8px;font-size:11px">ล้าง history</button>
+            </div>
+          </div>
+          <div id="ocr-export-area" style="display:none;margin-bottom:8px">
+            <div style="font-size:11px;color:#555;margin-bottom:4px">Copy → paste ต่อท้าย <code>wiki/context/ocr-learning-log.md</code> → git commit:</div>
+            <textarea id="ocr-export-text" rows="10" readonly style="width:100%;box-sizing:border-box;font-family:monospace;font-size:11px;padding:6px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9"></textarea>
           </div>
           <div id="ocr-teaching-history-view">${formatTeachingHistoryForDisplay()}</div>
         </div>
@@ -1220,6 +1314,14 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       if (!confirm('ล้าง OCR teaching history ทั้งหมด? Gemini จะไม่ได้ใช้บทเรียนเก่าเหล่านี้ใน prompt รอบถัดไป')) return;
       clearOcrTeachingHistory();
       renderSettingsPanel(panel);
+    });
+    panel.querySelector('[data-act="export-wiki"]')?.addEventListener('click', () => {
+      const exportArea = panel.querySelector('#ocr-export-area');
+      const exportText = panel.querySelector('#ocr-export-text');
+      const md = exportTeachingHistoryAsWikiMarkdown();
+      exportText.value = md;
+      exportArea.style.display = exportArea.style.display === 'none' ? 'block' : 'none';
+      if (exportArea.style.display === 'block') exportText.select();
     });
   }
 
@@ -1381,10 +1483,15 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         const secondaryOpts = [''].concat(locationKeys).map(k =>
           `<option value="${k}"${k === (r.secondary_location || '') ? ' selected' : ''}>${k || '-'}</option>`
         ).join('');
+        const warn = getWeightWarning(r.location, r.weight_kg);
+        const warnHtml = warn ? `<div class="ocr-weight-warn" data-i="${i}" style="font-size:10px;color:#c0392b;margin-top:1px">${escHtml(warn)}</div>` : `<div class="ocr-weight-warn" data-i="${i}" style="font-size:10px;color:#c0392b;margin-top:1px"></div>`;
         return `<tr style="border-bottom:1px solid #e8ddf5">
           <td style="text-align:center;padding:4px;color:#6f42c1;font-weight:600">${r.row_number || i + 1}</td>
           <td style="padding:4px"><input type="text" class="ocr-raw-time" data-i="${i}" value="${r.time || ''}" style="width:52px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
-          <td style="padding:4px"><input type="text" inputmode="decimal" class="ocr-raw-kg" data-i="${i}" value="${r.weight_expr || (r.weight_kg != null ? r.weight_kg : '')}" style="width:52px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
+          <td style="padding:4px">
+            <input type="text" inputmode="decimal" class="ocr-raw-kg" data-i="${i}" value="${r.weight_expr || (r.weight_kg != null ? r.weight_kg : '')}" style="width:52px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" />
+            ${warnHtml}
+          </td>
           <td style="padding:4px"><select class="ocr-raw-loc" data-i="${i}" style="width:92px;padding:2px;border:1px solid #ccc;border-radius:3px;font-size:12px">${opts}</select></td>
           <td style="padding:4px"><select class="ocr-raw-secondary-loc" data-i="${i}" style="width:92px;padding:2px;border:1px solid #ccc;border-radius:3px;font-size:12px">${secondaryOpts}</select></td>
           <td style="padding:4px"><input type="text" class="ocr-raw-rec" data-i="${i}" value="${r.recorder || ''}" style="width:65px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;font-size:12px" /></td>
@@ -1458,11 +1565,20 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         });
       });
 
+      function refreshWeightWarning(i) {
+        const r = clonedRawRows[i];
+        const warnEl = previewEl.querySelector(`.ocr-weight-warn[data-i="${i}"]`);
+        if (!warnEl) return;
+        const w = getWeightWarning(r.location, r.weight_kg);
+        warnEl.textContent = w || '';
+      }
+
       // --- Bind raw table edits → auto-update agg table ---
       previewEl.querySelectorAll('.ocr-raw-kg').forEach(inp => {
         inp.addEventListener('input', (e) => {
           const i = +e.target.dataset.i;
           applyRawRowEdit(clonedRawRows, i, 'weight_kg', e.target.value);
+          refreshWeightWarning(i);
           rebuildAggTable();
         });
       });
@@ -1470,6 +1586,7 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
         sel.addEventListener('change', (e) => {
           const i = +e.target.dataset.i;
           clonedRawRows[i].location = e.target.value;
+          refreshWeightWarning(i);
           rebuildAggTable();
         });
       });
