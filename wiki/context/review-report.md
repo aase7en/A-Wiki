@@ -4,43 +4,39 @@
 
 ## Summary
 
-- ✓ Passed: 505
-- ⚠ Warnings: 412
-- ❌ Failures: 51
+- ✓ Passed: 527
+- ⚠ Warnings: 431
+- ❌ Failures: 46
 
 ## Top Actionable Issues
 
+- ⚠ **L2** wiki\concepts\ai-tools\a2a-protocol.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\agent-memory-systems.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\agent-planning-loops.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\mcp-architecture.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\multi-agent-theory.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
+- ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\env\infectious-waste-management.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\env\rabies-pep-protocol.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\env\water-quality-parameters.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\iot\air-quality-index.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\iot\cold-chain-monitoring.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\iot\dashboard-design.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\iot\data-logger.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\iot\lora-p2p.md: missing frontmatter key: title
-- … 443 more issue(s) below
+- … 457 more issue(s) below
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
-- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[concepts/ai-tools/llm-rag-architecture]]
 - wiki\concepts\ai-tools\ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki\concepts\ai-tools\ai-myths.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
-- wiki\concepts\ai-tools\ai-myths.md: broken link: [[concepts/ai-tools/llm-rag-architecture]]
 - wiki\concepts\ai-tools\openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
 - wiki\concepts\env\water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
 - wiki\entities\ai-tools\9arm-skills.md: broken link: [[claude-skills]]
@@ -62,7 +58,6 @@
 - wiki\entities\ai-tools\turbovec.md: broken link: [[sqlite-vec]]
 - wiki\entities\ai-tools\turbovec.md: broken link: [[embedding-models]]
 - wiki\entities\ai-tools\turbovec.md: broken link: [[vector-search]]
-- wiki\sources\ai-engineering-glossary.md: broken link: [[concepts/ai-tools/multi-agent-theory]]
 - wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki\sources\ai-iot-server-build-v3.md: broken link: [[index-ai]]
 - wiki\sources\arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
@@ -92,15 +87,23 @@
 
 ## ⚠ L2: Frontmatter Completeness (title, type, tags) — Warnings
 
+- wiki\concepts\ai-tools\a2a-protocol.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\agent-memory-systems.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\agent-planning-loops.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\mcp-architecture.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\multi-agent-theory.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
+- wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
 - wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
@@ -270,7 +273,10 @@
 - wiki\synthesis\synth-3-dashboard-node-red.md: missing frontmatter key: tags
 - wiki\synthesis\synth-agent-frameworks-local-debug-2026.md: missing frontmatter key: tags
 - wiki\synthesis\synth-ai-agents-integration-guide.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-engineering-agent-patterns.md: missing frontmatter key: tags
 - wiki\synthesis\synth-ai-engineering-glossary.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-engineering-llm.md: missing frontmatter key: tags
+- wiki\synthesis\synth-ai-engineering-multi-agent.md: missing frontmatter key: tags
 - wiki\synthesis\synth-ai-iot-server-build-v3-final.md: missing frontmatter key: tags
 - wiki\synthesis\synth-ai-iot-server-build-v3.md: missing frontmatter key: tags
 - wiki\synthesis\synth-air-quality-iot-lora-network.md: missing frontmatter key: tags
@@ -423,14 +429,22 @@
 
 ## ⚠ L6: Quality Floor (body length, TL;DR) — Warnings
 
+- wiki\concepts\ai-tools\a2a-protocol.md: missing TL;DR line
 - wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing TL;DR line
+- wiki\concepts\ai-tools\agent-memory-systems.md: missing TL;DR line
+- wiki\concepts\ai-tools\agent-planning-loops.md: missing TL;DR line
 - wiki\concepts\ai-tools\ai-glossary.md: missing TL;DR line
 - wiki\concepts\ai-tools\ai-myths.md: missing TL;DR line
 - wiki\concepts\ai-tools\context-management.md: missing TL;DR line
 - wiki\concepts\ai-tools\hooks-skills-plugins.md: missing TL;DR line
+- wiki\concepts\ai-tools\llm-eval-frameworks.md: missing TL;DR line
+- wiki\concepts\ai-tools\llm-rag-architecture.md: missing TL;DR line
 - wiki\concepts\ai-tools\local-llm-routing.md: missing TL;DR line
+- wiki\concepts\ai-tools\mcp-architecture.md: missing TL;DR line
+- wiki\concepts\ai-tools\multi-agent-theory.md: missing TL;DR line
 - wiki\concepts\ai-tools\openrouter-api.md: missing TL;DR line
 - wiki\concepts\ai-tools\session-setup.md: missing TL;DR line
+- wiki\concepts\ai-tools\swarm-optimization.md: missing TL;DR line
 - wiki\concepts\ai-tools\symlinks-ssot.md: missing TL;DR line
 - wiki\concepts\ai-tools\vibe-coding.md: missing TL;DR line
 - wiki\concepts\env\hospital-wastewater-treatment.md: missing TL;DR line
@@ -512,10 +526,10 @@
 
 ---
 
-## ✓ Passed Checks (505 total)
+## ✓ Passed Checks (527 total)
 
-- **L2**: 105 passed
-- **L3**: 397 passed
+- **L2**: 110 passed
+- **L3**: 414 passed
 - **L6**: 3 passed
 
 ---

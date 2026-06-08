@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 156 sources
+## Stats — 161 sources
 
 | slug | abstract |
 |------|----------|
@@ -18,8 +18,13 @@
 | `CLAUDE` | ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Too… |
 | `agent-frameworks-local-debug-2026` | 1. **แก่นของ agent design มี 2 อย่าง**: System Prompt Design + C… |
 | `ai-agents-integration-guide` | 1. **Symlinks เป็น SSOT** — ใช้ symbolic link ให้ AI หลายตัว (Cl… |
+| `ai-engineering-agent-patterns` | 1. **Agent Loop (ReAct)**: Observe→Think→Act loop; 5 ingredients… |
 | `ai-engineering-glossary` | 1. **คำจำกัดความที่แม่นยำ** — แต่ละคำอธิบาย 3 ระดับ: สิ่งที่คนพู… |
+| `ai-engineering-llm` | 1. **RAG Pipeline (4 ขั้นตอน)**: Chunk → Embed → Retrieve → Gene… |
+| `ai-engineering-multi-agent` | 1. **4 Pattern พื้นฐาน**: Pipeline, Fan-out/Fan-in, Orchestrator… |
 | `ai-engineering-myths` | 1. **Pattern Matching ≠ Understanding** — LLMs predict next toke… |
+| `ai-engineering-swarm-optimization` | 1. **BFT สำหรับ LLM**: 3 attack patterns ใหม่ (Byzantine lie, sy… |
+| `ai-engineering-tools-protocols` | 1. **MCP 6 Primitives**: Server-side (Tools, Resources, Prompts)… |
 | `ai-iot-server-build-v3` | 1. **PC build ราคา ~98,500฿** — เน้นใช้งาน 24/7 สำหรับ Local LLM… |
 | `ai-iot-server-build-v3-final` | สเปกคอมพิวเตอร์ระดับสูงสำหรับการทำงาน 24/7 รองรับ: |
 | `air-quality-iot-lora-network` | 1. **Distributed network**: Sensor nodes → LoRa → Gateway → RPi… |

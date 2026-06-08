@@ -11,7 +11,7 @@
 ## Stats
 
 - Entities: **14**
-- Concepts: **17**
+- Concepts: **21**
 
 ---
 
@@ -41,6 +41,7 @@
 | slug | abstract |
 |------|----------|
 | `CLAUDE` | Query มาถึง ├─ ง่าย/ประจำ (≥70%) → Ollama local (ฟรี) └─ ซับซ้อน… |
+| `a2a-protocol` | Agent-to-Agent Protocol — มาตรฐาน open สำหรับ agents ค้นหา สื่อส… |
 | `agent-framework-tradeoffs` | Tradeoff ระหว่าง 3 แกนของ AI agent design — **ขนาด system prompt… |
 | `agent-memory-systems` | MemGPT virtual context, memory tiers, Letta, Mem0 — ระบบ memory… |
 | `agent-planning-loops` | ReAct loop, ReWOO planning, Anthropic workflow patterns — พื้นฐา… |
@@ -48,7 +49,10 @@
 | `ai-myths` | ความเชื่อผิดๆ 20 ข้อเกี่ยวกับ AI/ML — แต่ละข้ออธิบาย reality + d… |
 | `context-management` | แนวทางจัดการ context window ของ Claude Code ระหว่าง session เพื่… |
 | `hooks-skills-plugins` | สามกลไกหลักที่ขยายพฤติกรรมของ Claude Code โดยไม่ต้องแก้ตัว AI เอ… |
+| `llm-eval-frameworks` | LLM-as-judge, automated metrics, statistical rigor, regression t… |
+| `llm-rag-architecture` | Retrieval-Augmented Generation — ระบบเชื่อมต่อ LLM กับ external… |
 | `local-llm-routing` | การตัดสินใจโดยอัตโนมัติว่า query ควรส่งไปประมวลผลที่ **local mod… |
+| `mcp-architecture` | Model Context Protocol — มาตรฐานเปิดสำหรับเชื่อมต่อ AI agents กั… |
 | `multi-agent-failover` | A-Wiki มีระบบ failover ข้าม agent อยู่แล้วผ่าน `scripts/swarm/ag… |
 | `multi-agent-theory` | ทฤษฎีพื้นฐานการออกแบบระบบ multi-agent: patterns, protocols, arch… |
 | `openrouter-api` | หน้านี้เป็น overview ของ OpenRouter ในฐานะ unified API gateway ส… |
