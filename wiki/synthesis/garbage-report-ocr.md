@@ -200,6 +200,7 @@ Pattern ที่เรียนรู้จากการตรวจสอบ
 |---|---|---|---|
 | วอร์ด | Ward (ผู้ป่วยใน) | จอดรถ | ลายมือ ว ≈ จ, อักษรท้ายคล้ายกัน |
 | เวช | เวชกรรม | ลาว | ว-เ-ช กับ ล-า-ว รูปใกล้เคียงในลายมือ |
+| ฝังเข็ม | แผนก Acupuncture | เวช | mirror ของข้อบน — ลายมือ ฝ-ั-ง ↔ เ-ว-ช ในบางใบ (IMG_4520.jpg) |
 | แผนไทย+ฝังเข็ม | แพทย์แผนไทย + ฝังเข็ม | แผนไทย+ฝ่ายแม่ | สองแผนกในโซนเดียวกัน — ไม่ใช่ฝ่ายสูตินรี |
 
 ### เจ้าหน้าที่ประจำแผนก (Staff Directory)
@@ -246,6 +247,18 @@ Pattern ที่เรียนรู้จากการตรวจสอบ
 | สองคนชื่อเหมือนกัน (อ้อย+อ้อย) | เก็บ string "อ้อย+อ้อย" ทั้งคู่ ไม่ตัดซ้ำ |
 | น้ำหนัก 2 รายการในช่องเดียว (5+5) | เก็บเป็น string "5+5" ไม่บวกรวม — ให้ user ตัดสินใจ |
 | ตัวเลขคล้ายกันที่อ่านผิดบ่อย | 2↔9, 6↔5, 1↔4 — double-check เสมอเมื่อน้ำหนักดูผิดปกติ |
+
+## ความสัมพันธ์ (learning loop v2 — 2026-06-08)
+
+**Userscript v1.0.0** เพิ่ม 4 improvements:
+1. **Pattern consolidation** — correction ≥ 3 ครั้ง → CONFIRMED RULE ใน prompt
+2. **Injection position** — CONFIRMED RULES อยู่หลัง base prompt (ก่อน two-digit year hint)
+3. **Weight range validation** — ⚠ flag ถ้า kg นอก range (OPD 5–40, Ward 2–22, ER 1–20, โรงครัว 10–80)
+4. **Export-to-Wiki button** — one-click generate markdown สำหรับ cross-device sync
+
+ดูรายละเอียด: `scripts/userscripts/waste-form-ocr-fill.user.js` @version 1.0.0
+
+---
 
 ## ความสัมพันธ์
 
