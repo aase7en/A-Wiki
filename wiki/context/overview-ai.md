@@ -11,7 +11,7 @@
 ## Stats
 
 - Entities: **14**
-- Concepts: **14**
+- Concepts: **17**
 
 ---
 
@@ -42,6 +42,8 @@
 |------|----------|
 | `CLAUDE` | Query มาถึง ├─ ง่าย/ประจำ (≥70%) → Ollama local (ฟรี) └─ ซับซ้อน… |
 | `agent-framework-tradeoffs` | Tradeoff ระหว่าง 3 แกนของ AI agent design — **ขนาด system prompt… |
+| `agent-memory-systems` | MemGPT virtual context, memory tiers, Letta, Mem0 — ระบบ memory… |
+| `agent-planning-loops` | ReAct loop, ReWOO planning, Anthropic workflow patterns — พื้นฐา… |
 | `ai-glossary` | คำศัพท์ AI Engineering ที่แม่นยำ — แยก "สิ่งที่คนพูด" ออกจาก "คว… |
 | `ai-myths` | ความเชื่อผิดๆ 20 ข้อเกี่ยวกับ AI/ML — แต่ละข้ออธิบาย reality + d… |
 | `context-management` | แนวทางจัดการ context window ของ Claude Code ระหว่าง session เพื่… |
@@ -52,5 +54,6 @@
 | `openrouter-api` | หน้านี้เป็น overview ของ OpenRouter ในฐานะ unified API gateway ส… |
 | `openrouter-claude-code` | ** Claude Code = "หน้ากาก" (terminal UI + tool integration) เปลี… |
 | `session-setup` | Wiki นี้ใช้ **working copy ที่ clone จาก GitHub** เป็น repo หลัก… |
+| `swarm-optimization` | BFT consensus, voting topology, bio-inspired optimization (PSO/A… |
 | `symlinks-ssot` | Symbolic Link (Symlink) คือ "ทางลัด" ระดับ OS ที่ชี้ไปยังไฟล์/โฟ… |
 | `vibe-coding` | Vibe Coding คือ methodology การพัฒนา software ที่ใช้ AI (LLM) เป… |
