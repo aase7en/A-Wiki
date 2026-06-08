@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Waste Form OCR & Fill (gtwoffice trash_add)
 // @namespace    a-wiki
-// @version      1.1.2
+// @version      1.1.3
 // @description  ถ่ายรูปใบรายงานขยะ → OCR ด้วย Gemini Flash → กรอกฟอร์ม + บันทึกอัตโนมัติ + เปิดฟอร์มถัดไป
 // @author       A-Wiki contributors
 // @match        https://10779.gtwoffice.com/env/manage/trash_add*
@@ -1684,9 +1684,17 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       if (savedOverride) report.unshift('💾 บันทึก row override แล้ว — รอบหน้าใช้ค่าใหม่');
       if (savedTeachingCount) report.unshift(`🧠 บันทึก OCR teaching history ${savedTeachingCount} รายการ — Gemini จะใช้เป็นบทเรียนรอบถัดไป`);
 
+      // dropdown key = original OCR date (sel.value); corrected date may differ
+      const ocrDateISO = sel.value;
+      markFilled(ocrDateISO);
+      if (dateISO !== ocrDateISO) markFilled(dateISO);
+
+      // อัปเดต dropdown option ทันที
+      const opt = sel.querySelector(`option[value="${ocrDateISO}"]`);
+      if (opt && !opt.textContent.includes('✅')) opt.textContent = `✅ ${thaiDateBE(ocrDateISO)} (กรอกแล้ว)`;
+
       const autoContinue = content.querySelector('#ocr-auto-continue')?.checked;
       if (autoContinue) {
-        markFilled(dateISO); // บันทึก filled ก่อน navigate — ให้หน้าถัดไปเห็น ✓
         GM_setValue('ocr_auto_open_add', true);
         report.push('⏳ กำลังบันทึก...');
         const logEl2 = content.querySelector('#waste-ocr-log');
@@ -1705,9 +1713,6 @@ ${JSON.stringify(originalOcrRaw, null, 2)}
       const logEl = content.querySelector('#waste-ocr-log');
       logEl.style.display = 'block';
       logEl.textContent = report.join('\n');
-      markFilled(dateISO);
-      const opt = sel.querySelector(`option[value="${dateISO}"]`) || sel.options[sel.selectedIndex];
-      if (opt && !opt.textContent.includes('✓')) opt.textContent = `${thaiDateBE(dateISO)} ✓ (กรอกแล้ว)`;
 
       // --- LEARNING PROMPT (สำหรับส่งให้ A-Wiki AI Agent) ---
       const learnText = buildLearningPrompt(rawRows, meta, dateISO, fileName, arr);
