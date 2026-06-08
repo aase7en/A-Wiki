@@ -68,3 +68,15 @@
 3. **Executioner output MUST include a failing test** before any production code block.
 4. **If scouting returns zero free models** → collapse to single-agent mode (Primary Agent does all work).
 5. **Session memory** (`session-memory.md`) is updated with swarm decisions for cross-device continuity.
+
+---
+
+## Theoretical Foundation
+
+A-Wiki Agile Swarm implements a specific variant of multi-agent patterns:
+
+- **Architecture**: Supervisor pattern (Lead=Senior Critic + Workers=Architect/Executioner) — ดู [[wiki/concepts/ai-tools/multi-agent-theory#4-supervisor--orchestrator-pattern]]
+- **Role design**: Role Specialization (Planner≈Architect, Executor≈Executioner, Critic/Verifier≈Senior Critic) — ดู [[wiki/concepts/ai-tools/multi-agent-theory#6-role-specialization]]
+- **Context strategy**: Fresh context per subagent (ป้องกัน context bleeding — basis of Anthropic Research +90.2%)
+- **Validation**: Deterministic Verifier role (Senior Critic = "unwritable verifier" ใน blackboard terms)
+- **Awareness**: Familiar with [[wiki/concepts/ai-tools/ai-myths#5-agents--autonomy]] — "autonomy comes from the loop, not the LLM"

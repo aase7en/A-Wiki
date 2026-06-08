@@ -14,10 +14,10 @@
 | Type | Count |
 |------|-------|
 | ENTITIES | 58 |
-| CONCEPTS | 40 |
-| SYNTHESIS | 186 |
-| SOURCES | 156 |
-| **Total** | **440 pages** |
+| CONCEPTS | 41 |
+| SYNTHESIS | 187 |
+| SOURCES | 157 |
+| **Total** | **443 pages** |
 
 ---
 
@@ -27,10 +27,10 @@
 |--------|----------|----------|--------------|------------|
 | IoT | 36 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
 | Environmental Health | 3 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
-| AI Tools | 14 | 13 | `wiki/context/overview-ai.md` | `index-ai.md` |
+| AI Tools | 14 | 14 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (156): `wiki/context/overview-sources.md`
+- **Sources** (157): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -77,6 +77,7 @@
 | `synth-3-dashboard-node-red` | (awaiting human summary) |
 | `synth-agent-frameworks-local-debug-2026` | _To be filled in by human review._ |
 | `synth-ai-agents-integration-guide` | _To be filled in by human review._ |
+| `synth-ai-engineering-glossary` | _To be filled in by human review._ |
 | `synth-ai-iot-server-build-v3` | _To be filled in by human review._ |
 | `synth-ai-iot-server-build-v3-final` | _To be filled in by human review._ |
 | `synth-air-quality-iot-lora-network` | _To be filled in by human review._ |
@@ -228,4 +229,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 440 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 443 pages across 4 sections.*
