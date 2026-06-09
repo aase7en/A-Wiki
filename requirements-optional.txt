@@ -8,3 +8,12 @@
 # Enable when wiki >5k entries. Default backend (sqlite-vec, in requirements.txt)
 # stays untouched. See: wiki/entities/ai-tools/turbovec.md
 turbovec>=0.1.0
+
+# openmed — Healthcare AI: medical NER, PII detection, clinical de-identification.
+# Required for pharmacy domain source processing (drug/disease entity extraction).
+# See: wiki/entities/ai-tools/openmed.md
+# Install backends:
+#   pip install "openmed[hf]"         — standard (CPU/GPU)
+#   pip install "openmed[mlx]"        — Apple Silicon (faster)
+#   pip install "openmed[hf,service]" — + REST API on port 8770
+openmed[hf]>=1.5.0

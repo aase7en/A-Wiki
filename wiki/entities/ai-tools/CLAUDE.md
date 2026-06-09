@@ -13,7 +13,7 @@
 
 ---
 
-## Entities ที่มีอยู่ (14)
+## Entities ที่มีอยู่ (16)
 
 | Slug | Abstract |
 |------|----------|
@@ -31,6 +31,8 @@
 | `hyperframes` | Hyperframes — อ้างอิงในบริบท AI/agent framework |
 | `ollama` | Ollama — local LLM runtime สำหรับรัน model บน Mac Mini M4 |
 | `pocketbase` | PocketBase — lightweight backend-as-a-service สำหรับ IoT + dream projects |
+| `graphify` | Graphify — แปลงไฟล์ (code/PDF/image) เป็น interactive knowledge graph, 71.5x token reduction, MCP server |
+| `openmed` | OpenMed v1.5.5 — on-device healthcare AI: drug/disease NER, HIPAA PII detection, de-identification, 1000+ models |
 
 ---
 
