@@ -12,6 +12,9 @@ Tools exposed:
   - wiki_graph_hubs      — Top connected pages
   - wiki_get_page        — Read raw wiki page content
   - wiki_regen_index     — Rebuild wiki index + graph + embeddings
+  - wiki_ingest_route    — Universal cost-aware ingestion (Tier 1/2/3)
+  - wiki_batch_status    — Poll pending Tier 2/3 batches
+  - wiki_batch_collect   — Collect completed batch and write wiki/sources/
 
 Resources exposed:
   - wiki://overview      — Auto-generated wiki overview (slim)
@@ -286,6 +289,148 @@ def tool_wiki_regen_index(args: dict) -> dict:
         raise MCPError(-32000, "Index rebuild timed out")
 
 
+# ── Universal Ingest Harness tools (cost-aware routing) ───────────────
+
+
+def _harness_import():
+    """Lazy import of batch harness — keeps MCP server startup fast and
+    isolates failures (e.g. missing openai/anthropic SDK) to the call site."""
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "batch"))
+    from batch.collect import collect_batch, write_results  # noqa: E402
+    from batch.config import load_conf  # noqa: E402
+    from batch.poll import _refresh_one  # noqa: E402
+    from batch.router import (  # noqa: E402
+        build_requests, discover_backlog, dispatch, estimate_cost, select_tier,
+    )
+    from batch.state import get_batch, list_batches  # noqa: E402
+    return {
+        "collect_batch": collect_batch,
+        "write_results": write_results,
+        "load_conf": load_conf,
+        "_refresh_one": _refresh_one,
+        "build_requests": build_requests,
+        "discover_backlog": discover_backlog,
+        "dispatch": dispatch,
+        "estimate_cost": estimate_cost,
+        "select_tier": select_tier,
+        "get_batch": get_batch,
+        "list_batches": list_batches,
+    }
+
+
+def tool_wiki_ingest_route(args: dict) -> dict:
+    """Universal cost-aware ingestion router.
+
+    Args:
+        tier (int, optional): Force tier 1/2/3.
+        backend (str, optional): "deepseek" | "openai" | "anthropic".
+        domain (str, optional): Domain hint (iot|env|ai-tools|pharmacy|it|general).
+        limit (int, optional): Max files to ingest.
+        slugs (list[str], optional): Restrict to specific slugs.
+        file (str, optional): Single raw/<file> path.
+        estimate (bool, optional): Only return cost estimate; no API call.
+        dry_run (bool, optional): Build requests + select tier; no API call.
+    """
+    h = _harness_import()
+    try:
+        paths = h["discover_backlog"](
+            domain_hint=args.get("domain"),
+            limit=args.get("limit"),
+            slugs=args.get("slugs"),
+            file=args.get("file"),
+        )
+    except FileNotFoundError as e:
+        raise MCPError(-32000, str(e))
+
+    if not paths:
+        return {"n_files": 0, "message": "no files to ingest (raw/ scan empty)"}
+
+    conf = h["load_conf"]()
+    provisional = h["build_requests"](paths, 1, domain_hint=args.get("domain"))
+    tier, tier_reason = h["select_tier"](
+        paths,
+        cli_tier=args.get("tier"),
+        cli_backend=args.get("backend"),
+        conf=conf,
+        requests=provisional,
+    )
+    requests = h["build_requests"](paths, tier, domain_hint=args.get("domain"))
+
+    if args.get("estimate"):
+        return {
+            "n_files": len(paths),
+            "selected_tier": tier,
+            "tier_reason": tier_reason,
+            "tiers": {
+                t: h["estimate_cost"](requests, t, conf)
+                for t in (0, 1, 2, 3)
+                if conf.has_section(f"tier_{t}")
+            },
+        }
+
+    if args.get("dry_run"):
+        return {
+            "tier": tier,
+            "tier_reason": tier_reason,
+            "n_requests": len(requests),
+            "sample_slugs": [r.slug for r in requests[:5]],
+            "truncated": len(requests) > 5,
+        }
+
+    try:
+        submitted = h["dispatch"](requests, tier)
+    except RuntimeError as e:
+        raise MCPError(-32000, str(e))
+
+    if submitted.get("mode") == "realtime":
+        summary = h["write_results"](submitted["results"])
+        return {"tier": tier, "tier_reason": tier_reason, "mode": "realtime", **summary}
+    return {
+        "tier": tier,
+        "tier_reason": tier_reason,
+        "mode": "batch",
+        "batch_id": submitted["batch_id"],
+        "input_path": submitted.get("input_path"),
+        "next_step": "call wiki_batch_status, then wiki_batch_collect when ready",
+    }
+
+
+def tool_wiki_batch_status(args: dict) -> dict:
+    """Refresh and return pending Tier 2/3 batch status.
+
+    Args:
+        batch_id (str, optional): If provided, poll one batch only.
+        all (bool, optional): Include completed/collected batches.
+    """
+    h = _harness_import()
+    if args.get("batch_id"):
+        rec = h["get_batch"](args["batch_id"])
+        if rec is None:
+            raise MCPError(-32002, f"Unknown batch: {args['batch_id']}")
+        return h["_refresh_one"](rec)
+    records = h["list_batches"]() if args.get("all") else [
+        r for r in h["list_batches"]() if r.get("status") in ("pending", "in_progress")
+    ]
+    return {"batches": [h["_refresh_one"](r) for r in records], "count": len(records)}
+
+
+def tool_wiki_batch_collect(args: dict) -> dict:
+    """Download a completed batch, validate, and write wiki/sources/.
+
+    Args:
+        batch_id (str): The batch_id to collect.
+        no_gen_index (bool, optional): Skip gen-index.py rebuild.
+    """
+    h = _harness_import()
+    if not args.get("batch_id"):
+        raise MCPError(-32602, "batch_id is required")
+    try:
+        return h["collect_batch"](args["batch_id"], run_gen_index=not args.get("no_gen_index", False))
+    except (ValueError, RuntimeError) as e:
+        raise MCPError(-32000, str(e))
+
+
 # ── Resource implementations ──────────────────────────────────────────
 
 
@@ -388,6 +533,46 @@ TOOLS = {
             "properties": {
                 "no_embeddings": {"type": "boolean", "description": "Skip embedding rebuild", "default": False},
             },
+        },
+    },
+    "wiki_ingest_route": {
+        "fn": tool_wiki_ingest_route,
+        "description": "Universal cost-aware ingestion router. Selects Tier 1 (DeepSeek realtime), Tier 2 (OpenAI batch), or Tier 3 (Anthropic batch) based on backlog size, configured policy, and overrides. Every A-Wiki agent ingests through this tool — bypassing it triggers the check_harness_routing.py hook.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "tier": {"type": "integer", "description": "Force tier 1/2/3"},
+                "backend": {"type": "string", "enum": ["deepseek", "openai", "anthropic"]},
+                "domain": {"type": "string", "description": "Domain hint"},
+                "limit": {"type": "integer", "description": "Max files this run"},
+                "slugs": {"type": "array", "items": {"type": "string"}, "description": "Restrict to specific slugs"},
+                "file": {"type": "string", "description": "Single raw/<file> path"},
+                "estimate": {"type": "boolean", "description": "Return cost estimate only", "default": False},
+                "dry_run": {"type": "boolean", "description": "Build requests but skip the API call", "default": False},
+            },
+        },
+    },
+    "wiki_batch_status": {
+        "fn": tool_wiki_batch_status,
+        "description": "Refresh and return pending Tier 2/3 batch status (poll provider). Use after wiki_ingest_route returns a batch_id.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "batch_id": {"type": "string", "description": "Specific batch_id (optional)"},
+                "all": {"type": "boolean", "description": "Include completed/collected", "default": False},
+            },
+        },
+    },
+    "wiki_batch_collect": {
+        "fn": tool_wiki_batch_collect,
+        "description": "Download a completed batch, validate output against the source provenance hook, and write wiki/sources/<slug>.md. Idempotent — safe to re-run.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "batch_id": {"type": "string", "description": "batch_id from state.jsonl"},
+                "no_gen_index": {"type": "boolean", "description": "Skip gen-index.py rebuild", "default": False},
+            },
+            "required": ["batch_id"],
         },
     },
 }
