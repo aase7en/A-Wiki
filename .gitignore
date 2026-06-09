@@ -117,6 +117,14 @@ drive
 # the user's machine, not in the public repo. See SECURITY.md.
 personal/
 drive/personal/
+
+# --- Personal scripts (symlinks → drive/personal-tools/ — created by setup-local.sh)
+# Actual files live in Google Drive; git tracks only the symlink placeholder (not contents).
+# Run: bash scripts/setup-local.sh  to create symlinks on a new machine.
+scripts/userscripts/
+scripts/telegram-bot/
+scripts/personal/
+
 log.md
 session-memory.md
 wiki/context/session-memory.md

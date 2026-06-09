@@ -193,7 +193,7 @@ setup_model_router_policy() {
   fi
 }
 
-# ── 6. (optional) react-doctor — Claude Code skill for React audits ────────
+# ── 10. (optional) react-doctor — Claude Code skill for React audits ────────
 # Off by default. Enable with: INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh
 # A-Wiki itself has no React; this benefits dream projects (Sunday Estate, etc.).
 # See: wiki/entities/ai-tools/react-doctor.md
@@ -214,7 +214,66 @@ setup_react_doctor() {
   echo "  OK — react-doctor skill registered (~/.claude/skills/)"
 }
 
-# ── 8. (optional) SkillOpt — local install only, not committed ─────────────
+# ── 8. Personal scripts — symlinks/junctions → drive/personal-tools/ ─────────
+# Actual files live in Google Drive (private). Git tracks only the junction placeholder.
+# Creates: scripts/userscripts → drive/personal-tools/userscripts
+#          scripts/telegram-bot → drive/personal-tools/scripts/telegram-bot
+#          scripts/personal     → drive/personal-tools/scripts  (shorthand for all personal)
+
+setup_personal_links() {
+  echo "[8/9] Setting up personal script links (drive/personal-tools/)..."
+
+  DRIVE_PT="$REPO_ROOT/drive/personal-tools"
+
+  if [[ ! -d "$DRIVE_PT" ]]; then
+    echo "  WARN: drive/personal-tools/ not found — run 'bash scripts/setup-cloud-link.sh' first" >&2
+    return 0
+  fi
+
+  # Ensure subdirectories exist in drive
+  mkdir -p "$DRIVE_PT/userscripts"
+  mkdir -p "$DRIVE_PT/scripts/telegram-bot"
+  mkdir -p "$DRIVE_PT/scripts/waste-form"
+
+  make_personal_link() {
+    local link="$1"
+    local target="$2"
+    local label="$3"
+
+    if [[ -L "$link" ]]; then
+      echo "  already linked: $label"
+      return 0
+    fi
+    if [[ -e "$link" ]]; then
+      echo "  WARN: $link exists but is not a symlink — please remove manually and re-run" >&2
+      return 0
+    fi
+
+    case "$(uname -s)" in
+      Darwin*|Linux*)
+        ln -sfn "$target" "$link"
+        echo "  OK — symlink: $label -> $target"
+        ;;
+      MINGW*|CYGWIN*|MSYS*)
+        # Windows/Git Bash — use PowerShell junction
+        local win_link win_target
+        win_link=$(cygpath -w "$link")
+        win_target=$(cygpath -w "$target")
+        powershell.exe -NoProfile -Command "New-Item -ItemType Junction -Path '$win_link' -Target '$win_target'" > /dev/null
+        echo "  OK — junction: $label -> $target"
+        ;;
+      *)
+        echo "  WARN: unknown OS — create symlink manually: ln -sfn '$target' '$link'" >&2
+        ;;
+    esac
+  }
+
+  make_personal_link "$REPO_ROOT/scripts/userscripts"  "$DRIVE_PT/userscripts"           "scripts/userscripts"
+  make_personal_link "$REPO_ROOT/scripts/telegram-bot" "$DRIVE_PT/scripts/telegram-bot"  "scripts/telegram-bot"
+  make_personal_link "$REPO_ROOT/scripts/personal"     "$DRIVE_PT/scripts"               "scripts/personal"
+}
+
+# ── 9. (optional) SkillOpt — local install only, not committed ─────────────
 # Enable with: INSTALL_SKILLOPT=1 bash scripts/setup-local.sh
 
 setup_skillopt() {
@@ -241,6 +300,7 @@ setup_index
 setup_codex
 setup_model_intel
 setup_model_router_policy
+setup_personal_links
 setup_skillopt
 setup_react_doctor
 

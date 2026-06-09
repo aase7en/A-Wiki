@@ -82,6 +82,7 @@ A-Wiki repo ต้องเบา: tracked git เก็บเฉพาะไฟ
 | `drive/raw/` + `raw/` | source documents, PDFs, images, OCR input | ignored; `raw/` immutable |
 | `drive/.secrets` | API keys and private tokens | ignored; read on demand |
 | `drive/personal/journal/` | private `log.md`, `session-memory.md`, notes | ignored |
+| `drive/personal-tools/` | personal scripts (primary) — accessed via `scripts/userscripts/`, `scripts/telegram-bot/`, `scripts/personal/` | ignored; junctions created by `setup-local.sh` |
 | `log.md.example` / `wiki/context/session-memory.md.example` | public bootstrap templates | tracked |
 
 Path ของ Mac/Work PC/WSL ไม่จำเป็นต้องเหมือนกัน. ใช้ resolver เสมอ:
