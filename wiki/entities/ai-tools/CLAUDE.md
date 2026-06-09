@@ -13,12 +13,24 @@
 
 ---
 
-## Entities ที่มีอยู่ (2)
+## Entities ที่มีอยู่ (14)
 
 | Slug | Abstract |
 |------|----------|
 | `hermes-agent` | Open-source AI agent framework — CLI, ต่อ LLM หลาย provider, messaging gateway (Telegram, Discord) |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวบน Mac Mini — gateway รับข้อความ → route ไป AI model อัตโนมัติ |
+| `ecc` | ECC — Everything Claude Code: 249 skills + 63 agents สำหรับ optimize agent workflow ข้าม harness |
+| `9arm-skills` | claude-thai-skills: 12 Thai language skills — fuzzy-search, thai-ocr, line-bot |
+| `anthropic-skills` | Official Anthropic skill collection: 17 skills (docx/pdf/xlsx/pptx + creative + claude-api) ที่ `skills/anthropic-skills/` |
+| `gitnexus` | Code knowledge graph MCP — 16 tools, impact analysis, symbol navigation (PolyForm Noncommercial) |
+| `turbovec` | Alt vector backend (turbovec) — 16x compression vs sqlite-vec, future-scale option |
+| `react-doctor` | React static analysis Claude skill — ตรวจ component health สำหรับ dream projects |
+| `agents-md-spec` | AGENTS.md format standard (21.8k★) — multi-agent config spec สำหรับ Claude/Codex/Gemini/Cursor |
+| `frontend-slides` | frontend-slides v2.1.0 — Zero-dep HTML deck generator + 34 bold templates + PPTX/PDF export |
+| `social-media-skills` | Social media content creation skills collection |
+| `hyperframes` | Hyperframes — อ้างอิงในบริบท AI/agent framework |
+| `ollama` | Ollama — local LLM runtime สำหรับรัน model บน Mac Mini M4 |
+| `pocketbase` | PocketBase — lightweight backend-as-a-service สำหรับ IoT + dream projects |
 
 ---
 
