@@ -19,6 +19,11 @@ ENV_LINK = REPO_ROOT / ".env"
 DRIVE_PATH_FILE = REPO_ROOT / ".drive-path"
 
 SETUP_HINT = "-> Run: bash scripts/setup-cloud-link.sh"
+PLAN_FILES = [
+    ("handoff.md", "drive/personal/journal/handoff.md"),
+    ("goals.md", "drive/personal/journal/goals.md"),
+    ("wiki/context/session-memory.md", "drive/personal/journal/wiki-context-session-memory.md"),
+]
 EXPECTED_DRIVE_FOLDERS = [
     "raw",
     "waste-reports",
@@ -136,6 +141,24 @@ def check_raw() -> tuple[bool, str]:
     return False, "raw/ not configured"
 
 
+def check_plan_files() -> tuple[bool, str]:
+    """Warn if plan/goal/todo files are regular files instead of drive symlinks."""
+    not_linked = []
+    missing = []
+    for local_rel, _drive_rel in PLAN_FILES:
+        local = REPO_ROOT / local_rel
+        if not local.exists() and not local.is_symlink():
+            missing.append(local_rel)
+        elif local.exists() and not local.is_symlink():
+            not_linked.append(local_rel)
+    if not_linked:
+        return False, (
+            f"plan files are regular files (not drive-synced): {', '.join(not_linked)}\n"
+            "  -> Run: FORCE_SYMLINK=1 bash scripts/setup-local.sh"
+        )
+    return True, "plan files OK"
+
+
 def check_env() -> tuple[bool, str]:
     """Best-effort check; .env is optional because env vars may be injected."""
     if ENV_LINK.is_symlink() or is_reparse_point(ENV_LINK):
@@ -164,8 +187,9 @@ def main() -> int:
     drive_ok, drive_msg = check_drive()
     raw_ok, raw_msg = check_raw()
     env_ok, env_msg = check_env()
+    plan_ok, plan_msg = check_plan_files()
 
-    if drive_ok and raw_ok and env_ok:
+    if drive_ok and raw_ok and env_ok and plan_ok:
         emit("cloud links OK")
     else:
         if not drive_ok:
@@ -174,6 +198,8 @@ def main() -> int:
             emit(raw_msg)
         if not env_ok:
             emit(env_msg)
+        if not plan_ok:
+            emit(plan_msg)
         emit(SETUP_HINT)
 
     return 0

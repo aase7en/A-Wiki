@@ -8,6 +8,25 @@ When an agent opens Plan Mode, prepares an implementation plan, or is about to s
 
 `handoff.md` is local and gitignored because it can contain live work context. The tracked source of truth for its shape is `handoff.md.example`.
 
+## Drive-Sync Rule (Machine Portability)
+
+**`handoff.md`, `goals.md`, and `wiki/context/session-memory.md` MUST be drive-synced symlinks** — not regular files. This ensures plans, goals, and TODOs survive machine switches (Mac ↔ Work PC ↔ WSL) without git commits.
+
+| File | Drive target | Purpose |
+|------|-------------|---------|
+| `handoff.md` | `drive/personal/journal/handoff.md` | Active plan chunks (Plan Mode / task board) |
+| `goals.md` | `drive/personal/journal/goals.md` | Longer-term goals that persist across sessions |
+| `wiki/context/session-memory.md` | `drive/personal/journal/wiki-context-session-memory.md` | Cross-session TODOs + decisions |
+
+**To set up symlinks on a fresh machine:**
+```bash
+bash scripts/setup-local.sh          # auto-links on first setup
+# or, to fix existing regular files:
+FORCE_SYMLINK=1 bash scripts/setup-local.sh
+```
+
+The `SessionStart` hook (`check_drive_link.py`) warns at each session start if any of these files are regular files instead of symlinks.
+
 ## Required Plan Shape
 
 Every plan must use chunks small enough for another agent to resume without reading the whole previous conversation.
