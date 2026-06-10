@@ -81,35 +81,68 @@ setup_private_journal() {
 
   mkdir -p drive/personal/journal 2>/dev/null || true
 
+  # ensure_private_file LOCAL_PATH DRIVE_REL_PATH EXAMPLE_PATH
+  # Symlink LOCAL_PATH → drive. Uses absolute symlink target so subdirectory
+  # paths (wiki/context/…) resolve correctly on all machines.
+  # FORCE_SYMLINK=1  — auto-convert regular files to symlinks (backs up first).
   ensure_private_file() {
     local local_path="$1"
-    local drive_path="$2"
+    local drive_rel="$2"
     local example_path="$3"
+    local abs_drive="$REPO_ROOT/$drive_rel"
 
-    if [[ -e "$local_path" ]]; then
-      echo "  $local_path already exists — skipping"
-      return 0
+    # Already a valid symlink — verify target resolves
+    if [[ -L "$local_path" ]]; then
+      if [[ -e "$local_path" ]]; then
+        echo "  OK (symlink) — $local_path"
+      else
+        echo "  WARN: $local_path symlink broken — removing and re-linking" >&2
+        rm "$local_path"
+        # fall through to re-create
+      fi
+      [[ -L "$local_path" ]] && return 0
     fi
 
-    if [[ -f "$drive_path" ]]; then
+    # Regular file exists — convert to symlink if FORCE_SYMLINK=1, else warn
+    if [[ -e "$local_path" && ! -L "$local_path" ]]; then
+      if [[ "${FORCE_SYMLINK:-0}" == "1" ]]; then
+        if [[ ! -f "$abs_drive" ]]; then
+          mkdir -p "$(dirname "$abs_drive")"
+          cp "$local_path" "$abs_drive"
+          echo "  OK — migrated $local_path to drive ($abs_drive)"
+        fi
+        rm "$local_path"
+        # fall through to create symlink
+      else
+        echo "  WARN: $local_path is a regular file (not drive-synced)."
+        echo "        Re-run with FORCE_SYMLINK=1 bash scripts/setup-local.sh to auto-convert" >&2
+        return 0
+      fi
+    fi
+
+    # Create symlink from drive (absolute target — safe for any subdirectory depth)
+    if [[ -f "$abs_drive" ]]; then
       case "$(uname -s)" in
         Darwin*|Linux*)
-          ln -s "$drive_path" "$local_path"
-          echo "  OK — linked $local_path -> $drive_path"
+          ln -s "$abs_drive" "$local_path"
+          echo "  OK — linked $local_path -> $abs_drive"
           ;;
         *)
-          cp "$drive_path" "$local_path"
-          echo "  OK — copied $drive_path -> $local_path"
+          cp "$abs_drive" "$local_path"
+          echo "  OK — copied $abs_drive -> $local_path"
           ;;
       esac
       return 0
     fi
 
-    if [[ -f "$example_path" ]]; then
+    # Drive file missing — seed from example (and mirror to drive for future machines)
+    if [[ -n "$example_path" && -f "$example_path" ]]; then
       cp "$example_path" "$local_path"
       echo "  OK — created $local_path from $example_path"
+      mkdir -p "$(dirname "$abs_drive")" 2>/dev/null || true
+      cp "$local_path" "$abs_drive" 2>/dev/null && echo "  OK — seeded drive at $abs_drive" || true
     else
-      echo "  WARN: missing template $example_path" >&2
+      echo "  WARN: $abs_drive not found and no template — create $local_path manually when drive is mounted" >&2
     fi
   }
 
@@ -117,6 +150,12 @@ setup_private_journal() {
   ensure_private_file "wiki/context/session-memory.md" \
     "drive/personal/journal/wiki-context-session-memory.md" \
     "wiki/context/session-memory.md.example"
+  ensure_private_file "handoff.md" \
+    "drive/personal/journal/handoff.md" \
+    "handoff.md.example"
+  ensure_private_file "goals.md" \
+    "drive/personal/journal/goals.md" \
+    "goals.md.example"
 }
 
 # ── 5. Build SQLite wiki index ──────────────────────────────────────────────
