@@ -14,15 +14,36 @@
       "ecosystem": "../scripts/ecosystem"
     }
   },
-  "model": {
-    "provider": "gemini",
-    "name": "gemini-2.5-pro-exp-03-25",
-    "temperature": 0.5,
-    "max_tokens": 8192
+  "context": {
+    "fileName": ["AGENTS.md", "GEMINI.md"]
   },
   "hooks": {
-    "enabled": true,
-    "runner": "../scripts/hooks_runner.py"
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "name": "a-wiki-session-start",
+            "type": "command",
+            "command": "python3 scripts/hooks/session_start.py",
+            "timeout": 60000
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "a-wiki-hooks-runner",
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py",
+            "timeout": 60000
+          }
+        ]
+      }
+    ]
   },
   "version": "1.0.0"
 }
