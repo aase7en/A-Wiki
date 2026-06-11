@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import configparser
 import json
 import subprocess
 import sys
@@ -141,3 +142,26 @@ def test_refresh_scripts_regenerate_router_policy():
 
     assert "model-router-policy.py" in roster_script
     assert "model-router-policy.py" in intel_script
+
+
+def test_cost_routing_conf_documents_primary_model_ladder():
+    config = configparser.ConfigParser()
+    config.read(REPO_ROOT / "wiki" / "context" / "cost-routing.conf", encoding="utf-8")
+
+    required_keys = {
+        "provider",
+        "model",
+        "mode",
+        "secret_name",
+        "price_input_per_mtok",
+        "price_output_per_mtok",
+        "cache_read_multiplier",
+        "cache_write_5m_multiplier",
+        "cache_write_1h_multiplier",
+        "note",
+    }
+    for section in ("tier_4a", "tier_4b", "tier_4c"):
+        assert section in config
+        assert required_keys <= set(config[section])
+        assert "primary-agent only" in config[section]["note"]
+        assert "harness must not call" in config[section]["note"]

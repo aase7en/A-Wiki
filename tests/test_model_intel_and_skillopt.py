@@ -20,6 +20,30 @@ def test_session_start_exposes_model_intel_hook():
     assert hasattr(session_start, "maybe_update_model_intel")
 
 
+def test_session_start_model_tier_hint_can_be_disabled(monkeypatch, capsys):
+    monkeypatch.setenv("AWIKI_MODEL_TIER_HINT", "0")
+
+    session_start.show_model_tier_hint(now=session_start.datetime(2026, 6, 12))
+
+    captured = capsys.readouterr()
+    assert "Model tier" not in captured.err
+
+
+def test_session_start_model_tier_hint_is_date_aware(monkeypatch, capsys):
+    monkeypatch.delenv("AWIKI_MODEL_TIER_HINT", raising=False)
+
+    session_start.show_model_tier_hint(now=session_start.datetime(2026, 6, 12))
+    before = capsys.readouterr().err
+    session_start.show_model_tier_hint(now=session_start.datetime(2026, 6, 23))
+    after = capsys.readouterr().err
+
+    assert "ก่อน 2026-06-22" in before
+    assert "หลัง 2026-06-22" in after
+    assert "4b" in before
+    assert "4c" in after
+    assert "2-3" in after
+
+
 def test_session_start_todos_only_reads_active_unchecked_block(tmp_path, capsys):
     session_dir = tmp_path / "wiki" / "context"
     session_dir.mkdir(parents=True)

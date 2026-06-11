@@ -12,9 +12,13 @@ We:
   2. Emit `src/phaser/petAnims.ts` for Phaser preload + register.
 
 Actions supported (match what we generate via PixelLab):
-  walk → directional, looping
-  sit  → south-only, one-shot
-  wag  → south-only, looping (tail wag)
+  walk  → directional, looping
+  run   → directional, looping (Phase 9)
+  sit   → south-only, one-shot
+  wag   → south-only, looping (tail wag)
+  eat   → south-only, one-shot (Phase 9)
+  sleep → south-only, one-shot, hold last frame in-game (Phase 9)
+  bark  → south-only, one-shot (Phase 9)
 """
 from __future__ import annotations
 
@@ -32,13 +36,19 @@ PET_IDS = ["black", "red", "cream"]
 ACTION_MAP = {
     "walking_legs": "walk",
     "walking_moving": "walk",
+    "running_fast": "run",
     "sitting_down": "sit",
     "wagging_tail": "wag",
     "tail_wagging": "wag",
+    "eating_food": "eat",
+    "sleeping_curled": "sleep",
+    "barking_alert": "bark",
 }
-ACTION_ORDER = ["walk", "sit", "wag"]
-LOOPING_ACTIONS = {"walk", "wag"}
-FRAME_RATE = {"walk": 9, "sit": 7, "wag": 8}
+ACTION_ORDER = ["walk", "run", "sit", "wag", "eat", "sleep", "bark"]
+MOVE_ACTION_ORDER = ["walk", "run"]
+ONESHOT_ACTION_ORDER = [action for action in ACTION_ORDER if action not in MOVE_ACTION_ORDER]
+LOOPING_ACTIONS = {"walk", "run", "wag"}
+FRAME_RATE = {"walk": 9, "run": 12, "sit": 7, "wag": 8, "eat": 7, "sleep": 6, "bark": 8}
 
 PIXELLAB_DIRECTIONS = ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"]
 PIXELLAB_TO_DIR8 = {
@@ -87,10 +97,18 @@ def action_for_slug(slug: str) -> str | None:
     # Loose word match
     if "walk" in parts or "walking" in parts:
         return "walk"
+    if "run" in parts or "running" in parts:
+        return "run"
     if "sit" in parts or "sitting" in parts:
         return "sit"
     if "wag" in parts or "wagging" in parts:
         return "wag"
+    if "eat" in parts or "eating" in parts:
+        return "eat"
+    if "sleep" in parts or "sleeping" in parts:
+        return "sleep"
+    if "bark" in parts or "barking" in parts:
+        return "bark"
     return None
 
 
@@ -130,9 +148,9 @@ def render_pet_anims_ts(
     lines.append("import type { Dir8 } from '../types/domain'")
     lines.append("import type { PetDogId } from '../data/pets.seed'")
     lines.append("")
-    lines.append('export const PET_ANIM_ACTIONS = ["walk", "sit", "wag"] as const')
+    lines.append(f"export const PET_ANIM_ACTIONS = {json.dumps(ACTION_ORDER)} as const")
     lines.append("export type PetAction = (typeof PET_ANIM_ACTIONS)[number]")
-    lines.append("export const PET_MOVE_ACTIONS = [\"walk\"] as const")
+    lines.append(f"export const PET_MOVE_ACTIONS = {json.dumps(MOVE_ACTION_ORDER)} as const")
     lines.append("export type PetMoveAction = (typeof PET_MOVE_ACTIONS)[number]")
     lines.append("export interface PetAnimDef { key: string; frames: readonly string[]; frameRate: number; repeat: number }")
     lines.append("")
@@ -141,7 +159,7 @@ def render_pet_anims_ts(
     lines.append("export const PET_MOVE_ANIMS: Record<PetDogId, Record<PetMoveAction, Partial<Record<Dir8, PetAnimDef>>>> = {")
     for dog_id in PET_IDS:
         lines.append(f"  {dog_id}: {{")
-        for action in ["walk"]:
+        for action in MOVE_ACTION_ORDER:
             lines.append(f"    {action}: {{")
             per_action = per_dog_dir_anims.get(dog_id, {}).get(action, {})
             for px_dir in PIXELLAB_DIRECTIONS:
@@ -163,7 +181,7 @@ def render_pet_anims_ts(
     lines.append("export const PET_ONESHOT_ANIMS: Record<PetDogId, Partial<Record<PetAction, PetAnimDef>>> = {")
     for dog_id in PET_IDS:
         lines.append(f"  {dog_id}: {{")
-        for action in ["sit", "wag"]:
+        for action in ONESHOT_ACTION_ORDER:
             per_action = per_dog_dir_anims.get(dog_id, {}).get(action, {})
             if "south" not in per_action:
                 continue
@@ -303,6 +321,7 @@ def normalize_pet_frames(pwq_root: str | Path) -> dict[str, dict[str, int]]:
             summary[dog_id][action] = total_frames
 
     ts_text = render_pet_anims_ts(per_dog_dir_anims)
+    ts_out.parent.mkdir(parents=True, exist_ok=True)
     ts_out.write_text(ts_text, encoding="utf-8")
     return summary
 

@@ -36,7 +36,9 @@ ACTION_MAP = {
     "crying_sadly": "cry",
     "watering_plants": "water",
     "hoeing_soil": "hoe",
-    "harvesting_crop": "harvest",
+    # PixelLab slugs come from the free-text action description, so match the
+    # leading verb only ("harvesting_a_crop_with_a_sickle_…").
+    "harvesting": "harvest",
 }
 FRAME_RATE = {
     "idle": 4,
