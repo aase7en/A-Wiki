@@ -4,16 +4,15 @@
 # Usage:   scripts/delegate.sh <task_type> "<english_prompt>"
 # Tasks:   search | lookup | summarize | reason | compare | scan | race
 #
-# Routing priority (always free first):
-#   1. Gemini Free  (GEMINI_API_KEY direct — fastest, no routing overhead)
-#   2. DeepSeek Free (DEEPSEEK_API_KEY direct — cheapest per token if paid)
-#   3. OpenRouter Free models (via OPENROUTER_API_KEY)
-#   4. Groq Free    (GROQ_API_KEY)
-#   5. Paid fallback (OpenRouter auto / GPT-4o-mini / Haiku)
+# Routing priority (scout first, then cheapest capable):
+#   1. free-current dynamic roster
+#   2. cheap-capable provider route discovered at runtime
+#   3. platform-low-scout / low-cost CLI agent when available
+#   4. provider seeds only if scout cannot produce a live choice
 #
 # Self-healing:
 #   When ALL models fail → classify why → scout fresh models → retry once
-#   model-not-found  → update-model-roster.sh → retry with new models
+#   model-not-found  → model-scout-current.py → update-model-roster.sh → retry
 #   rate-limit       → report + suggest race mode or retry later
 #   auth-error       → report which key to check
 #   network          → report + retry once after 3s
@@ -25,11 +24,25 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ROSTER_CONF="$REPO_ROOT/wiki/context/model-roster.conf"
 POLICY_SCRIPT="$REPO_ROOT/scripts/model-router-policy.py"
 POLICY_CONF="${MODEL_ROUTER_POLICY_CONF:-$REPO_ROOT/.tmp/model-router-policy.conf}"
+SCOUT_SCRIPT="$REPO_ROOT/scripts/model-scout-current.py"
+SCOUT_JSON="${MODEL_SCOUT_CURRENT_JSON:-$REPO_ROOT/.tmp/model-scout-current.json}"
+SCOUT_REPORT="${MODEL_SCOUT_CURRENT_REPORT:-$REPO_ROOT/.tmp/model-scout-current.md}"
 UPDATE_SCRIPT="$REPO_ROOT/scripts/update-model-roster.sh"
 
+refresh_model_scout() {
+  local mode="${1:-cached}"
+  [ -f "$SCOUT_SCRIPT" ] || return 1
+  if [ "$mode" != "force" ] && [ -f "$SCOUT_JSON" ] && [ -z "${MODEL_SCOUT_FORCE:-}" ]; then
+    return 0
+  fi
+  python3 "$SCOUT_SCRIPT" --out "$SCOUT_JSON" --report "$SCOUT_REPORT" --quiet >/dev/null 2>&1 || \
+    python3 "$SCOUT_SCRIPT" --offline --out "$SCOUT_JSON" --report "$SCOUT_REPORT" --quiet >/dev/null 2>&1 || true
+}
+
 # ─── Load local router policy (graceful if missing) ──────────────────────────
+refresh_model_scout cached || true
 if [ -f "$POLICY_SCRIPT" ]; then
-  python3 "$POLICY_SCRIPT" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
+  python3 "$POLICY_SCRIPT" --scout "$SCOUT_JSON" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
 fi
 if [ -f "$POLICY_CONF" ]; then
   source "$POLICY_CONF" 2>/dev/null || true
@@ -43,7 +56,7 @@ if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
   export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
 fi
 
-# ─── Hardcoded defaults (Gemini first in every tier) ──────────────────────────
+# ─── Emergency seed defaults only; seed only; replaced by scout ───────────────
 TIER1_PRIMARY="${TIER1_PRIMARY:-google/gemini-2.5-flash:free}"
 TIER1_FALLBACK1="${TIER1_FALLBACK1:-deepseek/deepseek-chat-v3-0324:free}"
 TIER1_FALLBACK2="${TIER1_FALLBACK2:-qwen/qwen3-235b-a22b:free}"
@@ -59,6 +72,13 @@ TIER3_FALLBACK1="${TIER3_FALLBACK1:-qwen/qwen3-30b-a3b:free}"
 TIER3_FALLBACK2="${TIER3_FALLBACK2:-openai/gpt-4o-mini}"
 
 RACE_MODELS="${RACE_MODELS:-google/gemini-2.5-flash:free deepseek/deepseek-chat-v3-0324:free qwen/qwen3-235b-a22b:free}"
+
+GEMINI_DIRECT_MODEL_SEED="${GEMINI_DIRECT_MODEL_SEED:-gemini-2.5-flash}"
+GEMINI_DIRECT_MODEL="${GEMINI_DIRECT_MODEL:-$GEMINI_DIRECT_MODEL_SEED}"
+GROQ_DIRECT_MODEL_SEED="${GROQ_DIRECT_MODEL_SEED:-llama-3.3-70b-versatile}"
+GROQ_DIRECT_MODEL="${GROQ_DIRECT_MODEL:-$GROQ_DIRECT_MODEL_SEED}"
+ANTHROPIC_LOW_MODEL_SEED="${ANTHROPIC_LOW_MODEL_SEED:-claude-haiku-4-5}"
+ANTHROPIC_LOW_MODEL="${ANTHROPIC_LOW_MODEL:-$ANTHROPIC_LOW_MODEL_SEED}"
 
 # ─── Args ─────────────────────────────────────────────────────────────────────
 if [ $# -lt 2 ]; then
@@ -88,8 +108,8 @@ if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${DEEPSEEK_API_KEY:-}" ] && \
    [ -z "${ANTHROPIC_API_KEY:-}" ]; then
   echo "❌ No API keys found. Set at least one:" >&2
   echo "   OPENROUTER_API_KEY=sk-or-... (recommended — unlocks all models)" >&2
-  echo "   GEMINI_API_KEY=AIza...        (Google Gemini 2.5 Flash free)" >&2
-  echo "   DEEPSEEK_API_KEY=sk-...       (direct DeepSeek API)" >&2
+  echo "   GEMINI_API_KEY=AIza...        (direct platform route; scout validates current model)" >&2
+  echo "   DEEPSEEK_API_KEY=sk-...       (direct provider route; scout validates pricing)" >&2
   echo "   → claude.ai/code → Project Settings → Environment Variables" >&2
   exit 2
 fi
@@ -105,6 +125,32 @@ _track_fail() {
   local model="$1" reason="$2"
   TRIED_MODELS+=("$model")
   FAIL_REASONS+=("$reason")
+}
+
+# ─── Cost annotator ───────────────────────────────────────────────────────────
+# Appends a cost estimate line to stdout after the response body.
+# Estimates are labels only. Current pricing must come from model-scout-current.py.
+# Only active when MIN_COST_ANNOTATE=true (off by default).
+MIN_COST_ANNOTATE="${MIN_COST_ANNOTATE:-false}"
+_cost_annotate() {
+  local model_name="$1"
+  $MIN_COST_ANNOTATE || return 0
+  # Rough per-token ranges (input + output, 500 tokens avg)
+  case "$model_name" in
+    *gemini*flash*|*gemini-2.5-flash*)   local cost="~$0.00 (free tier)" ;;
+    *deepseek*r1*|*reasoner*)            local cost="~$0.00014" ;;
+    *deepseek*chat*v3*)                  local cost="~$0.00009" ;;
+    *deepseek*)                          local cost="~$0.00008" ;;
+    *qwen3*235b*|*qwen3-235b*)           local cost="~$0.00 (free)" ;;
+    *llama-3.3*70b*|*llama*3.3*70b*)     local cost="~$0.00 (free/Groq)" ;;
+    *qwen3*30b*|*qwen3-30b*)             local cost="~$0.00 (free)" ;;
+    *gpt-4o-mini*)                       local cost="~$0.00015" ;;
+    *claude*haiku*|*claude-haiku*)       local cost="~$0.00025" ;;
+    *openrouter/auto*)                   local cost="~$0.001 (varies)" ;;
+    *)                                   local cost="~$0.00 (unknown/free)" ;;
+  esac
+  echo ""
+  echo "# [cost-estimate] ${cost}  (model: ${model_name})"
 }
 
 # ─── Response parser + error classifier ───────────────────────────────────────
@@ -123,22 +169,22 @@ try_gemini_direct() {
   err_out=$(mktemp)
   local resp
   resp=$(curl -sS --max-time "$TIMEOUT" -X POST \
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_API_KEY" \
+    "https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_DIRECT_MODEL}:generateContent?key=$GEMINI_API_KEY" \
     -H "Content-Type: application/json" \
     -d "{\"contents\":[{\"parts\":[{\"text\":$ESCAPED}]}]}" 2>/dev/null) || {
-      _track_fail "gemini-2.5-flash(direct)" "network-timeout"
+      _track_fail "${GEMINI_DIRECT_MODEL}(direct)" "network-timeout"
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart gemini 2>"$err_out"; then
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
-  _track_fail "gemini-2.5-flash(direct)" "$LAST_ERROR"
+  _track_fail "${GEMINI_DIRECT_MODEL}(direct)" "$LAST_ERROR"
   rm -f "$err_out"; return 1
 }
 
 try_deepseek_direct() {
-  # Direct DeepSeek API — cheapest for deepseek models
+  # Direct DeepSeek API aliases are provider aliases, not durable policy model ids.
   [ -z "${DEEPSEEK_API_KEY:-}" ] && return 1
   local model="$1"
   local native
@@ -196,15 +242,16 @@ try_groq_model() {
     https://api.groq.com/openai/v1/chat/completions \
     -H "Authorization: Bearer $GROQ_API_KEY" \
     -H "Content-Type: application/json" \
-    -d "{\"model\":\"llama-3.3-70b-versatile\",\"messages\":[{\"role\":\"user\",\"content\":$ESCAPED}]}" 2>/dev/null) || {
-      _track_fail "groq(llama-3.3-70b)" "network-timeout"
+    -d "{\"model\":\"$GROQ_DIRECT_MODEL\",\"messages\":[{\"role\":\"user\",\"content\":$ESCAPED}]}" 2>/dev/null) || {
+      _track_fail "groq($GROQ_DIRECT_MODEL)" "network-timeout"
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _cost_annotate "$GROQ_DIRECT_MODEL(groq)"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
-  _track_fail "groq(llama-3.3-70b)" "$LAST_ERROR"
+  _track_fail "groq($GROQ_DIRECT_MODEL)" "$LAST_ERROR"
   rm -f "$err_out"; return 1
 }
 
@@ -218,11 +265,12 @@ try_anthropic_haiku() {
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2023-06-01" \
     -H "Content-Type: application/json" \
-    -d "{\"model\":\"claude-haiku-4-5\",\"max_tokens\":2048,\"messages\":[{\"role\":\"user\",\"content\":$ESCAPED}]}" 2>/dev/null) || {
+    -d "{\"model\":\"$ANTHROPIC_LOW_MODEL\",\"max_tokens\":2048,\"messages\":[{\"role\":\"user\",\"content\":$ESCAPED}]}" 2>/dev/null) || {
       _track_fail "anthropic(haiku)" "network-timeout"
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart anthropic 2>"$err_out"; then
+    _cost_annotate "$ANTHROPIC_LOW_MODEL"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -294,6 +342,7 @@ show_failure_and_heal() {
   if $has_auth_error; then
     echo "" >&2
     echo "🔑 AUTH ERROR detected — check your API key(s):" >&2
+    refresh_model_scout force || true
     echo "   Set via: claude.ai/code → Project Settings → Environment Variables" >&2
     echo "   Keys needed: OPENROUTER_API_KEY | GEMINI_API_KEY | DEEPSEEK_API_KEY" >&2
     return 1
@@ -301,13 +350,14 @@ show_failure_and_heal() {
 
   if $has_model_not_found; then
     echo "" >&2
-    echo "🔄 Model(s) no longer available — scouting fresh lineup from OpenRouter..." >&2
+    echo "🔄 Model(s) no longer available — scouting current model/pricing..." >&2
+    refresh_model_scout force || true
     if [ -n "${OPENROUTER_API_KEY:-}" ] && [ -x "$UPDATE_SCRIPT" ]; then
       bash "$UPDATE_SCRIPT" >/dev/null 2>&1 && {
         echo "✅ Roster updated — retrying with new models..." >&2
         # Reload updated router policy
         if [ -f "$POLICY_SCRIPT" ]; then
-          python3 "$POLICY_SCRIPT" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
+          python3 "$POLICY_SCRIPT" --scout "$SCOUT_JSON" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
         fi
         [ -f "$POLICY_CONF" ] && source "$POLICY_CONF" 2>/dev/null || true
         [ ! -f "$POLICY_CONF" ] && [ -f "$ROSTER_CONF" ] && source "$ROSTER_CONF" 2>/dev/null || true
@@ -322,6 +372,7 @@ show_failure_and_heal() {
   if $has_rate_limit; then
     echo "" >&2
     echo "⏱️  RATE LIMIT hit on all models. Options:" >&2
+    refresh_model_scout force || true
     echo "   • Try again in 1-2 minutes" >&2
     echo "   • Use 'race' mode to hit multiple providers simultaneously" >&2
     echo "   • Add more API keys (GROQ_API_KEY is free + high rate limit)" >&2
@@ -336,7 +387,7 @@ show_failure_and_heal() {
   fi
 
   echo "" >&2
-  echo "💡 Try: bash scripts/update-model-roster.sh  (scout current free models)" >&2
+  echo "💡 Try: python3 scripts/model-scout-current.py && bash scripts/update-model-roster.sh" >&2
   return 1
 }
 
