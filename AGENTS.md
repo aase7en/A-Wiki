@@ -150,6 +150,8 @@ Mac, Work PC, WSL, and Linux may mount the same Google Drive at different paths;
 | **3** | Subagent (Haiku-class / Explore) | **Cheap** — scan many files, lint |
 | **4** | Primary AI (current) | **Normal** — write wiki, complex reasoning |
 
+**Level 4 sub-ladder**: ก่อนเริ่มงาน multi-step หรือ task มีต้นทุนสูง ให้ classify task → เลือก tier 4a/4b/4c + effort ตาม `docs/protocols/model-switching.md` และ skill `model-cost-switching` เสมอ (ไม่ต้องรอ user สั่ง).
+
 **Model selection — NEVER hardcode model names:**
 ```bash
 cat wiki/context/model-roster.conf          # see current free models
