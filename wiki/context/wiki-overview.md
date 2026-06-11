@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 61 |
 | CONCEPTS | 48 |
-| SYNTHESIS | 190 |
+| SYNTHESIS | 194 |
 | SOURCES | 162 |
-| **Total** | **461 pages** |
+| **Total** | **465 pages** |
 
 ---
 
@@ -81,6 +81,9 @@
 | `synth-ai-engineering-glossary` | _To be filled in by human review._ |
 | `synth-ai-engineering-llm` | _To be filled in by human review._ |
 | `synth-ai-engineering-multi-agent` | _To be filled in by human review._ |
+| `synth-ai-engineering-myths` | _To be filled in by human review._ |
+| `synth-ai-engineering-swarm-optimization` | _To be filled in by human review._ |
+| `synth-ai-engineering-tools-protocols` | _To be filled in by human review._ |
 | `synth-ai-iot-server-build-v3` | _To be filled in by human review._ |
 | `synth-ai-iot-server-build-v3-final` | _To be filled in by human review._ |
 | `synth-air-quality-iot-lora-network` | _To be filled in by human review._ |
@@ -93,6 +96,7 @@
 | `synth-arduino-librariesarduinopowermanagement` | (awaiting human summary) |
 | `synth-build-software-better-together` | (awaiting human summary) |
 | `synth-building-an-iot-application-with-raspberry-pi-and-python` | GPIO.setmode(GPIO.BCM) # Define pin number sensor_pin = 4 |
+| `synth-claude-model-cost-switching-strategy-2026-06` | _To be filled in by human review._ |
 | `synth-context-claude-code-dev-vibe-coding-thailand` | (awaiting human summary) |
 | `synth-create-an-esp32-project-with-platformio-an-guide-for-beginne` | (awaiting human summary) |
 | `synth-create-an-esp32-project-with-platformio-an-guide-for-beginners` | (awaiting human summary) |
@@ -232,4 +236,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 461 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 465 pages across 4 sections.*

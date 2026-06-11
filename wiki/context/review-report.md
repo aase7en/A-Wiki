@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 539
-- ⚠ Warnings: 442
+- ✓ Passed: 536
+- ⚠ Warnings: 441
 - ❌ Failures: 46
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 468 more issue(s) below
+- … 467 more issue(s) below
 
 ---
 
@@ -296,7 +296,6 @@
 - wiki/synthesis/synth-build-software-better-together.md: missing frontmatter key: tags
 - wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md: missing frontmatter key: tags
 - wiki/synthesis/synth-claude-model-cost-switching-strategy-2026-06.md: missing frontmatter key: tags
-- wiki/synthesis/synth-claude-model-cost-switching-strategy.md: missing frontmatter key: tags
 - wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md: missing frontmatter key: tags
 - wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md: missing frontmatter key: tags
 - wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md: missing frontmatter key: tags
@@ -537,10 +536,10 @@
 
 ---
 
-## ✓ Passed Checks (539 total)
+## ✓ Passed Checks (536 total)
 
-- **L2**: 112 passed
-- **L3**: 424 passed
+- **L2**: 111 passed
+- **L3**: 422 passed
 - **L6**: 3 passed
 
 ---

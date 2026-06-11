@@ -7,20 +7,20 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 456 |
+| Wiki pages | 465 |
 | Owned skills | 42 |
 | Script capabilities | 13 |
-| Protocols/runbooks | 34 |
+| Protocols/runbooks | 35 |
 | HTML surfaces | 11 |
 
 ## Wiki Knowledge Surface
 
 | Type | Count |
 |---|---:|
-| Entities | 58 |
+| Entities | 61 |
 | Concepts | 48 |
-| Synthesis | 189 |
-| Sources | 161 |
+| Synthesis | 194 |
+| Sources | 162 |
 
 ## Capability Routing
 
@@ -122,6 +122,7 @@
 | Knowledge Currency Protocol — รับมือข้อมูลล้าหลัง | docs/protocols | `docs/protocols/knowledge-currency.md` |
 | Session Lifecycle Protocols — Mobile & Session End | docs/protocols | `docs/protocols/lifecycle.md` |
 | Protocol: Output Format — Durability Stratification + Render-Don't-Dump | docs/protocols | `docs/protocols/md-vs-html-output.md` |
+| Model-Cost Switching | docs/protocols | `docs/protocols/model-switching.md` |
 | NotebookLM-first Protocol | docs/protocols | `docs/protocols/notebooklm.md` |
 | PWQ Read-only Feed Contract | docs/protocols | `docs/protocols/pwq-read-only-feed-contract.md` |
 | Quick Commands — คำสั่งลัดทุก session | docs/protocols | `docs/protocols/quick-commands.md` |
