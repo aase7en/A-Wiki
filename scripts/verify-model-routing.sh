@@ -90,6 +90,10 @@ probe_output() {
 
 classify_output() {
     local output="$1"
+    if printf '%s' "$output" | grep -Eiq 'session limit|ERROR|failed|timeout after|not authenticated|authentication|command not found'; then
+        echo "FAIL"
+        return
+    fi
     if printf '%s' "$output" | grep -Eiq '4a|4b|4c|model-cost-switching|model-switching|tier'; then
         echo "PASS"
     else
