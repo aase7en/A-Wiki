@@ -107,13 +107,14 @@ rows=""
 for agent in claude codex gemini; do
     output=""
     status="FAIL"
-    if output="$(probe_output "$agent" 2>&1)"; then
+    if output="$(probe_output "$agent")"; then
         status="$(classify_output "$output")"
     elif [ $? -eq 127 ]; then
         status="SKIP"
         output="command not found"
     else
         status="FAIL"
+        output="probe failed"
     fi
 
     if [ "$status" = "PASS" ]; then
