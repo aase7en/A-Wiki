@@ -63,7 +63,7 @@ ls ~/.claude/skills/ | grep react-doctor
 ## ความสัมพันธ์
 
 - ใช้ร่วมกับ: [[claude-skills]] — Claude Code skill system
-- เกี่ยวข้องกับ: [[private-webapp]], [[pharmacy-app]], [[iot-dashboard]] (dream projects)
+- เกี่ยวข้องกับ: `private-webapp`, `pharmacy-app`, `iot-dashboard` (dream projects)
 - เปรียบเทียบกับ: ESLint, Biome — แต่ react-doctor scope แคบ+ลึกกว่า
 
 ## แหล่งข้อมูล

@@ -60,7 +60,7 @@ npx gitnexus setup                    # ผูก MCP ใน Claude Code
 
 ## ความสัมพันธ์
 
-- ใช้ร่วมกับ: [[mcp]] — protocol สำหรับ expose tools
+- ใช้ร่วมกับ: [[concepts/ai-tools/mcp-architecture|MCP]] — protocol สำหรับ expose tools
 - ใช้ร่วมกับ: [[turbovec]] — alternate vector backend ใน scale ใหญ่
 - เปรียบเทียบกับ: A-Wiki's [[knowledge-graph]] — wiki-level (markdown links) vs. code-level (function calls)
 - เกี่ยวข้องกับ: [[ecc]], [[claude-skills]] — ecosystem AI dev tools

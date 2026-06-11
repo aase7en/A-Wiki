@@ -81,7 +81,7 @@ updated: 2026-04-30
 - [x] Wiki ใน git ✅ (มีแล้ว 120 pages)
 - [x] profile.md, log.md ✅
 - [x] สร้าง journal/ + decisions/ folder + templates ✅
-- [x] Setup git mirror script ([[scripts/setup-git-mirror.sh]]) ✅
+- [x] Setup git mirror script (`scripts/setup-git-mirror.sh`) ✅
 - [ ] ใช้ journal ทุกวัน (หรืออย่างน้อย 3 วัน/สัปดาห์)
 - [ ] เขียน decisions เมื่อ major decision (เริ่ม ADR-0001, 0002)
 
@@ -132,7 +132,7 @@ updated: 2026-04-30
 - [[wiki/sources/local-llm-mac-mini-guide]] — Mac Mini setup
 - [[wiki/concepts/ai-tools/openrouter-claude-code]] — current cloud usage
 - [[wiki/entities/ai-tools/telegram-ai-router]] — interface design (Layer 4)
-- [[scripts/setup-git-mirror.sh]] — Layer 5 redundancy
+- `scripts/setup-git-mirror.sh` — Layer 5 redundancy
 
 ---
 

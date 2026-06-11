@@ -11,7 +11,7 @@ tags: [iot, esp32, esp32-s3]
 title: "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education"
 source: "https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/"
 author:
-  - "[[RSP]]"
+  - "RSP"
 published:
 created: 2026-04-18
 description:

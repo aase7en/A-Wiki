@@ -18,4 +18,4 @@ Domain สำหรับ troubleshooting, device setup, hardware/software issue
 
 ## Index
 
-→ [[/index-it]]
+→ [[index-it]]

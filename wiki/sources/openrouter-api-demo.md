@@ -33,4 +33,4 @@ tags: [openrouter, ai-tools, demo, api]
 
 ## หน้า Wiki ที่ได้รับการอัปเดต
 - [[concepts/ai-tools/openrouter-api]]
-- [[index-ai.md]]
+- [[index-ai-tools]]

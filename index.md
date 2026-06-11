@@ -11,7 +11,7 @@
 |--------|-------|-------|
 | Internet of Things (IoT) | [[index-iot]] | ✅ 34 entities, 11 concepts |
 | Environmental Health (อนามัยสิ่งแวดล้อม) | [[index-env]] | ✅ 2 entities, 4 concepts |
-| AI Tools | [[index-ai]] | ✅ 2 entities, 5 concepts |
+| AI Tools | [[index-ai-tools]] | ✅ 2 entities, 5 concepts |
 | Pharmacy (ร้านขายยา ภูฟาร์มาซี) | [[index-pharmacy]] | ✅ 3,760 SKU จาก SP Drugstore 2020 |
 | IT Support | [[index-it]] | 🆕 1 concept |
 
@@ -172,7 +172,7 @@
 
 ## Sources
 
-> ดูรายละเอียดเต็มตาม domain index — [[index-iot]], [[index-env]], [[index-ai]], [[index-pharmacy]]
+> ดูรายละเอียดเต็มตาม domain index — [[index-iot]], [[index-env]], [[index-ai-tools]], [[index-pharmacy]]
 
 | หน้า | ชื่อ | Domain | วันที่ |
 |------|------|--------|--------|

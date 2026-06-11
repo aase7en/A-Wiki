@@ -4,9 +4,9 @@
 
 ## Summary
 
-- ✓ Passed: 544
-- ⚠ Warnings: 441
-- ❌ Failures: 46
+- ✓ Passed: 595
+- ⚠ Warnings: 452
+- ❌ Failures: 4
 
 ## Top Actionable Issues
 
@@ -30,58 +30,16 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 467 more issue(s) below
+- … 436 more issue(s) below
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
 - wiki/concepts/ai-tools/ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki/concepts/ai-tools/openrouter-claude-code.md: broken link: [[scripts/setup-drive-redirect.sh]]
 - wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/9arm-skills.md: broken link: [[git-subtree-workflow]]
-- wiki/entities/ai-tools/agents-md-spec.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-thai-skills]]
-- wiki/entities/ai-tools/ecc.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[liquid-glass-design]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[motion-patterns]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[ui-to-vue]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[frontend-design-direction]]
-- wiki/entities/ai-tools/frontend-slides.md: broken link: [[remotion-video-creation]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[mcp]]
-- wiki/entities/ai-tools/gitnexus.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[claude-skills]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[private-webapp]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[pharmacy-app]]
-- wiki/entities/ai-tools/react-doctor.md: broken link: [[iot-dashboard]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[sqlite-vec]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[embedding-models]]
-- wiki/entities/ai-tools/turbovec.md: broken link: [[vector-search]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki/sources/ai-iot-server-build-v3.md: broken link: [[index-ai]]
-- wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md: broken link: [[deva_diy]]
-- wiki/sources/arduino-librariesarduino-powermanagement.md: broken link: [[arduino-libraries]]
-- wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md: broken link: [[Riccardo Medda]]
-- wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md: broken link: [[Rui Santos]]
-- wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md: broken link: [[Global Byte Shope]]
-- wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md: broken link: [[espressif]]
-- wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md: broken link: [[HelTecAutomation]]
-- wiki/sources/hyperframes-official-docs.md: broken link: [[index-ai.md]]
-- wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md: broken link: [[Naush Patuck]]
-- wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md: broken link: [[CodeLucky]]
-- wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md: broken link: [[IoTThinks]]
-- wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md: broken link: [[RAKwireless]]
-- wiki/sources/openrouter-api-demo.md: broken link: [[index-ai.md]]
-- wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md: broken link: [[monraspberry.com]]
-- wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md: broken link: [[ropg]]
-- wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md: broken link: [[vortigont]]
-- wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md: broken link: [[RSP]]
-- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
-- wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md: broken link: [[เหอเป่ย  ซ่างหง  เมตร  เทคโนโลยี  บจก.]]
 - wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
-- wiki/synthesis/digital-legacy-ai-architecture.md: broken link: [[scripts/setup-git-mirror.sh]]
 
 ---
 
@@ -442,17 +400,28 @@
 - wiki/concepts/ai-tools/agent-planning-loops.md: missing TL;DR line
 - wiki/concepts/ai-tools/ai-glossary.md: missing TL;DR line
 - wiki/concepts/ai-tools/ai-myths.md: missing TL;DR line
+- wiki/concepts/ai-tools/claude-skills.md: missing TL;DR line
+- wiki/concepts/ai-tools/claude-thai-skills.md: missing TL;DR line
 - wiki/concepts/ai-tools/context-management.md: missing TL;DR line
+- wiki/concepts/ai-tools/embedding-models.md: missing TL;DR line
+- wiki/concepts/ai-tools/frontend-design-direction.md: missing TL;DR line
+- wiki/concepts/ai-tools/git-subtree-workflow.md: missing TL;DR line
 - wiki/concepts/ai-tools/hooks-skills-plugins.md: missing TL;DR line
+- wiki/concepts/ai-tools/liquid-glass-design.md: missing TL;DR line
 - wiki/concepts/ai-tools/llm-eval-frameworks.md: missing TL;DR line
 - wiki/concepts/ai-tools/llm-rag-architecture.md: missing TL;DR line
 - wiki/concepts/ai-tools/local-llm-routing.md: missing TL;DR line
 - wiki/concepts/ai-tools/mcp-architecture.md: missing TL;DR line
+- wiki/concepts/ai-tools/motion-patterns.md: missing TL;DR line
 - wiki/concepts/ai-tools/multi-agent-theory.md: missing TL;DR line
 - wiki/concepts/ai-tools/openrouter-api.md: missing TL;DR line
+- wiki/concepts/ai-tools/remotion-video-creation.md: missing TL;DR line
 - wiki/concepts/ai-tools/session-setup.md: missing TL;DR line
+- wiki/concepts/ai-tools/sqlite-vec.md: missing TL;DR line
 - wiki/concepts/ai-tools/swarm-optimization.md: missing TL;DR line
 - wiki/concepts/ai-tools/symlinks-ssot.md: missing TL;DR line
+- wiki/concepts/ai-tools/ui-to-vue.md: missing TL;DR line
+- wiki/concepts/ai-tools/vector-search.md: missing TL;DR line
 - wiki/concepts/ai-tools/vibe-coding.md: missing TL;DR line
 - wiki/concepts/env/hospital-wastewater-treatment.md: missing TL;DR line
 - wiki/concepts/env/infectious-waste-management.md: missing TL;DR line
@@ -536,10 +505,10 @@
 
 ---
 
-## ✓ Passed Checks (544 total)
+## ✓ Passed Checks (595 total)
 
-- **L2**: 115 passed
-- **L3**: 426 passed
+- **L2**: 126 passed
+- **L3**: 466 passed
 - **L6**: 3 passed
 
 ---

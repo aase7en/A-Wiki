@@ -11,7 +11,7 @@ tags: [iot]
 title: "espressif/esp-idf: Espressif IoT Development Framework. Official development framework for Espressif SoCs."
 source: "https://github.com/espressif/esp-idf"
 author:
-  - "[[espressif]]"
+  - "espressif"
 published:
 created: 2026-04-18
 description: "Espressif IoT Development Framework. Official development framework for Espressif SoCs. - espressif/esp-idf"

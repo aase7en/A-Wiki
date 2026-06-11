@@ -11,7 +11,7 @@
 ## Stats
 
 - Entities: **17**
-- Concepts: **21**
+- Concepts: **32**
 
 ---
 
@@ -50,17 +50,28 @@
 | `agent-planning-loops` | ReAct loop, ReWOO planning, Anthropic workflow patterns — พื้นฐา… |
 | `ai-glossary` | คำศัพท์ AI Engineering ที่แม่นยำ — แยก "สิ่งที่คนพูด" ออกจาก "คว… |
 | `ai-myths` | ความเชื่อผิดๆ 20 ข้อเกี่ยวกับ AI/ML — แต่ละข้ออธิบาย reality + d… |
+| `claude-skills` | (no abstract) |
+| `claude-thai-skills` | The active local surface is `skills/claude-thai/`. These skills… |
 | `context-management` | แนวทางจัดการ context window ของ Claude Code ระหว่าง session เพื่… |
+| `embedding-models` | A-Wiki uses multilingual embeddings so Thai and English knowledg… |
+| `frontend-design-direction` | Use with [[synthesis/design-web-capability-hub]] to lock audienc… |
+| `git-subtree-workflow` | (no abstract) |
 | `hooks-skills-plugins` | สามกลไกหลักที่ขยายพฤติกรรมของ Claude Code โดยไม่ต้องแก้ตัว AI เอ… |
+| `liquid-glass-design` | Use only when the product context benefits from glass-like depth… |
 | `llm-eval-frameworks` | LLM-as-judge, automated metrics, statistical rigor, regression t… |
 | `llm-rag-architecture` | Retrieval-Augmented Generation — ระบบเชื่อมต่อ LLM กับ external… |
 | `local-llm-routing` | การตัดสินใจโดยอัตโนมัติว่า query ควรส่งไปประมวลผลที่ **local mod… |
 | `mcp-architecture` | Model Context Protocol — มาตรฐานเปิดสำหรับเชื่อมต่อ AI agents กั… |
+| `motion-patterns` | Use as a reference for web design, slides, and game UI polish. V… |
 | `multi-agent-failover` | A-Wiki มีระบบ failover ข้าม agent อยู่แล้วผ่าน `scripts/swarm/ag… |
 | `multi-agent-theory` | ทฤษฎีพื้นฐานการออกแบบระบบ multi-agent: patterns, protocols, arch… |
 | `openrouter-api` | หน้านี้เป็น overview ของ OpenRouter ในฐานะ unified API gateway ส… |
 | `openrouter-claude-code` | ** Claude Code = "หน้ากาก" (terminal UI + tool integration) เปลี… |
+| `remotion-video-creation` | Use only when the requested deliverable is a programmatic video… |
 | `session-setup` | Wiki นี้ใช้ **working copy ที่ clone จาก GitHub** เป็น repo หลัก… |
+| `sqlite-vec` | It keeps semantic search local and cheap, complementing FTS5 and… |
 | `swarm-optimization` | BFT consensus, voting topology, bio-inspired optimization (PSO/A… |
 | `symlinks-ssot` | Symbolic Link (Symlink) คือ "ทางลัด" ระดับ OS ที่ชี้ไปยังไฟล์/โฟ… |
+| `ui-to-vue` | A-Wiki defaults to the target repo's existing framework. Use thi… |
+| `vector-search` | Use vector search as Cost Pyramid Level -1 retrieval alongside F… |
 | `vibe-coding` | Vibe Coding คือ methodology การพัฒนา software ที่ใช้ AI (LLM) เป… |

@@ -373,4 +373,4 @@ claude-or <model-id>    # ลองตัวที่อยากใช้
 - [[wiki/concepts/ai-tools/local-llm-routing]] — concept routing โมเดลตามความซับซ้อน
 - [[wiki/entities/ai-tools/telegram-ai-router]] — design routing tier (Ollama → Gemini → Claude)
 - [[wiki/concepts/ai-tools/session-setup]] — Claude Code workflow + Phase 2 .git setup
-- [[scripts/setup-drive-redirect.sh]] — setup script สำหรับคอมใหม่
+- `scripts/setup-drive-redirect.sh` — setup script สำหรับคอมใหม่
