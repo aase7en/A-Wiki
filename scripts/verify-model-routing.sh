@@ -35,7 +35,7 @@ else
     mkdir -p "$(dirname "$OUT")"
 fi
 
-PROMPT="In this A-Wiki repo, for a new multi-step project, what model-cost switching ladder should the agent use? Answer briefly and mention the tier names."
+PROMPT="In this A-Wiki repo, how should an agent choose a model for a new multi-step project without hardcoding model versions? Answer briefly and mention scout current model/pricing plus the route roles."
 
 run_cmd() {
     local timeout_seconds="${AWIKI_VERIFY_MODEL_ROUTING_TIMEOUT:-60}"
@@ -65,8 +65,8 @@ probe_output() {
 
     if [ "$MOCK" -eq 1 ]; then
         case "$agent" in
-            claude) echo "Use model-cost-switching: tier 4a/4b/4c with effort." ;;
-            codex) echo "Default 4b, escalate to 4c, de-escalate to 4a." ;;
+            claude) echo "Scout current model/pricing first, then route free-current -> cheap-capable -> platform-low-scout -> platform-primary; use 4a/4b/4c effort without hardcoded model version." ;;
+            codex) echo "Use dynamic/current model selection: scout first, avoid hardcoded model versions, then pick free-current or cheap-capable before platform-primary 4b/4c." ;;
             gemini) echo "Use the best available model." ;;
         esac
         return 0
@@ -94,7 +94,9 @@ classify_output() {
         echo "FAIL"
         return
     fi
-    if printf '%s' "$output" | grep -Eiq '4a|4b|4c|model-cost-switching|model-switching|tier'; then
+    if printf '%s' "$output" | grep -Eiq 'scout|current|pricing|dynamic' && \
+       printf '%s' "$output" | grep -Eiq 'free-current|cheap-capable|platform-low-scout|platform-primary|4a|4b|4c|model-cost-switching|model-switching|tier' && \
+       printf '%s' "$output" | grep -Eiq 'no hardcoded|without hardcod|avoid hardcoded|not hardcode'; then
         echo "PASS"
     else
         echo "FAIL"
@@ -138,6 +140,8 @@ fi
     echo
     echo "- generated_at: $(date '+%Y-%m-%d %H:%M:%S %Z')"
     echo "- repo: A-Wiki"
+    echo "- Dynamic scout: required"
+    echo "- Policy: no hardcoded model version"
     echo "- PASS count: ${pass_count}/3"
     echo "- threshold: ${threshold}"
     echo

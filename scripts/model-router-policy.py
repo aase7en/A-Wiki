@@ -18,9 +18,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROSTER = REPO_ROOT / "wiki" / "context" / "model-roster.conf"
 DEFAULT_INTEL = REPO_ROOT / ".tmp" / "model-intel" / "latest.md"
+DEFAULT_SCOUT = REPO_ROOT / ".tmp" / "model-scout-current.json"
 DEFAULT_OUT = REPO_ROOT / ".tmp" / "model-router-policy.conf"
 
-DEFAULTS = {
+# Emergency seed defaults only; replaced by scout/roster at runtime.
+SEED_DEFAULTS = {
     "TIER1_PRIMARY": "google/gemini-2.5-flash:free",
     "TIER1_FALLBACK1": "deepseek/deepseek-chat-v3-0324:free",
     "TIER1_FALLBACK2": "qwen/qwen3-235b-a22b:free",
@@ -37,7 +39,7 @@ DEFAULTS = {
 
 
 def parse_roster(path: Path) -> dict[str, str]:
-    values = dict(DEFAULTS)
+    values = dict(SEED_DEFAULTS)
     if not path.exists():
         return values
     pattern = re.compile(r"^([A-Z0-9_]+)=(.*)$")
@@ -49,7 +51,7 @@ def parse_roster(path: Path) -> dict[str, str]:
         if not match:
             continue
         key, value = match.groups()
-        if key not in DEFAULTS:
+        if key not in SEED_DEFAULTS:
             continue
         try:
             parts = shlex.split(value, posix=True)
@@ -57,6 +59,50 @@ def parse_roster(path: Path) -> dict[str, str]:
         except ValueError:
             values[key] = value.strip().strip('"')
     return values
+
+
+def load_scout(path: Path) -> tuple[bool, dict[str, object]]:
+    if not path.exists():
+        return False, {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False, {}
+    return (True, payload) if isinstance(payload, dict) else (False, {})
+
+
+def scout_recommendation(payload: dict[str, object], role: str) -> dict[str, object]:
+    recommendations = payload.get("recommendations")
+    if not isinstance(recommendations, dict):
+        return {}
+    value = recommendations.get(role)
+    return value if isinstance(value, dict) else {}
+
+
+def apply_scout(values: dict[str, str], payload: dict[str, object]) -> None:
+    free_current = scout_recommendation(payload, "free-current")
+    cheap_capable = scout_recommendation(payload, "cheap-capable")
+    platform_low = scout_recommendation(payload, "platform-low-scout")
+
+    free_model = str(free_current.get("model_id") or "")
+    cheap_model = str(cheap_capable.get("model_id") or "")
+    if free_model:
+        values["TIER1_PRIMARY"] = free_model
+    if cheap_model:
+        values["TIER2_PRIMARY"] = cheap_model
+
+    race_models = [
+        str(candidate.get("model_id"))
+        for candidate in free_current.get("candidate_models", [])
+        if isinstance(candidate, dict) and candidate.get("model_id")
+    ]
+    if race_models:
+        values["RACE_MODELS"] = " ".join(race_models[:3])
+
+    platform_provider = str(platform_low.get("provider") or "")
+    platform_alias = str(platform_low.get("model_alias") or "")
+    if platform_provider or platform_alias:
+        values["MODEL_PLATFORM_LOW_SCOUT"] = f"{platform_provider}:{platform_alias}".strip(":")
 
 
 def extract_intel_summary(path: Path, max_chars: int = 700) -> tuple[bool, str]:
@@ -82,18 +128,28 @@ def shell_line(key: str, value: str) -> str:
     return f"{key}={shlex.quote(value)}"
 
 
-def build_policy(roster: Path, intel: Path) -> tuple[dict[str, str], bool, str]:
+def build_policy(roster: Path, intel: Path, scout: Path) -> tuple[dict[str, str], bool, str, bool]:
     values = parse_roster(roster)
     intel_available, intel_summary = extract_intel_summary(intel)
-    values["MODEL_ROUTER_POLICY_SOURCE"] = "model-roster+model-intel"
+    scout_available, scout_payload = load_scout(scout)
+    if scout_available:
+        apply_scout(values, scout_payload)
+    values["MODEL_ROUTER_POLICY_SOURCE"] = (
+        "model-roster+model-intel+current-scout" if scout_available else "model-roster+model-intel"
+    )
     values["MODEL_INTEL_AVAILABLE"] = "1" if intel_available else "0"
     values["MODEL_INTEL_PATH"] = str(intel)
     values["MODEL_INTEL_SUMMARY"] = intel_summary
+    values["MODEL_SCOUT_AVAILABLE"] = "1" if scout_available else "0"
+    values["MODEL_SCOUT_PATH"] = str(scout)
+    values["MODEL_SCOUT_GENERATED_AT"] = str(scout_payload.get("generated_at") or "") if scout_available else ""
+    values["MODEL_PLATFORM_LOW_SCOUT"] = values.get("MODEL_PLATFORM_LOW_SCOUT", "")
+    values["MODEL_IDS_ARE_SEEDS"] = "0" if scout_available else "1"
     values["MODEL_ROUTER_POLICY_GENERATED_AT"] = datetime.now().isoformat(timespec="seconds")
-    return values, intel_available, intel_summary
+    return values, intel_available, intel_summary, scout_available
 
 
-def write_policy(path: Path, values: dict[str, str], roster: Path) -> None:
+def write_policy(path: Path, values: dict[str, str], roster: Path, scout: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     ordered = [
         "TIER1_PRIMARY",
@@ -113,11 +169,18 @@ def write_policy(path: Path, values: dict[str, str], roster: Path) -> None:
         "MODEL_INTEL_AVAILABLE",
         "MODEL_INTEL_PATH",
         "MODEL_INTEL_SUMMARY",
+        "MODEL_SCOUT_AVAILABLE",
+        "MODEL_SCOUT_PATH",
+        "MODEL_SCOUT_GENERATED_AT",
+        "MODEL_PLATFORM_LOW_SCOUT",
+        "MODEL_IDS_ARE_SEEDS",
     ]
     lines = [
         "# model-router-policy.conf - local generated router policy",
         "# Generated by scripts/model-router-policy.py",
         f"# Roster: {roster}",
+        f"# Scout: {scout}",
+        "# Fixed model ids are seed only; replaced by scout when available.",
         "# Output is gitignored by default under .tmp/.",
         "",
     ]
@@ -130,6 +193,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Generate local model router policy")
     parser.add_argument("--roster", default=str(DEFAULT_ROSTER), help="model-roster.conf path")
     parser.add_argument("--intel", default=str(DEFAULT_INTEL), help="model intel cache markdown path")
+    parser.add_argument("--scout", default=str(DEFAULT_SCOUT), help="current model scout JSON path")
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="output shell conf path")
     parser.add_argument("--json", action="store_true", help="print JSON summary")
     parser.add_argument("--quiet", action="store_true", help="suppress text output")
@@ -137,15 +201,18 @@ def main() -> int:
 
     roster = Path(args.roster)
     intel = Path(args.intel)
+    scout = Path(args.scout)
     out = Path(args.out)
-    values, intel_available, intel_summary = build_policy(roster, intel)
-    write_policy(out, values, roster)
+    values, intel_available, intel_summary, scout_available = build_policy(roster, intel, scout)
+    write_policy(out, values, roster, scout)
 
     payload = {
         "policy_path": str(out),
         "roster_path": str(roster),
         "intel_path": str(intel),
+        "scout_path": str(scout),
         "intel_available": intel_available,
+        "scout_available": scout_available,
         "intel_summary_chars": len(intel_summary),
         "tiers": {key: values[key] for key in values if key.startswith("TIER") or key == "RACE_MODELS"},
     }

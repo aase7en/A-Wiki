@@ -63,3 +63,53 @@ def test_platform_instruction_files_have_behavioral_model_switching_pointer():
         text = read_doc(path)
         for phrase in required:
             assert phrase in text, f"{path} missing {phrase!r}"
+
+
+def test_platform_instruction_files_require_dynamic_cost_scouting():
+    required = [
+        "scout current model/pricing",
+        "free-current",
+        "cheap-capable",
+        "platform-low-scout",
+        "platform-primary",
+        "scripts/model-scout-current.py",
+        "dated examples only",
+    ]
+
+    for path in ("AGENTS.md", "CLAUDE.md"):
+        text = read_doc(path)
+        for phrase in required:
+            assert phrase in text, f"{path} missing {phrase!r}"
+
+
+def test_cost_first_tables_do_not_bind_vendor_models_as_routes():
+    forbidden_bindings = [
+        "Cheap paid (DeepSeek, Qwen)",
+        "Free API (OpenRouter free / Gemini Flash)",
+        "Subagent (Claude Haiku / Explore)",
+        "Subagent (Haiku-class / Explore)",
+        "Claude Sonnet (current)",
+        "Sonnet-class default",
+    ]
+
+    for path in ("AGENTS.md", "CLAUDE.md", "docs/protocols/model-switching.md"):
+        text = read_doc(path)
+        for phrase in forbidden_bindings:
+            assert phrase not in text, f"{path} still binds route to {phrase!r}"
+
+
+def test_model_switching_protocol_documents_dynamic_scout_gate():
+    text = read_doc("docs/protocols/model-switching.md")
+    required = [
+        "Dynamic Scout Gate",
+        "scout current model/pricing",
+        "free-current",
+        "cheap-capable",
+        "platform-low-scout",
+        "platform-primary",
+        "DeepSeek pricing",
+        "OpenRouter Models API",
+        "model examples are dated examples only",
+    ]
+    for phrase in required:
+        assert phrase in text

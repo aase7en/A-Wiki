@@ -27,6 +27,8 @@ def test_verify_model_routing_mock_mode_writes_report(tmp_path):
     assert "gemini" in text
     assert "PASS count: 2/3" in text
     assert "threshold: PASS" in text
+    assert "Dynamic scout: required" in text
+    assert "no hardcoded model version" in text
 
 
 def test_model_switching_protocol_has_manual_verification_matrix():
@@ -39,6 +41,7 @@ def test_model_switching_protocol_has_manual_verification_matrix():
         "Windsurf",
         "scripts/verify-model-routing.sh",
         "PASS/FAIL",
+        "scout current model/pricing",
     ]
     for phrase in required:
         assert phrase in text
