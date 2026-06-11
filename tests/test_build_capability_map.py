@@ -79,6 +79,37 @@ description: Should not appear.
 | **Total** | **10 pages** |
 """,
     )
+    write(
+        root / ".wiki-graph.json",
+        json.dumps(
+            {
+                "stats": {
+                    "nodes": 4,
+                    "edges": 4,
+                    "broken_links": 2,
+                    "orphans": 1,
+                    "orphans_list": ["wiki/context/now.md"],
+                    "hubs": [],
+                },
+                "edges": [
+                    {
+                        "from": "wiki/synthesis/demo.md",
+                        "to": "wiki/entities/ai-tools/missing.md",
+                        "type": "wikilink",
+                        "broken": True,
+                        "external": False,
+                    },
+                    {
+                        "from": "wiki/concepts/iot/demo.md",
+                        "to": "wiki/concepts/iot/missing.md",
+                        "type": "wikilink",
+                        "broken": True,
+                        "external": False,
+                    },
+                ],
+            }
+        ),
+    )
 
 
 def test_build_capability_map_discovers_owned_surfaces(tmp_path):
@@ -95,6 +126,16 @@ def test_build_capability_map_discovers_owned_surfaces(tmp_path):
     assert "ignored" not in skill_names
     assert any(item["capability"] == "Local Search" for item in data["capabilities"])
     assert any(item["capability"] == "Asset Pack Reporting" for item in data["capabilities"])
+    assert {lane["id"] for lane in data["strategic_lanes"]} == {
+        "design-web",
+        "game-lightweight-highend",
+        "revenue-engine",
+        "premium-auto-trading",
+    }
+    assert data["graph_hygiene"]["broken_links"] == 2
+    assert data["graph_hygiene"]["orphans"] == 1
+    assert data["graph_hygiene"]["broken_by_domain"]["synthesis"] == 1
+    assert data["graph_hygiene"]["broken_by_domain"]["iot"] == 1
 
 
 def test_build_capability_map_counts_wiki_files_without_stale_overview(tmp_path):
@@ -123,6 +164,14 @@ def test_format_markdown_includes_routing_tables(tmp_path):
     text = build_capability_map.format_markdown(data)
 
     assert "# Wiki Capability Map" in text
+    assert "## Strategic Capability Lanes" in text
+    assert "| `design-web` |" in text
+    assert "## Capability Upgrade Matrix" in text
+    assert "| Website design |" in text
+    assert "## Knowledge Graph Hygiene" in text
+    assert "| Broken links | 2 |" in text
+    assert "## MCP Allowlist" in text
+    assert "| `awiki` | Keep |" in text
     assert "## Capability Routing" in text
     assert "`python3 scripts/wiki/search-wiki.py \"query\"`" in text
     assert "| `foo-skill` |" in text

@@ -113,14 +113,15 @@ python3 scripts/lib/drive_secrets.py --check
 |-------|---------|-----------|
 | **-1** | Local FTS5 + sqlite-vec + knowledge-graph (+ GitNexus code-graph เมื่อ MCP active) | **ฟรี + ออฟไลน์** — ค้น wiki (keyword + semantic), neighbors, hubs, code call graph |
 | **0** | Hook (SessionStart / PreToolUse) + Context Compaction | **ฟรี** — งานซ้ำทุก session, strategic `/compact` |
-| **1** | Free API (OpenRouter free / Gemini Flash) | **ฟรี** — search, lookup, synthesis |
-| **2** | Cheap paid (DeepSeek, Qwen) | **ถูกมาก** — reasoning เบา, table |
-| **3** | Subagent (Claude Haiku / Explore) | **ถูก** — scan ไฟล์เยอะ, lint |
-| **4** | Claude Sonnet (current) | **ปกติ** — เขียน wiki, schema, reasoning ซับซ้อน |
+| **1** | `free-current` dynamic roster | **ฟรี** — search, lookup, synthesis หลัง scout current model/pricing |
+| **2** | `cheap-capable` runtime route | **ถูกมาก** — reasoning เบา, table; เลือกจากราคา provider สด |
+| **3** | `platform-low-scout` / low-cost CLI agent | **ถูก** — scan ไฟล์เยอะ, lint, gather current model intel |
+| **4** | `platform-primary` current model | **ปกติ** — เขียน wiki, schema, reasoning ซับซ้อน เฉพาะเมื่อ scout บอกว่า tier ต่ำกว่าไม่พอ |
 
 **Level 4 sub-ladder**: ก่อนเริ่มงาน multi-step หรือ task มีต้นทุนสูง ให้ classify task → เลือก tier 4a/4b/4c + effort ตาม `docs/protocols/model-switching.md` และ skill `model-cost-switching` เสมอ (ไม่ต้องรอ user สั่ง).
 
 > **เริ่มจาก Level ต่ำสุดเสมอ** — เลื่อนขึ้นก็ต่อเมื่อ level ต่ำกว่าทำไม่ได้
+> ก่อน route: run/check `scripts/model-scout-current.py` เพื่อ scout current model/pricing. DeepSeek V4 Flash/Pro, Qwen, Gemini Flash, Haiku, Sonnet เป็น dated examples only ไม่ใช่ binding defaults.
 > Prompt ส่งออกนอก: **ใช้ภาษาอังกฤษ** (ประหยัด ~30%)
 
 ---

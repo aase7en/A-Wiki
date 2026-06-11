@@ -6,6 +6,27 @@ agent can tell what capability level the repository is at.
 Format: keep the newest release first. Use small, operational entries that
 explain what changed and how to verify it.
 
+## 1.3.0 - 2026-06-12
+
+### Added
+
+- Strategic A-Wiki capability lanes for Design/Web, high-end lightweight games, revenue engine, and premium auto trading.
+- Capability upgrade roadmap with graph hygiene loop, MCP/plugin allowlist, and recurring update cadence.
+- Four wiki hub pages that connect the new lanes to existing skills, protocols, game docs, Creator Layer, and trading safety rules.
+
+### Changed
+
+- `scripts/wiki/build-capability-map.py` now emits strategic lanes, an upgrade matrix, graph hygiene baseline, and MCP allowlist in the generated capability map.
+- `scripts/check-privacy.py` skips vendored `skills/anthropic-skills/` license/example files so the privacy gate stays focused on repo-owned public-safe content.
+
+### Verification
+
+- `python3 -m pytest tests/test_build_capability_map.py -q`
+- `python3 -m pytest tests/test_check_privacy.py -q`
+- `python3 scripts/gen-index.py --check`
+- `python3 scripts/verify-awiki-ready.py`
+- `python3 scripts/check-privacy.py`
+
 ## 1.2.0 - 2026-05-30
 
 ### Added

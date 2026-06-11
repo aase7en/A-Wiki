@@ -7,10 +7,10 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 465 |
+| Wiki pages | 469 |
 | Owned skills | 42 |
 | Script capabilities | 13 |
-| Protocols/runbooks | 35 |
+| Protocols/runbooks | 36 |
 | HTML surfaces | 11 |
 
 ## Wiki Knowledge Surface
@@ -19,8 +19,57 @@
 |---|---:|
 | Entities | 61 |
 | Concepts | 48 |
-| Synthesis | 194 |
+| Synthesis | 198 |
 | Sources | 162 |
+
+## Strategic Capability Lanes
+
+| Lane | Goal | Route | Verify | Safety gate |
+|---|---|---|---|---|
+| `design-web` | Production-grade website, dashboard, and visual design workflow. | frontend-design -> webapp-testing -> Canva only for export/brand assets. | Playwright/browser visual smoke plus build/type checks for the target app. | No private analytics or brand secrets in tracked repo; generated review HTML stays in exports/html/. |
+| `game-lightweight-highend` | High-end-feeling but lightweight web games such as Sunday Invest Moon. | Phaser/Vite/TypeScript -> PixelLab manifest -> asset report -> bootstrap/copy. | Asset pack report, logic tests, typecheck/build, and FPS/blank-canvas smoke. | Binary/raw assets stay outside tracked wiki unless intentionally curated; secrets come from drive/. |
+| `revenue-engine` | Turn wiki knowledge into public-safe content, product ideas, and validation loops. | local wiki search -> Creator Layer -> verified market research -> content/product package. | Source table, privacy check, and trend/latest verification before public claims. | Voice, analytics, drafts, customer data, and private evidence stay in drive/personal/creator/. |
+| `premium-auto-trading` | Premium trading research and bot operations with strict paper/read-only/live separation. | paper trading first -> read-only portfolio feed -> live backend only after security review. | Bot Trading Iron Law, feed boundary scan, risk guard tests, audit log checks. | No client-side secrets, no browser exchange calls, no live execution without backend kill switch. |
+
+## Capability Upgrade Matrix
+
+| Area | Current capability | Upgraded capability | Verification |
+|---|---|---|---|
+| Second brain | Wiki pages, graph, skills, hooks, and generated context already exist. | Four strategic capability lanes with clear routing and safety gates. | `python3 scripts/wiki/build-capability-map.py --out -` |
+| Knowledge graph | Graph reports broken links and orphans, but the work is not lane-prioritized. | Graph hygiene baseline and P0 cleanup queue by source domain. | `python3 scripts/wiki/query-graph.py --broken && python3 scripts/wiki/query-graph.py --orphans` |
+| Website design | Frontend/design and web testing skills are available. | Design QA route combines frontend skill, browser/Playwright verification, and Canva export only when useful. | `Run target app build plus Playwright visual smoke.` |
+| High-end lightweight game | Phaser, Sunday Invest Moon, PixelLab, and manifest scripts exist. | Game lane locks performance budget, asset manifest validation, and no-secret runtime rules. | `python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files` |
+| Revenue engine | Creator Layer and Thai/social skills exist. | Revenue work flows from wiki evidence to product/content idea to validation before publishing. | `python3 scripts/check-privacy.py plus source/date/link review for latest claims.` |
+| Premium auto trading | Freqtrade notes, read-only feed contract, and trading iron law exist. | Three-tier trading model: paper, read-only, live backend with risk/security approval. | `Trading-specific tests in product repo plus A-Wiki privacy/preflight checks.` |
+
+## Knowledge Graph Hygiene
+
+| Metric | Count |
+|---|---:|
+| Nodes | 497 |
+| Edges | 1299 |
+| Broken links | 65 |
+| Orphans | 177 |
+
+| Broken source domain | Count |
+|---|---:|
+| sources | 39 |
+| ai-tools | 20 |
+| synthesis | 3 |
+| repo-root | 2 |
+| it-support | 1 |
+
+Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`, `wiki/context/overview-sources.md`, `wiki/context/project-backlog.md`
+
+## MCP Allowlist
+
+| Server | Status | Use | Gate |
+|---|---|---|---|
+| `awiki` | Keep | Local wiki search, semantic search, page reads, and graph neighbors. | Read-mostly; auto-approved tools must stay scoped to A-Wiki knowledge. |
+| `filesystem` | Keep scoped | Repo-local file access for agents that support MCP. | Restrict roots to the repo; never expose drive/, raw/, secrets, or home-wide paths. |
+| `github` | Keep when needed | Repository, issue, and PR inspection where connector/CLI is not enough. | Prefer read-only for review; A-Wiki workflow still commits directly to main. |
+| `supabase` | Allow after task need | Database/project work for web apps that actually use Supabase. | Use least privilege and never store project tokens in tracked files. |
+| `trading/exchange` | Reject by default | No direct exchange/broker MCP inside A-Wiki agent context. | Only a reviewed backend may hold trading authority; clients and wiki agents stay read-only/paper. |
 
 ## Capability Routing
 
@@ -128,6 +177,7 @@
 | Quick Commands — คำสั่งลัดทุก session | docs/protocols | `docs/protocols/quick-commands.md` |
 | 🕵️ Skeptical Reviewer Protocol | docs/protocols | `docs/protocols/review.md` |
 | Shopee Automation Safety | docs/protocols | `docs/protocols/shopee-automation-safety.md` |
+| A-Wiki Capability Upgrade Roadmap | docs/runbooks | `docs/runbooks/a-wiki-capability-upgrade-roadmap.md` |
 | A-Wiki Handoff Priority Plan | docs/runbooks | `docs/runbooks/a-wiki-handoff-priority-plan.md` |
 | A-Wiki Platform Hardening Plan | docs/runbooks | `docs/runbooks/a-wiki-platform-hardening-plan.md` |
 | Gap Closure Plan — A-Wiki Improvement Roadmap | docs/runbooks | `docs/runbooks/gap-closure-plan.md` |

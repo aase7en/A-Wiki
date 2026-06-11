@@ -103,6 +103,7 @@ SKIP_DIRS = {"raw", "drive", ".git", "node_modules", ".pytest_cache", "__pycache
 SKIP_PREFIXES = (
     # Vendored upstream skills keep their original examples and test fixtures.
     "skills/_upstream/",
+    "skills/anthropic-skills/",
     "skills/ecosystem/",
     "skills/claude-code/",
     "skills/delegation/",

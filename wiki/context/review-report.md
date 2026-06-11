@@ -4,7 +4,7 @@
 
 ## Summary
 
-- ✓ Passed: 536
+- ✓ Passed: 544
 - ⚠ Warnings: 441
 - ❌ Failures: 46
 
@@ -536,10 +536,10 @@
 
 ---
 
-## ✓ Passed Checks (536 total)
+## ✓ Passed Checks (544 total)
 
-- **L2**: 111 passed
-- **L3**: 422 passed
+- **L2**: 115 passed
+- **L3**: 426 passed
 - **L6**: 3 passed
 
 ---

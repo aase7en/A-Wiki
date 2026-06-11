@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 61 |
 | CONCEPTS | 48 |
-| SYNTHESIS | 194 |
+| SYNTHESIS | 198 |
 | SOURCES | 162 |
-| **Total** | **465 pages** |
+| **Total** | **469 pages** |
 
 ---
 
@@ -46,6 +46,7 @@
 | `air-quality-monitoring` | ใช้ [[entities/iot/pms5003]] วัด PM2.5/PM10 ต่อกับ [[entities/io… |
 | `appsheet-to-webapp-pi5` | "จะสร้าง web application ทดแทน AppSheet (ActivatedSludge + Epide… |
 | `cold-chain-vaccine` | ใช้ [[entities/iot/ds18b20]] (One-Wire, ±0.5°C, waterproof) วัดอ… |
+| `design-web-capability-hub` | (no abstract) |
 | `digital-legacy-ai-architecture` | ** สร้าง AI ที่ "เป็นเรา" และ persist หลังเราจากไป ด้วย 5-layer… |
 | `dream-projects` | ดู [[synthesis/iot-lora-architecture]] สำหรับ full architecture |
 | `dual-ai-workflow` | จะใช้ Gemini CLI และ Claude ร่วมกันอย่างไรให้ประหยัด credit สูงส… |
@@ -55,6 +56,7 @@
 | `environmental-monitoring-it` | Network architecture and data pipelines for large-scale environm… |
 | `environmental-pharmaceutical-risk` | Environmental monitoring of pharmaceutical contaminants (antibio… |
 | `fuel-tank-level` | ใช้ [[entities/iot/hc-sr04]] (ultrasonic distance) ติดตั้งบนปากถ… |
+| `game-lightweight-highend-capability-hub` | (no abstract) |
 | `garbage-report-ocr` | "จะสร้างระบบอ่านภาพใบรายงานขยะทั่วไปของโรงพยาบาล (internal form)… |
 | `healthcare-it-infrastructure` | Network observability and edge computing applied to pharmacy inf… |
 | `intelligent-iot-pipelines` | Edge ML inference, RAG for sensor troubleshooting, and vector se… |
@@ -71,6 +73,8 @@
 | `pixellab-api-endpoint-matrix` | [verified 2026-06-01] หน้านี้เป็น operational catalog ของ PixelL… |
 | `pixellab-asset-pipeline-for-trading-rpg` | "จะใช้ PixelLab API/MCP สร้างตัวละคร เรือ ฉาก และ animation สำหร… |
 | `pixellab-phaser-asset-convention` | "ถ้า PixelLab สร้าง asset ได้แล้ว จะตั้งชื่อไฟล์ จัดโฟลเดอร์ เก็… |
+| `premium-auto-trading-capability-hub` | (no abstract) |
+| `revenue-engine-capability-hub` | (no abstract) |
 | `sunday-invest-moon-roadmap` | 1. Read `## RESUME HERE`; it overrides stale TODOs in `HANDOFF.m… |
 | `synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (awaiting human summary) |
 | `synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (awaiting human summary) |
@@ -236,4 +240,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 465 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 469 pages across 4 sections.*
