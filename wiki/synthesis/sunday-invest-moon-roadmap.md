@@ -5,7 +5,7 @@ slug: sunday-invest-moon-roadmap
 tags: [game-design, handoff, cross-agent, roadmap, sunday-invest-moon, phaser]
 sources: [pixel-wealth-quest-gdd]
 created: 2026-06-04
-updated: 2026-06-05
+updated: 2026-06-11
 ---
 
 # Sunday Invest Moon — Roadmap (cross-agent handoff)
@@ -58,8 +58,8 @@ updated: 2026-06-05
 
 ## RESUME HERE
 
-**Next ticket**: **No implementation ticket remains — optional stage/commit review requires explicit user instruction**
-**Last touched**: `pixel-wealth-quest/src/phaser/scenes/RoomScene.ts; pixel-wealth-quest/src/phaser/playerMovementScenes.test.ts; pixel-wealth-quest/src/{phaser,components,state,styles}; pixel-wealth-quest/docs/asset-prompts/sunday-invest-moon-farm-prompts.md; A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md`
+**Next ticket**: **Ticket 9.1 — `market.ts` pure deterministic price engine** (see `## Phase 9`)
+**Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md (Phase 7/8 retro + Phase 9 section added 2026-06-11)`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -936,6 +936,105 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 ---
 
+## Phase 7 + 8 — Retro note (shipped outside roadmap tracking)
+
+> [verified 2026-06-11] Phase 7 and Phase 8 were implemented and committed straight to product-repo main without roadmap sections (tracked via session goals). Cold-start summary:
+> - **Phase 7 — Save System v2** (`0965b0d`): versioned `sim:save` single-key persistence, sleep-ready, forward-compatible (unknown fields extend the file without a version bump). Core: `src/logic/saveGame.ts` + store `SAVEABLE_FIELDS` funnel.
+> - **Phase 8 — Farm life-sim core** (`03b036a`, `a5e5688`, `8fcbe3d`): multi-crop registry (`src/data/crops.seed.ts`), day-based growth, 4×28 calendar (`src/logic/calendar.ts`), deterministic FNV-1a weather (`src/logic/weather.ts`), energy system (`src/logic/energy.ts`), bed sleep flow + morning report UI, shipping-bin economy (`src/logic/shippingBin.ts` — ship produce, pay at sleep).
+> - Test base after Phase 8: **300 vitest tests** green; bot trading still mock-only per ADR 2c.9.5.
+
+---
+
+## Phase 9 — Market economy + Bot seam hardening + HM UI + PixelLab animation batch
+
+> Plan approved 2026-06-11 (claude-fable-5). Execution order: **9.0 → 9.1 → 9.2 → 9.3 → 9.9 → 9.10 → 9.11 → 9.12 → 9.4 → 9.5 → 9.6 → 9.7 → 9.8 → 9.13** (market logic first; PixelLab gen mid-phase so API risk surfaces early; bot seam after; UI polish last). Commit format `chunk(9.X): goal [next: 9.Y]`. PixelLab budget for the whole phase ≤ **$3.00** (player $1.00 + pets $2.00), balance echo before/after every gen ticket.
+
+### Ticket 9.0 — Roadmap: Phase 7/8 retro + Phase 9 section + sync  · `[x]`
+**Goal**: Canonical roadmap carries Phase 7/8 retro + this Phase 9 plan; mirror synced; RESUME HERE → 9.1.
+**Done when**: sync script verifies no drift; both repos committed.
+
+### Ticket 9.1 — `src/logic/market.ts` pure deterministic price engine  · `[ ]`
+**Goal**: Sell prices move daily without RNG state: `sellPriceOf(itemId, day, seed='pwq-market')` = `max(1, round(base × seasonal × drift × weatherMod))`.
+- Drift = FNV-1a `hash(seed:itemId:day)` → **[0.85, 1.15]** (reuse `weather.ts` hash pattern; save-compatible, no stored state).
+- Seasonal: in-season 1.0 / off-season 1.2 scarcity premium (per-produce table; default 1.0). WeatherMod: storm day ×1.05 (derived from `weatherFor`).
+- Only produce moves; non-produce passes through static `priceCoins`. Shop buy prices stay static.
+- `marketHistory(itemId, day, n=7)` = pure recompute → free sparkline.
+**Files**: `src/logic/market.ts` (new), `src/logic/market.test.ts` (new).
+**Test-first**: determinism; integer ≥1 bounds; non-produce passthrough; off-season > in-season same-day; history 7 points pointwise == `sellPriceOf`; storm modifier on a known storm day.
+**Done when**: vitest + typecheck green; zero store/React imports.
+
+### Ticket 9.2 — Wire market into settlement + bin preview  · `[ ]`
+**Goal**: Bin settles at the finished day's market price; `ShippingBinPanel` preview == morning payout **by construction**.
+**Files**: `src/logic/sleep.ts` (swap local `priceOf` at line ~46 → `sellPriceOf(id, finishedDay)`), `src/logic/sleep.test.ts`, `src/components/ShippingBinPanel.tsx` (same swap at line ~7, using `gameClock.day`), panel + store tests.
+**Test-first**: bin of 1 carrot on a drift≠1.0 day pays `sellPriceOf('carrot-produce', finishedDay)`, not 24; dedicated preview==payout invariant test (lock against future next-day-price refactors).
+**Done when**: all tests green.
+
+### Ticket 9.3 — `MarketPanel.tsx` UI  · `[ ]`
+**Goal**: Player sees today's prices: row per produce — today vs base, ▲/▼ arrow, 7-day inline-SVG sparkline (idiom from `BotStatusOverlay`).
+**Entry**: "ราคาตลาดวันนี้" button in `ShippingBinPanel` header (no new art).
+**Files**: `src/components/MarketPanel.tsx` (new + test), `src/state/store.ts` (`ModalName` + `'market'`), `HudOverlay.tsx`, `ShippingBinPanel.tsx`, `src/styles/hud.css`.
+**Test-first**: one row per produce; arrow direction matches `sellPriceOf` vs base; sparkline has 7 points from `marketHistory`.
+**Done when**: opens from bin panel; mobile-safe; tests + typecheck green.
+
+### Ticket 9.4 — Bot config persistence in `sim:save`  · `[ ]`
+**Goal**: Bot configs survive reload; status recomputed deterministically on hydrate (equity curves NEVER persisted).
+**Files**: `src/logic/saveGame.ts` (`botConfigs` field + sanitizer), `src/state/store.ts` (`SAVEABLE_FIELDS`, `hydrateBotConfigs` validating `strategyId`, `refreshBots()` on mount, `configureBot` writes `botConfigs`), tests.
+**Test-first**: save round-trip with corrupt entry dropped; hydrate + `refreshBots()` curve == fresh `MockBotFeed` run (determinism proof).
+**Done when**: reload restores configs; `npm run feed:scan` clean; mock-only invariant untouched.
+
+### Ticket 9.5 — Daily bot refresh via `epoch` + serializable DTO guard  · `[ ]`
+**Goal**: Bot sparklines evolve once per in-game day, deterministically — no timers, no polling.
+**Files**: `src/feeds/tradingBotFeed.ts` (`BotConfig.epoch?: number`; mock seed → `deviceId:strategyId:epoch??0`), `src/state/store.ts` (`sleep()` re-runs configured bots with epoch = new day), tests.
+**Test-first**: same epoch → identical curve; different epoch → different; `JSON.parse(JSON.stringify(status))` deep-equals status.
+**Done when**: refresh is sleep-cadenced; all green.
+
+### Ticket 9.6 — Versioned remote bot contract doc v1  · `[ ]`
+**Goal**: `docs/bot-feed-contract.md` v1 — `GET/PUT /api/sim/bots/:deviceId`, BotConfig/BotStatus JSON shapes (incl. optional `epoch`, remote may ignore), error model, explicit no-secrets/no-order-execution clauses; cross-link ADR 2c.9.5 + Phase 5 feed contract.
+**Test-first**: regression lock — `RemoteBotFeed` still throws for both methods; no `fetch(`/URL literals in `tradingBotFeed.ts`.
+**Done when**: doc versioned v1; feed:scan clean.
+
+### Ticket 9.7 — HM HUD chip: season + weather + day  · `[ ]`
+**Goal**: Top chip shows season glyph + weather glyph + "วันที่ X" in HM idiom (inline pixel SVG, `--sim-*` tokens); data already in store.
+**Files**: `HudOverlay.tsx` (+ test, possibly small `CalendarChip.tsx`), `hud.css`.
+**Test-first**: aria-labels derived from `weatherFor(day, seasonOf(day))` + `dayOfSeason`.
+**Done when**: desktop + 380px mobile no overflow; tests green.
+
+### Ticket 9.8 — HM panel idiom pass (CSS-only)  · `[ ]`
+**Goal**: Consistent wood-frame header + parchment body + close-button placement across the ~15 modals.
+**Files**: `src/styles/hud.css`, `tokens.css` only.
+**Done when**: no component-markup changes beyond classNames; existing tests + typecheck green; visual QA 3 representative panels desktop/mobile.
+
+### Ticket 9.9 — PixelLab gen: player tool anims (water/hoe/harvest, south)  · `[ ]`
+**Goal**: 3 new south-facing 7-frame one-shots for น้องซันเดย์ (`watering`, `hoeing`, `harvest` scythe swing), normalized into `playerAnims.ts`.
+**Process**: `pixellab_gen.py balance` echo before → kick 3 `pixellab_character.py animate --character-id 58be20a8-ee08-4432-bb43-3627f69e12ac` jobs at session start → write failing `playerAnims.test.ts` while polling → zip export → extend `ACTION_MAP/ACTION_ORDER/FRAME_RATE` in A-Wiki `scripts/game/normalize_pwq_anims.py` → re-run normalize → balance echo after. Pin the action slug in the prompt so the export filename matches `ACTION_MAP`.
+**Budget**: cap **$1.00**, hard stop; log delta below.
+**Done when**: 3 actions in manifest with 7 on-disk frames each; tests green.
+
+### Ticket 9.10 — Wire tool anims into ToolWheel flow  · `[ ]`
+**Goal**: Selecting hoe/water/scythe plays the matching one-shot; farm logic stays instant (anim cosmetic).
+**Files**: `src/phaser/toolAnimMap.ts` (new pure map: `hoe→hoe, water→water, scythe→harvest, seed→undefined`) + test, `playerController.ts` (expose `playOneShot(action)`), `FarmScene.ts` (`handleFarmTool` calls it), controller tests.
+**Done when**: runtime QA shows swing before result; no energy/logic regressions.
+
+### Ticket 9.11 — PixelLab gen: pet anims (run×8dir + eat/sleep/bark south)  · `[ ]`
+**Goal**: Per dog — red/สุขใจ, black/ศรีสุข, cream/มั่งมี (still renders in-game): 8-dir `run` + south one-shots `eat`, `sleep`, `bark`.
+**Character ids** (from `public/assets/character/pets/gen/<c>/dog-<c>.character.json`): red `d09a749e-fce0-4ff6-8575-2a7e8f4884a2`, black `d43685ba-ea5d-4d94-9e35-2d79a2c95b18`, cream `bd9fd4e3-78b5-4f08-84cf-f426baae6fee` — reuse, no create step.
+**Files**: A-Wiki `scripts/game/normalize_pet_anims.py` (extend literal `["walk","sit","wag"]`; `run` joins move actions + LOOPING), pet `anim_clean/`, regenerated `petAnims.ts`, tests.
+**Test-first**: `PET_ANIM_ACTIONS` includes eat/sleep/bark; `PET_MOVE_ACTIONS` includes run; frames on disk for all 3 dogs.
+**Budget**: cap **$2.00** total, 2 gates (gate A = 3 run jobs, gate B = 9 one-shots); over cap → drop `bark` first.
+**Done when**: manifest regenerated; balance + evidence logged.
+
+### Ticket 9.12 — Pet behaviors: idle scheduler + bark-on-click  · `[ ]`
+**Goal**: Dogs occasionally eat/sleep during wander; rare run burst; clicking a dog plays bark and still opens the bio panel.
+**Files**: `src/phaser/objects/PetPack.ts` (tick choice table + one-shot playback, injectable rng), tests, pet click bridge (bark then existing `gameBus.emit('pet-clicked')`).
+**Test-first**: seeded rng tick sequence includes an `eat` one-shot then resumes wander; click still emits `pet-clicked` (bio regression lock); missing anim key → graceful skip, no crash.
+**Done when**: runtime QA in Room + Farm; tests green.
+
+### Ticket 9.13 — Phase 9 closeout smoke + roadmap sync  · `[ ]`
+**Goal**: Full runtime smoke — market panel → ship → sleep → payout == preview → bot refresh → tool anim → pet behaviors; desktop + mobile; console clean.
+**Gate**: `npm test` (all) + `npm run typecheck` + `npm run feed:scan` + React Doctor; canonical roadmap updated → mirror synced → closing commit.
+
+---
+
 ## Cross-cutting reuse map (every ticket pulls from here)
 
 | Need | Reuse from | File |
@@ -1037,4 +1136,5 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 > 2026-06-05 codex-poppy-javis: 5.7 done — fixed parent prototype FallbackMap key warning + Driver.js onboarding steps, smoke-tested Super User nav to PWQ iframe with src override to 5173, and verified iframe HUD visible with console 0 errors. RESUME HERE = 6.1 changed-file inventory + final handoff audit.
 > 2026-06-05 codex-poppy-javis: 6.1 done — captured dirty-tree inventory, stopped the prototype static server on 8000, left pre-existing PWQ dev server on 5173 running, and marked implementation slice complete pending explicit user commit/stage instruction. RESUME HERE = 6.2 optional stage/commit review only if user asks.
 > 2026-06-05 codex-poppy-javis: Started user runtime polish goal P1.1 — swapped title splash to v002, hid HUD on title, improved responsive viewport, froze living-room dogs, converted action strip to icons, changed run to status/speed boost only, slowed/scaled click-to-move, zoomed farm, softened house warp, and added farm asset prompt pack. RESUME HERE = P1.2 PixelLab/Gemini asset batch.
+> 2026-06-11 claude-fable-5: 9.0 done — added Phase 7/8 retro note (shipped outside roadmap: Save v2 + farm life-sim core, 300 tests) and full Phase 9 section (market economy, bot seam hardening, HM UI, PixelLab player tool anims + pet run/eat/sleep/bark; budget ≤ $3.00). RESUME HERE = 9.1 market price engine.
 ```
