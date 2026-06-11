@@ -119,6 +119,20 @@ def maybe_update_model_intel(repo_root):
         sys.stderr.write(f"⚠️ model intel refresh skipped: {message.splitlines()[-1]}\n")
 
 
+def show_model_tier_hint(now=None):
+    """Show one-line primary-model tier guidance."""
+    if os.environ.get("AWIKI_MODEL_TIER_HINT", "1") == "0":
+        return
+
+    current = now or datetime.now()
+    cutoff = datetime(2026, 6, 22)
+    if current.date() <= cutoff.date():
+        msg = "🧠 Model tier hint: ก่อน 2026-06-22 เริ่ม 4b/high; ใช้ 4c เฉพาะ architecture/risk ตาม docs/protocols/model-switching.md\n"
+    else:
+        msg = "🧠 Model tier hint: หลัง 2026-06-22 จำกัด 4c เป็น 2-3 sessions/สัปดาห์; default 4b, ลง 4a เมื่องาน verify ง่าย\n"
+    sys.stderr.write(msg)
+
+
 def show_todos(repo_root):
     """Show active TODOs from session-memory.md."""
     session_file = session_memory_path(Path(repo_root))
@@ -169,6 +183,7 @@ def main():
     check_wiki_freshness(repo_root)
     check_api_keys(repo_root)
     maybe_update_model_intel(repo_root)
+    show_model_tier_hint()
     show_todos(repo_root)
 
     sys.exit(0)

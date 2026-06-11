@@ -18,6 +18,7 @@
 | `/snapshot-nb [domain]` | export wiki → `exports/notebooklm/` (desktop only) |
 | `/ask-nb <คำถาม>` | แนะนำ user ถาม NotebookLM ก่อน → รอ paste คำตอบ → Claude action ต่อ |
 | `/compact [focus]` | บีบอัด context กลาง session (ประหยัด 40-60%) — ใช้หลังจบ subtask เช่น `/compact focus on wiki edits` |
+| `/model-tier [task]` | classify งานตาม `docs/protocols/model-switching.md` → เลือก Level 4 tier 4a/4b/4c + effort ก่อนเริ่มงานแพง |
 | `/clear` | เคลียร์ context ทั้งหมด — ใช้เมื่อเปลี่ยน task ใหม่ที่ไม่เกี่ยวกัน (ทำ `/rename <task>` ก่อนเสมอ) |
 
 ## คำสั่งจาก Superpowers-adapted skills (auto-invoke)

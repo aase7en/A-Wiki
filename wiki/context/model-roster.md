@@ -45,6 +45,24 @@
 
 ---
 
+## Primary-Model Ladder (Pyramid Level 4) — [verified 2026-06-12]
+
+> สำหรับเลือก **primary model + effort** เมื่องานอยู่ระดับ Level 4 ของ Cost-First Pyramid
+> วิธีใช้เต็ม: `docs/protocols/model-switching.md` + skill `model-cost-switching`
+> sources: [[sources/claude-model-cost-switching-strategy]] · last_verified: 2026-06-12 · verify_tool: claude-api-skill
+
+| Tier | Model | $/MTok (in/out) | เหมาะกับ |
+|---|---|---|---|
+| **4a ผู้ช่วย** | Haiku 4.5 | 1 / 5 | boilerplate, parsing, formatting, classification |
+| **4b ทีมช่าง (default)** | Sonnet 4.6 | 3 / 15 | implement ตาม spec, API integration, bulk content, debugging |
+| **4c สถาปนิก** | Opus 4.8 / Fable 5 | 5/25 · 10/50 | architecture, trading strategy, algorithm design, critical review |
+
+**Cache economics**: cache read ≈ 0.1× input price (ลด 90%) · cache write = 1.25× (5-min TTL) / 2× (1h TTL) · ขั้นต่ำ prefix 2048 tokens (Fable 5) → คุ้มเมื่อ prefix ถูกอ่านซ้ำ ≥ 2 ครั้ง
+**Effort (Fable 5, แทน temperature)**: `low | medium | high (default) | xhigh | max` — xhigh แนะนำสำหรับ coding/agentic; max เฉพาะ one-shot architecture
+**Batch API**: −50% ทั้ง input/output เมื่อรอผลได้
+
+---
+
 ## Benchmarking Notes
 
 - All benchmarking is **informal** — based on observed performance
