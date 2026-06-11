@@ -22,7 +22,7 @@ import shutil
 from pathlib import Path
 
 
-ACTION_ORDER = ["idle", "walk", "run", "sit", "lie", "eat", "cry"]
+ACTION_ORDER = ["idle", "walk", "run", "sit", "lie", "eat", "cry", "water", "hoe", "harvest"]
 MOVE_ACTION_ORDER = ["walk", "run"]
 WALK_LEFT_USES_SW = True
 DIRECTIONAL_RUN_USES_WALK = True
@@ -34,8 +34,22 @@ ACTION_MAP = {
     "lying_down": "lie",
     "eating_food": "eat",
     "crying_sadly": "cry",
+    "watering_plants": "water",
+    "hoeing_soil": "hoe",
+    "harvesting_crop": "harvest",
 }
-FRAME_RATE = {"idle": 4, "walk": 10, "run": 12, "sit": 8, "lie": 8, "eat": 7, "cry": 6}
+FRAME_RATE = {
+    "idle": 4,
+    "walk": 10,
+    "run": 12,
+    "sit": 8,
+    "lie": 8,
+    "eat": 7,
+    "cry": 6,
+    "water": 8,
+    "hoe": 8,
+    "harvest": 8,
+}
 REPEAT = {"idle": -1, "walk": -1, "run": -1}
 PUBLIC_BASE = "assets/character/nong-sunday/anim_clean"
 PIXELLAB_DIRECTIONS = ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"]

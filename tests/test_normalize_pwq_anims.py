@@ -37,6 +37,27 @@ def test_normalize_animation_frames_creates_clean_files_and_ts_module(tmp_path):
     assert "walk_south_002.png" in ts
 
 
+def test_normalize_maps_farm_tool_one_shots(tmp_path):
+    pwq_root = tmp_path / "pixel-wealth-quest"
+    anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
+    for slug in ("watering_plants", "hoeing_soil", "harvesting_crop"):
+        for i in range(8):
+            write_frame(anim_dir, slug, i)
+
+    result = normalize_pwq_anims.normalize_animation_frames(pwq_root)
+
+    assert result == {"water": 8, "hoe": 8, "harvest": 8}
+    clean_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim_clean"
+    assert (clean_dir / "water_south_007.png").exists()
+    assert (clean_dir / "hoe_south_000.png").exists()
+    assert (clean_dir / "harvest_south_000.png").exists()
+    ts = (pwq_root / "src" / "phaser" / "playerAnims.ts").read_text(encoding="utf-8")
+    # Tool swings are one-shots: present in the registry but never looping.
+    assert "'pwq_player_water_front'" in ts
+    assert "'pwq_player_hoe_front'" in ts
+    assert "'pwq_player_harvest_front'" in ts
+
+
 def test_normalize_animation_frames_keeps_walk_frames_per_direction(tmp_path):
     pwq_root = tmp_path / "pixel-wealth-quest"
     anim_dir = pwq_root / "public" / "assets" / "character" / "nong-sunday" / "anim"
