@@ -116,6 +116,11 @@ def is_external_target(target: str) -> bool:
     return False
 
 
+def is_external_url(target: str) -> bool:
+    """Target is an external URL/protocol and should not count as a local broken link."""
+    return target.strip().startswith(("http://", "https://", "mailto:"))
+
+
 def infer_domain(path: Path) -> str:
     parts = path.relative_to(REPO_ROOT).parts
     if not (len(parts) >= 2 and parts[0] == "wiki"):
@@ -267,7 +272,7 @@ def build() -> dict:
             if key in seen_edges:
                 continue
             seen_edges.add(key)
-            external = resolved is None and is_external_target(target)
+            external = resolved is None and (is_external_url(target) or is_external_target(target))
             edges.append({
                 "from": rel,
                 "to": to_rel or target,
@@ -299,7 +304,7 @@ def build() -> dict:
             if key in seen_edges:
                 continue
             seen_edges.add(key)
-            external = resolved is None and is_external_target(target)
+            external = resolved is None and (is_external_url(target) or is_external_target(target))
             edges.append({
                 "from": rel,
                 "to": to_rel or target,

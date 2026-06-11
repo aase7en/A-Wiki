@@ -11,7 +11,7 @@ tags: [iot, esp32, arduino]
 title: "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025"
 source: "https://devadiy.com/arduino-ide-guide/"
 author:
-  - "[[deva_diy]]"
+  - "deva_diy"
 published: 2025-08-12
 created: 2026-04-18
 description: "สอนใช้งาน Arduino IDE สำหรับมือใหม่ ตั้งแต่การติดตั้ง การตั้งค่า และการอัปโหลดโค้ดไปยังบอร์ด ESP32 และ Arduino พร้อมเทคนิคพื้นฐานที่ควรรู้"

@@ -11,7 +11,7 @@ tags: [iot, lora]
 title: "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS – Full Step-by-Step Demo"
 source: "https://www.youtube.com/watch?v=uqUSpXV8yVM"
 author:
-  - "[[RAKwireless]]"
+  - "RAKwireless"
 published: 2026-03-03
 created: 2026-04-18
 description: "Learn how LoRaWAN® FUOTA (Firmware Update Over-the-Air) works on the RAK3172 using RUI3 v5 and ChirpStackOS. This step-by-step demo shows device setup, OTAA join, and multicast firmware updates.In t"

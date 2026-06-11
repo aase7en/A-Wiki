@@ -2183,11 +2183,11 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (38 pages)",
+      "label": "AI-TOOLS DOMAIN (49 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
-      "height": 2400,
+      "height": 3120,
       "color": "2"
     },
     {
@@ -2271,11 +2271,31 @@
       "color": "2"
     },
     {
+      "id": "wiki-concepts-ai-tools-claude-skills-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/claude-skills.md",
+      "x": 3560,
+      "y": 440,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-claude-thai-skills-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/claude-thai-skills.md",
+      "x": 2880,
+      "y": 620,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
       "id": "wiki-concepts-ai-tools-context-management-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/context-management.md",
-      "x": 3560,
-      "y": 440,
+      "x": 3220,
+      "y": 620,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2284,8 +2304,28 @@
       "id": "wiki-entities-ai-tools-ecc-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/ecc.md",
-      "x": 2880,
+      "x": 3560,
       "y": 620,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-embedding-models-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/embedding-models.md",
+      "x": 2880,
+      "y": 800,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-frontend-design-direction-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/frontend-design-direction.md",
+      "x": 3220,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2294,8 +2334,18 @@
       "id": "wiki-entities-ai-tools-frontend-slides-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/frontend-slides.md",
-      "x": 3220,
-      "y": 620,
+      "x": 3560,
+      "y": 800,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-git-subtree-workflow-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/git-subtree-workflow.md",
+      "x": 2880,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2304,8 +2354,8 @@
       "id": "wiki-entities-ai-tools-gitnexus-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/gitnexus.md",
-      "x": 3560,
-      "y": 620,
+      "x": 3220,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2314,8 +2364,8 @@
       "id": "wiki-entities-ai-tools-graphify-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/graphify.md",
-      "x": 2880,
-      "y": 800,
+      "x": 3560,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2324,8 +2374,8 @@
       "id": "wiki-entities-ai-tools-hermes-agent-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hermes-agent.md",
-      "x": 3220,
-      "y": 800,
+      "x": 2880,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2334,8 +2384,8 @@
       "id": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
-      "x": 3560,
-      "y": 800,
+      "x": 3220,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2344,8 +2394,8 @@
       "id": "wiki-entities-ai-tools-hyperframes-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hyperframes.md",
-      "x": 2880,
-      "y": 980,
+      "x": 3560,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2354,8 +2404,18 @@
       "id": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "x": 2880,
+      "y": 1340,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-liquid-glass-design-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/liquid-glass-design.md",
       "x": 3220,
-      "y": 980,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2365,7 +2425,7 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/local-llm-routing.md",
       "x": 3560,
-      "y": 980,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2375,7 +2435,17 @@
       "type": "file",
       "file": "wiki/concepts/ai-tools/mcp-architecture.md",
       "x": 2880,
-      "y": 1160,
+      "y": 1520,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-motion-patterns-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/motion-patterns.md",
+      "x": 3220,
+      "y": 1520,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2384,8 +2454,8 @@
       "id": "wiki-concepts-ai-tools-multi-agent-failover-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/multi-agent-failover.md",
-      "x": 3220,
-      "y": 1160,
+      "x": 3560,
+      "y": 1520,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2394,8 +2464,8 @@
       "id": "wiki-concepts-ai-tools-multi-agent-theory-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/multi-agent-theory.md",
-      "x": 3560,
-      "y": 1160,
+      "x": 2880,
+      "y": 1700,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2404,8 +2474,8 @@
       "id": "wiki-entities-ai-tools-ollama-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/ollama.md",
-      "x": 2880,
-      "y": 1340,
+      "x": 3220,
+      "y": 1700,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2414,8 +2484,8 @@
       "id": "wiki-entities-ai-tools-openmed-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/openmed.md",
-      "x": 3220,
-      "y": 1340,
+      "x": 3560,
+      "y": 1700,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2424,8 +2494,8 @@
       "id": "wiki-concepts-ai-tools-openrouter-claude-code-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-claude-code.md",
-      "x": 3560,
-      "y": 1340,
+      "x": 2880,
+      "y": 1880,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2434,8 +2504,8 @@
       "id": "wiki-concepts-ai-tools-openrouter-api-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/openrouter-api.md",
-      "x": 2880,
-      "y": 1520,
+      "x": 3220,
+      "y": 1880,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2444,8 +2514,8 @@
       "id": "wiki-entities-ai-tools-pocketbase-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/pocketbase.md",
-      "x": 3220,
-      "y": 1520,
+      "x": 3560,
+      "y": 1880,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2454,8 +2524,18 @@
       "id": "wiki-concepts-ai-tools-llm-rag-architecture-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/llm-rag-architecture.md",
-      "x": 3560,
-      "y": 1520,
+      "x": 2880,
+      "y": 2060,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-remotion-video-creation-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/remotion-video-creation.md",
+      "x": 3220,
+      "y": 2060,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2464,8 +2544,8 @@
       "id": "wiki-concepts-ai-tools-CLAUDE-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/CLAUDE.md",
-      "x": 2880,
-      "y": 1700,
+      "x": 3560,
+      "y": 2060,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2474,8 +2554,8 @@
       "id": "wiki-entities-ai-tools-CLAUDE-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/CLAUDE.md",
-      "x": 3220,
-      "y": 1700,
+      "x": 2880,
+      "y": 2240,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2484,8 +2564,8 @@
       "id": "wiki-concepts-ai-tools-session-setup-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/session-setup.md",
-      "x": 3560,
-      "y": 1700,
+      "x": 3220,
+      "y": 2240,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2494,8 +2574,8 @@
       "id": "wiki-entities-ai-tools-social-media-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/social-media-skills.md",
-      "x": 2880,
-      "y": 1880,
+      "x": 3560,
+      "y": 2240,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2504,8 +2584,8 @@
       "id": "wiki-concepts-ai-tools-swarm-optimization-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/swarm-optimization.md",
-      "x": 3220,
-      "y": 1880,
+      "x": 2880,
+      "y": 2420,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2514,8 +2594,8 @@
       "id": "wiki-concepts-ai-tools-symlinks-ssot-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/symlinks-ssot.md",
-      "x": 3560,
-      "y": 1880,
+      "x": 3220,
+      "y": 2420,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2524,8 +2604,28 @@
       "id": "wiki-entities-ai-tools-telegram-ai-router-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/telegram-ai-router.md",
+      "x": 3560,
+      "y": 2420,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-ui-to-vue-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/ui-to-vue.md",
       "x": 2880,
-      "y": 2060,
+      "y": 2600,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-vector-search-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/vector-search.md",
+      "x": 3220,
+      "y": 2600,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2534,8 +2634,8 @@
       "id": "wiki-concepts-ai-tools-vibe-coding-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/vibe-coding.md",
-      "x": 3220,
-      "y": 2060,
+      "x": 3560,
+      "y": 2600,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2544,8 +2644,18 @@
       "id": "wiki-entities-ai-tools-react-doctor-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/react-doctor.md",
-      "x": 3560,
-      "y": 2060,
+      "x": 2880,
+      "y": 2780,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "type": "file",
+      "file": "wiki/concepts/ai-tools/sqlite-vec.md",
+      "x": 3220,
+      "y": 2780,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2554,8 +2664,8 @@
       "id": "wiki-entities-ai-tools-9arm-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/9arm-skills.md",
-      "x": 2880,
-      "y": 2240,
+      "x": 3560,
+      "y": 2780,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2564,8 +2674,8 @@
       "id": "wiki-entities-ai-tools-turbovec-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/turbovec.md",
-      "x": 3220,
-      "y": 2240,
+      "x": 2880,
+      "y": 2960,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -3183,7 +3293,7 @@
     {
       "id": "group-domain-other",
       "type": "group",
-      "label": "OTHER DOMAIN (10 pages)",
+      "label": "OTHER DOMAIN (11 pages)",
       "x": 0,
       "y": 15480,
       "width": 1020,
@@ -3231,10 +3341,20 @@
       "color": "none"
     },
     {
+      "id": "index-it-md",
+      "type": "file",
+      "file": "index-it.md",
+      "x": 380,
+      "y": 15740,
+      "width": 260,
+      "height": 120,
+      "color": "none"
+    },
+    {
       "id": "index-iot-md",
       "type": "file",
       "file": "index-iot.md",
-      "x": 380,
+      "x": 720,
       "y": 15740,
       "width": 260,
       "height": 120,
@@ -3244,8 +3364,8 @@
       "id": "index-pharmacy-md",
       "type": "file",
       "file": "index-pharmacy.md",
-      "x": 720,
-      "y": 15740,
+      "x": 40,
+      "y": 15920,
       "width": 260,
       "height": 120,
       "color": "none"
@@ -3254,7 +3374,7 @@
       "id": "profile-md",
       "type": "file",
       "file": "profile.md",
-      "x": 40,
+      "x": 380,
       "y": 15920,
       "width": 260,
       "height": 120,
@@ -3264,7 +3384,7 @@
       "id": "index-md",
       "type": "file",
       "file": "index.md",
-      "x": 380,
+      "x": 720,
       "y": 15920,
       "width": 260,
       "height": 120,
@@ -3274,8 +3394,8 @@
       "id": "wiki-CLAUDE-md",
       "type": "file",
       "file": "wiki/CLAUDE.md",
-      "x": 720,
-      "y": 15920,
+      "x": 40,
+      "y": 16100,
       "width": 260,
       "height": 120,
       "color": "none"
@@ -3284,7 +3404,7 @@
       "id": "wiki-templates-td-21-power-of-attorney-md",
       "type": "file",
       "file": "wiki/templates/td-21-power-of-attorney.md",
-      "x": 40,
+      "x": 380,
       "y": 16100,
       "width": 260,
       "height": 120,
@@ -6695,6 +6815,14 @@
       "color": "none"
     },
     {
+      "id": "edge-index-it-md-wiki-concepts-it-support-brother-hl-l3270cdw-wsd-error-md",
+      "fromNode": "index-it-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-it-support-brother-hl-l3270cdw-wsd-error-md",
+      "toSide": "left",
+      "color": "none"
+    },
+    {
       "id": "edge-index-pharmacy-md-wiki-entities-pharmacy-drug-matching-system-md",
       "fromNode": "index-pharmacy-md",
       "fromSide": "right",
@@ -6945,9 +7073,9 @@
     {
       "id": "edge-index-pharmacy-md-wiki-concepts-env-rabies-pep-protocol-md",
       "fromNode": "index-pharmacy-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-env-rabies-pep-protocol-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
@@ -6983,11 +7111,27 @@
       "color": "none"
     },
     {
+      "id": "edge-index-md-index-ai-tools-md",
+      "fromNode": "index-md",
+      "fromSide": "top",
+      "toNode": "index-ai-tools-md",
+      "toSide": "bottom",
+      "color": "none"
+    },
+    {
       "id": "edge-index-md-index-pharmacy-md",
       "fromNode": "index-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "index-pharmacy-md",
-      "toSide": "left",
+      "toSide": "right",
+      "color": "none"
+    },
+    {
+      "id": "edge-index-md-index-it-md",
+      "fromNode": "index-md",
+      "fromSide": "left",
+      "toNode": "index-it-md",
+      "toSide": "right",
       "color": "none"
     },
     {
@@ -7257,17 +7401,17 @@
     {
       "id": "edge-index-md-wiki-entities-env-activated-sludge-system-md",
       "fromNode": "index-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-env-activated-sludge-system-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-entities-env-rabies-pep-surveillance-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {
@@ -7417,9 +7561,9 @@
     {
       "id": "edge-index-md-wiki-concepts-env-water-quality-parameters-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-env-water-quality-parameters-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {
@@ -7729,25 +7873,25 @@
     {
       "id": "edge-index-md-wiki-context-knowledge-graph-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-context-knowledge-graph-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-context-wiki-state-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-context-wiki-state-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {
       "id": "edge-index-md-wiki-context-wiki-guide-md",
       "fromNode": "index-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-context-wiki-guide-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "none"
     },
     {
@@ -7777,9 +7921,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7793,9 +7937,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7809,17 +7953,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7841,9 +7985,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-agent-memory-systems-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-agent-memory-systems-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7857,17 +8001,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-agent-memory-systems-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-agent-memory-systems-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-agent-memory-systems-md-wiki-concepts-ai-tools-llm-rag-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-agent-memory-systems-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7897,9 +8041,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-agent-planning-loops-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-agent-planning-loops-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7929,17 +8073,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-ai-glossary-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-ai-glossary-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-ai-glossary-md-wiki-concepts-ai-tools-llm-rag-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-ai-glossary-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -7969,17 +8113,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-ai-myths-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-ai-myths-md-wiki-concepts-ai-tools-llm-rag-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -7999,6 +8143,46 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-entities-ai-tools-9arm-skills-md",
+      "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-claude-thai-skills-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-concepts-ai-tools-claude-thai-skills-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-claude-thai-skills-md-wiki-entities-ai-tools-ecc-md",
+      "fromNode": "wiki-concepts-ai-tools-claude-thai-skills-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-context-management-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-context-management-md",
       "fromSide": "bottom",
@@ -8009,9 +8193,65 @@
     {
       "id": "edge-wiki-concepts-ai-tools-context-management-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-concepts-ai-tools-context-management-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-concepts-ai-tools-vector-search-md",
+      "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-vector-search-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-entities-ai-tools-turbovec-md",
+      "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-turbovec-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-frontend-design-direction-md-wiki-synthesis-design-web-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-frontend-design-direction-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-design-web-capability-hub-md",
       "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-frontend-design-direction-md-wiki-entities-ai-tools-frontend-slides-md",
+      "fromNode": "wiki-concepts-ai-tools-frontend-design-direction-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-frontend-design-direction-md-wiki-concepts-iot-dashboard-design-md",
+      "fromNode": "wiki-concepts-ai-tools-frontend-design-direction-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-iot-dashboard-design-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-git-subtree-workflow-md-wiki-entities-ai-tools-9arm-skills-md",
+      "fromNode": "wiki-concepts-ai-tools-git-subtree-workflow-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8047,75 +8287,91 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-liquid-glass-design-md-wiki-entities-ai-tools-frontend-slides-md",
+      "fromNode": "wiki-concepts-ai-tools-liquid-glass-design-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-liquid-glass-design-md-wiki-synthesis-design-web-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-liquid-glass-design-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-design-web-capability-hub-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-concepts-ai-tools-llm-rag-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-sources-ai-engineering-llm-md",
       "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-llm-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-concepts-ai-tools-llm-eval-frameworks-md",
       "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-concepts-ai-tools-agent-memory-systems-md",
       "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-agent-memory-systems-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-concepts-ai-tools-mcp-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-mcp-architecture-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-sources-ai-engineering-llm-md",
       "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-llm-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8161,9 +8417,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-mcp-architecture-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-mcp-architecture-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8183,91 +8439,107 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-motion-patterns-md-wiki-synthesis-design-web-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-motion-patterns-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-design-web-capability-hub-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-motion-patterns-md-wiki-synthesis-game-lightweight-highend-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-motion-patterns-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-context-management-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-context-management-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-failover-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-ai-glossary-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-ai-glossary-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-sources-ai-engineering-multi-agent-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-ai-engineering-multi-agent-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-a2a-protocol-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-a2a-protocol-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-sources-ai-engineering-glossary-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-glossary-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-api-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8281,41 +8553,57 @@
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-concepts-ai-tools-openrouter-api-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-sources-local-llm-mac-mini-guide-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-local-llm-mac-mini-guide-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-session-setup-md",
-      "toSide": "top",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-remotion-video-creation-md-wiki-entities-ai-tools-frontend-slides-md",
+      "fromNode": "wiki-concepts-ai-tools-remotion-video-creation-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-remotion-video-creation-md-wiki-synthesis-revenue-engine-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-remotion-video-creation-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-revenue-engine-capability-hub-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8335,19 +8623,43 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-entities-ai-tools-turbovec-md",
+      "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-turbovec-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-concepts-ai-tools-vector-search-md",
+      "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromSide": "top",
+      "toNode": "wiki-concepts-ai-tools-vector-search-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-concepts-ai-tools-embedding-models-md",
+      "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -8361,9 +8673,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-sources-ai-engineering-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-swarm-optimization-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8385,9 +8697,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-multi-agent-failover-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8395,6 +8707,46 @@
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromSide": "left",
       "toNode": "wiki-sources-ai-agents-integration-guide-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-ui-to-vue-md-wiki-synthesis-design-web-capability-hub-md",
+      "fromNode": "wiki-concepts-ai-tools-ui-to-vue-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-design-web-capability-hub-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-ui-to-vue-md-wiki-entities-ai-tools-frontend-slides-md",
+      "fromNode": "wiki-concepts-ai-tools-ui-to-vue-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-concepts-ai-tools-embedding-models-md",
+      "fromNode": "wiki-concepts-ai-tools-vector-search-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromNode": "wiki-concepts-ai-tools-vector-search-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-entities-ai-tools-turbovec-md",
+      "fromNode": "wiki-concepts-ai-tools-vector-search-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-turbovec-md",
       "toSide": "right",
       "color": "2"
     },
@@ -8417,25 +8769,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -9167,6 +9519,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-it-support-CLAUDE-md-index-it-md",
+      "fromNode": "wiki-concepts-it-support-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "index-it-md",
+      "toSide": "right",
+      "color": "none"
+    },
+    {
       "id": "edge-wiki-concepts-it-support-CLAUDE-md-CLAUDE-md",
       "fromNode": "wiki-concepts-it-support-CLAUDE-md",
       "fromSide": "left",
@@ -9455,6 +9815,22 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "fromSide": "top",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-concepts-ai-tools-git-subtree-workflow-md",
+      "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-git-subtree-workflow-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
       "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
       "fromSide": "left",
@@ -9463,27 +9839,35 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-agents-md-spec-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-entities-ai-tools-agents-md-spec-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-agents-md-spec-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-agents-md-spec-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-anthropic-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-anthropic-skills-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-anthropic-skills-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-entities-ai-tools-anthropic-skills-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9503,18 +9887,82 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-concepts-ai-tools-claude-thai-skills-md",
+      "fromNode": "wiki-entities-ai-tools-ecc-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-claude-thai-skills-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-agents-md-spec-md",
       "fromNode": "wiki-entities-ai-tools-ecc-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-agents-md-spec-md",
-      "toSide": "left",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-entities-ai-tools-ecc-md",
+      "fromSide": "top",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-liquid-glass-design-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-liquid-glass-design-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-motion-patterns-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-motion-patterns-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-ui-to-vue-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-ui-to-vue-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-frontend-design-direction-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-frontend-design-direction-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-remotion-video-creation-md",
+      "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-remotion-video-creation-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-concepts-ai-tools-mcp-architecture-md",
+      "fromNode": "wiki-entities-ai-tools-gitnexus-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-ai-tools-mcp-architecture-md",
       "toSide": "right",
       "color": "2"
     },
@@ -9537,17 +9985,25 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-entities-ai-tools-gitnexus-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-graphify-md-wiki-entities-ai-tools-gitnexus-md",
       "fromNode": "wiki-entities-ai-tools-graphify-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-gitnexus-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9561,17 +10017,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-graphify-md-wiki-entities-ai-tools-anthropic-skills-md",
       "fromNode": "wiki-entities-ai-tools-graphify-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-anthropic-skills-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9585,25 +10041,25 @@
     {
       "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-sources-hermes-agent-guide-th-md",
       "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-hermes-agent-guide-th-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9649,25 +10105,25 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-sources-hyperframes-official-docs-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-hyperframes-official-docs-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-ollama-pi5-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ollama-pi5-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -9681,9 +10137,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9697,17 +10153,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-ollama-pi5-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ollama-pi5-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-openmed-md-wiki-entities-ai-tools-anthropic-skills-md",
       "fromNode": "wiki-entities-ai-tools-openmed-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-anthropic-skills-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9737,8 +10193,16 @@
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-react-doctor-md-wiki-concepts-ai-tools-claude-skills-md",
+      "fromNode": "wiki-entities-ai-tools-react-doctor-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-claude-skills-md",
       "toSide": "left",
       "color": "2"
     },
@@ -9753,9 +10217,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9777,17 +10241,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9801,32 +10265,56 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-local-llm-routing-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-ollama-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-ollama-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-sources-telegram-ai-router-design-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-sqlite-vec-md",
+      "fromNode": "wiki-entities-ai-tools-turbovec-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-embedding-models-md",
+      "fromNode": "wiki-entities-ai-tools-turbovec-md",
+      "fromSide": "top",
+      "toNode": "wiki-concepts-ai-tools-embedding-models-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-vector-search-md",
+      "fromNode": "wiki-entities-ai-tools-turbovec-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-vector-search-md",
       "toSide": "left",
       "color": "2"
     },
@@ -11833,41 +12321,41 @@
     {
       "id": "edge-wiki-sources-ai-engineering-glossary-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-sources-ai-engineering-glossary-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-ai-engineering-glossary-md-wiki-concepts-ai-tools-openrouter-api-md",
       "fromNode": "wiki-sources-ai-engineering-glossary-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-ai-engineering-llm-md-wiki-concepts-ai-tools-llm-rag-architecture-md",
       "fromNode": "wiki-sources-ai-engineering-llm-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-ai-engineering-llm-md-wiki-concepts-ai-tools-llm-eval-frameworks-md",
       "fromNode": "wiki-sources-ai-engineering-llm-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-ai-engineering-multi-agent-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-sources-ai-engineering-multi-agent-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -11897,9 +12385,9 @@
     {
       "id": "edge-wiki-sources-ai-engineering-swarm-optimization-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-sources-ai-engineering-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -11956,6 +12444,14 @@
       "fromSide": "bottom",
       "toNode": "wiki-sources-rpi-ai-hat-plus-2-official-md",
       "toSide": "top",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-ai-iot-server-build-v3-md-index-ai-tools-md",
+      "fromNode": "wiki-sources-ai-iot-server-build-v3-md",
+      "fromSide": "left",
+      "toNode": "index-ai-tools-md",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -12313,9 +12809,9 @@
     {
       "id": "edge-wiki-sources-hermes-agent-guide-th-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-hermes-agent-guide-th-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -12329,9 +12825,9 @@
     {
       "id": "edge-wiki-sources-hyperframes-official-docs-md-wiki-entities-ai-tools-hyperframes-md",
       "fromNode": "wiki-sources-hyperframes-official-docs-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hyperframes-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -12339,6 +12835,14 @@
       "fromNode": "wiki-sources-hyperframes-official-docs-md",
       "fromSide": "left",
       "toNode": "wiki-synthesis-wiki-to-video-pipeline-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-hyperframes-official-docs-md-index-ai-tools-md",
+      "fromNode": "wiki-sources-hyperframes-official-docs-md",
+      "fromSide": "left",
+      "toNode": "index-ai-tools-md",
       "toSide": "right",
       "color": "6"
     },
@@ -12433,9 +12937,9 @@
     {
       "id": "edge-wiki-sources-local-llm-mac-mini-guide-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-local-llm-mac-mini-guide-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -12539,6 +13043,14 @@
       "fromNode": "wiki-sources-openrouter-api-demo-md",
       "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-openrouter-api-demo-md-index-ai-tools-md",
+      "fromNode": "wiki-sources-openrouter-api-demo-md",
+      "fromSide": "left",
+      "toNode": "index-ai-tools-md",
       "toSide": "right",
       "color": "6"
     },
@@ -12713,9 +13225,9 @@
     {
       "id": "edge-wiki-sources-telegram-ai-agent-setup-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-telegram-ai-agent-setup-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -12737,9 +13249,9 @@
     {
       "id": "edge-wiki-sources-telegram-ai-router-design-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-telegram-ai-router-design-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -12873,17 +13385,17 @@
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-pocketbase-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {

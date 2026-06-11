@@ -11,7 +11,7 @@ tags: [iot, arduino]
 title: "arduino-libraries/Arduino_PowerManagement"
 source: "https://github.com/arduino-libraries/Arduino_PowerManagement"
 author:
-  - "[[arduino-libraries]]"
+  - "arduino-libraries"
 published:
 created: 2026-04-18
 description: "Contribute to arduino-libraries/Arduino_PowerManagement development by creating an account on GitHub."

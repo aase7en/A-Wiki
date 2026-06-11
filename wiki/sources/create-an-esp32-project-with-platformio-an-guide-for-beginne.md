@@ -11,7 +11,7 @@ tags: [iot, esp32, guide]
 title: "Create an ESP32 Project With PlatformIO: An Guide for Beginners"
 source: "https://www.elektormagazine.com/news/create-an-esp32-project-with-platformio"
 author:
-  - "[[Riccardo Medda]]"
+  - "Riccardo Medda"
 published: 2024-10-07
 created: 2026-04-18
 description: "Using PlatformIO with Visual Studio Code offers a powerful environment for MCU firmware development. This article describes an example of integration."

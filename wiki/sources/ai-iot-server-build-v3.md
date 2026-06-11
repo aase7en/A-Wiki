@@ -88,4 +88,4 @@ PDF อ้าง use case "Local LLM 70B+" แต่:
 ## หน้า Wiki ที่ได้รับการอัปเดต
 
 - [[synthesis/local-llm-pc-vs-mac-2026]] — สร้างใหม่ (synthesis เปรียบเทียบ PC vs Mac)
-- [[index-ai]] — เพิ่ม source + synthesis ใหม่
+- [[index-ai-tools]] — เพิ่ม source + synthesis ใหม่

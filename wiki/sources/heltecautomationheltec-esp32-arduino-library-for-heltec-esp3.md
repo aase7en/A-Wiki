@@ -11,7 +11,7 @@ tags: [iot, esp32, arduino, lora]
 title: "HelTecAutomation/Heltec_ESP32: Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards"
 source: "https://github.com/HelTecAutomation/Heltec_ESP32"
 author:
-  - "[[HelTecAutomation]]"
+  - "HelTecAutomation"
 published:
 created: 2026-04-18
 description: "Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards - HelTecAutomation/Heltec_ESP32"

@@ -11,7 +11,7 @@ tags: [iot, esp32, arduino, lora]
 title: "ropg/heltec_esp32_lora_v3: Proper working Arduino library for the Heltec ESP32 LoRa v3 board, as well as for Wireless Stick v3 and Wireless Stick Lite v3. Uses RadioLib"
 source: "https://github.com/ropg/heltec_esp32_lora_v3"
 author:
-  - "[[ropg]]"
+  - "ropg"
 published:
 created: 2026-04-18
 description: "Proper working Arduino library for the Heltec ESP32 LoRa v3 board, as well as for Wireless Stick v3 and Wireless Stick Lite v3. Uses RadioLib - ropg/heltec_esp32_lora_v3"

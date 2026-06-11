@@ -11,7 +11,7 @@ tags: [iot, raspberry-pi, ai]
 title: "Introducing the Raspberry Pi AI HAT+ 2: Generative AI on Raspberry Pi 5"
 source: "https://www.raspberrypi.com/news/introducing-the-raspberry-pi-ai-hat-plus-2-generative-ai-on-raspberry-pi-5/"
 author:
-  - "[[Naush Patuck]]"
+  - "Naush Patuck"
 published: 2026-01-15
 created: 2026-04-20
 description: "Unlock large language models (LLMs) and vision-language models (VLMs) on Raspberry Pi 5 with the Raspberry Pi AI HAT+ 2: on sale now at $130."

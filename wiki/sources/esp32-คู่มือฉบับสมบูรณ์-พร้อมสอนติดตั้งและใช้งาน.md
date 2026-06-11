@@ -11,7 +11,7 @@ tags: [iot, esp32]
 title: "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน"
 source: "https://globalbyteshop.com/blogs/projects/what-is-esp32"
 author:
-  - "[[Global Byte Shope]]"
+  - "Global Byte Shope"
 published: 2025-12-08
 created: 2026-04-18
 description: "ESP32 คือบอร์ด Microcontroller SOC ที่รวม CPU Dual-core, Wi-Fi และ Bluetooth ในตัว เหมาะสำหรับนักศึกษา Maker และงาน Smart Home/Smart Farm"

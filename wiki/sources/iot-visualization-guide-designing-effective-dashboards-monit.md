@@ -11,7 +11,7 @@ tags: [iot, dashboard, guide]
 title: "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs"
 source: "https://www.youtube.com/watch?v=nNp802oxy7o"
 author:
-  - "[[CodeLucky]]"
+  - "CodeLucky"
 published: 2025-12-31
 created: 2026-04-18
 description: "Learn how to design stunning and functional dashboards for the Internet of Things! 🌐📊In this video, we break down the essentials of visualizing real-time IoT data. From choosing the right widgets"

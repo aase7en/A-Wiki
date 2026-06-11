@@ -4,19 +4,19 @@ _Generated: 2026-06-12_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 ## Stats
 
-- **Nodes**: 497
-- **Edges**: 1299
-- **Broken links**: 65 (run `python3 scripts/query-graph.py --broken`)
+- **Nodes**: 509
+- **Edges**: 1304
+- **Broken links**: 0 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 177 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
 - `index-iot.md` (135 edges)
-- `index.md` (100 edges)
+- `index.md` (102 edges)
 - `wiki/entities/iot/esp32.md` (54 edges)
 - `index-pharmacy.md` (37 edges)
+- `index-ai-tools.md` (36 edges)
 - `wiki/entities/iot/esp32-s3.md` (35 edges)
-- `index-ai-tools.md` (32 edges)
 - `wiki/entities/iot/dx-lr02-lora.md` (31 edges)
 - `index-env.md` (30 edges)
 - `wiki/entities/iot/grafana.md` (27 edges)

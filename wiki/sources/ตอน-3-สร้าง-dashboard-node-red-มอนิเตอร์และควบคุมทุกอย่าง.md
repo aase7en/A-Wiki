@@ -11,7 +11,7 @@ tags: [iot, dashboard]
 title: "ตอน 3 : สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง 📊"
 source: "https://www.techsourcegroups.com/2025/node-red-dashboard-ui/"
 author:
-  - "[[Y.Chanadej]]"
+  - "Y.Chanadej"
 published: 2025-09-27
 created: 2026-04-18
 description: "อยากมี Dashboard สวยๆ แต่เขียนโค้ดไม่เป็น? 🎨 มาดูวิธีใช้ Node-RED Dashboard ที่จะเปลี่ยนข้อมูลดิบให้เป็น UI สุดล้ำในไม่กี่คลิก! 📈 #NodeRED"

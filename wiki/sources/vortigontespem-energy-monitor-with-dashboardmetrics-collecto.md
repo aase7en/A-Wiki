@@ -11,7 +11,7 @@ tags: [iot, esp32, dashboard, ai]
 title: "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter"
 source: "https://github.com/vortigont/espem"
 author:
-  - "[[vortigont]]"
+  - "vortigont"
 published:
 created: 2026-04-18
 description: "Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter - vortigont/espem"

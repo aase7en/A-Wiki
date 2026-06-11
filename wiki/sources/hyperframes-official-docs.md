@@ -49,4 +49,4 @@ tags: [hyperframes, heygen, ai-tools, video-rendering, html, catalog, cli, open-
 
 - [[entities/ai-tools/hyperframes]]
 - [[synthesis/wiki-to-video-pipeline]]
-- [[index-ai.md]]
+- [[index-ai-tools]]

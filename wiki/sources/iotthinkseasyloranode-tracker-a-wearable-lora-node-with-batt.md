@@ -11,7 +11,7 @@ tags: [iot, lora]
 title: "IoTThinks/EasyLoRaNode_Tracker: A wearable LoRa node with battery for long range wearable projects"
 source: "https://github.com/IoTThinks/EasyLoRaNode_Tracker"
 author:
-  - "[[IoTThinks]]"
+  - "IoTThinks"
 published:
 created: 2026-04-18
 description: "A wearable LoRa node with battery for long range wearable projects - IoTThinks/EasyLoRaNode_Tracker"

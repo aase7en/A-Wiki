@@ -11,7 +11,7 @@ tags: [iot, esp32, lora, sensor]
 title: "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication)"
 source: "https://randomnerdtutorials.com/esp32-lora-sensor-web-server/"
 author:
-  - "[[Rui Santos]]"
+  - "Rui Santos"
 published: 2019-11-20
 created: 2026-04-18
 description: "Build a sensor monitoring system with ESP32 TTGO LoRa32 SX1276 board that sends temperature, humidity and pressure readings via LoRa to a LoRa receiver web server."
