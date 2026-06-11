@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-06-12",
   "stats": {
-    "nodes": 489,
+    "nodes": 493,
     "edges": 1286,
     "edges_by_type": {
       "wikilink": 1146,
@@ -11,7 +11,7 @@
       "extends": 7
     },
     "broken_links": 65,
-    "orphans": 174,
+    "orphans": 178,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -425,7 +425,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-08",
+      "title": "Review Report — 2026-06-12",
       "domain": "context"
     },
     {
@@ -894,7 +894,7 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/claude-model-cost-switching-strategy.md",
+      "path": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
       "title": "การวางแผนสลับ model + บริหาร token cost (Fable 5 / Sonnet / Haiku)",
       "domain": "sources"
     },
@@ -1779,6 +1779,21 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-ai-engineering-myths.md",
+      "title": "AI Myths Busted — rohitg00/ai-engineering-from-scratch — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ai-engineering-swarm-optimization.md",
+      "title": "Swarm Optimization + Case Studies — rohitg00/ai-engineering-from-scratch Phase 16 (subtopics 14-25) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-ai-engineering-tools-protocols.md",
+      "title": "Tools & Protocols — rohitg00/ai-engineering-from-scratch Phase 13 (subtopics 06 MCP, 19 A2A) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-ai-iot-server-build-v3-final.md",
       "title": "> Source: `AI_IoT_Server_Build_v3_Final.pdf` (ผู้ใช้ส่งจาก Downloads/ — สร้างโดย — Synthesis",
       "domain": "synthesis"
@@ -1836,6 +1851,11 @@
     {
       "path": "wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md",
       "title": "[Mastodon](https://me.dm/@webcluesinfotech) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-claude-model-cost-switching-strategy-2026-06.md",
+      "title": "การวางแผนใช้ model Fable 5 สำหรับ game project ที่มี trading integration (claude.ai shared chat) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -8938,7 +8958,7 @@
       "external": false
     },
     {
-      "from": "wiki/sources/claude-model-cost-switching-strategy.md",
+      "from": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
       "to": "wiki/context/model-roster.md",
       "type": "wikilink",
       "broken": false,

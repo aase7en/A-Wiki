@@ -38,7 +38,7 @@
 | `arduino-librariesarduinopowermanagement` | (no abstract) |
 | `build-software-better-together` | (no abstract) |
 | `building-an-iot-application-with-raspberry-pi-and-python` | GPIO.setmode(GPIO.BCM) |
-| `claude-model-cost-switching-strategy` | 1. **Fable 5 = model แพงสุดในตลาด** ($10/M input, $50/M output ≈… |
+| `claude-model-cost-switching-strategy-2026-06` | 1. **Fable 5 = model แพงสุดในตลาด** ($10/M input, $50/M output ≈… |
 | `context-claude-code-dev-vibe-coding-thailand` | (no abstract) |
 | `create-an-esp32-project-with-platformio-an-guide-for-beginne` | (no abstract) |
 | `create-an-esp32-project-with-platformio-an-guide-for-beginners` | (no abstract) |

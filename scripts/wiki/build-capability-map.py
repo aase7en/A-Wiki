@@ -211,18 +211,11 @@ def discover_render_surfaces(root: Path) -> list[dict[str, str]]:
 
 
 def parse_wiki_stats(root: Path) -> dict[str, int]:
-    overview = root / "wiki" / "context" / "wiki-overview.md"
-    if not overview.exists():
-        return {}
-    text = overview.read_text(encoding="utf-8", errors="replace")
     stats: dict[str, int] = {}
-    for key in ("ENTITIES", "CONCEPTS", "SYNTHESIS", "SOURCES"):
-        match = re.search(rf"\|\s*{key}\s*\|\s*(\d+)\s*\|", text)
-        if match:
-            stats[key.lower()] = int(match.group(1))
-    match = re.search(r"\|\s*\*\*Total\*\*\s*\|\s*\*\*(\d+)\s+pages\*\*\s*\|", text)
-    if match:
-        stats["total_pages"] = int(match.group(1))
+    for section in ("entities", "concepts", "synthesis", "sources"):
+        base = root / "wiki" / section
+        stats[section] = len(list(base.rglob("*.md"))) if base.exists() else 0
+    stats["total_pages"] = sum(stats.values())
     return stats
 
 

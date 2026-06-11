@@ -97,6 +97,25 @@ def test_build_capability_map_discovers_owned_surfaces(tmp_path):
     assert any(item["capability"] == "Asset Pack Reporting" for item in data["capabilities"])
 
 
+def test_build_capability_map_counts_wiki_files_without_stale_overview(tmp_path):
+    make_fixture_repo(tmp_path)
+    write(tmp_path / "wiki" / "entities" / "iot" / "esp32.md", "# ESP32\n")
+    write(tmp_path / "wiki" / "concepts" / "iot" / "mqtt.md", "# MQTT\n")
+    write(tmp_path / "wiki" / "synthesis" / "model-switching.md", "# Model Switching\n")
+    write(tmp_path / "wiki" / "sources" / "source-one.md", "# Source One\n")
+
+    data = build_capability_map.build_capability_map(tmp_path)
+
+    assert data["wiki_stats"] == {
+        "entities": 1,
+        "concepts": 1,
+        "synthesis": 1,
+        "sources": 1,
+        "total_pages": 4,
+    }
+    assert data["summary"]["wiki_page_count"] == 4
+
+
 def test_format_markdown_includes_routing_tables(tmp_path):
     make_fixture_repo(tmp_path)
     data = build_capability_map.build_capability_map(tmp_path)
