@@ -109,6 +109,26 @@ Trading caveat: ก่อน strategy ต้องออกแบบ risk safegu
 6. ถ้าจะสลับ model ให้ compress context ไม่เกิน 500 tokens และชี้ไฟล์ source-of-truth.
 7. หลังจบ architect phase ให้ลดกลับ 4b เสมอ.
 
+## Verification Matrix
+
+Automated CLI probe:
+
+```bash
+bash scripts/verify-model-routing.sh
+```
+
+เกณฑ์ผ่าน: CLI platforms อย่างน้อย 2 ใน 3 (`claude`, `codex`, `gemini`) ต้องตอบถึง ladder `4a/4b/4c`, `tier`, หรือ `model-switching` ได้เองโดยไม่ต้อง prompt ชื่อ skill ตรง ๆ. รายงานถูกเขียนลง `exports/` ซึ่งเป็น review artifact ไม่ใช่ source-of-truth.
+
+Manual GUI checklist:
+
+| Platform | Probe | Expected | PASS/FAIL |
+|---|---|---|---|
+| Claude Desktop | ถาม "โปรเจ็คใหม่ multi-step ควรใช้ model อะไรบ้าง" โดยไม่เอ่ย pyramid/skill | อ้างถึง 4a/4b/4c หรือ model switching policy |  |
+| Cursor | เปิด repo แล้วถามคำถาม probe เดียวกัน | อ้าง `AGENTS.md`/protocol หรือ ladder ได้เอง |  |
+| Windsurf | เปิด repo แล้วถามคำถาม probe เดียวกัน | อ้าง `AGENTS.md`/protocol หรือ ladder ได้เอง |  |
+
+ความแน่นอนของ trigger เรียงจาก hook (deterministic) > always-loaded context (`AGENTS.md`/`CLAUDE.md`) > skill description. ถ้า probe FAIL ให้แก้ต้นเหตุที่ always-loaded context ก่อน แล้วค่อยปรับ skill description.
+
 ## Handoff Note Template
 
 ```md

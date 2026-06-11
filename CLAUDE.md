@@ -118,6 +118,8 @@ python3 scripts/lib/drive_secrets.py --check
 | **3** | Subagent (Claude Haiku / Explore) | **ถูก** — scan ไฟล์เยอะ, lint |
 | **4** | Claude Sonnet (current) | **ปกติ** — เขียน wiki, schema, reasoning ซับซ้อน |
 
+**Level 4 sub-ladder**: ก่อนเริ่มงาน multi-step หรือ task มีต้นทุนสูง ให้ classify task → เลือก tier 4a/4b/4c + effort ตาม `docs/protocols/model-switching.md` และ skill `model-cost-switching` เสมอ (ไม่ต้องรอ user สั่ง).
+
 > **เริ่มจาก Level ต่ำสุดเสมอ** — เลื่อนขึ้นก็ต่อเมื่อ level ต่ำกว่าทำไม่ได้
 > Prompt ส่งออกนอก: **ใช้ภาษาอังกฤษ** (ประหยัด ~30%)
 

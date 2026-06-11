@@ -47,3 +47,19 @@ def test_quick_commands_points_to_model_switching_protocol():
 
     assert "/model-tier" in text
     assert "docs/protocols/model-switching.md" in text
+
+
+def test_platform_instruction_files_have_behavioral_model_switching_pointer():
+    required = [
+        "docs/protocols/model-switching.md",
+        "model-cost-switching",
+        "classify task",
+        "tier 4a/4b/4c",
+        "effort",
+        "ไม่ต้องรอ user สั่ง",
+    ]
+
+    for path in ("AGENTS.md", "CLAUDE.md"):
+        text = read_doc(path)
+        for phrase in required:
+            assert phrase in text, f"{path} missing {phrase!r}"

@@ -82,8 +82,14 @@ link_skills_to() {
         skill_name="$(basename "$skill_dir")"
         target="$dest/$skill_name"
 
-        # Remove existing file/dir/symlink at target
-        if [ -e "$target" ] || [ -L "$target" ]; then
+        # Remove existing files/symlinks. Keep real directories to avoid
+        # deleting locally installed skills that are not managed by A-Wiki.
+        if [ -L "$target" ] || [ -f "$target" ]; then
+            rm -f "$target"
+        elif [ -d "$target" ]; then
+            echo "  ⚠️  Skipping existing directory: $target"
+            continue
+        elif [ -e "$target" ]; then
             rm -f "$target"
         fi
 
