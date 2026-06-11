@@ -1,17 +1,17 @@
 {
   "generated_at": "2026-06-12",
   "stats": {
-    "nodes": 493,
-    "edges": 1286,
+    "nodes": 497,
+    "edges": 1299,
     "edges_by_type": {
-      "wikilink": 1146,
+      "wikilink": 1151,
       "mdlink": 49,
       "depends": 33,
       "implements": 51,
-      "extends": 7
+      "extends": 15
     },
     "broken_links": 65,
-    "orphans": 178,
+    "orphans": 177,
     "hubs": [
       {
         "path": "index-iot.md",
@@ -1604,6 +1604,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/design-web-capability-hub.md",
+      "title": "Design/Web Capability Hub",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/digital-legacy-ai-architecture.md",
       "title": "Digital Legacy AI — Self + Persistent",
       "domain": "synthesis"
@@ -1646,6 +1651,11 @@
     {
       "path": "wiki/synthesis/fuel-tank-level.md",
       "title": "ระบบ Fuel/Water Tank Level Monitoring (HC-SR04 + ESP32 + MQTT)",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "title": "Game Lightweight High-end Capability Hub",
       "domain": "synthesis"
     },
     {
@@ -1726,6 +1736,16 @@
     {
       "path": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "title": "PixelLab to Phaser Asset Convention",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/premium-auto-trading-capability-hub.md",
+      "title": "Premium Auto Trading Capability Hub",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/revenue-engine-capability-hub.md",
+      "title": "Revenue Engine Capability Hub",
       "domain": "synthesis"
     },
     {
@@ -10225,6 +10245,27 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/concepts/iot/dashboard-design.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/entities/ai-tools/frontend-slides.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/entities/ai-tools/react-doctor.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/digital-legacy-ai-architecture.md",
       "to": "scripts/setup-git-mirror.sh",
       "type": "depends",
@@ -10591,6 +10632,41 @@
     {
       "from": "wiki/synthesis/fuel-tank-level.md",
       "to": "wiki/sources/esp32-tank-level-mqtt.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/sunday-invest-moon-roadmap.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -11158,6 +11234,41 @@
     {
       "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
+      "to": "wiki/sources/freqtrade-pi5.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/revenue-engine-capability-hub.md",
+      "to": "wiki/entities/ai-tools/social-media-skills.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/revenue-engine-capability-hub.md",
+      "to": "wiki/synthesis/openrouter-agent-routing.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/revenue-engine-capability-hub.md",
+      "to": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
       "type": "wikilink",
       "broken": false,
       "external": false

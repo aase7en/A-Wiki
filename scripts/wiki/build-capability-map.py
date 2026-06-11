@@ -117,6 +117,109 @@ SCRIPT_CAPABILITIES = [
     },
 ]
 
+STRATEGIC_LANES = [
+    {
+        "id": "design-web",
+        "goal": "Production-grade website, dashboard, and visual design workflow.",
+        "route": "frontend-design -> webapp-testing -> Canva only for export/brand assets.",
+        "verify": "Playwright/browser visual smoke plus build/type checks for the target app.",
+        "safety": "No private analytics or brand secrets in tracked repo; generated review HTML stays in exports/html/.",
+    },
+    {
+        "id": "game-lightweight-highend",
+        "goal": "High-end-feeling but lightweight web games such as Sunday Invest Moon.",
+        "route": "Phaser/Vite/TypeScript -> PixelLab manifest -> asset report -> bootstrap/copy.",
+        "verify": "Asset pack report, logic tests, typecheck/build, and FPS/blank-canvas smoke.",
+        "safety": "Binary/raw assets stay outside tracked wiki unless intentionally curated; secrets come from drive/.",
+    },
+    {
+        "id": "revenue-engine",
+        "goal": "Turn wiki knowledge into public-safe content, product ideas, and validation loops.",
+        "route": "local wiki search -> Creator Layer -> verified market research -> content/product package.",
+        "verify": "Source table, privacy check, and trend/latest verification before public claims.",
+        "safety": "Voice, analytics, drafts, customer data, and private evidence stay in drive/personal/creator/.",
+    },
+    {
+        "id": "premium-auto-trading",
+        "goal": "Premium trading research and bot operations with strict paper/read-only/live separation.",
+        "route": "paper trading first -> read-only portfolio feed -> live backend only after security review.",
+        "verify": "Bot Trading Iron Law, feed boundary scan, risk guard tests, audit log checks.",
+        "safety": "No client-side secrets, no browser exchange calls, no live execution without backend kill switch.",
+    },
+]
+
+CAPABILITY_UPGRADE_MATRIX = [
+    {
+        "area": "Second brain",
+        "current": "Wiki pages, graph, skills, hooks, and generated context already exist.",
+        "upgrade": "Four strategic capability lanes with clear routing and safety gates.",
+        "verify": "python3 scripts/wiki/build-capability-map.py --out -",
+    },
+    {
+        "area": "Knowledge graph",
+        "current": "Graph reports broken links and orphans, but the work is not lane-prioritized.",
+        "upgrade": "Graph hygiene baseline and P0 cleanup queue by source domain.",
+        "verify": "python3 scripts/wiki/query-graph.py --broken && python3 scripts/wiki/query-graph.py --orphans",
+    },
+    {
+        "area": "Website design",
+        "current": "Frontend/design and web testing skills are available.",
+        "upgrade": "Design QA route combines frontend skill, browser/Playwright verification, and Canva export only when useful.",
+        "verify": "Run target app build plus Playwright visual smoke.",
+    },
+    {
+        "area": "High-end lightweight game",
+        "current": "Phaser, Sunday Invest Moon, PixelLab, and manifest scripts exist.",
+        "upgrade": "Game lane locks performance budget, asset manifest validation, and no-secret runtime rules.",
+        "verify": "python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files",
+    },
+    {
+        "area": "Revenue engine",
+        "current": "Creator Layer and Thai/social skills exist.",
+        "upgrade": "Revenue work flows from wiki evidence to product/content idea to validation before publishing.",
+        "verify": "python3 scripts/check-privacy.py plus source/date/link review for latest claims.",
+    },
+    {
+        "area": "Premium auto trading",
+        "current": "Freqtrade notes, read-only feed contract, and trading iron law exist.",
+        "upgrade": "Three-tier trading model: paper, read-only, live backend with risk/security approval.",
+        "verify": "Trading-specific tests in product repo plus A-Wiki privacy/preflight checks.",
+    },
+]
+
+MCP_ALLOWLIST = [
+    {
+        "server": "awiki",
+        "status": "Keep",
+        "use": "Local wiki search, semantic search, page reads, and graph neighbors.",
+        "gate": "Read-mostly; auto-approved tools must stay scoped to A-Wiki knowledge.",
+    },
+    {
+        "server": "filesystem",
+        "status": "Keep scoped",
+        "use": "Repo-local file access for agents that support MCP.",
+        "gate": "Restrict roots to the repo; never expose drive/, raw/, secrets, or home-wide paths.",
+    },
+    {
+        "server": "github",
+        "status": "Keep when needed",
+        "use": "Repository, issue, and PR inspection where connector/CLI is not enough.",
+        "gate": "Prefer read-only for review; A-Wiki workflow still commits directly to main.",
+    },
+    {
+        "server": "supabase",
+        "status": "Allow after task need",
+        "use": "Database/project work for web apps that actually use Supabase.",
+        "gate": "Use least privilege and never store project tokens in tracked files.",
+    },
+    {
+        "server": "trading/exchange",
+        "status": "Reject by default",
+        "use": "No direct exchange/broker MCP inside A-Wiki agent context.",
+        "gate": "Only a reviewed backend may hold trading authority; clients and wiki agents stay read-only/paper.",
+    },
+]
+
 
 def rel(path: Path, root: Path) -> str:
     try:
@@ -219,6 +322,53 @@ def parse_wiki_stats(root: Path) -> dict[str, int]:
     return stats
 
 
+def classify_graph_domain(path: str) -> str:
+    parts = Path(path).parts
+    if len(parts) >= 4 and parts[0] == "wiki" and parts[1] in {"entities", "concepts"}:
+        return parts[2]
+    if len(parts) >= 3 and parts[0] == "wiki" and parts[1] in {"synthesis", "sources", "context"}:
+        return parts[1]
+    if parts and parts[0] == "wiki":
+        return "wiki-other"
+    return "repo-root"
+
+
+def read_graph_hygiene(root: Path) -> dict[str, Any]:
+    graph_path = root / ".wiki-graph.json"
+    fallback = {
+        "nodes": 0,
+        "edges": 0,
+        "broken_links": 0,
+        "orphans": 0,
+        "broken_by_domain": {},
+        "orphan_samples": [],
+        "status": "missing",
+    }
+    if not graph_path.exists():
+        return fallback
+    try:
+        graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        fallback["status"] = "invalid-json"
+        return fallback
+    stats = graph.get("stats") or {}
+    broken_by_domain: dict[str, int] = {}
+    for edge in graph.get("edges") or []:
+        if not edge.get("broken"):
+            continue
+        domain = classify_graph_domain(str(edge.get("from") or ""))
+        broken_by_domain[domain] = broken_by_domain.get(domain, 0) + 1
+    return {
+        "nodes": int(stats.get("nodes") or 0),
+        "edges": int(stats.get("edges") or 0),
+        "broken_links": int(stats.get("broken_links") or 0),
+        "orphans": int(stats.get("orphans") or 0),
+        "broken_by_domain": dict(sorted(broken_by_domain.items(), key=lambda item: (-item[1], item[0]))),
+        "orphan_samples": list((stats.get("orphans_list") or [])[:10]),
+        "status": "ok",
+    }
+
+
 def build_capability_map(root: Path = REPO_ROOT) -> dict[str, Any]:
     root = root.resolve()
     skills = discover_owned_skills(root)
@@ -226,6 +376,7 @@ def build_capability_map(root: Path = REPO_ROOT) -> dict[str, Any]:
     protocols = discover_protocols(root)
     render_surfaces = discover_render_surfaces(root)
     wiki_stats = parse_wiki_stats(root)
+    graph_hygiene = read_graph_hygiene(root)
     summary = {
         "owned_skill_count": len(skills),
         "script_count": len(capabilities),
@@ -241,6 +392,10 @@ def build_capability_map(root: Path = REPO_ROOT) -> dict[str, Any]:
         "skills": skills,
         "protocols": protocols,
         "render_surfaces": render_surfaces,
+        "strategic_lanes": STRATEGIC_LANES,
+        "upgrade_matrix": CAPABILITY_UPGRADE_MATRIX,
+        "graph_hygiene": graph_hygiene,
+        "mcp_allowlist": MCP_ALLOWLIST,
     }
 
 
@@ -292,6 +447,92 @@ def format_markdown(data: dict[str, Any]) -> str:
 
     lines.extend(
         [
+            "## Strategic Capability Lanes",
+            "",
+            "| Lane | Goal | Route | Verify | Safety gate |",
+            "|---|---|---|---|---|",
+        ]
+    )
+    for lane in data.get("strategic_lanes") or []:
+        lines.append(
+            "| `{id}` | {goal} | {route} | {verify} | {safety} |".format(
+                id=md_escape(lane["id"]),
+                goal=md_escape(lane["goal"]),
+                route=md_escape(lane["route"]),
+                verify=md_escape(lane["verify"]),
+                safety=md_escape(lane["safety"]),
+            )
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Capability Upgrade Matrix",
+            "",
+            "| Area | Current capability | Upgraded capability | Verification |",
+            "|---|---|---|---|",
+        ]
+    )
+    for item in data.get("upgrade_matrix") or []:
+        lines.append(
+            "| {area} | {current} | {upgrade} | `{verify}` |".format(
+                area=md_escape(item["area"]),
+                current=md_escape(item["current"]),
+                upgrade=md_escape(item["upgrade"]),
+                verify=md_escape(item["verify"]),
+            )
+        )
+
+    graph_hygiene = data.get("graph_hygiene") or {}
+    lines.extend(
+        [
+            "",
+            "## Knowledge Graph Hygiene",
+            "",
+            "| Metric | Count |",
+            "|---|---:|",
+            f"| Nodes | {graph_hygiene.get('nodes', 0)} |",
+            f"| Edges | {graph_hygiene.get('edges', 0)} |",
+            f"| Broken links | {graph_hygiene.get('broken_links', 0)} |",
+            f"| Orphans | {graph_hygiene.get('orphans', 0)} |",
+            "",
+            "| Broken source domain | Count |",
+            "|---|---:|",
+        ]
+    )
+    broken_by_domain = graph_hygiene.get("broken_by_domain") or {}
+    if broken_by_domain:
+        for domain, count in broken_by_domain.items():
+            lines.append(f"| {md_escape(str(domain))} | {count} |")
+    else:
+        lines.append("| none | 0 |")
+    orphan_samples = graph_hygiene.get("orphan_samples") or []
+    if orphan_samples:
+        lines.extend(["", "Orphan samples: " + ", ".join(f"`{md_escape(str(item))}`" for item in orphan_samples[:10]), ""])
+    else:
+        lines.append("")
+
+    lines.extend(
+        [
+            "## MCP Allowlist",
+            "",
+            "| Server | Status | Use | Gate |",
+            "|---|---|---|---|",
+        ]
+    )
+    for item in data.get("mcp_allowlist") or []:
+        lines.append(
+            "| `{server}` | {status} | {use} | {gate} |".format(
+                server=md_escape(item["server"]),
+                status=md_escape(item["status"]),
+                use=md_escape(item["use"]),
+                gate=md_escape(item["gate"]),
+            )
+        )
+
+    lines.extend(
+        [
+            "",
             "## Capability Routing",
             "",
             "| Capability | Surface | Command | Use when |",

@@ -145,19 +145,22 @@ Mac, Work PC, WSL, and Linux may mount the same Google Drive at different paths;
 |-------|---------|---------|
 | **-1** | Local FTS5 / knowledge-graph | **Free + offline** — search wiki, neighbors, hubs |
 | **0** | Hook (SessionStart / PreToolUse) + Context Compaction | **Free** — repeated tasks every session |
-| **1** | Free API (OpenRouter free / dynamic roster) | **Free** — search, lookup, synthesis |
-| **2** | Cheap paid (DeepSeek, Qwen) | **Very cheap** — light reasoning, tables |
-| **3** | Subagent (Haiku-class / Explore) | **Cheap** — scan many files, lint |
-| **4** | Primary AI (current) | **Normal** — write wiki, complex reasoning |
+| **1** | `free-current` dynamic roster | **Free** — search, lookup, synthesis after scout current model/pricing |
+| **2** | `cheap-capable` runtime route | **Very cheap** — light reasoning, tables; selected from current provider pricing |
+| **3** | `platform-low-scout` / low-cost CLI agent | **Cheap** — scan many files, lint, gather current model intel |
+| **4** | `platform-primary` current model | **Normal** — write wiki, complex reasoning only after scout says lower tiers are insufficient |
 
 **Level 4 sub-ladder**: ก่อนเริ่มงาน multi-step หรือ task มีต้นทุนสูง ให้ classify task → เลือก tier 4a/4b/4c + effort ตาม `docs/protocols/model-switching.md` และ skill `model-cost-switching` เสมอ (ไม่ต้องรอ user สั่ง).
 
-**Model selection — NEVER hardcode model names:**
+**Model selection — NEVER hardcode model names as policy:**
 ```bash
+python3 scripts/model-scout-current.py       # scout current model/pricing from volatile provider data
 cat wiki/context/model-roster.conf          # see current free models
 bash scripts/update-model-roster.sh         # refresh from OpenRouter API
 bash scripts/swarm/delegate.sh "query"      # delegate to best free model
 ```
+
+DeepSeek V4 Flash/Pro, Qwen, Gemini Flash, Haiku, Sonnet, or similar names are dated examples only. They may be used as emergency seeds or review examples, never as binding defaults.
 
 > Prompts sent outside: **use English** (saves ~30% tokens)
 
