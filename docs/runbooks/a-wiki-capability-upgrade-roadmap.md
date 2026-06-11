@@ -7,7 +7,7 @@
 | Surface | Current state | Verification |
 |---|---|---|
 | Repo health | Preflight, hooks, model router, skill quality, and skill evals pass locally | `python3 scripts/verify-awiki-ready.py` |
-| Wiki graph | Graph is generated and queryable, but still has broken links and orphans | `python3 scripts/wiki/query-graph.py --broken` |
+| Wiki graph | Graph is generated and queryable; broken links are currently clean, while orphan pages remain a triage backlog | `python3 scripts/wiki/query-graph.py --stats` |
 | Skills | Owned skills are quality-checked and eval-covered | `python3 scripts/skill-quality-report.py --fail-on-warn` |
 | Capability map | Generated from scripts, skills, protocols, render surfaces, graph stats, and strategic lanes | `python3 scripts/wiki/build-capability-map.py --out -` |
 
@@ -63,6 +63,19 @@ Keep MCP lightweight and allowlisted:
 | Trading/exchange MCP | Reject by default; trading authority belongs only in reviewed backend services |
 
 Any new skill, plugin, MCP, or upstream snapshot must pass `docs/protocols/brain-improvement-gate.md` and `docs/runbooks/upstream-refresh.md`.
+
+## Source Watchlist
+
+Use these official upstreams for volatile capability decisions. Record the retrieval date in any new source page or capability note.
+
+| Area | Official source | Current routing decision |
+|---|---|---|
+| MCP discovery | https://registry.modelcontextprotocol.io/ and https://github.com/modelcontextprotocol/servers | Registry is the discovery surface; reference server repo is not a production allowlist by itself |
+| GitHub MCP | https://github.com/github/github-mcp-server | Allowed when repo/issue/PR context is needed; prefer scoped/read-only review usage |
+| Supabase MCP | https://supabase.com/docs/guides/ai-tools/mcp | Allowed only for active Supabase projects, preferably project-scoped and read-only when reviewing |
+| Agent Skills | https://github.com/anthropics/skills and https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview | Track patterns and install candidates, but every adopted skill needs local eval/quality checks |
+| Game stack | https://github.com/phaserjs/template-vite-ts | Phaser + Vite + TypeScript remains the default lightweight high-end route; verify template version before bootstrapping |
+| Trading stack | https://www.freqtrade.io/en/stable/, https://hummingbot.org/docs/, https://docs.ccxt.com/ | Use for paper/read-only research; Hummingbot MCP/skills and CCXT agent skills still require trading safety review before adoption |
 
 ## Update Loop
 
