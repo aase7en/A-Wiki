@@ -179,6 +179,7 @@ python3 scripts/lib/drive_secrets.py --check
 | 11 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
 | 12 | **Source Provenance** | `check_source_original_file.py` | 🔴 Block | Block Write/Edit `wiki/sources/<slug>.md` ถ้า `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีจริง (grandfather Edit บน legacy broken sources) |
 | 13 | **Output Format Guard** | `check_output_format.py` | 🔴 Block/📋 Warn | Block `.html` ลง source-of-truth (wiki/docs/CLAUDE.md/AGENTS.md) หรือนอก exports/html/; เตือน render-don't-dump สำหรับ .md ตารางใหญ่+report keywords |
+| 14 | **Cost-First Gate** | `check_cost_tier.py` | 🔴 Block | Block Edit/Write/Agent ถ้าไม่มี `.tmp/cost-tier-YYYY-MM-DD.txt` — บังคับ classify tier (L1-L4) ก่อนใช้ primary model; Bash/PS exempt; `HOOK_SKIP=check_cost_tier` หรือ `CI=true` bypass ได้; ดู `docs/protocols/cost-gate.md` |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`

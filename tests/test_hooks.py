@@ -383,3 +383,133 @@ class TestCheckSourceOriginalFile:
             cwd=REPO_ROOT,
         )
         assert proc.returncode == 0, f"grandfather clause failed for {fp}: {proc.stderr}"
+
+
+# ── check_cost_tier ────────────────────────────────────────────────────
+
+HOOK_PATH = str(REPO_ROOT / "scripts" / "hooks" / "check_cost_tier.py")
+
+
+def _run_cost_gate(payload: dict, tmp_dir: Path, extra_env: dict | None = None) -> subprocess.CompletedProcess:
+    """Run check_cost_tier.py with an isolated tmp dir."""
+    env = {**os.environ, "AWIKI_COST_GATE_TMP_DIR": str(tmp_dir)}
+    env.pop("CI", None)
+    env.pop("HOOK_SKIP", None)
+    if extra_env:
+        env.update(extra_env)
+    return subprocess.run(
+        [sys.executable, HOOK_PATH],
+        input=json.dumps(payload),
+        capture_output=True, text=True,
+        env=env,
+        cwd=str(REPO_ROOT),
+    )
+
+
+class TestCostTierGate:
+    """check_cost_tier.py — cost-first pyramid enforcement."""
+
+    def test_bash_tool_is_exempt(self, tmp_path):
+        """Bash calls pass without any declaration."""
+        proc = _run_cost_gate(
+            {"tool_name": "Bash", "tool_input": {"command": "echo hi"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_powershell_tool_is_exempt(self, tmp_path):
+        """PowerShell calls pass without any declaration."""
+        proc = _run_cost_gate(
+            {"tool_name": "PowerShell", "tool_input": {"command": "echo hi"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_edit_blocked_when_no_declaration(self, tmp_path):
+        """Edit tool is blocked when cost-tier file is absent."""
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 2, f"expected block, got {proc.returncode}: {proc.stderr}"
+        assert "COST GATE" in proc.stderr
+
+    def test_write_blocked_when_no_declaration(self, tmp_path):
+        """Write tool is blocked when cost-tier file is absent."""
+        proc = _run_cost_gate(
+            {"tool_name": "Write", "tool_input": {"file_path": "wiki/new.md", "content": "hi"}},
+            tmp_path,
+        )
+        assert proc.returncode == 2
+
+    def test_agent_blocked_when_no_declaration(self, tmp_path):
+        """Agent tool is blocked when cost-tier file is absent."""
+        proc = _run_cost_gate(
+            {"tool_name": "Agent", "tool_input": {"description": "do work", "prompt": "..."}},
+            tmp_path,
+        )
+        assert proc.returncode == 2
+
+    def test_edit_passes_with_l4_declaration(self, tmp_path):
+        """Edit passes once agent has written a cost-tier declaration."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        decl = tmp_path / f"cost-tier-{today}.txt"
+        decl.write_text("L4|implementation|writing new wiki page", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_edit_passes_with_l2_declaration(self, tmp_path):
+        """Lower tiers also satisfy the gate."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        (tmp_path / f"cost-tier-{today}.txt").write_text("L2|summary|cheap model task", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_write_to_tmp_is_exempt(self, tmp_path):
+        """Writing to .tmp/ path is exempt — that's the declaration itself."""
+        proc = _run_cost_gate(
+            {"tool_name": "Write", "tool_input": {"file_path": ".tmp/cost-tier-2026-06-12.txt", "content": "L4|x|y"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_hook_skip_env_bypasses_gate(self, tmp_path):
+        """HOOK_SKIP=check_cost_tier disables the gate."""
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+            extra_env={"HOOK_SKIP": "check_cost_tier"},
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_ci_env_bypasses_gate(self, tmp_path):
+        """CI=true disables the gate (automated pipelines don't need to declare)."""
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+            extra_env={"CI": "true"},
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_declaration_tier_shown_in_stderr(self, tmp_path):
+        """When declaration exists, hook echoes the tier to stderr."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        (tmp_path / f"cost-tier-{today}.txt").write_text("L4|implementation|reason", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/x.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0
+        assert "L4" in proc.stderr
