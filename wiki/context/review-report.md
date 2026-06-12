@@ -1,4 +1,4 @@
-# Review Report — 2026-06-12
+# Review Report — 2026-06-13
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 

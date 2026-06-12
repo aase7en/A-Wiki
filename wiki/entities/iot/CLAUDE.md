@@ -8,7 +8,7 @@
 # Scoped Context — IoT Entities
 
 > **โดเมน**: Internet of Things (IoT)
-> **Last updated**: 2026-06-12
+> **Last updated**: 2026-06-13
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/iot/ เท่านั้น**
 
 ---
