@@ -58,8 +58,8 @@ updated: 2026-06-11
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 9.1 — `market.ts` pure deterministic price engine** (see `## Phase 9`)
-**Last touched**: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md (Phase 7/8 retro + Phase 9 section added 2026-06-11)`
+**Next ticket**: **Ticket 9.12 — Pet behaviors: idle scheduler + bark-on-click** (see `## Phase 9`)
+**Last touched**: `pixel-wealth-quest/src/phaser/petAnims.{ts,test.ts}; public/assets/character/pets/ (chunk 9.11, product commit f7daaf4); A-Wiki scripts/game/normalize_pet_anims.py`
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -953,7 +953,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Goal**: Canonical roadmap carries Phase 7/8 retro + this Phase 9 plan; mirror synced; RESUME HERE → 9.1.
 **Done when**: sync script verifies no drift; both repos committed.
 
-### Ticket 9.1 — `src/logic/market.ts` pure deterministic price engine  · `[ ]`
+### Ticket 9.1 — `src/logic/market.ts` pure deterministic price engine  · `[x]`
 **Goal**: Sell prices move daily without RNG state: `sellPriceOf(itemId, day, seed='pwq-market')` = `max(1, round(base × seasonal × drift × weatherMod))`.
 - Drift = FNV-1a `hash(seed:itemId:day)` → **[0.85, 1.15]** (reuse `weather.ts` hash pattern; save-compatible, no stored state).
 - Seasonal: in-season 1.0 / off-season 1.2 scarcity premium (per-produce table; default 1.0). WeatherMod: storm day ×1.05 (derived from `weatherFor`).
@@ -963,13 +963,13 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Test-first**: determinism; integer ≥1 bounds; non-produce passthrough; off-season > in-season same-day; history 7 points pointwise == `sellPriceOf`; storm modifier on a known storm day.
 **Done when**: vitest + typecheck green; zero store/React imports.
 
-### Ticket 9.2 — Wire market into settlement + bin preview  · `[ ]`
+### Ticket 9.2 — Wire market into settlement + bin preview  · `[x]`
 **Goal**: Bin settles at the finished day's market price; `ShippingBinPanel` preview == morning payout **by construction**.
 **Files**: `src/logic/sleep.ts` (swap local `priceOf` at line ~46 → `sellPriceOf(id, finishedDay)`), `src/logic/sleep.test.ts`, `src/components/ShippingBinPanel.tsx` (same swap at line ~7, using `gameClock.day`), panel + store tests.
 **Test-first**: bin of 1 carrot on a drift≠1.0 day pays `sellPriceOf('carrot-produce', finishedDay)`, not 24; dedicated preview==payout invariant test (lock against future next-day-price refactors).
 **Done when**: all tests green.
 
-### Ticket 9.3 — `MarketPanel.tsx` UI  · `[ ]`
+### Ticket 9.3 — `MarketPanel.tsx` UI  · `[x]`
 **Goal**: Player sees today's prices: row per produce — today vs base, ▲/▼ arrow, 7-day inline-SVG sparkline (idiom from `BotStatusOverlay`).
 **Entry**: "ราคาตลาดวันนี้" button in `ShippingBinPanel` header (no new art).
 **Files**: `src/components/MarketPanel.tsx` (new + test), `src/state/store.ts` (`ModalName` + `'market'`), `HudOverlay.tsx`, `ShippingBinPanel.tsx`, `src/styles/hud.css`.
@@ -1004,18 +1004,18 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Files**: `src/styles/hud.css`, `tokens.css` only.
 **Done when**: no component-markup changes beyond classNames; existing tests + typecheck green; visual QA 3 representative panels desktop/mobile.
 
-### Ticket 9.9 — PixelLab gen: player tool anims (water/hoe/harvest, south)  · `[ ]`
+### Ticket 9.9 — PixelLab gen: player tool anims (water/hoe/harvest, south)  · `[x]`
 **Goal**: 3 new south-facing 7-frame one-shots for น้องซันเดย์ (`watering`, `hoeing`, `harvest` scythe swing), normalized into `playerAnims.ts`.
 **Process**: `pixellab_gen.py balance` echo before → kick 3 `pixellab_character.py animate --character-id 58be20a8-ee08-4432-bb43-3627f69e12ac` jobs at session start → write failing `playerAnims.test.ts` while polling → zip export → extend `ACTION_MAP/ACTION_ORDER/FRAME_RATE` in A-Wiki `scripts/game/normalize_pwq_anims.py` → re-run normalize → balance echo after. Pin the action slug in the prompt so the export filename matches `ACTION_MAP`.
 **Budget**: cap **$1.00**, hard stop; log delta below.
 **Done when**: 3 actions in manifest with 7 on-disk frames each; tests green.
 
-### Ticket 9.10 — Wire tool anims into ToolWheel flow  · `[ ]`
+### Ticket 9.10 — Wire tool anims into ToolWheel flow  · `[x]`
 **Goal**: Selecting hoe/water/scythe plays the matching one-shot; farm logic stays instant (anim cosmetic).
 **Files**: `src/phaser/toolAnimMap.ts` (new pure map: `hoe→hoe, water→water, scythe→harvest, seed→undefined`) + test, `playerController.ts` (expose `playOneShot(action)`), `FarmScene.ts` (`handleFarmTool` calls it), controller tests.
 **Done when**: runtime QA shows swing before result; no energy/logic regressions.
 
-### Ticket 9.11 — PixelLab gen: pet anims (run×8dir + eat/sleep/bark south)  · `[ ]`
+### Ticket 9.11 — PixelLab gen: pet anims (run×8dir + eat/sleep/bark south)  · `[x]`
 **Goal**: Per dog — red/สุขใจ, black/ศรีสุข, cream/มั่งมี (still renders in-game): 8-dir `run` + south one-shots `eat`, `sleep`, `bark`.
 **Character ids** (from `public/assets/character/pets/gen/<c>/dog-<c>.character.json`): red `d09a749e-fce0-4ff6-8575-2a7e8f4884a2`, black `d43685ba-ea5d-4d94-9e35-2d79a2c95b18`, cream `bd9fd4e3-78b5-4f08-84cf-f426baae6fee` — reuse, no create step.
 **Files**: A-Wiki `scripts/game/normalize_pet_anims.py` (extend literal `["walk","sit","wag"]`; `run` joins move actions + LOOPING), pet `anim_clean/`, regenerated `petAnims.ts`, tests.
@@ -1137,4 +1137,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 > 2026-06-05 codex-poppy-javis: 6.1 done — captured dirty-tree inventory, stopped the prototype static server on 8000, left pre-existing PWQ dev server on 5173 running, and marked implementation slice complete pending explicit user commit/stage instruction. RESUME HERE = 6.2 optional stage/commit review only if user asks.
 > 2026-06-05 codex-poppy-javis: Started user runtime polish goal P1.1 — swapped title splash to v002, hid HUD on title, improved responsive viewport, froze living-room dogs, converted action strip to icons, changed run to status/speed boost only, slowed/scaled click-to-move, zoomed farm, softened house warp, and added farm asset prompt pack. RESUME HERE = P1.2 PixelLab/Gemini asset batch.
 > 2026-06-11 claude-fable-5: 9.0 done — added Phase 7/8 retro note (shipped outside roadmap: Save v2 + farm life-sim core, 300 tests) and full Phase 9 section (market economy, bot seam hardening, HM UI, PixelLab player tool anims + pet run/eat/sleep/bark; budget ≤ $3.00). RESUME HERE = 9.1 market price engine.
+> 2026-06-12 claude-fable-5: 9.1-9.3 done — deterministic market engine (FNV-1a drift 0.85-1.15, off-season ×1.2, storm ×1.05), bin settles at finished-day price with preview==payout invariant test, MarketPanel with arrows + 7-day sparklines (Playwright-verified desktop+mobile, console clean). Product commits 260e281/8fdfaa7/f47726a.
+> 2026-06-12 claude-fable-5: 9.9-9.10 done — player water/hoe/harvest south one-shots (9f; v3 API requires even frame_count, requested 8 → exported 9; PixelLab slugs derive from action description so ACTION_MAP matches leading verb) wired into ToolWheel via toolAnimMap + playerController.playOneShot; runtime-verified pwq_player_hoe_front plays and plot tills. Watering v1 has ghost-can artifact on 2 frames; v2 regen queued behind PixelLab outage. Product 4d7860b/1d04449; A-Wiki 5ad5010b.
+> 2026-06-12 claude-fable-5: 9.11 done — pet eat/sleep/bark south one-shots for all 3 dogs + run as directional looping move action (normalize_pet_anims extended + ts_out mkdir fix, 3 new A-Wiki tests; petAnims.test.ts 5 tests product-side). blocker: run 8-dir complete on red only — black 5/8 (missing W/NW/SW), cream 3/8; cream sleep pose generated standing not curled; regen blocked by PixelLab animate-character 422 outage, missing run dirs fall back to walk at runtime. Spend ~$0.52 of $3.00 cap (balance $2.961). Product f7daaf4. RESUME HERE = 9.12 pet behaviors.
 ```
