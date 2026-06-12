@@ -37,15 +37,52 @@ Run `bash scripts/swarm/agent-switch.sh` to refresh this section.
 
 ## Resume Here
 
-- **Next action**: Replace this line with the one next task.
-- **Canonical source**: Link the exact roadmap/protocol/wiki page if one exists.
-- **Do not redo**: List completed chunks that should not be restarted.
+- **Next action**: Refresh this local handoff from the current task before switching agents.
+- **Canonical source**: `docs/protocols/cross-agent-plan-handoff.md`
+- **Verify**: `python3 scripts/check-handoff.py --path handoff.md`
+- **Do not redo**: Do not restart completed chunks listed in Task Board or the canonical roadmap.
+
+## Exact Resume Command
+
+Start with the cheapest local check before using a primary model:
+
+```bash
+python3 scripts/check-handoff.py --path handoff.md
+```
+
+## Suggested Skills
+
+- model-cost-switching — choose the cheapest capable route before edits.
+- scrutinize — review the next chunk against the canonical source.
+- debug-mantra — use only when resuming a failing bugfix.
+
+## Cost Tier Snapshot
+
+| Field | Value |
+|---|---|
+| Current tier | L1 local validation first |
+| Cheapest next step | `python3 scripts/check-handoff.py --path handoff.md` |
+| Model scout | Check `.tmp/model-scout-current.json` age before paid routing |
 
 ## Task Board
 
 | ID | Status | Goal | Files | Verify | Handoff note |
 |---|---|---|---|---|---|
-| P1.1 | todo | Define the smallest next result | `path/to/file` | `command` | Context needed by next agent |
+| HANDOFF-1 | todo | Fill local handoff for the active task | `handoff.md` | `python3 scripts/check-handoff.py --path handoff.md` | Keep the next action singular and public-safe |
+
+## Failed Approaches
+
+None
+
+## Key Decisions
+
+| Decision | Rationale |
+|---|---|
+| Keep live handoff local and gitignored | Prevent private task context from entering tracked git |
+
+## Open Decisions
+
+None
 
 ## Evidence
 
