@@ -1,0 +1,45 @@
+# A-Wiki .gitattributes — keep line endings sane across Windows / macOS / Linux / WSL.
+# The harness ships executable wrappers that MUST keep their target line ending.
+
+# Default: text files normalized to LF in the repo, native on checkout.
+* text=auto
+
+# Python — always LF (cross-platform interpreters handle either, but tooling
+# like Black/Ruff and shebangs expect LF).
+*.py text eol=lf
+
+# POSIX shell wrappers — MUST be LF (`bash` chokes on CRLF).
+*.sh text eol=lf
+
+# PowerShell — CRLF on disk so PowerShell ISE/legacy hosts behave.
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
+
+# cmd / batch shims — CRLF, otherwise cmd.exe sometimes mis-parses.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Markdown — LF (renders the same; consistency).
+*.md text eol=lf
+
+# Config-ish text — LF.
+*.conf text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+
+# Binary — explicit so git never tries diff.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
