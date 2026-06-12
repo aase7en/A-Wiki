@@ -1,11 +1,12 @@
 ---
+> 2026-06-12 claude-sonnet-4-6: 12.3 done -- dialogue.seed.ts (4 tiers/NPC, Thai, safety scan clean); DialoguePanel.tsx (portrait/hearts/tier-lines/talk/close); HudOverlay wired; 5+6 tests green. RESUME HERE -> 12.4.
 type: synthesis
 title: "Sunday Invest Moon — Cross-Agent Roadmap"
 slug: sunday-invest-moon-roadmap
 tags: [game-design, handoff, cross-agent, roadmap, sunday-invest-moon, phaser]
 sources: [pixel-wealth-quest-gdd]
 created: 2026-06-04
-updated: 2026-06-11
+updated: 2026-06-12
 ---
 
 # Sunday Invest Moon — Roadmap (cross-agent handoff)
@@ -58,8 +59,8 @@ updated: 2026-06-11
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 12.1 — `src/data/npcs.seed.ts` NPC registry** (see `## Phase 12`)
-**Last touched**: `pixel-wealth-quest/src/components/StrategyBuilderPanel.tsx` + `BacktestPanel.tsx`; `A-Wiki/docs/protocols/bot-trading-iron-law.md` amendment; `src/feeds/tradingBotFeed.ts` PaperBotFeed default (session 2026-06-12, plan Phase 9–11 complete; 422 tests green)
+**Next ticket**: **Ticket 12.4 — NPC rendering in FarmScene.ts + click bridge** (see Phase 12)
+**Last touched**: src/state/store.ts (FriendshipState + NPC actions + buy() discount); src/components/DialoguePanel.tsx + HudOverlay.tsx; npcs.seed.ts + friendship.ts + npcSchedule.ts + dialogue.seed.ts (session 2026-06-12, Phase 12.1-12.3 complete; 465 tests green)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1073,7 +1074,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 > Plan approved 2026-06-11. 3 NPCs: แม่ค้าตลาด / ลุงชาวประมง / ครูการเงิน. Schedule-driven, gift/talk friendship points. Commit format `chunk(12.X): goal [next: 12.Y]`.
 
-### Ticket 12.1 — `src/data/npcs.seed.ts` NPC registry  · `[ ]`
+### Ticket 12.1 -- npcs.seed.ts NPC registry  . [x]
 **Goal**: 3 NPCs with typed bios, gift preferences, and daily schedule slots.
 **New file**: `src/data/npcs.seed.ts`
 ```ts
@@ -1083,24 +1084,27 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 ```
 **New test**: compile + type check; every NPC has ≥3 schedule slots; no loved/liked overlap; portrait paths are strings.
 **Done when**:
-- [ ] File exports typed `NPC_DEFS` record
-- [ ] Tests green
+- [x] File exports typed NPC_DEFS record
+- [x] Tests green
+> 2026-06-12 claude-sonnet-4-6: 12.1 done -- npcs.seed.ts (3 NPCs: market-lady/fishing-uncle/finance-teacher), npcSchedule.ts locationAt(), 7+4 tests green. RESUME HERE -> 12.2.
 
-### Ticket 12.2 — `src/logic/npcSchedule.ts` + `src/logic/friendship.ts`  · `[ ]`
+### Ticket 12.2 -- npcSchedule.ts + friendship.ts  . [x]
 **Goal**: Pure location resolver + pure friendship point tracker.
 **New files**:
 - `npcSchedule.ts`: `locationAt(npc: NpcDef, minuteOfDay: number): NpcSlot`
 - `friendship.ts`: 0–1000 points → 10 hearts; `giveGift(state, npc, item) → delta`; loved +80 / liked +30 / disliked −20; once per day guard; `talk(state, npc) → delta` +10
 **Test-first**: schedule wraps correctly; gift deltas match pref table; once-per-day guard; heart level = floor(points/100).
 **Done when**: tests + typecheck green; zero React/store imports.
+> 2026-06-12 claude-sonnet-4-6: 12.2 done -- npcSchedule.ts + friendship.ts (initFriendship/giveGift/talkToNpc/heartLevel/friendshipDiscount), 16 tests green; zero React/Zustand imports. RESUME HERE -> 12.3.
 
-### Ticket 12.3 — `src/data/dialogue.seed.ts` + `src/components/DialoguePanel.tsx`  · `[ ]`
+### Ticket 12.3 -- dialogue.seed.ts + DialoguePanel.tsx  . [x]
 **Goal**: Canned dialogue indexed by (npcId, heartLevel 0|1|2|3+) — coaching/friendly only, no trade execution language.
 **New files**: `dialogue.seed.ts` (entries per NPC × 4 heart tiers), `DialoguePanel.tsx` (parchment modal, portrait, lines, close + optional gift button when inventory has a liked item).
 **Safety scan**: no `ซื้อ/ขาย/ส่งออเดอร์/เทรด` in dialogue seed.
 **Done when**:
-- [ ] Safety scan clean
-- [ ] Tests prove no execution language; panel renders portrait + lines
+- [x] Safety scan clean
+- [x] Tests prove no execution language; panel renders portrait + lines
+> 2026-06-12 claude-sonnet-4-6: 12.3 done -- dialogue.seed.ts (4 tiers/NPC, Thai, safety scan clean); DialoguePanel.tsx (portrait/hearts/tier-lines/talk/close); HudOverlay wired; 5+6 tests green. RESUME HERE -> 12.4.
 
 ### Ticket 12.4 — NPC rendering in `FarmScene.ts` + click bridge  · `[ ]`
 **Goal**: NPCs visible in FarmScene at schedule-determined positions; click opens dialogue.
