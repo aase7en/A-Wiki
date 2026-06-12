@@ -1161,20 +1161,22 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 - [x] Tests prove no execution language; panel renders portrait + lines
 > 2026-06-12 claude-sonnet-4-6: 12.3 done -- dialogue.seed.ts (4 tiers/NPC, Thai, safety scan clean); DialoguePanel.tsx (portrait/hearts/tier-lines/talk/close); HudOverlay wired; 5+6 tests green. RESUME HERE -> 12.4.
 
-### Ticket 12.4 — NPC rendering in `FarmScene.ts` + click bridge  · `[ ]`
+### Ticket 12.4 — NPC rendering in `FarmScene.ts` + click bridge  · `[x]`
 **Goal**: NPCs visible in FarmScene at schedule-determined positions; click opens dialogue.
 **Edit**: `FarmScene.ts` — on each game-tick, call `locationAt(npc, minuteOfDay)` for each NPC; render/move sprite (reuse `PetPack` wander tween pattern, but position-based not random); interactive zone → `gameBus.emit('npc-clicked', npcId)`.
 **Edit**: `HudOverlay.tsx` — render `DialoguePanel` when `openModal === 'npc:*'`.
 **Preload**: placeholder NPC sprites (reuse existing walking human Worker-Bot sprites until PixelLab batch).
 **Done when**:
-- [ ] NPC appears at correct farm cell per schedule
-- [ ] Click → dialogue panel; propagation consumed
-- [ ] Tests green; typecheck green
+- [x] NPC appears at correct farm cell per schedule
+- [x] Click → dialogue panel; propagation consumed
+- [x] Tests green; typecheck green
+> 2026-06-12 claude-sonnet-4-6: 12.4 done -- FarmScene.redrawNpcs() renders 3 NPCs at locationAt() positions; gameBus 'npc-click' event + HudOverlay listener → openNpcDialogue; 22 NPC tests pass. RESUME HERE -> 12.5.
 
-### Ticket 12.5 — Friendship unlocks (shop discount)  · `[ ]`
+### Ticket 12.5 — Friendship unlocks (shop discount)  · `[x]`
 **Goal**: Hearts ≥ 3 → 5% shop discount; hearts ≥ 6 → 10%.
 **Edit**: `src/state/store.ts` — `friendshipDiscount(npcId): number` derived selector; `ShopPanel.tsx` reads it; `buy()` applies.
 **Test-first**: discount = max across all NPCs; discount correctly reduces price; tests green.
+> 2026-06-12 claude-sonnet-4-6: 12.5 done -- ShopPanel shows strikethrough+discounted price + badge "ลด X%"; buy aria-label uses finalPrice; 6 ShopPanel tests (inc. 4 discount); 469/469 tests. RESUME HERE -> 12.6.
 
 ### Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke  · `[ ]`
 **Goal**: 3 NPCs × 4-dir walk + idle south (cap $1.20).
