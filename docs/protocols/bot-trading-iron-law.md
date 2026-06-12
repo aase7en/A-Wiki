@@ -1,4 +1,4 @@
-# Bot Trading Iron Law
+﻿# Bot Trading Iron Law
 
 > [verified 2026-06-05] Sunday Invest Moon's game client is a simulation and visualization surface only. It must never possess trading credentials or execute real orders.
 
@@ -57,6 +57,24 @@ Before changing any trading-related client or adapter:
 - Add a failing test first for any production-code change.
 - Stop and request a security review before enabling a remote or live adapter.
 
+
+## Amendment — Paper Trading on Public Read-Only Data (2026-06-12)
+
+> [verified 2026-06-12] Approved addition: paper trading + public keyless read-only market data is **permitted** subject to the conditions below. The 7 Client Prohibitions above remain fully in force.
+
+**Approved pattern**: `CannedMarketDataFeed` (default) and `RemoteMarketDataFeed` (flag-gated) via `src/feeds/marketDataFeed.ts`.
+
+| Condition | Required |
+|---|---|
+| Data source | Public, keyless exchange endpoints only (Binance/OKX `/api/v3/klines` equivalent) — no authenticated calls |
+| Routing | All live data routed through the backend proxy (`/api/market/*`) — browser never contacts exchange directly |
+| Default | `CannedMarketDataFeed` (embedded historical data) must be the default; `RemoteMarketDataFeed` requires `VITE_PWQ_MARKET_FEED=remote` build-time flag |
+| Interface | `MarketDataFeed` must expose only `listSymbols()` and `getKlines()` — **zero write/order methods** |
+| Validation | Symbol and interval validated against server-side allowlists on both client and backend |
+| Fallback | **No silent fallback from canned to remote** — must fail explicitly if remote is unavailable |
+| Bundle check | `npm run feed:scan` must pass; `grep dist/` must find no exchange hostnames when flag is off |
+
+Paper bot settlement uses simulated fills only. No real orders are placed at any layer.
 ## Verification
 
 ```bash
