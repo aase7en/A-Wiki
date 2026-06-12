@@ -25,6 +25,39 @@
 
 ---
 
+## What Is A-Wiki?
+
+A-Wiki is a repo-based operating system for AI agents. It combines a structured knowledge wiki, cross-agent instruction files, safety hooks, model-cost routing, and reusable skills so Claude Code, Codex, Gemini CLI, Cursor, Windsurf, Cline, Copilot, Aider, and other agents behave like one coordinated team instead of isolated chat windows.
+
+In practical terms, A-Wiki helps you:
+
+| Need | How A-Wiki Helps |
+|---|---|
+| Keep AI context across sessions | Stores decisions, sources, summaries, TODOs, and domain knowledge in Markdown files that agents can re-read. |
+| Stop repeating instructions | Puts durable rules in `AGENTS.md`, `CLAUDE.md`, platform config files, hooks, and protocol docs. |
+| Search your own knowledge offline | Builds local FTS5 and optional vector indexes for fast wiki search without spending tokens. |
+| Control AI cost | Uses a Cost-First Pyramid: local search and hooks first, free/current model roster next, cheap capable models after that, primary models only when needed. |
+| Make agents safer | Blocks raw-source edits, secret leaks, destructive git commands, missing source provenance, and several format mistakes through hooks. |
+| Work across machines | Uses a lightweight repo plus external `drive/` data layer so Mac, Windows, WSL, and Linux can share the same brain safely. |
+| Coordinate many AI tools | Gives each platform its own entry file while keeping `AGENTS.md` as the shared source of truth. |
+
+## What Can You Build With It?
+
+A-Wiki is useful when your work benefits from long-lived memory, strict process, and repeatable AI workflows:
+
+| Use Case | Example |
+|---|---|
+| Personal second brain | Convert notes, source docs, and decisions into searchable wiki pages with provenance. |
+| AI-assisted software work | Enforce test-first implementation, root-cause debugging, reviews, and handoffs across agents. |
+| Research and synthesis | Keep raw sources immutable, summarize them into `wiki/sources/`, and connect them through concepts/entities. |
+| Multi-agent experimentation | Route lightweight tasks to free or cheap models while reserving primary models for judgment and validation. |
+| Cross-device continuity | Stop a task on one machine and resume on another with session memory, git history, and generated indexes. |
+| Domain operating manuals | Maintain structured knowledge for IoT, AI tools, pharmacy, environmental health, or your own domain. |
+
+If you fork A-Wiki, you are not just copying prompts. You are copying a working pattern for turning AI agents into a persistent, searchable, policy-driven workspace.
+
+---
+
 ## ⚡ Four Superpowers. One Repository.
 
 | Superpower | What It Does | Your Win |
@@ -270,6 +303,32 @@ cat wiki/context/model-roster.conf
 ```
 
 Queries OpenRouter's free tier and produces a ranked allocation recommendation — Architect role, Executioner role, race models.
+
+---
+
+## Cost-First Enforcement Modes
+
+A-Wiki currently enforces the Cost-First Pyramid at two practical points:
+
+| Mode | Status | What It Covers |
+|---|---|---|
+| Session start | Active | Hooks remind the agent to load current context, check API/model scout freshness, and start from the lowest-cost route. |
+| Tool calls during a session | Active | `PreToolUse` and routing scripts apply gates when the agent edits files, writes files, runs shell commands, or delegates model work. |
+| Continuous always-on monitor | Not enabled by default | A separate background process could watch the repo and model cache even when no AI tool is being used. |
+
+### Continuous Monitor Tradeoff
+
+An always-on Cost-First monitor is possible, but it should be adopted only if the extra operational complexity is worth it.
+
+| Benefit | Cost / Risk |
+|---|---|
+| Catches stale model pricing before the next tool call. | Needs a daemon, launch agent, cron job, or file watcher per machine. |
+| Can refresh `.tmp/model-scout-current.json` on a schedule. | May trigger network/API calls when you are not actively working. |
+| Can warn earlier when model IDs expire or prices change. | Adds another moving part that can fail differently on macOS, Windows, WSL, and Linux. |
+| Useful for shared/team repos with many agents active at once. | Less valuable for a solo repo where hooks already run at session start and tool use. |
+| Can centralize budget policy across tools that do not support hooks well. | If implemented too aggressively, it can create noise, lock files, or surprise edits in `.tmp/`. |
+
+Default recommendation: keep the current hook-based enforcement for solo/personal use. Add an always-on monitor only when A-Wiki is used by multiple agents or machines at the same time, or when model-cost drift has caused real failures often enough to justify the maintenance cost.
 
 ---
 
