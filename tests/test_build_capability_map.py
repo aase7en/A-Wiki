@@ -87,8 +87,8 @@ description: Should not appear.
                     "nodes": 4,
                     "edges": 4,
                     "broken_links": 2,
-                    "orphans": 1,
-                    "orphans_list": ["wiki/context/now.md"],
+                    "orphans": 2,
+                    "orphans_list": ["wiki/context/now.md", "wiki/sources/source-one.md"],
                     "hubs": [],
                 },
                 "edges": [
@@ -133,9 +133,11 @@ def test_build_capability_map_discovers_owned_surfaces(tmp_path):
         "premium-auto-trading",
     }
     assert data["graph_hygiene"]["broken_links"] == 2
-    assert data["graph_hygiene"]["orphans"] == 1
+    assert data["graph_hygiene"]["orphans"] == 2
     assert data["graph_hygiene"]["broken_by_domain"]["synthesis"] == 1
     assert data["graph_hygiene"]["broken_by_domain"]["iot"] == 1
+    assert data["graph_hygiene"]["orphan_by_domain"]["context"] == 1
+    assert data["graph_hygiene"]["orphan_by_domain"]["sources"] == 1
 
 
 def test_build_capability_map_counts_wiki_files_without_stale_overview(tmp_path):
@@ -170,6 +172,8 @@ def test_format_markdown_includes_routing_tables(tmp_path):
     assert "| Website design |" in text
     assert "## Knowledge Graph Hygiene" in text
     assert "| Broken links | 2 |" in text
+    assert "| Orphan domain | Count |" in text
+    assert "| context | 1 |" in text
     assert "## MCP Allowlist" in text
     assert "| `awiki` | Keep |" in text
     assert "## Capability Routing" in text

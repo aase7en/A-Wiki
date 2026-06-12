@@ -341,6 +341,7 @@ def read_graph_hygiene(root: Path) -> dict[str, Any]:
         "broken_links": 0,
         "orphans": 0,
         "broken_by_domain": {},
+        "orphan_by_domain": {},
         "orphan_samples": [],
         "status": "missing",
     }
@@ -358,13 +359,24 @@ def read_graph_hygiene(root: Path) -> dict[str, Any]:
             continue
         domain = classify_graph_domain(str(edge.get("from") or ""))
         broken_by_domain[domain] = broken_by_domain.get(domain, 0) + 1
+    orphan_list = list(stats.get("orphans_list") or [])
+    orphan_by_domain = {
+        str(domain): int(count)
+        for domain, count in (stats.get("orphan_by_domain") or {}).items()
+        if int(count)
+    }
+    if not orphan_by_domain:
+        for path in orphan_list:
+            domain = classify_graph_domain(str(path))
+            orphan_by_domain[domain] = orphan_by_domain.get(domain, 0) + 1
     return {
         "nodes": int(stats.get("nodes") or 0),
         "edges": int(stats.get("edges") or 0),
         "broken_links": int(stats.get("broken_links") or 0),
         "orphans": int(stats.get("orphans") or 0),
         "broken_by_domain": dict(sorted(broken_by_domain.items(), key=lambda item: (-item[1], item[0]))),
-        "orphan_samples": list((stats.get("orphans_list") or [])[:10]),
+        "orphan_by_domain": dict(sorted(orphan_by_domain.items(), key=lambda item: (-item[1], item[0]))),
+        "orphan_samples": orphan_list[:10],
         "status": "ok",
     }
 
@@ -503,6 +515,13 @@ def format_markdown(data: dict[str, Any]) -> str:
     broken_by_domain = graph_hygiene.get("broken_by_domain") or {}
     if broken_by_domain:
         for domain, count in broken_by_domain.items():
+            lines.append(f"| {md_escape(str(domain))} | {count} |")
+    else:
+        lines.append("| none | 0 |")
+    lines.extend(["", "| Orphan domain | Count |", "|---|---:|"])
+    orphan_by_domain = graph_hygiene.get("orphan_by_domain") or {}
+    if orphan_by_domain:
+        for domain, count in orphan_by_domain.items():
             lines.append(f"| {md_escape(str(domain))} | {count} |")
     else:
         lines.append("| none | 0 |")

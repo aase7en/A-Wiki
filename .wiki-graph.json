@@ -12,6 +12,11 @@
     },
     "broken_links": 0,
     "orphans": 177,
+    "orphan_by_domain": {
+      "sources": 85,
+      "synthesis": 79,
+      "context": 13
+    },
     "hubs": [
       {
         "path": "index-iot.md",

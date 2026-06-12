@@ -320,6 +320,7 @@ def build() -> dict:
                 broken += 1
 
     orphans = sorted(p for p in path_lookup if in_degree[p] == 0 and out_degree[p] == 0)
+    orphan_by_domain = Counter(infer_domain(REPO_ROOT / path) for path in orphans)
     # Hubs = top 10 by (in + out) excluding context/ noise
     score = {p: in_degree[p] + out_degree[p] for p in path_lookup}
     hubs = sorted(score.items(), key=lambda kv: -kv[1])[:10]
@@ -332,6 +333,7 @@ def build() -> dict:
             "edges_by_type": dict(edges_by_type),
             "broken_links": broken,
             "orphans": len(orphans),
+            "orphan_by_domain": dict(sorted(orphan_by_domain.items(), key=lambda item: (-item[1], item[0]))),
             "hubs": [{"path": p, "score": s} for p, s in hubs if s > 0],
             "orphans_list": orphans[:20],
         },

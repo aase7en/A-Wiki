@@ -55,6 +55,12 @@
 |---|---:|
 | none | 0 |
 
+| Orphan domain | Count |
+|---|---:|
+| sources | 85 |
+| synthesis | 79 |
+| context | 13 |
+
 Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`, `wiki/context/overview-sources.md`, `wiki/context/project-backlog.md`
 
 ## MCP Allowlist
