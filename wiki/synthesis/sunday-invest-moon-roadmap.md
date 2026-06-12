@@ -58,8 +58,8 @@ updated: 2026-06-11
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 9.12 — Pet behaviors: idle scheduler + bark-on-click** (see `## Phase 9`)
-**Last touched**: `pixel-wealth-quest/src/phaser/petAnims.{ts,test.ts}; public/assets/character/pets/ (chunk 9.11, product commit f7daaf4); A-Wiki scripts/game/normalize_pet_anims.py`
+**Next ticket**: **Ticket 12.1 — `src/data/npcs.seed.ts` NPC registry** (see `## Phase 12`)
+**Last touched**: `pixel-wealth-quest/src/components/StrategyBuilderPanel.tsx` + `BacktestPanel.tsx`; `A-Wiki/docs/protocols/bot-trading-iron-law.md` amendment; `src/feeds/tradingBotFeed.ts` PaperBotFeed default (session 2026-06-12, plan Phase 9–11 complete; 422 tests green)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1035,6 +1035,140 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 ---
 
+## Phase 9b — Plan Phase 9–11 retro: Market Feed Seam + Paper Engine + Backtest UI
+
+> [verified 2026-06-12] Market feed seam, paper trading engine, and backtest UI were implemented in a single session (product commits 260e281, 8fdfaa7, f47726a + Phase 10–11 commits). These correspond to the approved plan's Phase 9–11 (plan approved 2026-06-11). Test base after this work: **422 vitest tests** green, typecheck clean, `npm run feed:scan` clean.
+
+### Plan Phase 9 — Market Data Backend + Feed Seam  · `[x]`
+> [verified 2026-06-12]
+> - `backend/routers/market.py`: GET /api/market/klines + /symbols, Binance→OKX fallback, TTL cache, allowlist, rate limit
+> - `backend/tests/test_market.py`: 7 pytest tests (mock httpx, cache, allowlist, 502)
+> - `src/data/candles.canned.ts`: 500×1h BTC+ETH bars captured 2026-06-12 (99 KB, fully offline)
+> - `tools/capture-canned-candles.mjs`: author-time refresh script
+> - `src/feeds/marketDataFeed.ts`: `MarketDataFeed` interface (read-only, no order methods); `CannedMarketDataFeed` default; `RemoteMarketDataFeed` flag-gated (`VITE_PWQ_MARKET_FEED=remote`, fails loudly)
+> - `src/feeds/marketDataFeed.test.ts`: 9 contract tests (assertReadOnly, allowlist, timestamps)
+> - `A-Wiki/docs/protocols/bot-trading-iron-law.md`: amended to approve paper trading on public keyless data; 7 client prohibitions unchanged
+
+### Plan Phase 10 — Paper Trading Engine + Presets + Settlement  · `[x]`
+> [verified 2026-06-12]
+> - `src/logic/indicators.ts`: SMA/EMA/RSI(Wilder)/MACD/Bollinger/ATR/highest/lowest/crossAbove/crossBelow — pure, 27 golden-value tests
+> - `src/types/strategy.ts`: `StrategyDef` JSON schema — engine: signal/grid/dca/rebalance, RuleGroups, RiskParams
+> - `src/data/strategyPresets.ts`: 10 presets (grid-classic, grid-wide, dca-steady, dca-martingale, rebalance-5050, ma-cross, rsi-reversal, macd-momentum, bollinger-meanrev, breakout-high) + `LEGACY_STRATEGY_ALIAS` for save compat
+> - `src/logic/paperBroker.ts`: fee=0.1%, slippage=5bps, fill tracking, maxDrawdown, winRate
+> - `src/logic/strategyEngine.ts`: `runStrategy(def, candles, startCash)` — single function for live bot + backtest
+> - `src/feeds/tradingBotFeed.ts`: added `PaperBotFeed` (inject `MarketDataFeed`, runs strategyEngine); default singleton changed to `new PaperBotFeed()` (still offline/deterministic = mock-by-default per iron law)
+> - `src/logic/botSettlement.ts`: stake/settle/unstake — loss capped at stake (STAKE_MIN=50, STAKE_CAP=2000)
+> - `src/logic/balanceGate.test.ts`: 20-game-day run across all 10 presets, economy guard
+
+### Plan Phase 11 — Backtest UI + Custom Strategy Builder  · `[x]`
+> [verified 2026-06-12]
+> - `src/components/BacktestPanel.tsx`: strategy+symbol+interval selectors, equity sparkline SVG, 4 stat cards, risk disclaimer
+> - `src/logic/customStrategies.ts`: `validateStrategyDef`, CRUD, max 10 custom strategies
+> - `src/components/StrategyBuilderPanel.tsx`: name input, risk params, backtest preview, **deploy disabled until backtest run** (gate enforced)
+> - `src/feeds/tradingBotFeed.test.ts` + `src/state/store.test.ts`: updated for PaperBotFeed as default
+
+---
+
+## Phase 12 — NPCs
+
+> Plan approved 2026-06-11. 3 NPCs: แม่ค้าตลาด / ลุงชาวประมง / ครูการเงิน. Schedule-driven, gift/talk friendship points. Commit format `chunk(12.X): goal [next: 12.Y]`.
+
+### Ticket 12.1 — `src/data/npcs.seed.ts` NPC registry  · `[ ]`
+**Goal**: 3 NPCs with typed bios, gift preferences, and daily schedule slots.
+**New file**: `src/data/npcs.seed.ts`
+```ts
+NpcId = 'market-lady' | 'fishing-uncle' | 'finance-teacher'
+NpcDef = { id, nameTh, schedule: NpcSlot[], giftPrefs: { loved, liked, disliked }, portraitPath }
+NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
+```
+**New test**: compile + type check; every NPC has ≥3 schedule slots; no loved/liked overlap; portrait paths are strings.
+**Done when**:
+- [ ] File exports typed `NPC_DEFS` record
+- [ ] Tests green
+
+### Ticket 12.2 — `src/logic/npcSchedule.ts` + `src/logic/friendship.ts`  · `[ ]`
+**Goal**: Pure location resolver + pure friendship point tracker.
+**New files**:
+- `npcSchedule.ts`: `locationAt(npc: NpcDef, minuteOfDay: number): NpcSlot`
+- `friendship.ts`: 0–1000 points → 10 hearts; `giveGift(state, npc, item) → delta`; loved +80 / liked +30 / disliked −20; once per day guard; `talk(state, npc) → delta` +10
+**Test-first**: schedule wraps correctly; gift deltas match pref table; once-per-day guard; heart level = floor(points/100).
+**Done when**: tests + typecheck green; zero React/store imports.
+
+### Ticket 12.3 — `src/data/dialogue.seed.ts` + `src/components/DialoguePanel.tsx`  · `[ ]`
+**Goal**: Canned dialogue indexed by (npcId, heartLevel 0|1|2|3+) — coaching/friendly only, no trade execution language.
+**New files**: `dialogue.seed.ts` (entries per NPC × 4 heart tiers), `DialoguePanel.tsx` (parchment modal, portrait, lines, close + optional gift button when inventory has a liked item).
+**Safety scan**: no `ซื้อ/ขาย/ส่งออเดอร์/เทรด` in dialogue seed.
+**Done when**:
+- [ ] Safety scan clean
+- [ ] Tests prove no execution language; panel renders portrait + lines
+
+### Ticket 12.4 — NPC rendering in `FarmScene.ts` + click bridge  · `[ ]`
+**Goal**: NPCs visible in FarmScene at schedule-determined positions; click opens dialogue.
+**Edit**: `FarmScene.ts` — on each game-tick, call `locationAt(npc, minuteOfDay)` for each NPC; render/move sprite (reuse `PetPack` wander tween pattern, but position-based not random); interactive zone → `gameBus.emit('npc-clicked', npcId)`.
+**Edit**: `HudOverlay.tsx` — render `DialoguePanel` when `openModal === 'npc:*'`.
+**Preload**: placeholder NPC sprites (reuse existing walking human Worker-Bot sprites until PixelLab batch).
+**Done when**:
+- [ ] NPC appears at correct farm cell per schedule
+- [ ] Click → dialogue panel; propagation consumed
+- [ ] Tests green; typecheck green
+
+### Ticket 12.5 — Friendship unlocks (shop discount)  · `[ ]`
+**Goal**: Hearts ≥ 3 → 5% shop discount; hearts ≥ 6 → 10%.
+**Edit**: `src/state/store.ts` — `friendshipDiscount(npcId): number` derived selector; `ShopPanel.tsx` reads it; `buy()` applies.
+**Test-first**: discount = max across all NPCs; discount correctly reduces price; tests green.
+
+### Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke  · `[ ]`
+**Goal**: 3 NPCs × 4-dir walk + idle south (cap $1.20).
+**Process**: echo balance before/after; 3 PixelLab `animate` jobs; normalize + wire into PreloadScene.
+**Done when**:
+- [ ] Sprites on-disk; manifest entries; runtime smoke desktop + mobile; console 0 errors
+
+---
+
+## Phase 13 — Farm Animals
+
+> Plan approved 2026-06-11. Chicken + cow, daily feed → happiness → produce quality.
+
+### Ticket 13.1 — `src/data/animals.seed.ts` + `src/logic/animals.ts`  · `[ ]`
+**Goal**: Animal registry + pure daily happiness + produce quality logic.
+**New files**: `animals.seed.ts` (AnimalDef: id, nameTh, feedItemId, producesId, spriteKey), `animals.ts` (pure: `feedAnimal`, `animalDayTick` → happiness ±, `produceQuality(happiness)`).
+**New items in `items.ts`**: `animal-feed`, `egg`, `milk` (3 quality tiers each).
+**Test-first**: missed feed → happiness −10; daily produce qty × quality deterministic.
+
+### Ticket 13.2 — Store + barn zone + `animalDayTick` hook  · `[ ]`
+**Files**: `store.ts` (`animals[]`, `feedAnimal`, `animalDayTick` called from `sleep()`), `farm.seed.ts` (add `barn` zone cells near bottom of farm grid).
+
+### Ticket 13.3 — `FarmScene.ts` render + `AnimalPanel.tsx`  · `[ ]`
+**Goal**: Animals wander in barn zone (reuse `PetPack` wander); click opens status/feed panel.
+**Done when**: feed button reduces animal-feed inventory; next-day produce in shipping bin.
+
+### Ticket 13.4 — PixelLab chicken + cow sprites + smoke  · `[ ]`
+**Budget**: cap $0.90; echo balance before/after; normalize + wire.
+
+---
+
+## Phase 14 — Town + Market Prices + Festivals
+
+> Plan approved 2026-06-11. TownScene, market stall, 2 festivals.
+
+### Ticket 14.1 — `TownScene.ts` + `town.seed.ts`  · `[ ]`
+**Goal**: New Phaser scene (~24×16, top-down); market stall, town hall, farm→town east edge warp.
+**Files**: `src/phaser/scenes/TownScene.ts`, `src/data/town.seed.ts`.
+**Done when**: player can walk Farm east edge → TownScene and back; no asset budget yet.
+
+### Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`  · `[ ]`
+**Goal**: Produce prices fluctuate daily deterministic (seasonal × seeded random walk 0.7–1.4); town market offers better rate than shipping bin on good days; optional remote mode: % change proportional to BTC-yesterday delta.
+**Test-first**: determinism; market price > base some days < other days; town > bin invariant holds.
+
+### Ticket 14.3 — `src/logic/festivals.ts` + 2 events  · `[ ]`
+**Goal**: Spring day 14 = produce contest (bonus coins for top-quality crop); Autumn day 14 = investment quiz (multiple-choice coaching question, coin reward).
+**Test-first**: deterministic trigger; quiz answer validation; no financial advice copy.
+
+### Ticket 14.4 — PixelLab town/festival assets + smoke  · `[ ]`
+**Budget**: cap $0.80; echo balance before/after.
+
+---
+
 ## Cross-cutting reuse map (every ticket pulls from here)
 
 | Need | Reuse from | File |
@@ -1140,4 +1274,5 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 > 2026-06-12 claude-fable-5: 9.1-9.3 done — deterministic market engine (FNV-1a drift 0.85-1.15, off-season ×1.2, storm ×1.05), bin settles at finished-day price with preview==payout invariant test, MarketPanel with arrows + 7-day sparklines (Playwright-verified desktop+mobile, console clean). Product commits 260e281/8fdfaa7/f47726a.
 > 2026-06-12 claude-fable-5: 9.9-9.10 done — player water/hoe/harvest south one-shots (9f; v3 API requires even frame_count, requested 8 → exported 9; PixelLab slugs derive from action description so ACTION_MAP matches leading verb) wired into ToolWheel via toolAnimMap + playerController.playOneShot; runtime-verified pwq_player_hoe_front plays and plot tills. Watering v1 has ghost-can artifact on 2 frames; v2 regen queued behind PixelLab outage. Product 4d7860b/1d04449; A-Wiki 5ad5010b.
 > 2026-06-12 claude-fable-5: 9.11 done — pet eat/sleep/bark south one-shots for all 3 dogs + run as directional looping move action (normalize_pet_anims extended + ts_out mkdir fix, 3 new A-Wiki tests; petAnims.test.ts 5 tests product-side). blocker: run 8-dir complete on red only — black 5/8 (missing W/NW/SW), cream 3/8; cream sleep pose generated standing not curled; regen blocked by PixelLab animate-character 422 outage, missing run dirs fall back to walk at runtime. Spend ~$0.52 of $3.00 cap (balance $2.961). Product f7daaf4. RESUME HERE = 9.12 pet behaviors.
+> 2026-06-12 claude-haiku-4-5: Plan Phase 9–11 complete — market data backend+feed seam (CannedMarketDataFeed 500×1h offline + RemoteMarketDataFeed flag-gated; backend market.py proxy Binance→OKX), paper trading engine (10 preset strategies, indicators SMA/EMA/RSI/MACD/Bollinger/ATR, PaperBroker fee+slip, strategyEngine single runStrategy(), PaperBotFeed as default, botSettlement stake/settle), backtest UI (BacktestPanel sparkline + stats, StrategyBuilderPanel deploy-after-backtest gate, customStrategies CRUD). 422 tests green, typecheck clean, feed:scan clean, iron law: canned/mock still default. A-Wiki: bot-trading-iron-law.md amendment committed. RESUME HERE = 12.1 NPC registry.
 ```
