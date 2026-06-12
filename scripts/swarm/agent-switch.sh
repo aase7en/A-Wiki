@@ -51,6 +51,31 @@ LAST_BRIEF=$(awk '
 ' "$SESSION_FILE" 2>/dev/null || true)
 [ -z "$LAST_BRIEF" ] && LAST_BRIEF="(ไม่มี narrative — session-memory.md ยังไม่มี ## 🗓️ Recent block)"
 
+# Capture the cheapest useful routing context for the next agent without
+# forcing a fresh network scout during handoff.
+COST_FILE=$(find "$REPO_ROOT/.tmp" -maxdepth 1 -type f -name 'cost-tier-*.txt' 2>/dev/null | sort | tail -1 || true)
+if [ -n "$COST_FILE" ] && [ -f "$COST_FILE" ]; then
+  COST_TIER=$(cat "$COST_FILE" 2>/dev/null || echo "(unreadable)")
+else
+  COST_TIER="(none declared — start at L1 local/search before L4)"
+fi
+
+SCOUT_FILE="$REPO_ROOT/.tmp/model-scout-current.json"
+if [ -f "$SCOUT_FILE" ]; then
+  if command -v python3 >/dev/null 2>&1; then
+    SCOUT_AGE=$(python3 - "$SCOUT_FILE" <<'PY'
+import os, sys, time
+age_hours = (time.time() - os.path.getmtime(sys.argv[1])) / 3600
+print(f"{age_hours:.1f}h old")
+PY
+)
+  else
+    SCOUT_AGE="present"
+  fi
+else
+  SCOUT_AGE="missing — run python3 scripts/model-scout-current.py before paid routing"
+fi
+
 # ---- Determine task type & agent recommendation ----
 
 CONTEXT="$LAST_LOG $PENDING"
@@ -71,6 +96,33 @@ else
   RECOMMEND="**claude-qwen** — \`wiki-qwen\` (OpenRouter DeepSeek, default fallback) ⭐"
   RECOMMEND2="Gemini CLI — \`gemini\` สำหรับงาน lookup/search"
 fi
+
+case "$TASK_TYPE" in
+  web-search)
+    SUGGESTED_SKILLS="- model-cost-switching — confirm L1/L2 before paid synthesis.
+- google-drive:google-drive or browser search tools — only if local wiki search is insufficient.
+- scrutinize — validate source quality before writing durable notes."
+    CHEAPEST_NEXT="python3 scripts/wiki/search-wiki.py \"<query>\""
+    ;;
+  code)
+    SUGGESTED_SKILLS="- model-cost-switching — choose L1/L3 checks before L4 edits.
+- debug-mantra — reproduce and trace before fixing.
+- scrutinize — review blast radius and verification evidence."
+    CHEAPEST_NEXT="rg \"<symbol-or-error>\""
+    ;;
+  wiki-write)
+    SUGGESTED_SKILLS="- model-cost-switching — route ingest/synthesis through the cheapest capable tier.
+- scrutinize — check provenance and public-safe boundaries.
+- A-Wiki Skills:skill-creator — only if the pattern should become reusable."
+    CHEAPEST_NEXT="python3 scripts/wiki/search-wiki.py \"<topic>\""
+    ;;
+  *)
+    SUGGESTED_SKILLS="- model-cost-switching — start with local/search and escalate only if needed.
+- scrutinize — keep the next chunk aligned with the canonical source.
+- debug-mantra — use only for failing behavior or root-cause work."
+    CHEAPEST_NEXT="python3 scripts/check-handoff.py --path handoff.md"
+    ;;
+esac
 
 # ---- Build auto-export section ----
 
@@ -100,6 +152,16 @@ ${LAST_BRIEF}
 ### Agent Recommendation
 **Primary**: ${RECOMMEND}
 **Alternative**: ${RECOMMEND2}
+
+### Cost Tier Snapshot
+| Field | Value |
+|-------|-------|
+| Current tier | ${COST_TIER} |
+| Model scout | ${SCOUT_AGE} |
+| Cheapest next step | \`${CHEAPEST_NEXT}\` |
+
+### Suggested Skills
+${SUGGESTED_SKILLS}
 
 **Failover order (เมื่อ Claude Sonnet ชน limit):**
 | Priority | Agent | วิธีเปิด | Hooks | ใช้กับ |
@@ -167,6 +229,10 @@ if new_content == content:
 with open(path, "w", encoding="utf-8") as f:
     f.write(new_content)
 PY
+
+if [ -f "$REPO_ROOT/scripts/check-handoff.py" ] && command -v python3 >/dev/null 2>&1; then
+  python3 "$REPO_ROOT/scripts/check-handoff.py" --path "$HANDOFF" >/dev/null || true
+fi
 
 echo "[agent-switch] handoff.md updated (mode: ${MODE}, task: ${TASK_TYPE})" >&2
 echo ""

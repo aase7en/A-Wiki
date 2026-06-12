@@ -54,6 +54,19 @@ Update `handoff.md` at these checkpoints:
 | Switching Agent/IDE/device | Run `bash scripts/swarm/agent-switch.sh` or update manually |
 | Session end after significant work | Mirror durable summary to `wiki/context/session-memory.md` and `log.md` |
 
+After updating the file, run the lightweight checker:
+
+```bash
+python3 scripts/check-handoff.py --path handoff.md
+```
+
+Use strict mode before relying on a handoff for a long-running or multi-device
+switch:
+
+```bash
+python3 scripts/check-handoff.py --path handoff.md --strict
+```
+
 If `handoff.md` is missing, run:
 
 ```bash
@@ -117,9 +130,11 @@ session end so cross-session memory stays intact.
 
 1. Read platform rules: `AGENTS.md` plus the current tool file (`CLAUDE.md`, `GEMINI.md`, `.clinerules`, etc.).
 2. Read `handoff.md` if present locally; otherwise run `git log --oneline -10` and read the latest `chunk(<ID>): ... [next: <ID>]` — that `[next: <ID>]` is where you resume.
-3. Read only the referenced canonical file, such as a project roadmap, `wiki/context/session-memory.md`, or a specific protocol.
-4. Continue from `## Resume Here`; do not restart old completed chunks.
-5. After finishing a chunk, update `handoff.md` before doing unrelated work.
+3. Run `python3 scripts/check-handoff.py --path handoff.md` and treat warnings as context to repair before doing expensive work.
+4. Read `## Cost Tier Snapshot` and pick the lowest sufficient tier: L1 local/search, L2 cheap summary/table, L3 low-cost scan/scout, L4 primary model only for implementation or architecture that needs it.
+5. Read only the referenced canonical file, such as a project roadmap, `wiki/context/session-memory.md`, or a specific protocol.
+6. Continue from `## Resume Here`; do not restart old completed chunks.
+7. After finishing a chunk, update `handoff.md` before doing unrelated work.
 
 ## State Hierarchy
 
@@ -163,4 +178,9 @@ A cross-agent plan is ready only when:
 - `## Resume Here` names exactly one next action.
 - Completed chunks include evidence, not just "done".
 - Blockers include the missing input or failed command.
+- `## Failed Approaches` records what not to retry, or explicitly says `None`.
+- `## Key Decisions` records locked decisions and rationale, or explicitly says `None`.
+- `## Open Decisions` lists unresolved decisions before the next agent implements.
+- `## Cost Tier Snapshot` tells the next agent the cheapest first command and current routing state.
+- `python3 scripts/check-handoff.py --path handoff.md --strict` passes before high-risk handoff.
 - `handoff.md` contains no secrets or raw/private content.
