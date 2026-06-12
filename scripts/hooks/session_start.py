@@ -170,6 +170,49 @@ def show_todos(repo_root):
         pass
 
 
+def clean_stale_cost_declarations(repo_root: str) -> None:
+    """Remove cost-tier declaration files from previous days (reset gate)."""
+    tmp_dir = os.path.join(repo_root, ".tmp")
+    if not os.path.isdir(tmp_dir):
+        return
+    today = datetime.now().strftime("%Y-%m-%d")
+    removed = []
+    try:
+        for fname in os.listdir(tmp_dir):
+            if fname.startswith("cost-tier-") and fname.endswith(".txt"):
+                date_part = fname[len("cost-tier-"):-len(".txt")]
+                if date_part != today:
+                    try:
+                        os.remove(os.path.join(tmp_dir, fname))
+                        removed.append(fname)
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+    if removed:
+        sys.stderr.write(f"🧹 Cost gate reset: removed {len(removed)} stale declaration(s)\n")
+
+
+def check_model_scout_freshness(repo_root: str) -> None:
+    """Warn if model-scout-current.json is older than 24h."""
+    scout_path = os.path.join(repo_root, ".tmp", "model-scout-current.json")
+    if not os.path.exists(scout_path):
+        sys.stderr.write(
+            "💰 Cost gate: model scout ยังไม่เคยรัน\n"
+            "   รัน: python3 scripts/model-scout-current.py\n"
+        )
+        return
+    try:
+        age_hours = (datetime.now().timestamp() - os.path.getmtime(scout_path)) / 3600
+        if age_hours > 24:
+            sys.stderr.write(
+                f"💰 Cost gate: model scout เก่า {age_hours:.0f}h — ราคาอาจเปลี่ยน\n"
+                f"   รัน: python3 scripts/model-scout-current.py\n"
+            )
+    except Exception:
+        pass
+
+
 def main():
     try:
         input_data = json.load(sys.stdin)
@@ -185,6 +228,8 @@ def main():
     maybe_update_model_intel(repo_root)
     show_model_tier_hint()
     show_todos(repo_root)
+    clean_stale_cost_declarations(repo_root)
+    check_model_scout_freshness(repo_root)
 
     sys.exit(0)
 
