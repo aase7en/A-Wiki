@@ -14,3 +14,9 @@ fastembed>=0.4.0
 # Needed because Python's stdlib sqlite3 has enable_load_extension disabled
 # on macOS python.org / Apple system builds and some Linux distros.
 apsw>=3.45.0
+
+# Universal cost-aware ingest harness (scripts/batch/) — Tier 2 & 3 adapters.
+# Tier 0 (OpenRouter / Gemini free) and Tier 1 (DeepSeek) use stdlib urllib
+# so they keep working even without these SDKs installed.
+anthropic>=0.40.0
+openai>=1.50.0

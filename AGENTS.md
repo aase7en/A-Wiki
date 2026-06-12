@@ -164,6 +164,43 @@ DeepSeek V4 Flash/Pro, Qwen, Gemini Flash, Haiku, Sonnet, or similar names are d
 
 > Prompts sent outside: **use English** (saves ~30% tokens)
 
+### 🧭 Universal Cost-First Routing (binding for ALL agents)
+
+When ingesting any source (raw/, URL, paste, file) into `wiki/sources/`, **every** A-Wiki agent (Claude Code, Codex, Gemini CLI, Cursor, Windsurf, Cline, Copilot, Aider, …) MUST go through the universal harness. Direct LLM calls that write `wiki/sources/<slug>.md` are blocked by the `check_harness_routing.py` hook.
+
+| Tier | Backend | Mode | Use for |
+|------|---------|------|---------|
+| **00** | Primary agent subscription (Sonnet, etc.) | realtime | planning, bugfix, validation, scout job (primary agent decides; harness never auto-routes here) |
+| **0** | OpenRouter free / Gemini Flash latest | realtime | trivial work (small ASCII source, classification, lint) |
+| **1** | DeepSeek V4-Flash-Base | realtime | default ingest 1-20 files |
+| **2** | OpenAI GPT-4o-mini batch | batch (24h) | input-heavy backlog > 20 files |
+| **3** | Anthropic Haiku 4.5 batch | batch (24h) | quality escalation (Thai context, complex reasoning) |
+
+**Live cost matrix** = `wiki/context/cost-routing.conf` (single source of truth). The scout job (`scripts/batch/scout.py`) refreshes it from provider APIs — **prices and free model availability are NEVER hardcoded**.
+
+**Surfaces — pick one per agent:**
+
+| Surface | Invocation | Best for |
+|---------|-----------|----------|
+| CLI | `python scripts/batch/route.py …` | Codex, Gemini CLI, Aider, generic shell |
+| Shell wrapper | `bash scripts/batch/route.sh` / `route.ps1` / `route.cmd` | Per-OS native (Mac, Linux, WSL, Windows) |
+| MCP tool | `wiki_ingest_route`, `wiki_batch_status`, `wiki_batch_collect` (via `awiki` server) | Claude Code, Cursor, Windsurf, Cline |
+| ENV override | `A_WIKI_ROUTE_TIER=2`, `A_WIKI_BACKEND=openai` | CI, scheduled jobs |
+
+```bash
+# Default — auto tier selection from backlog + complexity
+python scripts/batch/route.py --domain ai-tools --limit 50
+
+# Cost estimate across all configured tiers (no API call)
+python scripts/batch/route.py --estimate --limit 100
+
+# Refresh free-model roster and propose conf changes for review
+python scripts/batch/scout.py --refresh
+python scripts/batch/scout.py --propose
+```
+
+Full protocol: `docs/protocols/universal-routing.md`. Enforcement: `scripts/hooks/check_harness_routing.py` blocks Write/Edit to `wiki/sources/<slug>.md` if frontmatter is missing `routed_via: harness@v\d+`.
+
 ---
 
 ## 🧠 Swarm Intelligence Protocol
