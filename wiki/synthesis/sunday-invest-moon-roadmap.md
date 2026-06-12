@@ -1070,6 +1070,61 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 
 ---
 
+## Resource Note: Real Broker Adapter (Future Phase)
+
+> **Cost-first**: ก่อนเริ่ม phase นี้ scout free model tier ก่อน; backend Python เท่านั้น; client ห้ามแตะ broker เด็ดขาด (Iron Law)
+
+**iqoptionapi** (community, unofficial): https://github.com/iqoptionapi/iqoptionapi
+
+### ช่วยลดเวลาได้ที่ Broker Adapter layer เท่านั้น
+| สิ่งที่ iqoptionapi มีให้ | ประโยชน์ |
+|--------------------------|----------|
+| `connect()` / `connect_2fa()` / `check_connect()` | Login + reconnect + 2FA พร้อมใช้ ไม่ต้อง reverse-engineer WebSocket |
+| `get_candles(asset, ...)` | ดึง candle จาก IQ Option ได้ทันที |
+| `get_all_open_time()` | เช็ค asset เปิด/ปิด (forex/cfd/crypto/digital/binary) |
+| `buy()` / `buy_digital_spot_v2()` / `buy_order()` | ส่ง order หลายประเภท |
+| `get_order()` / `get_positions()` / `get_position_history_v2()` | ติดตาม position |
+| `get_digital_payout()` / `get_all_profit()` | payout/profit data |
+
+> ลด prototype broker adapter: reverse-engineer WebSocket (หลายวัน) --> prototype ใน 1-2 วัน
+> **Warning**: unofficial/community repo -- มี timeout/check-win issues; ใช้เป็น learning/prototype เท่านั้น
+
+### สิ่งที่ iqoptionapi ไม่ช่วยแทน (ต้องสร้างเอง)
+strategy engine, backtesting, risk manager, portfolio/accounting, order reconciliation, monitoring/alert, database schema, dashboard, test suite, live/paper parity
+
+### Architecture ที่แนะนำ (backend-only -- Iron Law คงเดิม)
+
+Client เห็นแค่ paper trade result เสมอ -- ไม่มี order path ใน browser เด็ดขาด
+
+```python
+# Abstract interface -- เขียนก่อน, adapter มาทีหลัง
+class BrokerAdapter:
+    def get_candles(self, symbol, interval, limit): ...
+    def place_order(self, symbol, direction, amount): ...
+    def get_order(self, order_id): ...
+    def get_positions(self): ...
+    def close_position(self, position_id): ...
+
+# Concrete adapters
+class IqOptionAdapter(BrokerAdapter): ...   # <- iqoptionapi wraps here
+class AlpacaAdapter(BrokerAdapter):   ...   # future
+class BinanceAdapter(BrokerAdapter):  ...   # future
+```
+
+```
+[ Execution Engine (backend) ]
+        |
+[ BrokerAdapter interface ]
+        |
+[ IqOptionAdapter ]  [ AlpacaAdapter ]  [ BinanceAdapter ]
+        |
+[ iqoptionapi ]
+```
+
+**Phase ที่ใช้ประโยชน์**: future Phase X3 (Real Broker Integration) -- หลัง Phase 14, ยังไม่อยู่ใน scope ปัจจุบัน; ใส่ไว้เพื่อ reference เมื่อถึงเวลา
+
+---
+
 ## Phase 12 — NPCs
 
 > Plan approved 2026-06-11. 3 NPCs: แม่ค้าตลาด / ลุงชาวประมง / ครูการเงิน. Schedule-driven, gift/talk friendship points. Commit format `chunk(12.X): goal [next: 12.Y]`.
