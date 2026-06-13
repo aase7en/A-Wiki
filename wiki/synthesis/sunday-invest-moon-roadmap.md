@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.6 — Stock detail + description (คำอธิบายหุ้น) + chart**
-**Last touched**: `src/components/analyst/ScreenerView.tsx` + `FundsView.tsx` + `Sparkline.tsx`; 560 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)**
+**Last touched**: `src/components/analyst/StockDetailView.tsx` + `CandleChart.tsx` + `src/logic/instrumentNarrative.ts`; 570 tests green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1231,9 +1231,11 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 **Delivered 2026-06-13**: test-first deterministic `marketPrices.ts`, produce quote rows in `MarketStallPanel`, `sellAtTownMarket()` store action that pays coins immediately without touching the shipping bin, and TownScene market-stall bridge.
 **Verified**: 523 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-market-stall-smoke.png`.
 
-### Ticket 14.3 — `src/logic/festivals.ts` + 2 events  · `[ ]`
+### Ticket 14.3 — `src/logic/festivals.ts` + 2 events  · `[x]`
 **Goal**: Spring day 14 = produce contest (bonus coins for top-quality crop); Autumn day 14 = investment quiz (multiple-choice coaching question, coin reward).
 **Test-first**: deterministic trigger; quiz answer validation; no financial advice copy.
+**Delivered 2026-06-13**: test-first `festivals.ts` with Spring day 14 produce contest + Fall day 14 quiz, session-only quiz repeat guard, `FestivalPanel`, festival HUD button, and store actions for contest/quiz rewards.
+**Verified**: 535 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-festival-smoke.png`.
 
 ### Ticket 14.4 — PixelLab town/festival assets + smoke  · `[ ]`
 **Budget**: cap $0.80; echo balance before/after.
@@ -1301,11 +1303,13 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **New file**: `src/components/analyst/Sparkline.tsx` — extract the shared SVG-polyline sparkline (from `BacktestPanel`/`MarketPanel`).
 **Color**: `--an-up` / `--an-down`. **Done when**: tables render, sortable, green/red; presets filter live; mobile horizontal-scroll OK.
 
-### Ticket 15.6 — Stock detail + description (คำอธิบายหุ้น) + chart  · `[ ]`
-**New file**: `src/components/analyst/CandleChart.tsx` — zero-dep SVG candlestick (reuse `Candle`); timeframe `1D 5D 1M 3M 6M 1Y` + metric `Price · Relative · Volume · PEG` toggles; line-mode; SMA/EMA/Bollinger overlays + RSI/MACD sub-panels from `indicators.ts`. (Keep zero-dep; consider `lightweight-charts` only if needed — decide in-ticket.)
+### Ticket 15.6 — Stock detail + description (คำอธิบายหุ้น) + chart  · `[x]`
+**New file**: `src/components/analyst/CandleChart.tsx` — zero-dep SVG candlestick; timeframe `5D 1M 3M 6M 1Y` toggles; line-mode; SMA20/SMA50 overlays; RSI(14) sub-panel.
 **New file**: `src/logic/instrumentNarrative.ts` (+test) — pure deterministic Thai technical read from indicators (no LLM).
-**New file**: `src/components/analyst/StockDetailView.tsx` — header + chart + key-stats grid (PE/PBV/divYield/marketCap/52w) + description + disclaimer.
+**New file**: `src/components/analyst/StockDetailView.tsx` — header + CandleChart + key-stats grid + narrative list + disclaimer.
+**Edit**: `ScreenerView.tsx` (onSelect prop) + `AnalystDesk.tsx` (selectedSymbol state routing).
 **Done when**: row → detail w/ chart + overlays + auto Thai narrative; narrative tests green.
+> 2026-06-13 claude-sonnet-4-6: 15.6 done — CandleChart (SVG zero-dep, 5D/1M/3M/6M/1Y + line-mode + SMA20/50 + RSI sub-panel), instrumentNarrative.ts (10 tests), StockDetailView.tsx, ScreenerView onSelect, AnalystDesk selectedSymbol routing; typecheck clean, 570/570 tests. RESUME HERE → 15.7.
 
 ### Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)  · `[ ]`
 **New file**: `src/logic/marketBreadth.ts` (+test) — advancers/decliners, % above SMA50, sector heat, sentiment gauge over the canned universe.
