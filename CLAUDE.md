@@ -155,10 +155,12 @@ python3 scripts/lib/drive_secrets.py --check
 5. **CLAUDE.md ห้ามแก้โดยไม่ได้รับอนุญาต** — soft + hard lock
 6. **Private/heavy data stays in `drive/`** — ห้าม hardcode user/account cloud paths; use `drive/` or `A_WIKI_DRIVE_PATH`
 7. **Bot trading client is MOCK/visualization-only** — ห้ามเก็บ secret, sign request, หรือ execute order ใน client; ดู `docs/protocols/bot-trading-iron-law.md`
+8. **External-editor source-of-truth protection** — ไฟล์ที่ iterate นอก git (Tampermonkey, browser snippets) ต้องมี `USERSCRIPT_SYNC_OK=<version>` ตรงกับ `// @version` header ก่อน Edit/Write; บังคับโดย `scripts/hooks/check_external_editor_drift.py`
+9. **Source provenance — `raw/` first, always** — ingest ทุก URL/article ต้องบันทึกลง `raw/<slug>.<ext>` ก่อนสร้าง `wiki/sources/<slug>.md`; `original_file:` frontmatter บังคับ; บังคับโดย hook #12
 
 ---
 
-## 🪝 Active Hooks (13 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (14 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
