@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.8 — Extend read-only backend contract + ADR alignment**
-**Last touched**: `src/components/analyst/MarketView.tsx` + `OverviewView.tsx` + `src/logic/marketBreadth.ts`; 590 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.9 — Readability pass on existing finance panels**
+**Last touched**: `src/feeds/instrumentFeed.ts`; `backend/routers/market.py`; read-only screener/funds contract docs; 591 tests green (session 2026-06-14)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1319,11 +1319,12 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Done when**: market view shows breadth/sectors/movers; overview aggregates; breadth tests green.
 > 2026-06-13 claude-sonnet-4-6: 15.7 done — marketBreadth.ts (20 tests), MarketView.tsx, OverviewView.tsx, AnalystDesk wired; typecheck clean, 590/590 tests. RESUME HERE → 15.8.
 
-### Ticket 15.8 — Extend read-only backend contract + ADR alignment  · `[ ]`
+### Ticket 15.8 — Extend read-only backend contract + ADR alignment  · `[x]`
 **Goal**: Fold screener/funds into the existing read-only data contract; no new client risk.
 **Edit**: `backend/routers/market.py` (+ contract doc) and `A-Wiki/docs/protocols/bot-trading-iron-law.md` — add read-only `/api/screener/scan` + `/api/funds/list` alongside `/api/market/*`; server-side auth, rate-limit, **no secret/key in browser, no order endpoints**. Cross-link "Resource Note: Real Broker Adapter (Future Phase X3)" (broker stays backend-only).
 **Edit**: `src/feeds/instrumentFeed.ts` `RemoteInstrumentFeed` wired under `VITE_PWQ_MARKET_FEED=remote`, fail-loud.
 **Done when**: contract doc updated + cross-linked; remote flag wires screener/funds (404 until backend ships, by design); `npm run feed:scan` clean — no order/key path.
+> 2026-06-13 codex-poppy-javis: 15.8 done — `RemoteInstrumentFeed` now targets `/api/screener/scan` + `/api/funds/list` with fail-loud tests; backend exposes GET-only placeholder routers returning 404; product contract + A-Wiki Iron Law cross-link Resource Note: Real Broker Adapter (Future Phase X3). Verified 591 vitest tests, typecheck, build, feed scan, React Doctor 100. Backend pytest blocked locally because the active Python env lacks FastAPI.
 
 ### Ticket 15.9 — Readability pass on existing finance panels  · `[ ]`
 **Edit**: `MarketPanel.tsx`, `BacktestPanel.tsx`, `BotConfigPanel.tsx`, `StrategyBuilderPanel.tsx`, `MarketStallPanel.tsx` + `hud.css` — apply readable type ramp (Thai body ≥14px/1.65, `tabular-nums`), raise contrast, larger touch targets; keep parchment frame.
