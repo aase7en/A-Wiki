@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 14.3 — `src/logic/festivals.ts` + 2 events**
-**Last touched**: `src/logic/marketPrices.ts`; `src/components/MarketStallPanel.tsx`; `src/state/store.ts`; `src/phaser/scenes/TownScene.ts`; market-stall runtime smoke green with console/network 0 errors (session 2026-06-13)
+**Next ticket**: **Ticket 15.2 — Analyst Desk shell + office Workstation launcher**
+**Last touched**: `src/styles/tokens.css` (`.analyst-desk` scoped `--an-*` tokens + `--t-*` type ramp); `src/styles/analyst.css` (new — all scoped primitives); typecheck green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1267,7 +1267,7 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 
 **Radar / scan model to mirror:** hero "หุ้นที่เริ่มส่งสัญญาณแรงผิดปกติ" + "VOLUME SURGE สูงสุด 86.0x" + ▶ RE: SCAN refresh · ranking tabs `#ทั้งหมด · #วันล่าสุด · #RSI` · themed collections `#เดอะเบส S&P500 · #สายเทค Nasdaq100` · table cols **หุ้น · ราคา · Market cap · 1D% · RSI · Volume×** · chart timeframe `1D 5D 1M 3M 6M 1Y` + metric `Price · Relative · Volume · PEG`. Also present (MOCK-able later): Watchlist, Leaderboard, ประวัติซื้อขาย, แลกเปลี่ยน ฿$, profile, mail/alerts. Archive a reference screenshot → `A-Wiki/game-assets/references/sunday-invest-moon/investneet/`.
 
-### Ticket 15.1 — Analyst tokens + readable type ramp  · `[ ]`
+### Ticket 15.1 — Analyst tokens + readable type ramp  · `[x]`
 **Goal**: investneet warm-cream palette + readable type scale as **`.analyst-desk`-scoped** tokens; pixel HUD untouched.
 **Edit**: `src/styles/tokens.css` — add `.analyst-desk` (`[data-surface="analyst"]`) block: `--an-bg #fbf7ed`, `--an-bg-soft #f3ede0`, `--an-line #e5dcc7`, `--an-text #1f1a14`, `--an-muted #8a8378`, `--an-up #4a7301`, `--an-up-bright #9cff00`, `--an-down #b91c1c`, `--an-amber #ffd166`, `--an-panel #1b1030`. Append the readable `--t-*` ramp (body/caption/kicker/mono-num) from `prototype/colors_and_type.css` (Thai body = IBM Plex Sans Thai). `--sim-*` (Phase 2c.1.5) stays untouched.
 **New file**: `src/styles/analyst.css` — 600px-max centered column, 56px topbar, warm data table (`th` 10.5–11px/800/muted/`--an-bg-soft`), stat cards, filter/ranking chips, `font-variant-numeric: tabular-nums` on figures.
@@ -1439,4 +1439,5 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 > 2026-06-12 claude-fable-5: 9.11 done — pet eat/sleep/bark south one-shots for all 3 dogs + run as directional looping move action (normalize_pet_anims extended + ts_out mkdir fix, 3 new A-Wiki tests; petAnims.test.ts 5 tests product-side). blocker: run 8-dir complete on red only — black 5/8 (missing W/NW/SW), cream 3/8; cream sleep pose generated standing not curled; regen blocked by PixelLab animate-character 422 outage, missing run dirs fall back to walk at runtime. Spend ~$0.52 of $3.00 cap (balance $2.961). Product f7daaf4. RESUME HERE = 9.12 pet behaviors.
 > 2026-06-12 claude-haiku-4-5: Plan Phase 9–11 complete — market data backend+feed seam (CannedMarketDataFeed 500×1h offline + RemoteMarketDataFeed flag-gated; backend market.py proxy Binance→OKX), paper trading engine (10 preset strategies, indicators SMA/EMA/RSI/MACD/Bollinger/ATR, PaperBroker fee+slip, strategyEngine single runStrategy(), PaperBotFeed as default, botSettlement stake/settle), backtest UI (BacktestPanel sparkline + stats, StrategyBuilderPanel deploy-after-backtest gate, customStrategies CRUD). 422 tests green, typecheck clean, feed:scan clean, iron law: canned/mock still default. A-Wiki: bot-trading-iron-law.md amendment committed. RESUME HERE = 12.1 NPC registry.
 > 2026-06-13 claude-opus-4-8: Planned **Phase 15 — Analyst Desk** (investneet-style readable analysis suite: warm-cream `.analyst-desk` tokens, mobile-first 600px, stock radar/screener + funds + stock description + market breadth) reusing Phase 9–11 market/indicator infra; sampled investneet.com/scan.html's live design via Chrome DevTools (palette #fbf7ed/#1f1a14, up #4a7301 / down #b91c1c). Backend stays read-only (15.8 extends `/api/market/*` seam with `/api/screener|funds`; broker remains future X3). Iron Law intact. Synced to both roadmap copies. RESUME HERE unchanged = 14.3 (Phase 15 is queued backlog; user may choose to prioritize over 14.3).
+> 2026-06-13 claude-opus-4-8: **15.1 done** — added `.analyst-desk` / `[data-surface="analyst"]` scoped block to `tokens.css` (all `--an-*` palette + `--t-*` ramp matching investneet scale); created `src/styles/analyst.css` (~350 lines, all primitives: table, chip, collection-tab, stat-card, sparkline, timeframe/metric toggles, key-stats grid, buy/sell btns, narrative, disclaimer, responsive 639px). Typecheck green, pixel HUD untouched. RESUME HERE = 15.2.
 ```
