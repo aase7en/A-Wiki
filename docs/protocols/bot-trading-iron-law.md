@@ -75,6 +75,24 @@ Before changing any trading-related client or adapter:
 | Bundle check | `npm run feed:scan` must pass; `grep dist/` must find no exchange hostnames when flag is off |
 
 Paper bot settlement uses simulated fills only. No real orders are placed at any layer.
+
+## Amendment — Analyst Desk Read-Only Screener/Funds (2026-06-13)
+
+> [verified 2026-06-13] Approved addition: Analyst Desk may request read-only stock screener and fund data through backend proxy endpoints. The browser remains mock/read-only by default and must fail loudly when the remote backend is not available.
+
+**Approved pattern**: `CannedInstrumentFeed` (default) and `RemoteInstrumentFeed` (flag-gated) via `pixel-wealth-quest/src/feeds/instrumentFeed.ts`.
+
+| Endpoint | Status | Boundary |
+|---|---|---|
+| `GET /api/screener/scan` | Placeholder 404 until reviewed backend ships | Read-only universe for screener/funds UI; no credentials in browser |
+| `GET /api/screener/candles` | Placeholder/contracted backend path | Read-only OHLCV for allowlisted symbols |
+| `GET /api/funds/list` | Placeholder 404 until reviewed backend ships | Read-only mutual fund universe |
+
+Remote mode requires `VITE_PWQ_MARKET_FEED=remote` and must not silently fall back to canned data. All real data access must use server-side session auth, rate limits, allowlists, and no browser-held secret.
+
+## Resource Note — Real Broker Adapter (Future Phase X3)
+
+Real broker connectivity remains backend-only and outside the game client. A future broker adapter requires a separate security/legal review, server-side auth, secret storage, request signing, idempotency keys, risk controls, audit logs, and a kill switch. The browser may display sanitized read-only status; it must never receive credentials, signing material, order endpoints, or execution controls.
 ## Verification
 
 ```bash
@@ -87,4 +105,3 @@ python3 scripts/check-privacy.py
 python3 scripts/verify-cross-platform.py
 python3 scripts/gen-index.py --check
 ```
-
