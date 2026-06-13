@@ -59,8 +59,8 @@ updated: 2026-06-12
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 14.1 — `TownScene.ts` + `town.seed.ts`**
-**Last touched**: PixelLab NPC sprites + chicken/cow assets; `src/phaser/npcFrames.ts`; `PreloadScene`; `npcs.seed.ts`; `animals.seed.ts`; `textures.ts`; runtime desktop/mobile smoke green with console/network 0 errors (session 2026-06-13)
+**Next ticket**: **Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`**
+**Last touched**: `src/data/town.seed.ts`; `src/phaser/scenes/TownScene.ts`; `FarmScene` east-edge bridge; `PhaserGame` scene registry; Town runtime smoke green with console/network 0 errors (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1218,10 +1218,12 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 
 > Plan approved 2026-06-11. TownScene, market stall, 2 festivals.
 
-### Ticket 14.1 — `TownScene.ts` + `town.seed.ts`  · `[ ]`
+### Ticket 14.1 — `TownScene.ts` + `town.seed.ts`  · `[x]`
 **Goal**: New Phaser scene (~24×16, top-down); market stall, town hall, farm→town east edge warp.
 **Files**: `src/phaser/scenes/TownScene.ts`, `src/data/town.seed.ts`.
 **Done when**: player can walk Farm east edge → TownScene and back; no asset budget yet.
+**Delivered 2026-06-13**: test-first town seed + TownScene shell, Farm east-edge → Town warp, Town west gate → Farm return, Phaser registry coverage, runtime Town screenshot smoke.
+**Verified**: 510 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-town-smoke.png`.
 
 ### Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`  · `[ ]`
 **Goal**: Produce prices fluctuate daily deterministic (seasonal × seeded random walk 0.7–1.4); town market offers better rate than shipping bin on good days; optional remote mode: % change proportional to BTC-yesterday delta.
