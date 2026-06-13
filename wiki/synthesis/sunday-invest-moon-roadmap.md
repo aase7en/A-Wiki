@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.5 — Screener UI (เรดาร์สแกน) + Funds UI (กองทุน)**
-**Last touched**: `src/logic/screener.ts` + `src/data/scanPresets.ts` + `src/logic/screener.test.ts`; 560 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.6 — Stock detail + description (คำอธิบายหุ้น) + chart**
+**Last touched**: `src/components/analyst/ScreenerView.tsx` + `FundsView.tsx` + `Sparkline.tsx`; 560 tests green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1295,7 +1295,7 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Test-first**: `screener.test.ts` — deterministic rows + ranking per preset.
 **Done when**: presets filter+rank correctly; tests green.
 
-### Ticket 15.5 — Screener UI (เรดาร์สแกน) + Funds UI (กองทุน)  · `[ ]`
+### Ticket 15.5 — Screener UI (เรดาร์สแกน) + Funds UI (กองทุน)  · `[x]`
 **New file**: `src/components/analyst/ScreenerView.tsx` — investneet radar: hero "หุ้นที่เริ่มส่งสัญญาณแรงผิดปกติ" + volume-surge highlight + RE: SCAN; ranking tabs `#ทั้งหมด · #วันล่าสุด · #RSI`; themed-collection chips; results table **หุ้น · ราคา · Market cap · 1D% [g/r] · RSI · Volume×** + mini-sparkline; sortable; row → 15.6.
 **New file**: `src/components/analyst/FundsView.tsx` — funds table (กองทุน · หมวด · NAV · 1Y/3Y/5Y · ความเสี่ยง · ค่าธรรมเนียม) + filters.
 **New file**: `src/components/analyst/Sparkline.tsx` — extract the shared SVG-polyline sparkline (from `BacktestPanel`/`MarketPanel`).
@@ -1444,4 +1444,5 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 > 2026-06-13 claude-sonnet-4-6: **15.2 done** — AnalystTab type + analystTab/setAnalystTab in store; computer hotspot opens 'workstation' (was 'shop'); WorkstationLauncher 3-button panel; AnalystDesk full-screen fixed overlay (5-tab topbar: ภาพรวม/เรดาร์สแกน/กองทุน/วิเคราะห์ตลาด/พอร์ต, stub content); HudOverlay: analyst-desk renders OUTSIDE backdrop, workstation renders inside parchment panel. House test updated. 535 tests green. Pushed 58518e9. RESUME HERE = 15.3.
 > 2026-06-13 claude-sonnet-4-6: **15.3 done** — instruments.canned.ts (20 mock Thai stocks + 8 funds, deterministic genBars 30 bars each, labelled illustrative); instrumentFeed.ts (InstrumentFeed iface, CannedInstrumentFeed, RemoteInstrumentFeed fail-fast at ctor, createInstrumentFeed factory, allowlist guard); 8 tests test-first. 543/543 green. Pushed 2bc6de2. RESUME HERE = 15.4.
 > 2026-06-13 claude-sonnet-4-6: **15.4 done** — screener.ts (screen() composable criteria: changePct/RSI/SMA/PE/PBV/divYield; criteria-primary scoring; ScreenRow+Signal types; sort desc); scanPresets.ts (5 presets: momentum/breakout/oversold/high-div/value); 17 screener tests test-first. 560/560 green. Pushed 9e058c7. RESUME HERE = 15.5.
+> 2026-06-13 claude-sonnet-4-6: **15.5 done** — ScreenerView.tsx (radar hero, RE:SCAN, 5 preset chips, rank tabs, collection filter, table with 1D%/RSI/Vol×/Sparkline); FundsView.tsx (sortable table, category chips, risk badge); Sparkline.tsx (shared SVG polyline up/down); AnalystDesk wires real views. 560/560 green. Pushed e66368c. RESUME HERE = 15.6.
 ```
