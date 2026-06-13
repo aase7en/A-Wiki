@@ -1240,6 +1240,98 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 
 ---
 
+## Phase 15 — Analyst Desk (investneet-style readable analysis suite)
+
+> Plan approved 2026-06-13. User loves **investneet.com/scan.html** — its readability, warm color tone, dashboard, charts, stock-scan radar, funds (กองทุน), stock descriptions, market analysis. Phase 15 brings that *readable* feel in as a clean **"Analyst Desk"** surface, reusing the Phase 9–11 market/indicator/paper-trading infra. **Backlog phase — begins after the current RESUME ticket; internal start = 15.1.** Commit `chunk(15.X): goal [next: 15.Y]`.
+>
+> **Iron Law (unchanged — see `docs/protocols/bot-trading-iron-law.md`):** client stays MOCK + read-only — no API keys, no order path in the browser. Real **read-only** quotes arrive via the existing **Phase 9b `/api/market/*` seam** (Ticket 15.8 extends it with `/api/screener` + `/api/funds`). Real broker stays **backend-only**, already scoped in "Resource Note: Real Broker Adapter (Future Phase X3)". Every analysis view shows the learning-only disclaimer ("⚠️ ผลในอดีตไม่การันตีอนาคต — ข้อมูลนี้ใช้เพื่อการเรียนรู้เท่านั้น").
+
+### investneet design — sampled live (2026-06-13, Chrome DevTools on `scan.html`)
+
+investneet is itself an **"AI investing simulator"**, so its model maps ~1:1 onto Sunday Invest Moon. Source of truth for the Analyst Desk look:
+
+**Palette (verbatim CSS custom properties):**
+```css
+--bg #fbf7ed (warm cream) · --bg-soft #f3ede0 · --bg-deep #ede4d2
+--line #e5dcc7 · --line-soft #ede5d2
+--text #1f1a14 · --text-2 #4a4338 · --muted #8a8378
+up/positive: olive-green #4a7301 (dominant) · #6b8e23 · #84cc16 · bright #9cff00
+down/negative: --cherry #b91c1c · --red #ff4f91
+accents: --amber #ffd166 · --blue #38d5ff · --cyan #67e8f9 · --link #3b6bdb
+contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple)
+--content-max 600px (mobile-first single column) · --topbar-h 56px
+```
+> **Key insight:** warm-cream LIGHT theme — already close to SIM's parchment/cream (`--sim-cream #fff4da`). The Analyst Desk = a **clean reading mode** of the warm palette, cohesive with the farm game. Readability win = font sizing + tabular numbers + 600px column, not going dark.
+
+**Typography (sampled):** body = system stack, 16px; tables 13px; `th` = 10.5px / 800 / muted / `--bg-soft`. → keep **IBM Plex Sans Thai** (renders Thai better) at that scale. Mirror up-green / down-red exactly.
+
+**Radar / scan model to mirror:** hero "หุ้นที่เริ่มส่งสัญญาณแรงผิดปกติ" + "VOLUME SURGE สูงสุด 86.0x" + ▶ RE: SCAN refresh · ranking tabs `#ทั้งหมด · #วันล่าสุด · #RSI` · themed collections `#เดอะเบส S&P500 · #สายเทค Nasdaq100` · table cols **หุ้น · ราคา · Market cap · 1D% · RSI · Volume×** · chart timeframe `1D 5D 1M 3M 6M 1Y` + metric `Price · Relative · Volume · PEG`. Also present (MOCK-able later): Watchlist, Leaderboard, ประวัติซื้อขาย, แลกเปลี่ยน ฿$, profile, mail/alerts. Archive a reference screenshot → `A-Wiki/game-assets/references/sunday-invest-moon/investneet/`.
+
+### Ticket 15.1 — Analyst tokens + readable type ramp  · `[ ]`
+**Goal**: investneet warm-cream palette + readable type scale as **`.analyst-desk`-scoped** tokens; pixel HUD untouched.
+**Edit**: `src/styles/tokens.css` — add `.analyst-desk` (`[data-surface="analyst"]`) block: `--an-bg #fbf7ed`, `--an-bg-soft #f3ede0`, `--an-line #e5dcc7`, `--an-text #1f1a14`, `--an-muted #8a8378`, `--an-up #4a7301`, `--an-up-bright #9cff00`, `--an-down #b91c1c`, `--an-amber #ffd166`, `--an-panel #1b1030`. Append the readable `--t-*` ramp (body/caption/kicker/mono-num) from `prototype/colors_and_type.css` (Thai body = IBM Plex Sans Thai). `--sim-*` (Phase 2c.1.5) stays untouched.
+**New file**: `src/styles/analyst.css` — 600px-max centered column, 56px topbar, warm data table (`th` 10.5–11px/800/muted/`--an-bg-soft`), stat cards, filter/ranking chips, `font-variant-numeric: tabular-nums` on figures.
+**Done when**: `.analyst-desk` renders warm-cream readable Thai at sampled scale w/ tabular numbers + green/red; pixel HUD unchanged; lint clean.
+
+### Ticket 15.2 — Analyst Desk shell + office Workstation launcher  · `[ ]`
+**Goal**: Full-screen readable desk opened from the **existing** office computer; investneet-style tabbed nav.
+**New file**: `src/components/analyst/AnalystDesk.tsx` — full-bleed React layer (pauses Phaser), `data-surface="analyst"`, **mobile-first 600px column + 56px sticky top bar**. Tabs: **ภาพรวม · เรดาร์สแกน · กองทุน · วิเคราะห์ตลาด · พอร์ต**. Close → game.
+**Edit**: `src/state/store.ts` — add `'analyst-desk'` to `ModalName` + `analystTab` slice (default `'overview'`) + setter; render via existing `HudOverlay.tsx` modal pattern.
+**Edit**: the **existing office-computer hotspot** (Phase 2c.7.5 shop) → small **Workstation launcher** `[ร้านค้า] [ศูนย์วิเคราะห์] [บอทเทรด]`; ศูนย์วิเคราะห์ → `setOpenModal('analyst-desk')` (today it opens shop directly).
+**Reuse**: `.pwq-backdrop`, gameBus, Tide & Tally responsive breakpoints.
+**Done when**: office computer → ศูนย์วิเคราะห์ opens desk; tabs switch; close returns; readable desktop + 390×844; console clean.
+
+### Ticket 15.3 — Instrument universe (mock stocks + funds) + read-only feed seam  · `[ ]`
+**Goal**: Mock Thai-style stock + fund universe behind the **same seam shape** as `marketDataFeed.ts`.
+**New file**: `src/data/instruments.canned.ts` — ~20 mock stocks (PTT, CPALL, AOT, KBANK, ADVANC, DELTA…) `{ symbol, nameTh, sector, price, changePct, volume, marketCap, pe, pbv, divYield, ohlcv: Candle[] }` + ~8 funds `{ id, nameTh, category, nav, ret1y, ret3y, ret5y, risk, expensePct }`. Labelled mock/illustrative (candles.canned.ts stays crypto-only; this is separate equities/funds data).
+**New file**: `src/feeds/instrumentFeed.ts` — mirror `marketDataFeed.ts`: `InstrumentFeed` iface, `CannedInstrumentFeed` (default), `RemoteInstrumentFeed` (flag `VITE_PWQ_MARKET_FEED=remote`, read-only `/api/screener/*` + `/api/funds/*`, fail-loud), `createInstrumentFeed()`, allowlist guard.
+**Test-first**: `instrumentFeed.test.ts` — canned returns universe; allowlist rejects unknown; remote throws loudly.
+**Done when**: feed returns mock universe offline; tests green; `npm run feed:scan` clean.
+
+### Ticket 15.4 — Screener engine + scan presets (test-first)  · `[ ]`
+**New file**: `src/logic/screener.ts` — `screen(universe, criteria): ScreenRow[]`; composable filters (price/%chg/volume; RSI band; price vs SMA/EMA; MACD cross; PE/PBV/divYield; funds: return/risk/category) reusing `indicators.ts`; attaches `signal` + `score`; ranks.
+**New file**: `src/data/scanPresets.ts` — โมเมนตัมแรง · ทะลุแนวต้าน · RSI<30 ขายมากเกินไป · ปันผลสูง · Value (PE ต่ำ).
+**Test-first**: `screener.test.ts` — deterministic rows + ranking per preset.
+**Done when**: presets filter+rank correctly; tests green.
+
+### Ticket 15.5 — Screener UI (เรดาร์สแกน) + Funds UI (กองทุน)  · `[ ]`
+**New file**: `src/components/analyst/ScreenerView.tsx` — investneet radar: hero "หุ้นที่เริ่มส่งสัญญาณแรงผิดปกติ" + volume-surge highlight + RE: SCAN; ranking tabs `#ทั้งหมด · #วันล่าสุด · #RSI`; themed-collection chips; results table **หุ้น · ราคา · Market cap · 1D% [g/r] · RSI · Volume×** + mini-sparkline; sortable; row → 15.6.
+**New file**: `src/components/analyst/FundsView.tsx` — funds table (กองทุน · หมวด · NAV · 1Y/3Y/5Y · ความเสี่ยง · ค่าธรรมเนียม) + filters.
+**New file**: `src/components/analyst/Sparkline.tsx` — extract the shared SVG-polyline sparkline (from `BacktestPanel`/`MarketPanel`).
+**Color**: `--an-up` / `--an-down`. **Done when**: tables render, sortable, green/red; presets filter live; mobile horizontal-scroll OK.
+
+### Ticket 15.6 — Stock detail + description (คำอธิบายหุ้น) + chart  · `[ ]`
+**New file**: `src/components/analyst/CandleChart.tsx` — zero-dep SVG candlestick (reuse `Candle`); timeframe `1D 5D 1M 3M 6M 1Y` + metric `Price · Relative · Volume · PEG` toggles; line-mode; SMA/EMA/Bollinger overlays + RSI/MACD sub-panels from `indicators.ts`. (Keep zero-dep; consider `lightweight-charts` only if needed — decide in-ticket.)
+**New file**: `src/logic/instrumentNarrative.ts` (+test) — pure deterministic Thai technical read from indicators (no LLM).
+**New file**: `src/components/analyst/StockDetailView.tsx` — header + chart + key-stats grid (PE/PBV/divYield/marketCap/52w) + description + disclaimer.
+**Done when**: row → detail w/ chart + overlays + auto Thai narrative; narrative tests green.
+
+### Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)  · `[ ]`
+**New file**: `src/logic/marketBreadth.ts` (+test) — advancers/decliners, % above SMA50, sector heat, sentiment gauge over the canned universe.
+**New file**: `src/components/analyst/MarketView.tsx` — index cards (SET/SET50 mock), breadth bar, sector heatmap, "อารมณ์ตลาด" gauge, top gainers/losers/most-active.
+**New file**: `src/components/analyst/OverviewView.tsx` — landing: watchlist + portfolio snapshot (reuse `snapshot` slice) + today's scan highlights + breadth.
+**Done when**: market view shows breadth/sectors/movers; overview aggregates; breadth tests green.
+
+### Ticket 15.8 — Extend read-only backend contract + ADR alignment  · `[ ]`
+**Goal**: Fold screener/funds into the existing read-only data contract; no new client risk.
+**Edit**: `backend/routers/market.py` (+ contract doc) and `A-Wiki/docs/protocols/bot-trading-iron-law.md` — add read-only `/api/screener/scan` + `/api/funds/list` alongside `/api/market/*`; server-side auth, rate-limit, **no secret/key in browser, no order endpoints**. Cross-link "Resource Note: Real Broker Adapter (Future Phase X3)" (broker stays backend-only).
+**Edit**: `src/feeds/instrumentFeed.ts` `RemoteInstrumentFeed` wired under `VITE_PWQ_MARKET_FEED=remote`, fail-loud.
+**Done when**: contract doc updated + cross-linked; remote flag wires screener/funds (404 until backend ships, by design); `npm run feed:scan` clean — no order/key path.
+
+### Ticket 15.9 — Readability pass on existing finance panels  · `[ ]`
+**Edit**: `MarketPanel.tsx`, `BacktestPanel.tsx`, `BotConfigPanel.tsx`, `StrategyBuilderPanel.tsx`, `MarketStallPanel.tsx` + `hud.css` — apply readable type ramp (Thai body ≥14px/1.65, `tabular-nums`), raise contrast, larger touch targets; keep parchment frame.
+**Done when**: panels pass readability check (Thai ≥14px, tabular numbers, AA contrast); pixel aesthetic preserved.
+
+### Phase 15 verification
+```bash
+npm --prefix <product-repo> run typecheck && npm --prefix <product-repo> test
+npm --prefix <product-repo> run feed:scan          # iron-law: no order/key path
+npx react-doctor@latest <product-repo> --verbose --diff
+```
+Runtime: office computer → ศูนย์วิเคราะห์ → tabs · screener presets filter/sort · row → detail chart + Thai description · funds · market breadth · `preview_resize 390 844` no overflow.
+
+---
+
 ## Cross-cutting reuse map (every ticket pulls from here)
 
 | Need | Reuse from | File |
@@ -1346,4 +1438,5 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 > 2026-06-12 claude-fable-5: 9.9-9.10 done — player water/hoe/harvest south one-shots (9f; v3 API requires even frame_count, requested 8 → exported 9; PixelLab slugs derive from action description so ACTION_MAP matches leading verb) wired into ToolWheel via toolAnimMap + playerController.playOneShot; runtime-verified pwq_player_hoe_front plays and plot tills. Watering v1 has ghost-can artifact on 2 frames; v2 regen queued behind PixelLab outage. Product 4d7860b/1d04449; A-Wiki 5ad5010b.
 > 2026-06-12 claude-fable-5: 9.11 done — pet eat/sleep/bark south one-shots for all 3 dogs + run as directional looping move action (normalize_pet_anims extended + ts_out mkdir fix, 3 new A-Wiki tests; petAnims.test.ts 5 tests product-side). blocker: run 8-dir complete on red only — black 5/8 (missing W/NW/SW), cream 3/8; cream sleep pose generated standing not curled; regen blocked by PixelLab animate-character 422 outage, missing run dirs fall back to walk at runtime. Spend ~$0.52 of $3.00 cap (balance $2.961). Product f7daaf4. RESUME HERE = 9.12 pet behaviors.
 > 2026-06-12 claude-haiku-4-5: Plan Phase 9–11 complete — market data backend+feed seam (CannedMarketDataFeed 500×1h offline + RemoteMarketDataFeed flag-gated; backend market.py proxy Binance→OKX), paper trading engine (10 preset strategies, indicators SMA/EMA/RSI/MACD/Bollinger/ATR, PaperBroker fee+slip, strategyEngine single runStrategy(), PaperBotFeed as default, botSettlement stake/settle), backtest UI (BacktestPanel sparkline + stats, StrategyBuilderPanel deploy-after-backtest gate, customStrategies CRUD). 422 tests green, typecheck clean, feed:scan clean, iron law: canned/mock still default. A-Wiki: bot-trading-iron-law.md amendment committed. RESUME HERE = 12.1 NPC registry.
+> 2026-06-13 claude-opus-4-8: Planned **Phase 15 — Analyst Desk** (investneet-style readable analysis suite: warm-cream `.analyst-desk` tokens, mobile-first 600px, stock radar/screener + funds + stock description + market breadth) reusing Phase 9–11 market/indicator infra; sampled investneet.com/scan.html's live design via Chrome DevTools (palette #fbf7ed/#1f1a14, up #4a7301 / down #b91c1c). Backend stays read-only (15.8 extends `/api/market/*` seam with `/api/screener|funds`; broker remains future X3). Iron Law intact. Synced to both roadmap copies. RESUME HERE unchanged = 14.3 (Phase 15 is queued backlog; user may choose to prioritize over 14.3).
 ```
