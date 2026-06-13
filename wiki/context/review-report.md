@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 595
-- ⚠ Warnings: 452
+- ✓ Passed: 603
+- ⚠ Warnings: 454
 - ❌ Failures: 4
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 436 more issue(s) below
+- … 438 more issue(s) below
 
 ---
 
@@ -293,6 +293,8 @@
 - wiki/synthesis/synth-freqtrade-pi5.md: missing frontmatter key: tags
 - wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md: missing frontmatter key: tags
 - wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md: missing frontmatter key: tags
+- wiki/synthesis/synth-github-0x0funky-agent-sprite-forge.md: missing frontmatter key: tags
+- wiki/synthesis/synth-github-blendi-remade-sprite-sheet-creator.md: missing frontmatter key: tags
 - wiki/synthesis/synth-good-uiux-practices.md: missing frontmatter key: tags
 - wiki/synthesis/synth-hardware-inventory-2026-04-18.md: missing frontmatter key: tags
 - wiki/synthesis/synth-heltec-libraries.md: missing frontmatter key: tags
@@ -505,10 +507,10 @@
 
 ---
 
-## ✓ Passed Checks (595 total)
+## ✓ Passed Checks (603 total)
 
-- **L2**: 126 passed
-- **L3**: 466 passed
+- **L2**: 129 passed
+- **L3**: 471 passed
 - **L6**: 3 passed
 
 ---

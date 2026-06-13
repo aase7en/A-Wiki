@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 61 |
 | CONCEPTS | 59 |
-| SYNTHESIS | 198 |
-| SOURCES | 162 |
-| **Total** | **480 pages** |
+| SYNTHESIS | 201 |
+| SOURCES | 164 |
+| **Total** | **485 pages** |
 
 ---
 
@@ -30,7 +30,7 @@
 | AI Tools | 17 | 32 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (162): `wiki/context/overview-sources.md`
+- **Sources** (164): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -69,6 +69,7 @@
 | `pharmacy-project-specs` | สร้างระบบ AI Assistant ที่ช่วยให้คุณศุภศิษฎิ์ (เจ้าของร้านภูฟาร์… |
 | `pharmacy-web-app-roadmap` | สร้าง **FastAPI + React web app** บน **Raspberry Pi 5** พร้อมการ… |
 | `pi4-lora-gateway-server` | [ESP32 Node A] → DX-LR02 TX ~~LoRa~~ [ESP32 Node B] → DX-LR02 TX… |
+| `pixel-animation-sprite-pipeline` | ใช้หน้านี้เมื่อ A-Wiki/Codex ต้องสร้างหรือแก้ **pixel animation*… |
 | `pixel-wealth-quest-gdd` | "จะออกแบบ *Pixel Wealth Quest* — เกม pixel-art cozy ที่แปลงพฤติก… |
 | `pixellab-api-endpoint-matrix` | [verified 2026-06-01] หน้านี้เป็น operational catalog ของ PixelL… |
 | `pixellab-asset-pipeline-for-trading-rpg` | "จะใช้ PixelLab API/MCP สร้างตัวละคร เรือ ฉาก และ animation สำหร… |
@@ -140,6 +141,8 @@
 | `synth-freqtrade-pi5` | _To be filled in by human review._ |
 | `synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (awaiting human summary) |
 | `synth-get-started-esp32-esp-idf-programming-guide-v44-documentation` | (awaiting human summary) |
+| `synth-github-0x0funky-agent-sprite-forge` | [verified 2026-06-13] `agent-sprite-forge` เป็นชุด Codex skills… |
+| `synth-github-blendi-remade-sprite-sheet-creator` | [verified 2026-06-13] `sprite-sheet-creator` เป็นเว็บ Next.js/Re… |
 | `synth-good-uiux-practices` | (awaiting human summary) |
 | `synth-hardware-inventory-2026-04-18` | _To be filled in by human review._ |
 | `synth-heltec-libraries` | _To be filled in by human review._ |
@@ -240,4 +243,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 480 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 485 pages across 4 sections.*

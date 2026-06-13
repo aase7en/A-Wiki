@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 162 sources
+## Stats — 164 sources
 
 | slug | abstract |
 |------|----------|
@@ -80,6 +80,8 @@
 | `freqtrade-pi5` | 1. Freqtrade รองรับ ARM64 (Pi 5) ผ่าน Docker image เฉพาะ `*_pi`… |
 | `get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (no abstract) |
 | `get-started-esp32-esp-idf-programming-guide-v44-documentation` | (no abstract) |
+| `github-0x0funky-agent-sprite-forge` | [verified 2026-06-13] `agent-sprite-forge` เป็นชุด Codex skills… |
+| `github-blendi-remade-sprite-sheet-creator` | [verified 2026-06-13] `sprite-sheet-creator` เป็นเว็บ Next.js/Re… |
 | `good-uiux-practices` | (no abstract) |
 | `hardware-inventory-2026-04-18` | Date: 2026-04-18 Source: ถ่ายรูปอุปกรณ์จริง (10 รูป) |
 | `heltec-libraries` | 1. **Heltec WiFi LoRa 32 v3**: ESP32-S3 + SX1262 + 128×64 OLED —… |
