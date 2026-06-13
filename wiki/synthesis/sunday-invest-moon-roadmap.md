@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Phase 15 verification + Phase 16 planning**
-**Last touched**: `src/styles/hud.css` (readability pass — 15.9); 591 tests green (session 2026-06-14)
+**Next ticket**: **Phase 9b — retro review / Phase 16 plan**  
+**Last touched**: Phase 9 complete — 614 vitest tests, typecheck clean, feed:scan clean (session 2026-06-14)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -978,30 +978,30 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Test-first**: one row per produce; arrow direction matches `sellPriceOf` vs base; sparkline has 7 points from `marketHistory`.
 **Done when**: opens from bin panel; mobile-safe; tests + typecheck green.
 
-### Ticket 9.4 — Bot config persistence in `sim:save`  · `[ ]`
+### Ticket 9.4 — Bot config persistence in `sim:save`  · `[x]`
 **Goal**: Bot configs survive reload; status recomputed deterministically on hydrate (equity curves NEVER persisted).
 **Files**: `src/logic/saveGame.ts` (`botConfigs` field + sanitizer), `src/state/store.ts` (`SAVEABLE_FIELDS`, `hydrateBotConfigs` validating `strategyId`, `refreshBots()` on mount, `configureBot` writes `botConfigs`), tests.
 **Test-first**: save round-trip with corrupt entry dropped; hydrate + `refreshBots()` curve == fresh `MockBotFeed` run (determinism proof).
 **Done when**: reload restores configs; `npm run feed:scan` clean; mock-only invariant untouched.
 
-### Ticket 9.5 — Daily bot refresh via `epoch` + serializable DTO guard  · `[ ]`
+### Ticket 9.5 — Daily bot refresh via `epoch` + serializable DTO guard  · `[x]`
 **Goal**: Bot sparklines evolve once per in-game day, deterministically — no timers, no polling.
 **Files**: `src/feeds/tradingBotFeed.ts` (`BotConfig.epoch?: number`; mock seed → `deviceId:strategyId:epoch??0`), `src/state/store.ts` (`sleep()` re-runs configured bots with epoch = new day), tests.
 **Test-first**: same epoch → identical curve; different epoch → different; `JSON.parse(JSON.stringify(status))` deep-equals status.
 **Done when**: refresh is sleep-cadenced; all green.
 
-### Ticket 9.6 — Versioned remote bot contract doc v1  · `[ ]`
+### Ticket 9.6 — Versioned remote bot contract doc v1  · `[x]`
 **Goal**: `docs/bot-feed-contract.md` v1 — `GET/PUT /api/sim/bots/:deviceId`, BotConfig/BotStatus JSON shapes (incl. optional `epoch`, remote may ignore), error model, explicit no-secrets/no-order-execution clauses; cross-link ADR 2c.9.5 + Phase 5 feed contract.
 **Test-first**: regression lock — `RemoteBotFeed` still throws for both methods; no `fetch(`/URL literals in `tradingBotFeed.ts`.
 **Done when**: doc versioned v1; feed:scan clean.
 
-### Ticket 9.7 — HM HUD chip: season + weather + day  · `[ ]`
+### Ticket 9.7 — HM HUD chip: season + weather + day  · `[x]`
 **Goal**: Top chip shows season glyph + weather glyph + "วันที่ X" in HM idiom (inline pixel SVG, `--sim-*` tokens); data already in store.
 **Files**: `HudOverlay.tsx` (+ test, possibly small `CalendarChip.tsx`), `hud.css`.
 **Test-first**: aria-labels derived from `weatherFor(day, seasonOf(day))` + `dayOfSeason`.
 **Done when**: desktop + 380px mobile no overflow; tests green.
 
-### Ticket 9.8 — HM panel idiom pass (CSS-only)  · `[ ]`
+### Ticket 9.8 — HM panel idiom pass (CSS-only)  · `[x]`
 **Goal**: Consistent wood-frame header + parchment body + close-button placement across the ~15 modals.
 **Files**: `src/styles/hud.css`, `tokens.css` only.
 **Done when**: no component-markup changes beyond classNames; existing tests + typecheck green; visual QA 3 representative panels desktop/mobile.
@@ -1025,15 +1025,16 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Budget**: cap **$2.00** total, 2 gates (gate A = 3 run jobs, gate B = 9 one-shots); over cap → drop `bark` first.
 **Done when**: manifest regenerated; balance + evidence logged.
 
-### Ticket 9.12 — Pet behaviors: idle scheduler + bark-on-click  · `[ ]`
+### Ticket 9.12 — Pet behaviors: idle scheduler + bark-on-click  · `[x]`
 **Goal**: Dogs occasionally eat/sleep during wander; rare run burst; clicking a dog plays bark and still opens the bio panel.
 **Files**: `src/phaser/objects/PetPack.ts` (tick choice table + one-shot playback, injectable rng), tests, pet click bridge (bark then existing `gameBus.emit('pet-clicked')`).
 **Test-first**: seeded rng tick sequence includes an `eat` one-shot then resumes wander; click still emits `pet-clicked` (bio regression lock); missing anim key → graceful skip, no crash.
 **Done when**: runtime QA in Room + Farm; tests green.
 
-### Ticket 9.13 — Phase 9 closeout smoke + roadmap sync  · `[ ]`
+### Ticket 9.13 — Phase 9 closeout smoke + roadmap sync  · `[x]`
 **Goal**: Full runtime smoke — market panel → ship → sleep → payout == preview → bot refresh → tool anim → pet behaviors; desktop + mobile; console clean.
 **Gate**: `npm test` (all) + `npm run typecheck` + `npm run feed:scan` + React Doctor; canonical roadmap updated → mirror synced → closing commit.
+> 2026-06-14 claude-sonnet-4-6: Phase 9 fully closed — 9.4 bot persist + refreshBots (4 tests), 9.5 epoch-keyed curves + DTO guard (5 tests), 9.6 bot contract doc v1, 9.7 CalendarChip HUD (6 tests), 9.8 wood-frame panel CSS, 9.12 pet idle behaviors eat/sleep/bark (6 tests), 9.13 closeout. Final: **614/614 vitest, typecheck clean, feed:scan clean**. Added @types/node + fixed hud-readability.test.ts (node:fs). **RESUME** → Phase 9b retro / Phase 16 plan.
 
 ---
 
