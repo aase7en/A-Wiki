@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.9 — Readability pass on existing finance panels**
-**Last touched**: `src/feeds/instrumentFeed.ts`; `backend/routers/market.py`; read-only screener/funds contract docs; 591 tests green (session 2026-06-14)
+**Next ticket**: **Phase 15 verification + Phase 16 planning**
+**Last touched**: `src/styles/hud.css` (readability pass — 15.9); 591 tests green (session 2026-06-14)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1326,9 +1326,10 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Done when**: contract doc updated + cross-linked; remote flag wires screener/funds (404 until backend ships, by design); `npm run feed:scan` clean — no order/key path.
 > 2026-06-13 codex-poppy-javis: 15.8 done — `RemoteInstrumentFeed` now targets `/api/screener/scan` + `/api/funds/list` with fail-loud tests; backend exposes GET-only placeholder routers returning 404; product contract + A-Wiki Iron Law cross-link Resource Note: Real Broker Adapter (Future Phase X3). Verified 591 vitest tests, typecheck, build, feed scan, React Doctor 100. Backend pytest blocked locally because the active Python env lacks FastAPI.
 
-### Ticket 15.9 — Readability pass on existing finance panels  · `[ ]`
+### Ticket 15.9 — Readability pass on existing finance panels  · `[x]`
 **Edit**: `MarketPanel.tsx`, `BacktestPanel.tsx`, `BotConfigPanel.tsx`, `StrategyBuilderPanel.tsx`, `MarketStallPanel.tsx` + `hud.css` — apply readable type ramp (Thai body ≥14px/1.65, `tabular-nums`), raise contrast, larger touch targets; keep parchment frame.
 **Done when**: panels pass readability check (Thai ≥14px, tabular numbers, AA contrast); pixel aesthetic preserved.
+> 2026-06-14 claude-sonnet-4-6: 15.9 done — hud.css finance readability layer: .pwq-btn-primary/secondary (min-height 44px), .pwq-stat/label/value (tabular-nums, parchment card), .pwq-disclaimer (AA contrast), .pwq-strategy-builder + fieldsets + .pwq-validation-errors; all at 14px/1.65. Parchment frame untouched. 591/591 tests green.
 
 ### Phase 15 verification
 ```bash
