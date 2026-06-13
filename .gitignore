@@ -170,3 +170,8 @@ docker-compose.override.yml
 # --- GitNexus (code-graph cache, per-machine, can be large) ---
 # See: wiki/entities/ai-tools/gitnexus.md
 .gitnexus/
+
+# --- Productivity plugin (personal task list + working memory; Iron Law #6) ---
+# Dashboard lives in exports/html/ (already ignored). Keep personal data out of git.
+/TASKS.md
+/memory/
