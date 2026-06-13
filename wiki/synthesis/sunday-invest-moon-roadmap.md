@@ -1,5 +1,5 @@
 ---
-> 2026-06-12 claude-sonnet-4-6: 12.3 done -- dialogue.seed.ts (4 tiers/NPC, Thai, safety scan clean); DialoguePanel.tsx (portrait/hearts/tier-lines/talk/close); HudOverlay wired; 5+6 tests green. RESUME HERE -> 12.4.
+> 2026-06-13 codex-poppy-javis: 13.3 done -- AnimalPanel + FarmScene animal render/click bridge + placeholder chicken/cow textures; targeted 53 tests + typecheck green. RESUME HERE -> 12.6 / 13.4 asset tickets.
 type: synthesis
 title: "Sunday Invest Moon — Cross-Agent Roadmap"
 slug: sunday-invest-moon-roadmap
@@ -59,8 +59,8 @@ updated: 2026-06-12
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 12.4 — NPC rendering in FarmScene.ts + click bridge** (see Phase 12)
-**Last touched**: src/state/store.ts (FriendshipState + NPC actions + buy() discount); src/components/DialoguePanel.tsx + HudOverlay.tsx; npcs.seed.ts + friendship.ts + npcSchedule.ts + dialogue.seed.ts (session 2026-06-12, Phase 12.1-12.3 complete; 465 tests green)
+**Next ticket**: **Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke** (then Ticket 13.4 animal sprites; see Phase 12/13 asset tickets)
+**Last touched**: src/components/AnimalPanel.tsx + HudOverlay.tsx; src/phaser/scenes/FarmScene.ts + textures.ts; gameBus animal-clicked event; Phase 13.1-13.3 verified with targeted 53 tests + typecheck green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1191,18 +1191,21 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 
 > Plan approved 2026-06-11. Chicken + cow, daily feed → happiness → produce quality.
 
-### Ticket 13.1 — `src/data/animals.seed.ts` + `src/logic/animals.ts`  · `[ ]`
+### Ticket 13.1 — `src/data/animals.seed.ts` + `src/logic/animals.ts`  · `[x]`
 **Goal**: Animal registry + pure daily happiness + produce quality logic.
 **New files**: `animals.seed.ts` (AnimalDef: id, nameTh, feedItemId, producesId, spriteKey), `animals.ts` (pure: `feedAnimal`, `animalDayTick` → happiness ±, `produceQuality(happiness)`).
 **New items in `items.ts`**: `animal-feed`, `egg`, `milk` (3 quality tiers each).
 **Test-first**: missed feed → happiness −10; daily produce qty × quality deterministic.
+> 2026-06-13 codex-poppy-javis: Verified current implementation -- chicken/cow registry, animal-feed, egg/milk quality tiers, and pure animal logic covered by animals/items tests.
 
-### Ticket 13.2 — Store + barn zone + `animalDayTick` hook  · `[ ]`
+### Ticket 13.2 — Store + barn zone + `animalDayTick` hook  · `[x]`
 **Files**: `store.ts` (`animals[]`, `feedAnimal`, `animalDayTick` called from `sleep()`), `farm.seed.ts` (add `barn` zone cells near bottom of farm grid).
+> 2026-06-13 codex-poppy-javis: Verified current store integration -- animals persist, feed consumes animal-feed, sleep ticks happiness/produce, and barn zone exists in FARM.zones.
 
-### Ticket 13.3 — `FarmScene.ts` render + `AnimalPanel.tsx`  · `[ ]`
+### Ticket 13.3 — `FarmScene.ts` render + `AnimalPanel.tsx`  · `[x]`
 **Goal**: Animals wander in barn zone (reuse `PetPack` wander); click opens status/feed panel.
 **Done when**: feed button reduces animal-feed inventory; next-day produce in shipping bin.
+> 2026-06-13 codex-poppy-javis: Added AnimalPanel, gameBus animal-clicked bridge, FarmScene.redrawAnimals() in barn zone, and placeholder chicken/cow textures. Targeted animal/HUD/preload tests 53 passed; typecheck green.
 
 ### Ticket 13.4 — PixelLab chicken + cow sprites + smoke  · `[ ]`
 **Budget**: cap $0.90; echo balance before/after; normalize + wire.
