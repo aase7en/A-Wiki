@@ -6,7 +6,7 @@ slug: sunday-invest-moon-roadmap
 tags: [game-design, handoff, cross-agent, roadmap, sunday-invest-moon, phaser]
 sources: [pixel-wealth-quest-gdd]
 created: 2026-06-04
-updated: 2026-06-12
+updated: 2026-06-13
 ---
 
 # Sunday Invest Moon — Roadmap (cross-agent handoff)
@@ -59,8 +59,8 @@ updated: 2026-06-12
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`**
-**Last touched**: `src/data/town.seed.ts`; `src/phaser/scenes/TownScene.ts`; `FarmScene` east-edge bridge; `PhaserGame` scene registry; Town runtime smoke green with console/network 0 errors (session 2026-06-13)
+**Next ticket**: **Ticket 14.3 — `src/logic/festivals.ts` + 2 events**
+**Last touched**: `src/logic/marketPrices.ts`; `src/components/MarketStallPanel.tsx`; `src/state/store.ts`; `src/phaser/scenes/TownScene.ts`; market-stall runtime smoke green with console/network 0 errors (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1225,9 +1225,11 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 **Delivered 2026-06-13**: test-first town seed + TownScene shell, Farm east-edge → Town warp, Town west gate → Farm return, Phaser registry coverage, runtime Town screenshot smoke.
 **Verified**: 510 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-town-smoke.png`.
 
-### Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`  · `[ ]`
+### Ticket 14.2 — `src/logic/marketPrices.ts` + `MarketStallPanel.tsx`  · `[x]`
 **Goal**: Produce prices fluctuate daily deterministic (seasonal × seeded random walk 0.7–1.4); town market offers better rate than shipping bin on good days; optional remote mode: % change proportional to BTC-yesterday delta.
 **Test-first**: determinism; market price > base some days < other days; town > bin invariant holds.
+**Delivered 2026-06-13**: test-first deterministic `marketPrices.ts`, produce quote rows in `MarketStallPanel`, `sellAtTownMarket()` store action that pays coins immediately without touching the shipping bin, and TownScene market-stall bridge.
+**Verified**: 523 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-market-stall-smoke.png`.
 
 ### Ticket 14.3 — `src/logic/festivals.ts` + 2 events  · `[ ]`
 **Goal**: Spring day 14 = produce contest (bonus coins for top-quality crop); Autumn day 14 = investment quiz (multiple-choice coaching question, coin reward).
