@@ -59,8 +59,8 @@ updated: 2026-06-12
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke** (then Ticket 13.4 animal sprites; see Phase 12/13 asset tickets)
-**Last touched**: src/components/AnimalPanel.tsx + HudOverlay.tsx; src/phaser/scenes/FarmScene.ts + textures.ts; gameBus animal-clicked event; Phase 13.1-13.3 verified with targeted 53 tests + typecheck green (session 2026-06-13)
+**Next ticket**: **Ticket 14.1 — `TownScene.ts` + `town.seed.ts`**
+**Last touched**: PixelLab NPC sprites + chicken/cow assets; `src/phaser/npcFrames.ts`; `PreloadScene`; `npcs.seed.ts`; `animals.seed.ts`; `textures.ts`; runtime desktop/mobile smoke green with console/network 0 errors (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1179,11 +1179,12 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 **Test-first**: discount = max across all NPCs; discount correctly reduces price; tests green.
 > 2026-06-12 claude-sonnet-4-6: 12.5 done -- ShopPanel shows strikethrough+discounted price + badge "ลด X%"; buy aria-label uses finalPrice; 6 ShopPanel tests (inc. 4 discount); 469/469 tests. RESUME HERE -> 12.6.
 
-### Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke  · `[ ]`
+### Ticket 12.6 — PixelLab NPC sprites + Phase 12 smoke  · `[x]`
 **Goal**: 3 NPCs × 4-dir walk + idle south (cap $1.20).
 **Process**: echo balance before/after; 3 PixelLab `animate` jobs; normalize + wire into PreloadScene.
 **Done when**:
-- [ ] Sprites on-disk; manifest entries; runtime smoke desktop + mobile; console 0 errors
+- [x] Sprites on-disk; manifest entries; runtime smoke desktop + mobile; console 0 errors
+> 2026-06-13 codex-poppy-javis: 12.6 done -- PixelLab create-character + animate generated 3 NPCs with idle south + 4-dir walk frames (9 frames/dir), normalized into `public/assets/character/npcs/`, added `npc-sprites.manifest.json`, wired `preloadNpcFrames()` into PreloadScene, and replaced Worker-Bot placeholder texture keys. Balance before `$2.96099750654565`, after NPC batch `$2.77687443613344` (spend ~$0.1841 < $1.20 cap). Verified 504 tests, typecheck/build/feed scan, React Doctor 100, desktop/mobile runtime asset smoke.
 
 ---
 
@@ -1207,8 +1208,9 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 **Done when**: feed button reduces animal-feed inventory; next-day produce in shipping bin.
 > 2026-06-13 codex-poppy-javis: Added AnimalPanel, gameBus animal-clicked bridge, FarmScene.redrawAnimals() in barn zone, and placeholder chicken/cow textures. Targeted animal/HUD/preload tests 53 passed; typecheck green.
 
-### Ticket 13.4 — PixelLab chicken + cow sprites + smoke  · `[ ]`
+### Ticket 13.4 — PixelLab chicken + cow sprites + smoke  · `[x]`
 **Budget**: cap $0.90; echo balance before/after; normalize + wire.
+> 2026-06-13 codex-poppy-javis: 13.4 done -- Generated PixelLab `chicken-v001.png` + `cow-v001.png`, added `spritePath` registry fields, preloaded both real animal textures, and guarded placeholder generation so loaded textures are not overwritten. Animal batch spend ~$0.0148; balance after `$2.7620752804478` (< $0.90 cap). Desktop/mobile runtime smoke loaded NPC/animal assets with missing=0 and console/network issues=0.
 
 ---
 
