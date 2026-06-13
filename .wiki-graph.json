@@ -1,20 +1,20 @@
 {
   "generated_at": "2026-06-13",
   "stats": {
-    "nodes": 509,
-    "edges": 1304,
+    "nodes": 514,
+    "edges": 1310,
     "edges_by_type": {
-      "wikilink": 1140,
+      "wikilink": 1143,
       "mdlink": 49,
       "depends": 31,
       "implements": 49,
-      "extends": 35
+      "extends": 38
     },
     "broken_links": 0,
-    "orphans": 177,
+    "orphans": 179,
     "orphan_by_domain": {
       "sources": 85,
-      "synthesis": 79,
+      "synthesis": 81,
       "context": 13
     },
     "hubs": [
@@ -490,7 +490,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-12",
+      "title": "Review Report — 2026-06-13",
       "domain": "context"
     },
     {
@@ -1174,6 +1174,16 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/github-0x0funky-agent-sprite-forge.md",
+      "title": "GitHub: 0x0funky/agent-sprite-forge",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/github-blendi-remade-sprite-sheet-creator.md",
+      "title": "GitHub: blendi-remade/sprite-sheet-creator",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/good-uiux-practices.md",
       "title": "good-uiux-practices",
       "domain": "sources"
@@ -1784,6 +1794,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "title": "Pixel Animation Sprite Pipeline",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/pixel-wealth-quest-gdd.md",
       "title": "Pixel Wealth Quest — Game Design Document",
       "domain": "synthesis"
@@ -2136,6 +2151,16 @@
     {
       "path": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
       "title": "Get Started - ESP32 -  — ESP-IDF Programming Guide v4.4 documentation — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-github-0x0funky-agent-sprite-forge.md",
+      "title": "GitHub: 0x0funky/agent-sprite-forge — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-github-blendi-remade-sprite-sheet-creator.md",
+      "title": "GitHub: blendi-remade/sprite-sheet-creator — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -9477,6 +9502,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/github-0x0funky-agent-sprite-forge.md",
+      "to": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/github-blendi-remade-sprite-sheet-creator.md",
+      "to": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
       "to": "https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/src/oled/API.md",
       "type": "mdlink",
@@ -11215,6 +11254,34 @@
     {
       "from": "wiki/synthesis/pi4-lora-gateway-server.md",
       "to": "wiki/sources/dx-lr02-datasheet.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "to": "wiki/sources/github-blendi-remade-sprite-sheet-creator.md",
+      "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "to": "wiki/sources/github-0x0funky-agent-sprite-forge.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-animation-sprite-pipeline.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "type": "wikilink",
       "broken": false,
       "external": false
