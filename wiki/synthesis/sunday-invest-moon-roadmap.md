@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)**
-**Last touched**: `src/components/analyst/StockDetailView.tsx` + `CandleChart.tsx` + `src/logic/instrumentNarrative.ts`; 570 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.8 — Extend read-only backend contract + ADR alignment**
+**Last touched**: `src/components/analyst/MarketView.tsx` + `OverviewView.tsx` + `src/logic/marketBreadth.ts`; 590 tests green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1311,11 +1311,13 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Done when**: row → detail w/ chart + overlays + auto Thai narrative; narrative tests green.
 > 2026-06-13 claude-sonnet-4-6: 15.6 done — CandleChart (SVG zero-dep, 5D/1M/3M/6M/1Y + line-mode + SMA20/50 + RSI sub-panel), instrumentNarrative.ts (10 tests), StockDetailView.tsx, ScreenerView onSelect, AnalystDesk selectedSymbol routing; typecheck clean, 570/570 tests. RESUME HERE → 15.7.
 
-### Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)  · `[ ]`
-**New file**: `src/logic/marketBreadth.ts` (+test) — advancers/decliners, % above SMA50, sector heat, sentiment gauge over the canned universe.
-**New file**: `src/components/analyst/MarketView.tsx` — index cards (SET/SET50 mock), breadth bar, sector heatmap, "อารมณ์ตลาด" gauge, top gainers/losers/most-active.
-**New file**: `src/components/analyst/OverviewView.tsx` — landing: watchlist + portfolio snapshot (reuse `snapshot` slice) + today's scan highlights + breadth.
+### Ticket 15.7 — Market analysis + overview (วิเคราะห์ตลาด · ภาพรวม)  · `[x]`
+**New file**: `src/logic/marketBreadth.ts` (+20 tests) — advancers/decliners, pctAboveSma, sectorStats, topGainers/Losers/mostActive, sentiment.
+**New file**: `src/components/analyst/MarketView.tsx` — mock index cards (SET/SET50/MAI), อารมณ์ตลาด chip, breadth bar, sector heat cells, top gainers/losers/most-active tables.
+**New file**: `src/components/analyst/OverviewView.tsx` — landing: breadth stats, momentum signals table, top gainer/loser cards, cross-tab navigation props.
+**Edit**: `AnalystDesk.tsx` — wire MarketView + OverviewView; remove OverviewStub/MarketStub; add cross-tab callbacks.
 **Done when**: market view shows breadth/sectors/movers; overview aggregates; breadth tests green.
+> 2026-06-13 claude-sonnet-4-6: 15.7 done — marketBreadth.ts (20 tests), MarketView.tsx, OverviewView.tsx, AnalystDesk wired; typecheck clean, 590/590 tests. RESUME HERE → 15.8.
 
 ### Ticket 15.8 — Extend read-only backend contract + ADR alignment  · `[ ]`
 **Goal**: Fold screener/funds into the existing read-only data contract; no new client risk.
