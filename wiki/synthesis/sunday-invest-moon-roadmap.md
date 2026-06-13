@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.3 — Instrument universe (mock stocks + funds) + read-only feed seam**
-**Last touched**: `src/components/analyst/AnalystDesk.tsx` + `WorkstationLauncher.tsx`; `src/state/store.ts` (AnalystTab + analystTab); `src/data/room.seed.ts` (computer opens workstation); `src/components/HudOverlay.tsx`; 535 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.4 — Screener engine + scan presets (test-first)**
+**Last touched**: `src/data/instruments.canned.ts` + `src/feeds/instrumentFeed.ts` + `src/feeds/instrumentFeed.test.ts`; 543 tests green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1281,12 +1281,13 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Reuse**: `.pwq-backdrop`, gameBus, Tide & Tally responsive breakpoints.
 **Done when**: office computer → ศูนย์วิเคราะห์ opens desk; tabs switch; close returns; readable desktop + 390×844; console clean.
 
-### Ticket 15.3 — Instrument universe (mock stocks + funds) + read-only feed seam  · `[ ]`
+### Ticket 15.3 — Instrument universe (mock stocks + funds) + read-only feed seam  · `[x]`
 **Goal**: Mock Thai-style stock + fund universe behind the **same seam shape** as `marketDataFeed.ts`.
 **New file**: `src/data/instruments.canned.ts` — ~20 mock stocks (PTT, CPALL, AOT, KBANK, ADVANC, DELTA…) `{ symbol, nameTh, sector, price, changePct, volume, marketCap, pe, pbv, divYield, ohlcv: Candle[] }` + ~8 funds `{ id, nameTh, category, nav, ret1y, ret3y, ret5y, risk, expensePct }`. Labelled mock/illustrative (candles.canned.ts stays crypto-only; this is separate equities/funds data).
 **New file**: `src/feeds/instrumentFeed.ts` — mirror `marketDataFeed.ts`: `InstrumentFeed` iface, `CannedInstrumentFeed` (default), `RemoteInstrumentFeed` (flag `VITE_PWQ_MARKET_FEED=remote`, read-only `/api/screener/*` + `/api/funds/*`, fail-loud), `createInstrumentFeed()`, allowlist guard.
 **Test-first**: `instrumentFeed.test.ts` — canned returns universe; allowlist rejects unknown; remote throws loudly.
 **Done when**: feed returns mock universe offline; tests green; `npm run feed:scan` clean.
+> 2026-06-13 claude-sonnet-4-6: 15.3 done — instruments.canned.ts (20 stocks + 8 funds, deterministic genBars), instrumentFeed.ts (CannedFeed + RemoteInstrumentFeed fail-loud + createInstrumentFeed factory), 8 tests (test-first). 543 tests green. RESUME HERE → 15.4.
 
 ### Ticket 15.4 — Screener engine + scan presets (test-first)  · `[ ]`
 **New file**: `src/logic/screener.ts` — `screen(universe, criteria): ScreenRow[]`; composable filters (price/%chg/volume; RSI band; price vs SMA/EMA; MACD cross; PE/PBV/divYield; funds: return/risk/category) reusing `indicators.ts`; attaches `signal` + `score`; ranks.
@@ -1441,4 +1442,5 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 > 2026-06-13 claude-opus-4-8: Planned **Phase 15 — Analyst Desk** (investneet-style readable analysis suite: warm-cream `.analyst-desk` tokens, mobile-first 600px, stock radar/screener + funds + stock description + market breadth) reusing Phase 9–11 market/indicator infra; sampled investneet.com/scan.html's live design via Chrome DevTools (palette #fbf7ed/#1f1a14, up #4a7301 / down #b91c1c). Backend stays read-only (15.8 extends `/api/market/*` seam with `/api/screener|funds`; broker remains future X3). Iron Law intact. Synced to both roadmap copies. RESUME HERE unchanged = 14.3 (Phase 15 is queued backlog; user may choose to prioritize over 14.3).
 > 2026-06-13 claude-opus-4-8: **15.1 done** — added `.analyst-desk` / `[data-surface="analyst"]` scoped block to `tokens.css` (all `--an-*` palette + `--t-*` ramp matching investneet scale); created `src/styles/analyst.css` (~350 lines, all primitives: table, chip, collection-tab, stat-card, sparkline, timeframe/metric toggles, key-stats grid, buy/sell btns, narrative, disclaimer, responsive 639px). Typecheck green, pixel HUD untouched. RESUME HERE = 15.2.
 > 2026-06-13 claude-sonnet-4-6: **15.2 done** — AnalystTab type + analystTab/setAnalystTab in store; computer hotspot opens 'workstation' (was 'shop'); WorkstationLauncher 3-button panel; AnalystDesk full-screen fixed overlay (5-tab topbar: ภาพรวม/เรดาร์สแกน/กองทุน/วิเคราะห์ตลาด/พอร์ต, stub content); HudOverlay: analyst-desk renders OUTSIDE backdrop, workstation renders inside parchment panel. House test updated. 535 tests green. Pushed 58518e9. RESUME HERE = 15.3.
+> 2026-06-13 claude-sonnet-4-6: **15.3 done** — instruments.canned.ts (20 mock Thai stocks + 8 funds, deterministic genBars 30 bars each, labelled illustrative); instrumentFeed.ts (InstrumentFeed iface, CannedInstrumentFeed, RemoteInstrumentFeed fail-fast at ctor, createInstrumentFeed factory, allowlist guard); 8 tests test-first. 543/543 green. Pushed 2bc6de2. RESUME HERE = 15.4.
 ```
