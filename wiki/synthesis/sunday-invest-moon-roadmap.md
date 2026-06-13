@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 15.4 — Screener engine + scan presets (test-first)**
-**Last touched**: `src/data/instruments.canned.ts` + `src/feeds/instrumentFeed.ts` + `src/feeds/instrumentFeed.test.ts`; 543 tests green (session 2026-06-13)
+**Next ticket**: **Ticket 15.5 — Screener UI (เรดาร์สแกน) + Funds UI (กองทุน)**
+**Last touched**: `src/logic/screener.ts` + `src/data/scanPresets.ts` + `src/logic/screener.test.ts`; 560 tests green (session 2026-06-13)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1289,7 +1289,7 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 **Done when**: feed returns mock universe offline; tests green; `npm run feed:scan` clean.
 > 2026-06-13 claude-sonnet-4-6: 15.3 done — instruments.canned.ts (20 stocks + 8 funds, deterministic genBars), instrumentFeed.ts (CannedFeed + RemoteInstrumentFeed fail-loud + createInstrumentFeed factory), 8 tests (test-first). 543 tests green. RESUME HERE → 15.4.
 
-### Ticket 15.4 — Screener engine + scan presets (test-first)  · `[ ]`
+### Ticket 15.4 — Screener engine + scan presets (test-first)  · `[x]`
 **New file**: `src/logic/screener.ts` — `screen(universe, criteria): ScreenRow[]`; composable filters (price/%chg/volume; RSI band; price vs SMA/EMA; MACD cross; PE/PBV/divYield; funds: return/risk/category) reusing `indicators.ts`; attaches `signal` + `score`; ranks.
 **New file**: `src/data/scanPresets.ts` — โมเมนตัมแรง · ทะลุแนวต้าน · RSI<30 ขายมากเกินไป · ปันผลสูง · Value (PE ต่ำ).
 **Test-first**: `screener.test.ts` — deterministic rows + ranking per preset.
@@ -1443,4 +1443,5 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 > 2026-06-13 claude-opus-4-8: **15.1 done** — added `.analyst-desk` / `[data-surface="analyst"]` scoped block to `tokens.css` (all `--an-*` palette + `--t-*` ramp matching investneet scale); created `src/styles/analyst.css` (~350 lines, all primitives: table, chip, collection-tab, stat-card, sparkline, timeframe/metric toggles, key-stats grid, buy/sell btns, narrative, disclaimer, responsive 639px). Typecheck green, pixel HUD untouched. RESUME HERE = 15.2.
 > 2026-06-13 claude-sonnet-4-6: **15.2 done** — AnalystTab type + analystTab/setAnalystTab in store; computer hotspot opens 'workstation' (was 'shop'); WorkstationLauncher 3-button panel; AnalystDesk full-screen fixed overlay (5-tab topbar: ภาพรวม/เรดาร์สแกน/กองทุน/วิเคราะห์ตลาด/พอร์ต, stub content); HudOverlay: analyst-desk renders OUTSIDE backdrop, workstation renders inside parchment panel. House test updated. 535 tests green. Pushed 58518e9. RESUME HERE = 15.3.
 > 2026-06-13 claude-sonnet-4-6: **15.3 done** — instruments.canned.ts (20 mock Thai stocks + 8 funds, deterministic genBars 30 bars each, labelled illustrative); instrumentFeed.ts (InstrumentFeed iface, CannedInstrumentFeed, RemoteInstrumentFeed fail-fast at ctor, createInstrumentFeed factory, allowlist guard); 8 tests test-first. 543/543 green. Pushed 2bc6de2. RESUME HERE = 15.4.
+> 2026-06-13 claude-sonnet-4-6: **15.4 done** — screener.ts (screen() composable criteria: changePct/RSI/SMA/PE/PBV/divYield; criteria-primary scoring; ScreenRow+Signal types; sort desc); scanPresets.ts (5 presets: momentum/breakout/oversold/high-div/value); 17 screener tests test-first. 560/560 green. Pushed 9e058c7. RESUME HERE = 15.5.
 ```
