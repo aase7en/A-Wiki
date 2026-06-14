@@ -77,7 +77,7 @@ echo "L4|implementation|เขียน NPC rendering ใน FarmScene" > .tmp/c
 ## ทดสอบ
 
 ```bash
-pytest tests/test_hooks.py::TestCostTierGate -v    # 16 tests (incl invalid-tier hardening)
+pytest tests/test_hooks.py::TestCostTierGate -v    # 17 tests (incl invalid-tier + empty-tier hardening)
 pytest tests/test_hooks.py -v                       # full hook suite
 ```
 
