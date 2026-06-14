@@ -6,7 +6,7 @@ slug: sunday-invest-moon-roadmap
 tags: [game-design, handoff, cross-agent, roadmap, sunday-invest-moon, phaser]
 sources: [pixel-wealth-quest-gdd]
 created: 2026-06-04
-updated: 2026-06-13
+updated: 2026-06-14
 ---
 
 # Sunday Invest Moon — Roadmap (cross-agent handoff)
@@ -1331,7 +1331,7 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 ### Ticket 15.9 — Readability pass on existing finance panels  · `[x]`
 **Edit**: `MarketPanel.tsx`, `BacktestPanel.tsx`, `BotConfigPanel.tsx`, `StrategyBuilderPanel.tsx`, `MarketStallPanel.tsx` + `hud.css` — apply readable type ramp (Thai body ≥14px/1.65, `tabular-nums`), raise contrast, larger touch targets; keep parchment frame.
 **Done when**: panels pass readability check (Thai ≥14px, tabular numbers, AA contrast); pixel aesthetic preserved.
-> 2026-06-14 claude-sonnet-4-6: 15.9 done — hud.css finance readability layer: .pwq-btn-primary/secondary (min-height 44px), .pwq-stat/label/value (tabular-nums, parchment card), .pwq-disclaimer (AA contrast), .pwq-strategy-builder + fieldsets + .pwq-validation-errors; all at 14px/1.65. Parchment frame untouched. 591/591 tests green.
+> 2026-06-14 codex-poppy-javis: 15.9 done — added shared `.pwq-finance-readable` contract across MarketPanel, BacktestPanel, BotConfigPanel, StrategyBuilderPanel, and MarketStallPanel; finance controls now use Thai-readable 14px/1.65 text, tabular numbers, and 44px touch targets while preserving the parchment frame. Verified 617/617 vitest tests, typecheck, build, feed scan, and React Doctor 100.
 
 ### Phase 15 verification
 ```bash
