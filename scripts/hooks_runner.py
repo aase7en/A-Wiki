@@ -25,9 +25,26 @@ import sys
 import json
 import os
 import subprocess
+import time
+import glob
 
 HOOKS_DIR = os.path.join(os.path.dirname(__file__), "hooks")
 HOOK_TIMEOUT = int(os.environ.get("HOOK_TIMEOUT", "5"))
+
+# ── Live Dashboard event logger ───────────────────────────────────────────────
+_REPO_ROOT = os.path.dirname(os.path.abspath(__file__))  # scripts/
+_LIVE_LOG = os.path.join(_REPO_ROOT, "..", ".tmp", "live-events.jsonl")
+
+
+def _log_event(event_type: str, **kwargs) -> None:
+    """Write one JSON line to the live dashboard log (best-effort, never raises)."""
+    try:
+        os.makedirs(os.path.dirname(_LIVE_LOG), exist_ok=True)
+        entry = {"ts": round(time.time(), 3), "type": event_type, **{k: v for k, v in kwargs.items() if v is not None}}
+        with open(_LIVE_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
 def _norm_skip(name: str) -> str:
     """Normalize a skip entry: accept dashes/underscores, with/without .py."""
     name = name.strip().replace("-", "_")
@@ -68,13 +85,15 @@ def run_hook(hook_name, input_data):
             text=True,
             timeout=HOOK_TIMEOUT,
         )
+        passed = proc.returncode != 2
         if proc.returncode == 2:
+            _emit_hook_event(hook_name, input_data, "block")
             return False, proc.stderr.strip()
         if proc.returncode != 0:
-            # Non-blocking error — report but pass
             sys.stderr.write(
                 f"⚠️ Hook {hook_name} exited with code {proc.returncode}: {proc.stderr.strip()}\n"
             )
+        _emit_hook_event(hook_name, input_data, "pass")
         return True, ""
     except subprocess.TimeoutExpired:
         sys.stderr.write(f"⚠️ Hook {hook_name} timed out after {HOOK_TIMEOUT}s\n")
@@ -82,6 +101,25 @@ def run_hook(hook_name, input_data):
     except Exception as e:
         sys.stderr.write(f"⚠️ Hook {hook_name} error: {e}\n")
         return True, ""
+
+
+def _emit_hook_event(hook_name: str, input_data: dict, result: str) -> None:
+    """Emit a hook_check event to the live dashboard."""
+    base = hook_name.replace(".py", "")
+    tool = input_data.get("tool_name") or input_data.get("tool", "")
+    kwargs: dict = {"hook": base, "tool": tool or None, "result": result}
+    # For cost-tier pass: include declared tier
+    if "cost_tier" in base and result == "pass":
+        try:
+            today = time.strftime("%Y-%m-%d")
+            files = glob.glob(os.path.join(_REPO_ROOT, "..", ".tmp", f"cost-tier-{today}.txt"))
+            if files:
+                tier = open(files[0]).read().strip().split("|")[0].strip()
+                if tier:
+                    kwargs["tier"] = tier
+        except Exception:
+            pass
+    _log_event("hook_check", **kwargs)
 
 
 def main():

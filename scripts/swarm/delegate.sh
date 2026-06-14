@@ -141,6 +141,7 @@ _track_fail() {
   local model="$1" reason="$2"
   TRIED_MODELS+=("$model")
   FAIL_REASONS+=("$reason")
+  _log_event "delegate_fail" "model=$model" "reason=$reason"
 }
 
 # ─── Cost annotator ───────────────────────────────────────────────────────────
@@ -180,10 +181,20 @@ _extract_smart() {
   python3 "$EXTRACT_PY" "$fmt"
 }
 
+# ─── Live Dashboard Event Logger ──────────────────────────────────────────────
+EVENT_LOGGER="$REPO_ROOT/scripts/live-dashboard/event_logger.py"
+_log_event() {
+  # Non-blocking: fire-and-forget background python3 call
+  [ -f "$EVENT_LOGGER" ] && python3 "$EVENT_LOGGER" "$@" >/dev/null 2>&1 &
+  disown "$!" 2>/dev/null || true
+}
+
 # ─── Engine wrappers ──────────────────────────────────────────────────────────
 try_gemini_direct() {
   # Direct Google AI Studio — free 1500 req/day, no OpenRouter fee
   [ -z "${GEMINI_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=${GEMINI_DIRECT_MODEL}(gemini-direct)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -195,6 +206,7 @@ try_gemini_direct() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart gemini 2>"$err_out"; then
+    _log_event "delegate_done" "model=${GEMINI_DIRECT_MODEL}(gemini-direct)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -212,6 +224,8 @@ try_deepseek_direct() {
     *deepseek*)               native="deepseek-chat" ;;
     *) return 1 ;;
   esac
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=deepseek-direct($native)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -224,6 +238,7 @@ try_deepseek_direct() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=deepseek-direct($native)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -234,6 +249,8 @@ try_deepseek_direct() {
 try_openrouter_model() {
   local model="$1"
   [ -z "${OPENROUTER_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$model" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -245,6 +262,7 @@ try_openrouter_model() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=$model" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -254,6 +272,8 @@ try_openrouter_model() {
 
 try_groq_model() {
   [ -z "${GROQ_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$GROQ_DIRECT_MODEL(groq)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -266,6 +286,7 @@ try_groq_model() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=$GROQ_DIRECT_MODEL(groq)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     _cost_annotate "$GROQ_DIRECT_MODEL(groq)"
     rm -f "$err_out"; return 0
   fi
@@ -276,6 +297,8 @@ try_groq_model() {
 
 try_anthropic_haiku() {
   [ -z "${ANTHROPIC_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$ANTHROPIC_LOW_MODEL(anthropic)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -289,6 +312,7 @@ try_anthropic_haiku() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart anthropic 2>"$err_out"; then
+    _log_event "delegate_done" "model=$ANTHROPIC_LOW_MODEL(anthropic)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     _cost_annotate "$ANTHROPIC_LOW_MODEL"
     rm -f "$err_out"; return 0
   fi
