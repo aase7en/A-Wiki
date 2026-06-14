@@ -59,8 +59,8 @@ updated: 2026-06-13
 
 ## RESUME HERE
 
-**Next ticket**: **Phase 9b — retro review / Phase 16 plan**  
-**Last touched**: Phase 9 complete — 614 vitest tests, typecheck clean, feed:scan clean (session 2026-06-14)
+**Next ticket**: **Phase 14 retro / Phase 16 plan (or any remaining open tickets)**  
+**Last touched**: Ticket 14.4 done — 617 vitest tests, typecheck clean, feed:scan clean (session 2026-06-14)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1238,8 +1238,9 @@ NpcSlot = { fromMin, toMin, sceneId: 'town' | 'farm' | 'room', cell: Cell }
 **Delivered 2026-06-13**: test-first `festivals.ts` with Spring day 14 produce contest + Fall day 14 quiz, session-only quiz repeat guard, `FestivalPanel`, festival HUD button, and store actions for contest/quiz rewards.
 **Verified**: 535 vitest tests; typecheck; build; feed scan; React Doctor 100/100; runtime smoke `/tmp/pwq-festival-smoke.png`.
 
-### Ticket 14.4 — PixelLab town/festival assets + smoke  · `[ ]`
+### Ticket 14.4 — PixelLab town/festival assets + smoke  · `[x]`
 **Budget**: cap $0.80; echo balance before/after.
+> 2026-06-14 claude-sonnet-4-6: 14.4 done — town-market-stall-v001.png + town-hall-v001.png + festival-banner-v001.png generated (PixelLab, $0.0213); TownBuilding.textureKey/texturePath fields added; PreloadScene loops TOWN.buildings to load sprites; TownScene.drawBuildings() uses image sprite with rectangle fallback; town.assets.test.ts (3 tests) all pass. 617/617 tests, typecheck clean, feed:scan clean.
 
 ---
 
