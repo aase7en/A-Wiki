@@ -1,0 +1,20 @@
+# AG2 (AutoGen 2) — optional multi-agent orchestration layer for A-Wiki
+# Requires Python >=3.10 — install in a separate venv:
+#
+#   python3.10 -m venv .venv-ag2
+#   source .venv-ag2/bin/activate
+#   pip install -r requirements-ag2.txt
+#
+# Then use:
+#   bash scripts/swarm/goal.sh "<goal>" --dry-run
+#   python3 scripts/swarm/ag2-goal.py --goal "<goal>" --mode plan
+
+# Core AG2 (ag2ai fork of AutoGen — maintained, OpenAI-compatible)
+ag2[openai]>=0.13,<0.14
+
+# Optional: Gemini/Anthropic backends (needed if free-model delegation uses AG2 agents)
+# ag2[gemini]>=0.13,<0.14
+# ag2[anthropic]>=0.13,<0.14
+
+# HTTP + streaming for delegate.sh HTTP bridge (optional)
+httpx>=0.27,<0.29

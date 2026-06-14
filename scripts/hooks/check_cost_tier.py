@@ -37,7 +37,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 TMP_DIR = Path(os.environ.get("AWIKI_COST_GATE_TMP_DIR", str(REPO_ROOT / ".tmp")))
 
 # These tools require a cost declaration before running
-GATE_TOOLS = {"Edit", "Write", "Agent", "NotebookEdit"}
+GATE_TOOLS = {"Edit", "Write", "MultiEdit", "Agent", "NotebookEdit"}
 
 # These tools are exempt — declaration lives here
 EXEMPT_TOOLS = {"Bash", "PowerShell", "Read", "Glob", "Grep", "ToolSearch"}
