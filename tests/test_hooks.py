@@ -513,3 +513,24 @@ class TestCostTierGate:
         )
         assert proc.returncode == 0
         assert "L4" in proc.stderr
+
+    def test_multiedit_blocked_when_no_declaration(self, tmp_path):
+        """MultiEdit is blocked — same gate as Edit/Write."""
+        proc = _run_cost_gate(
+            {"tool_name": "MultiEdit", "tool_input": {"file_path": "wiki/test.md", "edits": []}},
+            tmp_path,
+        )
+        assert proc.returncode == 2, f"expected block, got {proc.returncode}: {proc.stderr}"
+        assert "COST GATE" in proc.stderr
+
+    def test_multiedit_passes_with_declaration(self, tmp_path):
+        """MultiEdit passes once a cost-tier declaration exists."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        (tmp_path / f"cost-tier-{today}.txt").write_text("L4|implementation|bulk wiki edit", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "MultiEdit", "tool_input": {"file_path": "wiki/test.md", "edits": []}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr

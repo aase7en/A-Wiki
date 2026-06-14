@@ -8,9 +8,9 @@
 | Area | Count |
 |---|---:|
 | Wiki pages | 485 |
-| Owned skills | 42 |
+| Owned skills | 43 |
 | Script capabilities | 13 |
-| Protocols/runbooks | 38 |
+| Protocols/runbooks | 39 |
 | HTML surfaces | 11 |
 
 ## Wiki Knowledge Surface
@@ -132,6 +132,7 @@ Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md
 | `thai-social-caption` | skills/claude-thai | Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: writ… | `skills/claude-thai/thai-social-caption/SKILL.md` |
 | `thai-text-processing` | skills/claude-thai | Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization,… | `skills/claude-thai/thai-text-processing/SKILL.md` |
 | `thai-translate` | skills/claude-thai | Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: transl… | `skills/claude-thai/thai-translate/SKILL.md` |
+| `ag2-goal` | skills/delegation | Orchestrate multi-step goals using AG2 agents — Planner decomposes, free Executors execute, Planner validates. | `skills/delegation/ag2-goal/SKILL.md` |
 | `crew-dispatch` | skills/delegation | Split multi-dimensional A-Wiki questions into parallel delegated subtasks while keeping primary-agent validation. | `skills/delegation/crew-dispatch/SKILL.md` |
 | `delegate-subagent` | skills/delegation | Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or… | `skills/delegation/delegate-subagent/SKILL.md` |
 | `skill-creator` | skills/delegation | Guide for creating or updating skills that extend Manus via specialized knowledge, workflows, or tool integrations. For any modification or improveme… | `skills/delegation/skill-creator/SKILL.md` |
@@ -158,6 +159,7 @@ Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md
 
 | Title | Family | Path |
 |---|---|---|
+| AG2 Goal Orchestrator — A-Wiki Protocol | docs/protocols | `docs/protocols/ag2-orchestrator.md` |
 | Agent Visual Event Protocol | docs/protocols | `docs/protocols/agent-visual-event-protocol.md` |
 | AI Engineering Integration Roadmap | docs/protocols | `docs/protocols/ai-engineering-ingest-roadmap.md` |
 | Antigravity Integration Playbook | docs/protocols | `docs/protocols/antigravity-playbook.md` |
