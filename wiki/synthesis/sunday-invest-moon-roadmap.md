@@ -60,9 +60,10 @@ updated: 2026-06-14
 ## RESUME HERE
 
 **Next ticket**: **Ticket 16.1 — Save-version migration ladder (foundation, test-first)**  
-**Last touched**: Phase 16 restructured to "make the money real" first (Opus 4.8 review). 16.1–16.5 = economy reconciliation (all pure-logic-cheap), 16.6–16.8 = guided loop, 16.9–16.10 = closeout. Highest-leverage = 16.2 (un-orphan `botSettlement`). (session 2026-06-14)
+**Last touched**: All Phase 16 tickets 16.1–16.7 staged as implementation patches in `A-Wiki/docs/phase-16-staging/` (session 2026-06-14). Product repo = `aase7en/sunday-estate-webapp` (pixel-wealth-quest subdir). Apply patches in a session with that repo in scope.
 **Suggested run order for the next agent**: 16.1 → 16.2 ⭐ → 16.3 → 16.4 → 16.5 → 16.6 → 16.7 → 16.8 → 16.9 → 16.10. Each ticket is one focused session; commit `chunk(16.X): goal [next: 16.Y]` and push at each boundary.
-**Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
+**Product repo**: `aase7en/sunday-estate-webapp` · `pixel-wealth-quest/` subdir. (Formerly referenced as `Aase7en-InW-Wiki` — that repo is deleted.)
+**Branch policy**: commit straight to `main` of both repos (A-Wiki + sunday-estate-webapp) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
 
