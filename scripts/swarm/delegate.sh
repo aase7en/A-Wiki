@@ -341,9 +341,11 @@ show_failure_and_heal() {
   local count=${#TRIED_MODELS[@]}
   echo "" >&2
   echo "⚠️  All $count model(s) failed. Attempt log:" >&2
-  for i in $(seq 0 $((count-1))); do
-    echo "   ✗ ${TRIED_MODELS[$i]} → ${FAIL_REASONS[$i]}" >&2
-  done
+  if [ "$count" -gt 0 ]; then
+    for i in $(seq 0 $((count-1))); do
+      echo "   ✗ ${TRIED_MODELS[$i]} → ${FAIL_REASONS[$i]}" >&2
+    done
+  fi
 
   # Classify dominant failure pattern
   local has_model_not_found=false
@@ -351,12 +353,14 @@ show_failure_and_heal() {
   local has_auth_error=false
   local has_network=false
 
-  for reason in "${FAIL_REASONS[@]}"; do
-    [[ "$reason" == MODEL_NOT_FOUND* ]] && has_model_not_found=true
-    [[ "$reason" == RATE_LIMIT* ]]      && has_rate_limit=true
-    [[ "$reason" == AUTH_ERROR* ]]      && has_auth_error=true
-    [[ "$reason" == network* ]]         && has_network=true
-  done
+  if [ "$count" -gt 0 ]; then
+    for reason in "${FAIL_REASONS[@]}"; do
+      [[ "$reason" == MODEL_NOT_FOUND* ]] && has_model_not_found=true
+      [[ "$reason" == RATE_LIMIT* ]]      && has_rate_limit=true
+      [[ "$reason" == AUTH_ERROR* ]]      && has_auth_error=true
+      [[ "$reason" == network* ]]         && has_network=true
+    done
+  fi
 
   if $has_auth_error; then
     echo "" >&2

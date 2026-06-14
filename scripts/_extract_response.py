@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 _extract_response.py — Response parser for delegate.sh engine wrappers.
 
