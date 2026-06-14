@@ -5,6 +5,12 @@ set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO"
 
+LOAD_KEYS="$REPO/scripts/hooks/load-drive-keys.sh"
+if [[ -f "$LOAD_KEYS" ]]; then
+  # shellcheck source=scripts/hooks/load-drive-keys.sh
+  source "$LOAD_KEYS" >/dev/null 2>&1 || true
+fi
+
 git remote get-url origin >/dev/null 2>&1 || exit 0
 
 # Always on main

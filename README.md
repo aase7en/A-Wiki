@@ -306,15 +306,55 @@ Queries OpenRouter's free tier and produces a ranked allocation recommendation â
 
 ---
 
+## Session Lifecycle â€” The Four Workflows
+
+A-Wiki now exposes the four operational workflows as a local interactive map:
+[awiki-workflow-map.html](exports/html/awiki-workflow-map.html)
+
+This HTML artifact is intentionally local-only and gitignored. It is a human-review leaf under the output-format policy, not a tracked source-of-truth document.
+
+| Workflow | What it does | Main surfaces |
+|---|---|---|
+| Session Start | Pull latest `main`, check Drive/external data, refresh context, show TODOs, prepare cost-first routing | `.claude/settings.json`, `.codex/hooks.json`, `scripts/hooks/session_start.py` |
+| Plan Mode / Handoff | Split work into resumable chunks, checkpoint `handoff.md`, allow safe cross-agent resume | `docs/protocols/cross-agent-plan-handoff.md`, `scripts/agent-switch.sh` |
+| Advisor / Swarm | Keep the top model as planner/validator while routing low-risk work to cheaper lanes | `scripts/swarm/delegate.sh`, `scripts/crew-dispatch.py`, `docs/protocols/crew.md` |
+| Cost-First Pyramid | Push local search and free/cheap routes first, then escalate to primary models only when justified | `docs/protocols/cost-gate.md`, `scripts/model-router-policy.py`, `scripts/hooks/check_cost_tier.py` |
+
+### Codex Guarded Full-Auto + AG2
+
+Codex in A-Wiki is designed for `approval_policy="never"` + `sandbox_mode="danger-full-access"` only inside a trusted repo with hook guardrails active. That combination is fast, but it is only acceptable because the repo layers file/write gates, delegation gates, secret scanning, source-provenance checks, and cost declarations on top.
+
+AG2 sits above the existing router as a goal orchestrator. It does not replace `delegate.sh`.
+
+| Layer | Owner | Why it stays there |
+|---|---|---|
+| Goal planning / chunking | `scripts/swarm/ag2-goal.py` | Lets Codex or Claude turn a goal into resumable work |
+| Free/cheap routing | `scripts/swarm/delegate.sh` | Single source of truth for provider fallback and cost-first dispatch |
+| Local-first retrieval | `scripts/search-wiki.py`, graph/search scripts | Zero-cost evidence before any external LLM call |
+| Final judgment | Primary model | Iron Law III: validation is not delegated |
+
 ## Cost-First Enforcement Modes
 
-A-Wiki currently enforces the Cost-First Pyramid at two practical points:
+A-Wiki enforces the Cost-First Pyramid at two practical points, but the enforcement strength is intentionally uneven:
 
 | Mode | Status | What It Covers |
 |---|---|---|
 | Session start | Active | Hooks remind the agent to load current context, check API/model scout freshness, and start from the lowest-cost route. |
 | Tool calls during a session | Active | `PreToolUse` and routing scripts apply gates when the agent edits files, writes files, runs shell commands, or delegates model work. |
 | Continuous always-on monitor | Not enabled by default | A separate background process could watch the repo and model cache even when no AI tool is being used. |
+
+### Enforcement Reality
+
+The current cost gate is a **nudge**, not a hard wall:
+
+| Behavior | Reality today |
+|---|---|
+| Tier declaration | Required before `Edit` / `Write` / `Agent`, and invalid tiers are now blocked |
+| Model-vs-tier validation | Not enforced; the hook cannot see the actual model route |
+| Scope of declaration | Per-day, not per-task |
+| Bypass visibility | `CI=true` and `HOOK_SKIP=check_cost_tier` still bypass, but now emit warnings |
+
+That tradeoff is deliberate for a solo repo. It forces the agent to stop and declare intent, but it avoids the friction of per-task re-approval or background daemons.
 
 ### Continuous Monitor Tradeoff
 

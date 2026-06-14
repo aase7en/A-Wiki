@@ -46,8 +46,7 @@ cat > .codex/hooks.json <<'JSON'
       {
         "matcher": "Agent",
         "hooks": [
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"},
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-delegation-gate"}
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"}
         ]
       },
       {
@@ -56,7 +55,8 @@ cat > .codex/hooks.json <<'JSON'
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-bash-destructive-git"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-bash-no-branch"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-secret-leak"},
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-apikey"}
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-apikey"},
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-delegation-gate"}
         ]
       }
     ],
@@ -96,8 +96,8 @@ cat > .codex/hooks.json <<'JSON'
           {"type": "command", "command": "bash .codex/hooks/wiki-context-check.sh"},
           {"type": "command", "command": "bash .codex/hooks/session-start-binary-scan.sh"},
           {"type": "command", "command": "bash scripts/show-active-todos.sh"},
+          {"type": "command", "command": "bash scripts/hooks/load-drive-keys.sh"},
           {"type": "command", "command": "bash .codex/hooks/session-start-apikey-check.sh"},
-          {"type": "command", "command": "bash .codex/hooks/session-start-load-drive-keys.sh"},
           {"type": "command", "command": "bash .codex/hooks/build-pharmacy-db.sh"},
           {"type": "command", "command": "python3 scripts/hooks/session_start.py"}
         ]

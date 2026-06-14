@@ -1,41 +1,33 @@
 # Straw Hat Wiki Crew Protocol
 
-> **อัปเดต**: 2026-05-18 | **วัตถุประสงค์**: routing rules สำหรับ parallel multi-agent dispatch
+> **อัปเดต**: 2026-06-15 | **วัตถุประสงค์**: capability-role dispatch สำหรับ A-Wiki โดยไม่ hardcode model names
 
 ---
 
 ## ลูกเรือ (Crewmates)
 
-| ชื่อ | Model | Cost | Env Key | ความถนัด |
-|------|-------|------|---------|---------|
-| 🧠 Vegapunk | Claude Sonnet | ปกติ | `ANTHROPIC_API_KEY` | CEO: วางแผน, synthesize, เขียน wiki |
-| 🗺️ Nami | Gemini 2.5 Flash-Lite | **ฟรี** (1K req/day) | `GOOGLE_AI_STUDIO_KEY` | หาของ: search, lookup, URL summary |
-| 📚 Robin | DeepSeek V4 Flash | $0.14/M input | `DEEPSEEK_API_KEY` | ขุดประวัติ: reasoning, compare, analysis |
-| ⚡ Luffy | Groq Llama 3.3 70B | **ฟรี** (14.4K req/day) | `GROQ_API_KEY` | กำลัง: scan ไฟล์, lint, fast execute |
-| 🔧 Franky | OpenRouter free router | **ฟรี** (200 req/day) | `OPENROUTER_API_KEY` | ช่าง: code, build, universal fallback |
-| 🍳 Sanji | `crew-dispatch.py` | ฟรี (local) | — | เชฟ: orchestrate parallel dispatch |
+| ชื่อ | Role | Cost lane | ความถนัด |
+|------|------|-----------|-----------|
+| 🧠 Vegapunk | Primary advisor / validator | `platform-primary` | วางแผน, synthesize, validate, final judgment |
+| 🗺️ Nami | Search / lookup lane | `free-current` | ข้อมูลล่าสุด, URL summary, fact lookup |
+| 📚 Robin | Reason / compare lane | `cheap-capable` หรือ `free-current` | reasoning, compare, synthesis ย่อย |
+| ⚡ Luffy | Scan / lint lane | `platform-low-scout` หรือ `free-current` | file scan, lint, fast evidence gathering |
+| 🔧 Franky | Universal fallback lane | runtime router | fallback / race / bridge ผ่าน `delegate.sh` |
+| 🍳 Sanji | Dispatch shim | local | แปลง task → `delegate.sh` และเก็บ backward compatibility |
 
 ---
 
 ## Task Routing Table
 
-| task_type | ไปที่ | เหตุผล |
-|-----------|-------|--------|
-| `search` | Nami | Gemini ดี web-grounded, ฟรี |
-| `lookup` | Nami | same |
-| `summary` | Nami | same |
-| `url` | Nami | URL fetch + summary |
-| `analyze` | Robin | DeepSeek reasoning ดี, ถูก |
-| `compare` | Robin | same |
-| `reason` | Robin | same |
-| `scan` | Luffy | Groq เร็วสุด, ฟรี, ดีสำหรับ file scan |
-| `lint` | Luffy | same |
-| `execute` | Luffy | same |
-| `code` | Franky | OpenRouter free picks best code model |
-| `build` | Franky | same |
-| `refactor` | Franky | same |
+| `task_type` | Crew role | Routed by |
+|-----------|-----------|-----------|
+| `search` / `lookup` | Nami | `scripts/swarm/delegate.sh search` |
+| `summarize` | Nami / Robin | `scripts/swarm/delegate.sh summarize` |
+| `reason` / `compare` | Robin | `scripts/swarm/delegate.sh reason|compare` |
+| `scan` | Luffy | `scripts/swarm/delegate.sh scan` |
+| `race` | Franky | `scripts/swarm/delegate.sh race` |
 
-**Fallback chain**: ถ้า crewmate หลักไม่มี API key → Franky (OpenRouter) → Luffy (Groq)
+**Fallback chain**: ใช้ runtime roster จาก `delegate.sh` เสมอ; อย่า bind provider/model name ใน protocol นี้
 
 ---
 
@@ -47,28 +39,20 @@ python3 scripts/crew-dispatch.py --task "search:best MQTT broker 2026"
 ```
 
 ### Parallel dispatch (หลาย task พร้อมกัน)
+ใช้ shell parallel หรือ AG2 orchestrator แทน เพราะ shim นี้ intentionally รับทีละ task:
+
 ```bash
-python3 scripts/crew-dispatch.py \
-  --task "search:latest ESP32-S3 specs" \
-  --task "analyze:compare ESP32 vs ESP32-S3 for TinyML" \
-  --task "scan:summarize wiki/entities/iot/esp32.md"
+bash scripts/swarm/delegate.sh search "latest ESP32-S3 specs" &
+bash scripts/swarm/delegate.sh compare "ESP32 vs ESP32-S3 for TinyML" &
+bash scripts/swarm/delegate.sh scan "summarize wiki/entities/iot/esp32.md" &
+wait
 ```
 
-### Plan file (Vegapunk เขียน JSON plan แล้วให้ Sanji dispatch)
-```bash
-# สร้าง /tmp/plan.json:
-# [{"type": "search", "prompt": "..."}, {"type": "analyze", "prompt": "..."}]
-python3 scripts/crew-dispatch.py --plan /tmp/plan.json
-```
+### Goal-level orchestration
+เมื่อโจทย์เป็น goal หลาย step ให้ใช้ AG2:
 
-### ดูสถานะลูกเรือ
 ```bash
-python3 scripts/crew-dispatch.py --list-crew
-```
-
-### Demo (ทดสอบระบบ)
-```bash
-python3 scripts/crew-dispatch.py --demo
+bash scripts/swarm/goal.sh "Audit all AI-tool wiki entries for staleness" --dry-run
 ```
 
 ---
@@ -79,34 +63,33 @@ python3 scripts/crew-dispatch.py --demo
 คำถามมาถึง Vegapunk
   ↓
 "ค้น wiki ก่อนได้ไหม?"  → scripts/search-wiki.py (Level -1, ฟรี 100%)
-"ไม่พบ → ต้องออก net?"  → Nami: Gemini Flash-Lite (Level 1, ฟรี)
-"ต้อง reasoning?"        → Robin: DeepSeek (Level 2, ถูกมาก)
-"scan ไฟล์เยอะ?"         → Luffy: Groq (Level 3, ฟรี)
-"เขียน wiki/สรุป?"       → Vegapunk: Claude Sonnet (Level 4, ปกติ)
+"ไม่พบ → ต้องออก net?"  → Nami lane ผ่าน `delegate.sh` (Level 1, ฟรีก่อน)
+"ต้อง reasoning?"        → Robin lane ผ่าน `delegate.sh` (Level 2, cheap/free)
+"scan ไฟล์เยอะ?"         → Luffy lane ผ่าน `delegate.sh` (Level 3, low-scout/free)
+"เขียน wiki/สรุป?"       → Vegapunk / platform-primary (Level 4)
 ```
 
 ---
 
 ## ข้อจำกัดที่ต้องรู้
 
-- **Nami (Gemini)**: Google ลด rate limit 50-80% ในธ.ค. 2025 — ระวัง 1K req/day หมดถ้าใช้บ่อย
-- **Luffy (Groq)**: 6K TPM — ไม่เหมาะงาน long-context (>4K tokens ต่อ call)
-- **Franky (OpenRouter free)**: catalog เปลี่ยนตลอด — ใช้ `openrouter/free` router ให้ auto-pick
-- **Robin (DeepSeek)**: V4 Pro ลด 75% ถึง 31 พ.ค. 2026 — ถ้าต้อง reasoning หนัก upgrade ได้ถูก
-- **ทุกคน**: ถ้าไม่มี API key → fall through ไป Franky → ถ้า Franky ก็ไม่มี → Claude native
+- Crew นี้เป็น **role map** ไม่ใช่ provider map; provider/model จริงเลือกที่ runtime โดย `delegate.sh`
+- ถ้า free-model keys ไม่มี → route จะล้มไปที่ platform-primary หรือ fail ตาม exit code ของ `delegate.sh`
+- ถ้าต้อง self-planning / multi-round loop ให้ใช้ AG2 (`goal.sh`) ไม่ใช่ `crew-dispatch.py`
+- Primary agent ยังต้อง validate output ของทุก lane ตาม Iron Law III
 
 ---
 
 ## Env Keys Setup
 
 ```bash
-# ใส่ใน ~/.zshrc หรือ ~/.bashrc
-export GOOGLE_AI_STUDIO_KEY="..."   # Nami — https://aistudio.google.com/apikey
-export DEEPSEEK_API_KEY="..."       # Robin — https://platform.deepseek.com
-export GROQ_API_KEY="..."           # Luffy — https://console.groq.com
-export OPENROUTER_API_KEY="..."     # Franky — https://openrouter.ai/keys
+# preferred: store in drive/.secrets and let delegate.sh / goal.sh load on demand
+export OPENROUTER_API_KEY="..."      # recommended universal free-first unlock
+export GOOGLE_AI_STUDIO_KEY="..."    # Gemini alias
+export GROQ_API_KEY="..."            # fast scan fallback
+export DEEPSEEK_API_KEY="..."        # direct provider fallback
 ```
 
 ---
 
-*Protocol version 1.0 — 2026-05-18*
+*Protocol version 2.0 — 2026-06-15*

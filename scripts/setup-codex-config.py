@@ -44,11 +44,15 @@ REQUIRED_GUARDRAILS = [
     "check-external-editor-drift",
 ]
 
-# These guardrails MUST be in PreToolUse Bash hooks
+# These guardrails MUST be in PreToolUse Bash hooks.
+# check-delegation-gate belongs here (NOT under Agent) — the hook only acts on
+# Bash `git push`, so wiring it under any other matcher makes it dead.
 REQUIRED_BASH_GUARDRAILS = [
     "check-bash-destructive-git",
     "check-bash-no-branch",
     "check-secret-leak",
+    "check-apikey",
+    "check-delegation-gate",
 ]
 
 HOOKS_CONFIG: dict = {
@@ -75,7 +79,6 @@ HOOKS_CONFIG: dict = {
                 "matcher": "Agent",
                 "hooks": [
                     {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"},
-                    {"type": "command", "command": "python3 scripts/hooks_runner.py check-delegation-gate"},
                 ],
             },
             {
@@ -83,8 +86,6 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": f"python3 scripts/hooks_runner.py {g}"}
                     for g in REQUIRED_BASH_GUARDRAILS
-                ] + [
-                    {"type": "command", "command": "python3 scripts/hooks_runner.py check-apikey"},
                 ],
             },
         ],
@@ -130,8 +131,8 @@ HOOKS_CONFIG: dict = {
                     {"type": "command", "command": "bash .codex/hooks/wiki-context-check.sh"},
                     {"type": "command", "command": "bash .codex/hooks/session-start-binary-scan.sh"},
                     {"type": "command", "command": "bash scripts/show-active-todos.sh"},
+                    {"type": "command", "command": "bash scripts/hooks/load-drive-keys.sh"},
                     {"type": "command", "command": "bash .codex/hooks/session-start-apikey-check.sh"},
-                    {"type": "command", "command": "bash .codex/hooks/session-start-load-drive-keys.sh"},
                     {"type": "command", "command": "bash .codex/hooks/build-pharmacy-db.sh"},
                     {"type": "command", "command": "python3 scripts/hooks/session_start.py"},
                 ]
