@@ -59,8 +59,8 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Phase 14 retro / Phase 16 plan (or any remaining open tickets)**  
-**Last touched**: Ticket 14.4 done — 617 vitest tests, typecheck clean, feed:scan clean (session 2026-06-14)
+**Next ticket**: **Ticket 16.1 — Quest Journal domain (test-first)**  
+**Last touched**: Phase 16 playable closeout plan added; ready to implement `src/logic/questJournal.ts` (session 2026-06-14)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1340,6 +1340,38 @@ npm --prefix <product-repo> run feed:scan          # iron-law: no order/key path
 npx react-doctor@latest <product-repo> --verbose --diff
 ```
 Runtime: office computer → ศูนย์วิเคราะห์ → tabs · screener presets filter/sort · row → detail chart + Thai description · funds · market breadth · `preview_resize 390 844` no overflow.
+
+---
+
+## Phase 16 — Playable closeout + guided daily loop
+
+**Goal**: Turn the shipped systems into a guided, finishable cozy life-sim slice: the player always knows what to do next, every major loop has one visible affordance, and final release gates are repeatable.
+
+### Ticket 16.1 — Quest Journal domain (test-first)  · `[~]`
+**Goal**: Add pure daily quest selection/progress logic that can summarize farm, town, animal, NPC, analyst, and festival loops without React/Phaser coupling.
+**Files**: `src/logic/questJournal.ts`, `src/logic/questJournal.test.ts`.
+**Done when**: test-first module returns stable quest IDs, progress labels, completion state, and next-action hints for a normal early-game day, a festival day, and a fully completed day.
+
+### Ticket 16.2 — Quest Journal HUD panel + daily goal button  · `[ ]`
+**Goal**: Surface 16.1 in the HUD as a compact parchment "สมุดเป้าหมาย" panel with icon button, readable Thai copy, and mobile-safe layout.
+**Files**: `HudOverlay.tsx`, new `QuestJournalPanel.tsx`, `hud.css`, component tests.
+**Done when**: panel opens/closes from HUD, lists all active goals with progress, and has no horizontal overflow at 390px.
+
+### Ticket 16.3 — World affordance polish pass  · `[ ]`
+**Goal**: Make important interactables visibly discoverable: house workstation, town market stall, festival banner, sea bridge, Debt Dungeon portal, animal/NPC click targets.
+**Files**: Phaser scene tests + small visual marker/tint changes only.
+**Done when**: every major loop has a visible cue and click bridge regression test.
+
+### Ticket 16.4 — Full playable runtime smoke matrix  · `[ ]`
+**Goal**: Prove the intended first-session path works end to end: title → house → farm → harvest/ship/sleep → town market → NPC/festival → analyst desk.
+**Files**: `scripts/` or Playwright smoke script, roadmap evidence.
+**Done when**: desktop + 390px mobile smoke has clean console, no blank canvas, no modal overflow, and captured screenshots.
+
+### Ticket 16.5 — Release preflight + public-safe package gate  · `[ ]`
+**Goal**: One repeatable command/evidence bundle for sale/demo handoff.
+**Done when**: full tests, typecheck, build, feed scan, React Doctor, privacy scan, roadmap mirror sync, and product iframe smoke are all recorded.
+
+> 2026-06-14 codex-poppy-javis: Phase 16 added as the playable closeout plan after Phase 14/15 completion. RESUME HERE → 16.1.
 
 ---
 
