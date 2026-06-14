@@ -58,13 +58,30 @@ def wiki_search(query: str, limit: int = 5) -> str:
         timeout=15,
     )
     if code != 0:
-        # Try without --json flag (older version)
+        # Fallback: older search-wiki without --json → tab-separated lines
         code, out, err = _run(
             [sys.executable, str(SEARCH_SCRIPT), query, "--limit", str(limit)],
             timeout=15,
         )
-        return json.dumps({"results": out.strip().splitlines()[:limit], "error": err.strip() or None})
-    return out.strip() or json.dumps({"results": []})
+        return json.dumps(
+            {"results": out.strip().splitlines()[:limit], "error": err.strip() or None},
+            ensure_ascii=False,
+        )
+    # search-wiki.py --json emits a JSON LIST; normalize to {"results": [...]}
+    # so callers can always rely on a dict shape (closes shape-mismatch at source).
+    raw = out.strip()
+    if not raw:
+        return json.dumps({"results": []})
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        return json.dumps({"results": [], "error": "unparseable search output"})
+    if isinstance(parsed, list):
+        return json.dumps({"results": parsed}, ensure_ascii=False)
+    if isinstance(parsed, dict):
+        parsed.setdefault("results", [])
+        return json.dumps(parsed, ensure_ascii=False)
+    return json.dumps({"results": []})
 
 
 def wiki_get_page(path: str) -> str:
@@ -95,13 +112,14 @@ def wiki_graph_neighbors(node: str, limit: int = 10) -> str:
     """
     if not GRAPH_SCRIPT.exists():
         return json.dumps({"error": f"{GRAPH_SCRIPT} not found"})
+    # query-graph.py takes the node via --neighbors PATH (NOT a positional arg).
     code, out, err = _run(
-        [sys.executable, str(GRAPH_SCRIPT), node, "--limit", str(limit)],
+        [sys.executable, str(GRAPH_SCRIPT), "--neighbors", node, "--limit", str(limit)],
         timeout=10,
     )
     if code != 0:
         return json.dumps({"error": err.strip() or "graph query failed"})
-    return json.dumps({"node": node, "neighbors": out.strip().splitlines()})
+    return json.dumps({"node": node, "neighbors": out.strip().splitlines()}, ensure_ascii=False)
 
 
 def delegate_task(task_type: str, prompt: str) -> str:

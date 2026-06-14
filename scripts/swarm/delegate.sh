@@ -28,6 +28,7 @@ SCOUT_SCRIPT="$REPO_ROOT/scripts/model-scout-current.py"
 SCOUT_JSON="${MODEL_SCOUT_CURRENT_JSON:-$REPO_ROOT/.tmp/model-scout-current.json}"
 SCOUT_REPORT="${MODEL_SCOUT_CURRENT_REPORT:-$REPO_ROOT/.tmp/model-scout-current.md}"
 UPDATE_SCRIPT="$REPO_ROOT/scripts/update-model-roster.sh"
+LOAD_DRIVE_KEYS_SH="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"
 
 refresh_model_scout() {
   local mode="${1:-cached}"
@@ -52,6 +53,21 @@ fi
 
 # ─── API key aliases (normalize alternate names → canonical names) ─────────────
 # GOOGLE_AI_STUDIO_KEY is the name shown in Google AI Studio UI → alias to GEMINI_API_KEY
+if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
+  export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
+fi
+
+# ─── Drive-backed key fallback ─────────────────────────────────────────────────
+# SessionStart hooks cannot persist exports back into Codex's parent process.
+# To make delegation work reliably from Desktop/CLI, delegate.sh must load
+# missing keys itself on demand.
+if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${DEEPSEEK_API_KEY:-}" ] && \
+   [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${GROQ_API_KEY:-}" ] && \
+   [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -f "$LOAD_DRIVE_KEYS_SH" ]; then
+  # shellcheck source=scripts/hooks/load-drive-keys.sh
+  source "$LOAD_DRIVE_KEYS_SH" >/dev/null 2>&1 || true
+fi
+
 if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
   export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
 fi
@@ -156,9 +172,12 @@ _cost_annotate() {
 # ─── Response parser + error classifier ───────────────────────────────────────
 # Writes response to stdout (exit 0) or classifies error to LAST_ERROR (exit 1)
 LAST_ERROR=""
+# _extract_response.py lives in scripts/ (one level up from scripts/swarm/).
+# Resolve via REPO_ROOT so the path is correct regardless of caller CWD.
+EXTRACT_PY="$REPO_ROOT/scripts/_extract_response.py"
 _extract_smart() {
   local fmt="$1"
-  python3 "$(dirname "${BASH_SOURCE[0]}")/_extract_response.py" "$fmt"
+  python3 "$EXTRACT_PY" "$fmt"
 }
 
 # ─── Engine wrappers ──────────────────────────────────────────────────────────
@@ -445,4 +464,13 @@ run_tier() {
 }
 
 # ─── Execute ──────────────────────────────────────────────────────────────────
+# Fail loudly if the response extractor is missing — otherwise every model call
+# fails identically and the auto-heal misdiagnoses the root cause.
+if [ ! -f "$EXTRACT_PY" ]; then
+  echo "❌ Response extractor not found: $EXTRACT_PY" >&2
+  echo "   delegate.sh cannot parse model responses without it." >&2
+  echo "   Expected at scripts/_extract_response.py (repo root: $REPO_ROOT)" >&2
+  exit 1
+fi
+
 run_tier 1

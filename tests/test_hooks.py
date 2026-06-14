@@ -534,3 +534,38 @@ class TestCostTierGate:
             tmp_path,
         )
         assert proc.returncode == 0, proc.stderr
+
+    def test_invalid_tier_rejected(self, tmp_path):
+        """A declaration with a non-L1-L4 tier is REJECTED (hardening) — garbage no longer passes."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        (tmp_path / f"cost-tier-{today}.txt").write_text("garbage|x|y", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 2, f"expected block on invalid tier, got {proc.returncode}: {proc.stderr}"
+        assert "ไม่ถูกต้อง" in proc.stderr or "COST GATE" in proc.stderr
+
+    def test_lowercase_tier_accepted(self, tmp_path):
+        """Tier matching is case-insensitive — 'l4' normalizes to L4 and passes."""
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        (tmp_path / f"cost-tier-{today}.txt").write_text("l4|implementation|case test", encoding="utf-8")
+
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+        )
+        assert proc.returncode == 0, proc.stderr
+
+    def test_ci_bypass_is_visible(self, tmp_path):
+        """CI bypass still passes (exit 0) but now emits a visible BYPASSED warning."""
+        proc = _run_cost_gate(
+            {"tool_name": "Edit", "tool_input": {"file_path": "wiki/test.md", "old_string": "a", "new_string": "b"}},
+            tmp_path,
+            extra_env={"CI": "true"},
+        )
+        assert proc.returncode == 0, proc.stderr
+        assert "BYPASSED" in proc.stderr

@@ -101,10 +101,19 @@ def run_dry_plan(goal: str) -> dict[str, Any]:
     except Exception:
         context = {"raw": context_results}
 
+    # wiki_search normalizes to {"results": [...]}, but stay defensive: a bare
+    # list (older shape) or a non-dict must not crash the dry-plan.
+    if isinstance(context, dict):
+        results = context.get("results", [])
+    elif isinstance(context, list):
+        results = context
+    else:
+        results = []
+
     plan = {
         "goal": goal,
         "mode": "dry-run",
-        "wiki_context_found": bool(context.get("results")),
+        "wiki_context_found": bool(results),
         "suggested_subtasks": [
             {"task_type": "search", "prompt": f"What is known about: {goal}"},
             {"task_type": "reason", "prompt": f"What are the key challenges or steps for: {goal}"},
@@ -116,8 +125,8 @@ def run_dry_plan(goal: str) -> dict[str, Any]:
         "note": "Run without --dry-run to execute with AG2 agents",
     }
 
-    if context.get("results"):
-        plan["wiki_context"] = context["results"][:3]
+    if results:
+        plan["wiki_context"] = results[:3]
 
     return plan
 

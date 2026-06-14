@@ -104,6 +104,10 @@
                     },
                     {
                         "type": "command",
+                        "command": "bash scripts/hooks/load-drive-keys.sh"
+                    },
+                    {
+                        "type": "command",
                         "command": "bash .claude/hooks/session-start-apikey-check.sh"
                     },
                     {
@@ -123,7 +127,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-cost-tier"
+                        "command": "python3 scripts/hooks_runner.py check-cost-tier"
                     },
                     {
                         "type": "command",
@@ -131,27 +135,36 @@
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-claudemd-lock"
+                        "command": "python3 scripts/hooks_runner.py check-claudemd-lock"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-raw-immutable"
+                        "command": "python3 scripts/hooks_runner.py check-raw-immutable"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-source-original-file"
+                        "command": "python3 scripts/hooks_runner.py check-source-original-file"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-external-editor-drift"
+                        "command": "python3 scripts/hooks_runner.py check-external-editor-drift"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-output-format"
+                        "command": "python3 scripts/hooks_runner.py check-output-format"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-harness-routing"
+                        "command": "python3 scripts/hooks_runner.py check-harness-routing"
+                    }
+                ]
+            },
+            {
+                "matcher": "Agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-cost-tier"
                     }
                 ]
             },
@@ -160,15 +173,23 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-bash-destructive-git"
+                        "command": "python3 scripts/hooks_runner.py check-bash-destructive-git"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-bash-no-branch"
+                        "command": "python3 scripts/hooks_runner.py check-bash-no-branch"
                     },
                     {
                         "type": "command",
-                        "command": "python scripts/hooks_runner.py check-secret-leak"
+                        "command": "python3 scripts/hooks_runner.py check-secret-leak"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-apikey"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-delegation-gate"
                     }
                 ]
             }

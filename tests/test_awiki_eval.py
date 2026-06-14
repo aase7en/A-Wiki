@@ -182,3 +182,44 @@ def test_awiki_skillopt_adapter_rejects_regression(tmp_path):
     payload = json.loads(result.stdout)
     assert payload["action"] == "reject"
     assert payload["candidate_score"] < payload["current_score"]
+
+
+def test_hook_configs_use_shared_drive_key_loader_before_status_check():
+    claude = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
+    codex = json.loads((REPO_ROOT / ".codex" / "hooks.json").read_text(encoding="utf-8"))
+
+    claude_cmds = [h["command"] for h in claude["hooks"]["SessionStart"][0]["hooks"]]
+    codex_cmds = [h["command"] for h in codex["hooks"]["SessionStart"][0]["hooks"]]
+
+    shared_loader = "bash scripts/hooks/load-drive-keys.sh"
+    claude_check = "bash .claude/hooks/session-start-apikey-check.sh"
+    codex_check = "bash .codex/hooks/session-start-apikey-check.sh"
+
+    assert shared_loader in claude_cmds
+    assert shared_loader in codex_cmds
+    assert claude_cmds.index(shared_loader) < claude_cmds.index(claude_check)
+    assert codex_cmds.index(shared_loader) < codex_cmds.index(codex_check)
+
+
+def test_setup_scripts_and_delegate_use_shared_drive_key_loader():
+    setup_py = (REPO_ROOT / "scripts" / "setup-codex-config.py").read_text(encoding="utf-8")
+    setup_sh = (REPO_ROOT / "scripts" / "setup-codex-hooks.sh").read_text(encoding="utf-8")
+    delegate = (REPO_ROOT / "scripts" / "swarm" / "delegate.sh").read_text(encoding="utf-8")
+
+    assert "bash scripts/hooks/load-drive-keys.sh" in setup_py
+    assert "bash scripts/hooks/load-drive-keys.sh" in setup_sh
+    assert "session-start-load-drive-keys.sh" not in setup_py
+    assert "session-start-load-drive-keys.sh" not in setup_sh
+    assert 'LOAD_DRIVE_KEYS_SH="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"' in delegate
+    assert 'source "$LOAD_DRIVE_KEYS_SH"' in delegate
+
+
+def test_apikey_check_hooks_are_nounset_safe():
+    claude = (REPO_ROOT / ".claude" / "hooks" / "session-start-apikey-check.sh").read_text(encoding="utf-8")
+    codex = (REPO_ROOT / ".codex" / "hooks" / "session-start-apikey-check.sh").read_text(encoding="utf-8")
+
+    for script in (claude, codex):
+        assert '${OPENROUTER_API_KEY:-}' in script
+        assert '${GROQ_API_KEY:-}' in script
+        assert '${GEMINI_API_KEY:-}' in script
+        assert '${GOOGLE_AI_STUDIO_KEY:-}' in script
