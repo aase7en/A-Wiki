@@ -1,224 +1,238 @@
 {
-  "enabledMcpjsonServers": ["playwright", "chrome-devtools", "firecrawl", "perplexity", "markitdown"],
-  "permissions": {
-    "allow": [
-      "Bash(mkdir *)",
-      "Bash(chmod +x *)",
-      "Bash(git mv *)",
-      "Bash(git stash *)",
-      "Bash(git rebase --continue)",
-      "Bash(git rebase --skip)",
-      "Bash(git rebase --abort)",
-      "Bash(git pull --rebase *)",
-      "Bash(git reset HEAD *)",
-      "Bash(git fetch *)",
-      "Bash(git ls-files *)",
-      "Bash(git check-ignore *)",
-      "Bash(git status*)",
-      "Bash(git diff*)",
-      "Bash(git log*)",
-      "Bash(git show*)",
-      "Bash(git branch*)",
-      "Bash(git remote*)",
-      "Bash(git config --get*)",
-      "Bash(git rev-parse*)",
-      "Bash(brew list)",
-      "Bash(brew list *)",
-      "Bash(brew info *)",
-      "Bash(brew search *)",
-      "Bash(gemini *)",
-      "Bash(curl -s *)",
-      "Bash(curl -sL *)",
-      "Bash(curl -sSL *)",
-      "Bash(curl -sI *)",
-      "Bash(curl -sIL *)",
-      "Bash(cat *)",
-      "Bash(ls *)",
-      "Bash(ls)",
-      "Bash(pwd)",
-      "Bash(grep *)",
-      "Bash(rg *)",
-      "Bash(find *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(wc *)",
-      "Bash(file *)",
-      "Bash(stat *)",
-      "Bash(test *)",
-      "Bash(diff *)",
-      "Bash(sort *)",
-      "Bash(uniq *)",
-      "Bash(jq *)",
-      "Bash(python3 -c *)",
-      "Bash(unset *)",
-      "Bash(echo *)",
-      "Bash(date*)",
-      "Bash(bash scripts/agent-switch.sh*)",
-      "Bash(bash scripts/agent-switch.sh)",
-      "Bash(python3 scripts/gen-index.py)",
-      "mcp__github__get_file_contents",
-      "mcp__github__list_branches",
-      "mcp__github__list_commits",
-      "mcp__github__get_commit",
-      "mcp__github__list_tags",
-      "mcp__github__get_tag",
-      "mcp__github__search_code",
-      "mcp__github__search_issues",
-      "mcp__github__search_pull_requests",
-      "mcp__github__list_pull_requests",
-      "mcp__github__pull_request_read",
-      "mcp__github__list_issues",
-      "mcp__github__issue_read",
-      "mcp__github__get_me"
-    ]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-start-git-pull.sh"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks/check_drive_link.py"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/wiki-context-check.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-start-binary-scan.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash scripts/show-active-todos.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-start-apikey-check.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/build-pharmacy-db.sh"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks/session_start.py"
-          }
-        ]
-      }
+    "enabledMcpjsonServers": [
+        "playwright",
+        "chrome-devtools",
+        "firecrawl",
+        "perplexity",
+        "markitdown"
     ],
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/pre-edit-staleness-check.sh"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-claudemd-lock"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-raw-immutable"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-source-original-file"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-external-editor-drift"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-output-format"
-          }
+    "permissions": {
+        "allow": [
+            "Bash(mkdir *)",
+            "Bash(chmod +x *)",
+            "Bash(git mv *)",
+            "Bash(git stash *)",
+            "Bash(git rebase --continue)",
+            "Bash(git rebase --skip)",
+            "Bash(git rebase --abort)",
+            "Bash(git pull --rebase *)",
+            "Bash(git reset HEAD *)",
+            "Bash(git fetch *)",
+            "Bash(git ls-files *)",
+            "Bash(git check-ignore *)",
+            "Bash(git status*)",
+            "Bash(git diff*)",
+            "Bash(git log*)",
+            "Bash(git show*)",
+            "Bash(git branch*)",
+            "Bash(git remote*)",
+            "Bash(git config --get*)",
+            "Bash(git rev-parse*)",
+            "Bash(brew list)",
+            "Bash(brew list *)",
+            "Bash(brew info *)",
+            "Bash(brew search *)",
+            "Bash(gemini *)",
+            "Bash(curl -s *)",
+            "Bash(curl -sL *)",
+            "Bash(curl -sSL *)",
+            "Bash(curl -sI *)",
+            "Bash(curl -sIL *)",
+            "Bash(cat *)",
+            "Bash(ls *)",
+            "Bash(ls)",
+            "Bash(pwd)",
+            "Bash(grep *)",
+            "Bash(rg *)",
+            "Bash(find *)",
+            "Bash(head *)",
+            "Bash(tail *)",
+            "Bash(wc *)",
+            "Bash(file *)",
+            "Bash(stat *)",
+            "Bash(test *)",
+            "Bash(diff *)",
+            "Bash(sort *)",
+            "Bash(uniq *)",
+            "Bash(jq *)",
+            "Bash(python3 -c *)",
+            "Bash(unset *)",
+            "Bash(echo *)",
+            "Bash(date*)",
+            "Bash(bash scripts/agent-switch.sh*)",
+            "Bash(bash scripts/agent-switch.sh)",
+            "Bash(python3 scripts/gen-index.py)",
+            "mcp__github__get_file_contents",
+            "mcp__github__list_branches",
+            "mcp__github__list_commits",
+            "mcp__github__get_commit",
+            "mcp__github__list_tags",
+            "mcp__github__get_tag",
+            "mcp__github__search_code",
+            "mcp__github__search_issues",
+            "mcp__github__search_pull_requests",
+            "mcp__github__list_pull_requests",
+            "mcp__github__pull_request_read",
+            "mcp__github__list_issues",
+            "mcp__github__issue_read",
+            "mcp__github__get_me"
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-bash-destructive-git"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-bash-no-branch"
-          },
-          {
-            "type": "command",
-            "command": "python scripts/hooks_runner.py check-secret-leak"
-          }
+    },
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-git-pull.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/check_drive_link.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/wiki-context-check.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-binary-scan.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash scripts/show-active-todos.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-apikey-check.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/build-pharmacy-db.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/session_start.py"
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-cost-tier"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/pre-edit-staleness-check.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-claudemd-lock"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-raw-immutable"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-source-original-file"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-external-editor-drift"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-output-format"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-harness-routing"
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-bash-destructive-git"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-bash-no-branch"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python scripts/hooks_runner.py check-secret-leak"
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/handoff-auto-export.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/post-wiki-edit-gen-index.sh"
+                    }
+                ]
+            },
+            {
+                "matcher": "TodoWrite",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/checkpoint-on-todo.sh"
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/checkpoint-on-commit.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/post-push-todo-remind.sh"
+                    }
+                ]
+            }
+        ],
+        "PostCompact": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo 'Context compacted. Re-read wiki/context/wiki-overview.md and wiki/context/session-memory.md to restore wiki state, then resume from session-memory.md TODOs.'"
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash scripts/agent-switch.sh stop"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/stop-auto-commit.sh"
+                    }
+                ]
+            }
         ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/handoff-auto-export.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/post-wiki-edit-gen-index.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "TodoWrite",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/checkpoint-on-todo.sh"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/checkpoint-on-commit.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/post-push-todo-remind.sh"
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Context compacted. Re-read wiki/context/wiki-overview.md and wiki/context/session-memory.md to restore wiki state, then resume from session-memory.md TODOs.'"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash scripts/agent-switch.sh stop"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/stop-auto-commit.sh"
-          }
-        ]
-      }
-    ]
-  }
+    }
 }
