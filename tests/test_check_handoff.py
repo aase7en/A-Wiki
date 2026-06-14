@@ -128,7 +128,8 @@ def test_blocked_row_without_blocker_fails_strict(tmp_path: Path):
 
 def test_secret_looking_token_always_fails(tmp_path: Path):
     handoff = tmp_path / "HANDOFF.md"
-    handoff.write_text(valid_handoff() + "\nsk-realSecretTokenValue1234567890abcdef\n", encoding="utf-8")
+    secret_like = "sk-" + "realSecretTokenValue1234567890abcdef"
+    handoff.write_text(valid_handoff() + f"\n{secret_like}\n", encoding="utf-8")
 
     result = run_check(handoff)
 

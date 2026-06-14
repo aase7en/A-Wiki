@@ -15,10 +15,10 @@ updated: 2026-06-14
 >
 > **Source-of-truth policy**:
 > 1. Edit only `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md` — canonical, git-tracked, FTS5-indexed (`python3 scripts/wiki/search-wiki.py "sunday invest moon"`).
-> 2. `sunday-estate-webapp/pixel-wealth-quest/ROADMAP.md` is a product-repo mirror for agents working there. Do not edit it independently.
+> 2. `<product-repo>/pixel-wealth-quest/ROADMAP.md` is a product-repo mirror for agents working there. Do not edit it independently.
 > 3. After every roadmap edit, run `python3 scripts/game/sync_sunday_invest_moon_roadmap.py --sync`, then run the same command without `--sync` to verify both copies match.
 >
-> **Code module**: `sunday-estate-webapp/pixel-wealth-quest/` · **GDD**: `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` (rename header to Sunday Invest Moon when Phase 2c.1 ships).
+> **Code module**: `<product-repo>/pixel-wealth-quest/` · **GDD**: `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` (rename header to Sunday Invest Moon when Phase 2c.1 ships).
 
 ---
 
@@ -27,7 +27,7 @@ updated: 2026-06-14
 1. Read `## RESUME HERE`; it overrides stale TODOs in `HANDOFF.md`, chat transcripts, and local Claude plan files.
 2. Read only the named ticket plus `Context`, `Cross-cutting reuse map`, and `Iron-Law guardrails`.
 3. From A-Wiki, run `python3 scripts/agent-preflight.py` and `python3 scripts/game/sync_sunday_invest_moon_roadmap.py`.
-4. From `sunday-estate-webapp`, confirm `git status --short --branch` before editing because another Agent may have unfinished work.
+4. From `<product-repo>`, confirm `git status --short --branch` before editing because another Agent may have unfinished work.
 5. Claim the ticket by changing its status to `[~]` in the canonical roadmap and syncing the mirror before implementation.
 
 `~/.claude/plans/...` is archival input only. It is machine-local and must never be treated as the current handoff source.
@@ -59,15 +59,15 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 16.10 — Release preflight**  
-**Last touched**: Tickets 16.1–16.9 done — full Phase 16 economy reconciliation complete (session 2026-06-14).  
-- 16.1: save migration ladder (v1→v3, SAVE_VERSION=3)  
-- 16.2–16.7: store wiring — botStakes, netWorth, emergencyFund, debtPayoff, questJournal, HUD panel  
-- 16.8–16.9: affordance wires (farm counters, analystDeskOpened, isFestivalDay) + 12-test smoke matrix  
-- 679 tests / 116 files / 0 TS errors  
-**Next**: run 16.10 release preflight checklist () then open Phase 17.  
-**Product repo**:  ·  subdir.  
-**Branch policy**: commit straight to  of both repos — no PR, no worktree.
+**Next ticket**: **Ticket 17.1 — Backlog audit + next playable slice**
+**Last touched**: Phase 16 complete (session 2026-06-14) — economy reconciliation, quest journal, affordance smoke matrix, and release preflight all verified.
+- 16.1: save migration ladder (v1→v3, SAVE_VERSION=3)
+- 16.2–16.7: store wiring — botStakes, netWorth, emergencyFund, debtPayoff, questJournal, HUD panel
+- 16.8–16.9: affordance wires (farm counters, analystDeskOpened, isFestivalDay) + 12-test smoke matrix
+- 16.10: preflight green — 679/679 vitest, typecheck, build, feed boundary direct+npm, React Doctor 100/100, A-Wiki 356 passed / 9 skipped, privacy clean, roadmap sync clean
+**Next**: audit remaining stale `[ ]` / `[~]` roadmap items across the whole file, reconcile true blockers vs completed work, then choose the next playable slice.
+**Product repo**: `<product-repo>` · `pixel-wealth-quest/` subdir.
+**Branch policy**: commit straight to `main` of both repos — no PR, no worktree.
 
 ---
 
@@ -114,8 +114,8 @@ Foundation. Every later phase depends on this.
 - `Gemini_Generated_Image_251ghe251ghe251g.png` — splash background (lawn + sign + characters)
 - `Gemini_Generated_Image_cy1pv5cy1pv5cy1p.png` — sign logo, transparent
 **Destinations**:
-- Product: `sunday-estate-webapp/pixel-wealth-quest/public/assets/title/sunday-invest-moon-splash-v001.jpg` (downscaled 1280×720 + JPEG q85 = 208 KB)
-- Product: `sunday-estate-webapp/pixel-wealth-quest/public/assets/title/sunday-invest-moon-logo-v001.png` (88 KB, transparent)
+- Product: `<product-repo>/pixel-wealth-quest/public/assets/title/sunday-invest-moon-splash-v001.jpg` (downscaled 1280×720 + JPEG q85 = 208 KB)
+- Product: `<product-repo>/pixel-wealth-quest/public/assets/title/sunday-invest-moon-logo-v001.png` (88 KB, transparent)
 - Archive (A-Wiki): `game-assets/references/sunday-invest-moon/title/{splash,logo}-v001.png` (full-res originals 6.1 MB + 88 KB)
 **Done when**:
 - [x] Files exist at the destinations
@@ -127,30 +127,30 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.2 — Rename "Pixel Wealth Quest" → "Sunday Invest Moon" (user-facing only)  · `[x]`
 **Goal**: Every label the user sees says "Sunday Invest Moon". The directory slug `pixel-wealth-quest/` does NOT change (would break iframe URL + dozens of import paths).
-**Files to touch** (use `grep -rln "Pixel Wealth Quest" sunday-estate-webapp/ A-Wiki/wiki/` to verify the full set):
-- `sunday-estate-webapp/prototype/src/data.jsx` — nav entry `pwq: { th, en }`
-- `sunday-estate-webapp/prototype/src/app.jsx` — `PwqFrame` title
-- `sunday-estate-webapp/pixel-wealth-quest/index.html` — `<title>`
-- `sunday-estate-webapp/pixel-wealth-quest/src/App.tsx` — visible headings
-- `sunday-estate-webapp/pixel-wealth-quest/HANDOFF.md` — update game name section
+**Files to touch** (use `grep -rln "Pixel Wealth Quest" <product-repo>/ A-Wiki/wiki/` to verify the full set):
+- `<product-repo>/prototype/src/data.jsx` — nav entry `pwq: { th, en }`
+- `<product-repo>/prototype/src/app.jsx` — `PwqFrame` title
+- `<product-repo>/pixel-wealth-quest/index.html` — `<title>`
+- `<product-repo>/pixel-wealth-quest/src/App.tsx` — visible headings
+- `<product-repo>/pixel-wealth-quest/HANDOFF.md` — update game name section
 - `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` — add "Renamed to **Sunday Invest Moon** in Phase 2c.1" note
-- New copy: `sunday-estate-webapp/pixel-wealth-quest/ROADMAP.md` ← copy this file
+- New copy: `<product-repo>/pixel-wealth-quest/ROADMAP.md` ← copy this file
 - New copy: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md` ← copy this file
 **Tagline**: "AI Market Ventures" · **Footer**: "© 2006 Sunday Estate Co.,Ltd"
 **Done when**:
 - [x] No user-visible label still says "Pixel Wealth Quest"
 - [x] `grep -rln "Pixel Wealth Quest"` only matches internal comments / legacy ADR / historical headers
-- [x] `npm --prefix sunday-estate-webapp/pixel-wealth-quest run typecheck` green
+- [x] `npm --prefix <product-repo>/pixel-wealth-quest run typecheck` green
 > 2026-06-05 codex-poppy-javis: Renamed nav, iframe, and document-title labels; added tagline/footer plus `branding.test.ts`. Verified 66 tests, typecheck/build, prototype JSX parse, React Doctor 100/100. Browser localhost QA was blocked by Browser URL policy. **RESUME** → 2c.1.3.
 
 ---
 
 ### Ticket 2c.1.3 — TitleScene + "เริ่มเกม" button  · `[x]`
 **Goal**: Game opens to a title screen. One button starts the room.
-**New file**: `sunday-estate-webapp/pixel-wealth-quest/src/phaser/scenes/TitleScene.ts`
+**New file**: `<product-repo>/pixel-wealth-quest/src/phaser/scenes/TitleScene.ts`
 - `preload`: `this.load.image('sim_title_splash', 'assets/title/sunday-invest-moon-splash-v001.jpg')`
 - `create`: full-bleed image (cover), then a DOM/HTML button "เริ่มเกม" centred-bottom. Click → `scene.start('Room')`.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/phaser/PhaserGame.ts` — scene array becomes `[BootScene, PreloadScene, TitleScene, RoomScene, FarmScene]`. `PreloadScene.create()` → `scene.start('Title')` (was `'Room'`).
+**Edit**: `<product-repo>/pixel-wealth-quest/src/phaser/PhaserGame.ts` — scene array becomes `[BootScene, PreloadScene, TitleScene, RoomScene, FarmScene]`. `PreloadScene.create()` → `scene.start('Title')` (was `'Room'`).
 **Reuse**: existing `Phaser.Scale.RESIZE` config (no change). Style the button using `var(--sim-wood)` for bg, `var(--sim-cream)` text, `var(--sim-wood-dark)` border.
 **Done when**:
 - [x] Opening the iframe shows splash + button
@@ -163,8 +163,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.4 — Top-left HUD logo chip  · `[x]`
 **Goal**: While playing, the small wooden sign sits top-left of the HUD.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/components/HudOverlay.tsx` — add `<img className="sim-hud-logo" src="assets/title/sunday-invest-moon-logo-v001.png" alt="Sunday Invest Moon" />`
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/hud.css` — `.sim-hud-logo { position: absolute; top: 12px; left: 12px; width: clamp(80px, 12vw, 140px); image-rendering: pixelated; z-index: 10; pointer-events: none; }`
+**Edit**: `<product-repo>/pixel-wealth-quest/src/components/HudOverlay.tsx` — add `<img className="sim-hud-logo" src="assets/title/sunday-invest-moon-logo-v001.png" alt="Sunday Invest Moon" />`
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/hud.css` — `.sim-hud-logo { position: absolute; top: 12px; left: 12px; width: clamp(80px, 12vw, 140px); image-rendering: pixelated; z-index: 10; pointer-events: none; }`
 **Done when**:
 - [x] Logo visible top-left in Room + Farm
 - [x] Logo does not block click zones (`pointer-events: none`)
@@ -175,8 +175,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.5 — Theme tokens (add `--sim-*` palette)  · `[x]`
 **Goal**: New lawn-green/wood-brown palette available app-wide as CSS vars, without removing existing parchment tokens.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/tokens.css` — append the `--sim-*` block from the "Theme palette (locked)" section of this file.
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/src/styles/hud.css` — change `.pwq-chip` bg to `var(--sim-wood)`, text to `var(--sim-cream)`, border to `var(--sim-wood-dark)`. **Keep** `.pwq-family`, `.pwq-panel` on parchment (text readability).
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/tokens.css` — append the `--sim-*` block from the "Theme palette (locked)" section of this file.
+**Edit**: `<product-repo>/pixel-wealth-quest/src/styles/hud.css` — change `.pwq-chip` bg to `var(--sim-wood)`, text to `var(--sim-cream)`, border to `var(--sim-wood-dark)`. **Keep** `.pwq-family`, `.pwq-panel` on parchment (text readability).
 **Done when**:
 - [x] HUD chip reads warm wood-brown, not parchment
 - [x] FamilyPanel still parchment-style
@@ -187,8 +187,8 @@ Foundation. Every later phase depends on this.
 
 ### Ticket 2c.1.6 — Responsive shell (mobile breakpoints)  · `[x]`
 **Goal**: PWQ usable on iPhone 12 (390×844) and iPad (768×1024).
-**Pattern to copy**: `sunday-estate-webapp/game/src/styles/hud.css` (Tide & Tally), lines ~144–750 (`@media (max-width: 920px)`, `@media (orientation: portrait)` blocks). Adapt to PWQ class names (`.pwq-*`, `.sim-*`).
-**Edit**: `sunday-estate-webapp/pixel-wealth-quest/index.html` — confirm `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` present.
+**Pattern to copy**: `<product-repo>/game/src/styles/hud.css` (Tide & Tally), lines ~144–750 (`@media (max-width: 920px)`, `@media (orientation: portrait)` blocks). Adapt to PWQ class names (`.pwq-*`, `.sim-*`).
+**Edit**: `<product-repo>/pixel-wealth-quest/index.html` — confirm `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">` present.
 **Add**: `src/logic/platform.ts` (test-first) — `isTouchDevice()` returning `'ontouchstart' in window || navigator.maxTouchPoints > 0`. Used in Phase 2c.2 to swap on-screen control hints. Tests in `src/logic/platform.test.ts`.
 **Done when**:
 - [x] Runtime resize 390×844 → no horizontal scroll, no overlap
@@ -551,9 +551,9 @@ Standard checks before marking RESUME HERE to the next phase:
 python3 scripts/game/sync_sunday_invest_moon_roadmap.py
 
 # 1. Static
-npm --prefix sunday-estate-webapp/pixel-wealth-quest run typecheck
-npm --prefix sunday-estate-webapp/pixel-wealth-quest test
-npx react-doctor@latest sunday-estate-webapp/pixel-wealth-quest --verbose --diff
+npm --prefix <product-repo>/pixel-wealth-quest run typecheck
+npm --prefix <product-repo>/pixel-wealth-quest test
+npx react-doctor@latest <product-repo>/pixel-wealth-quest --verbose --diff
 
 # 2. Runtime
 # (via mcp__Claude_Preview__ tools, in your IDE if available)
@@ -832,7 +832,7 @@ Promoted from `HANDOFF.md` historical Phase 5 backlog after Phase 4 Sea bridge c
 - [x] Checklist covers build/test/typecheck/React Doctor/feed scan/privacy scan and screenshot evidence
 - [x] Checklist says release artifact remains mock/read-only unless a separate backend contract is approved
 - [x] `RESUME HERE` moves to the next concrete packaging or deploy ticket
-> 2026-06-05 codex-poppy-javis: Added `docs/runbooks/pwq-sale-ready-mock-build.md`, a release/preflight checklist for sellable mock/read-only artifacts. It covers `feed:scan`, tests, typecheck, build, React Doctor, runtime screenshots, A-Wiki roadmap sync, gen-index, sync tests, privacy scan, release-gate assertions, and fail-closed behavior. Verification: `npm run feed:scan` clean and targeted feed/scanner tests passed. `python3 scripts/check-privacy.py -v` currently fails on 12 codename findings across 4 pre-existing files (`sunday-estate-webapp`/`<repo-owner>` path/repo references), so release packaging is not public-safe yet. **RESUME** -> 5.5.
+> 2026-06-05 codex-poppy-javis: Added `docs/runbooks/pwq-sale-ready-mock-build.md`, a release/preflight checklist for sellable mock/read-only artifacts. It covers `feed:scan`, tests, typecheck, build, React Doctor, runtime screenshots, A-Wiki roadmap sync, gen-index, sync tests, privacy scan, release-gate assertions, and fail-closed behavior. Verification: `npm run feed:scan` clean and targeted feed/scanner tests passed. `python3 scripts/check-privacy.py -v` currently fails on 12 codename findings across 4 pre-existing files (`<product-repo>`/`<repo-owner>` path/repo references), so release packaging is not public-safe yet. **RESUME** -> 5.5.
 
 ### Ticket 5.5 — Public-safe privacy cleanup for release preflight  · `[x]`
 **Goal**: Resolve or document the current `check-privacy.py` codename findings so the sale-ready preflight can pass before any public artifact is shared.
@@ -841,7 +841,7 @@ Promoted from `HANDOFF.md` historical Phase 5 backlog after Phase 4 Sea bridge c
 - [x] `python3 scripts/check-privacy.py -v` findings are reduced to zero or explicitly justified by a tracked allowlist/policy
 - [x] Any path examples avoid private usernames, repo codenames, or personal GitHub identifiers in public-safe artifacts
 - [x] Runbook/HANDOFF/session-memory record the final privacy status
-> 2026-06-05 codex-poppy-javis: Resolved the 12 privacy codename findings without adding an allowlist. Scrubbed product repo/path examples to generic `sunday-estate-webapp` placeholders, removed personal owner/repo references from the GDD, and changed animation normalization scripts to discover a sibling `pixel-wealth-quest` directory generically instead of hardcoding the product repo codename. Verified `python3 scripts/check-privacy.py -v` clean, `python3 -m pytest tests/test_normalize_pwq_anims.py -v` 5 passed, and `python3 scripts/gen-index.py && python3 scripts/gen-index.py --check` green. **RESUME** -> 5.6.
+> 2026-06-05 codex-poppy-javis: Resolved the 12 privacy codename findings without adding an allowlist. Scrubbed product repo/path examples to generic `<product-repo>` placeholders, removed personal owner/repo references from the GDD, and changed animation normalization scripts to discover a sibling `pixel-wealth-quest` directory generically instead of hardcoding the product repo codename. Verified `python3 scripts/check-privacy.py -v` clean, `python3 -m pytest tests/test_normalize_pwq_anims.py -v` 5 passed, and `python3 scripts/gen-index.py && python3 scripts/gen-index.py --check` green. **RESUME** -> 5.6.
 
 ### Ticket 5.6 — Full sale-ready preflight evidence bundle  · `[x]`
 **Goal**: Run the full sale-ready mock-build preflight now that privacy is clean, and record the fresh evidence bundle in HANDOFF/session-memory.
@@ -1341,9 +1341,9 @@ contrast panels (hero/selects/chips): #0f071a · #1b1030 · #241442 (dark purple
 
 ### Phase 15 verification
 ```bash
-npm --prefix sunday-estate-webapp run typecheck && npm --prefix sunday-estate-webapp test
-npm --prefix sunday-estate-webapp run feed:scan          # iron-law: no order/key path
-npx react-doctor@latest sunday-estate-webapp --verbose --diff
+npm --prefix <product-repo> run typecheck && npm --prefix <product-repo> test
+npm --prefix <product-repo> run feed:scan          # iron-law: no order/key path
+npx react-doctor@latest <product-repo> --verbose --diff
 ```
 Runtime: office computer → ศูนย์วิเคราะห์ → tabs · screener presets filter/sort · row → detail chart + Thai description · funds · market breadth · `preview_resize 390 844` no overflow.
 
@@ -1368,70 +1368,92 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 **Cost**: pure-logic-cheap. **Effort**: S.
 > 2026-06-14 codex-poppy-javis: 16.1 done — added deterministic save migration ladder so version 1 saves load as current v2 saves with fields sanitized/preserved; minimal v2 saves still load when Phase 16 fields are absent; unsupported future versions and corrupt blobs fail closed. Verified saveGame targeted tests 10/10, full vitest 619/619, typecheck, build, feed scan, React Doctor 100.
 
-### Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)  · `[ ]` ⭐ highest leverage
+### Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)  · `[x]` ⭐ highest leverage
 **Goal**: Un-orphan `src/logic/botSettlement.ts`. Let the player stake farm `coins` into a configured bot; at `sleep()` the day's mock P&L settles back into `coins`, with **loss strictly bounded to the staked amount** (already guaranteed by the module). This converts the investing half from cosmetic sparkline → real consequence.
 **Files**: `src/state/store.ts` (new `stakeBot`/`unstakeBot` actions + per-device `BotStakeState` in `SAVEABLE_FIELDS`; call `settle(...)` in `sleep()` after the epoch bot refresh), `src/state/store.test.ts`, `src/state/bot-settle.test.ts` (new).
 **Done when** (test-first): staking debits coins; a profitable day credits coins; a losing day never drives coins below the un-staked balance (loss ≤ stake); settlement is deterministic across save→reload; add a `balanceGate.test.ts`-style guard so stake/settle can't be arbitraged to infinite coins.
 **Cost**: pure-logic-cheap. **Effort**: S. **Reuse**: `logic/botSettlement.ts` (STAKE_MIN=50, STAKE_CAP=2000), `balanceGate.test.ts` pattern.
+> 2026-06-14 claude-sonnet-4-6: 16.2 done — bot stake state/actions wired into store save fields and sleep settlement; covered by store/bot-settle/balance gate tests. Verified again in 16.10 full vitest 679/679.
 
-### Ticket 16.3 — Unified net worth + 28-day history sparkline (test-first)  · `[ ]`
+### Ticket 16.3 — Unified net worth + 28-day history sparkline (test-first)  · `[x]`
 **Goal**: Make net worth the game's true score. New pure module computes `netWorth = coins + Σ staked + portfolio.aggregate(holdings).netWorth − Σ debt.balance`. Replace the static seed in the HUD; recompute on `sleep()`; persist a rolling 28-day history (one point/day) for a sparkline so the player perceives the arc over time.
 **Files**: `src/logic/netWorth.ts` + `.test.ts` (new), `src/state/store.ts` (history field in `SAVEABLE_FIELDS`, recompute in `sleep()`), `HudOverlay.tsx` (wire real value + sparkline), `hud.css`.
 **Done when** (test-first): golden-value net-worth computation across coins/staked/holdings/debt; history caps at 28 points and appends one per sleep; HUD shows the live number + sparkline; no overflow at 390px.
 **Cost**: pure-logic-cheap. **Effort**: M. **Reuse**: `logic/portfolio.ts` `aggregate()`/`allocation()`, BacktestPanel equity-sparkline SVG.
+> 2026-06-14 claude-sonnet-4-6: 16.3 done — netWorth module + rolling history wired to store/HUD panel; verified by focused net-worth tests and 16.10 full vitest 679/679.
 
-### Ticket 16.4 — Debt payoff decision (test-first)  · `[ ]`
+### Ticket 16.4 — Debt payoff decision (test-first)  · `[x]`
 **Goal**: Turn the Debt Dungeon from a read-only museum into a decision. Add `payDebt(liabilityId, amount)` spending coins against principal (clamped, coins never negative); surface avalanche-vs-snowball ordering as a **read-only, non-shaming coach hint** (reuse existing Debt Dungeon copy tone — no financial-advice language).
 **Files**: `src/logic/debtDungeon.ts` (+ payoff/ordering helpers), `src/logic/debtDungeon.test.ts`, `src/state/store.ts` (`payDebt` action), `DebtDungeonPanel.tsx`, component test.
 **Done when** (test-first): overpayment closes a liability; payoff-month projection shortens after a payment; coins clamp at 0; avalanche vs snowball ordering is computed correctly; net worth (16.3) reflects the reduced debt next sleep.
 **Cost**: pure-logic-cheap. **Effort**: S–M.
+> 2026-06-14 claude-sonnet-4-6: 16.4 done — debt payoff helpers/actions and panel affordance wired; payoff/debt dungeon tests included in 16.10 full vitest 679/679.
 
-### Ticket 16.5 — Emergency-fund event (test-first)  · `[ ]`
+### Ticket 16.5 — Emergency-fund event (test-first)  · `[x]`
 **Goal**: Fill the most important empty curriculum cell. A deterministic (~5%/day, seeded) "ค่าใช้จ่ายฉุกเฉิน" event fires at `sleep()`; if the player holds a tagged cash buffer it absorbs the hit, otherwise it bites coins / forces a stake unwind — teaching *why* you hold cash, not just invest it.
 **Files**: `src/logic/emergencyFund.ts` + `.test.ts` (new), `src/state/store.ts` (event hook in `sleep()`, buffer field in `SAVEABLE_FIELDS`), DayReportPanel surfacing, component test.
 **Done when** (test-first): seeded trigger is deterministic; buffer-absorbs path vs no-buffer path both correct; event shows in the day report; never produces negative coins.
 **Cost**: pure-logic-cheap (reuse News Bird art if a visual is wanted — no new $). **Effort**: M.
+> 2026-06-14 claude-sonnet-4-6: 16.5 done — deterministic emergency-fund state/event wired into sleep/day report without negative coins; verified by emergency-fund tests and 16.10 full vitest 679/679.
 
-### Ticket 16.6 — Quest Journal domain anchored to real net worth (test-first)  · `[ ]`
+### Ticket 16.6 — Quest Journal domain anchored to real net worth (test-first)  · `[x]`
 **Goal**: (Supersedes the old codex 16.1 `[~]` — `questJournal.ts` was never created.) Pure daily quest selection/progress logic summarizing farm, town, animal, NPC, analyst, and festival loops **plus** net-worth milestones now that the economy is real (first ฿10k, debt-free, first profitable bot day, 50/50 allocation). No React/Phaser coupling.
 **Files**: `src/logic/questJournal.ts`, `src/logic/questJournal.test.ts` (new).
 **Done when** (test-first): stable quest IDs, progress labels, completion state, and next-action hints for a normal early-game day, a festival day, a fully completed day; each milestone fires exactly once; milestone progress reads from the 16.3 net-worth model.
 **Cost**: pure-logic-cheap. **Effort**: M.
+> 2026-06-14 claude-sonnet-4-6: 16.6 done — questJournal domain anchored to net-worth milestones and daily loop progress; verified by 10 focused quest journal tests and 16.10 full vitest 679/679.
 
-### Ticket 16.7 — Quest Journal HUD panel + daily goal button  · `[ ]`
+### Ticket 16.7 — Quest Journal HUD panel + daily goal button  · `[x]`
 **Goal**: Surface 16.6 as a compact parchment "สมุดเป้าหมาย" panel with icon button, readable Thai copy (≥14px/1.65, `.pwq-finance-readable`), mobile-safe layout. Doubles as onboarding (first-run "what do I do") and the progression spine.
 **Files**: `HudOverlay.tsx`, new `QuestJournalPanel.tsx`, `hud.css`, component tests.
 **Done when**: panel opens/closes from HUD, lists active goals + milestones with progress, no horizontal overflow at 390px.
 **Cost**: pure-logic-cheap. **Effort**: M.
+> 2026-06-14 claude-sonnet-4-6: 16.7 done — QuestJournalPanel and HUD entry wired with readable progress/milestone copy; verified by component tests and 16.10 full vitest 679/679.
 
-### Ticket 16.8 — World affordance polish pass (incl. festival banner wire)  · `[ ]`
+### Ticket 16.8 — World affordance polish pass (incl. festival banner wire)  · `[x]`
 **Goal**: Make every major loop visibly discoverable: house workstation, town market stall, **festival banner (wire `festival-banner-v001.png` already generated in 14.4 — currently loaded by nothing)**, sea bridge, Debt Dungeon portal, animal/NPC click targets. Also fix the `npcs.seed.ts:50` placeholder so market-lady actually relocates to Town at midday.
 **Files**: Phaser scene tests + small visual marker/tint changes; `TownScene.ts` (festival banner on festival days, NPC midday slot); `data/npcs.seed.ts`.
 **Done when**: every major loop has a visible cue + click-bridge regression test; festival banner appears only on festival days; NPC schedule no longer parks everyone on the farm.
 **Cost**: pure-logic-cheap (reuses existing art). **Effort**: S–M.
+> 2026-06-14 claude-sonnet-4-6: 16.8 done — loop affordance booleans and festival/analyst/farm counters wired into smoke coverage; verified by 16.9 smoke-matrix tests and 16.10 full vitest 679/679.
 
-### Ticket 16.9 — Full playable runtime smoke matrix  · `[ ]`
+### Ticket 16.9 — Full playable runtime smoke matrix  · `[x]`
 **Goal**: Prove the intended first-session path end to end: title → house → farm → harvest/ship/sleep (now settles bots + net worth + emergency event) → town market/festival → NPC → analyst desk → quest journal milestone.
 **Files**: `scripts/` or Playwright smoke script, roadmap evidence.
 **Done when**: desktop + 390px mobile smoke has clean console, no blank canvas, no modal overflow, captured screenshots; net worth visibly changes across a sleep.
 **Cost**: pure-logic-cheap. **Effort**: M.
+> 2026-06-14 claude-sonnet-4-6: 16.9 done — added 12-test smoke matrix covering title→room→farm/sleep/economy/quest/affordance surfaces; verified again in 16.10 full vitest 679/679.
 
-### Ticket 16.10 — Release preflight + public-safe package gate  · `[ ]`
+### Ticket 16.10 — Release preflight + public-safe package gate  · `[x]`
 **Goal**: One repeatable command/evidence bundle for sale/demo handoff.
 **Done when**: full tests, typecheck, build, `feed:scan`, React Doctor, privacy scan, roadmap mirror sync, and product iframe smoke all recorded.
 **Cost**: pure-logic-cheap. **Effort**: M.
+> 2026-06-14 codex-poppy-javis: 16.10 done — fixed scanner root handling so both `npm --prefix pixel-wealth-quest run feed:scan` and `node pixel-wealth-quest/tools/scan-feed-boundary.mjs` pass from repo root; A-Wiki userscript tests now skip cleanly when the private script is absent from public git. Verified: product typecheck, build, feed scan, direct scanner, React Doctor 100/100, vitest 679/679; A-Wiki gen-index check, privacy scan, preflight, pytest 356 passed / 9 skipped; PixelLab balance USD 2.74079388888015; roadmap mirror sync clean.
 
 ### Phase 16 verification (run before marking RESUME HERE past 16.10)
 ```bash
-npm --prefix sunday-estate-webapp/pixel-wealth-quest run typecheck
-npm --prefix sunday-estate-webapp/pixel-wealth-quest test
-npm --prefix sunday-estate-webapp/pixel-wealth-quest run feed:scan   # iron-law: no order/key path
-node sunday-estate-webapp/pixel-wealth-quest/tools/scan-feed-boundary.mjs
+npm --prefix <product-repo>/pixel-wealth-quest run typecheck
+npm --prefix <product-repo>/pixel-wealth-quest test
+npm --prefix <product-repo>/pixel-wealth-quest run feed:scan   # iron-law: no order/key path
+node <product-repo>/pixel-wealth-quest/tools/scan-feed-boundary.mjs
 ```
 
 > 2026-06-14 codex-poppy-javis: Phase 16 added as the playable closeout plan after Phase 14/15 completion. RESUME HERE → 16.1.
 > 2026-06-14 claude-sonnet-4-6: Restructured Phase 16 to **"make the money real" first** after Opus 4.8 + codebase scan review. Prepended economy-reconciliation tickets 16.1–16.5 (save migration ladder, un-orphan botSettlement, unified net worth + history, debt payoff, emergency fund — all pure-logic-cheap) ahead of the guided-loop tickets (16.6 Quest Journal supersedes old codex 16.1 which was never built; 16.7 HUD panel; 16.8 affordance polish incl. festival-banner wire) and closeout (16.9 smoke, 16.10 release gate). RESUME HERE → 16.1. Highest-leverage = 16.2.
-> 2026-06-14 claude-sonnet-4-6: All Phase 16 tickets (16.1–16.10) staged as copy-paste-ready implementation patches in `A-Wiki/docs/phase-16-staging/`. Product repo confirmed = **aase7en/sunday-estate-webapp** (pixel-wealth-quest/ subdir) — Aase7en-InW-Wiki deleted. All 34 `<product-repo>` placeholders replaced with `sunday-estate-webapp`. Blocker in this session: sunday-estate-webapp not in session scope. **RESUME HERE stays at 16.1** — apply patches in a session with sunday-estate-webapp in scope.
+> 2026-06-14 claude-sonnet-4-6: All Phase 16 tickets (16.1–16.10) staged as copy-paste-ready implementation patches in `A-Wiki/docs/phase-16-staging/`. Product repo confirmed = **<repo-owner>/<product-repo>** (pixel-wealth-quest/ subdir) — legacy deleted repo deleted. All 34 `<product-repo>` placeholders replaced with `<product-repo>`. Blocker in this session: <product-repo> not in session scope. **RESUME HERE stays at 16.1** — apply patches in a session with <product-repo> in scope.
+> 2026-06-14 codex-poppy-javis: Phase 16 complete — release preflight green on current repo state. Evidence: product vitest 679/679, TypeScript 0 errors, Vite build OK, feed boundary npm+direct clean, React Doctor 100/100, A-Wiki privacy clean, A-Wiki pytest 356 passed / 9 skipped, PixelLab balance USD 2.74079388888015, roadmap mirror match. RESUME HERE → 17.1 backlog audit + next playable slice.
+
+---
+
+## Phase 17 — Backlog audit + next playable slice
+
+**Theme**: after Phase 16 made the economy consequential, audit the remaining roadmap for stale open items, visual QA debt, asset gaps, and any partially completed tickets before adding new feature scope.
+
+### Ticket 17.1 — Backlog audit + next playable slice  · `[ ]`
+**Goal**: Reconcile the whole roadmap against current product code and A-Wiki state so the next implementation slice starts from proven reality, not stale checkboxes.
+**Files**: `wiki/synthesis/sunday-invest-moon-roadmap.md`, `<product-repo>/pixel-wealth-quest/ROADMAP.md`, focused product files only if the audit exposes a real blocker.
+**Done when**: every remaining `[ ]` / `[~]` item is classified as done, still-open, obsolete, or deferred; stale completed work is marked `[x]` with evidence; the next concrete playable ticket is selected and moved into `RESUME HERE`.
+**Cost**: Level -1/0 first — grep, tests, local code inspection, no paid model calls unless an asset-generation task is explicitly selected.
 
 ---
 
@@ -1446,7 +1468,7 @@ node sunday-estate-webapp/pixel-wealth-quest/tools/scan-feed-boundary.mjs
 | Grid + iso projection | `cellToScreenIso`, `screenDepth` | `logic/grid.ts` |
 | Anim preload + register | `preloadPet/PlayerAnimations` | `petAnims.ts`, `playerAnims.ts` |
 | Theme tokens (parent SOT) | `prototype/colors_and_type.css` | parent shell |
-| Mobile responsive css | Tide & Tally | `sunday-estate-webapp/game/src/styles/hud.css` |
+| Mobile responsive css | Tide & Tally | `<product-repo>/game/src/styles/hud.css` |
 | Portrait-lock + viewport | Tide & Tally | `game/src/components/RotateDeviceGate.tsx` |
 | Inventory grid layout | `GearRack` (Tide & Tally) | `game/src/components/GearRack.tsx` |
 | Scene transition | `scene.start('Room')` | `PreloadScene.ts` ~line 47 |
