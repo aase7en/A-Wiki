@@ -59,11 +59,15 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)**  
-**Last touched**: Ticket 16.1 done — `parseSave` now migrates v1 saves through a v1→v2 ladder instead of wiping progress; unsupported future versions still fail closed (session 2026-06-14).
-**Suggested run order for the next agent**: 16.2 ⭐ → 16.3 → 16.4 → 16.5 → 16.6 → 16.7 → 16.8 → 16.9 → 16.10. Each ticket is one focused session; commit `chunk(16.X): goal [next: 16.Y]` and push at each boundary.
-**Product repo**: `aase7en/sunday-estate-webapp` · `pixel-wealth-quest/` subdir. (Formerly referenced as `Aase7en-InW-Wiki` — that repo is deleted.)
-**Branch policy**: commit straight to `main` of both repos (A-Wiki + sunday-estate-webapp) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
+**Next ticket**: **Ticket 16.10 — Release preflight**  
+**Last touched**: Tickets 16.1–16.9 done — full Phase 16 economy reconciliation complete (session 2026-06-14).  
+- 16.1: save migration ladder (v1→v3, SAVE_VERSION=3)  
+- 16.2–16.7: store wiring — botStakes, netWorth, emergencyFund, debtPayoff, questJournal, HUD panel  
+- 16.8–16.9: affordance wires (farm counters, analystDeskOpened, isFestivalDay) + 12-test smoke matrix  
+- 679 tests / 116 files / 0 TS errors  
+**Next**: run 16.10 release preflight checklist () then open Phase 17.  
+**Product repo**:  ·  subdir.  
+**Branch policy**: commit straight to  of both repos — no PR, no worktree.
 
 ---
 
