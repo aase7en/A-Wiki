@@ -1427,6 +1427,7 @@ node sunday-estate-webapp/pixel-wealth-quest/tools/scan-feed-boundary.mjs
 
 > 2026-06-14 codex-poppy-javis: Phase 16 added as the playable closeout plan after Phase 14/15 completion. RESUME HERE → 16.1.
 > 2026-06-14 claude-sonnet-4-6: Restructured Phase 16 to **"make the money real" first** after Opus 4.8 + codebase scan review. Prepended economy-reconciliation tickets 16.1–16.5 (save migration ladder, un-orphan botSettlement, unified net worth + history, debt payoff, emergency fund — all pure-logic-cheap) ahead of the guided-loop tickets (16.6 Quest Journal supersedes old codex 16.1 which was never built; 16.7 HUD panel; 16.8 affordance polish incl. festival-banner wire) and closeout (16.9 smoke, 16.10 release gate). RESUME HERE → 16.1. Highest-leverage = 16.2.
+> 2026-06-14 claude-sonnet-4-6: All Phase 16 tickets (16.1–16.10) staged as copy-paste-ready implementation patches in `A-Wiki/docs/phase-16-staging/`. Product repo confirmed = **aase7en/sunday-estate-webapp** (pixel-wealth-quest/ subdir) — Aase7en-InW-Wiki deleted. All 34 `<product-repo>` placeholders replaced with `sunday-estate-webapp`. Blocker in this session: sunday-estate-webapp not in session scope. **RESUME HERE stays at 16.1** — apply patches in a session with sunday-estate-webapp in scope.
 
 ---
 
