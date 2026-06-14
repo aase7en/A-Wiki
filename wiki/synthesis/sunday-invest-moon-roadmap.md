@@ -59,13 +59,13 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 17.1 — Backlog audit + next playable slice**
-**Last touched**: Phase 16 complete (session 2026-06-14) — economy reconciliation, quest journal, affordance smoke matrix, and release preflight all verified.
+**Next ticket**: **No open Sunday Invest Moon roadmap ticket**
+**Last touched**: Ticket 17.1 done (session 2026-06-14) — roadmap heading audit found 114 ticket headings and no remaining open game-roadmap heading after 17.1 was closed.
 - 16.1: save migration ladder (v1→v3, SAVE_VERSION=3)
 - 16.2–16.7: store wiring — botStakes, netWorth, emergencyFund, debtPayoff, questJournal, HUD panel
 - 16.8–16.9: affordance wires (farm counters, analystDeskOpened, isFestivalDay) + 12-test smoke matrix
 - 16.10: preflight green — 679/679 vitest, typecheck, build, feed boundary direct+npm, React Doctor 100/100, A-Wiki 356 passed / 9 skipped, privacy clean, roadmap sync clean
-**Next**: audit remaining stale `[ ]` / `[~]` roadmap items across the whole file, reconcile true blockers vs completed work, then choose the next playable slice.
+**Next**: continue A-Wiki active TODOs in `TASKS.md` / `wiki/context/session-memory.md` (Work PC/WSL verification, Tampermonkey private userscript update, protected-doc refresh only if explicitly permitted).
 **Product repo**: `<product-repo>` · `pixel-wealth-quest/` subdir.
 **Branch policy**: commit straight to `main` of both repos — no PR, no worktree.
 
@@ -1449,11 +1449,12 @@ node <product-repo>/pixel-wealth-quest/tools/scan-feed-boundary.mjs
 
 **Theme**: after Phase 16 made the economy consequential, audit the remaining roadmap for stale open items, visual QA debt, asset gaps, and any partially completed tickets before adding new feature scope.
 
-### Ticket 17.1 — Backlog audit + next playable slice  · `[ ]`
+### Ticket 17.1 — Backlog audit + next playable slice  · `[x]`
 **Goal**: Reconcile the whole roadmap against current product code and A-Wiki state so the next implementation slice starts from proven reality, not stale checkboxes.
 **Files**: `wiki/synthesis/sunday-invest-moon-roadmap.md`, `<product-repo>/pixel-wealth-quest/ROADMAP.md`, focused product files only if the audit exposes a real blocker.
 **Done when**: every remaining `[ ]` / `[~]` item is classified as done, still-open, obsolete, or deferred; stale completed work is marked `[x]` with evidence; the next concrete playable ticket is selected and moved into `RESUME HERE`.
 **Cost**: Level -1/0 first — grep, tests, local code inspection, no paid model calls unless an asset-generation task is explicitly selected.
+> 2026-06-14 codex-poppy-javis: 17.1 done — parsed roadmap headings with a status-aware script: 114 ticket/checkpoint headings total, only 17.1 itself was open. Historical HANDOFF/TODO backlog entries are archival because the roadmap header explicitly makes `ROADMAP.md` authoritative. No new game implementation ticket is selected; next work moves to A-Wiki active TODOs outside the game roadmap.
 
 ---
 
