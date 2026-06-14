@@ -59,8 +59,9 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 16.1 — Quest Journal domain (test-first)**  
-**Last touched**: Phase 16 playable closeout plan added; ready to implement `src/logic/questJournal.ts` (session 2026-06-14)
+**Next ticket**: **Ticket 16.1 — Save-version migration ladder (foundation, test-first)**  
+**Last touched**: Phase 16 restructured to "make the money real" first (Opus 4.8 review). 16.1–16.5 = economy reconciliation (all pure-logic-cheap), 16.6–16.8 = guided loop, 16.9–16.10 = closeout. Highest-leverage = 16.2 (un-orphan `botSettlement`). (session 2026-06-14)
+**Suggested run order for the next agent**: 16.1 → 16.2 ⭐ → 16.3 → 16.4 → 16.5 → 16.6 → 16.7 → 16.8 → 16.9 → 16.10. Each ticket is one focused session; commit `chunk(16.X): goal [next: 16.Y]` and push at each boundary.
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + <product-repo>) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
 ---
@@ -1343,35 +1344,87 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 
 ---
 
-## Phase 16 — Playable closeout + guided daily loop
+## Phase 16 — Make the money real → guided playable closeout
 
-**Goal**: Turn the shipped systems into a guided, finishable cozy life-sim slice: the player always knows what to do next, every major loop has one visible affordance, and final release gates are repeatable.
+**Theme**: *Every financial decision must move one honest, persistent number.* Phase 16 ships **almost no new content** — it **wires what already exists** so a learner can finally see cause→effect on their own balance, then layers the guided daily loop + release gates on top of that now-real economy.
 
-### Ticket 16.1 — Quest Journal domain (test-first)  · `[~]`
-**Goal**: Add pure daily quest selection/progress logic that can summarize farm, town, animal, NPC, analyst, and festival loops without React/Phaser coupling.
-**Files**: `src/logic/questJournal.ts`, `src/logic/questJournal.test.ts`.
-**Done when**: test-first module returns stable quest IDs, progress labels, completion state, and next-action hints for a normal early-game day, a festival day, and a fully completed day.
+**Why this order** (from the 2026-06-14 Opus 4.8 + scan review — see session log): the player's wealth is currently a *fiction*. `snapshot.netWorth` is a static seed that never moves; farm `coins`, bot equity sparklines, and debt are three disconnected pools; `logic/botSettlement.ts` is a fully-tested stake→settle bridge with **zero non-test imports** (orphaned); debt is read-only (no `payDebt`); `sleep()` reconciles only farm+animals. A Quest Journal / milestone system is meaningless until its milestones can anchor to a *real* net worth — so the economy-reconciliation tickets (16.1–16.5) come **before** the guided-loop tickets (16.6–16.8), which come before closeout (16.9–16.10).
 
-### Ticket 16.2 — Quest Journal HUD panel + daily goal button  · `[ ]`
-**Goal**: Surface 16.1 in the HUD as a compact parchment "สมุดเป้าหมาย" panel with icon button, readable Thai copy, and mobile-safe layout.
+> **Single highest-leverage ticket: 16.2** (un-orphan `botSettlement`). Without it the entire investing half of the game stays cosmetic.
+>
+> **Cost-First**: every ticket 16.1–16.9 is **pure-logic-cheap** (Level -1/0: pure TS + Vitest, no paid model, no PixelLab spend). 16.8 reuses *existing* art (festival banner already generated in 14.4) — no new asset $ unless explicitly approved. Echo PixelLab balance only if a ticket is later upgraded to generate art.
+>
+> **Iron Law watch**: as settlement becomes consequential, ALL P&L stays derived in pure logic from canned/mock feeds. `Remote*Feed` stubs MUST keep throwing. Keep `feed:scan` in the 16.10 gate. Never let "make it feel real" become "fetch a real quote in the client."
+
+### Ticket 16.1 — Save-version migration ladder (foundation, test-first)  · `[ ]`
+**Goal**: Stop `parseSave` from silently wiping saves on version mismatch — it currently does `parsed.version !== SAVE_VERSION → return null` (`src/logic/saveGame.ts:166`), so the first future bump to v3 deletes every existing v2 player. Replace the hard-reject with a `migrate(vN → vN+1)` ladder so old saves survive; 16.2–16.5 add persisted fields safely on top of it.
+**Files**: `src/logic/saveGame.ts`, `src/logic/saveGame.test.ts`.
+**Done when** (test-first): a v2 save object missing the new Phase 16 fields loads with sensible defaults (no wipe); an unknown future version migrates forward through the ladder; a corrupt/unparseable blob still fails closed to a fresh game; determinism preserved.
+**Cost**: pure-logic-cheap. **Effort**: S.
+
+### Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)  · `[ ]` ⭐ highest leverage
+**Goal**: Un-orphan `src/logic/botSettlement.ts`. Let the player stake farm `coins` into a configured bot; at `sleep()` the day's mock P&L settles back into `coins`, with **loss strictly bounded to the staked amount** (already guaranteed by the module). This converts the investing half from cosmetic sparkline → real consequence.
+**Files**: `src/state/store.ts` (new `stakeBot`/`unstakeBot` actions + per-device `BotStakeState` in `SAVEABLE_FIELDS`; call `settle(...)` in `sleep()` after the epoch bot refresh), `src/state/store.test.ts`, `src/state/bot-settle.test.ts` (new).
+**Done when** (test-first): staking debits coins; a profitable day credits coins; a losing day never drives coins below the un-staked balance (loss ≤ stake); settlement is deterministic across save→reload; add a `balanceGate.test.ts`-style guard so stake/settle can't be arbitraged to infinite coins.
+**Cost**: pure-logic-cheap. **Effort**: S. **Reuse**: `logic/botSettlement.ts` (STAKE_MIN=50, STAKE_CAP=2000), `balanceGate.test.ts` pattern.
+
+### Ticket 16.3 — Unified net worth + 28-day history sparkline (test-first)  · `[ ]`
+**Goal**: Make net worth the game's true score. New pure module computes `netWorth = coins + Σ staked + portfolio.aggregate(holdings).netWorth − Σ debt.balance`. Replace the static seed in the HUD; recompute on `sleep()`; persist a rolling 28-day history (one point/day) for a sparkline so the player perceives the arc over time.
+**Files**: `src/logic/netWorth.ts` + `.test.ts` (new), `src/state/store.ts` (history field in `SAVEABLE_FIELDS`, recompute in `sleep()`), `HudOverlay.tsx` (wire real value + sparkline), `hud.css`.
+**Done when** (test-first): golden-value net-worth computation across coins/staked/holdings/debt; history caps at 28 points and appends one per sleep; HUD shows the live number + sparkline; no overflow at 390px.
+**Cost**: pure-logic-cheap. **Effort**: M. **Reuse**: `logic/portfolio.ts` `aggregate()`/`allocation()`, BacktestPanel equity-sparkline SVG.
+
+### Ticket 16.4 — Debt payoff decision (test-first)  · `[ ]`
+**Goal**: Turn the Debt Dungeon from a read-only museum into a decision. Add `payDebt(liabilityId, amount)` spending coins against principal (clamped, coins never negative); surface avalanche-vs-snowball ordering as a **read-only, non-shaming coach hint** (reuse existing Debt Dungeon copy tone — no financial-advice language).
+**Files**: `src/logic/debtDungeon.ts` (+ payoff/ordering helpers), `src/logic/debtDungeon.test.ts`, `src/state/store.ts` (`payDebt` action), `DebtDungeonPanel.tsx`, component test.
+**Done when** (test-first): overpayment closes a liability; payoff-month projection shortens after a payment; coins clamp at 0; avalanche vs snowball ordering is computed correctly; net worth (16.3) reflects the reduced debt next sleep.
+**Cost**: pure-logic-cheap. **Effort**: S–M.
+
+### Ticket 16.5 — Emergency-fund event (test-first)  · `[ ]`
+**Goal**: Fill the most important empty curriculum cell. A deterministic (~5%/day, seeded) "ค่าใช้จ่ายฉุกเฉิน" event fires at `sleep()`; if the player holds a tagged cash buffer it absorbs the hit, otherwise it bites coins / forces a stake unwind — teaching *why* you hold cash, not just invest it.
+**Files**: `src/logic/emergencyFund.ts` + `.test.ts` (new), `src/state/store.ts` (event hook in `sleep()`, buffer field in `SAVEABLE_FIELDS`), DayReportPanel surfacing, component test.
+**Done when** (test-first): seeded trigger is deterministic; buffer-absorbs path vs no-buffer path both correct; event shows in the day report; never produces negative coins.
+**Cost**: pure-logic-cheap (reuse News Bird art if a visual is wanted — no new $). **Effort**: M.
+
+### Ticket 16.6 — Quest Journal domain anchored to real net worth (test-first)  · `[ ]`
+**Goal**: (Supersedes the old codex 16.1 `[~]` — `questJournal.ts` was never created.) Pure daily quest selection/progress logic summarizing farm, town, animal, NPC, analyst, and festival loops **plus** net-worth milestones now that the economy is real (first ฿10k, debt-free, first profitable bot day, 50/50 allocation). No React/Phaser coupling.
+**Files**: `src/logic/questJournal.ts`, `src/logic/questJournal.test.ts` (new).
+**Done when** (test-first): stable quest IDs, progress labels, completion state, and next-action hints for a normal early-game day, a festival day, a fully completed day; each milestone fires exactly once; milestone progress reads from the 16.3 net-worth model.
+**Cost**: pure-logic-cheap. **Effort**: M.
+
+### Ticket 16.7 — Quest Journal HUD panel + daily goal button  · `[ ]`
+**Goal**: Surface 16.6 as a compact parchment "สมุดเป้าหมาย" panel with icon button, readable Thai copy (≥14px/1.65, `.pwq-finance-readable`), mobile-safe layout. Doubles as onboarding (first-run "what do I do") and the progression spine.
 **Files**: `HudOverlay.tsx`, new `QuestJournalPanel.tsx`, `hud.css`, component tests.
-**Done when**: panel opens/closes from HUD, lists all active goals with progress, and has no horizontal overflow at 390px.
+**Done when**: panel opens/closes from HUD, lists active goals + milestones with progress, no horizontal overflow at 390px.
+**Cost**: pure-logic-cheap. **Effort**: M.
 
-### Ticket 16.3 — World affordance polish pass  · `[ ]`
-**Goal**: Make important interactables visibly discoverable: house workstation, town market stall, festival banner, sea bridge, Debt Dungeon portal, animal/NPC click targets.
-**Files**: Phaser scene tests + small visual marker/tint changes only.
-**Done when**: every major loop has a visible cue and click bridge regression test.
+### Ticket 16.8 — World affordance polish pass (incl. festival banner wire)  · `[ ]`
+**Goal**: Make every major loop visibly discoverable: house workstation, town market stall, **festival banner (wire `festival-banner-v001.png` already generated in 14.4 — currently loaded by nothing)**, sea bridge, Debt Dungeon portal, animal/NPC click targets. Also fix the `npcs.seed.ts:50` placeholder so market-lady actually relocates to Town at midday.
+**Files**: Phaser scene tests + small visual marker/tint changes; `TownScene.ts` (festival banner on festival days, NPC midday slot); `data/npcs.seed.ts`.
+**Done when**: every major loop has a visible cue + click-bridge regression test; festival banner appears only on festival days; NPC schedule no longer parks everyone on the farm.
+**Cost**: pure-logic-cheap (reuses existing art). **Effort**: S–M.
 
-### Ticket 16.4 — Full playable runtime smoke matrix  · `[ ]`
-**Goal**: Prove the intended first-session path works end to end: title → house → farm → harvest/ship/sleep → town market → NPC/festival → analyst desk.
+### Ticket 16.9 — Full playable runtime smoke matrix  · `[ ]`
+**Goal**: Prove the intended first-session path end to end: title → house → farm → harvest/ship/sleep (now settles bots + net worth + emergency event) → town market/festival → NPC → analyst desk → quest journal milestone.
 **Files**: `scripts/` or Playwright smoke script, roadmap evidence.
-**Done when**: desktop + 390px mobile smoke has clean console, no blank canvas, no modal overflow, and captured screenshots.
+**Done when**: desktop + 390px mobile smoke has clean console, no blank canvas, no modal overflow, captured screenshots; net worth visibly changes across a sleep.
+**Cost**: pure-logic-cheap. **Effort**: M.
 
-### Ticket 16.5 — Release preflight + public-safe package gate  · `[ ]`
+### Ticket 16.10 — Release preflight + public-safe package gate  · `[ ]`
 **Goal**: One repeatable command/evidence bundle for sale/demo handoff.
-**Done when**: full tests, typecheck, build, feed scan, React Doctor, privacy scan, roadmap mirror sync, and product iframe smoke are all recorded.
+**Done when**: full tests, typecheck, build, `feed:scan`, React Doctor, privacy scan, roadmap mirror sync, and product iframe smoke all recorded.
+**Cost**: pure-logic-cheap. **Effort**: M.
+
+### Phase 16 verification (run before marking RESUME HERE past 16.10)
+```bash
+npm --prefix <product-repo>/pixel-wealth-quest run typecheck
+npm --prefix <product-repo>/pixel-wealth-quest test
+npm --prefix <product-repo>/pixel-wealth-quest run feed:scan   # iron-law: no order/key path
+node <product-repo>/pixel-wealth-quest/tools/scan-feed-boundary.mjs
+```
 
 > 2026-06-14 codex-poppy-javis: Phase 16 added as the playable closeout plan after Phase 14/15 completion. RESUME HERE → 16.1.
+> 2026-06-14 claude-sonnet-4-6: Restructured Phase 16 to **"make the money real" first** after Opus 4.8 + codebase scan review. Prepended economy-reconciliation tickets 16.1–16.5 (save migration ladder, un-orphan botSettlement, unified net worth + history, debt payoff, emergency fund — all pure-logic-cheap) ahead of the guided-loop tickets (16.6 Quest Journal supersedes old codex 16.1 which was never built; 16.7 HUD panel; 16.8 affordance polish incl. festival-banner wire) and closeout (16.9 smoke, 16.10 release gate). RESUME HERE → 16.1. Highest-leverage = 16.2.
 
 ---
 
