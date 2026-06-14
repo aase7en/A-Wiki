@@ -1356,11 +1356,12 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 >
 > **Iron Law watch**: as settlement becomes consequential, ALL P&L stays derived in pure logic from canned/mock feeds. `Remote*Feed` stubs MUST keep throwing. Keep `feed:scan` in the 16.10 gate. Never let "make it feel real" become "fetch a real quote in the client."
 
-### Ticket 16.1 — Save-version migration ladder (foundation, test-first)  · `[ ]`
+### Ticket 16.1 — Save-version migration ladder (foundation, test-first)  · `[~]`
 **Goal**: Stop `parseSave` from silently wiping saves on version mismatch — it currently does `parsed.version !== SAVE_VERSION → return null` (`src/logic/saveGame.ts:166`), so the first future bump to v3 deletes every existing v2 player. Replace the hard-reject with a `migrate(vN → vN+1)` ladder so old saves survive; 16.2–16.5 add persisted fields safely on top of it.
 **Files**: `src/logic/saveGame.ts`, `src/logic/saveGame.test.ts`.
 **Done when** (test-first): a v2 save object missing the new Phase 16 fields loads with sensible defaults (no wipe); an unknown future version migrates forward through the ladder; a corrupt/unparseable blob still fails closed to a fresh game; determinism preserved.
 **Cost**: pure-logic-cheap. **Effort**: S.
+> blocker 2026-06-14 claude-sonnet-4-6: Product repo (Aase7en-InW-Wiki) not authorized in this A-Wiki-only session. Implementation fully staged at `A-Wiki/docs/phase-16-staging/16.1-save-migration-patch.md` — includes `migrateRaw()` function, line-166 swap, 7 tests (describe block), and per-field application checklist. Apply in a session with product repo access. RESUME HERE stays at 16.1 until applied and tests pass.
 
 ### Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)  · `[ ]` ⭐ highest leverage
 **Goal**: Un-orphan `src/logic/botSettlement.ts`. Let the player stake farm `coins` into a configured bot; at `sleep()` the day's mock P&L settles back into `coins`, with **loss strictly bounded to the staked amount** (already guaranteed by the module). This converts the investing half from cosmetic sparkline → real consequence.
