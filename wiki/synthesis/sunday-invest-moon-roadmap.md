@@ -59,9 +59,9 @@ updated: 2026-06-14
 
 ## RESUME HERE
 
-**Next ticket**: **Ticket 16.1 — Save-version migration ladder (foundation, test-first)**  
-**Last touched**: All Phase 16 tickets 16.1–16.7 staged as implementation patches in `A-Wiki/docs/phase-16-staging/` (session 2026-06-14). Product repo = `aase7en/sunday-estate-webapp` (pixel-wealth-quest subdir). Apply patches in a session with that repo in scope.
-**Suggested run order for the next agent**: 16.1 → 16.2 ⭐ → 16.3 → 16.4 → 16.5 → 16.6 → 16.7 → 16.8 → 16.9 → 16.10. Each ticket is one focused session; commit `chunk(16.X): goal [next: 16.Y]` and push at each boundary.
+**Next ticket**: **Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)**  
+**Last touched**: Ticket 16.1 done — `parseSave` now migrates v1 saves through a v1→v2 ladder instead of wiping progress; unsupported future versions still fail closed (session 2026-06-14).
+**Suggested run order for the next agent**: 16.2 ⭐ → 16.3 → 16.4 → 16.5 → 16.6 → 16.7 → 16.8 → 16.9 → 16.10. Each ticket is one focused session; commit `chunk(16.X): goal [next: 16.Y]` and push at each boundary.
 **Product repo**: `aase7en/sunday-estate-webapp` · `pixel-wealth-quest/` subdir. (Formerly referenced as `Aase7en-InW-Wiki` — that repo is deleted.)
 **Branch policy**: commit straight to `main` of both repos (A-Wiki + sunday-estate-webapp) — no PR, no worktree (per `A-Wiki/CLAUDE.md` rule #6).
 
@@ -1357,12 +1357,12 @@ Runtime: office computer → ศูนย์วิเคราะห์ → tabs
 >
 > **Iron Law watch**: as settlement becomes consequential, ALL P&L stays derived in pure logic from canned/mock feeds. `Remote*Feed` stubs MUST keep throwing. Keep `feed:scan` in the 16.10 gate. Never let "make it feel real" become "fetch a real quote in the client."
 
-### Ticket 16.1 — Save-version migration ladder (foundation, test-first)  · `[~]`
+### Ticket 16.1 — Save-version migration ladder (foundation, test-first)  · `[x]`
 **Goal**: Stop `parseSave` from silently wiping saves on version mismatch — it currently does `parsed.version !== SAVE_VERSION → return null` (`src/logic/saveGame.ts:166`), so the first future bump to v3 deletes every existing v2 player. Replace the hard-reject with a `migrate(vN → vN+1)` ladder so old saves survive; 16.2–16.5 add persisted fields safely on top of it.
 **Files**: `src/logic/saveGame.ts`, `src/logic/saveGame.test.ts`.
 **Done when** (test-first): a v2 save object missing the new Phase 16 fields loads with sensible defaults (no wipe); an unknown future version migrates forward through the ladder; a corrupt/unparseable blob still fails closed to a fresh game; determinism preserved.
 **Cost**: pure-logic-cheap. **Effort**: S.
-> blocker 2026-06-14 claude-sonnet-4-6: Product repo (Aase7en-InW-Wiki) not authorized in this A-Wiki-only session. Implementation fully staged at `A-Wiki/docs/phase-16-staging/16.1-save-migration-patch.md` — includes `migrateRaw()` function, line-166 swap, 7 tests (describe block), and per-field application checklist. Apply in a session with product repo access. RESUME HERE stays at 16.1 until applied and tests pass.
+> 2026-06-14 codex-poppy-javis: 16.1 done — added deterministic save migration ladder so version 1 saves load as current v2 saves with fields sanitized/preserved; minimal v2 saves still load when Phase 16 fields are absent; unsupported future versions and corrupt blobs fail closed. Verified saveGame targeted tests 10/10, full vitest 619/619, typecheck, build, feed scan, React Doctor 100.
 
 ### Ticket 16.2 — Settle bot stakes into coins on sleep (test-first)  · `[ ]` ⭐ highest leverage
 **Goal**: Un-orphan `src/logic/botSettlement.ts`. Let the player stake farm `coins` into a configured bot; at `sleep()` the day's mock P&L settles back into `coins`, with **loss strictly bounded to the staked amount** (already guaranteed by the module). This converts the investing half from cosmetic sparkline → real consequence.
