@@ -3,9 +3,15 @@ import subprocess
 import textwrap
 from pathlib import Path
 
+import pytest
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 USERSCRIPT = REPO_ROOT / "scripts" / "userscripts" / "waste-form-ocr-fill.user.js"
+pytestmark = pytest.mark.skipif(
+    not USERSCRIPT.exists(),
+    reason="private userscript moved out of public git to drive/personal-tools/",
+)
 
 
 def run_userscript_unit(tmp_path: Path, js_expr: str) -> str:
