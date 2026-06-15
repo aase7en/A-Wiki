@@ -1,10 +1,10 @@
 {
   "generated_at": "2026-06-15",
   "stats": {
-    "nodes": 513,
-    "edges": 1310,
+    "nodes": 514,
+    "edges": 1311,
     "edges_by_type": {
-      "wikilink": 1143,
+      "wikilink": 1144,
       "mdlink": 49,
       "depends": 31,
       "implements": 49,
@@ -490,7 +490,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-14",
+      "title": "Review Report — 2026-06-15",
       "domain": "context"
     },
     {
@@ -521,6 +521,11 @@
     {
       "path": "wiki/entities/ai-tools/CLAUDE.md",
       "title": "Scoped Context — AI Tools Entities",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/ag2-orchestrator.md",
+      "title": "AG2 Goal Orchestrator",
       "domain": "ai-tools"
     },
     {
@@ -6805,6 +6810,13 @@
       "from": "wiki/entities/ai-tools/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ag2-orchestrator.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },

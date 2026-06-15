@@ -13,10 +13,11 @@
 
 ---
 
-## Entities ที่มีอยู่ (16)
+## Entities ที่มีอยู่ (17)
 
 | Slug | Abstract |
 |------|----------|
+| `ag2-orchestrator` | AG2 Goal Orchestrator — Planner→Executor→Validator loop; free-model executors via delegate.sh; wiki_search() ก่อนเสมอ |
 | `hermes-agent` | Open-source AI agent framework — CLI, ต่อ LLM หลาย provider, messaging gateway (Telegram, Discord) |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวบน Mac Mini — gateway รับข้อความ → route ไป AI model อัตโนมัติ |
 | `ecc` | ECC — Everything Claude Code: 249 skills + 63 agents สำหรับ optimize agent workflow ข้าม harness |

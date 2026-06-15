@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **17**
+- Entities: **18**
 - Concepts: **32**
 
 ---
@@ -21,6 +21,7 @@
 |------|----------|
 | `9arm-skills` | repo จาก **thananon (9arm)** — รวม Claude Code skills 100% Shell… |
 | `CLAUDE` | primary: Claude Code (Anthropic) — wiki agent, reasoning, synthe… |
+| `ag2-orchestrator` | AG2 เป็น **Goal Orchestrator** ของ A-Wiki — รับ goal ระดับสูง แล… |
 | `agents-md-spec` | AGENTS.md เป็น **open format** สำหรับ guide AI coding agent — เป… |
 | `anthropic-skills` | `anthropics/skills` คือ repo ทางการของ Anthropic ที่รวบรวม 17 cu… |
 | `ecc` | ECC = open-source plugin/framework optimize agent workflow acros… |
