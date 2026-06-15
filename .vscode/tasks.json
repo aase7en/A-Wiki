@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "A-Wiki: Start Cline Session",
+      "type": "shell",
+      "command": "bash scripts/live-dashboard/start-cline.sh",
+      "group": "none",
+      "runOn": "folderOpen",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "A-Wiki: Open Live Dashboard",
+      "type": "shell",
+      "command": "bash scripts/dashboard-ensure.sh",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "A-Wiki: Setup Cline Hooks",
+      "type": "shell",
+      "command": "bash scripts/cline-hooks/setup-symlinks.sh",
+      "group": "none",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
