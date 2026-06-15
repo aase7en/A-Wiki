@@ -28,6 +28,7 @@ SCOUT_SCRIPT="$REPO_ROOT/scripts/model-scout-current.py"
 SCOUT_JSON="${MODEL_SCOUT_CURRENT_JSON:-$REPO_ROOT/.tmp/model-scout-current.json}"
 SCOUT_REPORT="${MODEL_SCOUT_CURRENT_REPORT:-$REPO_ROOT/.tmp/model-scout-current.md}"
 UPDATE_SCRIPT="$REPO_ROOT/scripts/update-model-roster.sh"
+LOAD_DRIVE_KEYS_SH="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"
 
 refresh_model_scout() {
   local mode="${1:-cached}"
@@ -52,6 +53,21 @@ fi
 
 # ─── API key aliases (normalize alternate names → canonical names) ─────────────
 # GOOGLE_AI_STUDIO_KEY is the name shown in Google AI Studio UI → alias to GEMINI_API_KEY
+if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
+  export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
+fi
+
+# ─── Drive-backed key fallback ─────────────────────────────────────────────────
+# SessionStart hooks cannot persist exports back into Codex's parent process.
+# To make delegation work reliably from Desktop/CLI, delegate.sh must load
+# missing keys itself on demand.
+if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${DEEPSEEK_API_KEY:-}" ] && \
+   [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${GROQ_API_KEY:-}" ] && \
+   [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -f "$LOAD_DRIVE_KEYS_SH" ]; then
+  # shellcheck source=scripts/hooks/load-drive-keys.sh
+  source "$LOAD_DRIVE_KEYS_SH" >/dev/null 2>&1 || true
+fi
+
 if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
   export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
 fi
@@ -125,6 +141,7 @@ _track_fail() {
   local model="$1" reason="$2"
   TRIED_MODELS+=("$model")
   FAIL_REASONS+=("$reason")
+  _log_event "delegate_fail" "model=$model" "reason=$reason"
 }
 
 # ─── Cost annotator ───────────────────────────────────────────────────────────
@@ -156,15 +173,28 @@ _cost_annotate() {
 # ─── Response parser + error classifier ───────────────────────────────────────
 # Writes response to stdout (exit 0) or classifies error to LAST_ERROR (exit 1)
 LAST_ERROR=""
+# _extract_response.py lives in scripts/ (one level up from scripts/swarm/).
+# Resolve via REPO_ROOT so the path is correct regardless of caller CWD.
+EXTRACT_PY="$REPO_ROOT/scripts/_extract_response.py"
 _extract_smart() {
   local fmt="$1"
-  python3 "$(dirname "${BASH_SOURCE[0]}")/_extract_response.py" "$fmt"
+  python3 "$EXTRACT_PY" "$fmt"
+}
+
+# ─── Live Dashboard Event Logger ──────────────────────────────────────────────
+EVENT_LOGGER="$REPO_ROOT/scripts/live-dashboard/event_logger.py"
+_log_event() {
+  # Non-blocking: fire-and-forget background python3 call
+  [ -f "$EVENT_LOGGER" ] && python3 "$EVENT_LOGGER" "$@" >/dev/null 2>&1 &
+  disown "$!" 2>/dev/null || true
 }
 
 # ─── Engine wrappers ──────────────────────────────────────────────────────────
 try_gemini_direct() {
   # Direct Google AI Studio — free 1500 req/day, no OpenRouter fee
   [ -z "${GEMINI_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=${GEMINI_DIRECT_MODEL}(gemini-direct)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -176,6 +206,7 @@ try_gemini_direct() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart gemini 2>"$err_out"; then
+    _log_event "delegate_done" "model=${GEMINI_DIRECT_MODEL}(gemini-direct)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -193,6 +224,8 @@ try_deepseek_direct() {
     *deepseek*)               native="deepseek-chat" ;;
     *) return 1 ;;
   esac
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=deepseek-direct($native)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -205,6 +238,7 @@ try_deepseek_direct() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=deepseek-direct($native)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -215,6 +249,8 @@ try_deepseek_direct() {
 try_openrouter_model() {
   local model="$1"
   [ -z "${OPENROUTER_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$model" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -226,6 +262,7 @@ try_openrouter_model() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=$model" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     rm -f "$err_out"; return 0
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
@@ -235,6 +272,8 @@ try_openrouter_model() {
 
 try_groq_model() {
   [ -z "${GROQ_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$GROQ_DIRECT_MODEL(groq)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -247,6 +286,7 @@ try_groq_model() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=$GROQ_DIRECT_MODEL(groq)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     _cost_annotate "$GROQ_DIRECT_MODEL(groq)"
     rm -f "$err_out"; return 0
   fi
@@ -257,6 +297,8 @@ try_groq_model() {
 
 try_anthropic_haiku() {
   [ -z "${ANTHROPIC_API_KEY:-}" ] && return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$ANTHROPIC_LOW_MODEL(anthropic)" "task=$TASK_TYPE"
   local err_out
   err_out=$(mktemp)
   local resp
@@ -270,6 +312,7 @@ try_anthropic_haiku() {
       rm -f "$err_out"; return 1
     }
   if printf '%s' "$resp" | _extract_smart anthropic 2>"$err_out"; then
+    _log_event "delegate_done" "model=$ANTHROPIC_LOW_MODEL(anthropic)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
     _cost_annotate "$ANTHROPIC_LOW_MODEL"
     rm -f "$err_out"; return 0
   fi
@@ -322,9 +365,11 @@ show_failure_and_heal() {
   local count=${#TRIED_MODELS[@]}
   echo "" >&2
   echo "⚠️  All $count model(s) failed. Attempt log:" >&2
-  for i in $(seq 0 $((count-1))); do
-    echo "   ✗ ${TRIED_MODELS[$i]} → ${FAIL_REASONS[$i]}" >&2
-  done
+  if [ "$count" -gt 0 ]; then
+    for i in $(seq 0 $((count-1))); do
+      echo "   ✗ ${TRIED_MODELS[$i]} → ${FAIL_REASONS[$i]}" >&2
+    done
+  fi
 
   # Classify dominant failure pattern
   local has_model_not_found=false
@@ -332,12 +377,14 @@ show_failure_and_heal() {
   local has_auth_error=false
   local has_network=false
 
-  for reason in "${FAIL_REASONS[@]}"; do
-    [[ "$reason" == MODEL_NOT_FOUND* ]] && has_model_not_found=true
-    [[ "$reason" == RATE_LIMIT* ]]      && has_rate_limit=true
-    [[ "$reason" == AUTH_ERROR* ]]      && has_auth_error=true
-    [[ "$reason" == network* ]]         && has_network=true
-  done
+  if [ "$count" -gt 0 ]; then
+    for reason in "${FAIL_REASONS[@]}"; do
+      [[ "$reason" == MODEL_NOT_FOUND* ]] && has_model_not_found=true
+      [[ "$reason" == RATE_LIMIT* ]]      && has_rate_limit=true
+      [[ "$reason" == AUTH_ERROR* ]]      && has_auth_error=true
+      [[ "$reason" == network* ]]         && has_network=true
+    done
+  fi
 
   if $has_auth_error; then
     echo "" >&2
@@ -445,4 +492,13 @@ run_tier() {
 }
 
 # ─── Execute ──────────────────────────────────────────────────────────────────
+# Fail loudly if the response extractor is missing — otherwise every model call
+# fails identically and the auto-heal misdiagnoses the root cause.
+if [ ! -f "$EXTRACT_PY" ]; then
+  echo "❌ Response extractor not found: $EXTRACT_PY" >&2
+  echo "   delegate.sh cannot parse model responses without it." >&2
+  echo "   Expected at scripts/_extract_response.py (repo root: $REPO_ROOT)" >&2
+  exit 1
+fi
+
 run_tier 1

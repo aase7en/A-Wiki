@@ -45,6 +45,25 @@ REQUIRED_HOOKS = [
     "check_external_editor_drift.py",
     "check_raw_immutable.py",
     "check_secret_leak.py",
+    # Cost-first + output guardrails (added 2026-06-14)
+    "check_cost_tier.py",
+    "check_harness_routing.py",
+    "check_output_format.py",
+    "check_source_original_file.py",
+    "check_claudemd_lock.py",
+]
+
+# Guardrail names that must appear in hooks config files (by name substring)
+REQUIRED_GUARDRAIL_NAMES = [
+    "check-cost-tier",
+    "check-harness-routing",
+    "check-claudemd-lock",
+    "check-raw-immutable",
+    "check-output-format",
+    "check-source-original-file",
+    "check-bash-destructive-git",
+    "check-bash-no-branch",
+    "check-secret-leak",
 ]
 
 PREFLIGHT_DOCS = [
@@ -157,6 +176,26 @@ def check_hooks() -> CheckResult:
     return CheckResult("OK", "core hooks", f"{len(REQUIRED_HOOKS)} required hook(s) present")
 
 
+def check_guardrail_coverage() -> CheckResult:
+    """Assert that required guardrail names appear in hook config files (not just file presence)."""
+    missing_by_config: dict[str, list[str]] = {}
+    for rel in HOOK_CONFIGS:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            continue
+        try:
+            raw = path.read_text(encoding="utf-8")
+        except Exception:
+            continue
+        missing = [g for g in REQUIRED_GUARDRAIL_NAMES if g not in raw]
+        if missing:
+            missing_by_config[rel] = missing
+    if missing_by_config:
+        parts = [f"{cfg}: {m}" for cfg, m in missing_by_config.items()]
+        return CheckResult("FAIL", "guardrail coverage", "; ".join(parts))
+    return CheckResult("OK", "guardrail coverage", f"{len(REQUIRED_GUARDRAIL_NAMES)} guardrail(s) wired in all configs")
+
+
 def collect_hook_commands(value) -> list[str]:
     commands: list[str] = []
     if isinstance(value, dict):
@@ -238,6 +277,7 @@ def run_checks(skip_remote: bool = False) -> list[CheckResult]:
         check_generated_index(),
         check_hooks(),
         check_hook_config_commands(),
+        check_guardrail_coverage(),
         check_instruction_drift(),
     ]
 

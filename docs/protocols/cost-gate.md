@@ -46,12 +46,26 @@ echo "L4|implementation|เขียน NPC rendering ใน FarmScene" > .tmp/c
 
 ## Skip Conditions
 
-| Condition | วิธี |
-|-----------|------|
-| Skip ทั้ง session | `HOOK_SKIP=check_cost_tier` |
-| Skip เฉพาะ automated CI | `CI=true` (set อัตโนมัติใน GitHub Actions) |
-| Write ไปยัง `.tmp/` | exempt อัตโนมัติ |
-| Bash/PowerShell/Read/Glob/Grep | exempt อัตโนมัติ |
+| Condition | วิธี | หมายเหตุ |
+|-----------|------|---------|
+| Skip ทั้ง session | `HOOK_SKIP=check_cost_tier` | bypass มี warning `💰 Cost gate: BYPASSED` ไป stderr |
+| Skip เฉพาะ automated CI | `CI=true` (set อัตโนมัติใน GitHub Actions) | bypass มี warning เช่นกัน |
+| Write ไปยัง `.tmp/` | exempt อัตโนมัติ | ที่เก็บ declaration เอง |
+| Bash/PowerShell/Read/Glob/Grep | exempt อัตโนมัติ | ใช้เขียน declaration ได้ |
+
+## ⚠️ Enforcement Reality — gate นี้บังคับได้แค่ไหน? [verified 2026-06-15]
+
+ตรง ๆ: นี่คือ **"nudge เตือนสติ"** ไม่ใช่ **"กำแพงบังคับต้นทุน"** — บังคับให้ *ประกาศ* tier ได้จริง แต่ไม่ได้บังคับให้ *ทำตาม* tier ที่ประกาศ จุดอ่อนที่ตั้งใจ trade-off เพื่อ friction ต่ำ:
+
+| จุดอ่อน | รายละเอียด | สถานะ |
+|---------|-----------|-------|
+| **Per-day ไม่ใช่ per-task** | ประกาศครั้งเดียวตอนเช้า → Edit/Write/Agent ทั้งวันผ่านหมด ไม่ว่า task จริงจะ tier ไหน | by design (friction ต่ำ) |
+| **ไม่ validate model จริง** | ประกาศ L1 แล้วใช้ primary model เขียน 50 ไฟล์ก็ได้ — hook ไม่เห็น model ที่รันจริง | by design (hook ไม่มี access ถึง model state) |
+| **Bash exempt** | agent เดียวกับที่เขียน declaration คือ agent ที่ไม่ถูก gate (เขียนผ่าน Bash) | by design (ต้องให้ self-declare ได้) |
+| **Tier validity** | ~~`garbage` ก็ผ่าน~~ → **harden แล้ว 2026-06-15**: tier ที่ไม่ใช่ L1-L4 ถูก block (exit 2) | ✅ fixed |
+| **Bypass เงียบ** | ~~`CI`/`HOOK_SKIP` ข้ามแบบไม่มีร่องรอย~~ → **harden แล้ว**: bypass emit warning ไป stderr | ✅ fixed |
+
+**สรุป:** gate ยกระดับ "ความตั้งใจ" (ต้องหยุดคิด+ประกาศก่อนเขียน) แต่ enforcement จริงของ cost-first ยังพึ่ง **honor system + primary agent เป็น validator** (Iron Law III) ไม่ใช่กลไกบังคับอัตโนมัติ — ถ้าต้องการ hard enforcement ต้องเพิ่ม per-task re-declare หรือ model-vs-tier validation (friction สูงขึ้น)
 
 ## Session Start Integration
 
@@ -63,7 +77,7 @@ echo "L4|implementation|เขียน NPC rendering ใน FarmScene" > .tmp/c
 ## ทดสอบ
 
 ```bash
-pytest tests/test_hooks.py::TestCostTierGate -v    # 11 tests
+pytest tests/test_hooks.py::TestCostTierGate -v    # 17 tests (incl invalid-tier + empty-tier hardening)
 pytest tests/test_hooks.py -v                       # full hook suite
 ```
 

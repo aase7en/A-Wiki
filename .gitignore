@@ -161,9 +161,15 @@ docker-compose.override.yml
 
 # --- Agent / AI configs with secrets ---
 .claude*
-.codex*
 .gemini*
 !.clinerules
+# .codex: ignore machine-specific pieces, track public-safe templates
+# (git requires parent dir NOT ignored for nested negation to work)
+.codex/hooks/
+.codex/agents/
+!.codex/agents/skeptical-reviewer.toml
+.codex/*.sh
+.codex/*.lock
 # .mcp.json is machine-specific (repo paths differ per machine) — use .mcp.json.example
 .mcp.json
 
