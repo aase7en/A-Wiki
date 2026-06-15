@@ -763,6 +763,54 @@ body {
 .help-table th { color: var(--text); font-weight: 700; }
 .help-table .yes { color: var(--success); font-weight: 700; }
 .help-table .no  { color: var(--warn); font-weight: 700; }
+
+/* ── Parallel Lanes view ─────────────────────────────── */
+.view-toggle-bar {
+  display: flex; gap: 4px; padding: 4px 0;
+  flex-shrink: 0;
+}
+.view-btn {
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 4px; color: var(--dim); font-size: var(--fs-xs);
+  padding: 4px 10px; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.view-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+.view-btn:hover:not(.active) { background: var(--card2); color: var(--text); }
+
+#lanes-panel {
+  flex: 1; overflow-y: auto; display: none; flex-direction: column;
+  gap: 0; padding: 0;
+}
+#lanes-axis-bar {
+  display: flex; padding: 4px 0 4px 138px;
+  font-size: var(--fs-2xs); color: var(--dim2);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+#lanes-axis-bar span { flex: 1; }
+#lanes-body { display: flex; flex-direction: column; gap: 3px; padding: 6px 0; }
+#lanes-empty {
+  text-align: center; color: var(--dim2); font-size: var(--fs-xs);
+  padding: 32px 16px; flex: 1; display: flex;
+  align-items: center; justify-content: center;
+}
+.lane-row { display: flex; align-items: center; height: 28px; gap: 8px; }
+.lane-label {
+  width: 130px; flex-shrink: 0; font-size: var(--fs-xs); color: var(--dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: 'SF Mono', 'JetBrains Mono', monospace;
+}
+.lane-track {
+  flex: 1; position: relative; height: 16px;
+  background: var(--card2); border-radius: 3px; overflow: hidden;
+}
+.lane-bar {
+  position: absolute; height: 100%; border-radius: 3px; opacity: 0.85;
+  min-width: 3px;
+}
+.lane-bar.done   { opacity: 0.75; }
+.lane-bar.failed { opacity: 0.45; filter: saturate(0.35); }
+.lane-bar.active { opacity: 1; animation: bar-pulse 1.4s ease-in-out infinite; }
+@keyframes bar-pulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
 </style>
 </head>
 <body>
@@ -808,6 +856,12 @@ body {
     <!-- Hook activity strip -->
     <div id="hook-strip"></div>
 
+    <!-- View toggle: Network | Lanes -->
+    <div class="view-toggle-bar">
+      <button class="view-btn active" id="btn-network" onclick="setNetView('network')">🔗 Network</button>
+      <button class="view-btn"        id="btn-lanes"   onclick="setNetView('lanes')">🏊 Lanes</button>
+    </div>
+
     <!-- Network graph -->
     <div id="network">
       <div class="net-inner">
@@ -843,6 +897,13 @@ body {
       <div id="parallel-badge">
         ⚡ PARALLEL × <span id="par-count">2</span> models
       </div>
+    </div>
+
+    <!-- Parallel Lanes panel (hidden by default) -->
+    <div id="lanes-panel">
+      <div id="lanes-axis-bar"></div>
+      <div id="lanes-body"></div>
+      <div id="lanes-empty">ยังไม่มี delegation — รัน delegate แล้วจะเห็น lanes ที่นี่</div>
     </div>
 
   </div>
@@ -965,6 +1026,105 @@ function hotWf(id, ms = 6000) {
   S.wfTimers[id] = setTimeout(() => el.classList.remove('hot'), ms);
 }
 
+/* ── Parallel Lanes ──────────────────────────────────── */
+const _LANE_COLORS = {
+  gemini: '#7ba3ff', deepseek: '#00c4e0', groq: '#ff6b6b',
+  openrouter: '#a0d0a0', anthropic: '#ff8c69', zhipu: '#c17de8', default: '#888'
+};
+let _lanes = {};       // model → { color, bars:[{start,end,task,status}], active|null }
+let _lanesRAF = null;
+
+function _laneColor(model) {
+  for (const [k, v] of Object.entries(_LANE_COLORS)) if (model.includes(k)) return v;
+  return _LANE_COLORS.default;
+}
+
+function updateLane(ev) {
+  const model = ev.model || ''; if (!model) return;
+  if (!_lanes[model]) _lanes[model] = { color: _laneColor(model), bars: [], active: null };
+  const L = _lanes[model];
+  if (ev.type === 'delegate_start') {
+    L.active = { start: ev.ts, task: ev.task || '' };
+  } else if (ev.type === 'delegate_done') {
+    if (L.active) { L.bars.push({ ...L.active, end: ev.ts, status: 'done' }); L.active = null; }
+  } else if (ev.type === 'delegate_fail') {
+    if (L.active) { L.bars.push({ ...L.active, end: ev.ts, status: 'failed' }); L.active = null; }
+  }
+  const panel = document.getElementById('lanes-panel');
+  if (panel && panel.style.display !== 'none') renderLanes();
+}
+
+function renderLanes() {
+  if (_lanesRAF) { cancelAnimationFrame(_lanesRAF); _lanesRAF = null; }
+  const body    = document.getElementById('lanes-body');
+  const axisBar = document.getElementById('lanes-axis-bar');
+  const empty   = document.getElementById('lanes-empty');
+  if (!body) return;
+  const now = Date.now() / 1000;
+  const allTs = Object.values(_lanes).flatMap(L =>
+    [...L.bars.map(b => b.start), ...(L.active ? [L.active.start] : [])]
+  );
+  if (!allTs.length) {
+    body.innerHTML = ''; axisBar.innerHTML = '';
+    if (empty) empty.style.display = 'flex';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  const winDur  = Math.max(300, now - Math.min(...allTs) + 10);
+  const winStart = now - winDur;
+  const pct  = ts => Math.max(0, Math.min(100, (ts - winStart) / winDur * 100));
+  const wpct = (s, e) => Math.max(0.5, pct(e) - pct(s));
+
+  // Time axis (5 labels)
+  axisBar.innerHTML = [0, 1, 2, 3, 4].map(i => {
+    const t = winStart + winDur * i / 4;
+    const lbl = new Date(t * 1000).toLocaleTimeString('th', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return `<span style="text-align:${i === 4 ? 'right' : 'left'}">${lbl}</span>`;
+  }).join('');
+
+  // Lane rows
+  body.innerHTML = '';
+  for (const [model, L] of Object.entries(_lanes)) {
+    const shortName = model.replace(/\(.*\)/, '').split('/').pop();
+    const row   = document.createElement('div'); row.className = 'lane-row';
+    const lbl   = document.createElement('div'); lbl.className = 'lane-label';
+    lbl.textContent = shortName; lbl.title = model;
+    const track = document.createElement('div'); track.className = 'lane-track';
+    for (const b of L.bars) {
+      if (b.end < winStart) continue;
+      const bar = document.createElement('div');
+      bar.className = `lane-bar ${b.status}`;
+      bar.style.cssText = `left:${pct(b.start).toFixed(2)}%;width:${wpct(b.start, b.end).toFixed(2)}%;background:${L.color}`;
+      bar.title = `${shortName} — ${b.task} (${((b.end - b.start) * 1000) | 0}ms)`;
+      track.appendChild(bar);
+    }
+    if (L.active) {
+      const bar = document.createElement('div');
+      bar.className = 'lane-bar active';
+      bar.style.cssText = `left:${pct(L.active.start).toFixed(2)}%;width:${wpct(L.active.start, now).toFixed(2)}%;background:${L.color}`;
+      bar.title = `${shortName} — ${L.active.task} (running…)`;
+      track.appendChild(bar);
+    }
+    row.append(lbl, track);
+    body.appendChild(row);
+  }
+  // Keep re-rendering while any delegation is active
+  if (Object.values(_lanes).some(L => L.active))
+    _lanesRAF = requestAnimationFrame(() => setTimeout(renderLanes, 500));
+}
+
+function setNetView(v) {
+  const btnNet  = document.getElementById('btn-network');
+  const btnLane = document.getElementById('btn-lanes');
+  const network = document.getElementById('network');
+  const lanes   = document.getElementById('lanes-panel');
+  if (btnNet)  btnNet.classList.toggle('active',  v === 'network');
+  if (btnLane) btnLane.classList.toggle('active', v === 'lanes');
+  if (network) network.style.display = v === 'network' ? '' : 'none';
+  if (lanes)   lanes.style.display   = v === 'lanes'   ? 'flex' : 'none';
+  if (v === 'lanes') renderLanes();
+}
+
 /* ── SSE Connection ─────────────────────────────────── */
 let _es = null;
 let _retryTimer = null;
@@ -1009,15 +1169,16 @@ function handleEvent(evt) {
   if (evt.type === 'backlog_complete' || evt.type === 'log_cleared' || evt.type === 'config_update') {
     if (evt.type === 'log_cleared') doClearLocal();
     if (evt.type === 'config_update') loadRecommendations();
+    if (evt.type === 'backlog_complete') renderLanes();
     return;
   }
   switch (evt.type) {
     case 'session_start':   onSessionStart(evt);   break;
     case 'hook_check':      onHookCheck(evt);       break;
     case 'cost_declare':    onCostDeclare(evt);     break;
-    case 'delegate_start':  onDelegateStart(evt);   break;
-    case 'delegate_done':   onDelegateDone(evt);    break;
-    case 'delegate_fail':   onDelegateFail(evt);    break;
+    case 'delegate_start':  onDelegateStart(evt);   updateLane(evt); break;
+    case 'delegate_done':   onDelegateDone(evt);    updateLane(evt); break;
+    case 'delegate_fail':   onDelegateFail(evt);    updateLane(evt); break;
   }
   pushTimeline(evt);
 }
