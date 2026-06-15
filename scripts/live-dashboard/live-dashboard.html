@@ -811,7 +811,18 @@ body {
 .lane-bar.failed { opacity: 0.45; filter: saturate(0.35); }
 .lane-bar.active { opacity: 1; animation: bar-pulse 1.4s ease-in-out infinite; }
 @keyframes bar-pulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
+/* ── vis-network graph container ────────────────────── */
+#graph-vis {
+  flex: 1;
+  width: 100%;
+  min-height: 300px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
 </style>
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
 
@@ -862,41 +873,12 @@ body {
       <button class="view-btn"        id="btn-lanes"   onclick="setNetView('lanes')">🏊 Lanes</button>
     </div>
 
-    <!-- Network graph -->
-    <div id="network">
-      <div class="net-inner">
+    <!-- Workflow Graph (vis-network) -->
+    <div id="graph-vis"></div>
 
-        <!-- Primary Agent -->
-        <div class="primary-wrap">
-          <div class="primary-card" id="primary-card">
-            <div class="primary-icon">🧠</div>
-            <div class="primary-name">claude-sonnet-4.6</div>
-            <div class="primary-role">Senior Critic · Primary</div>
-            <div class="primary-status" id="primary-status">● watching…</div>
-          </div>
-        </div>
-
-        <!-- SVG connector -->
-        <div id="connector-zone">
-          <svg id="connector-svg" viewBox="0 0 80 300" preserveAspectRatio="none">
-            <!-- Lines drawn dynamically by JS -->
-          </svg>
-        </div>
-
-        <!-- Free model cards -->
-        <div id="model-grid">
-          <div class="idle-hint" id="idle-hint">
-            ⟳ รอ delegation…
-            <small>ส่ง command ใน A-Wiki<br>เพื่อดู model ทำงาน</small>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Parallel badge -->
-      <div id="parallel-badge">
-        ⚡ PARALLEL × <span id="par-count">2</span> models
-      </div>
+    <!-- Parallel badge -->
+    <div id="parallel-badge">
+      ⚡ <span id="par-count">0</span> agents active
     </div>
 
     <!-- Parallel Lanes panel (hidden by default) -->
@@ -1000,8 +982,89 @@ const S = {
   tier: '?',
   active: {},      // modelKey → {card, el, lineEl, ts, task}
   activeCount: 0,
+  parallelCount: 0,
+  activeAgents: [],
   wfTimers: {},
 };
+
+/* ── vis-network graph ──────────────────────────────── */
+let _graphNet = null;
+let _graphData = { nodes: new vis.DataSet(), edges: new vis.DataSet() };
+
+function initGraph() {
+  const container = document.getElementById('graph-vis');
+  if (!container || !window.vis) return;
+  
+  const options = {
+    physics: {
+      solver: 'barnesHut',
+      barnesHut: { gravitationalConstant: -2000, centralGravity: 0.3, springLength: 150, springConstant: 0.04 },
+      stabilization: { iterations: 100 }
+    },
+    edges: {
+      smooth: { type: 'continuous' },
+      width: 2,
+      arrows: { to: { enabled: true, scaleFactor: 0.5 } }
+    },
+    nodes: {
+      shape: 'dot',
+      size: 16,
+      font: { size: 11, color: '#d8d8ff', face: '-apple-system' },
+      borderWidth: 2,
+    },
+    interaction: { hover: true, tooltipDelay: 200, zoomView: true, dragView: true, navigationButtons: false },
+  };
+  
+  _graphNet = new vis.Network(container, _graphData, options);
+  
+  // Initial fetch
+  fetch('/api/graph').then(r => r.json()).then(data => updateGraphFromAPI(data)).catch(() => {});
+}
+
+function updateGraphFromAPI(data) {
+  if (!data || !_graphData) return;
+  const { nodes, edges, parallel_count, active_agents } = data;
+  
+  S.parallelCount = parallel_count || 0;
+  S.activeAgents = active_agents || [];
+  
+  // Merge nodes
+  const keepIds = new Set(nodes.map(n => n.id));
+  _graphData.nodes.getIds().forEach(id => { if (!keepIds.has(id)) _graphData.nodes.remove(id); });
+  nodes.forEach(n => {
+    const existing = _graphData.nodes.get(n.id);
+    if (existing) {
+      // Only update if changed (avoid physics reset)
+      if (existing.status !== n.status || existing.count !== n.count) {
+        _graphData.nodes.update(n);
+      }
+    } else {
+      _graphData.nodes.add(n);
+    }
+  });
+  
+  // Merge edges
+  const edgeKeys = new Set(edges.map(e => `${e.from}→${e.to}`));
+  _graphData.edges.getIds().forEach(id => {
+    const e = _graphData.edges.get(id);
+    if (!edgeKeys.has(`${e.from}→${e.to}`)) _graphData.edges.remove(id);
+  });
+  edges.forEach(e => {
+    e.id = `${e.from}→${e.to}`;
+    e.width = e.active ? 2 : 1;
+    e.dashes = e.active ? true : false;
+    if (!e.color && e.active) e.color = { color: '#7c5cff', highlight: '#28d6c8' };
+    const existing = _graphData.edges.get(e.id);
+    if (!existing) _graphData.edges.add(e);
+  });
+  
+  updateParallel();
+}
+
+function updateGraphFromSSE(evt) {
+  if (evt.type !== 'graph_update') return;
+  updateGraphFromAPI(evt);
+}
 
 /* ── DOM helpers ────────────────────────────────────── */
 const $  = id => document.getElementById(id);
@@ -1116,12 +1179,12 @@ function renderLanes() {
 function setNetView(v) {
   const btnNet  = document.getElementById('btn-network');
   const btnLane = document.getElementById('btn-lanes');
-  const network = document.getElementById('network');
+  const graph   = document.getElementById('graph-vis');
   const lanes   = document.getElementById('lanes-panel');
   if (btnNet)  btnNet.classList.toggle('active',  v === 'network');
   if (btnLane) btnLane.classList.toggle('active', v === 'lanes');
-  if (network) network.style.display = v === 'network' ? '' : 'none';
-  if (lanes)   lanes.style.display   = v === 'lanes'   ? 'flex' : 'none';
+  if (graph)   graph.style.display = v === 'network' ? '' : 'none';
+  if (lanes)   lanes.style.display = v === 'lanes'   ? 'flex' : 'none';
   if (v === 'lanes') renderLanes();
 }
 
@@ -1172,6 +1235,9 @@ function handleEvent(evt) {
     if (evt.type === 'backlog_complete') renderLanes();
     return;
   }
+  // Step 3 — graph updates from SSE
+  if (evt.type === 'graph_update') { updateGraphFromSSE(evt); return; }
+  
   switch (evt.type) {
     case 'session_start':   onSessionStart(evt);   break;
     case 'hook_check':      onHookCheck(evt);       break;
@@ -1179,6 +1245,10 @@ function handleEvent(evt) {
     case 'delegate_start':  onDelegateStart(evt);   updateLane(evt); break;
     case 'delegate_done':   onDelegateDone(evt);    updateLane(evt); break;
     case 'delegate_fail':   onDelegateFail(evt);    updateLane(evt); break;
+    case 'task_start':                                break;
+    case 'task_complete':                             break;
+    case 'agent_spawn':                               break;
+    case 'agent_done':                                break;
   }
   pushTimeline(evt);
 }
@@ -1677,6 +1747,7 @@ async function loadRecommendations() {
 /* ── Boot ───────────────────────────────────────────── */
 connect();
 loadRecommendations();
+initGraph();
 </script>
 </body>
 </html>
