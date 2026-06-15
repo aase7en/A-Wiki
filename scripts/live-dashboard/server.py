@@ -97,7 +97,119 @@ _stats = {"events_sent": 0, "clients_connected": 0, "started": time.time()}
 _idle_since = time.time()  # updated in _sse connect/disconnect
 _idle_lock = threading.Lock()
 
+# ── Workflow Graph State (Step 2 — dashboard-v2) ──────────────────
+_graph_nodes: dict[str, dict] = {}   # id → {id, type, label, status, color, ...}
+_graph_edges: dict[tuple, dict] = {}  # (from, to, kind) → {from, to, kind, active}
+_active_agents: set[str] = set()
+_task_stack: list[str] = []
+_graph_lock = threading.Lock()
+
+_AGENT_COLORS = {
+    "primary": "#F59E0B",
+    "architect": "#06B6D4",
+    "executioner": "#10B981",
+    "subagent": "#8B5CF6",
+    "unknown": "#F59E0B",
+}
+
 _server_ref = None  # set in __main__ so idle_watchdog can call shutdown()
+
+
+# ---------------------------------------------------------------------------
+# Workflow Graph Engine (Step 2 — dashboard-v2)
+# ---------------------------------------------------------------------------
+
+def _process_graph_event(evt: dict) -> None:
+    """Update in-memory graph state from one event dict.
+    Called by tail_log() for every line read from the event log."""
+    global _graph_nodes, _graph_edges, _active_agents, _task_stack
+
+    etype = evt.get("type", "")
+    sid = evt.get("session_id", "")
+    aid = evt.get("agent_id", "")
+    role = evt.get("agent_role", "unknown")
+    tid = evt.get("task_id")
+    pid = evt.get("parent_task_id")
+
+    with _graph_lock:
+        # ── session_start ──────────────────────────────────
+        if etype == "session_start" and sid:
+            _graph_nodes[sid] = {
+                "id": sid, "type": "session", "label": f"Session {sid[-8:]}",
+                "status": "active", "color": "#F59E0B"
+            }
+
+        # ── task_start ─────────────────────────────────────
+        elif etype == "task_start" and tid:
+            _graph_nodes[tid] = {
+                "id": tid, "type": "task", "label": f"Task {tid[-6:]}",
+                "status": "active", "color": "#3B82F6",
+            }
+            if pid:
+                _graph_edges[(pid, tid, "parent")] = {
+                    "from": pid, "to": tid, "kind": "parent", "active": True
+                }
+            _task_stack.append(tid)
+
+        # ── task_complete ──────────────────────────────────
+        elif etype == "task_complete" and tid:
+            if tid in _graph_nodes:
+                _graph_nodes[tid]["status"] = "completed"
+            if tid in _task_stack:
+                _task_stack.remove(tid)
+
+        # ── agent_spawn ────────────────────────────────────
+        elif etype == "agent_spawn" and aid:
+            model = evt.get("model", "")
+            color = _AGENT_COLORS.get(role, _AGENT_COLORS["unknown"])
+            _graph_nodes[aid] = {
+                "id": aid, "type": "agent", "role": role,
+                "label": f"{role.title()}",
+                "status": "active", "color": color,
+                "model": model,
+            }
+            _active_agents.add(aid)
+            if tid and tid in _graph_nodes:
+                _graph_edges[(tid, aid, "assigns")] = {
+                    "from": tid, "to": aid, "kind": "assigns", "active": True
+                }
+
+        # ── agent_done ─────────────────────────────────────
+        elif etype == "agent_done" and aid:
+            if aid in _graph_nodes:
+                _graph_nodes[aid]["status"] = "completed"
+            _active_agents.discard(aid)
+
+        # ── hook_check / tool events → tool clusters ───────
+        elif etype == "hook_check":
+            tool = evt.get("tool", "")
+            if tool:
+                cluster_id = f"tool_{tool}"
+                if cluster_id not in _graph_nodes:
+                    _graph_nodes[cluster_id] = {
+                        "id": cluster_id, "type": "tool_cluster",
+                        "label": tool, "count": 0, "color": "#6B7280"
+                    }
+                _graph_nodes[cluster_id]["count"] += 1
+                if aid and aid in _graph_nodes:
+                    _graph_edges[(aid, cluster_id, "uses")] = {
+                        "from": aid, "to": cluster_id, "kind": "uses", "active": True
+                    }
+
+
+def _graph_snapshot() -> dict:
+    """Return current graph state as {nodes, edges, parallel_count, active_agents}."""
+    with _graph_lock:
+        nodes = list(_graph_nodes.values())
+        edges = list(_graph_edges.values())
+        parallel_count = len(_active_agents)
+        active = list(_active_agents)
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "parallel_count": parallel_count,
+        "active_agents": active,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -210,6 +322,18 @@ def tail_log():
                     line = line.strip()
                     if line:
                         broadcast(line)
+                        # Step 2 — feed graph engine
+                        try:
+                            evt = json.loads(line)
+                            _process_graph_event(evt)
+                            # Broadcast graph delta to SSE clients
+                            snapshot = json.dumps(
+                                {"type": "graph_update", **_graph_snapshot()},
+                                ensure_ascii=False
+                            )
+                            broadcast(snapshot)
+                        except Exception:
+                            pass
         except Exception:
             pass
         time.sleep(0.1)
@@ -377,6 +501,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_keys_get()
         elif path == "/api/capabilities":
             self._api_capabilities_get()
+        elif path == "/api/graph":
+            self._json_response(_graph_snapshot())
         else:
             self.send_error(404, "Not found")
 
