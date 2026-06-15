@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-06-15",
+  "confidence": "training",
+  "note": "Curated capability scorecard — durable offline-first fallback for scripts/model-capability-scout.py. Scores are 0-100 (benchmark % or normalized estimate). Keyed by model FAMILY (match substrings) so it survives volatile model ids. Values are [training]-derived estimates pending live-leaderboard refresh; confidence markers are honest. Cost-first is NOT encoded here — delegate.sh applies cost_rank as the primary sort key; capability only reorders within a cost class.",
+  "source_urls": {
+    "swe_bench": "https://www.swebench.com/",
+    "terminal_bench": "https://www.tbench.ai/leaderboard/terminal-bench/2.0",
+    "nl2repobench": "https://github.com/multimodal-art-projection/NL2RepoBench"
+  },
+  "dimensions": ["swe_bench", "terminal_bench", "nl2repobench", "reasoning", "speed"],
+  "neutral_default": 50,
+  "families": {
+    "glm": {
+      "match": ["glm", "zhipu", "z-ai", "z.ai", "bigmodel"],
+      "swe_bench": 68, "terminal_bench": 50, "nl2repobench": 45,
+      "reasoning": 80, "speed": 70,
+      "confidence": "training", "as_of": "2026-06-15",
+      "note": "GLM-4.6/5.2 (Z.ai) — strong coding+reasoning model"
+    },
+    "deepseek": {
+      "match": ["deepseek", "deepseek-r1", "deepseek-chat", "deepseek-reasoner"],
+      "swe_bench": 50, "terminal_bench": 38, "nl2repobench": 35,
+      "reasoning": 75, "speed": 62,
+      "confidence": "training", "as_of": "2026-06-15",
+      "note": "DeepSeek V3/R1 — reasoning-capable, cheap"
+    },
+    "gemini-flash": {
+      "match": ["gemini", "google/gemini"],
+      "swe_bench": 34, "terminal_bench": 32, "nl2repobench": 30,
+      "reasoning": 62, "speed": 93,
+      "confidence": "low", "as_of": "2026-06-15",
+      "note": "Gemini Flash — fast, free tier, lighter reasoning"
+    },
+    "claude-haiku": {
+      "match": ["haiku", "claude-haiku", "anthropic"],
+      "swe_bench": 42, "terminal_bench": 40, "nl2repobench": 32,
+      "reasoning": 66, "speed": 82,
+      "confidence": "low", "as_of": "2026-06-15",
+      "note": "Claude Haiku — balanced, low-cost paid"
+    },
+    "llama": {
+      "match": ["llama", "groq", "meta-llama"],
+      "swe_bench": 26, "terminal_bench": 22, "nl2repobench": 20,
+      "reasoning": 52, "speed": 96,
+      "confidence": "low", "as_of": "2026-06-15",
+      "note": "Llama on Groq — very fast, lighter capability"
+    },
+    "qwen": {
+      "match": ["qwen"],
+      "swe_bench": 40, "terminal_bench": 30, "nl2repobench": 32,
+      "reasoning": 66, "speed": 72,
+      "confidence": "low", "as_of": "2026-06-15",
+      "note": "Qwen3 — solid free general model"
+    },
+    "gpt-mini": {
+      "match": ["gpt-4o-mini", "gpt-4.1-mini", "o4-mini"],
+      "swe_bench": 36, "terminal_bench": 34, "nl2repobench": 30,
+      "reasoning": 64, "speed": 80,
+      "confidence": "low", "as_of": "2026-06-15",
+      "note": "OpenAI mini — paid fallback"
+    }
+  }
+}
