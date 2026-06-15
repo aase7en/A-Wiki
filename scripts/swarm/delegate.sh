@@ -52,6 +52,11 @@ refresh_capability_scout() {
 # ─── Load local router policy (graceful if missing) ──────────────────────────
 refresh_model_scout cached || true
 refresh_capability_scout || true
+
+# Ensure Live Dashboard is running (fire-and-forget — no-op if already up)
+if [ "${AWIKI_DISABLE_DASHBOARD_AUTOSTART:-0}" != "1" ] && [ -f "$REPO_ROOT/scripts/dashboard-ensure.sh" ]; then
+  bash "$REPO_ROOT/scripts/dashboard-ensure.sh" &>/dev/null &
+fi
 if [ -f "$POLICY_SCRIPT" ]; then
   python3 "$POLICY_SCRIPT" --scout "$SCOUT_JSON" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
 fi

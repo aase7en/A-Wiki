@@ -23,7 +23,12 @@ Port: 7790  (separate from render-html-preview on 7788)
 """
 import json
 import os
+import argparse
+import os
 import queue
+import signal
+import socket
+import subprocess
 import sys
 import threading
 import time
@@ -39,6 +44,10 @@ DASHBOARD_KEYS_FILE = REPO_ROOT / ".tmp" / "live-dashboard-keys.env"
 CAPABILITY_CACHE = REPO_ROOT / ".tmp" / "model-capability-cache.json"
 CAPABILITY_SCORECARD = REPO_ROOT / "wiki" / "context" / "model-capability-scores.json"
 PORT = 7790
+
+PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
+DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
+IDLE_TTL_S = 1800  # 30 min idle → auto-shutdown
 
 # task_type → capability dimension (mirrors delegate.sh::_capability_dimension)
 TASK_DIMENSION = {
@@ -85,6 +94,90 @@ DEFAULT_MODEL_CONFIG = {
 _clients = []
 _clients_lock = threading.Lock()
 _stats = {"events_sent": 0, "clients_connected": 0, "started": time.time()}
+_idle_since = time.time()  # updated in _sse connect/disconnect
+_idle_lock = threading.Lock()
+
+_server_ref = None  # set in __main__ so idle_watchdog can call shutdown()
+
+
+# ---------------------------------------------------------------------------
+# Daemon helpers
+# ---------------------------------------------------------------------------
+
+def is_already_running() -> bool:
+    """Return True if a live-dashboard.pid process is still alive."""
+    if not PID_FILE.exists():
+        return False
+    try:
+        pid = int(PID_FILE.read_text().strip())
+        os.kill(pid, 0)  # signal 0 = existence check
+        return True
+    except (ValueError, ProcessLookupError, PermissionError):
+        PID_FILE.unlink(missing_ok=True)
+        return False
+
+
+def _is_port_free(port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            s.bind(("127.0.0.1", port))
+            return True
+        except OSError:
+            return False
+
+
+def daemonize() -> None:
+    """Double-fork to fully detach; write PID file; redirect stdio to DAEMON_LOG."""
+    DAEMON_LOG.parent.mkdir(exist_ok=True)
+
+    # First fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            sys.exit(0)
+    except OSError as e:
+        sys.stderr.write(f"fork #1 failed: {e}\n")
+        sys.exit(1)
+
+    os.setsid()
+    os.umask(0)
+
+    # Second fork
+    try:
+        pid = os.fork()
+        if pid > 0:
+            sys.exit(0)
+    except OSError as e:
+        sys.stderr.write(f"fork #2 failed: {e}\n")
+        sys.exit(1)
+
+    # Redirect stdio
+    sys.stdout.flush()
+    sys.stderr.flush()
+    with open(os.devnull, "r") as devnull:
+        os.dup2(devnull.fileno(), sys.stdin.fileno())
+    with open(str(DAEMON_LOG), "a") as logf:
+        os.dup2(logf.fileno(), sys.stdout.fileno())
+        os.dup2(logf.fileno(), sys.stderr.fileno())
+
+    PID_FILE.write_text(str(os.getpid()))
+
+
+def idle_watchdog(server) -> None:
+    """Shut down server after IDLE_TTL_S seconds with no SSE clients."""
+    global _idle_since
+    while True:
+        time.sleep(60)
+        with _idle_lock:
+            idle = _idle_since
+        if idle is not None and (time.time() - idle) >= IDLE_TTL_S:
+            server.shutdown()
+            try:
+                PID_FILE.unlink(missing_ok=True)
+            except Exception:
+                pass
+            return
 
 
 def broadcast(line):
@@ -355,10 +448,13 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response({"error": str(e)}, 500)
 
     def _sse(self):
+        global _idle_since
         q = queue.Queue(maxsize=200)
         with _clients_lock:
             _clients.append(q)
             _stats["clients_connected"] = len(_clients)
+        with _idle_lock:
+            _idle_since = None  # active client → not idle
 
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
@@ -392,6 +488,10 @@ class Handler(BaseHTTPRequestHandler):
                 if q in _clients:
                     _clients.remove(q)
                 _stats["clients_connected"] = len(_clients)
+                remaining = len(_clients)
+            with _idle_lock:
+                if remaining == 0:
+                    _idle_since = time.time()  # start idle countdown
 
     def _serve_html(self):
         html_path = DASHBOARD_HTML if DASHBOARD_HTML.exists() else DASHBOARD_HTML_FALLBACK
@@ -438,24 +538,60 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser(description="A-Wiki Live Dashboard server")
+    ap.add_argument("--daemonize", action="store_true",
+                    help="Detach and run as background daemon (writes PID to .tmp/live-dashboard.pid)")
+    ap.add_argument("--no-browser", action="store_true",
+                    help="Skip opening browser tab after daemonize")
+    ap.add_argument("--run", action="store_true", help="Foreground mode (default; explicit flag)")
+    args = ap.parse_args()
+
+    if args.daemonize:
+        if is_already_running():
+            sys.exit(0)  # Already running — idempotent
+        if not _is_port_free(PORT):
+            sys.stderr.write(
+                f"⚠️  Port {PORT} is busy (non-dashboard process). "
+                f"Kill it or use a different port.\n"
+            )
+            sys.exit(1)
+        daemonize()  # Point of no return in child; parents exit above
+
+    LOG_FILE.parent.mkdir(exist_ok=True)
+
     t = threading.Thread(target=tail_log, daemon=True)
     t.start()
 
-    server = ThreadingHTTPServer(("localhost", PORT), Handler)
+    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     server.daemon_threads = True
-    print(f"🎛  A-Wiki Live Dashboard : http://localhost:{PORT}/")
-    print(f"📡  SSE event stream      : http://localhost:{PORT}/events")
-    print(f"🗑   Clear log             : http://localhost:{PORT}/clear")
-    print(f"📊  Status                : http://localhost:{PORT}/status")
-    print(f"🔧  Model config          : http://localhost:{PORT}/api/models")
-    print(f"🔑  API keys              : http://localhost:{PORT}/api/keys")
-    print(f"🧬  Capabilities          : http://localhost:{PORT}/api/capabilities")
-    print(f"📁  Watching              : {LOG_FILE}")
-    print()
-    print("Issue any A-Wiki command to see live model activity.")
-    print("Press Ctrl+C to stop.\n")
+    _server_ref = server
+
+    if args.daemonize:
+        w = threading.Thread(target=idle_watchdog, args=(server,), daemon=True)
+        w.start()
+        if not args.no_browser:
+            subprocess.Popen(
+                ["open", f"http://localhost:{PORT}/"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+    else:
+        print(f"🎛  A-Wiki Live Dashboard : http://localhost:{PORT}/")
+        print(f"📡  SSE event stream      : http://localhost:{PORT}/events")
+        print(f"🗑   Clear log             : http://localhost:{PORT}/clear")
+        print(f"📊  Status                : http://localhost:{PORT}/status")
+        print(f"🔧  Model config          : http://localhost:{PORT}/api/models")
+        print(f"🔑  API keys              : http://localhost:{PORT}/api/keys")
+        print(f"🧬  Capabilities          : http://localhost:{PORT}/api/capabilities")
+        print(f"📁  Watching              : {LOG_FILE}")
+        print()
+        print("Issue any A-Wiki command to see live model activity.")
+        print("Press Ctrl+C to stop.\n")
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\n⏹  Dashboard server stopped.")
-        sys.exit(0)
+        if not args.daemonize:
+            print("\n⏹  Dashboard server stopped.")
+    finally:
+        PID_FILE.unlink(missing_ok=True)
+    sys.exit(0)
