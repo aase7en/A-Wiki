@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 603
-- ⚠ Warnings: 454
+- ✓ Passed: 604
+- ⚠ Warnings: 456
 - ❌ Failures: 4
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 438 more issue(s) below
+- … 440 more issue(s) below
 
 ---
 
@@ -88,6 +88,7 @@
 - wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
 - wiki/entities/ai-tools/9arm-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/ag2-orchestrator.md: missing frontmatter key: title
 - wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/anthropic-skills.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
@@ -449,6 +450,7 @@
 - wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
 - wiki/entities/ai-tools/9arm-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/ag2-orchestrator.md: missing TL;DR line
 - wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
 - wiki/entities/ai-tools/anthropic-skills.md: missing TL;DR line
 - wiki/entities/ai-tools/ecc.md: missing TL;DR line
@@ -507,10 +509,10 @@
 
 ---
 
-## ✓ Passed Checks (603 total)
+## ✓ Passed Checks (604 total)
 
 - **L2**: 129 passed
-- **L3**: 471 passed
+- **L3**: 472 passed
 - **L6**: 3 passed
 
 ---
