@@ -28,6 +28,14 @@
   --fail: #ff4444;
   --warn: #ffb347;
   --neutral: #6080ff;
+
+  /* Fluid type scale — clamp(min, vw, max). Readable on phone + desktop. */
+  --fs-2xs:  clamp(11px, 1.6vw, 12px);
+  --fs-xs:   clamp(12px, 1.9vw, 13px);
+  --fs-sm:   clamp(13px, 2.1vw, 14.5px);
+  --fs-base: clamp(14.5px, 2.4vw, 16px);
+  --fs-lg:   clamp(17px, 3vw, 20px);
+  --fs-xl:   clamp(22px, 4vw, 28px);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,7 +44,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -80,7 +88,7 @@ body {
 }
 
 .brand {
-  font-size: 13px;
+  font-size: var(--fs-base);
   font-weight: 700;
   background: var(--grad);
   -webkit-background-clip: text;
@@ -96,10 +104,10 @@ body {
   flex: 1;
 }
 .wf-tab {
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 5px;
   border: 1px solid var(--border2);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--dim);
   transition: all 0.25s;
   white-space: nowrap;
@@ -123,7 +131,7 @@ body {
 #stats {
   display: flex;
   gap: 14px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--dim);
   flex-shrink: 0;
 }
@@ -131,30 +139,51 @@ body {
 .stat-val { color: var(--cyan); font-weight: 700; font-variant-numeric: tabular-nums; }
 
 .hdr-btn {
-  padding: 3px 8px;
+  padding: 5px 11px;
   background: transparent;
   border: 1px solid var(--border2);
-  border-radius: 4px;
+  border-radius: 5px;
   color: var(--dim);
   cursor: pointer;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   transition: all 0.2s;
 }
 .hdr-btn:hover { border-color: var(--dim); color: var(--text); }
+.hdr-btn.accent { border-color: rgba(124,92,255,0.5); color: var(--text); background: rgba(124,92,255,0.12); }
 
 /* ── Main layout ────────────────────────────────────── */
 #main {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr clamp(320px, 26vw, 380px);
   overflow: hidden;
   min-width: 0;
 }
-@media (max-width: 700px) {
-  #main { grid-template-columns: 1fr; grid-template-rows: 1fr 220px; }
+/* Tablet — keep two columns but narrower sidebar */
+@media (max-width: 900px) {
+  #main { grid-template-columns: 1fr 280px; }
+}
+/* Mobile — single-column stack, scrollable sections, big tap targets */
+@media (max-width: 600px) {
+  body { overflow: auto; height: auto; min-height: 100vh; }
+  #header { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  #wf-tabs { order: 3; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  #wf-tabs::-webkit-scrollbar { display: none; }
+  .wf-tab { flex-shrink: 0; }
+  #stats { order: 2; gap: 12px; }
+  #main {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
+  #net-panel { min-height: 55vh; }
+  .net-inner { flex-direction: column; gap: 16px; }
+  #connector-zone { display: none; }            /* SVG connector irrelevant when stacked vertically */
+  #model-grid { width: 100%; min-width: 0; }
   #sidebar { border-left: none; border-top: 1px solid var(--border); }
-  #wf-tabs { gap: 3px; }
-  .wf-tab { padding: 2px 5px; font-size: 9px; }
+  #timeline { max-height: 42vh; }
+  .hdr-btn { min-height: 40px; padding: 8px 14px; }
 }
 
 /* ── Network Panel (left) ───────────────────────────── */
@@ -178,9 +207,9 @@ body {
   display: flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 9.5px;
+  font-size: var(--fs-2xs);
   font-family: 'SF Mono', 'JetBrains Mono', monospace;
   border: 1px solid;
   animation: badge-in 0.2s ease-out;
@@ -261,12 +290,12 @@ body {
 }
 .primary-card.active::before { opacity: 0.2; }
 
-.primary-icon { font-size: 26px; line-height: 1; margin-bottom: 6px; }
-.primary-name { font-size: 11px; font-weight: 700; color: var(--text); }
-.primary-role { font-size: 9px; color: var(--dim); margin-top: 2px; }
+.primary-icon { font-size: var(--fs-xl); line-height: 1; margin-bottom: 6px; }
+.primary-name { font-size: var(--fs-sm); font-weight: 700; color: var(--text); }
+.primary-role { font-size: var(--fs-2xs); color: var(--dim); margin-top: 2px; }
 .primary-status {
   margin-top: 8px;
-  font-size: 9.5px;
+  font-size: var(--fs-2xs);
   padding: 2px 7px;
   border-radius: 3px;
   background: rgba(0,212,170,0.10);
@@ -322,7 +351,7 @@ body {
 
 .idle-hint {
   color: var(--dim);
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   text-align: center;
   padding: 16px 20px;
   border: 1px dashed var(--border2);
@@ -331,7 +360,7 @@ body {
 .idle-hint small {
   display: block;
   margin-top: 4px;
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   opacity: 0.6;
 }
 
@@ -374,9 +403,9 @@ body {
   justify-content: space-between;
   margin-bottom: 5px;
 }
-.m-name { font-size: 11px; font-weight: 700; }
+.m-name { font-size: var(--fs-sm); font-weight: 700; }
 .m-provider {
-  font-size: 8.5px;
+  font-size: var(--fs-2xs);
   padding: 1px 5px;
   border-radius: 3px;
   font-family: 'SF Mono', monospace;
@@ -391,12 +420,12 @@ body {
 .model-card.other    .m-provider { background: rgba(96,128,255,0.18);  color: var(--neutral);   }
 
 .m-task {
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   color: var(--dim);
   margin-bottom: 4px;
 }
 .m-preview {
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   color: var(--dim2);
   overflow: hidden;
   white-space: nowrap;
@@ -409,7 +438,7 @@ body {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
 }
 .thinking-dot {
   display: inline-flex;
@@ -441,7 +470,7 @@ body {
   background: rgba(124,92,255,0.15);
   border: 1px solid rgba(124,92,255,0.35);
   border-radius: 20px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--primary);
   white-space: nowrap;
   animation: badge-in 0.25s ease-out;
@@ -456,9 +485,9 @@ body {
   background: var(--bg2);
 }
 #sidebar-hdr {
-  padding: 8px 12px;
+  padding: 9px 13px;
   border-bottom: 1px solid var(--border);
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   color: var(--dim);
   font-weight: 700;
   text-transform: uppercase;
@@ -468,7 +497,7 @@ body {
   justify-content: space-between;
 }
 #event-count {
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   background: var(--border2);
   padding: 1px 6px;
   border-radius: 10px;
@@ -517,20 +546,20 @@ body {
 .ev-time {
   color: var(--dim2);
   font-family: 'SF Mono', monospace;
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   white-space: nowrap;
   padding-top: 1px;
   flex-shrink: 0;
 }
-.ev-icon { flex-shrink: 0; font-size: 11px; line-height: 1.4; }
-.ev-text { flex: 1; font-size: 9.5px; line-height: 1.5; word-break: break-word; }
+.ev-icon { flex-shrink: 0; font-size: var(--fs-sm); line-height: 1.4; }
+.ev-text { flex: 1; font-size: var(--fs-xs); line-height: 1.5; word-break: break-word; }
 .ev-text strong { color: var(--text); }
 .ev-text em { color: var(--dim); font-style: normal; }
 .ev-text .ok  { color: var(--success); }
 .ev-text .bad { color: var(--fail); }
 .ev-text .tag {
   font-family: 'SF Mono', monospace;
-  font-size: 8.5px;
+  font-size: var(--fs-2xs);
   background: var(--border2);
   padding: 0 3px;
   border-radius: 3px;
@@ -550,26 +579,27 @@ body {
   backdrop-filter: blur(4px);
 }
 #offline.show { display: flex; }
-#offline h2 { font-size: 18px; color: var(--text); }
-#offline p  { color: var(--dim); font-size: 12px; }
+#offline h2 { font-size: var(--fs-lg); color: var(--text); }
+#offline p  { color: var(--dim); font-size: var(--fs-sm); }
 #offline code {
   background: var(--card2);
   border: 1px solid var(--border2);
   padding: 6px 14px;
   border-radius: 6px;
   font-family: 'SF Mono', monospace;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--cyan);
 }
 #offline .retry-btn {
   margin-top: 6px;
-  padding: 6px 18px;
+  padding: 9px 20px;
   border-radius: 6px;
   background: rgba(124,92,255,0.2);
   border: 1px solid rgba(124,92,255,0.4);
   color: var(--text);
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--fs-sm);
+  min-height: 44px;
   transition: all 0.2s;
 }
 #offline .retry-btn:hover { background: rgba(124,92,255,0.35); }
@@ -613,17 +643,18 @@ body {
   padding: 12px 16px; border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
-#set-hdr .brand { font-size: 13px; }
+#set-hdr .brand { font-size: var(--fs-base); }
 #set-close {
   background: transparent; border: none; color: var(--dim);
-  font-size: 18px; cursor: pointer; line-height: 1;
+  font-size: var(--fs-lg); cursor: pointer; line-height: 1;
+  min-width: 32px; min-height: 32px;
 }
 #set-close:hover { color: var(--text); }
 #set-tabs { display: flex; gap: 6px; padding: 10px 16px 0; flex-shrink: 0; }
 .set-tab {
-  padding: 5px 12px; border-radius: 6px 6px 0 0;
+  padding: 7px 13px; border-radius: 6px 6px 0 0;
   border: 1px solid var(--border2); border-bottom: none;
-  font-size: 11px; color: var(--dim); cursor: pointer; background: transparent;
+  font-size: var(--fs-xs); color: var(--dim); cursor: pointer; background: transparent;
 }
 .set-tab.active { color: var(--text); background: var(--card); border-color: var(--primary); }
 #set-body { flex: 1; overflow-y: auto; padding: 14px 16px; }
@@ -647,51 +678,51 @@ body {
 .cfg-card.disabled { opacity: 0.5; }
 
 .cfg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.cfg-name { font-size: 12px; font-weight: 700; flex: 1; }
-.cfg-toggle { position: relative; width: 34px; height: 18px; flex-shrink: 0; cursor: pointer; }
+.cfg-name { font-size: var(--fs-base); font-weight: 700; flex: 1; }
+.cfg-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer; }
 .cfg-toggle input { opacity: 0; width: 0; height: 0; }
 .cfg-slider {
-  position: absolute; inset: 0; border-radius: 18px;
+  position: absolute; inset: 0; border-radius: 22px;
   background: var(--border2); transition: 0.2s;
 }
 .cfg-slider::before {
-  content: ''; position: absolute; height: 14px; width: 14px; left: 2px; top: 2px;
+  content: ''; position: absolute; height: 18px; width: 18px; left: 2px; top: 2px;
   border-radius: 50%; background: var(--dim); transition: 0.2s;
 }
 .cfg-toggle input:checked + .cfg-slider { background: rgba(0,212,170,0.35); }
-.cfg-toggle input:checked + .cfg-slider::before { transform: translateX(16px); background: var(--success); }
+.cfg-toggle input:checked + .cfg-slider::before { transform: translateX(18px); background: var(--success); }
 
 .cfg-field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
-.cfg-field label { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.4px; }
+.cfg-field label { font-size: var(--fs-2xs); color: var(--dim); text-transform: uppercase; letter-spacing: 0.4px; }
 .cfg-input {
   background: var(--bg); border: 1px solid var(--border2); border-radius: 5px;
-  padding: 5px 8px; color: var(--text); font-size: 11px;
-  font-family: 'SF Mono', monospace; width: 100%;
+  padding: 8px 10px; color: var(--text); font-size: var(--fs-sm);
+  font-family: 'SF Mono', monospace; width: 100%; min-height: 40px;
 }
 .cfg-input:focus { outline: none; border-color: var(--primary); }
 .cap-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
 .cap-badge {
-  font-size: 8.5px; font-family: 'SF Mono', monospace;
-  padding: 1px 6px; border-radius: 10px;
+  font-size: var(--fs-2xs); font-family: 'SF Mono', monospace;
+  padding: 2px 7px; border-radius: 10px;
   background: var(--border2); color: var(--dim);
 }
 .cap-badge.hi { background: rgba(0,212,170,0.15); color: var(--success); }
-.key-status { font-size: 9px; padding: 1px 6px; border-radius: 10px; flex-shrink: 0; }
+.key-status { font-size: var(--fs-2xs); padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
 .key-status.set   { background: rgba(0,212,170,0.12); color: var(--success); }
 .key-status.unset { background: rgba(255,179,71,0.12); color: var(--warn); }
 
 .set-btn {
-  width: 100%; padding: 8px; border-radius: 6px; cursor: pointer;
+  width: 100%; padding: 11px; border-radius: 6px; cursor: pointer;
   background: rgba(124,92,255,0.18); border: 1px solid rgba(124,92,255,0.4);
-  color: var(--text); font-size: 12px; font-weight: 600; margin-top: 8px;
-  transition: all 0.2s;
+  color: var(--text); font-size: var(--fs-base); font-weight: 600; margin-top: 8px;
+  min-height: 44px; transition: all 0.2s;
 }
 .set-btn:hover { background: rgba(124,92,255,0.32); }
-.set-btn.sm { width: auto; padding: 4px 10px; font-size: 10px; margin-top: 0; }
-.set-note { font-size: 9.5px; color: var(--dim); margin: 4px 0 12px; line-height: 1.5; }
+.set-btn.sm { width: auto; padding: 6px 12px; font-size: var(--fs-xs); margin-top: 0; min-height: 36px; }
+.set-note { font-size: var(--fs-xs); color: var(--dim); margin: 4px 0 12px; line-height: 1.55; }
 .set-toast {
   position: fixed; bottom: 18px; right: 18px; z-index: 400;
-  padding: 8px 14px; border-radius: 6px; font-size: 11px;
+  padding: 9px 15px; border-radius: 6px; font-size: var(--fs-sm);
   background: var(--card); border: 1px solid var(--success); color: var(--success);
   opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none;
 }
@@ -700,13 +731,38 @@ body {
 
 /* Recommendation hint strip */
 #rec-strip {
-  font-size: 9.5px; color: var(--dim); padding: 4px 16px;
+  font-size: var(--fs-xs); color: var(--dim); padding: 6px 16px;
   border-top: 1px solid var(--border); flex-shrink: 0;
   white-space: nowrap; overflow-x: auto; scrollbar-width: none;
 }
 #rec-strip::-webkit-scrollbar { display: none; }
 #rec-strip .rec-item { display: inline-block; margin-right: 14px; }
 #rec-strip b { color: var(--cyan); }
+
+/* ── คู่มือ / Help pane ──────────────────────────────── */
+.help-section { margin-bottom: 18px; }
+.help-section h4 {
+  font-size: var(--fs-base); color: var(--text); font-weight: 700;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.help-section p, .help-section li {
+  font-size: var(--fs-xs); color: var(--dim); line-height: 1.65; margin-bottom: 5px;
+}
+.help-section ul { padding-left: 18px; margin: 4px 0; }
+.help-section code {
+  font-family: 'SF Mono', monospace; font-size: var(--fs-2xs);
+  background: var(--card2); border: 1px solid var(--border2);
+  padding: 1px 6px; border-radius: 4px; color: var(--cyan); word-break: break-all;
+}
+.help-section b { color: var(--text); }
+.help-table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+.help-table th, .help-table td {
+  font-size: var(--fs-2xs); text-align: left; padding: 5px 8px;
+  border-bottom: 1px solid var(--border); color: var(--dim);
+}
+.help-table th { color: var(--text); font-weight: 700; }
+.help-table .yes { color: var(--success); font-weight: 700; }
+.help-table .no  { color: var(--warn); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -714,10 +770,10 @@ body {
 <!-- Offline overlay -->
 <div id="offline" class="show">
   <h2>📡 รอ Dashboard Server…</h2>
-  <p>เริ่ม SSE server ก่อน:</p>
-  <code>python3 scripts/live-dashboard/server.py</code>
-  <p style="margin-top:4px; font-size:11px;">แล้วเปิด <code>http://localhost:7790/</code> ใน browser</p>
-  <p style="color:var(--dim2); font-size:10px; max-width:320px; text-align:center;">
+  <p style="max-width:340px; text-align:center;">ปกติ A-Wiki <b style="color:var(--text)">เปิดให้อัตโนมัติ</b> ตอนเริ่ม session (Claude / Codex / Gemini). ถ้ายังไม่ขึ้น เปิดเองได้:</p>
+  <code>bash scripts/dashboard-ensure.sh</code>
+  <p style="margin-top:4px; font-size:var(--fs-xs);">หรือ foreground: <code>python3 scripts/live-dashboard/server.py</code></p>
+  <p style="color:var(--dim2); font-size:var(--fs-xs); max-width:340px; text-align:center;">
     หลัง server เริ่ม — ออก command ใดก็ได้ใน A-Wiki แล้วดู AI ทำงาน real-time ที่นี่
   </p>
   <button class="retry-btn" onclick="connect()">🔄 ลองเชื่อมต่ออีกครั้ง</button>
@@ -739,7 +795,7 @@ body {
     <div class="stat-item">tier <span class="stat-val" id="s-tier">?</span></div>
     <div class="stat-item" id="s-par-wrap" style="display:none">⚡parallel <span class="stat-val" id="s-par">0</span></div>
   </div>
-  <button class="hdr-btn" onclick="openSettings()">⚙️ models</button>
+  <button class="hdr-btn accent" onclick="openSettings()">⚙️ ตั้งค่า</button>
   <button class="hdr-btn" onclick="doClear()">🗑 clear</button>
 </div>
 
@@ -813,6 +869,7 @@ body {
   <div id="set-tabs">
     <button class="set-tab active" data-pane="pane-models" onclick="setTab(this)">Models</button>
     <button class="set-tab" data-pane="pane-keys" onclick="setTab(this)">API Keys</button>
+    <button class="set-tab" data-pane="pane-help" onclick="setTab(this)">📖 คู่มือ</button>
   </div>
   <div id="set-body">
     <div class="set-pane active" id="pane-models">
@@ -823,6 +880,50 @@ body {
     <div class="set-pane" id="pane-keys">
       <div class="set-note">ใส่ API key ของแต่ละ provider. เก็บใน <code>.tmp/</code> (gitignored) + drive/.secrets ถ้ามี — ไม่ขึ้น git. โชว์เฉพาะสถานะ set/unset ไม่เคยโชว์ค่า.</div>
       <div id="keys-list"></div>
+    </div>
+
+    <!-- คู่มือ / Help -->
+    <div class="set-pane" id="pane-help">
+      <div class="help-section">
+        <h4>🖥 อ่าน dashboard ยังไง</h4>
+        <ul>
+          <li><b>กลางจอ (Network)</b> — การ์ด Primary (🧠 Claude = Senior Critic) เชื่อมเส้นไปการ์ด model ที่กำลังทำงาน; เส้นวิ่ง = กำลัง delegate, หลายเส้นพร้อมกัน = parallel</li>
+          <li><b>Event Log</b> (ขวา/ล่าง) — timeline เหตุการณ์สด: session start, hook ผ่าน/บล็อก, delegate start/done/fail</li>
+          <li><b>แถบ hook</b> (บนซ้าย) — hook ที่เพิ่งรัน ✅ ผ่าน / 🔴 บล็อก</li>
+          <li><b>แท็บ workflow</b> (บน) — 🚀 Session · 📋 Plan · 🧠 Swarm · 💰 Cost-First สว่างเมื่อเข้าโหมดนั้น</li>
+          <li><b>แถบล่างสุด</b> — แนะนำ model ตามความสามารถ (capability) ต่อชนิดงาน</li>
+        </ul>
+      </div>
+      <div class="help-section">
+        <h4>🎛 เลือก model / ใส่ API key</h4>
+        <p>แท็บ <b>Models</b>: เปิด/ปิด toggle แต่ละ model, แก้ <code>model_id</code>, ดูคะแนน capability (SWE / Term / Repo / reason / speed) แล้วกด <b>บันทึก Models</b> — มีผลรอบ delegate ถัดไป.</p>
+        <p>แท็บ <b>API Keys</b>: ใส่ key ต่อ provider (โชว์แค่ set/unset ไม่โชว์ค่า). ถ้าไม่ตั้งอะไร = ใช้ default (free model เปิดอยู่แล้ว).</p>
+        <p><b>GLM / Z.ai:</b> เปิด toggle <b>GLM 5.2</b> + ใส่ <code>ZHIPU_API_KEY</code> + ใช้ endpoint <code>api.z.ai</code> (สากล) แก้ <code>model_id</code> เป็น <code>glm-5.2</code> ได้.</p>
+      </div>
+      <div class="help-section">
+        <h4>🚀 dashboard เปิดอัตโนมัติยังไง</h4>
+        <p>A-Wiki เปิดให้เองตอนเริ่ม session — ไม่ต้องรันเอง. ปิดเองเมื่อ idle 30 นาที.</p>
+        <table class="help-table">
+          <tr><th>Agent / IDE</th><th>Auto-start</th></tr>
+          <tr><td>Claude Code</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Codex</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Gemini CLI</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Cline / Cursor / Antigravity</td><td class="no">⚠ รันเอง</td></tr>
+        </table>
+        <p>IDE ที่ไม่มี hook (Cline/Cursor/Antigravity) สั่งเองครั้งเดียว: <code>bash scripts/dashboard-ensure.sh</code> (หรือรอจังหวะที่ agent delegate งานก็เปิดให้เอง).</p>
+      </div>
+      <div class="help-section">
+        <h4>⌨️ คำสั่ง manual</h4>
+        <ul>
+          <li>เปิด (daemon): <code>bash scripts/dashboard-ensure.sh</code></li>
+          <li>เปิด (foreground): <code>python3 scripts/live-dashboard/server.py</code></li>
+          <li>ปิด: <code>bash scripts/dashboard-stop.sh</code></li>
+        </ul>
+      </div>
+      <div class="help-section">
+        <h4>💰 Cost-first (สำคัญ)</h4>
+        <p>การจัดลำดับยึด <b>cost-first</b> เสมอ — model เสียเงิน <b>ไม่แซง</b> model ฟรี. capability สลับลำดับเฉพาะ <b>ภายใน cost class เดียวกัน</b>.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -1187,7 +1288,7 @@ function evText(evt) {
     case 'cost_declare':
       return `cost declared <strong>${tier||'?'}</strong>${task ? ' · '+task : ''}`;
     case 'delegate_start':
-      return `→ <strong>${modelShort(model)}</strong> <em>[${task||'?'}]</em>${prompt_preview ? '<br><em style="font-size:8.5px;opacity:.6">"'+prompt_preview.substring(0,50)+'"</em>' : ''}`;
+      return `→ <strong>${modelShort(model)}</strong> <em>[${task||'?'}]</em>${prompt_preview ? '<br><em style="font-size:var(--fs-2xs);opacity:.6">"'+prompt_preview.substring(0,50)+'"</em>' : ''}`;
     case 'delegate_done':
       return `← <strong>${modelShort(model)}</strong> <span class="ok">done</span>${evt.duration_ms ? ' · '+(evt.duration_ms/1000).toFixed(1)+'s' : ''}`;
     case 'delegate_fail':
