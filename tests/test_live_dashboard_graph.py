@@ -24,15 +24,13 @@ import server
 
 
 @pytest.fixture(autouse=True)
-def reset_graph_state(monkeypatch):
+def reset_graph_state():
     """Reset server graph state before each test."""
-    for attr in ("_graph_nodes", "_graph_edges", "_active_agents", "_task_stack"):
-        monkeypatch.setattr(server, attr, getattr(server, attr, {}).__class__())
-    monkeypatch.setattr(server, "_graph_nodes", {})
-    monkeypatch.setattr(server, "_graph_edges", {})
-    monkeypatch.setattr(server, "_active_agents", {})
-    monkeypatch.setattr(server, "_task_stack", [])
-    monkeypatch.setattr(server, "_agent_spawn_counter", 0)
+    import threading
+    server._graph_nodes.clear()
+    server._graph_edges.clear()
+    server._active_agents.clear()
+    server._task_stack.clear()
 
 
 class TestGraphEndpoint:
