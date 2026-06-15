@@ -226,6 +226,24 @@ def _emit_session_start() -> None:
         pass
 
 
+def _ensure_dashboard() -> None:
+    """Start Live Dashboard daemon if not running (fire-and-forget, non-blocking)."""
+    if os.environ.get("AWIKI_DISABLE_DASHBOARD_AUTOSTART", "0") == "1":
+        return
+    ensure_sh = Path(REPO_ROOT) / "scripts" / "dashboard-ensure.sh"
+    if not ensure_sh.exists():
+        return
+    try:
+        subprocess.Popen(
+            ["bash", str(ensure_sh)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except Exception:
+        pass
+
+
 def main():
     try:
         input_data = json.load(sys.stdin)
@@ -233,6 +251,7 @@ def main():
         input_data = {}
 
     _emit_session_start()
+    _ensure_dashboard()
 
     # Only run on SessionStart-like events (or always — lightweight enough)
     repo_root = REPO_ROOT
