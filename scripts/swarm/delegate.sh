@@ -72,6 +72,14 @@ if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
   export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
 fi
 
+# ─── Dashboard-saved key fallback ─────────────────────────────────────────────
+# Keys saved via live dashboard Settings → API Keys tab (stored gitignored)
+DASHBOARD_KEYS_ENV="$REPO_ROOT/.tmp/live-dashboard-keys.env"
+if [ -f "$DASHBOARD_KEYS_ENV" ]; then
+  # shellcheck source=/dev/null
+  set -a; source "$DASHBOARD_KEYS_ENV" 2>/dev/null || true; set +a
+fi
+
 # ─── Emergency seed defaults only; seed only; replaced by scout ───────────────
 TIER1_PRIMARY="${TIER1_PRIMARY:-google/gemini-2.5-flash:free}"
 TIER1_FALLBACK1="${TIER1_FALLBACK1:-deepseek/deepseek-chat-v3-0324:free}"
@@ -95,6 +103,38 @@ GROQ_DIRECT_MODEL_SEED="${GROQ_DIRECT_MODEL_SEED:-llama-3.3-70b-versatile}"
 GROQ_DIRECT_MODEL="${GROQ_DIRECT_MODEL:-$GROQ_DIRECT_MODEL_SEED}"
 ANTHROPIC_LOW_MODEL_SEED="${ANTHROPIC_LOW_MODEL_SEED:-claude-haiku-4-5}"
 ANTHROPIC_LOW_MODEL="${ANTHROPIC_LOW_MODEL:-$ANTHROPIC_LOW_MODEL_SEED}"
+
+# GLM / Z.ai direct route
+ZHIPU_DIRECT_MODEL_SEED="${ZHIPU_DIRECT_MODEL_SEED:-glm-4-flash}"
+ZHIPU_DIRECT_MODEL="${ZHIPU_DIRECT_MODEL:-$ZHIPU_DIRECT_MODEL_SEED}"
+ZHIPU_API_URL="${ZHIPU_API_URL:-https://open.bigmodel.cn/api/paas/v4/chat/completions}"
+
+# ─── Model config (live dashboard settings) ────────────────────────────────────
+# Reads .tmp/model-config.json (saved by dashboard Settings panel) to disable
+# specific models and apply custom model IDs without touching this file.
+MODEL_CONFIG_JSON="$REPO_ROOT/.tmp/model-config.json"
+if [ -f "$MODEL_CONFIG_JSON" ]; then
+  eval "$(python3 -c "
+import json, sys
+try:
+    cfg = json.load(open('$MODEL_CONFIG_JSON'))
+    for m in cfg.get('models', []):
+        mid = m.get('id', '').upper().replace('-', '_')
+        if not m.get('enabled', True) and mid:
+            print('export AWIKI_DISABLE_' + mid + '=1')
+        model_val = m.get('model_id', '')
+        if model_val:
+            if m.get('id') == 'gemini':    print('export GEMINI_DIRECT_MODEL=' + model_val)
+            elif m.get('id') == 'groq':    print('export GROQ_DIRECT_MODEL=' + model_val)
+            elif m.get('id') == 'anthropic': print('export ANTHROPIC_LOW_MODEL=' + model_val)
+            elif m.get('id') == 'zhipu':
+                print('export ZHIPU_DIRECT_MODEL=' + model_val)
+                api_url = m.get('api_url', '')
+                if api_url: print('export ZHIPU_API_URL=' + api_url)
+except Exception:
+    pass
+" 2>/dev/null)" || true
+fi
 
 # ─── Args ─────────────────────────────────────────────────────────────────────
 if [ $# -lt 2 ]; then
@@ -121,12 +161,14 @@ esac
 # ─── Key check ────────────────────────────────────────────────────────────────
 if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${DEEPSEEK_API_KEY:-}" ] && \
    [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${GROQ_API_KEY:-}" ] && \
-   [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+   [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${ZHIPU_API_KEY:-}" ]; then
   echo "❌ No API keys found. Set at least one:" >&2
   echo "   OPENROUTER_API_KEY=sk-or-... (recommended — unlocks all models)" >&2
-  echo "   GEMINI_API_KEY=AIza...        (direct platform route; scout validates current model)" >&2
-  echo "   DEEPSEEK_API_KEY=sk-...       (direct provider route; scout validates pricing)" >&2
-  echo "   → claude.ai/code → Project Settings → Environment Variables" >&2
+  echo "   GEMINI_API_KEY=AIza...        (direct Google AI Studio route; free)" >&2
+  echo "   DEEPSEEK_API_KEY=sk-...       (direct DeepSeek route; free tier)" >&2
+  echo "   ZHIPU_API_KEY=...             (GLM 5.2 / Z.ai; set via dashboard ⚙️)" >&2
+  echo "   → Dashboard: http://localhost:7790/ → ⚙️ Settings → API Keys" >&2
+  echo "   → Or: claude.ai/code → Project Settings → Environment Variables" >&2
   exit 2
 fi
 
