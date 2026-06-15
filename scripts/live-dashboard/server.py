@@ -17,6 +17,7 @@ Endpoints:
   POST /api/models   → save model config
   GET /api/keys      → key names + set/unset status (never values)
   POST /api/keys     → save one API key to .tmp/live-dashboard-keys.env
+  GET /api/capabilities → capability scorecard + recommended_by_task
 
 Port: 7790  (separate from render-html-preview on 7788)
 """
@@ -26,7 +27,7 @@ import queue
 import sys
 import threading
 import time
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -35,7 +36,16 @@ DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html
 DASHBOARD_HTML_FALLBACK = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
 MODEL_CONFIG_FILE = REPO_ROOT / ".tmp" / "model-config.json"
 DASHBOARD_KEYS_FILE = REPO_ROOT / ".tmp" / "live-dashboard-keys.env"
+CAPABILITY_CACHE = REPO_ROOT / ".tmp" / "model-capability-cache.json"
+CAPABILITY_SCORECARD = REPO_ROOT / "wiki" / "context" / "model-capability-scores.json"
 PORT = 7790
+
+# task_type → capability dimension (mirrors delegate.sh::_capability_dimension)
+TASK_DIMENSION = {
+    "reason": "reasoning", "compare": "reasoning",
+    "scan": "terminal_bench",
+    "search": "speed", "lookup": "speed", "summarize": "speed",
+}
 
 DEFAULT_MODEL_CONFIG = {
     "models": [
@@ -66,8 +76,8 @@ DEFAULT_MODEL_CONFIG = {
         {
             "id": "zhipu", "name": "GLM 5.2 (Z.ai)", "enabled": False,
             "provider": "zhipu", "key_env": "ZHIPU_API_KEY",
-            "model_id": "glm-4-flash",
-            "api_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            "model_id": "glm-4.6",
+            "api_url": "https://api.z.ai/api/paas/v4/chat/completions",
         },
     ]
 }
@@ -130,6 +140,48 @@ def _load_model_config():
 def _save_model_config(data):
     MODEL_CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
     MODEL_CONFIG_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), "utf-8")
+
+
+def _load_capabilities():
+    """Load capability scorecard: cache if present, else committed scorecard."""
+    for path in (CAPABILITY_CACHE, CAPABILITY_SCORECARD):
+        try:
+            if path.exists():
+                return json.loads(path.read_text("utf-8"))
+        except Exception:
+            continue
+    return {"families": {}, "dimensions": [], "neutral_default": 50}
+
+
+def _family_for_model(families, model):
+    """Match a model config entry to a capability family via match substrings."""
+    hay = " ".join(str(model.get(k, "")) for k in ("id", "model_id", "name", "provider")).lower()
+    for key, fam in families.items():
+        if any(s in hay for s in fam.get("match", [])):
+            return key, fam
+    return None, None
+
+
+def _recommended_by_task():
+    """For each task_type, the best-capability ENABLED model (excludes disabled)."""
+    caps = _load_capabilities()
+    families = caps.get("families", {})
+    neutral = caps.get("neutral_default", 50)
+    cfg = _load_model_config()
+    enabled = [m for m in cfg.get("models", []) if m.get("enabled", True)]
+
+    rec = {}
+    for task, dim in TASK_DIMENSION.items():
+        best, best_score = None, -1
+        for m in enabled:
+            _, fam = _family_for_model(families, m)
+            score = (fam or {}).get(dim, neutral)
+            if score > best_score:
+                best, best_score = m, score
+        if best is not None:
+            rec[task] = {"id": best["id"], "name": best.get("name", best["id"]),
+                         "dimension": dim, "score": best_score}
+    return rec
 
 
 def _read_keys_status():
@@ -230,6 +282,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_models_get()
         elif path == "/api/keys":
             self._api_keys_get()
+        elif path == "/api/capabilities":
+            self._api_capabilities_get()
         else:
             self.send_error(404, "Not found")
 
@@ -276,6 +330,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def _api_keys_get(self):
         self._json_response({"keys": _read_keys_status()})
+
+    def _api_capabilities_get(self):
+        caps = _load_capabilities()
+        caps = dict(caps)
+        caps["recommended_by_task"] = _recommended_by_task()
+        self._json_response(caps)
 
     def _api_keys_post(self):
         data = self._read_body()
@@ -381,13 +441,15 @@ if __name__ == "__main__":
     t = threading.Thread(target=tail_log, daemon=True)
     t.start()
 
-    server = HTTPServer(("localhost", PORT), Handler)
+    server = ThreadingHTTPServer(("localhost", PORT), Handler)
+    server.daemon_threads = True
     print(f"🎛  A-Wiki Live Dashboard : http://localhost:{PORT}/")
     print(f"📡  SSE event stream      : http://localhost:{PORT}/events")
     print(f"🗑   Clear log             : http://localhost:{PORT}/clear")
     print(f"📊  Status                : http://localhost:{PORT}/status")
     print(f"🔧  Model config          : http://localhost:{PORT}/api/models")
     print(f"🔑  API keys              : http://localhost:{PORT}/api/keys")
+    print(f"🧬  Capabilities          : http://localhost:{PORT}/api/capabilities")
     print(f"📁  Watching              : {LOG_FILE}")
     print()
     print("Issue any A-Wiki command to see live model activity.")

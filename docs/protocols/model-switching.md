@@ -155,6 +155,24 @@ Manual GUI checklist:
 
 ความแน่นอนของ trigger เรียงจาก hook (deterministic) > always-loaded context (`AGENTS.md`/`CLAUDE.md`) > skill description. ถ้า probe FAIL ให้แก้ต้นเหตุที่ always-loaded context ก่อน แล้วค่อยปรับ skill description.
 
+## Capability-Aware Routing (within cost class)
+
+นอกจาก cost tier, swarm router (`scripts/swarm/delegate.sh`) จัดลำดับ model ตาม **ความสามารถ**
+ที่อ้างอิง leaderboard สาธารณะ (SWE-bench / Terminal-Bench 2.0 / NL2RepoBench) — แต่ **ยึด cost-first เสมอ**.
+
+- **Scorecard** `wiki/context/model-capability-scores.json` (committed, offline-first floor) keyed by
+  family + `match` substrings, คะแนน 0-100 ต่อ dimension (`swe_bench`/`terminal_bench`/`nl2repobench`/`reasoning`/`speed`).
+- **Scout** `scripts/model-capability-scout.py --offline-ok` refresh best-effort → `.tmp/model-capability-cache.json`;
+  network/parse fail → degrade เป็น committed (ไม่ raise, ไม่ block).
+- **Ranking** `_rank_by_capability()` sort key = `(cost_rank ASC, capability_score DESC)`.
+  `cost_rank` (0=free, 1=cheap paid direct, 2=premium) เป็น **primary key** → **paid ห้ามแซง free**;
+  capability สลับลำดับเฉพาะภายใน cost class. จัดเฉพาะ model ที่ **enabled + มี key** (ผู้ใช้คุมผ่าน Live Dashboard ⚙️).
+- task_type → dimension: `reason|compare`→reasoning, `scan`→terminal_bench, `search|lookup|summarize`→speed
+  (ไม่เพิ่ม task_type ใหม่ — เลี่ยง blast radius; `swe_bench`/`nl2repobench` เก็บไว้รอ caller `code`/`repo`).
+
+ดู `wiki/entities/ai-tools/model-capability-bench.md` + `scripts/live-dashboard/README.md`.
+ผู้ใช้เลือก model + ใส่ API key (รวม GLM/Z.ai) ได้ที่ Live Dashboard `http://localhost:7790/` → ⚙️.
+
 ## Handoff Note Template
 
 ```md
