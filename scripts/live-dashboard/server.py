@@ -145,7 +145,7 @@ def _process_graph_event(evt: dict) -> None:
                 "id": tid, "type": "task", "label": f"Task {tid[-6:]}",
                 "status": "active", "color": "#3B82F6",
             }
-            if pid:
+            if pid and pid.lower() not in ("none", "null", ""):
                 _graph_edges[(pid, tid, "parent")] = {
                     "from": pid, "to": tid, "kind": "parent", "active": True
                 }
