@@ -37,7 +37,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 TMP_DIR = Path(os.environ.get("AWIKI_COST_GATE_TMP_DIR", str(REPO_ROOT / ".tmp")))
 
 # These tools require a cost declaration before running
-GATE_TOOLS = {"Edit", "Write", "Agent", "NotebookEdit"}
+GATE_TOOLS = {"Edit", "Write", "MultiEdit", "Agent", "NotebookEdit"}
 
 # These tools are exempt — declaration lives here
 EXEMPT_TOOLS = {"Bash", "PowerShell", "Read", "Glob", "Grep", "ToolSearch"}
@@ -66,13 +66,18 @@ def is_tmp_write(tool: str, tool_input: dict) -> bool:
     return ".tmp" in fpath or "cost-tier" in fpath
 
 
+VALID_TIERS = ("L1", "L2", "L3", "L4")
+
+
 def main() -> None:
-    # Skip in CI
+    # Skip in CI — but make the bypass VISIBLE (not silent) so it shows in logs.
     if os.environ.get("CI", "").lower() in ("true", "1"):
+        sys.stderr.write("💰 Cost gate: BYPASSED (CI=true) — no tier enforced this run\n")
         sys.exit(0)
 
-    # Skip if explicitly overridden
+    # Skip if explicitly overridden — also surface the bypass.
     if "check_cost_tier" in os.environ.get("HOOK_SKIP", ""):
+        sys.stderr.write("💰 Cost gate: BYPASSED (HOOK_SKIP=check_cost_tier)\n")
         sys.exit(0)
 
     try:
@@ -95,10 +100,17 @@ def main() -> None:
     decl = read_declaration(today)
 
     if decl:
-        # Declaration exists — optionally surface tier in stderr for visibility
         tier = decl.split("|")[0].strip().upper()
-        if tier not in ("L1", "L2", "L3", "L4"):
-            tier = "?"
+        # Hardening: a declaration must carry a VALID tier (L1-L4). A garbage
+        # value (e.g. "lol|x|y") no longer satisfies the gate — that defeats the
+        # whole point of conscious cost classification.
+        if tier not in VALID_TIERS:
+            sys.stderr.write(
+                f"⚠️  COST GATE: declaration มี tier ไม่ถูกต้อง: '{tier}'\n"
+                f"   ต้องเป็นหนึ่งใน {', '.join(VALID_TIERS)} — แก้ .tmp/cost-tier-{today}.txt\n"
+                f"   เช่น: echo \"L4|implementation|เหตุผล\" > .tmp/cost-tier-{today}.txt\n"
+            )
+            sys.exit(2)
         sys.stderr.write(f"💰 Cost tier: {tier}  ({decl})\n")
         sys.exit(0)
 

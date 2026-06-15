@@ -213,11 +213,26 @@ def check_model_scout_freshness(repo_root: str) -> None:
         pass
 
 
+def _emit_session_start() -> None:
+    """Emit session_start event to live dashboard (best-effort)."""
+    try:
+        import time as _t
+        log = Path(REPO_ROOT) / ".tmp" / "live-events.jsonl"
+        log.parent.mkdir(exist_ok=True)
+        entry = {"ts": round(_t.time(), 3), "type": "session_start"}
+        with open(log, "a", encoding="utf-8") as f:
+            f.write(__import__("json").dumps(entry) + "\n")
+    except Exception:
+        pass
+
+
 def main():
     try:
         input_data = json.load(sys.stdin)
     except Exception:
         input_data = {}
+
+    _emit_session_start()
 
     # Only run on SessionStart-like events (or always — lightweight enough)
     repo_root = REPO_ROOT

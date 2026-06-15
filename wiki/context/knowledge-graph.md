@@ -1,6 +1,6 @@
 # Knowledge Graph (auto-generated)
 
-_Generated: 2026-06-15_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
+_Generated: 2026-06-14_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
 
 ## Stats
 

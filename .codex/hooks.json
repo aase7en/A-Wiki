@@ -4,12 +4,20 @@
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"},
           {"type": "command", "command": "bash .codex/hooks/pre-edit-staleness-check.sh"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-claudemd-lock"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-raw-immutable"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-source-original-file"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-external-editor-drift"},
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-output-format"}
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-output-format"},
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-harness-routing"}
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"}
         ]
       },
       {
@@ -17,7 +25,9 @@
         "hooks": [
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-bash-destructive-git"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-bash-no-branch"},
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-secret-leak"}
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-secret-leak"},
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-apikey"},
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-delegation-gate"}
         ]
       }
     ],
@@ -57,6 +67,7 @@
           {"type": "command", "command": "bash .codex/hooks/wiki-context-check.sh"},
           {"type": "command", "command": "bash .codex/hooks/session-start-binary-scan.sh"},
           {"type": "command", "command": "bash scripts/show-active-todos.sh"},
+          {"type": "command", "command": "bash scripts/hooks/load-drive-keys.sh"},
           {"type": "command", "command": "bash .codex/hooks/session-start-apikey-check.sh"},
           {"type": "command", "command": "bash .codex/hooks/build-pharmacy-db.sh"},
           {"type": "command", "command": "python3 scripts/hooks/session_start.py"}
