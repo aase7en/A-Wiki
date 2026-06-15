@@ -1,0 +1,1 @@
+/Users/aase7en/Desktop/A-Wiki/drive/personal/journal/log.md
