@@ -1460,14 +1460,16 @@ _ro.observe(document.getElementById('connector-zone'));
 function updateParallel() {
   const badge = $('parallel-badge');
   const wrap  = $('s-par-wrap');
-  if (S.activeCount > 1) {
-    $('par-count').textContent = S.activeCount;
+  // Use max of old card-based count and graph-based parallel_count
+  const count = Math.max(S.activeCount || 0, S.parallelCount || 0);
+  if (count > 0) {
+    $('par-count').textContent = count;
     badge.style.display = 'flex';
     wrap.style.display  = 'flex';
-    $('s-par').textContent = S.activeCount;
+    $('s-par').textContent = count;
   } else {
     badge.style.display = 'none';
-    if (S.activeCount === 0) wrap.style.display = 'none';
+    wrap.style.display = 'none';
   }
 }
 
