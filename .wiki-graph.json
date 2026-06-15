@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-13",
+  "generated_at": "2026-06-15",
   "stats": {
-    "nodes": 514,
+    "nodes": 513,
     "edges": 1310,
     "edges_by_type": {
       "wikilink": 1143,
@@ -10,12 +10,12 @@
       "implements": 49,
       "extends": 38
     },
-    "broken_links": 0,
-    "orphans": 179,
+    "broken_links": 1,
+    "orphans": 178,
     "orphan_by_domain": {
       "sources": 85,
       "synthesis": 81,
-      "context": 13
+      "context": 12
     },
     "hubs": [
       {
@@ -71,7 +71,6 @@
       "wiki/context/overview-sources.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory.md",
       "wiki/context/wiki-capability-map.md",
       "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
       "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
@@ -79,7 +78,8 @@
       "wiki/sources/ai-iot-server-build-v3-final.md",
       "wiki/sources/ai-tools/langchain-framework.md",
       "wiki/sources/ai-tools/vector-databases.md",
-      "wiki/sources/arduino-ide-esp32-arduino-2025.md"
+      "wiki/sources/arduino-ide-esp32-arduino-2025.md",
+      "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md"
     ]
   },
   "nodes": [
@@ -491,11 +491,6 @@
     {
       "path": "wiki/context/review-report.md",
       "title": "Review Report — 2026-06-13",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
       "domain": "context"
     },
     {
@@ -6558,8 +6553,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": false,
-      "external": true
+      "broken": true,
+      "external": false
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
