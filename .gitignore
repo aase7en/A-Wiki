@@ -162,7 +162,12 @@ docker-compose.override.yml
 # --- Agent / AI configs with secrets ---
 .claude*
 .gemini*
-!.clinerules
+
+# .clinerules/ — directory with tracked rules.md + machine-local hooks/
+.clinerules/hooks/
+.clinerules/skills/
+.clinerules/workflows/
+!.clinerules/rules.md
 # .codex: ignore machine-specific pieces, track public-safe templates
 # (git requires parent dir NOT ignored for nested negation to work)
 .codex/hooks/
