@@ -5,8 +5,8 @@
 ## Summary
 
 - ✓ Passed: 604
-- ⚠ Warnings: 456
-- ❌ Failures: 4
+- ⚠ Warnings: 460
+- ❌ Failures: 7
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 440 more issue(s) below
+- … 447 more issue(s) below
 
 ---
 
@@ -38,6 +38,9 @@
 
 - wiki/concepts/ai-tools/ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/entities/ai-tools/model-capability-bench.md: broken link: [[live-dashboard]]
+- wiki/entities/ai-tools/zhipu-glm.md: broken link: [[secrets-policy]]
+- wiki/entities/ai-tools/zhipu-glm.md: broken link: [[live-dashboard]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
@@ -97,12 +100,14 @@
 - wiki/entities/ai-tools/graphify.md: missing frontmatter key: title
 - wiki/entities/ai-tools/hermes-agent.md: missing frontmatter key: title
 - wiki/entities/ai-tools/hyperframes.md: missing frontmatter key: title
+- wiki/entities/ai-tools/model-capability-bench.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
 - wiki/entities/ai-tools/openmed.md: missing frontmatter key: title
 - wiki/entities/ai-tools/pocketbase.md: missing frontmatter key: title
 - wiki/entities/ai-tools/react-doctor.md: missing frontmatter key: title
 - wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
 - wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
+- wiki/entities/ai-tools/zhipu-glm.md: missing frontmatter key: title
 - wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
 - wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
 - wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
@@ -459,12 +464,14 @@
 - wiki/entities/ai-tools/graphify.md: missing TL;DR line
 - wiki/entities/ai-tools/hermes-agent.md: missing TL;DR line
 - wiki/entities/ai-tools/hyperframes.md: missing TL;DR line
+- wiki/entities/ai-tools/model-capability-bench.md: missing TL;DR line
 - wiki/entities/ai-tools/ollama.md: missing TL;DR line
 - wiki/entities/ai-tools/openmed.md: missing TL;DR line
 - wiki/entities/ai-tools/pocketbase.md: missing TL;DR line
 - wiki/entities/ai-tools/react-doctor.md: missing TL;DR line
 - wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
 - wiki/entities/ai-tools/turbovec.md: missing TL;DR line
+- wiki/entities/ai-tools/zhipu-glm.md: missing TL;DR line
 - wiki/entities/env/activated-sludge-system.md: missing TL;DR line
 - wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
 - wiki/entities/iot/18650-battery-shield.md: missing TL;DR line

@@ -98,6 +98,7 @@ def _build_zones() -> tuple[list[str], set[str], list[str]]:
     allowed_html = [
         _abs("exports/html"),
         _abs("skills/render-html/templates"),
+        _abs("scripts/live-dashboard"),
     ]
     return src_dirs, src_files, allowed_html
 

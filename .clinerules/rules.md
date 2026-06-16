@@ -137,6 +137,27 @@ bash scripts/swarm/delegate.sh executioner "implement X"
 
 ---
 
+## Hook Discipline (Cline Native Hooks)
+
+- **Session start**: run `bash scripts/live-dashboard/start-cline.sh` to set up hooks + dashboard
+- **Hooks auto-run** via `.clinerules/hooks/{PreToolUse,PostToolUse,TaskComplete,TaskStart}` → forward to `scripts/hooks_runner.py`
+- **Live dashboard**: auto-starts at `http://localhost:7790` via `scripts/dashboard-ensure.sh`
+- **Hooks are enforcement layer**: Iron Laws still bind — hooks assist, never replace judgment
+- **Symlinks are machine-local**: run `bash scripts/cline-hooks/setup-symlinks.sh` on new machines
+- **VS Code Tasks**: Cmd+Shift+P → "Run Task" → "A-Wiki: Start Cline Session"
+
+```bash
+# Quick start (one command):
+bash scripts/live-dashboard/start-cline.sh
+
+# Or step by step:
+bash scripts/cline-hooks/setup-symlinks.sh     # create symlinks
+bash scripts/cline-hooks/enable-hooks.sh        # enable in Cline settings
+bash scripts/dashboard-ensure.sh                # start live dashboard
+```
+
+---
+
 ## Do NOT Delegate (Primary Agent ONLY)
 
 - Deep reasoning / decision making
@@ -163,4 +184,3 @@ bash scripts/swarm/delegate.sh executioner "implement X"
 HTML costs ~2.1× Markdown tokens when read by an agent — use it only as a terminal leaf.
 Enforced by: `scripts/hooks/check_output_format.py` | Verify: `python3 scripts/format-cost.py --demo`
 Full protocol: `docs/protocols/md-vs-html-output.md`
-
