@@ -16,14 +16,13 @@
     "zai": {
       "label": "Z.ai (GLM)",
       "api_style": "openai",
-      "enabled": false,
-      "via": "openrouter",
-      "default_model": "z-ai/glm-4.6",
+      "enabled": true,
+      "default_model": "glm-5.1",
       "endpoint": "https://api.z.ai/api/paas/v4/chat/completions",
       "models_url": "https://api.z.ai/api/paas/v4/models",
-      "auth_env": "ZAI_API_KEY",
+      "auth_env": "ZHIPU_API_KEY",
       "auth_scheme": "bearer",
-      "notes": "GLM-4.6 = flagship (primary), GLM-4.5-Air = cheap/fast (secondary). Default routed via OpenRouter until ZAI_API_KEY is set + enabled:true (then direct Coding-Plan pricing)."
+      "notes": "GLM-5.1 = flagship (primary); glm-4.5-air = cheap/fast (secondary). Direct route (no OpenRouter markup) when ZHIPU_API_KEY is in env — env name matches delegate.sh try_zhipu_direct + drive/.secrets. Verified available ids 2026-06-16 via GET /models: glm-5.1, glm-5, glm-4.7, glm-5-turbo, glm-4.6, glm-4.5, glm-4.5-air. NOTE: 'glm-5.2' is NOT exposed on the direct API (Codeplan-only alias); use glm-5.1 for direct harness calls. delegate.sh seed stays glm-4.6 for test-compat — pin glm-5.1 via dashboard ⚙️ or ZHIPU_DIRECT_MODEL=glm-5.1."
     },
     "gemini": {
       "label": "Google AI Studio (Gemini)",
