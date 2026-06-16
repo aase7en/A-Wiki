@@ -1,0 +1,98 @@
+"""
+Contract tests for the redesigned A-Wiki Live Dashboard (live-dashboard.html).
+
+Guards the Definition of Done from docs/design/dashboard-design-system.md:
+no dead DOM refs from the old layout, < 60KB, all SSE/API contracts wired, the
+8 requested animation components present, and prefers-reduced-motion honored.
+"""
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
+
+DEAD_REFS = ("primary-card", "connector-svg", "model-grid")
+
+
+def _read():
+    assert HTML.is_file(), "live-dashboard.html must exist"
+    return HTML.read_text(encoding="utf-8")
+
+
+def test_no_dead_dom_refs_from_old_layout():
+    text = _read()
+    found = [r for r in DEAD_REFS if r in text]
+    assert not found, f"dead DOM refs from old layout remain: {found}"
+
+
+def test_file_under_60kb():
+    size = HTML.stat().st_size
+    assert size < 60 * 1024, f"HTML too large: {size} bytes (limit 60KB)"
+
+
+def test_sse_and_api_contracts_wired():
+    text = _read()
+    for token in ("/events", "/api/graph", "/api/models", "/api/keys", "/api/capabilities"):
+        assert token in text, f"missing API/SSE contract: {token}"
+    assert "EventSource" in text, "must open an SSE EventSource"
+
+
+def test_prefers_reduced_motion_honored():
+    text = _read()
+    assert "prefers-reduced-motion" in text, "must honor prefers-reduced-motion"
+
+
+# ── The 8 requested animation components ──────────────────────────────────
+
+def test_animated_counter():
+    text = _read()
+    assert ("requestAnimationFrame" in text and ("data-counter" in text or "animateCounter" in text)), \
+        "Animated Counter (rAF + counter target) missing"
+
+
+def test_glow_line_divider():
+    text = _read()
+    assert "glow-divider" in text and "@keyframes" in text, "Glow Line Divider missing"
+
+
+def test_progress_bar_with_shimmer():
+    text = _read()
+    assert "progress-bar" in text and "shimmer" in text.lower(), \
+        "Progress Bar + shimmer overlay missing"
+
+
+def test_typed_rotator():
+    text = _read()
+    assert ("data-typed" in text) or ("typedRotator" in text) or ("typeRotate" in text), \
+        "Typed Rotator (types/deletes phrases) missing"
+
+
+def test_fade_word_cycle():
+    text = _read()
+    assert "fade-cycle" in text or "fadeWord" in text, "Fade Word Cycle missing"
+
+
+def test_animated_gradient():
+    text = _read()
+    assert "gradient-shift" in text or "animated-gradient" in text, "Animated Gradient missing"
+
+
+def test_glow_toggle():
+    text = _read()
+    assert "glow-toggle" in text or "glow-toggle" in text, "Glow Toggle missing"
+
+
+def test_glassmorphism_cards():
+    text = _read()
+    assert "glass-card" in text and "backdrop-filter" in text, "Glassmorphism Cards missing"
+
+
+def test_branching_timeline_present():
+    """Centerpiece: delegation lanes branching over a time axis."""
+    text = _read()
+    assert "lane" in text and ("time-axis" in text or "axis" in text), \
+        "branching timeline (lanes + time axis) missing"

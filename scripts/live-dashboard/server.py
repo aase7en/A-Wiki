@@ -26,11 +26,8 @@ import os
 import argparse
 import os
 import queue
-<<<<<<< HEAD
-=======
 import signal
 import socket
->>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
 import subprocess
 import sys
 import threading
@@ -40,28 +37,6 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
-<<<<<<< HEAD
-DASHBOARD_HTML = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
-RENDER_PY = REPO_ROOT / "skills" / "render-html" / "scripts" / "render.py"
-PORT = 7790
-
-
-def ensure_dashboard_html() -> None:
-    """Render the live-dashboard surface (empty backlog; SSE fills it) if missing.
-    Lets `server.py` work out-of-the-box without a manual render step."""
-    if DASHBOARD_HTML.exists() or not RENDER_PY.exists():
-        return
-    try:
-        DASHBOARD_HTML.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(
-            [sys.executable, str(RENDER_PY), "live-dashboard", "--out", str(DASHBOARD_HTML)],
-            input='{"events": []}', text=True, capture_output=True, check=False,
-        )
-    except Exception:
-        pass
-
-_clients: list[queue.Queue] = []
-=======
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
 DASHBOARD_HTML_FALLBACK = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
 MODEL_CONFIG_FILE = REPO_ROOT / ".tmp" / "model-config.json"
@@ -117,7 +92,6 @@ DEFAULT_MODEL_CONFIG = {
 }
 
 _clients = []
->>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
 _clients_lock = threading.Lock()
 _stats = {"events_sent": 0, "clients_connected": 0, "started": time.time()}
 _idle_since = time.time()  # updated in _sse connect/disconnect
@@ -205,6 +179,29 @@ def _process_graph_event(evt: dict) -> None:
             if aid in _graph_nodes:
                 _graph_nodes[aid]["status"] = "completed"
             _active_agents.discard(aid)
+
+        # ── delegate_start/done/fail → derived agent activity ──
+        # delegate.sh emits delegate_* (not agent_spawn/done). Derive per-model
+        # agent nodes so parallel delegations show in the graph + parallel_count.
+        elif etype == "delegate_start":
+            model = evt.get("model", "") or "unknown"
+            did = f"agent:{model}"
+            label = model.split("/")[0].split("(")[0][:24] or "delegate"
+            _graph_nodes[did] = {
+                "id": did, "type": "agent", "role": "executioner",
+                "label": label, "status": "active",
+                "color": _AGENT_COLORS["executioner"], "model": model,
+                "task": evt.get("task", ""),
+            }
+            _active_agents.add(did)
+        elif etype in ("delegate_done", "delegate_fail"):
+            model = evt.get("model", "") or "unknown"
+            did = f"agent:{model}"
+            if did in _graph_nodes:
+                _graph_nodes[did]["status"] = "completed" if etype == "delegate_done" else "failed"
+                if etype == "delegate_done" and evt.get("duration_ms"):
+                    _graph_nodes[did]["duration_ms"] = evt.get("duration_ms")
+            _active_agents.discard(did)
 
         # ── hook_check / tool events → tool clusters ───────
         elif etype == "hook_check":
@@ -646,15 +643,9 @@ class Handler(BaseHTTPRequestHandler):
                     _idle_since = time.time()  # start idle countdown
 
     def _serve_html(self):
-<<<<<<< HEAD
-        ensure_dashboard_html()
-        if DASHBOARD_HTML.exists():
-            content = DASHBOARD_HTML.read_bytes()
-=======
         html_path = DASHBOARD_HTML if DASHBOARD_HTML.exists() else DASHBOARD_HTML_FALLBACK
         if html_path.exists():
             content = html_path.read_bytes()
->>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(content)))

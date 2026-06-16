@@ -188,3 +188,68 @@ class TestGraphProcessing:
         snapshot = server._graph_snapshot()
         task_node = [n for n in snapshot["nodes"] if n["id"] == "task-1"][0]
         assert task_node["status"] == "completed"
+
+    # ── delegate_* → derived agent activity (parallel subagent visibility) ──
+
+    def _sess(self, sid="sess-d"):
+        return {"ts": time.time(), "type": "session_start",
+                "session_id": sid, "agent_id": "agent-pri", "agent_role": "primary",
+                "task_id": None, "parent_task_id": None}
+
+    def test_delegate_start_creates_active_agent_and_parallel(self):
+        self._feed([
+            self._sess(),
+            {"ts": time.time(), "type": "delegate_start",
+             "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+             "model": "gemini-2.5-flash", "task": "lookup", "parent_task_id": None},
+        ])
+        snapshot = server._graph_snapshot()
+        agents = [n for n in snapshot["nodes"]
+                  if n.get("type") == "agent" and n.get("model") == "gemini-2.5-flash"]
+        assert agents, "delegate_start must synthesize an agent node for the model"
+        assert agents[0]["status"] == "active"
+        assert snapshot["parallel_count"] >= 1
+        assert agents[0]["id"] in snapshot["active_agents"]
+
+    def test_delegate_done_removes_from_parallel(self):
+        self._feed([
+            self._sess(),
+            {"ts": time.time(), "type": "delegate_start",
+             "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+             "model": "deepseek-chat", "task": "reason", "parent_task_id": None},
+            {"ts": time.time(), "type": "delegate_done",
+             "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+             "model": "deepseek-chat", "duration_ms": "1234", "parent_task_id": None},
+        ])
+        snapshot = server._graph_snapshot()
+        agents = [n for n in snapshot["nodes"]
+                  if n.get("type") == "agent" and n.get("model") == "deepseek-chat"]
+        assert agents and agents[0]["status"] == "completed"
+        assert agents[0]["id"] not in snapshot["active_agents"]
+
+    def test_delegate_fail_marks_failed(self):
+        self._feed([
+            self._sess(),
+            {"ts": time.time(), "type": "delegate_start",
+             "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+             "model": "qwen3-235b", "task": "scan", "parent_task_id": None},
+            {"ts": time.time(), "type": "delegate_fail",
+             "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+             "model": "qwen3-235b", "reason": "rate-limit", "parent_task_id": None},
+        ])
+        snapshot = server._graph_snapshot()
+        agents = [n for n in snapshot["nodes"]
+                  if n.get("type") == "agent" and n.get("model") == "qwen3-235b"]
+        assert agents and agents[0]["status"] == "failed"
+        assert agents[0]["id"] not in snapshot["active_agents"]
+
+    def test_parallel_delegates_count_concurrently(self):
+        """Two delegate_start with different models → parallel_count == 2."""
+        for m in ("gemini-2.5-flash", "deepseek-chat"):
+            self._feed([{
+                "ts": time.time(), "type": "delegate_start",
+                "session_id": "sess-d", "agent_id": "agent-pri", "agent_role": "primary",
+                "model": m, "task": "race", "parent_task_id": None,
+            }])
+        snapshot = server._graph_snapshot()
+        assert snapshot["parallel_count"] == 2

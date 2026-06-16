@@ -25,6 +25,20 @@
       "problemMatcher": []
     },
     {
+      "label": "A-Wiki: Live Dashboard (auto on folder open)",
+      "detail": "Auto-starts the dashboard server whenever the workspace opens — works for Kilo Code, Cline, or any VS Code extension. Idempotent + PID-guarded.",
+      "type": "shell",
+      "command": "bash scripts/dashboard-ensure.sh",
+      "group": "none",
+      "runOn": "folderOpen",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "A-Wiki: Setup Cline Hooks",
       "type": "shell",
       "command": "bash scripts/cline-hooks/setup-symlinks.sh",

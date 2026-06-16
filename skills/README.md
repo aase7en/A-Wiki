@@ -2,6 +2,12 @@
 
 > Single source of truth for all AI agent skills. Every skill has a YAML frontmatter with `name`, `description`, and `status`.
 
+> **Canonical sources & discovery**
+> - The categorized dirs below (`engineering/`, `wiki/`, `delegation/`, …) are the **canonical** content locations.
+> - `claude-code/` and `ecosystem/` are convenience mirrors/upstream — prefer the categorized copy when a skill exists in both.
+> - `agent-skills/engineering/{debug-mantra,scrutinize,post-mortem}` are **Iron-Law-enforcing** variants of the same skills here (fuller preambles). Either is valid; the agent-skills variant adds Iron Law enforcement.
+> - **Kilo Code** discovers these via `.kilo/kilo.jsonc` → `skills.paths` (relative, repo-portable). Claude/Codex link them via `scripts/link-skills.sh` / `scripts/ecosystem/link-my-skills.sh`.
+
 ## Categories
 
 ### engineering
@@ -15,7 +21,12 @@
 | Skill | Description | Status |
 |-------|-------------|--------|
 | [management-talk](./productivity/management-talk/SKILL.md) | Rewrite engineering content for leadership audiences | stable |
-| [excel-generator](./productivity/excel-generator/SKILL.md) | Professional Excel spreadsheet creation | beta |
+
+### domain
+| Skill | Description | Status |
+|-------|-------------|--------|
+| [excel-generator](./domain/excel-generator/SKILL.md) | Professional Excel spreadsheet creation | beta |
+| [pharmacy-order-lookup](./domain/pharmacy-order-lookup/SKILL.md) | Drug order lookup against sp_drugstore DB | beta |
 
 ### wiki
 | Skill | Description | Status |
@@ -40,11 +51,6 @@
 | [ask-notebooklm](./research/ask-notebooklm/SKILL.md) | Cross-file synthesis via Gemini API | beta |
 | [brainstorm-before-build](./research/brainstorm-before-build/SKILL.md) | Plan before implementing >3 file changes | beta |
 | [internet-skill-finder](./research/internet-skill-finder/SKILL.md) | Discover agent skills from GitHub | beta |
-
-### domain
-| Skill | Description | Status |
-|-------|-------------|--------|
-| [pharmacy-order-lookup](./domain/pharmacy-order-lookup/SKILL.md) | Drug order lookup against sp_drugstore DB | beta |
 
 ### delegation
 | Skill | Description | Status |
