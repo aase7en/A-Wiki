@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **18**
+- Entities: **20**
 - Concepts: **32**
 
 ---
@@ -30,6 +30,7 @@
 | `graphify` | Graphify แปลงไฟล์หลากหลาย (code, PDF, markdown, ภาพ, whiteboard)… |
 | `hermes-agent` | Hermes Agent คือ open-source AI agent framework ที่รันผ่าน CLI ส… |
 | `hyperframes` | HyperFrames คือ framework สำหรับเขียนวิดีโอด้วย HTML/CSS และ ani… |
+| `model-capability-bench` | ระบบจัดลำดับ model ตาม **ความสามารถ (capability)** ก่อนแจกจ่ายงา… |
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |
 | `openmed` | OpenMed คือ open-source healthcare AI framework ที่ประมวลผล clin… |
 | `pocketbase` | PocketBase คือ open-source backend framework ที่รวม SQLite datab… |
@@ -37,6 +38,7 @@
 | `social-media-skills` | A-Wiki รับเฉพาะ workflow ที่คุ้มจาก `social-media-skills` มาทำเป… |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวที่รันบน Mac Mini ที่บ้าน ทำหน้าที่เป็น gate… |
 | `turbovec` | turbovec implement **TurboQuant** (Google Research) — quantize e… |
+| `zhipu-glm` | GLM-4.6 / GLM-5.2 เป็น model เด่นด้าน **coding + reasoning + age… |
 
 ---
 

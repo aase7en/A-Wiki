@@ -256,6 +256,20 @@ The GitHub Actions workflow [`model-roster-refresh.yml`](.github/workflows/model
 
 It intentionally does **not** auto-commit changes. Model routing affects every agent, so roster updates should be reviewed before landing on `main`.
 
+### 🎛 Live Dashboard — watch the swarm in real time
+
+```bash
+python3 scripts/live-dashboard/server.py     # → http://localhost:7790/
+```
+
+A real-time monitor showing **which AI is working, on what, in which workflow, how many models in parallel, and which hooks fire/block** — streamed live via SSE as you issue any A-Wiki command.
+
+- **⚙️ Settings → Models** — toggle any model on/off and edit its `model_id`. Each card shows a **capability scorecard** (SWE-bench · Terminal-Bench · NL2Repo · reasoning · speed). If you change nothing, sensible **defaults** apply.
+- **⚙️ Settings → API Keys** — paste a provider key (incl. **GLM 5.2 / Z.ai**). Keys are stored gitignored in `.tmp/` + `drive/.secrets` (never in the repo, never shown back).
+- **Capability-aware routing** — the router ranks models by leaderboard capability **within each cost class**, so `cost_rank` always wins: a paid model never jumps ahead of a free one. Capability only breaks ties among models you've enabled.
+
+Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` (written by the panel) and `wiki/context/model-capability-scores.json`. See [`scripts/live-dashboard/README.md`](scripts/live-dashboard/README.md).
+
 ---
 
 ## 🤖 Daily Workflow — How to Operate with the Swarm

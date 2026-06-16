@@ -1,21 +1,21 @@
 {
   "generated_at": "2026-06-15",
   "stats": {
-    "nodes": 514,
-    "edges": 1311,
+    "nodes": 517,
+    "edges": 1316,
     "edges_by_type": {
-      "wikilink": 1144,
+      "wikilink": 1149,
       "mdlink": 49,
       "depends": 31,
       "implements": 49,
       "extends": 38
     },
-    "broken_links": 1,
-    "orphans": 178,
+    "broken_links": 3,
+    "orphans": 179,
     "orphan_by_domain": {
       "sources": 85,
       "synthesis": 81,
-      "context": 12
+      "context": 13
     },
     "hubs": [
       {
@@ -71,6 +71,7 @@
       "wiki/context/overview-sources.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
+      "wiki/context/session-memory.md",
       "wiki/context/wiki-capability-map.md",
       "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
       "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
@@ -78,8 +79,7 @@
       "wiki/sources/ai-iot-server-build-v3-final.md",
       "wiki/sources/ai-tools/langchain-framework.md",
       "wiki/sources/ai-tools/vector-databases.md",
-      "wiki/sources/arduino-ide-esp32-arduino-2025.md",
-      "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md"
+      "wiki/sources/arduino-ide-esp32-arduino-2025.md"
     ]
   },
   "nodes": [
@@ -494,6 +494,11 @@
       "domain": "context"
     },
     {
+      "path": "wiki/context/session-memory.md",
+      "title": "Session Memory",
+      "domain": "context"
+    },
+    {
       "path": "wiki/context/wiki-capability-map.md",
       "title": "Wiki Capability Map",
       "domain": "context"
@@ -569,6 +574,11 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/model-capability-bench.md",
+      "title": "Model Capability Benchmarks (Routing)",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/ollama.md",
       "title": "Ollama",
       "domain": "ai-tools"
@@ -601,6 +611,11 @@
     {
       "path": "wiki/entities/ai-tools/turbovec.md",
       "title": "turbovec",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/zhipu-glm.md",
+      "title": "GLM / Z.ai (Zhipu)",
       "domain": "ai-tools"
     },
     {
@@ -6558,8 +6573,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": true,
-      "external": false
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
@@ -7080,6 +7095,20 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/model-capability-bench.md",
+      "to": "live-dashboard",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/model-capability-bench.md",
+      "to": "wiki/entities/ai-tools/zhipu-glm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/ollama.md",
       "to": "wiki/entities/ai-tools/telegram-ai-router.md",
       "type": "wikilink",
@@ -7266,6 +7295,27 @@
       "to": "wiki/concepts/ai-tools/vector-search.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zhipu-glm.md",
+      "to": "secrets-policy",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zhipu-glm.md",
+      "to": "wiki/entities/ai-tools/model-capability-bench.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zhipu-glm.md",
+      "to": "live-dashboard",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {

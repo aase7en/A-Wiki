@@ -41,8 +41,23 @@ refresh_model_scout() {
     python3 "$SCOUT_SCRIPT" --offline --out "$SCOUT_JSON" --report "$SCOUT_REPORT" --quiet >/dev/null 2>&1 || true
 }
 
+CAPABILITY_SCOUT_SCRIPT="$REPO_ROOT/scripts/model-capability-scout.py"
+refresh_capability_scout() {
+  # Best-effort leaderboard capability refresh (offline-ok). Never blocks routing.
+  [ -f "$CAPABILITY_SCOUT_SCRIPT" ] || return 0
+  [ -f "$REPO_ROOT/.tmp/model-capability-cache.json" ] && [ -z "${CAPABILITY_SCOUT_FORCE:-}" ] && return 0
+  python3 "$CAPABILITY_SCOUT_SCRIPT" --offline-ok --quiet >/dev/null 2>&1 &
+  disown "$!" 2>/dev/null || true
+}
+
 # ─── Load local router policy (graceful if missing) ──────────────────────────
 refresh_model_scout cached || true
+refresh_capability_scout || true
+
+# Ensure Live Dashboard is running (fire-and-forget — no-op if already up)
+if [ "${AWIKI_DISABLE_DASHBOARD_AUTOSTART:-0}" != "1" ] && [ -f "$REPO_ROOT/scripts/dashboard-ensure.sh" ]; then
+  bash "$REPO_ROOT/scripts/dashboard-ensure.sh" &>/dev/null &
+fi
 if [ -f "$POLICY_SCRIPT" ]; then
   python3 "$POLICY_SCRIPT" --scout "$SCOUT_JSON" --out "$POLICY_CONF" --quiet >/dev/null 2>&1 || true
 fi
@@ -73,6 +88,14 @@ if [ -z "${GEMINI_API_KEY:-}" ] && [ -n "${GOOGLE_AI_STUDIO_KEY:-}" ]; then
   export GEMINI_API_KEY="$GOOGLE_AI_STUDIO_KEY"
 fi
 
+# ─── Dashboard-saved key fallback ─────────────────────────────────────────────
+# Keys saved via live dashboard Settings → API Keys tab (stored gitignored)
+DASHBOARD_KEYS_ENV="$REPO_ROOT/.tmp/live-dashboard-keys.env"
+if [ -f "$DASHBOARD_KEYS_ENV" ]; then
+  # shellcheck source=/dev/null
+  set -a; source "$DASHBOARD_KEYS_ENV" 2>/dev/null || true; set +a
+fi
+
 # ─── Emergency seed defaults only; seed only; replaced by scout ───────────────
 TIER1_PRIMARY="${TIER1_PRIMARY:-google/gemini-2.5-flash:free}"
 TIER1_FALLBACK1="${TIER1_FALLBACK1:-deepseek/deepseek-chat-v3-0324:free}"
@@ -96,6 +119,38 @@ GROQ_DIRECT_MODEL_SEED="${GROQ_DIRECT_MODEL_SEED:-llama-3.3-70b-versatile}"
 GROQ_DIRECT_MODEL="${GROQ_DIRECT_MODEL:-$GROQ_DIRECT_MODEL_SEED}"
 ANTHROPIC_LOW_MODEL_SEED="${ANTHROPIC_LOW_MODEL_SEED:-claude-haiku-4-5}"
 ANTHROPIC_LOW_MODEL="${ANTHROPIC_LOW_MODEL:-$ANTHROPIC_LOW_MODEL_SEED}"
+
+# GLM / Z.ai direct route (Z.ai international endpoint; editable via dashboard)
+ZHIPU_DIRECT_MODEL_SEED="${ZHIPU_DIRECT_MODEL_SEED:-glm-4.6}"
+ZHIPU_DIRECT_MODEL="${ZHIPU_DIRECT_MODEL:-$ZHIPU_DIRECT_MODEL_SEED}"
+ZHIPU_API_URL="${ZHIPU_API_URL:-https://api.z.ai/api/paas/v4/chat/completions}"
+
+# ─── Model config (live dashboard settings) ────────────────────────────────────
+# Reads .tmp/model-config.json (saved by dashboard Settings panel) to disable
+# specific models and apply custom model IDs without touching this file.
+MODEL_CONFIG_JSON="$REPO_ROOT/.tmp/model-config.json"
+if [ -f "$MODEL_CONFIG_JSON" ]; then
+  eval "$(python3 -c "
+import json, sys
+try:
+    cfg = json.load(open('$MODEL_CONFIG_JSON'))
+    for m in cfg.get('models', []):
+        mid = m.get('id', '').upper().replace('-', '_')
+        if not m.get('enabled', True) and mid:
+            print('export AWIKI_DISABLE_' + mid + '=1')
+        model_val = m.get('model_id', '')
+        if model_val:
+            if m.get('id') == 'gemini':    print('export GEMINI_DIRECT_MODEL=' + model_val)
+            elif m.get('id') == 'groq':    print('export GROQ_DIRECT_MODEL=' + model_val)
+            elif m.get('id') == 'anthropic': print('export ANTHROPIC_LOW_MODEL=' + model_val)
+            elif m.get('id') == 'zhipu':
+                print('export ZHIPU_DIRECT_MODEL=' + model_val)
+                api_url = m.get('api_url', '')
+                if api_url: print('export ZHIPU_API_URL=' + api_url)
+except Exception:
+    pass
+" 2>/dev/null)" || true
+fi
 
 # ─── Args ─────────────────────────────────────────────────────────────────────
 if [ $# -lt 2 ]; then
@@ -122,12 +177,14 @@ esac
 # ─── Key check ────────────────────────────────────────────────────────────────
 if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${DEEPSEEK_API_KEY:-}" ] && \
    [ -z "${OPENROUTER_API_KEY:-}" ] && [ -z "${GROQ_API_KEY:-}" ] && \
-   [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+   [ -z "${ANTHROPIC_API_KEY:-}" ] && [ -z "${ZHIPU_API_KEY:-}" ]; then
   echo "❌ No API keys found. Set at least one:" >&2
   echo "   OPENROUTER_API_KEY=sk-or-... (recommended — unlocks all models)" >&2
-  echo "   GEMINI_API_KEY=AIza...        (direct platform route; scout validates current model)" >&2
-  echo "   DEEPSEEK_API_KEY=sk-...       (direct provider route; scout validates pricing)" >&2
-  echo "   → claude.ai/code → Project Settings → Environment Variables" >&2
+  echo "   GEMINI_API_KEY=AIza...        (direct Google AI Studio route; free)" >&2
+  echo "   DEEPSEEK_API_KEY=sk-...       (direct DeepSeek route; free tier)" >&2
+  echo "   ZHIPU_API_KEY=...             (GLM 5.2 / Z.ai; set via dashboard ⚙️)" >&2
+  echo "   → Dashboard: http://localhost:7790/ → ⚙️ Settings → API Keys" >&2
+  echo "   → Or: claude.ai/code → Project Settings → Environment Variables" >&2
   exit 2
 fi
 
@@ -164,6 +221,7 @@ _cost_annotate() {
     *qwen3*30b*|*qwen3-30b*)             local cost="~$0.00 (free)" ;;
     *gpt-4o-mini*)                       local cost="~$0.00015" ;;
     *claude*haiku*|*claude-haiku*)       local cost="~$0.00025" ;;
+    *glm*|*zhipu*)                       local cost="~$0.0001 (GLM/Z.ai)" ;;
     *openrouter/auto*)                   local cost="~$0.001 (varies)" ;;
     *)                                   local cost="~$0.00 (unknown/free)" ;;
   esac
@@ -190,10 +248,19 @@ _log_event() {
   disown "$!" 2>/dev/null || true
 }
 
+# ─── Provider enable guard ─────────────────────────────────────────────────────
+# Dashboard toggles write AWIKI_DISABLE_<ID>=1 (via model-config.json parser above).
+# Each engine calls this so disabled providers are skipped (return 1 → fallthrough).
+_provider_enabled() {
+  local var="AWIKI_DISABLE_${1}"
+  [ -z "${!var:-}" ]
+}
+
 # ─── Engine wrappers ──────────────────────────────────────────────────────────
 try_gemini_direct() {
   # Direct Google AI Studio — free 1500 req/day, no OpenRouter fee
   [ -z "${GEMINI_API_KEY:-}" ] && return 1
+  _provider_enabled GEMINI || return 1
   local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
   _log_event "delegate_start" "model=${GEMINI_DIRECT_MODEL}(gemini-direct)" "task=$TASK_TYPE"
   local err_out
@@ -218,6 +285,7 @@ try_gemini_direct() {
 try_deepseek_direct() {
   # Direct DeepSeek API aliases are provider aliases, not durable policy model ids.
   [ -z "${DEEPSEEK_API_KEY:-}" ] && return 1
+  _provider_enabled DEEPSEEK || return 1
   local model="$1"
   local native
   case "$model" in
@@ -250,6 +318,7 @@ try_deepseek_direct() {
 try_openrouter_model() {
   local model="$1"
   [ -z "${OPENROUTER_API_KEY:-}" ] && return 1
+  _provider_enabled OPENROUTER || return 1
   local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
   _log_event "delegate_start" "model=$model" "task=$TASK_TYPE"
   local err_out
@@ -273,6 +342,7 @@ try_openrouter_model() {
 
 try_groq_model() {
   [ -z "${GROQ_API_KEY:-}" ] && return 1
+  _provider_enabled GROQ || return 1
   local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
   _log_event "delegate_start" "model=$GROQ_DIRECT_MODEL(groq)" "task=$TASK_TYPE"
   local err_out
@@ -298,6 +368,7 @@ try_groq_model() {
 
 try_anthropic_haiku() {
   [ -z "${ANTHROPIC_API_KEY:-}" ] && return 1
+  _provider_enabled ANTHROPIC || return 1
   local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
   _log_event "delegate_start" "model=$ANTHROPIC_LOW_MODEL(anthropic)" "task=$TASK_TYPE"
   local err_out
@@ -322,6 +393,7 @@ try_anthropic_haiku() {
   rm -f "$err_out"; return 1
 }
 
+<<<<<<< HEAD
 # ─── Generic registry adapter ─────────────────────────────────────────────────
 # try_registry_model <provider> <model> — provider-agnostic call driven by
 # wiki/context/providers.json. Adding a NEW provider needs only a registry entry
@@ -342,6 +414,33 @@ try_registry_model() {
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
   _track_fail "${provider}($model)" "$LAST_ERROR"
+=======
+try_zhipu_direct() {
+  # GLM / Z.ai — OpenAI-compatible chat completions (Bearer auth).
+  # Endpoint + model id are dashboard-configurable (Z.ai international by default).
+  [ -z "${ZHIPU_API_KEY:-}" ] && return 1
+  _provider_enabled ZHIPU || return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=$ZHIPU_DIRECT_MODEL(zhipu)" "task=$TASK_TYPE"
+  local err_out
+  err_out=$(mktemp)
+  local resp
+  resp=$(curl -sS --max-time "$TIMEOUT" -X POST \
+    "$ZHIPU_API_URL" \
+    -H "Authorization: Bearer $ZHIPU_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"model\":\"$ZHIPU_DIRECT_MODEL\",\"messages\":[{\"role\":\"user\",\"content\":$ESCAPED}]}" 2>/dev/null) || {
+      _track_fail "zhipu($ZHIPU_DIRECT_MODEL)" "network-timeout"
+      rm -f "$err_out"; return 1
+    }
+  if printf '%s' "$resp" | _extract_smart openai 2>"$err_out"; then
+    _log_event "delegate_done" "model=$ZHIPU_DIRECT_MODEL(zhipu)" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
+    _cost_annotate "$ZHIPU_DIRECT_MODEL(zhipu)"
+    rm -f "$err_out"; return 0
+  fi
+  LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
+  _track_fail "zhipu($ZHIPU_DIRECT_MODEL)" "$LAST_ERROR"
+>>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
   rm -f "$err_out"; return 1
 }
 
@@ -462,6 +561,78 @@ show_failure_and_heal() {
   return 1
 }
 
+# ─── Capability-based ranking (cost-first preserved) ──────────────────────────
+# Reorders the engine try-sequence by leaderboard capability WITHIN each cost
+# class. cost_rank is the PRIMARY sort key → a paid model can never jump ahead of
+# a free one; capability only breaks ties inside the same cost class.
+CAPABILITY_CACHE="$REPO_ROOT/.tmp/model-capability-cache.json"
+CAPABILITY_SCORECARD="$REPO_ROOT/wiki/context/model-capability-scores.json"
+
+_capability_dimension() {
+  case "$TASK_TYPE" in
+    reason|compare)           echo reasoning ;;
+    scan)                     echo terminal_bench ;;
+    search|lookup|summarize)  echo speed ;;
+    *)                        echo speed ;;
+  esac
+}
+
+# Args: <dimension> <line...>  where line = "engine|model_id|cost_rank"
+# Emits the lines reordered. Degrades to unchanged order if no scorecard/cache.
+_rank_by_capability() {
+  local dim="$1"; shift
+  local card="$CAPABILITY_CACHE"
+  [ -f "$card" ] || card="$CAPABILITY_SCORECARD"
+  if [ ! -f "$card" ]; then
+    printf '%s\n' "$@"   # no data → unchanged cost-first order
+    return 0
+  fi
+  printf '%s\n' "$@" | python3 -c '
+import sys, json
+dim = sys.argv[1]; card = sys.argv[2]
+try:
+    fams = json.load(open(card)).get("families", {})
+except Exception:
+    sys.stdout.write(sys.stdin.read()); sys.exit(0)  # bad json → unchanged
+def score(mid):
+    m = (mid or "").lower()
+    for f in fams.values():
+        if any(s in m for s in f.get("match", [])):
+            return f.get(dim, 50)
+    return 50
+rows = []
+for i, ln in enumerate(sys.stdin.read().splitlines()):
+    if not ln.strip(): continue
+    parts = (ln.split("|") + ["", "", "9"])[:3]
+    eng, mid, cr = parts
+    try: cr = int(cr)
+    except ValueError: cr = 9
+    rows.append((cr, -score(mid), i, ln))   # i = stable tiebreak
+rows.sort()
+for r in rows: print(r[3])
+' "$dim" "$card"
+}
+
+# Dispatch a capability-ranked candidate list (cost-first within each rank).
+# Args: <dimension> <line...>  line = "engine|model_id|cost_rank"
+_run_ranked() {
+  local dim="$1"; shift
+  local ranked engine model_id _rest
+  ranked=$(_rank_by_capability "$dim" "$@")
+  while IFS='|' read -r engine model_id _rest; do
+    [ -z "$engine" ] && continue
+    case "$engine" in
+      gemini)     try_gemini_direct            && return 0 ;;
+      deepseek)   try_deepseek_direct  "$model_id" && return 0 ;;
+      openrouter) try_openrouter_model "$model_id" && return 0 ;;
+      groq)       try_groq_model             && return 0 ;;
+      anthropic)  try_anthropic_haiku        && return 0 ;;
+      zhipu)      try_zhipu_direct           && return 0 ;;
+    esac
+  done <<< "$ranked"
+  return 1
+}
+
 # ─── Run tier with auto-heal ──────────────────────────────────────────────────
 run_tier() {
   local attempt="${1:-1}"
@@ -481,6 +652,7 @@ run_tier() {
       try_openrouter_model "$TIER1_FALLBACK3"    && return 0
       ;;
 
+<<<<<<< HEAD
     2)  # reason / compare — Gemini free FIRST
       try_gemini_direct                          && return 0
       try_openrouter_model "$TIER2_PRIMARY"      && return 0
@@ -489,14 +661,29 @@ run_tier() {
       try_openrouter_model "$TIER2_FALLBACK2"    && return 0
       try_registry_model   zai "${TIER2_FALLBACK_GLM:-z-ai/glm-4.6}" && return 0
       try_openrouter_model "$TIER2_FALLBACK3"    && return 0
+=======
+    2)  # reason / compare — capability-ranked within cost class (free first)
+      _run_ranked "$(_capability_dimension)" \
+        "gemini|$GEMINI_DIRECT_MODEL|0" \
+        "openrouter|$TIER2_PRIMARY|0" \
+        "openrouter|$TIER2_FALLBACK1|0" \
+        "openrouter|$TIER2_FALLBACK2|0" \
+        "deepseek|$TIER2_FALLBACK1|1" \
+        "zhipu|$ZHIPU_DIRECT_MODEL|1" \
+        "openrouter|$TIER2_FALLBACK3|2" \
+        && return 0
+>>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
       ;;
 
-    3)  # scan / long-context — Gemini free FIRST
-      try_gemini_direct                          && return 0
-      try_openrouter_model "$TIER3_PRIMARY"      && return 0
-      try_openrouter_model "$TIER3_FALLBACK1"    && return 0
-      try_openrouter_model "$TIER3_FALLBACK2"    && return 0
-      try_anthropic_haiku                        && return 0
+    3)  # scan / long-context — capability-ranked within cost class (free first)
+      _run_ranked "$(_capability_dimension)" \
+        "gemini|$GEMINI_DIRECT_MODEL|0" \
+        "openrouter|$TIER3_PRIMARY|0" \
+        "openrouter|$TIER3_FALLBACK1|0" \
+        "zhipu|$ZHIPU_DIRECT_MODEL|1" \
+        "openrouter|$TIER3_FALLBACK2|2" \
+        "anthropic|$ANTHROPIC_LOW_MODEL|2" \
+        && return 0
       ;;
   esac
 

@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-Wiki Live — Real-time AI Monitor</title>
+<style>
+:root {
+  /* ── Elevation layers (depth via bg, not flat) ───── */
+  --elev-0: #06060d;
+  --elev-1: #0c0c18;
+  --elev-2: #14142a;
+  --elev-3: #1e1e3a;
+
+  /* ── Legacy aliases (backward compat) ────────────── */
+  --bg: var(--elev-0);
+  --bg2: var(--elev-1);
+  --card: var(--elev-2);
+  --card2: var(--elev-3);
+  --border: #1a1a36;
+  --border2: #28284a;
+
+  /* ── Semantic accents (distinctive, not AI-generic) */
+  --accent-brand: #5eead4;    /* teal — replaces default purple */
+  --accent-warm: #fbbf24;     /* amber — cost tier, warnings */
+  --accent-cool: #60a5fa;     /* blue — tasks, info */
+  --accent-success: #34d399;
+  --accent-danger: #f87171;
+  --accent-neutral: #94a3b8;
+
+  /* ── Role colors (graph nodes, agent cards) ──────── */
+  --role-primary: #fbbf24;
+  --role-architect: #22d3ee;
+  --role-executioner: #34d399;
+  --role-subagent: #a78bfa;
+  --role-tool: #94a3b8;
+  --role-session: #fbbf24;
+  --role-task: #60a5fa;
+
+  /* ── Text hierarchy (4 tiers) ────────────────────── */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #64748b;
+  --text-disabled: #475569;
+
+  /* ── Legacy text aliases ─────────────────────────── */
+  --text: var(--text-primary);
+  --dim: var(--text-tertiary);
+  --dim2: #475569;
+
+  /* ── Legacy accent aliases ───────────────────────── */
+  --primary: var(--accent-brand);
+  --cyan: var(--accent-brand);
+  --grad: none;
+  --success: var(--accent-success);
+  --fail: var(--accent-danger);
+  --warn: var(--accent-warm);
+  --neutral: var(--accent-neutral);
+  --google: #4285F4;
+  --deepseek: #00c4d4;
+  --groq: #ff6b6b;
+  --qwen: #ffb347;
+  --anthropic: #d4a574;
+  --openai: #74b9d4;
+
+  /* ── Typography ramp (7 stops, fluid) ────────────── */
+  --fs-2xs:  clamp(10px, 1.4vw, 11px);
+  --fs-xs:   clamp(11px, 1.7vw, 12px);
+  --fs-sm:   clamp(12px, 2.0vw, 13px);
+  --fs-base: clamp(14px, 2.3vw, 15px);
+  --fs-lg:   clamp(16px, 2.8vw, 18px);
+  --fs-xl:   clamp(20px, 3.5vw, 24px);
+  --fs-2xl:  clamp(26px, 4.5vw, 32px);
+
+  /* ── Spacing scale (4px base, 8 stops) ───────────── */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+
+  /* ── Radii ────────────────────────────────────────── */
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px; --r-full: 9999px;
+
+  /* ── Shadows (elevation via shadow) ──────────────── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.45);
+  --shadow-glow: 0 0 16px rgba(94,234,212,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-size: var(--fs-sm);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* ── Header ────────────────────────────────────────── */
+#header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 44px;
+}
+
+.live-pulse {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--dim);
+  flex-shrink: 0;
+  position: relative;
+}
+.live-pulse.on {
+  background: var(--success);
+}
+.live-pulse.on::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--success);
+  animation: ripple 1.5s ease-out infinite;
+}
+@keyframes ripple {
+  0%   { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.brand {
+  font-size: var(--fs-base);
+  font-weight: 700;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+/* Workflow tabs */
+#wf-tabs {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+}
+.wf-tab {
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border2);
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  transition: all 0.25s;
+  white-space: nowrap;
+  cursor: default;
+}
+.wf-tab.hot {
+  border-color: var(--primary);
+  color: var(--text);
+  background: rgba(124,92,255,0.12);
+  animation: tab-glow 2s ease-in-out;
+}
+.wf-tab.hot.cost  { border-color: var(--warn); background: rgba(255,179,71,0.10); }
+.wf-tab.hot.swarm { border-color: var(--cyan);  background: rgba(40,214,200,0.10); }
+@keyframes tab-glow {
+  0%   { box-shadow: 0 0 0 rgba(124,92,255,0); }
+  30%  { box-shadow: 0 0 16px rgba(124,92,255,0.7); }
+  100% { box-shadow: 0 0 8px rgba(124,92,255,0.2); }
+}
+
+/* Stats */
+#stats {
+  display: flex;
+  gap: 14px;
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  flex-shrink: 0;
+}
+.stat-item { display: flex; align-items: center; gap: 4px; }
+.stat-val { color: var(--cyan); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.hdr-btn {
+  padding: 5px 11px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  transition: all 0.2s;
+}
+.hdr-btn:hover { border-color: var(--dim); color: var(--text); }
+.hdr-btn.accent { border-color: rgba(124,92,255,0.5); color: var(--text); background: rgba(124,92,255,0.12); }
+
+/* ── Main layout ────────────────────────────────────── */
+#main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr clamp(320px, 26vw, 380px);
+  overflow: hidden;
+  min-width: 0;
+}
+/* Tablet — keep two columns but narrower sidebar */
+@media (max-width: 900px) {
+  #main { grid-template-columns: 1fr 280px; }
+}
+/* Mobile — single-column stack, scrollable sections, big tap targets */
+@media (max-width: 600px) {
+  body { overflow: auto; height: auto; min-height: 100vh; }
+  #header { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  #wf-tabs { order: 3; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  #wf-tabs::-webkit-scrollbar { display: none; }
+  .wf-tab { flex-shrink: 0; }
+  #stats { order: 2; gap: 12px; }
+  #main {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
+  #net-panel { min-height: 55vh; }
+  .net-inner { flex-direction: column; gap: 16px; }
+  #connector-zone { display: none; }            /* SVG connector irrelevant when stacked vertically */
+  #model-grid { width: 100%; min-width: 0; }
+  #sidebar { border-left: none; border-top: 1px solid var(--border); }
+  #timeline { max-height: 42vh; }
+  .hdr-btn { min-height: 40px; padding: 8px 14px; }
+}
+
+/* ── Network Panel (left) ───────────────────────────── */
+#net-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px 16px 12px;
+  gap: 10px;
+}
+
+/* Hook activity strip */
+#hook-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 24px;
+  align-items: center;
+}
+.hook-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: var(--fs-2xs);
+  font-family: 'SF Mono', 'JetBrains Mono', monospace;
+  border: 1px solid;
+  animation: badge-in 0.2s ease-out;
+  transition: opacity 0.8s;
+}
+.hook-badge.pass {
+  border-color: rgba(0,212,170,0.35);
+  background: rgba(0,212,170,0.07);
+  color: var(--success);
+}
+.hook-badge.block {
+  border-color: rgba(255,68,68,0.5);
+  background: rgba(255,68,68,0.10);
+  color: var(--fail);
+  animation: badge-in 0.2s ease-out, badge-shake 0.3s ease-out;
+}
+.hook-badge.warn {
+  border-color: rgba(255,179,71,0.4);
+  background: rgba(255,179,71,0.08);
+  color: var(--warn);
+}
+.hook-badge.dim { opacity: 0.25; }
+@keyframes badge-in {
+  from { transform: scale(0.7) translateY(-4px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+@keyframes badge-shake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-3px); }
+  75%      { transform: translateX(3px); }
+}
+
+/* Network graph */
+#network {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.net-inner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  max-width: 680px;
+  width: 100%;
+}
+
+/* Primary node */
+.primary-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.primary-card {
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(124,92,255,0.15), rgba(40,214,200,0.08));
+  border: 1px solid rgba(124,92,255,0.4);
+  text-align: center;
+  min-width: 128px;
+  position: relative;
+}
+.primary-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  background: var(--grad);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: -1;
+}
+.primary-card.active::before { opacity: 0.2; }
+
+.primary-icon { font-size: var(--fs-xl); line-height: 1; margin-bottom: 6px; }
+.primary-name { font-size: var(--fs-sm); font-weight: 700; color: var(--text); }
+.primary-role { font-size: var(--fs-2xs); color: var(--dim); margin-top: 2px; }
+.primary-status {
+  margin-top: 8px;
+  font-size: var(--fs-2xs);
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(0,212,170,0.10);
+  color: var(--success);
+  display: inline-block;
+}
+
+/* Connector zone */
+#connector-zone {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+  overflow: visible;
+}
+#connector-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.conn-line {
+  stroke-dasharray: 5,4;
+  stroke-width: 1.5;
+  fill: none;
+  opacity: 0.6;
+}
+.conn-line.active {
+  opacity: 1;
+  animation: flow-right 0.8s linear infinite;
+}
+.conn-line.returning {
+  animation: flow-left 0.8s linear infinite;
+}
+@keyframes flow-right {
+  to { stroke-dashoffset: -27; }
+}
+@keyframes flow-left {
+  to { stroke-dashoffset: 27; }
+}
+
+/* Model cards grid */
+#model-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.idle-hint {
+  color: var(--dim);
+  font-size: var(--fs-sm);
+  text-align: center;
+  padding: 16px 20px;
+  border: 1px dashed var(--border2);
+  border-radius: 8px;
+}
+.idle-hint small {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-2xs);
+  opacity: 0.6;
+}
+
+.model-card {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+  animation: card-in 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  transition: border-color 0.3s, opacity 0.6s;
+}
+@keyframes card-in {
+  from { transform: translateX(24px) scale(0.92); opacity: 0; }
+  to   { transform: translateX(0)    scale(1);    opacity: 1; }
+}
+.model-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+}
+.model-card.gemini::before     { background: var(--google);    }
+.model-card.deepseek::before   { background: var(--deepseek);  }
+.model-card.groq::before       { background: var(--groq);      }
+.model-card.qwen::before       { background: var(--qwen);      }
+.model-card.anthropic::before  { background: var(--anthropic); }
+.model-card.openai::before     { background: var(--openai);    }
+.model-card.other::before      { background: var(--neutral);   }
+
+.model-card.done { border-color: rgba(0,212,170,0.3); }
+.model-card.failed { border-color: rgba(255,68,68,0.3); }
+.model-card.fading { opacity: 0.15; transition: opacity 1.2s; }
+
+.m-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.m-name { font-size: var(--fs-sm); font-weight: 700; }
+.m-provider {
+  font-size: var(--fs-2xs);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'SF Mono', monospace;
+  font-weight: 600;
+}
+.model-card.gemini   .m-provider { background: rgba(66,133,244,0.18);  color: var(--google);    }
+.model-card.deepseek .m-provider { background: rgba(0,196,212,0.18);   color: var(--deepseek);  }
+.model-card.groq     .m-provider { background: rgba(255,107,107,0.18); color: var(--groq);      }
+.model-card.qwen     .m-provider { background: rgba(255,179,71,0.18);  color: var(--qwen);      }
+.model-card.anthropic .m-provider{ background: rgba(212,165,116,0.18); color: var(--anthropic); }
+.model-card.openai   .m-provider { background: rgba(116,185,212,0.18); color: var(--openai);    }
+.model-card.other    .m-provider { background: rgba(96,128,255,0.18);  color: var(--neutral);   }
+
+.m-task {
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+.m-preview {
+  font-size: var(--fs-2xs);
+  color: var(--dim2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 170px;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+.m-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+}
+.thinking-dot {
+  display: inline-flex;
+  gap: 2px;
+}
+.thinking-dot span {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: bounce-dot 1.2s ease-in-out infinite;
+}
+.thinking-dot span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dot span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce-dot {
+  0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
+  40%          { transform: scale(1.2); opacity: 1; }
+}
+
+/* Parallel badge */
+#parallel-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(124,92,255,0.15);
+  border: 1px solid rgba(124,92,255,0.35);
+  border-radius: 20px;
+  font-size: var(--fs-xs);
+  color: var(--primary);
+  white-space: nowrap;
+  animation: badge-in 0.25s ease-out;
+}
+
+/* ── Sidebar (right) ────────────────────────────────── */
+#sidebar {
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg2);
+}
+#sidebar-hdr {
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  color: var(--dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#event-count {
+  font-size: var(--fs-2xs);
+  background: var(--border2);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--dim);
+  font-weight: 400;
+}
+
+#timeline {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+#timeline::-webkit-scrollbar { width: 4px; }
+#timeline::-webkit-scrollbar-track { background: transparent; }
+#timeline::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.ev-row {
+  display: flex;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 1px;
+  animation: row-slide 0.2s ease-out;
+  border-left: 2px solid transparent;
+  cursor: default;
+  transition: background 0.15s;
+}
+.ev-row:hover { background: rgba(255,255,255,0.025); }
+.ev-row.new { background: rgba(124,92,255,0.06); }
+
+.ev-row.t-session_start  { border-left-color: var(--success); }
+.ev-row.t-hook_check     { border-left-color: rgba(40,214,200,0.4); }
+.ev-row.t-hook_check.block { border-left-color: var(--fail); }
+.ev-row.t-cost_declare   { border-left-color: var(--warn); }
+.ev-row.t-delegate_start { border-left-color: rgba(124,92,255,0.6); }
+.ev-row.t-delegate_done  { border-left-color: var(--success); }
+.ev-row.t-delegate_fail  { border-left-color: var(--fail); }
+
+@keyframes row-slide {
+  from { transform: translateY(-5px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.ev-time {
+  color: var(--dim2);
+  font-family: 'SF Mono', monospace;
+  font-size: var(--fs-2xs);
+  white-space: nowrap;
+  padding-top: 1px;
+  flex-shrink: 0;
+}
+.ev-icon { flex-shrink: 0; font-size: var(--fs-sm); line-height: 1.4; }
+.ev-text { flex: 1; font-size: var(--fs-xs); line-height: 1.5; word-break: break-word; }
+.ev-text strong { color: var(--text); }
+.ev-text em { color: var(--dim); font-style: normal; }
+.ev-text .ok  { color: var(--success); }
+.ev-text .bad { color: var(--fail); }
+.ev-text .tag {
+  font-family: 'SF Mono', monospace;
+  font-size: var(--fs-2xs);
+  background: var(--border2);
+  padding: 0 3px;
+  border-radius: 3px;
+}
+
+/* ── Disconnected overlay ───────────────────────────── */
+#offline {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,18,0.92);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  backdrop-filter: blur(4px);
+}
+#offline.show { display: flex; }
+#offline h2 { font-size: var(--fs-lg); color: var(--text); }
+#offline p  { color: var(--dim); font-size: var(--fs-sm); }
+#offline code {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: 'SF Mono', monospace;
+  font-size: var(--fs-sm);
+  color: var(--cyan);
+}
+#offline .retry-btn {
+  margin-top: 6px;
+  padding: 9px 20px;
+  border-radius: 6px;
+  background: rgba(124,92,255,0.2);
+  border: 1px solid rgba(124,92,255,0.4);
+  color: var(--text);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  min-height: 44px;
+  transition: all 0.2s;
+}
+#offline .retry-btn:hover { background: rgba(124,92,255,0.35); }
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes flash-green {
+  0%   { background: rgba(0,212,170,0.25); }
+  100% { background: transparent; }
+}
+.flash-green { animation: flash-green 0.6s ease-out; }
+
+@keyframes flash-red {
+  0%   { background: rgba(255,68,68,0.25); }
+  100% { background: transparent; }
+}
+.flash-red { animation: flash-red 0.5s ease-out; }
+
+/* ── Settings slide-over ────────────────────────────── */
+#settings-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(8,8,18,0.6);
+  backdrop-filter: blur(2px);
+  z-index: 300;
+}
+#settings-backdrop.show { display: block; }
+#settings {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(440px, 92vw);
+  background: var(--bg2);
+  border-left: 1px solid var(--border2);
+  z-index: 301;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  box-shadow: -12px 0 40px rgba(0,0,0,0.5);
+}
+#settings.show { transform: translateX(0); }
+#set-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#set-hdr .brand { font-size: var(--fs-base); }
+#set-close {
+  background: transparent; border: none; color: var(--dim);
+  font-size: var(--fs-lg); cursor: pointer; line-height: 1;
+  min-width: 32px; min-height: 32px;
+}
+#set-close:hover { color: var(--text); }
+#set-tabs { display: flex; gap: 6px; padding: 10px 16px 0; flex-shrink: 0; }
+.set-tab {
+  padding: 7px 13px; border-radius: 6px 6px 0 0;
+  border: 1px solid var(--border2); border-bottom: none;
+  font-size: var(--fs-xs); color: var(--dim); cursor: pointer; background: transparent;
+}
+.set-tab.active { color: var(--text); background: var(--card); border-color: var(--primary); }
+#set-body { flex: 1; overflow-y: auto; padding: 14px 16px; }
+.set-pane { display: none; }
+.set-pane.active { display: block; }
+
+.cfg-card {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 11px 12px; margin-bottom: 9px;
+  position: relative; overflow: hidden;
+}
+.cfg-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+}
+.cfg-card.gemini::before    { background: var(--google); }
+.cfg-card.deepseek::before  { background: var(--deepseek); }
+.cfg-card.openrouter::before{ background: var(--neutral); }
+.cfg-card.groq::before      { background: var(--groq); }
+.cfg-card.anthropic::before { background: var(--anthropic); }
+.cfg-card.zhipu::before     { background: #34d399; }
+.cfg-card.disabled { opacity: 0.5; }
+
+.cfg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cfg-name { font-size: var(--fs-base); font-weight: 700; flex: 1; }
+.cfg-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer; }
+.cfg-toggle input { opacity: 0; width: 0; height: 0; }
+.cfg-slider {
+  position: absolute; inset: 0; border-radius: 22px;
+  background: var(--border2); transition: 0.2s;
+}
+.cfg-slider::before {
+  content: ''; position: absolute; height: 18px; width: 18px; left: 2px; top: 2px;
+  border-radius: 50%; background: var(--dim); transition: 0.2s;
+}
+.cfg-toggle input:checked + .cfg-slider { background: rgba(0,212,170,0.35); }
+.cfg-toggle input:checked + .cfg-slider::before { transform: translateX(18px); background: var(--success); }
+
+.cfg-field { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
+.cfg-field label { font-size: var(--fs-2xs); color: var(--dim); text-transform: uppercase; letter-spacing: 0.4px; }
+.cfg-input {
+  background: var(--bg); border: 1px solid var(--border2); border-radius: 5px;
+  padding: 8px 10px; color: var(--text); font-size: var(--fs-sm);
+  font-family: 'SF Mono', monospace; width: 100%; min-height: 40px;
+}
+.cfg-input:focus { outline: none; border-color: var(--primary); }
+.cap-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.cap-badge {
+  font-size: var(--fs-2xs); font-family: 'SF Mono', monospace;
+  padding: 2px 7px; border-radius: 10px;
+  background: var(--border2); color: var(--dim);
+}
+.cap-badge.hi { background: rgba(0,212,170,0.15); color: var(--success); }
+.key-status { font-size: var(--fs-2xs); padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+.key-status.set   { background: rgba(0,212,170,0.12); color: var(--success); }
+.key-status.unset { background: rgba(255,179,71,0.12); color: var(--warn); }
+
+.set-btn {
+  width: 100%; padding: 11px; border-radius: 6px; cursor: pointer;
+  background: rgba(124,92,255,0.18); border: 1px solid rgba(124,92,255,0.4);
+  color: var(--text); font-size: var(--fs-base); font-weight: 600; margin-top: 8px;
+  min-height: 44px; transition: all 0.2s;
+}
+.set-btn:hover { background: rgba(124,92,255,0.32); }
+.set-btn.sm { width: auto; padding: 6px 12px; font-size: var(--fs-xs); margin-top: 0; min-height: 36px; }
+.set-note { font-size: var(--fs-xs); color: var(--dim); margin: 4px 0 12px; line-height: 1.55; }
+.set-toast {
+  position: fixed; bottom: 18px; right: 18px; z-index: 400;
+  padding: 9px 15px; border-radius: 6px; font-size: var(--fs-sm);
+  background: var(--card); border: 1px solid var(--success); color: var(--success);
+  opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none;
+}
+.set-toast.show { opacity: 1; transform: translateY(0); }
+.set-toast.err { border-color: var(--fail); color: var(--fail); }
+
+/* Recommendation hint strip */
+#rec-strip {
+  font-size: var(--fs-xs); color: var(--dim); padding: 6px 16px;
+  border-top: 1px solid var(--border); flex-shrink: 0;
+  white-space: nowrap; overflow-x: auto; scrollbar-width: none;
+}
+#rec-strip::-webkit-scrollbar { display: none; }
+#rec-strip .rec-item { display: inline-block; margin-right: 14px; }
+#rec-strip b { color: var(--cyan); }
+
+/* ── คู่มือ / Help pane ──────────────────────────────── */
+.help-section { margin-bottom: 18px; }
+.help-section h4 {
+  font-size: var(--fs-base); color: var(--text); font-weight: 700;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.help-section p, .help-section li {
+  font-size: var(--fs-xs); color: var(--dim); line-height: 1.65; margin-bottom: 5px;
+}
+.help-section ul { padding-left: 18px; margin: 4px 0; }
+.help-section code {
+  font-family: 'SF Mono', monospace; font-size: var(--fs-2xs);
+  background: var(--card2); border: 1px solid var(--border2);
+  padding: 1px 6px; border-radius: 4px; color: var(--cyan); word-break: break-all;
+}
+.help-section b { color: var(--text); }
+.help-table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+.help-table th, .help-table td {
+  font-size: var(--fs-2xs); text-align: left; padding: 5px 8px;
+  border-bottom: 1px solid var(--border); color: var(--dim);
+}
+.help-table th { color: var(--text); font-weight: 700; }
+.help-table .yes { color: var(--success); font-weight: 700; }
+.help-table .no  { color: var(--warn); font-weight: 700; }
+
+/* ── Parallel Lanes view ─────────────────────────────── */
+.view-toggle-bar {
+  display: flex; gap: 4px; padding: 4px 0;
+  flex-shrink: 0;
+}
+.view-btn {
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 4px; color: var(--dim); font-size: var(--fs-xs);
+  padding: 4px 10px; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.view-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+.view-btn:hover:not(.active) { background: var(--card2); color: var(--text); }
+
+#lanes-panel {
+  flex: 1; overflow-y: auto; display: none; flex-direction: column;
+  gap: 0; padding: 0;
+}
+#lanes-axis-bar {
+  display: flex; padding: 4px 0 4px 138px;
+  font-size: var(--fs-2xs); color: var(--dim2);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+#lanes-axis-bar span { flex: 1; }
+#lanes-body { display: flex; flex-direction: column; gap: 3px; padding: 6px 0; }
+#lanes-empty {
+  text-align: center; color: var(--dim2); font-size: var(--fs-xs);
+  padding: 32px 16px; flex: 1; display: flex;
+  align-items: center; justify-content: center;
+}
+.lane-row { display: flex; align-items: center; height: 28px; gap: 8px; }
+.lane-label {
+  width: 130px; flex-shrink: 0; font-size: var(--fs-xs); color: var(--dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: 'SF Mono', 'JetBrains Mono', monospace;
+}
+.lane-track {
+  flex: 1; position: relative; height: 16px;
+  background: var(--card2); border-radius: 3px; overflow: hidden;
+}
+.lane-bar {
+  position: absolute; height: 100%; border-radius: 3px; opacity: 0.85;
+  min-width: 3px;
+}
+.lane-bar.done   { opacity: 0.75; }
+.lane-bar.failed { opacity: 0.45; filter: saturate(0.35); }
+.lane-bar.active { opacity: 1; animation: bar-pulse 1.4s ease-in-out infinite; }
+@keyframes bar-pulse { 0%,100%{opacity:1} 50%{opacity:0.65} }
+/* ── vis-network graph container ────────────────────── */
+#graph-vis {
+  flex: 1;
+  width: 100%;
+  min-height: 300px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+</style>
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+
+<!-- Offline overlay -->
+<div id="offline" class="show">
+  <h2>📡 รอ Dashboard Server…</h2>
+  <p style="max-width:340px; text-align:center;">ปกติ A-Wiki <b style="color:var(--text)">เปิดให้อัตโนมัติ</b> ตอนเริ่ม session (Claude / Codex / Gemini). ถ้ายังไม่ขึ้น เปิดเองได้:</p>
+  <code>bash scripts/dashboard-ensure.sh</code>
+  <p style="margin-top:4px; font-size:var(--fs-xs);">หรือ foreground: <code>python3 scripts/live-dashboard/server.py</code></p>
+  <p style="color:var(--dim2); font-size:var(--fs-xs); max-width:340px; text-align:center;">
+    หลัง server เริ่ม — ออก command ใดก็ได้ใน A-Wiki แล้วดู AI ทำงาน real-time ที่นี่
+  </p>
+  <button class="retry-btn" onclick="connect()">🔄 ลองเชื่อมต่ออีกครั้ง</button>
+</div>
+
+<!-- Header -->
+<div id="header">
+  <div class="live-pulse" id="live-dot"></div>
+  <span class="brand">A-Wiki Live</span>
+  <div id="wf-tabs">
+    <div class="wf-tab" id="wf-session">🚀 Session Start</div>
+    <div class="wf-tab" id="wf-plan">📋 Plan Mode</div>
+    <div class="wf-tab swarm" id="wf-swarm">🧠 Advisor/Swarm</div>
+    <div class="wf-tab cost"  id="wf-cost">💰 Cost-First</div>
+  </div>
+  <div id="stats">
+    <div class="stat-item">hooks <span class="stat-val" id="s-hooks">0</span></div>
+    <div class="stat-item">models <span class="stat-val" id="s-models">0</span></div>
+    <div class="stat-item">tier <span class="stat-val" id="s-tier">?</span></div>
+    <div class="stat-item" id="s-par-wrap" style="display:none">⚡parallel <span class="stat-val" id="s-par">0</span></div>
+  </div>
+  <button class="hdr-btn accent" onclick="openSettings()">⚙️ ตั้งค่า</button>
+  <button class="hdr-btn" onclick="doClear()">🗑 clear</button>
+</div>
+
+<!-- Main -->
+<div id="main">
+
+  <!-- Left: Network panel -->
+  <div id="net-panel">
+
+    <!-- Hook activity strip -->
+    <div id="hook-strip"></div>
+
+    <!-- View toggle: Network | Lanes -->
+    <div class="view-toggle-bar">
+      <button class="view-btn active" id="btn-network" onclick="setNetView('network')">🔗 Network</button>
+      <button class="view-btn"        id="btn-lanes"   onclick="setNetView('lanes')">🏊 Lanes</button>
+    </div>
+
+    <!-- Workflow Graph (vis-network) -->
+    <div id="graph-vis"></div>
+
+    <!-- Parallel badge -->
+    <div id="parallel-badge">
+      ⚡ <span id="par-count">0</span> agents active
+    </div>
+
+    <!-- Parallel Lanes panel (hidden by default) -->
+    <div id="lanes-panel">
+      <div id="lanes-axis-bar"></div>
+      <div id="lanes-body"></div>
+      <div id="lanes-empty">ยังไม่มี delegation — รัน delegate แล้วจะเห็น lanes ที่นี่</div>
+    </div>
+
+  </div>
+
+  <!-- Right: Sidebar timeline -->
+  <div id="sidebar">
+    <div id="sidebar-hdr">
+      Event Log
+      <span id="event-count">0 events</span>
+    </div>
+    <div id="timeline"></div>
+    <div id="rec-strip" title="แนะนำ model ตามความสามารถ (capability) ต่อชนิดงาน"></div>
+  </div>
+
+</div>
+
+<!-- Settings slide-over -->
+<div id="settings-backdrop" onclick="closeSettings()"></div>
+<div id="settings">
+  <div id="set-hdr">
+    <span class="brand">⚙️ Models &amp; API Keys</span>
+    <button id="set-close" onclick="closeSettings()">✕</button>
+  </div>
+  <div id="set-tabs">
+    <button class="set-tab active" data-pane="pane-models" onclick="setTab(this)">Models</button>
+    <button class="set-tab" data-pane="pane-keys" onclick="setTab(this)">API Keys</button>
+    <button class="set-tab" data-pane="pane-help" onclick="setTab(this)">📖 คู่มือ</button>
+  </div>
+  <div id="set-body">
+    <div class="set-pane active" id="pane-models">
+      <div class="set-note">เปิด/ปิด model, แก้ model id, ดูคะแนนความสามารถ (SWE-bench · Terminal-Bench · NL2Repo). ปิดทั้งหมด = ใช้ default. การจัดลำดับยึด cost-first เสมอ — capability สลับลำดับเฉพาะภายใน cost class.</div>
+      <div id="models-list"></div>
+      <button class="set-btn" onclick="saveModels()">💾 บันทึก Models</button>
+    </div>
+    <div class="set-pane" id="pane-keys">
+      <div class="set-note">ใส่ API key ของแต่ละ provider. เก็บใน <code>.tmp/</code> (gitignored) + drive/.secrets ถ้ามี — ไม่ขึ้น git. โชว์เฉพาะสถานะ set/unset ไม่เคยโชว์ค่า.</div>
+      <div id="keys-list"></div>
+    </div>
+
+    <!-- คู่มือ / Help -->
+    <div class="set-pane" id="pane-help">
+      <div class="help-section">
+        <h4>🖥 อ่าน dashboard ยังไง</h4>
+        <ul>
+          <li><b>กลางจอ (Network)</b> — การ์ด Primary (🧠 Claude = Senior Critic) เชื่อมเส้นไปการ์ด model ที่กำลังทำงาน; เส้นวิ่ง = กำลัง delegate, หลายเส้นพร้อมกัน = parallel</li>
+          <li><b>Event Log</b> (ขวา/ล่าง) — timeline เหตุการณ์สด: session start, hook ผ่าน/บล็อก, delegate start/done/fail</li>
+          <li><b>แถบ hook</b> (บนซ้าย) — hook ที่เพิ่งรัน ✅ ผ่าน / 🔴 บล็อก</li>
+          <li><b>แท็บ workflow</b> (บน) — 🚀 Session · 📋 Plan · 🧠 Swarm · 💰 Cost-First สว่างเมื่อเข้าโหมดนั้น</li>
+          <li><b>แถบล่างสุด</b> — แนะนำ model ตามความสามารถ (capability) ต่อชนิดงาน</li>
+        </ul>
+      </div>
+      <div class="help-section">
+        <h4>🎛 เลือก model / ใส่ API key</h4>
+        <p>แท็บ <b>Models</b>: เปิด/ปิด toggle แต่ละ model, แก้ <code>model_id</code>, ดูคะแนน capability (SWE / Term / Repo / reason / speed) แล้วกด <b>บันทึก Models</b> — มีผลรอบ delegate ถัดไป.</p>
+        <p>แท็บ <b>API Keys</b>: ใส่ key ต่อ provider (โชว์แค่ set/unset ไม่โชว์ค่า). ถ้าไม่ตั้งอะไร = ใช้ default (free model เปิดอยู่แล้ว).</p>
+        <p><b>GLM / Z.ai:</b> เปิด toggle <b>GLM 5.2</b> + ใส่ <code>ZHIPU_API_KEY</code> + ใช้ endpoint <code>api.z.ai</code> (สากล) แก้ <code>model_id</code> เป็น <code>glm-5.2</code> ได้.</p>
+      </div>
+      <div class="help-section">
+        <h4>🚀 dashboard เปิดอัตโนมัติยังไง</h4>
+        <p>A-Wiki เปิดให้เองตอนเริ่ม session — ไม่ต้องรันเอง. ปิดเองเมื่อ idle 30 นาที.</p>
+        <table class="help-table">
+          <tr><th>Agent / IDE</th><th>Auto-start</th></tr>
+          <tr><td>Claude Code</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Codex</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Gemini CLI</td><td class="yes">✅ auto</td></tr>
+          <tr><td>Cline / Cursor / Antigravity</td><td class="no">⚠ รันเอง</td></tr>
+        </table>
+        <p>IDE ที่ไม่มี hook (Cline/Cursor/Antigravity) สั่งเองครั้งเดียว: <code>bash scripts/dashboard-ensure.sh</code> (หรือรอจังหวะที่ agent delegate งานก็เปิดให้เอง).</p>
+      </div>
+      <div class="help-section">
+        <h4>⌨️ คำสั่ง manual</h4>
+        <ul>
+          <li>เปิด (daemon): <code>bash scripts/dashboard-ensure.sh</code></li>
+          <li>เปิด (foreground): <code>python3 scripts/live-dashboard/server.py</code></li>
+          <li>ปิด: <code>bash scripts/dashboard-stop.sh</code></li>
+        </ul>
+      </div>
+      <div class="help-section">
+        <h4>💰 Cost-first (สำคัญ)</h4>
+        <p>การจัดลำดับยึด <b>cost-first</b> เสมอ — model เสียเงิน <b>ไม่แซง</b> model ฟรี. capability สลับลำดับเฉพาะ <b>ภายใน cost class เดียวกัน</b>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="set-toast" id="set-toast"></div>
+
+<script>
+/* ── State ─────────────────────────────────────────── */
+const S = {
+  connected: false,
+  hookCount: 0,
+  eventCount: 0,
+  modelsUsed: new Set(),
+  tier: '?',
+  active: {},      // modelKey → {card, el, lineEl, ts, task}
+  activeCount: 0,
+  parallelCount: 0,
+  activeAgents: [],
+  wfTimers: {},
+};
+
+/* ── vis-network graph ──────────────────────────────── */
+let _graphNet = null;
+let _graphData = { nodes: new vis.DataSet(), edges: new vis.DataSet() };
+
+function initGraph() {
+  const container = document.getElementById('graph-vis');
+  if (!container || !window.vis) return;
+  
+  const options = {
+    physics: {
+      solver: 'barnesHut',
+      barnesHut: { gravitationalConstant: -2000, centralGravity: 0.3, springLength: 150, springConstant: 0.04 },
+      stabilization: { iterations: 100 }
+    },
+    edges: {
+      smooth: { type: 'continuous' },
+      width: 2,
+      arrows: { to: { enabled: true, scaleFactor: 0.5 } }
+    },
+    nodes: {
+      shape: 'dot',
+      size: 16,
+      font: { size: 11, color: '#d8d8ff', face: '-apple-system' },
+      borderWidth: 2,
+    },
+    interaction: { hover: true, tooltipDelay: 200, zoomView: true, dragView: true, navigationButtons: false },
+  };
+  
+  _graphNet = new vis.Network(container, _graphData, options);
+  
+  // Initial fetch
+  fetch('/api/graph').then(r => r.json()).then(data => updateGraphFromAPI(data)).catch(() => {});
+}
+
+function updateGraphFromAPI(data) {
+  if (!data || !_graphData) return;
+  const { nodes, edges, parallel_count, active_agents } = data;
+  
+  S.parallelCount = parallel_count || 0;
+  S.activeAgents = active_agents || [];
+  
+  // Merge nodes
+  const keepIds = new Set(nodes.map(n => n.id));
+  _graphData.nodes.getIds().forEach(id => { if (!keepIds.has(id)) _graphData.nodes.remove(id); });
+  nodes.forEach(n => {
+    const existing = _graphData.nodes.get(n.id);
+    if (existing) {
+      // Only update if changed (avoid physics reset)
+      if (existing.status !== n.status || existing.count !== n.count) {
+        _graphData.nodes.update(n);
+      }
+    } else {
+      _graphData.nodes.add(n);
+    }
+  });
+  
+  // Merge edges
+  const edgeKeys = new Set(edges.map(e => `${e.from}→${e.to}`));
+  _graphData.edges.getIds().forEach(id => {
+    const e = _graphData.edges.get(id);
+    if (!edgeKeys.has(`${e.from}→${e.to}`)) _graphData.edges.remove(id);
+  });
+  edges.forEach(e => {
+    e.id = `${e.from}→${e.to}`;
+    e.width = e.active ? 2 : 1;
+    e.dashes = e.active ? true : false;
+    if (!e.color && e.active) e.color = { color: '#7c5cff', highlight: '#28d6c8' };
+    const existing = _graphData.edges.get(e.id);
+    if (!existing) _graphData.edges.add(e);
+  });
+  
+  updateParallel();
+}
+
+function updateGraphFromSSE(evt) {
+  if (evt.type !== 'graph_update') return;
+  updateGraphFromAPI(evt);
+}
+
+/* ── DOM helpers ────────────────────────────────────── */
+const $  = id => document.getElementById(id);
+const mk = (tag, cls) => { const el = document.createElement(tag); if(cls) el.className = cls; return el; };
+const hh = (el, html) => { el.innerHTML = html; };
+
+/* ── Workflow tabs ──────────────────────────────────── */
+const WF_MAP = {
+  session: $('wf-session'),
+  plan:    $('wf-plan'),
+  swarm:   $('wf-swarm'),
+  cost:    $('wf-cost'),
+};
+
+function hotWf(id, ms = 6000) {
+  const el = WF_MAP[id];
+  if (!el) return;
+  el.classList.remove('hot');
+  void el.offsetWidth;
+  el.classList.add('hot');
+  clearTimeout(S.wfTimers[id]);
+  S.wfTimers[id] = setTimeout(() => el.classList.remove('hot'), ms);
+}
+
+/* ── Parallel Lanes ──────────────────────────────────── */
+const _LANE_COLORS = {
+  gemini: '#7ba3ff', deepseek: '#00c4e0', groq: '#ff6b6b',
+  openrouter: '#a0d0a0', anthropic: '#ff8c69', zhipu: '#c17de8', default: '#888'
+};
+let _lanes = {};       // model → { color, bars:[{start,end,task,status}], active|null }
+let _lanesRAF = null;
+
+function _laneColor(model) {
+  for (const [k, v] of Object.entries(_LANE_COLORS)) if (model.includes(k)) return v;
+  return _LANE_COLORS.default;
+}
+
+function updateLane(ev) {
+  const model = ev.model || ''; if (!model) return;
+  if (!_lanes[model]) _lanes[model] = { color: _laneColor(model), bars: [], active: null };
+  const L = _lanes[model];
+  if (ev.type === 'delegate_start') {
+    L.active = { start: ev.ts, task: ev.task || '' };
+  } else if (ev.type === 'delegate_done') {
+    if (L.active) { L.bars.push({ ...L.active, end: ev.ts, status: 'done' }); L.active = null; }
+  } else if (ev.type === 'delegate_fail') {
+    if (L.active) { L.bars.push({ ...L.active, end: ev.ts, status: 'failed' }); L.active = null; }
+  }
+  const panel = document.getElementById('lanes-panel');
+  if (panel && panel.style.display !== 'none') renderLanes();
+}
+
+function renderLanes() {
+  if (_lanesRAF) { cancelAnimationFrame(_lanesRAF); _lanesRAF = null; }
+  const body    = document.getElementById('lanes-body');
+  const axisBar = document.getElementById('lanes-axis-bar');
+  const empty   = document.getElementById('lanes-empty');
+  if (!body) return;
+  const now = Date.now() / 1000;
+  const allTs = Object.values(_lanes).flatMap(L =>
+    [...L.bars.map(b => b.start), ...(L.active ? [L.active.start] : [])]
+  );
+  if (!allTs.length) {
+    body.innerHTML = ''; axisBar.innerHTML = '';
+    if (empty) empty.style.display = 'flex';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  const winDur  = Math.max(300, now - Math.min(...allTs) + 10);
+  const winStart = now - winDur;
+  const pct  = ts => Math.max(0, Math.min(100, (ts - winStart) / winDur * 100));
+  const wpct = (s, e) => Math.max(0.5, pct(e) - pct(s));
+
+  // Time axis (5 labels)
+  axisBar.innerHTML = [0, 1, 2, 3, 4].map(i => {
+    const t = winStart + winDur * i / 4;
+    const lbl = new Date(t * 1000).toLocaleTimeString('th', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return `<span style="text-align:${i === 4 ? 'right' : 'left'}">${lbl}</span>`;
+  }).join('');
+
+  // Lane rows
+  body.innerHTML = '';
+  for (const [model, L] of Object.entries(_lanes)) {
+    const shortName = model.replace(/\(.*\)/, '').split('/').pop();
+    const row   = document.createElement('div'); row.className = 'lane-row';
+    const lbl   = document.createElement('div'); lbl.className = 'lane-label';
+    lbl.textContent = shortName; lbl.title = model;
+    const track = document.createElement('div'); track.className = 'lane-track';
+    for (const b of L.bars) {
+      if (b.end < winStart) continue;
+      const bar = document.createElement('div');
+      bar.className = `lane-bar ${b.status}`;
+      bar.style.cssText = `left:${pct(b.start).toFixed(2)}%;width:${wpct(b.start, b.end).toFixed(2)}%;background:${L.color}`;
+      bar.title = `${shortName} — ${b.task} (${((b.end - b.start) * 1000) | 0}ms)`;
+      track.appendChild(bar);
+    }
+    if (L.active) {
+      const bar = document.createElement('div');
+      bar.className = 'lane-bar active';
+      bar.style.cssText = `left:${pct(L.active.start).toFixed(2)}%;width:${wpct(L.active.start, now).toFixed(2)}%;background:${L.color}`;
+      bar.title = `${shortName} — ${L.active.task} (running…)`;
+      track.appendChild(bar);
+    }
+    row.append(lbl, track);
+    body.appendChild(row);
+  }
+  // Keep re-rendering while any delegation is active
+  if (Object.values(_lanes).some(L => L.active))
+    _lanesRAF = requestAnimationFrame(() => setTimeout(renderLanes, 500));
+}
+
+function setNetView(v) {
+  const btnNet  = document.getElementById('btn-network');
+  const btnLane = document.getElementById('btn-lanes');
+  const graph   = document.getElementById('graph-vis');
+  const lanes   = document.getElementById('lanes-panel');
+  if (btnNet)  btnNet.classList.toggle('active',  v === 'network');
+  if (btnLane) btnLane.classList.toggle('active', v === 'lanes');
+  if (graph)   graph.style.display = v === 'network' ? '' : 'none';
+  if (lanes)   lanes.style.display = v === 'lanes'   ? 'flex' : 'none';
+  if (v === 'lanes') renderLanes();
+}
+
+/* ── SSE Connection ─────────────────────────────────── */
+let _es = null;
+let _retryTimer = null;
+
+function connect() {
+  if (_es) { _es.close(); _es = null; }
+  clearTimeout(_retryTimer);
+
+  try {
+    _es = new EventSource('/events');
+  } catch(e) {
+    scheduleRetry(); return;
+  }
+
+  _es.onopen = () => {
+    S.connected = true;
+    $('live-dot').classList.add('on');
+    $('offline').classList.remove('show');
+  };
+
+  _es.onmessage = e => {
+    try { handleEvent(JSON.parse(e.data)); } catch {}
+  };
+
+  _es.onerror = () => {
+    S.connected = false;
+    $('live-dot').classList.remove('on');
+    $('offline').classList.add('show');
+    _es.close(); _es = null;
+    scheduleRetry();
+  };
+}
+
+function scheduleRetry() {
+  clearTimeout(_retryTimer);
+  _retryTimer = setTimeout(connect, 3000);
+}
+
+/* ── Event dispatch ─────────────────────────────────── */
+function handleEvent(evt) {
+  if (!evt || !evt.type) return;
+  if (evt.type === 'backlog_complete' || evt.type === 'log_cleared' || evt.type === 'config_update') {
+    if (evt.type === 'log_cleared') doClearLocal();
+    if (evt.type === 'config_update') loadRecommendations();
+    if (evt.type === 'backlog_complete') renderLanes();
+    return;
+  }
+  // Step 3 — graph updates from SSE
+  if (evt.type === 'graph_update') { updateGraphFromSSE(evt); return; }
+  
+  switch (evt.type) {
+    case 'session_start':   onSessionStart(evt);   break;
+    case 'hook_check':      onHookCheck(evt);       break;
+    case 'cost_declare':    onCostDeclare(evt);     break;
+    case 'delegate_start':  onDelegateStart(evt);   updateLane(evt); break;
+    case 'delegate_done':   onDelegateDone(evt);    updateLane(evt); break;
+    case 'delegate_fail':   onDelegateFail(evt);    updateLane(evt); break;
+    case 'task_start':                                break;
+    case 'task_complete':                             break;
+    case 'agent_spawn':                               break;
+    case 'agent_done':                                break;
+  }
+  pushTimeline(evt);
+}
+
+/* ── Event handlers ─────────────────────────────────── */
+function onSessionStart(evt) {
+  hotWf('session', 8000);
+  setPrimaryStatus('● session started');
+  $('primary-card').classList.add('flash-green');
+  setTimeout(() => $('primary-card').classList.remove('flash-green'), 600);
+}
+
+function onHookCheck(evt) {
+  const { hook='', tool='', result='pass', tier='' } = evt;
+  S.hookCount++;
+  $('s-hooks').textContent = S.hookCount;
+
+  // Workflow mapping
+  if (hook.includes('delegation_gate')) hotWf('plan', 5000);
+  else if (hook.includes('cost_tier'))   hotWf('cost', 4000);
+  else if (hook.includes('session'))     hotWf('session', 6000);
+
+  if (tier) { S.tier = tier; $('s-tier').textContent = tier; }
+
+  // Badge
+  const strip = $('hook-strip');
+  const b = mk('div', `hook-badge ${result === 'block' ? 'block' : result === 'warn' ? 'warn' : 'pass'}`);
+  const short = hook.replace('check_','').replace(/_/g,'-').replace('post_','').substring(0,18);
+  b.textContent = (result === 'block' ? '🔴 ' : '✅ ') + short + (tool ? ' ·'+tool : '') + (tier ? ' '+tier : '');
+  strip.insertBefore(b, strip.firstChild);
+
+  // Trim + dim old badges
+  const all = strip.querySelectorAll('.hook-badge');
+  all.forEach((el, i) => {
+    if (i > 8) el.remove();
+    else if (i > 4) el.classList.add('dim');
+  });
+}
+
+function onCostDeclare(evt) {
+  const { tier='?', task='' } = evt;
+  hotWf('cost', 5000);
+  S.tier = tier;
+  $('s-tier').textContent = tier;
+  setPrimaryStatus(`● declared ${tier}${task ? ' · '+task : ''}`);
+}
+
+function onDelegateStart(evt) {
+  const { model='unknown', task='?', prompt_preview='' } = evt;
+  hotWf('swarm', 12000);
+  $('idle-hint') && $('idle-hint').remove();
+
+  const key = modelKey(model);
+  S.modelsUsed.add(key);
+  $('s-models').textContent = S.modelsUsed.size;
+
+  const card = buildModelCard(model, task, prompt_preview);
+  $('model-grid').appendChild(card);
+
+  S.active[key] = { card, ts: Date.now(), task };
+  S.activeCount++;
+  updateParallel();
+  updateConnections();
+  setPrimaryStatus(`● delegating → ${modelShort(model)}`);
+}
+
+function onDelegateDone(evt) {
+  const { model='', duration_ms=0 } = evt;
+  const key = modelKey(model);
+  const entry = S.active[key];
+  if (!entry) return;
+
+  entry.card.classList.add('done');
+  const dur = duration_ms ? (duration_ms/1000).toFixed(1)+'s' : ((Date.now()-entry.ts)/1000).toFixed(1)+'s';
+  entry.card.querySelector('.m-status').innerHTML = `<span class="ok">✅ done · ${dur}</span>`;
+  entry.card.classList.add('flash-green');
+
+  S.activeCount = Math.max(0, S.activeCount - 1);
+  delete S.active[key];
+  updateParallel();
+  updateConnections();
+
+  if (S.activeCount === 0) setPrimaryStatus('● validating…');
+
+  // Fade + remove after 10s
+  setTimeout(() => {
+    entry.card.classList.add('fading');
+    setTimeout(() => entry.card.remove(), 1200);
+  }, 10000);
+}
+
+function onDelegateFail(evt) {
+  const { model='', reason='failed' } = evt;
+  const key = modelKey(model);
+  const entry = S.active[key];
+  if (!entry) return;
+
+  entry.card.classList.add('failed');
+  entry.card.querySelector('.m-status').innerHTML = `<span class="bad">✗ ${reason}</span>`;
+  entry.card.classList.add('flash-red');
+
+  S.activeCount = Math.max(0, S.activeCount - 1);
+  delete S.active[key];
+  updateParallel();
+  updateConnections();
+
+  setTimeout(() => {
+    entry.card.classList.add('fading');
+    setTimeout(() => entry.card.remove(), 1200);
+  }, 6000);
+}
+
+/* ── Model card builder ─────────────────────────────── */
+function buildModelCard(model, task, preview) {
+  const card = mk('div', `model-card ${modelCls(model)}`);
+  const { display, provider } = modelMeta(model);
+  card.innerHTML = `
+    <div class="m-header">
+      <div class="m-name">${display}</div>
+      <div class="m-provider">${provider}</div>
+    </div>
+    <div class="m-task">⟳ ${task}</div>
+    ${preview ? `<div class="m-preview">"${preview}"</div>` : ''}
+    <div class="m-status">
+      <div class="thinking-dot"><span></span><span></span><span></span></div>
+      <span>thinking…</span>
+    </div>`;
+  return card;
+}
+
+/* ── SVG connection lines ───────────────────────────── */
+function updateConnections() {
+  const svg = $('connector-svg');
+  const zone = $('connector-zone');
+  const grid = $('model-grid');
+  const primary = document.querySelector('.primary-card');
+  if (!svg || !grid || !primary) return;
+
+  // Clear old lines
+  svg.innerHTML = '';
+
+  const cards = grid.querySelectorAll('.model-card');
+  if (!cards.length) return;
+
+  const zoneRect  = zone.getBoundingClientRect();
+  const primRect  = primary.getBoundingClientRect();
+  const zoneH     = zoneRect.height || 300;
+  const zoneW     = zoneRect.width  || 80;
+
+  // Resize viewBox to match zone
+  svg.setAttribute('viewBox', `0 0 ${zoneW} ${zoneH}`);
+
+  const startY = primRect.top + primRect.height/2 - zoneRect.top;
+
+  cards.forEach(card => {
+    const cRect = card.getBoundingClientRect();
+    const endY  = cRect.top + cRect.height/2 - zoneRect.top;
+    const isActive = !card.classList.contains('done') && !card.classList.contains('failed') && !card.classList.contains('fading');
+    const isDone   = card.classList.contains('done');
+
+    const color = getCardColor(card);
+
+    // Draw bezier path
+    const x0 = 0, x1 = zoneW;
+    const midX = zoneW * 0.5;
+    const path = `M ${x0} ${startY} C ${midX} ${startY} ${midX} ${endY} ${x1} ${endY}`;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+    line.setAttribute('d', path);
+    line.setAttribute('class', `conn-line${isActive ? ' active' : isDone ? ' returning' : ''}`);
+    line.setAttribute('stroke', color);
+    svg.appendChild(line);
+
+    // Animated dot along the path (only when active)
+    if (isActive) {
+      const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r', '3');
+      dot.setAttribute('fill', color);
+      const anim = document.createElementNS('http://www.w3.org/2000/svg','animateMotion');
+      anim.setAttribute('dur', '1.2s');
+      anim.setAttribute('repeatCount', 'indefinite');
+      const mp = document.createElementNS('http://www.w3.org/2000/svg','mpath');
+      const pid = 'p-'+Math.random().toString(36).slice(2);
+      line.setAttribute('id', pid);
+      mp.setAttributeNS('http://www.w3.org/1999/xlink','href','#'+pid);
+      anim.appendChild(mp);
+      dot.appendChild(anim);
+      svg.appendChild(dot);
+    }
+  });
+}
+
+function getCardColor(card) {
+  if (card.classList.contains('gemini'))   return 'var(--google)';
+  if (card.classList.contains('deepseek')) return 'var(--deepseek)';
+  if (card.classList.contains('groq'))     return 'var(--groq)';
+  if (card.classList.contains('qwen'))     return 'var(--qwen)';
+  if (card.classList.contains('anthropic'))return 'var(--anthropic)';
+  if (card.classList.contains('openai'))   return 'var(--openai)';
+  return 'var(--neutral)';
+}
+
+// Re-draw connections when layout changes
+const _ro = new ResizeObserver(() => updateConnections());
+_ro.observe(document.getElementById('model-grid'));
+_ro.observe(document.getElementById('connector-zone'));
+
+/* ── Parallel indicator ─────────────────────────────── */
+function updateParallel() {
+  const badge = $('parallel-badge');
+  const wrap  = $('s-par-wrap');
+  // Use max of old card-based count and graph-based parallel_count
+  const count = Math.max(S.activeCount || 0, S.parallelCount || 0);
+  if (count > 0) {
+    $('par-count').textContent = count;
+    badge.style.display = 'flex';
+    wrap.style.display  = 'flex';
+    $('s-par').textContent = count;
+  } else {
+    badge.style.display = 'none';
+    wrap.style.display = 'none';
+  }
+}
+
+/* ── Primary status helper ──────────────────────────── */
+function setPrimaryStatus(txt) {
+  const el = $('primary-status');
+  if (el) el.textContent = txt;
+}
+
+/* ── Timeline ───────────────────────────────────────── */
+function pushTimeline(evt) {
+  const { type, ts, hook='', tool='', result='pass', tier='', model='', task='', reason='' } = evt;
+
+  S.eventCount++;
+  $('event-count').textContent = S.eventCount + ' events';
+
+  const row = mk('div', `ev-row t-${type}${result==='block' ? ' block' : ''} new`);
+  const t = ts ? new Date(ts*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}) : '--:--:--';
+
+  row.innerHTML = `<span class="ev-time">${t}</span><span class="ev-icon">${evIcon(type, result)}</span><span class="ev-text">${evText(evt)}</span>`;
+
+  const tl = $('timeline');
+  tl.insertBefore(row, tl.firstChild);
+  setTimeout(() => row.classList.remove('new'), 800);
+
+  // Trim
+  while (tl.children.length > 120) tl.removeChild(tl.lastChild);
+}
+
+function evIcon(type, result) {
+  switch(type) {
+    case 'session_start':  return '🔌';
+    case 'hook_check':     return result === 'block' ? '🔴' : '✅';
+    case 'cost_declare':   return '💰';
+    case 'delegate_start': return '🤖';
+    case 'delegate_done':  return '✅';
+    case 'delegate_fail':  return '✗ ';
+    default:               return '·';
+  }
+}
+
+function evText(evt) {
+  const { type, hook='', tool='', result='pass', tier='', model='', task='', reason='', prompt_preview='' } = evt;
+  switch(type) {
+    case 'session_start':
+      return '<strong>session started</strong>';
+    case 'hook_check':
+      return `<span class="tag">${hookShort(hook)}</span>${tool ? ' → <em>'+tool+'</em>' : ''} <span class="${result==='block'?'bad':'ok'}">${result}</span>${tier ? ' <strong>'+tier+'</strong>' : ''}`;
+    case 'cost_declare':
+      return `cost declared <strong>${tier||'?'}</strong>${task ? ' · '+task : ''}`;
+    case 'delegate_start':
+      return `→ <strong>${modelShort(model)}</strong> <em>[${task||'?'}]</em>${prompt_preview ? '<br><em style="font-size:var(--fs-2xs);opacity:.6">"'+prompt_preview.substring(0,50)+'"</em>' : ''}`;
+    case 'delegate_done':
+      return `← <strong>${modelShort(model)}</strong> <span class="ok">done</span>${evt.duration_ms ? ' · '+(evt.duration_ms/1000).toFixed(1)+'s' : ''}`;
+    case 'delegate_fail':
+      return `✗ <strong>${modelShort(model)}</strong> <span class="bad">${reason||'failed'}</span>`;
+    default:
+      return type;
+  }
+}
+
+function hookShort(h) {
+  return (h || '').replace('check_','').replace(/_/g,'-').substring(0, 22);
+}
+
+/* ── Model helpers ──────────────────────────────────── */
+function modelKey(m) { return (m||'unknown').split('(')[0].trim(); }
+
+function modelCls(m) {
+  if (!m) return 'other';
+  if (m.includes('gemini'))    return 'gemini';
+  if (m.includes('deepseek'))  return 'deepseek';
+  if (m.includes('groq') || m.includes('llama') || m.includes('llama')) return 'groq';
+  if (m.includes('qwen'))      return 'qwen';
+  if (m.includes('claude'))    return 'anthropic';
+  if (m.includes('gpt'))       return 'openai';
+  return 'other';
+}
+
+function modelMeta(m) {
+  if (!m) return { display: 'Unknown', provider: '?' };
+  const id = m.toLowerCase();
+  if (id.includes('gemini-2.5-flash'))  return { display: 'Gemini 2.5 Flash',  provider: 'Google · free' };
+  if (id.includes('gemini-2.0-flash'))  return { display: 'Gemini 2.0 Flash',  provider: 'Google · free' };
+  if (id.includes('gemini'))            return { display: 'Gemini Flash',        provider: 'Google · free' };
+  if (id.includes('deepseek-r1'))       return { display: 'DeepSeek R1',        provider: 'DeepSeek · free' };
+  if (id.includes('deepseek-chat'))     return { display: 'DeepSeek V3',        provider: 'DeepSeek · free' };
+  if (id.includes('deepseek'))          return { display: 'DeepSeek',           provider: 'DeepSeek · free' };
+  if (id.includes('llama-3.3-70b'))     return { display: 'Llama 3.3 70B',     provider: 'Groq · free' };
+  if (id.includes('llama-3.1'))         return { display: 'Llama 3.1',          provider: 'Groq · free' };
+  if (id.includes('llama'))             return { display: 'Llama',              provider: 'Groq · free' };
+  if (id.includes('qwen3-235b'))        return { display: 'Qwen3 235B·A22B',   provider: 'OR · free' };
+  if (id.includes('qwen3-30b'))         return { display: 'Qwen3 30B·A3B',     provider: 'OR · free' };
+  if (id.includes('qwen'))              return { display: 'Qwen',              provider: 'OR · free' };
+  if (id.includes('claude-haiku'))      return { display: 'Claude Haiku 4.5',  provider: 'Anthropic' };
+  if (id.includes('claude-sonnet'))     return { display: 'Claude Sonnet',     provider: 'Anthropic' };
+  if (id.includes('gpt-4o-mini'))       return { display: 'GPT-4o mini',       provider: 'OpenAI' };
+  if (id.includes('gpt-4o'))            return { display: 'GPT-4o',            provider: 'OpenAI' };
+  return { display: m.split('/').pop().substring(0,20), provider: 'free' };
+}
+
+function modelShort(m) {
+  if (!m) return '?';
+  const { display } = modelMeta(m);
+  return display;
+}
+
+/* ── Clear ──────────────────────────────────────────── */
+function doClear() {
+  fetch('/clear').catch(() => {});
+  doClearLocal();
+}
+function doClearLocal() {
+  $('timeline').innerHTML = '';
+  $('hook-strip').innerHTML = '';
+  $('model-grid').innerHTML = `<div class="idle-hint" id="idle-hint">⟳ รอ delegation…<small>ส่ง command ใน A-Wiki<br>เพื่อดู model ทำงาน</small></div>`;
+  $('connector-svg').innerHTML = '';
+  S.hookCount = 0; S.eventCount = 0; S.modelsUsed.clear();
+  S.active = {}; S.activeCount = 0;
+  $('s-hooks').textContent = '0';
+  $('s-models').textContent = '0';
+  $('s-par').textContent = '0';
+  $('parallel-badge').style.display = 'none';
+  $('s-par-wrap').style.display = 'none';
+  $('event-count').textContent = '0 events';
+  setPrimaryStatus('● watching…');
+}
+
+/* ── Settings: model picker + API keys + capability ──── */
+let _caps = { families: {}, recommended_by_task: {} };
+
+function toast(msg, isErr) {
+  const t = $('set-toast');
+  t.textContent = msg;
+  t.className = 'set-toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = 'set-toast', 2200);
+}
+
+function openSettings() {
+  $('settings-backdrop').classList.add('show');
+  $('settings').classList.add('show');
+  loadSettings();
+}
+function closeSettings() {
+  $('settings-backdrop').classList.remove('show');
+  $('settings').classList.remove('show');
+}
+function setTab(btn) {
+  document.querySelectorAll('.set-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.set-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  $(btn.dataset.pane).classList.add('active');
+}
+
+async function loadSettings() {
+  try {
+    const [models, caps, keys] = await Promise.all([
+      fetch('/api/models').then(r => r.json()),
+      fetch('/api/capabilities').then(r => r.json()),
+      fetch('/api/keys').then(r => r.json()),
+    ]);
+    _caps = caps || _caps;
+    renderModels(models.models || [], keys.keys || []);
+    renderKeys(keys.keys || []);
+  } catch (e) { toast('โหลด settings ไม่ได้', true); }
+}
+
+function famScores(model) {
+  const fams = _caps.families || {};
+  const hay = [model.id, model.model_id, model.name, model.provider].join(' ').toLowerCase();
+  for (const f of Object.values(fams)) {
+    if ((f.match || []).some(s => hay.includes(s))) return f;
+  }
+  return null;
+}
+
+function renderModels(models, keys) {
+  const keySet = {}; (keys || []).forEach(k => keySet[k.name] = k.set);
+  const wrap = $('models-list');
+  wrap.innerHTML = '';
+  models.forEach((m, i) => {
+    const card = mk('div', `cfg-card ${m.id}${m.enabled === false ? ' disabled' : ''}`);
+    const f = famScores(m);
+    const badge = (label, v) => v == null ? '' :
+      `<span class="cap-badge ${v >= 60 ? 'hi' : ''}">${label} ${v}</span>`;
+    const caps = f ? `<div class="cap-badges">
+        ${badge('SWE', f.swe_bench)}${badge('Term', f.terminal_bench)}${badge('Repo', f.nl2repobench)}${badge('reason', f.reasoning)}${badge('speed', f.speed)}
+      </div>` : '';
+    const keyName = m.key_env || '';
+    const hasKey = keySet[keyName];
+    card.innerHTML = `
+      <div class="cfg-row">
+        <span class="cfg-name">${m.name}</span>
+        <span class="key-status ${hasKey ? 'set' : 'unset'}">${hasKey ? '🔑 key set' : '🔑 no key'}</span>
+        <label class="cfg-toggle">
+          <input type="checkbox" data-i="${i}" ${m.enabled === false ? '' : 'checked'}>
+          <span class="cfg-slider"></span>
+        </label>
+      </div>
+      <div class="cfg-field">
+        <label>model id</label>
+        <input class="cfg-input" data-mid="${i}" value="${m.model_id || ''}" placeholder="(provider default)">
+      </div>
+      ${caps}`;
+    wrap.appendChild(card);
+  });
+  // Keep a working copy for save
+  wrap._models = models;
+}
+
+function saveModels() {
+  const wrap = $('models-list');
+  const models = wrap._models || [];
+  wrap.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    models[+cb.dataset.i].enabled = cb.checked;
+  });
+  wrap.querySelectorAll('input[data-mid]').forEach(inp => {
+    const v = inp.value.trim();
+    if (v) models[+inp.dataset.mid].model_id = v;
+  });
+  fetch('/api/models', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ models }),
+  }).then(r => r.json()).then(res => {
+    if (res.ok) { toast('✅ บันทึกแล้ว — มีผลรอบ delegate ถัดไป'); loadRecommendations(); }
+    else toast(res.error || 'บันทึกไม่สำเร็จ', true);
+  }).catch(() => toast('บันทึกไม่สำเร็จ', true));
+}
+
+function renderKeys(keys) {
+  const wrap = $('keys-list');
+  wrap.innerHTML = '';
+  (keys || []).forEach(k => {
+    const card = mk('div', 'cfg-card');
+    card.innerHTML = `
+      <div class="cfg-row">
+        <span class="cfg-name">${k.name}</span>
+        <span class="key-status ${k.set ? 'set' : 'unset'}">${k.set ? 'set' : 'unset'}</span>
+      </div>
+      <div class="cfg-row">
+        <input class="cfg-input" type="password" data-key="${k.name}" placeholder="วาง API key ที่นี่…">
+        <button class="set-btn sm" data-save="${k.name}">บันทึก</button>
+      </div>`;
+    wrap.appendChild(card);
+  });
+  wrap.querySelectorAll('button[data-save]').forEach(btn => {
+    btn.onclick = () => saveKey(btn.dataset.save);
+  });
+}
+
+function saveKey(name) {
+  const inp = $('keys-list').querySelector(`input[data-key="${name}"]`);
+  const val = inp.value.trim();
+  if (!val) { toast('ใส่ค่า key ก่อน', true); return; }
+  fetch('/api/keys', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ key_name: name, key_value: val }),
+  }).then(r => r.json()).then(res => {
+    if (res.ok) { inp.value = ''; toast(`✅ ${name} บันทึกแล้ว`); loadSettings(); }
+    else toast(res.error || 'บันทึก key ไม่สำเร็จ', true);
+  }).catch(() => toast('บันทึก key ไม่สำเร็จ', true));
+}
+
+async function loadRecommendations() {
+  try {
+    const caps = await fetch('/api/capabilities').then(r => r.json());
+    _caps = caps || _caps;
+    const rec = caps.recommended_by_task || {};
+    const order = ['reason', 'scan', 'search'];
+    const label = { reason: 'reason/compare', scan: 'scan', search: 'search/lookup' };
+    const parts = order.filter(t => rec[t]).map(t =>
+      `<span class="rec-item">🧬 ${label[t]} → <b>${rec[t].name}</b> <span style="opacity:.6">(${rec[t].dimension} ${rec[t].score})</span></span>`);
+    $('rec-strip').innerHTML = parts.join('') || '';
+  } catch (e) {}
+}
+
+/* ── Boot ───────────────────────────────────────────── */
+connect();
+loadRecommendations();
+initGraph();
+</script>
+</body>
+</html>
