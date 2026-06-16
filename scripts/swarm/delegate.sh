@@ -29,6 +29,7 @@ SCOUT_JSON="${MODEL_SCOUT_CURRENT_JSON:-$REPO_ROOT/.tmp/model-scout-current.json
 SCOUT_REPORT="${MODEL_SCOUT_CURRENT_REPORT:-$REPO_ROOT/.tmp/model-scout-current.md}"
 UPDATE_SCRIPT="$REPO_ROOT/scripts/update-model-roster.sh"
 LOAD_DRIVE_KEYS_SH="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"
+REGISTRY_PY="$REPO_ROOT/scripts/swarm/provider_registry.py"
 
 refresh_model_scout() {
   local mode="${1:-cached}"
@@ -321,6 +322,29 @@ try_anthropic_haiku() {
   rm -f "$err_out"; return 1
 }
 
+# ─── Generic registry adapter ─────────────────────────────────────────────────
+# try_registry_model <provider> <model> — provider-agnostic call driven by
+# wiki/context/providers.json. Adding a NEW provider needs only a registry entry
+# (no new try_*_direct function). provider_registry.py does the HTTP + extraction;
+# this wrapper keeps the bash-side orchestration (event logging, timing, heal).
+try_registry_model() {
+  local provider="$1" model="$2"
+  [ -f "$REGISTRY_PY" ] || return 1
+  local _t0; _t0=$(date +%s 2>/dev/null || echo 0)
+  _log_event "delegate_start" "model=${model}(${provider})" "task=$TASK_TYPE"
+  local err_out out
+  err_out=$(mktemp)
+  if out=$(printf '%s' "$PROMPT" | python3 "$REGISTRY_PY" call "$provider" "$model" --timeout "$TIMEOUT" 2>"$err_out"); then
+    printf '%s\n' "$out"
+    _log_event "delegate_done" "model=${model}(${provider})" "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0) - _t0 ) * 1000 ))"
+    _cost_annotate "$model"
+    rm -f "$err_out"; return 0
+  fi
+  LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
+  _track_fail "${provider}($model)" "$LAST_ERROR"
+  rm -f "$err_out"; return 1
+}
+
 # ─── Parallel race mode ───────────────────────────────────────────────────────
 run_race() {
   local tmpdir
@@ -463,6 +487,7 @@ run_tier() {
       try_deepseek_direct  "$TIER2_FALLBACK1"    && return 0
       try_openrouter_model "$TIER2_FALLBACK1"    && return 0
       try_openrouter_model "$TIER2_FALLBACK2"    && return 0
+      try_registry_model   zai "${TIER2_FALLBACK_GLM:-z-ai/glm-4.6}" && return 0
       try_openrouter_model "$TIER2_FALLBACK3"    && return 0
       ;;
 

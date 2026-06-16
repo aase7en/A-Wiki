@@ -17,6 +17,7 @@ Port: 7790  (separate from render-html-preview on 7788)
 """
 import json
 import queue
+import subprocess
 import sys
 import threading
 import time
@@ -26,7 +27,23 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
+RENDER_PY = REPO_ROOT / "skills" / "render-html" / "scripts" / "render.py"
 PORT = 7790
+
+
+def ensure_dashboard_html() -> None:
+    """Render the live-dashboard surface (empty backlog; SSE fills it) if missing.
+    Lets `server.py` work out-of-the-box without a manual render step."""
+    if DASHBOARD_HTML.exists() or not RENDER_PY.exists():
+        return
+    try:
+        DASHBOARD_HTML.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [sys.executable, str(RENDER_PY), "live-dashboard", "--out", str(DASHBOARD_HTML)],
+            input='{"events": []}', text=True, capture_output=True, check=False,
+        )
+    except Exception:
+        pass
 
 _clients: list[queue.Queue] = []
 _clients_lock = threading.Lock()
@@ -127,6 +144,7 @@ class Handler(BaseHTTPRequestHandler):
                 _stats["clients_connected"] = len(_clients)
 
     def _serve_html(self):
+        ensure_dashboard_html()
         if DASHBOARD_HTML.exists():
             content = DASHBOARD_HTML.read_bytes()
             self.send_response(200)
