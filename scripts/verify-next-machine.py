@@ -54,6 +54,7 @@ def checks(build_vec: bool = False) -> list[Step]:
         command_step("cloud link", ["bash", "scripts/setup-cloud-link.sh", "--status"], timeout=60),
         command_step("drive secrets", [sys.executable, "scripts/lib/drive_secrets.py", "--check"], timeout=60),
         command_step("import keys", [sys.executable, "scripts/import-keys.py", "--check"], timeout=60),
+        command_step("kilo config", ["bash", "scripts/setup-kilo-config.sh", "--check"], timeout=60),
         command_step("readiness", [sys.executable, "scripts/verify-awiki-ready.py", "--skip-remote"], timeout=180),
         command_step("cross-platform", vec_args, timeout=360 if build_vec else 180),
         command_step("sync smoke", [sys.executable, "scripts/sync-smoke.py"], timeout=120),
