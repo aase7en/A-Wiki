@@ -393,7 +393,6 @@ try_anthropic_haiku() {
   rm -f "$err_out"; return 1
 }
 
-<<<<<<< HEAD
 # ─── Generic registry adapter ─────────────────────────────────────────────────
 # try_registry_model <provider> <model> — provider-agnostic call driven by
 # wiki/context/providers.json. Adding a NEW provider needs only a registry entry
@@ -414,7 +413,10 @@ try_registry_model() {
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
   _track_fail "${provider}($model)" "$LAST_ERROR"
-=======
+  rm -f "$err_out"; return 1
+}
+
+# ─── Z.ai / GLM direct ────────────────────────────────────────────────────────
 try_zhipu_direct() {
   # GLM / Z.ai — OpenAI-compatible chat completions (Bearer auth).
   # Endpoint + model id are dashboard-configurable (Z.ai international by default).
@@ -440,7 +442,6 @@ try_zhipu_direct() {
   fi
   LAST_ERROR=$(cat "$err_out" 2>/dev/null || echo "unknown")
   _track_fail "zhipu($ZHIPU_DIRECT_MODEL)" "$LAST_ERROR"
->>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
   rm -f "$err_out"; return 1
 }
 
@@ -652,16 +653,6 @@ run_tier() {
       try_openrouter_model "$TIER1_FALLBACK3"    && return 0
       ;;
 
-<<<<<<< HEAD
-    2)  # reason / compare — Gemini free FIRST
-      try_gemini_direct                          && return 0
-      try_openrouter_model "$TIER2_PRIMARY"      && return 0
-      try_deepseek_direct  "$TIER2_FALLBACK1"    && return 0
-      try_openrouter_model "$TIER2_FALLBACK1"    && return 0
-      try_openrouter_model "$TIER2_FALLBACK2"    && return 0
-      try_registry_model   zai "${TIER2_FALLBACK_GLM:-z-ai/glm-4.6}" && return 0
-      try_openrouter_model "$TIER2_FALLBACK3"    && return 0
-=======
     2)  # reason / compare — capability-ranked within cost class (free first)
       _run_ranked "$(_capability_dimension)" \
         "gemini|$GEMINI_DIRECT_MODEL|0" \
@@ -672,7 +663,6 @@ run_tier() {
         "zhipu|$ZHIPU_DIRECT_MODEL|1" \
         "openrouter|$TIER2_FALLBACK3|2" \
         && return 0
->>>>>>> 4ec6b650b1d741aaee397c72045addaad802c045
       ;;
 
     3)  # scan / long-context — capability-ranked within cost class (free first)
