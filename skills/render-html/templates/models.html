@@ -1,0 +1,117 @@
+<section class="card">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <strong>Pick your models</strong>
+    <span class="muted" id="count"></span>
+    <span style="flex:1"></span>
+    <input id="filter" placeholder="filter model / provider…"
+           style="font:inherit;padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);color:var(--text);min-width:200px">
+  </div>
+  <p class="muted" style="margin:8px 2px 0;font-size:12px">
+    <span class="badge low">primary</span> = flagship (quality) &nbsp;·&nbsp;
+    <span class="badge ok">secondary</span> = cheap / fast / free.
+    Click <strong>Set primary</strong> / <strong>Set secondary</strong>, then <strong>Copy as JSON</strong> and paste back to the agent.
+  </p>
+</section>
+
+<section class="card" id="picked">
+  <strong>Current selection</strong>
+  <div style="margin-top:8px;display:flex;gap:22px;flex-wrap:wrap">
+    <div>primary &nbsp;<code id="sel-primary">—</code></div>
+    <div>secondary &nbsp;<code id="sel-secondary">—</code></div>
+    <div>race &nbsp;<code id="sel-race">—</code></div>
+  </div>
+</section>
+
+<div id="providers"></div>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var BP = D.by_provider || {};
+var selection = { primary: null, secondary: null, race: [] };
+var query = "";
+
+function fmtCtx(n){ if(typeof n!=="number") return "—"; return n>=1000 ? Math.round(n/1000)+"K" : String(n); }
+function fmtPrice(p){
+  if(p===null||p===undefined||p==="") return "—";
+  var v=parseFloat(p); if(isNaN(v)) return "—";
+  if(v===0) return "free";
+  return "$"+(v*1e6).toFixed(2)+"/M";
+}
+function matches(m){
+  if(!query) return true;
+  var q=query.toLowerCase();
+  return (m.model_id||"").toLowerCase().indexOf(q)>=0 || (m.provider||"").toLowerCase().indexOf(q)>=0;
+}
+
+function refreshSelection(){
+  document.getElementById("sel-primary").textContent = selection.primary || "—";
+  document.getElementById("sel-secondary").textContent = selection.secondary || "—";
+  document.getElementById("sel-race").textContent = selection.race.length ? selection.race.join("  ") : "—";
+}
+
+function rowHtml(m){
+  var roleBadge = m.role==="primary" ? '<span class="badge low">primary</span>' : '<span class="badge ok">secondary</span>';
+  return '<tr data-id="'+m.model_id+'">'+
+    '<td><code>'+m.model_id+'</code> '+roleBadge+' <span class="badge medium">'+(m.tier_hint||'')+'</span></td>'+
+    '<td>'+fmtCtx(m.context_length)+'</td>'+
+    '<td class="muted">'+fmtPrice(m.prompt_price)+'</td>'+
+    '<td class="muted">'+fmtPrice(m.completion_price)+'</td>'+
+    '<td style="white-space:nowrap">'+
+      '<button class="awiki-btn pick" data-slot="primary"   data-id="'+m.model_id+'" style="background:var(--accent);border:0">primary</button> '+
+      '<button class="awiki-btn pick" data-slot="secondary" data-id="'+m.model_id+'" style="background:var(--accent-2);border:0">secondary</button> '+
+      '<button class="awiki-btn pick" data-slot="race"      data-id="'+m.model_id+'">+race</button>'+
+    '</td></tr>';
+}
+
+function render(){
+  var root = document.getElementById("providers");
+  root.innerHTML = "";
+  var shown = 0, total = 0;
+  Object.keys(BP).sort().forEach(function(prov){
+    var b = BP[prov] || {};
+    var all = (b.primary||[]).concat(b.secondary||[]);
+    total += all.length;
+    var visible = all.filter(matches);
+    if(!visible.length) return;
+    shown += visible.length;
+    var sec = document.createElement("section");
+    sec.className = "card reveal";
+    sec.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+
+        '<strong>'+prov+'</strong><span class="muted">'+visible.length+' models</span></div>'+
+      '<table><thead><tr><th>Model</th><th>Context</th><th>In $/Mtok</th><th>Out $/Mtok</th><th>Pin</th></tr></thead>'+
+      '<tbody>'+visible.map(rowHtml).join("")+'</tbody></table>';
+    root.appendChild(sec);
+    if(window.AWIKI_OBSERVE) window.AWIKI_OBSERVE(sec);
+  });
+  document.getElementById("count").textContent = shown+" of "+total+" shown";
+  bindPicks();
+}
+
+function bindPicks(){
+  document.querySelectorAll("button.pick").forEach(function(btn){
+    btn.onclick = function(){
+      var id = btn.getAttribute("data-id");
+      var slot = btn.getAttribute("data-slot");
+      if(slot==="race"){
+        if(selection.race.indexOf(id)<0) selection.race.push(id);
+      } else {
+        selection[slot] = id;
+      }
+      refreshSelection();
+    };
+  });
+}
+
+document.getElementById("filter").addEventListener("input", function(e){ query=e.target.value; render(); });
+
+// Round-trip: Copy-as-JSON returns the selection the agent feeds to apply-model-selection.py
+window.AWIKI_EXPORT = function(){
+  return {
+    primary: selection.primary,
+    secondary: selection.secondary,
+    race: selection.race,
+    generated_from: "models surface"
+  };
+};
+
+refreshSelection();
+render();

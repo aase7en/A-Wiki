@@ -39,7 +39,7 @@ def _embedded_data(html: str) -> dict:
     return json.loads(raw)
 
 
-SURFACES = ["scouter", "report", "health", "plan", "pharmacy", "audit", "skills", "delivery", "agents"]
+SURFACES = ["scouter", "report", "health", "plan", "pharmacy", "audit", "skills", "delivery", "agents", "models", "live-dashboard"]
 
 
 def test_registry_has_every_template():
@@ -164,6 +164,26 @@ def test_plan_surface_has_phase_cards():
     html = render.render("plan", data)
     # Phase decision panel must be present
     assert "awiki-phase" in html or "phase-card" in html
+
+
+def test_models_surface_has_chooser_and_round_trip_selection():
+    data = _load("models.json")
+    html = render.render("models", data)
+    # per-provider chooser with primary/secondary pin controls
+    assert 'data-slot="primary"' in html
+    assert 'data-slot="secondary"' in html
+    # round-trips the picked selection back to the agent
+    assert "AWIKI_EXPORT" in html
+    assert _embedded_data(html) == data
+
+
+def test_live_dashboard_surface_shows_agent_and_lanes():
+    data = _load("live-dashboard.json")
+    html = render.render("live-dashboard", data)
+    assert 'id="agent-card"' in html
+    assert 'id="plan-lanes"' in html
+    assert "EventSource" in html  # upgrades to live SSE when served
+    assert _embedded_data(html) == data
 
 
 def test_agents_surface_has_ops_board_and_round_trip_decision():

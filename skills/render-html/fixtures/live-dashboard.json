@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-06-15",
+  "events": [
+    {"ts": 1750000000.0, "type": "session_start", "device": "work-pc"},
+    {"ts": 1750000001.0, "type": "model_active", "model": "claude-opus-4-8", "tier": "L4"},
+    {"ts": 1750000002.0, "type": "hook_check", "hook": "check_cost_tier", "tool": "Edit", "result": "pass", "tier": "L4"},
+    {"ts": 1750000003.0, "type": "route_plan", "tier": "L2", "models": "z-ai/glm-4.6 google/gemini-2.5-flash:free deepseek/deepseek-chat", "parallelize": "1", "est_cost": "$0.001"},
+    {"ts": 1750000004.0, "type": "delegate_start", "model": "z-ai/glm-4.6(zai)", "task": "reason"},
+    {"ts": 1750000007.0, "type": "delegate_done", "model": "z-ai/glm-4.6(zai)", "duration_ms": "3000"},
+    {"ts": 1750000008.0, "type": "hook_check", "hook": "check_secret_leak", "tool": "Bash", "result": "pass"}
+  ]
+}

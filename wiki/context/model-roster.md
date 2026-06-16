@@ -63,6 +63,17 @@
 
 ---
 
+## Provider Registry & Chooser — [verified 2026-06-15]
+
+ค่ายเดลิเกชันทั้งหมดประกาศไว้ที่ **`wiki/context/providers.json`** (OpenRouter, Z.ai/GLM, Gemini, Groq, DeepSeek, Anthropic). เพิ่มค่ายใหม่ = แก้ registry 1 ไฟล์ หรือ `scripts/add-provider.py` ไม่ต้องเขียน bash.
+
+- **Z.ai GLM-4.6** (flagship/primary) + **GLM-4.5-Air** (cheap/secondary) → [[zai-glm]]; เริ่มผ่าน OpenRouter (`z-ai/glm-4.6`)
+- scout หลายค่าย: `model-scout-current.py --catalog` → `.tmp/model-catalog.json` (จัด primary/secondary + ราคา/token)
+- ผู้ใช้เลือกเอง: `render-html` surface `models` (HTML) หรือ `scripts/choose-model.py` (CLI) → `apply-model-selection.py` pin ลง roster
+- เลือกอัตโนมัติคุ้มค่า: `scripts/model_match.py` (task→tier→price + parallelize gate)
+
+---
+
 ## Benchmarking Notes
 
 - All benchmarking is **informal** — based on observed performance

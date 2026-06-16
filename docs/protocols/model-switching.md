@@ -169,3 +169,35 @@ Manual GUI checklist:
 - Last completed chunk: <chunk-id>
 - Next chunk: <chunk-id>
 ```
+
+---
+
+## Provider Registry, Multi-Provider Scout & Chooser — [verified 2026-06-15]
+
+ระบบ routing ตอนนี้ขับด้วย **provider registry กลาง** + **task→tier→price matrix** เพื่อให้เพิ่มค่าย/รุ่นใหม่ได้โดยไม่แตะโค้ด และเลือกรุ่นแบบคุ้มค่าอัตโนมัติ
+
+**1. Provider Registry — `wiki/context/providers.json`** (public-safe: เก็บแค่ชื่อ env var ของ key ไม่เก็บ key)
+- `api_style ∈ {openai, gemini, anthropic}` → ตัวสร้าง request 3 แบบ แทน adapter hardcode
+- `via` = route ผ่านค่ายอื่นจนกว่าจะใส่ key ตรง (เช่น `zai` → `openrouter` ด้วย `z-ai/glm-4.6` จนกว่า `ZAI_API_KEY` จะถูกตั้ง + `enabled:true`)
+- ใช้ร่วมโดย `scripts/swarm/provider_registry.py` (`build_request` / `call` / `resolve_transport`) และ `delegate.sh` (`try_registry_model <provider> <model>`)
+- **เพิ่มค่ายใหม่ = แก้ registry 1 ไฟล์ (หรือ `add-provider.py`) ไม่ต้องเขียน bash**
+
+**2. Multi-provider scout** — `scripts/model-scout-current.py --catalog`
+- scan รุ่นทุกค่าย (OpenRouter รวม z-ai/anthropic/google/deepseek/qwen) แล้วจัดกลุ่ม **primary (flagship)** vs **secondary (cheap/fast/free)** ต่อค่าย + `tier_hint` (L1–L4)
+- เขียน `.tmp/model-catalog.json` (ไม่ทำลาย recommendations/sources เดิม)
+
+**3. Model chooser (ให้ผู้ใช้เลือก)**
+- HTML: `render-html` surface `models` → `python3 skills/render-html/scripts/render.py models --in .tmp/model-catalog.json` (เลือก primary/secondary แล้ว Copy-as-JSON กลับมาให้ agent)
+- CLI: `python3 scripts/choose-model.py --list` / `--primary <id> --secondary <id> --apply`
+- pin ลง roster: `python3 scripts/apply-model-selection.py` (cost-first map: secondary→TIER1_PRIMARY, primary→TIER2/3_PRIMARY, race→RACE_MODELS)
+
+**4. Task→tier→price matrix** — `scripts/model_match.py <task_class> [--latency] [--emit]`
+- เลือกรุ่นถูกสุดที่ผ่านเกณฑ์ tier จาก catalog (ราคา/token จริง)
+- **Parallelize gate:** race เฉพาะเมื่อ latency-sensitive **และ** tier ถูก (L1/L2) **และ** มี ≥2 free lane — กันจ่าย 3× สำหรับงาน trivial/flagship
+
+**5. Live Dashboard** — `scripts/live-dashboard/server.py` (:7790, auto-render surface ถ้า HTML หาย)
+- event ใหม่: `route_plan` (จาก `model_match --emit`), `model_active` (จาก `check_cost_tier` แสดง tier ปัจจุบันของ primary agent)
+- เห็นว่ากำลังใช้/จะใช้ model อะไร + tier ตอนวางแผน/ทำงาน
+
+**6. เพิ่ม API key + provider** — `scripts/add-provider.py --provider <id> --env-name <ENV> --key-stdin [--enable] [--dry-run]`
+- key value ลง `drive/.secrets` เท่านั้น (ไม่ลง repo); registry เก็บแค่ env var **name** (public-safe)

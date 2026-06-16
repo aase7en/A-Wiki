@@ -69,6 +69,30 @@ def is_tmp_write(tool: str, tool_input: dict) -> bool:
 VALID_TIERS = ("L1", "L2", "L3", "L4")
 
 
+def emit_model_active(tier: str) -> None:
+    """Fire-and-forget: surface the primary-agent's active cost tier on the Live
+    Dashboard. Appends one JSON line (no subprocess/network), once per tier/day,
+    and never raises — so it cannot slow or break the blocking gate."""
+    try:
+        import time
+
+        marker = TMP_DIR / f".model-active-{datetime.now():%Y%m%d}-{tier}"
+        if marker.exists():
+            return
+        TMP_DIR.mkdir(parents=True, exist_ok=True)
+        entry = {
+            "ts": round(time.time(), 3),
+            "type": "model_active",
+            "model": os.environ.get("AWIKI_PRIMARY_MODEL", "primary-agent"),
+            "tier": tier,
+        }
+        with open(TMP_DIR / "live-events.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        marker.write_text("1", encoding="utf-8")
+    except Exception:
+        pass
+
+
 def main() -> None:
     # Skip in CI — but make the bypass VISIBLE (not silent) so it shows in logs.
     if os.environ.get("CI", "").lower() in ("true", "1"):
@@ -112,6 +136,7 @@ def main() -> None:
             )
             sys.exit(2)
         sys.stderr.write(f"💰 Cost tier: {tier}  ({decl})\n")
+        emit_model_active(tier)
         sys.exit(0)
 
     # --- Block ---

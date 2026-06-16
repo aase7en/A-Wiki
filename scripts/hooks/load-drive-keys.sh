@@ -66,5 +66,7 @@ load_key "GROQ_API_KEY"
 # Paid keys — load only if present; delegate.sh uses them only as last resort
 load_key "ANTHROPIC_API_KEY"
 load_key "DEEPSEEK_API_KEY"
+# Z.ai (GLM) direct — optional; until set, GLM routes via OpenRouter (providers.json)
+load_key "ZAI_API_KEY"
 
 _drive_keys_finish 0

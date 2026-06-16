@@ -72,6 +72,20 @@
       "required_keys": ["lanes"],
       "data_source": "agent visual event protocol JSON (docs/protocols/agent-visual-event-protocol.md)"
     },
+    "models": {
+      "template": "models.html",
+      "title": "Model Chooser — Primary & Secondary",
+      "description": "Per-provider catalog of scouted models grouped into primary (flagship) vs secondary (cheap/fast/free) with price/token; pick a main + backup and round-trip the selection back to the agent",
+      "required_keys": ["by_provider"],
+      "data_source": "scripts/model-scout-current.py --catalog → .tmp/model-catalog.json"
+    },
+    "live-dashboard": {
+      "template": "live-dashboard.html",
+      "title": "A-Wiki Live Dashboard",
+      "description": "Live action view: primary-agent model + cost tier, planned model lanes (route_plan), delegate events, and hook results streaming from .tmp/live-events.jsonl",
+      "required_keys": ["events"],
+      "data_source": "scripts/live-dashboard/event_logger.py → .tmp/live-events.jsonl (SSE via server.py)"
+    },
     "status": {
       "template": "health.html",
       "title": "A-Wiki Status",

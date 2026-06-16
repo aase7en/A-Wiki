@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-06-15",
+  "providers": ["deepseek", "google", "z-ai"],
+  "model_count": 5,
+  "models": [
+    {"provider": "z-ai", "model_id": "z-ai/glm-4.6", "name": "GLM 4.6", "context_length": 200000, "prompt_price": "0.0000006", "completion_price": "0.0000022", "role": "primary", "tier_hint": "L4"},
+    {"provider": "z-ai", "model_id": "z-ai/glm-4.5-air", "name": "GLM 4.5 Air", "context_length": 128000, "prompt_price": "0.0000002", "completion_price": "0.0000011", "role": "secondary", "tier_hint": "L2"},
+    {"provider": "google", "model_id": "google/gemini-2.5-flash:free", "name": "Gemini 2.5 Flash (free)", "context_length": 1000000, "prompt_price": "0", "completion_price": "0", "role": "secondary", "tier_hint": "L1"},
+    {"provider": "deepseek", "model_id": "deepseek/deepseek-r1", "name": "DeepSeek R1", "context_length": 64000, "prompt_price": "0.00000055", "completion_price": "0.00000219", "role": "primary", "tier_hint": "L4"},
+    {"provider": "deepseek", "model_id": "deepseek/deepseek-chat", "name": "DeepSeek Chat", "context_length": 64000, "prompt_price": "0.00000027", "completion_price": "0.0000011", "role": "secondary", "tier_hint": "L2"}
+  ],
+  "by_provider": {
+    "z-ai": {
+      "primary": [
+        {"provider": "z-ai", "model_id": "z-ai/glm-4.6", "name": "GLM 4.6", "context_length": 200000, "prompt_price": "0.0000006", "completion_price": "0.0000022", "role": "primary", "tier_hint": "L4"}
+      ],
+      "secondary": [
+        {"provider": "z-ai", "model_id": "z-ai/glm-4.5-air", "name": "GLM 4.5 Air", "context_length": 128000, "prompt_price": "0.0000002", "completion_price": "0.0000011", "role": "secondary", "tier_hint": "L2"}
+      ]
+    },
+    "google": {
+      "primary": [],
+      "secondary": [
+        {"provider": "google", "model_id": "google/gemini-2.5-flash:free", "name": "Gemini 2.5 Flash (free)", "context_length": 1000000, "prompt_price": "0", "completion_price": "0", "role": "secondary", "tier_hint": "L1"}
+      ]
+    },
+    "deepseek": {
+      "primary": [
+        {"provider": "deepseek", "model_id": "deepseek/deepseek-r1", "name": "DeepSeek R1", "context_length": 64000, "prompt_price": "0.00000055", "completion_price": "0.00000219", "role": "primary", "tier_hint": "L4"}
+      ],
+      "secondary": [
+        {"provider": "deepseek", "model_id": "deepseek/deepseek-chat", "name": "DeepSeek Chat", "context_length": 64000, "prompt_price": "0.00000027", "completion_price": "0.0000011", "role": "secondary", "tier_hint": "L2"}
+      ]
+    }
+  }
+}

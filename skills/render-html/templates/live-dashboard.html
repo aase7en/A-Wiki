@@ -1,0 +1,110 @@
+<section class="card reveal" id="agent-card">
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <strong style="font-size:17px">Primary agent</strong>
+    <code id="agent-model" style="font-size:15px">—</code>
+    <span class="badge ok" id="agent-tier">tier —</span>
+    <span style="flex:1"></span>
+    <span class="badge low" id="conn">static</span>
+  </div>
+</section>
+
+<section class="card reveal" id="plan-card">
+  <strong>Planned model lanes</strong>
+  <span class="muted" id="plan-meta"></span>
+  <div id="plan-lanes" style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"></div>
+</section>
+
+<section class="card reveal">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <strong>Hooks</strong><span class="muted">last results</span>
+  </div>
+  <div id="hook-strip" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</section>
+
+<section class="card reveal">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <strong>Live events</strong><span class="muted" id="evt-count"></span>
+  </div>
+  <div id="timeline" style="max-height:420px;overflow:auto;font-size:13px"></div>
+</section>
+<!--SCRIPT-->
+var D = window.AWIKI_DATA;
+var events = (D.events || []).slice();
+
+function tstr(ts){
+  if(!ts) return "";
+  try { return new Date(ts*1000).toLocaleTimeString(); } catch(e){ return String(ts); }
+}
+function hookClass(r){ return r==="block" || r==="fail" ? "fail" : "ok"; }
+
+function applyEvent(e){
+  if(e.type==="model_active"){
+    if(e.model) document.getElementById("agent-model").textContent = e.model;
+    if(e.tier) document.getElementById("agent-tier").textContent = "tier "+e.tier;
+  }
+  if(e.type==="route_plan"){
+    var meta = document.getElementById("plan-meta");
+    meta.textContent = "  tier "+(e.tier||"?")+
+      (e.parallelize==="1"||e.parallelize===true ? " · parallel" : " · sequential")+
+      (e.est_cost ? " · est "+e.est_cost : "");
+    var lanes = document.getElementById("plan-lanes");
+    lanes.innerHTML = "";
+    String(e.models||"").split(/[ ,]+/).filter(Boolean).forEach(function(m){
+      var d=document.createElement("span");
+      d.className="badge low"; d.style.fontSize="12px"; d.textContent=m;
+      lanes.appendChild(d);
+    });
+  }
+  if(e.type==="hook_check"){
+    var strip=document.getElementById("hook-strip");
+    var b=document.createElement("span");
+    b.className="badge "+hookClass(e.result);
+    b.textContent=(e.hook||"hook")+" "+(e.result||"");
+    strip.appendChild(b);
+    while(strip.children.length>12) strip.removeChild(strip.firstChild);
+  }
+}
+
+function timelineRow(e){
+  var color = e.type==="delegate_fail" ? "var(--fail)" :
+              e.type==="delegate_done" ? "var(--ok)" :
+              e.type==="route_plan" ? "var(--accent)" : "var(--muted)";
+  var extra = Object.keys(e).filter(function(k){return k!=="ts"&&k!=="type";})
+                .map(function(k){return k+"="+e[k];}).join("  ");
+  var tr=document.createElement("div");
+  tr.style.cssText="padding:5px 2px;border-bottom:1px solid var(--border);display:flex;gap:10px";
+  tr.innerHTML='<span class="muted" style="min-width:74px">'+tstr(e.ts)+'</span>'+
+    '<span style="min-width:120px;color:'+color+'">'+e.type+'</span>'+
+    '<span class="muted">'+extra+'</span>';
+  return tr;
+}
+
+function renderAll(){
+  var tl=document.getElementById("timeline"); tl.innerHTML="";
+  events.forEach(function(e){ applyEvent(e); tl.appendChild(timelineRow(e)); });
+  document.getElementById("evt-count").textContent = events.length+" events";
+  tl.scrollTop = tl.scrollHeight;
+}
+
+function pushEvent(e){
+  events.push(e);
+  applyEvent(e);
+  var tl=document.getElementById("timeline");
+  tl.appendChild(timelineRow(e));
+  document.getElementById("evt-count").textContent = events.length+" events";
+  tl.scrollTop = tl.scrollHeight;
+}
+
+renderAll();
+
+// If served by server.py (same origin), upgrade to a live SSE stream.
+if (location.protocol.indexOf("http")===0) {
+  try {
+    var es = new EventSource("/events");
+    es.onopen = function(){ var c=document.getElementById("conn"); c.textContent="live"; c.className="badge ok"; };
+    es.onmessage = function(ev){ try { pushEvent(JSON.parse(ev.data)); } catch(e){} };
+    es.onerror = function(){ var c=document.getElementById("conn"); c.textContent="reconnecting…"; c.className="badge medium"; };
+  } catch(e){}
+}
+
+window.AWIKI_EXPORT = function(){ return { events: events }; };

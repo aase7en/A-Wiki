@@ -1,0 +1,75 @@
+{
+  "_comment": "A-Wiki provider registry — single source of truth for LLM providers. Adding a provider = ONE entry here (no new bash). PUBLIC-SAFE: store env var NAMES only, NEVER key values (keys live in drive/.secrets). 'api_style' picks the request shape (openai|gemini|anthropic). 'via' routes through another provider until the provider's own auth_env is set + enabled:true.",
+  "version": 1,
+  "providers": {
+    "openrouter": {
+      "label": "OpenRouter",
+      "api_style": "openai",
+      "enabled": true,
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "models_url": "https://openrouter.ai/api/v1/models",
+      "auth_env": "OPENROUTER_API_KEY",
+      "auth_scheme": "bearer",
+      "free_filter": true,
+      "notes": "Aggregator; free + paid models. z-ai/glm-4.6, deepseek, qwen, llama all reachable here."
+    },
+    "zai": {
+      "label": "Z.ai (GLM)",
+      "api_style": "openai",
+      "enabled": false,
+      "via": "openrouter",
+      "default_model": "z-ai/glm-4.6",
+      "endpoint": "https://api.z.ai/api/paas/v4/chat/completions",
+      "models_url": "https://api.z.ai/api/paas/v4/models",
+      "auth_env": "ZAI_API_KEY",
+      "auth_scheme": "bearer",
+      "notes": "GLM-4.6 = flagship (primary), GLM-4.5-Air = cheap/fast (secondary). Default routed via OpenRouter until ZAI_API_KEY is set + enabled:true (then direct Coding-Plan pricing)."
+    },
+    "gemini": {
+      "label": "Google AI Studio (Gemini)",
+      "api_style": "gemini",
+      "enabled": true,
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta",
+      "models_url": "https://generativelanguage.googleapis.com/v1beta/models",
+      "auth_env": "GEMINI_API_KEY",
+      "auth_scheme": "query_key",
+      "default_model": "gemini-2.5-flash",
+      "notes": "Direct free tier (~1500 req/day). GOOGLE_AI_STUDIO_KEY is aliased to GEMINI_API_KEY by load-drive-keys.sh."
+    },
+    "groq": {
+      "label": "Groq",
+      "api_style": "openai",
+      "enabled": true,
+      "endpoint": "https://api.groq.com/openai/v1/chat/completions",
+      "models_url": "https://api.groq.com/openai/v1/models",
+      "auth_env": "GROQ_API_KEY",
+      "auth_scheme": "bearer",
+      "default_model": "llama-3.3-70b-versatile",
+      "notes": "Direct free tier, very high rate limit, fast. Good secondary lane for scan/latency-sensitive work."
+    },
+    "deepseek": {
+      "label": "DeepSeek",
+      "api_style": "openai",
+      "enabled": true,
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "models_url": "https://api.deepseek.com/models",
+      "auth_env": "DEEPSEEK_API_KEY",
+      "auth_scheme": "bearer",
+      "default_model": "deepseek-chat",
+      "notes": "Cheap reasoning (deepseek-chat) + deepseek-reasoner. Pricing volatile — confirm via scout."
+    },
+    "anthropic": {
+      "label": "Anthropic (Claude)",
+      "api_style": "anthropic",
+      "enabled": true,
+      "endpoint": "https://api.anthropic.com/v1/messages",
+      "models_url": "https://api.anthropic.com/v1/models",
+      "auth_env": "ANTHROPIC_API_KEY",
+      "auth_scheme": "x_api_key",
+      "anthropic_version": "2023-06-01",
+      "default_model": "claude-haiku-4-5",
+      "max_tokens": 2048,
+      "notes": "Paid quality escalation only (Haiku low tier). Harness uses as last resort; primary-agent tiers (4a-4c) are subscription, not API."
+    }
+  }
+}
