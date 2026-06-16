@@ -22,8 +22,12 @@ leaderboard สาธารณะ 3 แหล่ง แล้วเลือก 
 | **SWE-bench** | https://www.swebench.com/ | resolve GitHub issue (coding) | (เก็บ badge; รอ task `code`) |
 | **Terminal-Bench 2.0** | https://www.tbench.ai/leaderboard/terminal-bench/2.0 | agentic / terminal task | `scan` |
 | **NL2RepoBench** | https://github.com/multimodal-art-projection/NL2RepoBench | NL → repo-scale code | (เก็บ badge; รอ task `repo`) |
+| **Aider Polyglot** | https://aider.chat/docs/leaderboards/ | edit/refactor หลายภาษา | (เพิ่ม 2026-06-16; เสริม `code`) |
+| **LiveCodeBench** | https://livecodebench.github.io/ | competitive programming + contamination control | (เพิ่ม 2026-06-16; reasoning + code) |
 | reasoning | (สังเคราะห์) | เหตุผลทั่วไป | `reason`/`compare` |
 | speed | (สังเคราะห์) | latency/throughput | `search`/`lookup`/`summarize` |
+
+> **ความซื่อสัตย์เรื่อง live fetch** (verified 2026-06-16): leaderboard coding ไม่มี JSON feed แบบ GET ตรง (`aider.chat/assets/leaderboard.json` = 404; swebench.com / tbench.ai เป็น JS page). `model-capability-scout.py` ลงทะเบียน source ไว้ทั้ง 5 และลอง parse markdown-table (`_parse_markdown_scores`); หน้าที่ไม่ machine-readable กลายเป็น `unparseable` → ใช้ค่า committed `[training]` (offline-first). ตัวเลข `[verified]` ต้องรอ dedicated parser หรือ curated manual update.
 
 ## สถาปัตยกรรม (offline-first)
 
