@@ -10,11 +10,12 @@ What it does (idempotent):
   3. Optionally refreshes the scout catalog so the new models show up.
 
 Usage:
-  add-provider.py --provider zai --env-name ZAI_API_KEY --key <value> --enable
+  add-provider.py --provider zai --env-name ZHIPU_API_KEY --key <value> --enable
   add-provider.py --provider mistral --env-name MISTRAL_API_KEY \
                   --endpoint https://api.mistral.ai/v1/chat/completions \
                   --api-style openai --key-stdin
-  add-provider.py --provider zai --env-name ZAI_API_KEY --dry-run    # preview
+  add-provider.py --provider zai --env-name ZHIPU_API_KEY --dry-run    # preview
+  # NOTE: zai/Z.ai uses env name ZHIPU_API_KEY (matches delegate.sh + drive/.secrets).
 
 Test hooks: --registry <path> and --secrets-file <path> override defaults.
 """

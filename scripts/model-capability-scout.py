@@ -10,6 +10,15 @@ Sources:
   swe_bench       https://www.swebench.com/                              (coding / resolve-issue)
   terminal_bench  https://www.tbench.ai/leaderboard/terminal-bench/2.0   (agentic / terminal)
   nl2repobench    https://github.com/multimodal-art-projection/NL2RepoBench (NL -> repo code)
+  aider_polyglot  https://aider.chat/docs/leaderboards/                  (edit/refactor, multi-lang)
+  livecodebench   https://livecodebench.github.io/                       (contaminant-controlled coding)
+
+NOTE: most rendered leaderboards have no clean JSON feed (verified 2026-06-16:
+aider.chat/assets/leaderboard.json = 404, swebench.com / tbench.ai are JS pages).
+_parse_markdown_scores extracts `|model|...|NN.N|` rows when present; pages that
+are not machine-readable simply contribute nothing -> committed value is kept.
+This is the "live + offline fallback" contract. Dedicated parsers can be added
+per-source later without touching build_cache (it iterates SOURCES dynamically).
 
 Usage:
   python3 scripts/model-capability-scout.py            # best-effort refresh -> .tmp cache
@@ -45,6 +54,14 @@ SOURCES = {
     "nl2repobench": {
         "label": "NL2RepoBench",
         "url": "https://raw.githubusercontent.com/multimodal-art-projection/NL2RepoBench/main/README.md",
+    },
+    "aider_polyglot": {
+        "label": "Aider Polyglot",
+        "url": "https://aider.chat/docs/leaderboards/",
+    },
+    "livecodebench": {
+        "label": "LiveCodeBench",
+        "url": "https://livecodebench.github.io/",
     },
 }
 
@@ -135,7 +152,7 @@ def build_cache(offline: bool, timeout: int) -> dict[str, Any]:
     families = result.get("families", {})
     sources_status: dict[str, Any] = {}
 
-    for dimension in ("swe_bench", "terminal_bench", "nl2repobench"):
+    for dimension in list(SOURCES.keys()):
         outcome = scout_source(dimension, families, offline, timeout)
         sources_status[dimension] = {
             "status": outcome["status"],
