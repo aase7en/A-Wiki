@@ -230,8 +230,9 @@ Manual GUI checklist:
 - เลือกรุ่นถูกสุดที่ผ่านเกณฑ์ tier จาก catalog (ราคา/token จริง)
 - **Parallelize gate:** race เฉพาะเมื่อ latency-sensitive **และ** tier ถูก (L1/L2) **และ** มี ≥2 free lane — กันจ่าย 3× สำหรับงาน trivial/flagship
 
-**5. Live Dashboard** — `scripts/live-dashboard/server.py` (:7790, auto-render surface ถ้า HTML หาย)
-- event ใหม่: `route_plan` (จาก `model_match --emit`), `model_active` (จาก `check_cost_tier` แสดง tier ปัจจุบันของ primary agent)
+**5. Live Dashboard** — `scripts/live-dashboard/server.py` (:7790)
+- **Auto-start ทุกแพลตฟอร์ม:** Claude Code/Codex (SessionStart hook → `session_start.py`), Kilo Code/Cline/VS Code (`runOn: folderOpen` task → `dashboard-ensure.sh`), และ lazy บน `delegate.sh` ครั้งแรก. ปิดด้วย `AWIKI_DISABLE_DASHBOARD_AUTOSTART=1`.
+- event ใหม่: `route_plan` (จาก `model_match --emit`), `model_active` (จาก `check_cost_tier` แสดง tier ปัจจุบันของ primary agent), และ derivation ของ agent/parallel activity จาก `delegate_start/done/fail` (เห็น parallel lanes โดยไม่ต้อง `agent_spawn`)
 - เห็นว่ากำลังใช้/จะใช้ model อะไร + tier ตอนวางแผน/ทำงาน
 
 **6. เพิ่ม API key + provider** — `scripts/add-provider.py --provider <id> --env-name <ENV> --key-stdin [--enable] [--dry-run]`

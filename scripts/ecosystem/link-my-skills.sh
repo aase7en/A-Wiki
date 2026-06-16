@@ -30,14 +30,15 @@ for skill in skills/claude-thai/*/; do
   ln -s "../../${skill%/}" "$target" 2>/dev/null && echo "Linked: $name"
 done
 
-# 3. ECC ecosystem skills (SELECTIVE — only relevant ones)
+# 3. ECC ecosystem skills (SELECTIVE — only relevant, existing ones)
+# Every name here MUST exist under skills/ecosystem/ (verified by
+# tests/test_kilo_skill_discovery.py). Add/remove as the ecosystem evolves.
 ECC_INCLUDE=(
   "agentic-engineering" "api-design" "architecture-decision-records"
-  "automated-testing" "bash-scripting" "code-review"
-  "commit-message" "continuous-integration" "git-workflow"
-  "markdown" "project-planning" "python-development"
-  "research-paper" "technical-writing" "terminal-commands"
-  "web-development"
+  "git-workflow" "project-flow-ops" "python-patterns"
+  "python-testing" "tdd-workflow" "research-ops"
+  "article-writing" "terminal-ops" "frontend-patterns"
+  "security-review" "plankton-code-quality"
 )
 for name in "${ECC_INCLUDE[@]}"; do
   src="skills/ecosystem/$name"

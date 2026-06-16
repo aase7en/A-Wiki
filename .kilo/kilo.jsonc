@@ -1,3 +1,14 @@
 {
-  "$schema": "https://app.kilo.ai/config.json"
+  "$schema": "https://app.kilo.ai/config.json",
+  "skills": {
+    "paths": [
+      "./agent-skills",
+      "./skills/claude-code",
+      "./skills/engineering",
+      "./skills/productivity",
+      "./skills/delegation",
+      "./skills/wiki",
+      "./skills/research"
+    ]
+  }
 }
