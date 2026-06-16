@@ -7,6 +7,7 @@
 | Page | Use |
 |---|---|
 | [[wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error]] | Brother HL-L3270CDW WSD printer troubleshooting |
+| [[wiki/concepts/it-support/windows-user-profile-service-failed-signin]] | Windows login: "User Profile Service failed the sign-in / profile cannot be loaded" — ProfileList registry repair + recurrence prevention |
 
 ## Rules
 
