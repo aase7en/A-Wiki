@@ -135,6 +135,23 @@ Trading caveat: ก่อน strategy ต้องออกแบบ risk safegu
 7. ถ้าจะสลับ model ให้ compress context ไม่เกิน 500 tokens และชี้ไฟล์ source-of-truth.
 8. หลังจบ architect phase ให้ลดกลับ 4b เสมอ.
 
+## Agent-Stuck Escalation (ทำให้เป็น trigger แทนนิสัย manual)
+
+เมื่อ executioner (4b) แก้บั๊กเดิมซ้ำแล้ว test ยังไม่ผ่าน อย่าสลับโมเดลแบบปุ๊ปปั๊ป (ad-hoc) — ใช้ ladder นี้ที่ทำซ้ำและตรวจได้:
+
+| รอบที่ fail | Trigger | สิ่งที่ทำ | Role |
+|---|---|---|---|
+| 1 | 4b แก้แล้ว test ยัง fail | debug-mantra root-cause ต่อในระดับเดิม | 4b (GLM-5.1 / workhorse) |
+| 2 | ไฟล์เดิม + test เดิม fail อีก | **escalate** — ขอ root-cause + ทิศทางจาก cheap-capable reasoning route ที่ scout เลือก (อาจเป็น DeepSeek reasoner หรือ GLM reason — **ห้าม hardcode**; scout บอกถูกสุดในขณะนั้น) | 4c Architect (`low`/`medium`) |
+| 3 | ยัง fail หลังได้ spec ใหม่ | ขึ้น 4c primary agent one-shot architecture → ลดกลับ 4b ทันทีพร้อม failing test | 4c → 4b |
+| ทุกรอบ | — | **Senior Critic validate** ทุก output (Iron Law #3): plan ผ่าน Iron Law? มี failing test ก่อนโค้ด? root-cause ก่อนแก้? | primary agent (ไม่มอบหมายได้) |
+
+กฎ:
+- **ห้าม escalate เพราะ "ช้า"** — escalate เฉพาะ *root-cause fail ซ้ำ* (context drift / ติดหล่ม) ไม่ใช่ความเร็ว
+- **Architect คิด, Executioner แก้ไฟล์**: อย่าให้ 4c ทั้งคิดทั้งเขียน (แพง + drift) — เอา spec/root-cause กลับมาให้ 4b ลงมือพร้อม failing test
+- **Compress context ก่อนสลับ** (≤500 tokens + pointer ไฟล์ source-of-truth) — กัน context bleeding
+- trigger นี้ log ลง `escalation_used` ใน handoff note (ด้านล่าง) เพื่อ cross-agent continuity
+
 ## Verification Matrix
 
 Automated CLI probe:
@@ -181,8 +198,8 @@ Manual GUI checklist:
 - Current tier: 4b workhorse role
 - Scout status: <fresh scout timestamp or skipped reason>
 - Current route roles: free-current -> cheap-capable -> platform-low-scout -> platform-primary
-- Escalation used: none
-- Next escalation trigger: architecture blocker, trading risk, or repeated root-cause failure
+- Escalation used: none (log round 1/2/3 per "Agent-Stuck Escalation" ladder above)
+- Next escalation trigger: root-cause fail ซ้ำรอบ 2 → 4c Architect (ดู Agent-Stuck Escalation); หรือ architecture blocker / trading risk
 - Context to load: wiki/context/wiki-overview.md, docs/protocols/model-switching.md, <task-specific files>
 - Last completed chunk: <chunk-id>
 - Next chunk: <chunk-id>

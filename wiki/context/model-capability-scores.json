@@ -1,12 +1,14 @@
 {
   "schema_version": 1,
-  "as_of": "2026-06-15",
+  "as_of": "2026-06-16",
   "confidence": "training",
-  "note": "Curated capability scorecard — durable offline-first fallback for scripts/model-capability-scout.py. Scores are 0-100 (benchmark % or normalized estimate). Keyed by model FAMILY (match substrings) so it survives volatile model ids. Values are [training]-derived estimates pending live-leaderboard refresh; confidence markers are honest. Cost-first is NOT encoded here — delegate.sh applies cost_rank as the primary sort key; capability only reorders within a cost class.",
+  "note": "Curated capability scorecard — durable offline-first fallback for scripts/model-capability-scout.py. Scores are 0-100 (benchmark % or normalized estimate). Keyed by model FAMILY (match substrings) so it survives volatile model ids. Values are [training]-derived estimates pending live-leaderboard refresh; confidence markers are honest. Cost-first is NOT encoded here — delegate.sh applies cost_rank as the primary sort key; capability only reorders within a cost class. Aider Polyglot + LiveCodeBench registered as tracked sources 2026-06-16 (numeric refresh pending dedicated parsers — public leaderboards expose no clean JSON feed).",
   "source_urls": {
     "swe_bench": "https://www.swebench.com/",
     "terminal_bench": "https://www.tbench.ai/leaderboard/terminal-bench/2.0",
-    "nl2repobench": "https://github.com/multimodal-art-projection/NL2RepoBench"
+    "nl2repobench": "https://github.com/multimodal-art-projection/NL2RepoBench",
+    "aider_polyglot": "https://aider.chat/docs/leaderboards/",
+    "livecodebench": "https://livecodebench.github.io/"
   },
   "dimensions": ["swe_bench", "terminal_bench", "nl2repobench", "reasoning", "speed"],
   "neutral_default": 50,
@@ -16,7 +18,7 @@
       "swe_bench": 68, "terminal_bench": 50, "nl2repobench": 45,
       "reasoning": 80, "speed": 70,
       "confidence": "training", "as_of": "2026-06-15",
-      "note": "GLM-4.6/5.2 (Z.ai) — strong coding+reasoning model"
+      "note": "GLM (Z.ai) — strong coding+reasoning. Verified 2026-06-16 via Z.AI GET /models: live flagship = glm-5.1 (glm-5.2 is NOT on the direct API — Codeplan-only alias). Numeric scores remain [training]; pending live-leaderboard parser."
     },
     "deepseek": {
       "match": ["deepseek", "deepseek-r1", "deepseek-chat", "deepseek-reasoner"],
