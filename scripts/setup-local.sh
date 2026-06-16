@@ -312,11 +312,29 @@ setup_personal_links() {
   make_personal_link "$REPO_ROOT/scripts/personal"     "$DRIVE_PT/scripts"               "scripts/personal"
 }
 
-# ── 9. (optional) SkillOpt — local install only, not committed ─────────────
+# ── 9. Global Kilo config — render from portable Drive template ────────────
+# Keeps ~/.config/kilo/kilo.jsonc consistent across machines (home Mac + work
+# Windows/WSL) by auto-detecting each machine's Google Drive path and injecting
+# provider keys from Drive .secrets. AI model/agent/permission settings are
+# preserved verbatim. Safe to re-run; idempotent.
+
+setup_kilo_config() {
+  echo "[9/9] Rendering global Kilo config from portable Drive template..."
+  if [[ ! -f "scripts/setup-kilo-config.sh" ]]; then
+    echo "  scripts/setup-kilo-config.sh not found — skipping"
+    return 0
+  fi
+  bash scripts/setup-kilo-config.sh || {
+    echo "  WARN: Kilo config render skipped — run 'bash scripts/setup-kilo-config.sh' manually" >&2
+    return 0
+  }
+}
+
+# ── 10. (optional) SkillOpt — local install only, not committed ────────────
 # Enable with: INSTALL_SKILLOPT=1 bash scripts/setup-local.sh
 
 setup_skillopt() {
-  echo "[8/8] SkillOpt optional integration..."
+  echo "[10/10] SkillOpt optional integration..."
   if [[ "${INSTALL_SKILLOPT:-0}" != "1" ]]; then
     echo "  skipped install — set INSTALL_SKILLOPT=1 to install into .venv-skillopt"
     return 0
@@ -340,6 +358,7 @@ setup_codex
 setup_model_intel
 setup_model_router_policy
 setup_personal_links
+setup_kilo_config
 setup_skillopt
 setup_react_doctor
 

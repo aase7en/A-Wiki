@@ -40,6 +40,7 @@ def test_checks_include_work_pc_relevant_steps(monkeypatch):
         "cloud link",
         "drive secrets",
         "import keys",
+        "kilo config",
         "readiness",
         "cross-platform",
         "sync smoke",
