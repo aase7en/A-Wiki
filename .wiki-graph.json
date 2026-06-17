@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-06-15",
+  "generated_at": "2026-06-18",
   "stats": {
-    "nodes": 517,
-    "edges": 1316,
+    "nodes": 518,
+    "edges": 1319,
     "edges_by_type": {
-      "wikilink": 1149,
+      "wikilink": 1152,
       "mdlink": 49,
       "depends": 31,
       "implements": 49,
       "extends": 38
     },
-    "broken_links": 3,
+    "broken_links": 5,
     "orphans": 179,
     "orphan_by_domain": {
       "sources": 85,
@@ -611,6 +611,11 @@
     {
       "path": "wiki/entities/ai-tools/turbovec.md",
       "title": "turbovec",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/zai-glm.md",
+      "title": "Z.ai — GLM Series",
       "domain": "ai-tools"
     },
     {
@@ -2715,6 +2720,13 @@
     {
       "from": "CLAUDE.md",
       "to": "wiki/entities/ai-tools/frontend-slides.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/zai-glm.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -7295,6 +7307,20 @@
       "to": "wiki/concepts/ai-tools/vector-search.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zai-glm.md",
+      "to": "openrouter",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zai-glm.md",
+      "to": "model-cost-switching",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {
