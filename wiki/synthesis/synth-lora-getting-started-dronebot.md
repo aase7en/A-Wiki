@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, getting, started, dronebot]
 type: synthesis
 title: "LoRa - Getting Started with Arduino, ESP32 & Pico — Synthesis"
 slug: synth-lora-getting-started-dronebot

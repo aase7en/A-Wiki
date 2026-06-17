@@ -1,4 +1,5 @@
 ---
+tags: [raspberry, iot, guide, understanding, their]
 type: source
 title: "Raspberry Pi and IoT: the guide to understanding their role in the Internet of Things"
 slug: raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th

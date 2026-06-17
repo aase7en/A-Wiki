@@ -1,4 +1,5 @@
 ---
+tags: [ai, note, taking, research, assistant, powered]
 type: synthesis
 title: "คำแนะนำเกี่ยวกับแหล่งข้อมูล — Synthesis"
 slug: synth-note-taking-research-assistant-powered-by-ai

@@ -1,4 +1,5 @@
 ---
+tags: [ai, engineering, myths]
 type: synthesis
 title: "AI Myths Busted — rohitg00/ai-engineering-from-scratch — Synthesis"
 slug: synth-ai-engineering-myths

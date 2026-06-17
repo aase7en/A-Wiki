@@ -1,4 +1,5 @@
 ---
+tags: [iot, edge, esp32]
 type: synthesis
 title: "สรุปสาระสำคัญ: สถาปัตยกรรม IoT, Edge AI และศักยภาพของ ESP32-C6 (อัปเดตปี 2026) — Synthesis"
 slug: synth-iot-edge-ai-esp32-c6-2026

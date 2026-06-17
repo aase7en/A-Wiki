@@ -1,4 +1,5 @@
 ---
+tags: [build, software, better, together]
 type: source
 title: "Build software better, together"
 slug: build-software-better-together

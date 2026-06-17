@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, getting, started, arduino, esp32]
 type: source
 title: "LoRa - Getting Started with Arduino, ESP32 & Pico"
 slug: lora-getting-started-with-arduino-esp32-pico

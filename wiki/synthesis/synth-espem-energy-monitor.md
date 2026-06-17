@@ -1,4 +1,5 @@
 ---
+tags: [espem, energy, monitor]
 type: synthesis
 title: "vortigont/espem: Energy Monitor with Dashboard (ESP32 + PZEM-004T) — Synthesis"
 slug: synth-espem-energy-monitor

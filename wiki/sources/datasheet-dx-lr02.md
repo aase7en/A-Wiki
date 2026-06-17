@@ -1,4 +1,5 @@
 ---
+tags: [iot, datasheet, lr02]
 type: source
 title: "ข้อมูล datasheet ของ DX LR02 "
 slug: datasheet-dx-lr02

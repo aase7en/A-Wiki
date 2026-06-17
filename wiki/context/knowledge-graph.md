@@ -5,22 +5,22 @@ _Generated: 2026-06-18_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 ## Stats
 
 - **Nodes**: 518
-- **Edges**: 1319
-- **Broken links**: 5 (run `python3 scripts/query-graph.py --broken`)
-- **Orphans**: 179 (run `python3 scripts/query-graph.py --orphans`)
+- **Edges**: 1646
+- **Broken links**: 0 (run `python3 scripts/query-graph.py --broken`)
+- **Orphans**: 23 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
 - `index-iot.md` (135 edges)
 - `index.md` (102 edges)
-- `wiki/entities/iot/esp32.md` (54 edges)
+- `wiki/entities/iot/esp32.md` (58 edges)
 - `index-pharmacy.md` (37 edges)
+- `wiki/entities/iot/esp32-s3.md` (37 edges)
 - `index-ai-tools.md` (36 edges)
-- `wiki/entities/iot/esp32-s3.md` (35 edges)
-- `wiki/entities/iot/dx-lr02-lora.md` (31 edges)
+- `wiki/entities/iot/dx-lr02-lora.md` (36 edges)
 - `index-env.md` (30 edges)
-- `wiki/entities/iot/grafana.md` (27 edges)
-- `wiki/synthesis/iot-lora-architecture.md` (27 edges)
+- `wiki/sources/hardware-inventory-2026-04-18.md` (30 edges)
+- `wiki/synthesis/iot-lora-architecture.md` (30 edges)
 
 ## Query CLI
 

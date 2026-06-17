@@ -1,4 +1,5 @@
 ---
+tags: [iot, engineering, education]
 type: source
 title: "IoT Engineering Education"
 slug: iot-engineering-education

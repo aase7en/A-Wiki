@@ -1,4 +1,5 @@
 ---
+tags: [iot, engineering, education]
 type: synthesis
 title: "รายการบทความที่จัดทำขึ้นเพื่อเผยแพร่นี้ เป็นเนื้อหาทางวิชาที่เกี่ยวข้องกับวิศวกร — Synthesis"
 slug: synth-iot-engineering-education

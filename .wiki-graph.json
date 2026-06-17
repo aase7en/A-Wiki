@@ -2,20 +2,19 @@
   "generated_at": "2026-06-18",
   "stats": {
     "nodes": 518,
-    "edges": 1319,
+    "edges": 1646,
     "edges_by_type": {
-      "wikilink": 1152,
+      "wikilink": 1153,
       "mdlink": 49,
-      "depends": 31,
+      "depends": 357,
       "implements": 49,
       "extends": 38
     },
-    "broken_links": 5,
-    "orphans": 179,
+    "broken_links": 0,
+    "orphans": 23,
     "orphan_by_domain": {
-      "sources": 85,
-      "synthesis": 81,
-      "context": 13
+      "context": 13,
+      "sources": 10
     },
     "hubs": [
       {
@@ -28,10 +27,14 @@
       },
       {
         "path": "wiki/entities/iot/esp32.md",
-        "score": 54
+        "score": 58
       },
       {
         "path": "index-pharmacy.md",
+        "score": 37
+      },
+      {
+        "path": "wiki/entities/iot/esp32-s3.md",
         "score": 37
       },
       {
@@ -39,24 +42,20 @@
         "score": 36
       },
       {
-        "path": "wiki/entities/iot/esp32-s3.md",
-        "score": 35
-      },
-      {
         "path": "wiki/entities/iot/dx-lr02-lora.md",
-        "score": 31
+        "score": 36
       },
       {
         "path": "index-env.md",
         "score": 30
       },
       {
-        "path": "wiki/entities/iot/grafana.md",
-        "score": 27
+        "path": "wiki/sources/hardware-inventory-2026-04-18.md",
+        "score": 30
       },
       {
         "path": "wiki/synthesis/iot-lora-architecture.md",
-        "score": 27
+        "score": 30
       }
     ],
     "orphans_list": [
@@ -73,13 +72,13 @@
       "wiki/context/review-report.md",
       "wiki/context/session-memory.md",
       "wiki/context/wiki-capability-map.md",
-      "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "wiki/sources/3-dashboard-node-red.md",
-      "wiki/sources/ai-iot-server-build-v3-final.md",
       "wiki/sources/ai-tools/langchain-framework.md",
       "wiki/sources/ai-tools/vector-databases.md",
-      "wiki/sources/arduino-ide-esp32-arduino-2025.md"
+      "wiki/sources/env/air-quality-monitoring.md",
+      "wiki/sources/env/soil-moisture-sensing.md",
+      "wiki/sources/env/water-quality-parameters.md",
+      "wiki/sources/iot/lorawan-architecture.md",
+      "wiki/sources/iot/mqtt-protocol-overview.md"
     ]
   },
   "nodes": [
@@ -490,7 +489,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-15",
+      "title": "Review Report — 2026-06-18",
       "domain": "context"
     },
     {
@@ -574,6 +573,11 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/live-dashboard.md",
+      "title": "Live Dashboard — A-Wiki Real-time Monitor",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/model-capability-bench.md",
       "title": "Model Capability Benchmarks (Routing)",
       "domain": "ai-tools"
@@ -616,11 +620,6 @@
     {
       "path": "wiki/entities/ai-tools/zai-glm.md",
       "title": "Z.ai — GLM Series",
-      "domain": "ai-tools"
-    },
-    {
-      "path": "wiki/entities/ai-tools/zhipu-glm.md",
-      "title": "GLM / Z.ai (Zhipu)",
       "domain": "ai-tools"
     },
     {
@@ -5113,6 +5112,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/a2a-protocol.md",
+      "to": "wiki/sources/ai-engineering-tools-protocols.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/a2a-protocol.md",
       "to": "wiki/concepts/ai-tools/mcp-architecture.md",
       "type": "wikilink",
       "broken": false,
@@ -5148,6 +5154,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
+      "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "implements",
       "broken": false,
@@ -5171,6 +5184,13 @@
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-memory-systems.md",
+      "to": "wiki/sources/ai-engineering-agent-patterns.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5218,6 +5238,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
+      "to": "wiki/sources/ai-engineering-agent-patterns.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
       "to": "wiki/concepts/ai-tools/agent-memory-systems.md",
       "type": "wikilink",
       "broken": false,
@@ -5248,6 +5275,13 @@
       "from": "wiki/concepts/ai-tools/agent-planning-loops.md",
       "to": "wiki/sources/ai-engineering-agent-patterns.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-glossary.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5290,6 +5324,20 @@
       "from": "wiki/concepts/ai-tools/ai-glossary.md",
       "to": "wiki/sources/ai-engineering-glossary.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "wiki/sources/ai-engineering-myths.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/ai-myths.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5435,6 +5483,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
+      "to": "wiki/sources/ai-agents-integration-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
       "to": "wiki/concepts/ai-tools/symlinks-ssot.md",
       "type": "wikilink",
       "broken": false,
@@ -5477,6 +5532,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
+      "to": "wiki/sources/ai-engineering-llm.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
       "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
       "type": "wikilink",
       "broken": false,
@@ -5493,6 +5555,13 @@
       "from": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
       "to": "wiki/sources/ai-engineering-llm.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "to": "wiki/sources/ai-engineering-llm.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5533,6 +5602,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/local-llm-routing.md",
+      "to": "wiki/sources/telegram-ai-router-design.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/local-llm-routing.md",
       "to": "wiki/entities/ai-tools/telegram-ai-router.md",
       "type": "wikilink",
       "broken": false,
@@ -5556,6 +5632,13 @@
       "from": "wiki/concepts/ai-tools/local-llm-routing.md",
       "to": "wiki/sources/telegram-ai-router-design.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/mcp-architecture.md",
+      "to": "wiki/sources/ai-engineering-tools-protocols.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5638,6 +5721,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
+      "to": "wiki/sources/ai-engineering-multi-agent.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "to": "wiki/concepts/ai-tools/ai-glossary.md",
       "type": "wikilink",
       "broken": false,
@@ -5682,6 +5772,13 @@
       "from": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "to": "wiki/sources/ai-engineering-glossary.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/openrouter-api.md",
+      "to": "wiki/sources/openrouter-api-demo.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5785,6 +5882,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/swarm-optimization.md",
+      "to": "wiki/sources/ai-engineering-swarm-optimization.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/swarm-optimization.md",
       "to": "wiki/concepts/ai-tools/multi-agent-theory.md",
       "type": "wikilink",
       "broken": false,
@@ -5822,6 +5926,13 @@
       "from": "wiki/concepts/ai-tools/swarm-optimization.md",
       "to": "wiki/sources/ai-engineering-multi-agent.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/symlinks-ssot.md",
+      "to": "wiki/sources/ai-agents-integration-guide.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -5883,6 +5994,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/vibe-coding.md",
+      "to": "wiki/sources/vibe-pocketbase-gemini-plan.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/vibe-coding.md",
       "to": "wiki/entities/ai-tools/pocketbase.md",
       "type": "wikilink",
       "broken": false,
@@ -5939,6 +6057,13 @@
     },
     {
       "from": "wiki/concepts/env/infectious-waste-management.md",
+      "to": "wiki/sources/infectious-waste-th-law.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/env/infectious-waste-management.md",
       "to": "wiki/concepts/env/hospital-wastewater-treatment.md",
       "type": "wikilink",
       "broken": false,
@@ -5955,6 +6080,27 @@
       "from": "wiki/concepts/env/infectious-waste-management.md",
       "to": "wiki/sources/infectious-waste-th-law.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/env/rabies-pep-protocol.md",
+      "to": "wiki/sources/ddc-cpg-rabies-2564.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/env/rabies-pep-protocol.md",
+      "to": "wiki/sources/saovabha-rabies-pep-2565.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/env/rabies-pep-protocol.md",
+      "to": "wiki/sources/who-rabies-position-2018.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6030,6 +6176,20 @@
     },
     {
       "from": "wiki/concepts/iot/air-quality-index.md",
+      "to": "wiki/sources/air-quality-sensors-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/air-quality-index.md",
+      "to": "wiki/sources/air-quality-iot-lora-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/entities/iot/pms5003.md",
       "type": "wikilink",
       "broken": false,
@@ -6074,6 +6234,27 @@
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/cold-chain-monitoring.md",
+      "to": "wiki/sources/vaccine-temp-monitoring-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/cold-chain-monitoring.md",
+      "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/cold-chain-monitoring.md",
+      "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6156,6 +6337,20 @@
     },
     {
       "from": "wiki/concepts/iot/dashboard-design.md",
+      "to": "wiki/sources/iot-visualization-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/dashboard-design.md",
+      "to": "wiki/sources/dashboard-design-best-practices.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/dashboard-design.md",
       "to": "wiki/entities/iot/grafana.md",
       "type": "wikilink",
       "broken": false,
@@ -6205,6 +6400,13 @@
     },
     {
       "from": "wiki/concepts/iot/data-logger.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/data-logger.md",
       "to": "wiki/entities/iot/node-red.md",
       "type": "wikilink",
       "broken": false,
@@ -6235,6 +6437,34 @@
       "from": "wiki/concepts/iot/data-logger.md",
       "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora-p2p.md",
+      "to": "wiki/sources/esp32-lora-arduino-ide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora-p2p.md",
+      "to": "wiki/sources/esp32-lora-sensor-webserver.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora-p2p.md",
+      "to": "wiki/sources/easyloranode-tracker.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora-p2p.md",
+      "to": "wiki/sources/lora-thai-intro.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6305,6 +6535,41 @@
       "from": "wiki/concepts/iot/lora-p2p.md",
       "to": "wiki/sources/lora-thai-intro.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora.md",
+      "to": "wiki/sources/esp32-lora-arduino-ide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora.md",
+      "to": "wiki/sources/lora-thai-intro.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora.md",
+      "to": "wiki/sources/lora-getting-started-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lora.md",
+      "to": "wiki/sources/lora-vs-nbiot.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6401,6 +6666,27 @@
     },
     {
       "from": "wiki/concepts/iot/lorawan.md",
+      "to": "wiki/sources/lorawan-network-beginner.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lorawan.md",
+      "to": "wiki/sources/esp32-lora-gateway-sparkfun.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lorawan.md",
+      "to": "wiki/sources/lorawan-fuota-rak3172.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lorawan.md",
       "to": "wiki/sources/lorawan-fuota-rak3172.md",
       "type": "wikilink",
       "broken": false,
@@ -6450,6 +6736,13 @@
     },
     {
       "from": "wiki/concepts/iot/modbus.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/modbus.md",
       "to": "wiki/entities/iot/node-red.md",
       "type": "wikilink",
       "broken": false,
@@ -6471,6 +6764,13 @@
     },
     {
       "from": "wiki/concepts/iot/mqtt-qos.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/mqtt-qos.md",
       "to": "wiki/entities/iot/mqtt-protocol.md",
       "type": "wikilink",
       "broken": false,
@@ -6492,6 +6792,13 @@
     },
     {
       "from": "wiki/concepts/iot/publish-subscribe.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/publish-subscribe.md",
       "to": "wiki/entities/iot/mqtt-protocol.md",
       "type": "wikilink",
       "broken": false,
@@ -6508,6 +6815,20 @@
       "from": "wiki/concepts/iot/publish-subscribe.md",
       "to": "wiki/sources/mqtt-introduction.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/tinyml.md",
+      "to": "wiki/sources/tinyml-esp32-applications.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/tinyml.md",
+      "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6576,6 +6897,20 @@
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/drug-aliases.md",
+      "to": "wiki/sources/drug-aliases-reference.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "wiki/synthesis/pharmacy-order-checker.md",
       "type": "wikilink",
       "broken": false,
@@ -6611,6 +6946,13 @@
     },
     {
       "from": "wiki/concepts/pharmacy/drug-classification.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/drug-classification.md",
       "to": "wiki/concepts/pharmacy/ordering-workflow.md",
       "type": "wikilink",
       "broken": false,
@@ -6627,6 +6969,13 @@
       "from": "wiki/concepts/pharmacy/drug-classification.md",
       "to": "wiki/synthesis/pharmacy-order-checker.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/drug-validation.md",
+      "to": "wiki/sources/drug-aliases-reference.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6674,6 +7023,13 @@
     },
     {
       "from": "wiki/concepts/pharmacy/fuzzy-match.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/fuzzy-match.md",
       "to": "wiki/synthesis/pharmacy-order-checker.md",
       "type": "wikilink",
       "broken": false,
@@ -6697,6 +7053,13 @@
       "from": "wiki/concepts/pharmacy/fuzzy-match.md",
       "to": "wiki/sources/sp-drugstore-2020-catalog.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/ordering-workflow.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -6774,6 +7137,13 @@
       "from": "wiki/concepts/pharmacy/pharmacy-context.md",
       "to": "wiki/concepts/pharmacy/drug-aliases.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/ui-design-pharmacy.md",
+      "to": "wiki/sources/pharmacy-ui-instructions.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7031,6 +7401,20 @@
     },
     {
       "from": "wiki/entities/ai-tools/hermes-agent.md",
+      "to": "wiki/sources/hermes-agent-guide-th.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/hermes-agent.md",
+      "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/hermes-agent.md",
       "to": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "type": "wikilink",
       "broken": false,
@@ -7047,6 +7431,13 @@
       "from": "wiki/entities/ai-tools/hermes-agent.md",
       "to": "wiki/sources/hermes-agent-guide-th.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/hyperframes.md",
+      "to": "wiki/sources/hyperframes-official-docs.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7107,16 +7498,44 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/model-capability-bench.md",
-      "to": "live-dashboard",
+      "from": "wiki/entities/ai-tools/live-dashboard.md",
+      "to": "wiki/entities/ai-tools/zai-glm.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/live-dashboard.md",
+      "to": "wiki/entities/ai-tools/model-capability-bench.md",
+      "type": "wikilink",
+      "broken": false,
       "external": false
     },
     {
       "from": "wiki/entities/ai-tools/model-capability-bench.md",
-      "to": "wiki/entities/ai-tools/zhipu-glm.md",
+      "to": "wiki/entities/ai-tools/live-dashboard.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/model-capability-bench.md",
+      "to": "wiki/entities/ai-tools/zai-glm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ollama.md",
+      "to": "wiki/sources/local-llm-mac-mini-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ollama.md",
+      "to": "wiki/sources/ollama-pi5.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7173,6 +7592,13 @@
       "from": "wiki/entities/ai-tools/openmed.md",
       "to": "wiki/entities/ai-tools/anthropic-skills.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/pocketbase.md",
+      "to": "wiki/sources/vibe-pocketbase-gemini-plan.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7236,6 +7662,13 @@
       "from": "wiki/entities/ai-tools/social-media-skills.md",
       "to": "wiki/synthesis/openrouter-agent-routing.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/telegram-ai-router.md",
+      "to": "wiki/sources/telegram-ai-router-design.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7311,37 +7744,30 @@
     },
     {
       "from": "wiki/entities/ai-tools/zai-glm.md",
-      "to": "openrouter",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/zai-glm.md",
-      "to": "model-cost-switching",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/zhipu-glm.md",
-      "to": "secrets-policy",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/zhipu-glm.md",
       "to": "wiki/entities/ai-tools/model-capability-bench.md",
       "type": "wikilink",
       "broken": false,
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/zhipu-glm.md",
-      "to": "live-dashboard",
+      "from": "wiki/entities/ai-tools/zai-glm.md",
+      "to": "wiki/concepts/ai-tools/openrouter-api.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zai-glm.md",
+      "to": "wiki/entities/ai-tools/live-dashboard.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/zai-glm.md",
+      "to": "wiki/synthesis/synth-claude-model-cost-switching-strategy-2026-06.md",
+      "type": "wikilink",
+      "broken": false,
       "external": false
     },
     {
@@ -7376,6 +7802,27 @@
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/rabies-pep-surveillance.md",
+      "to": "wiki/sources/ddc-cpg-rabies-2564.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/rabies-pep-surveillance.md",
+      "to": "wiki/sources/saovabha-rabies-pep-2565.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/rabies-pep-surveillance.md",
+      "to": "wiki/sources/who-rabies-position-2018.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7423,6 +7870,13 @@
     },
     {
       "from": "wiki/entities/iot/18650-battery-shield.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/18650-battery-shield.md",
       "to": "wiki/entities/iot/vapcell-m35-18650.md",
       "type": "wikilink",
       "broken": false,
@@ -7453,6 +7907,27 @@
       "from": "wiki/entities/iot/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/arduino-ide.md",
+      "to": "wiki/sources/arduino-ide-esp32-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/arduino-ide.md",
+      "to": "wiki/sources/esp32-complete-guide-thai.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/arduino-ide.md",
+      "to": "wiki/sources/platformio-esp32-guide.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7507,6 +7982,13 @@
     },
     {
       "from": "wiki/entities/iot/arduino-uno-r3.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/arduino-uno-r3.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -7537,6 +8019,20 @@
       "from": "wiki/entities/iot/arduino-uno-r3.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/chirpstack.md",
+      "to": "wiki/sources/lorawan-fuota-rak3172.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/chirpstack.md",
+      "to": "wiki/sources/lorawan-network-beginner.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7584,6 +8080,13 @@
     },
     {
       "from": "wiki/entities/iot/dht11.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dht11.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -7607,6 +8110,27 @@
       "from": "wiki/entities/iot/dht11.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/ds18b20.md",
+      "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/ds18b20.md",
+      "to": "wiki/sources/vaccine-temp-monitoring-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/ds18b20.md",
+      "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7670,6 +8194,41 @@
       "from": "wiki/entities/iot/ds18b20.md",
       "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-lr02-lora.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-lr02-lora.md",
+      "to": "wiki/sources/dx-lr02-datasheet.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-lr02-lora.md",
+      "to": "wiki/sources/dx-lr02-official-arduino-library.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-lr02-lora.md",
+      "to": "wiki/sources/dx-lr02-module-spec-official.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-lr02-lora.md",
+      "to": "wiki/sources/dx-lr02-serial-guide-v2.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7745,6 +8304,13 @@
     },
     {
       "from": "wiki/entities/iot/dx-smart-ttl.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/dx-smart-ttl.md",
       "to": "wiki/entities/iot/esp32-s3.md",
       "type": "wikilink",
       "broken": false,
@@ -7761,6 +8327,13 @@
       "from": "wiki/entities/iot/dx-smart-ttl.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/emqx.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7801,6 +8374,13 @@
     },
     {
       "from": "wiki/entities/iot/esp-idf.md",
+      "to": "wiki/sources/esp-idf-docs.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp-idf.md",
       "to": "wiki/entities/iot/arduino-ide.md",
       "type": "wikilink",
       "broken": false,
@@ -7831,6 +8411,13 @@
       "from": "wiki/entities/iot/esp-idf.md",
       "to": "wiki/sources/esp-idf-docs.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32-c6.md",
+      "to": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7873,6 +8460,20 @@
       "from": "wiki/entities/iot/esp32-c6.md",
       "to": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32-s3.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32-s3.md",
+      "to": "wiki/sources/esp32-s3-intro-thai.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -7936,6 +8537,34 @@
       "from": "wiki/entities/iot/esp32-s3.md",
       "to": "wiki/sources/esp32-s3-intro-thai.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32.md",
+      "to": "wiki/sources/esp32-complete-guide-thai.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/esp32.md",
+      "to": "wiki/sources/arduino-ide-esp32-setup.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8039,6 +8668,20 @@
     },
     {
       "from": "wiki/entities/iot/grafana.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/grafana.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/grafana.md",
       "to": "wiki/entities/iot/influxdb.md",
       "type": "wikilink",
       "broken": false,
@@ -8088,6 +8731,20 @@
     },
     {
       "from": "wiki/entities/iot/hc-sr04.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/hc-sr04.md",
+      "to": "wiki/sources/esp32-tank-level-mqtt.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/hc-sr04.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -8130,6 +8787,13 @@
     },
     {
       "from": "wiki/entities/iot/hc-sr501.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/hc-sr501.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -8151,6 +8815,13 @@
     },
     {
       "from": "wiki/entities/iot/home-assistant.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/home-assistant.md",
       "to": "wiki/entities/iot/mqtt-protocol.md",
       "type": "wikilink",
       "broken": false,
@@ -8167,6 +8838,20 @@
       "from": "wiki/entities/iot/home-assistant.md",
       "to": "wiki/sources/mqtt-introduction.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/hx711.md",
+      "to": "wiki/sources/esp32-hx711-randomnerd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/hx711.md",
+      "to": "wiki/sources/esp32-hx711-mqtt-github.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8221,6 +8906,13 @@
     },
     {
       "from": "wiki/entities/iot/influxdb.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/influxdb.md",
       "to": "wiki/entities/iot/grafana.md",
       "type": "wikilink",
       "broken": false,
@@ -8242,6 +8934,13 @@
     },
     {
       "from": "wiki/entities/iot/line-notify.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/line-notify.md",
       "to": "wiki/entities/iot/telegram-bot.md",
       "type": "wikilink",
       "broken": false,
@@ -8258,6 +8957,13 @@
       "from": "wiki/entities/iot/line-notify.md",
       "to": "wiki/sources/iot-lora-gateway-architecture.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/load-cell.md",
+      "to": "wiki/sources/esp32-hx711-randomnerd.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8291,6 +8997,13 @@
     },
     {
       "from": "wiki/entities/iot/mosquitto.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/mosquitto.md",
       "to": "wiki/entities/iot/mqtt-protocol.md",
       "type": "wikilink",
       "broken": false,
@@ -8314,6 +9027,13 @@
       "from": "wiki/entities/iot/mosquitto.md",
       "to": "wiki/sources/mqtt-introduction.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/mqtt-protocol.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8368,6 +9088,13 @@
     },
     {
       "from": "wiki/entities/iot/mysql.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/mysql.md",
       "to": "wiki/entities/iot/node-red.md",
       "type": "wikilink",
       "broken": false,
@@ -8396,6 +9123,13 @@
     },
     {
       "from": "wiki/entities/iot/nb-iot.md",
+      "to": "wiki/sources/lora-vs-nbiot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/nb-iot.md",
       "to": "wiki/concepts/iot/lora.md",
       "type": "wikilink",
       "broken": false,
@@ -8412,6 +9146,20 @@
       "from": "wiki/entities/iot/nb-iot.md",
       "to": "wiki/sources/lora-vs-nbiot.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/node-red.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/node-red.md",
+      "to": "wiki/sources/nodered-dashboard-ui.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8466,6 +9214,13 @@
     },
     {
       "from": "wiki/entities/iot/platformio.md",
+      "to": "wiki/sources/platformio-esp32-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/platformio.md",
       "to": "wiki/entities/iot/arduino-ide.md",
       "type": "wikilink",
       "broken": false,
@@ -8496,6 +9251,20 @@
       "from": "wiki/entities/iot/platformio.md",
       "to": "wiki/sources/platformio-esp32-guide.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/pms5003.md",
+      "to": "wiki/sources/air-quality-iot-lora-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/pms5003.md",
+      "to": "wiki/sources/air-quality-sensors-dronebot.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8564,6 +9333,13 @@
     },
     {
       "from": "wiki/entities/iot/pzem-004t.md",
+      "to": "wiki/sources/espem-energy-monitor.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/pzem-004t.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -8594,6 +9370,13 @@
       "from": "wiki/entities/iot/pzem-004t.md",
       "to": "wiki/sources/espem-energy-monitor.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/raspberry-pi.md",
+      "to": "wiki/sources/raspberry-pi-iot-guide.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8636,6 +9419,34 @@
       "from": "wiki/entities/iot/raspberry-pi.md",
       "to": "wiki/sources/raspberry-pi-iot-guide.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/rfm95-sx1276.md",
+      "to": "wiki/sources/esp32-lora-arduino-ide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/rfm95-sx1276.md",
+      "to": "wiki/sources/esp32-lora-sensor-webserver.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/rfm95-sx1276.md",
+      "to": "wiki/sources/lora-getting-started-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/rfm95-sx1276.md",
+      "to": "wiki/sources/esp32-lora-gateway-sparkfun.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8692,6 +9503,20 @@
       "from": "wiki/entities/iot/rfm95-sx1276.md",
       "to": "wiki/sources/lora-getting-started-dronebot.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/telegram-bot.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/telegram-bot.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8760,6 +9585,20 @@
     },
     {
       "from": "wiki/entities/iot/the-things-network.md",
+      "to": "wiki/sources/esp32-lora-gateway-sparkfun.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/the-things-network.md",
+      "to": "wiki/sources/lorawan-network-beginner.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/the-things-network.md",
       "to": "wiki/concepts/iot/lorawan.md",
       "type": "wikilink",
       "broken": false,
@@ -8788,6 +9627,13 @@
     },
     {
       "from": "wiki/entities/iot/vapcell-m35-18650.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/vapcell-m35-18650.md",
       "to": "wiki/entities/iot/18650-battery-shield.md",
       "type": "wikilink",
       "broken": false,
@@ -8811,6 +9657,13 @@
       "from": "wiki/entities/iot/vapcell-m35-18650.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/velxio.md",
+      "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -8923,6 +9776,13 @@
       "from": "wiki/entities/pharmacy/drug-database.md",
       "to": "wiki/sources/pharmacy-context.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/pharmacy/drug-matching-system.md",
+      "to": "wiki/sources/drug-aliases-reference.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10210,6 +11070,20 @@
     {
       "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "to": "wiki/sources/freqtrade-pi5.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -10253,6 +11127,27 @@
       "from": "wiki/synthesis/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/air-quality-monitoring.md",
+      "to": "wiki/sources/air-quality-iot-lora-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/air-quality-monitoring.md",
+      "to": "wiki/sources/air-quality-sensors-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/air-quality-monitoring.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10349,6 +11244,13 @@
     },
     {
       "from": "wiki/synthesis/appsheet-to-webapp-pi5.md",
+      "to": "wiki/sources/appsheet-env-datadict.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "to": "wiki/entities/iot/esp32.md",
       "type": "wikilink",
       "broken": false,
@@ -10393,6 +11295,27 @@
       "from": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "to": "wiki/entities/env/rabies-pep-surveillance.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/cold-chain-vaccine.md",
+      "to": "wiki/sources/vaccine-temp-monitoring-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/cold-chain-vaccine.md",
+      "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/cold-chain-vaccine.md",
+      "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10470,6 +11393,20 @@
       "from": "wiki/synthesis/cold-chain-vaccine.md",
       "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
       "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/sources/dashboard-design-best-practices.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/sources/good-uiux-practices.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10657,6 +11594,13 @@
     },
     {
       "from": "wiki/synthesis/dual-ai-workflow.md",
+      "to": "wiki/sources/telegram-ai-router-design.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/dual-ai-workflow.md",
       "to": "wiki/synthesis/openrouter-agent-routing.md",
       "type": "wikilink",
       "broken": false,
@@ -10687,6 +11631,27 @@
       "from": "wiki/synthesis/dual-ai-workflow.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/energy-power-monitoring.md",
+      "to": "wiki/sources/pzem-004t-guide-2025.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/energy-power-monitoring.md",
+      "to": "wiki/sources/espem-energy-monitor.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/energy-power-monitoring.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10776,6 +11741,13 @@
     },
     {
       "from": "wiki/synthesis/env-webapp-schema-wastewater.md",
+      "to": "wiki/sources/appsheet-env-datadict.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/env-webapp-schema-wastewater.md",
       "to": "wiki/synthesis/appsheet-to-webapp-pi5.md",
       "type": "wikilink",
       "broken": false,
@@ -10798,6 +11770,13 @@
     {
       "from": "wiki/synthesis/env-webapp-schema-wastewater.md",
       "to": "wiki/sources/umbrel-pi5-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/fuel-tank-level.md",
+      "to": "wiki/sources/esp32-tank-level-mqtt.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -10860,6 +11839,20 @@
     },
     {
       "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
       "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "type": "extends",
       "broken": false,
@@ -10890,6 +11883,13 @@
       "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
       "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/garbage-report-ocr.md",
+      "to": "wiki/sources/infectious-waste-th-law.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -10939,6 +11939,27 @@
       "from": "wiki/synthesis/garbage-report-ocr.md",
       "to": "wiki/sources/infectious-waste-th-law.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/iot-lora-architecture.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/iot-lora-architecture.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/iot-lora-architecture.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11042,6 +12063,27 @@
     },
     {
       "from": "wiki/synthesis/local-llm-pc-vs-mac-2026.md",
+      "to": "wiki/sources/ai-iot-server-build-v3.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/local-llm-pc-vs-mac-2026.md",
+      "to": "wiki/sources/local-llm-mac-mini-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/local-llm-pc-vs-mac-2026.md",
+      "to": "wiki/sources/strix-halo-research-2026-05-05.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/local-llm-pc-vs-mac-2026.md",
       "to": "wiki/sources/strix-halo-research-2026-05-05.md",
       "type": "wikilink",
       "broken": false,
@@ -11098,6 +12140,20 @@
     },
     {
       "from": "wiki/synthesis/openrouter-agent-routing.md",
+      "to": "wiki/sources/openrouter-api-demo.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/openrouter-agent-routing.md",
+      "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/openrouter-agent-routing.md",
       "to": "wiki/synthesis/dual-ai-workflow.md",
       "type": "wikilink",
       "broken": false,
@@ -11142,6 +12198,13 @@
       "from": "wiki/synthesis/openrouter-agent-routing.md",
       "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pharmacy-order-checker.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11210,6 +12273,13 @@
     },
     {
       "from": "wiki/synthesis/pharmacy-web-app-roadmap.md",
+      "to": "wiki/sources/pharmacy-ui-instructions.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pharmacy-web-app-roadmap.md",
       "to": "wiki/entities/pharmacy/pharmacy-business.md",
       "type": "wikilink",
       "broken": false,
@@ -11247,6 +12317,27 @@
       "from": "wiki/synthesis/pharmacy-web-app-roadmap.md",
       "to": "wiki/sources/pharmacy-ui-instructions.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pi4-lora-gateway-server.md",
+      "to": "wiki/sources/raspberry-pi-iot-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pi4-lora-gateway-server.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pi4-lora-gateway-server.md",
+      "to": "wiki/sources/dx-lr02-datasheet.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11371,6 +12462,13 @@
     },
     {
       "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
       "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "type": "wikilink",
       "broken": false,
@@ -11408,6 +12506,13 @@
       "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
       "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11441,6 +12546,20 @@
     },
     {
       "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "type": "depends",
       "broken": false,
@@ -11469,6 +12588,20 @@
     },
     {
       "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/pixellab-phaser-asset-convention.md",
       "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "type": "extends",
       "broken": false,
@@ -11490,6 +12623,20 @@
     },
     {
       "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
+      "to": "wiki/sources/freqtrade-pi5.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
       "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "type": "extends",
       "broken": false,
@@ -11499,6 +12646,13 @@
       "from": "wiki/synthesis/premium-auto-trading-capability-hub.md",
       "to": "wiki/sources/freqtrade-pi5.md",
       "type": "extends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/revenue-engine-capability-hub.md",
+      "to": "wiki/sources/openrouter-api-demo.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11524,11 +12678,795 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/sunday-invest-moon-roadmap.md",
+      "to": "wiki/synthesis/pixel-wealth-quest-gdd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
+      "to": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
+      "to": "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-3-dashboard-node-red.md",
+      "to": "wiki/sources/3-dashboard-node-red.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-agent-frameworks-local-debug-2026.md",
+      "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-agents-integration-guide.md",
+      "to": "wiki/sources/ai-agents-integration-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-agent-patterns.md",
+      "to": "wiki/sources/ai-engineering-agent-patterns.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-glossary.md",
+      "to": "wiki/sources/ai-engineering-glossary.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-llm.md",
+      "to": "wiki/sources/ai-engineering-llm.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-multi-agent.md",
+      "to": "wiki/sources/ai-engineering-multi-agent.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-myths.md",
+      "to": "wiki/sources/ai-engineering-myths.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-swarm-optimization.md",
+      "to": "wiki/sources/ai-engineering-swarm-optimization.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-engineering-tools-protocols.md",
+      "to": "wiki/sources/ai-engineering-tools-protocols.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-iot-server-build-v3-final.md",
+      "to": "wiki/sources/ai-iot-server-build-v3-final.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ai-iot-server-build-v3.md",
+      "to": "wiki/sources/ai-iot-server-build-v3.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-air-quality-iot-lora-network.md",
+      "to": "wiki/sources/air-quality-iot-lora-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
+      "to": "wiki/sources/air-quality-sensors-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-appsheet-env-datadict.md",
+      "to": "wiki/sources/appsheet-env-datadict.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md",
+      "to": "wiki/sources/arduino-ide-esp32-arduino-2025.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-arduino-ide-esp32-setup.md",
+      "to": "wiki/sources/arduino-ide-esp32-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "to": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md",
+      "to": "wiki/sources/arduino-librariesarduino-powermanagement.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md",
+      "to": "wiki/sources/arduino-librariesarduinopowermanagement.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-build-software-better-together.md",
+      "to": "wiki/sources/build-software-better-together.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md",
+      "to": "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-claude-model-cost-switching-strategy-2026-06.md",
+      "to": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-context-claude-code-dev-vibe-coding-thailand.md",
+      "to": "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
+      "to": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
+      "to": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dashboard-design-best-practices-and-examples.md",
+      "to": "wiki/sources/dashboard-design-best-practices-and-examples.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dashboard-design-best-practices.md",
+      "to": "wiki/sources/dashboard-design-best-practices.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-datasheet-dx-lr02.md",
+      "to": "wiki/sources/datasheet-dx-lr02.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ddc-cpg-rabies-2564.md",
+      "to": "wiki/sources/ddc-cpg-rabies-2564.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-drug-aliases-reference.md",
+      "to": "wiki/sources/drug-aliases-reference.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
+      "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dx-lr02-at-commands-demo.md",
+      "to": "wiki/sources/dx-lr02-at-commands-demo.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dx-lr02-datasheet.md",
+      "to": "wiki/sources/dx-lr02-datasheet.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dx-lr02-module-spec-official.md",
+      "to": "wiki/sources/dx-lr02-module-spec-official.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dx-lr02-official-arduino-library.md",
+      "to": "wiki/sources/dx-lr02-official-arduino-library.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-dx-lr02-serial-guide-v2.md",
+      "to": "wiki/sources/dx-lr02-serial-guide-v2.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-easyloranode-tracker.md",
+      "to": "wiki/sources/easyloranode-tracker.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp-idf-docs.md",
+      "to": "wiki/sources/esp-idf-docs.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-complete-guide-thai.md",
+      "to": "wiki/sources/esp32-complete-guide-thai.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-hx711-mqtt-github.md",
+      "to": "wiki/sources/esp32-hx711-mqtt-github.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-hx711-randomnerd.md",
+      "to": "wiki/sources/esp32-hx711-randomnerd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md",
+      "to": "wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-arduino-ide.md",
+      "to": "wiki/sources/esp32-lora-arduino-ide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-gateway-sparkfun.md",
+      "to": "wiki/sources/esp32-lora-gateway-sparkfun.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
+      "to": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
+      "to": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-lora-sensor-webserver.md",
+      "to": "wiki/sources/esp32-lora-sensor-webserver.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-s3-intro-thai.md",
+      "to": "wiki/sources/esp32-s3-intro-thai.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-tank-level-mqtt.md",
+      "to": "wiki/sources/esp32-tank-level-mqtt.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-weather-dashboard-16day.md",
+      "to": "wiki/sources/esp32-weather-dashboard-16day.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-weather-epd.md",
+      "to": "wiki/sources/esp32-weather-epd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-with-lora-using-arduino-ide.md",
+      "to": "wiki/sources/esp32-with-lora-using-arduino-ide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
+      "to": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-esp32.md",
+      "to": "wiki/sources/esp32.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-espem-energy-monitor.md",
+      "to": "wiki/sources/espem-energy-monitor.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md",
+      "to": "wiki/sources/espressif-esp32-s3-iot-engineering-education.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
+      "to": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
       "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
       "type": "mdlink",
       "broken": false,
       "external": true
+    },
+    {
+      "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "to": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-freqtrade-pi5.md",
+      "to": "wiki/sources/freqtrade-pi5.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
+      "to": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
+      "to": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-github-0x0funky-agent-sprite-forge.md",
+      "to": "wiki/sources/github-0x0funky-agent-sprite-forge.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-github-blendi-remade-sprite-sheet-creator.md",
+      "to": "wiki/sources/github-blendi-remade-sprite-sheet-creator.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-good-uiux-practices.md",
+      "to": "wiki/sources/good-uiux-practices.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-hardware-inventory-2026-04-18.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-heltec-libraries.md",
+      "to": "wiki/sources/heltec-libraries.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
+      "to": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "to": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-hermes-agent-guide-th.md",
+      "to": "wiki/sources/hermes-agent-guide-th.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-hermes-agent.md",
+      "to": "wiki/sources/hermes-agent.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-hospital-wastewater-treatment.md",
+      "to": "wiki/sources/hospital-wastewater-treatment.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-how-lorawan-network-works-a-beginner.md",
+      "to": "wiki/sources/how-lorawan-network-works-a-beginner.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-hyperframes-official-docs.md",
+      "to": "wiki/sources/hyperframes-official-docs.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-infectious-waste-th-law.md",
+      "to": "wiki/sources/infectious-waste-th-law.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
+      "to": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
+      "to": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md",
+      "to": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-engineering-education.md",
+      "to": "wiki/sources/iot-engineering-education.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-lora-gateway-architecture.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md",
+      "to": "wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
+      "to": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md",
+      "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md",
+      "to": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
+      "to": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iot-visualization-guide.md",
+      "to": "wiki/sources/iot-visualization-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
+      "to": "wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
+      "to": "wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
+      "to": "wiki/sources/local-llm-mac-mini-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-arduino-esp8266-esp32-iot-lora-lora.md",
+      "to": "wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-getting-started-dronebot.md",
+      "to": "wiki/sources/lora-getting-started-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md",
+      "to": "wiki/sources/lora-getting-started-with-arduino-esp32-pico.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-nb-iot.md",
+      "to": "wiki/sources/lora-nb-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-thai-intro.md",
+      "to": "wiki/sources/lora-thai-intro.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lora-vs-nbiot.md",
+      "to": "wiki/sources/lora-vs-nbiot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
+      "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
+      "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lorawan-fuota-rak3172.md",
+      "to": "wiki/sources/lorawan-fuota-rak3172.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-lorawan-network-beginner.md",
+      "to": "wiki/sources/lorawan-network-beginner.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-mac-studio-used-thailand-2026-05-05.md",
+      "to": "wiki/sources/mac-studio-used-thailand-2026-05-05.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-manual-input-appsheet-env-2026-05-04.md",
+      "to": "wiki/sources/manual-input-appsheet-env-2026-05-04.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-mqtt-introduction.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-nodered-dashboard-ui.md",
+      "to": "wiki/sources/nodered-dashboard-ui.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-note-taking-research-assistant-powered-by-ai.md",
+      "to": "wiki/sources/note-taking-research-assistant-powered-by-ai.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ollama-pi5.md",
+      "to": "wiki/sources/ollama-pi5.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-openrouter-api-demo.md",
+      "to": "wiki/sources/openrouter-api-demo.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pharmacy-context.md",
+      "to": "wiki/sources/pharmacy-context.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pharmacy-ui-instructions.md",
+      "to": "wiki/sources/pharmacy-ui-instructions.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
+      "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
     },
     {
       "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
@@ -11552,6 +13490,160 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-platformio-esp32-guide.md",
+      "to": "wiki/sources/platformio-esp32-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-pzem-004t-guide-2025.md",
+      "to": "wiki/sources/pzem-004t-guide-2025.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-rabies-vaccine-guidelines-th-2026-05-02.md",
+      "to": "wiki/sources/rabies-vaccine-guidelines-th-2026-05-02.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md",
+      "to": "wiki/sources/raspberry-pi-5-16gb-made-in-uk.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
+      "to": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
+      "to": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-raspberry-pi-documentation.md",
+      "to": "wiki/sources/raspberry-pi-documentation.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-raspberry-pi-iot-guide.md",
+      "to": "wiki/sources/raspberry-pi-iot-guide.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-readme.md",
+      "to": "wiki/sources/readme.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
+      "to": "wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
+      "to": "wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md",
+      "to": "wiki/sources/rpi-ai-hat-plus-2-official.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-rpi5-16gb-thailand-price.md",
+      "to": "wiki/sources/rpi5-16gb-thailand-price.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
+      "to": "wiki/sources/saovabha-rabies-pep-2565.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-source-5e4074bd.md",
+      "to": "wiki/sources/source-5e4074bd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-sp-drugstore-2020-catalog.md",
+      "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-strix-halo-research-2026-05-05.md",
+      "to": "wiki/sources/strix-halo-research-2026-05-05.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-supabase-overview-2026-05-02.md",
+      "to": "wiki/sources/supabase-overview-2026-05-02.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-telegram-ai-agent-setup.md",
+      "to": "wiki/sources/telegram-ai-agent-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-telegram-ai-router-design.md",
+      "to": "wiki/sources/telegram-ai-router-design.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-tinyml-esp32-applications.md",
+      "to": "wiki/sources/tinyml-esp32-applications.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-trading-rpg-project-brief-2026-05-30.md",
+      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-trading-rpg-project-brief-2026-05-30.md",
       "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
       "type": "extends",
@@ -11566,11 +13658,151 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-umbrel-pi5-setup.md",
+      "to": "wiki/sources/umbrel-pi5-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-uthai-equipment-price-2568.md",
+      "to": "wiki/sources/uthai-equipment-price-2568.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ux-design-in-iot.md",
+      "to": "wiki/sources/ux-design-in-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-vaccine-cae-anomaly-detection.md",
+      "to": "wiki/sources/vaccine-cae-anomaly-detection.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-vaccine-temp-monitoring-iot.md",
+      "to": "wiki/sources/vaccine-temp-monitoring-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
+      "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md",
+      "to": "wiki/sources/vibe-pocketbase-gemini-plan.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
+      "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
       "to": "https://github.com/vortigont/espem/blob/master/docs/BUILD.md",
       "type": "mdlink",
       "broken": false,
       "external": true
+    },
+    {
+      "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md",
+      "to": "wiki/sources/web-appsheet-export-yaml-2026-05-04.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md",
+      "to": "wiki/sources/web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-web-local-llm-mac-mini-2026-04-19.md",
+      "to": "wiki/sources/web-local-llm-mac-mini-2026-04-19.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-web-raspberry-pi-ai-bot-recommendation-2026.md",
+      "to": "wiki/sources/web-raspberry-pi-ai-bot-recommendation-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-who-rabies-position-2018.md",
+      "to": "wiki/sources/who-rabies-position-2018.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
+      "to": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md",
+      "to": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-คู่มือ-hermes-agent.md",
+      "to": "wiki/sources/คู่มือ-hermes-agent.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
+      "to": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
+      "to": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
+      "to": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
     },
     {
       "from": "wiki/synthesis/synthesis-ai-tools.md",
@@ -11644,6 +13876,20 @@
     },
     {
       "from": "wiki/synthesis/temperature-monitor-project.md",
+      "to": "wiki/sources/hardware-inventory-2026-04-18.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/temperature-monitor-project.md",
+      "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/temperature-monitor-project.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
       "broken": false,
@@ -11707,6 +13953,13 @@
     },
     {
       "from": "wiki/synthesis/vibe-pocketbase-project.md",
+      "to": "wiki/sources/vibe-pocketbase-gemini-plan.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/vibe-pocketbase-project.md",
       "to": "wiki/synthesis/pharmacy-order-checker.md",
       "type": "wikilink",
       "broken": false,
@@ -11742,6 +13995,13 @@
     },
     {
       "from": "wiki/synthesis/waste-form-automation.md",
+      "to": "wiki/sources/infectious-waste-th-law.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/waste-form-automation.md",
       "to": "wiki/synthesis/garbage-report-ocr.md",
       "type": "wikilink",
       "broken": false,
@@ -11765,6 +14025,27 @@
       "from": "wiki/synthesis/waste-form-automation.md",
       "to": "wiki/sources/infectious-waste-th-law.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/waste-weight-monitoring.md",
+      "to": "wiki/sources/esp32-hx711-randomnerd.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/waste-weight-monitoring.md",
+      "to": "wiki/sources/esp32-hx711-mqtt-github.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/waste-weight-monitoring.md",
+      "to": "wiki/sources/iot-lora-gateway-architecture.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -11849,6 +14130,13 @@
       "from": "wiki/synthesis/waste-weight-monitoring.md",
       "to": "wiki/sources/esp32-hx711-mqtt-github.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/wiki-to-video-pipeline.md",
+      "to": "wiki/sources/hyperframes-official-docs.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },

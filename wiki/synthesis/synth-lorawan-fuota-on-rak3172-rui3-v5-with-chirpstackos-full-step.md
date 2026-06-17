@@ -1,4 +1,5 @@
 ---
+tags: [iot, lorawan, fuota, rak3172, rui3, chirpstackos]
 type: synthesis
 title: "![](https://www.youtube.com/watch?v=uqUSpXV8yVM) — Synthesis"
 slug: synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step

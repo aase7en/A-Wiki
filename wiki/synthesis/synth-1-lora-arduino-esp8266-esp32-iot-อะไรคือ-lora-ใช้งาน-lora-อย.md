@@ -1,4 +1,5 @@
 ---
+tags: [lora, arduino, esp8266, esp32, iot]
 type: synthesis
 title: "[![ArduinoAll ขาย Arduino ซื้อ Arduino ทุกอย่าง เปลี่ยนชื่อเป็น AllNewStep](http — Synthesis"
 slug: synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย

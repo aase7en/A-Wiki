@@ -1,4 +1,5 @@
 ---
+tags: [iot, umbrel, pi5, setup]
 type: synthesis
 title: "Umbrel OS บน Raspberry Pi 5 — Setup และ Custom Apps — Synthesis"
 slug: synth-umbrel-pi5-setup

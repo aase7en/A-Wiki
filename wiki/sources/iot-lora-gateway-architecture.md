@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, gateway, architecture]
 type: source
 title: "iot lora gateway architecture"
 slug: iot-lora-gateway-architecture

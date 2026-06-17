@@ -1,4 +1,5 @@
 ---
+tags: [readme]
 type: synthesis
 title: "README — Synthesis"
 slug: synth-readme

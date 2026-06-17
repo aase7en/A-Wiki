@@ -1,4 +1,5 @@
 ---
+tags: [iot, nodered, dashboard]
 type: synthesis
 title: "ตอน 3: สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง — Synthesis"
 slug: synth-nodered-dashboard-ui

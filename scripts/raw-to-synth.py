@@ -202,11 +202,24 @@ def generate_synthesis(source_path: Path, score_result: dict) -> str:
 
     synt_slug = f"synth-{slug}"
 
+    # Carry over source tags (+ synthesis marker, + domain) so every synth stub
+    # ships with a non-empty `tags:` line. Root-cause fix for missing-tags audit.
+    src_tags = meta.get("tags", [])
+    if isinstance(src_tags, str):
+        src_tags = [src_tags]
+    synth_tags = ["synthesis"] + [str(t).strip() for t in src_tags if str(t).strip()]
+    if domain and domain not in synth_tags:
+        synth_tags.append(domain)
+    # de-dup preserving order
+    seen: set[str] = set()
+    synth_tags = [t for t in synth_tags if not (t in seen or seen.add(t))]
+
     lines = [
         "---",
         f"type: synthesis",
         f"title: \"{title} — Synthesis\"",
         f"slug: {synt_slug}",
+        f"tags: [{', '.join(synth_tags)}]",
         f"date_synthesized: {today}",
         f"sources: [{source_rel}]",
         f"quality_score: {score_result['total']}/10",
@@ -214,7 +227,7 @@ def generate_synthesis(source_path: Path, score_result: dict) -> str:
         "---",
         "",
         f"# {title} — Synthesis",
-        f"> Quality Score: {score_result['total']}/10 — {score_result['tier']}",
+        f"> Quality Score: {score_result['total']}/10 — {score_result['tier']} · [wiki]",
         "",
         "## Summary",
         summary,

@@ -1,4 +1,5 @@
 ---
+tags: [lora, iot]
 type: source
 title: "เครื่องวัดน้ำ LoRa-nb iot เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริยะ"
 slug: lora-nb-iot

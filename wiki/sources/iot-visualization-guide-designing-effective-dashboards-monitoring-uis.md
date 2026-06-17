@@ -1,4 +1,5 @@
 ---
+tags: [iot, visualization, guide, designing, effective]
 type: source
 title: "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs"
 slug: iot-visualization-guide-designing-effective-dashboards-monitoring-uis

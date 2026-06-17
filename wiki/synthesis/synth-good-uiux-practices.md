@@ -1,4 +1,5 @@
 ---
+tags: [good, uiux, practices]
 type: synthesis
 title: "<iframe src="https://projector.datacamp.com/?auto_play=pause&amp;projector_key=c — Synthesis"
 slug: synth-good-uiux-practices

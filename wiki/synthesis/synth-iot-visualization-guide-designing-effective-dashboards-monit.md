@@ -1,4 +1,5 @@
 ---
+tags: [iot, visualization, guide, designing, effective]
 type: synthesis
 title: "![](https://www.youtube.com/watch?v=nNp802oxy7o) — Synthesis"
 slug: synth-iot-visualization-guide-designing-effective-dashboards-monit

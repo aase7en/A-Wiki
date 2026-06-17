@@ -1,4 +1,5 @@
 ---
+tags: [hardware, inventory]
 type: source
 title: "hardware inventory 2026 04 18"
 slug: hardware-inventory-2026-04-18

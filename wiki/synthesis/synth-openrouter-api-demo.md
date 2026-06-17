@@ -1,4 +1,5 @@
 ---
+tags: [ai, openrouter, api, demo]
 type: synthesis
 title: "OpenRouter API demo and capabilities — Synthesis"
 slug: synth-openrouter-api-demo

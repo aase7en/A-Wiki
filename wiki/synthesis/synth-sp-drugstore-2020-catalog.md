@@ -1,4 +1,5 @@
 ---
+tags: [pharmacy, drugstore, catalog]
 type: synthesis
 title: "เอสพีดรักสโตร์ 2020 — Drug Catalog 3,760 รายการ — Synthesis"
 slug: synth-sp-drugstore-2020-catalog

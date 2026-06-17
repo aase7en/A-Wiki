@@ -1,4 +1,5 @@
 ---
+tags: [iot, raspberry, documentation]
 type: source
 title: "Raspberry Pi Documentation"
 slug: raspberry-pi-documentation

@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, gateway, architecture]
 type: synthesis
 title: "IoT Architecture Diagram: ESP32 + LoRa + MQTT + Services — Synthesis"
 slug: synth-iot-lora-gateway-architecture

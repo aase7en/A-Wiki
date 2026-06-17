@@ -1,4 +1,5 @@
 ---
+tags: [vortigontespem, energy, monitor, dashboardmetrics, collecto]
 type: synthesis
 title: "**[BUILD](https://github.com/vortigont/espem/blob/master/docs/BUILD.md) | [USAGE — Synthesis"
 slug: synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto

@@ -1,4 +1,5 @@
 ---
+tags: [iot, velxio, arduino, esp32, simulator]
 type: synthesis
 title: "Velxio — Open-Source Arduino/ESP32/Raspberry Pi Simulator — Synthesis"
 slug: synth-velxio-arduino-esp32-pi-simulator

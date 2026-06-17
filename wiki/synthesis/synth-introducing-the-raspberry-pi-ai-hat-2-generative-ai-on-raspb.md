@@ -1,4 +1,5 @@
 ---
+tags: [iot, introducing, raspberry, hat, generative, raspb]
 type: synthesis
 title: "A little over a year ago, we introduced the [Raspberry Pi AI HAT+](https://www.r — Synthesis"
 slug: synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb

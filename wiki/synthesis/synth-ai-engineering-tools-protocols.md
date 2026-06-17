@@ -1,4 +1,5 @@
 ---
+tags: [ai, engineering, tools, protocols]
 type: synthesis
 title: "Tools & Protocols — rohitg00/ai-engineering-from-scratch Phase 13 (subtopics 06 MCP, 19 A2A) — Synthesis"
 slug: synth-ai-engineering-tools-protocols

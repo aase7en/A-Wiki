@@ -1,4 +1,5 @@
 ---
+tags: [iot, node, red, mqtt, sql]
 type: source
 title: "“IoT Node-RED + MQTT + SQL – ทำ Data Logger & Dashboard แบบอุตสาหกรรม”"
 slug: iot-node-red-mqtt-sql-data-logger-dashboard

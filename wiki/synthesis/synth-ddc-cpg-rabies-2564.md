@@ -1,4 +1,5 @@
 ---
+tags: [env, ddc, cpg, rabies]
 type: synthesis
 title: "แนวทางเวชปฏิบัติโรคพิษสุนัขบ้า และคำถามที่พบบ่อย (ฉบับปรับปรุง) — Synthesis"
 slug: synth-ddc-cpg-rabies-2564

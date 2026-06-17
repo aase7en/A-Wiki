@@ -1,4 +1,5 @@
 ---
+tags: [iot, ollama, pi5]
 type: synthesis
 title: "Ollama Local LLM on Raspberry Pi 5 — Synthesis"
 slug: synth-ollama-pi5

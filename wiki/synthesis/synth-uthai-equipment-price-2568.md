@@ -1,4 +1,5 @@
 ---
+tags: [ai, uthai, equipment, price]
 type: synthesis
 title: "บัญชีราคามาตรฐานครุภัณฑ์ ธ.ค. 2568 — Synthesis"
 slug: synth-uthai-equipment-price-2568

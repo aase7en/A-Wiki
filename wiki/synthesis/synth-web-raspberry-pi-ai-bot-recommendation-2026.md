@@ -1,4 +1,5 @@
 ---
+tags: [iot, web, raspberry, bot, recommendation]
 type: synthesis
 title: "> ⚠️ PENDING REVIEW — เนื้อหานี้ยังไม่ได้รับการตรวจสอบโดย Claude — Synthesis"
 slug: synth-web-raspberry-pi-ai-bot-recommendation-2026

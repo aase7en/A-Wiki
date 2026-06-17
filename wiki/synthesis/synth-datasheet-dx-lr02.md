@@ -1,4 +1,5 @@
 ---
+tags: [iot, datasheet, lr02]
 type: synthesis
 title: "ข้อมูล datasheet ของ DX LR02  — Synthesis"
 slug: synth-datasheet-dx-lr02

@@ -1,4 +1,5 @@
 ---
+tags: [ai, hermes, agent, guide]
 type: synthesis
 title: "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent — Synthesis"
 slug: synth-hermes-agent-guide-th

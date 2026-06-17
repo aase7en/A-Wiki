@@ -1,4 +1,5 @@
 ---
+tags: [iot, web, comparison, mac, mini, pi5]
 type: synthesis
 title: "> ⚠️ PENDING REVIEW — เนื้อหานี้ยังไม่ได้รับการตรวจสอบโดย Claude — Synthesis"
 slug: synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19

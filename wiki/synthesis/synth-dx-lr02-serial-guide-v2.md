@@ -1,4 +1,5 @@
 ---
+tags: [iot, lr02, serial, guide]
 type: synthesis
 title: "DX-LR02-900T22D Serial Port Application Guide v2.0 — Synthesis"
 slug: synth-dx-lr02-serial-guide-v2

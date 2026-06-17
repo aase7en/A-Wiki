@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, arduino, ide]
 type: synthesis
 title: "ESP32 with LoRa using Arduino IDE — Synthesis"
 slug: synth-esp32-lora-arduino-ide

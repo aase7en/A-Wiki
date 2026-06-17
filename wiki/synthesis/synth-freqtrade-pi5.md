@@ -1,4 +1,5 @@
 ---
+tags: [iot, freqtrade, pi5]
 type: synthesis
 title: "Freqtrade — Crypto Trading Bot on Raspberry Pi — Synthesis"
 slug: synth-freqtrade-pi5

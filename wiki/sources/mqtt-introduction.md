@@ -1,4 +1,5 @@
 ---
+tags: [iot, mqtt, introduction]
 type: source
 title: "mqtt introduction"
 slug: mqtt-introduction

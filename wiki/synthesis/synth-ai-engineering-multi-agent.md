@@ -1,9 +1,10 @@
 ---
+tags: [ai, engineering, multi, agent]
 type: synthesis
 title: "Multi-Agent Theory — rohitg00/ai-engineering-from-scratch Phase 16 (subtopics 01-13) — Synthesis"
 slug: synth-ai-engineering-multi-agent
 date_synthesized: 2026-06-08
-sources: [wiki\sources\ai-engineering-multi-agent.md]
+sources: [wiki/sources/ai-engineering-multi-agent.md]
 quality_score: 10/10
 domain: ''
 ---

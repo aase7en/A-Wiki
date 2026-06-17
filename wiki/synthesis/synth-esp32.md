@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32]
 type: synthesis
 title: "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน — Synthesis"
 slug: synth-esp32

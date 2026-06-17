@@ -1,4 +1,5 @@
 ---
+tags: [pharmacy, drugstore, catalog]
 type: source
 title: "รายการยา บริษัท เอสพีดรักสโตร์ 2020 จำกัด"
 slug: sp-drugstore-2020-catalog

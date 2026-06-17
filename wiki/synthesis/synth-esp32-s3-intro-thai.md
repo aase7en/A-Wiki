@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, intro, thai]
 type: synthesis
 title: "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education — Synthesis"
 slug: synth-esp32-s3-intro-thai

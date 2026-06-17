@@ -1,4 +1,5 @@
 ---
+tags: [strix, halo, research]
 type: synthesis
 title: "AMD Ryzen AI Max+ 395 (Strix Halo) — Verified Research 2026-05-05 — Synthesis"
 slug: synth-strix-halo-research-2026-05-05

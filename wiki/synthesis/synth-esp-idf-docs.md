@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp, idf, docs]
 type: synthesis
 title: "ESP-IDF: Espressif IoT Development Framework (Official) — Synthesis"
 slug: synth-esp-idf-docs

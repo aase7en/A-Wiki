@@ -1,4 +1,5 @@
 ---
+tags: [air, quality, iot, lora, network]
 type: synthesis
 title: "AIR-QUALITY-IOT-NETWORK — Distributed LoRa + Kafka + Grafana — Synthesis"
 slug: synth-air-quality-iot-lora-network

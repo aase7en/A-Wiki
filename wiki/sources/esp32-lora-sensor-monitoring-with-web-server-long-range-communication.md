@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, sensor, monitoring, web]
 type: source
 title: "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication)"
 slug: esp32-lora-sensor-monitoring-with-web-server-long-range-communication

@@ -1,4 +1,5 @@
 ---
+tags: [source, 5e4074bd]
 type: synthesis
 title: "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด — Synthesis"
 slug: synth-source-5e4074bd

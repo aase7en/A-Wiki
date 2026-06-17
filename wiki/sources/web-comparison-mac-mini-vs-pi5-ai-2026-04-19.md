@@ -1,4 +1,5 @@
 ---
+tags: [iot, web, comparison, mac, mini, pi5]
 type: source
 title: "web comparison mac mini vs pi5 ai 2026 04 19"
 slug: web-comparison-mac-mini-vs-pi5-ai-2026-04-19

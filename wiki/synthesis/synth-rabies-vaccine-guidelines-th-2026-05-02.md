@@ -1,4 +1,5 @@
 ---
+tags: [env, rabies, vaccine, guidelines]
 type: synthesis
 title: "> **หมายเหตุ**: ข้อมูลนี้ค้นหาด้วย Gemini CLI (web search) แล้วให้ Claude verify — Synthesis"
 slug: synth-rabies-vaccine-guidelines-th-2026-05-02

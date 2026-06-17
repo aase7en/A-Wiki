@@ -1,4 +1,5 @@
 ---
+tags: [dashboard, design, best, practices, examples]
 type: synthesis
 title: "[User Experience](https://www.justinmind.com/blog/category/user-experience/) — Synthesis"
 slug: synth-dashboard-design-best-practices-and-examples

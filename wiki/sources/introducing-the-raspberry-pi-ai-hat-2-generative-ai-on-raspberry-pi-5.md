@@ -1,4 +1,5 @@
 ---
+tags: [iot, introducing, raspberry, hat, generative]
 type: source
 title: "Introducing the Raspberry Pi AI HAT+ 2: Generative AI on Raspberry Pi 5"
 slug: introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5

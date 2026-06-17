@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [environmental, pharmaceutical, risk, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # Environmental Pharmaceutical Risk
 
 > **Cross-domain synthesis:** Environmental Health ⟷ Pharmacy

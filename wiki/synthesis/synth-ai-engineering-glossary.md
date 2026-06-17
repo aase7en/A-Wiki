@@ -1,9 +1,10 @@
 ---
+tags: [ai, engineering, glossary]
 type: synthesis
 title: "AI Engineering Glossary — rohitg00/ai-engineering-from-scratch — Synthesis"
 slug: synth-ai-engineering-glossary
 date_synthesized: 2026-06-08
-sources: [wiki\sources\ai-engineering-glossary.md]
+sources: [wiki/sources/ai-engineering-glossary.md]
 quality_score: 10/10
 domain: ai
 ---

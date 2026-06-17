@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, gateway, sparkfun]
 type: synthesis
 title: "ESP32 LoRa 1-CH Gateway, LoRaWAN, and the Things Network — Synthesis"
 slug: synth-esp32-lora-gateway-sparkfun

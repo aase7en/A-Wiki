@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino, ide, esp32]
 type: synthesis
 title: "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025 — Synthesis"
 slug: synth-arduino-ide-esp32-arduino-2025

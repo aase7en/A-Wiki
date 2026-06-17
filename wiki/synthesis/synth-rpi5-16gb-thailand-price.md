@@ -1,4 +1,5 @@
 ---
+tags: [iot, rpi5, 16gb, thailand, price]
 type: synthesis
 title: "Raspberry Pi 5 16GB — ราคาในไทย (Arduitronics) — Synthesis"
 slug: synth-rpi5-16gb-thailand-price

@@ -1,4 +1,5 @@
 ---
+tags: [env, who, rabies, position]
 type: synthesis
 title: "Rabies vaccines: WHO position paper, April 2018 (Summary) — Synthesis"
 slug: synth-who-rabies-position-2018

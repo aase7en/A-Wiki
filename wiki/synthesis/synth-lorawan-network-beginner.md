@@ -1,4 +1,5 @@
 ---
+tags: [iot, lorawan, network, beginner]
 type: synthesis
 title: "How LoRaWAN Network Works: A Beginner's Guide — Synthesis"
 slug: synth-lorawan-network-beginner

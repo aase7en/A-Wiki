@@ -1,4 +1,5 @@
 ---
+tags: [github, blendi, remade, sprite, sheet]
 type: synthesis
 title: "GitHub: blendi-remade/sprite-sheet-creator — Synthesis"
 slug: synth-github-blendi-remade-sprite-sheet-creator

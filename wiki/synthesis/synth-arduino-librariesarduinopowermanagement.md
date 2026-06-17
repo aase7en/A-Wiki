@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino]
 type: synthesis
 title: "arduino-libraries/Arduino_PowerManagement — Synthesis"
 slug: synth-arduino-librariesarduinopowermanagement

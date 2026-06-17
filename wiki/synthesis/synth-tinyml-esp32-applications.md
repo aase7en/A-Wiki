@@ -1,4 +1,5 @@
 ---
+tags: [iot, tinyml, esp32, applications]
 type: synthesis
 title: "6 Popular ESP32 AI Applications Using TinyML (DFRobot + TeachMeMicro) — Synthesis"
 slug: synth-tinyml-esp32-applications

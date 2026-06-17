@@ -1,4 +1,5 @@
 ---
+tags: [ai, context, claude, code, dev, vibe]
 type: synthesis
 title: "(10) context ใน Claude Code ใกล้เต็ม dev... - Vibe Coding Thailand — Synthesis"
 slug: synth-context-claude-code-dev-vibe-coding-thailand

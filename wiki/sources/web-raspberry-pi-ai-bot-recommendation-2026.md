@@ -1,4 +1,5 @@
 ---
+tags: [iot, web, raspberry, bot, recommendation]
 type: source
 title: "web raspberry pi ai bot recommendation 2026"
 slug: web-raspberry-pi-ai-bot-recommendation-2026

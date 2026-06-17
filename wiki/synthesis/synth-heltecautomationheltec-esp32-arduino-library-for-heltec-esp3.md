@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, arduino, library, heltec, esp3]
 type: synthesis
 title: "English | [简体中文](#%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87) — Synthesis"
 slug: synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3

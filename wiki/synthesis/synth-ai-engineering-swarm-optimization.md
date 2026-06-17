@@ -1,4 +1,5 @@
 ---
+tags: [ai, engineering, swarm, optimization]
 type: synthesis
 title: "Swarm Optimization + Case Studies — rohitg00/ai-engineering-from-scratch Phase 16 (subtopics 14-25) — Synthesis"
 slug: synth-ai-engineering-swarm-optimization

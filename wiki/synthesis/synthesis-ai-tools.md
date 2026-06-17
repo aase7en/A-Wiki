@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [synthesis, tools, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # AI Tools — Knowledge Synthesis
 
 > **Domain:** ai-tools

@@ -1,4 +1,5 @@
 ---
+tags: [manual, input, appsheet, env]
 type: synthesis
 title: "> ⚠️ ข้อมูลชุดนี้กำลังถูกรวบรวมเพื่อส่งต่อให้ Claude วิเคราะห์โครงสร้างเพื่อแปลง — Synthesis"
 slug: synth-manual-input-appsheet-env-2026-05-04

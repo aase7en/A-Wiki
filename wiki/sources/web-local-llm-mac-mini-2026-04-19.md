@@ -1,4 +1,5 @@
 ---
+tags: [ai, web, local, llm, mac, mini]
 type: source
 title: "web local llm mac mini 2026 04 19"
 slug: web-local-llm-mac-mini-2026-04-19

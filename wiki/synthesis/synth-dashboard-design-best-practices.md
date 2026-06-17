@@ -1,4 +1,5 @@
 ---
+tags: [dashboard, design, best, practices]
 type: synthesis
 title: "Dashboard Design: Best Practices and Examples — Synthesis"
 slug: synth-dashboard-design-best-practices

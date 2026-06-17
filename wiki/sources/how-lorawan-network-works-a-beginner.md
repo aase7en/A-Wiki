@@ -1,4 +1,5 @@
 ---
+tags: [iot, lorawan, network, works, beginner]
 type: source
 title: "How LoRaWAN Network Works: A Beginner"
 slug: how-lorawan-network-works-a-beginner

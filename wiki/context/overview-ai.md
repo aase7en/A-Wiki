@@ -30,6 +30,7 @@
 | `graphify` | Graphify แปลงไฟล์หลากหลาย (code, PDF, markdown, ภาพ, whiteboard)… |
 | `hermes-agent` | Hermes Agent คือ open-source AI agent framework ที่รันผ่าน CLI ส… |
 | `hyperframes` | HyperFrames คือ framework สำหรับเขียนวิดีโอด้วย HTML/CSS และ ani… |
+| `live-dashboard` | Live Dashboard เป็น HTTP + WebSocket server (Python stdlib, zero… |
 | `model-capability-bench` | ระบบจัดลำดับ model ตาม **ความสามารถ (capability)** ก่อนแจกจ่ายงา… |
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |
 | `openmed` | OpenMed คือ open-source healthcare AI framework ที่ประมวลผล clin… |
@@ -38,8 +39,7 @@
 | `social-media-skills` | A-Wiki รับเฉพาะ workflow ที่คุ้มจาก `social-media-skills` มาทำเป… |
 | `telegram-ai-router` | Bot Telegram ส่วนตัวที่รันบน Mac Mini ที่บ้าน ทำหน้าที่เป็น gate… |
 | `turbovec` | turbovec implement **TurboQuant** (Google Research) — quantize e… |
-| `zai-glm` | Z.ai (Zhipu AI) ผู้พัฒนาโมเดลตระกูล **GLM**. ใน A-Wiki ใช้เป็นทา… |
-| `zhipu-glm` | GLM-5.1 (live flagship) / GLM-4.7 / GLM-4.6 เป็น model เด่นด้าน… |
+| `zai-glm` | Z.ai (Zhipu AI) ผู้พัฒนาโมเดลตระกูล **GLM** (General Language Mo… |
 
 ---
 

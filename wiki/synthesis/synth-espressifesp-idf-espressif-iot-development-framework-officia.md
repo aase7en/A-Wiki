@@ -1,4 +1,5 @@
 ---
+tags: [espressifesp, idf, espressif, iot, development]
 type: synthesis
 title: "- [中文版](https://github.com/espressif/esp-idf/blob/master/README_CN.md) — Synthesis"
 slug: synth-espressifesp-idf-espressif-iot-development-framework-officia

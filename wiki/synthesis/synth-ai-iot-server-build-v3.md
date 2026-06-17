@@ -1,4 +1,5 @@
 ---
+tags: [iot, server, build]
 type: synthesis
 title: "Personal AI & IoT Server Build List (v3) — Synthesis"
 slug: synth-ai-iot-server-build-v3

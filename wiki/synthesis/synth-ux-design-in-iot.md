@@ -1,4 +1,5 @@
 ---
+tags: [design, iot]
 type: synthesis
 title: "![UX design in IoT: best practices for connected systems](https://cdn.prod.websi — Synthesis"
 slug: synth-ux-design-in-iot

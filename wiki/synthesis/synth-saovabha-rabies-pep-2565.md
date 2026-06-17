@@ -1,4 +1,5 @@
 ---
+tags: [env, saovabha, rabies, pep]
 type: synthesis
 title: "แนวทางการดูแลรักษาผู้สัมผัสโรคพิษสุนัขบ้า — สถานเสาวภา พ.ศ. 2565 — Synthesis"
 slug: synth-saovabha-rabies-pep-2565

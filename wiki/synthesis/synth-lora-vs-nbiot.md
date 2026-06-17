@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, nbiot]
 type: synthesis
 title: "เครื่องวัดน้ำ LoRa-NB-IoT: การวิเคราะห์เปรียบเทียบ LoRa และ NB-IoT — Synthesis"
 slug: synth-lora-vs-nbiot

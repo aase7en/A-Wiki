@@ -1,4 +1,5 @@
 ---
+tags: [iot, ตอน, สร้าง, dashboard, node, red]
 type: synthesis
 title: "Audio Player <audio src="https://www.techsourcegroups.com/wp-content/uploads/202 — Synthesis"
 slug: synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง

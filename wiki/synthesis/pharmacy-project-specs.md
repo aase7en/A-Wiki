@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [pharmacy, project, specs, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # Project Specs: Pharmacy Order Checker
 
 ## 1. เป้าหมาย (Goal)

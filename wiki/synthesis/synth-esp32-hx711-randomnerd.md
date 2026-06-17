@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, hx711, randomnerd]
 type: synthesis
 title: "ESP32 with Load Cell and HX711 Amplifier (Digital Scale) — Synthesis"
 slug: synth-esp32-hx711-randomnerd

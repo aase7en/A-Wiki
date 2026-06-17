@@ -1,4 +1,5 @@
 ---
+tags: [iot, ropgheltec, esp32, lora, proper, working]
 type: synthesis
 title: "[![](https://github.com/ropg/heltec_esp32_lora_v3/raw/main/images/ESP32_LoRa_v3 — Synthesis"
 slug: synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for

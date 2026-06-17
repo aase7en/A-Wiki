@@ -1,4 +1,5 @@
 ---
+tags: [ai, web, local, llm, mac, mini]
 type: synthesis
 title: "> ℹ️ SOURCE: Gemini training data — ไม่มี URL อ้างอิง ข้อมูลเชิงเทคนิคถูกต้อง แต — Synthesis"
 slug: synth-web-local-llm-mac-mini-2026-04-19

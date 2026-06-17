@@ -1,4 +1,5 @@
 ---
+tags: [hyperframes, official, docs]
 type: synthesis
 title: "HyperFrames official repository, documentation, and catalog — Synthesis"
 slug: synth-hyperframes-official-docs

@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [healthcare, infrastructure, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # Healthcare IT Infrastructure
 
 > **Cross-domain synthesis:** IT ⟷ Pharmacy

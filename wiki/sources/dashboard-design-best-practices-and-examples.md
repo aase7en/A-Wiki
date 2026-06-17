@@ -1,4 +1,5 @@
 ---
+tags: [dashboard, design, best, practices, examples]
 type: source
 title: "Dashboard Design: best practices and examples"
 slug: dashboard-design-best-practices-and-examples

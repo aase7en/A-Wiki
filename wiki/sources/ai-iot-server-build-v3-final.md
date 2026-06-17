@@ -1,4 +1,5 @@
 ---
+tags: [iot, server, build, final]
 type: source
 title: "ai iot server build v3 final"
 slug: ai-iot-server-build-v3-final
