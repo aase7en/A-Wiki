@@ -139,10 +139,11 @@ python3 scripts/lib/drive_secrets.py --check
 | **RyanCodrai/turbovec** | `requirements-optional.txt` (opt-in) | `--backend turbovec` in `scripts/build-vec-index.py` | Alt vector backend, 16x compression, future-scale → [[turbovec]] |
 | **millionco/react-doctor** | global Claude skill (no repo path) | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis for dream projects → [[react-doctor]] |
 | **zarazhangrui/frontend-slides** | `skills/ecosystem/frontend-slides/` (v2.1.0, MIT) | manual sparse-clone from upstream (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
+| **Z.ai (GLM)** | `wiki/context/providers.json` → `zai` | direct API `api.z.ai` (OpenAI-compatible) via provider registry; key `ZHIPU_API_KEY`; `delegate.sh::try_zhipu_direct` | GLM-5.1 flagship + glm-4.5-air cheap — cost-first reasoning/coding; pin รุ่นผ่าน Live Dashboard ⚙️ → [[zai-glm]] |
 
 **Symlink agent-skills/** into agent harnesses: `bash scripts/link-my-skills.sh`
 **Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
-**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec,frontend-slides}.md`
+**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec,frontend-slides,zai-glm}.md`
 
 ---
 
@@ -177,7 +178,7 @@ python3 scripts/lib/drive_secrets.py --check
 | 7 | **Delegation Gate** | `check_delegation_gate.py` | 🔴 Block | Block `git push` without session end protocol |
 | 8 | **Drive Link Check** | `check_drive_link.py` | 📋 Warn | SessionStart: verify `drive/` + `raw/` symlinks intact (non-blocking, ~25ms) |
 | 9 | **Post-Wiki Edit** | `post_wiki_edit.py` | ⚡ Async | Auto-run `gen-index.py` after wiki edit |
-| 10 | **Session Start** | `session_start.py` | 📋 Log | Log session start with timestamp + context |
+| 10 | **Session Start** | `session_start.py` | 📋 Log | Log session start + context; **auto-start Live Dashboard** (`dashboard-ensure.sh` → `server.py --daemonize`, PID-guarded, เปิด browser ครั้งแรก :7790). ปิดด้วย `AWIKI_DISABLE_DASHBOARD_AUTOSTART=1` |
 | 11 | **Hook Runner** | `hooks_runner.py` | 🔄 Orchestrator | Runs ALL hooks in order, aggregates results |
 | 12 | **Source Provenance** | `check_source_original_file.py` | 🔴 Block | Block Write/Edit `wiki/sources/<slug>.md` ถ้า `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีจริง (grandfather Edit บน legacy broken sources) |
 | 13 | **Output Format Guard** | `check_output_format.py` | 🔴 Block/📋 Warn | Block `.html` ลง source-of-truth (wiki/docs/CLAUDE.md/AGENTS.md) หรือนอก exports/html/; เตือน render-don't-dump สำหรับ .md ตารางใหญ่+report keywords |

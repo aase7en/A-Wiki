@@ -213,7 +213,7 @@ Manual GUI checklist:
 
 **1. Provider Registry — `wiki/context/providers.json`** (public-safe: เก็บแค่ชื่อ env var ของ key ไม่เก็บ key)
 - `api_style ∈ {openai, gemini, anthropic}` → ตัวสร้าง request 3 แบบ แทน adapter hardcode
-- `via` = route ผ่านค่ายอื่นจนกว่าจะใส่ key ตรง (เช่น `zai` → `openrouter` ด้วย `z-ai/glm-4.6` จนกว่า `ZAI_API_KEY` จะถูกตั้ง + `enabled:true`)
+- `via` = route ผ่านค่ายอื่นจนกว่าจะใส่ key ตรง (กลไก fallback). **Z.ai เป็น direct แล้ว**: `enabled:true`, `auth_env: ZHIPU_API_KEY`, flagship `glm-5.1` ผ่าน `api.z.ai` (เลี่ยง markup OpenRouter); roster ยังเก็บ `z-ai/glm-4.6` เป็น fallback
 - ใช้ร่วมโดย `scripts/swarm/provider_registry.py` (`build_request` / `call` / `resolve_transport`) และ `delegate.sh` (`try_registry_model <provider> <model>`)
 - **เพิ่มค่ายใหม่ = แก้ registry 1 ไฟล์ (หรือ `add-provider.py`) ไม่ต้องเขียน bash**
 

@@ -60,11 +60,14 @@ def test_registry_is_public_safe_no_secret_values():
         assert "api_style" in p and p["api_style"] in ("openai", "gemini", "anthropic")
 
 
-def test_zai_routes_via_openrouter_and_default_model_is_glm():
+def test_zai_is_direct_glm_provider():
+    # Z.ai is a first-class DIRECT provider (no OpenRouter markup): GLM via api.z.ai
     data = json.loads(PROVIDERS_JSON.read_text(encoding="utf-8"))
     zai = data["providers"]["zai"]
-    assert zai.get("via") == "openrouter"
-    assert zai.get("default_model", "").startswith("z-ai/glm")
+    assert zai["auth_env"] == "ZHIPU_API_KEY"
+    assert zai["endpoint"].startswith("https://api.z.ai")
+    assert zai.get("default_model", "").startswith("glm")
+    assert zai.get("enabled") is True
 
 
 # ── build_request: one shape per api_style ─────────────────────────────────
@@ -105,26 +108,28 @@ def test_build_request_anthropic_style(reg):
 
 # ── via resolution: Z.ai falls back to OpenRouter until ZAI_API_KEY exists ──
 
-def test_resolve_transport_zai_via_openrouter_when_no_key(reg):
+def test_resolve_transport_zai_direct(reg):
+    # No `via` → resolves to itself (direct) regardless of key presence
     name, conf = reg.resolve_transport("zai", env={})
-    assert name == "openrouter"
-    assert conf["api_style"] == "openai"
-
-
-def test_resolve_transport_zai_direct_when_key_present(reg):
-    name, conf = reg.resolve_transport("zai", env={"ZAI_API_KEY": "zk-1"})
     assert name == "zai"
     assert conf["endpoint"].startswith("https://api.z.ai")
 
 
-def test_build_request_zai_uses_openrouter_endpoint_keeps_model(reg):
+def test_resolve_transport_zai_direct_when_key_present(reg):
+    name, conf = reg.resolve_transport("zai", env={"ZHIPU_API_KEY": "zk-1"})
+    assert name == "zai"
+    assert conf["endpoint"].startswith("https://api.z.ai")
+
+
+def test_build_request_zai_direct_endpoint_keeps_model(reg):
     spec = reg.build_request(
-        "zai", "z-ai/glm-4.6", "ping",
-        env={"OPENROUTER_API_KEY": "sk-or-x"},  # no ZAI key
+        "zai", "glm-5.1", "ping",
+        env={"ZHIPU_API_KEY": "zk-x"},
     )
-    assert spec["url"].startswith("https://openrouter.ai")
-    assert spec["body"]["model"] == "z-ai/glm-4.6"
-    assert spec["transport_provider"] == "openrouter"
+    assert spec["url"].startswith("https://api.z.ai")
+    assert spec["body"]["model"] == "glm-5.1"
+    assert spec["transport_provider"] == "zai"
+    assert spec["headers"]["Authorization"] == "Bearer zk-x"
 
 
 # ── CLI: build redacts the key; list enabled ───────────────────────────────
@@ -149,8 +154,8 @@ def test_cli_list_enabled_json():
     assert result.returncode == 0, result.stderr
     names = {p["name"] for p in json.loads(result.stdout)}
     assert "openrouter" in names
-    # zai is disabled by default (routes via openrouter), so not in enabled list
-    assert "zai" not in names
+    # zai is a direct, enabled provider (GLM via api.z.ai)
+    assert "zai" in names
 
 
 # ── Integration: roster + delegate wiring ──────────────────────────────────
