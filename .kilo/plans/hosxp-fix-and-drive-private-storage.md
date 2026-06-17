@@ -25,12 +25,12 @@
 
 ### ส่วน A — ย้าย script ไป private drive + แก้ syntax + ลบจาก repo root
 
-**ปลายทาง (แนะนำ)**: `L:\My Drive\A-Wiki-Data\private-tools\hosxp-permissions\`
-- เหตุผล: `private-tools/` ใช้รูปแบบ "1 tool = 1 subfolder" อยู่แล้ว; เป็น IT-fix ส่วนตัว (ไม่ใช่ความรู้ wiki)
-- ทางเลือก: `L:\My Drive\A-Wiki-Data\personal-tools\scripts\` (ถ้าอยากอยู่กับ scripts ทั่วไป)
+**ปลายทาง** (ตามที่เลือก): `L:\My Drive\A-Wiki-Data\uthai-hospital\hosxp\`
+- เหตุผล: จัดเป็นงานด้านโรงพยาบาล (HOSxP) — `uthai-hospital/` มีอยู่แล้ว (`env-evaluations/` ฯลฯ)
+- อ้างผ่าน repo: `drive/uthai-hospital/hosxp/`
 
 ขั้นตอน:
-1. สร้างโฟลเดอร์ `drive\private-tools\hosxp-permissions\` (ผ่าน junction หรือ path L: ตรงๆ)
+1. สร้างโฟลเดอร์ `drive\uthai-hospital\hosxp\` (ผ่าน junction หรือ path L: ตรงๆ)
 2. เขียน `fix-hosxp-permissions.ps1` ใหม่ที่นั่น — เวอร์ชัน **ASCII-only + UTF-8 BOM + แก้ `$_:` bug**, เนื้อหาเดิม (ค้นหา Hos-WIM32.INI → grant write/modify ให้ aase7en)
 3. เขียน `run-as-admin.bat` ที่นั่น — ใช้ `%~dp0` อ้างตัวเอง รัน ps1 แบบ `-ExecutionPolicy Bypass`
 4. **ลบ** `A:\GitHub\A-Wiki\fix-hosxp-permissions.ps1` และ `.bat` ออกจาก repo root (ยังไม่ได้ commit อยู่แล้ว → ลบได้สบาย)
@@ -46,9 +46,10 @@
 
 ### ส่วน C — คู่มือ "อะไรควรเก็บใน drive" สำหรับ AI ทุกตัว
 
-สร้าง `L:\My Drive\A-Wiki-Data\README.md` (อยู่ใน drive = **gitignored/private**) เป็นคู่มือที่ agent อ่านได้เมื่อเข้า drive ประกอบด้วย:
+วางที่ **2 ที่** (ตามที่เลือก — ได้รับอนุญาตแก้ AGENTS.md แล้วตาม Iron Law #5):
 
-- **Path resolution ของเครื่องนี้**: `L:\My Drive\A-Wiki-Data` (= repo `drive/` junction) — public-safe: อ้างผ่าน `drive/` หรือ `$A_WIKI_DRIVE_PATH`, **ห้าม hardcode** ในไฟล์ที่ track ใน git
+#### C1. `drive/README.md` (private, gitignored) — ฉบับเต็ม + path เครื่องนี้
+- **Path resolution ของเครื่องนี้**: `L:\My Drive\A-Wiki-Data` (= repo `drive/` junction)
 - **ตาราง "อะไรเก็บที่ไหน"** (ขยายจากตาราง AGENTS.md External Data Layer):
   | เก็บใน drive (private) | เก็บใน repo (public) |
   |---|---|
@@ -57,14 +58,21 @@
   - มี personal data / secret / ข้อมูลคนไข้ / path เครื่องเฉพาะ → **drive** (gitignored)
   - เป็นความรู้/rule ที่ใช้ร่วมข้ามเครื่อง → **repo** (public)
   - ไม่แน่ใจ → ใส่ใน drive ก่อน (ปลอดภัยกว่า)
-- แมป subfolder ที่มี: `raw/` `personal/` `personal-tools/` `private-tools/` `uthai-hospital/` `individual-tasks/` `.secrets/` `batch-state/` (เก็บอะไรแต่ละอัน)
+- แมป subfolder ที่มี: `raw/` `personal/` `personal-tools/` `private-tools/` `uthai-hospital/` `individual-tasks/` `.secrets/` `batch-state/`
 
-> หมายเหตุ Iron Law #5: ไม่แก้ AGENTS.md ในแพลนนี้ (ต้องการ permission แยก) — ใช้ `drive/README.md` private แทน ซึ่งตรงกับ "Brain Improvement Gate: public-safe"
+#### C2. แก้ `AGENTS.md` (public) — เพิ่มส่วน "Storage Decision Rule" แบบ public-safe
+- วางใต้ส่วน "## 🗄️ External Data Layer" ที่มีอยู่
+- เน้น: **abstract rules เท่านั้น** ห้าม hardcode path `L:\...` (public-safe + cross-device policy)
+- เนื้อหาที่จะเพิ่ม:
+  - กฎ "Drive vs Repo" decision checklist (3 ข้อเดียวกับ C1)
+  - เตือน: ห้ามเขียน path เครื่องเฉพาะ / personal artifact / IT-fix ส่วนตัว ลง repo โดยตรง — ใช้ `drive/` (junction) หรือ `A_WIKI_DRIVE_PATH`
+  - ชี้ไป `drive/README.md` (private) สำหรับรายละเอียด path แต่ละเครื่อง + แมป subfolder
+- รักษาโทน/มาร์กดาวน์ให้กลมกลืนกับส่วนที่มี
 
 ### ส่วน D — วิธีรันหลังย้าย
 
 ```
-1. เข้าโฟลเดอร์:  L:\My Drive\A-Wiki-Data\private-tools\hosxp-permissions\
+1. เข้าโฟลเดอร์:  L:\My Drive\A-Wiki-Data\uthai-hospital\hosxp\
 2. คลิกขวา run-as-admin.bat → Run as administrator
    (หรือ: powershell -ExecutionPolicy Bypass -File "<path>\fix-hosxp-permissions.ps1")
 3. Log out → login เป็น aase7en → เปิด HOSxPXE4 ตามปกติ (ไม่ต้อง admin)
@@ -74,13 +82,19 @@
 
 ## ผลลัพธ์ที่คาดหวัง
 
-- ไฟล์ IT-fix **ไม่ตกไปใน public repo** อีก
+- ไฟล์ IT-fix **ไม่ตกไปใน public repo** อีก (อยู่ใน `drive/uthai-hospital/hosxp/`)
 - `.ps1` รันได้จริง (ไม่มี syntax error แล้ว)
 - AI ทุก platform ที่เข้า drive/ จะเจอ `README.md` → รู้ path + กฎการจัดเก็บ
+- AI ทุก platform อ่าน `AGENTS.md` → เห็น Storage Decision Rule (public-safe, ไม่มี path เครื่องเฉพาะ)
 - `.drive-path` บอกตำแหน่ง drive ของเครื่องนี้โดยไม่ hardcode
 
 ## การตรวจทาน
 
-- `git -C A:\GitHub\A-Wiki status` ยืนยันว่าไม่มี fix-hosxp-* ค้างอยู่
-- `git -C A:\GitHub\A-Wiki check-ignore .drive-path drive/README.md` คืนค่า (ignored = private แน่นอน)
+- `git -C A:\GitHub\A-Wiki status` ยืนยันว่าไม่มี fix-hosxp-* ค้างอยู่ และมีแค่ AGENTS.md ที่เปลี่ยน
+- `git -C A:\GitHub\A-Wiki check-ignore .drive-path drive/README.md drive/uthai-hospital/hosxp/` คืนค่า (ignored = private แน่นอน)
 - รัน `.bat` จริง → ไม่มี ParseException → แสดงผล permission
+
+## ข้อยืนยัน Iron Law
+
+- **Iron Law #5 (ห้ามแก้ AGENTS.md โดยไม่ได้รับอนุญาต)**: ✅ ได้รับอนุญาตจาก user แล้วในแพลนนี้
+- **Public-safe policy**: ส่วนที่เพิ่มใน AGENTS.md เป็น abstract rule เท่านั้น — **ห้าม** ใส่ path `L:\My Drive\A-Wiki-Data` หรือ personal data ลงใน AGENTS.md (ไปไว้ใน `.drive-path` + `drive/README.md` ที่เป็น private)
