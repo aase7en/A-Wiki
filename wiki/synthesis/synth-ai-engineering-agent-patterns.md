@@ -1,9 +1,10 @@
 ---
+tags: [ai, engineering, agent, patterns]
 type: synthesis
 title: "Agent Engineering Patterns — rohitg00/ai-engineering-from-scratch Phase 14 (subtopics 01, 02, 07, 12) — Synthesis"
 slug: synth-ai-engineering-agent-patterns
 date_synthesized: 2026-06-08
-sources: [wiki\sources\ai-engineering-agent-patterns.md]
+sources: [wiki/sources/ai-engineering-agent-patterns.md]
 quality_score: 9/10
 domain: ''
 ---

@@ -1,4 +1,5 @@
 ---
+tags: [building, iot, application, raspberry, python]
 type: synthesis
 title: "[Mastodon](https://me.dm/@webcluesinfotech) — Synthesis"
 slug: synth-building-an-iot-application-with-raspberry-pi-and-python

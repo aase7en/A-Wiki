@@ -1,4 +1,5 @@
 ---
+tags: [iot, raspberry, 16gb, made]
 type: source
 title: "[จัดส่งฟรี] Raspberry Pi 5 (แรม 16GB) ของแท้ made in UK"
 slug: raspberry-pi-5-16gb-made-in-uk

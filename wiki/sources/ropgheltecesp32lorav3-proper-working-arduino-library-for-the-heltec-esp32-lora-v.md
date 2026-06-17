@@ -1,4 +1,5 @@
 ---
+tags: [iot, proper, working, arduino, library, heltec]
 type: source
 title: "ropg/heltec_esp32_lora_v3: Proper working Arduino library for the Heltec ESP32 LoRa v3 board, as well as for Wireless Stick v3 and Wireless Stick Lite v3. Uses RadioLib"
 slug: ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v

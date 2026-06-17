@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, using, arduino, ide]
 type: source
 title: "ESP32 with LoRa using Arduino IDE"
 slug: esp32-with-lora-using-arduino-ide

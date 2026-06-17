@@ -1,4 +1,5 @@
 ---
+tags: [env, infectious, waste, law]
 type: synthesis
 title: "กฎหมายและมาตรฐานการจัดการมูลฝอยติดเชื้อในโรงพยาบาล ประเทศไทย — Synthesis"
 slug: synth-infectious-waste-th-law

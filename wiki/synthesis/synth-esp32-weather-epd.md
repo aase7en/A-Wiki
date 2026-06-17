@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, weather, epd]
 type: synthesis
 title: "ESP32 E-Paper Weather Display — Low Power, OpenWeatherMap — Synthesis"
 slug: synth-esp32-weather-epd

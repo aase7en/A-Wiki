@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, hx711, mqtt, github]
 type: synthesis
 title: "ESP32-HX711-MQTT — Weight Scale IoT by ESP32 — Synthesis"
 slug: synth-esp32-hx711-mqtt-github

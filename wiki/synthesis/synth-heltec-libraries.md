@@ -1,4 +1,5 @@
 ---
+tags: [iot, heltec, libraries]
 type: synthesis
 title: "Heltec ESP32 LoRa Libraries (Official + Unofficial) — Synthesis"
 slug: synth-heltec-libraries

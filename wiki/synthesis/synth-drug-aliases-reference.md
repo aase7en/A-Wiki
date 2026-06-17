@@ -1,4 +1,5 @@
 ---
+tags: [pharmacy, drug, aliases, reference]
 type: synthesis
 title: "Drug Aliases Reference Dictionary — Synthesis"
 slug: synth-drug-aliases-reference

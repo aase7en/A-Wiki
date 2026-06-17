@@ -1,4 +1,5 @@
 ---
+tags: [iot, server, build, final]
 type: synthesis
 title: "> Source: `AI_IoT_Server_Build_v3_Final.pdf` (ผู้ใช้ส่งจาก Downloads/ — สร้างโดย — Synthesis"
 slug: synth-ai-iot-server-build-v3-final

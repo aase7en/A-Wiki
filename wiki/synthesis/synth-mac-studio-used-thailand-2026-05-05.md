@@ -1,4 +1,5 @@
 ---
+tags: [ai, mac, studio, used, thailand]
 type: synthesis
 title: "> Source: Gemini CLI 1 query (web search) — 2026-05-05 — Synthesis"
 slug: synth-mac-studio-used-thailand-2026-05-05

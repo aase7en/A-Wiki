@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, getting, started, arduino, esp32]
 type: synthesis
 title: "Table of Contents \[[show](#)\] — Synthesis"
 slug: synth-lora-getting-started-with-arduino-esp32-pico

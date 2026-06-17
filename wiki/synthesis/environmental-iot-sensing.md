@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [environmental, iot, sensing, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # Environmental IoT Sensing
 
 > **Cross-domain synthesis:** IoT ⟷ Environmental Health

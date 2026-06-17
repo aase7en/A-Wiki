@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino]
 type: source
 title: "arduino-libraries/Arduino_PowerManagement"
 slug: arduino-librariesarduinopowermanagement

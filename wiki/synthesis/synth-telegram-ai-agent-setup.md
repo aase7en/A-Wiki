@@ -1,4 +1,5 @@
 ---
+tags: [ai, telegram, agent, setup]
 type: synthesis
 title: "Telegram AI Agent — Claude API / OpenRouter / Ollama — Synthesis"
 slug: synth-telegram-ai-agent-setup

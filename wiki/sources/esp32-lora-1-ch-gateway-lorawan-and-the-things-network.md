@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, gateway, lorawan, things]
 type: source
 title: "ESP32 LoRa 1-CH Gateway, LoRaWAN, and the Things Network"
 slug: esp32-lora-1-ch-gateway-lorawan-and-the-things-network

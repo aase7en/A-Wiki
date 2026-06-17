@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino, library, heltec, esp32, esp32lora]
 type: source
 title: "HelTecAutomation/Heltec_ESP32: Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards"
 slug: heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based

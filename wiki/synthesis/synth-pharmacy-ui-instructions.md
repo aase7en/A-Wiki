@@ -1,4 +1,5 @@
 ---
+tags: [pharmacy, instructions]
 type: synthesis
 title: "Pharmacy App UI Design Instructions (v3) — Synthesis"
 slug: synth-pharmacy-ui-instructions

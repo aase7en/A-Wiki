@@ -1,4 +1,5 @@
 ---
+tags: [strix, halo, research]
 type: source
 title: "strix halo research 2026 05 05"
 slug: strix-halo-research-2026-05-05

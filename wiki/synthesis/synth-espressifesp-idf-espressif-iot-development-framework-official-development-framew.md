@@ -1,4 +1,5 @@
 ---
+tags: [espressifesp, idf, espressif, iot, development]
 type: synthesis
 title: "espressif/esp-idf: Espressif IoT Development Framework. Official development framework for Espressif SoCs. — Synthesis"
 slug: synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew

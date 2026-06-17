@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino, ide, esp32]
 type: source
 title: "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025"
 slug: arduino-ide-esp32-arduino-2025

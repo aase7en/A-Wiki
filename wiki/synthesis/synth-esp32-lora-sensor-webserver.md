@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, sensor, webserver]
 type: synthesis
 title: "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication) — Synthesis"
 slug: synth-esp32-lora-sensor-webserver

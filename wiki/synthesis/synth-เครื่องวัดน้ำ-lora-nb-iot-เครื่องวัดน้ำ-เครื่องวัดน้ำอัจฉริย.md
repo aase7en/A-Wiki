@@ -1,4 +1,5 @@
 ---
+tags: [เครื่องวัดน้ำ, lora, iot]
 type: synthesis
 title: "**การวิเคราะห์เปรียบเทียบของ LoRa และ NB-IoT ว่าใครดีกว่ากัน** — Synthesis"
 slug: synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย

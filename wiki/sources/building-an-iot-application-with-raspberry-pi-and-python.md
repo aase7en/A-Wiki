@@ -1,4 +1,5 @@
 ---
+tags: [building, iot, application, raspberry, python]
 type: source
 title: "Building an IoT Application with Raspberry Pi and Python"
 slug: building-an-iot-application-with-raspberry-pi-and-python

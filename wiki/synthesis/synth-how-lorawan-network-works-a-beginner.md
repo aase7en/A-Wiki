@@ -1,4 +1,5 @@
 ---
+tags: [iot, lorawan, network, works, beginner]
 type: synthesis
 title: "At its core, a LoRaWAN network (Long Range Wide Area Network) is a communication — Synthesis"
 slug: synth-how-lorawan-network-works-a-beginner

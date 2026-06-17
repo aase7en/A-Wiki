@@ -1,4 +1,5 @@
 ---
+tags: [espressif, esp32, iot, engineering, educ]
 type: synthesis
 title: "บริษัท **Espressif Systems** ได้เปิดตัวชิป **ESP32-S3 SoC** ในช่วงปลายปีค.ศ. 202 — Synthesis"
 slug: synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ

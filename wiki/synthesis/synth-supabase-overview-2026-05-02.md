@@ -1,4 +1,5 @@
 ---
+tags: [ai, supabase, overview]
 type: synthesis
 title: "> **บริบทผู้ใช้**: โปรเจกต์ในมือคือ Pharmacy web app (ภูฟาร์มาซี — FastAPI + Rea — Synthesis"
 slug: synth-supabase-overview-2026-05-02

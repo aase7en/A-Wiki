@@ -146,6 +146,28 @@ def extract_title(text: str, fallback: str) -> str:
     return h1.group(1).strip() if h1 else fallback
 
 
+FRONTMATTER_SOURCES_RE = re.compile(r"^sources:\s*\[(.*?)\]", re.MULTILINE)
+
+
+def extract_frontmatter_sources(text: str) -> list[str]:
+    """Pull the `sources: [a, b]` provenance list from frontmatter.
+
+    These entries are a real relationship (this page is derived from / cites
+    that source) and should become graph edges so cited sources aren't counted
+    as orphans. Handles inline-list form only (the convention used in wiki/).
+    """
+    if not text.startswith("---"):
+        return []
+    end = text.find("\n---", 3)
+    if end == -1:
+        return []
+    m = FRONTMATTER_SOURCES_RE.search(text[3:end])
+    if not m or not m.group(1).strip():
+        return []
+    # normalise Windows backslash separators in case a stub was generated on Win.
+    return [s.strip().strip("\"'").replace("\\", "/") for s in m.group(1).split(",") if s.strip()]
+
+
 def resolve_wikilink(target: str, all_paths: dict[str, Path]) -> Path | None:
     """Try to resolve [[target]] to an actual file by stem or last-segment match."""
     t = target.strip()
@@ -249,6 +271,24 @@ def build() -> dict:
         })
         in_degree.setdefault(rel, 0)
         out_degree.setdefault(rel, 0)
+
+        # Frontmatter `sources:` provenance → real `depends` edges (page → source).
+        # Counted for every node (even link-skipped ones) so cited sources gain
+        # in-degree and stop showing as false orphans.
+        fm_seen: set[str] = set()
+        for src_target in extract_frontmatter_sources(text):
+            resolved = resolve_wikilink(src_target, path_lookup)
+            if not resolved:
+                continue
+            to_rel = resolved.relative_to(REPO_ROOT).as_posix()
+            if to_rel == rel or to_rel in fm_seen:
+                continue
+            fm_seen.add(to_rel)
+            edges.append({"from": rel, "to": to_rel, "type": "depends",
+                          "broken": False, "external": False})
+            edges_by_type["depends"] += 1
+            in_degree[to_rel] += 1
+            out_degree[rel] += 1
 
         if not should_parse_links(fp):
             continue

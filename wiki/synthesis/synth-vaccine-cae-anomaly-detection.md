@@ -1,4 +1,5 @@
 ---
+tags: [env, vaccine, cae, anomaly, detection]
 type: synthesis
 title: "Real-time Temperature Anomaly Detection in Vaccine Refrigeration using Deep Learning on ESP32 — Synthesis"
 slug: synth-vaccine-cae-anomaly-detection

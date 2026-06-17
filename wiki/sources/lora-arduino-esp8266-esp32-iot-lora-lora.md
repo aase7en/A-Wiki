@@ -1,4 +1,5 @@
 ---
+tags: [lora, arduino, esp8266, esp32, iot]
 type: source
 title: "#1 LoRa Arduino ESP8266 ESP32 IoT อะไรคือ LoRa ใช้งาน LoRa อย่างไร"
 slug: lora-arduino-esp8266-esp32-iot-lora-lora

@@ -1,4 +1,5 @@
 ---
+tags: [iot, tracker, wearable, lora, node, batt]
 type: synthesis
 title: "A wearable LoRa node with battery and less than 15uA deepsleep — Synthesis"
 slug: synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt

@@ -1,4 +1,5 @@
 ---
+tags: [iot, lr02, commands, demo]
 type: synthesis
 title: "DX-LR02/LR03 Module Demo & AT Commands (Video Transcript) — Synthesis"
 slug: synth-dx-lr02-at-commands-demo

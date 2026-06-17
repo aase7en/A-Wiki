@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [driven, environmental, modeling, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # AI-driven Environmental Modeling
 
 > **Cross-domain synthesis:** Environmental Health ⟷ AI Tools

@@ -1,4 +1,5 @@
 ---
+tags: [ai, claude, model, cost, switching, strategy]
 type: synthesis
 title: "การวางแผนใช้ model Fable 5 สำหรับ game project ที่มี trading integration (claude.ai shared chat) — Synthesis"
 slug: synth-claude-model-cost-switching-strategy-2026-06

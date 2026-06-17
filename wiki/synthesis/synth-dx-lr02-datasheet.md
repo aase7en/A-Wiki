@@ -1,4 +1,5 @@
 ---
+tags: [iot, lr02, datasheet]
 type: synthesis
 title: "ข้อมูล Datasheet ของ DX-LR02 (DX-SMART) — Synthesis"
 slug: synth-dx-lr02-datasheet

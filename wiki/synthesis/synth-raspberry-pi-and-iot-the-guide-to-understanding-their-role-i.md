@@ -1,4 +1,5 @@
 ---
+tags: [raspberry, iot, guide, understanding, their]
 type: synthesis
 title: "L' **Internet of Things (IoT)** is no longer a trend: it's a reality that's tran — Synthesis"
 slug: synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i

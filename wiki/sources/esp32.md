@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32]
 type: source
 title: "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน"
 slug: esp32

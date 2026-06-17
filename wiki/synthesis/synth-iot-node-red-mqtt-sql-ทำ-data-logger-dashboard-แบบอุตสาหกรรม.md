@@ -1,4 +1,5 @@
 ---
+tags: [iot, node, red, mqtt, sql]
 type: synthesis
 title: "คอร์สนี้ออกแบบเพื่อให้ผู้เรียนสามารถสร้างระบบ IoT แบบใช้งานได้จริงในโรงงาน — Synthesis"
 slug: synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม

@@ -1,4 +1,5 @@
 ---
+tags: [iot, ds18b20, esp32, randomnerd]
 type: synthesis
 title: "ESP32 DS18B20 Temperature Sensor — Single, Multiple, Web Server — Synthesis"
 slug: synth-ds18b20-esp32-randomnerd

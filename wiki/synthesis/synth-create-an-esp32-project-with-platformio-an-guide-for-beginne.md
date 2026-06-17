@@ -1,4 +1,5 @@
 ---
+tags: [iot, create, esp32, project, platformio, guide]
 type: synthesis
 title: "![Create an ESP32 Project With PlatformIO: A Guide for Beginners](https://cdn.xi — Synthesis"
 slug: synth-create-an-esp32-project-with-platformio-an-guide-for-beginne

@@ -1,4 +1,5 @@
 ---
+tags: [iot, vortigontespem, energy, monitor, dashboardmetrics, collector]
 type: synthesis
 title: "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter — Synthesis"
 slug: synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con

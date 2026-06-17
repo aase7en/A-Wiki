@@ -1,4 +1,5 @@
 ---
+tags: [ai, local, llm, mac, mini, guide]
 type: synthesis
 title: "Local LLM on Mac Mini — In-depth Guide (2025-2026) — Synthesis"
 slug: synth-local-llm-mac-mini-guide

@@ -1,4 +1,5 @@
 ---
+tags: [pharmacy, context]
 type: synthesis
 title: "Pharmacy Context & Business Overview — Synthesis"
 slug: synth-pharmacy-context

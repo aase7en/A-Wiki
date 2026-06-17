@@ -1,4 +1,5 @@
 ---
+tags: [hardware, inventory]
 type: synthesis
 title: "Hardware Inventory — My IoT Lab (2026-04-18) — Synthesis"
 slug: synth-hardware-inventory-2026-04-18

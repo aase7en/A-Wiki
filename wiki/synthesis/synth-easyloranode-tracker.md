@@ -1,4 +1,5 @@
 ---
+tags: [iot, easyloranode, tracker]
 type: synthesis
 title: "EasyLoRaNode_Tracker: Wearable LoRa Node with Battery — Synthesis"
 slug: synth-easyloranode-tracker

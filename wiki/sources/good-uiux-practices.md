@@ -1,4 +1,5 @@
 ---
+tags: [good, uiux, practices]
 type: source
 title: "Good UI/UX practices"
 slug: good-uiux-practices

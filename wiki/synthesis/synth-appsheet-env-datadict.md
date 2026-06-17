@@ -1,4 +1,5 @@
 ---
+tags: [appsheet, env, datadict]
 type: synthesis
 title: "AppSheet ENV App Data Dictionary (ActivatedSludge-29279640) — Synthesis"
 slug: synth-appsheet-env-datadict

@@ -1,4 +1,5 @@
 ---
+tags: [iot, dashboard, node, red]
 type: source
 title: "ตอน 3 : สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง 📊"
 slug: 3-dashboard-node-red

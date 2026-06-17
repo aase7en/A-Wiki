@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, weather, dashboard, 16day]
 type: synthesis
 title: "ESP32 Weather Dashboard — Satellite Maps + 16-Day Forecast (Free APIs) — Synthesis"
 slug: synth-esp32-weather-dashboard-16day

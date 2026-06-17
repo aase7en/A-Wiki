@@ -1,4 +1,5 @@
 ---
+tags: [iot, node, red, mqtt, sql]
 type: synthesis
 title: "“IoT Node-RED + MQTT + SQL – ทำ Data Logger & Dashboard แบบอุตสาหกรรม” — Synthesis"
 slug: synth-iot-node-red-mqtt-sql-data-logger-dashboard

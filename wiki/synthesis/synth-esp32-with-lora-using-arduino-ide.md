@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, using, arduino, ide]
 type: synthesis
 title: "In this tutorial we’ll explore the basic principles of LoRa, and how it can be u — Synthesis"
 slug: synth-esp32-with-lora-using-arduino-ide

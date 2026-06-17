@@ -55,6 +55,6 @@ empty enabled set → fallthrough ปกติ · ไม่มี key → engine
 ## เชื่อมโยง
 
 - Routing engine: `scripts/swarm/delegate.sh` · Dashboard: [[live-dashboard]]
-- Model ใหม่ที่ใช้ระบบนี้: [[zhipu-glm]]
+- Model ใหม่ที่ใช้ระบบนี้: [[zai-glm]]
 - Protocol: `docs/protocols/model-switching.md` (capability-aware routing section)
 - เกี่ยวข้อง: model-scout-current.py (volatile pricing scout — pattern เดียวกัน)

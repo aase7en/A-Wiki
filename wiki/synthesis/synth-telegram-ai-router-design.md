@@ -1,4 +1,5 @@
 ---
+tags: [ai, telegram, router, design]
 type: synthesis
 title: "Telegram AI Router — Home Server Design — Synthesis"
 slug: synth-telegram-ai-router-design

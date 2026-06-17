@@ -1,9 +1,10 @@
 ---
+tags: [ai, engineering, llm]
 type: synthesis
 title: "LLM Engineering — rohitg00/ai-engineering-from-scratch Phase 11 (subtopics 06 RAG, 10 Evaluation) — Synthesis"
 slug: synth-ai-engineering-llm
 date_synthesized: 2026-06-08
-sources: [wiki\sources\ai-engineering-llm.md]
+sources: [wiki/sources/ai-engineering-llm.md]
 quality_score: 9/10
 domain: ''
 ---

@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, gateway, lorawan, things]
 type: synthesis
 title: "Contributors: jimblom — Synthesis"
 slug: synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network

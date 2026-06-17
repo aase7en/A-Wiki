@@ -1,4 +1,5 @@
 ---
+tags: [ai, rpi, hat, plus, official]
 type: synthesis
 title: "Raspberry Pi AI HAT+ 2 — Official Announcement — Synthesis"
 slug: synth-rpi-ai-hat-plus-2-official

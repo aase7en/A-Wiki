@@ -1,4 +1,5 @@
 ---
+tags: [iot, mqtt, introduction]
 type: synthesis
 title: "MQTT: The Standard Messaging Protocol for IoT — Synthesis"
 slug: synth-mqtt-introduction

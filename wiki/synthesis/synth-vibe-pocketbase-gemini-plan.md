@@ -1,4 +1,5 @@
 ---
+tags: [ai, vibe, pocketbase, gemini, plan]
 type: synthesis
 title: "แผน Vibe Coding: Pocketbase + Frontend — คำแนะนำจาก Gemini Pro — Synthesis"
 slug: synth-vibe-pocketbase-gemini-plan

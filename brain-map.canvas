@@ -2381,20 +2381,10 @@
       "color": "2"
     },
     {
-      "id": "wiki-entities-ai-tools-zhipu-glm-md",
-      "type": "file",
-      "file": "wiki/entities/ai-tools/zhipu-glm.md",
-      "x": 3220,
-      "y": 980,
-      "width": 260,
-      "height": 120,
-      "color": "2"
-    },
-    {
       "id": "wiki-concepts-ai-tools-git-subtree-workflow-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/git-subtree-workflow.md",
-      "x": 3560,
+      "x": 3220,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -2404,8 +2394,8 @@
       "id": "wiki-entities-ai-tools-gitnexus-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/gitnexus.md",
-      "x": 2880,
-      "y": 1160,
+      "x": 3560,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2414,7 +2404,7 @@
       "id": "wiki-entities-ai-tools-graphify-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/graphify.md",
-      "x": 3220,
+      "x": 2880,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2424,7 +2414,7 @@
       "id": "wiki-entities-ai-tools-hermes-agent-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hermes-agent.md",
-      "x": 3560,
+      "x": 3220,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -2434,8 +2424,8 @@
       "id": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
-      "x": 2880,
-      "y": 1340,
+      "x": 3560,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2444,7 +2434,7 @@
       "id": "wiki-entities-ai-tools-hyperframes-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/hyperframes.md",
-      "x": 3220,
+      "x": 2880,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -2454,7 +2444,7 @@
       "id": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/llm-eval-frameworks.md",
-      "x": 3560,
+      "x": 3220,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -2464,6 +2454,16 @@
       "id": "wiki-concepts-ai-tools-liquid-glass-design-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/liquid-glass-design.md",
+      "x": 3560,
+      "y": 1340,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
+      "id": "wiki-entities-ai-tools-live-dashboard-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/live-dashboard.md",
       "x": 2880,
       "y": 1520,
       "width": 260,
@@ -8009,6 +8009,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-sources-ai-engineering-tools-protocols-md",
+      "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-ai-engineering-tools-protocols-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-concepts-ai-tools-mcp-architecture-md",
       "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
       "fromSide": "right",
@@ -8049,11 +8057,19 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
+      "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromSide": "bottom",
-      "toNode": "wiki-entities-ai-tools-hermes-agent-md",
+      "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
+      "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-hermes-agent-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8078,6 +8094,14 @@
       "fromSide": "bottom",
       "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-agent-memory-systems-md-wiki-sources-ai-engineering-agent-patterns-md",
+      "fromNode": "wiki-concepts-ai-tools-agent-memory-systems-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-agent-patterns-md",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8129,6 +8153,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-agent-planning-loops-md-wiki-sources-ai-engineering-agent-patterns-md",
+      "fromNode": "wiki-concepts-ai-tools-agent-planning-loops-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-ai-engineering-agent-patterns-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-agent-planning-loops-md-wiki-concepts-ai-tools-agent-memory-systems-md",
       "fromNode": "wiki-concepts-ai-tools-agent-planning-loops-md",
       "fromSide": "left",
@@ -8157,6 +8189,14 @@
       "fromNode": "wiki-concepts-ai-tools-agent-planning-loops-md",
       "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-agent-patterns-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-ai-glossary-md-wiki-sources-ai-engineering-glossary-md",
+      "fromNode": "wiki-concepts-ai-tools-ai-glossary-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-ai-engineering-glossary-md",
       "toSide": "top",
       "color": "2"
     },
@@ -8198,6 +8238,22 @@
       "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-glossary-md",
       "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-ai-myths-md-wiki-sources-ai-engineering-myths-md",
+      "fromNode": "wiki-concepts-ai-tools-ai-myths-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-ai-engineering-myths-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-ai-myths-md-wiki-sources-ai-engineering-glossary-md",
+      "fromNode": "wiki-concepts-ai-tools-ai-myths-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-ai-engineering-glossary-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8243,9 +8299,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8353,43 +8409,51 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-sources-ai-agents-integration-guide-md",
+      "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-ai-agents-integration-guide-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-context-management-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-context-management-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-session-setup-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-session-setup-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-sources-ai-agents-integration-guide-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-sources-ai-agents-integration-guide-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-liquid-glass-design-md-wiki-entities-ai-tools-frontend-slides-md",
       "fromNode": "wiki-concepts-ai-tools-liquid-glass-design-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-frontend-slides-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8398,6 +8462,14 @@
       "fromSide": "left",
       "toNode": "wiki-synthesis-design-web-capability-hub-md",
       "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-sources-ai-engineering-llm-md",
+      "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-llm-md",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8411,17 +8483,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-llm-eval-frameworks-md-wiki-sources-ai-engineering-llm-md",
       "fromNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-ai-engineering-llm-md",
-      "toSide": "top",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-llm-rag-architecture-md-wiki-sources-ai-engineering-llm-md",
+      "fromNode": "wiki-concepts-ai-tools-llm-rag-architecture-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-llm-md",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8465,6 +8545,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-sources-telegram-ai-router-design-md",
+      "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-telegram-ai-router-design-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
       "fromSide": "right",
@@ -8483,9 +8571,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-local-llm-routing-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-local-llm-routing-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -8494,6 +8582,14 @@
       "fromSide": "bottom",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
       "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-mcp-architecture-md-wiki-sources-ai-engineering-tools-protocols-md",
+      "fromNode": "wiki-concepts-ai-tools-mcp-architecture-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-ai-engineering-tools-protocols-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8585,6 +8681,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-sources-ai-engineering-multi-agent-md",
+      "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-multi-agent-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-ai-glossary-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromSide": "top",
@@ -8629,6 +8733,14 @@
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromSide": "bottom",
       "toNode": "wiki-sources-ai-engineering-glossary-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-openrouter-api-md-wiki-sources-openrouter-api-demo-md",
+      "fromNode": "wiki-concepts-ai-tools-openrouter-api-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-openrouter-api-demo-md",
       "toSide": "top",
       "color": "2"
     },
@@ -8715,9 +8827,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-session-setup-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-session-setup-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -8742,6 +8854,14 @@
       "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-embedding-models-md",
       "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-sources-ai-engineering-swarm-optimization-md",
+      "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-swarm-optimization-md",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8785,11 +8905,19 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-sources-ai-agents-integration-guide-md",
+      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-agents-integration-guide-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8849,6 +8977,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
       "fromSide": "top",
@@ -8867,9 +9003,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8913,6 +9049,14 @@
       "color": "5"
     },
     {
+      "id": "edge-wiki-concepts-env-infectious-waste-management-md-wiki-sources-infectious-waste-th-law-md",
+      "fromNode": "wiki-concepts-env-infectious-waste-management-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
       "id": "edge-wiki-concepts-env-infectious-waste-management-md-wiki-concepts-env-hospital-wastewater-treatment-md",
       "fromNode": "wiki-concepts-env-infectious-waste-management-md",
       "fromSide": "bottom",
@@ -8933,6 +9077,30 @@
       "fromNode": "wiki-concepts-env-infectious-waste-management-md",
       "fromSide": "right",
       "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-concepts-env-rabies-pep-protocol-md-wiki-sources-ddc-cpg-rabies-2564-md",
+      "fromNode": "wiki-concepts-env-rabies-pep-protocol-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ddc-cpg-rabies-2564-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-concepts-env-rabies-pep-protocol-md-wiki-sources-saovabha-rabies-pep-2565-md",
+      "fromNode": "wiki-concepts-env-rabies-pep-protocol-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-saovabha-rabies-pep-2565-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-concepts-env-rabies-pep-protocol-md-wiki-sources-who-rabies-position-2018-md",
+      "fromNode": "wiki-concepts-env-rabies-pep-protocol-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-who-rabies-position-2018-md",
       "toSide": "left",
       "color": "5"
     },
@@ -9017,6 +9185,22 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-sources-air-quality-sensors-dronebot-md",
+      "fromNode": "wiki-concepts-iot-air-quality-index-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-sensors-dronebot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-sources-air-quality-iot-lora-network-md",
+      "fromNode": "wiki-concepts-iot-air-quality-index-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-entities-iot-pms5003-md",
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
@@ -9069,6 +9253,30 @@
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
       "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-cold-chain-monitoring-md-wiki-sources-vaccine-temp-monitoring-iot-md",
+      "fromNode": "wiki-concepts-iot-cold-chain-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-temp-monitoring-iot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-cold-chain-monitoring-md-wiki-sources-vaccine-cae-anomaly-detection-md",
+      "fromNode": "wiki-concepts-iot-cold-chain-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-cold-chain-monitoring-md-wiki-sources-ds18b20-esp32-randomnerd-md",
+      "fromNode": "wiki-concepts-iot-cold-chain-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ds18b20-esp32-randomnerd-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9161,6 +9369,22 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-dashboard-design-md-wiki-sources-iot-visualization-guide-md",
+      "fromNode": "wiki-concepts-iot-dashboard-design-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-visualization-guide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-dashboard-design-md-wiki-sources-dashboard-design-best-practices-md",
+      "fromNode": "wiki-concepts-iot-dashboard-design-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dashboard-design-best-practices-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-dashboard-design-md-wiki-entities-iot-grafana-md",
       "fromNode": "wiki-concepts-iot-dashboard-design-md",
       "fromSide": "left",
@@ -9217,6 +9441,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-data-logger-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-concepts-iot-data-logger-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-data-logger-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-concepts-iot-data-logger-md",
       "fromSide": "left",
@@ -9253,6 +9485,38 @@
       "fromNode": "wiki-concepts-iot-data-logger-md",
       "fromSide": "right",
       "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-p2p-md-wiki-sources-esp32-lora-arduino-ide-md",
+      "fromNode": "wiki-concepts-iot-lora-p2p-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-arduino-ide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-p2p-md-wiki-sources-esp32-lora-sensor-webserver-md",
+      "fromNode": "wiki-concepts-iot-lora-p2p-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-sensor-webserver-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-p2p-md-wiki-sources-easyloranode-tracker-md",
+      "fromNode": "wiki-concepts-iot-lora-p2p-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-easyloranode-tracker-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-p2p-md-wiki-sources-lora-thai-intro-md",
+      "fromNode": "wiki-concepts-iot-lora-p2p-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-thai-intro-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9333,6 +9597,46 @@
       "fromNode": "wiki-concepts-iot-lora-p2p-md",
       "fromSide": "right",
       "toNode": "wiki-sources-lora-thai-intro-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-concepts-iot-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-md-wiki-sources-esp32-lora-arduino-ide-md",
+      "fromNode": "wiki-concepts-iot-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-arduino-ide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-md-wiki-sources-lora-thai-intro-md",
+      "fromNode": "wiki-concepts-iot-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-thai-intro-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-md-wiki-sources-lora-getting-started-dronebot-md",
+      "fromNode": "wiki-concepts-iot-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-getting-started-dronebot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lora-md-wiki-sources-lora-vs-nbiot-md",
+      "fromNode": "wiki-concepts-iot-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-vs-nbiot-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9441,6 +9745,30 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-lorawan-network-beginner-md",
+      "fromNode": "wiki-concepts-iot-lorawan-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-network-beginner-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "fromNode": "wiki-concepts-iot-lorawan-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-lorawan-fuota-rak3172-md",
+      "fromNode": "wiki-concepts-iot-lorawan-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-fuota-rak3172-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-lorawan-fuota-rak3172-md",
       "fromNode": "wiki-concepts-iot-lorawan-md",
       "fromSide": "right",
@@ -9497,6 +9825,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-modbus-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-concepts-iot-modbus-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-modbus-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-concepts-iot-modbus-md",
       "fromSide": "bottom",
@@ -9517,6 +9853,14 @@
       "fromNode": "wiki-concepts-iot-modbus-md",
       "fromSide": "right",
       "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-mqtt-qos-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-concepts-iot-mqtt-qos-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9545,6 +9889,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-publish-subscribe-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-concepts-iot-publish-subscribe-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-publish-subscribe-md-wiki-entities-iot-mqtt-protocol-md",
       "fromNode": "wiki-concepts-iot-publish-subscribe-md",
       "fromSide": "top",
@@ -9565,6 +9917,22 @@
       "fromNode": "wiki-concepts-iot-publish-subscribe-md",
       "fromSide": "right",
       "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-tinyml-md-wiki-sources-tinyml-esp32-applications-md",
+      "fromNode": "wiki-concepts-iot-tinyml-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-tinyml-esp32-applications-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-tinyml-md-wiki-sources-vaccine-cae-anomaly-detection-md",
+      "fromNode": "wiki-concepts-iot-tinyml-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9641,6 +10009,22 @@
       "color": "4"
     },
     {
+      "id": "edge-wiki-concepts-pharmacy-drug-aliases-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-concepts-pharmacy-drug-aliases-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-concepts-pharmacy-drug-aliases-md-wiki-sources-drug-aliases-reference-md",
+      "fromNode": "wiki-concepts-pharmacy-drug-aliases-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-drug-aliases-reference-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
       "id": "edge-wiki-concepts-pharmacy-drug-aliases-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-concepts-pharmacy-drug-aliases-md",
       "fromSide": "top",
@@ -9673,6 +10057,14 @@
       "color": "4"
     },
     {
+      "id": "edge-wiki-concepts-pharmacy-drug-classification-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-concepts-pharmacy-drug-classification-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
       "id": "edge-wiki-concepts-pharmacy-drug-classification-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-concepts-pharmacy-drug-classification-md",
       "fromSide": "left",
@@ -9694,6 +10086,14 @@
       "fromSide": "left",
       "toNode": "wiki-synthesis-pharmacy-order-checker-md",
       "toSide": "right",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-concepts-pharmacy-drug-validation-md-wiki-sources-drug-aliases-reference-md",
+      "fromNode": "wiki-concepts-pharmacy-drug-validation-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-drug-aliases-reference-md",
+      "toSide": "left",
       "color": "4"
     },
     {
@@ -9745,6 +10145,14 @@
       "color": "4"
     },
     {
+      "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
       "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
       "fromSide": "left",
@@ -9771,6 +10179,14 @@
     {
       "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-sources-sp-drugstore-2020-catalog-md",
       "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-concepts-pharmacy-ordering-workflow-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-concepts-pharmacy-ordering-workflow-md",
       "fromSide": "right",
       "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
       "toSide": "left",
@@ -9862,6 +10278,14 @@
       "fromSide": "top",
       "toNode": "wiki-concepts-pharmacy-drug-aliases-md",
       "toSide": "bottom",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-concepts-pharmacy-ui-design-pharmacy-md-wiki-sources-pharmacy-ui-instructions-md",
+      "fromNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pharmacy-ui-instructions-md",
+      "toSide": "left",
       "color": "4"
     },
     {
@@ -10027,9 +10451,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-liquid-glass-design-md",
       "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-liquid-glass-design-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10067,17 +10491,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-concepts-ai-tools-mcp-architecture-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-mcp-architecture-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10091,33 +10515,33 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-concepts-ai-tools-claude-skills-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-graphify-md-wiki-entities-ai-tools-gitnexus-md",
       "fromNode": "wiki-entities-ai-tools-graphify-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-gitnexus-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-graphify-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-graphify-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -10129,11 +10553,27 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-sources-hermes-agent-guide-th-md",
+      "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-hermes-agent-guide-th-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-sources-agent-frameworks-local-debug-2026-md",
+      "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-hermes-agent-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10153,6 +10593,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-sources-hyperframes-official-docs-md",
+      "fromNode": "wiki-entities-ai-tools-hyperframes-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hyperframes-official-docs-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
       "fromSide": "right",
@@ -10163,9 +10611,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -10211,17 +10659,57 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-sources-hyperframes-official-docs-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-hyperframes-official-docs-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-live-dashboard-md-wiki-entities-ai-tools-zai-glm-md",
+      "fromNode": "wiki-entities-ai-tools-live-dashboard-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-zai-glm-md",
       "toSide": "top",
       "color": "2"
     },
     {
-      "id": "edge-wiki-entities-ai-tools-model-capability-bench-md-wiki-entities-ai-tools-zhipu-glm-md",
+      "id": "edge-wiki-entities-ai-tools-live-dashboard-md-wiki-entities-ai-tools-model-capability-bench-md",
+      "fromNode": "wiki-entities-ai-tools-live-dashboard-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-model-capability-bench-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-model-capability-bench-md-wiki-entities-ai-tools-live-dashboard-md",
       "fromNode": "wiki-entities-ai-tools-model-capability-bench-md",
-      "fromSide": "right",
-      "toNode": "wiki-entities-ai-tools-zhipu-glm-md",
-      "toSide": "left",
+      "fromSide": "top",
+      "toNode": "wiki-entities-ai-tools-live-dashboard-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-model-capability-bench-md-wiki-entities-ai-tools-zai-glm-md",
+      "fromNode": "wiki-entities-ai-tools-model-capability-bench-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-entities-ai-tools-zai-glm-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-local-llm-mac-mini-guide-md",
+      "fromNode": "wiki-entities-ai-tools-ollama-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-local-llm-mac-mini-guide-md",
+      "toSide": "top",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-sources-ollama-pi5-md",
+      "fromNode": "wiki-entities-ai-tools-ollama-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-ollama-pi5-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10251,9 +10739,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -10278,6 +10766,14 @@
       "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-anthropic-skills-md",
       "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "fromNode": "wiki-entities-ai-tools-pocketbase-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10331,9 +10827,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-social-media-skills-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -10349,6 +10845,14 @@
       "fromNode": "wiki-entities-ai-tools-social-media-skills-md",
       "fromSide": "left",
       "toNode": "wiki-synthesis-openrouter-agent-routing-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-sources-telegram-ai-router-design-md",
+      "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-telegram-ai-router-design-md",
       "toSide": "right",
       "color": "2"
     },
@@ -10387,9 +10891,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10433,10 +10937,34 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-entities-ai-tools-zhipu-glm-md-wiki-entities-ai-tools-model-capability-bench-md",
-      "fromNode": "wiki-entities-ai-tools-zhipu-glm-md",
-      "fromSide": "left",
+      "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-entities-ai-tools-model-capability-bench-md",
+      "fromNode": "wiki-entities-ai-tools-zai-glm-md",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-model-capability-bench-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-concepts-ai-tools-openrouter-api-md",
+      "fromNode": "wiki-entities-ai-tools-zai-glm-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-entities-ai-tools-live-dashboard-md",
+      "fromNode": "wiki-entities-ai-tools-zai-glm-md",
+      "fromSide": "top",
+      "toNode": "wiki-entities-ai-tools-live-dashboard-md",
+      "toSide": "bottom",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-synthesis-synth-claude-model-cost-switching-strategy-2026-06-md",
+      "fromNode": "wiki-entities-ai-tools-zai-glm-md",
+      "fromSide": "left",
+      "toNode": "wiki-synthesis-synth-claude-model-cost-switching-strategy-2026-06-md",
       "toSide": "right",
       "color": "2"
     },
@@ -10477,6 +11005,30 @@
       "fromNode": "wiki-entities-env-activated-sludge-system-md",
       "fromSide": "right",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-entities-env-rabies-pep-surveillance-md-wiki-sources-ddc-cpg-rabies-2564-md",
+      "fromNode": "wiki-entities-env-rabies-pep-surveillance-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ddc-cpg-rabies-2564-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-entities-env-rabies-pep-surveillance-md-wiki-sources-saovabha-rabies-pep-2565-md",
+      "fromNode": "wiki-entities-env-rabies-pep-surveillance-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-saovabha-rabies-pep-2565-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-entities-env-rabies-pep-surveillance-md-wiki-sources-who-rabies-position-2018-md",
+      "fromNode": "wiki-entities-env-rabies-pep-surveillance-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-who-rabies-position-2018-md",
       "toSide": "left",
       "color": "5"
     },
@@ -10529,6 +11081,14 @@
       "color": "5"
     },
     {
+      "id": "edge-wiki-entities-iot-18650-battery-shield-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-18650-battery-shield-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-18650-battery-shield-md-wiki-entities-iot-vapcell-m35-18650-md",
       "fromNode": "wiki-entities-iot-18650-battery-shield-md",
       "fromSide": "right",
@@ -10566,6 +11126,30 @@
       "fromSide": "left",
       "toNode": "CLAUDE-md",
       "toSide": "right",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-arduino-ide-md-wiki-sources-arduino-ide-esp32-setup-md",
+      "fromNode": "wiki-entities-iot-arduino-ide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-ide-esp32-setup-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-arduino-ide-md-wiki-sources-esp32-complete-guide-thai-md",
+      "fromNode": "wiki-entities-iot-arduino-ide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-complete-guide-thai-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-arduino-ide-md-wiki-sources-platformio-esp32-guide-md",
+      "fromNode": "wiki-entities-iot-arduino-ide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-platformio-esp32-guide-md",
+      "toSide": "left",
       "color": "3"
     },
     {
@@ -10625,6 +11209,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-arduino-uno-r3-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-arduino-uno-r3-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-arduino-uno-r3-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-entities-iot-arduino-uno-r3-md",
       "fromSide": "right",
@@ -10661,6 +11253,22 @@
       "fromNode": "wiki-entities-iot-arduino-uno-r3-md",
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-chirpstack-md-wiki-sources-lorawan-fuota-rak3172-md",
+      "fromNode": "wiki-entities-iot-chirpstack-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-fuota-rak3172-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-chirpstack-md-wiki-sources-lorawan-network-beginner-md",
+      "fromNode": "wiki-entities-iot-chirpstack-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-network-beginner-md",
       "toSide": "left",
       "color": "3"
     },
@@ -10713,6 +11321,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-dht11-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-dht11-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-dht11-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-entities-iot-dht11-md",
       "fromSide": "right",
@@ -10741,6 +11357,30 @@
       "fromNode": "wiki-entities-iot-dht11-md",
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-ds18b20-md-wiki-sources-ds18b20-esp32-randomnerd-md",
+      "fromNode": "wiki-entities-iot-ds18b20-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ds18b20-esp32-randomnerd-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-ds18b20-md-wiki-sources-vaccine-temp-monitoring-iot-md",
+      "fromNode": "wiki-entities-iot-ds18b20-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-temp-monitoring-iot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-ds18b20-md-wiki-sources-vaccine-cae-anomaly-detection-md",
+      "fromNode": "wiki-entities-iot-ds18b20-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
       "toSide": "left",
       "color": "3"
     },
@@ -10813,6 +11453,46 @@
       "fromNode": "wiki-entities-iot-ds18b20-md",
       "fromSide": "right",
       "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-dx-lr02-lora-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-dx-lr02-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-dx-lr02-lora-md-wiki-sources-dx-lr02-datasheet-md",
+      "fromNode": "wiki-entities-iot-dx-lr02-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-datasheet-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-dx-lr02-lora-md-wiki-sources-dx-lr02-official-arduino-library-md",
+      "fromNode": "wiki-entities-iot-dx-lr02-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-official-arduino-library-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-dx-lr02-lora-md-wiki-sources-dx-lr02-module-spec-official-md",
+      "fromNode": "wiki-entities-iot-dx-lr02-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-module-spec-official-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-dx-lr02-lora-md-wiki-sources-dx-lr02-serial-guide-v2-md",
+      "fromNode": "wiki-entities-iot-dx-lr02-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-serial-guide-v2-md",
       "toSide": "left",
       "color": "3"
     },
@@ -10897,6 +11577,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-dx-smart-ttl-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-dx-smart-ttl-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-dx-smart-ttl-md-wiki-entities-iot-esp32-s3-md",
       "fromNode": "wiki-entities-iot-dx-smart-ttl-md",
       "fromSide": "right",
@@ -10917,6 +11605,14 @@
       "fromNode": "wiki-entities-iot-dx-smart-ttl-md",
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-emqx-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-entities-iot-emqx-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
       "toSide": "left",
       "color": "3"
     },
@@ -10961,6 +11657,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-esp-idf-md-wiki-sources-esp-idf-docs-md",
+      "fromNode": "wiki-entities-iot-esp-idf-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp-idf-docs-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-esp-idf-md-wiki-entities-iot-arduino-ide-md",
       "fromNode": "wiki-entities-iot-esp-idf-md",
       "fromSide": "right",
@@ -10997,6 +11701,14 @@
       "fromNode": "wiki-entities-iot-esp-idf-md",
       "fromSide": "right",
       "toNode": "wiki-sources-esp-idf-docs-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-c6-md-wiki-sources-iot-edge-ai-esp32-c6-2026-md",
+      "fromNode": "wiki-entities-iot-esp32-c6-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-edge-ai-esp32-c6-2026-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11045,6 +11757,22 @@
       "fromNode": "wiki-entities-iot-esp32-c6-md",
       "fromSide": "right",
       "toNode": "wiki-sources-iot-edge-ai-esp32-c6-2026-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-s3-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-esp32-s3-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-s3-md-wiki-sources-esp32-s3-intro-thai-md",
+      "fromNode": "wiki-entities-iot-esp32-s3-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-s3-intro-thai-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11117,6 +11845,38 @@
       "fromNode": "wiki-entities-iot-esp32-s3-md",
       "fromSide": "right",
       "toNode": "wiki-sources-esp32-s3-intro-thai-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-esp32-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-entities-iot-esp32-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-md-wiki-sources-esp32-complete-guide-thai-md",
+      "fromNode": "wiki-entities-iot-esp32-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-complete-guide-thai-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-esp32-md-wiki-sources-arduino-ide-esp32-setup-md",
+      "fromNode": "wiki-entities-iot-esp32-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-ide-esp32-setup-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11233,6 +11993,22 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-grafana-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-entities-iot-grafana-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-grafana-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-entities-iot-grafana-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-grafana-md-wiki-entities-iot-influxdb-md",
       "fromNode": "wiki-entities-iot-grafana-md",
       "fromSide": "right",
@@ -11289,6 +12065,22 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-hc-sr04-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-hc-sr04-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-hc-sr04-md-wiki-sources-esp32-tank-level-mqtt-md",
+      "fromNode": "wiki-entities-iot-hc-sr04-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-tank-level-mqtt-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-hc-sr04-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-entities-iot-hc-sr04-md",
       "fromSide": "right",
@@ -11337,6 +12129,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-hc-sr501-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-hc-sr501-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-hc-sr501-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-entities-iot-hc-sr501-md",
       "fromSide": "top",
@@ -11361,6 +12161,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-home-assistant-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-entities-iot-home-assistant-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-home-assistant-md-wiki-entities-iot-mqtt-protocol-md",
       "fromNode": "wiki-entities-iot-home-assistant-md",
       "fromSide": "right",
@@ -11381,6 +12189,22 @@
       "fromNode": "wiki-entities-iot-home-assistant-md",
       "fromSide": "right",
       "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-hx711-md-wiki-sources-esp32-hx711-randomnerd-md",
+      "fromNode": "wiki-entities-iot-hx711-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-randomnerd-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-hx711-md-wiki-sources-esp32-hx711-mqtt-github-md",
+      "fromNode": "wiki-entities-iot-hx711-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-mqtt-github-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11441,6 +12265,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-influxdb-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-entities-iot-influxdb-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-influxdb-md-wiki-entities-iot-grafana-md",
       "fromNode": "wiki-entities-iot-influxdb-md",
       "fromSide": "left",
@@ -11459,6 +12291,14 @@
     {
       "id": "edge-wiki-entities-iot-influxdb-md-wiki-sources-iot-lora-gateway-architecture-md",
       "fromNode": "wiki-entities-iot-influxdb-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-line-notify-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-entities-iot-line-notify-md",
       "fromSide": "right",
       "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
       "toSide": "left",
@@ -11485,6 +12325,14 @@
       "fromNode": "wiki-entities-iot-line-notify-md",
       "fromSide": "right",
       "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-load-cell-md-wiki-sources-esp32-hx711-randomnerd-md",
+      "fromNode": "wiki-entities-iot-load-cell-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-randomnerd-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11521,6 +12369,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-mosquitto-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-entities-iot-mosquitto-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-mosquitto-md-wiki-entities-iot-mqtt-protocol-md",
       "fromNode": "wiki-entities-iot-mosquitto-md",
       "fromSide": "bottom",
@@ -11547,6 +12403,14 @@
     {
       "id": "edge-wiki-entities-iot-mosquitto-md-wiki-sources-mqtt-introduction-md",
       "fromNode": "wiki-entities-iot-mosquitto-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-mqtt-protocol-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-entities-iot-mqtt-protocol-md",
       "fromSide": "right",
       "toNode": "wiki-sources-mqtt-introduction-md",
       "toSide": "left",
@@ -11609,6 +12473,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-mysql-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-entities-iot-mysql-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-mysql-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-entities-iot-mysql-md",
       "fromSide": "left",
@@ -11641,6 +12513,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-nb-iot-md-wiki-sources-lora-vs-nbiot-md",
+      "fromNode": "wiki-entities-iot-nb-iot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-vs-nbiot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-nb-iot-md-wiki-concepts-iot-lora-md",
       "fromNode": "wiki-entities-iot-nb-iot-md",
       "fromSide": "right",
@@ -11661,6 +12541,22 @@
       "fromNode": "wiki-entities-iot-nb-iot-md",
       "fromSide": "right",
       "toNode": "wiki-sources-lora-vs-nbiot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-node-red-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-entities-iot-node-red-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-node-red-md-wiki-sources-nodered-dashboard-ui-md",
+      "fromNode": "wiki-entities-iot-node-red-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-nodered-dashboard-ui-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11721,6 +12617,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-platformio-md-wiki-sources-platformio-esp32-guide-md",
+      "fromNode": "wiki-entities-iot-platformio-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-platformio-esp32-guide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-platformio-md-wiki-entities-iot-arduino-ide-md",
       "fromNode": "wiki-entities-iot-platformio-md",
       "fromSide": "right",
@@ -11757,6 +12661,22 @@
       "fromNode": "wiki-entities-iot-platformio-md",
       "fromSide": "right",
       "toNode": "wiki-sources-platformio-esp32-guide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-pms5003-md-wiki-sources-air-quality-iot-lora-network-md",
+      "fromNode": "wiki-entities-iot-pms5003-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-pms5003-md-wiki-sources-air-quality-sensors-dronebot-md",
+      "fromNode": "wiki-entities-iot-pms5003-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-sensors-dronebot-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11833,6 +12753,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-pzem-004t-md-wiki-sources-espem-energy-monitor-md",
+      "fromNode": "wiki-entities-iot-pzem-004t-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espem-energy-monitor-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-pzem-004t-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-entities-iot-pzem-004t-md",
       "fromSide": "right",
@@ -11869,6 +12797,14 @@
       "fromNode": "wiki-entities-iot-pzem-004t-md",
       "fromSide": "right",
       "toNode": "wiki-sources-espem-energy-monitor-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-raspberry-pi-md-wiki-sources-raspberry-pi-iot-guide-md",
+      "fromNode": "wiki-entities-iot-raspberry-pi-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-iot-guide-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11917,6 +12853,38 @@
       "fromNode": "wiki-entities-iot-raspberry-pi-md",
       "fromSide": "right",
       "toNode": "wiki-sources-raspberry-pi-iot-guide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-rfm95-sx1276-md-wiki-sources-esp32-lora-arduino-ide-md",
+      "fromNode": "wiki-entities-iot-rfm95-sx1276-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-arduino-ide-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-rfm95-sx1276-md-wiki-sources-esp32-lora-sensor-webserver-md",
+      "fromNode": "wiki-entities-iot-rfm95-sx1276-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-sensor-webserver-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-rfm95-sx1276-md-wiki-sources-lora-getting-started-dronebot-md",
+      "fromNode": "wiki-entities-iot-rfm95-sx1276-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-getting-started-dronebot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-rfm95-sx1276-md-wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "fromNode": "wiki-entities-iot-rfm95-sx1276-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-gateway-sparkfun-md",
       "toSide": "left",
       "color": "3"
     },
@@ -11981,6 +12949,22 @@
       "fromNode": "wiki-entities-iot-rfm95-sx1276-md",
       "fromSide": "right",
       "toNode": "wiki-sources-lora-getting-started-dronebot-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-telegram-bot-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-entities-iot-telegram-bot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-telegram-bot-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-telegram-bot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
       "toSide": "left",
       "color": "3"
     },
@@ -12057,6 +13041,22 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-the-things-network-md-wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "fromNode": "wiki-entities-iot-the-things-network-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-the-things-network-md-wiki-sources-lorawan-network-beginner-md",
+      "fromNode": "wiki-entities-iot-the-things-network-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-network-beginner-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-the-things-network-md-wiki-concepts-iot-lorawan-md",
       "fromNode": "wiki-entities-iot-the-things-network-md",
       "fromSide": "left",
@@ -12089,6 +13089,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-entities-iot-vapcell-m35-18650-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-entities-iot-vapcell-m35-18650-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-entities-iot-vapcell-m35-18650-md-wiki-entities-iot-18650-battery-shield-md",
       "fromNode": "wiki-entities-iot-vapcell-m35-18650-md",
       "fromSide": "left",
@@ -12117,6 +13125,14 @@
       "fromNode": "wiki-entities-iot-vapcell-m35-18650-md",
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-velxio-md-wiki-sources-velxio-arduino-esp32-pi-simulator-md",
+      "fromNode": "wiki-entities-iot-velxio-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-velxio-arduino-esp32-pi-simulator-md",
       "toSide": "left",
       "color": "3"
     },
@@ -12245,6 +13261,14 @@
       "fromNode": "wiki-entities-pharmacy-drug-database-md",
       "fromSide": "right",
       "toNode": "wiki-sources-pharmacy-context-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-entities-pharmacy-drug-matching-system-md-wiki-sources-drug-aliases-reference-md",
+      "fromNode": "wiki-entities-pharmacy-drug-matching-system-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-drug-aliases-reference-md",
       "toSide": "left",
       "color": "4"
     },
@@ -12395,17 +13419,17 @@
     {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-ai-agents-integration-guide-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
       "fromNode": "wiki-sources-ai-agents-integration-guide-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -12467,9 +13491,9 @@
     {
       "id": "edge-wiki-sources-ai-engineering-llm-md-wiki-concepts-ai-tools-llm-eval-frameworks-md",
       "fromNode": "wiki-sources-ai-engineering-llm-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-llm-eval-frameworks-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -12963,9 +13987,9 @@
     {
       "id": "edge-wiki-sources-hyperframes-official-docs-md-wiki-entities-ai-tools-hyperframes-md",
       "fromNode": "wiki-sources-hyperframes-official-docs-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-hyperframes-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -13569,6 +14593,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-8-bit-trading-rpg-blueprint-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-8-bit-trading-rpg-blueprint-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-8-bit-trading-rpg-blueprint-md-wiki-sources-freqtrade-pi5-md",
+      "fromNode": "wiki-synthesis-8-bit-trading-rpg-blueprint-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-freqtrade-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-8-bit-trading-rpg-blueprint-md-wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
       "fromNode": "wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromSide": "right",
@@ -13606,6 +14646,30 @@
       "fromSide": "left",
       "toNode": "CLAUDE-md",
       "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-sources-air-quality-iot-lora-network-md",
+      "fromNode": "wiki-synthesis-air-quality-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-sources-air-quality-sensors-dronebot-md",
+      "fromNode": "wiki-synthesis-air-quality-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-sensors-dronebot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-air-quality-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -13713,6 +14777,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-sources-appsheet-env-datadict-md",
+      "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-appsheet-env-datadict-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromSide": "right",
@@ -13766,6 +14838,30 @@
       "fromSide": "left",
       "toNode": "wiki-entities-env-rabies-pep-surveillance-md",
       "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-sources-vaccine-temp-monitoring-iot-md",
+      "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-temp-monitoring-iot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-sources-vaccine-cae-anomaly-detection-md",
+      "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-sources-ds18b20-esp32-randomnerd-md",
+      "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ds18b20-esp32-randomnerd-md",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -13853,6 +14949,22 @@
       "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
       "fromSide": "right",
       "toNode": "wiki-sources-ds18b20-esp32-randomnerd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-design-web-capability-hub-md-wiki-sources-dashboard-design-best-practices-md",
+      "fromNode": "wiki-synthesis-design-web-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dashboard-design-best-practices-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-design-web-capability-hub-md-wiki-sources-good-uiux-practices-md",
+      "fromNode": "wiki-synthesis-design-web-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-good-uiux-practices-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14049,6 +15161,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-dual-ai-workflow-md-wiki-sources-telegram-ai-router-design-md",
+      "fromNode": "wiki-synthesis-dual-ai-workflow-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-telegram-ai-router-design-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-dual-ai-workflow-md-wiki-synthesis-openrouter-agent-routing-md",
       "fromNode": "wiki-synthesis-dual-ai-workflow-md",
       "fromSide": "left",
@@ -14085,6 +15205,30 @@
       "fromNode": "wiki-synthesis-dual-ai-workflow-md",
       "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-hermes-agent-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-sources-pzem-004t-guide-2025-md",
+      "fromNode": "wiki-synthesis-energy-power-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pzem-004t-guide-2025-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-sources-espem-energy-monitor-md",
+      "fromNode": "wiki-synthesis-energy-power-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espem-energy-monitor-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-energy-power-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14185,6 +15329,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-env-webapp-schema-wastewater-md-wiki-sources-appsheet-env-datadict-md",
+      "fromNode": "wiki-synthesis-env-webapp-schema-wastewater-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-appsheet-env-datadict-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-env-webapp-schema-wastewater-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-synthesis-env-webapp-schema-wastewater-md",
       "fromSide": "left",
@@ -14213,6 +15365,14 @@
       "fromNode": "wiki-synthesis-env-webapp-schema-wastewater-md",
       "fromSide": "right",
       "toNode": "wiki-sources-umbrel-pi5-setup-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-sources-esp32-tank-level-mqtt-md",
+      "fromNode": "wiki-synthesis-fuel-tank-level-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-tank-level-mqtt-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14281,6 +15441,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
       "fromSide": "left",
@@ -14318,6 +15494,14 @@
       "fromSide": "left",
       "toNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
       "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-garbage-report-ocr-md-wiki-sources-infectious-waste-th-law-md",
+      "fromNode": "wiki-synthesis-garbage-report-ocr-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -14373,6 +15557,30 @@
       "fromNode": "wiki-synthesis-garbage-report-ocr-md",
       "fromSide": "right",
       "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-iot-lora-architecture-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-synthesis-iot-lora-architecture-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-synthesis-iot-lora-architecture-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14489,6 +15697,30 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-local-llm-pc-vs-mac-2026-md-wiki-sources-ai-iot-server-build-v3-md",
+      "fromNode": "wiki-synthesis-local-llm-pc-vs-mac-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-iot-server-build-v3-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-local-llm-pc-vs-mac-2026-md-wiki-sources-local-llm-mac-mini-guide-md",
+      "fromNode": "wiki-synthesis-local-llm-pc-vs-mac-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-local-llm-mac-mini-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-local-llm-pc-vs-mac-2026-md-wiki-sources-strix-halo-research-2026-05-05-md",
+      "fromNode": "wiki-synthesis-local-llm-pc-vs-mac-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-strix-halo-research-2026-05-05-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-local-llm-pc-vs-mac-2026-md-wiki-sources-strix-halo-research-2026-05-05-md",
       "fromNode": "wiki-synthesis-local-llm-pc-vs-mac-2026-md",
       "fromSide": "right",
@@ -14553,6 +15785,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-openrouter-agent-routing-md-wiki-sources-openrouter-api-demo-md",
+      "fromNode": "wiki-synthesis-openrouter-agent-routing-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-openrouter-api-demo-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-openrouter-agent-routing-md-wiki-sources-agent-frameworks-local-debug-2026-md",
+      "fromNode": "wiki-synthesis-openrouter-agent-routing-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-openrouter-agent-routing-md-wiki-synthesis-dual-ai-workflow-md",
       "fromNode": "wiki-synthesis-openrouter-agent-routing-md",
       "fromSide": "right",
@@ -14605,6 +15853,14 @@
       "fromNode": "wiki-synthesis-openrouter-agent-routing-md",
       "fromSide": "right",
       "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pharmacy-order-checker-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-synthesis-pharmacy-order-checker-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14681,6 +15937,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-pharmacy-web-app-roadmap-md-wiki-sources-pharmacy-ui-instructions-md",
+      "fromNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pharmacy-ui-instructions-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-pharmacy-web-app-roadmap-md-wiki-entities-pharmacy-pharmacy-business-md",
       "fromNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
       "fromSide": "bottom",
@@ -14725,6 +15989,30 @@
       "fromNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
       "fromSide": "right",
       "toNode": "wiki-sources-pharmacy-ui-instructions-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pi4-lora-gateway-server-md-wiki-sources-raspberry-pi-iot-guide-md",
+      "fromNode": "wiki-synthesis-pi4-lora-gateway-server-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-iot-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pi4-lora-gateway-server-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-pi4-lora-gateway-server-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pi4-lora-gateway-server-md-wiki-sources-dx-lr02-datasheet-md",
+      "fromNode": "wiki-synthesis-pi4-lora-gateway-server-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-datasheet-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14865,6 +16153,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-pixel-wealth-quest-gdd-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-pixel-wealth-quest-gdd-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-pixel-wealth-quest-gdd-md-wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromNode": "wiki-synthesis-pixel-wealth-quest-gdd-md",
       "fromSide": "left",
@@ -14921,6 +16217,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-pixellab-api-endpoint-matrix-md-wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromNode": "wiki-synthesis-pixellab-api-endpoint-matrix-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-pixellab-api-endpoint-matrix-md-wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md",
       "fromNode": "wiki-synthesis-pixellab-api-endpoint-matrix-md",
       "fromSide": "right",
@@ -14941,6 +16245,22 @@
       "fromNode": "wiki-synthesis-pixellab-api-endpoint-matrix-md",
       "fromSide": "right",
       "toNode": "wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md-wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromNode": "wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
       "toSide": "left",
       "color": "6"
     },
@@ -14977,6 +16297,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-pixellab-phaser-asset-convention-md-wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-pixellab-phaser-asset-convention-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-pixellab-phaser-asset-convention-md-wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
       "fromNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
       "fromSide": "right",
@@ -15001,6 +16337,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-premium-auto-trading-capability-hub-md-wiki-sources-freqtrade-pi5-md",
+      "fromNode": "wiki-synthesis-premium-auto-trading-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-freqtrade-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-premium-auto-trading-capability-hub-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-premium-auto-trading-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-premium-auto-trading-capability-hub-md-wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromNode": "wiki-synthesis-premium-auto-trading-capability-hub-md",
       "fromSide": "left",
@@ -15013,6 +16365,14 @@
       "fromNode": "wiki-synthesis-premium-auto-trading-capability-hub-md",
       "fromSide": "right",
       "toNode": "wiki-sources-freqtrade-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-revenue-engine-capability-hub-md-wiki-sources-openrouter-api-demo-md",
+      "fromNode": "wiki-synthesis-revenue-engine-capability-hub-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-openrouter-api-demo-md",
       "toSide": "left",
       "color": "6"
     },
@@ -15041,6 +16401,902 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-sunday-invest-moon-roadmap-md-wiki-synthesis-pixel-wealth-quest-gdd-md",
+      "fromNode": "wiki-synthesis-sunday-invest-moon-roadmap-md",
+      "fromSide": "top",
+      "toNode": "wiki-synthesis-pixel-wealth-quest-gdd-md",
+      "toSide": "bottom",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย-md-wiki-sources-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย-md",
+      "fromNode": "wiki-synthesis-synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand-md-wiki-sources-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand-md",
+      "fromNode": "wiki-synthesis-synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-3-dashboard-node-red-md-wiki-sources-3-dashboard-node-red-md",
+      "fromNode": "wiki-synthesis-synth-3-dashboard-node-red-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-3-dashboard-node-red-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-agent-frameworks-local-debug-2026-md-wiki-sources-agent-frameworks-local-debug-2026-md",
+      "fromNode": "wiki-synthesis-synth-agent-frameworks-local-debug-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-agents-integration-guide-md-wiki-sources-ai-agents-integration-guide-md",
+      "fromNode": "wiki-synthesis-synth-ai-agents-integration-guide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-agents-integration-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-agent-patterns-md-wiki-sources-ai-engineering-agent-patterns-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-agent-patterns-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-agent-patterns-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-glossary-md-wiki-sources-ai-engineering-glossary-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-glossary-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-glossary-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-llm-md-wiki-sources-ai-engineering-llm-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-llm-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-llm-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-multi-agent-md-wiki-sources-ai-engineering-multi-agent-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-multi-agent-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-multi-agent-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-myths-md-wiki-sources-ai-engineering-myths-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-myths-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-myths-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-swarm-optimization-md-wiki-sources-ai-engineering-swarm-optimization-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-swarm-optimization-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-swarm-optimization-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-engineering-tools-protocols-md-wiki-sources-ai-engineering-tools-protocols-md",
+      "fromNode": "wiki-synthesis-synth-ai-engineering-tools-protocols-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-engineering-tools-protocols-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-iot-server-build-v3-final-md-wiki-sources-ai-iot-server-build-v3-final-md",
+      "fromNode": "wiki-synthesis-synth-ai-iot-server-build-v3-final-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-iot-server-build-v3-final-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ai-iot-server-build-v3-md-wiki-sources-ai-iot-server-build-v3-md",
+      "fromNode": "wiki-synthesis-synth-ai-iot-server-build-v3-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-iot-server-build-v3-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-air-quality-iot-lora-network-md-wiki-sources-air-quality-iot-lora-network-md",
+      "fromNode": "wiki-synthesis-synth-air-quality-iot-lora-network-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-air-quality-sensors-dronebot-md-wiki-sources-air-quality-sensors-dronebot-md",
+      "fromNode": "wiki-synthesis-synth-air-quality-sensors-dronebot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-air-quality-sensors-dronebot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-appsheet-env-datadict-md-wiki-sources-appsheet-env-datadict-md",
+      "fromNode": "wiki-synthesis-synth-appsheet-env-datadict-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-appsheet-env-datadict-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-arduino-ide-esp32-arduino-2025-md-wiki-sources-arduino-ide-esp32-arduino-2025-md",
+      "fromNode": "wiki-synthesis-synth-arduino-ide-esp32-arduino-2025-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-ide-esp32-arduino-2025-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-arduino-ide-esp32-setup-md-wiki-sources-arduino-ide-esp32-setup-md",
+      "fromNode": "wiki-synthesis-synth-arduino-ide-esp32-setup-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-ide-esp32-setup-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป-md-wiki-sources-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป-md",
+      "fromNode": "wiki-synthesis-synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-arduino-librariesarduino-powermanagement-md-wiki-sources-arduino-librariesarduino-powermanagement-md",
+      "fromNode": "wiki-synthesis-synth-arduino-librariesarduino-powermanagement-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-librariesarduino-powermanagement-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-arduino-librariesarduinopowermanagement-md-wiki-sources-arduino-librariesarduinopowermanagement-md",
+      "fromNode": "wiki-synthesis-synth-arduino-librariesarduinopowermanagement-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-arduino-librariesarduinopowermanagement-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-build-software-better-together-md-wiki-sources-build-software-better-together-md",
+      "fromNode": "wiki-synthesis-synth-build-software-better-together-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-build-software-better-together-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-building-an-iot-application-with-raspberry-pi-and-python-md-wiki-sources-building-an-iot-application-with-raspberry-pi-and-python-md",
+      "fromNode": "wiki-synthesis-synth-building-an-iot-application-with-raspberry-pi-and-python-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-building-an-iot-application-with-raspberry-pi-and-python-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-claude-model-cost-switching-strategy-2026-06-md-wiki-sources-claude-model-cost-switching-strategy-2026-06-md",
+      "fromNode": "wiki-synthesis-synth-claude-model-cost-switching-strategy-2026-06-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-claude-model-cost-switching-strategy-2026-06-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-context-claude-code-dev-vibe-coding-thailand-md-wiki-sources-context-claude-code-dev-vibe-coding-thailand-md",
+      "fromNode": "wiki-synthesis-synth-context-claude-code-dev-vibe-coding-thailand-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-context-claude-code-dev-vibe-coding-thailand-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-create-an-esp32-project-with-platformio-an-guide-for-beginne-md-wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginne-md",
+      "fromNode": "wiki-synthesis-synth-create-an-esp32-project-with-platformio-an-guide-for-beginne-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginne-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-create-an-esp32-project-with-platformio-an-guide-for-beginners-md-wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginners-md",
+      "fromNode": "wiki-synthesis-synth-create-an-esp32-project-with-platformio-an-guide-for-beginners-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginners-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dashboard-design-best-practices-and-examples-md-wiki-sources-dashboard-design-best-practices-and-examples-md",
+      "fromNode": "wiki-synthesis-synth-dashboard-design-best-practices-and-examples-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dashboard-design-best-practices-and-examples-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dashboard-design-best-practices-md-wiki-sources-dashboard-design-best-practices-md",
+      "fromNode": "wiki-synthesis-synth-dashboard-design-best-practices-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dashboard-design-best-practices-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-datasheet-dx-lr02-md-wiki-sources-datasheet-dx-lr02-md",
+      "fromNode": "wiki-synthesis-synth-datasheet-dx-lr02-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-datasheet-dx-lr02-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ddc-cpg-rabies-2564-md-wiki-sources-ddc-cpg-rabies-2564-md",
+      "fromNode": "wiki-synthesis-synth-ddc-cpg-rabies-2564-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ddc-cpg-rabies-2564-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-drug-aliases-reference-md-wiki-sources-drug-aliases-reference-md",
+      "fromNode": "wiki-synthesis-synth-drug-aliases-reference-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-drug-aliases-reference-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ds18b20-esp32-randomnerd-md-wiki-sources-ds18b20-esp32-randomnerd-md",
+      "fromNode": "wiki-synthesis-synth-ds18b20-esp32-randomnerd-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ds18b20-esp32-randomnerd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dx-lr02-at-commands-demo-md-wiki-sources-dx-lr02-at-commands-demo-md",
+      "fromNode": "wiki-synthesis-synth-dx-lr02-at-commands-demo-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-at-commands-demo-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dx-lr02-datasheet-md-wiki-sources-dx-lr02-datasheet-md",
+      "fromNode": "wiki-synthesis-synth-dx-lr02-datasheet-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-datasheet-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dx-lr02-module-spec-official-md-wiki-sources-dx-lr02-module-spec-official-md",
+      "fromNode": "wiki-synthesis-synth-dx-lr02-module-spec-official-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-module-spec-official-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dx-lr02-official-arduino-library-md-wiki-sources-dx-lr02-official-arduino-library-md",
+      "fromNode": "wiki-synthesis-synth-dx-lr02-official-arduino-library-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-official-arduino-library-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-dx-lr02-serial-guide-v2-md-wiki-sources-dx-lr02-serial-guide-v2-md",
+      "fromNode": "wiki-synthesis-synth-dx-lr02-serial-guide-v2-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-dx-lr02-serial-guide-v2-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-easyloranode-tracker-md-wiki-sources-easyloranode-tracker-md",
+      "fromNode": "wiki-synthesis-synth-easyloranode-tracker-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-easyloranode-tracker-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp-idf-docs-md-wiki-sources-esp-idf-docs-md",
+      "fromNode": "wiki-synthesis-synth-esp-idf-docs-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp-idf-docs-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-complete-guide-thai-md-wiki-sources-esp32-complete-guide-thai-md",
+      "fromNode": "wiki-synthesis-synth-esp32-complete-guide-thai-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-complete-guide-thai-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-hx711-mqtt-github-md-wiki-sources-esp32-hx711-mqtt-github-md",
+      "fromNode": "wiki-synthesis-synth-esp32-hx711-mqtt-github-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-mqtt-github-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-hx711-randomnerd-md-wiki-sources-esp32-hx711-randomnerd-md",
+      "fromNode": "wiki-synthesis-synth-esp32-hx711-randomnerd-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-randomnerd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md-wiki-sources-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-arduino-ide-md-wiki-sources-esp32-lora-arduino-ide-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-arduino-ide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-arduino-ide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-gateway-sparkfun-md-wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-gateway-sparkfun-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-gateway-sparkfun-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md-wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md-wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-lora-sensor-webserver-md-wiki-sources-esp32-lora-sensor-webserver-md",
+      "fromNode": "wiki-synthesis-synth-esp32-lora-sensor-webserver-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-lora-sensor-webserver-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-s3-intro-thai-md-wiki-sources-esp32-s3-intro-thai-md",
+      "fromNode": "wiki-synthesis-synth-esp32-s3-intro-thai-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-s3-intro-thai-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-tank-level-mqtt-md-wiki-sources-esp32-tank-level-mqtt-md",
+      "fromNode": "wiki-synthesis-synth-esp32-tank-level-mqtt-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-tank-level-mqtt-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-weather-dashboard-16day-md-wiki-sources-esp32-weather-dashboard-16day-md",
+      "fromNode": "wiki-synthesis-synth-esp32-weather-dashboard-16day-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-weather-dashboard-16day-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-weather-epd-md-wiki-sources-esp32-weather-epd-md",
+      "fromNode": "wiki-synthesis-synth-esp32-weather-epd-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-weather-epd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-with-lora-using-arduino-ide-md-wiki-sources-esp32-with-lora-using-arduino-ide-md",
+      "fromNode": "wiki-synthesis-synth-esp32-with-lora-using-arduino-ide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-with-lora-using-arduino-ide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md-wiki-sources-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md",
+      "fromNode": "wiki-synthesis-synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-esp32-md-wiki-sources-esp32-md",
+      "fromNode": "wiki-synthesis-synth-esp32-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-espem-energy-monitor-md-wiki-sources-espem-energy-monitor-md",
+      "fromNode": "wiki-synthesis-synth-espem-energy-monitor-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espem-energy-monitor-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-espressif-esp32-s3-iot-engineering-education-md-wiki-sources-espressif-esp32-s3-iot-engineering-education-md",
+      "fromNode": "wiki-synthesis-synth-espressif-esp32-s3-iot-engineering-education-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espressif-esp32-s3-iot-engineering-education-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-espressifesp-idf-espressif-iot-development-framework-officia-md-wiki-sources-espressifesp-idf-espressif-iot-development-framework-officia-md",
+      "fromNode": "wiki-synthesis-synth-espressifesp-idf-espressif-iot-development-framework-officia-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espressifesp-idf-espressif-iot-development-framework-officia-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md-wiki-sources-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md",
+      "fromNode": "wiki-synthesis-synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-freqtrade-pi5-md-wiki-sources-freqtrade-pi5-md",
+      "fromNode": "wiki-synthesis-synth-freqtrade-pi5-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-freqtrade-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md-wiki-sources-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md",
+      "fromNode": "wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v44-documentation-md-wiki-sources-get-started-esp32-esp-idf-programming-guide-v44-documentation-md",
+      "fromNode": "wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v44-documentation-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-get-started-esp32-esp-idf-programming-guide-v44-documentation-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-github-0x0funky-agent-sprite-forge-md-wiki-sources-github-0x0funky-agent-sprite-forge-md",
+      "fromNode": "wiki-synthesis-synth-github-0x0funky-agent-sprite-forge-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-github-0x0funky-agent-sprite-forge-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-github-blendi-remade-sprite-sheet-creator-md-wiki-sources-github-blendi-remade-sprite-sheet-creator-md",
+      "fromNode": "wiki-synthesis-synth-github-blendi-remade-sprite-sheet-creator-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-github-blendi-remade-sprite-sheet-creator-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-good-uiux-practices-md-wiki-sources-good-uiux-practices-md",
+      "fromNode": "wiki-synthesis-synth-good-uiux-practices-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-good-uiux-practices-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-hardware-inventory-2026-04-18-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-synthesis-synth-hardware-inventory-2026-04-18-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-heltec-libraries-md-wiki-sources-heltec-libraries-md",
+      "fromNode": "wiki-synthesis-synth-heltec-libraries-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-heltec-libraries-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md-wiki-sources-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md",
+      "fromNode": "wiki-synthesis-synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md-wiki-sources-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md",
+      "fromNode": "wiki-synthesis-synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-hermes-agent-guide-th-md-wiki-sources-hermes-agent-guide-th-md",
+      "fromNode": "wiki-synthesis-synth-hermes-agent-guide-th-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hermes-agent-guide-th-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-hermes-agent-md-wiki-sources-hermes-agent-md",
+      "fromNode": "wiki-synthesis-synth-hermes-agent-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hermes-agent-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-hospital-wastewater-treatment-md-wiki-sources-hospital-wastewater-treatment-md",
+      "fromNode": "wiki-synthesis-synth-hospital-wastewater-treatment-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hospital-wastewater-treatment-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-how-lorawan-network-works-a-beginner-md-wiki-sources-how-lorawan-network-works-a-beginner-md",
+      "fromNode": "wiki-synthesis-synth-how-lorawan-network-works-a-beginner-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-how-lorawan-network-works-a-beginner-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-hyperframes-official-docs-md-wiki-sources-hyperframes-official-docs-md",
+      "fromNode": "wiki-synthesis-synth-hyperframes-official-docs-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hyperframes-official-docs-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-infectious-waste-th-law-md-wiki-sources-infectious-waste-th-law-md",
+      "fromNode": "wiki-synthesis-synth-infectious-waste-th-law-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md-wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md",
+      "fromNode": "wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md-wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md",
+      "fromNode": "wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-edge-ai-esp32-c6-2026-md-wiki-sources-iot-edge-ai-esp32-c6-2026-md",
+      "fromNode": "wiki-synthesis-synth-iot-edge-ai-esp32-c6-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-edge-ai-esp32-c6-2026-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-engineering-education-md-wiki-sources-iot-engineering-education-md",
+      "fromNode": "wiki-synthesis-synth-iot-engineering-education-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-engineering-education-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-lora-gateway-architecture-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-synth-iot-lora-gateway-architecture-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-node-red-mqtt-sql-data-logger-dashboard-md-wiki-sources-iot-node-red-mqtt-sql-data-logger-dashboard-md",
+      "fromNode": "wiki-synthesis-synth-iot-node-red-mqtt-sql-data-logger-dashboard-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-node-red-mqtt-sql-data-logger-dashboard-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md-wiki-sources-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md",
+      "fromNode": "wiki-synthesis-synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-nodered-mqtt-sql-course-md-wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "fromNode": "wiki-synthesis-synth-iot-nodered-mqtt-sql-course-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-nodered-mqtt-sql-course-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-visualization-guide-designing-effective-dashboards-monit-md-wiki-sources-iot-visualization-guide-designing-effective-dashboards-monit-md",
+      "fromNode": "wiki-synthesis-synth-iot-visualization-guide-designing-effective-dashboards-monit-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-visualization-guide-designing-effective-dashboards-monit-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md-wiki-sources-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md",
+      "fromNode": "wiki-synthesis-synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iot-visualization-guide-md-wiki-sources-iot-visualization-guide-md",
+      "fromNode": "wiki-synthesis-synth-iot-visualization-guide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-visualization-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md-wiki-sources-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md",
+      "fromNode": "wiki-synthesis-synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md-wiki-sources-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md",
+      "fromNode": "wiki-synthesis-synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-local-llm-mac-mini-guide-md-wiki-sources-local-llm-mac-mini-guide-md",
+      "fromNode": "wiki-synthesis-synth-local-llm-mac-mini-guide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-local-llm-mac-mini-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-arduino-esp8266-esp32-iot-lora-lora-md-wiki-sources-lora-arduino-esp8266-esp32-iot-lora-lora-md",
+      "fromNode": "wiki-synthesis-synth-lora-arduino-esp8266-esp32-iot-lora-lora-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-arduino-esp8266-esp32-iot-lora-lora-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-getting-started-dronebot-md-wiki-sources-lora-getting-started-dronebot-md",
+      "fromNode": "wiki-synthesis-synth-lora-getting-started-dronebot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-getting-started-dronebot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-getting-started-with-arduino-esp32-pico-md-wiki-sources-lora-getting-started-with-arduino-esp32-pico-md",
+      "fromNode": "wiki-synthesis-synth-lora-getting-started-with-arduino-esp32-pico-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-getting-started-with-arduino-esp32-pico-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-nb-iot-md-wiki-sources-lora-nb-iot-md",
+      "fromNode": "wiki-synthesis-synth-lora-nb-iot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-nb-iot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-thai-intro-md-wiki-sources-lora-thai-intro-md",
+      "fromNode": "wiki-synthesis-synth-lora-thai-intro-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-thai-intro-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lora-vs-nbiot-md-wiki-sources-lora-vs-nbiot-md",
+      "fromNode": "wiki-synthesis-synth-lora-vs-nbiot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lora-vs-nbiot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo-md-wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo-md",
+      "fromNode": "wiki-synthesis-synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-md-wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-md",
+      "fromNode": "wiki-synthesis-synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lorawan-fuota-rak3172-md-wiki-sources-lorawan-fuota-rak3172-md",
+      "fromNode": "wiki-synthesis-synth-lorawan-fuota-rak3172-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-fuota-rak3172-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-lorawan-network-beginner-md-wiki-sources-lorawan-network-beginner-md",
+      "fromNode": "wiki-synthesis-synth-lorawan-network-beginner-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-lorawan-network-beginner-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-mac-studio-used-thailand-2026-05-05-md-wiki-sources-mac-studio-used-thailand-2026-05-05-md",
+      "fromNode": "wiki-synthesis-synth-mac-studio-used-thailand-2026-05-05-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mac-studio-used-thailand-2026-05-05-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-manual-input-appsheet-env-2026-05-04-md-wiki-sources-manual-input-appsheet-env-2026-05-04-md",
+      "fromNode": "wiki-synthesis-synth-manual-input-appsheet-env-2026-05-04-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-manual-input-appsheet-env-2026-05-04-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-mqtt-introduction-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-synthesis-synth-mqtt-introduction-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-nodered-dashboard-ui-md-wiki-sources-nodered-dashboard-ui-md",
+      "fromNode": "wiki-synthesis-synth-nodered-dashboard-ui-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-nodered-dashboard-ui-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-note-taking-research-assistant-powered-by-ai-md-wiki-sources-note-taking-research-assistant-powered-by-ai-md",
+      "fromNode": "wiki-synthesis-synth-note-taking-research-assistant-powered-by-ai-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-note-taking-research-assistant-powered-by-ai-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ollama-pi5-md-wiki-sources-ollama-pi5-md",
+      "fromNode": "wiki-synthesis-synth-ollama-pi5-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ollama-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-openrouter-api-demo-md-wiki-sources-openrouter-api-demo-md",
+      "fromNode": "wiki-synthesis-synth-openrouter-api-demo-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-openrouter-api-demo-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-pharmacy-context-md-wiki-sources-pharmacy-context-md",
+      "fromNode": "wiki-synthesis-synth-pharmacy-context-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pharmacy-context-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-pharmacy-ui-instructions-md-wiki-sources-pharmacy-ui-instructions-md",
+      "fromNode": "wiki-synthesis-synth-pharmacy-ui-instructions-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pharmacy-ui-instructions-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md-wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromNode": "wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pixellab-api-v2-openapi-2026-06-01-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md-wiki-synthesis-pixellab-api-endpoint-matrix-md",
       "fromNode": "wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md",
       "fromSide": "left",
@@ -15065,6 +17321,182 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-synth-platformio-esp32-guide-md-wiki-sources-platformio-esp32-guide-md",
+      "fromNode": "wiki-synthesis-synth-platformio-esp32-guide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-platformio-esp32-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-pzem-004t-guide-2025-md-wiki-sources-pzem-004t-guide-2025-md",
+      "fromNode": "wiki-synthesis-synth-pzem-004t-guide-2025-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pzem-004t-guide-2025-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-rabies-vaccine-guidelines-th-2026-05-02-md-wiki-sources-rabies-vaccine-guidelines-th-2026-05-02-md",
+      "fromNode": "wiki-synthesis-synth-rabies-vaccine-guidelines-th-2026-05-02-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-rabies-vaccine-guidelines-th-2026-05-02-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-raspberry-pi-5-16gb-made-in-uk-md-wiki-sources-raspberry-pi-5-16gb-made-in-uk-md",
+      "fromNode": "wiki-synthesis-synth-raspberry-pi-5-16gb-made-in-uk-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-5-16gb-made-in-uk-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md-wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md",
+      "fromNode": "wiki-synthesis-synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th-md-wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th-md",
+      "fromNode": "wiki-synthesis-synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-raspberry-pi-documentation-md-wiki-sources-raspberry-pi-documentation-md",
+      "fromNode": "wiki-synthesis-synth-raspberry-pi-documentation-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-documentation-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-raspberry-pi-iot-guide-md-wiki-sources-raspberry-pi-iot-guide-md",
+      "fromNode": "wiki-synthesis-synth-raspberry-pi-iot-guide-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-raspberry-pi-iot-guide-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-readme-md-wiki-sources-readme-md",
+      "fromNode": "wiki-synthesis-synth-readme-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-readme-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md-wiki-sources-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md",
+      "fromNode": "wiki-synthesis-synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md-wiki-sources-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md",
+      "fromNode": "wiki-synthesis-synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-rpi-ai-hat-plus-2-official-md-wiki-sources-rpi-ai-hat-plus-2-official-md",
+      "fromNode": "wiki-synthesis-synth-rpi-ai-hat-plus-2-official-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-rpi-ai-hat-plus-2-official-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-rpi5-16gb-thailand-price-md-wiki-sources-rpi5-16gb-thailand-price-md",
+      "fromNode": "wiki-synthesis-synth-rpi5-16gb-thailand-price-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-rpi5-16gb-thailand-price-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-saovabha-rabies-pep-2565-md-wiki-sources-saovabha-rabies-pep-2565-md",
+      "fromNode": "wiki-synthesis-synth-saovabha-rabies-pep-2565-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-saovabha-rabies-pep-2565-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-source-5e4074bd-md-wiki-sources-source-5e4074bd-md",
+      "fromNode": "wiki-synthesis-synth-source-5e4074bd-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-source-5e4074bd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-sp-drugstore-2020-catalog-md-wiki-sources-sp-drugstore-2020-catalog-md",
+      "fromNode": "wiki-synthesis-synth-sp-drugstore-2020-catalog-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-sp-drugstore-2020-catalog-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-strix-halo-research-2026-05-05-md-wiki-sources-strix-halo-research-2026-05-05-md",
+      "fromNode": "wiki-synthesis-synth-strix-halo-research-2026-05-05-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-strix-halo-research-2026-05-05-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-supabase-overview-2026-05-02-md-wiki-sources-supabase-overview-2026-05-02-md",
+      "fromNode": "wiki-synthesis-synth-supabase-overview-2026-05-02-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-supabase-overview-2026-05-02-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-telegram-ai-agent-setup-md-wiki-sources-telegram-ai-agent-setup-md",
+      "fromNode": "wiki-synthesis-synth-telegram-ai-agent-setup-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-telegram-ai-agent-setup-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-telegram-ai-router-design-md-wiki-sources-telegram-ai-router-design-md",
+      "fromNode": "wiki-synthesis-synth-telegram-ai-router-design-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-telegram-ai-router-design-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-tinyml-esp32-applications-md-wiki-sources-tinyml-esp32-applications-md",
+      "fromNode": "wiki-synthesis-synth-tinyml-esp32-applications-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-tinyml-esp32-applications-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-trading-rpg-project-brief-2026-05-30-md-wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "fromNode": "wiki-synthesis-synth-trading-rpg-project-brief-2026-05-30-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-trading-rpg-project-brief-2026-05-30-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-synth-trading-rpg-project-brief-2026-05-30-md-wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromNode": "wiki-synthesis-synth-trading-rpg-project-brief-2026-05-30-md",
       "fromSide": "left",
@@ -15077,6 +17509,166 @@
       "fromNode": "wiki-synthesis-synth-trading-rpg-project-brief-2026-05-30-md",
       "fromSide": "right",
       "toNode": "wiki-sources-freqtrade-pi5-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-umbrel-pi5-setup-md-wiki-sources-umbrel-pi5-setup-md",
+      "fromNode": "wiki-synthesis-synth-umbrel-pi5-setup-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-umbrel-pi5-setup-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-uthai-equipment-price-2568-md-wiki-sources-uthai-equipment-price-2568-md",
+      "fromNode": "wiki-synthesis-synth-uthai-equipment-price-2568-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-uthai-equipment-price-2568-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ux-design-in-iot-md-wiki-sources-ux-design-in-iot-md",
+      "fromNode": "wiki-synthesis-synth-ux-design-in-iot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ux-design-in-iot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-vaccine-cae-anomaly-detection-md-wiki-sources-vaccine-cae-anomaly-detection-md",
+      "fromNode": "wiki-synthesis-synth-vaccine-cae-anomaly-detection-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-vaccine-temp-monitoring-iot-md-wiki-sources-vaccine-temp-monitoring-iot-md",
+      "fromNode": "wiki-synthesis-synth-vaccine-temp-monitoring-iot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vaccine-temp-monitoring-iot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-velxio-arduino-esp32-pi-simulator-md-wiki-sources-velxio-arduino-esp32-pi-simulator-md",
+      "fromNode": "wiki-synthesis-synth-velxio-arduino-esp32-pi-simulator-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-velxio-arduino-esp32-pi-simulator-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-vibe-pocketbase-gemini-plan-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "fromNode": "wiki-synthesis-synth-vibe-pocketbase-gemini-plan-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto-md-wiki-sources-vortigontespem-energy-monitor-with-dashboardmetrics-collecto-md",
+      "fromNode": "wiki-synthesis-synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vortigontespem-energy-monitor-with-dashboardmetrics-collecto-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con-md-wiki-sources-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con-md",
+      "fromNode": "wiki-synthesis-synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-web-appsheet-export-yaml-2026-05-04-md-wiki-sources-web-appsheet-export-yaml-2026-05-04-md",
+      "fromNode": "wiki-synthesis-synth-web-appsheet-export-yaml-2026-05-04-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-web-appsheet-export-yaml-2026-05-04-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19-md-wiki-sources-web-comparison-mac-mini-vs-pi5-ai-2026-04-19-md",
+      "fromNode": "wiki-synthesis-synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-web-comparison-mac-mini-vs-pi5-ai-2026-04-19-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-web-local-llm-mac-mini-2026-04-19-md-wiki-sources-web-local-llm-mac-mini-2026-04-19-md",
+      "fromNode": "wiki-synthesis-synth-web-local-llm-mac-mini-2026-04-19-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-web-local-llm-mac-mini-2026-04-19-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-web-raspberry-pi-ai-bot-recommendation-2026-md-wiki-sources-web-raspberry-pi-ai-bot-recommendation-2026-md",
+      "fromNode": "wiki-synthesis-synth-web-raspberry-pi-ai-bot-recommendation-2026-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-web-raspberry-pi-ai-bot-recommendation-2026-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-who-rabies-position-2018-md-wiki-sources-who-rabies-position-2018-md",
+      "fromNode": "wiki-synthesis-synth-who-rabies-position-2018-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-who-rabies-position-2018-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ-md-wiki-sources-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ-md",
+      "fromNode": "wiki-synthesis-synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ข้อมูล-datasheet-ของ-dx-lr02-md-wiki-sources-ข้อมูล-datasheet-ของ-dx-lr02-md",
+      "fromNode": "wiki-synthesis-synth-ข้อมูล-datasheet-ของ-dx-lr02-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ข้อมูล-datasheet-ของ-dx-lr02-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-คู่มือ-hermes-agent-md-wiki-sources-คู่มือ-hermes-agent-md",
+      "fromNode": "wiki-synthesis-synth-คู่มือ-hermes-agent-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-คู่มือ-hermes-agent-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk-md-wiki-sources-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk-md",
+      "fromNode": "wiki-synthesis-synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md-wiki-sources-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
+      "fromNode": "wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md-wiki-sources-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
+      "fromNode": "wiki-synthesis-synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
       "toSide": "left",
       "color": "6"
     },
@@ -15161,6 +17753,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-sources-hardware-inventory-2026-04-18-md",
+      "fromNode": "wiki-synthesis-temperature-monitor-project-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-sources-mqtt-introduction-md",
+      "fromNode": "wiki-synthesis-temperature-monitor-project-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-synthesis-iot-lora-architecture-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
       "fromSide": "left",
@@ -15233,6 +17841,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-vibe-pocketbase-project-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "fromNode": "wiki-synthesis-vibe-pocketbase-project-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-vibe-pocketbase-project-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-synthesis-vibe-pocketbase-project-md",
       "fromSide": "bottom",
@@ -15273,6 +17889,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-waste-form-automation-md-wiki-sources-infectious-waste-th-law-md",
+      "fromNode": "wiki-synthesis-waste-form-automation-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-waste-form-automation-md-wiki-synthesis-garbage-report-ocr-md",
       "fromNode": "wiki-synthesis-waste-form-automation-md",
       "fromSide": "bottom",
@@ -15301,6 +17925,30 @@
       "fromNode": "wiki-synthesis-waste-form-automation-md",
       "fromSide": "right",
       "toNode": "wiki-sources-infectious-waste-th-law-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-sources-esp32-hx711-randomnerd-md",
+      "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-randomnerd-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-sources-esp32-hx711-mqtt-github-md",
+      "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-esp32-hx711-mqtt-github-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-sources-iot-lora-gateway-architecture-md",
+      "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lora-gateway-architecture-md",
       "toSide": "left",
       "color": "6"
     },
@@ -15397,6 +18045,14 @@
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
       "fromSide": "right",
       "toNode": "wiki-sources-esp32-hx711-mqtt-github-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-wiki-to-video-pipeline-md-wiki-sources-hyperframes-official-docs-md",
+      "fromNode": "wiki-synthesis-wiki-to-video-pipeline-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-hyperframes-official-docs-md",
       "toSide": "left",
       "color": "6"
     },

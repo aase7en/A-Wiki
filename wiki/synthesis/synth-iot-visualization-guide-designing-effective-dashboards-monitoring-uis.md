@@ -1,4 +1,5 @@
 ---
+tags: [iot, visualization, guide, designing, effective]
 type: synthesis
 title: "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs — Synthesis"
 slug: synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis

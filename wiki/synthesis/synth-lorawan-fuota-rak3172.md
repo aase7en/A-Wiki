@@ -1,4 +1,5 @@
 ---
+tags: [iot, lorawan, fuota, rak3172]
 type: synthesis
 title: "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS — Synthesis"
 slug: synth-lorawan-fuota-rak3172

@@ -1,4 +1,5 @@
 ---
+tags: [env, hospital, wastewater, treatment]
 type: synthesis
 title: "กฎหมายและมาตรฐานระบบบำบัดน้ำเสียโรงพยาบาล ประเทศไทย — Synthesis"
 slug: synth-hospital-wastewater-treatment

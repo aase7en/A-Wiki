@@ -1,4 +1,5 @@
 ---
+tags: [ai, mac, studio, used, thailand]
 type: source
 title: "mac studio used thailand 2026 05 05"
 slug: mac-studio-used-thailand-2026-05-05

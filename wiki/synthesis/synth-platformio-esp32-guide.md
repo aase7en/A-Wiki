@@ -1,4 +1,5 @@
 ---
+tags: [iot, platformio, esp32, guide]
 type: synthesis
 title: "Create an ESP32 Project With PlatformIO: A Guide for Beginners — Synthesis"
 slug: synth-platformio-esp32-guide

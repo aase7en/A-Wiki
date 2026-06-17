@@ -1,4 +1,5 @@
 ---
+tags: [web, appsheet, export, yaml]
 type: synthesis
 title: "> ⚠️ PENDING REVIEW — เนื้อหานี้สรุปจากข้อมูลปี 2026 เพื่อใช้ในการวิเคราะห์โครงส — Synthesis"
 slug: synth-web-appsheet-export-yaml-2026-05-04

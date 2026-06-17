@@ -1,4 +1,5 @@
 ---
+tags: [iot, wearable, lora, node, battery, long]
 type: synthesis
 title: "IoTThinks/EasyLoRaNode_Tracker: A wearable LoRa node with battery for long range wearable projects — Synthesis"
 slug: synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we

@@ -1,4 +1,5 @@
 ---
+tags: [iot, arduino, ide, คืออะไร, esp32, และ]
 type: synthesis
 title: "**Arduino IDE** (Integrated Development Environment) คือโปรแกรมสำหรับเขียนโค้ดแล — Synthesis"
 slug: synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป

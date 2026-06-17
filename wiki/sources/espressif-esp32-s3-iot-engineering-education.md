@@ -1,4 +1,5 @@
 ---
+tags: [espressif, esp32, iot, engineering, education]
 type: source
 title: "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education"
 slug: espressif-esp32-s3-iot-engineering-education

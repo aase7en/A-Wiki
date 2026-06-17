@@ -1,4 +1,5 @@
 ---
+tags: [ai, agents, integration, guide]
 type: synthesis
 title: "คู่มือการบูรณาการ AI Agents ขั้นสูง: Symlink, Hooks, Skills, Plugins และ NotebookLM — Synthesis"
 slug: synth-ai-agents-integration-guide

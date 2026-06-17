@@ -1,4 +1,5 @@
 ---
+tags: [iot, raspberry, documentation]
 type: synthesis
 title: "[![](https://www.raspberrypi.com/documentation/images/full-sized/Getting-Started — Synthesis"
 slug: synth-raspberry-pi-documentation

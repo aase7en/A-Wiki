@@ -1,4 +1,5 @@
 ---
+tags: [iot, lora, thai, intro]
 type: synthesis
 title: "#1 LoRa Arduino ESP8266 ESP32 IoT อะไรคือ LoRa ใช้งาน LoRa อย่างไร — Synthesis"
 slug: synth-lora-thai-intro

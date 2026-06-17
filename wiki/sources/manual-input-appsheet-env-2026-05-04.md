@@ -1,4 +1,5 @@
 ---
+tags: [manual, input, appsheet, env]
 type: source
 title: "manual input appsheet env 2026 05 04"
 slug: manual-input-appsheet-env-2026-05-04

@@ -1,4 +1,5 @@
 ---
+tags: [vaccine, temp, monitoring, iot]
 type: synthesis
 title: "Vaccine Temperature Monitoring System using IoT (ESP32 + GSM) — Synthesis"
 slug: synth-vaccine-temp-monitoring-iot

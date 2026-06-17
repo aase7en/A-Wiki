@@ -1,4 +1,5 @@
 ---
+tags: [ai, agent, frameworks, local, debug]
 type: synthesis
 title: "Insights จากการ debug agent framework บน local LLM (thClaws/Hermes/OpenClaw) — Synthesis"
 slug: synth-agent-frameworks-local-debug-2026

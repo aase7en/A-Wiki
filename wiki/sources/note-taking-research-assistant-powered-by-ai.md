@@ -1,4 +1,5 @@
 ---
+tags: [ai, note, taking, research, assistant, powered]
 type: source
 title: "Note Taking & Research Assistant Powered by AI"
 slug: note-taking-research-assistant-powered-by-ai

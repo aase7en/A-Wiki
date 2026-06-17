@@ -1,4 +1,5 @@
 ---
+tags: [lora, iot]
 type: synthesis
 title: "เครื่องวัดน้ำ LoRa-nb iot เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริยะ — Synthesis"
 slug: synth-lora-nb-iot

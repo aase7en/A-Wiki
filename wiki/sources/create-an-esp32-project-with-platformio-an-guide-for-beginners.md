@@ -1,4 +1,5 @@
 ---
+tags: [iot, create, esp32, project, platformio, guide]
 type: source
 title: "Create an ESP32 Project With PlatformIO: An Guide for Beginners"
 slug: create-an-esp32-project-with-platformio-an-guide-for-beginners

@@ -1,4 +1,5 @@
 ---
+tags: [ai, context, claude, code, ใกล้เต็ม, dev]
 type: synthesis
 title: "context ใน Claude Code ใกล้เต็ม dev ส่วนใหญ่กด /compact หรือ /clear แบบเดาๆ ว่าต — Synthesis"
 slug: synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand

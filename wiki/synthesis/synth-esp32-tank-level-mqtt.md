@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, tank, level, mqtt]
 type: synthesis
 title: "ESP32 Tank Level Sensor — Ultrasonic + MQTT + Captive Portal — Synthesis"
 slug: synth-esp32-tank-level-mqtt

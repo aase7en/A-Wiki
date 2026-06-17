@@ -1,4 +1,5 @@
 ---
+tags: [iot, lr02, module, spec, official]
 type: synthesis
 title: "DX-LR02-900T22D MODULE SPECIFICATION v1.1 — Synthesis"
 slug: synth-dx-lr02-module-spec-official

@@ -1,3 +1,11 @@
+---
+type: synthesis
+tags: [drug, safety, cross-domain]
+sources: []
+created: 2026-05-25
+updated: 2026-06-18
+---
+
 # AI for Drug Safety
 
 > **Cross-domain synthesis:** Pharmacy ⟷ AI Tools

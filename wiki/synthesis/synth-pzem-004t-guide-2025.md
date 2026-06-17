@@ -1,4 +1,5 @@
 ---
+tags: [iot, pzem, 004t, guide]
 type: synthesis
 title: "ESP32 PZEM-004T Energy Monitoring — Complete 2025 Guide (ESPHome & MQTT) — Synthesis"
 slug: synth-pzem-004t-guide-2025

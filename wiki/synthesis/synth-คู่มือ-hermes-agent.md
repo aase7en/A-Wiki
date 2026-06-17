@@ -1,4 +1,5 @@
 ---
+tags: [ai, คู่มือ, hermes, agent]
 type: synthesis
 title: "คู่มือภาษาไทย น้อง เฮอมีส ai — Synthesis"
 slug: synth-คู่มือ-hermes-agent

@@ -1,4 +1,5 @@
 ---
+tags: [web, appsheet, export, yaml]
 type: source
 title: "web appsheet export yaml 2026 05 04"
 slug: web-appsheet-export-yaml-2026-05-04

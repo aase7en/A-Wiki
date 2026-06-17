@@ -46,20 +46,19 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 517 |
-| Edges | 1316 |
-| Broken links | 3 |
-| Orphans | 179 |
+| Nodes | 518 |
+| Edges | 1646 |
+| Broken links | 0 |
+| Orphans | 23 |
 
 | Broken source domain | Count |
 |---|---:|
-| ai-tools | 3 |
+| none | 0 |
 
 | Orphan domain | Count |
 |---|---:|
-| sources | 85 |
-| synthesis | 81 |
 | context | 13 |
+| sources | 10 |
 
 Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`, `wiki/context/overview-sources.md`, `wiki/context/project-backlog.md`
 

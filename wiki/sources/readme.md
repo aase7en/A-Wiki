@@ -1,4 +1,5 @@
 ---
+tags: [readme]
 type: source
 title: "README"
 slug: readme

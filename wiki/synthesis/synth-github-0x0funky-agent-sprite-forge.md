@@ -1,4 +1,5 @@
 ---
+tags: [ai, github, 0x0funky, agent, sprite, forge]
 type: synthesis
 title: "GitHub: 0x0funky/agent-sprite-forge — Synthesis"
 slug: synth-github-0x0funky-agent-sprite-forge

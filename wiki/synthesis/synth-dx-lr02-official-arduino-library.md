@@ -1,4 +1,5 @@
 ---
+tags: [iot, lr02, official, arduino, library]
 type: synthesis
 title: "DX-LR02 Official Arduino Library & PingPong Example — Synthesis"
 slug: synth-dx-lr02-official-arduino-library

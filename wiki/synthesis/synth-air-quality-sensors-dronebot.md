@@ -1,4 +1,5 @@
 ---
+tags: [iot, air, quality, sensors, dronebot]
 type: synthesis
 title: "Measure Air Quality with Microcontrollers — DroneBot Workshop — Synthesis"
 slug: synth-air-quality-sensors-dronebot

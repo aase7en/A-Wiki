@@ -1,4 +1,5 @@
 ---
+tags: [raspberry, iot, guide]
 type: synthesis
 title: "Raspberry Pi and IoT: the guide to understanding their role in the Internet of Things — Synthesis"
 slug: synth-raspberry-pi-iot-guide

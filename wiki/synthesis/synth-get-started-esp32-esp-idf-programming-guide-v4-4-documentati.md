@@ -1,4 +1,5 @@
 ---
+tags: [iot, get, started, esp32, esp, idf]
 type: synthesis
 title: "> [!warning] Note — Synthesis"
 slug: synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati

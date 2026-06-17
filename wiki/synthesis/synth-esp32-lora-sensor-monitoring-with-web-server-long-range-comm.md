@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, lora, sensor, monitoring, web]
 type: synthesis
 title: "In this project, you’ll build a sensor monitoring system using a TTGO LoRa32 SX1 — Synthesis"
 slug: synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm

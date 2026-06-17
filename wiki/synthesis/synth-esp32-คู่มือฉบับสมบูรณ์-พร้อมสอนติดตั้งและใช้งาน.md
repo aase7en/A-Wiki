@@ -1,4 +1,5 @@
 ---
+tags: [iot, esp32, คู่มือฉบับสมบูรณ์]
 type: synthesis
 title: "ESP32 เป็นหัวใจสำคัญของโครงการ IoT (Internet of Things) ในปัจจุบัน ด้วยคุณสมบัติ — Synthesis"
 slug: synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน

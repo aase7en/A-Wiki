@@ -1,4 +1,5 @@
 ---
+tags: [ai, hermes, agent]
 type: source
 title: "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent"
 slug: hermes-agent

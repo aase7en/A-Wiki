@@ -1,4 +1,5 @@
 ---
+tags: [design, iot]
 type: source
 title: "UX Design in IoT"
 slug: ux-design-in-iot

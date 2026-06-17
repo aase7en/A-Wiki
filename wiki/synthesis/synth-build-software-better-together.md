@@ -1,4 +1,5 @@
 ---
+tags: [build, software, better, together]
 type: synthesis
 title: "TTGO-T-Beam Arduino Car Tracker - ESP32 + LoRa + GPS + GSM (optional) — Synthesis"
 slug: synth-build-software-better-together
