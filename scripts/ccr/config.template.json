@@ -2,13 +2,8 @@
   "LOG": false,
   "HOST": "127.0.0.1",
   "PORT": 3456,
+  "_note": "GLM Coding Plan is NOT routed here — Z.ai ToS forbids third-party proxies for the subscription. Run GLM directly via scripts/launch-glm.* or ~/.claude/settings.json. ccr carries non-GLM providers only.",
   "Providers": [
-    {
-      "name": "zai",
-      "api_base_url": "https://api.z.ai/api/paas/v4/chat/completions",
-      "api_key": "${ZHIPU_API_KEY}",
-      "models": ["glm-4.6", "glm-4.5-air"]
-    },
     {
       "name": "deepseek",
       "api_base_url": "https://api.deepseek.com/chat/completions",
