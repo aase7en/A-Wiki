@@ -10,8 +10,13 @@ if (-not (Get-Command ccr -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-$py = "python"
-if (Get-Command python3 -ErrorAction SilentlyContinue) { $py = "python3" }
+# Find a REAL Python (skip the Microsoft Store execution-alias stub under WindowsApps)
+$py = $null
+foreach ($c in @("py", "python3", "python")) {
+    $g = Get-Command $c -ErrorAction SilentlyContinue
+    if ($g -and $g.Source -notmatch 'WindowsApps') { $py = $g.Source; break }
+}
+if (-not $py) { Write-Error "No real Python found (only the Microsoft Store alias). Install from python.org, or turn off the 'python' App execution alias in Settings."; exit 1 }
 
 Write-Host "-> regenerating ccr config from Drive .secrets ..."
 & $py scripts/gen-ccr-config.py
