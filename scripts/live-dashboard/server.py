@@ -263,10 +263,33 @@ def _is_port_free(port: int) -> bool:
 
 
 def daemonize() -> None:
-    """Double-fork to fully detach; write PID file; redirect stdio to DAEMON_LOG."""
+    """Detach into a background daemon; write PID file; redirect stdio.
+
+    Cross-platform: POSIX uses the classic double-fork. Windows has no
+    os.fork — instead the parent re-spawns this script as a fully detached
+    child (DETACHED_PROCESS) marked with _AWIKI_DASH_CHILD=1 and exits; the
+    child (handled in __main__) claims the PID and serves.
+    """
     DAEMON_LOG.parent.mkdir(exist_ok=True)
 
-    # First fork
+    if os.name == "nt":
+        DETACHED_PROCESS = 0x00000008
+        CREATE_NEW_PROCESS_GROUP = 0x00000200
+        CREATE_NO_WINDOW = 0x08000000
+        argv = [sys.executable, os.path.abspath(__file__), "--daemonize"]
+        if "--no-browser" in sys.argv:
+            argv.append("--no-browser")
+        logf = open(str(DAEMON_LOG), "a", encoding="utf-8")
+        env = dict(os.environ, _AWIKI_DASH_CHILD="1")
+        proc = subprocess.Popen(
+            argv, stdin=subprocess.DEVNULL, stdout=logf, stderr=logf,
+            creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW,
+            env=env, close_fds=True, cwd=str(REPO_ROOT),
+        )
+        PID_FILE.write_text(str(proc.pid))
+        sys.exit(0)
+
+    # POSIX double-fork
     try:
         pid = os.fork()
         if pid > 0:
@@ -278,7 +301,6 @@ def daemonize() -> None:
     os.setsid()
     os.umask(0)
 
-    # Second fork
     try:
         pid = os.fork()
         if pid > 0:
@@ -287,7 +309,6 @@ def daemonize() -> None:
         sys.stderr.write(f"fork #2 failed: {e}\n")
         sys.exit(1)
 
-    # Redirect stdio
     sys.stdout.flush()
     sys.stderr.flush()
     with open(os.devnull, "r") as devnull:
@@ -696,15 +717,20 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     if args.daemonize:
-        if is_already_running():
-            sys.exit(0)  # Already running — idempotent
-        if not _is_port_free(PORT):
-            sys.stderr.write(
-                f"⚠️  Port {PORT} is busy (non-dashboard process). "
-                f"Kill it or use a different port.\n"
-            )
-            sys.exit(1)
-        daemonize()  # Point of no return in child; parents exit above
+        # On Windows the detached child re-enters with this marker — it must
+        # skip the guard + re-spawn and go straight to serving.
+        if os.environ.get("_AWIKI_DASH_CHILD") == "1":
+            PID_FILE.write_text(str(os.getpid()))
+        else:
+            if is_already_running():
+                sys.exit(0)  # Already running — idempotent
+            if not _is_port_free(PORT):
+                sys.stderr.write(
+                    f"⚠️  Port {PORT} is busy (non-dashboard process). "
+                    f"Kill it or use a different port.\n"
+                )
+                sys.exit(1)
+            daemonize()  # POSIX: forks (child continues). Windows: spawns child, parent exits.
 
     LOG_FILE.parent.mkdir(exist_ok=True)
 
@@ -719,10 +745,14 @@ if __name__ == "__main__":
         w = threading.Thread(target=idle_watchdog, args=(server,), daemon=True)
         w.start()
         if not args.no_browser:
-            subprocess.Popen(
-                ["open", f"http://localhost:{PORT}/"],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-            )
+            # Cross-platform browser open. `open` is macOS-only and raises
+            # FileNotFoundError on Windows/Linux (would crash the daemon at
+            # startup) — webbrowser picks the right launcher per OS.
+            try:
+                import webbrowser
+                webbrowser.open(f"http://localhost:{PORT}/")
+            except Exception:
+                pass
     else:
         print(f"🎛  A-Wiki Live Dashboard : http://localhost:{PORT}/")
         print(f"📡  SSE event stream      : http://localhost:{PORT}/events")

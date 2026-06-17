@@ -123,6 +123,31 @@ A_WIKI_DRIVE_PATH="/explicit/A-Wiki-Data" python3 scripts/lib/drive_secrets.py -
 
 Mac, Work PC, WSL, and Linux may mount the same Google Drive at different paths; scripts must resolve `drive/` or `A_WIKI_DRIVE_PATH`, not hardcode user/account paths.
 
+## 🧭 Storage Decision Rule — Drive vs Repo
+
+Before writing **any** new file, decide where it lives. The wrong choice either leaks private data to the public repo or buries reusable knowledge where no other machine can find it.
+
+**Decision checklist (in order):**
+
+1. **Personal data / secret / patient or customer data / machine-specific path or artifact (IT fixes, local user accounts, `C:\Users\...`, install configs)** → `drive/` (gitignored). **Never** the public repo.
+2. **Reusable knowledge / rule / hook / skill shared across machines** → repo (public, tracked).
+3. **Unsure** → put it in `drive/` first (safer). Promote to repo only after confirming it is public-safe.
+
+**Hard rules:**
+- Never write machine-specific paths (`L:\...`, `C:\Users\<user>\...`, personal account names) into the public repo. Put them in `drive/` or resolve dynamically via the `drive/` junction, `.drive-path`, or `A_WIKI_DRIVE_PATH`.
+- A script/tool that exists only to fix one specific machine belongs under `drive/` — never at the repo root.
+- When in doubt about public-safety, run `python scripts/check-privacy.py` before committing.
+
+| Belongs in `drive/` (private) | Belongs in repo (public) |
+|-------------------------------|--------------------------|
+| Machine-specific IT-fix scripts | Wiki knowledge pages |
+| Secrets, API keys, tokens | Protocol docs, ADRs |
+| Raw source files (PDFs, images, OCR input) | Public hooks, skills, plugins |
+| Private journals / session-memory | `.example` bootstrap templates |
+| Heavy / local databases, customer data | Public-safe scripts + indexes |
+
+> Machine-specific path resolution and the full subfolder map live in `drive/README.md` (private, gitignored). Read it when operating inside `drive/`.
+
 ---
 
 ## 🔒 Iron Laws (UNBREACHABLE — all platforms)
