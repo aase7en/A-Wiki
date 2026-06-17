@@ -10,5 +10,12 @@
       "./skills/wiki",
       "./skills/research"
     ]
+  },
+  "indexing": {
+    "enabled": true,
+    "provider": "gemini",
+    "model": "gemini-embedding-001",
+    "vectorStore": "lancedb",
+    "lancedb": {}
   }
 }
