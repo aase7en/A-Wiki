@@ -6,10 +6,15 @@
 $ErrorActionPreference = "Stop"
 Set-Location (Join-Path $PSScriptRoot "..")
 
-$py = "python"
-if (Get-Command python3 -ErrorAction SilentlyContinue) { $py = "python3" }
+# Find a REAL Python (skip the Microsoft Store execution-alias stub under WindowsApps)
+$py = $null
+foreach ($c in @("py", "python3", "python")) {
+    $g = Get-Command $c -ErrorAction SilentlyContinue
+    if ($g -and $g.Source -notmatch 'WindowsApps') { $py = $g.Source; break }
+}
+if (-not $py) { Write-Error "No real Python found (only the Microsoft Store alias). Install from python.org, or turn off the 'python' App execution alias in Settings."; exit 1 }
 
-$key = (& $py scripts/lib/drive_secrets.py ZHIPU_API_KEY).Trim()
+$key = (& $py scripts/lib/drive_secrets.py ZHIPU_API_KEY | Out-String).Trim()
 if (-not $key) { Write-Error "ZHIPU_API_KEY not found in drive/.secrets"; exit 1 }
 
 $env:ANTHROPIC_BASE_URL   = "https://api.z.ai/api/anthropic"
