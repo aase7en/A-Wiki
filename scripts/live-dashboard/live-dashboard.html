@@ -279,6 +279,9 @@ to{transform:translateY(0);opacity:1}
 
 .ev-filter{background:var(--elev-0);color:var(--text-tertiary);border:1px solid var(--border2);border-radius:var(--r-sm);padding:2px 6px;font-size:var(--fs-2xs);font-family:var(--font-mono);cursor:pointer}
 
+
+.routing-info{font-size:var(--fs-xs);color:var(--text-tertiary);padding:4px 10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px}
+
 </style>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
@@ -343,6 +346,9 @@ to{transform:translateY(0);opacity:1}
       <div id="kpi-cost" class="cost-tile">
         <div class="cost-tier-val" id="cost-tier-big">L-1</div>
         <div class="cost-detail"><span id="cost-delegations">0 delegates</span> | <span id="cost-ratio">0 free / 0 paid</span></div>
+      </div>
+      <div id="routing-info" class="routing-info" style="display:none">
+        <span id="route-text">Last route: —</span>
       </div>
     </div>
 
@@ -432,6 +438,18 @@ to{transform:translateY(0);opacity:1}
           <tr><td>Cline / Cursor</td><td class="no">⚠ รันเอง / lazy บน delegate</td></tr>
         </table>
         <p>เปิดเอง: <code>bash scripts/dashboard-ensure.sh</code> · ปิด: <code>bash scripts/dashboard-stop.sh</code></p>
+      </div>
+      <div class="help-section">
+        <h4>📊 Capability Legend</h4>
+        <table class="help-table" id="cap-legend">
+          <tr><th>Dimension</th><th>Benchmark</th><th>Threshold</th></tr>
+          <tr><td>SWE</td><td>SWE-bench</td><td>≥60 strong</td></tr>
+          <tr><td>Term</td><td>Terminal-bench</td><td>≥60 strong</td></tr>
+          <tr><td>Repo</td><td>NL2RepoBench</td><td>≥60 strong</td></tr>
+          <tr><td>reason</td><td>Reasoning</td><td>≥60 strong</td></tr>
+          <tr><td>speed</td><td>Latency</td><td>≥60 strong</td></tr>
+        </table>
+        <p style="margin-top:6px">Scores 0–100. <b style="color:var(--accent-success)">Green badge</b> = ≥60 (strong). Cost-first routing ranks within free/paid class by highest capability.</p>
       </div>
     </div>
   </div>
@@ -723,7 +741,8 @@ case'hook_check':onHook(ev);break;
 case'cost_declare':onCost(ev);break;
 case'delegate_start':onDelStart(ev);updateLane(ev);break;
 case'delegate_done':onDelDone(ev);updateLane(ev);break;
-case'delegate_fail':onDelFail(ev);updateLane(ev);break;
+  case'delegate_fail':onDelFail(ev);updateLane(ev);break;
+  case'route_plan':onRoute(ev);break;
 }
 pushTimeline(ev);
 }
@@ -776,6 +795,12 @@ const badge=$('parallel-badge'),count=Math.max(S.activeCount||0,S.parallelCount|
 bumpCounter('s-par',count);
 if(count>0){$('par-count').textContent=count;badge.style.display='inline-flex';}
 else badge.style.display='none';
+}
+function onRoute(ev){
+const{model='',rank='',cost_class='',dimension='',score}=ev;
+const ri=$('routing-info');if(!ri)return;
+ri.style.display='flex';
+$('route-text').textContent=`#${rank} → ${modelShort(model)} (${cost_class} class, ${dimension} ${score}pts)`;
 }
 function setOriginStatus(txt,color){setFlowOriginStatus(txt,color);}
 function pushTimeline(ev){

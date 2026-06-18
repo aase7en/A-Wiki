@@ -209,9 +209,25 @@ def test_event_log_filter_controls_exist():
 def test_backlog_complete_restores_counters():
     text = _read()
     assert "backlog_complete" in text, "must handle backlog_complete event"
-    # backlog handler should re-render or update counters (not just flow/lanes)
     idx = text.find("backlog_complete")
     after = text[idx : idx + 150]
     assert (
         "renderLanes" in after and ("bumpCounter" in text or "s-hooks" in text)
     ), "backlog_complete must restore counter state, not just layout"
+
+
+# ── Phase 4: routing rationale + capability legend ──────────────────────────
+
+def test_routing_rationale_surface_exists():
+    text = _read()
+    assert "route_plan" in text, "must handle route_plan SSE event"
+    assert (
+        "routing" in text or "route-rationale" in text or "model-rank" in text
+    ), "routing rationale must be surfaced to operator"
+
+
+def test_capability_legend_exists():
+    text = _read()
+    assert "cap-legend" in text or "capability-legend" in text, (
+        "capability score legend must explain score dimensions and thresholds"
+    )
