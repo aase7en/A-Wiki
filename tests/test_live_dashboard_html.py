@@ -173,3 +173,23 @@ def test_no_infinite_animation_on_decorative_elements():
         if not ok:
             errs.append(f"infinite animation on non-status selector: {selector[:80]}")
     assert not errs, "\n".join(errs)
+
+
+# ── Phase 2: operator signal — failures KPI + cost tile + Summary view ────
+
+def test_failures_and_cost_kpi_tiles_exist():
+    text = _read()
+    assert "s-fail" in text, "Failures KPI counter (#s-fail) must exist"
+    assert "errors-rail" in text, "Errors rail (#errors-rail) must exist"
+    assert "kpi-cost" in text, "Cost KPI tile (#kpi-cost) must exist"
+
+
+def test_summary_view_exists_and_is_default():
+    text = _read()
+    assert "view-summary" in text, "Summary view panel must exist"
+    assert "currentView=" in text, "view-tracking variable must exist"
+
+
+def test_failures_handler_wires_to_errors_rail():
+    text = _read()
+    assert "s-fail" in text, "fail counter element id must exist"
