@@ -1,3 +1,13 @@
+---
+type: source
+title: "MQTT Protocol Overview"
+slug: mqtt-protocol-overview
+date_ingested: 2026-05-25
+original_file: raw/legacy/mqtt-protocol-overview.md
+tags: [protocol, messaging, publish-subscribe, m2m, iot]
+provenance: legacy-import
+---
+
 # MQTT Protocol Overview
 
 > **Type:** documentation
@@ -25,5 +35,11 @@ MQTT (Message Queuing Telemetry Transport) is a lightweight publish-subscribe me
 - https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html
 - https://www.hivemq.com/blog/mqtt-essentials-part-1-introducing-mqtt/
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[entities/iot/mqtt-protocol]] — entity page this source documents
+- [[concepts/iot/mqtt-qos]] — QoS levels described here
+- [[concepts/iot/publish-subscribe]] — the messaging pattern MQTT implements
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/mqtt-protocol-overview.md`).*

@@ -1,7 +1,7 @@
 ---
 type: synthesis
 tags: [intelligent, iot, pipelines, cross-domain]
-sources: []
+sources: [wiki/sources/it/edge-computing-iot.md]
 created: 2026-05-25
 updated: 2026-06-18
 ---

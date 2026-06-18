@@ -1,3 +1,13 @@
+---
+type: source
+title: "Soil Moisture Sensing Technologies"
+slug: soil-moisture-sensing
+date_ingested: 2026-05-25
+original_file: raw/legacy/soil-moisture-sensing.md
+tags: [soil-moisture, agriculture, sensor, irrigation]
+provenance: legacy-import
+---
+
 # Soil Moisture Sensing Technologies
 
 > **Type:** article
@@ -24,5 +34,11 @@ Soil moisture sensing is critical for precision agriculture, irrigation manageme
 - https://www.fao.org/land-water/land/land-governance/land-resources-planning-toolbox/en/
 - https://smap.jpl.nasa.gov/
 
+## หน้า Wiki ที่ได้รับการอัปเดต / แหล่งข้อมูลที่เกี่ยวข้อง
+
+- [[concepts/iot/data-logger]] — IoT data logging for the dense capacitive-sensor deployments described here
+- [[sources/env/water-quality-parameters]] — sibling environmental in-situ monitoring source
+- [[sources/env/air-quality-monitoring]] — sibling low-cost sensor-network monitoring source
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/soil-moisture-sensing.md`).*

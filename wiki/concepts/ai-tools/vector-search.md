@@ -3,7 +3,7 @@ type: concept
 title: "Vector Search"
 slug: vector-search
 tags: [retrieval, semantic-search, embeddings, sqlite-vec]
-sources: []
+sources: [wiki/sources/ai-tools/vector-databases.md]
 created: 2026-06-12
 updated: 2026-06-12
 ---

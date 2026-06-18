@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [pharmacy, validation, quality-assurance]
-sources: [pharmacy-context, drug-aliases-reference]
+sources: [pharmacy-context, drug-aliases-reference, wiki/sources/pharmacy/drug-interaction-checking.md]
 created: 2026-04-30
 updated: 2026-04-30
 ---

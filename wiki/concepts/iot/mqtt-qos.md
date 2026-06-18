@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [mqtt, qos, reliability, messaging]
-sources: [mqtt-introduction]
+sources: [mqtt-introduction, wiki/sources/iot/mqtt-protocol-overview.md]
 created: 2026-04-18
 updated: 2026-04-18
 ---

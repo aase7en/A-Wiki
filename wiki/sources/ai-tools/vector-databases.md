@@ -1,3 +1,13 @@
+---
+type: source
+title: "Vector Databases for Semantic Search"
+slug: vector-databases
+date_ingested: 2026-05-25
+original_file: raw/legacy/vector-databases.md
+tags: [vector-db, embedding, ann, similarity-search, rag]
+provenance: legacy-import
+---
+
 # Vector Databases for Semantic Search
 
 > **Type:** article
@@ -24,5 +34,11 @@ Vector databases store and query high-dimensional embeddings produced by neural 
 - https://www.pinecone.io/learn/vector-database/
 - https://github.com/erikbern/ann-benchmarks
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/ai-tools/vector-search]] — the ANN similarity search these databases provide
+- [[concepts/ai-tools/embedding-models]] — embeddings that vector databases index
+- [[concepts/ai-tools/sqlite-vec]] — the local embedded vector backend A-Wiki uses
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/vector-databases.md`).*

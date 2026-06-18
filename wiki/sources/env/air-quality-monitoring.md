@@ -1,3 +1,13 @@
+---
+type: source
+title: "Air Quality Monitoring — Sensor Networks and Standards"
+slug: air-quality-monitoring
+date_ingested: 2026-05-25
+original_file: raw/legacy/air-quality-monitoring.md
+tags: [air-quality, pm2.5, sensors, epa, monitoring]
+provenance: legacy-import
+---
+
 # Air Quality Monitoring — Sensor Networks and Standards
 
 > **Type:** article
@@ -25,5 +35,10 @@ Air quality monitoring combines reference-grade stations (FRM/FEM) with low-cost
 - https://www.epa.gov/outdoor-air-quality-data
 - https://community.purpleair.com/
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/iot/air-quality-index]] — the AQI scale this source describes
+- [[entities/iot/pms5003]] — the low-cost optical PM sensor referenced here
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/air-quality-monitoring.md`).*

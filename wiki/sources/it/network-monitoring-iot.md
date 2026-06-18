@@ -1,3 +1,13 @@
+---
+type: source
+title: "Network Monitoring for IoT Deployments"
+slug: network-monitoring-iot
+date_ingested: 2026-05-25
+original_file: raw/legacy/network-monitoring-iot.md
+tags: [network-monitoring, iot, snmp, metrics, observability]
+provenance: legacy-import
+---
+
 # Network Monitoring for IoT Deployments
 
 > **Type:** article
@@ -24,5 +34,11 @@ Network monitoring in IoT environments differs from traditional IT monitoring du
 - https://prometheus.io/docs/operating/integrations/
 - https://www.grafana.com/solutions/iot-monitoring/
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[entities/iot/grafana]] — the dashboarding half of the Prometheus + Grafana stack
+- [[entities/iot/influxdb]] — time-series metric store for IoT telemetry
+- [[concepts/iot/mqtt-qos]] — MQTT broker queue depth / health monitoring discussed here
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/network-monitoring-iot.md`).*

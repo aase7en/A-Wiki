@@ -1,20 +1,19 @@
 {
   "generated_at": "2026-06-18",
   "stats": {
-    "nodes": 518,
-    "edges": 1646,
+    "nodes": 538,
+    "edges": 1692,
     "edges_by_type": {
-      "wikilink": 1153,
+      "wikilink": 1179,
       "mdlink": 49,
-      "depends": 357,
+      "depends": 377,
       "implements": 49,
       "extends": 38
     },
     "broken_links": 0,
-    "orphans": 23,
+    "orphans": 13,
     "orphan_by_domain": {
-      "context": 13,
-      "sources": 10
+      "context": 13
     },
     "hubs": [
       {
@@ -50,11 +49,11 @@
         "score": 30
       },
       {
-        "path": "wiki/sources/hardware-inventory-2026-04-18.md",
+        "path": "wiki/concepts/iot/lora.md",
         "score": 30
       },
       {
-        "path": "wiki/synthesis/iot-lora-architecture.md",
+        "path": "wiki/entities/iot/grafana.md",
         "score": 30
       }
     ],
@@ -71,14 +70,7 @@
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
       "wiki/context/session-memory.md",
-      "wiki/context/wiki-capability-map.md",
-      "wiki/sources/ai-tools/langchain-framework.md",
-      "wiki/sources/ai-tools/vector-databases.md",
-      "wiki/sources/env/air-quality-monitoring.md",
-      "wiki/sources/env/soil-moisture-sensing.md",
-      "wiki/sources/env/water-quality-parameters.md",
-      "wiki/sources/iot/lorawan-architecture.md",
-      "wiki/sources/iot/mqtt-protocol-overview.md"
+      "wiki/context/wiki-capability-map.md"
     ]
   },
   "nodes": [
@@ -933,6 +925,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/air-quality-monitoring.md",
+      "title": "Air Quality Monitoring — Sensor Networks and Standards — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers",
       "domain": "sources"
@@ -1023,6 +1020,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/drug-interaction-checking.md",
+      "title": "Drug Interaction Checking Systems — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/ds18b20-esp32-randomnerd.md",
       "title": "ESP32 DS18B20 Temperature Sensor Guide",
       "domain": "sources"
@@ -1055,6 +1057,11 @@
     {
       "path": "wiki/sources/easyloranode-tracker.md",
       "title": "EasyLoRaNode_Tracker: Wearable LoRa Node with Battery",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/edge-computing-iot.md",
+      "title": "Edge Computing Architectures for IoT — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1343,6 +1350,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/langchain-framework.md",
+      "title": "LangChain Framework for LLM Applications — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide",
       "domain": "sources"
@@ -1378,6 +1390,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/lorawan-architecture.md",
+      "title": "LoRaWAN Architecture — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo",
       "domain": "sources"
@@ -1410,6 +1427,16 @@
     {
       "path": "wiki/sources/mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/mqtt-protocol-overview.md",
+      "title": "MQTT Protocol Overview — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/network-monitoring-iot.md",
+      "title": "Network Monitoring for IoT Deployments — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1523,6 +1550,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/soil-moisture-sensing.md",
+      "title": "Soil Moisture Sensing Technologies — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/source-5e4074bd.md",
       "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies PEP/PrEP)",
       "domain": "sources"
@@ -1588,6 +1620,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/vector-databases.md",
+      "title": "Vector Databases for Semantic Search — Legacy Import Stub",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
       "title": "Velxio — Arduino/ESP32/Raspberry Pi Simulator",
       "domain": "sources"
@@ -1605,6 +1642,11 @@
     {
       "path": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/water-quality-parameters.md",
+      "title": "Water Quality Parameters and Monitoring — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1928,6 +1970,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-air-quality-monitoring.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers — DroneBot Workshop — Synthesis",
       "domain": "synthesis"
@@ -2018,6 +2065,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-drug-interaction-checking.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
       "title": "ESP32 DS18B20 Temperature Sensor — Single, Multiple, Web Server — Synthesis",
       "domain": "synthesis"
@@ -2050,6 +2102,11 @@
     {
       "path": "wiki/synthesis/synth-easyloranode-tracker.md",
       "title": "EasyLoRaNode_Tracker: Wearable LoRa Node with Battery — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-edge-computing-iot.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2303,6 +2360,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-langchain-framework.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide (2025-2026) — Synthesis",
       "domain": "synthesis"
@@ -2338,6 +2400,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-lorawan-architecture.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS – Full Step-by-Step Demo — Synthesis",
       "domain": "synthesis"
@@ -2370,6 +2437,16 @@
     {
       "path": "wiki/synthesis/synth-mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-mqtt-protocol-overview.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-network-monitoring-iot.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2478,6 +2555,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-soil-moisture-sensing.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-source-5e4074bd.md",
       "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด — Synthesis",
       "domain": "synthesis"
@@ -2543,6 +2625,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-vector-databases.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
       "title": "Velxio — Open-Source Arduino/ESP32/Raspberry Pi Simulator — Synthesis",
       "domain": "synthesis"
@@ -2560,6 +2647,11 @@
     {
       "path": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-water-quality-parameters.md",
+      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -5161,6 +5253,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
+      "to": "wiki/sources/ai-tools/langchain-framework.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "implements",
       "broken": false,
@@ -5973,6 +6072,13 @@
     },
     {
       "from": "wiki/concepts/ai-tools/vector-search.md",
+      "to": "wiki/sources/ai-tools/vector-databases.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/ai-tools/vector-search.md",
       "to": "wiki/concepts/ai-tools/embedding-models.md",
       "type": "depends",
       "broken": false,
@@ -6141,6 +6247,13 @@
     },
     {
       "from": "wiki/concepts/env/water-quality-parameters.md",
+      "to": "wiki/sources/env/water-quality-parameters.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/env/water-quality-parameters.md",
       "to": "wiki/entities/env/activated-sludge-system.md",
       "type": "wikilink",
       "broken": false,
@@ -6184,6 +6297,13 @@
     {
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/air-quality-index.md",
+      "to": "wiki/sources/env/air-quality-monitoring.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -6687,6 +6807,13 @@
     },
     {
       "from": "wiki/concepts/iot/lorawan.md",
+      "to": "wiki/sources/iot/lorawan-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/lorawan.md",
       "to": "wiki/sources/lorawan-fuota-rak3172.md",
       "type": "wikilink",
       "broken": false,
@@ -6765,6 +6892,13 @@
     {
       "from": "wiki/concepts/iot/mqtt-qos.md",
       "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/iot/mqtt-qos.md",
+      "to": "wiki/sources/iot/mqtt-protocol-overview.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -6975,6 +7109,13 @@
     {
       "from": "wiki/concepts/pharmacy/drug-validation.md",
       "to": "wiki/sources/drug-aliases-reference.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/concepts/pharmacy/drug-validation.md",
+      "to": "wiki/sources/pharmacy/drug-interaction-checking.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -10081,6 +10222,41 @@
       "external": false
     },
     {
+      "from": "wiki/sources/ai-tools/langchain-framework.md",
+      "to": "wiki/concepts/ai-tools/llm-rag-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-tools/langchain-framework.md",
+      "to": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-tools/vector-databases.md",
+      "to": "wiki/concepts/ai-tools/vector-search.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-tools/vector-databases.md",
+      "to": "wiki/concepts/ai-tools/embedding-models.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/ai-tools/vector-databases.md",
+      "to": "wiki/concepts/ai-tools/sqlite-vec.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/air-quality-iot-lora-network.md",
       "to": "wiki/entities/iot/pms5003.md",
       "type": "wikilink",
@@ -10272,6 +10448,55 @@
     {
       "from": "wiki/sources/easyloranode-tracker.md",
       "to": "wiki/concepts/iot/lora-p2p.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/air-quality-monitoring.md",
+      "to": "wiki/concepts/iot/air-quality-index.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/air-quality-monitoring.md",
+      "to": "wiki/entities/iot/pms5003.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/soil-moisture-sensing.md",
+      "to": "wiki/concepts/iot/data-logger.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/soil-moisture-sensing.md",
+      "to": "wiki/sources/env/water-quality-parameters.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/soil-moisture-sensing.md",
+      "to": "wiki/sources/env/air-quality-monitoring.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/water-quality-parameters.md",
+      "to": "wiki/concepts/env/water-quality-parameters.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/env/water-quality-parameters.md",
+      "to": "wiki/concepts/env/hospital-wastewater-treatment.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -10529,6 +10754,48 @@
       "external": false
     },
     {
+      "from": "wiki/sources/iot/lorawan-architecture.md",
+      "to": "wiki/concepts/iot/lorawan.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/iot/lorawan-architecture.md",
+      "to": "wiki/concepts/iot/lora.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/iot/lorawan-architecture.md",
+      "to": "wiki/entities/iot/chirpstack.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/iot/mqtt-protocol-overview.md",
+      "to": "wiki/entities/iot/mqtt-protocol.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/iot/mqtt-protocol-overview.md",
+      "to": "wiki/concepts/iot/mqtt-qos.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/iot/mqtt-protocol-overview.md",
+      "to": "wiki/concepts/iot/publish-subscribe.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "to": "wiki/entities/iot/esp32-c6.md",
       "type": "wikilink",
@@ -10587,6 +10854,48 @@
     {
       "from": "wiki/sources/iot-visualization-guide.md",
       "to": "wiki/concepts/iot/dashboard-design.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/edge-computing-iot.md",
+      "to": "wiki/concepts/iot/tinyml.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/edge-computing-iot.md",
+      "to": "wiki/entities/iot/raspberry-pi.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/edge-computing-iot.md",
+      "to": "wiki/concepts/iot/data-logger.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/network-monitoring-iot.md",
+      "to": "wiki/entities/iot/grafana.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/network-monitoring-iot.md",
+      "to": "wiki/entities/iot/influxdb.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/it/network-monitoring-iot.md",
+      "to": "wiki/concepts/iot/mqtt-qos.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -10706,6 +11015,20 @@
     {
       "from": "wiki/sources/openrouter-api-demo.md",
       "to": "index-ai-tools.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/pharmacy/drug-interaction-checking.md",
+      "to": "wiki/concepts/pharmacy/drug-validation.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/pharmacy/drug-interaction-checking.md",
+      "to": "wiki/entities/pharmacy/drug-database.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -11775,6 +12098,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/environmental-iot-sensing.md",
+      "to": "wiki/sources/env/soil-moisture-sensing.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/fuel-tank-level.md",
       "to": "wiki/sources/esp32-tank-level-mqtt.md",
       "type": "depends",
@@ -11943,6 +12273,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/intelligent-iot-pipelines.md",
+      "to": "wiki/sources/it/edge-computing-iot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/iot-lora-architecture.md",
       "to": "wiki/sources/iot-lora-gateway-architecture.md",
       "type": "depends",
@@ -12058,6 +12395,13 @@
       "from": "wiki/synthesis/iot-lora-architecture.md",
       "to": "wiki/sources/mqtt-introduction.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/iot-network-infrastructure.md",
+      "to": "wiki/sources/it/network-monitoring-iot.md",
+      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -12790,6 +13134,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-air-quality-monitoring.md",
+      "to": "wiki/sources/air-quality-monitoring.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "to": "wiki/sources/air-quality-sensors-dronebot.md",
       "type": "depends",
@@ -12916,6 +13267,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-drug-interaction-checking.md",
+      "to": "wiki/sources/drug-interaction-checking.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
       "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
       "type": "depends",
@@ -12960,6 +13318,13 @@
     {
       "from": "wiki/synthesis/synth-easyloranode-tracker.md",
       "to": "wiki/sources/easyloranode-tracker.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-edge-computing-iot.md",
+      "to": "wiki/sources/edge-computing-iot.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -13322,6 +13687,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-langchain-framework.md",
+      "to": "wiki/sources/langchain-framework.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "to": "wiki/sources/local-llm-mac-mini-guide.md",
       "type": "depends",
@@ -13371,6 +13743,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-lorawan-architecture.md",
+      "to": "wiki/sources/lorawan-architecture.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "type": "depends",
@@ -13415,6 +13794,20 @@
     {
       "from": "wiki/synthesis/synth-mqtt-introduction.md",
       "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-mqtt-protocol-overview.md",
+      "to": "wiki/sources/mqtt-protocol-overview.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-network-monitoring-iot.md",
+      "to": "wiki/sources/network-monitoring-iot.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -13588,6 +13981,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-soil-moisture-sensing.md",
+      "to": "wiki/sources/soil-moisture-sensing.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-source-5e4074bd.md",
       "to": "wiki/sources/source-5e4074bd.md",
       "type": "depends",
@@ -13693,6 +14093,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-vector-databases.md",
+      "to": "wiki/sources/vector-databases.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
       "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
       "type": "depends",
@@ -13723,6 +14130,13 @@
     {
       "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-water-quality-parameters.md",
+      "to": "wiki/sources/water-quality-parameters.md",
       "type": "depends",
       "broken": false,
       "external": false

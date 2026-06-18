@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [lorawan, lora, network-protocol, lpwan, ttn, chirpstack, iot-network]
-sources: [lorawan-network-beginner, esp32-lora-gateway-sparkfun, lorawan-fuota-rak3172]
+sources: [lorawan-network-beginner, esp32-lora-gateway-sparkfun, lorawan-fuota-rak3172, wiki/sources/iot/lorawan-architecture.md]
 created: 2026-04-18
 updated: 2026-04-18
 ---

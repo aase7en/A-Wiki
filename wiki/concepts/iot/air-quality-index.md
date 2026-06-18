@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [aqi, air-quality, pm2.5, pm10, iot, environment]
-sources: [air-quality-sensors-dronebot, air-quality-iot-lora-network]
+sources: [air-quality-sensors-dronebot, air-quality-iot-lora-network, wiki/sources/env/air-quality-monitoring.md]
 created: 2026-04-18
 updated: 2026-04-18
 ---

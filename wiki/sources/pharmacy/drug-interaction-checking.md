@@ -1,3 +1,13 @@
+---
+type: source
+title: "Drug Interaction Checking Systems"
+slug: drug-interaction-checking
+date_ingested: 2026-05-25
+original_file: raw/legacy/drug-interaction-checking.md
+tags: [drug-interactions, clinical-decision-support, medication-safety, pharmacy]
+provenance: legacy-import
+---
+
 # Drug Interaction Checking Systems
 
 > **Type:** article
@@ -24,5 +34,10 @@ Drug-drug interaction (DDI) checking is a core clinical decision support functio
 - https://go.drugbank.com/drug-interactions
 - https://www.fda.gov/drugs/drug-interactions-labeling
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/pharmacy/drug-validation]] — DDI checking as a drug-validation / decision-support function
+- [[entities/pharmacy/drug-database]] — the drug knowledge base DDI checks run against
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/drug-interaction-checking.md`).*

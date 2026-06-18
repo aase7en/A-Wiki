@@ -1,3 +1,13 @@
+---
+type: source
+title: "LangChain Framework for LLM Applications"
+slug: langchain-framework
+date_ingested: 2026-05-25
+original_file: raw/legacy/langchain-framework.md
+tags: [llm, framework, chains, agents, rag]
+provenance: legacy-import
+---
+
 # LangChain Framework for LLM Applications
 
 > **Type:** documentation
@@ -24,5 +34,10 @@ LangChain is an open-source framework for building applications powered by large
 - https://python.langchain.com/docs/introduction/
 - https://blog.langchain.dev/
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/ai-tools/llm-rag-architecture]] — LangChain's retrieval-augmented generation building blocks
+- [[concepts/ai-tools/agent-framework-tradeoffs]] — LangChain/LangGraph as an agent framework option
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/langchain-framework.md`).*

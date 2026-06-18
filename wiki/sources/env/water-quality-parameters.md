@@ -1,3 +1,13 @@
+---
+type: source
+title: "Water Quality Parameters and Monitoring"
+slug: water-quality-parameters-source
+date_ingested: 2026-05-25
+original_file: raw/legacy/water-quality-parameters.md
+tags: [water-quality, who, turbidity, ph, monitoring, standards]
+provenance: legacy-import
+---
+
 # Water Quality Parameters and Monitoring
 
 > **Type:** reference
@@ -24,5 +34,10 @@ Water quality monitoring assesses physical, chemical, and biological parameters 
 - https://www.who.int/teams/environment-climate-change-and-health/water-sanitation-and-health
 - https://www.epa.gov/water-quality-surveillance
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/env/water-quality-parameters]] — the concept page this source backs
+- [[concepts/env/hospital-wastewater-treatment]] — applies these water-quality parameters to effluent
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/water-quality-parameters.md`).*
