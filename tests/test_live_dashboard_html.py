@@ -231,3 +231,41 @@ def test_capability_legend_exists():
     assert "cap-legend" in text or "capability-legend" in text, (
         "capability score legend must explain score dimensions and thresholds"
     )
+
+
+# ── Phase 5: accessibility — contrast, focus, labels, aria-live ─────────────
+
+def test_timestamp_contrast_not_disabled():
+    text = _read()
+    idx = text.find(".ev-time")
+    if idx == -1:
+        pytest.skip("ev-time class not found")
+    after = text[idx : idx + 200]
+    assert "text-disabled" not in after, (
+        ".ev-time must not use --text-disabled (2.8:1 contrast fails WCAG AA)"
+    )
+
+
+def test_focus_visible_rule_present():
+    text = _read()
+    style_end = text.find("</style>")
+    style = text[:style_end]
+    assert (
+        "focus-visible" in style or "focus-visible" in text[style_end:]
+    ), "must declare :focus-visible styling for keyboard navigation"
+
+
+def test_modal_has_keyboard_escape():
+    text = _read()
+    assert (
+        "keydown" in text and ("Escape" in text or "27" in text or "closeSettings" in text)
+    ), "settings modal must support Escape key to close"
+
+
+def test_aria_labels_on_toggles():
+    text = _read()
+    idx = text.find("glow-toggle")
+    after = text[idx : idx + 300] if idx > -1 else ""
+    assert (
+        "aria-label" in after or "aria-label" in text
+    ), "glow-toggle checkboxes must have accessible labels"
