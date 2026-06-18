@@ -269,3 +269,33 @@ def test_aria_labels_on_toggles():
     assert (
         "aria-label" in after or "aria-label" in text
     ), "glow-toggle checkboxes must have accessible labels"
+
+
+# ── Phase 6: robustness — graph offline, ASCII timestamps, language zones ───
+
+def test_graph_has_offline_fallback():
+    text = _read()
+    idx = text.find("initGraph")
+    if idx == -1:
+        pytest.skip("initGraph not found")
+    after = text[idx : idx + 400]
+    assert (
+        "window.vis" in after and "fallback" in after.lower()
+    ) or (
+        "offline" in after.lower() and "graph" in after.lower()
+    ) or (
+        "graph-unavailable" in text
+    ), "graph view must show a visible fallback when vis-network is unavailable"
+
+
+def test_timestamps_use_ascii_locale():
+    text = _read()
+    assert (
+        "toLocaleTimeString('th'" not in text
+    ), "timestamps must use ASCII digits — remove Thai locale from toLocaleTimeString"
+
+
+def test_language_zone_policy_applied():
+    text = _read()
+    assert "font-mono" in text, "mono font must be defined for data zones"
+    assert any(x in text for x in ("lang=\"th\"", "lang='th'")), "Thai lang attribute must remain on root"
