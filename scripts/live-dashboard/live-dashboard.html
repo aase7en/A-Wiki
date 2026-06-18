@@ -384,7 +384,9 @@ to{transform:translateY(0);opacity:1}
     </div>
 
     <!-- Graph (vis-network) -->
-    <div id="graph-vis"></div>
+    <div id="graph-vis">
+    <div id="graph-unavailable" class="graph-fallback" style="display:none;align-items:center;justify-content:center;height:100%;color:var(--text-disabled);font-size:var(--fs-xs);text-align:center;padding:24px">🔗 Graph unavailable offline<br><small>vis-network CDN not loaded</small></div>
+  </div>
   </div>
 
   <!-- Right: event log -->
@@ -631,7 +633,7 @@ function pushFailure(ev){
 S.failCount++;S.failures.push(ev);bumpCounter('s-fail',S.failCount);
 const rail=$('errors-list'),empty=$('errors-empty');if(!rail)return;
 if(empty)empty.style.display='none';
-const ts=ev.ts?new Date(ev.ts*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
+const ts=ev.ts?new Date(ev.ts*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
 const tag=ev.type==='delegate_fail'?`✗ ${modelShort(ev.model||'')}`:`🔒 ${(ev.hook||'').replace('check_','').slice(0,18)}`;
 const row=mk('div','err-row');
 row.innerHTML=`<span class="err-ts">${ts}</span><span class="err-txt">${tag} ${ev.reason||ev.result||''}</span>`;
@@ -671,7 +673,7 @@ const winDur=Math.max(300,now-Math.min(...allTs)+10),winStart=now-winDur;
 const pct=ts=>Math.max(0,Math.min(100,(ts-winStart)/winDur*100));
 const wpct=(s,e)=>Math.max(.5,pct(e)-pct(s));
 axis.innerHTML=[0,1,2,3,4].map(i=>{const t=winStart+winDur*i/4;
-const lbl=new Date(t*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const lbl=new Date(t*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 return `<span style="text-align:${i===4?'right':'left'}">${lbl}</span>`;}).join('');
 body.innerHTML='';
 for(const[model,L]of Object.entries(_lanes)){
@@ -704,7 +706,10 @@ svg.innerHTML=html;
 }
 let _gNet=null,_gData={nodes:new vis.DataSet(),edges:new vis.DataSet()};
 function initGraph(){
-const c=$('graph-vis');if(!c||!window.vis||_gNet)return;
+const c=$('graph-vis');if(!c||_gNet)return;
+const fb=$('graph-unavailable');
+if(!window.vis){if(fb)fb.style.display='flex';return;}
+if(fb)fb.style.display='none';
 _gNet=new vis.Network(c,_gData,{physics:{solver:'barnesHut',barnesHut:{gravitationalConstant:-2000,centralGravity:.3,springLength:150}},
 edges:{smooth:{type:'continuous'},width:2,arrows:{to:{enabled:true,scaleFactor:.5}}},
 nodes:{shape:'dot',size:16,font:{size:11,color:'#cbd5e1'},borderWidth:2},
@@ -812,7 +817,7 @@ function pushTimeline(ev){
 S.eventCount++;bumpCounter('s-events',S.eventCount);
 $('event-count').textContent=S.eventCount;
 const{type,ts}=ev;const row=mk('div',`ev-row t-${type}${ev.result==='block'?' block':''} new`);
-const t=ts?new Date(ts*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
+const t=ts?new Date(ts*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
 row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span>`;
 const tl=$('timeline-list');tl.insertBefore(row,tl.firstChild);
 setTimeout(()=>row.classList.remove('new'),800);
