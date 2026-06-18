@@ -99,6 +99,7 @@ logs/
 data/
 .tmp/
 temp/
+.playwright-mcp/
 wiki/context/model-roster.conf.bak
 
 # raw is a symlink (Mac) or junction (Windows) to Google Drive A-Wiki-Data
