@@ -276,6 +276,9 @@ to{transform:translateY(0);opacity:1}
 .cost-detail{font-size:var(--fs-xs);color:var(--text-tertiary);line-height:1.6}
 #si-fail .stat-val{background:linear-gradient(135deg,var(--accent-danger),var(--accent-warm));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
+
+.ev-filter{background:var(--elev-0);color:var(--text-tertiary);border:1px solid var(--border2);border-radius:var(--r-sm);padding:2px 6px;font-size:var(--fs-2xs);font-family:var(--font-mono);cursor:pointer}
+
 </style>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
@@ -377,7 +380,8 @@ to{transform:translateY(0);opacity:1}
 
   <!-- Right: event log -->
   <div id="sidebar">
-    <div id="sidebar-hdr">Event Log <span id="event-count">0</span></div>
+    <div id="sidebar-hdr">Event Log <span id="event-count">0</span>
+      <select id="ev-filter" class="ev-filter" onchange="filterEvents()"><option value="all">All</option><option value="block">Blocks/Fails</option><option value="cost">Cost</option><option value="delegate">Delegate</option></select></div>
     <div id="timeline-list"></div>
   </div>
 </div>
@@ -782,7 +786,18 @@ const t=ts?new Date(ts*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-d
 row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span>`;
 const tl=$('timeline-list');tl.insertBefore(row,tl.firstChild);
 setTimeout(()=>row.classList.remove('new'),800);
-while(tl.children.length>120)tl.removeChild(tl.lastChild);
+  while(tl.children.length>120)tl.removeChild(tl.lastChild);
+}
+function filterEvents(){
+const v=$('ev-filter').value;
+document.querySelectorAll('.ev-row').forEach(r=>{
+if(v==='all'){r.style.display='';return;}
+const c=r.classList;
+const show=(v==='block'&&(c.contains('block')||c.contains('t-delegate_fail')))||
+(v==='cost'&&c.contains('t-cost_declare'))||
+(v==='delegate'&&(c.contains('t-delegate_start')||c.contains('t-delegate_done')));
+r.style.display=show?'':'none';
+});
 }
 function evIcon(t,r){return{session_start:'🔌',hook_check:r==='block'?'🔴':'✅',cost_declare:'💰',
 delegate_start:'🤖',delegate_done:'✅',delegate_fail:'✗'}[t]||'·';}
