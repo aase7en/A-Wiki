@@ -262,6 +262,20 @@ to{transform:translateY(0);opacity:1}
 .origin-core.busy::before,.station.active .station-core{animation:none!important}
 }
 
+
+#view-summary{flex:1;display:flex;flex-direction:column;overflow-y:auto;gap:12px;padding:4px 0}
+#errors-rail{border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 12px;background:var(--elev-1)}
+.errors-hdr{font-size:var(--fs-xs);color:var(--accent-danger);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+#errors-list{display:flex;flex-direction:column;gap:3px}
+.err-row{display:flex;gap:6px;padding:3px 6px;border-radius:var(--r-sm);font-size:var(--fs-2xs);font-family:var(--font-mono);background:rgba(248,113,113,.08);border-left:2px solid var(--accent-danger);animation:badge-in .2s}
+.err-row .err-ts{color:var(--text-disabled);flex-shrink:0}
+.err-row .err-txt{color:var(--text-secondary)}
+#errors-empty{color:var(--text-disabled);font-size:var(--fs-xs);text-align:center;padding:12px 0}
+.cost-tile{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--elev-2)}
+.cost-tier-val{font-size:var(--fs-2xl);font-weight:800;color:var(--accent-warm);font-family:var(--font-mono);min-width:60px;text-align:center}
+.cost-detail{font-size:var(--fs-xs);color:var(--text-tertiary);line-height:1.6}
+#si-fail .stat-val{background:linear-gradient(135deg,var(--accent-danger),var(--accent-warm));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
 </style>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
@@ -290,6 +304,7 @@ to{transform:translateY(0);opacity:1}
     <div class="stat-item" id="si-models"><span class="stat-lbl">models</span><span class="stat-val" data-counter id="s-models">0</span></div>
     <div class="stat-item" id="si-events"><span class="stat-lbl">events</span><span class="stat-val" data-counter id="s-events">0</span></div>
     <div class="stat-item" id="si-par"><span class="stat-lbl">parallel</span><span class="stat-val warm" data-counter id="s-par">0</span></div>
+    <div class="stat-item" id="si-fail"><span class="stat-lbl">failures</span><span class="stat-val" data-counter id="s-fail">0</span></div>
   </div>
   <button class="hdr-btn accent" onclick="openSettings()">⚙️</button>
   <button class="hdr-btn" onclick="doClear()">🗑</button>
@@ -309,12 +324,26 @@ to{transform:translateY(0);opacity:1}
   <div id="net-panel">
     <div id="hook-strip"></div>
     <div class="view-toggle-bar">
-      <button class="view-btn active" id="btn-flow" onclick="setView('flow')">🌊 Flow</button>
+      <button class="view-btn active" id="btn-summary" onclick="setView('summary')">📊 Summary</button>
+      <button class="view-btn" id="btn-flow" onclick="setView('flow')">🌊 Flow</button>
       <button class="view-btn" id="btn-timeline" onclick="setView('timeline')">🏊 Timeline</button>
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
     </div>
 
-    <!-- FLOW VIEW (default) -->
+    <!-- SUMMARY VIEW (default) -->
+    <div id="view-summary" class="view-panel">
+      <div id="errors-rail">
+        <div class="errors-hdr">⚠ Failures &amp; Blocks <span id="errors-count">0</span></div>
+        <div id="errors-list"></div>
+        <div id="errors-empty">No failures — all hooks and delegations passing</div>
+      </div>
+      <div id="kpi-cost" class="cost-tile">
+        <div class="cost-tier-val" id="cost-tier-big">L-1</div>
+        <div class="cost-detail"><span id="cost-delegations">0 delegates</span> | <span id="cost-ratio">0 free / 0 paid</span></div>
+      </div>
+    </div>
+
+    <!-- FLOW VIEW -->
     <div id="flow-panel">
       <div id="flow-stage">
         <svg id="flow-svg" xmlns="http://www.w3.org/2000/svg">
@@ -407,7 +436,7 @@ to{transform:translateY(0);opacity:1}
 
 <script>
 const S={connected:false,hookCount:0,eventCount:0,modelsUsed:new Set(),tier:'?',
-active:{},activeCount:0,parallelCount:0,wfTimers:{},_tiers:{'L-1':15,'L0':30,'L1':45,'L2':60,'L3':80,'L4':100}};
+active:{},activeCount:0,parallelCount:0,failCount:0,failures:[],delegateFree:0,delegatePaid:0,wfTimers:{},_tiers:{'L-1':15,'L0':30,'L1':45,'L2':60,'L3':80,'L4':100}};
 const $=id=>document.getElementById(id);
 const mk=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -559,17 +588,39 @@ _particleRAF=requestAnimationFrame(particleLoop);
 let _lastEventTs=Date.now();
 const verbose=false;
 function spawnThought(){if(!verbose)return;}
-let currentView='flow';
+let currentView='summary';
 function setView(v){
 currentView=v;
-const fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph');
-fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');
+$('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
 $('graph-vis').style.display=v==='graph'?'block':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
-else initGraph();
+else if(v==='graph')initGraph();
+}
+function pushFailure(ev){
+S.failCount++;S.failures.push(ev);bumpCounter('s-fail',S.failCount);
+const rail=$('errors-list'),empty=$('errors-empty');if(!rail)return;
+if(empty)empty.style.display='none';
+const ts=ev.ts?new Date(ev.ts*1000).toLocaleTimeString('th',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
+const tag=ev.type==='delegate_fail'?`✗ ${modelShort(ev.model||'')}`:`🔒 ${(ev.hook||'').replace('check_','').slice(0,18)}`;
+const row=mk('div','err-row');
+row.innerHTML=`<span class="err-ts">${ts}</span><span class="err-txt">${tag} ${ev.reason||ev.result||''}</span>`;
+rail.insertBefore(row,rail.firstChild);
+}
+function updateCostKPI(tier){
+$('cost-tier-big').textContent=tier;$('tier-label').textContent=tier;
+const pct=S._tiers[tier]??50;$('tier-fill').style.width=pct+'%';S.tier=tier;
+}
+function trackDelegation(model){
+const id=(model||'').toLowerCase();const f=['gemini','deepseek','llama','qwen','glm'];
+const isFree=f.some(x=>id.includes(x));
+if(isFree)S.delegateFree++;else S.delegatePaid++;
+$('cost-delegations').textContent=(S.delegateFree+S.delegatePaid)+' delegates';
+$('cost-ratio').textContent=S.delegateFree+' free / '+S.delegatePaid+' paid';
 }
 let _lanes={},_lanesRAF=null;
 function updateLane(ev){
@@ -685,10 +736,10 @@ const short=hook.replace('check_','').replace(/_/g,'-').substring(0,18);
 b.textContent=(result==='block'?'🔴 ':'✅ ')+short+(tool?' ·'+tool:'')+(tier?' '+tier:'');
 strip.insertBefore(b,strip.firstChild);
 strip.querySelectorAll('.hook-badge').forEach((el,i)=>{if(i>8)el.remove();else if(i>4)el.classList.add('dim');});
-if(result==='block')spawnThought(`🔒 ${short} blocked`,{tone:'red',anchor:'origin'});
-else if(result==='warn')spawnThought(`⚠ ${short}`,{tone:'gold',anchor:'origin'});
+  if(result==='block'){spawnThought(`🔒 ${short} blocked`,{tone:'red',anchor:'origin'});pushFailure(ev);}
+  else if(result==='warn')spawnThought(`⚠ ${short}`,{tone:'gold',anchor:'origin'});
 }
-function onCost(ev){const{tier='?',task=''}=ev;hotWf('cost',5000);setTier(tier);
+function onCost(ev){const{tier='?',task=''}=ev;hotWf('cost',5000);setTier(tier);updateCostKPI(tier);
 setOriginStatus(`tier ${tier}${task?' · '+task:''}`,'var(--accent-warm)');
 spawnThought(`💰 tier ${tier}${task?' · '+task:''}`,{tone:'gold',anchor:'origin'});}
 function setTier(tier){
@@ -706,14 +757,14 @@ setOriginStatus(`→ ${modelShort(model)}`,'var(--role-subagent)');
 function onDelDone(ev){
 const{model='',duration_ms=0}=ev;const key=modelKey(model);const e=S.active[key];if(!e)return;
 S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();drawBranchLines();
-flowComplete(model,true,duration_ms);
+flowComplete(model,true,duration_ms);trackDelegation(model);
 spawnThought(`✓ ${modelShort(model)} done${duration_ms?' · '+(duration_ms/1000).toFixed(1)+'s':''}`,{tone:'green',anchor:'station',model:key});
 if(!S.activeCount)setOriginStatus('validating…','var(--accent-success)');
 }
 function onDelFail(ev){
 const{model='',reason=''}=ev;const key=modelKey(model);if(!S.active[key])return;
 S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();drawBranchLines();
-flowComplete(model,false,0);
+flowComplete(model,false,0);pushFailure(ev);
 spawnThought(`✗ ${modelShort(model)} ${reason||'failed'}`,{tone:'red',anchor:'station',model:key});
 }
 function updateParallel(){
@@ -759,9 +810,13 @@ $('lanes-body').innerHTML='';$('branch-svg').innerHTML='';
 for(const k in _stations){const st=_stations[k];st.active=false;st._emit=false;
 st.el.classList.remove('active','done','fail');st.pipeEl.classList.remove('active','return','fail');st.count=0;st.cntEl.textContent='0';}
 _particles=[];particleG.innerHTML='';
-bumpCounter('s-hooks',0);bumpCounter('s-models',0);bumpCounter('s-events',0);bumpCounter('s-par',0);
-$('parallel-badge').style.display='none';$('event-count').textContent='0';
-setOriginStatus('watching…','var(--accent-success)');setOriginBusy(false);
+  bumpCounter('s-hooks',0);bumpCounter('s-models',0);bumpCounter('s-events',0);bumpCounter('s-par',0);bumpCounter('s-fail',0);
+  $('parallel-badge').style.display='none';$('event-count').textContent='0';
+  S.failCount=0;S.failures=[];S.delegateFree=0;S.delegatePaid=0;
+  const el=$('errors-list');if(el)el.innerHTML='';
+  const ee=$('errors-empty');if(ee)ee.style.display='flex';
+  $('cost-tier-big').textContent='L-1';$('cost-delegations').textContent='0 delegates';$('cost-ratio').textContent='0 free / 0 paid';
+  setOriginStatus('watching…','var(--accent-success)');setOriginBusy(false);
 }
 let _caps={families:{},recommended_by_task:{}};
 function toast(msg,err){const t=$('set-toast');t.textContent=msg;t.className='set-toast show'+(err?' err':'');setTimeout(()=>t.className='set-toast',2200);}
@@ -820,6 +875,7 @@ strip.innerHTML=`<span id="typed-intro" data-typed></span>`+parts.join('');
 if(_typedRAF)clearTimeout(_typedRAF);typedStep();
 }catch(e){}}
 buildOrigin();
+setView('summary');
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
