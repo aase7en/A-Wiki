@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [water-quality, wastewater, activated-sludge, measurement, hospital-env]
-sources: [appsheet-activated-sludge-app]
+sources: [appsheet-activated-sludge-app, wiki/sources/env/water-quality-parameters.md]
 created: 2026-04-22
 updated: 2026-04-22
 ---

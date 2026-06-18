@@ -8065,6 +8065,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-sources-ai-tools-langchain-framework-md",
+      "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-ai-tools-langchain-framework-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-entities-ai-tools-hermes-agent-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromSide": "left",
@@ -8953,6 +8961,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-sources-ai-tools-vector-databases-md",
+      "fromNode": "wiki-concepts-ai-tools-vector-search-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-ai-tools-vector-databases-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-concepts-ai-tools-embedding-models-md",
       "fromNode": "wiki-concepts-ai-tools-vector-search-md",
       "fromSide": "top",
@@ -9145,6 +9161,14 @@
       "color": "5"
     },
     {
+      "id": "edge-wiki-concepts-env-water-quality-parameters-md-wiki-sources-env-water-quality-parameters-md",
+      "fromNode": "wiki-concepts-env-water-quality-parameters-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-env-water-quality-parameters-md",
+      "toSide": "left",
+      "color": "5"
+    },
+    {
       "id": "edge-wiki-concepts-env-water-quality-parameters-md-wiki-entities-env-activated-sludge-system-md",
       "fromNode": "wiki-concepts-env-water-quality-parameters-md",
       "fromSide": "right",
@@ -9197,6 +9221,14 @@
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
       "toNode": "wiki-sources-air-quality-iot-lora-network-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-sources-env-air-quality-monitoring-md",
+      "fromNode": "wiki-concepts-iot-air-quality-index-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-env-air-quality-monitoring-md",
       "toSide": "left",
       "color": "3"
     },
@@ -9769,6 +9801,14 @@
       "color": "3"
     },
     {
+      "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-iot-lorawan-architecture-md",
+      "fromNode": "wiki-concepts-iot-lorawan-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-lorawan-architecture-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
       "id": "edge-wiki-concepts-iot-lorawan-md-wiki-sources-lorawan-fuota-rak3172-md",
       "fromNode": "wiki-concepts-iot-lorawan-md",
       "fromSide": "right",
@@ -9861,6 +9901,14 @@
       "fromNode": "wiki-concepts-iot-mqtt-qos-md",
       "fromSide": "right",
       "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-mqtt-qos-md-wiki-sources-iot-mqtt-protocol-overview-md",
+      "fromNode": "wiki-concepts-iot-mqtt-qos-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-iot-mqtt-protocol-overview-md",
       "toSide": "left",
       "color": "3"
     },
@@ -10093,6 +10141,14 @@
       "fromNode": "wiki-concepts-pharmacy-drug-validation-md",
       "fromSide": "right",
       "toNode": "wiki-sources-drug-aliases-reference-md",
+      "toSide": "left",
+      "color": "4"
+    },
+    {
+      "id": "edge-wiki-concepts-pharmacy-drug-validation-md-wiki-sources-pharmacy-drug-interaction-checking-md",
+      "fromNode": "wiki-concepts-pharmacy-drug-validation-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-pharmacy-drug-interaction-checking-md",
       "toSide": "left",
       "color": "4"
     },
@@ -14017,6 +14073,30 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-sources-iot-mqtt-protocol-overview-md-wiki-entities-iot-mqtt-protocol-md",
+      "fromNode": "wiki-sources-iot-mqtt-protocol-overview-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-iot-mqtt-protocol-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-iot-mqtt-protocol-overview-md-wiki-concepts-iot-mqtt-qos-md",
+      "fromNode": "wiki-sources-iot-mqtt-protocol-overview-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-iot-mqtt-qos-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-iot-mqtt-protocol-overview-md-wiki-concepts-iot-publish-subscribe-md",
+      "fromNode": "wiki-sources-iot-mqtt-protocol-overview-md",
+      "fromSide": "left",
+      "toNode": "wiki-concepts-iot-publish-subscribe-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-sources-iot-edge-ai-esp32-c6-2026-md-wiki-entities-iot-esp32-c6-md",
       "fromNode": "wiki-sources-iot-edge-ai-esp32-c6-2026-md",
       "fromSide": "left",
@@ -15369,6 +15449,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-environmental-iot-sensing-md-wiki-sources-env-soil-moisture-sensing-md",
+      "fromNode": "wiki-synthesis-environmental-iot-sensing-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-env-soil-moisture-sensing-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-sources-esp32-tank-level-mqtt-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
       "fromSide": "right",
@@ -15561,6 +15649,14 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-synthesis-intelligent-iot-pipelines-md-wiki-sources-it-edge-computing-iot-md",
+      "fromNode": "wiki-synthesis-intelligent-iot-pipelines-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-it-edge-computing-iot-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-sources-iot-lora-gateway-architecture-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
       "fromSide": "right",
@@ -15693,6 +15789,14 @@
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
       "fromSide": "right",
       "toNode": "wiki-sources-mqtt-introduction-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-iot-network-infrastructure-md-wiki-sources-it-network-monitoring-iot-md",
+      "fromNode": "wiki-synthesis-iot-network-infrastructure-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-it-network-monitoring-iot-md",
       "toSide": "left",
       "color": "6"
     },

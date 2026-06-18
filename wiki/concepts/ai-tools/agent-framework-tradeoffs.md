@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [agent-framework, system-prompt, context-injection, local-llm, prompt-engineering, tradeoff]
-sources: [agent-frameworks-local-debug-2026]
+sources: [agent-frameworks-local-debug-2026, wiki/sources/ai-tools/langchain-framework.md]
 created: 2026-05-02
 updated: 2026-05-02
 ---

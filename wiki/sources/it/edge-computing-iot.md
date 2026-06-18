@@ -1,3 +1,13 @@
+---
+type: source
+title: "Edge Computing Architectures for IoT"
+slug: edge-computing-iot
+date_ingested: 2026-05-25
+original_file: raw/legacy/edge-computing-iot.md
+tags: [edge-computing, iot, fog, processing, latency]
+provenance: legacy-import
+---
+
 # Edge Computing Architectures for IoT
 
 > **Type:** article
@@ -24,5 +34,11 @@ Edge computing moves data processing closer to IoT devices to reduce latency, ba
 - https://www.edgexfoundry.org/
 - https://aws.amazon.com/greengrass/
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/iot/tinyml]] — on-device ML inference at the device edge
+- [[entities/iot/raspberry-pi]] — common gateway-edge hardware for local aggregation
+- [[concepts/iot/data-logger]] — edge data reduction / aggregation before cloud upload
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/edge-computing-iot.md`).*

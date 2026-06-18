@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 808
-- ⚠ Warnings: 261
+- ✓ Passed: 852
+- ⚠ Warnings: 257
 - ❌ Failures: 4
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 245 more issue(s) below
+- … 241 more issue(s) below
 
 ---
 
@@ -147,13 +147,9 @@
 - wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
 - wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
 - wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
-- wiki/sources/ai-tools/langchain-framework.md: no frontmatter (missing --- delimiter)
-- wiki/sources/ai-tools/vector-databases.md: no frontmatter (missing --- delimiter)
 - wiki/sources/env/air-quality-monitoring.md: no frontmatter (missing --- delimiter)
 - wiki/sources/env/soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
 - wiki/sources/env/water-quality-parameters.md: no frontmatter (missing --- delimiter)
-- wiki/sources/iot/lorawan-architecture.md: no frontmatter (missing --- delimiter)
-- wiki/sources/iot/mqtt-protocol-overview.md: no frontmatter (missing --- delimiter)
 - wiki/sources/it/edge-computing-iot.md: no frontmatter (missing --- delimiter)
 - wiki/sources/it/network-monitoring-iot.md: no frontmatter (missing --- delimiter)
 - wiki/sources/pharmacy/drug-interaction-checking.md: no frontmatter (missing --- delimiter)
@@ -314,10 +310,10 @@
 
 ---
 
-## ✓ Passed Checks (808 total)
+## ✓ Passed Checks (852 total)
 
-- **L2**: 330 passed
-- **L3**: 475 passed
+- **L2**: 354 passed
+- **L3**: 495 passed
 - **L6**: 3 passed
 
 ---

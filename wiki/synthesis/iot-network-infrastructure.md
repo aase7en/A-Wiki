@@ -1,7 +1,7 @@
 ---
 type: synthesis
 tags: [iot, network, infrastructure, cross-domain]
-sources: []
+sources: [wiki/sources/it/network-monitoring-iot.md]
 created: 2026-05-25
 updated: 2026-06-18
 ---

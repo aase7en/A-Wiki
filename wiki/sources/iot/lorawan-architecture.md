@@ -1,3 +1,13 @@
+---
+type: source
+title: "LoRaWAN Architecture"
+slug: lorawan-architecture
+date_ingested: 2026-05-25
+original_file: raw/legacy/lorawan-architecture.md
+tags: [lpwan, long-range, radio, sensor-network, iot]
+provenance: legacy-import
+---
+
 # LoRaWAN Architecture
 
 > **Type:** documentation
@@ -24,5 +34,11 @@ LoRaWAN is a Low Power Wide Area Network (LPWAN) protocol designed for battery-p
 - https://lora-alliance.org/about-lorawan/
 - https://lora-developers.semtech.com/documentation/tech-papers-and-guides/lora-and-lorawan
 
+## หน้า Wiki ที่ได้รับการอัปเดต
+
+- [[concepts/iot/lorawan]] — the LoRaWAN protocol this source documents
+- [[concepts/iot/lora]] — the underlying LoRa physical layer / chirp spread spectrum
+- [[entities/iot/chirpstack]] — open-source LoRaWAN Network Server implementation
+
 ---
-*Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
+*Legacy sister-wiki import — provenance reconstructed 2026-06-18 (raw stub: `raw/legacy/lorawan-architecture.md`).*
