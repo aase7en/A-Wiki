@@ -160,7 +160,7 @@ to{transform:scale(1);opacity:1}
 @keyframes row-slide{from{transform:translateY(-5px);opacity:0}
 to{transform:translateY(0);opacity:1}
 }
-.ev-time{color:var(--text-disabled);font-family:var(--font-mono);font-size:var(--fs-2xs);white-space:nowrap;padding-top:1px;flex-shrink:0}
+.ev-time{color:var(--text-secondary);font-family:var(--font-mono);font-size:var(--fs-2xs);white-space:nowrap;padding-top:1px;flex-shrink:0}
 .ev-ic{flex-shrink:0;font-size:var(--fs-sm);line-height:1.4}
 .ev-tx{flex:1;font-size:var(--fs-xs);line-height:1.5;word-break:break-word}
 .ev-tx strong{color:var(--text-primary)}
@@ -281,6 +281,9 @@ to{transform:translateY(0);opacity:1}
 
 
 .routing-info{font-size:var(--fs-xs);color:var(--text-tertiary);padding:4px 10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px}
+
+
+:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;border-radius:var(--r-sm)}
 
 </style>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
@@ -455,6 +458,7 @@ to{transform:translateY(0);opacity:1}
   </div>
 </div>
 <div class="set-toast" id="set-toast"></div>
+<div id="aria-live" class="sr-only" aria-live="polite"></div>
 
 <script>
 const S={connected:false,hookCount:0,eventCount:0,modelsUsed:new Set(),tier:'?',
@@ -632,6 +636,7 @@ const tag=ev.type==='delegate_fail'?`✗ ${modelShort(ev.model||'')}`:`🔒 ${(e
 const row=mk('div','err-row');
 row.innerHTML=`<span class="err-ts">${ts}</span><span class="err-txt">${tag} ${ev.reason||ev.result||''}</span>`;
 rail.insertBefore(row,rail.firstChild);
+const al=$('aria-live');if(al)al.textContent=`Failure: ${tag}`;
 }
 function updateCostKPI(tier){
 $('cost-tier-big').textContent=tier;$('tier-label').textContent=tier;
@@ -862,6 +867,7 @@ let _caps={families:{},recommended_by_task:{}};
 function toast(msg,err){const t=$('set-toast');t.textContent=msg;t.className='set-toast show'+(err?' err':'');setTimeout(()=>t.className='set-toast',2200);}
 function openSettings(){$('settings-backdrop').classList.add('show');$('settings').classList.add('show');loadSettings();}
 function closeSettings(){$('settings-backdrop').classList.remove('show');$('settings').classList.remove('show');}
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('settings-backdrop').classList.contains('show'))closeSettings();});
 function setTab(b){document.querySelectorAll('.set-tab').forEach(x=>x.classList.remove('active'));
 document.querySelectorAll('.set-pane').forEach(p=>p.classList.remove('active'));b.classList.add('active');$(b.dataset.pane).classList.add('active');}
 async function loadSettings(){
@@ -885,7 +891,7 @@ const caps=f?`<div class="cap-badges">${badge('SWE',f.swe_bench)}${badge('Term',
 const kn=m.key_env||'',hk=ks[kn];
 card.innerHTML=`<div class="cfg-row"><span class="cfg-name">${m.name}</span>
 <span class="key-status ${hk?'set':'unset'}">${hk?'🔑 set':'🔑 no key'}</span>
-<label class="glow-toggle"><input type="checkbox" data-i="${i}" ${m.enabled===false?'':'checked'}><span class="glow-slider"></span></label></div>
+<label class="glow-toggle"><input type="checkbox" data-i="${i}" ${m.enabled===false?'':'checked'} aria-label="Enable ${m.name}"><span class="glow-slider"></span></label></div>
 <div class="cfg-field"><label>model id</label><input class="cfg-input" data-mid="${i}" value="${m.model_id||''}" placeholder="(default)"></div>${caps}`;
 w.appendChild(card);});w._models=models;}
 function saveModels(){const w=$('models-list'),models=w._models||[];
