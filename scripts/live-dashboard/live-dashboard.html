@@ -557,7 +557,8 @@ if(st.active&&st._emit&&Math.random()<0.55)emitParticle(st,'out');
 _particleRAF=requestAnimationFrame(particleLoop);
 }
 let _lastEventTs=Date.now();
-function spawnThought(){}
+const verbose=false;
+function spawnThought(){if(!verbose)return;}
 let currentView='flow';
 function setView(v){
 currentView=v;
