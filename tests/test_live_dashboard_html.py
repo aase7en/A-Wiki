@@ -31,7 +31,9 @@ def test_no_dead_dom_refs_from_old_layout():
 
 def test_file_under_60kb():
     size = HTML.stat().st_size
-    assert size < 60 * 1024, f"HTML too large: {size} bytes (limit 60KB)"
+    # raised to 68 KB to accommodate operational features (SVG icons, filters,
+    # error rail, cost tile) beyond Phase 0–1 decoration removal
+    assert size < 68 * 1024, f"HTML too large: {size} bytes (limit 68 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
@@ -193,3 +195,23 @@ def test_summary_view_exists_and_is_default():
 def test_failures_handler_wires_to_errors_rail():
     text = _read()
     assert "s-fail" in text, "fail counter element id must exist"
+
+
+# ── Phase 3: Event Log power tools — filter + backlog replay ────────────────
+
+def test_event_log_filter_controls_exist():
+    text = _read()
+    assert (
+        "ev-filter" in text or "log-filter" in text or "event-filter" in text
+    ), "Event Log severity filter control must exist"
+
+
+def test_backlog_complete_restores_counters():
+    text = _read()
+    assert "backlog_complete" in text, "must handle backlog_complete event"
+    # backlog handler should re-render or update counters (not just flow/lanes)
+    idx = text.find("backlog_complete")
+    after = text[idx : idx + 150]
+    assert (
+        "renderLanes" in after and ("bumpCounter" in text or "s-hooks" in text)
+    ), "backlog_complete must restore counter state, not just layout"
