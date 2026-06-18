@@ -144,3 +144,32 @@ def test_branching_timeline_present():
     text = _read()
     assert "lane" in text and ("time-axis" in text or "axis" in text), \
         "branching timeline (lanes + time axis) missing"
+
+
+# ── Phase 1: animation-as-signal discipline ────────────────────────────────
+
+def test_no_infinite_animation_on_decorative_elements():
+    """Only status-driven (.active,.on,.busy,.hot,.tick,.block,.done,.fail)
+    and component-marker (.fade-cycle,.word,#typed-intro) elements may use
+    animation:...infinite. No always-on ambient loops."""
+    text = _read()
+    style_end = text.find("</style>")
+    style = text[:style_end]
+    # the minified CSS splits rules with "}\n"
+    rules = style.split("}\n")
+    errs = []
+    for rule in rules:
+        if "infinite" not in rule:
+            continue
+        brace = rule.find("{")
+        if brace == -1:
+            continue
+        selector = rule[:brace].strip()
+        ok = any(x in selector for x in (
+            ".active", ".on", ".busy", ".hot", ".tick",
+            ".block", ".done", ".fail",
+            ".word", "#typed-intro",
+        ))
+        if not ok:
+            errs.append(f"infinite animation on non-status selector: {selector[:80]}")
+    assert not errs, "\n".join(errs)
