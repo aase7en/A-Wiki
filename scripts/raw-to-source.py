@@ -125,7 +125,7 @@ def extract_title_from_body(text: str) -> str:
             break
     for line in text.splitlines():
         s = line.strip()
-        if s.startswith("# ") and not s.startswith("# "):
+        if s.startswith("# ") and not s.startswith("## "):
             return s[2:].strip()
     # Fallback: first non-empty, non-frontmatter line
     in_frontmatter = False
@@ -147,6 +147,12 @@ def collect_raw_files() -> list[Path]:
     for p in sorted(RAW_DIR.rglob("*.md")):
         if p.name == "README.md":
             continue
+        # Skip provenance stubs under raw/legacy/ — these are backfilled
+        # original_file pointers for frozen legacy sister-wiki sources, NOT
+        # ingestable raw documents. Routing them would duplicate the existing
+        # (subdir) source pages with garbage titles.
+        if "legacy" in p.relative_to(RAW_DIR).parts:
+            continue
         # Skip JSON within raw/
         if p.suffix == ".md":
             files.append(p)
@@ -154,8 +160,13 @@ def collect_raw_files() -> list[Path]:
 
 
 def source_exists(slug: str) -> bool:
-    """Check if a source file already exists for the given slug."""
-    return (SOURCES_DIR / f"{slug}.md").exists()
+    """Check if a source file already exists for the given slug, anywhere under
+    wiki/sources/ — flat (wiki/sources/<slug>.md) OR a domain subdir
+    (wiki/sources/<domain>/<slug>.md). Subdir-aware so an existing subdir source
+    is never duplicated as a bare-path file."""
+    if (SOURCES_DIR / f"{slug}.md").exists():
+        return True
+    return any(True for _ in SOURCES_DIR.rglob(f"{slug}.md"))
 
 
 def generate_frontmatter(

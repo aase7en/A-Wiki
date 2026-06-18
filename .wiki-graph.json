@@ -1,12 +1,12 @@
 {
   "generated_at": "2026-06-18",
   "stats": {
-    "nodes": 538,
-    "edges": 1692,
+    "nodes": 518,
+    "edges": 1682,
     "edges_by_type": {
       "wikilink": 1179,
       "mdlink": 49,
-      "depends": 377,
+      "depends": 367,
       "implements": 49,
       "extends": 38
     },
@@ -925,11 +925,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/air-quality-monitoring.md",
-      "title": "Air Quality Monitoring — Sensor Networks and Standards — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers",
       "domain": "sources"
@@ -1020,11 +1015,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/drug-interaction-checking.md",
-      "title": "Drug Interaction Checking Systems — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/ds18b20-esp32-randomnerd.md",
       "title": "ESP32 DS18B20 Temperature Sensor Guide",
       "domain": "sources"
@@ -1057,11 +1047,6 @@
     {
       "path": "wiki/sources/easyloranode-tracker.md",
       "title": "EasyLoRaNode_Tracker: Wearable LoRa Node with Battery",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/edge-computing-iot.md",
-      "title": "Edge Computing Architectures for IoT — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1350,11 +1335,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/langchain-framework.md",
-      "title": "LangChain Framework for LLM Applications — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide",
       "domain": "sources"
@@ -1390,11 +1370,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/lorawan-architecture.md",
-      "title": "LoRaWAN Architecture — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo",
       "domain": "sources"
@@ -1427,16 +1402,6 @@
     {
       "path": "wiki/sources/mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/mqtt-protocol-overview.md",
-      "title": "MQTT Protocol Overview — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/network-monitoring-iot.md",
-      "title": "Network Monitoring for IoT Deployments — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1550,11 +1515,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/soil-moisture-sensing.md",
-      "title": "Soil Moisture Sensing Technologies — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/source-5e4074bd.md",
       "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies PEP/PrEP)",
       "domain": "sources"
@@ -1620,11 +1580,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/vector-databases.md",
-      "title": "Vector Databases for Semantic Search — Legacy Import Stub",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
       "title": "Velxio — Arduino/ESP32/Raspberry Pi Simulator",
       "domain": "sources"
@@ -1642,11 +1597,6 @@
     {
       "path": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/water-quality-parameters.md",
-      "title": "Water Quality Parameters and Monitoring — Legacy Import Stub",
       "domain": "sources"
     },
     {
@@ -1970,11 +1920,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-air-quality-monitoring.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers — DroneBot Workshop — Synthesis",
       "domain": "synthesis"
@@ -2065,11 +2010,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-drug-interaction-checking.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
       "title": "ESP32 DS18B20 Temperature Sensor — Single, Multiple, Web Server — Synthesis",
       "domain": "synthesis"
@@ -2102,11 +2042,6 @@
     {
       "path": "wiki/synthesis/synth-easyloranode-tracker.md",
       "title": "EasyLoRaNode_Tracker: Wearable LoRa Node with Battery — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-edge-computing-iot.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2360,11 +2295,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-langchain-framework.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide (2025-2026) — Synthesis",
       "domain": "synthesis"
@@ -2400,11 +2330,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-lorawan-architecture.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS – Full Step-by-Step Demo — Synthesis",
       "domain": "synthesis"
@@ -2437,16 +2362,6 @@
     {
       "path": "wiki/synthesis/synth-mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-mqtt-protocol-overview.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-network-monitoring-iot.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2555,11 +2470,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-soil-moisture-sensing.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-source-5e4074bd.md",
       "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด — Synthesis",
       "domain": "synthesis"
@@ -2625,11 +2535,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-vector-databases.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
       "title": "Velxio — Open-Source Arduino/ESP32/Raspberry Pi Simulator — Synthesis",
       "domain": "synthesis"
@@ -2647,11 +2552,6 @@
     {
       "path": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-water-quality-parameters.md",
-      "title": "**Provenance:** This is a *legacy-import provenance stub*, not a captured raw do — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -13134,13 +13034,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-air-quality-monitoring.md",
-      "to": "wiki/sources/air-quality-monitoring.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "to": "wiki/sources/air-quality-sensors-dronebot.md",
       "type": "depends",
@@ -13267,13 +13160,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-drug-interaction-checking.md",
-      "to": "wiki/sources/drug-interaction-checking.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
       "to": "wiki/sources/ds18b20-esp32-randomnerd.md",
       "type": "depends",
@@ -13318,13 +13204,6 @@
     {
       "from": "wiki/synthesis/synth-easyloranode-tracker.md",
       "to": "wiki/sources/easyloranode-tracker.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-edge-computing-iot.md",
-      "to": "wiki/sources/edge-computing-iot.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -13687,13 +13566,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-langchain-framework.md",
-      "to": "wiki/sources/langchain-framework.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "to": "wiki/sources/local-llm-mac-mini-guide.md",
       "type": "depends",
@@ -13743,13 +13615,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-lorawan-architecture.md",
-      "to": "wiki/sources/lorawan-architecture.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "type": "depends",
@@ -13794,20 +13659,6 @@
     {
       "from": "wiki/synthesis/synth-mqtt-introduction.md",
       "to": "wiki/sources/mqtt-introduction.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-mqtt-protocol-overview.md",
-      "to": "wiki/sources/mqtt-protocol-overview.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-network-monitoring-iot.md",
-      "to": "wiki/sources/network-monitoring-iot.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -13981,13 +13832,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-soil-moisture-sensing.md",
-      "to": "wiki/sources/soil-moisture-sensing.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-source-5e4074bd.md",
       "to": "wiki/sources/source-5e4074bd.md",
       "type": "depends",
@@ -14093,13 +13937,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-vector-databases.md",
-      "to": "wiki/sources/vector-databases.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
       "to": "wiki/sources/velxio-arduino-esp32-pi-simulator.md",
       "type": "depends",
@@ -14130,13 +13967,6 @@
     {
       "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-water-quality-parameters.md",
-      "to": "wiki/sources/water-quality-parameters.md",
       "type": "depends",
       "broken": false,
       "external": false
