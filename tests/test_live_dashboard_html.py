@@ -34,6 +34,54 @@ def test_file_under_60kb():
     assert size < 60 * 1024, f"HTML too large: {size} bytes (limit 60KB)"
 
 
+# ── Phase 0: token reconciliation + size contract ─────────────────────────
+
+def test_no_deep_space_decoration():
+    """The deep-space palette (nebula, stars, --space-*) is banned decoration."""
+    text = _read()
+    assert "--space-" not in text, "deep-space --space-* tokens must be removed"
+    assert 'id="nebula"' not in text, "#nebula element must be removed"
+    assert 'id="stars"' not in text, "#stars element must be removed"
+    assert "#nebula" not in text, "#nebula selector must be removed"
+    assert "#stars" not in text, "#stars selector must be removed"
+
+
+def test_no_glow_triplet():
+    """The three --glow-* tokens collapse into a single --shadow-glow."""
+    text = _read()
+    for t in ("--glow-cyan", "--glow-gold", "--glow-violet"):
+        assert t not in text, f"{t} must be removed (collapse to --shadow-glow)"
+    assert "--shadow-glow" in text, "single --shadow-glow token must exist"
+
+
+def test_root_declares_documented_tokens():
+    """:root must adopt the dashboard-design-system.md tokens verbatim."""
+    text = _read()
+    root = text[: text.find("</style>")]
+    for token, hexv in (
+        ("--elev-0", "#06060d"),
+        ("--elev-1", "#0c0c18"),
+        ("--elev-2", "#14142a"),
+        ("--elev-3", "#1e1e3a"),
+        ("--text-tertiary", "#64748b"),
+    ):
+        assert token in root, f":root must declare {token}"
+        assert hexv in root, f":root {token} must use documented {hexv}"
+    assert "#7c8aa5" not in root, "old tertiary #7c8aa5 must be gone"
+
+
+def test_no_hardcoded_hex_outside_root():
+    """Color hex literals may only live in :root (design-system DoD)."""
+    text = _read()
+    root_end = text.find("</style>")
+    outside_root = text[root_end:]
+    # CSS hex inside the rest of <style> (after :root block close)
+    style_after = text[text.find("}") + 1 : root_end]
+    # ignore SVG gradient stop-color attributes which are data, not theme
+    leaks = re.findall(r"#[0-9a-fA-F]{6}\b", style_after)
+    assert not leaks, f"hardcoded hex outside :root in <style>: {leaks[:8]}"
+
+
 def test_sse_and_api_contracts_wired():
     text = _read()
     for token in ("/events", "/api/graph", "/api/models", "/api/keys", "/api/capabilities"):
