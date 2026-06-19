@@ -89,3 +89,14 @@ Check current free models: `cat wiki/context/model-roster.conf`
 # HTML costs ~2.1× MD tokens when read — leaf artifact only.
 # Enforced: scripts/hooks/check_output_format.py | docs/protocols/md-vs-html-output.md
 
+## A-Wiki Live Dashboard
+
+At the start of every session, run:
+
+```bash
+bash scripts/live-dashboard/awiki-live-init.sh windsurf
+```
+
+This ensures the real-time A-Wiki Live monitor is running on http://localhost:7790
+and emits a `session_start` event so the dashboard can track this session.
+

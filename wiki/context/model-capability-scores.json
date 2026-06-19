@@ -34,15 +34,22 @@
       "confidence": "low", "as_of": "2026-06-15",
       "note": "Gemini Flash — fast, free tier, lighter reasoning"
     },
+    "claude": {
+      "match": ["claude-opus", "claude-sonnet", "claude-4", "claude-3.5"],
+      "swe_bench": 60, "terminal_bench": 52, "nl2repobench": 48,
+      "reasoning": 85, "speed": 55,
+      "confidence": "training", "as_of": "2026-06-15",
+      "note": "Claude Opus/Sonnet — premium reasoning, best-in-class"
+    },
     "claude-haiku": {
-      "match": ["haiku", "claude-haiku", "anthropic"],
+      "match": ["haiku", "claude-haiku"],
       "swe_bench": 42, "terminal_bench": 40, "nl2repobench": 32,
       "reasoning": 66, "speed": 82,
       "confidence": "low", "as_of": "2026-06-15",
       "note": "Claude Haiku — balanced, low-cost paid"
     },
     "llama": {
-      "match": ["llama", "groq", "meta-llama"],
+      "match": ["llama", "meta-llama", "llama-3", "llama-4"],
       "swe_bench": 26, "terminal_bench": 22, "nl2repobench": 20,
       "reasoning": 52, "speed": 96,
       "confidence": "low", "as_of": "2026-06-15",
@@ -54,6 +61,13 @@
       "reasoning": 66, "speed": 72,
       "confidence": "low", "as_of": "2026-06-15",
       "note": "Qwen3 — solid free general model"
+    },
+    "kimi": {
+      "match": ["kimi"],
+      "swe_bench": 55, "terminal_bench": 45, "nl2repobench": 40,
+      "reasoning": 70, "speed": 75,
+      "confidence": "training", "as_of": "2026-06-19",
+      "note": "Kimi K2 (Moonshot) — strong coding, used in Fireworks"
     },
     "gpt-mini": {
       "match": ["gpt-4o-mini", "gpt-4.1-mini", "o4-mini"],

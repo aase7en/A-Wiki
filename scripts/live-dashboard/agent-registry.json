@@ -1,0 +1,96 @@
+{
+  "$schema": "../agent-config.schema.json",
+  "version": "1.0.0",
+  "description": "A-Wiki Agent Types Registry — 12 agent types with default effort levels",
+  "agent_types": [
+    {
+      "type": "plan",
+      "role": "วางแผนงาน",
+      "default_effort": 80,
+      "icon": "📋",
+      "strength": "reasoning"
+    },
+    {
+      "type": "architect",
+      "role": "ออกแบบระบบ",
+      "default_effort": 90,
+      "icon": "🏗️",
+      "strength": "reasoning"
+    },
+    {
+      "type": "ask",
+      "role": "ตอบคำถาม",
+      "default_effort": 30,
+      "icon": "💬",
+      "strength": "speed"
+    },
+    {
+      "type": "code",
+      "role": "เขียนโค้ด",
+      "default_effort": 70,
+      "icon": "💻",
+      "strength": "coding"
+    },
+    {
+      "type": "code-reviewer",
+      "role": "review โค้ด",
+      "default_effort": 60,
+      "icon": "🔍",
+      "strength": "coding"
+    },
+    {
+      "type": "code-simplifier",
+      "role": "simplify code",
+      "default_effort": 50,
+      "icon": "✂️",
+      "strength": "coding"
+    },
+    {
+      "type": "code-skeptic",
+      "role": "ตรวจสอบข้อผิดพลาด",
+      "default_effort": 40,
+      "icon": "🤔",
+      "strength": "coding"
+    },
+    {
+      "type": "debug",
+      "role": "debug bug",
+      "default_effort": 85,
+      "icon": "🐛",
+      "strength": "reasoning"
+    },
+    {
+      "type": "documentation-specialist",
+      "role": "เขียน doc",
+      "default_effort": 50,
+      "icon": "📝",
+      "strength": "speed"
+    },
+    {
+      "type": "frontend-specialist",
+      "role": "frontend dev",
+      "default_effort": 75,
+      "icon": "🎨",
+      "strength": "coding"
+    },
+    {
+      "type": "orchestrator",
+      "role": "orchestrate agents",
+      "default_effort": 95,
+      "icon": "🎯",
+      "strength": "reasoning"
+    },
+    {
+      "type": "test-engineer",
+      "role": "เขียน test",
+      "default_effort": 70,
+      "icon": "🧪",
+      "strength": "coding"
+    }
+  ],
+  "effort_scale": {
+    "min": 0,
+    "max": 100,
+    "description": "Effort level: 0 = minimal (use cheapest model), 100 = maximum (use best model)"
+  }
+}
