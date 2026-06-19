@@ -481,6 +481,7 @@ to{transform:translateY(0);opacity:1}
     <button class="set-tab" data-pane="pane-keys" onclick="setTab(this)">API Keys</button>
     <button class="set-tab" data-pane="pane-help" onclick="setTab(this)">📖 คู่มือ</button>
     <button class="set-tab" data-pane="pane-chat" onclick="setTab(this);loadChatSettings()">💬 Chat</button>
+    <button class="set-tab" data-pane="pane-admin" onclick="setTab(this);loadAdminPanel()">🔑 Admin</button>
   </div>
   <div id="set-body">
     <div class="set-pane active" id="pane-models">
@@ -565,6 +566,33 @@ to{transform:translateY(0);opacity:1}
         <div class="chat-test-result" id="chat-test-result"></div>
       </div>
       <button class="set-btn" onclick="saveChatSettings()">💾 บันทึก Chat Settings</button>
+    </div>
+    <div class="set-pane" id="pane-admin">
+      <div class="set-note">จัดการ Team Tokens, ดูสถิติการใช้งาน, และประวัติแชท</div>
+      <div class="glass-card">
+        <div class="cfg-row"><span class="cfg-name">👥 Token Stats</span></div>
+        <div id="admin-stats" style="font-size:var(--fs-xs);color:var(--text-tertiary)">กำลังโหลด...</div>
+      </div>
+      <div class="cfg-field" style="margin-top:10px">
+        <label>เพิ่ม Token ใหม่</label>
+        <div style="display:flex;gap:6px">
+          <input class="cfg-input" id="admin-new-token" placeholder="ใส่ token ใหม่" style="flex:1">
+          <button class="set-btn sm" onclick="adminAddToken()">➕ เพิ่ม</button>
+        </div>
+      </div>
+      <div class="cfg-field">
+        <label>ลบ Token</label>
+        <div style="display:flex;gap:6px">
+          <input class="cfg-input" id="admin-del-token" placeholder="ใส่ token ที่ต้องการลบ" style="flex:1">
+          <button class="set-btn sm" onclick="adminRemoveToken()" style="color:var(--accent-danger);border-color:rgba(248,113,113,.4)">🗑 ลบ</button>
+        </div>
+      </div>
+      <div id="admin-result" style="font-size:var(--fs-xs);min-height:18px;margin-top:6px"></div>
+      <div class="glass-card" style="margin-top:12px">
+        <div class="cfg-row"><span class="cfg-name">💬 Shared History</span><span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">(last 50)</span></div>
+        <div id="admin-history" style="font-size:var(--fs-xs);max-height:300px;overflow-y:auto"></div>
+      </div>
+      <button class="set-btn" onclick="loadAdminPanel()">🔄 รีเฟรช</button>
     </div>
   </div>
 </div>
@@ -1325,6 +1353,76 @@ function removeChatLoading(id){
 function quickAsk(q){
   document.getElementById('chat-textarea').value = q;
   sendChat();
+}
+
+// ===== ADMIN PANEL =====
+async function loadAdminPanel() {
+  try {
+    // Load stats
+    const statsResp = await fetch('/api/auth/stats');
+    const stats = await statsResp.json();
+    const statsEl = document.getElementById('admin-stats');
+    if (stats.tokens_configured === 0) {
+      statsEl.innerHTML = '<em>Auth disabled — no tokens configured</em>';
+    } else {
+      const rows = (stats.usage || []).map(u =>
+        '<div style="padding:2px 0">👤 <b>' + (u.name || u.token) + '</b> — ' + u.count + ' requests, last: ' + new Date(u.last_seen * 1000).toLocaleTimeString('th-TH') + '</div>'
+      ).join('');
+      statsEl.innerHTML = '<div>🔑 ' + stats.tokens_configured + ' tokens configured</div>' + (rows || '<em>ยังไม่มีคนใช้งาน</em>');
+    }
+
+    // Load history
+    const histResp = await fetch('/api/chat/history?limit=20');
+    const hist = await histResp.json();
+    const histEl = document.getElementById('admin-history');
+    if (hist.history && hist.history.length) {
+      histEl.innerHTML = hist.history.map(h =>
+        '<div style="padding:4px 0;border-bottom:1px solid var(--border)">' +
+        '<b>' + (h.user || '?') + '</b> <span style="color:var(--text-tertiary)">' + new Date(h.ts * 1000).toLocaleTimeString('th-TH') + '</span><br>' +
+        '<span style="color:var(--accent-brand)">Q:</span> ' + h.message.substring(0, 120) + '<br>' +
+        '<span style="color:var(--accent-success)">A:</span> ' + (h.response || '').substring(0, 200) +
+        '</div>'
+      ).join('');
+    } else {
+      histEl.innerHTML = '<em>ยังไม่มีประวัติแชท</em>';
+    }
+  } catch(e) {
+    document.getElementById('admin-stats').textContent = 'โหลดข้อมูลไม่ได้';
+  }
+}
+
+async function adminAddToken() {
+  const inp = document.getElementById('admin-new-token');
+  const tok = inp.value.trim();
+  const res = document.getElementById('admin-result');
+  if (!tok) { res.textContent = '❌ ใส่ token ก่อน'; return; }
+  res.textContent = '⏳ กำลังเพิ่ม...';
+  try {
+    const r = await fetch('/api/admin/tokens/add', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: tok })
+    });
+    const data = await r.json();
+    if (data.ok) { res.textContent = '✅ เพิ่ม token แล้ว'; inp.value = ''; loadAdminPanel(); }
+    else res.textContent = '❌ ' + (data.error || 'ไม่สำเร็จ');
+  } catch(e) { res.textContent = '❌ เชื่อมต่อไม่ได้'; }
+}
+
+async function adminRemoveToken() {
+  const inp = document.getElementById('admin-del-token');
+  const tok = inp.value.trim();
+  const res = document.getElementById('admin-result');
+  if (!tok) { res.textContent = '❌ ใส่ token ก่อน'; return; }
+  res.textContent = '⏳ กำลังลบ...';
+  try {
+    const r = await fetch('/api/admin/tokens/remove', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: tok })
+    });
+    const data = await r.json();
+    if (data.ok) { res.textContent = '✅ ลบ token แล้ว'; inp.value = ''; loadAdminPanel(); }
+    else res.textContent = '❌ ' + (data.error || 'ไม่สำเร็จ');
+  } catch(e) { res.textContent = '❌ เชื่อมต่อไม่ได้'; }
 }
 </script>
 </body>
