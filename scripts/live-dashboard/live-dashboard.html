@@ -132,10 +132,10 @@ to{transform:scale(1);opacity:1}
 }
 .origin-nm{font-size:var(--fs-xs);font-weight:700;color:var(--text-primary);letter-spacing:.3px}
 .origin-st{font-size:var(--fs-2xs);color:var(--accent-success);min-width:90px;text-align:center}
-.station{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;transition:filter .3s;pointer-events:auto}
+.station{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;transition:filter .3s, transform .2s;pointer-events:auto;cursor:grab} .station:active{cursor:grabbing;transform:translate(-50%,-50%) scale(1.05)}
 .station-core{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 11px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--st-color,var(--border2));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);position:relative;transition:all .3s;min-width:72px}
 .station-core::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--st-color,var(--border2));border-radius:3px 0 0 3px}
-.station-ic{font-size:18px;line-height:1}
+.station-ic{font-size:22px;line-height:1;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-bottom:3px;text-shadow:0 0 8px rgba(251,191,36,0.5);filter:drop-shadow(0 0 2px rgba(0,0,0,0.5))}
 .station-nm{font-size:var(--fs-2xs);font-weight:700;color:var(--text-secondary);max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .station-cnt{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--text-tertiary);font-variant-numeric:tabular-nums}
 .station.active .station-core{border-color:var(--st-color);box-shadow:var(--shadow-glow);animation:station-pulse 1.5s ease-in-out infinite}
@@ -662,7 +662,7 @@ el.classList.add('hot');clearTimeout(S.wfTimers[id]);S.wfTimers[id]=setTimeout((
 const LANE_COLORS={gemini:'#7ba3ff',deepseek:'#00c4e0',groq:'#ff6b6b',openrouter:'#a0d0a0',
 anthropic:'#ff8c69',zhipu:'#c17de8',qwen:'#ffb347',default:'#94a3b8'};
 function laneColor(m){for(const[k,v]of Object.entries(LANE_COLORS))if(m.includes(k))return v;return LANE_COLORS.default;}
-const MODEL_ICON={gemini:'✦',deepseek:'🐋',groq:'⚡',openrouter:'🛰',anthropic:'🅰',zhipu:'🔮',qwen:'🧬',default:'🤖'};
+const MODEL_ICON={gemini:'🏆',deepseek:'🏆',groq:'🏆',openrouter:'🏆',anthropic:'🏆',zhipu:'🏆',qwen:'🏆',default:'🏆'};
 const flowSvg=$('flow-svg'),pipeG=$('pipe-g'),particleG=$('particle-g'),flowOverlay=$('flow-overlay'),flowStage=$('flow-stage');
 const SVGNS='http://www.w3.org/2000/svg';
 const _stations={};
@@ -1043,7 +1043,28 @@ catch(e){toast('โหลด settings ไม่ได้',true);}}
 async function loadModelStationsConfig(){
 try{const m=await fetch('/api/models').then(r=>r.json());
 (m.models||[]).forEach(md=>{const st=addStation(md.model_id||md.id||md.name);
-if(st&&md.enabled===false){st.disabled=true;st.el.classList.add('disabled');}});}
+if(st&&md.enabled===false){st.disabled=true;st.el.classList.add('disabled');}});
+// Restore flow stations drag-and-drop order
+try{
+  const saved=JSON.parse(localStorage.getItem('awiki-flow-stations-order')||'[]');
+  if(saved.length){
+    const temp={};
+    saved.forEach(k=>{if(_stations[k])temp[k]=_stations[k];});
+    for(const k in _stations){if(!temp[k])temp[k]=_stations[k];}
+    for(const k in _stations){delete _stations[k];}
+    for(const k in temp){_stations[k]=temp[k];}
+    // Also re-order children in the DOM flow-overlay so on-screen elements match
+    const overlay=document.getElementById('flow-overlay');
+    if(overlay){
+      saved.forEach(k=>{
+        const el=overlay.querySelector(`.station[data-key="${k}"]`);
+        if(el)overlay.appendChild(el);
+      });
+    }
+  }
+}catch(_){}
+layoutFlow();
+}
 catch(e){}}
 function famScores(m){const hay=[m.id,m.model_id,m.name,m.provider].join(' ').toLowerCase();
 for(const f of Object.values(_caps.families||{}))if((f.match||[]).some(s=>hay.includes(s)))return f;return null;}
@@ -1478,6 +1499,58 @@ function updateEffort(slider){
   localStorage.setItem('awiki-agent-effort',JSON.stringify(AGENT_TYPES.filter(a=>a.effort!==undefined).map(a=>({type:a.type,effort:a.effort}))));
 }
 renderAgentChain();
+
+
+// ===== FLOW VIEW NODE DRAG-AND-DROP SORTABLE =====
+(function initFlowSortable() {
+  const overlay = document.getElementById('flow-overlay');
+  if (!overlay) return;
+
+  try {
+    new Sortable(overlay, {
+      animation: 200,
+      draggable: '.station',
+      onEnd: function (evt) {
+        const stationsList = Array.from(overlay.querySelectorAll('.station'));
+        const newKeys = stationsList.map(el => el.dataset.key);
+        
+        // Re-order the _stations object properties in-place based on on-screen drag order
+        const temp = {};
+        newKeys.forEach(k => {
+          if (_stations[k]) {
+            temp[k] = _stations[k];
+          }
+        });
+        
+        // Pick up any extra station keys that might not have been in the DOM yet (safety)
+        for (const k in _stations) {
+          if (!temp[k]) {
+            temp[k] = _stations[k];
+          }
+        }
+        
+        // Clear and rebuild _stations in-place to respect the new property insertion order
+        for (const k in _stations) {
+          delete _stations[k];
+        }
+        for (const k in temp) {
+          _stations[k] = temp[k];
+        }
+        
+        // Trigger flow layout redraw so the paths, animation particles, and coordinates align perfectly!
+        layoutFlow();
+        
+        // Optional state saving
+        try {
+          localStorage.setItem('awiki-flow-stations-order', JSON.stringify(newKeys));
+        } catch(_) {}
+      }
+    });
+    console.log("✅ Flow Drag-and-Drop Sortable initialized successfully.");
+  } catch(e) {
+    console.warn("Could not find Sortable for flow-overlay yet, will retry.", e);
+  }
+})();
 
 </script>
 </body>
