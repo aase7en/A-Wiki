@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "note": "Agent model auto-scan policy — cost classes, agent configs, and apply rules for scripts/agents/agent_model_scan.py",
+  "cost_classes": {
+    "free":        { "rank": 0, "label": "Free / credit-burned" },
+    "cheap-paid":  { "rank": 1, "label": "Cheap paid (DeepSeek, Z.ai direct)" },
+    "premium-paid":{ "rank": 2, "label": "Premium paid (Claude Opus via OpenRouter)" },
+    "subscription":{ "rank": -1, "label": "Paid subscription (Z.ai Codeplan — model pinned)" }
+  },
+  "apply_policy": {
+    "auto_apply_within_same_cost_class": true,
+    "tier_up_requires_confirmation": true,
+    "min_capability_gain": 5,
+    "revert_log": "wiki/context/agent-model-scan-log.jsonl"
+  },
+  "agents": {
+    "architect": {
+      "file": ".kilo/agents/architect.md",
+      "current_model": "openrouter/anthropic/claude-opus-4.8",
+      "role_dimension": "reasoning",
+      "cost_class": "premium-paid",
+      "candidate_families": ["claude", "glm", "deepseek"],
+      "managed": true
+    },
+    "code-reviewer": {
+      "file": ".kilo/agents/code-reviewer.md",
+      "current_model": "google/gemini-3.5-flash",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["gemini-flash", "llama", "qwen", "kimi"],
+      "managed": true
+    },
+    "code-simplifier": {
+      "file": ".kilo/agents/code-simplifier.md",
+      "current_model": "groq/qwen/qwen3-32b",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["qwen", "llama", "gemini-flash"],
+      "managed": true
+    },
+    "code-skeptic": {
+      "file": ".kilo/agents/code-skeptic.md",
+      "current_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["kimi", "qwen", "gemini-flash"],
+      "managed": true
+    },
+    "docs-specialist": {
+      "file": ".kilo/agents/docs-specialist.md",
+      "current_model": "google/gemini-3.5-flash",
+      "role_dimension": "reasoning",
+      "cost_class": "free",
+      "candidate_families": ["gemini-flash", "llama", "qwen"],
+      "managed": true
+    },
+    "frontend-specialist": {
+      "file": ".kilo/agents/frontend-specialist.md",
+      "current_model": "fireworks-ai/accounts/fireworks/models/qwen3p7-plus",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["qwen", "gemini-flash", "kimi"],
+      "managed": true
+    },
+    "test-engineer": {
+      "file": ".kilo/agents/test-engineer.md",
+      "current_model": "fireworks-ai/accounts/fireworks/models/kimi-k2p7-code",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["kimi", "qwen", "gemini-flash"],
+      "managed": true
+    },
+    "plan": {
+      "current_model": "zai-coding-plan/glm-5.2",
+      "role_dimension": "reasoning",
+      "cost_class": "subscription",
+      "candidate_families": ["glm"],
+      "managed": false,
+      "note": "Built-in override — model pinned to Z.ai Codeplan subscription. GHA cannot auto-apply; propose only."
+    },
+    "ask": {
+      "current_model": "kilo/kilo-auto/free",
+      "role_dimension": "reasoning",
+      "cost_class": "free",
+      "candidate_families": [],
+      "managed": false,
+      "note": "Built-in override — Kilo auto-free router. GHA cannot auto-apply."
+    },
+    "code": {
+      "current_model": "fireworks-ai/accounts/fireworks/models/deepseek-v4-flash",
+      "role_dimension": "swe_bench",
+      "cost_class": "free",
+      "candidate_families": ["deepseek", "qwen", "kimi"],
+      "managed": false,
+      "note": "Built-in override — stays in kilo.jsonc. GHA cannot auto-apply; propose only."
+    },
+    "debug": {
+      "current_model": "kilo/poolside/laguna-m.1:free",
+      "role_dimension": "terminal_bench",
+      "cost_class": "free",
+      "candidate_families": [],
+      "managed": false,
+      "note": "Built-in override — Kilo Poolside free tier. Fixed provider."
+    },
+    "orchestrator": {
+      "current_model": "openrouter/anthropic/claude-opus-4.8",
+      "role_dimension": "reasoning",
+      "cost_class": "premium-paid",
+      "candidate_families": ["claude", "glm", "deepseek"],
+      "managed": false,
+      "note": "Built-in override — stays in kilo.jsonc. GHA cannot auto-apply; propose only."
+    }
+  }
+}
