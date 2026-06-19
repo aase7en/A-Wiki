@@ -1,0 +1,29 @@
+# Cloudflare Tunnel Config — A-Wiki Hermes
+# ============================================
+# ติดตั้ง cloudflared บน Pi 5 และ map Hermes API port 8501 ผ่าน Cloudflare Tunnel
+#
+# ขั้นตอน:
+# 1. ติดตั้ง cloudflared: curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 -o /usr/local/bin/cloudflared && chmod +x /usr/local/bin/cloudflared
+# 2. Login: cloudflared tunnel login
+# 3. สร้าง tunnel: cloudflared tunnel create awiki-hermes
+# 4. Copy tunnel ID + credentials ไปใส่ใน config นี้
+# 5. ตั้งค่า DNS: สร้าง CNAME record awiki-hermes.yourdomain.com → <tunnel-id>.cfargotunnel.com
+# 6. วางไฟล์นี้ที่ ~/.cloudflared/config.yml
+# 7. ติดตั้งเป็น service: cloudflared service install
+#
+# ดูคู่มือเต็ม: docs/cloudflare-tunnel-setup.md
+
+tunnel: <TUNNEL_ID>
+credentials-file: /home/umbrel/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  # A-Wiki Live Chat → Hermes API (port 8501)
+  - hostname: awiki-hermes.yourdomain.com
+    service: http://localhost:8501
+
+  # Dashboard proxy (port 7790) — optional, for /api/auth/verify access
+  - hostname: awiki-dashboard.yourdomain.com
+    service: http://localhost:7790
+
+  # Fallback: block unmatched traffic
+  - service: http_status:404
