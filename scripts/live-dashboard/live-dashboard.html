@@ -1461,10 +1461,10 @@ function initAgentChain(){
     const el=document.createElement('div');
     el.className='agent-chain-item';
     el.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-md);cursor:grab;font-size:var(--fs-sm)';
-    el.innerHTML='<span style="cursor:grab">⋮⋮</span><span>'+a.icon+'</span><span style="flex:1;font-weight:600">'+a.role+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-xs)">'+a.type+'</span><input type="range" min="0" max="100" value="'+a.effort+'" style="width:60px;accent-color:var(--accent-brand)" data-type="'+a.type+'" onchange="updateEffort(this)"><span style="font-size:var(--fs-xs);min-width:24px;text-align:right">'+a.effort+'</span>';
+    el.innerHTML='<span class="drag-handle" style="cursor:grab;padding:0 4px;user-select:none">⋮⋮</span><span>'+a.icon+'</span><span style="flex:1;font-weight:600">'+a.role+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-xs)">'+a.type+'</span><input type="range" min="0" max="100" value="'+a.effort+'" style="width:60px;accent-color:var(--accent-brand)" data-type="'+a.type+'" onchange="updateEffort(this)"><span style="font-size:var(--fs-xs);min-width:24px;text-align:right">'+a.effort+'</span>';
     el.setAttribute('data-type',a.type);list.appendChild(el);
   });
-  try{new Sortable(list,{animation:150,handle:'span',onEnd:function(evt){
+  try{new Sortable(list,{animation:150,handle:'.drag-handle',onEnd:function(evt){
     const items=list.querySelectorAll('.agent-chain-item');
     _agentOrder=Array.from(items).map(el=>el.dataset.type);
     localStorage.setItem('awiki-agent-order',JSON.stringify(_agentOrder));
@@ -1479,6 +1479,11 @@ function updateEffort(slider){
   localStorage.setItem('awiki-agent-effort',JSON.stringify(AGENT_TYPES.map(a=>({type:a.type,effort:a.effort}))));
 }
 initAgentChain();
+
+
+// Theme Toggle
+function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme')||'';const n=c==='green-white'?'':'green-white';h.setAttribute('data-theme',n);document.getElementById('btn-theme').textContent=n==='green-white'?'☀':'🌙';try{localStorage.setItem('dashboard-theme',n);}catch(_){}}
+(function(){try{const t=localStorage.getItem('dashboard-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('btn-theme').textContent=t==='green-white'?'☀':'🌙';}}catch(_){}})();
 
 </script>
 </body>
