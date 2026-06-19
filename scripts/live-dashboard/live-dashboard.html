@@ -1233,7 +1233,11 @@ async function sendChat(){
 
       removeChatLoading(loadId);
 
-      if (!resp.ok) {
+      if (resp.status === 202) {
+        const qdata = await resp.json();
+        addChatMessage('hermes', '⏳ **คิวเต็ม** — คุณอยู่ในคิวลำดับที่ ' + qdata.position + '\n\nระบบกำลังประมวลผล request อื่นอยู่ กรุณารอสักครู่แล้วลองใหม่');
+        statusEl.textContent = '⏳ คิวลำดับที่ ' + qdata.position + ' — ลองใหม่ใน 5 วิ';
+      } else if (!resp.ok) {
         const err = await resp.text();
         addChatMessage('hermes', '⚠️ Hermes server ตอบกลับไม่สำเร็จ: ' + (err || resp.status));
         statusEl.textContent = '❌ Error: ' + resp.status;

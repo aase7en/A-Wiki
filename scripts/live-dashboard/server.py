@@ -35,7 +35,6 @@ import subprocess
 import sys
 import threading
 import time
-from collections import deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -56,17 +55,23 @@ HERMES_WEBHOOK_URL = os.environ.get(
     "http://100.111.37.13:8644/webhook/awiki-live"
 )
 
+# Hermes API URL for health checks (port 8501, not 8644 webhook)
+HERMES_API_URL = os.environ.get(
+    "AWIKI_HERMES_API_URL",
+    "http://100.111.37.13:8501"
+)
+
 # Auth tokens loaded from drive/.secrets or environment variable
 TEAM_TOKENS = set()
 _TOKEN_LOADED = False
 
 # Concurrency queue for chat requests
-_chat_queue = deque()
 _chat_active = 0
 MAX_CHAT_CONCURRENT = 2
 CHAT_QUEUE_TIMEOUT = 300  # 5 minutes
 _chat_queue_lock = threading.Lock()
-_chat_queue_cond = threading.Condition(_chat_queue_lock)
+_chat_queue_positions: dict[int, float] = {}  # id(handler) → enqueue_time
+_chat_queue_counter = 0
 
 PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
 DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
@@ -645,10 +650,10 @@ class Handler(BaseHTTPRequestHandler):
 
     # ── Chat Proxy → Hermes Gateway ────────────────────────────────
     def _api_chat_proxy(self):
-        """GET /api/chat — health check ไป Hermes"""
+        """GET /api/chat — health check ไป Hermes API"""
         try:
             import urllib.request
-            url = HERMES_WEBHOOK_URL.replace("/webhook/awiki-live", "/health")
+            url = HERMES_API_URL + "/health"
             req = urllib.request.Request(url, method="GET")
             resp = urllib.request.urlopen(req, timeout=5)
             self._json_response({"status": "ok", "hermes": resp.read().decode()[:200]})
@@ -669,7 +674,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response({"valid": False}, 401)
 
     def _api_chat_post(self):
-        """POST /api/chat — ส่งข้อความไป Hermes Gateway แล้วตอบกลับ (พร้อม queue)"""
+        """POST /api/chat — ส่งข้อความไป Hermes Gateway (พร้อม queue)"""
         if not _validate_token(self):
             self._json_response({"error": "unauthorized — invalid team token"}, 401)
             return
@@ -677,19 +682,20 @@ class Handler(BaseHTTPRequestHandler):
         global _chat_active
         with _chat_queue_lock:
             if _chat_active >= MAX_CHAT_CONCURRENT:
-                position = len(_chat_queue) + 1
-                self._json_response({"queued": True, "position": position}, 202)
-                _chat_queue.append((self, time.time()))
+                # Count waiting requests since last dequeue
+                waiting = max(1, _chat_active - MAX_CHAT_CONCURRENT + 1)
+                self._json_response({"queued": True, "position": waiting, "retry_after_ms": 5000}, 202)
                 return
             _chat_active += 1
 
         try:
             self._do_chat_proxy()
         finally:
-            self._process_next_in_queue()
+            with _chat_queue_lock:
+                _chat_active = max(0, _chat_active - 1)
 
     def _do_chat_proxy(self):
-        """Internal: forward request to Hermes (called by _api_chat_post or queue)."""
+        """Internal: forward request to Hermes."""
         try:
             import urllib.request
 
@@ -707,35 +713,6 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response({"error": f"HTTP {e.code}: {e.reason}"}, 502)
         except Exception as e:
             self._json_response({"error": str(e)[:300]}, 502)
-
-    def _process_next_in_queue(self):
-        """Dequeue and process next chat request if available."""
-        global _chat_active
-        with _chat_queue_lock:
-            _chat_active = max(0, _chat_active - 1)
-
-            # Purge timed-out entries
-            now = time.time()
-            while _chat_queue and (now - _chat_queue[0][1]) > CHAT_QUEUE_TIMEOUT:
-                old_req, _ = _chat_queue.popleft()
-                try:
-                    old_req._json_response({"error": "queue timeout — request expired"}, 408)
-                except Exception:
-                    pass
-
-            if _chat_queue:
-                next_req, _ = _chat_queue.popleft()
-                _chat_active += 1
-                # Process in a new thread so we don't block
-                t = threading.Thread(target=self._run_queued_request, args=(next_req,), daemon=True)
-                t.start()
-
-    def _run_queued_request(self, handler):
-        """Run a queued request handler."""
-        try:
-            handler._do_chat_proxy()
-        finally:
-            handler._process_next_in_queue()
 
     def _json_response(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode()
