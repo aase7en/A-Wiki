@@ -316,6 +316,19 @@ to{transform:translateY(0);opacity:1}
 
 :focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;border-radius:var(--r-sm)}
 
+/* Chat settings */
+.chat-mode-row{display:flex;gap:8px;margin-bottom:10px}
+.chat-mode-opt{flex:1;text-align:center;padding:8px;border-radius:var(--r-md);border:1px solid var(--border2);font-size:var(--fs-xs);color:var(--text-tertiary);cursor:pointer;transition:all .2s;background:transparent}
+.chat-mode-opt.active{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.08)}
+.chat-profiles{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+.chat-profile-chip{padding:5px 10px;border-radius:var(--r-full);border:1px solid var(--border2);font-size:var(--fs-2xs);color:var(--text-tertiary);cursor:pointer;transition:all .15s;background:transparent}
+.chat-profile-chip:hover{border-color:var(--accent-brand);color:var(--text-primary)}
+.chat-profile-chip.sel{border-color:var(--accent-brand);background:rgba(94,234,212,.1);color:var(--accent-brand)}
+.chat-test-result{font-size:var(--fs-2xs);margin-top:6px;min-height:18px}
+.chat-test-result.ok{color:var(--accent-success)}
+.chat-test-result.fail{color:var(--accent-danger)}
+.chat-status-badge{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-2xs);padding:2px 8px;border-radius:var(--r-full);margin-left:6px}
+
 </style>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
@@ -467,6 +480,7 @@ to{transform:translateY(0);opacity:1}
     <button class="set-tab active" data-pane="pane-models" onclick="setTab(this)">Models</button>
     <button class="set-tab" data-pane="pane-keys" onclick="setTab(this)">API Keys</button>
     <button class="set-tab" data-pane="pane-help" onclick="setTab(this)">📖 คู่มือ</button>
+    <button class="set-tab" data-pane="pane-chat" onclick="setTab(this);loadChatSettings()">💬 Chat</button>
   </div>
   <div id="set-body">
     <div class="set-pane active" id="pane-models">
@@ -511,6 +525,46 @@ to{transform:translateY(0);opacity:1}
         </table>
         <p style="margin-top:6px">Scores 0–100. <b style="color:var(--accent-success)">Green badge</b> = ≥60 (strong). Cost-first routing ranks within free/paid class by highest capability.</p>
       </div>
+    </div>
+    <div class="set-pane" id="pane-chat">
+      <div class="set-note">ตั้งค่าเชื่อมต่อ Hermes AI — เลือก Proxy (ผ่าน dashboard server) หรือ Direct (ตรง Pi 5)</div>
+      <div class="cfg-field">
+        <label>Team Token (สำหรับ login team)</label>
+        <input class="cfg-input" id="chat-auth-token" placeholder="ใส่ token ทีม (ถ้ามี)" type="password">
+      </div>
+      <div class="cfg-field">
+        <label>Connection Mode</label>
+        <div class="chat-mode-row">
+          <button class="chat-mode-opt active" id="chat-mode-proxy" onclick="setChatMode('proxy')">🔁 Proxy<br><small>ผ่าน dashboard</small></button>
+          <button class="chat-mode-opt" id="chat-mode-direct" onclick="setChatMode('direct')">⚡ Direct<br><small>ตรง Hermes API</small></button>
+        </div>
+      </div>
+      <div id="chat-direct-cfg" style="display:none">
+        <div class="cfg-field">
+          <label>Hermes URL</label>
+          <input class="cfg-input" id="chat-hermes-url" placeholder="http://100.111.37.13:8501">
+        </div>
+        <div class="cfg-field">
+          <label>Quick Profile</label>
+          <div class="chat-profiles">
+            <button class="chat-profile-chip sel" data-profile="lan" onclick="pickChatProfile('lan')">🏠 LAN</button>
+            <button class="chat-profile-chip" data-profile="tailscale" onclick="pickChatProfile('tailscale')">🔗 Tailscale</button>
+            <button class="chat-profile-chip" data-profile="funnel" onclick="pickChatProfile('funnel')">🌐 Funnel</button>
+            <button class="chat-profile-chip" data-profile="cloudflare" onclick="pickChatProfile('cloudflare')">☁️ Cloudflare</button>
+            <button class="chat-profile-chip" data-profile="custom" onclick="pickChatProfile('custom')">✏️ Custom</button>
+          </div>
+        </div>
+        <div class="cfg-field">
+          <label>API Key (ถ้ามี)</label>
+          <input class="cfg-input" id="chat-hermes-key" placeholder="ปล่อยว่างถ้าไม่ต้องใช้" type="password">
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="set-btn sm" onclick="autoDetectHermes()">🔍 Auto-Detect</button>
+          <button class="set-btn sm" onclick="testHermesConnection()">🧪 Test</button>
+        </div>
+        <div class="chat-test-result" id="chat-test-result"></div>
+      </div>
+      <button class="set-btn" onclick="saveChatSettings()">💾 บันทึก Chat Settings</button>
     </div>
   </div>
 </div>
@@ -987,6 +1041,122 @@ _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
 
+// ===== CHAT CONFIG =====
+const CHAT_PROFILES = {
+  lan:      { name: 'LAN',        url: 'http://pi5-local:8501',         hint: 'ต้องอยู่ใน WiFi เดียวกัน' },
+  tailscale:{ name: 'Tailscale',  url: 'http://100.111.37.13:8501',    hint: 'ต้องเปิด Tailscale บน Pi 5' },
+  funnel:   { name: 'Funnel',     url: 'https://pi5.xxx.ts.net',       hint: 'รัน: tailscale funnel 8501' },
+  cloudflare:{ name: 'Cloudflare', url: 'https://awiki-hermes.yourdomain.com', hint: 'ผ่าน Cloudflare Tunnel' },
+  custom:   { name: 'Custom',     url: '',                              hint: '' }
+};
+const C = { mode: 'proxy', url: 'http://100.111.37.13:8501', key: '', profile: 'tailscale', authToken: '' };
+try {
+  const saved = JSON.parse(localStorage.getItem('awiki-chat-config') || '{}');
+  if (saved.mode) C.mode = saved.mode;
+  if (saved.url) C.url = saved.url;
+  if (saved.key) C.key = saved.key;
+  if (saved.profile) C.profile = saved.profile;
+  if (saved.authToken) C.authToken = saved.authToken;
+} catch(e) {}
+
+function loadChatSettings() {
+  document.querySelectorAll('.chat-mode-opt').forEach(b => b.classList.toggle('active', b.id === 'chat-mode-' + C.mode));
+  document.getElementById('chat-direct-cfg').style.display = C.mode === 'direct' ? 'block' : 'none';
+  document.getElementById('chat-hermes-url').value = C.url;
+  document.getElementById('chat-hermes-key').value = C.key;
+  document.getElementById('chat-auth-token').value = C.authToken;
+  document.getElementById('chat-test-result').textContent = '';
+  document.querySelectorAll('.chat-profile-chip').forEach(c => c.classList.toggle('sel', c.dataset.profile === C.profile));
+}
+
+function saveChatSettings() {
+  C.mode = document.querySelector('.chat-mode-opt.active')?.id === 'chat-mode-direct' ? 'direct' : 'proxy';
+  C.url = document.getElementById('chat-hermes-url').value.trim() || 'http://100.111.37.13:8501';
+  C.key = document.getElementById('chat-hermes-key').value.trim();
+  C.authToken = document.getElementById('chat-auth-token').value.trim();
+  localStorage.setItem('awiki-chat-config', JSON.stringify({ mode: C.mode, url: C.url, key: C.key, profile: C.profile, authToken: C.authToken }));
+  document.getElementById('chat-test-result').textContent = '✅ Saved';
+  document.getElementById('chat-test-result').className = 'chat-test-result ok';
+  updateChatStatusBadge();
+  ctxToast('Chat settings saved', false);
+}
+
+function setChatMode(mode) {
+  C.mode = mode;
+  document.querySelectorAll('.chat-mode-opt').forEach(b => b.classList.toggle('active', b.id === 'chat-mode-' + mode));
+  document.getElementById('chat-direct-cfg').style.display = mode === 'direct' ? 'block' : 'none';
+}
+
+function pickChatProfile(profile) {
+  C.profile = profile;
+  document.querySelectorAll('.chat-profile-chip').forEach(c => c.classList.toggle('sel', c.dataset.profile === profile));
+  if (CHAT_PROFILES[profile] && CHAT_PROFILES[profile].url) {
+    document.getElementById('chat-hermes-url').value = CHAT_PROFILES[profile].url;
+    C.url = CHAT_PROFILES[profile].url;
+  }
+  if (profile === 'custom') {
+    document.getElementById('chat-hermes-url').value = '';
+    document.getElementById('chat-hermes-url').focus();
+  }
+}
+
+async function autoDetectHermes() {
+  const result = document.getElementById('chat-test-result');
+  result.textContent = '🔍 กำลังค้นหา...';
+  result.className = 'chat-test-result';
+  const order = ['lan', 'tailscale', 'funnel'];
+  for (const key of order) {
+    const url = CHAT_PROFILES[key].url;
+    if (!url) continue;
+    try {
+      const resp = await fetch(url + '/health', { method: 'GET', signal: AbortSignal.timeout(3000) });
+      if (resp.ok) {
+        pickChatProfile(key);
+        result.textContent = '✅ เจอ! ' + CHAT_PROFILES[key].name + ' (' + url + ')';
+        result.className = 'chat-test-result ok';
+        return;
+      }
+    } catch(e) {}
+  }
+  result.textContent = '❌ ไม่พบ Hermes — ลองเปิด Funnel หรือตรวจสอบ Pi 5';
+  result.className = 'chat-test-result fail';
+}
+
+async function testHermesConnection() {
+  const url = document.getElementById('chat-hermes-url').value.trim();
+  if (!url) { const r = document.getElementById('chat-test-result'); r.textContent = '❌ ใส่ URL ก่อน'; r.className = 'chat-test-result fail'; return; }
+  const result = document.getElementById('chat-test-result');
+  result.textContent = '⏳ ทดสอบ...';
+  result.className = 'chat-test-result';
+  const start = Date.now();
+  try {
+    const resp = await fetch(url + '/health', { method: 'GET', signal: AbortSignal.timeout(5000) });
+    const ms = Date.now() - start;
+    if (resp.ok) { result.textContent = '✅ Connected! ' + ms + 'ms'; result.className = 'chat-test-result ok'; }
+    else { result.textContent = '⚠️ HTTP ' + resp.status + ' — ' + ms + 'ms'; result.className = 'chat-test-result fail'; }
+  } catch(e) {
+    result.textContent = '❌ ' + (e.name === 'TimeoutError' ? 'หมดเวลา (5s)' : 'เชื่อมต่อไม่ได้');
+    result.className = 'chat-test-result fail';
+  }
+}
+
+function updateChatStatusBadge() {
+  const badge = document.getElementById('chat-status');
+  if (!badge) return;
+  if (C.mode === 'proxy') {
+    badge.innerHTML = ''; badge.textContent = '✅ ตอบแล้ว — ' + new Date().toLocaleTimeString('th-TH');
+  } else {
+    const profile = CHAT_PROFILES[C.profile] || { name: 'Custom' };
+    badge.innerHTML = '<span class="chat-status-badge">⚡ Direct: ' + profile.name + '</span>';
+  }
+}
+
+function ctxToast(msg, isErr) {
+  const t = document.getElementById('set-toast');
+  t.textContent = msg; t.className = 'set-toast show' + (isErr ? ' err' : '');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
 // ===== CHAT FUNCTIONS (Hermes AI) =====
 const HERMES_WEBHOOK = '/api/chat'; // proxied by dashboard server → Hermes
 let _chatFiles = [];
@@ -1014,37 +1184,75 @@ async function sendChat(){
   ta.value = '';
   document.getElementById('chat-empty').style.display = 'none';
 
-  // Add user message
   addChatMessage('user', msg, _chatFiles.map(f => f.name));
-  // Add loading indicator
   const loadId = addChatLoading();
-  document.getElementById('chat-status').textContent = '🧠 Hermes กำลังคิด... (ค้นจาก A-Wiki Brain)';
+  const statusEl = document.getElementById('chat-status');
+  statusEl.textContent = '🧠 Hermes กำลังคิด... (ค้นจาก A-Wiki Brain)';
 
   try {
-    const formData = new FormData();
-    formData.append('prompt', msg);
-    _chatFiles.forEach(f => formData.append('files', f));
+    let resp, data;
 
-    const resp = await fetch(HERMES_WEBHOOK, {
-      method: 'POST',
-      body: formData
-    });
+    if (C.mode === 'direct') {
+      const body = JSON.stringify({
+        messages: [
+          { role: 'system', content: 'You are Hermes, an AI assistant with access to the A-Wiki knowledge base (605+ wiki pages at ~/A-Wiki/wiki/). Use the terminal to search the wiki before answering: `python3 ~/A-Wiki/scripts/search-wiki.py "query"`. For IoT/ESP32/MQTT questions, search wiki/entities/iot/ and wiki/concepts/iot/. For pharmacy questions, search wiki/entities/pharmacy/. Always cite wiki sources. Respond in Thai (ภาษาไทย) unless the user asks in English.' },
+          { role: 'user', content: msg }
+        ],
+        stream: false,
+        max_tokens: 4000
+      });
+      const headers = { 'Content-Type': 'application/json' };
+      if (C.key) headers['Authorization'] = 'Bearer ' + C.key;
+      else if (C.authToken) headers['Authorization'] = 'Bearer ' + C.authToken;
 
-    removeChatLoading(loadId);
+      resp = await fetch(C.url + '/v1/chat/completions', {
+        method: 'POST', headers, body, signal: AbortSignal.timeout(120000)
+      });
 
-    if(!resp.ok){
-      const err = await resp.text();
-      addChatMessage('hermes', '⚠️ Hermes server ตอบกลับไม่สำเร็จ: ' + (err || resp.status));
-      document.getElementById('chat-status').textContent = '❌ Error: ' + resp.status;
+      removeChatLoading(loadId);
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        addChatMessage('hermes', '⚠️ Hermes ตอบกลับไม่สำเร็จ\n\nโหมด: Direct (' + (CHAT_PROFILES[C.profile]?.name || 'Custom') + ')\nURL: ' + C.url + '\n' + (err || 'HTTP ' + resp.status));
+        statusEl.textContent = '❌ Error: ' + resp.status;
+      } else {
+        data = await resp.json();
+        addChatMessage('hermes', data.choices?.[0]?.message?.content || JSON.stringify(data));
+        statusEl.innerHTML = '';
+        updateChatStatusBadge();
+      }
     } else {
-      const data = await resp.json();
-      addChatMessage('hermes', data.response || data.text || data.message || JSON.stringify(data));
-      document.getElementById('chat-status').textContent = '✅ ตอบแล้ว — ' + new Date().toLocaleTimeString('th-TH');
+      const formData = new FormData();
+      formData.append('prompt', msg);
+      _chatFiles.forEach(f => formData.append('files', f));
+
+      const fetchOpts = { method: 'POST', body: formData };
+      if (C.authToken) fetchOpts.headers = { 'Authorization': 'Bearer ' + C.authToken };
+
+      resp = await fetch(HERMES_WEBHOOK, fetchOpts);
+
+      removeChatLoading(loadId);
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        addChatMessage('hermes', '⚠️ Hermes server ตอบกลับไม่สำเร็จ: ' + (err || resp.status));
+        statusEl.textContent = '❌ Error: ' + resp.status;
+      } else {
+        data = await resp.json();
+        addChatMessage('hermes', data.response || data.text || data.message || JSON.stringify(data));
+        statusEl.textContent = '✅ ตอบแล้ว — ' + new Date().toLocaleTimeString('th-TH');
+      }
     }
   } catch(e) {
     removeChatLoading(loadId);
-    addChatMessage('hermes', '⚠️ ไม่สามารถเชื่อมต่อ Hermes Server ได้\n\nตรวจสอบว่า:\n• Pi 5 เปิดอยู่และ Tailscale เชื่อมต่อ\n• Hermes Gateway รันอยู่ (port 8644)\n• `dashboard-ensure.sh` รัน proxy ถูกต้อง');
-    document.getElementById('chat-status').textContent = '🔌 ไม่สามารถเชื่อมต่อ';
+    if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+      addChatMessage('hermes', '⏰ **หมดเวลา** — Hermes ใช้เวลาคิดนานเกินไป (120s)\nลองถามใหม่ด้วยคำถามที่สั้นลง');
+    } else if (C.mode === 'direct') {
+      addChatMessage('hermes', '🔌 **เชื่อมต่อ Hermes ไม่ได้**\n\nโหมด: Direct (' + (CHAT_PROFILES[C.profile]?.name || 'Custom') + ')\nURL: ' + C.url + '\n\nตรวจสอบ:\n• Pi 5 เปิดอยู่\n• ' + (CHAT_PROFILES[C.profile]?.hint || 'URL ถูกต้อง'));
+    } else {
+      addChatMessage('hermes', '⚠️ ไม่สามารถเชื่อมต่อ Hermes Server ได้\n\nตรวจสอบว่า:\n• Pi 5 เปิดอยู่และ Tailscale เชื่อมต่อ\n• Hermes Gateway รันอยู่ (port 8644)\n• `dashboard-ensure.sh` รัน proxy ถูกต้อง');
+    }
+    statusEl.textContent = '🔌 ไม่สามารถเชื่อมต่อ';
   }
 
   _chatFiles = [];

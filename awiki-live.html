@@ -99,6 +99,36 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   #input-bar { padding: 10px 12px; }
   #input-bar textarea { font-size: 16px; }
 }
+
+/* Profile selector */
+#settings-box .profile-row { display: flex; gap: 6px; align-items: center; margin-top: 12px; }
+#settings-box select { flex: 1; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--r); color: var(--text); font-size: 14px; }
+#settings-box select:focus { border-color: var(--brand); outline: none; }
+.btn-sm { padding: 6px 12px; border-radius: var(--r); cursor: pointer; font-size: 11px; background: none; border: 1px solid var(--border2); color: var(--text2); white-space: nowrap; }
+.btn-sm:hover { border-color: var(--brand); color: var(--brand); }
+.btn-sm.test { border-color: var(--success); color: var(--success); }
+.btn-sm.test:hover { background: rgba(52,211,153,.1); }
+#settings-box .test-result { font-size: 11px; margin-top: 6px; min-height: 16px; }
+#settings-box .test-result.ok { color: var(--success); }
+#settings-box .test-result.fail { color: var(--danger); }
+.conn-mode { font-size: 10px; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+.mode-lan { background: rgba(96,165,250,.15); color: var(--cool); }
+.mode-tailscale { background: rgba(167,139,250,.15); color: var(--violet); }
+.mode-funnel { background: rgba(251,191,36,.15); color: var(--warm); }
+.mode-custom { background: rgba(100,116,139,.15); color: var(--muted); }
+.mode-cloudflare { background: rgba(251,146,60,.15); color: #fb923c; }
+.latency { font-size: 10px; color: var(--text3); margin-left: 4px; }
+
+/* Login overlay */
+#login-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 300; justify-content: center; align-items: center; }
+#login-overlay.show { display: flex; }
+#login-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rl); padding: 32px 24px; width: 90%; max-width: 380px; text-align: center; }
+#login-box h3 { margin-bottom: 8px; color: var(--brand); font-size: 18px; }
+#login-box p { color: var(--text3); font-size: 13px; margin-bottom: 20px; }
+#login-box input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--r); color: var(--text); font-size: 16px; font-family: monospace; text-align: center; letter-spacing: 4px; }
+#login-box input:focus { border-color: var(--brand); outline: none; }
+#login-box button { width: 100%; padding: 12px; border-radius: var(--r); background: linear-gradient(135deg, var(--brand), var(--cool)); border: none; color: #000; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 14px; }
+#login-error { color: var(--danger); font-size: 12px; margin-top: 8px; min-height: 18px; }
 </style>
 </head>
 <body>
@@ -133,8 +163,21 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div id="settings-overlay" onclick="if(event.target===this)toggleSettings()">
   <div id="settings-box">
     <h3>⚙️ Hermes Server</h3>
+    <label>Connection Profile</label>
+    <div class="profile-row">
+      <select id="cfg-profile" onchange="onProfileChange()">
+        <option value="lan">🏠 LAN (ที่บ้าน)</option>
+        <option value="tailscale">🔗 Tailscale (นอกบ้าน)</option>
+        <option value="funnel">🌐 Tailscale Funnel</option>
+        <option value="cloudflare">☁️ Cloudflare Tunnel</option>
+        <option value="custom">✏️ กำหนดเอง</option>
+      </select>
+      <button class="btn-sm test" onclick="manualTest()">🧪 Test</button>
+      <button class="btn-sm" onclick="autoDetect()">🔍 Auto</button>
+    </div>
+    <div class="test-result" id="test-result"></div>
     <label>API Server URL</label>
-    <input type="text" id="cfg-url" placeholder="http://100.111.37.13:8501">
+    <input type="text" id="cfg-url" placeholder="http://pi5-local:8501">
     <label>API Key (ถ้ามี)</label>
     <input type="password" id="cfg-key" placeholder="ปล่อยว่างถ้าไม่ต้องใช้">
     <div class="btn-row">
@@ -145,22 +188,60 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- Login overlay -->
+<div id="login-overlay" class="show">
+  <div id="login-box">
+    <h3>🔐 Team Access</h3>
+    <p>ใส่รหัสผ่านทีมเพื่อใช้งาน A-Wiki Live</p>
+    <input type="password" id="login-token" placeholder="••••••••" maxlength="64" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
 <script>
 // ── CONFIG ──────────────────────────────────────────
 const STORAGE_KEY = 'awiki-live-config';
-let HERMES_URL = 'http://100.111.37.13:8501';
+const PROFILES = {
+  lan:     { name: 'LAN (ที่บ้าน)',     url: 'http://pi5-local:8501',            hint: 'ต้องอยู่ใน WiFi เดียวกัน',          cls: 'mode-lan' },
+  tailscale:{ name: 'Tailscale (นอกบ้าน)', url: 'http://100.111.37.13:8501',     hint: 'ต้องเปิด Tailscale บน Pi 5',       cls: 'mode-tailscale' },
+  funnel:  { name: 'Tailscale Funnel',  url: 'https://pi5.xxx.ts.net',            hint: 'รัน: tailscale funnel 8501',        cls: 'mode-funnel' },
+  cloudflare:{ name: 'Cloudflare Tunnel', url: 'https://awiki-hermes.yourdomain.com', hint: 'ต้องติดตั้ง cloudflared บน Pi 5',   cls: 'mode-cloudflare' },
+  custom:  { name: 'กำหนดเอง',           url: '',                                  hint: '',                                  cls: 'mode-custom' }
+};
+let currentProfile = 'tailscale';
+let HERMES_URL = PROFILES.tailscale.url;
 let HERMES_KEY = '';
+let AUTH_SERVER = 'http://localhost:7790';
+let AUTH_TOKEN = '';
 let loading = false;
 
 // Load saved config
 try {
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  if (saved && saved.url) HERMES_URL = saved.url;
-  if (saved && saved.key) HERMES_KEY = saved.key;
+  if (saved) {
+    if (saved.profile && PROFILES[saved.profile]) currentProfile = saved.profile;
+    if (saved.url) HERMES_URL = saved.url;
+    if (saved.key) HERMES_KEY = saved.key;
+    if (saved.token) AUTH_TOKEN = saved.token;
+    if (saved.authServer) AUTH_SERVER = saved.authServer;
+  }
 } catch(e) {}
 
+document.getElementById('cfg-profile').value = currentProfile;
 document.getElementById('cfg-url').value = HERMES_URL;
 document.getElementById('cfg-key').value = HERMES_KEY;
+
+function onProfileChange() {
+  const p = document.getElementById('cfg-profile').value;
+  const cfgUrl = document.getElementById('cfg-url');
+  if (p === 'custom') {
+    cfgUrl.value = '';
+    cfgUrl.focus();
+  } else if (PROFILES[p] && PROFILES[p].url) {
+    cfgUrl.value = PROFILES[p].url;
+  }
+}
 
 // ── HELPERS ─────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -170,19 +251,60 @@ const toast = (msg, ms=2500) => {
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), ms);
 };
 
+// ── AUTH ─────────────────────────────────────────────
+function checkAuth() {
+  if (AUTH_TOKEN) {
+    $('login-overlay').classList.remove('show');
+    checkConnection();
+  } else {
+    $('login-overlay').classList.add('show');
+    $('login-token').focus();
+  }
+}
+
+async function doLogin() {
+  const token = $('login-token').value.trim();
+  const errEl = $('login-error');
+  if (!token) { errEl.textContent = 'กรุณาใส่รหัสผ่าน'; return; }
+  errEl.textContent = '⏳ กำลังตรวจสอบ...';
+  try {
+    const resp = await fetch(AUTH_SERVER + '/api/auth/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+      signal: AbortSignal.timeout(5000)
+    });
+    const data = await resp.json();
+    if (data.valid) {
+      AUTH_TOKEN = token;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ profile: currentProfile, url: HERMES_URL, key: HERMES_KEY, token: AUTH_TOKEN, authServer: AUTH_SERVER }));
+      $('login-overlay').classList.remove('show');
+      checkConnection();
+      toast('✅ เข้าสู่ระบบแล้ว');
+    } else {
+      errEl.textContent = '❌ รหัสผ่านไม่ถูกต้อง';
+    }
+  } catch(e) {
+    errEl.textContent = '❌ เชื่อมต่อ Auth Server ไม่ได้ — ตรวจสอบว่า dashboard server (port 7790) ทำงานอยู่';
+  }
+}
+
 function toggleSettings() {
   const el = $('settings-overlay');
   el.classList.toggle('show');
   if (el.classList.contains('show')) {
+    $('cfg-profile').value = currentProfile;
     $('cfg-url').value = HERMES_URL;
     $('cfg-key').value = HERMES_KEY;
+    $('test-result').textContent = '';
   }
 }
 
 function saveSettings() {
-  HERMES_URL = $('cfg-url').value.trim() || 'http://100.111.37.13:8501';
+  currentProfile = $('cfg-profile').value;
+  HERMES_URL = $('cfg-url').value.trim() || PROFILES[currentProfile]?.url || 'http://pi5-local:8501';
   HERMES_KEY = $('cfg-key').value.trim();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ url: HERMES_URL, key: HERMES_KEY }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ profile: currentProfile, url: HERMES_URL, key: HERMES_KEY, token: AUTH_TOKEN, authServer: AUTH_SERVER }));
   toggleSettings();
   checkConnection();
   toast('✅ บันทึกแล้ว!');
@@ -193,25 +315,75 @@ async function checkConnection() {
   const dot = $('status-dot');
   const txt = $('status-text');
   const banner = $('conn-banner');
+  const profile = PROFILES[currentProfile] || { name: 'Custom', cls: 'mode-custom' };
+  const start = Date.now();
   try {
     const resp = await fetch(HERMES_URL + '/health', { method: 'GET', signal: AbortSignal.timeout(5000) });
+    const ms = Date.now() - start;
     if (resp.ok) {
       dot.classList.add('on');
-      txt.textContent = '● connected';
+      txt.innerHTML = '● connected <span class="conn-mode ' + profile.cls + '">' + profile.name + '</span><span class="latency">' + ms + 'ms</span>';
       banner.classList.remove('show');
     } else {
       dot.classList.remove('on');
-      txt.textContent = '○ offline';
+      txt.innerHTML = '○ offline <span class="conn-mode ' + profile.cls + '">' + profile.name + '</span>';
       banner.classList.add('show');
     }
   } catch(e) {
     dot.classList.remove('on');
-    txt.textContent = '○ offline';
+    txt.innerHTML = '○ offline <span class="conn-mode ' + profile.cls + '">' + profile.name + '</span>';
     banner.classList.add('show');
   }
 }
 checkConnection();
 setInterval(checkConnection, 30000);
+
+// ── AUTO-DETECT ──────────────────────────────────────
+async function autoDetect() {
+  const result = $('test-result');
+  result.textContent = '🔍 กำลังค้นหา...';
+  result.className = 'test-result';
+  const order = ['lan', 'tailscale', 'funnel'];
+  for (const key of order) {
+    const url = PROFILES[key].url;
+    if (!url) continue;
+    try {
+      const resp = await fetch(url + '/health', { method: 'GET', signal: AbortSignal.timeout(3000) });
+      if (resp.ok) {
+        $('cfg-profile').value = key;
+        $('cfg-url').value = url;
+        result.textContent = '✅ เจอ! ' + PROFILES[key].name + ' (' + url + ')';
+        result.className = 'test-result ok';
+        return;
+      }
+    } catch(e) {}
+  }
+  result.textContent = '❌ ไม่พบ Hermes — ลองเปิด Funnel หรือตรวจสอบ Pi 5';
+  result.className = 'test-result fail';
+}
+
+async function manualTest() {
+  const url = $('cfg-url').value.trim();
+  if (!url) { $('test-result').textContent = '❌ กรุณาใส่ URL'; $('test-result').className = 'test-result fail'; return; }
+  const result = $('test-result');
+  result.textContent = '⏳ กำลังทดสอบ...';
+  result.className = 'test-result';
+  const start = Date.now();
+  try {
+    const resp = await fetch(url + '/health', { method: 'GET', signal: AbortSignal.timeout(5000) });
+    const ms = Date.now() - start;
+    if (resp.ok) {
+      result.textContent = '✅ Connected! ' + ms + 'ms';
+      result.className = 'test-result ok';
+    } else {
+      result.textContent = '⚠️ HTTP ' + resp.status + ' — ' + ms + 'ms';
+      result.className = 'test-result fail';
+    }
+  } catch(e) {
+    result.textContent = '❌ ' + (e.name === 'TimeoutError' ? 'หมดเวลา (5s)' : 'เชื่อมต่อไม่ได้') + ' — ตรวจสอบว่า Pi 5 เปิดอยู่และ Tailscale/Funnel ทำงาน';
+    result.className = 'test-result fail';
+  }
+}
 
 // ── MESSAGES ─────────────────────────────────────────
 function addMsg(role, text) {
@@ -293,6 +465,7 @@ async function send() {
 
     const headers = { 'Content-Type': 'application/json' };
     if (HERMES_KEY) headers['Authorization'] = 'Bearer ' + HERMES_KEY;
+    else if (AUTH_TOKEN) headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
 
     const resp = await fetch(HERMES_URL + '/v1/chat/completions', {
       method: 'POST',
@@ -305,7 +478,8 @@ async function send() {
 
     if (!resp.ok) {
       const err = await resp.text();
-      addMsg('hermes', '⚠️ **Hermes ตอบกลับไม่สำเร็จ**\n\n' + (err || 'HTTP ' + resp.status));
+      const profile = PROFILES[currentProfile] || { name: 'Custom' };
+      addMsg('hermes', '⚠️ **Hermes ตอบกลับไม่สำเร็จ**\n\nServer: ' + profile.name + ' (' + HERMES_URL + ')\n' + (err || 'HTTP ' + resp.status));
       toast('❌ Error: ' + resp.status);
     } else {
       const data = await resp.json();
@@ -314,10 +488,11 @@ async function send() {
     }
   } catch(e) {
     removeLoading();
+    const profile = PROFILES[currentProfile] || { name: 'Custom', hint: '' };
     if (e.name === 'TimeoutError' || e.name === 'AbortError') {
-      addMsg('hermes', '⏰ **หมดเวลา** — Hermes ใช้เวลาคิดนานเกินไป (120s)\nลองถามใหม่ด้วยคำถามที่สั้นลง');
+      addMsg('hermes', '⏰ **หมดเวลา** — Hermes ใช้เวลาคิดนานเกินไป (120s)\nลองถามใหม่ด้วยคำถามที่สั้นลง\n\nโหมด: ' + profile.name + ' (' + HERMES_URL + ')');
     } else {
-      addMsg('hermes', '🔌 **เชื่อมต่อ Hermes ไม่ได้**\n\nตรวจสอบ:\n• Pi 5 เปิดอยู่\n• Tailscale เชื่อมต่ออยู่\n• Hermes API Server รันที่ ' + HERMES_URL);
+      addMsg('hermes', '🔌 **เชื่อมต่อ Hermes ไม่ได้**\n\nโหมด: ' + profile.name + '\nURL: ' + HERMES_URL + '\n\nตรวจสอบ:\n• Pi 5 เปิดอยู่\n• ' + (profile.hint || 'URL ถูกต้อง'));
     }
     $('conn-banner').classList.add('show');
   }
@@ -339,7 +514,7 @@ $('ta').addEventListener('input', function() {
 });
 
 // Initial check
-checkConnection();
+checkAuth();
 </script>
 </body>
 </html>
