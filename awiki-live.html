@@ -138,6 +138,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <div class="dot" id="status-dot"></div>
     <span class="brand">A-Wiki Live</span>
     <span class="status" id="status-text">● connecting…</span>
+    <span id="user-name-display" style="display:none;font-size:12px;color:var(--text2);margin-right:4px"></span>
     <button class="config-btn" onclick="toggleSettings()">⚙️</button>
   </div>
   <div id="conn-banner">⚠️ เชื่อมต่อ Hermes ไม่ได้ — ตรวจสอบว่า Pi 5 เปิดอยู่และ Tailscale เชื่อมต่อ</div>
@@ -192,8 +193,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div id="login-overlay" class="show">
   <div id="login-box">
     <h3>🔐 Team Access</h3>
-    <p>ใส่รหัสผ่านทีมเพื่อใช้งาน A-Wiki Live</p>
-    <input type="password" id="login-token" placeholder="••••••••" maxlength="64" onkeydown="if(event.key==='Enter')doLogin()">
+    <p>ใส่ชื่อและรหัสผ่านทีมเพื่อใช้งาน A-Wiki Live</p>
+    <input type="text" id="login-name" placeholder="ชื่อของคุณ (เช่น ก้อง, แนน)" maxlength="32" style="margin-bottom:8px; letter-spacing:0">
+    <input type="password" id="login-token" placeholder="รหัสทีม" maxlength="64" onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">เข้าสู่ระบบ</button>
     <div id="login-error"></div>
   </div>
@@ -214,6 +216,7 @@ let HERMES_URL = PROFILES.tailscale.url;
 let HERMES_KEY = '';
 let AUTH_SERVER = 'http://localhost:7790';
 let AUTH_TOKEN = '';
+let USER_NAME = '';
 let loading = false;
 
 // Load saved config
@@ -225,6 +228,7 @@ try {
     if (saved.key) HERMES_KEY = saved.key;
     if (saved.token) AUTH_TOKEN = saved.token;
     if (saved.authServer) AUTH_SERVER = saved.authServer;
+    if (saved.userName) USER_NAME = saved.userName;
   }
 } catch(e) {}
 
@@ -255,6 +259,10 @@ const toast = (msg, ms=2500) => {
 function checkAuth() {
   if (AUTH_TOKEN) {
     $('login-overlay').classList.remove('show');
+    if (USER_NAME) {
+      $('user-name-display').textContent = '👤 ' + USER_NAME;
+      $('user-name-display').style.display = 'inline';
+    }
     checkConnection();
   } else {
     $('login-overlay').classList.add('show');
@@ -263,27 +271,36 @@ function checkAuth() {
 }
 
 async function doLogin() {
+  const name = $('login-name').value.trim();
   const token = $('login-token').value.trim();
   const errEl = $('login-error');
+  if (!name) { errEl.textContent = 'กรุณาใส่ชื่อของคุณ'; return; }
   if (!token) { errEl.textContent = 'กรุณาใส่รหัสผ่าน'; return; }
   errEl.textContent = '⏳ กำลังตรวจสอบ...';
   try {
     const resp = await fetch(AUTH_SERVER + '/api/auth/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, name }),
       signal: AbortSignal.timeout(5000)
     });
     const data = await resp.json();
     if (data.valid) {
       AUTH_TOKEN = token;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ profile: currentProfile, url: HERMES_URL, key: HERMES_KEY, token: AUTH_TOKEN, authServer: AUTH_SERVER }));
+      USER_NAME = name;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ profile: currentProfile, url: HERMES_URL, key: HERMES_KEY, token: AUTH_TOKEN, authServer: AUTH_SERVER, userName: USER_NAME }));
       $('login-overlay').classList.remove('show');
+      $('user-name-display').textContent = '👤 ' + USER_NAME;
+      $('user-name-display').style.display = 'inline';
       checkConnection();
-      toast('✅ เข้าสู่ระบบแล้ว');
+      toast('✅ สวัสดี ' + USER_NAME);
     } else {
       errEl.textContent = '❌ รหัสผ่านไม่ถูกต้อง';
     }
+  } catch(e) {
+    errEl.textContent = '❌ เชื่อมต่อ Auth Server ไม่ได้ — ตรวจสอบว่า dashboard server (port 7790) ทำงานอยู่';
+  }
+}
   } catch(e) {
     errEl.textContent = '❌ เชื่อมต่อ Auth Server ไม่ได้ — ตรวจสอบว่า dashboard server (port 7790) ทำงานอยู่';
   }

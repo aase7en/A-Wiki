@@ -189,6 +189,109 @@ def _validate_token(request_handler) -> bool:
     return token in TEAM_TOKENS
 
 
+# ── Usage tracking per token ──────────────────────────────────────
+_usage_lock = threading.Lock()
+_usage: dict[str, dict] = {}  # token → {name, count, first_seen, last_seen}
+
+
+def _track_usage(token: str, name: str = ""):
+    with _usage_lock:
+        now = time.time()
+        if token not in _usage:
+            _usage[token] = {"name": name, "count": 0, "first_seen": now, "last_seen": now}
+        entry = _usage[token]
+        entry["count"] += 1
+        entry["last_seen"] = now
+        if name and not entry["name"]:
+            entry["name"] = name
+
+
+def _get_usage_stats() -> list[dict]:
+    with _usage_lock:
+        return [
+            {"token": t[:8] + "...", "name": d["name"], "count": d["count"],
+             "first_seen": d["first_seen"], "last_seen": d["last_seen"]}
+            for t, d in _usage.items()
+        ]
+
+
+def _get_token_usage(token: str) -> dict:
+    with _usage_lock:
+        d = _usage.get(token, {"name": "", "count": 0, "first_seen": 0, "last_seen": 0})
+        return {**d, "token": token[:8] + "..."}
+
+
+# ── Shared conversation history (last 50 messages across all users) ─
+_history_lock = threading.Lock()
+_history: list[dict] = []
+MAX_HISTORY = 50
+
+
+def _add_to_history(entry: dict):
+    with _history_lock:
+        _history.append(entry)
+        while len(_history) > MAX_HISTORY:
+            _history.pop(0)
+
+
+def _get_history(limit: int = 50) -> list[dict]:
+    with _history_lock:
+        return list(_history[-limit:])
+
+
+# ── Token admin helpers ──────────────────────────────────────────
+_admin_lock = threading.Lock()
+
+
+def _list_tokens() -> list[str]:
+    _load_team_tokens()
+    return sorted(TEAM_TOKENS)
+
+
+def _add_token(new_token: str) -> bool:
+    global TEAM_TOKENS
+    _load_team_tokens()
+    if not new_token or new_token in TEAM_TOKENS:
+        return False
+    with _admin_lock:
+        TEAM_TOKENS.add(new_token)
+        _write_tokens_to_secrets()
+    return True
+
+
+def _remove_token(token: str) -> bool:
+    global TEAM_TOKENS
+    _load_team_tokens()
+    if token not in TEAM_TOKENS:
+        return False
+    with _admin_lock:
+        TEAM_TOKENS.discard(token)
+        _write_tokens_to_secrets()
+    return True
+
+
+def _write_tokens_to_secrets():
+    """Persist current TEAM_TOKENS back to drive/.secrets."""
+    secrets_file = REPO_ROOT / "drive" / ".secrets"
+    if not secrets_file.exists():
+        return
+    try:
+        lines = secrets_file.read_text("utf-8").splitlines()
+        new_lines = []
+        found = False
+        for line in lines:
+            if line.strip().startswith("TEAM_TOKENS="):
+                new_lines.append(f'TEAM_TOKENS={",".join(sorted(TEAM_TOKENS))}')
+                found = True
+            else:
+                new_lines.append(line)
+        if not found:
+            new_lines.append(f'TEAM_TOKENS={",".join(sorted(TEAM_TOKENS))}')
+        secrets_file.write_text("\n".join(new_lines) + "\n", "utf-8")
+    except Exception:
+        pass
+
+
 
 # ---------------------------------------------------------------------------
 # Workflow Graph Engine (Step 2 — dashboard-v2)
@@ -624,6 +727,12 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response(_graph_snapshot())
         elif path == "/api/chat":
             self._api_chat_proxy()
+        elif path == "/api/auth/stats":
+            self._api_auth_stats()
+        elif path == "/api/chat/history":
+            self._api_chat_history()
+        elif path == "/api/admin/tokens":
+            self._api_admin_tokens_get()
         else:
             self.send_error(404, "Not found")
 
@@ -637,6 +746,10 @@ class Handler(BaseHTTPRequestHandler):
             self._api_chat_post()
         elif path == "/api/auth/verify":
             self._api_auth_verify()
+        elif path == "/api/admin/tokens/add":
+            self._api_admin_tokens_add()
+        elif path == "/api/admin/tokens/remove":
+            self._api_admin_tokens_remove()
         else:
             self.send_error(404, "Not found")
 
@@ -663,15 +776,72 @@ class Handler(BaseHTTPRequestHandler):
     def _api_auth_verify(self):
         """POST /api/auth/verify — validate team token."""
         _load_team_tokens()
+        data = self._read_body()
+        token = (data.get("token") or "").strip()
+        name = (data.get("name") or "").strip()
         if not TEAM_TOKENS:
             self._json_response({"valid": True, "note": "auth disabled (no tokens configured)"})
             return
-        data = self._read_body()
-        token = (data.get("token") or "").strip()
         if token in TEAM_TOKENS:
-            self._json_response({"valid": True})
+            if name:
+                _track_usage(token, name)
+            self._json_response({"valid": True, "name": name or None})
         else:
             self._json_response({"valid": False}, 401)
+
+    def _api_auth_stats(self):
+        """GET /api/auth/stats — return usage stats per token."""
+        _load_team_tokens()
+        stats = _get_usage_stats()
+        self._json_response({"tokens_configured": len(TEAM_TOKENS), "usage": stats})
+
+    def _api_chat_history(self):
+        """GET /api/chat/history — return shared conversation history."""
+        limit = 50
+        try:
+            qs = self.path.split("?")[1] if "?" in self.path else ""
+            for p in qs.split("&"):
+                if p.startswith("limit="):
+                    limit = min(int(p.split("=")[1]), 100)
+        except Exception:
+            pass
+        self._json_response({"history": _get_history(limit)})
+
+    def _api_admin_tokens_get(self):
+        """GET /api/admin/tokens — list all tokens (masked)."""
+        _load_team_tokens()
+        tokens = [t[:4] + "***" + t[-2:] if len(t) > 6 else "***" for t in sorted(TEAM_TOKENS)]
+        self._json_response({"tokens": tokens, "count": len(TEAM_TOKENS)})
+
+    def _api_admin_tokens_add(self):
+        """POST /api/admin/tokens/add — add a new token."""
+        if not _validate_token(self):
+            self._json_response({"error": "unauthorized"}, 401)
+            return
+        data = self._read_body()
+        new_token = (data.get("token") or "").strip()
+        if not new_token:
+            self._json_response({"error": "token required"}, 400)
+            return
+        if _add_token(new_token):
+            self._json_response({"ok": True, "message": "token added"})
+        else:
+            self._json_response({"error": "token already exists or invalid"}, 409)
+
+    def _api_admin_tokens_remove(self):
+        """POST /api/admin/tokens/remove — remove a token."""
+        if not _validate_token(self):
+            self._json_response({"error": "unauthorized"}, 401)
+            return
+        data = self._read_body()
+        token = (data.get("token") or "").strip()
+        if not token:
+            self._json_response({"error": "token required"}, 400)
+            return
+        if _remove_token(token):
+            self._json_response({"ok": True, "message": "token removed"})
+        else:
+            self._json_response({"error": "token not found"}, 404)
 
     def _api_chat_post(self):
         """POST /api/chat — ส่งข้อความไป Hermes Gateway (พร้อม queue)"""
@@ -679,10 +849,15 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response({"error": "unauthorized — invalid team token"}, 401)
             return
 
+        # Track usage
+        auth = self.headers.get("Authorization", "")
+        token = auth.replace("Bearer ", "").strip()
+        if token:
+            _track_usage(token)
+
         global _chat_active
         with _chat_queue_lock:
             if _chat_active >= MAX_CHAT_CONCURRENT:
-                # Count waiting requests since last dequeue
                 waiting = max(1, _chat_active - MAX_CHAT_CONCURRENT + 1)
                 self._json_response({"queued": True, "position": waiting, "retry_after_ms": 5000}, 202)
                 return
@@ -703,11 +878,36 @@ class Handler(BaseHTTPRequestHandler):
             content_length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(content_length)
 
+            # Track user message for history
+            user_msg = ""
+            try:
+                if b"prompt=" in body[:500]:
+                    from urllib.parse import parse_qs
+                    user_msg = parse_qs(body.decode("utf-8", errors="replace")).get("prompt", [""])[0][:200]
+            except Exception:
+                pass
+
+            auth = self.headers.get("Authorization", "")
+            token = auth.replace("Bearer ", "").strip()
+            user_name = ""
+            with _usage_lock:
+                user_name = _usage.get(token, {}).get("name", "")
+
             req = urllib.request.Request(HERMES_WEBHOOK_URL, data=body, method="POST")
             req.add_header("Content-Type", content_type)
 
             resp = urllib.request.urlopen(req, timeout=120)
             result = resp.read().decode()
+
+            # Add to shared history
+            if user_msg:
+                _add_to_history({
+                    "ts": time.time(),
+                    "user": user_name or token[:8],
+                    "message": user_msg,
+                    "response": result[:500],
+                })
+
             self._json_response({"response": result})
         except urllib.error.HTTPError as e:
             self._json_response({"error": f"HTTP {e.code}: {e.reason}"}, 502)
