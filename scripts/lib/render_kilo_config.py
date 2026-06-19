@@ -16,12 +16,21 @@ Three locations:
   - repo fallback template   : scripts/lib/kilo.jsonc.template  (bundled, git-synced)
   - rendered output          : ~/.config/kilo/kilo.jsonc        (local, per-machine)
 
+Agent prompts (p1):
+  Prompts are now read from .kilo/agents/*.md — the template specifies only
+  model + variant per agent. Editing a prompt in .kilo/agents/ automatically
+  propagates on the next render.
+
+Command sync (p2):
+  Repo commands (.kilo/command/) are synced first, then Drive commands
+  (.config/kilo/command/) overwrite any duplicates. Drive = user-local overrides.
+
 Placeholders resolved at render time:
-  __DRIVE_DATA__      → A-Wiki-Data dir on THIS machine
-  __DRIVE_PERSONAL__  → <data>/personal          (MCP filesystem target; never .secrets)
-  __DRIVE_SKILLS__    → <data>/.config/kilo/skills
-  __REPO_ROOT__       → this repository root
-  __SECRET_<ENV>__    → provider apiKey from Drive .secrets (entry dropped if missing)
+  __DRIVE_DATA__      -> A-Wiki-Data dir on THIS machine
+  __DRIVE_PERSONAL__  -> <data>/personal          (MCP filesystem target; never .secrets)
+  __DRIVE_SKILLS__    -> <data>/.config/kilo/skills
+  __REPO_ROOT__       -> this repository root
+  __SECRET_<ENV>__    -> provider apiKey from Drive .secrets (entry dropped if missing)
 
 CLI:
   python3 scripts/lib/render_kilo_config.py             # render (idempotent)
@@ -30,9 +39,9 @@ CLI:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
-import re
 import sys
 import tempfile
 from pathlib import Path
@@ -43,14 +52,17 @@ Kilo_GLOBAL_DIR = Path.home() / ".config" / "kilo"
 Kilo_CONFIG = Kilo_GLOBAL_DIR / "kilo.jsonc"
 Kilo_COMMAND_DIR = Kilo_GLOBAL_DIR / "command"
 DRIVE_CONFIG_SUBDIR = Path(".config") / "kilo"
+AGENTS_DIR = REPO_ROOT / ".kilo" / "agents"
+REPO_COMMAND_DIR = REPO_ROOT / ".kilo" / "command"
 
-# provider id → .secrets env var name. Additive only; default model/agents untouched.
+# provider id -> .secrets env var name. Additive only; default model/agents untouched.
 PROVIDER_SECRET_MAP: dict[str, str] = {
     "google": "GEMINI_API_KEY",
     "openrouter": "OPENROUTER_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
     "groq": "GROQ_API_KEY",
     "deepseek": "DEEPSEEK_API_KEY",
+    "fireworks-ai": "FIREWORKS_API_KEY",
 }
 # High-sensitivity secrets never injected into any config file (mirror import-keys.py).
 NEVER_INJECT = {"WIKI_UNLOCK"}
@@ -75,11 +87,11 @@ def detect_drive_data_root() -> Path | None:
     if str(lib) not in sys.path:
         sys.path.insert(0, str(lib))
 
-    # 2. Standalone glob — does NOT require the drive/ symlink to exist.
+    # 2. Standalone glob -- does NOT require the drive/ symlink to exist.
     try:
         from drive_secrets import _glob_cloudstorage_drive  # type: ignore
         for secrets_file in _glob_cloudstorage_drive():
-            data = secrets_file.parent  # <data>/.secrets → <data>
+            data = secrets_file.parent  # <data>/.secrets -> <data>
             if data.is_dir():
                 return data
     except Exception:
@@ -127,6 +139,37 @@ def load_secrets(data_root: Path) -> dict[str, str]:
     return values
 
 
+# ── Agent merging (p1) ─────────────────────────────────────────────────────
+
+def merge_agents(template_agents: dict, agents_from_md: dict) -> dict:
+    """Merge .md agent definitions with template overrides.
+
+    The template (after p1) provides only model/variant/disable per agent.
+    Everything else (prompt, description, mode, options, permission) comes
+    from .kilo/agents/*.md.
+
+    Template-only agents (no .md file, e.g. plan, code, ask) are preserved.
+    .md-only agents (no template entry) are added.
+    """
+    result = {}
+
+    for agent_id, tpl_entry in template_agents.items():
+        if agent_id in agents_from_md:
+            merged = dict(agents_from_md[agent_id])
+            for override_key in ("model", "variant", "disable"):
+                if override_key in tpl_entry:
+                    merged[override_key] = tpl_entry[override_key]
+            result[agent_id] = merged
+        else:
+            result[agent_id] = dict(tpl_entry)
+
+    for agent_id, md_entry in agents_from_md.items():
+        if agent_id not in result:
+            result[agent_id] = dict(md_entry)
+
+    return result
+
+
 # ── Rendering (pure, unit-tested) ──────────────────────────────────────────
 
 def build_path_map(drive_data: Path, repo_root: Path) -> dict[str, str]:
@@ -150,55 +193,94 @@ def resolve_provider_secrets(config: dict, secrets: dict[str, str]) -> None:
             continue
         opts = prov.get("options")
         if not isinstance(opts, dict):
-            continue  # provider without an apiKey placeholder — leave untouched
+            continue  # provider without an apiKey placeholder -- leave untouched
         ak = opts.get("apiKey", "")
         if isinstance(ak, str) and ak.startswith("__SECRET_") and ak.endswith("__"):
             env_name = ak[len("__SECRET_"):-len("__")]
             val = secrets.get(env_name, "")
             if env_name in NEVER_INJECT or not val:
-                del providers[pname]  # no usable key → don't advertise the provider
+                del providers[pname]  # no usable key -> don't advertise the provider
             else:
                 opts["apiKey"] = val
 
 
-def resolve_path_tokens(obj, path_map: dict[str, str]):
-    """Recursively replace __TOKEN__ substrings in every string value."""
+def resolve_path_tokens(obj, path_map: dict[str, str], secrets: dict[str, str] | None = None):
+    """Recursively replace __TOKEN__ substrings in every string value.
+    Also resolves __SECRET_X__ placeholders if secrets dict provided."""
     if isinstance(obj, str):
         for tok, val in path_map.items():
             if tok in obj:
                 obj = obj.replace(tok, val)
+        if secrets is not None:
+            for env_name, val in secrets.items():
+                placeholder = f"__SECRET_{env_name}__"
+                if placeholder in obj:
+                    obj = obj.replace(placeholder, val)
         return obj
     if isinstance(obj, list):
-        return [resolve_path_tokens(x, path_map) for x in obj]
+        return [resolve_path_tokens(x, path_map, secrets) for x in obj]
     if isinstance(obj, dict):
-        return {k: resolve_path_tokens(v, path_map) for k, v in obj.items()}
+        return {k: resolve_path_tokens(v, path_map, secrets) for k, v in obj.items()}
     return obj
 
 
-def _assert_no_placeholders(rendered: str, path_map: dict[str, str]) -> None:
+def _write_config_cache() -> None:
+    """Write a hash of template + .kilo/agents/*.md for staleness detection (p4)."""
+    cache_file = REPO_ROOT / ".kilo" / ".kilo-config-cache"
+    tpl = BUNDLED_TEMPLATE
+    agents_dir = AGENTS_DIR
+    hasher = hashlib.sha256()
+    try:
+        if tpl.is_file():
+            hasher.update(tpl.read_bytes())
+        if agents_dir.is_dir():
+            for f in sorted(agents_dir.glob("*.md")):
+                hasher.update(f.name.encode())
+                hasher.update(f.read_bytes())
+    except OSError:
+        pass  # best-effort
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
+    cache_file.write_text(hasher.hexdigest(), encoding="utf-8")
+
+
+def _assert_no_placeholders(rendered: str, path_map: dict[str, str], secrets: dict[str, str] | None = None) -> None:
     for tok in path_map:
         if tok in rendered:
             raise ValueError(f"Unresolved path placeholder {tok} in rendered config")
-    if "__SECRET_" in rendered:
+    if secrets is not None:
+        for env_name in PROVIDER_SECRET_MAP.values():
+            if f"__SECRET_{env_name}__" in rendered:
+                raise ValueError(f"Unresolved __SECRET_{env_name}__ placeholder in rendered config")
+    elif "__SECRET_" in rendered:
         raise ValueError("Unresolved __SECRET_*__ placeholder in rendered config")
 
 
 def render_config(template_text: str, drive_data: Path, repo_root: Path,
-                  secrets: dict[str, str]) -> str:
-    """Render template text → machine-specific JSONC string."""
+                  secrets: dict[str, str],
+                  agents_from_md: dict | None = None) -> str:
+    """Render template text -> machine-specific JSONC string.
+
+    If agents_from_md is provided, it is merged into the template's agent
+    definitions (p1). Otherwise template agents are used verbatim.
+    """
     config = json.loads(template_text)  # template is strict JSON (no // comments)
+
+    if agents_from_md is not None:
+        template_agents = config.get("agent", {})
+        config["agent"] = merge_agents(template_agents, agents_from_md)
+
     resolve_provider_secrets(config, secrets)
     path_map = build_path_map(drive_data, repo_root)
-    config = resolve_path_tokens(config, path_map)
+    config = resolve_path_tokens(config, path_map, secrets)
     rendered = json.dumps(config, indent=2, ensure_ascii=False) + "\n"
-    _assert_no_placeholders(rendered, path_map)
+    _assert_no_placeholders(rendered, path_map, secrets)
     return rendered
 
 
 # ── Command copying ────────────────────────────────────────────────────────
 
 def copy_commands(src_dir: Path, dest_dir: Path) -> list[Path]:
-    """Copy *.md slash-command files src→dest (overwrite). Returns copied paths.
+    """Copy *.md slash-command files src->dest (overwrite). Returns copied paths.
     Creates dest_dir. Ignores non-.md files."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     copied: list[Path] = []
@@ -222,7 +304,7 @@ def find_template(drive_data: Path | None) -> Path:
     if BUNDLED_TEMPLATE.is_file():
         return BUNDLED_TEMPLATE
     raise FileNotFoundError(
-        "No kilo.jsonc.template found — neither in Drive (.config/kilo/) nor "
+        "No kilo.jsonc.template found -- neither in Drive (.config/kilo/) nor "
         "bundled at scripts/lib/kilo.jsonc.template"
     )
 
@@ -258,6 +340,14 @@ def _report(drive_data: Path, template_path: Path, secrets: dict[str, str]) -> s
     drive_cmds = drive_data / DRIVE_CONFIG_SUBDIR / "command"
     cmds = sorted(p.name for p in drive_cmds.glob("*.md")) if drive_cmds.is_dir() else []
     lines.append(f"Drive /commands : {', '.join(cmds) if cmds else '(none in Drive)'}")
+    # Repo commands
+    if REPO_COMMAND_DIR.is_dir():
+        repo_cmds = sorted(p.name for p in REPO_COMMAND_DIR.glob("*.md"))
+        lines.append(f"Repo /commands  : {', '.join(repo_cmds) if repo_cmds else '(none in repo)'}")
+    # Agents from .kilo/agents/
+    agents_found = sorted(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.is_dir() else []
+    lines.append(f"Agent .md files : {len(agents_found)} found in {AGENTS_DIR}"
+                 if agents_found else "Agent .md files : (none)")
     return "\n".join(lines)
 
 
@@ -280,24 +370,37 @@ def main(argv: list[str] | None = None) -> int:
     secrets = load_secrets(drive_data)
     template_text = template_path.read_text(encoding="utf-8")
 
+    # Read .kilo/agents/*.md (p1)
+    from parse_agent_md import read_agents_dir  # type: ignore
+    agents_from_md = read_agents_dir(AGENTS_DIR)
+
     if args.check:
         print(_report(drive_data, template_path, secrets))
         return 0
 
-    rendered = render_config(template_text, drive_data, REPO_ROOT, secrets)
+    rendered = render_config(template_text, drive_data, REPO_ROOT, secrets,
+                             agents_from_md=agents_from_md)
     out_path = Path(args.out)
 
     if not args.force and out_path.is_file() and out_path.read_text(encoding="utf-8") == rendered:
-        print(f"OK — {out_path} already up to date")
+        print(f"OK -- {out_path} already up to date")
     else:
         _atomic_write(out_path, rendered)
-        print(f"OK — wrote {out_path}")
+        print(f"OK -- wrote {out_path}")
 
-    # Copy Drive slash-commands → local command dir
+    # Write staleness cache (p4): hash of template + agents for SessionStart check
+    _write_config_cache()
+
+    # Sync repo commands first, then Drive overrides (p2)
+    repo_copied = copy_commands(REPO_COMMAND_DIR, Kilo_COMMAND_DIR)
+    if repo_copied:
+        print(f"OK -- synced {len(repo_copied)} repo command(s) -> {Kilo_COMMAND_DIR}")
+
     drive_cmds = drive_data / DRIVE_CONFIG_SUBDIR / "command"
-    copied = copy_commands(drive_cmds, Kilo_COMMAND_DIR)
-    if copied:
-        print(f"OK — copied {len(copied)} command(s) → {Kilo_COMMAND_DIR}")
+    drive_copied = copy_commands(drive_cmds, Kilo_COMMAND_DIR)
+    if drive_copied:
+        print(f"OK -- synced {len(drive_copied)} Drive command(s) -> {Kilo_COMMAND_DIR}")
+
     print(_report(drive_data, template_path, secrets))
     return 0
 
