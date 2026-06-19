@@ -21,6 +21,37 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 @keyframes gradient-shift{0%{background-position:0% 50%}
 100%{background-position:300% 50%}
 }
+/* === CHAT PANEL === */
+#chat-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+#chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px 20px}
+.chat-quick-btn{padding:8px 16px;border-radius:var(--r-full);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);cursor:pointer;font-size:var(--fs-xs);transition:all .2s;white-space:nowrap}
+.chat-quick-btn:hover{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.08)}
+#chat-input-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--elev-1);align-items:flex-end}
+#chat-textarea{flex:1;resize:none;padding:10px 14px;border-radius:var(--r-lg);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-base);font-family:inherit;line-height:1.5;max-height:150px;min-height:44px;outline:none;transition:border-color .2s}
+#chat-textarea:focus{border-color:var(--accent-brand);box-shadow:0 0 12px rgba(94,234,212,.15)}
+#chat-send-btn{padding:10px 16px;font-size:var(--fs-lg);min-height:44px}
+#chat-status{padding:4px 16px;font-size:var(--fs-2xs);color:var(--text-tertiary);min-height:20px;display:flex;align-items:center;gap:8px}
+.chat-msg{display:flex;gap:10px;animation:msgIn .25s ease-out;max-width:85%}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-msg.hermes{align-self:flex-start}
+.chat-msg .msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.chat-msg.user .msg-avatar{background:var(--accent-cool)}
+.chat-msg.hermes .msg-avatar{background:linear-gradient(135deg,var(--accent-brand),var(--accent-violet))}
+.chat-msg .msg-bubble{padding:10px 16px;border-radius:var(--r-lg);font-size:var(--fs-sm);line-height:1.55;word-break:break-word}
+.chat-msg.user .msg-bubble{background:var(--accent-cool);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.hermes .msg-bubble{background:var(--elev-2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.chat-msg .msg-bubble pre{background:var(--elev-0);padding:8px 12px;border-radius:var(--r-sm);overflow-x:auto;font-size:var(--fs-2xs);margin:8px 0;font-family:var(--font-mono);border:1px solid var(--border)}
+.chat-msg .msg-bubble code{font-family:var(--font-mono);font-size:var(--fs-2xs);background:rgba(94,234,212,.1);padding:2px 5px;border-radius:3px}
+.chat-msg .msg-bubble pre code{background:none;padding:0}
+.chat-msg .msg-time{font-size:10px;color:var(--text-tertiary);margin-top:4px}
+.msg-loading{display:flex;gap:6px;padding:10px 16px;align-items:center}
+.msg-loading .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-brand);animation:bounce .6s infinite alternate}
+.msg-loading .dot:nth-child(2){animation-delay:.2s}
+.msg-loading .dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{to{transform:translateY(-6px);opacity:.5}}
+@keyframes msgIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.chat-file-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--r-full);background:var(--elev-3);border:1px solid var(--border2);font-size:var(--fs-2xs);color:var(--text-secondary);margin:2px}
 #wf-tabs{display:flex;gap:5px;flex:1;flex-wrap:wrap}
 .wf-tab{padding:5px 11px;border-radius:var(--r-sm);border:1px solid var(--border2);font-size:var(--fs-xs);color:var(--text-tertiary);transition:all .25s;white-space:nowrap}
 .wf-tab.hot{border-color:var(--accent-brand);color:var(--text-primary);background:rgba(94,234,212,.10);animation:tab-glow 2s ease-in-out}
@@ -337,6 +368,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-flow" onclick="setView('flow')">🌊 Flow</button>
       <button class="view-btn" id="btn-timeline" onclick="setView('timeline')">🏊 Timeline</button>
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
+      <button class="view-btn" id="btn-chat" onclick="setView('chat')">💬 Chat</button>
     </div>
 
     <!-- SUMMARY VIEW (default) -->
@@ -386,6 +418,29 @@ to{transform:translateY(0);opacity:1}
     <!-- Graph (vis-network) -->
     <div id="graph-vis">
     <div id="graph-unavailable" class="graph-fallback" style="display:none;align-items:center;justify-content:center;height:100%;color:var(--text-disabled);font-size:var(--fs-xs);text-align:center;padding:24px">🔗 Graph unavailable offline<br><small>vis-network CDN not loaded</small></div>
+  </div>
+
+  <!-- 💬 CHAT VIEW — Hermes AI Interface -->
+  <div id="chat-panel" style="display:none">
+    <div id="chat-messages"></div>
+    <div id="chat-input-bar">
+      <input type="file" id="chat-file-input" multiple style="display:none" onchange="onChatFileChange()">
+      <button class="hdr-btn" onclick="document.getElementById('chat-file-input').click()" title="แนบไฟล์">📎<span id="chat-file-count" style="font-size:10px;margin-left:3px;display:none">0</span></button>
+      <textarea id="chat-textarea" rows="1" placeholder="ถาม Hermes... (ใช้สมอง A-Wiki ตอบ)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+      <button class="hdr-btn accent" onclick="sendChat()" id="chat-send-btn">▶</button>
+    </div>
+    <div id="chat-status"></div>
+    <div id="chat-empty" class="chat-empty-state">
+      <div style="font-size:3rem;margin-bottom:16px">🧠</div>
+      <div style="font-size:var(--fs-lg);font-weight:700;margin-bottom:8px">Hermes + A-Wiki Brain</div>
+      <div style="color:var(--text-tertiary);font-size:var(--fs-sm)">ถามอะไรก็ได้ — Hermes จะค้นจาก Wiki 605+ หน้าให้<br>รองรับแนบไฟล์ PDF, รูปภาพ, โค้ด</div>
+      <div id="chat-quick-qs" style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+        <button class="chat-quick-btn" onclick="quickAsk('สรุปความรู้เรื่อง MQTT ใน wiki')">📡 MQTT คืออะไร</button>
+        <button class="chat-quick-btn" onclick="quickAsk('ESP32 มีสเปคอะไรบ้างในแล็บ')">🔌 ESP32 Specs</button>
+        <button class="chat-quick-btn" onclick="quickAsk('ช่วยออกแบบระบบวัดอุณหภูมิวัคซีนด้วย IoT')">💉 Cold Chain</button>
+        <button class="chat-quick-btn" onclick="quickAsk('model roster ตอนนี้มี free model อะไรบ้าง')">🤖 Free Models</button>
+      </div>
+    </div>
   </div>
   </div>
 
@@ -619,12 +674,13 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),ch=$('btn-chat');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');ch.classList.toggle('active',v==='chat');
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
 $('graph-vis').style.display=v==='graph'?'block':'none';
+$('chat-panel').style.display=v==='chat'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
@@ -930,6 +986,134 @@ setView('summary');
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
+
+// ===== CHAT FUNCTIONS (Hermes AI) =====
+const HERMES_WEBHOOK = '/api/chat'; // proxied by dashboard server → Hermes
+let _chatFiles = [];
+let _chatLoading = false;
+
+function onChatFileChange(){
+  _chatFiles = Array.from(document.getElementById('chat-file-input').files);
+  const badge = document.getElementById('chat-file-count');
+  if(_chatFiles.length){
+    badge.textContent = _chatFiles.length;
+    badge.style.display = 'inline';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+async function sendChat(){
+  if(_chatLoading) return;
+  const ta = document.getElementById('chat-textarea');
+  const msg = ta.value.trim();
+  if(!msg && !_chatFiles.length) return;
+
+  _chatLoading = true;
+  document.getElementById('chat-send-btn').disabled = true;
+  ta.value = '';
+  document.getElementById('chat-empty').style.display = 'none';
+
+  // Add user message
+  addChatMessage('user', msg, _chatFiles.map(f => f.name));
+  // Add loading indicator
+  const loadId = addChatLoading();
+  document.getElementById('chat-status').textContent = '🧠 Hermes กำลังคิด... (ค้นจาก A-Wiki Brain)';
+
+  try {
+    const formData = new FormData();
+    formData.append('prompt', msg);
+    _chatFiles.forEach(f => formData.append('files', f));
+
+    const resp = await fetch(HERMES_WEBHOOK, {
+      method: 'POST',
+      body: formData
+    });
+
+    removeChatLoading(loadId);
+
+    if(!resp.ok){
+      const err = await resp.text();
+      addChatMessage('hermes', '⚠️ Hermes server ตอบกลับไม่สำเร็จ: ' + (err || resp.status));
+      document.getElementById('chat-status').textContent = '❌ Error: ' + resp.status;
+    } else {
+      const data = await resp.json();
+      addChatMessage('hermes', data.response || data.text || data.message || JSON.stringify(data));
+      document.getElementById('chat-status').textContent = '✅ ตอบแล้ว — ' + new Date().toLocaleTimeString('th-TH');
+    }
+  } catch(e) {
+    removeChatLoading(loadId);
+    addChatMessage('hermes', '⚠️ ไม่สามารถเชื่อมต่อ Hermes Server ได้\n\nตรวจสอบว่า:\n• Pi 5 เปิดอยู่และ Tailscale เชื่อมต่อ\n• Hermes Gateway รันอยู่ (port 8644)\n• `dashboard-ensure.sh` รัน proxy ถูกต้อง');
+    document.getElementById('chat-status').textContent = '🔌 ไม่สามารถเชื่อมต่อ';
+  }
+
+  _chatFiles = [];
+  document.getElementById('chat-file-input').value = '';
+  document.getElementById('chat-file-count').style.display = 'none';
+  _chatLoading = false;
+  document.getElementById('chat-send-btn').disabled = false;
+  ta.focus();
+}
+
+function addChatMessage(role, text, files){
+  const wrap = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'user' ? '👤' : '🧠';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  // Simple markdown-like rendering
+  let html = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+
+  if(files && files.length){
+    html = '<div>' + files.map(f => '<span class="chat-file-badge">📎 ' + f + '</span>').join('') + '</div>' + html;
+  }
+
+  bubble.innerHTML = html;
+
+  const time = document.createElement('div');
+  time.className = 'msg-time';
+  time.textContent = new Date().toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'});
+
+  div.append(avatar, bubble);
+  wrap.appendChild(div);
+
+  // Scroll to bottom
+  wrap.scrollTop = wrap.scrollHeight;
+  return div;
+}
+
+function addChatLoading(){
+  const wrap = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg hermes';
+  div.id = 'msg-loading';
+  div.innerHTML = '<div class=\"msg-avatar\" style=\"background:linear-gradient(135deg,var(--accent-brand),var(--accent-violet))\">🧠</div><div class=\"msg-loading\"><div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div>';
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+  return 'msg-loading';
+}
+
+function removeChatLoading(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+function quickAsk(q){
+  document.getElementById('chat-textarea').value = q;
+  sendChat();
+}
 </script>
 </body>
 </html>

@@ -18,6 +18,9 @@ Endpoints:
   GET /api/keys      → key names + set/unset status (never values)
   POST /api/keys     → save one API key to .tmp/live-dashboard-keys.env
   GET /api/capabilities → capability scorecard + recommended_by_task
+  GET /api/chat       → Hermes health check
+  POST /api/chat      → ส่งข้อความไป Hermes Gateway (proxy)
+  GET /api/graph      → knowledge graph snapshot
 
 Port: 7790  (separate from render-html-preview on 7788)
 """
@@ -44,6 +47,13 @@ DASHBOARD_KEYS_FILE = REPO_ROOT / ".tmp" / "live-dashboard-keys.env"
 CAPABILITY_CACHE = REPO_ROOT / ".tmp" / "model-capability-cache.json"
 CAPABILITY_SCORECARD = REPO_ROOT / "wiki" / "context" / "model-capability-scores.json"
 PORT = 7790
+
+# Hermes Gateway webhook URL สำหรับ Chat Panel
+# ตั้งค่าได้ผ่าน environment variable หรือ default เป็น Pi 5 Tailscale IP
+HERMES_WEBHOOK_URL = os.environ.get(
+    "AWIKI_HERMES_URL",
+    "http://100.x.y.z:8644/webhook/awiki-live"
+)
 
 PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
 DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
@@ -547,6 +557,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_capabilities_get()
         elif path == "/api/graph":
             self._json_response(_graph_snapshot())
+        elif path == "/api/chat":
+            self._api_chat_proxy()
         else:
             self.send_error(404, "Not found")
 
@@ -556,6 +568,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_models_post()
         elif path == "/api/keys":
             self._api_keys_post()
+        elif path == "/api/chat":
+            self._api_chat_post()
         else:
             self.send_error(404, "Not found")
 
@@ -566,6 +580,38 @@ class Handler(BaseHTTPRequestHandler):
             return json.loads(body)
         except Exception:
             return {}
+
+    # ── Chat Proxy → Hermes Gateway ────────────────────────────────
+    def _api_chat_proxy(self):
+        """GET /api/chat — health check ไป Hermes"""
+        try:
+            import urllib.request
+            url = HERMES_WEBHOOK_URL.replace("/webhook/awiki-live", "/health")
+            req = urllib.request.Request(url, method="GET")
+            resp = urllib.request.urlopen(req, timeout=5)
+            self._json_response({"status": "ok", "hermes": resp.read().decode()[:200]})
+        except Exception as e:
+            self._json_response({"status": "unreachable", "error": str(e)[:200]}, 502)
+
+    def _api_chat_post(self):
+        """POST /api/chat — ส่งข้อความไป Hermes Gateway แล้วตอบกลับ"""
+        try:
+            import urllib.request
+
+            content_type = self.headers.get("Content-Type", "")
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length)
+
+            req = urllib.request.Request(HERMES_WEBHOOK_URL, data=body, method="POST")
+            req.add_header("Content-Type", content_type)
+
+            resp = urllib.request.urlopen(req, timeout=120)
+            result = resp.read().decode()
+            self._json_response({"response": result})
+        except urllib.error.HTTPError as e:
+            self._json_response({"error": f"HTTP {e.code}: {e.reason}"}, 502)
+        except Exception as e:
+            self._json_response({"error": str(e)[:300]}, 502)
 
     def _json_response(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode()
