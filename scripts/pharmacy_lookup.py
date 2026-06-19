@@ -42,35 +42,8 @@ _QTY_TIMES = re.compile(r"\s*[×xX]\s*(\d+)\s*$")
 
 # ── Text normalisation ───────────────────────────────────────────────────────
 
-def split_transitions(s: str) -> str:
-    """Insert spaces at character-type boundaries in mixed Thai/EN/digit strings.
-
-    Examples:
-        "TONAF1%แดง15g" → "TONAF 1 % แดง 15 g"
-        "ดีคอลเจน100เม็ด" → "ดีคอลเจน 100 เม็ด"
-        "VAPORUB50g"     → "VAPORUB 50 g"
-    """
-    # EN letters ↔ digits
-    s = re.sub(r"(?<=[a-zA-Z])(?=[0-9])|(?<=[0-9])(?=[a-zA-Z])", " ", s)
-    # EN/digit ↔ Thai (Unicode block U+0E00–U+0E7F)
-    s = re.sub(
-        r"(?<=[a-zA-Z0-9])(?=[\u0e00-\u0e7f])|(?<=[\u0e00-\u0e7f])(?=[a-zA-Z0-9])",
-        " ", s,
-    )
-    # alphanumeric/Thai ↔ %
-    s = re.sub(
-        r"(?<=[a-zA-Z0-9\u0e00-\u0e7f])(?=[%])|(?<=[%])(?=[a-zA-Z0-9\u0e00-\u0e7f])",
-        " ", s,
-    )
-    # digit ↔ × / x / X (pack-size separators like 50x10)
-    s = re.sub(r"(?<=[0-9])(?=[xX×])|(?<=[xX×])(?=[0-9])", " ", s)
-    return " ".join(s.split())
-
-
 def norm(s: str) -> str:
-    s = split_transitions(s)
     return re.sub(r"[\s.\-_()/]+", " ", s.lower()).strip()
-
 
 
 # ── Thai→English dosage-form + brand name mapping ────────────────────────────

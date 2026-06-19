@@ -2,50 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "A-Wiki: Start Cline Session",
-      "type": "shell",
-      "command": "bash scripts/live-dashboard/start-cline.sh",
-      "group": "none",
-      "runOn": "folderOpen",
-      "presentation": {
-        "reveal": "silent",
-        "panel": "shared"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "A-Wiki: Open Live Dashboard",
+      "label": "A-Wiki: Live Dashboard (auto)",
       "type": "shell",
       "command": "bash scripts/dashboard-ensure.sh",
-      "group": "none",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "A-Wiki: Live Dashboard (auto on folder open)",
-      "detail": "Auto-starts the dashboard server whenever the workspace opens — works for Kilo Code, Cline, or any VS Code extension. Idempotent + PID-guarded.",
-      "type": "shell",
-      "command": "bash scripts/dashboard-ensure.sh",
-      "group": "none",
       "runOn": "folderOpen",
       "presentation": {
         "reveal": "silent",
         "panel": "shared",
         "close": true
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "A-Wiki: Setup Cline Hooks",
-      "type": "shell",
-      "command": "bash scripts/cline-hooks/setup-symlinks.sh",
-      "group": "none",
-      "presentation": {
-        "reveal": "silent",
-        "panel": "shared"
       },
       "problemMatcher": []
     }

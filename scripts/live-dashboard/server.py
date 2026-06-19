@@ -18,9 +18,6 @@ Endpoints:
   GET /api/keys      → key names + set/unset status (never values)
   POST /api/keys     → save one API key to .tmp/live-dashboard-keys.env
   GET /api/capabilities → capability scorecard + recommended_by_task
-  GET /api/chat       → Hermes health check
-  POST /api/chat      → ส่งข้อความไป Hermes Gateway (proxy)
-  GET /api/graph      → knowledge graph snapshot
 
 Port: 7790  (separate from render-html-preview on 7788)
 """
@@ -47,31 +44,11 @@ DASHBOARD_KEYS_FILE = REPO_ROOT / ".tmp" / "live-dashboard-keys.env"
 CAPABILITY_CACHE = REPO_ROOT / ".tmp" / "model-capability-cache.json"
 CAPABILITY_SCORECARD = REPO_ROOT / "wiki" / "context" / "model-capability-scores.json"
 PORT = 7790
-
-# Hermes Gateway webhook URL สำหรับ Chat Panel
-# ตั้งค่าได้ผ่าน environment variable หรือ default เป็น Pi 5 Tailscale IP
-HERMES_WEBHOOK_URL = os.environ.get(
-    "AWIKI_HERMES_URL",
-    "http://100.x.y.z:8644/webhook/awiki-live"
-)
-
-# Hermes API URL for health checks (port 8501, not 8644 webhook)
-HERMES_API_URL = os.environ.get(
-    "AWIKI_HERMES_API_URL",
-    "http://100.x.y.z:8501"
-)
-
-# Auth tokens loaded from drive/.secrets or environment variable
-TEAM_TOKENS = set()
-_TOKEN_LOADED = False
-
-# Concurrency queue for chat requests
-_chat_active = 0
-MAX_CHAT_CONCURRENT = 2
-CHAT_QUEUE_TIMEOUT = 300  # 5 minutes
-_chat_queue_lock = threading.Lock()
-_chat_queue_positions: dict[int, float] = {}  # id(handler) → enqueue_time
-_chat_queue_counter = 0
+ADMIN_PASSWORD_FILE = REPO_ROOT / ".tmp" / "admin-password.hash"
+AGENT_REGISTRY_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "agent-registry.json"
+AGENT_CONFIG_FILE = REPO_ROOT / ".tmp" / "agent-config.json"
+CHAT_LOG_FILE = REPO_ROOT / ".tmp" / "chat-log.jsonl"
+UPLOAD_DIR = REPO_ROOT / ".tmp" / "uploads"
 
 PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
 DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
@@ -141,156 +118,6 @@ _AGENT_COLORS = {
 }
 
 _server_ref = None  # set in __main__ so idle_watchdog can call shutdown()
-
-
-def _load_team_tokens():
-    """Load team tokens from drive/.secrets and AWIKI_TEAM_TOKENS env var."""
-    global TEAM_TOKENS, _TOKEN_LOADED
-    if _TOKEN_LOADED:
-        return
-    _TOKEN_LOADED = True
-
-    tokens = set()
-
-    # Try drive/.secrets first
-    secrets_file = REPO_ROOT / "drive" / ".secrets"
-    if secrets_file.exists():
-        try:
-            for line in secrets_file.read_text("utf-8").splitlines():
-                line = line.strip()
-                if line.startswith("TEAM_TOKENS="):
-                    val = line.split("=", 1)[1].strip().strip('"').strip("'")
-                    for t in val.split(","):
-                        t = t.strip()
-                        if t:
-                            tokens.add(t)
-        except Exception:
-            pass
-
-    # Also check environment variable
-    env_tokens = os.environ.get("AWIKI_TEAM_TOKENS", "")
-    if env_tokens:
-        for t in env_tokens.split(","):
-            t = t.strip()
-            if t:
-                tokens.add(t)
-
-    TEAM_TOKENS = tokens
-
-
-def _validate_token(request_handler) -> bool:
-    """Check Authorization: Bearer header against TEAM_TOKENS.
-    Returns True if token is valid or no tokens configured (auth disabled)."""
-    _load_team_tokens()
-    if not TEAM_TOKENS:
-        return True  # No tokens configured = auth disabled
-    auth = request_handler.headers.get("Authorization", "")
-    token = auth.replace("Bearer ", "").strip()
-    return token in TEAM_TOKENS
-
-
-# ── Usage tracking per token ──────────────────────────────────────
-_usage_lock = threading.Lock()
-_usage: dict[str, dict] = {}  # token → {name, count, first_seen, last_seen}
-
-
-def _track_usage(token: str, name: str = ""):
-    with _usage_lock:
-        now = time.time()
-        if token not in _usage:
-            _usage[token] = {"name": name, "count": 0, "first_seen": now, "last_seen": now}
-        entry = _usage[token]
-        entry["count"] += 1
-        entry["last_seen"] = now
-        if name and not entry["name"]:
-            entry["name"] = name
-
-
-def _get_usage_stats() -> list[dict]:
-    with _usage_lock:
-        return [
-            {"token": t[:8] + "...", "name": d["name"], "count": d["count"],
-             "first_seen": d["first_seen"], "last_seen": d["last_seen"]}
-            for t, d in _usage.items()
-        ]
-
-
-def _get_token_usage(token: str) -> dict:
-    with _usage_lock:
-        d = _usage.get(token, {"name": "", "count": 0, "first_seen": 0, "last_seen": 0})
-        return {**d, "token": token[:8] + "..."}
-
-
-# ── Shared conversation history (last 50 messages across all users) ─
-_history_lock = threading.Lock()
-_history: list[dict] = []
-MAX_HISTORY = 50
-
-
-def _add_to_history(entry: dict):
-    with _history_lock:
-        _history.append(entry)
-        while len(_history) > MAX_HISTORY:
-            _history.pop(0)
-
-
-def _get_history(limit: int = 50) -> list[dict]:
-    with _history_lock:
-        return list(_history[-limit:])
-
-
-# ── Token admin helpers ──────────────────────────────────────────
-_admin_lock = threading.Lock()
-
-
-def _list_tokens() -> list[str]:
-    _load_team_tokens()
-    return sorted(TEAM_TOKENS)
-
-
-def _add_token(new_token: str) -> bool:
-    global TEAM_TOKENS
-    _load_team_tokens()
-    if not new_token or new_token in TEAM_TOKENS:
-        return False
-    with _admin_lock:
-        TEAM_TOKENS.add(new_token)
-        _write_tokens_to_secrets()
-    return True
-
-
-def _remove_token(token: str) -> bool:
-    global TEAM_TOKENS
-    _load_team_tokens()
-    if token not in TEAM_TOKENS:
-        return False
-    with _admin_lock:
-        TEAM_TOKENS.discard(token)
-        _write_tokens_to_secrets()
-    return True
-
-
-def _write_tokens_to_secrets():
-    """Persist current TEAM_TOKENS back to drive/.secrets."""
-    secrets_file = REPO_ROOT / "drive" / ".secrets"
-    if not secrets_file.exists():
-        return
-    try:
-        lines = secrets_file.read_text("utf-8").splitlines()
-        new_lines = []
-        found = False
-        for line in lines:
-            if line.strip().startswith("TEAM_TOKENS="):
-                new_lines.append(f'TEAM_TOKENS={",".join(sorted(TEAM_TOKENS))}')
-                found = True
-            else:
-                new_lines.append(line)
-        if not found:
-            new_lines.append(f'TEAM_TOKENS={",".join(sorted(TEAM_TOKENS))}')
-        secrets_file.write_text("\n".join(new_lines) + "\n", "utf-8")
-    except Exception:
-        pass
-
 
 
 # ---------------------------------------------------------------------------
@@ -725,14 +552,12 @@ class Handler(BaseHTTPRequestHandler):
             self._api_capabilities_get()
         elif path == "/api/graph":
             self._json_response(_graph_snapshot())
-        elif path == "/api/chat":
-            self._api_chat_proxy()
-        elif path == "/api/auth/stats":
-            self._api_auth_stats()
-        elif path == "/api/chat/history":
-            self._api_chat_history()
-        elif path == "/api/admin/tokens":
-            self._api_admin_tokens_get()
+        elif path == "/api/admin/status":
+            self._api_admin_status()
+        elif path == "/api/agents":
+            self._api_agents_get()
+        elif path.startswith("/api/uploads/"):
+            self._serve_upload(path)
         else:
             self.send_error(404, "Not found")
 
@@ -742,14 +567,16 @@ class Handler(BaseHTTPRequestHandler):
             self._api_models_post()
         elif path == "/api/keys":
             self._api_keys_post()
+        elif path == "/api/admin/auth":
+            self._api_admin_auth()
+        elif path == "/api/agents":
+            self._api_agents_post()
+        elif path == "/api/agents/reorder":
+            self._api_agents_reorder()
         elif path == "/api/chat":
             self._api_chat_post()
-        elif path == "/api/auth/verify":
-            self._api_auth_verify()
-        elif path == "/api/admin/tokens/add":
-            self._api_admin_tokens_add()
-        elif path == "/api/admin/tokens/remove":
-            self._api_admin_tokens_remove()
+        elif path == "/api/upload":
+            self._api_upload_post()
         else:
             self.send_error(404, "Not found")
 
@@ -760,159 +587,6 @@ class Handler(BaseHTTPRequestHandler):
             return json.loads(body)
         except Exception:
             return {}
-
-    # ── Chat Proxy → Hermes Gateway ────────────────────────────────
-    def _api_chat_proxy(self):
-        """GET /api/chat — health check ไป Hermes API"""
-        try:
-            import urllib.request
-            url = HERMES_API_URL + "/health"
-            req = urllib.request.Request(url, method="GET")
-            resp = urllib.request.urlopen(req, timeout=5)
-            self._json_response({"status": "ok", "hermes": resp.read().decode()[:200]})
-        except Exception as e:
-            self._json_response({"status": "unreachable", "error": str(e)[:200]}, 502)
-
-    def _api_auth_verify(self):
-        """POST /api/auth/verify — validate team token."""
-        _load_team_tokens()
-        data = self._read_body()
-        token = (data.get("token") or "").strip()
-        name = (data.get("name") or "").strip()
-        if not TEAM_TOKENS:
-            self._json_response({"valid": True, "note": "auth disabled (no tokens configured)"})
-            return
-        if token in TEAM_TOKENS:
-            if name:
-                _track_usage(token, name)
-            self._json_response({"valid": True, "name": name or None})
-        else:
-            self._json_response({"valid": False}, 401)
-
-    def _api_auth_stats(self):
-        """GET /api/auth/stats — return usage stats per token."""
-        _load_team_tokens()
-        stats = _get_usage_stats()
-        self._json_response({"tokens_configured": len(TEAM_TOKENS), "usage": stats})
-
-    def _api_chat_history(self):
-        """GET /api/chat/history — return shared conversation history."""
-        limit = 50
-        try:
-            qs = self.path.split("?")[1] if "?" in self.path else ""
-            for p in qs.split("&"):
-                if p.startswith("limit="):
-                    limit = min(int(p.split("=")[1]), 100)
-        except Exception:
-            pass
-        self._json_response({"history": _get_history(limit)})
-
-    def _api_admin_tokens_get(self):
-        """GET /api/admin/tokens — list all tokens (masked)."""
-        _load_team_tokens()
-        tokens = [t[:4] + "***" + t[-2:] if len(t) > 6 else "***" for t in sorted(TEAM_TOKENS)]
-        self._json_response({"tokens": tokens, "count": len(TEAM_TOKENS)})
-
-    def _api_admin_tokens_add(self):
-        """POST /api/admin/tokens/add — add a new token."""
-        if not _validate_token(self):
-            self._json_response({"error": "unauthorized"}, 401)
-            return
-        data = self._read_body()
-        new_token = (data.get("token") or "").strip()
-        if not new_token:
-            self._json_response({"error": "token required"}, 400)
-            return
-        if _add_token(new_token):
-            self._json_response({"ok": True, "message": "token added"})
-        else:
-            self._json_response({"error": "token already exists or invalid"}, 409)
-
-    def _api_admin_tokens_remove(self):
-        """POST /api/admin/tokens/remove — remove a token."""
-        if not _validate_token(self):
-            self._json_response({"error": "unauthorized"}, 401)
-            return
-        data = self._read_body()
-        token = (data.get("token") or "").strip()
-        if not token:
-            self._json_response({"error": "token required"}, 400)
-            return
-        if _remove_token(token):
-            self._json_response({"ok": True, "message": "token removed"})
-        else:
-            self._json_response({"error": "token not found"}, 404)
-
-    def _api_chat_post(self):
-        """POST /api/chat — ส่งข้อความไป Hermes Gateway (พร้อม queue)"""
-        if not _validate_token(self):
-            self._json_response({"error": "unauthorized — invalid team token"}, 401)
-            return
-
-        # Track usage
-        auth = self.headers.get("Authorization", "")
-        token = auth.replace("Bearer ", "").strip()
-        if token:
-            _track_usage(token)
-
-        global _chat_active
-        with _chat_queue_lock:
-            if _chat_active >= MAX_CHAT_CONCURRENT:
-                waiting = max(1, _chat_active - MAX_CHAT_CONCURRENT + 1)
-                self._json_response({"queued": True, "position": waiting, "retry_after_ms": 5000}, 202)
-                return
-            _chat_active += 1
-
-        try:
-            self._do_chat_proxy()
-        finally:
-            with _chat_queue_lock:
-                _chat_active = max(0, _chat_active - 1)
-
-    def _do_chat_proxy(self):
-        """Internal: forward request to Hermes."""
-        try:
-            import urllib.request
-
-            content_type = self.headers.get("Content-Type", "")
-            content_length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(content_length)
-
-            # Track user message for history
-            user_msg = ""
-            try:
-                if b"prompt=" in body[:500]:
-                    from urllib.parse import parse_qs
-                    user_msg = parse_qs(body.decode("utf-8", errors="replace")).get("prompt", [""])[0][:200]
-            except Exception:
-                pass
-
-            auth = self.headers.get("Authorization", "")
-            token = auth.replace("Bearer ", "").strip()
-            user_name = ""
-            with _usage_lock:
-                user_name = _usage.get(token, {}).get("name", "")
-
-            req = urllib.request.Request(HERMES_WEBHOOK_URL, data=body, method="POST")
-            req.add_header("Content-Type", content_type)
-
-            resp = urllib.request.urlopen(req, timeout=120)
-            result = resp.read().decode()
-
-            # Add to shared history
-            if user_msg:
-                _add_to_history({
-                    "ts": time.time(),
-                    "user": user_name or token[:8],
-                    "message": user_msg,
-                    "response": result[:500],
-                })
-
-            self._json_response({"response": result})
-        except urllib.error.HTTPError as e:
-            self._json_response({"error": f"HTTP {e.code}: {e.reason}"}, 502)
-        except Exception as e:
-            self._json_response({"error": str(e)[:300]}, 502)
 
     def _json_response(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode()
@@ -1009,6 +683,127 @@ class Handler(BaseHTTPRequestHandler):
             with _idle_lock:
                 if remaining == 0:
                     _idle_since = time.time()  # start idle countdown
+
+    # ── Admin Auth ────────────────────────────────────────────
+    def _api_admin_status(self):
+        has_pass = ADMIN_PASSWORD_FILE.exists()
+        self._json_response({"password_set": has_pass, "free_only": not has_pass})
+
+    def _api_admin_auth(self):
+        data = self._read_body()
+        pw = data.get("password", "")
+        if not pw or not ADMIN_PASSWORD_FILE.exists():
+            self._json_response({"ok": False, "error": "No password set or empty"}, 401)
+            return
+        stored = ADMIN_PASSWORD_FILE.read_text().strip()
+        if ":" in stored:
+            salt, hash_val = stored.split(":", 1)
+            import hashlib
+            if hashlib.sha256((salt + pw).encode()).hexdigest() == hash_val:
+                self._json_response({"ok": True, "token": "session-" + salt[:8]})
+                return
+        self._json_response({"ok": False, "error": "Invalid password"}, 401)
+
+    # ── Agent Registry ────────────────────────────────────────
+    def _api_agents_get(self):
+        registry = {}
+        if AGENT_REGISTRY_FILE.exists():
+            try:
+                registry = json.loads(AGENT_REGISTRY_FILE.read_text())
+            except Exception:
+                pass
+        config = {}
+        if AGENT_CONFIG_FILE.exists():
+            try:
+                config = json.loads(AGENT_CONFIG_FILE.read_text())
+            except Exception:
+                pass
+        self._json_response({"registry": registry, "config": config})
+
+    def _api_agents_post(self):
+        data = self._read_body()
+        try:
+            AGENT_CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+            AGENT_CONFIG_FILE.write_text(json.dumps(data, indent=2))
+            self._json_response({"ok": True})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_agents_reorder(self):
+        data = self._read_body()
+        order = data.get("order", [])
+        try:
+            existing = {}
+            if AGENT_CONFIG_FILE.exists():
+                existing = json.loads(AGENT_CONFIG_FILE.read_text())
+            existing["agent_order"] = order
+            AGENT_CONFIG_FILE.write_text(json.dumps(existing, indent=2))
+            self._json_response({"ok": True})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    # -- Chat --
+    def _api_chat_post(self):
+        data = self._read_body()
+        message = data.get("message", "").strip()
+        if not message:
+            self._json_response({"error": "message required"}, 400)
+            return
+        evt = {"ts": round(time.time(), 3), "type": "chat_message", "message": message[:4000], "from": data.get("from", "dashboard")}
+        try:
+            CHAT_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with open(CHAT_LOG_FILE, "a", encoding="utf-8") as f:
+                f.write(json.dumps(evt, ensure_ascii=False) + "\n")
+            broadcast(json.dumps(evt, ensure_ascii=False))
+            self._json_response({"ok": True})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    # -- Upload --
+    def _api_upload_post(self):
+        ctype = self.headers.get("Content-Type", "")
+        if "multipart/form-data" not in ctype:
+            self._json_response({"error": "multipart/form-data required"}, 400)
+            return
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length)
+        boundary = ctype.split("boundary=")[1].strip()
+        parts = body.split(b"--" + boundary.encode())
+        for part in parts:
+            if b"filename=" in part:
+                header, data = part.split(b"\r\n\r\n", 1)
+                data = data.rsplit(b"\r\n--", 1)[0]
+                fname = "upload_" + str(int(time.time()))
+                for line in header.decode(errors="ignore").split("\r\n"):
+                    if "filename=" in line:
+                        fn = line.split("filename=")[1].strip(chr(34))
+                        if fn:
+                            fname = fn
+                UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+                dest = UPLOAD_DIR / fname
+                dest.write_bytes(data)
+                evt = {"ts": round(time.time(), 3), "type": "file_uploaded", "filename": fname, "size": len(data), "path": str(dest.relative_to(REPO_ROOT))}
+                broadcast(json.dumps(evt, ensure_ascii=False))
+                self._json_response({"ok": True, "filename": fname, "size": len(data)})
+                return
+        self._json_response({"error": "no file found"}, 400)
+
+    def _serve_upload(self, path):
+        fname = path.split("/api/uploads/", 1)[1]
+        if ".." in fname or "/" in fname:
+            self.send_error(403, "Invalid path")
+            return
+        fpath = UPLOAD_DIR / fname
+        if not fpath.exists():
+            self.send_error(404, "Not found")
+            return
+        fc = fpath.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/octet-stream")
+        self.send_header("Content-Length", str(len(fc)))
+        self._cors()
+        self.end_headers()
+        self.wfile.write(fc)
 
     def _serve_html(self):
         html_path = DASHBOARD_HTML if DASHBOARD_HTML.exists() else DASHBOARD_HTML_FALLBACK
@@ -1108,6 +903,9 @@ if __name__ == "__main__":
         print(f"🔧  Model config          : http://localhost:{PORT}/api/models")
         print(f"🔑  API keys              : http://localhost:{PORT}/api/keys")
         print(f"🧬  Capabilities          : http://localhost:{PORT}/api/capabilities")
+        print(f"💬  Chat                  : http://localhost:{PORT}/api/chat")
+        print(f"📤  Upload                : http://localhost:{PORT}/api/upload")
+        print(f"🤖  Agents                : http://localhost:{PORT}/api/agents")
         print(f"📁  Watching              : {LOG_FILE}")
         print()
         print("Issue any A-Wiki command to see live model activity.")
