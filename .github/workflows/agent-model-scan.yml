@@ -1,0 +1,121 @@
+name: A-Wiki Agent Model Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_issue:
+        description: "Create or update an issue when tier-up proposals exist"
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+  schedule:
+    - cron: "41 2 * * 1"
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+concurrency:
+  group: agent-model-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: Scan agent model benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run scan (apply safe swaps)
+        id: scan
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp/agent-model-scan
+
+          python3 scripts/agents/agent_model_scan.py \
+            --apply \
+            --offline > .tmp/agent-model-scan/report.md
+
+      - name: Check for changes
+        id: changes
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- .kilo/agents/ wiki/context/agent-model-scan-log.jsonl; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff -- .kilo/agents/ wiki/context/agent-model-scan-log.jsonl \
+              > .tmp/agent-model-scan/agent-model-scan.diff
+          fi
+
+      - name: Commit + push safe swaps
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "a-wiki-agent-model-scan"
+          git config user.email "agent-model-scan@a-wiki"
+          git add .kilo/agents/ wiki/context/agent-model-scan-log.jsonl
+          git commit -m "feat(agents): auto-scan model swap $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Upload scan report
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-model-scan-report
+          path: |
+            .tmp/agent-model-scan/report.md
+            .tmp/agent-model-scan/agent-model-scan.diff
+          if-no-files-found: ignore
+
+      - name: Create or update tier-up proposal issue
+        if: steps.changes.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.create_issue == 'true')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          title="A-Wiki agent model scan — changes available"
+          existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')"
+          body_file=".tmp/agent-model-scan/issue-body.md"
+          {
+            echo "A scheduled agent model benchmark scan found candidate changes."
+            echo ""
+            echo "## Safe swaps (auto-applied)"
+            echo ""
+            echo '```'
+            python3 scripts/agents/agent_model_scan.py --dry-run --offline 2>&1
+            echo '```'
+            echo ""
+            echo "## Review"
+            echo ""
+            echo "Review the attached workflow artifact, then verify locally:"
+            echo ""
+            echo '```bash'
+            echo 'python3 scripts/agents/agent_model_scan.py --dry-run'
+            echo 'python3 -m pytest tests/test_agent_model_scan.py -v'
+            echo '```'
+            echo ""
+            echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > "$body_file"
+
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file "$body_file"
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+          fi
