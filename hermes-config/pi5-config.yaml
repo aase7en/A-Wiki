@@ -1,0 +1,147 @@
+# Hermes Config — Pi 5 UmbrelOS (adapted from Windows)
+# Generated: 2026-06-19
+
+model:
+  default: deepseek-v4-pro
+  provider: deepseek
+  base_url: ''
+
+providers: {}
+fallback_providers: []
+
+toolsets:
+- hermes-cli
+
+max_concurrent_sessions: null
+
+agent:
+  max_turns: 60
+  gateway_timeout: 1800
+  restart_drain_timeout: 180
+  api_max_retries: 3
+  tool_use_enforcement: auto
+  task_completion_guidance: true
+  parallel_tool_call_guidance: true
+  environment_probe: true
+  coding_context: auto
+  gateway_timeout_warning: 900
+  clarify_timeout: 600
+  gateway_notify_interval: 180
+  gateway_auto_continue_freshness: 3600
+  image_input_mode: auto
+  reasoning_effort: medium
+
+terminal:
+  backend: local
+  cwd: /home/umbrel/A-Wiki
+  timeout: 180
+  auto_source_bashrc: true
+  persistent_shell: true
+  lifetime_seconds: 300
+
+web:
+  backend: firecrawl
+
+browser:
+  inactivity_timeout: 120
+  command_timeout: 30
+  engine: auto
+
+checkpoints:
+  enabled: false
+  max_snapshots: 20
+
+compression:
+  enabled: true
+  threshold: 0.5
+  target_ratio: 0.2
+  protect_last_n: 20
+
+prompt_caching:
+  cache_ttl: 5m
+
+auxiliary:
+  vision:
+    provider: gemini
+    model: gemini-3.5-flash
+  web_extract:
+    provider: gemini
+    model: gemini-3.5-flash
+  compression:
+    provider: gemini
+    model: gemini-3.5-flash
+  skills_hub:
+    provider: zai
+    model: glm-5.2
+  approval:
+    provider: auto
+  title_generation:
+    provider: groq
+    model: llama-3.1-8b-instant
+  curator:
+    provider: zai
+    model: glm-5.2
+
+display:
+  compact: false
+  interface: cli
+  streaming: true
+  show_reasoning: false
+  show_cost: false
+  skin: default
+  language: en
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  write_approval: false
+  memory_char_limit: 2200
+  user_char_limit: 1375
+
+delegation:
+  max_iterations: 50
+  max_concurrent_children: 3
+  max_spawn_depth: 1
+  orchestrator_enabled: true
+
+tts:
+  provider: openai
+stt:
+  enabled: true
+  provider: local
+
+skills:
+  template_vars: true
+  guard_agent_created: false
+
+curator:
+  enabled: true
+  interval_hours: 168
+  stale_after_days: 30
+  archive_after_days: 90
+  backup:
+    enabled: true
+    keep: 5
+
+# === Gateway — เปิด Webhook + Telegram ===
+platforms:
+  webhook:
+    enabled: true
+    extra:
+      host: "0.0.0.0"
+      port: 8644
+      secret: "awiki-hermes-pi5-secret-2026"
+
+telegram:
+  reactions: false
+  allowed_chats: ''
+  extra:
+    rich_messages: true
+
+discord:
+  require_mention: true
+  auto_thread: true
+
+timezone: Asia/Bangkok
+slack:
+  require_mention: true
