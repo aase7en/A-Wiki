@@ -393,7 +393,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-timeline" onclick="setView('timeline')">🏊 Timeline</button>
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
-      <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="Theme">🌙</button>💬 Chat</button>
+      <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="Toggle theme">🌙</button>💬 Chat</button>
     </div>
 
     <!-- SUMMARY VIEW (default) -->
@@ -501,7 +501,16 @@ to{transform:translateY(0);opacity:1}
       <div class="set-note">เปิด/ปิด model, แก้ model id, ดูคะแนนความสามารถ. จัดลำดับยึด cost-first — capability สลับเฉพาะใน cost class.</div>
       <div id="models-list"></div>
       <button class="set-btn" onclick="saveModels()">💾 บันทึก Models</button>
-    </div>
+    
+            <div class="set-pane" id="pane-agents">
+              <h3>🤖 Agent Chain</h3>
+              <p style="margin:0 0 12px;color:var(--text-tertiary);font-size:var(--fs-sm)">ลากเพื่อจัดลำดับ agent · Effort = คุณภาพ model (0=ถูกสุด, 100=ดีสุด)</p>
+              <div id="agent-chain-list" style="display:flex;flex-direction:column;gap:6px"></div>
+              <div style="margin-top:12px;font-size:var(--fs-xs);color:var(--text-tertiary)">
+                <span id="agent-saved" style="color:var(--accent-success);display:none">✅ Saved</span>
+              </div>
+            </div>
+</div>
     <div class="set-pane" id="pane-keys">
       <div class="set-note">ใส่ API key ต่อ provider. เก็บใน <code>.tmp/</code> (gitignored) — ไม่ขึ้น git. โชว์เฉพาะสถานะ set/unset.</div>
       <div id="keys-list"></div>
@@ -581,18 +590,7 @@ to{transform:translateY(0);opacity:1}
       <button class="set-btn" onclick="saveChatSettings()">💾 บันทึก Chat Settings</button>
     </div>
     <div class="set-pane" id="pane-admin">
-      <div class="set-note">จัดการ Team Tokens, ดูสถิติการใช้งาน, และประวัติแชท
-            <div class="set-pane" id="pane-agents">
-              <h3>🤖 Agent Chain</h3>
-              <p style="margin:0 0 12px;color:var(--text-tertiary);font-size:var(--fs-sm)">Drag to reorder agents. Effort = model quality (0=cheapest, 100=best).</p>
-              <div id="agent-chain-list" style="display:flex;flex-direction:column;gap:6px">
-                <!-- populated by JS -->
-              </div>
-              <div style="margin-top:12px;font-size:var(--fs-xs);color:var(--text-tertiary)">
-                <span id="agent-chain-saved" style="color:var(--accent-success);display:none">✅ Saved</span>
-              </div>
-            </div>
-</div>
+      <div class="set-note">จัดการ Team Tokens, ดูสถิติการใช้งาน, และประวัติแชท</div>
       <div class="glass-card">
         <div class="cfg-row"><span class="cfg-name">👥 Token Stats</span></div>
         <div id="admin-stats" style="font-size:var(--fs-xs);color:var(--text-tertiary)">กำลังโหลด...</div>
@@ -1449,41 +1447,37 @@ async function adminRemoveToken() {
   } catch(e) { res.textContent = '❌ เชื่อมต่อไม่ได้'; }
 }
 
-// Agent Chain — drag-and-drop ordering
+function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme')||'';const n=c==='green-white'?'':'green-white';h.setAttribute('data-theme',n);const b=document.getElementById('btn-theme');if(b)b.textContent=n==='green-white'?'☀':'🌙';try{localStorage.setItem('awiki-theme',n);}catch(_){}}
+(function(){try{const t=localStorage.getItem('awiki-theme');if(t){document.documentElement.setAttribute('data-theme',t);const b=document.getElementById('btn-theme');if(b)b.textContent=t==='green-white'?'☀':'🌙';}}catch(_){}})();
+
+
 const AGENT_TYPES=[{type:"plan",role:"วางแผน",icon:"📋",effort:80},{type:"architect",role:"ออกแบบ",icon:"🏗️",effort:90},{type:"ask",role:"ตอบคำถาม",icon:"💬",effort:30},{type:"code",role:"เขียนโค้ด",icon:"💻",effort:70},{type:"code-reviewer",role:"review",icon:"🔍",effort:60},{type:"code-simplifier",role:"simplify",icon:"✂️",effort:50},{type:"code-skeptic",role:"ตรวจสอบ",icon:"🤔",effort:40},{type:"debug",role:"debug",icon:"🐛",effort:85},{type:"docs-specialist",role:"เขียนdoc",icon:"📝",effort:50},{type:"frontend-specialist",role:"frontend",icon:"🎨",effort:75},{type:"orchestrator",role:"orchestrate",icon:"🎯",effort:95},{type:"test-engineer",role:"test",icon:"🧪",effort:70}];
 let _agentOrder=AGENT_TYPES.map(a=>a.type);
-function initAgentChain(){
+function renderAgentChain(){
   const list=document.getElementById('agent-chain-list');if(!list)return;
   try{const saved=JSON.parse(localStorage.getItem('awiki-agent-order')||'[]');if(saved.length)_agentOrder=saved;}catch(_){}
+  try{const saved=JSON.parse(localStorage.getItem('awiki-agent-effort')||'[]');saved.forEach(s=>{const a=AGENT_TYPES.find(x=>x.type===s.type);if(a)a.effort=s.effort;});}catch(_){}
   list.innerHTML='';
-  _agentOrder.forEach((type,i)=>{
-    const a=AGENT_TYPES.find(x=>x.type===type)||AGENT_TYPES[i];
+  _agentOrder.forEach(type=>{
+    const a=AGENT_TYPES.find(x=>x.type===type)||{type,role:type,icon:'🤖',effort:50};
     const el=document.createElement('div');
-    el.className='agent-chain-item';
-    el.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-md);cursor:grab;font-size:var(--fs-sm)';
-    el.innerHTML='<span class="drag-handle" style="cursor:grab;padding:0 4px;user-select:none">⋮⋮</span><span>'+a.icon+'</span><span style="flex:1;font-weight:600">'+a.role+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-xs)">'+a.type+'</span><input type="range" min="0" max="100" value="'+a.effort+'" style="width:60px;accent-color:var(--accent-brand)" data-type="'+a.type+'" onchange="updateEffort(this)"><span style="font-size:var(--fs-xs);min-width:24px;text-align:right">'+a.effort+'</span>';
-    el.setAttribute('data-type',a.type);list.appendChild(el);
+    el.className='agent-item';el.dataset.type=a.type;
+    el.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-md);cursor:default;font-size:var(--fs-sm)';
+    el.innerHTML='<span class="drag-handle" style="cursor:grab;color:var(--text-tertiary);user-select:none;font-size:16px">⋮⋮</span><span>'+a.icon+'</span><span style="flex:1;font-weight:600">'+a.role+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-xs)">'+a.type+'</span><input type="range" min="0" max="100" value="'+a.effort+'" style="width:60px;accent-color:var(--accent-brand)" data-type="'+a.type+'" oninput="updateEffort(this)"><span style="font-size:var(--fs-xs);min-width:24px;text-align:right">'+a.effort+'</span>';
+    list.appendChild(el);
   });
   try{new Sortable(list,{animation:150,handle:'.drag-handle',onEnd:function(evt){
-    const items=list.querySelectorAll('.agent-chain-item');
-    _agentOrder=Array.from(items).map(el=>el.dataset.type);
+    const items=list.querySelectorAll('.agent-item');_agentOrder=Array.from(items).map(el=>el.dataset.type);
     localStorage.setItem('awiki-agent-order',JSON.stringify(_agentOrder));
-    document.getElementById('agent-chain-saved').style.display='inline';
-    setTimeout(()=>{document.getElementById('agent-chain-saved').style.display='none'},2000);
+    const s=document.getElementById('agent-saved');s.style.display='inline';setTimeout(()=>{s.style.display='none'},2000);
   }});}catch(_){}
 }
 function updateEffort(slider){
-  const type=slider.dataset.type;const val=parseInt(slider.value);
-  const a=AGENT_TYPES.find(x=>x.type===type);if(a)a.effort=val;
+  const type=slider.dataset.type;const val=parseInt(slider.value);const a=AGENT_TYPES.find(x=>x.type===type);if(a)a.effort=val;
   slider.nextElementSibling.textContent=val;
-  localStorage.setItem('awiki-agent-effort',JSON.stringify(AGENT_TYPES.map(a=>({type:a.type,effort:a.effort}))));
+  localStorage.setItem('awiki-agent-effort',JSON.stringify(AGENT_TYPES.filter(a=>a.effort!==undefined).map(a=>({type:a.type,effort:a.effort}))));
 }
-initAgentChain();
-
-
-// Theme Toggle
-function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme')||'';const n=c==='green-white'?'':'green-white';h.setAttribute('data-theme',n);document.getElementById('btn-theme').textContent=n==='green-white'?'☀':'🌙';try{localStorage.setItem('dashboard-theme',n);}catch(_){}}
-(function(){try{const t=localStorage.getItem('dashboard-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('btn-theme').textContent=t==='green-white'?'☀':'🌙';}}catch(_){}})();
+renderAgentChain();
 
 </script>
 </body>
