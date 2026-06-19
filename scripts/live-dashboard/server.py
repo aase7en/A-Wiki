@@ -35,6 +35,7 @@ import subprocess
 import sys
 import threading
 import time
+from collections import deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -54,6 +55,18 @@ HERMES_WEBHOOK_URL = os.environ.get(
     "AWIKI_HERMES_URL",
     "http://100.111.37.13:8644/webhook/awiki-live"
 )
+
+# Auth tokens loaded from drive/.secrets or environment variable
+TEAM_TOKENS = set()
+_TOKEN_LOADED = False
+
+# Concurrency queue for chat requests
+_chat_queue = deque()
+_chat_active = 0
+MAX_CHAT_CONCURRENT = 2
+CHAT_QUEUE_TIMEOUT = 300  # 5 minutes
+_chat_queue_lock = threading.Lock()
+_chat_queue_cond = threading.Condition(_chat_queue_lock)
 
 PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
 DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
@@ -123,6 +136,53 @@ _AGENT_COLORS = {
 }
 
 _server_ref = None  # set in __main__ so idle_watchdog can call shutdown()
+
+
+def _load_team_tokens():
+    """Load team tokens from drive/.secrets and AWIKI_TEAM_TOKENS env var."""
+    global TEAM_TOKENS, _TOKEN_LOADED
+    if _TOKEN_LOADED:
+        return
+    _TOKEN_LOADED = True
+
+    tokens = set()
+
+    # Try drive/.secrets first
+    secrets_file = REPO_ROOT / "drive" / ".secrets"
+    if secrets_file.exists():
+        try:
+            for line in secrets_file.read_text("utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("TEAM_TOKENS="):
+                    val = line.split("=", 1)[1].strip().strip('"').strip("'")
+                    for t in val.split(","):
+                        t = t.strip()
+                        if t:
+                            tokens.add(t)
+        except Exception:
+            pass
+
+    # Also check environment variable
+    env_tokens = os.environ.get("AWIKI_TEAM_TOKENS", "")
+    if env_tokens:
+        for t in env_tokens.split(","):
+            t = t.strip()
+            if t:
+                tokens.add(t)
+
+    TEAM_TOKENS = tokens
+
+
+def _validate_token(request_handler) -> bool:
+    """Check Authorization: Bearer header against TEAM_TOKENS.
+    Returns True if token is valid or no tokens configured (auth disabled)."""
+    _load_team_tokens()
+    if not TEAM_TOKENS:
+        return True  # No tokens configured = auth disabled
+    auth = request_handler.headers.get("Authorization", "")
+    token = auth.replace("Bearer ", "").strip()
+    return token in TEAM_TOKENS
+
 
 
 # ---------------------------------------------------------------------------
@@ -570,6 +630,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_keys_post()
         elif path == "/api/chat":
             self._api_chat_post()
+        elif path == "/api/auth/verify":
+            self._api_auth_verify()
         else:
             self.send_error(404, "Not found")
 
@@ -593,8 +655,41 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             self._json_response({"status": "unreachable", "error": str(e)[:200]}, 502)
 
+    def _api_auth_verify(self):
+        """POST /api/auth/verify — validate team token."""
+        _load_team_tokens()
+        if not TEAM_TOKENS:
+            self._json_response({"valid": True, "note": "auth disabled (no tokens configured)"})
+            return
+        data = self._read_body()
+        token = (data.get("token") or "").strip()
+        if token in TEAM_TOKENS:
+            self._json_response({"valid": True})
+        else:
+            self._json_response({"valid": False}, 401)
+
     def _api_chat_post(self):
-        """POST /api/chat — ส่งข้อความไป Hermes Gateway แล้วตอบกลับ"""
+        """POST /api/chat — ส่งข้อความไป Hermes Gateway แล้วตอบกลับ (พร้อม queue)"""
+        if not _validate_token(self):
+            self._json_response({"error": "unauthorized — invalid team token"}, 401)
+            return
+
+        global _chat_active
+        with _chat_queue_lock:
+            if _chat_active >= MAX_CHAT_CONCURRENT:
+                position = len(_chat_queue) + 1
+                self._json_response({"queued": True, "position": position}, 202)
+                _chat_queue.append((self, time.time()))
+                return
+            _chat_active += 1
+
+        try:
+            self._do_chat_proxy()
+        finally:
+            self._process_next_in_queue()
+
+    def _do_chat_proxy(self):
+        """Internal: forward request to Hermes (called by _api_chat_post or queue)."""
         try:
             import urllib.request
 
@@ -612,6 +707,35 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response({"error": f"HTTP {e.code}: {e.reason}"}, 502)
         except Exception as e:
             self._json_response({"error": str(e)[:300]}, 502)
+
+    def _process_next_in_queue(self):
+        """Dequeue and process next chat request if available."""
+        global _chat_active
+        with _chat_queue_lock:
+            _chat_active = max(0, _chat_active - 1)
+
+            # Purge timed-out entries
+            now = time.time()
+            while _chat_queue and (now - _chat_queue[0][1]) > CHAT_QUEUE_TIMEOUT:
+                old_req, _ = _chat_queue.popleft()
+                try:
+                    old_req._json_response({"error": "queue timeout — request expired"}, 408)
+                except Exception:
+                    pass
+
+            if _chat_queue:
+                next_req, _ = _chat_queue.popleft()
+                _chat_active += 1
+                # Process in a new thread so we don't block
+                t = threading.Thread(target=self._run_queued_request, args=(next_req,), daemon=True)
+                t.start()
+
+    def _run_queued_request(self, handler):
+        """Run a queued request handler."""
+        try:
+            handler._do_chat_proxy()
+        finally:
+            handler._process_next_in_queue()
 
     def _json_response(self, data, status=200):
         body = json.dumps(data, ensure_ascii=False).encode()
