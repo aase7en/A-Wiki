@@ -1,11 +1,11 @@
-# Review Report — 2026-06-18
+# Review Report — 2026-06-20
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 852
-- ⚠ Warnings: 257
+- ✓ Passed: 822
+- ⚠ Warnings: 251
 - ❌ Failures: 4
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 241 more issue(s) below
+- … 235 more issue(s) below
 
 ---
 
@@ -147,12 +147,6 @@
 - wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
 - wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
 - wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
-- wiki/sources/env/air-quality-monitoring.md: no frontmatter (missing --- delimiter)
-- wiki/sources/env/soil-moisture-sensing.md: no frontmatter (missing --- delimiter)
-- wiki/sources/env/water-quality-parameters.md: no frontmatter (missing --- delimiter)
-- wiki/sources/it/edge-computing-iot.md: no frontmatter (missing --- delimiter)
-- wiki/sources/it/network-monitoring-iot.md: no frontmatter (missing --- delimiter)
-- wiki/sources/pharmacy/drug-interaction-checking.md: no frontmatter (missing --- delimiter)
 - wiki/synthesis/ai-driven-environmental-modeling.md: missing frontmatter key: title
 - wiki/synthesis/ai-for-drug-safety.md: missing frontmatter key: title
 - wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
@@ -310,10 +304,10 @@
 
 ---
 
-## ✓ Passed Checks (852 total)
+## ✓ Passed Checks (822 total)
 
-- **L2**: 354 passed
-- **L3**: 495 passed
+- **L2**: 342 passed
+- **L3**: 477 passed
 - **L6**: 3 passed
 
 ---

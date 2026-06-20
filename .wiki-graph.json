@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-18",
+  "generated_at": "2026-06-20",
   "stats": {
-    "nodes": 518,
-    "edges": 1682,
+    "nodes": 520,
+    "edges": 1683,
     "edges_by_type": {
       "wikilink": 1179,
       "mdlink": 49,
-      "depends": 367,
+      "depends": 368,
       "implements": 49,
       "extends": 38
     },
@@ -481,7 +481,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-18",
+      "title": "Review Report — 2026-06-20",
       "domain": "context"
     },
     {
@@ -1007,6 +1007,11 @@
     {
       "path": "wiki/sources/ddc-cpg-rabies-2564.md",
       "title": "แนวทางเวชปฏิบัติโรคพิษสุนัขบ้า — กรมควบคุมโรค",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/deepseek-aideepseek-v4-pro-at-main.md",
+      "title": "deepseek-aideepseek-v4-pro-at-main",
       "domain": "sources"
     },
     {
@@ -2002,6 +2007,11 @@
     {
       "path": "wiki/synthesis/synth-ddc-cpg-rabies-2564.md",
       "title": "แนวทางเวชปฏิบัติโรคพิษสุนัขบ้า และคำถามที่พบบ่อย (ฉบับปรับปรุง) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-deepseek-aideepseek-v4-pro-at-main.md",
+      "title": "[Download](https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/resolve/main/DeepS — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -13148,6 +13158,13 @@
     {
       "from": "wiki/synthesis/synth-ddc-cpg-rabies-2564.md",
       "to": "wiki/sources/ddc-cpg-rabies-2564.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-deepseek-aideepseek-v4-pro-at-main.md",
+      "to": "wiki/sources/deepseek-aideepseek-v4-pro-at-main.md",
       "type": "depends",
       "broken": false,
       "external": false

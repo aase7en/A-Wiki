@@ -1,11 +1,11 @@
 # Knowledge Graph (auto-generated)
 
-_Generated: 2026-06-18_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
+_Generated: 2026-06-20_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
 
 ## Stats
 
-- **Nodes**: 518
-- **Edges**: 1659
+- **Nodes**: 520
+- **Edges**: 1683
 - **Broken links**: 0 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 13 (run `python3 scripts/query-graph.py --orphans`)
 
@@ -19,8 +19,8 @@ _Generated: 2026-06-18_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 - `index-ai-tools.md` (36 edges)
 - `wiki/entities/iot/dx-lr02-lora.md` (36 edges)
 - `index-env.md` (30 edges)
-- `wiki/sources/hardware-inventory-2026-04-18.md` (30 edges)
-- `wiki/synthesis/iot-lora-architecture.md` (30 edges)
+- `wiki/concepts/iot/lora.md` (30 edges)
+- `wiki/entities/iot/grafana.md` (30 edges)
 
 ## Query CLI
 
