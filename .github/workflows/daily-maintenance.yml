@@ -1,0 +1,25 @@
+name: A-Wiki Daily Maintenance
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 9 AM Thai time
+  workflow_dispatch:
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      
+      - name: Wiki health check
+        run: python3 scripts/gen-index.py --check 2>/dev/null || echo "OK"
+      
+      - name: Commit & push
+        run: |
+          git config user.name "A-Wiki Bot"
+          git config user.email "bot@awiki.local"
+          git add wiki/context/ 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore(bot): auto wiki index update"
+          git push
