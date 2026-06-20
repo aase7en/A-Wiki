@@ -475,3 +475,56 @@ This project is indexed by GitNexus as **A-Wiki** (20417 symbols, 22525 relation
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+---
+
+## 🤖 Hermes Multi-Device Ecosystem
+
+A-Wiki drives Hermes Agent across all devices with unified config, auto-sync, and 24/7 Telegram access:
+
+| Device | Role | Hermes Install |
+|--------|------|---------------|
+| **MacBook** | Dev + config source | Native (`.hermes/hermes-agent/venv/bin/hermes`) |
+| **Raspberry Pi 5** | 24/7 server + Telegram gateway | Docker (Umbrel App Store) |
+| **Windows** | Secondary workstation | Native or Docker |
+
+### Auto-Sync Protocol
+
+```
+MacBook: manual export + git push → GitHub
+Pi5:     cron every 6h → git pull → docker cp → hermes profile import
+Windows: Task Scheduler every 6h → git pull → hermes profile import
+```
+
+**Profile**: `tech_and_ai_architect` (77 skills, unified config)
+**Secrets**: `.env` + `auth.json` — NEVER in git, transfer via scp/HTTP
+
+### Backup Schedule
+
+| Job | Schedule | ID |
+|-----|----------|-----|
+| Daily Backup to Drive | 3 AM | `7faa058b696e` |
+| Weekly Memory Compaction | Sun 4 AM | `efd1f46fcf53` |
+| A-Wiki Health Check | Daily 8 AM | `224a5351605a` |
+
+### Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/hermes/export-macbook-config.sh` | Export config package |
+| `scripts/hermes/import-on-pi5.sh` | Import on Pi5 |
+| `scripts/hermes/auto-sync-from-git.sh` | Pi5 auto-sync (cron) |
+| `scripts/hermes/auto-sync.ps1` | Windows auto-sync (Task Scheduler) |
+| `scripts/hermes/backup-sessions.sh` | Export sessions → Drive |
+| `scripts/hermes/backup-to-drive.sh` | Full Drive backup |
+| `scripts/hermes/compact-memories.py` | Memory dedup + compact |
+
+### Telegram Integration
+
+Pi5 runs Hermes Telegram gateway 24/7:
+1. Create bot via @BotFather → `TELEGRAM_BOT_TOKEN`
+2. Add to Pi5 container `.env`
+3. `hermes gateway setup` → enable Telegram
+4. Commands: `/wiki`, `/search`, `/backup`, `/status`, lifecycle commands
+
+See: `docs/runbooks/hermes-multi-device.md`
