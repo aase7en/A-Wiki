@@ -38,6 +38,14 @@ PKG_TIME=$(stat -c %Y "$LATEST" 2>/dev/null || echo 0)
 LAST_TIME=$(cat "$LAST_IMPORT_FILE" 2>/dev/null || echo 0)
 [ "$PKG_TIME" -le "$LAST_TIME" ] && { echo "Already imported."; exit 0; }
 
+# ---- Step: Sync secrets from Google Drive ----
+echo "Syncing secrets from Google Drive..."
+if [ -f "scripts/hermes/sync-secrets-from-drive.sh" ]; then
+  bash scripts/hermes/sync-secrets-from-drive.sh 2>&1 || echo "Drive sync skipped (OK if first run)"
+else
+  echo "sync-secrets-from-drive.sh not found — skip"
+fi
+
 echo "Importing $LATEST..."
 sudo -S -p '' docker cp "$LATEST" "$CONTAINER:/tmp/hermes-auto-import.tar.gz"
 sudo -S -p '' docker exec "$CONTAINER" "$HERMES_BIN" profile import /tmp/hermes-auto-import.tar.gz 2>&1

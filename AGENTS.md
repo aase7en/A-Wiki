@@ -488,12 +488,20 @@ A-Wiki drives Hermes Agent across all devices with unified config, auto-sync, an
 | **Raspberry Pi 5** | 24/7 server + Telegram gateway | Docker (Umbrel App Store) |
 | **Windows** | Secondary workstation | Native or Docker |
 
-### Auto-Sync Protocol
+### Secure Sync Protocol (Public + Private Layers)
 
 ```
-MacBook: manual export + git push → GitHub
-Pi5:     cron every 6h → git pull → docker cp → hermes profile import
-Windows: Task Scheduler every 6h → git pull → hermes profile import
+PUBLIC (GitHub)              PRIVATE (Google Drive — encrypted, NEVER HTTP)
+─────────────                ─────────────────────────────────────────
+config.yaml                  .env (API keys), auth.json
+skills/, cron/, scripts/     SOUL.md, MEMORY.md, USER.md
+
+MacBook: sync-all.sh --push  → GitHub + Google Drive
+Pi5:     cron every 6h       → sync-all.sh (pull Git + Drive → docker cp)
+Windows: Task Scheduler 6h   → sync-all.sh (pull Git + Drive → import)
+
+⚠️  One command: bash scripts/hermes/sync-all.sh
+⚠️  NO HTTP server for config — secrets move ONLY via Google Drive
 ```
 
 **Profile**: `tech_and_ai_architect` (77 skills, unified config)
@@ -501,20 +509,24 @@ Windows: Task Scheduler every 6h → git pull → hermes profile import
 
 ### Backup Schedule
 
-| Job | Schedule | ID |
-|-----|----------|-----|
-| Daily Backup to Drive | 3 AM | `7faa058b696e` |
-| Weekly Memory Compaction | Sun 4 AM | `efd1f46fcf53` |
-| A-Wiki Health Check | Daily 8 AM | `224a5351605a` |
+| Job | Schedule | Command |
+|-----|----------|---------|
+| Full Sync to Drive | On config change | `bash scripts/hermes/sync-all.sh --push` |
+| Auto-Sync (Pi5) | Every 6h | `bash scripts/hermes/sync-all.sh` |
+| Daily Backup to Drive | 3 AM | `bash scripts/hermes/backup-to-drive.sh` |
+| Weekly Memory Compaction | Sun 4 AM | `python3 scripts/hermes/compact-memories.py` |
+| A-Wiki Health Check | Daily 8 AM | cron `224a5351605a` |
 
 ### Scripts
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/hermes/export-macbook-config.sh` | Export config package |
-| `scripts/hermes/import-on-pi5.sh` | Import on Pi5 |
-| `scripts/hermes/auto-sync-from-git.sh` | Pi5 auto-sync (cron) |
-| `scripts/hermes/auto-sync.ps1` | Windows auto-sync (Task Scheduler) |
+| `scripts/hermes/sync-all.sh` | **One-command full sync** (public + private) |
+| `scripts/hermes/sync-secrets-to-drive.sh` | Push .env/auth/SOUL/memories → Drive |
+| `scripts/hermes/sync-secrets-from-drive.sh` | Pull secrets ← Drive (for Pi5/Win) |
+| `scripts/hermes/export-macbook-config.sh` | Export config package (public layer) |
+| `scripts/hermes/auto-sync-from-git.sh` | Pi5 auto-sync with Drive secrets |
+| `scripts/hermes/auto-sync.ps1` | Windows auto-sync |
 | `scripts/hermes/backup-sessions.sh` | Export sessions → Drive |
 | `scripts/hermes/backup-to-drive.sh` | Full Drive backup |
 | `scripts/hermes/compact-memories.py` | Memory dedup + compact |
