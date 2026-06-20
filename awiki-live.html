@@ -92,7 +92,7 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 
 <script>
 // ── Config ──
-const HERMES_URL = 'http://192.168.1.157:18790/chat';
+const HERMES_URL = 'http://192.168.1.157:7790/api/chat';
 let _chatFiles = [];
 let _chatLoading = false;
 let _connected = false;
@@ -114,7 +114,8 @@ async function testConnection(){
   status.textContent='🔄 Connecting...';
   btn.disabled=true;
   try{
-    const resp=await fetch(HERMES_URL+'/health',{method:'GET',signal:AbortSignal.timeout(5000)});
+    const healthUrl = HERMES_URL.replace('/api/chat','/status');
+    const resp=await fetch(healthUrl,{method:'GET',signal:AbortSignal.timeout(5000)});
     if(resp.ok){
       _connected=true;
       status.innerHTML='<span class="chat-status-badge">⚡ Connected</span>';
