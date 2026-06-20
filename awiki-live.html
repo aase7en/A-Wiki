@@ -92,7 +92,14 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 
 <script>
 // ── Config ──
-const HERMES_URL = 'http://192.168.1.157:7790/api/chat';
+const HERMES_BASE = 'http://192.168.1.157';
+const HERMES_PORT = 8501;
+const HERMES_CHAT_URL = `${HERMES_BASE}:${HERMES_PORT}/v1/chat/completions`;
+const HERMES_HEALTH_URL = `${HERMES_BASE}:${HERMES_PORT}/health`;
+// API key for Hermes — LAN-only personal project
+const API_KEY = 'VPTzFYq8K68BYFdfJfzciqlwh7Oxhp4KYKxHxs2NCyk';
+const MODEL = 'deepseek-v4-pro';
+
 let _chatFiles = [];
 let _chatLoading = false;
 let _connected = false;
@@ -114,18 +121,18 @@ async function testConnection(){
   status.textContent='🔄 Connecting...';
   btn.disabled=true;
   try{
-    const healthUrl = HERMES_URL.replace('/api/chat','/status');
-    const resp=await fetch(healthUrl,{method:'GET',signal:AbortSignal.timeout(5000)});
+    const resp=await fetch(HERMES_HEALTH_URL,{method:'GET',signal:AbortSignal.timeout(5000)});
     if(resp.ok){
+      const data=await resp.json();
       _connected=true;
-      status.innerHTML='<span class="chat-status-badge">⚡ Connected</span>';
+      status.innerHTML='<span class="chat-status-badge">⚡ Connected — '+data.platform+'</span>';
       btn.textContent='✅ Connected';
     }else{
       throw new Error('HTTP '+resp.status);
     }
   }catch(e){
     _connected=false;
-    status.textContent='⚠ '+e.message+' — will use fetch anyway';
+    status.textContent='⚠ '+e.message+' — will try anyway';
     btn.textContent='🔌 Retry';
   }
   btn.disabled=false;
@@ -163,38 +170,40 @@ async function sendChat(){
   const ta=document.getElementById('chat-textarea');
   const msg=ta.value.trim();
   if(!msg&&!_chatFiles.length)return;
-  
+
   _chatLoading=true;
   document.getElementById('chat-send-btn').disabled=true;
   document.getElementById('chat-empty')?.remove();
-  
+
   // Add user message
   addChatMessage('user',msg||'(files attached)',_chatFiles.map(f=>f.name));
   ta.value='';
   autoResize(ta);
-  
+
   const statusEl=document.getElementById('chat-status');
-  statusEl.innerHTML='<span class="chat-status-badge">⏳ Sending...</span>';
-  
+  statusEl.innerHTML='<span class="chat-status-badge">⏳ Thinking...</span>';
+
   try{
-    let resp;
-    if(_chatFiles.length){
-      const formData=new FormData();
-      formData.append('message',msg||'Files attached');
-      _chatFiles.forEach(f=>formData.append('files',f));
-      resp=await fetch(HERMES_URL,{method:'POST',body:formData,signal:AbortSignal.timeout(60000)});
-    }else{
-      resp=await fetch(HERMES_URL,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message:msg}),
-        signal:AbortSignal.timeout(60000)
-      });
+    // Build OpenAI-format messages
+    const messages=[{role:'user',content:msg||'Files attached'}];
+
+    const resp=await fetch(HERMES_CHAT_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+API_KEY
+      },
+      body:JSON.stringify({model:MODEL,messages: messages,max_tokens:2000}),
+      signal:AbortSignal.timeout(180000)
+    });
+
+    if(!resp.ok){
+      const errText=await resp.text();
+      throw new Error('HTTP '+resp.status+': '+errText.substring(0,200));
     }
-    
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
+
     const data=await resp.json();
-    const reply=data.response||data.text||data.message||data.reply||JSON.stringify(data);
+    const reply=data.choices?.[0]?.message?.content||JSON.stringify(data);
     addChatMessage('hermes',reply);
     statusEl.innerHTML='<span class="chat-status-badge">⚡ Connected</span>';
     _connected=true;
@@ -205,7 +214,7 @@ async function sendChat(){
     _connected=false;
     document.getElementById('btn-connect').textContent='🔌 Retry';
   }
-  
+
   _chatFiles=[];
   document.getElementById('file-input').value='';
   document.getElementById('chat-file-count').style.display='none';
