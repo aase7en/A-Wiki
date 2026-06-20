@@ -1,0 +1,1 @@
+../../skills/engineering-lifecycle/ship/documentation-and-adrs/SKILL.md

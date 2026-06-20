@@ -1,0 +1,1 @@
+../../skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md

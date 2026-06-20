@@ -1,0 +1,1 @@
+../../skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md
