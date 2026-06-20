@@ -264,3 +264,52 @@ hermes chat -q "ค้นหา: mqtt broker ใน wiki"
 | `agents/*.md` | 4 specialist personas |
 | `commands/*.md` | 7 slash commands |
 | `docs/runbooks/rpi5-docker-audit.md` | Docker compatibility audit |
+| `scripts/hermes/export-macbook-config.sh` | Export full Hermes config from MacBook |
+| `scripts/hermes/import-on-pi5.sh` | Import Hermes config on Pi5 |
+| `scripts/hermes/IMPORT-NOTES.md` | Full migration guide + secrets handling |
+
+## MacBook → Pi5 Config Migration
+
+ใช้เมื่อต้องการย้าย configuration ทั้งหมดจาก MacBook ไป Pi5
+(config.yaml, SOUL.md, skills 77 ตัว, memories, cron jobs, toolsets, provider)
+
+### Quick Migration (3 ขั้นตอน)
+
+```bash
+# 1. บน MacBook — export config
+bash scripts/hermes/export-macbook-config.sh
+# → ได้ไฟล์ scripts/hermes/hermes-export-YYYYMMDD.tar.gz
+
+# 2. Transfer ไป Pi5
+scp scripts/hermes/hermes-export-*.tar.gz pi@umbrel.local:~/
+
+# 3. บน Pi5 — import
+ssh pi@umbrel.local
+hermes profile import ~/hermes-export-*.tar.gz
+# หรือใช้ script:
+bash ~/A-Wiki/scripts/hermes/import-on-pi5.sh ~/hermes-export-*.tar.gz
+```
+
+### จัดการ Secrets (API Keys)
+
+```bash
+# Secrets ไม่อยู่ใน package — ต้อง copy เอง
+scp ~/.hermes/profiles/tech_and_ai_architect/.env pi@umbrel.local:~/.hermes/profiles/tech_and_ai_architect/
+scp ~/.hermes/profiles/tech_and_ai_architect/auth.json pi@umbrel.local:~/.hermes/profiles/tech_and_ai_architect/
+scp ~/.hermes/.env pi@umbrel.local:~/.hermes/
+```
+
+### Git-based sync (ทางเลือก)
+
+```bash
+# 1. Commit + push export package
+git add scripts/hermes/hermes-export-*.tar.gz
+git commit -m "chore(hermes): export MacBook config for Pi5 deployment"
+git push
+
+# 2. บน Pi5 — pull + import
+cd ~/A-Wiki && git pull
+hermes profile import scripts/hermes/hermes-export-*.tar.gz
+```
+
+ดูรายละเอียด full migration: `scripts/hermes/IMPORT-NOTES.md`
