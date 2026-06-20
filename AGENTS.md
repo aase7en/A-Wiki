@@ -488,9 +488,11 @@ A-Wiki drives Hermes Agent across all devices with unified config, auto-sync, an
 | **Raspberry Pi 5** | 24/7 server + Telegram gateway | Docker (Umbrel App Store) |
 | **Windows** | Secondary workstation | Native or Docker |
 
-### Secure Sync Protocol (Public + Private Layers)
+### Secure Sync Protocol (Public + Private Layers) — LIVE ✅
 
 ```
+Status:  ✅ MacBook (push)  ✅ Pi5 (auto-pull every 6h)  ⬜ Windows (pending)
+
 PUBLIC (GitHub)              PRIVATE (Google Drive — encrypted, NEVER HTTP)
 ─────────────                ─────────────────────────────────────────
 config.yaml                  .env (API keys), auth.json
