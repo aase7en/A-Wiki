@@ -338,6 +338,61 @@ python scripts/hooks_runner.py < tests/fixtures/sample-input.json
 
 ---
 
+## 🏗️ Engineering Lifecycle Skills (NEW)
+
+A-Wiki now includes production-grade engineering lifecycle skills adapted from [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) (MIT). These skills give agents structured workflows with verification gates and anti-rationalization tables.
+
+### Lifecycle Phases
+
+```
+DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
+```
+
+| Phase | Skills | Location |
+|-------|--------|----------|
+| **Define** | `spec-driven-development`, `idea-refine` | `skills/engineering-lifecycle/define/` |
+| **Plan** | `planning-and-task-breakdown` | `skills/engineering-lifecycle/plan/` |
+| **Build** | `incremental-implementation`, `test-driven-development`, `doubt-driven-development`, `source-driven-development`, `frontend-ui-engineering`, `api-and-interface-design`, `context-engineering` | `skills/engineering-lifecycle/build/` |
+| **Verify** | `browser-testing-with-devtools` | `skills/engineering-lifecycle/verify/` |
+| **Review** | `code-simplification`, `security-and-hardening`, `performance-optimization` | `skills/engineering-lifecycle/review/` |
+| **Ship** | `git-workflow-and-versioning`, `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `observability-and-instrumentation`, `shipping-and-launch` | `skills/engineering-lifecycle/ship/` |
+
+### Meta-Skill
+
+`skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` — loaded at session start by `hooks/lifecycle-session-start.sh`. Contains the intent→skill mapping flowchart.
+
+### Intent → Skill Mapping (for Codex / OpenCode / Copilot)
+
+When a task arrives, map the user's intent:
+
+- "I need to plan / design something" → `spec-driven-development`
+- "Break this into tasks" → `planning-and-task-breakdown`
+- "Build / implement / code this" → `incremental-implementation` + `test-driven-development`
+- "Write tests" / "Test this" → `test-driven-development`
+- "Something is broken / bug" → `debug-mantra`
+- "Review / audit / QA" → `scrutinize` + person fan-out
+- "Simplify / refactor this code" → `code-simplification`
+- "Security review" → `security-and-hardening`
+- "Performance / slow" → `performance-optimization`
+- "Deploy / ship / release" → `shipping-and-launch` + person fan-out
+- "Document this / ADR" → `documentation-and-adrs`
+- "Deprecate / migrate / sunset" → `deprecation-and-migration`
+
+### Agent Personas
+
+4 specialist personas for parallel fan-out reviews. Personas do NOT invoke other personas.
+
+| Persona | Role | File |
+|---------|------|------|
+| `code-reviewer` | Senior Staff Engineer | `agents/code-reviewer.md` |
+| `test-engineer` | QA Specialist | `agents/test-engineer.md` |
+| `security-auditor` | Security Engineer | `agents/security-auditor.md` |
+| `web-performance-auditor` | Web Performance Engineer | `agents/web-performance-auditor.md` |
+
+**Hermes orchestrator**: `scripts/hermes/lifecycle-config.json` configures phase ordering, person fan-out, and shortcut blocklist.
+
+---
+
 ## 📝 Commit / PR Rules
 
 - **Commit directly to `main`** — never create branches or PRs

@@ -1,0 +1,1 @@
+../../skills/engineering-lifecycle/define/spec-driven-development/SKILL.md

@@ -1,0 +1,1 @@
+../../skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md

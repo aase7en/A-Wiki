@@ -107,6 +107,57 @@ python3 scripts/lib/drive_secrets.py --check
 
 ---
 
+## 🏗️ Engineering Lifecycle Skills (ใหม่ — จาก addyosmani/agent-skills)
+
+A-Wiki now includes production-grade lifecycle skills adapted from agent-skills (MIT). Skills are in `skills/engineering-lifecycle/` — usable by all agents.
+
+### Lifecycle Phases
+```
+DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
+```
+
+| Phase | Skills | Path |
+|-------|--------|------|
+| **Define** | `spec-driven-development`, `idea-refine` | `define/` |
+| **Plan** | `planning-and-task-breakdown` | `plan/` |
+| **Build** | `incremental-implementation`, `test-driven-development`, `doubt-driven-development`, `source-driven-development`, `frontend-ui-engineering`, `api-and-interface-design`, `context-engineering` | `build/` |
+| **Verify** | `browser-testing-with-devtools` | `verify/` |
+| **Review** | `code-simplification`, `security-and-hardening`, `performance-optimization` | `review/` |
+| **Ship** | `git-workflow-and-versioning`, `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `observability-and-instrumentation`, `shipping-and-launch` | `ship/` |
+
+### Agent Personas (4 specialists)
+| Persona | Role | File |
+|---------|------|------|
+| `code-reviewer` | Staff Engineer, five-axis review | `agents/code-reviewer.md` |
+| `test-engineer` | QA Specialist, prove-it pattern | `agents/test-engineer.md` |
+| `security-auditor` | Security Engineer, OWASP | `agents/security-auditor.md` |
+| `web-performance-auditor` | Web Perf, Core Web Vitals | `agents/web-performance-auditor.md` |
+
+**Rule**: Personas do NOT invoke other personas. Parallel fan-out only (e.g., `/ship` runs code-reviewer + security-auditor + test-engineer concurrently).
+
+### Slash Commands
+| Command | Skills | Use |
+|---------|--------|-----|
+| `/spec` | `spec-driven-development` | Define what to build |
+| `/plan` | `planning-and-task-breakdown` | Break into verifiable tasks |
+| `/build` | `incremental-implementation` + TDD | Build slice by slice |
+| `/test` | `debug-mantra` + TDD | Debug + fix |
+| `/review` | `scrutinize` + `code-simplification` + `security-and-hardening` | Quality gates |
+| `/code-simplify` | `code-simplification` | Reduce complexity |
+| `/ship` | `shipping-and-launch` + parallel fan-out | Go/no-go |
+
+**Session start**: `hooks/lifecycle-session-start.sh` injects `awiki-lifecycle-router/SKILL.md`.
+
+### A-Wiki Overlap (keep ours)
+| A-Wiki | Replaces agent-skills |
+|--------|----------------------|
+| `debug-mantra` | `debugging-and-error-recovery` (4-step is stronger) |
+| `scrutinize` | `code-review-and-quality` (outsider-perspective is stronger) |
+| `grill-me` | `interview-me` (more relentless) |
+| `post-mortem` | (no equivalent) |
+
+---
+
 ## 💰 Cost-First Decision Pyramid (จาก InW-Wiki)
 
 | Level | ช่องทาง | ใช้กับงาน |
