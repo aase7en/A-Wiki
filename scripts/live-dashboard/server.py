@@ -749,15 +749,48 @@ class Handler(BaseHTTPRequestHandler):
         if not message:
             self._json_response({"error": "message required"}, 400)
             return
+
+        # Log incoming message
         evt = {"ts": round(time.time(), 3), "type": "chat_message", "message": message[:4000], "from": data.get("from", "dashboard")}
         try:
             CHAT_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(CHAT_LOG_FILE, "a", encoding="utf-8") as f:
                 f.write(json.dumps(evt, ensure_ascii=False) + "\n")
             broadcast(json.dumps(evt, ensure_ascii=False))
-            self._json_response({"ok": True})
+        except Exception:
+            pass
+
+        # Call Hermes API
+        api_key = os.environ.get("API_SERVER_KEY", "")
+        if not api_key:
+            self._json_response({"error": "API_SERVER_KEY not set", "response": "⚠️ API key not configured"}, 500)
+            return
+
+        try:
+            import urllib.request
+            hermes_payload = json.dumps({
+                "model": "deepseek-v4-pro",
+                "messages": [{"role": "user", "content": message}],
+                "max_tokens": 2000
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                "http://127.0.0.1:8501/v1/chat/completions",
+                data=hermes_payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {api_key}"
+                },
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                result = json.loads(resp.read().decode("utf-8"))
+            reply = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            if not reply:
+                reply = json.dumps(result, ensure_ascii=False)
         except Exception as e:
-            self._json_response({"error": str(e)}, 500)
+            reply = f"❌ Hermes API error: {e}"
+
+        self._json_response({"ok": True, "response": reply})
 
     # -- Upload --
     def _api_upload_post(self):
@@ -879,7 +912,7 @@ if __name__ == "__main__":
     t = threading.Thread(target=tail_log, daemon=True)
     t.start()
 
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     server.daemon_threads = True
     _server_ref = server
 
