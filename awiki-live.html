@@ -92,8 +92,8 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 
 <script>
 // ── Config ──
-// Use SSH tunnel: ssh -N -L 8501:localhost:8501 pi@192.168.1.157
-const HERMES_BASE = 'http://localhost';
+// Direct LAN access via socat forward on Pi 5 host
+const HERMES_BASE = 'http://192.168.1.157';
 const HERMES_PORT = 8501;
 const HERMES_CHAT_URL = `${HERMES_BASE}:${HERMES_PORT}/v1/chat/completions`;
 const HERMES_HEALTH_URL = `${HERMES_BASE}:${HERMES_PORT}/health`;
