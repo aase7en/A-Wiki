@@ -87,6 +87,37 @@
 
 ---
 
+## 🚀 โปรเจกต์ในท่อ (Backlog)
+
+### 🎮 เกมภายใต้ Sunday Estate
+
+| โปรเจกต์ | Stack | สถานะ |
+|----------|-------|--------|
+| **Sunday Invest Moon** | Phaser + React + Zustand | 🟡 Dev — 679 tests green |
+| **Tide & Tally** | เรือโจรสลัดเทรดบอท | 🟡 Dev |
+
+### 🏥 IoT โรงพยาบาล
+
+| โปรเจกต์ | Hardware |
+|----------|----------|
+| วัดไฟฟ้า | PZEM-004T + ESP32 |
+| ชั่งขยะ | Load Cell + HX711 |
+| PM2.5 | PMS5003 + LoRa |
+| Cold Chain | DS18B20 + TinyML |
+
+### 💻 Web App + AI
+
+| โปรเจกต์ | Stack |
+|----------|-------|
+| Pharmacy Order Checker | FastAPI + React |
+| ระบบบำบัดน้ำเสีย | FastAPI + PostgreSQL |
+| Trading Bot | Freqtrade + Pi 5 |
+| Mac Mini AI Server | Ollama + LiteLLM |
+
+> ทั้งหมด 15+ โปรเจกต์ใน roadmap — รันบน Pi 5 + Mac Mini เป็นหลัก
+
+---
+
 ## 💰 ต้นทุน
 
 | รายการ | ราคา/เดือน |
