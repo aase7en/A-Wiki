@@ -1,0 +1,77 @@
+name: Build Pake Desktop App
+# 🖥️ Build A-Wiki Live as a native desktop app using Pake (Rust/Tauri)
+# [Thai ไอ้A Plus Spot.] · A-Wiki Brain + Hermes Agent
+#
+# Triggers: manual (workflow_dispatch)
+# Output: Linux AppImage + macOS DMG + Windows EXE
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to package'
+        required: true
+        default: 'https://aase7en.github.io/A-Wiki/awiki-live.html'
+      app_name:
+        description: 'App name'
+        required: true
+        default: 'A-Wiki Live'
+      icon_url:
+        description: 'Icon URL (optional)'
+        required: false
+        default: ''
+      width:
+        description: 'Window width'
+        required: false
+        default: '480'
+      height:
+        description: 'Window height'
+        required: false
+        default: '720'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install Linux deps (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install pake-cli
+        run: npm install -g pake-cli
+
+      - name: Build Pake app
+        run: |
+          pake ${{ inputs.url }} \
+            --name "${{ inputs.app_name }}" \
+            --width ${{ inputs.width }} \
+            --height ${{ inputs.height }} \
+            ${{ inputs.icon_url && format('--icon {0}', inputs.icon_url) || '' }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app_name }}-${{ runner.os }}
+          path: |
+            *.dmg
+            *.AppImage
+            *.exe
+            *.msi
+            *.deb
