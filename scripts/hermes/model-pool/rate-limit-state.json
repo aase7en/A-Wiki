@@ -1,0 +1,9 @@
+{
+  "cooldowns": {
+    "gemini/gemini-3-flash-preview": {
+      "since": 1782069293.0367348,
+      "until": 1782069353.0367353,
+      "reason": "rate-limited, cooling 60s"
+    }
+  }
+}

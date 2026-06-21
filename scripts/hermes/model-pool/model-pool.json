@@ -1,0 +1,238 @@
+{
+  "generated_at": "2026-06-21T19:15:30Z",
+  "source": "[Thai ไอ้A Plus Spot.] · A-Wiki Brain · Hermes Agent",
+  "providers": {
+    "gemini": {
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "gemini-2.5-flash-lite",
+          "capability": "text",
+          "rpm": 30,
+          "context": 1048576,
+          "note": "",
+          "provider": "gemini"
+        },
+        {
+          "id": "gemini-2.5-flash",
+          "capability": "text",
+          "rpm": 15,
+          "context": 1048576,
+          "note": "",
+          "provider": "gemini"
+        },
+        {
+          "id": "gemini-3-flash-preview",
+          "capability": "text+vision",
+          "rpm": 15,
+          "context": 1048576,
+          "note": "free tier",
+          "provider": "gemini"
+        },
+        {
+          "id": "gemini-3-flash-lite-preview",
+          "capability": "text+vision",
+          "rpm": 30,
+          "context": 1048576,
+          "note": "free tier",
+          "provider": "gemini"
+        }
+      ]
+    },
+    "zai": {
+      "base_url": "https://open.bigmodel.cn/api/paas/v4",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "glm-4.7-flash",
+          "capability": "text",
+          "rpm": 60,
+          "context": 131072,
+          "note": "free",
+          "provider": "zai"
+        },
+        {
+          "id": "glm-4.6v-flash",
+          "capability": "vision",
+          "rpm": 30,
+          "context": 131072,
+          "note": "free vision",
+          "provider": "zai"
+        },
+        {
+          "id": "glm-4.6v",
+          "capability": "vision",
+          "rpm": 30,
+          "context": 131072,
+          "note": "vision general",
+          "provider": "zai"
+        }
+      ]
+    },
+    "openrouter": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "poolside/laguna-m.1:free",
+          "capability": "text",
+          "rpm": 20,
+          "context": 32768,
+          "note": "",
+          "provider": "openrouter"
+        },
+        {
+          "id": "deepseek/deepseek-v4-flash-lite:free",
+          "capability": "text",
+          "rpm": 20,
+          "context": 131072,
+          "note": "",
+          "provider": "openrouter"
+        },
+        {
+          "id": "google/gemini-2.5-flash-lite:free",
+          "capability": "text",
+          "rpm": 20,
+          "context": 1048576,
+          "note": "",
+          "provider": "openrouter"
+        },
+        {
+          "id": "nvidia/llama-3.3-nemotron-super-49b-v1:free",
+          "capability": "text",
+          "rpm": 20,
+          "context": 131072,
+          "note": "",
+          "provider": "openrouter"
+        },
+        {
+          "id": "meta-llama/llama-4-maverick:free",
+          "capability": "text",
+          "rpm": 20,
+          "context": 131072,
+          "note": "",
+          "provider": "openrouter"
+        }
+      ]
+    },
+    "groq": {
+      "base_url": "https://api.groq.com/openai/v1",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "llama-3.3-70b-versatile",
+          "capability": "text",
+          "rpm": 30,
+          "context": 131072,
+          "note": "",
+          "provider": "groq"
+        },
+        {
+          "id": "mixtral-8x7b-32768",
+          "capability": "text",
+          "rpm": 30,
+          "context": 32768,
+          "note": "",
+          "provider": "groq"
+        },
+        {
+          "id": "gemma2-9b-it",
+          "capability": "text",
+          "rpm": 30,
+          "context": 8192,
+          "note": "",
+          "provider": "groq"
+        }
+      ]
+    },
+    "xai": {
+      "base_url": "https://api.x.ai/v1",
+      "has_free_tier": false,
+      "models": [
+        {
+          "id": "grok-3-mini",
+          "capability": "text",
+          "rpm": 10,
+          "context": 131072,
+          "note": "may have free credits",
+          "provider": "xai"
+        }
+      ]
+    },
+    "huggingface": {
+      "base_url": "https://api-inference.huggingface.co/models",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "Qwen/Qwen3-32B",
+          "capability": "text",
+          "rpm": 10,
+          "context": 32768,
+          "note": "free inference API",
+          "provider": "huggingface"
+        }
+      ]
+    },
+    "fireworks": {
+      "base_url": "https://api.fireworks.ai/inference/v1",
+      "has_free_tier": true,
+      "models": [
+        {
+          "id": "accounts/fireworks/models/llama-v3p3-70b-instruct",
+          "capability": "text",
+          "rpm": 30,
+          "context": 131072,
+          "note": "",
+          "provider": "fireworks"
+        }
+      ]
+    },
+    "deepseek": {
+      "base_url": "https://api.deepseek.com/v1",
+      "has_free_tier": false,
+      "models": [
+        {
+          "id": "deepseek-v4-flash-lite",
+          "capability": "text",
+          "rpm": 20,
+          "context": 131072,
+          "note": "cheapest tier",
+          "provider": "deepseek"
+        }
+      ]
+    }
+  },
+  "fallback_chain": {
+    "text": [
+      "gemini/gemini-2.5-flash-lite",
+      "gemini/gemini-2.5-flash",
+      "gemini/gemini-3-flash-preview",
+      "gemini/gemini-3-flash-lite-preview",
+      "zai/glm-4.7-flash",
+      "openrouter/poolside/laguna-m.1:free",
+      "openrouter/deepseek/deepseek-v4-flash-lite:free",
+      "openrouter/google/gemini-2.5-flash-lite:free",
+      "openrouter/nvidia/llama-3.3-nemotron-super-49b-v1:free",
+      "openrouter/meta-llama/llama-4-maverick:free",
+      "groq/llama-3.3-70b-versatile",
+      "groq/mixtral-8x7b-32768",
+      "groq/gemma2-9b-it",
+      "xai/grok-3-mini",
+      "huggingface/Qwen/Qwen3-32B",
+      "fireworks/accounts/fireworks/models/llama-v3p3-70b-instruct",
+      "deepseek/deepseek-v4-flash-lite"
+    ],
+    "vision": [
+      "gemini/gemini-3-flash-preview",
+      "gemini/gemini-3-flash-lite-preview",
+      "zai/glm-4.6v-flash",
+      "zai/glm-4.6v"
+    ],
+    "reasoning": []
+  },
+  "stats": {
+    "total_models": 19,
+    "total_providers": 8
+  }
+}
