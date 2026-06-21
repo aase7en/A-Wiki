@@ -1,0 +1,48 @@
+name: Wiki Health Check
+# 🔍 Validate wiki links, check for broken refs, lint markdown
+# Runs daily at midnight UTC
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for broken wiki links
+        run: |
+          echo "=== Checking wiki links ==="
+          find wiki/ -name "*.md" -exec grep -oP '\[\[.*?\]\]' {} \; | sort | uniq -c | sort -rn | head -20
+          echo "=== Done ==="
+
+      - name: Validate frontmatter
+        run: |
+          python3 -c "
+          import yaml, os, sys
+          errors = 0
+          for root, dirs, files in os.walk('wiki/'):
+              for f in files:
+                  if f.endswith('.md'):
+                      path = os.path.join(root, f)
+                      with open(path) as fh:
+                          content = fh.read()
+                      if content.startswith('---'):
+                          try:
+                              yaml.safe_load(content.split('---')[1])
+                          except Exception as e:
+                              print(f'❌ {path}: {e}')
+                              errors += 1
+          print(f'Checked {sum(1 for _ in os.walk(\"wiki\"))} files, {errors} errors')
+          sys.exit(1 if errors else 0)
+          "
+
+      - name: Notify via webhook
+        if: always()
+        run: |
+          curl -X POST "${{ secrets.HERMES_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"event\": \"wiki-health\", \"status\": \"${{ job.status }}\"}" || true

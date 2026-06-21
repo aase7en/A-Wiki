@@ -1,0 +1,35 @@
+name: Model Pool Scout
+# 👁️ Scan all connected providers for free models, update pool every 6 hours
+# [Thai ไอ้A Plus Spot.] · A-Wiki Brain + Hermes Agent
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # Every 6 hours
+  workflow_dispatch:          # Manual trigger
+
+jobs:
+  scout-models:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run model pool scanner
+        run: python3 scripts/hermes/model-pool/model-pool-scanner.py
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Upload updated pool
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-pool
+          path: scripts/hermes/model-pool/model-pool.json
+
+      - name: Auto-commit if changed
+        run: |
+          git config user.name "A-Wiki Bot"
+          git config user.email "bot@awiki.nousresearch.com"
+          git add scripts/hermes/model-pool/model-pool.json
+          git diff --staged --quiet || git commit -m "chore(swarm): auto-update model pool [skip ci]"
+          git push
