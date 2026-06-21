@@ -142,7 +142,6 @@ core-knowledge/exports/
 # --- Archive / Downloads ---
 *.zip
 *.tar.gz
-!scripts/hermes/hermes-export-*.tar.gz
 *.rar
 *.7z
 *.iso
