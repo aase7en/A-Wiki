@@ -1,9 +1,6 @@
 name: Build Pake Desktop App
-# 🖥️ Build A-Wiki Live as a native desktop app using Pake (Rust/Tauri)
+# 🖥️ Build A-Wiki Live as a native desktop app using Pake (Rust/Tauri v2)
 # [Thai ไอ้A Plus Spot.] · A-Wiki Brain + Hermes Agent
-#
-# Triggers: manual (workflow_dispatch)
-# Output: Linux AppImage + macOS DMG + Windows EXE
 
 on:
   workflow_dispatch:
@@ -32,6 +29,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -44,34 +42,65 @@ jobs:
           node-version: '22'
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install Linux deps (Ubuntu)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install pake-cli
         run: npm install -g pake-cli
 
-      - name: Build Pake app
+      - name: Build Pake app (Linux)
+        if: runner.os == 'Linux'
+        env:
+          PAKE_URL: ${{ inputs.url }}
+          PAKE_NAME: ${{ inputs.app_name }}
+          PAKE_WIDTH: ${{ inputs.width }}
+          PAKE_HEIGHT: ${{ inputs.height }}
+          PAKE_ICON: ${{ inputs.icon_url }}
         run: |
-          pake ${{ inputs.url }} \
-            --name "${{ inputs.app_name }}" \
-            --width ${{ inputs.width }} \
-            --height ${{ inputs.height }} \
-            ${{ inputs.icon_url && format('--icon {0}', inputs.icon_url) || '' }}
+          ICON_ARG=""
+          if [ -n "$PAKE_ICON" ]; then ICON_ARG="--icon $PAKE_ICON"; fi
+          pake "$PAKE_URL" --name "$PAKE_NAME" --width "$PAKE_WIDTH" --height "$PAKE_HEIGHT" $ICON_ARG
+          echo "Built files:"
+          ls -la *.AppImage *.deb 2>/dev/null || echo "Checking output dir..."
+          find . -name "*.AppImage" -o -name "*.deb" -o -name "*.dmg" -o -name "*.exe" 2>/dev/null
+
+      - name: Build Pake app (macOS)
+        if: runner.os == 'macOS'
+        env:
+          PAKE_URL: ${{ inputs.url }}
+          PAKE_NAME: ${{ inputs.app_name }}
+          PAKE_WIDTH: ${{ inputs.width }}
+          PAKE_HEIGHT: ${{ inputs.height }}
+          PAKE_ICON: ${{ inputs.icon_url }}
+        run: |
+          ICON_ARG=""
+          if [ -n "$PAKE_ICON" ]; then ICON_ARG="--icon $PAKE_ICON"; fi
+          pake "$PAKE_URL" --name "$PAKE_NAME" --width "$PAKE_WIDTH" --height "$PAKE_HEIGHT" $ICON_ARG
+          find . -name "*.dmg" 2>/dev/null
+
+      - name: Build Pake app (Windows)
+        if: runner.os == 'Windows'
+        env:
+          PAKE_URL: ${{ inputs.url }}
+          PAKE_NAME: ${{ inputs.app_name }}
+          PAKE_WIDTH: ${{ inputs.width }}
+          PAKE_HEIGHT: ${{ inputs.height }}
+        run: |
+          pake "%PAKE_URL%" --name "%PAKE_NAME%" --width %PAKE_WIDTH% --height %PAKE_HEIGHT%
+        shell: cmd
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.app_name }}-${{ runner.os }}
           path: |
-            *.dmg
-            *.AppImage
-            *.exe
-            *.msi
-            *.deb
+            **/*.dmg
+            **/*.AppImage
+            **/*.exe
+            **/*.msi
+            **/*.deb
