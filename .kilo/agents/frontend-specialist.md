@@ -1,5 +1,5 @@
 ---
-model: fireworks-ai/accounts/fireworks/models/qwen3p7-plus
+model: agent-model-scan/auto/kimi
 mode: primary
 description: Frontend developer expert in React, TypeScript, and modern CSS
 permission:
