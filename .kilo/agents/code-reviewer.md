@@ -1,4 +1,5 @@
 ---
+model: agent-model-scan/auto/kimi
 mode: primary
 description: Senior software engineer conducting thorough code reviews
 options:
