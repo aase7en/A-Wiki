@@ -8,13 +8,13 @@
 # Scoped Context — Source Summaries
 
 > **โดเมน**: Source documents — summaries of raw/ content
-> **Last updated**: 2026-06-20
+> **Last updated**: 2026-06-22
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน sources/**
 > ถ้าการแก้ source workflow เปลี่ยนความสามารถของ A-Wiki brain, ingestion, provenance, hooks, scripts, หรือ public-safe policy → อ่าน `docs/protocols/brain-improvement-gate.md` ก่อน
 
 ---
 
-## Sources ที่มีอยู่ (164 files)
+## Sources ที่มีอยู่ (167 files)
 
 ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Tools, Pharmacy
 

@@ -68,6 +68,7 @@ jobs:
         run: |
           bash scripts/setup-codex-hooks.sh
           python scripts/build-wiki-index.py
+          python scripts/gen-index.py
 
       - name: Cross-platform verifier
         run: python scripts/verify-cross-platform.py

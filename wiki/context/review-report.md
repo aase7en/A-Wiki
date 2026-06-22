@@ -1,12 +1,12 @@
-# Review Report — 2026-06-20
+# Review Report — 2026-06-22
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 822
-- ⚠ Warnings: 251
-- ❌ Failures: 4
+- ✓ Passed: 834
+- ⚠ Warnings: 255
+- ❌ Failures: 6
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 235 more issue(s) below
+- … 241 more issue(s) below
 
 ---
 
@@ -38,6 +38,8 @@
 
 - wiki/concepts/ai-tools/ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/entities/ai-tools/pake.md: broken link: [[entities/ai-tools/a-wiki]]
+- wiki/entities/ai-tools/sunday-estate.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
@@ -101,8 +103,10 @@
 - wiki/entities/ai-tools/model-capability-bench.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
 - wiki/entities/ai-tools/openmed.md: missing frontmatter key: title
+- wiki/entities/ai-tools/pake.md: missing frontmatter key: title
 - wiki/entities/ai-tools/pocketbase.md: missing frontmatter key: title
 - wiki/entities/ai-tools/react-doctor.md: missing frontmatter key: title
+- wiki/entities/ai-tools/sunday-estate.md: missing frontmatter key: title
 - wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
 - wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/zai-glm.md: missing frontmatter key: title
@@ -255,8 +259,10 @@
 - wiki/entities/ai-tools/model-capability-bench.md: missing TL;DR line
 - wiki/entities/ai-tools/ollama.md: missing TL;DR line
 - wiki/entities/ai-tools/openmed.md: missing TL;DR line
+- wiki/entities/ai-tools/pake.md: missing TL;DR line
 - wiki/entities/ai-tools/pocketbase.md: missing TL;DR line
 - wiki/entities/ai-tools/react-doctor.md: missing TL;DR line
+- wiki/entities/ai-tools/sunday-estate.md: missing TL;DR line
 - wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
 - wiki/entities/ai-tools/turbovec.md: missing TL;DR line
 - wiki/entities/ai-tools/zai-glm.md: missing TL;DR line
@@ -304,10 +310,10 @@
 
 ---
 
-## ✓ Passed Checks (822 total)
+## ✓ Passed Checks (834 total)
 
-- **L2**: 342 passed
-- **L3**: 477 passed
+- **L2**: 348 passed
+- **L3**: 483 passed
 - **L6**: 3 passed
 
 ---
