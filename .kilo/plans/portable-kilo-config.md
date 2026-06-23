@@ -49,7 +49,7 @@ Create under `<Drive>/A-Wiki-Data/.config/kilo/`:
 
 `render_kilo_config.py` does, in order:
 1. **Detect Drive data root** via `drive_secrets._glob_cloudstorage_drive()` (standalone — works before any symlink). Map to `A-Wiki-Data` dir. Fall back to `drive_path.get_drive_root()`, then `A_WIKI_DRIVE_PATH` env. Fail loudly with guidance if none (esp. Windows `%USERPROFILE%\Google Drive\A-Wiki-Data` / WSL `/mnt/...`).
-2. **Detect repo root** (`Path(__file__).resolve().parents[2]`) — never hardcode `/Users/aase7en/...`.
+2. **Detect repo root** (`Path(__file__).resolve().parents[2]`) — never hardcode `/Users/$USER/...`.
 3. **Resolve placeholders**:
    - `__DRIVE_DATA__` = A-Wiki-Data dir, `__DRIVE_PERSONAL__` = `<data>/personal`, `__DRIVE_SKILLS__` = `<data>/.config/kilo/skills`, `__REPO_ROOT__` = repo.
    - `__SECRET_<NAME>__` → value parsed from `<data>/.secrets` (reuse `drive_secrets.parse_secrets_file`). If a key is absent, **drop that provider entry** (don't leave a dangling placeholder).
@@ -111,7 +111,7 @@ Each command body instructs the agent to use the resolved Drive path (commands a
 2. Home Mac: `bash scripts/setup-kilo-config.sh --check` → shows detected Drive path + keys + commands; `--force` renders; `kilo` picks up new providers/commands/skills; `/drive` prints correct path; MCP `drive-files` lists `personal/` files.
 3. Simulate work machine: run render with a Windows-style `A_WIKI_DRIVE_PATH` fixture + `%USERPROFILE%` → output paths are Windows-native, no Mac paths leak.
 4. Confirm existing AI behavior intact: default agent/model unchanged; `code-skeptic` no longer references `.kilocode`.
-5. `grep -rn "/Users/aase7en" ~/.config/kilo/kilo.jsonc` after render on a path-fixture run → none (no hardcoded home path).
+5. `grep -rn "/Users/$USER" ~/.config/kilo/kilo.jsonc` after render on a path-fixture run → none (no hardcoded home path).
 
 ## Iron Laws / guardrails
 - **#1** failing test first (Phase F).
