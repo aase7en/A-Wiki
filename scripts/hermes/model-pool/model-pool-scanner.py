@@ -106,15 +106,24 @@ FREE_MODEL_CATALOG = {
 
 
 def load_api_keys() -> dict[str, str]:
-    """Load API keys from .env"""
+    """Load API keys: os.environ first (GitHub Actions), fallback to .env file"""
     keys = {}
+    known_vars = set()
+    for cfg in FREE_MODEL_CATALOG.values():
+        known_vars.update(cfg.get("env_var", []))
+    for var in known_vars:
+        val = os.environ.get(var, "").strip()
+        if val:
+            keys[var] = val
     if os.path.exists(ENV_PATH):
         with open(ENV_PATH) as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
                     k, v = line.split("=", 1)
-                    keys[k] = v.strip().strip('"').strip("'")
+                    v = v.strip().strip('"').strip("'")
+                    if v and k not in keys:
+                        keys[k] = v
     return keys
 
 
