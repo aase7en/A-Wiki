@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-23T13:42:00+07:00",
+  "note": "Hermes Model Priority Policy — Codeplan (complex/routine) > DeepSeek (default) > Z.AI pay-per-token > free fallback. Restrict: blacklist zai-codeplan on 403/401.",
+  "default_model": {
+    "text": "deepseek/deepseek-v4-flash",
+    "reasoning": "deepseek/deepseek-v4-pro",
+    "vision": "zai/glm-4.6v-flash",
+    "coding": "deepseek/deepseek-v4-flash"
+  },
+  "codeplan": {
+    "provider": "zai-codeplan",
+    "api_key_env": "ZAI_CODEPLAN_API_KEY",
+    "supported_models": ["glm-4.7", "glm-5.2", "glm-5-turbo"],
+    "routine_model": "zai-codeplan/glm-4.7",
+    "complex_model": "zai-codeplan/glm-5.2",
+    "quota_multiplier": {
+      "glm-4.7": 1,
+      "glm-5.2": 3,
+      "glm-5-turbo": 3
+    },
+    "peak_hours_utc8": "14:00-18:00",
+    "tiers": {
+      "lite": {"monthly_usd": 18, "5h_prompts": 80, "weekly_prompts": 400},
+      "pro": {"monthly_usd": 72, "5h_prompts": 400, "weekly_prompts": 2000},
+      "max": {"monthly_usd": 160, "5h_prompts": 1600, "weekly_prompts": 8000}
+    },
+    "restrict_policy": {
+      "detect_status": [401, 403],
+      "detect_keywords": ["restricted", "unauthorized tool", "unsupported", "forbidden", "not supported"],
+      "consecutive_failures_threshold": 2,
+      "action": "blacklist_provider",
+      "recovery": "manual",
+      "alert_channel": "telegram"
+    }
+  },
+  "zai_pay_per_token": {
+    "provider": "zai",
+    "api_key_env": "ZAI_API_KEY",
+    "free_models": ["glm-4.7-flash", "glm-4.5-flash", "glm-4.6v-flash"],
+    "cheap_models": [
+      {"id": "glm-4.7-flashx", "input": 0.07, "output": 0.4},
+      {"id": "glm-4.6v-flashx", "input": 0.04, "output": 0.4}
+    ],
+    "mid_models": [
+      {"id": "glm-4.7", "input": 0.6, "output": 2.2},
+      {"id": "glm-4.6v", "input": 0.3, "output": 0.9}
+    ]
+  },
+  "role_routing": {
+    "light": "deepseek/deepseek-v4-flash",
+    "routine": "zai-codeplan/glm-4.7",
+    "complex": "zai-codeplan/glm-5.2",
+    "fallback_complex": "deepseek/deepseek-v4-pro",
+    "fallback_free": "zai/glm-4.7-flash"
+  },
+  "benchmark_sources": {
+    "enabled": true,
+    "mode": "advisory_only",
+    "schedule": "daily",
+    "sources": [
+      {"name": "ArtificialAnalysis", "url": "https://artificialanalysis.ai/", "metrics": ["cost_per_1m_tokens", "performance_score", "latency"]},
+      {"name": "ChatbotArena", "url": "https://huggingface.co/spaces/lmarena-ai/chatbot-arena", "metrics": ["elo_rating"]},
+      {"name": "OpenLLMLeaderboard", "url": "https://huggingface.co/open-llm-leaderboard", "metrics": ["benchmark_scores"]}
+    ],
+    "suggest_threshold": {"cost_savings_percent": 20, "performance_gain_percent": 5},
+    "report_path": "reports/benchmark",
+    "alert_channel": "telegram"
+  }
+}
