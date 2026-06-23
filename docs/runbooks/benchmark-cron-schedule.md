@@ -26,4 +26,4 @@ cat .tmp/cost-audit-$(date +%Y-%m-%d).json
 
 ## Working Directory
 
-ทุก cron job รันจาก A-Wiki repository root (`/Users/aase7en/Desktop/A-Wiki`)
+ทุก cron job รันจาก A-Wiki repository root (`$REPO_ROOT`)

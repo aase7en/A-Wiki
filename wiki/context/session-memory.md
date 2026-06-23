@@ -1,1 +1,1 @@
-/Users/aase7en/Desktop/A-Wiki/drive/personal/journal/wiki-context-session-memory.md
+../../drive/personal/journal/wiki-context-session-memory.md

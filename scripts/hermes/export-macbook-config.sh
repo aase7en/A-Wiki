@@ -110,7 +110,7 @@ hermes profile show tech_and_ai_architect
 ```
 
 ## Path differences to fix
-- `terminal.cwd`: `/Users/aase7en/Desktop/A-Wiki` → `/home/pi/A-Wiki` (or wherever A-Wiki lives on Pi5)
+- `terminal.cwd`: `$REPO_ROOT` → `/home/pi/A-Wiki` (or wherever A-Wiki lives on Pi5)
 - Any other `/Users/aase7en` paths → adjust for Pi5
 
 ## Pi5-specific notes

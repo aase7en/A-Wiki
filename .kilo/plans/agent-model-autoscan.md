@@ -40,7 +40,7 @@
 ### 1.2 Symlink strategy
 
 ```
-~/.config/kilo/agents  →  /Users/aase7en/Desktop/A-Wiki/.kilo/agents
+~/.config/kilo/agents  →  $REPO_ROOT/.kilo/agents
 ```
 
 - `~/.config/kilo/agents/` ปัจจุบันไม่มี → สร้าง symlink ได้เลย
@@ -107,7 +107,7 @@ if changed:
 | `.kilo/agents/frontend-specialist.md` | เพิ่ม `model: fireworks-ai/accounts/fireworks/models/qwen3p7-plus` |
 | `.kilo/agents/test-engineer.md` | เพิ่ม `model: fireworks-ai/accounts/fireworks/models/kimi-k2p7-code` |
 | `~/.config/kilo/kilo.jsonc` | Backup → `~/.config/kilo/kilo.jsonc.pre-agents-md.bak` → ลบ 7 custom agent entries (architect, code-reviewer, code-simplifier, code-skeptic, docs-specialist, frontend-specialist, test-engineer) จาก `agent` object, เก็บ 5 built-in overrides (plan, ask, code, debug, orchestrator) + top-level fields |
-| `~/.config/kilo/agents` | สร้าง symlink → `/Users/aase7en/Desktop/A-Wiki/.kilo/agents` |
+| `~/.config/kilo/agents` | สร้าง symlink → `$REPO_ROOT/.kilo/agents` |
 
 **Precedence verification:**
 - Kilo docs ยืนยัน: project `.md` (level 5) > global `kilo.jsonc` (level 2)

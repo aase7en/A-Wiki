@@ -108,7 +108,7 @@ If `model:` is absent from the frontmatter, the scanner inserts it after the ope
 
 ## Symlink Strategy
 
-`~/.config/kilo/agents` → `/Users/aase7en/Desktop/A-Wiki/.kilo/agents`
+`~/.config/kilo/agents` → `$REPO_ROOT/.kilo/agents`
 
 This makes the 7 managed `.md` files available globally (precedence level 4: global agent `.md` files). For A-Wiki project itself, project `.md` (level 5) takes priority. Since the symlink points to the same files, both levels resolve to the same content.
 

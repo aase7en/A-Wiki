@@ -31,7 +31,7 @@
 
 ขั้นตอน:
 1. สร้างโฟลเดอร์ `drive\uthai-hospital\hosxp\` (ผ่าน junction หรือ path L: ตรงๆ)
-2. เขียน `fix-hosxp-permissions.ps1` ใหม่ที่นั่น — เวอร์ชัน **ASCII-only + UTF-8 BOM + แก้ `$_:` bug**, เนื้อหาเดิม (ค้นหา Hos-WIM32.INI → grant write/modify ให้ aase7en)
+2. เขียน `fix-hosxp-permissions.ps1` ใหม่ที่นั่น — เวอร์ชัน **ASCII-only + UTF-8 BOM + แก้ `$_:` bug**, เนื้อหาเดิม (ค้นหา Hos-WIM32.INI → grant write/modify ให้ $USER)
 3. เขียน `run-as-admin.bat` ที่นั่น — ใช้ `%~dp0` อ้างตัวเอง รัน ps1 แบบ `-ExecutionPolicy Bypass`
 4. **ลบ** `A:\GitHub\A-Wiki\fix-hosxp-permissions.ps1` และ `.bat` ออกจาก repo root (ยังไม่ได้ commit อยู่แล้ว → ลบได้สบาย)
 
@@ -75,7 +75,7 @@
 1. เข้าโฟลเดอร์:  L:\My Drive\A-Wiki-Data\uthai-hospital\hosxp\
 2. คลิกขวา run-as-admin.bat → Run as administrator
    (หรือ: powershell -ExecutionPolicy Bypass -File "<path>\fix-hosxp-permissions.ps1")
-3. Log out → login เป็น aase7en → เปิด HOSxPXE4 ตามปกติ (ไม่ต้อง admin)
+3. Log out → login เป็น $USER → เปิด HOSxPXE4 ตามปกติ (ไม่ต้อง admin)
 ```
 
 ---
