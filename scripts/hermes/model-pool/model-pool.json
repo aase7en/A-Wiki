@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T19:15:30Z",
+  "generated_at": "2026-06-23T13:42:00+07:00",
   "source": "[Thai ไอ้A Plus Spot.] · A-Wiki Brain · Hermes Agent",
   "providers": {
     "gemini": {
@@ -67,8 +67,35 @@
           "context": 131072,
           "note": "vision general",
           "provider": "zai"
+        },
+        {
+          "id": "glm-4.7-flashx",
+          "capability": "text",
+          "rpm": 60,
+          "context": 131072,
+          "note": "cheap fast paid \\.07/\\.4",
+          "provider": "zai"
+        },
+        {
+          "id": "glm-4.7",
+          "capability": "text+reasoning",
+          "rpm": 60,
+          "context": 131072,
+          "note": "mid-tier \\.6/\\.2",
+          "provider": "zai"
+        },
+        {
+          "id": "glm-4.6v-flashx",
+          "capability": "vision",
+          "rpm": 30,
+          "context": 131072,
+          "note": "cheap vision \\.04/\\.4",
+          "provider": "zai"
         }
-      ]
+      ],
+      "api_key_env": "ZAI_API_KEY",
+      "subscription": false,
+      "note": "Z.AI pay-per-token API (free + cheap models)"
     },
     "openrouter": {
       "base_url": "https://openrouter.ai/api/v1",
@@ -193,46 +220,97 @@
       "has_free_tier": false,
       "models": [
         {
-          "id": "deepseek-v4-flash-lite",
+          "id": "deepseek-v4-flash",
           "capability": "text",
-          "rpm": 20,
+          "rpm": 30,
           "context": 131072,
-          "note": "cheapest tier",
+          "note": "default fast tier",
           "provider": "deepseek"
+        },
+        {
+          "id": "deepseek-v4-pro",
+          "capability": "text+reasoning",
+          "rpm": 15,
+          "context": 131072,
+          "note": "complex tasks",
+          "provider": "deepseek"
+        }
+      ]
+    },
+    "zai-codeplan": {
+      "base_url": "https://open.bigmodel.cn/api/paas/v4",
+      "has_free_tier": false,
+      "subscription": true,
+      "api_key_env": "ZAI_CODEPLAN_API_KEY",
+      "note": "Z.AI Codeplan subscription (Lite/Pro/Max). SDK-based use carries restrict risk. Quota 5h+weekly.",
+      "models": [
+        {
+          "id": "glm-4.7",
+          "capability": "text",
+          "rpm": 60,
+          "context": 131072,
+          "note": "routine 1x quota",
+          "provider": "zai-codeplan"
+        },
+        {
+          "id": "glm-5.2",
+          "capability": "text+reasoning",
+          "rpm": 30,
+          "context": 131072,
+          "note": "complex 3x peak / 2x off-peak",
+          "provider": "zai-codeplan"
+        },
+        {
+          "id": "glm-5-turbo",
+          "capability": "text+reasoning",
+          "rpm": 30,
+          "context": 131072,
+          "note": "complex 3x peak",
+          "provider": "zai-codeplan"
         }
       ]
     }
   },
   "fallback_chain": {
     "text": [
+      "zai-codeplan/glm-4.7",
+      "deepseek/deepseek-v4-flash",
+      "deepseek/deepseek-v4-pro",
+      "zai/glm-4.7-flash",
+      "zai/glm-4.7-flashx",
+      "openrouter/deepseek/deepseek-v4-flash-lite:free",
       "gemini/gemini-2.5-flash-lite",
       "gemini/gemini-2.5-flash",
-      "gemini/gemini-3-flash-preview",
-      "gemini/gemini-3-flash-lite-preview",
-      "zai/glm-4.7-flash",
       "openrouter/poolside/laguna-m.1:free",
-      "openrouter/deepseek/deepseek-v4-flash-lite:free",
-      "openrouter/google/gemini-2.5-flash-lite:free",
-      "openrouter/nvidia/llama-3.3-nemotron-super-49b-v1:free",
-      "openrouter/meta-llama/llama-4-maverick:free",
       "groq/llama-3.3-70b-versatile",
-      "groq/mixtral-8x7b-32768",
-      "groq/gemma2-9b-it",
+      "openrouter/meta-llama/llama-4-maverick:free",
+      "openrouter/nvidia/llama-3.3-nemotron-super-49b-v1:free",
       "xai/grok-3-mini",
       "huggingface/Qwen/Qwen3-32B",
-      "fireworks/accounts/fireworks/models/llama-v3p3-70b-instruct",
-      "deepseek/deepseek-v4-flash-lite"
+      "fireworks/accounts/fireworks/models/llama-v3p3-70b-instruct"
     ],
     "vision": [
-      "gemini/gemini-3-flash-preview",
-      "gemini/gemini-3-flash-lite-preview",
+      "zai-codeplan/glm-4.7",
       "zai/glm-4.6v-flash",
-      "zai/glm-4.6v"
+      "zai/glm-4.6v-flashx",
+      "zai/glm-4.6v",
+      "gemini/gemini-3-flash-preview",
+      "gemini/gemini-3-flash-lite-preview"
     ],
-    "reasoning": []
+    "reasoning": [
+      "zai-codeplan/glm-5.2",
+      "zai-codeplan/glm-4.7",
+      "deepseek/deepseek-v4-pro",
+      "zai/glm-4.7",
+      "zai/glm-4.7-flash",
+      "gemini/gemini-2.5-flash",
+      "openrouter/deepseek/deepseek-v4-flash-lite:free",
+      "xai/grok-3-mini"
+    ]
   },
   "stats": {
-    "total_models": 19,
-    "total_providers": 8
-  }
+    "total_models": 26,
+    "total_providers": 9
+  },
+  "note": "Priority: Codeplan (complex/routine) -> DeepSeek (default) -> Z.AI pay-per-token -> Gemini/OpenRouter free. Restrict: blacklist zai-codeplan on 403/401."
 }

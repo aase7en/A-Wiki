@@ -1,0 +1,5 @@
+{
+  "blacklisted_providers": {},
+  "note": "Provider-level blacklist state. Entries added on restrict detection (401/403). Recovery is manual: delete the entry to re-enable the provider.",
+  "schema_version": 1
+}
