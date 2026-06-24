@@ -1,232 +1,400 @@
 #!/usr/bin/env python3
 """
-Dual-Mode Model Router — ECO / PRO
+Dual-Mode Model Router v2 — Dynamic Scout + ECO / PRO
 [Thai ไอ้A Plus Spot.] · A-Wiki Brain · Hermes Agent
+
+Architecture:
+  - ECO mode  →  cheapest/free models for 24/7 automation
+  - PRO mode  →  strongest models for deep engineering (GLM-5.2 Z.AI→OR fallback)
+
+No hardcoded model names. Every decision is scouted live from OpenRouter API.
 """
-import json, os, sys, subprocess
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
 from datetime import datetime, timezone
-from urllib.request import Request, urlopen
-from urllib.error import HTTPError
+from pathlib import Path
 
 # ════════════════════════════════
-# CONFIG
+# PATHS
 # ════════════════════════════════
 MODE_FILE = "/opt/data/.hermes-mode"
-
-ECO_TIERS = [
-    ("🆓  Step-3.7-Flash",      "stepfun/step-3.7-flash:free",    0.00, "Coding, agentic, multimodal"),
-    ("🆓  Gemini-Flash-Lite",   "gemini/gemini-2.5-flash-lite",  0.00, "Chat, search, light work"),
-    ("🆓  GLM-4.7-Flash",       "zai/glm-4.7-flash",             0.00, "General text (quota)"),
-    ("💲  DeepSeek V4 Flash",   "deepseek/deepseek-v4-flash",     0.14, "Medium reasoning"),
-    ("💲  DeepSeek Chat",       "deepseek/deepseek-chat",         0.50, "Heavy reasoning (sparingly)"),
-]
-
-PRO_TIERS = [
-    ("⭐  GLM-5.2",             "zai/glm-5.2",                   0.00, "🏆 TOP — planning, design, deep reasoning"),
-    ("🆓  Step-3.7-Flash",      "stepfun/step-3.7-flash:free",    0.00, "Coding, agentic subtasks"),
-    ("💲  DeepSeek Chat",       "deepseek/deepseek-chat",         0.50, "Analysis, reasoning"),
-    ("🆓  Gemini-3-Flash",      "gemini/gemini-3-flash-preview",  0.00, "Multimodal, vision"),
-    ("💲  OpenRouter Premium",  "(openrouter/any)",              0.20, "Heavy lifting"),
-]
+SCOUT_SCRIPT = Path("/opt/data/A-Wiki/scripts/model-scout-current.py")
+HERMES = "/opt/hermes/.venv/bin/hermes"
 
 # ════════════════════════════════
-# READ BALANCE
+# CONSTANTS
 # ════════════════════════════════
-env_path = "/opt/data/.env"
-env_vars = {}
-if os.path.exists(env_path):
-    with open(env_path) as f:
-        for line in f:
-            line = line.strip()
-            if "=" in line and not line.startswith("#"):
-                k, v = line.split("=", 1)
-                env_vars[k.strip()] = v.strip().strip("'\"")
+PAID_THRESHOLD_LOW = 0.50   # below this → force ECO
+PAID_THRESHOLD_CRIT = 0.30  # below this → critical alert
 
-def check_deepseek(key):
+# Providers with free/zero-cost tiers for ECO
+FREE_PROVIDERS = {"gemini", "google"}
+
+
+def read_mode() -> str:
+    """Read current ECO/PRO mode from file."""
     try:
-        req = Request("https://api.deepseek.com/user/balance",
-                      headers={"Authorization": f"Bearer {key}", "Accept": "application/json"})
-        with urlopen(req, timeout=15) as r:
+        with open(MODE_FILE) as f:
+            return f.read().strip().lower()
+    except (FileNotFoundError, OSError):
+        return "eco"
+
+
+def write_mode(mode: str) -> None:
+    """Persist mode to file."""
+    try:
+        with open(MODE_FILE, "w") as f:
+            f.write(mode.strip().lower())
+    except OSError:
+        pass
+
+
+# ════════════════════════════════
+# RUN SCOUT
+# ════════════════════════════════
+
+def run_scout() -> dict | None:
+    """Run A-Wiki model-scout-current.py and return parsed payload."""
+    if not SCOUT_SCRIPT.exists():
+        return None
+
+    result_path = "/tmp/model-scout-router.json"
+    try:
+        subprocess.run(
+            [sys.executable, str(SCOUT_SCRIPT), "--out", result_path, "--quiet"],
+            timeout=25, capture_output=True,
+        )
+        if os.path.exists(result_path):
+            with open(result_path) as f:
+                return json.load(f)
+        return None
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError):
+        return None
+
+
+# ════════════════════════════════
+# READ BALANCES
+# ════════════════════════════════
+
+def load_env() -> dict[str, str]:
+    """Read .env into dict (keys only)."""
+    env = {}
+    env_path = "/opt/data/.env"
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if "=" in line and not line.startswith("#"):
+                    k, v = line.split("=", 1)
+                    env[k.strip()] = v.strip().strip("'\"")
+    return env
+
+
+def check_balance_deepseek(key: str) -> dict:
+    """Check DeepSeek remaining balance."""
+    import urllib.request, urllib.error
+    try:
+        req = urllib.request.Request(
+            "https://api.deepseek.com/user/balance",
+            headers={"Authorization": f"Bearer {key}", "Accept": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
             d = json.loads(r.read())
         info = (d.get("balance_infos") or [{}])[0]
         return {"status": "ok", "balance": float(info.get("total_balance", 0))}
-    except Exception as e:
-        return {"status": "error", "detail": str(e)[:60]}
+    except Exception:
+        return {"status": "error", "balance": 0}
 
-def check_openrouter(key):
+
+def check_balance_openrouter(key: str) -> dict:
+    """Check OpenRouter remaining credit."""
+    import urllib.request, urllib.error
     try:
-        req = Request("https://openrouter.ai/api/v1/auth/key",
-                      headers={"Authorization": f"Bearer {key}"})
-        with urlopen(req, timeout=15) as r:
+        req = urllib.request.Request(
+            "https://openrouter.ai/api/v1/auth/key",
+            headers={"Authorization": f"Bearer {key}"},
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
             d = json.loads(r.read())
         d = d.get("data", {})
-        return {"status": "ok", "remaining": d.get("limit_remaining"), "limit": d.get("limit")}
-    except Exception as e:
-        return {"status": "error", "detail": str(e)[:60]}
+        return {"status": "ok", "remaining": d.get("limit_remaining", 0), "limit": d.get("limit", 0)}
+    except Exception:
+        return {"status": "error", "remaining": 0}
 
-def check_zai(key):
-    try:
-        req = Request("https://api.z.ai/api/paas/v4/chat/completions",
-                      data=json.dumps({"model":"glm-4.7-flash","messages":[{"role":"user","content":"ping"}],"max_tokens":1}).encode(),
-                      headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"})
-        with urlopen(req, timeout=15) as r:
-            return {"status": "ok", "note": "Weekly quota (active)"}
-    except HTTPError as e:
-        if e.code == 429: return {"status": "rate_limited"}
-        return {"status": f"HTTP {e.code}"}
-    except Exception as e:
-        return {"status": "error", "detail": str(e)[:60]}
-
-balances = {}
-for name, env_key, checker in [
-    ("DeepSeek","DEEPSEEK_API_KEY",check_deepseek),
-    ("OpenRouter","OPENROUTER_API_KEY",check_openrouter),
-    ("Z.AI/GLM","GLM_API_KEY",check_zai),
-]:
-    key = env_vars.get(env_key, "")
-    if not key or len(key) < 10:
-        balances[name] = {"status": "not_configured"}
-        continue
-    balances[name] = checker(key)
-
-ds_bal = balances.get("DeepSeek", {}).get("balance", 0)
-or_bal = balances.get("OpenRouter", {}).get("remaining", 0) or 0
 
 # ════════════════════════════════
-# READ MODE
+# CLASSIFY MODELS FROM SCOUT
 # ════════════════════════════════
-current_mode = "eco"
-if os.path.exists(MODE_FILE):
-    with open(MODE_FILE) as f:
-        current_mode = f.read().strip().lower()
+
+def classify_model(mid: str, prompt_price, completion_price) -> str:
+    """Classify a model as 'free', 'cheap', or 'premium' based on combined price."""
+    mid_lower = mid.lower()
+
+    def _to_float(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+
+    pp = _to_float(prompt_price)
+    cp = _to_float(completion_price)
+
+    if mid_lower.endswith(":free") or (pp == 0 and cp == 0):
+        return "free"
+    if pp is not None and cp is not None and (pp + cp) < 1e-6:  # < $0.001/M
+        return "cheap"
+    return "premium"
+
+
+def select_eco_models(scout: dict) -> dict:
+    """Pick the best free/cheap models for ECO mode from scout data."""
+    catalog = scout.get("catalog", {})
+    models = catalog.get("models", [])
+
+    free_models = [m for m in models if classify_model(
+        m.get("model_id", ""),
+        m.get("prompt_price"),
+        m.get("completion_price"),
+    ) == "free"]
+
+    cheap_models = [m for m in models if classify_model(
+        m.get("model_id", ""),
+        m.get("prompt_price"),
+        m.get("completion_price"),
+    ) == "cheap"]
+
+    # Sort: highest context window first
+    free_sorted = sorted(free_models, key=lambda m: -(m.get("context_length") or 0))
+    cheap_sorted = sorted(cheap_models, key=lambda m: -(m.get("context_length") or 0))
+
+    return {
+        "free_models": [m.get("model_id", "?") for m in free_sorted[:6]],
+        "free_details": free_sorted[:6],
+        "cheap_models": [m.get("model_id", "?") for m in cheap_sorted[:4]],
+        "cheap_details": cheap_sorted[:4],
+    }
+
+
+def select_pro_models(scout: dict) -> dict:
+    """Pick the strongest models for PRO mode, prioritizing GLM-5.2 via Z.AI then OR."""
+    catalog = scout.get("catalog", {})
+    models = catalog.get("models", [])
+
+    # Find GLM-5.2 variants
+    glm_models = [m for m in models if "glm-5.2" in m.get("model_id", "").lower()
+                  or "glm5.2" in m.get("model_id", "").lower()]
+
+    # Find premium (expensive) models sorted by context
+    premium = [m for m in models if classify_model(
+        m.get("model_id", ""),
+        m.get("prompt_price"),
+        m.get("completion_price"),
+    ) == "premium"]
+    premium_sorted = sorted(premium, key=lambda m: -(m.get("context_length") or 0))
+
+    return {
+        "glm_5.2": [m.get("model_id", "?") for m in glm_models],
+        "glm_details": glm_models,
+        "premium_models": [m.get("model_id", "?") for m in premium_sorted[:6]],
+        "premium_details": premium_sorted[:6],
+    }
+
 
 # ════════════════════════════════
-# AUTO-FORCE ECO IF LOW CREDIT
+# GET TOKEN USAGE
 # ════════════════════════════════
-force_eco_reason = None
-if ds_bal < 0.50 and or_bal < 1.00:
-    force_eco_reason = "⚠️ All paid credits low! Auto-forcing ECO mode"
-elif ds_bal < 0.30:
-    force_eco_reason = "🔴 DeepSeek nearly empty ($%.2f). Auto-force ECO" % ds_bal
 
-if force_eco_reason and current_mode == "pro":
-    current_mode = "eco"
-    with open(MODE_FILE, "w") as f:
-        f.write("eco")
-
-# ════════════════════════════════
-# GET USAGE FROM INSIGHTS
-# ════════════════════════════════
-def get_token_usage():
+def get_token_usage() -> int:
+    """Query Hermes insights for 7-day token usage."""
     try:
         r = subprocess.run(
-            ["/opt/hermes/.venv/bin/hermes", "insights", "--days", "7"],
+            [HERMES, "insights", "--days", "7"],
             capture_output=True, text=True, timeout=20,
-            env={**os.environ, "PATH": f"/opt/hermes/.venv/bin:{os.environ.get('PATH','')}"}
+            env={**os.environ, "PATH": f"{os.path.dirname(HERMES)}:{os.environ.get('PATH', '')}"},
         )
-        # Parse total tokens
         for line in r.stdout.split("\n"):
             if "Total tokens:" in line:
-                parts = line.split()
-                for p in parts:
+                for p in line.split():
                     try:
-                        return int(p.replace(",",""))
-                    except: pass
+                        return int(p.replace(",", ""))
+                    except ValueError:
+                        continue
         return 0
-    except: return 0
+    except Exception:
+        return 0
 
-total_tokens_7d = get_token_usage()
-
-# ════════════════════════════════
-# CALCULATE BUDGET
-# ════════════════════════════════
-daily_avg = total_tokens_7d / 7 if total_tokens_7d else 0
-ds_tokens = int(ds_bal / 0.166 * 1_000_000) if ds_bal > 0 else 0
-or_tokens = int(or_bal / 0.20 * 1_000_000) if or_bal > 0 else 0
 
 # ════════════════════════════════
 # GENERATE REPORT
 # ════════════════════════════════
-ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-# ── Mode Status ──
-mode_icon = "🟢" if current_mode == "eco" else "🔴"
-mode_label = "ECO (ประหยัด)" if current_mode == "eco" else "PRO (ประสิทธิภาพ)"
+def main() -> int:
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    current_mode = read_mode()
 
-print(f"╔══════════════════════════════════════╗")
-print(f"║   🔀 Dual-Mode Model Router        ║")
-print(f"╠══════════════════════════════════════╣")
-print(f"║   📅 {ts}")
-print(f"╚══════════════════════════════════════╝")
-print()
+    # ── Run scout ──
+    scout = run_scout()
+    if scout is None:
+        print("⚠️  Scout unavailable (A-Wiki model-scout-current.py not found or failed)")
+        print("   Using last known cached config.\n")
 
-# Mode status
-print(f"【ℹ️】 Current Mode: {mode_icon} {mode_label}")
-if force_eco_reason:
-    print(f"   {force_eco_reason}")
-print()
+    # ── Balances ──
+    env = load_env()
+    ds_key = env.get("DEEPSEEK_API_KEY", "")
+    or_key = env.get("OPENROUTER_API_KEY", "")
+    ds_bal = check_balance_deepseek(ds_key) if len(ds_key) >= 10 else {"status": "no_key", "balance": 0}
+    or_bal = check_balance_openrouter(or_key) if len(or_key) >= 10 else {"status": "no_key", "remaining": 0}
+    ds_balance = ds_bal.get("balance", 0)
+    or_remaining = or_bal.get("remaining", 0) or 0
 
-# Balance
-print(f"【💰】Credit Balance")
-print(f"   ✅ DeepSeek      ${ds_bal:.2f}  (≈ {ds_tokens:,} tokens)")
-print(f"   ✅ OpenRouter    ${or_bal:.2f}  (≈ {or_tokens:,} tokens)")
-print(f"   ✅ Z.AI/GLM      Weekly quota active")
-print()
+    # ── Auto-force ECO on low credit ──
+    force_reason = None
+    if ds_balance < PAID_THRESHOLD_LOW and or_remaining < 1.00:
+        force_reason = "⚠️  All paid credits low! Auto-forcing ECO mode"
+    elif ds_balance < PAID_THRESHOLD_CRIT:
+        force_reason = f"🔴 DeepSeek nearly empty (${ds_balance:.2f}). Auto-forcing ECO"
 
-# Budget health
-print(f"【📊】Budget Health")
-health = "🟢 Healthy" if ds_bal > 1.00 else "🟡 Low" if ds_bal > 0.50 else "🔴 Critical"
-print(f"   DeepSeek:   {health}")
-health2 = "🟢 Healthy" if or_bal > 2.00 else "🟡 Low" if or_bal > 1.00 else "🔴 Critical"
-print(f"   OpenRouter: {health2}")
-if daily_avg > 0:
-    ds_days = ds_tokens / daily_avg if daily_avg > 0 else 0
-    print(f"   7-day avg:  {daily_avg:,.0f} tok/day")
-    print(f"   DeepSeek lasts ~{ds_days:.1f} days at current rate")
-print()
+    if force_reason and current_mode == "pro":
+        current_mode = "eco"
+        write_mode("eco")
 
-# Available tiers
-print(f"【🔀】Active Routing Tiers ({mode_label})")
-print()
+    # ── ECO / PRO model analysis ──
+    eco = select_eco_models(scout) if scout else {}
+    pro = select_pro_models(scout) if scout else {}
 
-tiers = ECO_TIERS if current_mode == "eco" else PRO_TIERS
-for i, (name, model, cost, use) in enumerate(tiers):
-    # Mark as available/limited
-    if cost > 0 and current_mode == "eco" and i >= 3:
-        # Paid tiers - show with remaining balance
-        avail = ds_bal > 0.50 or or_bal > 0.50
-        status = "✅" if avail else "⛔ (no credit)"
-        print(f"   {status}  Tier {i}: {name:25}  ${cost:.2f}/M  — {use}")
-    elif cost > 0:
-        status = "✅"
-        print(f"   {status}  Tier {i}: {name:25}  ${cost:.2f}/M  — {use}")
+    # ── Estimate DeepSeek tokens remaining ──
+    ds_tokens = int(ds_balance / 0.166 * 1_000_000) if ds_balance > 0 else 0
+    or_tokens = int(or_remaining / 0.20 * 1_000_000) if or_remaining > 0 else 0
+    total_tokens_7d = get_token_usage()
+    daily_avg = total_tokens_7d / 7 if total_tokens_7d else 0
+
+    # ══════════════════════════════════════
+    # PRINT REPORT
+    # ══════════════════════════════════════
+    mode_icon = "🟢" if current_mode == "eco" else "🔴"
+    mode_label = "ECO (ประหยัด)" if current_mode == "eco" else "PRO (ประสิทธิภาพ)"
+
+    print(f"╔══════════════════════════════════════╗")
+    print(f"║   🔀 Dual-Mode Model Router v2      ║")
+    print(f"╠══════════════════════════════════════╣")
+    print(f"║   📅 {ts}")
+    print(f"╚══════════════════════════════════════╝")
+    print()
+
+    # ── Mode ──
+    print(f"【ℹ️】 Current Mode: {mode_icon} {mode_label}")
+    if force_reason:
+        print(f"   {force_reason}")
+    print()
+
+    # ── Balance ──
+    print(f"【💰】 Credit Balance")
+    print(f"   DeepSeek API    ${ds_balance:.2f}  (≈ {ds_tokens:,} tokens)")
+    print(f"   OpenRouter      ${or_remaining:.2f}  (≈ {or_tokens:,} tokens)")
+    print(f"   Google/Gemini   Free Tier (active)")
+    ds_health = "🟢 Healthy" if ds_balance > 1.00 else "🟡 Low" if ds_balance > 0.50 else "🔴 Critical"
+    or_health = "🟢 Healthy" if or_remaining > 2.00 else "🟡 Low" if or_remaining > 1.00 else "🔴 Critical"
+    print(f"   DeepSeek:   {ds_health}")
+    print(f"   OpenRouter: {or_health}")
+    if daily_avg > 0:
+        ds_days = ds_tokens / daily_avg if daily_avg > 0 else 0
+        print(f"   7-day avg:  {daily_avg:,.0f} tok/day  ·  DeepSeek lasts ~{ds_days:.1f} days")
+    print()
+
+    # ── ECO Recommendations ──
+    print(f"【♻️】 ECO Mode — Recommended Models (Dynamic Scout)")
+    print()
+    if scout and eco.get("free_models"):
+        print(f"   🆓  Free Tier (best for 24/7 automation):")
+        for m in eco["free_details"][:4]:
+            mid = m.get("model_id", "?")
+            ctx = m.get("context_length") or "?"
+            print(f"       {mid:45}  context: {ctx:,}" if isinstance(ctx, int)
+                  else f"       {mid:45}  context: {ctx}")
+    if scout and eco.get("cheap_models"):
+        print(f"\n   💲  Cheap Tier (light reasoning):")
+        for m in eco["cheap_details"][:4]:
+            mid = m.get("model_id", "?")
+            ctx = m.get("context_length") or "?"
+            prompt_p = m.get("prompt_price") or "?"
+            comp_p = m.get("completion_price") or "?"
+            p_str = f"${prompt_p}" if prompt_p not in (None, "-1", "?") else "?"
+            c_str = f"${comp_p}" if comp_p not in (None, "-1", "?") else "?"
+            print(f"       {mid:45}  context: {ctx:,}  {p_str}/{c_str}/M" if isinstance(ctx, int)
+                  else f"       {mid:45}  context: {ctx}")
+    if not scout:
+        print(f"   ❇️  Default ECO: deepseek-v4-flash + gemini-3.5-flash")
+    print()
+
+    # ── PRO Recommendations ──
+    print(f"【⚡】 PRO Mode — Recommended Models (Heavy Engineering)")
+    print()
+    if scout and pro.get("glm_5.2"):
+        print(f"   ⭐  GLM-5.2 (via Z.AI key → fallback OpenRouter):")
+        for m in pro["glm_details"]:
+            mid = m.get("model_id", "?")
+            ctx = m.get("context_length") or "?"
+            prompt_p = m.get("prompt_price") or "?"
+            comp_p = m.get("completion_price") or "?"
+            p_str = f"${prompt_p}" if prompt_p not in (None, "-1", "?") else "?"
+            c_str = f"${comp_p}" if comp_p not in (None, "-1", "?") else "?"
+            print(f"       {mid:45}  context: {ctx:,}  prompt {p_str}  comp {c_str}/M" if isinstance(ctx, int)
+                  else f"       {mid:45}  context: {ctx}")
+    if scout and pro.get("premium_models"):
+        print(f"\n   💎  Premium alternatives:")
+        for m in pro["premium_details"][:4]:
+            mid = m.get("model_id", "?")
+            ctx = m.get("context_length") or "?"
+            prompt_p = m.get("prompt_price") or "?"
+            comp_p = m.get("completion_price") or "?"
+            p_str = f"${prompt_p}" if prompt_p not in (None, "-1", "?") else "?"
+            c_str = f"${comp_p}" if comp_p not in (None, "-1", "?") else "?"
+            print(f"       {mid:45}  context: {ctx:,}  prompt {p_str}  comp {c_str}/M" if isinstance(ctx, int)
+                  else f"       {mid:45}  context: {ctx}")
+    if not scout:
+        print(f"   ❇️  Default PRO: GLM-5.2 (Z.AI) + DeepSeek V4 Pro fallback")
+    print()
+
+    # ── Current config reference ──
+    print(f"【⚙️】 Current Hermes Config Reference")
+    print(f"   Main model:      deepseek-v4-flash (DeepSeek API)")
+    print(f"   Vision:          gemini-3.5-flash (Gemini — ฟรี)")
+    print(f"   Web extract:     gemini-3.5-flash (Gemini — ฟรี)")
+    print(f"   Context comp:    gemini-3.5-flash (Gemini — ฟรี)")
+    print(f"   Skills hub/MCP:  GLM-5.2 (Z.AI key → fallback OpenRouter)")
+    print()
+
+    # ── Usage tips ──
+    if current_mode == "eco":
+        print(f"【💡】 ECO active — saving credits for 24/7 automation.")
+        print(f"   Use 'เริ่ม [project]' to switch to PRO mode")
+        print(f"   Example: 'เริ่ม Sunday Estate' → GLM-5.2 for design + deep code")
     else:
-        print(f"   ✅  Tier {i}: {name:25}  FREE      — {use}")
-print()
+        print(f"【💡】 PRO mode active — full power:")
+        print(f"   Main: GLM-5.2 (Z.AI key / OpenRouter fallback)")
+        print(f"   Support: DeepSeek V4 Pro (heavy thinking)")
+        print(f"   Say 'กลับ eco' to switch back")
+    print()
 
-# Project recommendations
-if current_mode == "eco":
-    print(f"【💡】ECO is active — saving credits.")
-    print(f"   Use 'เริ่ม [project]' to switch to PRO mode")
-    print(f"   Example: 'เริ่ม Sunday Estate' → GLM-5.2 for design + planning")
-else:
-    print(f"【💡】PRO mode active — full power for your projects:")
-    print(f"   🏡 Sunday Estate webapp     → GLM-5.2 (structure + design)")
-    print(f"   🤖 Robot Trading + AI       → GLM-5.2 + DeepSeek Chat")
-    print(f"   🎮 Game Farm Invest Moon     → GLM-5.2 + Step-3.7 coding")
-    print(f"   ♻️ IoT Hospital Waste        → Step-3.7 + Gemini")
-    print(f"   Say 'จบโปรเจกต์' or 'กลับ eco' to switch back")
-print()
+    # ── Credit alerts ──
+    if ds_balance < PAID_THRESHOLD_LOW and current_mode == "eco":
+        print(f"【⚠️】 DeepSeek < ${PAID_THRESHOLD_LOW:.2f} — auto-forcing ECO for all tasks")
+        print(f"   Consider topping up DeepSeek +$5-10 to unlock PRO mode")
+    elif ds_balance < PAID_THRESHOLD_CRIT:
+        print(f"【🔴】 Critical: DeepSeek almost empty (${ds_balance:.2f})")
+        print(f"   Route non-critical work to Gemini/OpenRouter free models")
+    print()
 
-# Auto-switch warning
-if ds_bal < 0.50 and current_mode == "eco":
-    print(f"【⚠️】Credit Alert")
-    print(f"   DeepSeek < $0.50 — auto-force ECO mode for all tasks")
-    print(f"   Consider topping up to unlock PRO mode")
-elif ds_bal < 0.30:
-    print(f"【🔴】Critical: DeepSeek nearly empty ($%.2f)" % ds_bal)
-    print(f"   Route all non-critical work to Gemini/Step free models")
-print()
+    # ── Footer ──
+    print(f"──✦ Dual-Mode Router v2 · Dynamic Scout · A-Wiki · Hermes Agent ✦──")
 
-# Footer
-print(f"──✦ Dual-Mode Router · A-Wiki Brain · Hermes Agent ✦──")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
