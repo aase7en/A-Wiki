@@ -180,14 +180,30 @@ def select_eco_models(scout: dict) -> dict:
     }
 
 
+def find_zai_premium(scout: dict) -> list:
+    """Find the latest premium Z.AI GLM model from scout data (dynamic — no hardcode)."""
+    catalog = scout.get("catalog", {})
+    models = catalog.get("models", [])
+    # Find Z.AI models — match any glm-x.x pattern dynamically
+    zai = [m for m in models
+           if any(p in (m.get("model_id", "") or "").lower()
+                  for p in ["z-ai/glm", "zai/glm", "zhipu/glm"])]
+    # Sort by version: glm-X.Y descending (extract X.Y from model id)
+    import re
+    def version_key(m):
+        vs = re.findall(r"glm-?(\d+(?:\.\d+)?)", (m.get("model_id", "") or "").lower())
+        return tuple(float(v) for v in vs) if vs else (0,)
+    zai_sorted = sorted(zai, key=version_key, reverse=True)
+    return zai_sorted
+
+
 def select_pro_models(scout: dict) -> dict:
-    """Pick the strongest models for PRO mode, prioritizing GLM-5.2 via Z.AI then OR."""
+    """Pick the strongest models for PRO mode — dynamic, no hardcoded model names."""
     catalog = scout.get("catalog", {})
     models = catalog.get("models", [])
 
-    # Find GLM-5.2 variants
-    glm_models = [m for m in models if "glm-5.2" in m.get("model_id", "").lower()
-                  or "glm5.2" in m.get("model_id", "").lower()]
+    # Dynamically find latest Z.AI premium model
+    zai_premium = find_zai_premium(scout)
 
     # Find premium (expensive) models sorted by context
     premium = [m for m in models if classify_model(
@@ -198,8 +214,8 @@ def select_pro_models(scout: dict) -> dict:
     premium_sorted = sorted(premium, key=lambda m: -(m.get("context_length") or 0))
 
     return {
-        "glm_5.2": [m.get("model_id", "?") for m in glm_models],
-        "glm_details": glm_models,
+        "zai_premium": [m.get("model_id", "?") for m in zai_premium],
+        "zai_details": zai_premium,
         "premium_models": [m.get("model_id", "?") for m in premium_sorted[:6]],
         "premium_details": premium_sorted[:6],
     }
@@ -334,9 +350,10 @@ def main() -> int:
     # ── PRO Recommendations ──
     print(f"【⚡】 PRO Mode — Recommended Models (Heavy Engineering)")
     print()
-    if scout and pro.get("glm_5.2"):
-        print(f"   ⭐  GLM-5.2 (via Z.AI key → fallback OpenRouter):")
-        for m in pro["glm_details"]:
+    if scout and pro.get("zai_premium"):
+        latest_id = pro["zai_details"][0].get("model_id", "") if pro["zai_details"] else "?"
+        print(f"   ⭐  Z.AI GLM latest ({latest_id}) — Z.AI key → fallback OpenRouter:")
+        for m in pro["zai_details"]:
             mid = m.get("model_id", "?")
             ctx = m.get("context_length") or "?"
             prompt_p = m.get("prompt_price") or "?"
@@ -357,27 +374,48 @@ def main() -> int:
             print(f"       {mid:45}  context: {ctx:,}  prompt {p_str}  comp {c_str}/M" if isinstance(ctx, int)
                   else f"       {mid:45}  context: {ctx}")
     if not scout:
-        print(f"   ❇️  Default PRO: GLM-5.2 (Z.AI) + DeepSeek V4 Pro fallback")
+        print(f"   ❇️  Default PRO: GLM x.x (Z.AI latest) + DeepSeek V4 Flash fallback")
+    print()
+
+    # ── Cost comparison ──
+    print(f"【💰】 Cost Comparison (per 1M tokens)")
+    print(f"   ┌────────────────────┬────────────┬──────────────┐")
+    print(f"   │ Model              │  รับเข้า    │  ส่งออก       │")
+    print(f"   ├────────────────────┼────────────┼──────────────┤")
+    print(f"   │ DeepSeek V4 Flash  │  $0.09     │  $0.18       │")
+    print(f"   │ Gemini 3.5 Flash   │  ~$0.00    │  ~$0.00      │  ← ฟรี")
+    print(f"   │ GLM x.x (Z.AI)     │  $0.95     │  $3.00       │  ← PRO mode")
+    print(f"   │ GPT-5.5            │  $5.00     │  $30.00      │  ← ไม่ต้องใช้")
+    print(f"   └────────────────────┴────────────┴──────────────┘")
+    print(f"   สรุป: ECO mode = ~$0.27/M  |  PRO mode = ~$3.95/M")
+    print(f"   เทียบกับ subscription $18/เดือน → แบบ PAYG คุ้มกว่าเมื่อใช้ < 4.5M tok/เดือน")
     print()
 
     # ── Current config reference ──
-    print(f"【⚙️】 Current Hermes Config Reference")
+    print(f"【⚙️】 Current Hermes Config Reference (ECO Default)")
     print(f"   Main model:      deepseek-v4-flash (DeepSeek API)")
     print(f"   Vision:          gemini-3.5-flash (Gemini — ฟรี)")
     print(f"   Web extract:     gemini-3.5-flash (Gemini — ฟรี)")
     print(f"   Context comp:    gemini-3.5-flash (Gemini — ฟรี)")
-    print(f"   Skills hub/MCP:  GLM-5.2 (Z.AI key → fallback OpenRouter)")
+    print(f"   Skills hub/MCP:  deepseek-v4-flash (ECO) → Z.AI GLM (PRO)")
+    print(f"   Triage/Kanban:   deepseek-v4-flash (ECO) → Z.AI GLM (PRO)")
+    print(f"   Curator:         Z.AI GLM x.x (สัปดาห์ละครั้ง — คุ้ม)")
     print()
 
     # ── Usage tips ──
     if current_mode == "eco":
         print(f"【💡】 ECO active — saving credits for 24/7 automation.")
-        print(f"   Use 'เริ่ม [project]' to switch to PRO mode")
-        print(f"   Example: 'เริ่ม Sunday Estate' → GLM-5.2 for design + deep code")
+        print(f"   🎮  Game Farm Invest Moon     → Flash (routine) / GLM (PRO)")
+        print(f"   🤖  Robot Trade + Analysis    → Flash+Gemini (ECO) / GLM (PRO)")
+        print(f"   📊  TradingView signals       → Gemini 3.5 Flash (ฟรี — vision)")
+        print(f"   🏛️  Polymarket analysis       → Flash (data) / GLM (deep reasoning)")
+        print(f"   Say 'เริ่ม [project]' to switch to PRO mode")
     else:
-        print(f"【💡】 PRO mode active — full power:")
-        print(f"   Main: GLM-5.2 (Z.AI key / OpenRouter fallback)")
-        print(f"   Support: DeepSeek V4 Pro (heavy thinking)")
+        print(f"【💡】 PRO mode active — full power for projects:")
+        print(f"   🎮  Game Farm Invest Moon     → Z.AI GLM (latest) + DeepSeek Flash")
+        print(f"   🤖  Robot Trade + Analysis    → Z.AI GLM + Gemini 3.5 Flash")
+        print(f"   📊  TradingView + TA logic    → Z.AI GLM (deep reasoning)")
+        print(f"   🏛️  Polymarket routing        → Z.AI GLM + Flash fallback")
         print(f"   Say 'กลับ eco' to switch back")
     print()
 
