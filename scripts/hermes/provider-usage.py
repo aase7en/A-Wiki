@@ -154,7 +154,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description="Provider Usage Dashboard")
     parser.add_argument("--json", action="store_true", help="JSON output")
-    parser.add_argument("--save", action="store_true", help=f"Save to {SAVE_PATH}")
+    parser.add_argument("--no-save", action="store_true", help="Skip saving to file")
     args = parser.parse_args()
 
     results = {}
@@ -184,7 +184,7 @@ def main():
         else:
             report["summary"]["not_configured"] += 1
 
-    if args.save:
+    if not args.no_save:
         os.makedirs(os.path.dirname(SAVE_PATH), exist_ok=True)
         with open(SAVE_PATH, "w") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
