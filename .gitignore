@@ -187,3 +187,11 @@ docker-compose.override.yml
 # Dashboard lives in exports/html/ (already ignored). Keep personal data out of git.
 /TASKS.md
 /memory/
+
+# --- Layer 2: Hermes Context (no secrets) ---
+# Sync scripts/hermes/.hermes/config.yaml + SOUL.md + memory/ + sessions/
+# But ignore all .env files and secrets
+scripts/hermes/.hermes/.env
+scripts/hermes/.hermes/.env.local
+scripts/hermes/.hermes/.env.*.local
+scripts/hermes/.hermes/auth.json
