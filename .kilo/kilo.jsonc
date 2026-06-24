@@ -17,5 +17,6 @@
     "model": "gemini-embedding-001",
     "vectorStore": "lancedb",
     "lancedb": {}
-  }
+  },
+  "snapshot": false
 }
