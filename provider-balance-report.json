@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-06-23 19:23 UTC",
+  "results": {
+    "DeepSeek": {
+      "status": "not_configured"
+    },
+    "OpenRouter": {
+      "status": "not_configured"
+    },
+    "Gemini": {
+      "status": "not_configured"
+    },
+    "Z.AI/GLM": {
+      "status": "not_configured"
+    },
+    "Groq": {
+      "status": "not_configured"
+    }
+  },
+  "summary": {
+    "ok": 0,
+    "total": 5
+  }
+}
