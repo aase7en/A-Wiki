@@ -41,7 +41,12 @@ SOURCES = [
     {"id": "decrypt",       "label": "Decrypt",       "url": "https://decrypt.co/feed", "type": "rss"},
     {"id": "cryptoslate",   "label": "CryptoSlate",   "url": "https://cryptoslate.com/feed/", "type": "rss"},
 
-    # ── Finance / Economy ──
+    # ── TradingView / Technical Analysis (same parent as TradingView) ──
+    {"id": "investing",    "label":"Investing.com","url":"https://www.investing.com/rss/news.rss","type":"rss"},
+    {"id": "investing-crypto","label":"Investing Crypto","url":"https://www.investing.com/rss/crypto_news.rss","type":"rss"},
+
+    # ── Market Analysis ──
+    {"id": "marketbeat",   "label":"MarketBeat","url":"https://www.marketbeat.com/rss/","type":"rss"},
     {"id": "reuters-finance","label":"Reuters Finance","url":"https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best","type":"rss"},
     {"id": "bnn-bleeding",  "label": "BNN Bloomberg", "url": "https://www.bnnbloomberg.ca/feed/", "type": "rss"},
 
