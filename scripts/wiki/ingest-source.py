@@ -70,9 +70,36 @@ def frontmatter(**kwargs) -> str:
 def extract_text_from_url(url: str) -> str | None:
     """Try to fetch and extract text from a URL.
 
-    Uses curl as a lightweight fallback. Returns plain-text content or None.
+    Priority:
+    1. curl-impersonate binary (TLS fingerprint: chrome) — bypasses Cloudflare/Akamai
+    2. curl -sL (existing fallback)
+
+    On 403/429: prints suggestion to use scrape-advanced.py.
+    Returns plain-text content or None.
     """
     import subprocess
+
+    # Try curl-impersonate binary first
+    for bin_name in ("curl-impersonate-chrome", "curl-impersonate"):
+        bin_path = shutil.which(bin_name)
+        if bin_path:
+            try:
+                result = subprocess.run(
+                    [bin_path, "-sL", "--max-time", "15", url],
+                    capture_output=True, text=True, timeout=20,
+                )
+                if result.returncode == 0 and result.stdout.strip():
+                    return result.stdout
+                if "403" in result.stderr or "429" in result.stderr:
+                    print(
+                        f"hint: target may be blocking — try: python3 scripts/wiki/scrape-advanced.py --url {url}",
+                        file=sys.stderr,
+                    )
+                    return None
+            except Exception:
+                continue
+
+    # Fallback to curl -sL
     try:
         result = subprocess.run(
             ["curl", "-sL", "--max-time", "15", url],
@@ -82,16 +109,57 @@ def extract_text_from_url(url: str) -> str | None:
             return result.stdout
     except Exception:
         pass
+
+    print(
+        f"hint: both curl methods failed — try: python3 scripts/wiki/scrape-advanced.py --url {url}",
+        file=sys.stderr,
+    )
     return None
 
 
-def extract_text_from_file(path: str) -> str | None:
-    """Read a local file. Handles .md, .txt, .json."""
+def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
+    """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
+
+    For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
+    converts to Markdown via MarkItDown and saves to ``raw/<slug>.md``
+    so the provenance hook passes.
+    """
     p = Path(path)
     if not p.exists():
         return None
+
+    ext = p.suffix.lower()
+
+    # Plain text formats — direct read
+    if ext in PLAIN_TEXT_EXTS:
+        try:
+            return p.read_text(encoding="utf-8")
+        except Exception:
+            return None
+
+    # Binary/office formats — use MarkItDown
+    if ext in BINARY_EXTS:
+        try:
+            from markitdown import MarkItDown  # type: ignore[import-untyped]
+
+            md = MarkItDown()
+            result = md.convert(str(p))
+            if result and result.text_content:
+                text = result.text_content
+                if slug:
+                    raw_path = REPO_ROOT / "raw" / f"{slug}.md"
+                    raw_path.parent.mkdir(parents=True, exist_ok=True)
+                    raw_path.write_text(text, encoding="utf-8")
+                    print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
+                return text
+        except ImportError:
+            print("warn: MarkItDown not installed — install: pip install markitdown", file=sys.stderr)
+        except Exception as e:
+            print(f"warn: MarkItDown conversion failed for {path}: {e}", file=sys.stderr)
+
+    # Fallback: try plain text with error replacement
     try:
-        return p.read_text(encoding="utf-8")
+        return p.read_text(encoding="utf-8", errors="replace")
     except Exception:
         return None
 
@@ -184,11 +252,23 @@ def create_source_entry(
     key_concepts: list[str] | None = None,
     related_links: list[str] | None = None,
     quality: str = "seed",
+    original_file: str | None = None,
 ) -> str:
-    """Generate the full source markdown file content."""
+    """Generate the full source markdown file content with YAML frontmatter."""
     today = dt.date.today().isoformat()
     concepts = key_concepts or []
     links = related_links or []
+    slug = slugify(title)
+
+    front = frontmatter(
+        type="source",
+        title=title,
+        slug=slug,
+        date_ingested=today,
+        original_file=original_file or "",
+        tags=tags,
+        quality=quality,
+    )
 
     body = f"""# {title}
 
@@ -222,7 +302,7 @@ def create_source_entry(
     ---
     *Auto-created by `scripts/ingest-source.py` — review abstract and concepts for accuracy.*
     """)
-    return body
+    return front + "\n" + body
 
 
 def ingest_source(
@@ -233,6 +313,7 @@ def ingest_source(
     tags: list[str],
     raw_text: str | None,
     quality: str = "seed",
+    original_file: str | None = None,
 ) -> Path | None:
     """Ingest a source: generate file and write to disk."""
     if domain not in VALID_DOMAINS:
@@ -259,6 +340,7 @@ def ingest_source(
         key_concepts=concepts,
         related_links=links,
         quality=quality,
+        original_file=original_file,
     )
 
     # Ensure directory exists
@@ -366,16 +448,39 @@ def main() -> None:
         sys.exit(1)
 
     # Fetch content
+    original_file: str | None = None
     if args.url:
         print(f"🌐 Fetching: {args.url}...", file=sys.stderr)
         raw_text = extract_text_from_url(args.url)
         ref = args.url
         source_type = args.source_type or "article"
+        if raw_text:
+            # Save fetched content to raw/ for provenance
+            url_slug = slugify(args.title) if args.title else slugify(ref.split("/")[-1].split("?")[0] or "web-page")
+            raw_path = REPO_ROOT / "raw" / f"{url_slug}.md"
+            raw_path.parent.mkdir(parents=True, exist_ok=True)
+            raw_path.write_text(raw_text, encoding="utf-8")
+            print(f"💾 Raw content saved: {raw_path}", file=sys.stderr)
+            original_file = f"raw/{url_slug}.md"
     elif args.file:
+        file_path = Path(args.file)
+        file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
-        raw_text = extract_text_from_file(args.file)
-        ref = str(Path(args.file).resolve())
+        raw_text = extract_text_from_file(args.file, slug=file_slug)
+        ref = str(file_path.resolve())
         source_type = args.source_type or "other"
+        # Determine original_file: MarkItDown may have created raw/<slug>.md
+        if raw_text:
+            raw_md = REPO_ROOT / "raw" / f"{file_slug}.md"
+            if raw_md.exists():
+                original_file = f"raw/{file_slug}.md"
+            else:
+                # Binary copy to raw/ for non-MarkItDown files
+                raw_dest = REPO_ROOT / "raw" / f"{file_slug}{file_path.suffix}"
+                raw_dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(file_path, raw_dest)
+                print(f"💾 Raw copy saved: {raw_dest}", file=sys.stderr)
+                original_file = f"raw/{file_slug}{file_path.suffix}"
 
     if not raw_text:
         print("error: could not fetch/read content", file=sys.stderr)
@@ -389,6 +494,7 @@ def main() -> None:
         tags=args.tags or [],
         raw_text=raw_text,
         quality=args.quality,
+        original_file=original_file,
     )
 
 
