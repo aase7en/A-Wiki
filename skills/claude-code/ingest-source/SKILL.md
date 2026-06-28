@@ -24,8 +24,9 @@ description: Use this skill when the user sends a new source (file in raw/, URL,
 |------------------|--------|
 | Path ใน `raw/` แล้ว | ✅ ผ่าน — ไปต่อ Step 1 |
 | **URL** | `WebFetch` → **save markdown ลง `raw/<slug>.md` ทันที** พร้อม frontmatter: `source_url`, `fetched_at: YYYY-MM-DD`, `fetched_via: WebFetch`, ถ้าเป็น model-filtered ให้ใส่ `note:` แจ้งด้วย |
+| | ถ้า URL คืน 403/JS-rendered → ใช้ `scripts/wiki/scrape-advanced.py --url <url>` แทน |
 | **Paste text** | ขอ slug จาก user → save ลง `raw/<slug>.md` พร้อม `pasted_at:`, `language:` |
-| **Binary/PDF/CSV** | save ลง `raw/<slug>.<ext>` (gitignored อัตโนมัติ) — ดู Step 5 large-file flow |
+| **Binary/PDF/DOCX/XLSX/PPTX/EPUB** | save ลง `raw/<slug>.<ext>` (gitignored อัตโนมัติ) — `ingest-source.py` ใช้ MarkItDown แปลงเป็น Markdown อัตโนมัติ; output ไป `raw/<slug>.md` เพื่อให้ hook provenance ผ่าน |
 
 **ทำไม**: `raw/` คือ symlink → Google Drive A-Wiki-Data/raw — ออกแบบให้รองรับไฟล์ดิบ
 หนักๆ + เก็บ provenance permanent. ถ้าข้าม:

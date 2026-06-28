@@ -330,7 +330,26 @@ setup_kilo_config() {
   }
 }
 
-# ── 10. (optional) SkillOpt — local install only, not committed ────────────
+# ── 10. (optional) Scraper dependencies (markitdown + curl_cffi) ──────────
+# Enable with: SCRAPER_INSTALL=1 bash scripts/setup-local.sh
+# These power the document-conversion and TLS-fingerprint HTTP fetch features
+# in scripts/wiki/ingest-source.py. curl-impersonate binary is NOT included;
+# install separately: brew install curl-impersonate-chrome (macOS).
+
+setup_scraper_deps() {
+  echo "[optional] Installing web scraping dependencies (SCRAPER_INSTALL=1)..."
+  if [[ ! -f "requirements-optional.txt" ]]; then
+    echo "  WARN: requirements-optional.txt not found — skipping" >&2
+    return 0
+  fi
+  pip install -r requirements-optional.txt 2>/dev/null || pip3 install -r requirements-optional.txt || {
+    echo "  WARN: pip install failed — inspect Python environment and retry" >&2
+    return 0
+  }
+  echo "  OK — optional scraping deps installed"
+}
+
+# ── 11. (optional) SkillOpt — local install only, not committed ────────────
 # Enable with: INSTALL_SKILLOPT=1 bash scripts/setup-local.sh
 
 setup_skillopt() {
@@ -359,6 +378,7 @@ setup_model_intel
 setup_model_router_policy
 setup_personal_links
 setup_kilo_config
+setup_scraper_deps
 setup_skillopt
 setup_react_doctor
 
@@ -376,6 +396,9 @@ echo "To install runnable SkillOpt locally:"
 echo "  INSTALL_SKILLOPT=1 bash scripts/setup-local.sh"
 echo "To install react-doctor skill (for dream projects with React):"
 echo "  INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh"
+echo "To install web scraping dependencies (MarkItDown + curl_cffi):"
+echo "  SCRAPER_INSTALL=1 bash scripts/setup-local.sh"
+echo "  (curl-impersonate binary: brew install curl-impersonate-chrome)"
 echo "To verify this clone is ready for real A-Wiki work:"
 echo "  python3 scripts/verify-awiki-ready.py"
 echo "To verify OS-specific dependencies and sqlite-vec on this machine:"

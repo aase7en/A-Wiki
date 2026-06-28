@@ -315,6 +315,8 @@ Before any agent edits, adds, removes, installs, or adopts anything that affects
 | `scripts/verify-next-machine.py` | One-command Work PC/WSL/fresh-clone verification |
 | `scripts/sync-smoke.py` | Non-destructive sync workflow smoke test using temp repos |
 | `scripts/setup-dream-gitnexus.sh` | Batch GitNexus setup for explicit external project paths |
+| `scripts/wiki/ingest-source.py` | Ingest URL or file into wiki (MarkItDown + curl-impersonate) |
+| `scripts/wiki/scrape-advanced.py --url <URL>` | Multi-tier web scraper router (tiers 0-4) |
 | `scripts/build_pharmacy_db.py` | Build ignored pharmacy SQLite runtime DB from Drive/raw JSON |
 | `scripts/pharmacy_lookup.py` | Pharmacy order lookup against local SQLite FTS5 DB |
 | `scripts/compare_delivery.py` | Compare pharmacy order list with delivery JSON |
