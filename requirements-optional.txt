@@ -17,3 +17,12 @@ turbovec>=0.1.0
 #   pip install "openmed[mlx]"        — Apple Silicon (faster)
 #   pip install "openmed[hf,service]" — + REST API on port 8770
 openmed[hf]>=1.5.0
+
+# scraper — document conversion pipeline. Install via SCRAPER_INSTALL=1.
+# See: scripts/wiki/ingest-source.py (optional MarkItDown conversion)
+markitdown>=0.1.0
+
+# scraper — TLS-fingerprint HTTP fetch (bypass Cloudflare/Akamai).
+# Binary alternative: brew install curl-impersonate-chrome (macOS)
+# See: scripts/wiki/ingest-source.py (curl-impersonate fallback)
+curl_cffi>=0.7.0

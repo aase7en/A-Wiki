@@ -16,6 +16,7 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import sys
 import textwrap
 import unicodedata
@@ -26,6 +27,11 @@ SOURCES_DIR = REPO_ROOT / "wiki" / "sources"
 
 # Domains we recognise
 VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general")
+
+# File extensions handled directly by read_text
+PLAIN_TEXT_EXTS = {".md", ".txt", ".json", ".csv", ".yaml", ".yml", ".xml", ".ini", ".cfg", ".conf", ".log", ".tsv"}
+# Binary/office formats convertible via MarkItDown
+BINARY_EXTS = {".pdf", ".docx", ".xlsx", ".pptx", ".epub", ".html", ".htm"}
 
 DOMAIN_TITLES = {
     "iot": "IoT",
