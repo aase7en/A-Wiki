@@ -1,0 +1,17 @@
+[Unit]
+Description=Hermes Container Recovery Daemon v2.0
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+WorkingDirectory=__HOST_RECOV_DIR__
+EnvironmentFile=-__HOST_RECOV_DIR__/recovery/telegram.env
+ExecStart=/bin/bash __HOST_RECOV_DIR__/container-recovery-v2.sh
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-recovery
+
+[Install]
+WantedBy=default.target

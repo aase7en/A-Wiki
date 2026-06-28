@@ -1,0 +1,11 @@
+{
+  "mode": "freeforall",
+  "expected_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "expected_provider": "openrouter",
+  "fallback_models": [
+    "qwen/qwen3-coder:free",
+    "nvidia/nemotron-3-super-55b:free"
+  ],
+  "last_verified": "2026-06-29T06:00:00+07:00",
+  "version": "2.0"
+}

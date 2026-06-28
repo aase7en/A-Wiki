@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Hermes container recovery every 2 minutes (tier-based)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=2min
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
