@@ -28,6 +28,9 @@ readonly CRITICAL_INTERVAL=120   # 2 minutes
 readonly IMPORTANT_INTERVAL=600  # 10 minutes
 readonly WATCH_INTERVAL=1800     # 30 minutes
 
+# Alert throttling (seconds)
+readonly ALERT_COOLDOWN=1800   # 30 min per key
+
 # ===== LOGGING =====
 log() {
     local level="$1"
@@ -198,9 +201,9 @@ check_container() {
 
     if [[ "$status" == "running" ]]; then
         if ! run_health_check "$container" "$health_script"; then
-            log WARN "Deep health check FAILED for $container"
+            log WARN "Deep health check FAILED for $container (running — log only, no restart)"
             log_event "$container" "health_check_failed" "running" "Deep check failed" "$tier"
-            return 1
+            return 2
         fi
 
         log DEBUG "$container is healthy (tier: $tier)"
@@ -225,12 +228,16 @@ recover_container() {
 
         record_recovery "$container" "$tier"
 
-        send_alert "Container **$container** recovered at $(date '+%Y-%m-%d %H:%M:%S')"
+        if should_alert "$container"; then
+            send_alert "$container" "Container **$container** recovered at $(date '+%Y-%m-%d %H:%M:%S')"
+        fi
         return 0
     else
         log ERROR "Failed to recover $container"
         log_event "$container" "recovery_failed" "failed" "Docker start failed" "$tier"
-        send_alert "CRITICAL: Failed to recover **$container**"
+        if should_alert "$container"; then
+            send_alert "$container" "CRITICAL: Failed to recover **$container**"
+        fi
         return 1
     fi
 }
@@ -260,23 +267,39 @@ check_and_restore_hermes_model() {
 
     if docker exec "$HERMES_CLI_CONTAINER" bash "$MODE_SWITCH_IN_CONTAINER" freeforall >> "$LOG_FILE" 2>&1; then
         log INFO "Hermes model restored to FREE-FOR-ALL"
-        send_alert "Hermes model restored to FREE-FOR-ALL (free models)"
+        if should_alert "hermes-model"; then
+            send_alert "hermes-model" "Hermes model restored to FREE-FOR-ALL (free models)"
+        fi
         log_model_event "restored" "freeforall" "freeforall" 1 "mode-switch via docker exec"
         record_model_restore
         return 0
     else
         log ERROR "Failed to restore Hermes model via mode-switch.sh"
         log_model_event "restored" "freeforall" "unknown" 0 "docker exec mode-switch.sh failed"
+        if should_alert "hermes-model"; then
+            send_alert "hermes-model" "CRITICAL: Failed to restore Hermes model via mode-switch.sh"
+        fi
         return 1
     fi
 }
 
+# ===== ALERT THROTTLING =====
+should_alert() {
+    local key="$1"
+    local now; now=$(date +%s)
+    local f="${BASE_DIR}/recovery/.last_alert_${key}"
+    local last=0; [[ -f "$f" ]] && last=$(cat "$f")
+    if (( now - last >= ALERT_COOLDOWN )); then echo "$now" > "$f"; return 0; fi
+    return 1
+}
+
 # ===== TELEGRAM ALERTING =====
 send_alert() {
-    local message="$1"
+    local key="$1"
+    local message="$2"
 
     mkdir -p "$BASE_DIR/recovery/alerts"
-    local alert_file="${BASE_DIR}/recovery/alerts/alert_$(date +%s).txt"
+    local alert_file="${BASE_DIR}/recovery/alerts/alert_${key}_$(date +%s).txt"
     echo "$message" > "$alert_file"
 
     if [[ -n "$TELEGRAM_BOT_TOKEN" && -n "$TELEGRAM_CHAT_ID" ]]; then
@@ -344,15 +367,25 @@ main() {
 
         log INFO "Checking $container (tier: $tier, priority: $priority)"
 
-        if ! check_container "$container" "$tier" "$health_script"; then
-            if recover_container "$container" "$tier"; then
-                if [[ "$container" == "$HERMES_CLI_CONTAINER" ]]; then
-                    recovered_hermes=true
-                    log INFO "Hermes CLI container recovered, waiting 10s for service init..."
-                    sleep 10
-                fi
-            fi
-        fi
+        set +e
+        check_container "$container" "$tier" "$health_script"
+        rc=$?
+        set -e
+        case $rc in
+            0) ;;  # healthy
+            1)  # not running → recover
+                if recover_container "$container" "$tier"; then
+                    if [[ "$container" == "$HERMES_CLI_CONTAINER" ]]; then
+                        recovered_hermes=true
+                        log INFO "Hermes CLI container recovered, waiting 10s for service init..."
+                        sleep 10
+                    fi
+                fi ;;
+            2)  # running but check failed → throttled warning only
+                if should_alert "$container"; then
+                    send_alert "$container" "Health warning: **$container** deep-check failed (running)"
+                fi ;;
+        esac
     done < "$CONTAINER_CONF"
 
     if [[ "$recovered_hermes" == true ]]; then
