@@ -1,0 +1,16 @@
+﻿{
+  "apiKeys": {
+    "openrouter": "$OPENROUTER_API_KEY",
+    "gemini": "$GOOGLE_AI_STUDIO_KEY",
+    "deepseek": "$DEEPSEEK_API_KEY"
+  },
+  "modelPreferences": {
+    "defaultProvider": "openrouter",
+    "defaultModel": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+  },
+  "syncSettings": {
+    "autoSync": false,
+    "syncInterval": 3600
+  }
+}
+
