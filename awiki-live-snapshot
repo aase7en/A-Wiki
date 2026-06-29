@@ -1,0 +1,20 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]: A-Wiki Live
+    - generic [ref=e5]: × Hermes
+    - button "🗑 Clear" [ref=e6] [cursor=pointer]
+    - button "🔌 Connect" [ref=e7] [cursor=pointer]
+  - generic [ref=e8]:
+    - generic [ref=e10]:
+      - heading "💬 A-Wiki Live × Hermes" [level=2] [ref=e11]
+      - paragraph [ref=e12]: คุยกับ Hermes AI Agent โดยตรง — ถามคำถาม สั่งงาน IoT ค้นหา Wiki หรืออัปโหลดไฟล์
+      - generic [ref=e13]:
+        - button "📡 IoT Status" [ref=e14] [cursor=pointer]
+        - button "🔍 Wiki Search" [ref=e15] [cursor=pointer]
+        - button "🏥 Health Check" [ref=e16] [cursor=pointer]
+        - button "🤖 Model Status" [ref=e17] [cursor=pointer]
+    - generic [ref=e19]: ⚪ Not connected
+    - generic [ref=e20]:
+      - button "📎" [ref=e21] [cursor=pointer]
+      - textbox "พิมพ์ข้อความ... (Enter = ส่ง, Shift+Enter = บรรทัดใหม่)" [active] [ref=e22]
+      - button "▶" [ref=e23] [cursor=pointer]
