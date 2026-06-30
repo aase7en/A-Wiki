@@ -4,8 +4,8 @@
   "phases": {
     "define": {
       "required_before": "plan",
-      "skills": ["spec-driven-development", "idea-refine"],
-      "a_wiki_skills": ["grill-me"]
+      "skills": ["spec-driven-development"],
+      "a_wiki_skills": ["grill-me", "brainstorm-before-build"]
     },
     "plan": {
       "required_before": "build",

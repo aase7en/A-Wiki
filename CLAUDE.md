@@ -118,7 +118,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 
 | Phase | Skills | Path |
 |-------|--------|------|
-| **Define** | `spec-driven-development`, `idea-refine` | `define/` |
+| **Define** | `spec-driven-development`, `brainstorm-before-build` | `define/` |
 | **Plan** | `planning-and-task-breakdown` | `plan/` |
 | **Build** | `incremental-implementation`, `test-driven-development`, `doubt-driven-development`, `source-driven-development`, `frontend-ui-engineering`, `api-and-interface-design`, `context-engineering` | `build/` |
 | **Verify** | `browser-testing-with-devtools` | `verify/` |

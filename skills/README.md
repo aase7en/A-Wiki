@@ -50,7 +50,7 @@
 | [web-research](./research/web-research/SKILL.md) | Web search for datasheets, prices, facts | beta |
 | [ask-notebooklm](./research/ask-notebooklm/SKILL.md) | Cross-file synthesis via Gemini API | beta |
 | [brainstorm-before-build](./research/brainstorm-before-build/SKILL.md) | Plan before implementing >3 file changes | beta |
-| [internet-skill-finder](./research/internet-skill-finder/SKILL.md) | Discover agent skills from GitHub | beta |
+| [skill-scout](./research/skill-scout/SKILL.md) | Find existing skills before creating new ones | beta |
 
 ### delegation
 | Skill | Description | Status |

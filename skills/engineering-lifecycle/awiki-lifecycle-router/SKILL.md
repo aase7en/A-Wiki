@@ -50,7 +50,7 @@ Task arrives
     ├── Pharmacy order lookup? ────────────→ pharmacy-order-lookup (A-Wiki skill)
     ├── Cross-domain synthesis? ───────────→ ask-notebooklm (A-Wiki skill)
     ├── Multi-model delegation? ───────────→ delegate-subagent (A-Wiki skill)
-    ├── Refine vague ideas? ───────────────→ define/idea-refine (lifecycle)
+    ├── Refine vague ideas? ───────────────→ brainstorm-before-build (A-Wiki skill)
     └── Extract what user wants? ──────────→ grill-me (A-Wiki skill)
 ```
 
@@ -71,7 +71,7 @@ For a complete feature, the typical skill sequence is:
 
 ```
 1.  grill-me                     → Extract what the user actually wants
-2.  define/idea-refine           → Refine vague ideas
+2.  brainstorm-before-build      → Clarify intent, refine vague ideas before building
 3.  define/spec-driven-development → Define what we're building
 4.  plan/planning-and-task-breakdown → Break into verifiable chunks
 5.  build/context-engineering    → Load the right context
@@ -90,7 +90,7 @@ For a complete feature, the typical skill sequence is:
 | Phase | Skill | One-Line Summary |
 |-------|-------|-----------------|
 | Define | `spec-driven-development` | Requirements and acceptance criteria before code |
-| Define | `idea-refine` | Structured divergent/convergent thinking |
+| Define | `brainstorm-before-build` (A-Wiki) | Clarify intent then pick approach before building |
 | Plan | `planning-and-task-breakdown` | Decompose into small, verifiable tasks |
 | Build | `incremental-implementation` | Thin vertical slices, test each before expanding |
 | Build | `test-driven-development` | Failing test first, then make it pass |

@@ -36,7 +36,7 @@ Adopt the standardized engineering lifecycle architecture from addyosmani/agent-
 | # | Phase | Skill | Why A-Wiki needs it |
 |---|-------|-------|---------------------|
 | 1 | Define | `spec-driven-development` | No spec-before-code discipline. Agents jump to implementation. |
-| 2 | Define | `idea-refine` | No structured divergent/convergent thinking before building. |
+| 2 | Define | `brainstorm-before-build` | No structured divergent/convergent thinking before building. |
 | 3 | Plan | `planning-and-task-breakdown` | No systematic task decomposition with acceptance criteria. |
 | 4 | Build | `incremental-implementation` | No thin vertical slice discipline. Agents implement everything at once. |
 | 5 | Build | `test-driven-development` | No Red-Green-Refactor workflow. Tests written after code. |
@@ -80,8 +80,7 @@ skills/engineering-lifecycle/          ← One source of truth (plain Markdown)
 ├── define/
 │   ├── spec-driven-development/
 │   │   └── SKILL.md                   ← Adapted: add [wiki] markers, A-Wiki tool refs
-│   └── idea-refine/
-│       └── SKILL.md
+│   └── (idea-refine removed — superseded by brainstorm-before-build, an A-Wiki skill)
 │
 ├── plan/
 │   └── planning-and-task-breakdown/
@@ -298,7 +297,7 @@ New file: `scripts/hermes/lifecycle-config.json` (tracked)
 ```json
 {
   "phases": {
-    "define": { "required_before": "plan", "skills": ["spec-driven-development", "idea-refine", "grill-me"] },
+    "define": { "required_before": "plan", "skills": ["spec-driven-development", "brainstorm-before-build", "grill-me"] },
     "plan": { "required_before": "build", "skills": ["planning-and-task-breakdown"] },
     "build": { "required_before": "verify", "skills": ["incremental-implementation", "test-driven-development", "doubt-driven-development", "source-driven-development", "frontend-ui-engineering", "api-and-interface-design", "context-engineering"] },
     "verify": { "required_before": "review", "skills": ["debug-mantra", "browser-testing-with-devtools"] },
@@ -402,7 +401,6 @@ Agent-agnostic command definitions. Each platform (Kilo, Claude Code, Gemini CLI
 ### New files (38)
 ```
 skills/engineering-lifecycle/define/spec-driven-development/SKILL.md
-skills/engineering-lifecycle/define/idea-refine/SKILL.md
 skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md
 skills/engineering-lifecycle/build/incremental-implementation/SKILL.md
 skills/engineering-lifecycle/build/test-driven-development/SKILL.md
@@ -469,7 +467,7 @@ Phase 1: Foundation Skeleton
 
 Phase 2: Define + Plan (minimal viable lifecycle start)
   ├── 2.1 spec-driven-development (complex — most adaptations needed)
-  ├── 2.2 idea-refine
+  ├── 2.2 (idea-refine removed — superseded by brainstorm-before-build)
   └── 2.3 planning-and-task-breakdown
 
 Phase 3: Build Skills (core engineering discipline)

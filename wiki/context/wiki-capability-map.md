@@ -108,7 +108,7 @@ Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md
 | `export-notebooklm` | skills/claude-code | Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM… | `skills\claude-code\export-notebooklm\SKILL.md` |
 | `hook-suggest` | skills/claude-code | > | `skills\claude-code\hook-suggest\SKILL.md` |
 | `ingest-source` | skills/claude-code | Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnosti… | `skills\claude-code\ingest-source\SKILL.md` |
-| `internet-skill-finder` | skills/claude-code | Search and recommend Agent Skills from verified GitHub repositories. Use when users ask to find, discover, search for, or recommend skills/plugins fo… | `skills\claude-code\internet-skill-finder\SKILL.md` |
+| `skill-scout` | skills/claude-code | Search local + marketplace + GitHub + web for existing skills before creating new ones. Use when users ask to find, discover, search for, or recommend skills/plugins fo… | `skills\claude-code\skill-scout\SKILL.md` |
 | `lint-wiki` | skills/claude-code | Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic. | `skills\claude-code\lint-wiki\SKILL.md` |
 | `obsidian` | skills/claude-code | Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working wi… | `skills\claude-code\obsidian\SKILL.md` |
 | `pharmacy-order-lookup` | skills/claude-code | > | `skills\claude-code\pharmacy-order-lookup\SKILL.md` |
