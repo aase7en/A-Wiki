@@ -153,7 +153,7 @@ User (Telegram): "ช่วย review โค้ดไฟล์นี้"
 
 | Phase | Skills | What Hermes Does |
 |-------|--------|------------------|
-| **DEFINE** | `spec-driven-development`, `idea-refine`, `grill-me` | Write spec → human reviews → proceed |
+| **DEFINE** | `spec-driven-development`, `brainstorm-before-build`, `grill-me` | Write spec → human reviews → proceed |
 | **PLAN** | `planning-and-task-breakdown` | Decompose → verify acceptance criteria |
 | **BUILD** | `incremental-implementation`, `test-driven-development`, `doubt-driven-development`, `source-driven-development`, `frontend-ui-engineering`, `api-and-interface-design`, `context-engineering` | Implement slice by slice, test first |
 | **VERIFY** | `browser-testing-with-devtools`, `debug-mantra` | Reproduce → fix → guard |

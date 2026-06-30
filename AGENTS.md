@@ -352,7 +352,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 
 | Phase | Skills | Location |
 |-------|--------|----------|
-| **Define** | `spec-driven-development`, `idea-refine` | `skills/engineering-lifecycle/define/` |
+| **Define** | `spec-driven-development`, `brainstorm-before-build` | `skills/engineering-lifecycle/define/` |
 | **Plan** | `planning-and-task-breakdown` | `skills/engineering-lifecycle/plan/` |
 | **Build** | `incremental-implementation`, `test-driven-development`, `doubt-driven-development`, `source-driven-development`, `frontend-ui-engineering`, `api-and-interface-design`, `context-engineering` | `skills/engineering-lifecycle/build/` |
 | **Verify** | `browser-testing-with-devtools` | `skills/engineering-lifecycle/verify/` |

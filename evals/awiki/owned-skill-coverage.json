@@ -79,9 +79,9 @@
       "required": ["hook-suggest"]
     },
     {
-      "id": "internet-skill-finder",
-      "skill": "skills/claude-code/internet-skill-finder/SKILL.md",
-      "required": ["Internet Skill Finder"]
+      "id": "skill-scout",
+      "skill": "skills/claude-code/skill-scout/SKILL.md",
+      "required": ["Skill Scout"]
     },
     {
       "id": "lint-wiki",
