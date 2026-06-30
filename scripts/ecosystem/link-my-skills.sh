@@ -34,11 +34,11 @@ done
 # Every name here MUST exist under skills/ecosystem/ (verified by
 # tests/test_kilo_skill_discovery.py). Add/remove as the ecosystem evolves.
 ECC_INCLUDE=(
-  "agentic-engineering" "api-design" "architecture-decision-records"
+  "agentic-engineering" "api-design"
   "git-workflow" "project-flow-ops" "python-patterns"
   "python-testing" "tdd-workflow" "research-ops"
   "article-writing" "terminal-ops" "frontend-patterns"
-  "security-review" "plankton-code-quality"
+  "plankton-code-quality"
 )
 for name in "${ECC_INCLUDE[@]}"; do
   src="skills/ecosystem/$name"

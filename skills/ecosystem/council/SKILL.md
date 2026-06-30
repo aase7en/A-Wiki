@@ -184,7 +184,7 @@ If the user wants another round:
 - `santa-method` — adversarial verification
 - `knowledge-ops` — persist durable decision deltas correctly
 - `search-first` — gather external reference material before the council if needed
-- `architecture-decision-records` — formalize the outcome when the decision becomes long-lived system policy
+- `documentation-and-adrs` — formalize the outcome when the decision becomes long-lived system policy
 
 ## Example
 
