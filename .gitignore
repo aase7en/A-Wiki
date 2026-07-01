@@ -105,6 +105,19 @@ wiki/context/model-roster.conf.bak
 # --- Skill registry drafts (bootstrap output, never committed) ---
 skills-registry.draft.json
 
+# --- Per-agent local state (machine-local; only public configs tracked) ---
+# Agent runtime state (history, cache, local settings) belongs on the machine,
+# not in the public repo. See Storage Decision Rule in AGENTS.md.
+.zcode/
+.hermes/
+.kilo/plans/
+.kilo/worktrees/
+.kilo/agent-manager.json
+.agents/
+# .gemini/settings.json is tracked by design (public skill config);
+# only ignore local overrides.
+.gemini/settings.local.json
+
 # raw is a symlink (Mac) or junction (Windows) to Google Drive A-Wiki-Data
 # Each machine manages its own local link — never tracked in git
 raw
