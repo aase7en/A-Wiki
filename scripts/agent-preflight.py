@@ -51,6 +51,8 @@ REQUIRED_HOOKS = [
     "check_output_format.py",
     "check_source_original_file.py",
     "check_claudemd_lock.py",
+    # Skill registry gate (added 2026-07-01, architecture Chunk 3)
+    "check_skill_registry.py",
 ]
 
 # Guardrail names that must appear in hooks config files (by name substring)
@@ -64,6 +66,7 @@ REQUIRED_GUARDRAIL_NAMES = [
     "check-bash-destructive-git",
     "check-bash-no-branch",
     "check-secret-leak",
+    "check-skill-registry",
 ]
 
 PREFLIGHT_DOCS = [
