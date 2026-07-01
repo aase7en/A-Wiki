@@ -250,6 +250,33 @@ def main() -> None:
             "   in skills-registry.json."
         )
 
+    # --- Gate 4: warn if generated surfaces are stale (CLICK-PATH-002) ---
+    # Editing a SKILL.md (esp. frontmatter) can desync the generated surfaces.
+    # The membership check (Gate 1) doesn't catch this — it only confirms the
+    # name is registered. This non-blocking reminder prompts the agent to regen
+    # before committing so CI doesn't catch it later.
+    repo_root = Path(__file__).resolve().parents[2]
+    regen = repo_root / "scripts" / "regen-skill-surfaces.py"
+    if regen.exists():
+        import subprocess
+        try:
+            proc = subprocess.run(
+                [sys.executable, str(regen), "--check"],
+                cwd=str(repo_root),
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if proc.returncode != 0:
+                _emit(
+                    f"ℹ️  [check_skill_registry] generated surfaces are stale after editing '{skill_name}'.\n"
+                    "   Run: python scripts/regen-skill-surfaces.py\n"
+                    "   (non-blocking — CI will also catch this, but regen now avoids a failed push)"
+                )
+        except (subprocess.SubprocessError, OSError):
+            # regen --check itself failed to run (not our problem); don't warn.
+            pass
+
     sys.exit(0)
 
 
