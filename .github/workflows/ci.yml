@@ -65,6 +65,11 @@ jobs:
           python scripts/check-privacy.py
           bash -n scripts/setup-local.sh scripts/setup-cloud-link.sh scripts/update-model-roster.sh scripts/delegate.sh scripts/swarm/delegate.sh
 
+      - name: Skill registry consistency
+        run: |
+          python scripts/regen-skill-surfaces.py --validate
+          python scripts/regen-skill-surfaces.py --check
+
       - name: Unit tests
         run: python -m pytest -q
 
