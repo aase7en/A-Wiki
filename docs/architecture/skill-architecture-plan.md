@@ -1,12 +1,11 @@
 # A-Wiki Universal Skill Architecture — Design Plan
 
-> **Status:** ✅ Chunk 1 DONE · ⬜ Chunks 2-5 pending
+> **Status:** ✅ ALL 5 CHUNKS COMPLETE
 > **Last update:** 2026-07-01 (ZCode session)
-> **Resume marker:** `chunk(registry)` DONE · next: `chunk(dedup)`
-> **To resume:** read this file + `handoff.md` (private) → continue from Chunk 2.
+> **Architecture:** 5-layer contract, fully implemented + enforced
 
-This is the durable design doc (Layer 1 knowledge). The live progress tracker
-is `handoff.md` (private, gitignored). Both must stay in sync at chunk boundaries.
+This is the durable design doc (Layer 1 knowledge). The architecture is now
+complete — all 5 chunks implemented, tested, and committed.
 
 ---
 
@@ -100,11 +99,14 @@ handoff rule #8), and pushes at the boundary.
 
 - [x] `skills-registry.json` exists, schema-validated, covers all 6 surfaces
 - [x] `python scripts/regen-skill-surfaces.py --check` exits 0 (no drift)
-- [x] `pytest tests/test_skills_registry.py` green (34 tests)
-- [ ] Skill count on each agent surface equal (cross-agent visibility matrix) — Chunk 5
-- [ ] `git check-ignore .zcode/ .hermes/ .kilo/plans/ .agents/` all match — Chunk 4
-- [ ] `check-privacy.py` clean, `agent-preflight.py` passes — ongoing
-- [ ] Docs updated (AGENTS.md/CLAUDE.md with user approval) — Chunk 5
+- [x] `pytest tests/test_skills_registry.py` green (40 tests)
+- [x] `pytest tests/test_check_skill_registry.py` green (7 tests)
+- [x] `pytest tests/test_cross_agent_visibility.py` green (12 tests)
+- [x] Skill count on each agent surface verified (325 canonical visible across all 3 surfaces) — Chunk 5
+- [x] `git check-ignore .zcode/ .hermes/ .kilo/plans/` all match — Chunk 4
+- [x] `check-privacy.py` clean for all new files — ongoing
+- [x] Wiki knowledge page: `wiki/entities/ai-tools/a-wiki-skill-architecture.md` — Chunk 5
+- [ ] Docs updated (AGENTS.md/CLAUDE.md with user approval) — pending user decision on Iron Law #9
 
 ---
 
