@@ -40,10 +40,22 @@ Nothing else changes. The registry, drift detection, hook, CI, and all other age
 
 ## How to add a new skill
 
-1. Create `skills/<category>/<skill-name>/SKILL.md` with frontmatter (`name`, `description`, `domain`, `lifecycle_phase`).
-2. Add an entry to `skills-registry.json` (or run `regen-skill-surfaces.py --bootstrap`).
-3. Run `python scripts/regen-skill-surfaces.py` to update all surfaces.
-4. Commit. The `check_skill_registry.py` hook will warn if frontmatter is incomplete.
+**Order matters (CLICK-PATH-001):** the hook blocks a Write to `SKILL.md` whose name is not yet in the registry. Register FIRST, then author.
+
+1. **Register** — add an entry to `skills-registry.json` (`name`, `domain`, `lifecycle_phase`, `category`, `source: repo`, `path`, `agents: ["all"]`, `status: canonical`). To scaffold a draft entry: `python scripts/regen-skill-surfaces.py --bootstrap --out skills-registry.draft.json` then copy the relevant entry into the real registry.
+2. **Regenerate surfaces** — `python scripts/regen-skill-surfaces.py` (so the new skill appears in generated tables/paths).
+3. **Author the SKILL.md** at the declared `path` — the hook now passes because the name is registered.
+4. **Commit** — the hook warns if frontmatter is incomplete; CI verifies no drift.
+
+## On a fresh clone
+
+A fresh `git clone` already contains `skills-registry.json` and the committed `generated/` surfaces. To verify they're in sync (they should be, byte-identical, since generators are deterministic):
+
+```bash
+python scripts/regen-skill-surfaces.py --check    # expect: no drift
+```
+
+If `--check` reports drift (e.g. a previous commit bypassed regen), run `python scripts/regen-skill-surfaces.py` (no flags) to regenerate, then commit. **Do NOT use `--bootstrap` on a clone that already has a registry** — `--bootstrap` writes a separate `skills-registry.draft.json` and never touches the real registry or surfaces (it's only for first-time registry creation on a repo with no registry).
 
 ## How to deduplicate skills
 

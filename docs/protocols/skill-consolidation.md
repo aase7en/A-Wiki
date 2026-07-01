@@ -80,7 +80,13 @@ different functions. Leave them alone.
    or manual audit.
 2. Add an entry to `CONSOLIDATION_ACTIONS` in `scripts/skills_registry/consolidate.py`.
 3. Run `python scripts/skills_registry/consolidate.py skills-registry.json`.
-4. Verify: `python scripts/regen-skill-surfaces.py --validate` and `--check`.
+   Running `consolidate.py` **automatically regenerates the generated surfaces**
+   afterward (CLICK-PATH-003 fix: it chains `regen-skill-surfaces.py` as a
+   subprocess when any action was applied). You do NOT need a separate regen step.
+4. Verify: `python scripts/regen-skill-surfaces.py --validate` and `--check`
+   (both should pass — surfaces were synced in step 3).
 5. Commit with `chunk(dedup): <what> [next: ...]`.
 
-The consolidation script is **idempotent** — safe to run multiple times.
+The consolidation script is **idempotent** — safe to run multiple times. A
+re-run with no new actions reports everything as "skipped" and does not rewrite
+the registry or regenerate surfaces.

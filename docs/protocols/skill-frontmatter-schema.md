@@ -124,3 +124,35 @@ Use `debug-mantra` instead.
 3. **Warn** if the skill is `status: deprecated` (suggest the successor).
 
 Override (emergency): `HOOK_SKIP=check_skill_registry`.
+
+---
+
+## Creating a new skill (ordered checklist — CLICK-PATH-001)
+
+**Order matters.** The hook blocks a Write/Edit to `SKILL.md` whose name is not
+yet in the registry, so you MUST register BEFORE authoring the file:
+
+1. **Add a registry entry** to `skills-registry.json` with the new skill's
+   `name`, `domain`, `lifecycle_phase`, `category`, `source` (`repo`),
+   `path`, `agents` (`["all"]`), and `status` (`canonical`). (Running
+   `python scripts/regen-skill-surfaces.py --bootstrap --out draft.json`
+   can scaffold a draft entry to copy in.)
+2. **Regenerate surfaces** so the generated tables/paths include the new skill:
+   `python scripts/regen-skill-surfaces.py`
+3. **NOW author the `SKILL.md`** at the declared `path`. The hook will pass
+   because the name is already registered.
+4. **Verify** `python scripts/regen-skill-surfaces.py --check` is green (it
+   should be — step 2 already synced surfaces), then commit.
+
+If you author `SKILL.md` first (before step 1), the hook blocks the Write with
+exit 2 and the registry-first order. To unblock: do step 1, then re-attempt.
+
+---
+
+## After editing an existing skill
+
+Editing an already-registered `SKILL.md` (e.g. fixing a typo, adding a section)
+needs no special order — the hook passes because the name is already in the
+registry. Just remember to re-run `python scripts/regen-skill-surfaces.py` if
+the edit changes the skill's `domain`/`lifecycle_phase`/`name` (frontmatter
+changes flow into generated surfaces), then commit.

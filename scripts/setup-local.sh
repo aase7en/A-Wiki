@@ -330,7 +330,32 @@ setup_kilo_config() {
   }
 }
 
-# ── 10. (optional) Scraper dependencies (markitdown + curl_cffi) ──────────
+# ── 10. Git hooks + per-agent Drive storage (skill architecture Chunk 3/4) ──
+# Installs the pre-commit hook (catches skill-registry drift before CI) and
+# ensures drive/.agents/<agent>/ dirs exist for per-agent private state.
+setup_git_hooks_and_agents() {
+  echo "[10/12] Installing git hooks + per-agent Drive storage..."
+
+  # Pre-commit hook (drift gate) — installer is idempotent.
+  if [ -f "scripts/install-git-hooks.sh" ]; then
+    bash scripts/install-git-hooks.sh || echo "  WARN: git hook install failed (non-fatal)" >&2
+  fi
+
+  # Per-agent private dirs under drive/.agents/ (created lazily by resolve_agent_dir,
+  # but pre-creating the common ones here avoids first-use surprises).
+  python3 -c "
+import sys; sys.path.insert(0, 'scripts')
+try:
+    from drive_path import resolve_agent_dir, get_drive_root
+    for agent in ['zcode', 'claude', 'codex', 'hermes', 'kilo']:
+        resolve_agent_dir(agent)
+    print(f'  OK — per-agent dirs under {get_drive_root()}/.agents/')
+except Exception as exc:
+    print(f'  WARN: drive/.agents setup skipped ({exc})', file=sys.stderr)
+" 2>&1 || true
+}
+
+# ── 11. (optional) Scraper dependencies (markitdown + curl_cffi) ──────────
 # Enable with: SCRAPER_INSTALL=1 bash scripts/setup-local.sh
 # These power the document-conversion and TLS-fingerprint HTTP fetch features
 # in scripts/wiki/ingest-source.py. curl-impersonate binary is NOT included;
@@ -378,6 +403,7 @@ setup_model_intel
 setup_model_router_policy
 setup_personal_links
 setup_kilo_config
+setup_git_hooks_and_agents
 setup_scraper_deps
 setup_skillopt
 setup_react_doctor

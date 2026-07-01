@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Universal Skill Architecture
 
-> **Resume marker:** `chunk(registry)` DONE (pending commit) · next: `chunk(dedup)`
-> **Last session:** 2026-07-01 (ZCode, builtin:zai-coding-plan/GLM-5.2)
+> **Resume marker:** all 5 chunks COMPLETE + audit fixes applied
+> **Last session:** 2026-07-01/02 (ZCode, builtin:zai-coding-plan/GLM-5.2)
 > **Full design doc:** `docs/architecture/skill-architecture-plan.md` (READ FIRST)
-> **To resume:** `git pull origin main` → read this file → read the plan → continue from Chunk 2.
+> **To resume:** `git pull origin main` → verify surfaces in sync (`regen-skill-surfaces.py --check`) → read this file → read the plan → pick up any backlog item.
 
 This is the public-safe, git-tracked handoff doc. The private `handoff.md`
 symlink (→ drive/personal/journal/) is for session-local scratch only and is
@@ -13,13 +13,29 @@ gitignored (Chunk 4 will formalize this). Keep THIS file in sync at chunk bounda
 
 ## 📊 Progress Tracker
 
-| Chunk | ID | Status | Tests | Key files |
-|-------|----|--------|-------|-----------|
-| **1 — registry** | `chunk(registry)` | ✅ DONE | 34/34 | `skills-registry.json`, `scripts/skills_registry/`, `scripts/regen-skill-surfaces.py`, `tests/test_skills_registry.py` |
-| **2 — dedup** | `chunk(dedup)` | ⬜ NEXT | — | alias/deprecate ~30 skills + `dedup.py` + `docs/protocols/skill-consolidation.md` |
-| **3 — enforce** | `chunk(enforce)` | ⬜ | — | `scripts/hooks/check_skill_registry.py` + pre-commit + CI + Iron Law #9 (needs approval) |
-| **4 — harden** | `chunk(harden)` | ⬜ | — | `.gitignore` + `drive/.agents/` + `drive_path.py` |
-| **5 — verify** | `chunk(verify)` | ⬜ | — | `scripts/verify-skill-surfaces.py` + `test_cross_agent_visibility.py` + docs |
+| Chunk | ID | Status | Commit | Tests |
+|-------|----|--------|--------|-------|
+| **1 — registry** | `chunk(registry)` | ✅ DONE | `41e2e2e` | 34 |
+| **2 — dedup** | `chunk(dedup)` | ✅ DONE | `27ed570` | +6 |
+| **3 — enforce** | `chunk(enforce)` | ✅ DONE | `e50e523` | +7 |
+| **4 — harden** | `chunk(harden)` | ✅ DONE | `8ea577b` | — |
+| **5 — verify** | `chunk(verify)` | ✅ DONE | `ace3dbb` | +12 |
+| **+ agents/security** | — | ✅ DONE | `63e5198` | Cline/Antigravity generators + path-traversal guard |
+| **+ Iron Law #9/#10** | — | ✅ DONE | `917697d` | AGENTS.md/CLAUDE.md/GEMINI.md (user-approved) |
+| **+ audit fixes** | — | ✅ DONE | `d41b1c2` | fail-closed hook + consolidate-chain + pre-commit broadened |
+| **+ migration guard** | — | ✅ DONE | `8a6d69b` | `migrate_registry()` schema-version upgrade path |
+
+**Total: 59 tests green, 11 commits, 5 generated surfaces, 0 drift.**
+
+## Backlog (low-priority, audit findings not yet addressed)
+
+| # | Item | Source | Risk |
+|---|------|--------|------|
+| B1 | `dedup.py` O(n²) pairwise Jaccard — fine at 331 skills, slow at 1000+ | arch-audit Q5 | Do when registry grows |
+| B2 | `consolidate.py` deprecated action has no skip guard (re-writes every run) | arch-audit Q6 | Cosmetic |
+| B3 | `drift.py` doesn't detect orphan/stale surface files (removed generator leaves file) | arch-audit Q7 | Edge case |
+| B4 | registry has no atomic-write / file-locking | grill-me Q1 | Low (solo-wiki, no concurrent writes) |
+| B5 | `gen_agents_md.py` uses `s['name']` bracket (latent KeyError) | arch-audit Q4 | Guarded upstream by validate_registry |
 
 ---
 
@@ -39,7 +55,7 @@ grep -rc "aase7en\|C:.Users" skills-registry.json scripts/skills_registry/genera
 
 ---
 
-## ⬜ Chunk 2 — dedup (NEXT) — Moderate level
+## ✅ Chunk 2 — dedup (DONE — `27ed570`)
 
 **Goal:** Reduce skill surface ~30% by collapsing true duplicates and aliasing near-duplicates. Keep all distinct skills. See plan §Chunk 2 for full action matrix.
 
@@ -56,7 +72,7 @@ grep -rc "aase7en\|C:.Users" skills-registry.json scripts/skills_registry/genera
 
 ---
 
-## ⬜ Chunk 3 — enforce
+## ✅ Chunk 3 — enforce (DONE — `e50e523`)
 
 **Pattern:** copy `scripts/hooks/check_harness_routing.py` skeleton (stdin JSON, `_emit`, grandfather, HOOK_SKIP, exit 2).
 
@@ -71,7 +87,7 @@ grep -rc "aase7en\|C:.Users" skills-registry.json scripts/skills_registry/genera
 
 ---
 
-## ⬜ Chunk 4 — harden
+## ✅ Chunk 4 — harden (DONE — `8ea577b`)
 
 - `.gitignore`: `.zcode/` `.hermes/` `.kilo/plans/` `.kilo/worktrees/` `.agents/`
 - `git rm --cached` log.md, handoff.md, .gemini/settings.json (**surface to user first**)
@@ -84,7 +100,7 @@ grep -rc "aase7en\|C:.Users" skills-registry.json scripts/skills_registry/genera
 
 ---
 
-## ⬜ Chunk 5 — verify
+## ✅ Chunk 5 — verify (DONE — `ace3dbb`)
 
 - `scripts/verify-skill-surfaces.py` — per-agent coverage matrix
 - `tests/test_cross_agent_visibility.py`
