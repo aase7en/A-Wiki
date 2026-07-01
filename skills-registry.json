@@ -2378,8 +2378,9 @@
         "all"
       ],
       "version": "1.0.0",
-      "status": "canonical",
-      "description": "HIPAA-specific entrypoint for healthcare privacy and security work. Use when a task is explicitly framed around HIPAA, PHI handling, covered entities, BAAs, bre"
+      "status": "alias",
+      "description": "HIPAA-specific entrypoint for healthcare privacy and security work. Use when a task is explicitly framed around HIPAA, PHI handling, covered entities, BAAs, bre",
+      "canonical": "healthcare-phi-compliance"
     },
     {
       "name": "homelab-network-readiness",
@@ -2956,8 +2957,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
-      "description": "Verification loop for Laravel projects: env checks, linting, static analysis, tests with coverage, security scans, and deployment readiness."
+      "status": "alias",
+      "description": "Verification loop for Laravel projects: env checks, linting, static analysis, tests with coverage, security scans, and deployment readiness.",
+      "canonical": "django-verification"
     },
     {
       "name": "latency-critical-systems",
@@ -4194,8 +4196,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
-      "description": "Verification loop for Quarkus projects: build, static analysis, tests with coverage, security scans, native compilation, and diff review before release or PR."
+      "status": "alias",
+      "description": "Verification loop for Quarkus projects: build, static analysis, tests with coverage, security scans, native compilation, and diff review before release or PR.",
+      "canonical": "django-verification"
     },
     {
       "name": "ralphinho-rfc-pipeline",
@@ -4433,8 +4436,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
-      "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro"
+      "status": "deprecated",
+      "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro",
+      "migrated_to": "debug-mantra"
     },
     {
       "name": "rules-distill",
@@ -4726,7 +4730,11 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an e"
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an e",
+      "mirror_paths": [
+        "skills/claude-code/skill-creator",
+        "skills/delegation/skill-creator"
+      ]
     },
     {
       "name": "skill-installer",
@@ -4913,8 +4921,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
-      "description": "Verification loop for Spring Boot projects: build, static analysis, tests with coverage, security scans, and diff review before release or PR."
+      "status": "alias",
+      "description": "Verification loop for Spring Boot projects: build, static analysis, tests with coverage, security scans, and diff review before release or PR.",
+      "canonical": "django-verification"
     },
     {
       "name": "strategic-compact",
@@ -5304,8 +5313,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
-      "description": ">-"
+      "status": "alias",
+      "description": ">-",
+      "canonical": "context-budget"
     },
     {
       "name": "token-optimization",

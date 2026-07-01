@@ -141,7 +141,6 @@
 | `healthcare-phi-compliance` | medical | none | ecosystem | `skills/ecosystem/healthcare-phi-compliance/SKILL.md` |
 | `hermes-imports` | code | none | ecosystem | `skills/ecosystem/hermes-imports/SKILL.md` |
 | `hexagonal-architecture` | engineering | none | ecosystem | `skills/ecosystem/hexagonal-architecture/SKILL.md` |
-| `hipaa-compliance` | medical | none | ecosystem | `skills/ecosystem/hipaa-compliance/SKILL.md` |
 | `homelab-network-readiness` | network | none | ecosystem | `skills/ecosystem/homelab-network-readiness/SKILL.md` |
 | `homelab-network-setup` | network | none | ecosystem | `skills/ecosystem/homelab-network-setup/SKILL.md` |
 | `homelab-pihole-dns` | network | none | ecosystem | `skills/ecosystem/homelab-pihole-dns/SKILL.md` |
@@ -175,7 +174,6 @@
 | `laravel-plugin-discovery` | code | none | ecosystem | `skills/ecosystem/laravel-plugin-discovery/SKILL.md` |
 | `laravel-security` | code | none | ecosystem | `skills/ecosystem/laravel-security/SKILL.md` |
 | `laravel-tdd` | code | none | ecosystem | `skills/ecosystem/laravel-tdd/SKILL.md` |
-| `laravel-verification` | code | none | ecosystem | `skills/ecosystem/laravel-verification/SKILL.md` |
 | `latency-critical-systems` | engineering | none | uncategorized | `~/.claude/skills/latency-critical-systems/SKILL.md` |
 | `lead-intelligence` | business | none | ecosystem | `skills/ecosystem/lead-intelligence/SKILL.md` |
 | `lint-wiki` | wiki | none | wiki | `skills/claude-code/lint-wiki/SKILL.md` |
@@ -247,7 +245,6 @@
 | `quarkus-patterns` | code | none | ecosystem | `skills/ecosystem/quarkus-patterns/SKILL.md` |
 | `quarkus-security` | code | none | ecosystem | `skills/ecosystem/quarkus-security/SKILL.md` |
 | `quarkus-tdd` | code | none | ecosystem | `skills/ecosystem/quarkus-tdd/SKILL.md` |
-| `quarkus-verification` | code | none | ecosystem | `skills/ecosystem/quarkus-verification/SKILL.md` |
 | `ralphinho-rfc-pipeline` | code | none | ecosystem | `skills/ecosystem/ralphinho-rfc-pipeline/SKILL.md` |
 | `react-patterns` | code | none | uncategorized | `~/.claude/skills/react-patterns/SKILL.md` |
 | `react-performance` | code | none | uncategorized | `~/.claude/skills/react-performance/SKILL.md` |
@@ -261,7 +258,6 @@
 | `repo-scan` | code | none | ecosystem | `skills/ecosystem/repo-scan/SKILL.md` |
 | `research-ops` | code | none | ecosystem | `skills/ecosystem/research-ops/SKILL.md` |
 | `returns-reverse-logistics` | logistics | none | ecosystem | `skills/ecosystem/returns-reverse-logistics/SKILL.md` |
-| `root-cause-first` | debug | none | wiki | `skills/claude-code/root-cause-first/SKILL.md` |
 | `rules-distill` | code | none | ecosystem | `skills/ecosystem/rules-distill/SKILL.md` |
 | `rust-patterns` | code | none | ecosystem | `skills/ecosystem/rust-patterns/SKILL.md` |
 | `rust-testing` | code | none | ecosystem | `skills/ecosystem/rust-testing/SKILL.md` |
@@ -289,7 +285,6 @@
 | `springboot-patterns` | code | none | ecosystem | `skills/ecosystem/springboot-patterns/SKILL.md` |
 | `springboot-security` | code | none | ecosystem | `skills/ecosystem/springboot-security/SKILL.md` |
 | `springboot-tdd` | code | none | ecosystem | `skills/ecosystem/springboot-tdd/SKILL.md` |
-| `springboot-verification` | code | none | ecosystem | `skills/ecosystem/springboot-verification/SKILL.md` |
 | `strategic-compact` | ai-ops | none | ecosystem | `skills/ecosystem/strategic-compact/SKILL.md` |
 | `swift-actor-persistence` | code | none | ecosystem | `skills/ecosystem/swift-actor-persistence/SKILL.md` |
 | `swift-concurrency-6-2` | code | none | ecosystem | `skills/ecosystem/swift-concurrency-6-2/SKILL.md` |
@@ -312,7 +307,6 @@
 | `thai-translate` | thai | none | thai | `skills/claude-thai/thai-translate/SKILL.md` |
 | `theme-factory` | design | none | uncategorized | `skills/anthropic-skills/theme-factory/SKILL.md` |
 | `tinystruct-patterns` | code | none | ecosystem | `skills/ecosystem/tinystruct-patterns/SKILL.md` |
-| `token-budget-advisor` | ai-ops | none | ecosystem | `skills/ecosystem/token-budget-advisor/SKILL.md` |
 | `token-optimization` | ai-ops | none | wiki | `skills/claude-code/token-optimization/SKILL.md` |
 | `ui-demo` | ux-ui | none | ecosystem | `skills/ecosystem/ui-demo/SKILL.md` |
 | `ui-to-vue` | ux-ui | none | ecosystem | `skills/ecosystem/ui-to-vue/SKILL.md` |
@@ -339,18 +333,18 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 25 |
+| ai-ops | 24 |
 | business | 10 |
-| code | 178 |
+| code | 175 |
 | data | 15 |
-| debug | 7 |
+| debug | 6 |
 | design | 8 |
 | document | 9 |
 | engineering | 20 |
 | env | 1 |
 | logistics | 7 |
 | media | 13 |
-| medical | 7 |
+| medical | 6 |
 | network | 10 |
 | pharmacy | 1 |
 | productivity | 7 |
