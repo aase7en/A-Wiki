@@ -142,6 +142,27 @@ class Registry:
 # Validation
 # ---------------------------------------------------------------------------
 
+def migrate_registry(data: dict[str, Any]) -> dict[str, Any]:
+    """Upgrade a registry dict from its declared schema_version to SCHEMA_VERSION.
+
+    Each step transforms v(n) → v(n+1) in place. When the registry's version is
+    already current, this is a no-op. This is the migration story that
+    validate_registry relies on (grill-me finding: schema_version 2 would
+    otherwise reject all existing registries with no upgrade path).
+
+    Add a new step here whenever SCHEMA_VERSION bumps. Steps must be additive
+    (never drop fields silently) and idempotent.
+    """
+    version = data.get("schema_version", 0)
+    # Example placeholder for the v1→v2 transition (uncomment + adapt when v2 ships):
+    # if version < 2:
+    #     for skill in data.get("skills", []):
+    #         skill.setdefault("new_v2_field", "default")
+    #     data["schema_version"] = 2
+    #     version = 2
+    return data
+
+
 def validate_registry(path: Path | str) -> list[str]:
     """Return a list of human-readable error strings. Empty list = valid."""
     try:
@@ -151,6 +172,9 @@ def validate_registry(path: Path | str) -> list[str]:
         return [f"cannot read registry: {exc}"]
 
     errors: list[str] = []
+
+    # Migrate before validating so older registries upgrade transparently.
+    data = migrate_registry(data)
 
     # Top-level
     if data.get("schema_version") != SCHEMA_VERSION:
@@ -263,5 +287,6 @@ __all__ = [
     "REQUIRED_SKILL_FIELDS",
     "DriftError",
     "Registry",
+    "migrate_registry",
     "validate_registry",
 ]
