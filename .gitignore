@@ -114,6 +114,9 @@ skills-registry.draft.json
 .kilo/worktrees/
 .kilo/agent-manager.json
 .agents/
+# Exception: react-doctor is a public bootstrap skill (INSTALL_REACT_DOCTOR=1),
+# tracked intentionally — not machine-local state.
+!.agents/skills/react-doctor/
 # .gemini/settings.json is tracked by design (public skill config);
 # only ignore local overrides.
 .gemini/settings.local.json
