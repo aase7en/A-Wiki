@@ -209,10 +209,11 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 7. **Bot trading client is MOCK/visualization-only** — ห้ามเก็บ secret, sign request, หรือ execute order ใน client; ดู `docs/protocols/bot-trading-iron-law.md`
 8. **External-editor source-of-truth protection** — ไฟล์ที่ iterate นอก git (Tampermonkey, browser snippets) ต้องมี `USERSCRIPT_SYNC_OK=<version>` ตรงกับ `// @version` header ก่อน Edit/Write; บังคับโดย `scripts/hooks/check_external_editor_drift.py`
 9. **Source provenance — `raw/` first, always** — ingest ทุก URL/article ต้องบันทึกลง `raw/<slug>.<ext>` ก่อนสร้าง `wiki/sources/<slug>.md`; `original_file:` frontmatter บังคับ; บังคับโดย hook #12
+10. **Skill registry is the single source of truth** — ทุก SKILL.md ต้องลงทะเบียนใน `skills-registry.json` พร้อม frontmatter ครบ (`domain`, `lifecycle_phase`, `status`); generated surfaces ห้ามแก้มือ; เพิ่ม skill: registry → `regen-skill-surfaces.py` → commit; บังคับโดย `check_skill_registry.py` (hook ใหม่ใน PreToolUse Edit/Write/MultiEdit). ดู `docs/architecture/skill-architecture-plan.md`
 
 ---
 
-## 🪝 Active Hooks (14 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (15 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
@@ -234,9 +235,26 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 | 12 | **Source Provenance** | `check_source_original_file.py` | 🔴 Block | Block Write/Edit `wiki/sources/<slug>.md` ถ้า `original_file:` หาย/null/ไม่ใช่ raw/ หรือชี้ไฟล์ที่ไม่มีจริง (grandfather Edit บน legacy broken sources) |
 | 13 | **Output Format Guard** | `check_output_format.py` | 🔴 Block/📋 Warn | Block `.html` ลง source-of-truth (wiki/docs/CLAUDE.md/AGENTS.md) หรือนอก exports/html/; เตือน render-don't-dump สำหรับ .md ตารางใหญ่+report keywords |
 | 14 | **Cost-First Gate** | `check_cost_tier.py` | 🔴 Block | Block Edit/Write/Agent ถ้าไม่มี `.tmp/cost-tier-YYYY-MM-DD.txt` — บังคับ classify tier (L1-L4) ก่อนใช้ primary model; Bash/PS exempt; `HOOK_SKIP=check_cost_tier` หรือ `CI=true` bypass ได้; ดู `docs/protocols/cost-gate.md` |
+| 15 | **Skill Registry Gate** | `check_skill_registry.py` | 🔴 Block/📋 Warn | Block Write/Edit/MultiEdit `SKILL.md` ที่ไม่ได้ลงทะเบียนใน `skills-registry.json`; warn เมื่อ frontmatter ขาด `domain`/`lifecycle_phase`; warn เมื่อแก้ deprecated skill; path-traversal guard. Iron Law #10. `HOOK_SKIP=check_skill_registry` |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`
+
+---
+
+## 🔧 Universal Skill Registry (Iron Law #10)
+
+ทุก skill ของทุก agent (Codex, Claude, Antigravity, ZCode, Hermes, Windsurf, OpenClaw, Kilo, Cline + อนาคต) อยู่ภายใต้ **`skills-registry.json`** — single source of truth. Generated surfaces ห้ามแก้มือ.
+
+**5-layer:** `SKILL.md` → `skills-registry.json` → generators → agent surfaces → enforcement (hook #15).
+
+```bash
+python scripts/regen-skill-surfaces.py             # regen all surfaces
+python scripts/regen-skill-surfaces.py --check      # CI: fail if drift
+python scripts/verify-skill-surfaces.py             # cross-agent visibility
+```
+
+เพิ่ม skill: สร้าง SKILL.md → add registry entry → `regen` → commit. เพิ่ม agent surface: `gen_<agent>.py` + 1 line. ดู `docs/architecture/skill-architecture-plan.md`.
 
 ---
 

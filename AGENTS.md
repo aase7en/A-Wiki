@@ -160,6 +160,7 @@ Before writing **any** new file, decide where it lives. The wrong choice either 
 6. **External-editor source-of-truth protection** — files iterated in tools outside git (Tampermonkey userscripts, browser snippets) require `USERSCRIPT_SYNC_OK=<version>` env var matching the file's `// @version` header before any Edit/Write. Enforced by `scripts/hooks/check_external_editor_drift.py`. Rationale: 2026-05-27 incident — git baseline was v0.1.0 but Tampermonkey copy was v0.8.0; editing git directly would have downgraded the live tool and destroyed 7 iterations of work.
 7. **Source provenance — `raw/` first, always** — when ingesting any URL/article/pasted text, the raw content MUST be saved to `raw/<slug>.<ext>` (auto-syncs to Google Drive via the `raw → drive/raw` symlink) BEFORE creating `wiki/sources/<slug>.md`. The source's `original_file:` frontmatter field is mandatory and must point at a real file under `raw/`. Enforced by `scripts/hooks/check_source_original_file.py` (PreToolUse Write/Edit/MultiEdit blocker). Grandfather clause: edits to legacy sources that were already non-compliant pass — only regressions and new Writes are blocked. Override (emergencies only): `HOOK_SKIP=check_source_original_file`. Rationale: 2026-05-30 Velxio ingest skipped raw-save, lost provenance, had to be corrected in-session. See [[ingest-flow-raw-first]] memory.
 8. **Bot trading client is MOCK/visualization-only** — no secrets stored, no signed requests, no order execution in client code; see `docs/protocols/bot-trading-iron-law.md`.
+9. **Skill registry is the single source of truth** — every SKILL.md must be registered in `skills-registry.json` with valid frontmatter (`domain`, `lifecycle_phase`, `status`). Generated surfaces (`.kilo`/`.gemini`/`.cline`/`.antigravity`/AGENTS.md tables) must never be hand-edited. New skills: add to registry → `python scripts/regen-skill-surfaces.py` → commit. Enforced by `scripts/hooks/check_skill_registry.py` (PreToolUse Write/Edit/MultiEdit blocker). Override (emergencies only): `HOOK_SKIP=check_skill_registry`. See `docs/protocols/skill-frontmatter-schema.md`.
 
 ---
 
@@ -268,6 +269,31 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 
 **Symlink setup**: `bash scripts/link-my-skills.sh`
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
+
+---
+
+## 🔧 Universal Skill Registry
+
+Every skill across all 9 agents (Codex, Claude, Antigravity, ZCode, Hermes, Windsurf, OpenClaw, Kilo, Cline + future) is governed by **`skills-registry.json`** — the single source of truth. Generated per-agent surfaces are NEVER hand-edited.
+
+**5-layer contract:** `SKILL.md` → `skills-registry.json` → generators → agent surfaces → enforcement hook.
+
+```bash
+python scripts/regen-skill-surfaces.py             # regenerate all surfaces from registry
+python scripts/regen-skill-surfaces.py --check      # CI: fail if drift
+python scripts/regen-skill-surfaces.py --validate   # validate registry schema
+python scripts/regen-skill-surfaces.py --bootstrap --out draft.json  # first-time scan
+python scripts/verify-skill-surfaces.py             # cross-agent visibility smoke test
+```
+
+| Action | Command |
+|--------|---------|
+| Add a new skill | Create SKILL.md → add registry entry → `regen` → commit |
+| Add a new agent surface | Add `scripts/skills_registry/generators/gen_<agent>.py` + 1 line in `GENERATORS` dict |
+| Deduplicate skills | Edit `consolidate.py` CONSOLIDATION_ACTIONS → run → `regen` |
+| Domain taxonomy | `VALID_DOMAINS` in `scripts/skills_registry/__init__.py` (22 domains) |
+
+**Enforcement:** `check_skill_registry.py` (Iron Law #9) blocks unregistered SKILL.md writes; warns on missing frontmatter. See `docs/architecture/skill-architecture-plan.md`.
 
 ---
 
