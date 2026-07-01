@@ -75,6 +75,43 @@ def get_waste_reports_dir(year_month: str | None = None) -> Path:
     return base
 
 
+# Per-agent private state convention (architecture Chunk 4).
+# Each agent gets an isolated directory under drive/.agents/<agent>/ for its
+# local settings, history, cache, and secrets. This prevents agents from
+# overwriting each other's state and keeps private data out of the public repo.
+_KNOWN_AGENTS = ("zcode", "claude", "codex", "hermes", "kilo", "cline", "windsurf", "openclaw", "gemini")
+
+
+def resolve_agent_dir(agent_name: str, create: bool = True) -> Path:
+    """Return drive/.agents/<agent_name>/ — the per-agent private storage dir.
+
+    Resolution uses get_drive_root() (4-step fallback), then appends .agents/<name>.
+    The directory is created if missing (unless create=False).
+
+    Raises ValueError for unknown agent names (typos must be caught early).
+    To add a new agent: add it to _KNOWN_AGENTS here + create a generator in
+    scripts/skills_registry/generators/ if it needs a skill surface.
+    """
+    name = agent_name.lower().strip()
+    if name not in _KNOWN_AGENTS:
+        raise ValueError(
+            f"unknown agent '{agent_name}'. Known: {sorted(_KNOWN_AGENTS)}. "
+            f"Add new agents to _KNOWN_AGENTS in scripts/drive_path.py."
+        )
+    base = get_drive_root() / ".agents" / name
+    if create:
+        base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def list_agent_dirs() -> list[Path]:
+    """Return all existing per-agent dirs under drive/.agents/."""
+    base = get_drive_root() / ".agents"
+    if not path_exists(base):
+        return []
+    return sorted(p for p in base.iterdir() if p.is_dir())
+
+
 def get_ocr_feedback_dir() -> Path:
     """Return drive/ocr-feedback/ path."""
     p = get_drive_root() / "ocr-feedback"
