@@ -15,9 +15,12 @@ fi
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$REPO_ROOT"
 
-# Only run if the staged changes touch SKILL.md or the registry.
+# Only run if the staged changes touch skills, the registry, OR the generator/
+# taxonomy/consolidation code that determines surface output (CLICK-PATH-004 fix:
+# previously the filter was too narrow and missed generator/taxonomy edits that
+# would alter surface output, causing local-pass / CI-fail divergence).
 STAGED=$(git diff --cached --name-only)
-if ! echo "$STAGED" | grep -qE '(^|/)SKILL\.md$|^skills-registry\.json$'; then
+if ! echo "$STAGED" | grep -qE '(^|/)SKILL\.md$|^skills-registry\.json$|^scripts/skills_registry/|^scripts/regen-skill-surfaces\.py$|^scripts/verify-skill-surfaces\.py$'; then
     exit 0
 fi
 

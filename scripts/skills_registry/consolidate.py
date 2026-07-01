@@ -117,6 +117,7 @@ def apply_consolidation(registry_path: Path) -> dict[str, Any]:
 
 
 if __name__ == "__main__":
+    import subprocess
     import sys
     registry_path = Path(sys.argv[1]) if len(sys.argv) > 1 else REPO_ROOT / "skills-registry.json"
     result = apply_consolidation(registry_path)
@@ -131,3 +132,21 @@ if __name__ == "__main__":
         print(f"Skipped: {len(result['skipped'])}")
         for line in result["skipped"]:
             print(f"  → {line}")
+
+    # CLICK-PATH-003 fix: chain surface regen so generated/ stays in sync.
+    # consolidate.py mutates the registry; without this, generated surfaces go stale
+    # and CI --check fails on the next push.
+    if result["applied"] or result["renamed"]:
+        print("\n--- Regenerating surfaces (registry changed) ---")
+        regen = REPO_ROOT / "scripts" / "regen-skill-surfaces.py"
+        proc = subprocess.run(
+            [sys.executable, str(regen)],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+        )
+        if proc.returncode == 0:
+            print("✅ Surfaces regenerated from updated registry.")
+        else:
+            print(f"⚠️  regen failed (exit {proc.returncode}):\n{proc.stderr}", file=sys.stderr)
+            print("   Run manually: python scripts/regen-skill-surfaces.py", file=sys.stderr)

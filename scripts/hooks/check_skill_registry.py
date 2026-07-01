@@ -68,19 +68,31 @@ def _extract_frontmatter_all(content: str) -> dict[str, str]:
 
 
 def _load_registry_names() -> set[str]:
-    """Load all registered skill names + aliases from skills-registry.json."""
+    """Load all registered skill names + aliases from skills-registry.json.
+
+    SECURITY: a missing or corrupt registry must NOT fail-open. We distinguish:
+      - registry missing entirely → return None (signal "not bootstrapped")
+      - registry corrupt/unreadable → return None + emit warning
+    The caller treats None as "registry unavailable" and refuses to pass through,
+    so corrupting the registry cannot bypass the gate.
+    """
     repo_root = Path(__file__).resolve().parents[2]
     registry_path = repo_root / "skills-registry.json"
     if not registry_path.exists():
-        return set()  # registry not bootstrapped yet — pass through
+        return None  # signal: not bootstrapped — caller decides
     try:
         with open(registry_path, encoding="utf-8") as f:
             data = json.load(f)
-    except (OSError, json.JSONDecodeError):
-        return set()
+    except (OSError, json.JSONDecodeError) as exc:
+        _emit(
+            f"⚠️  [check_skill_registry] skills-registry.json is unreadable ({exc});\n"
+            "   refusing to pass through (fail-closed). Fix the registry or use HOOK_SKIP."
+        )
+        return None  # corrupt → fail-closed
     names: set[str] = set()
     for skill in data.get("skills", []):
-        names.add(skill["name"])
+        if "name" in skill:
+            names.add(skill["name"])
         for alias in skill.get("aliases", []) or []:
             names.add(alias)
     return names
@@ -178,17 +190,33 @@ def main() -> None:
     if content is None:
         sys.exit(0)
 
-    # --- Gate 1: skill must be registered ---
+    # --- Gate 1: skill must be registered (fail-closed on corrupt/missing registry) ---
     registered = _load_registry_names()
-    if registered and skill_name not in registered:
+    if registered is None:
+        # Registry missing (not bootstrapped) OR corrupt (fail-closed per security audit).
+        # Missing-registry on a fresh repo is benign (no skills to gate yet), so warn-only.
+        # A corrupt registry is already warned inside _load_registry_names; block here too.
+        if (Path(__file__).resolve().parents[2] / "skills-registry.json").exists():
+            # Registry EXISTS but unreadable → corruption → fail-closed.
+            _emit(
+                "🚫 [check_skill_registry] Blocked Write: skills-registry.json is corrupt/unreadable\n"
+                "   (fail-closed: a corrupt registry cannot bypass the gate)\n"
+                "   fix: restore skills-registry.json from git, then retry\n"
+                "   override (emergency): HOOK_SKIP=check_skill_registry"
+            )
+            sys.exit(2)
+        # Missing entirely (fresh repo, not bootstrapped) → warn-only, pass through.
+        sys.exit(0)
+
+    if skill_name not in registered:
         _emit(
             "🚫 [check_skill_registry] Blocked Write to unregistered skill\n"
             f"   skill: '{skill_name}' not found in skills-registry.json\n"
-            "   fix: register the skill first:\n"
+            "   fix: register the skill FIRST, then author the SKILL.md:\n"
             "     1. Add an entry to skills-registry.json (name, domain, lifecycle_phase, path)\n"
             "     2. Run: python scripts/regen-skill-surfaces.py\n"
-            "     3. Re-attempt this edit\n"
-            "   why: registry is the single source of truth (skill architecture Chunk 3)\n"
+            "     3. THEN Write/Edit the SKILL.md (this gate will pass)\n"
+            "   note: order matters — registry entry must exist BEFORE writing SKILL.md\n"
             "   override (emergency): HOOK_SKIP=check_skill_registry"
         )
         sys.exit(2)
