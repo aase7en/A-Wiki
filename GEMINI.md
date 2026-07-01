@@ -71,8 +71,12 @@ bash scripts/swarm/delegate.sh "query"    # delegate to best available free mode
 ## Gemini CLI Config
 
 - Config dir: `.gemini/`
-- Settings: `.gemini/settings.json` (model config, temperature, hooks runner)
+- Settings: `.gemini/settings.json` (model config, temperature, hooks runner) — **the `agent.skills` block is now GENERATED** from `skills-registry.json` by `scripts/skills_registry/generators/gen_gemini.py`; do not hand-edit it. Run `python scripts/regen-skill-surfaces.py` to refresh.
 - Hooks: `scripts/hooks_runner.py` (Python — same hooks as all platforms)
+
+### Universal Skill Registry (Iron Law #9)
+
+ทุก skill อยู่ภายใต้ `skills-registry.json` (single source of truth). Gemini's skills block + paths ถูก generate อัตโนมัติ. เพิ่ม skill: registry → `regen-skill-surfaces.py` → commit. ดู `docs/architecture/skill-architecture-plan.md`.
 
 ---
 
