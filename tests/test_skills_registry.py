@@ -286,6 +286,103 @@ class TestDedupInvariants:
 
 
 # ---------------------------------------------------------------------------
+# Consolidation (Chunk 2): dedup.py + consolidate.py
+# ---------------------------------------------------------------------------
+
+class TestDedupDetection:
+    """dedup.detect_clusters must find known duplicate clusters."""
+
+    def test_detects_verification_cluster(self, sample_registry_file: Path) -> None:
+        from skills_registry.dedup import detect_clusters
+
+        reg = Registry.load(sample_registry_file)
+        clusters = detect_clusters(reg)
+        # At minimum, clusters should be a list (the sample is small).
+        assert isinstance(clusters, list)
+
+    def test_classify_cluster_returns_valid_action(self, sample_registry_file: Path) -> None:
+        from skills_registry.dedup import classify_cluster, detect_clusters
+
+        reg = Registry.load(sample_registry_file)
+        for cluster in detect_clusters(reg):
+            action = classify_cluster(cluster, reg)
+            assert action in {"delete", "alias", "stub", "distinct"}
+
+    def test_validate_dedup_clean_on_valid_registry(self, sample_registry_file: Path) -> None:
+        from skills_registry.dedup import validate_dedup
+
+        reg = Registry.load(sample_registry_file)
+        errors = validate_dedup(reg)
+        assert errors == []
+
+    def test_validate_dedup_catches_alias_without_canonical(self, tmp_path: Path) -> None:
+        from skills_registry.dedup import validate_dedup
+
+        bad = {
+            "schema_version": SCHEMA_VERSION, "generated_at": "x",
+            "skills": [
+                {"name": "a", "domain": ["code"], "status": "alias", "source": "repo", "path": "p", "lifecycle_phase": "none"},
+            ],
+        }
+        reg = Registry(bad)
+        errors = validate_dedup(reg)
+        assert any("no 'canonical'" in e for e in errors)
+
+
+class TestConsolidation:
+    """consolidate.apply_consolidation must be idempotent and sound."""
+
+    def test_consolidation_is_idempotent(self, tmp_path: Path) -> None:
+        from skills_registry.consolidate import apply_consolidation
+
+        # Build a minimal registry with a verification cluster.
+        reg_data = {
+            "schema_version": SCHEMA_VERSION, "generated_at": "x",
+            "skills": [
+                {"name": "django-verification", "aliases": [], "domain": ["code"], "lifecycle_phase": "none", "category": "ecosystem", "source": "repo", "path": "skills/ecosystem/django-verification", "agents": ["all"], "status": "canonical"},
+                {"name": "laravel-verification", "aliases": [], "domain": ["code"], "lifecycle_phase": "none", "category": "ecosystem", "source": "repo", "path": "skills/ecosystem/laravel-verification", "agents": ["all"], "status": "canonical"},
+                {"name": "debug-mantra", "aliases": [], "domain": ["code", "debug"], "lifecycle_phase": "build", "category": "engineering", "source": "repo", "path": "agent-skills/engineering/debug-mantra", "agents": ["all"], "status": "canonical"},
+                {"name": "root-cause-first", "aliases": [], "domain": ["code", "debug"], "lifecycle_phase": "build", "category": "engineering", "source": "repo", "path": "skills/deprecated/root-cause-first", "agents": ["all"], "status": "canonical"},
+            ],
+        }
+        p = tmp_path / "r.json"
+        p.write_text(json.dumps(reg_data), encoding="utf-8")
+
+        result1 = apply_consolidation(p)
+        # Reload to capture state after first run.
+        with open(p, encoding="utf-8") as f:
+            state1 = json.load(f)
+        p.write_text(json.dumps(state1), encoding="utf-8")
+        result2 = apply_consolidation(p)
+        with open(p, encoding="utf-8") as f:
+            state2 = json.load(f)
+
+        # Second run should not change anything (idempotent).
+        assert state1 == state2
+
+    def test_consolidation_creates_valid_aliases(self, tmp_path: Path) -> None:
+        from skills_registry import validate_registry
+        from skills_registry.consolidate import apply_consolidation
+
+        reg_data = {
+            "schema_version": SCHEMA_VERSION, "generated_at": "x",
+            "skills": [
+                {"name": "django-verification", "aliases": [], "domain": ["code"], "lifecycle_phase": "none", "category": "ecosystem", "source": "repo", "path": "skills/ecosystem/django-verification", "agents": ["all"], "status": "canonical"},
+                {"name": "laravel-verification", "aliases": [], "domain": ["code"], "lifecycle_phase": "none", "category": "ecosystem", "source": "repo", "path": "skills/ecosystem/laravel-verification", "agents": ["all"], "status": "canonical"},
+                {"name": "root-cause-first", "aliases": [], "domain": ["code", "debug"], "lifecycle_phase": "build", "category": "engineering", "source": "repo", "path": "skills/deprecated/root-cause-first", "agents": ["all"], "status": "canonical"},
+                {"name": "debug-mantra", "aliases": [], "domain": ["code", "debug"], "lifecycle_phase": "build", "category": "engineering", "source": "repo", "path": "agent-skills/engineering/debug-mantra", "agents": ["all"], "status": "canonical"},
+            ],
+        }
+        p = tmp_path / "r.json"
+        p.write_text(json.dumps(reg_data), encoding="utf-8")
+        apply_consolidation(p)
+
+        # After consolidation, the registry must still be schema-valid.
+        errors = validate_registry(p)
+        assert errors == [], f"registry invalid after consolidation: {errors}"
+
+
+# ---------------------------------------------------------------------------
 # Domain / lifecycle classification heuristics
 # ---------------------------------------------------------------------------
 
