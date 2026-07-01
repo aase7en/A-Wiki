@@ -157,6 +157,19 @@ def main() -> None:
     if not file_path.replace("\\", "/").endswith("/SKILL.md") and Path(file_path).name != "SKILL.md":
         sys.exit(0)
 
+    # SECURITY: reject path-traversal attempts (file_path reaching outside skill dirs).
+    # The hook only needs to read SKILL.md under the repo's skill surfaces; reject
+    # anything containing ".." segments that could escape those trees.
+    normalized = file_path.replace("\\", "/")
+    if "/../" in normalized or normalized.startswith("../") or Path(normalized).is_absolute() and ".." in normalized:
+        _emit(
+            "🚫 [check_skill_registry] Blocked path-traversal in file_path\n"
+            f"   path: {file_path}\n"
+            "   why: SKILL.md paths must stay within skill directories (no '..' escapes)\n"
+            "   override (emergency): HOOK_SKIP=check_skill_registry"
+        )
+        sys.exit(2)
+
     skill_name = _skill_name_from_path(file_path)
     if not skill_name:
         sys.exit(0)
