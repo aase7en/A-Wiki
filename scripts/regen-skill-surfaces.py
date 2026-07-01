@@ -49,7 +49,13 @@ from skills_registry import (  # noqa: E402
     validate_registry,
 )
 from skills_registry import drift as drift_mod  # noqa: E402
-from skills_registry.generators import gen_agents_md, gen_gemini, gen_kilo  # noqa: E402
+from skills_registry.generators import (  # noqa: E402
+    gen_agents_md,
+    gen_antigravity,
+    gen_cline,
+    gen_gemini,
+    gen_kilo,
+)
 from skills_registry.scan import build_draft_registry  # noqa: E402
 
 REGISTRY_PATH = REPO_ROOT / "skills-registry.json"
@@ -60,6 +66,8 @@ SURFACES_DIR = REPO_ROOT / "scripts" / "skills_registry" / "generated"
 GENERATORS = {
     gen_kilo.filename: gen_kilo,
     gen_gemini.filename: gen_gemini,
+    gen_cline.filename: gen_cline,
+    gen_antigravity.filename: gen_antigravity,
     gen_agents_md.filename: gen_agents_md,
 }
 

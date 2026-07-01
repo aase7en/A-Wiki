@@ -1,0 +1,22 @@
+{
+  "skills": {
+    "paths": [
+      "./agent-skills/swarm-intelligence",
+      "./skills/anthropic-skills",
+      "./skills/assessment-generator",
+      "./skills/awiki",
+      "./skills/claude-code",
+      "./skills/claude-thai",
+      "./skills/delegation",
+      "./skills/ecosystem",
+      "./skills/engineering",
+      "./skills/engineering-lifecycle",
+      "./skills/openmed",
+      "./skills/productivity",
+      "./skills/render-html",
+      "./skills/wiki",
+      "./skills/word-generator"
+    ],
+    "source": "skills-registry.json"
+  }
+}
