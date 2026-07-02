@@ -17,7 +17,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from skills_registry import Registry, validate_registry  # noqa: E402
-from skills_registry.generators import gen_agents_md, gen_gemini, gen_kilo  # noqa: E402
+from skills_registry.generators import (  # noqa: E402
+    gen_agents_md,
+    gen_gemini,
+    gen_hermes,
+    gen_kilo,
+)
 
 REGISTRY_PATH = REPO_ROOT / "skills-registry.json"
 
@@ -67,6 +72,13 @@ class TestAgentSurfacesGenerated:
         assert "skills" in data
         assert len(data["skills"]) > 0, "expected at least one Gemini skill group"
 
+    def test_hermes_manifest_generated(self, registry: Registry) -> None:
+        """Hermes surface must exist and parse as the opt-in manifest shape."""
+        out = gen_hermes.render(registry)
+        data = json.loads(out)
+        assert "skills" in data
+        assert isinstance(data["skills"], list)
+
 
 class TestCrossAgentVisibility:
     """The core assertion: canonical skills are discoverable across surfaces."""
@@ -100,6 +112,7 @@ class TestCrossAgentVisibility:
         generated = {
             gen_kilo.filename: gen_kilo.render(reg),
             gen_gemini.filename: gen_gemini.render(reg),
+            gen_hermes.filename: gen_hermes.render(reg),
             gen_agents_md.filename: gen_agents_md.render(reg),
         }
         surfaces_dir = REPO_ROOT / "scripts" / "skills_registry" / "generated"

@@ -111,7 +111,7 @@ hermes profile show tech_and_ai_architect
 
 ## Path differences to fix
 - `terminal.cwd`: `$REPO_ROOT` → `/home/pi/A-Wiki` (or wherever A-Wiki lives on Pi5)
-- Any other `/Users/aase7en` paths → adjust for Pi5
+- Any other `/Users/<you>` paths → adjust for Pi5
 
 ## Pi5-specific notes
 - Terminal backend should be `local` (already set)

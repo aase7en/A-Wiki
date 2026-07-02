@@ -30,7 +30,8 @@
       "source": "repo",
       "path": "skills/awiki/a-wiki-telegram/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -372,7 +373,8 @@
       "source": "repo",
       "path": "skills/claude-code/ask-notebooklm/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -509,7 +511,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -681,7 +684,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -768,7 +772,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -889,7 +894,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/review/code-simplification/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -1365,7 +1371,8 @@
       "source": "repo",
       "path": "skills/engineering/debug-mantra/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -1417,7 +1424,8 @@
       "source": "repo",
       "path": "skills/claude-code/delegate-subagent/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -1453,7 +1461,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -1624,7 +1633,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/documentation-and-adrs/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -1896,7 +1906,8 @@
       "source": "repo",
       "path": "skills/claude-code/export-notebooklm/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -2186,7 +2197,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/git-workflow-and-versioning/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -2529,7 +2541,8 @@
       "source": "repo",
       "path": "skills/claude-code/ingest-source/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3006,7 +3019,8 @@
       "source": "repo",
       "path": "skills/claude-code/lint-wiki/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3522,7 +3536,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3539,7 +3554,8 @@
       "source": "repo",
       "path": "skills/claude-code/obsidian/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3659,7 +3675,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/review/performance-optimization/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3728,7 +3745,8 @@
       "source": "repo",
       "path": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3798,7 +3816,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -3832,7 +3851,8 @@
       "source": "repo",
       "path": "skills/engineering/post-mortem/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -4365,7 +4385,8 @@
       "source": "repo",
       "path": "skills/render-html/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -4570,7 +4591,8 @@
       "source": "repo",
       "path": "skills/engineering/scrutinize/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -4606,7 +4628,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/review/security-and-hardening/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -4692,7 +4715,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/ship/shipping-and-launch/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -4850,7 +4874,8 @@
       "source": "repo",
       "path": "skills/engineering-lifecycle/define/spec-driven-development/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5072,7 +5097,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-address/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5089,7 +5115,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-customer-service/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5106,7 +5133,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-date-format/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5123,7 +5151,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-festival-card/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5140,7 +5169,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-government-form/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5157,7 +5187,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-id-validate/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5174,7 +5205,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-invoice/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5191,7 +5223,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-pdpa/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5208,7 +5241,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-resume/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5225,7 +5259,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-social-caption/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5242,7 +5277,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-text-processing/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5259,7 +5295,8 @@
       "source": "repo",
       "path": "skills/claude-thai/thai-translate/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -5583,7 +5620,8 @@
       "source": "repo",
       "path": "skills/claude-code/wiki-search-local/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",

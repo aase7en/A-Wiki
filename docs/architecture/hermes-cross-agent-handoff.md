@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Hermes Cross-Agent Integration + Subagent
 
-> **Resume marker:** planning DONE · next: `chunk(hermes-a)` (build gen_hermes.py)
+> **Resume marker:** ✅ Chunk A DONE · ⏳ next: `chunk(hermes-b)` (needs Claude guideline pasted) · ⛔ Chunk C blocked (needs `drive/.secrets/hermes.env` after Step 0 rotation)
 > **Last session:** 2026-07-02 (ZCode, builtin:zai-coding-plan/GLM-5.2)
 > **Parent architecture:** `docs/architecture/skill-architecture-plan.md` (the 5-layer registry system this extends)
-> **To resume:** `git pull origin main` → read THIS file → execute Chunk A → B → C → D in order.
+> **To resume:** `git pull origin main` → read THIS file → execute Chunk B → C → D in order (A is done).
 
 This handoff covers the Hermes-specific work that extends the Universal Skill
 Architecture (already shipped, 11 commits `41e2e2e`→`06746cb`) to the Hermes
@@ -93,13 +93,13 @@ chat (now in conversation logs). **Before Chunk C (any live Pi5 work):**
   - `scripts/hermes/IMPORT-NOTES.md:43`
 - (Optional) Add system-user allowlist to `scripts/check-privacy.py` HOME_PATH_PATTERNS handling: skip `/home/(node|pi|umbrel|ubuntu|root|nobody)/`. This silences the 17 false-positives.
 
-**A4. Verify + commit**
-- `python scripts/regen-skill-surfaces.py` (regen all surfaces including new hermes.skills.json)
-- `python scripts/regen-skill-surfaces.py --check` (0 drift)
-- `python scripts/verify-skill-surfaces.py` (now shows 6 surfaces)
-- `python -m pytest tests/test_skills_registry.py tests/test_check_skill_registry.py tests/test_cross_agent_visibility.py -q` (all green)
-- `python scripts/check-privacy.py` (hermes false-positives gone or reduced)
-- **Commit:** `chunk(hermes-a): gen_hermes.py + per-agent tagging + privacy fix`
+**A4. Verify + commit** ✅ DONE 2026-07-02
+- `python scripts/regen-skill-surfaces.py` (regen all surfaces including new hermes.skills.json) — ✅ 6 surfaces, hermes 21KB
+- `python scripts/regen-skill-surfaces.py --check` (0 drift) — ✅ no drift
+- `python scripts/verify-skill-surfaces.py` (now shows 6 surfaces) — ✅ 325 canonical visible
+- `python -m pytest tests/test_skills_registry.py tests/test_check_skill_registry.py tests/test_cross_agent_visibility.py -q` (all green) — ✅ 66 passed (+7 new)
+- `python scripts/check-privacy.py` (hermes false-positives gone or reduced) — ✅ home_path 31→6 (17 system-user FPs silenced, 2 `aase7en` leaks fixed)
+- **Result:** 38 skills tagged for Hermes (13 lifecycle + 20 telegram-domain + 9 meta, deduped). `gen_hermes.py` + `tag_hermes.py` (idempotent heuristic tagger) shipped. **Commit:** `chunk(hermes-a): gen_hermes.py + per-agent tagging + privacy fix`
 
 ### Chunk B — `chunk(hermes-b)`: sequential persona orchestrator (SAFE, repo-only)
 

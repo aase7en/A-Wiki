@@ -54,6 +54,7 @@ from skills_registry.generators import (  # noqa: E402
     gen_antigravity,
     gen_cline,
     gen_gemini,
+    gen_hermes,
     gen_kilo,
 )
 from skills_registry.scan import build_draft_registry  # noqa: E402
@@ -68,6 +69,7 @@ GENERATORS = {
     gen_gemini.filename: gen_gemini,
     gen_cline.filename: gen_cline,
     gen_antigravity.filename: gen_antigravity,
+    gen_hermes.filename: gen_hermes,
     gen_agents_md.filename: gen_agents_md,
 }
 
