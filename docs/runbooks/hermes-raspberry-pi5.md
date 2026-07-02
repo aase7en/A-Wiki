@@ -9,8 +9,8 @@
 > | Item | Below (theory) | Live 2026-07-02 |
 > |------|----------------|------------------|
 > | Install | native venv `$HOME/.hermes` | container `hermes-agent_web_1`, `HERMES_HOME=/opt/data` |
-> | A-Wiki | `~/A-Wiki` + mount `~/A-Wiki:/A-Wiki:ro` | **no such mount**; two clones inside the rw volume: `/opt/data/A-Wiki` (canonical, SSH, `ad9331c`) + `/opt/data/home/A-Wiki` (stale twin, HTTPS, `df564bd`, 35 commits behind) |
-> | Skills | `~/.hermes/skills/lifecycle/` | `/opt/data/skills/` (37 dirs) — A-Wiki-backed symlinks split 10 (canonical) / 17 (stale twin); 0 broken |
+> | A-Wiki | `~/A-Wiki` + mount `~/A-Wiki:/A-Wiki:ro` | **no such mount**; two clones inside the rw volume: `/opt/data/A-Wiki` (canonical, SSH, **FF'd to `a37e491` 2026-07-02**) + `/opt/data/home/A-Wiki` (stale twin, HTTPS, `df564bd`, now orphaned) |
+> | Skills | `~/.hermes/skills/lifecycle/` | `/opt/data/skills/` — A-Wiki-backed symlinks **all 25 → canonical, 0 broken, 0 stale** (was 10/17 split; reconciled 2026-07-02 via C3') |
 > | `hermes` on PATH | yes | no — runs as `/opt/hermes/.venv/bin/hermes` inside the container only |
 > | `awiki-init-pi5.sh` | drives the setup | **do NOT run on this containerized install** — wrong layout |
 >
@@ -18,7 +18,7 @@
 >
 > **SSH access:** host `umbrel-1.tail<id>.ts.net` (Tailscale), `umbrel` user (rotated pw), **not in `docker` group** → use `sudo -S docker ...` (sudo is passwordful). No `sshpass`/`plink` on Windows dev box; use `paramiko`.
 >
-> **Reconciling the live install is tracked as Chunk C3'** in `docs/architecture/hermes-cross-agent-handoff.md` (§"LIVE PI5 REALITY"). Fixing the symlink split-brain + fast-forwarding the canonical clone is the remaining live work; the steps below remain valid for a fresh bare-metal deploy.
+> **Chunk C3' LANDED 2026-07-02** (see `docs/architecture/hermes-cross-agent-handoff.md` §"C3' RESULTS"): symlink split-brain fixed (17 repointed + 1 dup + 1 orphan removed), canonical clone fast-forwarded to `a37e491`, `hermes.skills.json` (39 skills) present on device. Canonical clone was a dirty working tree (on-device `scripts/investment/` + auto-gen indexes) — preserved via stash + pop, no work lost. **Only C4 (Telegram smoke test) remains**, needing a bot token the dev box lacks. The native-venv steps below remain valid for a fresh bare-metal deploy.
 
 ## ภาพรวม
 
