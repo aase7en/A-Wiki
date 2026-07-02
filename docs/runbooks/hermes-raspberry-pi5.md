@@ -1,6 +1,24 @@
 # Hermes Agent on Raspberry Pi 5 — A-Wiki Brain Integration
 
-**วันที่**: 2026-06-20 | **สถานะ**: ✅ Verified
+**วันที่**: 2026-06-20 | **สถานะ**: ✅ Verified (theory) · 🔶 Live reconciled 2026-07-02
+
+> ## ⚠️ Live Container Reality (verified 2026-07-02 — read before following the steps below)
+>
+> The native-venv setup path below (Sections "One-Shot Setup" / "Manual Setup") reflects how this **should** work on a bare-metal Pi5. The actual deployed Pi5 is the **containerized Umbrel App Store** install, whose layout differs materially. Verified live:
+>
+> | Item | Below (theory) | Live 2026-07-02 |
+> |------|----------------|------------------|
+> | Install | native venv `$HOME/.hermes` | container `hermes-agent_web_1`, `HERMES_HOME=/opt/data` |
+> | A-Wiki | `~/A-Wiki` + mount `~/A-Wiki:/A-Wiki:ro` | **no such mount**; two clones inside the rw volume: `/opt/data/A-Wiki` (canonical, SSH, `ad9331c`) + `/opt/data/home/A-Wiki` (stale twin, HTTPS, `df564bd`, 35 commits behind) |
+> | Skills | `~/.hermes/skills/lifecycle/` | `/opt/data/skills/` (37 dirs) — A-Wiki-backed symlinks split 10 (canonical) / 17 (stale twin); 0 broken |
+> | `hermes` on PATH | yes | no — runs as `/opt/hermes/.venv/bin/hermes` inside the container only |
+> | `awiki-init-pi5.sh` | drives the setup | **do NOT run on this containerized install** — wrong layout |
+>
+> Mode = `freeforall`. Telegram gateway connected/running (PID 143). Default model `cohere/north-mini-code:free`, 19-model pool at 10–60 RPM.
+>
+> **SSH access:** host `umbrel-1.tail<id>.ts.net` (Tailscale), `umbrel` user (rotated pw), **not in `docker` group** → use `sudo -S docker ...` (sudo is passwordful). No `sshpass`/`plink` on Windows dev box; use `paramiko`.
+>
+> **Reconciling the live install is tracked as Chunk C3'** in `docs/architecture/hermes-cross-agent-handoff.md` (§"LIVE PI5 REALITY"). Fixing the symlink split-brain + fast-forwarding the canonical clone is the remaining live work; the steps below remain valid for a fresh bare-metal deploy.
 
 ## ภาพรวม
 
