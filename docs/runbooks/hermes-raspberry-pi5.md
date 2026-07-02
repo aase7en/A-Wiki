@@ -18,7 +18,7 @@
 >
 > **SSH access:** host `umbrel-1.tail<id>.ts.net` (Tailscale), `umbrel` user (rotated pw), **not in `docker` group** → use `sudo -S docker ...` (sudo is passwordful). No `sshpass`/`plink` on Windows dev box; use `paramiko`.
 >
-> **Chunk C3' LANDED 2026-07-02** (see `docs/architecture/hermes-cross-agent-handoff.md` §"C3' RESULTS"): symlink split-brain fixed (17 repointed + 1 dup + 1 orphan removed), canonical clone fast-forwarded to `a37e491`, `hermes.skills.json` (39 skills) present on device. Canonical clone was a dirty working tree (on-device `scripts/investment/` + auto-gen indexes) — preserved via stash + pop, no work lost. **Only C4 (Telegram smoke test) remains**, needing a bot token the dev box lacks. The native-venv steps below remain valid for a fresh bare-metal deploy.
+> **Chunk C3' + C4 LANDED 2026-07-02/03** (see `docs/architecture/hermes-cross-agent-handoff.md` §"C3' RESULTS" + §"C4 RESULTS"): symlink split-brain fixed (17 repointed + 1 dup + 1 orphan removed), canonical clone fast-forwarded to `a37e491`, `hermes.skills.json` (39 skills) present on device. **C4 smoke test confirmed the gateway + Telegram path works, but A-Wiki lifecycle slash commands are NOT wired** (only `/status` + cron work natively) — see the corrected table in §"Slash Commands" below. Open follow-up: `chunk(hermes-e)` command-router. The native-venv steps below remain valid for a fresh bare-metal deploy.
 
 ## ภาพรวม
 
@@ -143,15 +143,22 @@ User: "สร้าง API task management"
 ```
 
 ### Slash Commands in Hermes Chat
-| Command | Maps To | Behavior |
-|---------|---------|----------|
-| `/spec` | `spec-driven-development` | Define requirements before code |
-| `/plan` | `planning-and-task-breakdown` | Break into verifiable tasks |
-| `/build` | `incremental-implementation` + TDD | Build slice by slice |
-| `/test` | `debug-mantra` + TDD | Debug + fix with tests |
-| `/review` | `scrutinize` + `code-simplification` + `security-and-hardening` | Quality gates |
-| `/code-simplify` | `code-simplification` | Reduce complexity |
-| `/ship` | `shipping-and-launch` + parallel fan-out | Pre-launch checklist + persona review |
+
+> ⚠️ **VERIFIED 2026-07-02/03 (C4 smoke test): the A-Wiki lifecycle slash commands below are ASPIRATION, not implementation.** Sending `/spec`, `/plan`, `/build`, `/review`, `/ship`, `/search`, `/wiki` to the live Telegram bot returns `Unknown command`. The only native slash command confirmed working is `/status`. The A-Wiki lifecycle skills exist on-device (symlinks + manifest from Chunk C3') but **have no Telegram command trigger** — building that command-router is tracked as `chunk(hermes-e)` in `docs/architecture/hermes-cross-agent-handoff.md`. The table below documents the *intended* mapping for when that router ships.
+
+| Command | Maps To | Behavior | Status |
+|---------|---------|----------|--------|
+| `/status` | native Hermes | Session/model/context report | ✅ **works** |
+| `/spec` | `spec-driven-development` | Define requirements before code | ❌ not wired |
+| `/plan` | `planning-and-task-breakdown` | Break into verifiable tasks | ❌ not wired |
+| `/build` | `incremental-implementation` + TDD | Build slice by slice | ❌ not wired |
+| `/test` | `debug-mantra` + TDD | Debug + fix with tests | ❌ not wired |
+| `/review` | `scrutinize` + `code-simplification` + `security-and-hardening` | Quality gates | ❌ not wired |
+| `/code-simplify` | `code-simplification` | Reduce complexity | ❌ not wired |
+| `/ship` | `shipping-and-launch` + parallel fan-out | Pre-launch checklist + persona review | ❌ not wired |
+| `/search` / `/wiki` | `scripts/wiki/search-wiki.py` | A-Wiki FTS5 search | ❌ not wired |
+
+Until `chunk(hermes-e)` lands, you can still reach the A-Wiki brain indirectly: send a plain (non-slash) message and Hermes' background skill loader + self-improvement loop will draw on the reconciled skill set. The gateway log confirms Hermes reads/patches its own skills via this background path.
 
 ### Telegram Bot Integration
 ```
