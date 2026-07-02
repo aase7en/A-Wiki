@@ -445,6 +445,139 @@ class TestGeneratorIdempotency:
         out2 = gen_agents_md.render(reg)
         assert out1 == out2
 
+    def test_hermes_generator_is_idempotent(self, sample_registry_file: Path) -> None:
+        from skills_registry.generators import gen_hermes
+
+        reg = Registry.load(sample_registry_file)
+        out1 = gen_hermes.render(reg)
+        out2 = gen_hermes.render(reg)
+        assert out1 == out2
+
+
+# ---------------------------------------------------------------------------
+# Hermes generator (opt-in per-agent filtering)
+# ---------------------------------------------------------------------------
+# Uniquely among the generators, gen_hermes is OPT-IN: it lists ONLY skills
+# that explicitly name "hermes" in agents[], deliberately ignoring "all".
+# Rationale: Pi5 free-tier models (8k-32k context) cannot preload all 331
+# canonical skills, so Hermes surfaces a small (~40-50) hand-picked set.
+# This mirrors canonical_for_agent's "all OR agent" rule, inverted.
+
+HERMES_SAMPLE_REGISTRY: dict = {
+    "schema_version": SCHEMA_VERSION,
+    "generated_at": "2026-07-01T00:00:00Z",
+    "skills": [
+        {  # tagged for hermes → MUST appear
+            "name": "hermes-tagged",
+            "aliases": [],
+            "domain": ["ai-ops"],
+            "lifecycle_phase": "review",
+            "category": "swarm",
+            "source": "repo",
+            "path": "skills/awiki/hermes-fan-out",
+            "agents": ["all", "hermes"],
+            "version": "",
+            "status": "canonical",
+        },
+        {  # agents == ["all"] only → MUST NOT appear (free-tier budget)
+            "name": "all-only",
+            "aliases": [],
+            "domain": ["code"],
+            "lifecycle_phase": "none",
+            "category": "engineering",
+            "source": "repo",
+            "path": "skills/x/all-only",
+            "agents": ["all"],
+            "version": "",
+            "status": "canonical",
+        },
+        {  # tagged for a different agent only → MUST NOT appear
+            "name": "claude-only",
+            "aliases": [],
+            "domain": ["code"],
+            "lifecycle_phase": "none",
+            "category": "engineering",
+            "source": "repo",
+            "path": "skills/x/claude-only",
+            "agents": ["claude"],
+            "version": "",
+            "status": "canonical",
+        },
+        {  # alias of a hermes-tagged canonical → MUST appear (resolves via canonical)
+            "name": "hermes-alias",
+            "aliases": [],
+            "domain": ["ai-ops"],
+            "lifecycle_phase": "review",
+            "category": "swarm",
+            "source": "external-installed",
+            "path": "~/.hermes/skills/alias",
+            "agents": ["hermes"],
+            "version": "",
+            "status": "alias",
+            "canonical": "hermes-tagged",
+        },
+    ],
+}
+
+
+@pytest.fixture
+def hermes_sample_file(tmp_path: Path) -> Path:
+    p = tmp_path / "hermes-registry.json"
+    p.write_text(json.dumps(HERMES_SAMPLE_REGISTRY, indent=2), encoding="utf-8")
+    return p
+
+
+class TestHermesGenerator:
+    """gen_hermes emits hermes.skills.json — the opt-in skill list for Pi5 Hermes."""
+
+    def test_filename_is_hermes_skills_json(self) -> None:
+        from skills_registry.generators import gen_hermes
+
+        assert gen_hermes.filename == "hermes.skills.json"
+
+    def test_emits_only_explicitly_hermes_tagged_skills(self, hermes_sample_file: Path) -> None:
+        """Skills with agents==['all'] must NOT appear — only explicit 'hermes' tags."""
+        from skills_registry.generators import gen_hermes
+
+        reg = Registry.load(hermes_sample_file)
+        data = json.loads(gen_hermes.render(reg))
+        assert "skills" in data, "output must have a top-level 'skills' key"
+        names = {s["name"] for s in data["skills"]}
+        assert "hermes-tagged" in names, "explicitly hermes-tagged skill must be listed"
+        assert "all-only" not in names, (
+            "agents==['all'] must be EXCLUDED so Hermes doesn't preload all 331 skills"
+        )
+        assert "claude-only" not in names, "non-hermes explicit tag must be excluded"
+
+    def test_output_is_valid_json_with_required_fields(self, hermes_sample_file: Path) -> None:
+        """Each entry must carry the fields Hermes needs to locate + describe a skill."""
+        from skills_registry.generators import gen_hermes
+
+        reg = Registry.load(hermes_sample_file)
+        data = json.loads(gen_hermes.render(reg))
+        assert len(data["skills"]) > 0
+        for s in data["skills"]:
+            assert "name" in s, "skill entry missing 'name'"
+            assert "path" in s, "skill entry missing 'path' (needed for symlink on Pi5)"
+
+    def test_round_trips_through_json(self, hermes_sample_file: Path) -> None:
+        """Output must be valid, deterministic JSON (stable key order)."""
+        from skills_registry.generators import gen_hermes
+
+        reg = Registry.load(hermes_sample_file)
+        out = gen_hermes.render(reg)
+        # Must parse cleanly.
+        json.loads(out)
+        # Deterministic: second render byte-identical.
+        assert gen_hermes.render(reg) == out
+
+    def test_empty_registry_emits_empty_list(self, empty_registry_file: Path) -> None:
+        from skills_registry.generators import gen_hermes
+
+        reg = Registry.load(empty_registry_file)
+        data = json.loads(gen_hermes.render(reg))
+        assert data["skills"] == []
+
 
 # ---------------------------------------------------------------------------
 # Drift detection

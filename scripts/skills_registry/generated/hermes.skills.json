@@ -1,0 +1,706 @@
+{
+  "skills": [
+    {
+      "name": "a-wiki-telegram",
+      "aliases": [],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/awiki/a-wiki-telegram/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot"
+    },
+    {
+      "name": "ask-notebooklm",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/ask-notebooklm/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient."
+    },
+    {
+      "name": "awiki-lifecycle-router",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i"
+    },
+    {
+      "name": "browser-testing-with-devtools",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "verify",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru"
+    },
+    {
+      "name": "ci-cd-and-automation",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering",
+        "sre"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch"
+    },
+    {
+      "name": "code-simplification",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/review/code-simplification/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code "
+    },
+    {
+      "name": "debug-mantra",
+      "aliases": [],
+      "domain": [
+        "debug"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/engineering/debug-mantra/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at"
+    },
+    {
+      "name": "delegate-subagent",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/delegate-subagent/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros"
+    },
+    {
+      "name": "deprecation-and-migration",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan"
+    },
+    {
+      "name": "documentation-and-adrs",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/documentation-and-adrs/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,"
+    },
+    {
+      "name": "export-notebooklm",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/export-notebooklm/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges"
+    },
+    {
+      "name": "git-workflow-and-versioning",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/git-workflow-and-versioning/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev"
+    },
+    {
+      "name": "ingest-source",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/ingest-source/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic."
+    },
+    {
+      "name": "lint-wiki",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/lint-wiki/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic."
+    },
+    {
+      "name": "observability-and-instrumentation",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering",
+        "sre"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r"
+    },
+    {
+      "name": "obsidian",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/obsidian/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy"
+    },
+    {
+      "name": "performance-optimization",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/review/performance-optimization/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when"
+    },
+    {
+      "name": "pharmacy-order-lookup",
+      "aliases": [],
+      "domain": [
+        "medical",
+        "pharmacy"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": ">"
+    },
+    {
+      "name": "planning-and-task-breakdown",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering",
+        "productivity"
+      ],
+      "lifecycle_phase": "plan",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. "
+    },
+    {
+      "name": "post-mortem",
+      "aliases": [],
+      "domain": [
+        "productivity"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/engineering/post-mortem/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers "
+    },
+    {
+      "name": "render-html",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/render-html/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM"
+    },
+    {
+      "name": "scrutinize",
+      "aliases": [],
+      "domain": [
+        "debug"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/engineering/scrutinize/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same "
+    },
+    {
+      "name": "security-and-hardening",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering",
+        "security"
+      ],
+      "lifecycle_phase": "review",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/review/security-and-hardening/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d"
+    },
+    {
+      "name": "shipping-and-launch",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/ship/shipping-and-launch/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production."
+    },
+    {
+      "name": "spec-driven-development",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "define",
+      "category": "engineering-lifecycle",
+      "source": "repo",
+      "path": "skills/engineering-lifecycle/define/spec-driven-development/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,"
+    },
+    {
+      "name": "thai-address",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-address/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse"
+    },
+    {
+      "name": "thai-customer-service",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-customer-service/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, "
+    },
+    {
+      "name": "thai-date-format",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-date-format/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger"
+    },
+    {
+      "name": "thai-festival-card",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-festival-card/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user"
+    },
+    {
+      "name": "thai-government-form",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-government-form/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms"
+    },
+    {
+      "name": "thai-id-validate",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-id-validate/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th"
+    },
+    {
+      "name": "thai-invoice",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-invoice/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai "
+    },
+    {
+      "name": "thai-pdpa",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-pdpa/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w"
+    },
+    {
+      "name": "thai-resume",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-resume/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in "
+    },
+    {
+      "name": "thai-social-caption",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-social-caption/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption"
+    },
+    {
+      "name": "thai-text-processing",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-text-processing/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation"
+    },
+    {
+      "name": "thai-translate",
+      "aliases": [],
+      "domain": [
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "thai",
+      "source": "repo",
+      "path": "skills/claude-thai/thai-translate/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be"
+    },
+    {
+      "name": "wiki-search-local",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/wiki-search-local/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes."
+    }
+  ]
+}

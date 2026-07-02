@@ -44,12 +44,30 @@ PERSONAL_CODENAMES = [
 ]
 
 # Hardcoded home directory paths (any platform).
+# Each pattern MUST have one capture group = the username, so that
+# ``_is_system_user(m)`` can allowlist container/OS default accounts.
 HOME_PATH_PATTERNS = [
-    r"/Users/[A-Za-z0-9._-]+/",      # macOS
-    r"/home/[A-Za-z0-9._-]+/",        # Linux
-    r"C:\\\\Users\\\\[A-Za-z0-9._-]+\\\\",  # Windows escaped
-    r"C:/Users/[A-Za-z0-9._-]+/",     # Windows forward-slash
+    r"/Users/([A-Za-z0-9._-]+)/",      # macOS
+    r"/home/([A-Za-z0-9._-]+)/",        # Linux
+    r"C:\\\\Users\\\\([A-Za-z0-9._-]+)\\\\",  # Windows escaped
+    r"C:/Users/([A-Za-z0-9._-]+)/",     # Windows forward-slash
 ]
+
+# Usernames that are NOT personal — they're container/OS default accounts
+# (Docker ``node`` image, Raspberry Pi OS ``pi``, Umbrel ``umbrel``, …).
+# Matches from HOME_PATH_PATTERNS whose captured group is in this set are
+# suppressed so the scan doesn't drown in ~17 false-positives per Hermes run.
+# Rationale: docs/architecture/hermes-cross-agent-handoff.md §"RCA findings"
+# — the Docker node user + RPi OS pi user showed up as 17 spurious leaks.
+SYSTEM_USERS: frozenset[str] = frozenset({
+    "node",        # official node Docker image default user
+    "pi",          # Raspberry Pi OS default user
+    "umbrel",      # Umbrel app-store server default user
+    "ubuntu",      # official ubuntu Docker image / Ubuntu cloud images
+    "root",        # universal superuser (system, not personal)
+    "nobody",      # unprivileged system account (nginx, etc.)
+    "app", "appuser", "www-data", "wwwrun",  # common service accounts
+})
 
 # CloudStorage paths with account names embedded.
 CLOUDSTORAGE_PATTERNS = [
@@ -145,6 +163,21 @@ def email_is_personal(addr: str) -> bool:
     return True
 
 
+def _is_system_user(match: re.Match) -> bool:
+    """True if a HOME_PATH_PATTERNS match captures a known container/OS user.
+
+    HOME_PATH_PATTERNS is an alternation of per-OS patterns, each with its
+    OWN capture group for the username.  Because only the matched branch's
+    group is non-None, we scan ``match.groups()`` for the first captured
+    value rather than reading a fixed index.  Suppresses ``/home/node/``,
+    ``/home/pi/``, etc. so they don't show up as personal leaks.
+    """
+    for user in match.groups():
+        if user is not None:
+            return user in SYSTEM_USERS
+    return False
+
+
 def scan(verbose: bool = False) -> list[dict]:
     findings: list[dict] = []
     codename_re = re.compile("|".join(PERSONAL_CODENAMES))
@@ -170,6 +203,8 @@ def scan(verbose: bool = False) -> list[dict]:
                 })
             for m in home_re.finditer(line):
                 if any(tm in line for tm in TEMPLATE_MARKERS):
+                    continue
+                if _is_system_user(m):
                     continue
                 findings.append({
                     "file": rel, "line": lineno, "kind": "home_path",
