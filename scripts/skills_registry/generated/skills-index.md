@@ -139,6 +139,7 @@
 | `healthcare-emr-patterns` | code, medical | none | ecosystem | `skills/ecosystem/healthcare-emr-patterns/SKILL.md` |
 | `healthcare-eval-harness` | medical | none | ecosystem | `skills/ecosystem/healthcare-eval-harness/SKILL.md` |
 | `healthcare-phi-compliance` | medical | none | ecosystem | `skills/ecosystem/healthcare-phi-compliance/SKILL.md` |
+| `hermes-fan-out` | ai-ops | meta | swarm | `skills/awiki/hermes-fan-out/SKILL.md` |
 | `hermes-imports` | code | none | ecosystem | `skills/ecosystem/hermes-imports/SKILL.md` |
 | `hexagonal-architecture` | engineering | none | ecosystem | `skills/ecosystem/hexagonal-architecture/SKILL.md` |
 | `homelab-network-readiness` | network | none | ecosystem | `skills/ecosystem/homelab-network-readiness/SKILL.md` |
@@ -333,7 +334,7 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 24 |
+| ai-ops | 25 |
 | business | 10 |
 | code | 175 |
 | data | 15 |
