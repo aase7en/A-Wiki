@@ -38,6 +38,24 @@
       "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot"
     },
     {
+      "name": "hermes-fan-out",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "swarm",
+      "source": "repo",
+      "path": "skills/awiki/hermes-fan-out/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report."
+    },
+    {
       "name": "accessibility",
       "aliases": [],
       "domain": [

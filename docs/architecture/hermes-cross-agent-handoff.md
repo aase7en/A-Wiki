@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Hermes Cross-Agent Integration + Subagent
 
-> **Resume marker:** ✅ Chunk A DONE · ⏳ next: `chunk(hermes-b)` (needs Claude guideline pasted) · ⛔ Chunk C blocked (needs `drive/.secrets/hermes.env` after Step 0 rotation)
+> **Resume marker:** ✅ Chunk A + B DONE · ⛔ Chunk C blocked (needs `drive/.secrets/hermes.env` after Step 0 rotation — Umbrel/Portainer creds in old chat logs must be rotated first)
 > **Last session:** 2026-07-02 (ZCode, builtin:zai-coding-plan/GLM-5.2)
 > **Parent architecture:** `docs/architecture/skill-architecture-plan.md` (the 5-layer registry system this extends)
-> **To resume:** `git pull origin main` → read THIS file → execute Chunk B → C → D in order (A is done).
+> **To resume:** `git pull origin main` → read THIS file → execute Chunk C (only one left; A+B done).
 
 This handoff covers the Hermes-specific work that extends the Universal Skill
 Architecture (already shipped, 11 commits `41e2e2e`→`06746cb`) to the Hermes
@@ -123,9 +123,16 @@ chat (now in conversation logs). **Before Chunk C (any live Pi5 work):**
 - How to invoke via Telegram: `/review <task>` → triggers orchestrator.
 - Frontmatter: `name: hermes-fan-out`, `domain: [ai-ops]`, `lifecycle_phase: review`, `agents: ["all","hermes"]` (tag for Hermes).
 
-**B4. Tests**
-- `tests/test_persona_orchestrator.py` — dry-run mode validates persona parsing + command construction without calling Hermes.
-- Add to the test suite run.
+**B4. Tests** ✅ DONE 2026-07-02
+- `tests/test_persona_orchestrator.py` — **16 tests, all pure** (no subprocess, no Hermes call). Covers `build_plan` argv shape + sleep math + empty case, `load_personas` from `lifecycle-config.json`, `run` with injectable stub runner, `merge_report` severity sort. Import via `importlib.util` (hermetic to the active venv, which may shadow the module name).
+- Added to the test suite: 82 targeted tests pass (66 from Chunk A + 16 new).
+
+**Architecture deviations from original spec (user-approved):**
+- **Python module + thin .sh wrapper** (not pure bash). Mirrors `scripts/batch/route.{sh,py}`. Rationale: unit-testable pure functions (`build_plan`, `run`, `merge_report`), Iron Law #1 clean, Pi5-deployable (wrapper calls python3 which exists on Pi5 OS). Handoff wrote `.sh` because its author hadn't seen the repo's `route.sh`/`route.py` pattern.
+- **`lifecycle_phase: meta`** (not `review`). User-approved — `skill-frontmatter-schema.md:66` defines `meta` as "Routers, gates, orchestration"; a fan-out dispatcher IS orchestration. Matches the one precedent (`awiki-lifecycle-router`).
+- **Pure unit test, no stub hermes binary** (not subprocess test). User-approved — `--dry-run` returns a JSON plan dict, tests assert the plan + merge logic directly. CI-safe, fast, deterministic.
+
+**Result:** `scripts/hermes/persona-orchestrator.py` (pure logic + CLI, dry-run default) + `persona-orchestrator.sh` (route.sh-style wrapper) + `skills/awiki/hermes-fan-out/SKILL.md` (registered as 39th Hermes skill, `domain: [ai-ops]`, `lifecycle_phase: meta`). 16/16 tests green, 0 drift, 326 canonical visible.
 
 **Commit:** `chunk(hermes-b): sequential persona orchestrator + fan-out skill`
 
