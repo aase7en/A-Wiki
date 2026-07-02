@@ -29,13 +29,14 @@ gitignored (Chunk 4 will formalize this). Keep THIS file in sync at chunk bounda
 
 ## Backlog (low-priority, audit findings not yet addressed)
 
-| # | Item | Source | Risk |
-|---|------|--------|------|
-| B1 | `dedup.py` O(n²) pairwise Jaccard — fine at 331 skills, slow at 1000+ | arch-audit Q5 | Do when registry grows |
-| B2 | `consolidate.py` deprecated action has no skip guard (re-writes every run) | arch-audit Q6 | Cosmetic |
-| B3 | `drift.py` doesn't detect orphan/stale surface files (removed generator leaves file) | arch-audit Q7 | Edge case |
-| B4 | registry has no atomic-write / file-locking | grill-me Q1 | Low (solo-wiki, no concurrent writes) |
-| B5 | `gen_agents_md.py` uses `s['name']` bracket (latent KeyError) | arch-audit Q4 | Guarded upstream by validate_registry |
+| # | Item | Source | Risk | Status |
+|---|------|--------|------|--------|
+| B1 | `dedup.py` O(n²) pairwise Jaccard — fine at 331 skills, slow at 1000+ | arch-audit Q5 | Do when registry grows | open |
+| B2 | `consolidate.py` deprecated action has no skip guard (re-writes every run) | arch-audit Q6 | Cosmetic | open |
+| B3 | `drift.py` doesn't detect orphan/stale surface files (removed generator leaves file) | arch-audit Q7 | Edge case | open |
+| B4 | registry has no atomic-write / file-locking | grill-me Q1 | Low (solo-wiki, no concurrent writes) | open |
+| B5 | `gen_agents_md.py` uses `s['name']` bracket (latent KeyError) | arch-audit Q4 | Guarded upstream by validate_registry | open |
+| **B6** | **Hermes gap** — no `gen_hermes.py`, 313 skills invisible to Hermes | RCA (2026-07-02) | Cross-agent incomplete for 1 of 9 agents | **→ see `hermes-cross-agent-handoff.md` (Chunk A-C)** |
 
 ---
 
