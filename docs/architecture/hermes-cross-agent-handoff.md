@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Hermes Cross-Agent Integration + Subagent
 
-> **Resume marker:** ✅ Chunk A + B + C + D DONE · 🔶 Chunk C now COMPLETE (C2 inspect + C3' symlink reconciliation landed 2026-07-02). ⏸ Only C4 (Telegram smoke) remains — DEFERRED (needs bot token the dev box lacks).
-> **Last session:** 2026-07-02 (ZCode, builtin:zai-coding-plan/GLM-5.2) — C3' executed in full; see §"C3' RESULTS (2026-07-02)" below.
+> **Resume marker:** ✅ ALL CHUNKS DONE (A + B + C incl. C3' + C4 + D). The 4-chunk plan is complete. One new follow-up surfaced by C4: see §"Follow-up chunk proposal (chunk hermes-e)" — the A-Wiki lifecycle skills have no Telegram command surface yet and need a command-router.
+> **Last session:** 2026-07-02/03 (ZCode, builtin:zai-coding-plan/GLM-5.2) — C3' + C4 both executed; see §"C3' RESULTS" + §"C4 RESULTS" below.
 > **Parent architecture:** `docs/architecture/skill-architecture-plan.md` (the 5-layer registry system this extends)
-> **To resume:** `git pull origin main` → read THIS file → see §"C3' RESULTS" + §"C4" below. Remaining live work = C4 only (Telegram smoke, needs bot token). Optional follow-up: promote Pi5's `scripts/investment/` work to the repo (see §"Promotion candidate").
+> **To resume:** nothing pending from the original plan. Open items are the optional `chunk(hermes-e)` command-router and the `scripts/investment/` promotion review (see §"Promotion candidate").
 
 This handoff covers the Hermes-specific work that extends the Universal Skill
 Architecture (already shipped, 11 commits `41e2e2e`→`06746cb`) to the Hermes
@@ -284,14 +284,7 @@ docker exec --user hermes hermes-agent_web_1 bash -lc '
 ```
 Expected: all A-Wiki symlinks → `/opt/data/A-Wiki`, 0 broken, HEAD at current main (post Chunk B = `00ee3fd` or newer).
 
-**C4. Telegram smoke test** ⏸ DEFERRED — the dev box has no Telegram bot token. Run these on a machine with bot access (or on the Pi5 itself via the gateway), and record timing for the runbook:
-
-```
-/wiki mqtt broker            → expect FTS5 search reply from A-Wiki
-/search esp32 temperature    → same search path
-/review <paste a small task> → expect persona-orchestrator to fire (3 sequential personas)
-```
-Capture: did `/review` invoke `scripts/hermes/persona-orchestrator.py`? How long did a 3-persona sequential pass take on free-tier (target: within rate-limit budget at 15-30 RPM/model)? Any throttling observed (check `rate-limit-state.json` cooldowns before/after)?
+**C4. Telegram smoke test** ✅ DONE 2026-07-02/03 (executed by user from a phone via Telegram, captured by the resuming agent over SSH). **Outcome: Telegram infra WORKS; the A-Wiki slash-command integration does NOT exist.** See §"C4 RESULTS (2026-07-02/03)" below.
 
 **C5. Update runbook + this handoff** ✅ DONE 2026-07-02 (this commit) — added §"LIVE PI5 REALITY" to this doc, corrected the read-only-mount hard constraint, and added a "Live Container Reality (verified 2026-07-02)" reconciliation section to `docs/runbooks/hermes-raspberry-pi5.md`. When C3' + C4 land, append their results to both files.
 
@@ -346,6 +339,53 @@ After C3'.2 one symlink showed broken — `lifecycle/idea-refine`. Investigation
 ### Paramiko helper (reusable)
 
 A non-interactive `sudo docker exec --user hermes` helper was written at `drive/private-tools/c3prime/pi5_exec.py` (gitignored, reads credentials from `drive/.secrets` only). Reuse it for any future live-Pi5 work: `python pi5_exec.py "remote-cmd"` or `python pi5_exec.py --check`. Key design points: uses `exec_command` + `sudo -S -p ''` (deterministic, no PTY parsing), `--user hermes` to preserve uid 1000 file ownership, sentinel-based exit-code capture.
+
+---
+
+## 🔴 C4 RESULTS (executed 2026-07-02/03)
+
+User ran the smoke test from a phone via Telegram (the dev box had been blocked from Tailscale by workplace Fortinet; user switched the dev box to home WiFi + Tailscale so the resuming agent could capture device logs over SSH in parallel). Verdict: **the gateway + Telegram path works; the A-Wiki lifecycle slash-command layer does NOT exist on this device.**
+
+### What WORKED ✅
+
+| Input | Result | Evidence |
+|-------|--------|----------|
+| plain message `สวัสดี` | LLM replied (model `cohere/north-mini-code:free`) | gateway_state telegram=connected, PID 140 alive |
+| `/status` | full status block (session id, model, context 91,069/256,000 = 36%, agent-running, connected platforms) | **the only native slash command exercised that worked** |
+| cron job `news-analysis-evening` (auto) | full evening news brief in Thai | cron scheduler healthy |
+
+### What did NOT work ❌
+
+| Input | Result | Meaning |
+|-------|--------|---------|
+| `/search esp32 temperature` | `Unknown command /search. Type /commands...` | **NOT wired** — runbook was wrong |
+| `/wiki mqtt broker` | `Unknown command /wiki` | **NOT wired** |
+| `/review <task>` | `Unknown command /review` | **NOT wired** |
+
+**Root cause:** The runbook table claiming `/spec /plan /build /review /ship /wiki /search` map to lifecycle skills (runbook §"Slash Commands in Hermes Chat") was **aspiration, never implemented on this device.** Hermes gateway only knows its own native commands (`/status`, cron job management). The A-Wiki lifecycle skills shipped in Chunk A/B/C exist as symlinks + manifest on the device but have **no Telegram trigger** — there is no integration layer mapping `/<cmd>` → skill invocation. Persona-orchestrator likewise is a standalone script with no Telegram entrypoint.
+
+### Secondary observations
+
+- **Model in use:** `cohere/north-mini-code:free` via openrouter (matches `config.yaml` default).
+- **Free-tier instability:** 06:51 UTC the gateway logged 3 consecutive API failures (`ReadError`, `Connection reset by peer`, `APIConnectionError`) on `cohere/north-mini-code:free` — context was 35 msgs / ~39,125 tokens. Recovered on retry schedule. No `restrict-state.json` cooldown persisted.
+- **Gateway restarted several times** 2026-07-02 (05:19, 06:02, 12:03, 18:04 UTC) — at least the 18:04 one coincided with the `/search`-unknown sequence; cause not pinned (could be container manager or `--replace` self-restart).
+- **`rate-limit-state.json` empty before AND after** — no cooldowns observed.
+
+### Implications / what this means for the plan
+
+1. **The handoff's original Gap #3 framing was incomplete.** It assumed symlink + manifest = "skills visible to Hermes." That is true for Hermes' *background* skill loader (evidence: the gateway log shows Hermes patching its own SKILL.md files via self-improvement review). But there is **no user-facing slash-command surface** for A-Wiki lifecycle skills. Closing that gap is a *new* chunk, not part of C3'.
+2. **Chunk A/B/C delivered the substrate** (generator, manifest, symlinks, persona-orchestrator script). The missing piece is a **command-router / Telegram handler** that maps `/<cmd>` → `scripts/hermes/persona-orchestrator.py` (or → `scripts/wiki/search-wiki.py` for `/wiki`/`/search`).
+3. **Telegram path itself is healthy** — adding the command layer is a pure additive integration, not infra repair. The bot token + webhook + gateway are all confirmed working.
+
+### Honest limits confirmed
+
+- ❌ This plan does NOT (and now we've verified, cannot) expose A-Wiki lifecycle skills via Telegram without additional integration work.
+- ❌ Persona-orchestrator has never been invoked over Telegram (no log evidence; the `/review` it was meant to back never reached the orchestrator).
+- ✅ All other chunks remain valid: C3' substrate is on-device and reconciled; the command layer can build on it whenever prioritized.
+
+### Follow-up chunk proposal (NOT in scope of this handoff)
+
+`chunk(hermes-e)`: build a `scripts/hermes/telegram-command-router.{py,sh}` that the gateway can register, mapping `/search`/`/wiki` → `search-wiki.py` and `/review`/`/spec`/`/plan`/`/build`/`/ship` → `persona-orchestrator.py`. Requires understanding Hermes' native command-registration API (not yet investigated). Tracked here so it is not forgotten.
 
 ### Chunk D — `chunk(hermes-d)`: this handoff doc (DONE in this session)
 
