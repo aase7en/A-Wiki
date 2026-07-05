@@ -1,12 +1,12 @@
-# Review Report — 2026-07-04
+# Review Report — 2026-07-05
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
 - ✓ Passed: 839
-- ⚠ Warnings: 260
-- ❌ Failures: 6
+- ⚠ Warnings: 264
+- ❌ Failures: 11
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 246 more issue(s) below
+- … 255 more issue(s) below
 
 ---
 
@@ -38,6 +38,11 @@
 
 - wiki/concepts/ai-tools/ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-frontmatter-schema]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-consolidation]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
 - wiki/entities/ai-tools/pake.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/entities/ai-tools/sunday-estate.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
@@ -90,6 +95,9 @@
 - wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
 - wiki/entities/ai-tools/9arm-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: title
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: type
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: tags
 - wiki/entities/ai-tools/ag2-orchestrator.md: missing frontmatter key: title
 - wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/anthropic-skills.md: missing frontmatter key: title
@@ -249,6 +257,7 @@
 - wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
 - wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
 - wiki/entities/ai-tools/9arm-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing TL;DR line
 - wiki/entities/ai-tools/ag2-orchestrator.md: missing TL;DR line
 - wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
 - wiki/entities/ai-tools/anthropic-skills.md: missing TL;DR line
