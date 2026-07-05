@@ -4,9 +4,9 @@
 
 ## Summary
 
-- ✓ Passed: 839
-- ⚠ Warnings: 264
-- ❌ Failures: 11
+- ✓ Passed: 840
+- ⚠ Warnings: 268
+- ❌ Failures: 12
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 255 more issue(s) below
+- … 260 more issue(s) below
 
 ---
 
@@ -43,6 +43,7 @@
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
+- wiki/entities/ai-tools/gbrain.md: broken link: [[deer-flow]]
 - wiki/entities/ai-tools/pake.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/entities/ai-tools/sunday-estate.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
@@ -103,11 +104,13 @@
 - wiki/entities/ai-tools/anthropic-skills.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
 - wiki/entities/ai-tools/frontend-slides.md: missing frontmatter key: title
+- wiki/entities/ai-tools/gbrain.md: missing frontmatter key: title
 - wiki/entities/ai-tools/gitnexus.md: missing frontmatter key: title
 - wiki/entities/ai-tools/graphify.md: missing frontmatter key: title
 - wiki/entities/ai-tools/hermes-agent.md: missing frontmatter key: title
 - wiki/entities/ai-tools/hyperframes.md: missing frontmatter key: title
 - wiki/entities/ai-tools/live-dashboard.md: missing frontmatter key: title
+- wiki/entities/ai-tools/mattpocock-skills.md: missing frontmatter key: title
 - wiki/entities/ai-tools/model-capability-bench.md: missing frontmatter key: title
 - wiki/entities/ai-tools/news-intelligence-pipeline.md: no frontmatter (missing --- delimiter)
 - wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
@@ -263,11 +266,13 @@
 - wiki/entities/ai-tools/anthropic-skills.md: missing TL;DR line
 - wiki/entities/ai-tools/ecc.md: missing TL;DR line
 - wiki/entities/ai-tools/frontend-slides.md: missing TL;DR line
+- wiki/entities/ai-tools/gbrain.md: missing TL;DR line
 - wiki/entities/ai-tools/gitnexus.md: missing TL;DR line
 - wiki/entities/ai-tools/graphify.md: missing TL;DR line
 - wiki/entities/ai-tools/hermes-agent.md: missing TL;DR line
 - wiki/entities/ai-tools/hyperframes.md: missing TL;DR line
 - wiki/entities/ai-tools/live-dashboard.md: missing TL;DR line
+- wiki/entities/ai-tools/mattpocock-skills.md: missing TL;DR line
 - wiki/entities/ai-tools/model-capability-bench.md: missing TL;DR line
 - wiki/entities/ai-tools/news-intelligence-pipeline.md: missing TL;DR line
 - wiki/entities/ai-tools/ollama.md: missing TL;DR line
@@ -324,10 +329,10 @@
 
 ---
 
-## ✓ Passed Checks (839 total)
+## ✓ Passed Checks (840 total)
 
 - **L2**: 349 passed
-- **L3**: 487 passed
+- **L3**: 488 passed
 - **L6**: 3 passed
 
 ---

@@ -7,7 +7,7 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 504 |
+| Wiki pages | 506 |
 | Owned skills | 42 |
 | Script capabilities | 13 |
 | Protocols/runbooks | 52 |
@@ -17,7 +17,7 @@
 
 | Type | Count |
 |---|---:|
-| Entities | 70 |
+| Entities | 72 |
 | Concepts | 59 |
 | Synthesis | 206 |
 | Sources | 169 |
@@ -46,19 +46,19 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 533 |
-| Edges | 1692 |
-| Broken links | 2 |
-| Orphans | 16 |
+| Nodes | 535 |
+| Edges | 1698 |
+| Broken links | 7 |
+| Orphans | 17 |
 
 | Broken source domain | Count |
 |---|---:|
-| ai-tools | 2 |
+| ai-tools | 7 |
 
 | Orphan domain | Count |
 |---|---:|
 | context | 15 |
-| ai-tools | 1 |
+| ai-tools | 2 |
 
 Orphan samples: `wiki/context/device-session.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`, `wiki/context/overview-sources.md`, `wiki/context/project-backlog.md`
 
