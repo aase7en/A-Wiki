@@ -269,6 +269,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | mattpocock/skills | `skills/mattpocock/` (25 skills) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, code-review (as `two-axis-code-review` — renamed to avoid clashing with the built-in `/code-review`), domain-modeling, and 20 more → [[mattpocock-skills]] |
 | safishamsi/graphify | global Claude skill (`pip install graphifyy`) | opt-in — `bash scripts/install-graphify.sh` or `setup-optional-mcp.sh --graphify` | Code/PDF/image → knowledge graph, 71.5x token reduction, MCP server → [[graphify]] |
 | garrytan/gbrain | external MCP (Bun + PGLite/Postgres) | opt-in — `bash scripts/setup-optional-mcp.sh --gbrain` | Memory/synthesis layer with self-wiring knowledge graph — not auto-installed (own runtime+DB) → [[gbrain]] |
+| **env-wastewater-webapp** (sibling repo, not upstream) | `~/Desktop/env-wastewater-webapp` (private GitHub repo, separate from A-Wiki) | companion pointer — its `AGENTS.md` links back here via `$A_WIKI_ROOT`; SessionStart hook reminds on every session | Wastewater migration + monitoring webapp code lives there; ENV domain knowledge + schema stay here → [[env-webapp-project]] |
 
 **Symlink setup**: `bash scripts/link-my-skills.sh`
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`

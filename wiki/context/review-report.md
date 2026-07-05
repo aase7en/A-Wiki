@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 842
-- ⚠ Warnings: 270
+- ✓ Passed: 843
+- ⚠ Warnings: 272
 - ❌ Failures: 11
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 261 more issue(s) below
+- … 263 more issue(s) below
 
 ---
 
@@ -123,6 +123,7 @@
 - wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/zai-glm.md: missing frontmatter key: title
 - wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
+- wiki/entities/env/env-webapp-project.md: missing frontmatter key: title
 - wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
 - wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
 - wiki/entities/iot/arduino-ide.md: missing frontmatter key: title
@@ -286,6 +287,7 @@
 - wiki/entities/ai-tools/turbovec.md: missing TL;DR line
 - wiki/entities/ai-tools/zai-glm.md: missing TL;DR line
 - wiki/entities/env/activated-sludge-system.md: missing TL;DR line
+- wiki/entities/env/env-webapp-project.md: missing TL;DR line
 - wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
 - wiki/entities/iot/18650-battery-shield.md: missing TL;DR line
 - wiki/entities/iot/arduino-ide.md: missing TL;DR line
@@ -330,10 +332,10 @@
 
 ---
 
-## ✓ Passed Checks (842 total)
+## ✓ Passed Checks (843 total)
 
 - **L2**: 349 passed
-- **L3**: 490 passed
+- **L3**: 491 passed
 - **L6**: 3 passed
 
 ---
