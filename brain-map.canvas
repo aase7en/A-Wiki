@@ -2283,7 +2283,7 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (59 pages)",
+      "label": "AI-TOOLS DOMAIN (60 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
@@ -2831,10 +2831,20 @@
       "color": "2"
     },
     {
+      "id": "wiki-entities-ai-tools-deer-flow-md",
+      "type": "file",
+      "file": "wiki/entities/ai-tools/deer-flow.md",
+      "x": 2880,
+      "y": 3320,
+      "width": 260,
+      "height": 120,
+      "color": "2"
+    },
+    {
       "id": "wiki-entities-ai-tools-mattpocock-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/mattpocock-skills.md",
-      "x": 2880,
+      "x": 3220,
       "y": 3320,
       "width": 260,
       "height": 120,
@@ -2844,7 +2854,7 @@
       "id": "wiki-entities-ai-tools-react-doctor-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/react-doctor.md",
-      "x": 3220,
+      "x": 3560,
       "y": 3320,
       "width": 260,
       "height": 120,
@@ -2854,8 +2864,8 @@
       "id": "wiki-concepts-ai-tools-sqlite-vec-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/sqlite-vec.md",
-      "x": 3560,
-      "y": 3320,
+      "x": 2880,
+      "y": 3500,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2864,7 +2874,7 @@
       "id": "wiki-entities-ai-tools-9arm-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/9arm-skills.md",
-      "x": 2880,
+      "x": 3220,
       "y": 3500,
       "width": 260,
       "height": 120,
@@ -2874,7 +2884,7 @@
       "id": "wiki-entities-ai-tools-turbovec-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/turbovec.md",
-      "x": 3220,
+      "x": 3560,
       "y": 3500,
       "width": 260,
       "height": 120,
@@ -8537,9 +8547,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8585,17 +8595,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-concepts-ai-tools-sqlite-vec-md",
       "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8625,9 +8635,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-git-subtree-workflow-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-concepts-ai-tools-git-subtree-workflow-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9057,25 +9067,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-concepts-ai-tools-vector-search-md",
       "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-vector-search-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-concepts-ai-tools-embedding-models-md",
       "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9193,9 +9203,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-concepts-ai-tools-sqlite-vec-md",
       "fromNode": "wiki-concepts-ai-tools-vector-search-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -10601,25 +10611,25 @@
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-concepts-ai-tools-claude-skills-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-concepts-ai-tools-git-subtree-workflow-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-git-subtree-workflow-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -10665,9 +10675,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-anthropic-skills-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-entities-ai-tools-anthropic-skills-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10679,11 +10689,27 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-deer-flow-md-wiki-entities-ai-tools-gbrain-md",
+      "fromNode": "wiki-entities-ai-tools-deer-flow-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-gbrain-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-deer-flow-md-wiki-entities-ai-tools-ag2-orchestrator-md",
+      "fromNode": "wiki-entities-ai-tools-deer-flow-md",
+      "fromSide": "right",
+      "toNode": "wiki-entities-ai-tools-ag2-orchestrator-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-entities-ai-tools-ecc-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -10775,6 +10801,14 @@
       "color": "2"
     },
     {
+      "id": "edge-wiki-entities-ai-tools-gbrain-md-wiki-entities-ai-tools-deer-flow-md",
+      "fromNode": "wiki-entities-ai-tools-gbrain-md",
+      "fromSide": "left",
+      "toNode": "wiki-entities-ai-tools-deer-flow-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-concepts-ai-tools-mcp-architecture-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
       "fromSide": "bottom",
@@ -10785,9 +10819,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10977,9 +11011,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-mattpocock-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-mattpocock-skills-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -11129,9 +11163,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-react-doctor-md-wiki-concepts-ai-tools-claude-skills-md",
       "fromNode": "wiki-entities-ai-tools-react-doctor-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -11241,17 +11275,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-sqlite-vec-md",
       "fromNode": "wiki-entities-ai-tools-turbovec-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-embedding-models-md",
       "fromNode": "wiki-entities-ai-tools-turbovec-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -13969,9 +14003,9 @@
     {
       "id": "edge-wiki-sources-ai-tools-vector-databases-md-wiki-concepts-ai-tools-sqlite-vec-md",
       "fromNode": "wiki-sources-ai-tools-vector-databases-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {

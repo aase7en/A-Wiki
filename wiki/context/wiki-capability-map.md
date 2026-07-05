@@ -7,7 +7,7 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 506 |
+| Wiki pages | 507 |
 | Owned skills | 42 |
 | Script capabilities | 13 |
 | Protocols/runbooks | 52 |
@@ -17,7 +17,7 @@
 
 | Type | Count |
 |---|---:|
-| Entities | 72 |
+| Entities | 73 |
 | Concepts | 59 |
 | Synthesis | 206 |
 | Sources | 169 |
@@ -46,14 +46,14 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 535 |
-| Edges | 1698 |
-| Broken links | 7 |
+| Nodes | 537 |
+| Edges | 1706 |
+| Broken links | 8 |
 | Orphans | 17 |
 
 | Broken source domain | Count |
 |---|---:|
-| ai-tools | 7 |
+| ai-tools | 8 |
 
 | Orphan domain | Count |
 |---|---:|

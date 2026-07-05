@@ -4,9 +4,9 @@
 
 ## Summary
 
-- ✓ Passed: 840
-- ⚠ Warnings: 268
-- ❌ Failures: 12
+- ✓ Passed: 842
+- ⚠ Warnings: 270
+- ❌ Failures: 11
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 260 more issue(s) below
+- … 261 more issue(s) below
 
 ---
 
@@ -43,7 +43,6 @@
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
 - wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
-- wiki/entities/ai-tools/gbrain.md: broken link: [[deer-flow]]
 - wiki/entities/ai-tools/pake.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/entities/ai-tools/sunday-estate.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
@@ -102,6 +101,7 @@
 - wiki/entities/ai-tools/ag2-orchestrator.md: missing frontmatter key: title
 - wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
 - wiki/entities/ai-tools/anthropic-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/deer-flow.md: missing frontmatter key: title
 - wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
 - wiki/entities/ai-tools/frontend-slides.md: missing frontmatter key: title
 - wiki/entities/ai-tools/gbrain.md: missing frontmatter key: title
@@ -264,6 +264,7 @@
 - wiki/entities/ai-tools/ag2-orchestrator.md: missing TL;DR line
 - wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
 - wiki/entities/ai-tools/anthropic-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/deer-flow.md: missing TL;DR line
 - wiki/entities/ai-tools/ecc.md: missing TL;DR line
 - wiki/entities/ai-tools/frontend-slides.md: missing TL;DR line
 - wiki/entities/ai-tools/gbrain.md: missing TL;DR line
@@ -329,10 +330,10 @@
 
 ---
 
-## ✓ Passed Checks (840 total)
+## ✓ Passed Checks (842 total)
 
 - **L2**: 349 passed
-- **L3**: 488 passed
+- **L3**: 490 passed
 - **L6**: 3 passed
 
 ---
