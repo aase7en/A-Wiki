@@ -191,10 +191,11 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 | **millionco/react-doctor** | global Claude skill (no repo path) | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis for dream projects → [[react-doctor]] |
 | **zarazhangrui/frontend-slides** | `skills/ecosystem/frontend-slides/` (v2.1.0, MIT) | manual sparse-clone from upstream (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
 | **Z.ai (GLM)** | `wiki/context/providers.json` → `zai` | direct API `api.z.ai` (OpenAI-compatible) via provider registry; key `ZHIPU_API_KEY`; `delegate.sh::try_zhipu_direct` | GLM-5.1 flagship + glm-4.5-air cheap — cost-first reasoning/coding; pin รุ่นผ่าน Live Dashboard ⚙️ → [[zai-glm]] |
+| **mattpocock/skills** | `skills/mattpocock/` (25 skills, MIT) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, domain-modeling, `two-axis-code-review` (renamed from upstream `code-review` to avoid clashing with built-in `/code-review`), +20 more, symlinked to all agent harnesses + Hermes → [[mattpocock-skills]] |
 
 **Symlink agent-skills/** into agent harnesses: `bash scripts/link-my-skills.sh`
-**Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
-**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec,frontend-slides,zai-glm}.md`
+**Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
+**Wiki pages for each tool:** `wiki/entities/ai-tools/{ecc,9arm-skills,gitnexus,turbovec,react-doctor,agents-md-spec,frontend-slides,zai-glm,mattpocock-skills}.md`
 
 ---
 

@@ -89,6 +89,20 @@ if [ -d "$NATIVE_SKILLS_DIR" ]; then
   done
 fi
 
+# ---- Step 4b: Link Matt Pocock skills (grill-me, tdd, code-review, etc.) ----
+MATTPOCOCK_SKILLS_DIR="$A_WIKI_DIR/skills/mattpocock"
+if [ -d "$MATTPOCOCK_SKILLS_DIR" ]; then
+  mkdir -p "$HERMES_SKILLS/awiki/mattpocock"
+  info "Linking Matt Pocock skills"
+  for skill_dir in "$MATTPOCOCK_SKILLS_DIR"/*/; do
+    skill=$(basename "$skill_dir")
+    if [ -f "$skill_dir/SKILL.md" ]; then
+      ln -sf "$skill_dir" "$HERMES_SKILLS/awiki/mattpocock/$skill"
+    fi
+  done
+  info "Linked $(ls -d "$HERMES_SKILLS/awiki/mattpocock"/*/ 2>/dev/null | wc -l) mattpocock skills"
+fi
+
 # ---- Step 5: Link agent personas ----
 AGENTS_DIR="$A_WIKI_DIR/agents"
 if [ -d "$AGENTS_DIR" ]; then

@@ -20,6 +20,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SKILL_SOURCE="$REPO_ROOT/agent-skills"
 ANTHROPIC_SKILL_SOURCE="$REPO_ROOT/skills/anthropic-skills"
+MATTPOCOCK_SKILL_SOURCE="$REPO_ROOT/skills/mattpocock"
 
 LINK_TARGETS=()
 
@@ -45,10 +46,18 @@ else
                     echo "  • anthropic-skills/$(basename "$dir")"
                 done
             fi
+            if [ -d "$MATTPOCOCK_SKILL_SOURCE" ]; then
+                echo ""
+                echo "Matt Pocock skills (from $MATTPOCOCK_SKILL_SOURCE):"
+                for dir in "$MATTPOCOCK_SKILL_SOURCE"/*/; do
+                    echo "  • mattpocock/$(basename "$dir")"
+                done
+            fi
             echo ""
             agent_count=$(find "$SKILL_SOURCE" -mindepth 2 -maxdepth 2 -type d | wc -l | tr -d ' ')
             anthropic_count=$([ -d "$ANTHROPIC_SKILL_SOURCE" ] && find "$ANTHROPIC_SKILL_SOURCE" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ' || echo 0)
-            echo "Total: $agent_count agent-skills + $anthropic_count anthropic-skills"
+            mattpocock_count=$([ -d "$MATTPOCOCK_SKILL_SOURCE" ] && find "$MATTPOCOCK_SKILL_SOURCE" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ' || echo 0)
+            echo "Total: $agent_count agent-skills + $anthropic_count anthropic-skills + $mattpocock_count mattpocock skills"
             exit 0
             ;;
         *)
@@ -73,10 +82,11 @@ link_skills_to() {
 
     mkdir -p "$dest"
 
-    # Find all skill directories (two levels deep in agent-skills/, one level in anthropic-skills/)
+    # Find all skill directories (two levels deep in agent-skills/, one level in anthropic-skills/ and mattpocock/)
     {
         find "$SKILL_SOURCE" -mindepth 2 -maxdepth 2 -type d -print0
         [ -d "$ANTHROPIC_SKILL_SOURCE" ] && find "$ANTHROPIC_SKILL_SOURCE" -mindepth 1 -maxdepth 1 -type d -print0
+        [ -d "$MATTPOCOCK_SKILL_SOURCE" ] && find "$MATTPOCOCK_SKILL_SOURCE" -mindepth 1 -maxdepth 1 -type d -print0
     } |
     while IFS= read -r -d '' skill_dir; do
         skill_name="$(basename "$skill_dir")"
