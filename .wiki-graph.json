@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-04",
+  "generated_at": "2026-07-05",
   "stats": {
-    "nodes": 533,
-    "edges": 1692,
+    "nodes": 535,
+    "edges": 1698,
     "edges_by_type": {
-      "wikilink": 1183,
+      "wikilink": 1186,
       "mdlink": 49,
-      "depends": 373,
+      "depends": 374,
       "implements": 49,
-      "extends": 38
+      "extends": 40
     },
-    "broken_links": 2,
-    "orphans": 16,
+    "broken_links": 7,
+    "orphans": 17,
     "orphan_by_domain": {
       "context": 15,
-      "ai-tools": 1
+      "ai-tools": 2
     },
     "hubs": [
       {
@@ -74,6 +74,7 @@
       "wiki/context/session-memory.md",
       "wiki/context/session-summary-2026-06-24.md",
       "wiki/context/wiki-capability-map.md",
+      "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "wiki/entities/ai-tools/news-intelligence-pipeline.md"
     ]
   },
@@ -485,7 +486,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-06-22",
+      "title": "Review Report — 2026-07-04",
       "domain": "context"
     },
     {
@@ -531,6 +532,11 @@
     {
       "path": "wiki/entities/ai-tools/CLAUDE.md",
       "title": "Scoped Context — AI Tools Entities",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "title": "A-Wiki Universal Skill Architecture",
       "domain": "ai-tools"
     },
     {
@@ -2576,6 +2582,11 @@
     {
       "path": "wiki/synthesis/synth-telegram-ai-router-design.md",
       "title": "Telegram AI Router — Home Server Design — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-thai-tax-deduction-document-guide.md",
+      "title": "thai-tax-deduction-document-guide — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -7328,6 +7339,41 @@
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "to": "skill-frontmatter-schema",
+      "type": "extends",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "to": "skill-consolidation",
+      "type": "extends",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "to": "agent-private-storage",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "to": "awiki-lifecycle-router",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "to": "skill-architecture-plan",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {
@@ -14018,6 +14064,13 @@
     {
       "from": "wiki/synthesis/synth-telegram-ai-router-design.md",
       "to": "wiki/sources/telegram-ai-router-design.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-thai-tax-deduction-document-guide.md",
+      "to": "wiki/sources/thai-tax-deduction-document-guide.md",
       "type": "depends",
       "broken": false,
       "external": false
