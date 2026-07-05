@@ -1,10 +1,10 @@
 {
   "generated_at": "2026-07-05",
   "stats": {
-    "nodes": 537,
-    "edges": 1706,
+    "nodes": 538,
+    "edges": 1709,
     "edges_by_type": {
-      "wikilink": 1194,
+      "wikilink": 1197,
       "mdlink": 49,
       "depends": 374,
       "implements": 49,
@@ -552,6 +552,11 @@
     {
       "path": "wiki/entities/ai-tools/anthropic-skills.md",
       "title": "Anthropic Skills",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/deer-flow.md",
+      "title": "bytedance/deer-flow",
       "domain": "ai-tools"
     },
     {
@@ -7471,6 +7476,27 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/deer-flow.md",
+      "to": "hermes-agent",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/deer-flow.md",
+      "to": "wiki/entities/ai-tools/gbrain.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/deer-flow.md",
+      "to": "wiki/entities/ai-tools/ag2-orchestrator.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/ecc.md",
       "to": "wiki/entities/ai-tools/9arm-skills.md",
       "type": "wikilink",
@@ -7556,9 +7582,9 @@
     },
     {
       "from": "wiki/entities/ai-tools/gbrain.md",
-      "to": "deer-flow",
+      "to": "wiki/entities/ai-tools/deer-flow.md",
       "type": "wikilink",
-      "broken": true,
+      "broken": false,
       "external": false
     },
     {

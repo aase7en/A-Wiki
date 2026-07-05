@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **27**
+- Entities: **28**
 - Concepts: **32**
 
 ---
@@ -25,6 +25,7 @@
 | `ag2-orchestrator` | AG2 เป็น **Goal Orchestrator** ของ A-Wiki — รับ goal ระดับสูง แล… |
 | `agents-md-spec` | AGENTS.md เป็น **open format** สำหรับ guide AI coding agent — เป… |
 | `anthropic-skills` | `anthropics/skills` คือ repo ทางการของ Anthropic ที่รวบรวม 17 cu… |
+| `deer-flow` | DeerFlow (โดย ByteDance) เป็น agent harness เต็มรูปแบบ — orchest… |
 | `ecc` | ECC = open-source plugin/framework optimize agent workflow acros… |
 | `frontend-slides` | Skill สร้าง presentation HTML แบบ zero-dependency (no npm, no bu… |
 | `gbrain` | GBrain (โดย Garry Tan, President/CEO ของ Y Combinator) เป็น "mem… |
