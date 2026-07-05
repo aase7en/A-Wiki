@@ -1,16 +1,16 @@
 {
   "generated_at": "2026-07-05",
   "stats": {
-    "nodes": 538,
-    "edges": 1709,
+    "nodes": 539,
+    "edges": 1713,
     "edges_by_type": {
-      "wikilink": 1197,
+      "wikilink": 1201,
       "mdlink": 49,
       "depends": 374,
       "implements": 49,
       "extends": 40
     },
-    "broken_links": 8,
+    "broken_links": 10,
     "orphans": 17,
     "orphan_by_domain": {
       "context": 15,
@@ -672,6 +672,11 @@
     {
       "path": "wiki/entities/env/activated-sludge-system.md",
       "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
+      "domain": "env"
+    },
+    {
+      "path": "wiki/entities/env/env-webapp-project.md",
+      "title": "env-wastewater-webapp (sibling repo)",
       "domain": "env"
     },
     {
@@ -2844,6 +2849,13 @@
     {
       "from": "CLAUDE.md",
       "to": "wiki/entities/ai-tools/gbrain.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/env/env-webapp-project.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8094,6 +8106,27 @@
     {
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/env-webapp-project.md",
+      "to": "hospital-wastewater-treatment",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/env-webapp-project.md",
+      "to": "water-quality-parameters",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/env/env-webapp-project.md",
+      "to": "wiki/synthesis/env-webapp-schema-wastewater.md",
       "type": "wikilink",
       "broken": false,
       "external": false

@@ -194,6 +194,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 | **mattpocock/skills** | `skills/mattpocock/` (25 skills, MIT) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, domain-modeling, `two-axis-code-review` (renamed from upstream `code-review` to avoid clashing with built-in `/code-review`), +20 more, symlinked to all agent harnesses + Hermes → [[mattpocock-skills]] |
 | **safishamsi/graphify** | global Claude skill (`pip install graphifyy`, MIT) | opt-in — `bash scripts/install-graphify.sh` or `setup-optional-mcp.sh --graphify` | Code/PDF/image → interactive knowledge graph, 71.5x token reduction, MCP server → [[graphify]] |
 | **garrytan/gbrain** | external MCP via Bun + PGLite/Postgres (MIT, 25k★) | opt-in — `bash scripts/setup-optional-mcp.sh --gbrain` | Memory/synthesis layer, self-wiring knowledge graph — tool-shaped, not auto-installed (own runtime+DB) → [[gbrain]] |
+| **env-wastewater-webapp** (sibling repo, not upstream) | `~/Desktop/env-wastewater-webapp` (private GitHub repo, separate from A-Wiki) | companion pointer — its `AGENTS.md`/`CLAUDE.md` links back here via `$A_WIKI_ROOT`; SessionStart hook reminds on every session | Wastewater migration + monitoring webapp code lives there; ENV domain knowledge + schema stay here → [[env-webapp-project]] |
 
 **Symlink agent-skills/** into agent harnesses: `bash scripts/link-my-skills.sh`
 **Refresh upstream:** `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
