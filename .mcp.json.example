@@ -51,6 +51,20 @@
       "env": {},
       "disabled": true,
       "autoApprove": ["query", "context", "impact", "detect_changes"]
+    },
+    "graphify": {
+      "command": "graphify",
+      "args": ["serve", "--mode", "stdio"],
+      "env": {},
+      "disabled": true,
+      "autoApprove": ["query_graph", "get_node", "get_neighbors", "shortest_path"]
+    },
+    "gbrain": {
+      "command": "gbrain",
+      "args": ["serve"],
+      "env": {},
+      "disabled": true,
+      "autoApprove": []
     }
   }
 }

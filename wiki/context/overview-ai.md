@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **25**
+- Entities: **27**
 - Concepts: **32**
 
 ---
@@ -27,11 +27,13 @@
 | `anthropic-skills` | `anthropics/skills` คือ repo ทางการของ Anthropic ที่รวบรวม 17 cu… |
 | `ecc` | ECC = open-source plugin/framework optimize agent workflow acros… |
 | `frontend-slides` | Skill สร้าง presentation HTML แบบ zero-dependency (no npm, no bu… |
+| `gbrain` | GBrain (โดย Garry Tan, President/CEO ของ Y Combinator) เป็น "mem… |
 | `gitnexus` | GitNexus สร้าง **knowledge graph ระดับโค้ด** ของ repo (functions… |
 | `graphify` | Graphify แปลงไฟล์หลากหลาย (code, PDF, markdown, ภาพ, whiteboard)… |
 | `hermes-agent` | Hermes Agent คือ open-source AI agent framework ที่รันผ่าน CLI ส… |
 | `hyperframes` | HyperFrames คือ framework สำหรับเขียนวิดีโอด้วย HTML/CSS และ ani… |
 | `live-dashboard` | Live Dashboard เป็น HTTP + SSE server (Python stdlib, zero-dep)… |
+| `mattpocock-skills` | repo จาก **Matt Pocock** (AI Hero / Total TypeScript) — ชุด Clau… |
 | `model-capability-bench` | ระบบจัดลำดับ model ตาม **ความสามารถ (capability)** ก่อนแจกจ่ายงา… |
 | `news-intelligence-pipeline` | Layer 1: DATA COLLECTION 🆓 Cron (no_agent, ทุก 4h) RSS + free AP… |
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |

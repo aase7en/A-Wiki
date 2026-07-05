@@ -1,16 +1,16 @@
 {
   "generated_at": "2026-07-05",
   "stats": {
-    "nodes": 535,
-    "edges": 1698,
+    "nodes": 537,
+    "edges": 1706,
     "edges_by_type": {
-      "wikilink": 1186,
+      "wikilink": 1194,
       "mdlink": 49,
       "depends": 374,
       "implements": 49,
       "extends": 40
     },
-    "broken_links": 7,
+    "broken_links": 8,
     "orphans": 17,
     "orphan_by_domain": {
       "context": 15,
@@ -486,7 +486,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-04",
+      "title": "Review Report — 2026-07-05",
       "domain": "context"
     },
     {
@@ -565,6 +565,11 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/gbrain.md",
+      "title": "GBrain",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/gitnexus.md",
       "title": "GitNexus",
       "domain": "ai-tools"
@@ -587,6 +592,11 @@
     {
       "path": "wiki/entities/ai-tools/live-dashboard.md",
       "title": "Live Dashboard — A-Wiki Real-time Monitor",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "title": "mattpocock/skills",
       "domain": "ai-tools"
     },
     {
@@ -2808,6 +2818,27 @@
     {
       "from": "CLAUDE.md",
       "to": "wiki/entities/ai-tools/zai-glm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/graphify.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "CLAUDE.md",
+      "to": "wiki/entities/ai-tools/gbrain.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -7510,6 +7541,27 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/gbrain.md",
+      "to": "wiki/entities/ai-tools/gitnexus.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gbrain.md",
+      "to": "wiki/entities/ai-tools/graphify.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gbrain.md",
+      "to": "deer-flow",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/gitnexus.md",
       "to": "wiki/concepts/ai-tools/mcp-architecture.md",
       "type": "wikilink",
@@ -7673,6 +7725,20 @@
     {
       "from": "wiki/entities/ai-tools/live-dashboard.md",
       "to": "wiki/entities/ai-tools/model-capability-bench.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "to": "wiki/entities/ai-tools/9arm-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
       "type": "wikilink",
       "broken": false,
       "external": false
