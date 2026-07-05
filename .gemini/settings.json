@@ -5,7 +5,8 @@
     "skills": {
       "claude_code": "../skills/claude-code",
       "claude_thai": "../skills/claude-thai",
-      "ecosystem": "../skills/ecosystem"
+      "ecosystem": "../skills/ecosystem",
+      "mattpocock": "../skills/mattpocock"
     },
     "hooks": "../.claude/hooks",
     "scripts": {

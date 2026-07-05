@@ -266,9 +266,10 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | Poppy Javis | `skills/word-generator/` | local | Thai Standard Word Document Generator (TH SarabunPSK) |
 | millionco/react-doctor | global Claude skill | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis (dream projects) |
 | zarazhangrui/frontend-slides | `skills/ecosystem/frontend-slides/` (synced direct v2.1.0) | manual sparse-clone (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
+| mattpocock/skills | `skills/mattpocock/` (25 skills) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, code-review (as `two-axis-code-review` — renamed to avoid clashing with the built-in `/code-review`), domain-modeling, and 20 more → [[mattpocock-skills]] |
 
 **Symlink setup**: `bash scripts/link-my-skills.sh`
-**Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh`
+**Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
 
 ---
 
