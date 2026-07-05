@@ -12,7 +12,11 @@ verify_tool: training
 # env-wastewater-webapp (sibling repo)
 
 **ประเภท**: Software project — data migration + future monitoring webapp
-**สถานะ**: Phase 1 (read-only CSV analysis) in progress
+**สถานะ**: Phase 1 (read-only CSV analysis) + Phase 2 (Supabase writes) เสร็จแล้ว
+— 907/907 rows migrate เข้า `wastewater.reading` + `carbon.reading` สำเร็จ
+(2026-07-05). ยังไม่มี PR เปิดสำหรับ branch `claude/webapp-env-pending-x7hl7l`.
+ขั้นถัดไป: FastAPI backend + frontend (ยังไม่เริ่ม). ดูรายละเอียด/follow-ups ที่
+`MIGRATION.md` ใน repo นั้น.
 **Location**: `~/Desktop/env-wastewater-webapp` — **แยก git repo จาก A-Wiki** (private, github.com/aase7en/env-wastewater-webapp)
 
 ## ภาพรวม
