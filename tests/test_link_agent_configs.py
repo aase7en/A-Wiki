@@ -255,6 +255,25 @@ def test_status_ok_after_link(tmp_path):
     assert "claude" in result.stdout
 
 
+def test_status_counts_real_link_target_not_just_symlink_bit(tmp_path):
+    """Regression guard for the realpath-based rewrite (Windows junctions
+    aren't `-L` true but do resolve correctly via realpath) — an unrelated
+    real directory sitting alongside must never be miscounted as managed."""
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    unrelated = home / ".claude" / "skills" / "not-an-a-wiki-skill"
+    unrelated.mkdir(parents=True)
+
+    run_script(home=home, drive=drive)
+    result = run_script("--status", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+    for line in result.stdout.splitlines():
+        if line.strip().startswith("[ OK ] claude:"):
+            assert "0 skills linked" not in line, line
+            break
+    else:
+        raise AssertionError(f"no claude status line found:\n{result.stdout}")
+
+
 def test_status_fails_on_dangling_env(tmp_path):
     home, drive = make_env(tmp_path)
     run_script(home=home, drive=drive)

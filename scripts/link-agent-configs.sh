@@ -121,6 +121,23 @@ resolve_drive_root() {
     echo "$HOME/.a-wiki-data"
 }
 
+# ── resolve a path through symlinks AND Windows junctions ───────────────────
+# On Windows, create_link()'s fallback makes an NTFS junction for directories.
+# A junction is a valid, working reparse point, but MSYS's `[ -L ]`/`readlink`
+# only recognize true symlinks — they report a junction as a plain directory.
+# `realpath`/`readlink -f` go through the OS path-resolution call instead, so
+# they follow junctions correctly; use this everywhere status/detection needs
+# to know what a path *actually* points at.
+resolve_real_path() {
+    if command -v realpath >/dev/null 2>&1; then
+        realpath "$1" 2>/dev/null
+    elif readlink -f "$1" >/dev/null 2>&1; then
+        readlink -f "$1"
+    else
+        readlink "$1" 2>/dev/null
+    fi
+}
+
 # ── link creation (symlink -> PowerShell junction -> mklink /J) ─────────────
 
 create_link() {
@@ -371,8 +388,8 @@ do_status() {
         broken=0
         if [ -d "$dir/skills" ]; then
             for entry in "$dir/skills"/*; do
-                [ -L "$entry" ] || continue
-                target="$(readlink "$entry")"
+                [ -e "$entry" ] || [ -L "$entry" ] || continue
+                target="$(resolve_real_path "$entry")"
                 case "$target" in
                     "$REPO_ROOT"/*)
                         managed=$((managed + 1))
