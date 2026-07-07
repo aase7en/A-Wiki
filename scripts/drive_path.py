@@ -79,7 +79,7 @@ def get_waste_reports_dir(year_month: str | None = None) -> Path:
 # Each agent gets an isolated directory under drive/.agents/<agent>/ for its
 # local settings, history, cache, and secrets. This prevents agents from
 # overwriting each other's state and keeps private data out of the public repo.
-_KNOWN_AGENTS = ("zcode", "claude", "codex", "hermes", "kilo", "cline", "windsurf", "openclaw", "gemini")
+_KNOWN_AGENTS = ("zcode", "claude", "codex", "hermes", "kilo", "cline", "windsurf", "openclaw", "gemini", "antigravity")
 
 
 def resolve_agent_dir(agent_name: str, create: bool = True) -> Path:

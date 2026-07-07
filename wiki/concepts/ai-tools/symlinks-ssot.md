@@ -3,8 +3,8 @@ type: concept
 tags: [ai-tools, symlinks, ssot, multi-agent, claude-code, configuration]
 sources: [ai-agents-integration-guide]
 created: 2026-05-17
-updated: 2026-05-17
-last_verified: 2026-05-17
+updated: 2026-07-06
+last_verified: 2026-07-06
 verify_tool: training
 ---
 
@@ -69,6 +69,14 @@ git ls-files -s CLAUDE.md  # mode 120000 = symlink
 ```
 
 ถ้า repo ถูก clone ไปเครื่องอื่น symlink ยังอยู่แต่ต้องตรวจว่า target path ตรงกัน
+
+## Universal Agent-Config Linker [verified 2026-07-06]
+
+ปัญหาที่พบบ่อยกว่า config ไฟล์ (`CLAUDE.md`/`GEMINI.md`/ฯลฯ) คือ **skills + secrets ข้ามหลายเครื่อง**: ผู้ใช้ที่มี agent เดียวกัน (Claude Code, Codex, Hermes, ZCode, Kilo, Cline, Gemini, Antigravity, Windsurf, OpenClaw ฯลฯ) อยู่คนละเครื่อง (บ้าน/ที่ทำงาน/มือถือ) ต้องติดตั้ง skill และกรอก secret ซ้ำทุกครั้งที่ย้ายเครื่อง เพราะแต่ละ agent default ไปอ่านจาก local dir ของตัวเอง (`~/.claude`, `~/.hermes`, ...) ไม่ใช่จาก cloud
+
+A-Wiki แก้ด้วย **hybrid source-of-truth**: skills (git repo, sync ข้ามเครื่องอยู่แล้ว) + secrets/`.env` (Google Drive ผ่าน `drive/` symlink) — ไม่เอา git repo ไปวางใน Drive เพราะ Google Drive for Desktop ไม่ sync/ตาม symlink ได้อย่างน่าเชื่อถือ symlink ต้องชี้**เข้า**ไปหา Drive mount เสมอ ไม่ใช่วางไว้*ใน* Drive แล้วหวังให้ sync ออกมา
+
+**Implementation**: `scripts/link-agent-configs.sh` (auto-detect agent ที่ติดตั้งบนเครื่อง → link skills เข้า repo + `.env` เข้า Drive), เรียกอัตโนมัติจาก `scripts/setup-local.sh` ทุกเครื่องใหม่ ดูรายละเอียดเต็มที่ `agent-skills/extensibility/symlink-connector/SKILL.md`
 
 ## ความสัมพันธ์
 

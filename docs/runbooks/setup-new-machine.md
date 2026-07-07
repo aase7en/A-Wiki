@@ -40,6 +40,7 @@ bash scripts/setup-local.sh
 | `gen-index.py` | rebuild local wiki index | เฉพาะ generated context/index ตามระบบ |
 | Codex hooks | link `.codex/hooks` | ไม่ |
 | model intel cache | เตรียม `.tmp/model-intel/` | ไม่ |
+| `link-agent-configs.sh` | link skills → repo + `.env` → Drive สำหรับทุก agent harness ที่ตรวจพบบนเครื่องนี้ (Claude/Codex/Cline/Hermes/Gemini/ZCode/Antigravity/Windsurf/OpenClaw) | ไม่ |
 
 Mac ส่วนตัวอาจเจอ path ลักษณะนี้:
 
@@ -54,6 +55,31 @@ bash scripts/setup-cloud-link.sh --status
 bash scripts/setup-cloud-link.sh --provider google
 bash scripts/setup-cloud-link.sh --path "/explicit/cloud/path"
 ```
+
+---
+
+## 2b. Universal agent-config links (skills + `.env`)
+
+เครื่องใหม่ทุกเครื่อง `setup-local.sh` จะเรียก `scripts/link-agent-configs.sh`
+ให้อัตโนมัติ — ไม่ต้องติดตั้ง skill หรือกรอก secret ซ้ำต่อ agent อีก:
+
+```bash
+bash scripts/link-agent-configs.sh              # link ทุก harness ที่ตรวจพบ
+bash scripts/link-agent-configs.sh --status     # health check
+bash scripts/link-agent-configs.sh --agent zcode  # บังคับ agent ที่ยังไม่มี dir
+```
+
+- **Skills** (`agent-skills/`, `skills/anthropic-skills/`, `skills/mattpocock/`)
+  → symlink จาก repo (git = source of truth, sync ข้ามเครื่องอยู่แล้ว)
+- **`.env`** ของ Hermes/ZCode และ repo root → symlink ไป `drive/` (Google Drive
+  = source of truth สำหรับ secrets) — ดูรายละเอียดเต็มที่
+  `agent-skills/extensibility/symlink-connector/SKILL.md`
+- **มือถือ / cloud session (Claude Code on the web ฯลฯ)**: ไม่มี local `~/.claude`
+  หรือ Google Drive mount ให้ symlink ใช้ remote environment ของแพลตฟอร์มนั้นแทน
+  (repo clone สดในแต่ละ session) — ข้าม step นี้ได้ ไม่ error
+- **Windows ไม่มี Developer Mode**: dir link fallback เป็น PowerShell junction
+  อัตโนมัติ; ไฟล์เดี่ยว (`.env`) fallback เป็น copy ธรรมดา — แก้ที่ Drive แล้ว
+  re-run script เพื่อ sync
 
 ---
 
@@ -120,7 +146,8 @@ python3 scripts/verify-awiki-ready.py
 python3 scripts/verify-cross-platform.py --build-vec
 python3 scripts/verify-next-machine.py --build-vec
 bash scripts/setup-cloud-link.sh --status
-python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py -q
+bash scripts/link-agent-configs.sh --status
+python3 -m pytest tests/test_agent_preflight.py tests/test_drive_link_health.py tests/test_link_agent_configs.py -q
 ```
 
 ควรเห็น:

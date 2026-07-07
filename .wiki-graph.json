@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-05",
+  "generated_at": "2026-07-07",
   "stats": {
-    "nodes": 539,
+    "nodes": 538,
     "edges": 1713,
     "edges_by_type": {
       "wikilink": 1201,
@@ -10,10 +10,10 @@
       "implements": 49,
       "extends": 40
     },
-    "broken_links": 10,
-    "orphans": 17,
+    "broken_links": 11,
+    "orphans": 16,
     "orphan_by_domain": {
-      "context": 15,
+      "context": 14,
       "ai-tools": 2
     },
     "hubs": [
@@ -71,7 +71,6 @@
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
       "wiki/context/session-memory-2026-06-24.md",
-      "wiki/context/session-memory.md",
       "wiki/context/session-summary-2026-06-24.md",
       "wiki/context/wiki-capability-map.md",
       "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
@@ -492,11 +491,6 @@
     {
       "path": "wiki/context/session-memory-2026-06-24.md",
       "title": "session-memory-2026-06-24",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
       "domain": "context"
     },
     {
@@ -7092,8 +7086,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": false,
-      "external": true
+      "broken": true,
+      "external": false
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",

@@ -13,6 +13,18 @@ sys.modules[spec.name] = verify_next_machine
 spec.loader.exec_module(verify_next_machine)
 
 
+def test_agent_config_links_step_warns_not_fails_on_nonzero(monkeypatch):
+    class FakeProc:
+        returncode = 1
+        stdout = "problems found"
+        stderr = ""
+
+    monkeypatch.setattr(verify_next_machine, "run", lambda args, timeout=180: FakeProc())
+    step = verify_next_machine.agent_config_links_step()
+    assert step.level == "WARN"
+    assert step.name == "agent config links"
+
+
 def test_exit_code_fails_only_on_fail():
     steps = [
         verify_next_machine.Step("OK", "a", "ok"),
@@ -33,11 +45,17 @@ def test_checks_include_work_pc_relevant_steps(monkeypatch):
 
     monkeypatch.setattr(verify_next_machine, "command_step", fake_command_step)
     monkeypatch.setattr(verify_next_machine, "docker_step", lambda: verify_next_machine.Step("WARN", "docker", "missing"))
+    monkeypatch.setattr(
+        verify_next_machine,
+        "agent_config_links_step",
+        lambda: verify_next_machine.Step("OK", "agent config links", "ok"),
+    )
 
     steps = verify_next_machine.checks(build_vec=True)
 
     assert [step.name for step in steps] == [
         "cloud link",
+        "agent config links",
         "drive secrets",
         "import keys",
         "kilo config",

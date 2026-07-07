@@ -271,7 +271,7 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | garrytan/gbrain | external MCP (Bun + PGLite/Postgres) | opt-in — `bash scripts/setup-optional-mcp.sh --gbrain` | Memory/synthesis layer with self-wiring knowledge graph — not auto-installed (own runtime+DB) → [[gbrain]] |
 | **env-wastewater-webapp** (sibling repo, not upstream) | `~/Desktop/env-wastewater-webapp` (private GitHub repo, separate from A-Wiki) | companion pointer — its `AGENTS.md` links back here via `$A_WIKI_ROOT`; SessionStart hook reminds on every session | Wastewater migration + monitoring webapp code lives there; ENV domain knowledge + schema stay here → [[env-webapp-project]] |
 
-**Symlink setup**: `bash scripts/link-my-skills.sh`
+**Symlink setup**: `bash scripts/link-agent-configs.sh` — links skills into every detected harness (Claude/Codex/Cline/Hermes/Gemini/ZCode/Antigravity/Windsurf/OpenClaw) and `.env` into Google Drive; runs automatically inside `setup-local.sh`. (`scripts/link-my-skills.sh` still works as a deprecated shim.) See [[symlink-connector]].
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
 **Opt-in MCP setup**: `bash scripts/setup-optional-mcp.sh --graphify|--gbrain` (not installed by default — see [[graphify]] / [[gbrain]])
 
