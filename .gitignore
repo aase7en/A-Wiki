@@ -83,6 +83,10 @@ build/
 out/
 target/
 *.d.ts
+# Exception: the /build Telegram command-skill lives under skills/awiki/build/
+# and must NOT be ignored. The global `build/` rule above matches its path.
+!skills/awiki/build/
+!skills/awiki/build/**
 
 # --- Logs ---
 *.log

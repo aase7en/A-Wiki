@@ -56,6 +56,132 @@
       "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report."
     },
     {
+      "name": "wiki",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/wiki/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap)."
+    },
+    {
+      "name": "search",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/search/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py."
+    },
+    {
+      "name": "review",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "review",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/review/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor)."
+    },
+    {
+      "name": "spec",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "define",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/spec/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code."
+    },
+    {
+      "name": "plan",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "plan",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/plan/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks."
+    },
+    {
+      "name": "build",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "build",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/build/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance."
+    },
+    {
+      "name": "ship",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/ship/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review."
+    },
+    {
       "name": "accessibility",
       "aliases": [],
       "domain": [

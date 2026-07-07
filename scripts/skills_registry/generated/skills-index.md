@@ -44,6 +44,7 @@
 | `brand-voice` | design | none | ecosystem | `skills/ecosystem/brand-voice/SKILL.md` |
 | `browser-qa` | code, debug | none | ecosystem | `skills/ecosystem/browser-qa/SKILL.md` |
 | `browser-testing-with-devtools` | code, engineering | verify | engineering-lifecycle | `skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md` |
+| `build` | ai-ops | build | awiki | `skills/awiki/build/SKILL.md` |
 | `bun-runtime` | code | none | ecosystem | `skills/ecosystem/bun-runtime/SKILL.md` |
 | `canary-watch` | sre | none | ecosystem | `skills/ecosystem/canary-watch/SKILL.md` |
 | `canvas-design` | design | none | uncategorized | `skills/anthropic-skills/canvas-design/SKILL.md` |
@@ -233,6 +234,7 @@
 | `perl-testing` | code | none | ecosystem | `skills/ecosystem/perl-testing/SKILL.md` |
 | `pharmacy-order-lookup` | medical, pharmacy | none | wiki | `skills/claude-code/pharmacy-order-lookup/SKILL.md` |
 | `pixellab-asset-ingest` | media | none | wiki | `skills/claude-code/pixellab-asset-ingest/SKILL.md` |
+| `plan` | ai-ops | plan | awiki | `skills/awiki/plan/SKILL.md` |
 | `plan-orchestrate` | productivity | none | ecosystem | `skills/ecosystem/plan-orchestrate/SKILL.md` |
 | `plankton-code-quality` | code | none | ecosystem | `skills/ecosystem/plankton-code-quality/SKILL.md` |
 | `planning-and-task-breakdown` | code, engineering, productivity | plan | engineering-lifecycle | `skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md` |
@@ -274,6 +276,7 @@
 | `research-ops` | code | none | ecosystem | `skills/ecosystem/research-ops/SKILL.md` |
 | `resolving-merge-conflicts` | engineering, code | none | mattpocock | `skills/mattpocock/resolving-merge-conflicts/SKILL.md` |
 | `returns-reverse-logistics` | logistics | none | ecosystem | `skills/ecosystem/returns-reverse-logistics/SKILL.md` |
+| `review` | ai-ops | review | awiki | `skills/awiki/review/SKILL.md` |
 | `rules-distill` | code | none | ecosystem | `skills/ecosystem/rules-distill/SKILL.md` |
 | `rust-patterns` | code | none | ecosystem | `skills/ecosystem/rust-patterns/SKILL.md` |
 | `rust-testing` | code | none | ecosystem | `skills/ecosystem/rust-testing/SKILL.md` |
@@ -283,6 +286,7 @@
 | `scholar-evaluation` | data | none | ecosystem | `skills/ecosystem/scientific-thinking-scholar-evaluation/SKILL.md` |
 | `scrape-web` | code | none | uncategorized | `skills/wiki/scrape-web/SKILL.md` |
 | `scrutinize` | debug | none | uncategorized | `skills/engineering/scrutinize/SKILL.md` |
+| `search` | wiki | none | awiki | `skills/awiki/search/SKILL.md` |
 | `search-first` | code | none | ecosystem | `skills/ecosystem/search-first/SKILL.md` |
 | `security-and-hardening` | code, engineering, security | review | engineering-lifecycle | `skills/engineering-lifecycle/review/security-and-hardening/SKILL.md` |
 | `security-bounty-hunter` | security | none | ecosystem | `skills/ecosystem/security-bounty-hunter/SKILL.md` |
@@ -291,6 +295,7 @@
 | `seo` | business | none | ecosystem | `skills/ecosystem/seo/SKILL.md` |
 | `setup-matt-pocock-skills` | engineering | none | mattpocock | `skills/mattpocock/setup-matt-pocock-skills/SKILL.md` |
 | `setup-pre-commit` | engineering | none | mattpocock | `skills/mattpocock/setup-pre-commit/SKILL.md` |
+| `ship` | ai-ops | ship | awiki | `skills/awiki/ship/SKILL.md` |
 | `shipping-and-launch` | code, engineering | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/shipping-and-launch/SKILL.md` |
 | `skill-comply` | code | none | ecosystem | `skills/ecosystem/skill-comply/SKILL.md` |
 | `skill-creator` | code | none | uncategorized | `skills/anthropic-skills/skill-creator/SKILL.md` |
@@ -300,6 +305,7 @@
 | `slack-gif-creator` | media | none | uncategorized | `skills/anthropic-skills/slack-gif-creator/SKILL.md` |
 | `social-graph-ranker` | code | none | ecosystem | `skills/ecosystem/social-graph-ranker/SKILL.md` |
 | `social-publisher` | code | none | uncategorized | `~/.claude/skills/social-publisher/SKILL.md` |
+| `spec` | ai-ops | define | awiki | `skills/awiki/spec/SKILL.md` |
 | `spec-driven-development` | code, engineering | define | engineering-lifecycle | `skills/engineering-lifecycle/define/spec-driven-development/SKILL.md` |
 | `springboot-patterns` | code | none | ecosystem | `skills/ecosystem/springboot-patterns/SKILL.md` |
 | `springboot-security` | code | none | ecosystem | `skills/ecosystem/springboot-security/SKILL.md` |
@@ -347,6 +353,7 @@
 | `web-artifacts-builder` | code | none | uncategorized | `skills/anthropic-skills/web-artifacts-builder/SKILL.md` |
 | `web-research` | code | none | wiki | `skills/claude-code/web-research/SKILL.md` |
 | `webapp-testing` | code | none | uncategorized | `skills/anthropic-skills/webapp-testing/SKILL.md` |
+| `wiki` | wiki | none | awiki | `skills/awiki/wiki/SKILL.md` |
 | `wiki-search-local` | wiki | none | wiki | `skills/claude-code/wiki-search-local/SKILL.md` |
 | `windows-desktop-e2e` | code | none | ecosystem | `skills/ecosystem/windows-desktop-e2e/SKILL.md` |
 | `word-generator` | document | none | uncategorized | `skills/word-generator/SKILL.md` |
@@ -359,7 +366,7 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 27 |
+| ai-ops | 32 |
 | business | 10 |
 | code | 180 |
 | data | 15 |
@@ -379,4 +386,4 @@
 | thai | 12 |
 | trader | 10 |
 | ux-ui | 5 |
-| wiki | 7 |
+| wiki | 9 |

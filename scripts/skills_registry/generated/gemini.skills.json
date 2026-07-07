@@ -1,6 +1,7 @@
 {
   "skills": {
     "ai-ops": "../agent-skills/swarm-intelligence",
+    "awiki": "../skills/awiki",
     "delegation": "../skills/delegation",
     "ecosystem": "../skills/ecosystem",
     "engineering-lifecycle": "../skills/engineering-lifecycle",
