@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Hermes Cross-Agent Integration + Subagent
 
-> **Resume marker:** ✅ ALL CHUNKS DONE (A + B + C incl. C3' + C4 + D). The 4-chunk plan is complete. One new follow-up surfaced by C4: see §"Follow-up chunk proposal (chunk hermes-e)" — the A-Wiki lifecycle skills have no Telegram command surface yet and need a command-router.
-> **Last session:** 2026-07-02/03 (ZCode, builtin:zai-coding-plan/GLM-5.2) — C3' + C4 both executed; see §"C3' RESULTS" + §"C4 RESULTS" below.
+> **Resume marker:** ✅ ALL CHUNKS DONE (A + B + C incl. C3' + C4 + D + **E**). chunk(hermes-e) Phase 1+2 (router + 7 command-skills) shipped 2026-07-07 (`eba10df` + `8935ae7`); Phase 3 (Pi5 deploy) is staged and ready but blocked from THIS session by Fortinet-on-Tailscale — see §"CHUNK E (hermes-e) — Phase 3 deploy" below for the one-command resume.
+> **Last session:** 2026-07-07 (ZCode, builtin:zai-coding-plan/GLM-5.2) — chunk(hermes-e) Phase 1+2 done + pushed; Phase 3 deploy script written + ready (in `drive/private-tools/hermes-e/`); could not execute because dev box is behind workplace Fortinet blocking Tailscale (same blocker as C4 — switch to home WiFi to resume).
 > **Parent architecture:** `docs/architecture/skill-architecture-plan.md` (the 5-layer registry system this extends)
-> **To resume:** nothing pending from the original plan. Open items are the optional `chunk(hermes-e)` command-router and the `scripts/investment/` promotion review (see §"Promotion candidate").
+> **To resume:** run Phase 3 deploy when on a Tailscale-friendly network — see §"CHUNK E (hermes-e) — Phase 3 deploy". Also open: `scripts/investment/` promotion review (see §"Promotion candidate").
 
 This handoff covers the Hermes-specific work that extends the Universal Skill
 Architecture (already shipped, 11 commits `41e2e2e`→`06746cb`) to the Hermes
@@ -383,13 +383,117 @@ User ran the smoke test from a phone via Telegram (the dev box had been blocked 
 - ❌ Persona-orchestrator has never been invoked over Telegram (no log evidence; the `/review` it was meant to back never reached the orchestrator).
 - ✅ All other chunks remain valid: C3' substrate is on-device and reconciled; the command layer can build on it whenever prioritized.
 
-### Follow-up chunk proposal (NOT in scope of this handoff)
+### Follow-up chunk proposal (DONE — see §"CHUNK E (hermes-e)" below)
 
-`chunk(hermes-e)`: build a `scripts/hermes/telegram-command-router.{py,sh}` that the gateway can register, mapping `/search`/`/wiki` → `search-wiki.py` and `/review`/`/spec`/`/plan`/`/build`/`/ship` → `persona-orchestrator.py`. Requires understanding Hermes' native command-registration API (not yet investigated). Tracked here so it is not forgotten.
+~~`chunk(hermes-e)`: build a `scripts/hermes/telegram-command-router.{py,sh}` that the gateway can register, mapping `/search`/`/wiki` → `search-wiki.py` and `/review`/`/spec`/`/plan`/`/build`/`/ship` → `persona-orchestrator.py`. Requires understanding Hermes' native command-registration API (not yet investigated). Tracked here so it is not forgotten.~~
+
+**RESOLVED 2026-07-07** — mechanism investigated, Phase 1+2 shipped, Phase 3 ready. See §"CHUNK E (hermes-e)".
 
 ### Chunk D — `chunk(hermes-d)`: this handoff doc (DONE in this session)
 
 ✅ This file.
+
+---
+
+## CHUNK E (hermes-e) — Telegram Command Router + 7 Command-Skills
+
+> **Status:** Phase 1+2 ✅ DONE + pushed (`eba10df` + `8935ae7`, 2026-07-07). Phase 3 (Pi5 deploy) ⏳ READY but blocked from the authoring session by workplace Fortinet blocking Tailscale (same blocker as C4). Phase 4 (Telegram smoke) ⏳ PENDING Phase 3.
+
+Closes the C4 gap end-to-end: `/wiki /search /review /spec /plan /build /ship` return `Unknown command` on the live Pi5 → after Phase 3+4 they will route to A-Wiki scripts.
+
+### Mechanism investigation (the "not yet investigated" unknown — RESOLVED)
+
+Hermes exposes **two** command-registration paths (verified via upstream docs at `hermes-agent.nousresearch.com/docs/`):
+
+1. **Skills-as-Commands** ✅ (chosen, reliable today): every skill dir under `~/.hermes/skills/` (or `/opt/data/skills/` on the container) is auto-exposed as `/<dirname>` on every messaging platform. LLM interprets the message → invokes a script. Cost: ~1000 free-tier tokens/call.
+2. **`quick_commands type:exec`** in `config.yaml`: zero-LLM shell exec. BLOCKED by upstream bug #44718 (the `{args}` placeholder never substitutes) + security concern #5125 (shell injection). Tracked as future optimization.
+
+**Design decision (user-approved):** Skills-as-Commands (Option A) + 7 thin wrapper skills (one per command). The `quick_commands exec` optimization swaps in later when #44718 is fixed in the container's Hermes version.
+
+### Phase 1 — `telegram-command-router.{py,sh}` + tests + command map ✅ DONE
+
+Commit `eba10df`. Mirrors `persona-orchestrator.{py,sh}` architecture exactly (pure router + injectable executor + dry-run default + fail-soft).
+
+| File | Purpose |
+|------|---------|
+| `scripts/hermes/telegram-command-router.py` | Pure router (`resolve_command`, `build_route`, `load_command_map`) + injectable `execute()` + CLI. Dry-run default (CI-safe). |
+| `scripts/hermes/telegram-command-router.sh` | POSIX wrapper (python3 → python → py -3 fallback). 21 lines, copy of persona wrapper. |
+| `scripts/hermes/telegram-commands.json` | Route map: 7 commands → `{script, kind, phase}`. Edit to add a command. |
+| `tests/test_telegram_command_router.py` | 22 pure tests (Iron Law #1: RED → GREEN). No subprocess, no hermes/search-wiki call. |
+
+**Verified:** 22/22 tests green; end-to-end dry-run + `--apply` sanity (`/wiki mqtt broker` → search-wiki.py → 5 JSON hits, exit 0). 104 tests green total (router + persona + skills registry + cross-agent visibility).
+
+### Phase 2 — 7 command-skills + registry ✅ DONE
+
+Commit `8935ae7`. Each `skills/awiki/<cmd>/SKILL.md` auto-exposes as `/<cmd>` on Telegram.
+
+| Skill | Phase | Routes to |
+|-------|-------|-----------|
+| `wiki`, `search` | none | `search-wiki.py` (FTS5, Level -1) |
+| `review` | review | `persona-orchestrator.py` (3-persona fan-out) |
+| `spec` | define | `persona-orchestrator.py` (single-pass draft) |
+| `plan` | plan | `persona-orchestrator.py` (single-pass decomposition) |
+| `build` | build | `persona-orchestrator.py` (single-pass TDD guidance) |
+| `ship` | ship | `persona-orchestrator.py` (fan-out + pre-launch gate) |
+
+- Registry: 7 entries added to `skills-registry.json` (`agents: ["all","hermes"]`). Hermes-tagged count **39 → 46**.
+- All 6 surfaces regenerated, 0 drift. `verify-skill-surfaces` OK (358 canonical).
+- **Gotcha fixed:** `.gitignore:82` global `build/` rule matched `skills/awiki/build/SKILL.md`. Force-added + added negation `!skills/awiki/build/` so `/build` isn't silently dropped from the Pi5 clone.
+
+### CHUNK E (hermes-e) — Phase 3 deploy ⏳ READY (blocked by Fortinet, not by code)
+
+**Blocker (same as C4):** the dev box used to author chunk(hermes-e) is behind workplace Fortinet which blocks Tailscale. Cannot reach `umbrel-1.tail<id>.ts.net:22` (DNS fail + direct-IP timeout). Switch to home WiFi to resume.
+
+**Resume command (when on a Tailscale-friendly network):**
+
+```bash
+# 1. Verify secrets + helper present
+python scripts/lib/drive_secrets.py --check
+ls drive/private-tools/c3prime/pi5_exec.py drive/private-tools/hermes-e/deploy-pi5.py
+
+# 2. Read-only connectivity check
+python drive/private-tools/hermes-e/deploy-pi5.py --check
+
+# 3. Preview the plan (no writes)
+python drive/private-tools/hermes-e/deploy-pi5.py --dry-run
+
+# 4. Execute: snapshot → FF clone → 7 symlinks → verify
+python drive/private-tools/hermes-e/deploy-pi5.py --apply
+```
+
+**What the deploy does (4 steps, all reversible):**
+1. `tar czf /opt/data/.hermes-e-skills-snap-<ts>.tar.gz` of `/opt/data/skills/` (rollback anchor)
+2. `git fetch origin main && git merge --ff-only` on `/opt/data/A-Wiki` (stash+pop if dirty, C3' pattern) — lands Phase 1+2 on-device (`a37e491` → `8935ae7`)
+3. `ln -sfn` 7 entries in `/opt/data/skills/awiki/` → `/opt/data/A-Wiki/skills/awiki/<name>` (idempotent; verifies SKILL.md exists before linking)
+4. Verify: each symlink resolves + SKILL.md readable, 0 broken links, HEAD reported
+
+**If `/<cmd>` returns Unknown after deploy** (skill present but gateway didn't rescan):
+```bash
+python drive/private-tools/hermes-e/deploy-pi5.py --apply --no-ff --rescan
+# or restart the container via Umbrel UI
+```
+
+**Rollback:** see `drive/private-tools/hermes-e/README.md` (gitignored) for per-step rollback commands.
+
+### Phase 4 — Telegram smoke test ⏳ PENDING Phase 3
+
+After deploy, send from a phone via Telegram and capture the gateway log over SSH in parallel (same pattern as C4):
+
+```
+/wiki mqtt broker          → expect 5 FTS5 hits
+/search esp32              → same backend as /wiki
+/status                    → already worked (native, negative control)
+/foobar                    → expect "Unknown command" (negative control)
+/review review this PR     → expect sequential fan-out report (~30-60s)
+/spec /plan /build /ship   → expect single-pass or fan-out per phase
+```
+
+Append results here as §"CHUNK E Phase 4 RESULTS" when done (mirror the C4 RESULTS format).
+
+### Open follow-ups (low priority, separate commits)
+
+- **`quick_commands exec` optimization**: when Hermes bug #44718 is fixed in the container's image, add `quick_commands:` entries to `/opt/data/profiles/<name>/config.yaml` that bypass the LLM (zero-token route). The skill layer remains as graceful fallback. Docs: Hermes "quick commands are checked before skill commands, so you can override skill names."
+- **Legacy skill cleanup**: `skills/awiki/a-wiki-commands/SKILL.md` + `skills/awiki/a-wiki-telegram/SKILL.md` declare the command table as aspiration; now that the 7 per-command skills exist, mark them "superseded — see skills/awiki/<cmd>/" and correct the ASPIRATION warning.
 
 ---
 

@@ -144,21 +144,30 @@ User: "สร้าง API task management"
 
 ### Slash Commands in Hermes Chat
 
-> ⚠️ **VERIFIED 2026-07-02/03 (C4 smoke test): the A-Wiki lifecycle slash commands below are ASPIRATION, not implementation.** Sending `/spec`, `/plan`, `/build`, `/review`, `/ship`, `/search`, `/wiki` to the live Telegram bot returns `Unknown command`. The only native slash command confirmed working is `/status`. The A-Wiki lifecycle skills exist on-device (symlinks + manifest from Chunk C3') but **have no Telegram command trigger** — building that command-router is tracked as `chunk(hermes-e)` in `docs/architecture/hermes-cross-agent-handoff.md`. The table below documents the *intended* mapping for when that router ships.
+> ✅ **UPDATE 2026-07-07 (chunk hermes-e Phase 1+2 shipped):** the command-router + 7 per-command skills are committed (`eba10df` + `8935ae7`) and pushed. Each `/wiki /search /review /spec /plan /build /ship` now has a real backing skill (`skills/awiki/<cmd>/SKILL.md`) that invokes `scripts/hermes/telegram-command-router.{py,sh}` → backing script. **Phase 3 (Pi5 deploy) is staged and ready but not yet executed** — the authoring session was blocked by workplace Fortinet on Tailscale (same as C4). To activate on the live bot, run the deploy per `docs/architecture/hermes-cross-agent-handoff.md` §"CHUNK E (hermes-e) — Phase 3 deploy". Until that deploy lands, the C4 status below (Unknown command) still holds on the device.
+>
+> ⚠️ **Historical (C4 smoke test, 2026-07-02/03):** before chunk(hermes-e), `/spec /plan /build /review /ship /search /wiki` returned `Unknown command` on the live bot. Only `/status` (native) worked. The lifecycle skills existed on-device (C3' symlinks) but had no Telegram command trigger — that gap is what chunk(hermes-e) closes.
 
 | Command | Maps To | Behavior | Status |
 |---------|---------|----------|--------|
-| `/status` | native Hermes | Session/model/context report | ✅ **works** |
-| `/spec` | `spec-driven-development` | Define requirements before code | ❌ not wired |
-| `/plan` | `planning-and-task-breakdown` | Break into verifiable tasks | ❌ not wired |
-| `/build` | `incremental-implementation` + TDD | Build slice by slice | ❌ not wired |
-| `/test` | `debug-mantra` + TDD | Debug + fix with tests | ❌ not wired |
-| `/review` | `scrutinize` + `code-simplification` + `security-and-hardening` | Quality gates | ❌ not wired |
-| `/code-simplify` | `code-simplification` | Reduce complexity | ❌ not wired |
-| `/ship` | `shipping-and-launch` + parallel fan-out | Pre-launch checklist + persona review | ❌ not wired |
-| `/search` / `/wiki` | `scripts/wiki/search-wiki.py` | A-Wiki FTS5 search | ❌ not wired |
+| `/status` | native Hermes | Session/model/context report | ✅ **works** (native) |
+| `/wiki` | `skills/awiki/wiki/` → `search-wiki.py` | A-Wiki FTS5 search (top 5) | 🔶 code shipped, deploy pending (hermes-e Phase 3) |
+| `/search` | `skills/awiki/search/` → `search-wiki.py` | Alias of `/wiki` | 🔶 code shipped, deploy pending |
+| `/spec` | `skills/awiki/spec/` → `persona-orchestrator.py` | DEFINE — draft spec before code | 🔶 code shipped, deploy pending |
+| `/plan` | `skills/awiki/plan/` → `persona-orchestrator.py` | PLAN — break into verifiable tasks | 🔶 code shipped, deploy pending |
+| `/build` | `skills/awiki/build/` → `persona-orchestrator.py` | BUILD — incremental + TDD guidance | 🔶 code shipped, deploy pending |
+| `/review` | `skills/awiki/review/` → `persona-orchestrator.py` | REVIEW — 3-persona fan-out | 🔶 code shipped, deploy pending |
+| `/ship` | `skills/awiki/ship/` → `persona-orchestrator.py` | SHIP — fan-out + pre-launch gate | 🔶 code shipped, deploy pending |
+| `/test`, `/code-simplify` | (not in hermes-e scope) | — | ❌ not wired (future chunk) |
 
-Until `chunk(hermes-e)` lands, you can still reach the A-Wiki brain indirectly: send a plain (non-slash) message and Hermes' background skill loader + self-improvement loop will draw on the reconciled skill set. The gateway log confirms Hermes reads/patches its own skills via this background path.
+**To activate** (after switching to a Tailscale-friendly network):
+```bash
+python drive/private-tools/hermes-e/deploy-pi5.py --check     # connectivity
+python drive/private-tools/hermes-e/deploy-pi5.py --apply     # snapshot + FF + 7 symlinks + verify
+```
+Then smoke-test from a phone (Phase 4) — see handoff §"CHUNK E (hermes-e) — Phase 4".
+
+Until the deploy lands, you can still reach the A-Wiki brain indirectly: send a plain (non-slash) message and Hermes' background skill loader + self-improvement loop will draw on the reconciled skill set. The gateway log confirms Hermes reads/patches its own skills via this background path.
 
 ### Telegram Bot Integration
 ```
