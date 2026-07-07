@@ -444,3 +444,92 @@ class TestCheckMode:
         text = (REPO_ROOT / "scripts" / "gen-index.py").read_text(encoding="utf-8")
 
         assert '"--profile", "content"' in text
+
+
+# ── graph-hygiene separation (capability-map stability) ────────────────
+
+class TestGraphHygieneSeparation:
+    """Live graph counters (Nodes/Edges/Orphans) must NOT live inside
+    wiki-capability-map.md, because they shift every gen-index run and make
+    --check non-deterministic. They belong in a separate graph-hygiene.md
+    that is generated but excluded from the --check gate.
+
+    See ADR: separate stable catalog from volatile live metrics.
+    """
+
+    def test_capability_map_has_no_graph_section(self, sample_wiki, monkeypatch):
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
+        ctx = sample_wiki.parent / "context"
+        ctx.mkdir(exist_ok=True)
+        _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)
+
+        # Point the cap-builder at a fixture path that exists
+        cap_builder = sample_wiki.parent / "scripts" / "wiki" / "build-capability-map.py"
+        cap_builder.parent.mkdir(parents=True, exist_ok=True)
+        cap_builder.write_text("#!/usr/bin/env python3\nprint('# cap')\n")
+        _patch_wiki(monkeypatch, gen_index, "REPO_ROOT", sample_wiki.parent)
+
+        monkeypatch.setattr("sys.argv", ["gen-index.py"])
+        gen_index.main()
+
+        cap_text = (ctx / "wiki-capability-map.md").read_text(encoding="utf-8")
+        assert "## Knowledge Graph Hygiene" not in cap_text
+        assert "| Nodes |" not in cap_text
+
+    def test_graph_hygiene_file_generated(self, sample_wiki, monkeypatch):
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
+        ctx = sample_wiki.parent / "context"
+        ctx.mkdir(exist_ok=True)
+        _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)
+
+        # Minimal .wiki-graph.json for the hygiene builder to consume
+        (sample_wiki.parent / ".wiki-graph.json").write_text(
+            '{"stats": {"nodes": 5, "edges": 3, "broken_links": 1, "orphans": 1, '
+            '"orphans_list": ["wiki/x.md"]}, "edges": []}',
+            encoding="utf-8",
+        )
+
+        monkeypatch.setattr("sys.argv", ["gen-index.py"])
+        gen_index.main()
+
+        hygiene_path = ctx / "graph-hygiene.md"
+        assert hygiene_path.exists(), "graph-hygiene.md must be generated"
+        text = hygiene_path.read_text(encoding="utf-8")
+        assert "| Nodes | 5 |" in text
+        assert "| Orphans | 1 |" in text
+
+    def test_check_excludes_graph_hygiene_file(self, sample_wiki, monkeypatch):
+        """graph-hygiene.md must NOT be in the outputs dict that --check
+        compares — otherwise volatile counters keep failing the check."""
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
+        ctx = sample_wiki.parent / "context"
+        ctx.mkdir(exist_ok=True)
+        _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)
+
+        monkeypatch.setattr("sys.argv", ["gen-index.py"])
+        gen_index.main()
+
+        pages = collect_pages()
+        outputs = collect_outputs(pages)
+        checked_paths = {p.name for p in outputs}
+        assert "graph-hygiene.md" not in checked_paths, (
+            "graph-hygiene.md must be excluded from the --check outputs dict"
+        )
+
+    def test_capability_map_idempotent_across_runs(self, sample_wiki, monkeypatch):
+        """The core regression: running gen-index twice (full then --check)
+        must pass, because capability-map no longer embeds volatile counters.
+        (The existing _date_re already strips the date, so the only remaining
+        volatility source was graph counters — which the fix removes.)"""
+        _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
+        ctx = sample_wiki.parent / "context"
+        ctx.mkdir(exist_ok=True)
+        _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", ctx)
+
+        monkeypatch.setattr("sys.argv", ["gen-index.py"])
+        gen_index.main()
+
+        # Second run — just check (must pass without re-writing)
+        monkeypatch.setattr("sys.argv", ["gen-index.py", "--check"])
+        rc = gen_index.main()
+        assert rc == 0, "capability-map must be stable across consecutive runs"

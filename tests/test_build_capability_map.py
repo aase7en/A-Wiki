@@ -132,6 +132,8 @@ def test_build_capability_map_discovers_owned_surfaces(tmp_path):
         "revenue-engine",
         "premium-auto-trading",
     }
+    # Graph hygiene data is still collected (consumed by the separate
+    # graph-hygiene.md builder) — but NOT rendered into the capability map.
     assert data["graph_hygiene"]["broken_links"] == 2
     assert data["graph_hygiene"]["orphans"] == 2
     assert data["graph_hygiene"]["broken_by_domain"]["synthesis"] == 1
@@ -170,16 +172,38 @@ def test_format_markdown_includes_routing_tables(tmp_path):
     assert "| `design-web` |" in text
     assert "## Capability Upgrade Matrix" in text
     assert "| Website design |" in text
-    assert "## Knowledge Graph Hygiene" in text
-    assert "| Broken links | 2 |" in text
-    assert "| Orphan domain | Count |" in text
-    assert "| context | 1 |" in text
+    # Graph hygiene was extracted to wiki/context/graph-hygiene.md (see ADR on
+    # separating stable catalog from volatile live counters). The capability
+    # map must NOT embed Nodes/Edges/Orphans so gen-index --check is stable.
+    assert "## Knowledge Graph Hygiene" not in text
+    assert "| Nodes |" not in text
+    assert "| Broken links |" not in text
+    assert "| Orphan domain |" not in text
     assert "## MCP Allowlist" in text
     assert "| `awiki` | Keep |" in text
     assert "## Capability Routing" in text
     assert "`python3 scripts/wiki/search-wiki.py \"query\"`" in text
     assert "| `foo-skill` |" in text
     assert "| `health` | Health |" in text
+
+
+def test_graph_hygiene_section_is_separate_file(tmp_path):
+    """read_graph_hygiene() data is emitted by a dedicated builder for
+    wiki/context/graph-hygiene.md, NOT embedded in the capability map.
+
+    The capability-map builder must still expose the data (so the dedicated
+    builder can call it) but must NOT render it into the catalog markdown.
+    """
+    make_fixture_repo(tmp_path)
+    data = build_capability_map.build_capability_map(tmp_path)
+
+    # Data is still collected (the dedicated builder consumes it)
+    assert data["graph_hygiene"]["broken_links"] == 2
+    assert data["graph_hygiene"]["orphans"] == 2
+
+    # But the markdown catalog must NOT contain it
+    text = build_capability_map.format_markdown(data)
+    assert "## Knowledge Graph Hygiene" not in text
 
 
 def test_cli_writes_output_file(tmp_path):
