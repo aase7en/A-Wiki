@@ -3,7 +3,7 @@
     {
       "id": "group-domain-context",
       "type": "group",
-      "label": "CONTEXT DOMAIN (20 pages)",
+      "label": "CONTEXT DOMAIN (19 pages)",
       "x": 0,
       "y": 0,
       "width": 1020,
@@ -131,20 +131,10 @@
       "color": "1"
     },
     {
-      "id": "wiki-context-session-memory-md",
-      "type": "file",
-      "file": "wiki/context/session-memory.md",
-      "x": 40,
-      "y": 800,
-      "width": 260,
-      "height": 120,
-      "color": "1"
-    },
-    {
       "id": "wiki-context-now-md",
       "type": "file",
       "file": "wiki/context/now.md",
-      "x": 380,
+      "x": 40,
       "y": 800,
       "width": 260,
       "height": 120,
@@ -154,7 +144,7 @@
       "id": "wiki-context-wiki-capability-map-md",
       "type": "file",
       "file": "wiki/context/wiki-capability-map.md",
-      "x": 720,
+      "x": 380,
       "y": 800,
       "width": 260,
       "height": 120,
@@ -164,8 +154,8 @@
       "id": "wiki-context-wiki-overview-md",
       "type": "file",
       "file": "wiki/context/wiki-overview.md",
-      "x": 40,
-      "y": 980,
+      "x": 720,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "1"
@@ -174,7 +164,7 @@
       "id": "wiki-context-wiki-state-md",
       "type": "file",
       "file": "wiki/context/wiki-state.md",
-      "x": 380,
+      "x": 40,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -184,7 +174,7 @@
       "id": "wiki-context-wiki-guide-md",
       "type": "file",
       "file": "wiki/context/wiki-guide.md",
-      "x": 720,
+      "x": 380,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -194,8 +184,8 @@
       "id": "wiki-context-session-memory-2026-06-24-md",
       "type": "file",
       "file": "wiki/context/session-memory-2026-06-24.md",
-      "x": 40,
-      "y": 1160,
+      "x": 720,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "1"
@@ -204,7 +194,7 @@
       "id": "wiki-context-session-summary-2026-06-24-md",
       "type": "file",
       "file": "wiki/context/session-summary-2026-06-24.md",
-      "x": 380,
+      "x": 40,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -5589,9 +5579,9 @@
     {
       "id": "edge-README-md-wiki-context-wiki-overview-md",
       "fromNode": "README-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-context-wiki-overview-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "none"
     },
     {
@@ -7429,9 +7419,9 @@
     {
       "id": "edge-index-md-wiki-context-wiki-overview-md",
       "fromNode": "index-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-context-wiki-overview-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "none"
     },
     {
@@ -8229,9 +8219,9 @@
     {
       "id": "edge-index-md-wiki-context-wiki-guide-md",
       "fromNode": "index-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-context-wiki-guide-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "none"
     },
     {

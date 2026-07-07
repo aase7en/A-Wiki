@@ -5,6 +5,7 @@
     "delegation": "../skills/delegation",
     "ecosystem": "../skills/ecosystem",
     "engineering-lifecycle": "../skills/engineering-lifecycle",
+    "extensibility": "../agent-skills/extensibility",
     "mattpocock": "../skills/mattpocock",
     "swarm": "../skills/awiki",
     "thai": "../skills/claude-thai",

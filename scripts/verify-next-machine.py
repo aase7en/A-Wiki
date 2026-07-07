@@ -46,12 +46,21 @@ def docker_step() -> Step:
     return Step("OK", "docker", f"available: {tail(proc)}")
 
 
+def agent_config_links_step() -> Step:
+    # Non-fatal: a fresh machine may not have every harness installed yet,
+    # or Drive may not be mounted — that's an actionable WARN, not a FAIL.
+    proc = run(["bash", "scripts/link-agent-configs.sh", "--status"], timeout=60)
+    level = "OK" if proc.returncode == 0 else "WARN"
+    return Step(level, "agent config links", tail(proc))
+
+
 def checks(build_vec: bool = False) -> list[Step]:
     vec_args = [sys.executable, "scripts/verify-cross-platform.py"]
     if build_vec:
         vec_args.append("--build-vec")
     return [
         command_step("cloud link", ["bash", "scripts/setup-cloud-link.sh", "--status"], timeout=60),
+        agent_config_links_step(),
         command_step("drive secrets", [sys.executable, "scripts/lib/drive_secrets.py", "--check"], timeout=60),
         command_step("import keys", [sys.executable, "scripts/import-keys.py", "--check"], timeout=60),
         command_step("kilo config", ["bash", "scripts/setup-kilo-config.sh", "--check"], timeout=60),

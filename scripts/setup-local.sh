@@ -312,6 +312,23 @@ setup_personal_links() {
   make_personal_link "$REPO_ROOT/scripts/personal"     "$DRIVE_PT/scripts"               "scripts/personal"
 }
 
+# ── 8b. Universal agent-config links — skills (repo) + .env (Drive) ────────
+# Links every detected agent harness (Claude/Codex/Cline/Hermes/Gemini/ZCode/
+# Antigravity/Windsurf/OpenClaw) to repo skills + Drive-backed .env in one
+# pass, so a new machine needs no per-agent setup. Safe to re-run.
+
+setup_agent_links() {
+  echo "[8b/12] Linking agent skills + .env (scripts/link-agent-configs.sh)..."
+  if [[ ! -f "scripts/link-agent-configs.sh" ]]; then
+    echo "  scripts/link-agent-configs.sh not found — skipping"
+    return 0
+  fi
+  bash scripts/link-agent-configs.sh || {
+    echo "  WARN: agent-config linking failed — run 'bash scripts/link-agent-configs.sh' manually" >&2
+    return 0
+  }
+}
+
 # ── 9. Global Kilo config — render from portable Drive template ────────────
 # Keeps ~/.config/kilo/kilo.jsonc consistent across machines (home Mac + work
 # Windows/WSL) by auto-detecting each machine's Google Drive path and injecting
@@ -347,7 +364,7 @@ setup_git_hooks_and_agents() {
 import sys; sys.path.insert(0, 'scripts')
 try:
     from drive_path import resolve_agent_dir, get_drive_root
-    for agent in ['zcode', 'claude', 'codex', 'hermes', 'kilo']:
+    for agent in ['zcode', 'claude', 'codex', 'hermes', 'kilo', 'cline', 'windsurf', 'openclaw', 'gemini', 'antigravity']:
         resolve_agent_dir(agent)
     print(f'  OK — per-agent dirs under {get_drive_root()}/.agents/')
 except Exception as exc:
@@ -402,6 +419,7 @@ setup_codex
 setup_model_intel
 setup_model_router_policy
 setup_personal_links
+setup_agent_links
 setup_kilo_config
 setup_git_hooks_and_agents
 setup_scraper_deps
