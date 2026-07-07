@@ -75,6 +75,24 @@
       "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru"
     },
     {
+      "name": "build",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "build",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/build/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance."
+    },
+    {
       "name": "ci-cd-and-automation",
       "aliases": [],
       "domain": [
@@ -355,6 +373,24 @@
       "description": ">"
     },
     {
+      "name": "plan",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "plan",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/plan/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks."
+    },
+    {
       "name": "planning-and-task-breakdown",
       "aliases": [],
       "domain": [
@@ -411,6 +447,24 @@
       "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM"
     },
     {
+      "name": "review",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "review",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/review/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor)."
+    },
+    {
       "name": "scrutinize",
       "aliases": [],
       "domain": [
@@ -427,6 +481,24 @@
       "version": "",
       "status": "canonical",
       "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same "
+    },
+    {
+      "name": "search",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/search/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py."
     },
     {
       "name": "security-and-hardening",
@@ -449,6 +521,24 @@
       "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d"
     },
     {
+      "name": "ship",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/ship/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review."
+    },
+    {
       "name": "shipping-and-launch",
       "aliases": [],
       "domain": [
@@ -466,6 +556,24 @@
       "version": "",
       "status": "canonical",
       "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production."
+    },
+    {
+      "name": "spec",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "define",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/spec/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code."
     },
     {
       "name": "spec-driven-development",
@@ -701,6 +809,24 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be"
+    },
+    {
+      "name": "wiki",
+      "aliases": [],
+      "domain": [
+        "wiki"
+      ],
+      "lifecycle_phase": "none",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/wiki/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap)."
     },
     {
       "name": "wiki-search-local",
