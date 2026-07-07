@@ -89,6 +89,21 @@ Rules that keep re-runs safe:
   `scripts/setup-cloud-link.sh`). Junctions can't target a single file, so a
   `.env` link that can't be a symlink falls back to a plain copy — re-run
   after editing the Drive copy.
+- **Windows junctions vs `ls -la`/`Get-Item`**: a junction is a real, working
+  reparse point, but Git Bash's `ls -la` shows it as a plain directory (`d`,
+  not `l`) and Windows PowerShell 5.1's `Get-Item ... | Select LinkType`
+  sometimes reports it as blank too — neither recognizes a junction the way
+  they recognize a true symlink. `--status` accounts for this (it resolves
+  through `realpath`, which does follow junctions, instead of relying on the
+  symlink bit) so its skill counts are accurate on Windows. If you want to
+  double check by hand, read a file through the link instead of `ls`-ing it:
+  `cat <agent_dir>/skills/<skill>/SKILL.md` — if the content matches the repo,
+  the link works, regardless of what `ls`/`Get-Item` display.
+- `--unlink` only removes true symlinks it detects via the symlink bit, so it
+  currently leaves Windows junctions in place rather than risk `rm` behaving
+  unexpectedly on a reparse point it can't fully identify — a known, safe
+  (non-destructive) limitation, not planned to change without real Windows
+  testing.
 
 ## Verifying
 
