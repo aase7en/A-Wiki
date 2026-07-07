@@ -101,6 +101,55 @@ def test_keeps_existing_real_directory(tmp_path):
     assert "Skipping existing directory" in result.stdout
 
 
+def test_force_skills_replaces_matching_real_dir_and_backs_up_content(tmp_path):
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    real = home / ".claude" / "skills" / "debug-mantra"
+    real.mkdir(parents=True)
+    marker = real / "KEEP"
+    marker.write_text("pre-existing content", encoding="utf-8")
+
+    result = run_script("--force-skills", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+
+    link = home / ".claude" / "skills" / "debug-mantra"
+    assert link.is_symlink()
+    assert os.readlink(link) == str(
+        REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    )
+
+    # Original content must be backed up somewhere under the skills dir, not deleted.
+    skills_dir = home / ".claude" / "skills"
+    backups = list(skills_dir.glob("debug-mantra.pre-link-backup-*"))
+    assert len(backups) == 1, f"expected exactly one backup, found: {list(skills_dir.iterdir())}"
+    assert (backups[0] / "KEEP").read_text(encoding="utf-8") == "pre-existing content"
+
+
+def test_force_skills_does_not_touch_unmatched_real_dir(tmp_path):
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    custom = home / ".claude" / "skills" / "my-totally-custom-skill"
+    custom.mkdir(parents=True)
+    marker = custom / "KEEP"
+    marker.write_text("not an A-Wiki skill", encoding="utf-8")
+
+    result = run_script("--force-skills", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+
+    assert not custom.is_symlink()
+    assert custom.is_dir()
+    assert marker.read_text(encoding="utf-8") == "not an A-Wiki skill"
+
+
+def test_without_force_skills_real_dir_is_left_alone(tmp_path):
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    real = home / ".claude" / "skills" / "debug-mantra"
+    real.mkdir(parents=True)
+
+    result = run_script(home=home, drive=drive)  # no --force-skills
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert not real.is_symlink()
+    assert "Skipping existing directory" in result.stdout
+
+
 def test_agent_flag_creates_dir(tmp_path):
     home, drive = make_env(tmp_path, agents=())
     home.mkdir(parents=True, exist_ok=True)

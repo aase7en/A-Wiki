@@ -21,7 +21,7 @@
 #   bash scripts/link-agent-configs.sh --unlink       # remove managed links only
 #   bash scripts/link-agent-configs.sh --list         # show agents + linkable skills
 #   Other flags: --all --skills-only --env-only --no-repo-env --dry-run --force
-#                --repo-root <path>
+#                --force-skills --repo-root <path>
 #
 # Overrides (no hardcoded personal paths — Iron Law #6):
 #   A_WIKI_DRIVE_PATH        Drive data root. Fallback order matches
@@ -31,8 +31,13 @@
 #   HERMES_HOME              hermes home (default ~/.hermes)
 #
 # Notes:
-#   - Real (non-symlink) skill dirs and .env files are never deleted; a real
-#     .env is migrated to Drive only with --force (backed up beside the target).
+#   - Real (non-symlink) skill dirs and .env files are never deleted by default;
+#     a real .env is migrated to Drive only with --force (backed up beside the
+#     target). A real skill dir with a name matching an A-Wiki skill is left
+#     alone unless --force-skills is passed, in which case it is renamed to
+#     "<name>.pre-link-backup-<timestamp>" (never deleted) before the live
+#     symlink is created. Directories whose name does NOT match any A-Wiki
+#     skill are never touched, force or not.
 #   - Google Drive for Desktop does not sync symlinks: links must point INTO
 #     the Drive mount; only real files live on Drive.
 # ============================================================================
@@ -51,6 +56,7 @@ DO_ENV=1
 SKIP_REPO_ENV=0
 DRY_RUN=0
 FORCE=0
+FORCE_SKILLS=0
 REQUESTED_AGENTS=""
 PROBLEMS=0
 
@@ -183,8 +189,17 @@ link_skills_into() {
         if [ -L "$target" ] || [ -f "$target" ]; then
             rm -f "$target"
         elif [ -d "$target" ]; then
-            echo "  ⚠️  Skipping existing directory: $target"
-            continue
+            if [ "$FORCE_SKILLS" != "1" ]; then
+                echo "  ⚠️  Skipping existing directory: $target"
+                continue
+            fi
+            # --force-skills: this dir's name matches a known A-Wiki skill
+            # (we only ever reach here for names in list_skill_sources), so
+            # back up its content instead of deleting, then replace with a
+            # live symlink.
+            local backup="${target}.pre-link-backup-$(date +%Y%m%d%H%M%S)"
+            mv "$target" "$backup"
+            echo "  📦 backed up $target -> $backup"
         fi
 
         if create_link "$skill_dir" "$target"; then
@@ -479,6 +494,7 @@ while [ $# -gt 0 ]; do
         --no-repo-env) SKIP_REPO_ENV=1 ;;
         --dry-run) DRY_RUN=1 ;;
         --force) FORCE=1 ;;
+        --force-skills) FORCE_SKILLS=1 ;;
         --repo-root)
             shift
             if [ $# -eq 0 ] || [ ! -d "$1" ]; then
