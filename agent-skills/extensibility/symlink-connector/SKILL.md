@@ -74,6 +74,13 @@ Rules that keep re-runs safe:
 - A **real directory** already at a skill target is never deleted — only
   stale symlinks/files are replaced. Locally installed skills A-Wiki doesn't
   manage survive untouched.
+- If a machine already has **static copies** of A-Wiki skills (e.g. from
+  before this linker existed), pass `--force-skills` to convert them into
+  live symlinks: any real directory whose name matches a known A-Wiki skill
+  is renamed to `<name>.pre-link-backup-<timestamp>` (never deleted) before
+  the symlink is created. Directories whose name does **not** match any
+  A-Wiki skill are left alone even with `--force-skills` — only matching
+  names are ever touched.
 - A **real `.env` file** is left alone unless `--force` is passed, in which
   case its content is migrated to Drive (with a timestamped backup if a Drive
   copy already exists) before the local path becomes a symlink.
