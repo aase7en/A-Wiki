@@ -67,6 +67,25 @@ def test_instruction_drift_passes_when_documented(monkeypatch, tmp_path):
     assert result.level == "OK"
 
 
+def test_instruction_drift_accepts_cline_directory(monkeypatch, tmp_path):
+    """Cline moved from a single .clinerules file to a .clinerules/ directory
+    containing rules.md + hooks/. The drift check must read rules.md when the
+    entry is a directory, not treat it as a missing file."""
+    rules = tmp_path / ".clinerules" / "rules.md"
+    rules.parent.mkdir(parents=True)
+    rules.write_text(
+        "python scripts/agent-preflight.py\n"
+        "docs/protocols/brain-improvement-gate.md\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(agent_preflight, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(agent_preflight, "PREFLIGHT_DOCS", [".clinerules"])
+
+    result = agent_preflight.check_instruction_drift()
+
+    assert result.level == "OK"
+
+
 def test_hook_command_audit_blocks_absolute_paths(monkeypatch, tmp_path):
     config = tmp_path / ".codex" / "hooks.json"
     config.parent.mkdir()

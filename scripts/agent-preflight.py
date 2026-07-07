@@ -244,16 +244,32 @@ def check_hook_config_commands() -> CheckResult:
     return CheckResult("OK", "hook command paths", f"{len(HOOK_CONFIGS)} config file(s) resolve")
 
 
+def _read_platform_doc(rel: str) -> str | None:
+    """Read a platform instruction doc, accepting either a file or a
+    Cline-style directory (`.clinerules/` with `rules.md` inside).
+
+    Returns the doc text, or None if no readable file is found. Cline moved
+    from a single `.clinerules` file to a `.clinerules/` directory containing
+    `rules.md` + `hooks/` subdirs; the preflight must accept both shapes.
+    """
+    path = REPO_ROOT / rel
+    if path.is_file():
+        return path.read_text(encoding="utf-8", errors="replace")
+    rules_md = path / "rules.md"
+    if rules_md.is_file():
+        return rules_md.read_text(encoding="utf-8", errors="replace")
+    return None
+
+
 def check_instruction_drift() -> CheckResult:
     missing_files = []
     missing_preflight = []
     missing_brain_gate = []
     for rel in PREFLIGHT_DOCS:
-        path = REPO_ROOT / rel
-        if not path.is_file():
+        text = _read_platform_doc(rel)
+        if text is None:
             missing_files.append(rel)
             continue
-        text = path.read_text(encoding="utf-8", errors="replace")
         if "scripts/agent-preflight.py" not in text:
             missing_preflight.append(rel)
         if "brain-improvement-gate" not in text:
