@@ -1,6 +1,7 @@
 {
   "skills": {
     "paths": [
+      "./agent-skills/extensibility",
       "./agent-skills/swarm-intelligence",
       "./skills/anthropic-skills",
       "./skills/assessment-generator",

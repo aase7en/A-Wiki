@@ -6296,6 +6296,26 @@
       "version": "",
       "status": "canonical",
       "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests."
+    },
+    {
+      "name": "symlink-connector",
+      "aliases": [
+        "universal-agent-linker",
+        "link-agent-configs"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "extensibility",
+      "source": "repo",
+      "path": "agent-skills/extensibility/symlink-connector/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "2.0.0",
+      "status": "canonical",
+      "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup."
     }
   ]
 }

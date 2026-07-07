@@ -315,6 +315,7 @@
 | `swift-concurrency-6-2` | code | none | ecosystem | `skills/ecosystem/swift-concurrency-6-2/SKILL.md` |
 | `swift-protocol-di-testing` | code | none | ecosystem | `skills/ecosystem/swift-protocol-di-testing/SKILL.md` |
 | `swiftui-patterns` | code | none | ecosystem | `skills/ecosystem/swiftui-patterns/SKILL.md` |
+| `symlink-connector` | engineering | ship | extensibility | `agent-skills/extensibility/symlink-connector/SKILL.md` |
 | `tdd` | engineering, code | build | mattpocock | `skills/mattpocock/tdd/SKILL.md` |
 | `tdd-workflow` | code | none | ecosystem | `skills/ecosystem/tdd-workflow/SKILL.md` |
 | `teach` | productivity | none | mattpocock | `skills/mattpocock/teach/SKILL.md` |
@@ -373,7 +374,7 @@
 | debug | 8 |
 | design | 10 |
 | document | 9 |
-| engineering | 40 |
+| engineering | 41 |
 | env | 1 |
 | logistics | 7 |
 | media | 13 |
