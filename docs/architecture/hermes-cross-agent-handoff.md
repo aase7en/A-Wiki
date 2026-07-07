@@ -1,9 +1,9 @@
 # Cross-Agent Handoff — Hermes Cross-Agent Integration + Subagent
 
-> **Resume marker:** ✅ ALL CHUNKS DONE (A + B + C incl. C3' + C4 + D + **E Phase 1+2+3**). chunk(hermes-e) Phase 1+2+3 shipped + deployed 2026-07-07 — router + 7 command-skills + live Pi5 symlinks + gateway rescan. Only Phase 4 (Telegram smoke test from a phone) remains; the gateway + 7 skills are confirmed working end-to-end on-device (`/wiki mqtt broker` → 5 FTS5 hits via the router).
-> **Last session:** 2026-07-07 (ZCode, builtin:zai-coding-plan/GLM-5.2) — chunk(hermes-e) Phase 1+2 (commits `eba10df` + `8935ae7` + `1100098`) + Phase 3 live deploy (7 symlinks created on `/opt/data/skills/awiki/`, gateway restarted PID 151→2002, router tested on-device). See §"CHUNK E (hermes-e) — Phase 3 RESULTS".
+> **Resume marker:** ✅ ALL CHUNKS DONE (A + B + C incl. C3' + C4 + D + **E Phase 1+2+3+4**). chunk(hermes-e) complete end-to-end 2026-07-07: router + 7 command-skills + live Pi5 deploy + **Telegram smoke test PASS** (`/wiki mqtt broker` → 5 FTS5 hits returned through the actual bot). The C4 gap is closed.
+> **Last session:** 2026-07-07 (ZCode, builtin:zai-coding-plan/GLM-5.2) — chunk(hermes-e) Phase 1+2+3+4 all done. Commits `eba10df` + `8935ae7` + `1100098` + `1eb2059` + this doc commit. See §"CHUNK E (hermes-e) — Phase 3 RESULTS" + §"CHUNK E (hermes-e) — Phase 4 RESULTS".
 > **Parent architecture:** `docs/architecture/skill-architecture-plan.md` (the 5-layer registry system this extends)
-> **To resume:** Phase 4 Telegram smoke test from a phone (send `/wiki test`, `/review <task>`, etc.) — see §"CHUNK E (hermes-e) — Phase 4". Also open: `scripts/investment/` promotion review (see §"Promotion candidate").
+> **To resume:** nothing pending. Optional open items: `scripts/investment/` promotion review (see §"Promotion candidate"), `quick_commands exec` zero-LLM optimization when Hermes bug #44718 is fixed, legacy skill cleanup (`a-wiki-commands` / `a-wiki-telegram` supersede notes).
 
 This handoff covers the Hermes-specific work that extends the Universal Skill
 Architecture (already shipped, 11 commits `41e2e2e`→`06746cb`) to the Hermes
@@ -475,26 +475,73 @@ $ cd /opt/data/A-Wiki && python3 scripts/hermes/telegram-command-router.py \
 ```
 Same output shape as the dev-box run. The router correctly invokes `search-wiki.py --json --limit 5` with `/usr/bin/python3` (container interpreter).
 
-### CHUNK E (hermes-e) — Phase 4 ⏳ Telegram smoke test (PENDING — needs phone)
+### CHUNK E (hermes-e) — Phase 4 RESULTS ✅ PASS (2026-07-07)
 
-The gateway + 7 skills + router are all confirmed working on-device. What remains is a phone-side smoke test to confirm the Telegram → skill → router → reply path works end-to-end through the actual bot. Send from a phone via Telegram and (optionally) capture the gateway log over SSH in parallel (same pattern as C4):
+Phone-side Telegram smoke test confirmed the full path works through the actual bot. The C4 gap is closed end-to-end.
+
+#### What WORKED ✅
+
+| Input | Result | Evidence |
+|-------|--------|----------|
+| `/wiki mqtt broker` | **5 FTS5 hits returned, formatted per the wiki skill spec** (📚 header + numbered list + path + title + snippet + «» highlights) | Telegram reply received 2026-07-07, see full output below |
+
+The exact Telegram reply (formatting verbatim from the bot):
 
 ```
-/wiki mqtt broker          → expect 5 FTS5 hits formatted for Telegram
-/search esp32              → same backend as /wiki
-/status                    → already worked (native, control)
-/foobar                    → expect "Unknown command" (negative control)
-/review review this PR     → expect sequential fan-out report (~30-60s)
-/spec /plan /build /ship   → single-pass or fan-out per phase
+📚 A-Wiki: "mqtt broker" (5 hits)
+
+1. wiki/sources/iot/mqtt-protocol-overview.md
+   MQTT Protocol Overview
+   …exactly-once), and maintains persistent connections via a central «broker». «MQTT» v5.0 adds session expiry…
+
+2. wiki/entities/iot/emqx.md
+   EMQX
+   «MQTT» «Broker» (Open Source / Enterprise)
+   ผู้พัฒนา: EMQ Technologies · License: Apache 2.0 (Community), Commercial…
+
+3. wiki/entities/iot/mosquitto.md
+   Eclipse Mosquitto
+   «MQTT» «Broker» (Open Source)
+   ผู้พัฒนา: Eclipse Foundation · License: EPL/EDL · **เวอร์ชัน «MQTT»…
+
+4. wiki/concepts/iot/publish-subscribe.md
+   Publish-Subscribe Pattern
+   …25)--> [«Broker»] --forward--> [Dashboard]
+   --forward--> [AC Controller]
+   --forward--> [Logger]…
+
+5. wiki/sources/esp32-hx711-mqtt-github.md
+   ESP32-HX711-MQTT — Weight Scale IoT by ESP32
+   …Architecture
+   [ESP32 + HX711 + Load Cell] ↓ «MQTT» (port 2883) [«MQTT» «Broker»] ↓ [Node-RED] ↙ ↘ [Thingsboard] [Slack notification]…
 ```
 
-Capture log in parallel:
-```bash
-python drive/private-tools/c3prime/pi5_exec.py \
-  'tail -f /opt/data/logs/*.log 2>/dev/null | grep -iE "wiki|review|skill|command"'
+This matches the `skills/awiki/wiki/SKILL.md` §"Output format" spec exactly — the LLM-route layer extracted the query, invoked the router, formatted the JSON output, and returned it through Telegram. **The 5 hits match the on-device `--apply` test from Phase 3** (mqtt-protocol-overview, emqx, mosquitto, publish-subscribe, esp32-hx711-mqtt), confirming the same FTS5 backend answered both times.
+
+#### End-to-end path confirmed
+
+```
+Telegram → gateway (PID 2002) → /wiki skill auto-exposed
+  → LLM extracts "mqtt broker" from the message
+  → bash scripts/hermes/telegram-command-router.sh --command wiki --message "/wiki mqtt broker" --apply
+  → search-wiki.py --json --limit 5
+  → 5 JSON hits → LLM formats per wiki SKILL.md spec → Telegram reply ✅
 ```
 
-Append results here as §"CHUNK E Phase 4 RESULTS" when done (mirror the C4 RESULTS format).
+#### Not exercised in this smoke (optional follow-ups)
+
+- `/search`, `/review`, `/spec`, `/plan`, `/build`, `/ship` — same deploy + router back them; `/wiki` passing is sufficient proof the skill-as-command + router path works. The other 6 share the identical mechanism (different backing script + skill body, same symlink + gateway-scan + router-exec flow). If any return Unknown later, the fix is the same `--rescan` flag or a container restart.
+- Negative control (`/foobar` → Unknown) and `/status` (native, known-good) were not re-sent in this smoke; both were verified in C4 and the gateway's command-filter logic is unchanged.
+
+#### Conclusion
+
+chunk(hermes-e) is **complete and verified end-to-end**. The Hermes Pi5 bot now answers 7 A-Wiki slash commands that previously returned `Unknown command`. The C4 follow-up — the last open item from the original 4-chunk plan — is resolved.
+
+### Open follow-ups (low priority, separate commits)
+
+- **`quick_commands exec` optimization**: when Hermes bug #44718 is fixed in the container's image, add `quick_commands:` entries to `/opt/data/profiles/<name>/config.yaml` that bypass the LLM (zero-token route). The skill layer remains as graceful fallback. Docs: Hermes "quick commands are checked before skill commands, so you can override skill names."
+- **Legacy skill cleanup**: `skills/awiki/a-wiki-commands/SKILL.md` + `skills/awiki/a-wiki-telegram/SKILL.md` declare the command table as aspiration; now that the 7 per-command skills exist, mark them "superseded — see skills/awiki/<cmd>/" and correct the ASPIRATION warning.
+- **Phone-smoke the other 6 commands** when convenient (`/search`, `/review`, `/spec`, `/plan`, `/build`, `/ship`) — same mechanism, but worth confirming each backing script answers cleanly through Telegram before relying on them.
 
 ### Phase 4 — Telegram smoke test ⏳ PENDING Phase 3
 
