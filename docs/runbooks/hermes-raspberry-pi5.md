@@ -144,30 +144,25 @@ User: "สร้าง API task management"
 
 ### Slash Commands in Hermes Chat
 
-> ✅ **UPDATE 2026-07-07 (chunk hermes-e Phase 1+2 shipped):** the command-router + 7 per-command skills are committed (`eba10df` + `8935ae7`) and pushed. Each `/wiki /search /review /spec /plan /build /ship` now has a real backing skill (`skills/awiki/<cmd>/SKILL.md`) that invokes `scripts/hermes/telegram-command-router.{py,sh}` → backing script. **Phase 3 (Pi5 deploy) is staged and ready but not yet executed** — the authoring session was blocked by workplace Fortinet on Tailscale (same as C4). To activate on the live bot, run the deploy per `docs/architecture/hermes-cross-agent-handoff.md` §"CHUNK E (hermes-e) — Phase 3 deploy". Until that deploy lands, the C4 status below (Unknown command) still holds on the device.
+> ✅ **UPDATE 2026-07-07 (chunk hermes-e Phase 1+2+3 DONE + deployed):** the command-router + 7 per-command skills are committed (`eba10df` + `8935ae7` + `1100098`) AND deployed to the live Pi5. Each `/wiki /search /review /spec /plan /build /ship` now has a real backing skill symlinked at `/opt/data/skills/awiki/<name>/` and the gateway has rescanned them (restarted PID 151→2002). On-device router test confirmed: `/wiki mqtt broker` → 5 FTS5 hits via `telegram-command-router.py`. **Only Phase 4 (phone-side Telegram smoke) remains** — see handoff §"CHUNK E (hermes-e) — Phase 4".
 >
 > ⚠️ **Historical (C4 smoke test, 2026-07-02/03):** before chunk(hermes-e), `/spec /plan /build /review /ship /search /wiki` returned `Unknown command` on the live bot. Only `/status` (native) worked. The lifecycle skills existed on-device (C3' symlinks) but had no Telegram command trigger — that gap is what chunk(hermes-e) closes.
 
 | Command | Maps To | Behavior | Status |
 |---------|---------|----------|--------|
 | `/status` | native Hermes | Session/model/context report | ✅ **works** (native) |
-| `/wiki` | `skills/awiki/wiki/` → `search-wiki.py` | A-Wiki FTS5 search (top 5) | 🔶 code shipped, deploy pending (hermes-e Phase 3) |
-| `/search` | `skills/awiki/search/` → `search-wiki.py` | Alias of `/wiki` | 🔶 code shipped, deploy pending |
-| `/spec` | `skills/awiki/spec/` → `persona-orchestrator.py` | DEFINE — draft spec before code | 🔶 code shipped, deploy pending |
-| `/plan` | `skills/awiki/plan/` → `persona-orchestrator.py` | PLAN — break into verifiable tasks | 🔶 code shipped, deploy pending |
-| `/build` | `skills/awiki/build/` → `persona-orchestrator.py` | BUILD — incremental + TDD guidance | 🔶 code shipped, deploy pending |
-| `/review` | `skills/awiki/review/` → `persona-orchestrator.py` | REVIEW — 3-persona fan-out | 🔶 code shipped, deploy pending |
-| `/ship` | `skills/awiki/ship/` → `persona-orchestrator.py` | SHIP — fan-out + pre-launch gate | 🔶 code shipped, deploy pending |
+| `/wiki` | `skills/awiki/wiki/` → `search-wiki.py` | A-Wiki FTS5 search (top 5) | ✅ deployed (hermes-e Phase 3); phone smoke pending |
+| `/search` | `skills/awiki/search/` → `search-wiki.py` | Alias of `/wiki` | ✅ deployed; phone smoke pending |
+| `/spec` | `skills/awiki/spec/` → `persona-orchestrator.py` | DEFINE — draft spec before code | ✅ deployed; phone smoke pending |
+| `/plan` | `skills/awiki/plan/` → `persona-orchestrator.py` | PLAN — break into verifiable tasks | ✅ deployed; phone smoke pending |
+| `/build` | `skills/awiki/build/` → `persona-orchestrator.py` | BUILD — incremental + TDD guidance | ✅ deployed; phone smoke pending |
+| `/review` | `skills/awiki/review/` → `persona-orchestrator.py` | REVIEW — 3-persona fan-out | ✅ deployed; phone smoke pending |
+| `/ship` | `skills/awiki/ship/` → `persona-orchestrator.py` | SHIP — fan-out + pre-launch gate | ✅ deployed; phone smoke pending |
 | `/test`, `/code-simplify` | (not in hermes-e scope) | — | ❌ not wired (future chunk) |
 
-**To activate** (after switching to a Tailscale-friendly network):
-```bash
-python drive/private-tools/hermes-e/deploy-pi5.py --check     # connectivity
-python drive/private-tools/hermes-e/deploy-pi5.py --apply     # snapshot + FF + 7 symlinks + verify
-```
-Then smoke-test from a phone (Phase 4) — see handoff §"CHUNK E (hermes-e) — Phase 4".
+**Phase 4 smoke test** (from a phone, after deploy): see `docs/architecture/hermes-cross-agent-handoff.md` §"CHUNK E (hermes-e) — Phase 4". Send `/wiki mqtt broker`, `/status` (control), `/foobar` (negative control), `/review <task>`. Capture the gateway log in parallel over SSH if diagnosing.
 
-Until the deploy lands, you can still reach the A-Wiki brain indirectly: send a plain (non-slash) message and Hermes' background skill loader + self-improvement loop will draw on the reconciled skill set. The gateway log confirms Hermes reads/patches its own skills via this background path.
+You can still reach the A-Wiki brain indirectly via a plain (non-slash) message — Hermes' background skill loader + self-improvement loop draws on the reconciled skill set. The gateway log confirms Hermes reads/patches its own skills via this background path.
 
 ### Telegram Bot Integration
 ```
