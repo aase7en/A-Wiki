@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "description": "Route map for scripts/hermes/telegram-command-router.py — maps Telegram slash commands to backing A-Wiki scripts. Each key is a command name (the skill dir name = the Telegram /<cmd>). 'kind' is 'search' (FTS5 query) or 'orchestrate' (persona fan-out). 'phase' is the lifecycle phase for orchestrate commands. Source of truth for chunk(hermes-e); see docs/architecture/hermes-cross-agent-handoff.md.",
+    "chunk": "hermes-e",
+    "version": 1
+  },
+  "wiki": {
+    "script": "scripts/wiki/search-wiki.py",
+    "kind": "search"
+  },
+  "search": {
+    "script": "scripts/wiki/search-wiki.py",
+    "kind": "search"
+  },
+  "review": {
+    "script": "scripts/hermes/persona-orchestrator.py",
+    "kind": "orchestrate",
+    "phase": "review"
+  },
+  "spec": {
+    "script": "scripts/hermes/persona-orchestrator.py",
+    "kind": "orchestrate",
+    "phase": "spec"
+  },
+  "plan": {
+    "script": "scripts/hermes/persona-orchestrator.py",
+    "kind": "orchestrate",
+    "phase": "plan"
+  },
+  "build": {
+    "script": "scripts/hermes/persona-orchestrator.py",
+    "kind": "orchestrate",
+    "phase": "build"
+  },
+  "ship": {
+    "script": "scripts/hermes/persona-orchestrator.py",
+    "kind": "orchestrate",
+    "phase": "ship"
+  }
+}
