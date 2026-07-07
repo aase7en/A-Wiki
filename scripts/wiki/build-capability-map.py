@@ -495,41 +495,13 @@ def format_markdown(data: dict[str, Any]) -> str:
             )
         )
 
-    graph_hygiene = data.get("graph_hygiene") or {}
-    lines.extend(
-        [
-            "",
-            "## Knowledge Graph Hygiene",
-            "",
-            "| Metric | Count |",
-            "|---|---:|",
-            f"| Nodes | {graph_hygiene.get('nodes', 0)} |",
-            f"| Edges | {graph_hygiene.get('edges', 0)} |",
-            f"| Broken links | {graph_hygiene.get('broken_links', 0)} |",
-            f"| Orphans | {graph_hygiene.get('orphans', 0)} |",
-            "",
-            "| Broken source domain | Count |",
-            "|---|---:|",
-        ]
-    )
-    broken_by_domain = graph_hygiene.get("broken_by_domain") or {}
-    if broken_by_domain:
-        for domain, count in broken_by_domain.items():
-            lines.append(f"| {md_escape(str(domain))} | {count} |")
-    else:
-        lines.append("| none | 0 |")
-    lines.extend(["", "| Orphan domain | Count |", "|---|---:|"])
-    orphan_by_domain = graph_hygiene.get("orphan_by_domain") or {}
-    if orphan_by_domain:
-        for domain, count in orphan_by_domain.items():
-            lines.append(f"| {md_escape(str(domain))} | {count} |")
-    else:
-        lines.append("| none | 0 |")
-    orphan_samples = graph_hygiene.get("orphan_samples") or []
-    if orphan_samples:
-        lines.extend(["", "Orphan samples: " + ", ".join(f"`{md_escape(str(item))}`" for item in orphan_samples[:10]), ""])
-    else:
-        lines.append("")
+    # NOTE: Knowledge Graph Hygiene (Nodes/Edges/Broken/Orphans) was removed
+    # from this markdown catalog because those live counters shift every
+    # gen-index run, making gen-index.py --check non-deterministic. The data
+    # is still collected in data["graph_hygiene"] and rendered to a separate
+    # wiki/context/graph-hygiene.md by scripts/gen-index.py (excluded from
+    # the --check gate). See ADR on separating stable catalog from volatile
+    # live metrics.
 
     lines.extend(
         [
