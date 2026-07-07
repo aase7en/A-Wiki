@@ -164,6 +164,23 @@ Before writing **any** new file, decide where it lives. The wrong choice either 
 
 ---
 
+## 🏗️ Agent Foundation Architecture (4 Layers)
+
+> **What this is:** A-Wiki's true "foundational roots" — the layers that, if removed, the system breaks or degrades. This corrects a common misreading where upstream tools (ECC, DeerFlow, GBrain, Graphify, Matt Pocock) are mistaken for the foundation. In reality the foundation is mostly A-Wiki-native; upstream tools are catalog / opt-in / rejected (see §Repository Integration).
+>
+> **Foundation vs supplement test:** 🔴 **HARD** = enforced by hook/code that runs today (remove → breaks). 🟡 **SOFT** = loaded via prompt/skill (forgettable, degrades gracefully). ⚪ **Optional** = not installed / catalog-only.
+
+| Layer | Function | Components | Level |
+|-------|----------|------------|-------|
+| **1. Enforcement & Discipline** | What agents *must/must not* do — hard-enforced | **9 Iron Laws** (above) · **17 PreToolUse hooks** (`scripts/hooks/`: `check_skill_registry`, `check_source_original_file`, `check_harness_routing`, `check_output_format`, `check_raw_immutable`, `check_external_editor_drift`, `check_secret_leak`, `check_bash_no_branch` …) · **9arm skills** (`debug-mantra` is the named instrument of Iron Law #2; + `scrutinize`, `post-mortem`) · eval/safety personas (`agents/test-engineer.md`, `agents/security-auditor.md`) | 🔴 HARD + 🟡 SOFT |
+| **2. Orchestration & Routing** | The "OS" — task ordering, cost control, scale | **Hermes** (`scripts/hermes/` + `lifecycle-config.json` — the real long-horizon orchestrator; reason DeerFlow was rejected) · **awiki-lifecycle-router** (`skills/engineering-lifecycle/`, intent→skill flowchart, define→…→ship) · **Universal harness routing** (`scripts/batch/route.py` + MCP `wiki_ingest_route`) · **Cost-First Decision Pyramid** (below) · **Swarm Intelligence Protocol** (below) · Hermes `shortcut_blocklist` (`implement_without_spec` …) | 🔴 HARD + 🟡 SOFT |
+| **3. Memory & Knowledge** | Remember + retrieve context | **`awiki` MCP server** (`scripts/mcp-wiki-server.py` — the only wiki/memory MCP with `disabled: false` + auto-approved) · **FTS5 + sqlite-vec** (`.wiki-index.db`, BM25 + 384-dim multilingual fastembed) · **`.wiki-graph.json`** (538 nodes / 1713 edges, A-Wiki's own knowledge graph) · **`wiki/context/`** (28 overview + `session-memory.md`) | 🔴 HARD + 🟡 SOFT |
+| **4. Skill Catalog** | What agents *can* do — all skills are catalog, not enforcement | **ECC** (228 vendored skills — bundle, NOT the OS/harness) · **addyosmani lifecycle** (define/plan/build/verify/review/ship) · **Matt Pocock** (25 skills, soft contributor: `tdd`, `grill-me`) · **9arm** (also soft here) · **GBrain / Graphify** (opt-in supplements, overlap with Layer 3 — NOT installed) · **DeerFlow** (**rejected** — see entity page) | ⚪ Optional |
+
+**Reading this correctly:** Layers 1–3 are A-Wiki-native and load-bearing. Layer 4 is upstream catalog — valuable for capability, but a skill bundle is not a "foundation" in the same sense as a hook-enforced Iron Law or the live `awiki` MCP. When someone lists "5 foundational roots" naming only upstream tools, they are describing Layer 4 and omitting Layers 1–3 where the real foundations live.
+
+---
+
 ## 💰 Cost-First Decision Pyramid
 
 **Always start at the lowest level. Move up only when lower level cannot do the job.**
@@ -252,10 +269,12 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 
 > A-Wiki ผสาน skills/tools จากหลาย upstream — ดู `wiki/entities/ai-tools/` สำหรับ deep-dive แต่ละตัว.
 > **Spec**: ไฟล์นี้ตาม [agents.md](https://github.com/agentsmd/agents.md) v1.
+>
+> **⚠️ Note:** upstream tools ในตารางนี้ = **skill catalog / opt-in supplement / rejected** — ไม่ใช่ foundation ทั้งหมด. ดูว่าอะไรเป็นฐานรากจริงที่ §**Agent Foundation Architecture** (ด้านบน). ECC = catalog bundle (ไม่ใช่ OS), GBrain/Graphify = opt-in ไม่ได้ลง, DeerFlow = rejected, Matt Pocock = soft contributor.
 
 | Repo | Local path | Integration mode | Purpose |
 |------|-----------|------------------|---------|
-| affaan-m/ECC | `skills/ecosystem/` | remote + `scripts/refresh-ecosystem.sh` | 63 agents + 249 skills |
+| affaan-m/ECC | `skills/ecosystem/` | remote + `scripts/refresh-ecosystem.sh` | **Skill catalog only** (228 vendored skills). Harness/agents/commands/hooks NOT wired — snapshot at `skills/_upstream/ecc/` (read-only). NOT the OS/harness; see §Agent Foundation Architecture. |
 | Boom-Vitt/claude-thai-skills | `skills/claude-thai/` | merged | Thai skills |
 | Legacy sister wiki | `wiki/` + `skills/claude-code/` | merged (frozen) | Legacy knowledge base |
 | thananon/9arm-skills | `agent-skills/_upstream/9arm-skills/` + fork in `agent-skills/{engineering,productivity}/` | remote + `scripts/refresh-9arm.sh` | debug-mantra, scrutinize, post-mortem, management-talk |
@@ -266,9 +285,10 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | Poppy Javis | `skills/word-generator/` | local | Thai Standard Word Document Generator (TH SarabunPSK) |
 | millionco/react-doctor | global Claude skill | `INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh` | React static analysis (dream projects) |
 | zarazhangrui/frontend-slides | `skills/ecosystem/frontend-slides/` (synced direct v2.1.0) | manual sparse-clone (ECC vendor lags) | Zero-dep HTML decks + 34 bold templates + PPTX/PDF scripts → [[frontend-slides]] |
-| mattpocock/skills | `skills/mattpocock/` (25 skills) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, code-review (as `two-axis-code-review` — renamed to avoid clashing with the built-in `/code-review`), domain-modeling, and 20 more → [[mattpocock-skills]] |
+| mattpocock/skills | `skills/mattpocock/` (25 skills) | remote `mattpocock` + `scripts/refresh-mattpocock.sh` | grill-me, tdd, diagnosing-bugs, code-review (as `two-axis-code-review` — renamed to avoid clashing with the built-in `/code-review`), domain-modeling, and 20 more → [[mattpocock-skills]]. **Soft contributor** (no hook-backed discipline; overlaps 9arm + Iron Laws). Symlink surface requires `link-skills.sh` re-run (stale as of 2026-07-06). |
 | safishamsi/graphify | global Claude skill (`pip install graphifyy`) | opt-in — `bash scripts/install-graphify.sh` or `setup-optional-mcp.sh --graphify` | Code/PDF/image → knowledge graph, 71.5x token reduction, MCP server → [[graphify]] |
 | garrytan/gbrain | external MCP (Bun + PGLite/Postgres) | opt-in — `bash scripts/setup-optional-mcp.sh --gbrain` | Memory/synthesis layer with self-wiring knowledge graph — not auto-installed (own runtime+DB) → [[gbrain]] |
+| **bytedance/deer-flow** | `wiki/entities/ai-tools/deer-flow.md` (entity page only) | **REJECTED** — redundant with Hermes | Long-horizon harness — considered then declined (overlaps Hermes swarm + too app-shaped for brain-improvement-gate). See entity page for rationale. **Replaced by:** [[hermes-agent]]. Zero integration: no script, no MCP, no dependency. |
 | **env-wastewater-webapp** (sibling repo, not upstream) | `~/Desktop/env-wastewater-webapp` (private GitHub repo, separate from A-Wiki) | companion pointer — its `AGENTS.md` links back here via `$A_WIKI_ROOT`; SessionStart hook reminds on every session | Wastewater migration + monitoring webapp code lives there; ENV domain knowledge + schema stay here → [[env-webapp-project]] |
 
 **Symlink setup**: `bash scripts/link-agent-configs.sh` — links skills into every detected harness (Claude/Codex/Cline/Hermes/Gemini/ZCode/Antigravity/Windsurf/OpenClaw) and `.env` into Google Drive; runs automatically inside `setup-local.sh`. (`scripts/link-my-skills.sh` still works as a deprecated shim.) See [[symlink-connector]].
@@ -468,21 +488,25 @@ When a task arrives, map the user's intent:
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **A-Wiki** (20417 symbols, 22525 relationships, 143 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+> **⚠️ Status on this machine: DISABLED.** The `gitnexus` MCP server is `disabled: true` in `.mcp.json`, there is **no `.gitnexus/` index** on disk, and the `.claude/skills/gitnexus/` skill directory referenced below does **not** exist here. The "20417 symbols" claim below comes from an earlier machine's index and is **not** the current state of this checkout.
+>
+> **All rules in this block apply ONLY after** `bash scripts/setup-gitnexus.sh` is run, `npx gitnexus analyze` completes, and the MCP is enabled. Until then, ignore the GitNexus instructions below — calling `gitnexus_*` tools will fail.
+
+The project can be indexed by GitNexus as **A-Wiki** (when enabled, symbol/relationship/flow counts depend on the current checkout). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
-## Always Do
+## Always Do (when GitNexus is enabled)
 
-- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
-- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
+- **WHEN ENABLED, run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
+- **WHEN ENABLED, run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **WHEN ENABLED, warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
 - When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
 - When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
 
-## Never Do
+## Never Do (when GitNexus is enabled)
 
-- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
+- NEVER edit a function, class, or method without first running `gitnexus_impact` on it (when GitNexus is enabled).
 - NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
 - NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
 - NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
@@ -497,6 +521,8 @@ This project is indexed by GitNexus as **A-Wiki** (20417 symbols, 22525 relation
 | `gitnexus://repo/A-Wiki/process/{name}` | Step-by-step execution trace |
 
 ## CLI
+
+> The skill files below are referenced from upstream GitNexus docs. On this machine they may not exist until `scripts/setup-gitnexus.sh` is run. Verify with `ls .claude/skills/gitnexus/` before reading.
 
 | Task | Read this skill file |
 |------|---------------------|
