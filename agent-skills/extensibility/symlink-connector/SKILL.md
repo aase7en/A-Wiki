@@ -30,9 +30,19 @@ Drive mount; only real files live on Drive.
 bash scripts/link-agent-configs.sh              # link every detected agent
 bash scripts/link-agent-configs.sh --status     # health check (exit 1 on broken links)
 bash scripts/link-agent-configs.sh --agent zcode  # force one agent (creates its dir)
+bash scripts/link-agent-configs.sh --force-skills # convert static copies → live links (backs up first)
+bash scripts/link-agent-configs.sh --clean-backups  # delete *.pre-link-backup-* dirs, verified-safe
 bash scripts/link-agent-configs.sh --unlink     # remove managed links only
 bash scripts/link-agent-configs.sh --list       # preview agents + linkable skills
 ```
+
+`--force-skills` leaves a `<skill>.pre-link-backup-<timestamp>` directory next
+to each converted skill. Once you've confirmed the live links work
+(`--status` shows the skills linked), `--clean-backups` removes those backup
+directories — but **only** where the live `<skill>` is a verified working
+managed link into the repo. If any skill's link is missing or broken, its
+backup is kept (never deletes the only surviving copy). Add `--dry-run` to
+preview what it would remove without touching anything.
 
 Runs automatically as part of `bash scripts/setup-local.sh` (one command per
 new machine) and is checked by `scripts/verify-next-machine.py`.

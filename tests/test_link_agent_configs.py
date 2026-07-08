@@ -394,3 +394,61 @@ def test_unlink_removes_managed_links_only(tmp_path):
     # unmanaged real dir survives; drive-side data survives
     assert real.is_dir()
     assert (drive / ".agents" / "hermes" / ".env").is_file()
+
+
+# ── clean-backups (destructive: verify-then-delete) ──────────────────────
+
+
+def test_clean_backups_deletes_only_when_live_link_verified(tmp_path):
+    """--clean-backups removes a <skill>.pre-link-backup-* dir ONLY when the
+    live <skill> is a working managed link into the repo."""
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    run_script("--force-skills", home=home, drive=drive)  # create live links
+
+    skills = home / ".claude" / "skills"
+    backup = skills / "debug-mantra.pre-link-backup-20260101000000"
+    backup.mkdir()
+    (backup / "old.txt").write_text("stale copy", encoding="utf-8")
+
+    # sanity: the live link is verified working
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert _is_managed_link(skills / "debug-mantra", expected)
+
+    result = run_script("--clean-backups", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert not backup.exists(), "backup should be deleted once link verified"
+    # live link untouched
+    assert _is_managed_link(skills / "debug-mantra", expected)
+
+
+def test_clean_backups_keeps_backup_when_no_working_link(tmp_path):
+    """Safety: if the live skill is missing/not a managed link, the backup is
+    KEPT — never delete the only surviving copy."""
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    skills = home / ".claude" / "skills"
+    skills.mkdir(parents=True)
+    backup = skills / "debug-mantra.pre-link-backup-20260101000000"
+    backup.mkdir()
+    marker = backup / "only-copy.txt"
+    marker.write_text("do not lose me", encoding="utf-8")
+    # NOTE: no live debug-mantra link created
+
+    result = run_script("--clean-backups", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert backup.exists(), "backup must be kept when no working link exists"
+    assert marker.read_text(encoding="utf-8") == "do not lose me"
+
+
+def test_clean_backups_dry_run_deletes_nothing(tmp_path):
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    run_script("--force-skills", home=home, drive=drive)
+
+    skills = home / ".claude" / "skills"
+    backup = skills / "debug-mantra.pre-link-backup-20260101000000"
+    backup.mkdir()
+    (backup / "x.txt").write_text("keep", encoding="utf-8")
+
+    result = run_script("--clean-backups", "--dry-run", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+    assert backup.exists(), "dry-run must not delete"
+    assert "dry-run" in result.stdout.lower()

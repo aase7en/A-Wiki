@@ -19,6 +19,8 @@
 #   bash scripts/link-agent-configs.sh --agent zcode  # force one agent (creates dir)
 #   bash scripts/link-agent-configs.sh --status       # report; exit 1 on broken links
 #   bash scripts/link-agent-configs.sh --unlink       # remove managed links only
+#   bash scripts/link-agent-configs.sh --clean-backups # delete *.pre-link-backup-* dirs
+#                                                       # (only where the live link is verified)
 #   bash scripts/link-agent-configs.sh --list         # show agents + linkable skills
 #   Other flags: --all --skills-only --env-only --no-repo-env --dry-run --force
 #                --force-skills --repo-root <path>
@@ -50,7 +52,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 AGENT_NAMES="claude codex cline hermes gemini zcode antigravity windsurf openclaw"
 ENV_AGENTS="hermes zcode"
 
-MODE="link"        # link | status | unlink | list
+MODE="link"        # link | status | unlink | clean-backups | list
 DO_SKILLS=1
 DO_ENV=1
 SKIP_REPO_ENV=0
@@ -61,7 +63,7 @@ REQUESTED_AGENTS=""
 PROBLEMS=0
 
 usage() {
-    sed -n '2,42p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,44p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 # ── agent dir resolution ────────────────────────────────────────────────────
@@ -483,6 +485,55 @@ do_unlink() {
     echo "✅ managed links removed (Drive-side data untouched)"
 }
 
+# ── clean-backups: delete <skill>.pre-link-backup-* dirs, but ONLY where the
+# live <skill> is a verified working managed link. Never deletes the only
+# surviving copy of a skill whose link failed. Respects --dry-run.
+do_clean_backups() {
+    local a dir skills entry base live target removed=0 kept=0
+    echo "🧹 Cleaning verified pre-link backups"
+    echo "  repo:  $REPO_ROOT"
+
+    for a in $(active_agents); do
+        dir="$(agent_dir "$a")"
+        skills="$dir/skills"
+        [ -d "$skills" ] || continue
+
+        for entry in "$skills"/*.pre-link-backup-*; do
+            [ -d "$entry" ] || continue
+            base="$(basename "$entry")"
+            base="${base%.pre-link-backup-*}"
+            live="$skills/$base"
+
+            # Verify the live skill is a working managed link into the repo
+            # (same test do_status uses): resolves under REPO_ROOT AND exists.
+            target=""
+            [ -e "$live" ] && target="$(resolve_real_path "$live")"
+            case "$target" in
+                "$REPO_ROOT"/*)
+                    if [ "$DRY_RUN" = "1" ]; then
+                        echo "  [dry-run] would remove $entry (link OK)"
+                    else
+                        rm -rf "$entry"
+                        echo "  ✓ removed $base backup ($a)"
+                    fi
+                    removed=$((removed + 1))
+                    ;;
+                *)
+                    echo "  ⚠️  kept $base backup ($a) — live link NOT verified; not deleting"
+                    kept=$((kept + 1))
+                    ;;
+            esac
+        done
+    done
+
+    echo ""
+    if [ "$DRY_RUN" = "1" ]; then
+        echo "✅ dry-run: $removed backup(s) would be removed, $kept kept"
+    else
+        echo "✅ removed $removed backup(s), kept $kept (unverified)"
+    fi
+}
+
 do_list() {
     local a dir st n=0 d
     echo "Agents:"
@@ -523,6 +574,7 @@ while [ $# -gt 0 ]; do
             ;;
         --status) MODE="status" ;;
         --unlink) MODE="unlink" ;;
+        --clean-backups) MODE="clean-backups" ;;
         --list) MODE="list" ;;
         --skills-only) DO_ENV=0 ;;
         --env-only) DO_SKILLS=0 ;;
@@ -551,8 +603,9 @@ done
 DRIVE_ROOT="$(resolve_drive_root)"
 
 case "$MODE" in
-    link)   do_link ;;
-    status) do_status ;;
-    unlink) do_unlink ;;
-    list)   do_list ;;
+    link)          do_link ;;
+    status)        do_status ;;
+    unlink)        do_unlink ;;
+    clean-backups) do_clean_backups ;;
+    list)          do_list ;;
 esac
