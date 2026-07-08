@@ -139,14 +139,26 @@ resolve_real_path() {
 }
 
 # ── link creation (symlink -> PowerShell junction -> mklink /J) ─────────────
+#
+# Windows portability note (root-caused 2026-07-08 via debug-mantra):
+# On Git Bash builds without symlink support (MSYS2 `wantsymlinks=n`), `ln -s`
+# does a SILENT FALLBACK — it returns exit 0 but creates a plain directory
+# (or copies the target) instead of a symlink. Without verifying the result,
+# create_link() would `return 0` on that fake directory and never reach the
+# PowerShell junction fallback that actually works on Windows.
+# Fix: after `ln -s`, require `[ -L "$link" ]` to be true; if it isn't (the
+# silent-fallback case), remove whatever ln created before falling through.
 
 create_link() {
     local target="$1" link="$2"
     [ -L "$link" ] && rm -f "$link"
 
-    if ln -s "$target" "$link" 2>/dev/null; then
+    if ln -s "$target" "$link" 2>/dev/null && [ -L "$link" ]; then
         return 0
     fi
+    # ln -s succeeded but did NOT create a real symlink (Windows silent
+    # fallback). Remove the fake entry so the junction fallback can replace it.
+    [ -e "$link" ] && [ ! -L "$link" ] && rm -rf "$link"
 
     # Windows/Git Bash fallback — junctions work for directories only
     if [ -d "$target" ] && command -v powershell.exe >/dev/null 2>&1; then

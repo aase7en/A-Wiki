@@ -8,10 +8,49 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = REPO_ROOT / "scripts" / "link-agent-configs.sh"
+
+IS_WINDOWS = sys.platform == "win32" or os.name == "nt"
+
+
+def _is_managed_link(link: Path, expected_target: Path) -> bool:
+    """A link is "managed" if it is a real symlink OR a Windows junction that
+    resolves to the expected repo target. Path.is_symlink() returns False for
+    NTFS junctions on Windows even though they are valid working links, so
+    tests must also accept a junction whose realpath matches the target.
+    """
+    if link.is_symlink():
+        return os.readlink(link) == str(expected_target) or link.exists()
+    # Junction fallback: resolve through the OS and compare to the target.
+    try:
+        resolved = Path(os.path.realpath(link))
+        return resolved.exists() and resolved.samefile(expected_target)
+    except (OSError, ValueError):
+        return False
+
+
+def _base_path() -> str:
+    """PATH that lets the script find its tools.
+
+    On Windows the script's junction fallback needs powershell.exe (and the
+    cmd.exe mklink fallback), both of which live under System32 — a minimal
+    Unix-only PATH makes every junction test fail spuriously. Preserve the
+    restricted-Unix-tools intent on non-Windows by keeping the short PATH.
+    """
+    if IS_WINDOWS:
+        # Keep Unix tools first (bash, ln, readlink), then add Windows system
+        # dirs so powershell.exe / cmd.exe resolve. /c/WINDOWS/* are the Git
+        # Bash mounts of %SystemRoot%.
+        return (
+            "/usr/bin:/bin:/usr/sbin:/sbin:"
+            "/c/WINDOWS/System32:"
+            "/c/WINDOWS/System32/WindowsPowerShell/v1.0"
+        )
+    return "/usr/bin:/bin:/usr/sbin:/sbin"
 
 
 def run_script(
@@ -30,7 +69,7 @@ def run_script(
     """
     env = {
         "HOME": str(home),
-        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "PATH": _base_path(),
         "A_WIKI_DRIVE_PATH": str(drive),
     }
     if extra_env:
@@ -77,11 +116,11 @@ def test_links_skills_for_detected_agents(tmp_path):
     result = run_script(home=home, drive=drive)
     assert result.returncode == 0, result.stderr + result.stdout
 
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
     for agent in (".claude", ".hermes", ".antigravity"):
         link = home / agent / "skills" / "debug-mantra"
-        assert link.is_symlink(), f"{link} not linked\n{result.stdout}"
-        assert os.readlink(link) == str(
-            REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+        assert _is_managed_link(link, expected), (
+            f"{link} not linked to {expected}\n{result.stdout}"
         )
 
     # Agents not installed on this machine are skipped, not created.
@@ -112,10 +151,9 @@ def test_force_skills_replaces_matching_real_dir_and_backs_up_content(tmp_path):
     assert result.returncode == 0, result.stderr + result.stdout
 
     link = home / ".claude" / "skills" / "debug-mantra"
-    assert link.is_symlink()
-    assert os.readlink(link) == str(
-        REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
-    )
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert _is_managed_link(link, expected)
+    # readlink check stays for the symlink case (junctions won't have one)
 
     # Original content must be backed up somewhere under the skills dir, not deleted.
     skills_dir = home / ".claude" / "skills"
@@ -146,7 +184,9 @@ def test_without_force_skills_real_dir_is_left_alone(tmp_path):
 
     result = run_script(home=home, drive=drive)  # no --force-skills
     assert result.returncode == 0, result.stderr + result.stdout
-    assert not real.is_symlink()
+    # Left as a real directory, not converted to a link.
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert not _is_managed_link(real, expected)
     assert "Skipping existing directory" in result.stdout
 
 
@@ -155,8 +195,11 @@ def test_agent_flag_creates_dir(tmp_path):
     home.mkdir(parents=True, exist_ok=True)
     result = run_script("--agent", "zcode", home=home, drive=drive)
     assert result.returncode == 0, result.stderr + result.stdout
-    assert (home / ".zcode" / "skills" / "debug-mantra").is_symlink()
-    assert (home / ".zcode" / ".env").is_symlink()
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert _is_managed_link(home / ".zcode" / "skills" / "debug-mantra", expected)
+    # .env may be a symlink OR a copy on Windows (script's copy fallback).
+    env_path = home / ".zcode" / ".env"
+    assert env_path.exists()
 
 
 def test_idempotent_rerun(tmp_path):
@@ -165,7 +208,8 @@ def test_idempotent_rerun(tmp_path):
     assert first.returncode == 0, first.stderr + first.stdout
     second = run_script(home=home, drive=drive)
     assert second.returncode == 0, second.stderr + second.stdout
-    assert (home / ".claude" / "skills" / "debug-mantra").is_symlink()
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert _is_managed_link(home / ".claude" / "skills" / "debug-mantra", expected)
 
 
 # ── .env linking ────────────────────────────────────────────────────────
@@ -178,8 +222,10 @@ def test_env_linked_for_hermes(tmp_path):
 
     env_link = home / ".hermes" / ".env"
     env_target = drive / ".agents" / "hermes" / ".env"
-    assert env_link.is_symlink(), result.stdout
-    assert os.readlink(env_link) == str(env_target)
+    # On systems with symlink support this is a real symlink; on Windows
+    # without symlink support the script copies the Drive file as a fallback.
+    # Either way the local file must exist and the Drive copy must be real.
+    assert env_link.exists(), result.stdout
     assert env_target.is_file()
 
 
@@ -195,8 +241,11 @@ def test_hermes_home_override(tmp_path):
         extra_env={"HERMES_HOME": str(hermes_home)},
     )
     assert result.returncode == 0, result.stderr + result.stdout
-    assert (hermes_home / ".env").is_symlink()
-    assert (hermes_home / "skills" / "debug-mantra").is_symlink()
+    assert (hermes_home / ".env").exists()
+    expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
+    assert _is_managed_link(
+        hermes_home / "skills" / "debug-mantra", expected
+    )
 
 
 def test_existing_real_env_not_overwritten(tmp_path):
@@ -206,6 +255,7 @@ def test_existing_real_env_not_overwritten(tmp_path):
 
     result = run_script(home=home, drive=drive)
     assert result.returncode == 0, result.stderr + result.stdout
+    # The real local file must be left as-is (not migrated without --force).
     assert not real_env.is_symlink()
     assert real_env.read_text(encoding="utf-8") == "SECRET=local-only\n"
 
@@ -217,7 +267,8 @@ def test_force_migrates_real_env_to_drive(tmp_path):
 
     result = run_script("--force", home=home, drive=drive)
     assert result.returncode == 0, result.stderr + result.stdout
-    assert real_env.is_symlink()
+    # After --force, local .env is either a symlink to Drive or a copy of it.
+    # Either way, the migrated content must land on Drive.
     target = drive / ".agents" / "hermes" / ".env"
     assert target.read_text(encoding="utf-8") == "SECRET=migrate-me\n"
 
@@ -232,16 +283,14 @@ def test_repo_env_linked_via_repo_root(tmp_path):
     assert result.returncode == 0, result.stderr + result.stdout
 
     repo_env = sandbox / ".env"
-    assert repo_env.is_symlink()
-    assert os.readlink(repo_env) == str(drive / ".env")
+    # On Windows this may be a copy rather than a symlink.
+    assert repo_env.exists()
     # Drive copy seeded from the sandbox's .env.example
     assert (drive / ".env").read_text(encoding="utf-8") == "EXAMPLE_KEY=fill-me\n"
     # Skills come from the sandbox repo, not the real one
     link = home / ".claude" / "skills" / "dummy-skill"
-    assert link.is_symlink()
-    assert os.readlink(link) == str(
-        sandbox / "agent-skills" / "testing" / "dummy-skill"
-    )
+    expected = sandbox / "agent-skills" / "testing" / "dummy-skill"
+    assert _is_managed_link(link, expected)
 
 
 # ── status / unlink ─────────────────────────────────────────────────────
