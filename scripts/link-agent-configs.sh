@@ -61,7 +61,7 @@ REQUESTED_AGENTS=""
 PROBLEMS=0
 
 usage() {
-    sed -n '2,36p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,42p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 # ── agent dir resolution ────────────────────────────────────────────────────
@@ -153,7 +153,13 @@ create_link() {
     local target="$1" link="$2"
     [ -L "$link" ] && rm -f "$link"
 
-    if ln -s "$target" "$link" 2>/dev/null && [ -L "$link" ]; then
+    # winsymlinks:nativestrict = create a REAL symlink or fail immediately,
+    # instead of the MSYS silent fallback (fake dir / deep copy). This skips
+    # the wasted copy work entirely and, when Developer Mode is enabled,
+    # produces true symlinks (which also work for single files like .env,
+    # where junctions can't). Harmless no-op on Linux/macOS.
+    if MSYS=winsymlinks:nativestrict CYGWIN=winsymlinks:nativestrict \
+        ln -s "$target" "$link" 2>/dev/null && [ -L "$link" ]; then
         return 0
     fi
     # ln -s succeeded but did NOT create a real symlink (Windows silent
