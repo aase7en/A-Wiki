@@ -293,6 +293,41 @@ def test_repo_env_linked_via_repo_root(tmp_path):
     assert _is_managed_link(link, expected)
 
 
+def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
+    """Git Bash/MSYS `ln -s` silently deep-copies (or creates a fake dir) and
+    exits 0 when symlink support is off. Simulate that with a stub `ln` that
+    copies: create_link must detect the non-link result, remove the fake, and
+    report the failure — never leave a copy masquerading as a live link.
+
+    PATH is pinned to the stub + minimal Unix dirs on ALL platforms so the
+    junction fallback (powershell.exe) is unavailable and the only honest
+    outcome is a reported failure. Runs fast on Linux CI — no junctions.
+    """
+    home, drive = make_env(tmp_path, agents=(".claude",))
+    fakebin = tmp_path / "fakebin"
+    fakebin.mkdir()
+    stub = fakebin / "ln"
+    stub.write_text(
+        "#!/bin/bash\n"
+        '# mimic MSYS silent fallback: `ln -s <target> <link>` deep-copies, exit 0\n'
+        'if [ "$1" = "-s" ]; then cp -r "$2" "$3"; exit 0; fi\n'
+        'exec /bin/ln "$@"\n',
+        encoding="utf-8",
+    )
+    stub.chmod(0o755)
+
+    result = run_script(
+        home=home,
+        drive=drive,
+        extra_env={"PATH": f"{fakebin}:/usr/bin:/bin:/usr/sbin:/sbin"},
+    )
+    assert result.returncode == 0, result.stderr + result.stdout
+
+    target = home / ".claude" / "skills" / "debug-mantra"
+    assert not target.exists(), "silent copy left behind masquerading as a link"
+    assert "failed to link" in result.stdout, result.stdout
+
+
 # ── status / unlink ─────────────────────────────────────────────────────
 
 
