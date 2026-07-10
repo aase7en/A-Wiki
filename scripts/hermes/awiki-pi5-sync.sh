@@ -69,8 +69,9 @@ step "Step 2/3: Gateway rescan (pick up newly imported skills)..."
 # skills stay invisible until the next container restart. Send SIGHUP to
 # force an immediate rescan.
 PID_FILE="/opt/data/gateway.pid"
+# gateway.pid contains JSON (Phase 3 discovery) — extract the digits, don't cat.
 if sudo -S -p '' docker exec "$CONTAINER" test -f "$PID_FILE" 2>/dev/null; then
-  if sudo -S -p '' docker exec "$CONTAINER" bash -c "kill -HUP \$(cat $PID_FILE)" 2>/dev/null; then
+  if sudo -S -p '' docker exec "$CONTAINER" bash -c "kill -HUP \$(grep -o '[0-9]\+' $PID_FILE | head -1)" 2>/dev/null; then
     info "Gateway rescanned — new skills now visible"
   else
     warn "SIGHUP failed — skills will load on next container restart"

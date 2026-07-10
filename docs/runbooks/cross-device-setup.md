@@ -134,7 +134,8 @@ git config alias.awiki-sync    # should show: !bash ".../scripts/awiki-sync.sh"
 | `scripts/link-agent-configs.sh` | Create/maintain symlinks from agent homes → repo | Windows, Mac |
 | `scripts/awiki-sync.sh` | Platform-aware router: pull + link (Win/Mac) or pull + Pi5-sync | All |
 | `scripts/hermes/awiki-pi5-sync.sh` | Pi5 Docker sync: wraps auto-sync + adds gateway rescan + verify | Pi5 only |
-| `scripts/hermes/auto-sync-from-git.sh` | Pi5 cron logic: git pull + docker cp + profile import | Pi5 (cron) |
+| `scripts/hermes/auto-sync-from-git.sh` | Pi5 cron logic: host git pull + container brain FF + gateway rescan (via `pi5-brain-sync.py`) | Pi5 (cron) |
+| `scripts/hermes/pi5-brain-sync.py` | FF `/opt/data/A-Wiki` inside the container (stash/pop, auto-gen conflict handling) + SIGHUP rescan; dry-run default | Pi5 |
 | `scripts/hooks/post_merge_relink.sh` | Auto re-link after `git pull` (skips Pi5) | Windows, Mac |
 | `scripts/install-git-hooks.sh` | Install hooks + register `git awiki-sync` alias | All (once per clone) |
 

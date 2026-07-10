@@ -35,7 +35,7 @@ crontab -l | grep auto-sync                   # cron 6h active ไหม
 cd ~/A-Wiki
 bash scripts/hermes/awiki-pi5-sync.sh
 # จะถามรหัสผ่าน sudo (สำหรับ docker exec) — ใส่รหัสผ่าน umbrel
-# = git pull + docker cp + profile import + gateway rescan + verify
+# = host git pull + FF clone ใน container + gateway rescan + verify
 ```
 
 ### ถ้า skills ยังหายหลัง sync
@@ -77,15 +77,25 @@ host (umbrel@umbrel)           ← คุณอยู่ที่นี่เม
 ├── ~/A-Wiki/                  ← git clone (GitHub = source of truth)
 │   └── scripts/hermes/
 │       ├── auto-sync-from-git.sh   ← cron 6h เรียกสคริปต์นี้
+│       ├── pi5-brain-sync.py       ← ตัว FF clone ใน container (dry-run ได้)
 │       └── awiki-pi5-sync.sh       ← manual sync สคริปต์นี้
 │
 └── Docker: hermes-agent_web_1 ← Hermes รันอยู่ข้างในนี้
-    ├── /opt/data/A-Wiki/      ← clone ของ container เอง
-    ├── /opt/data/skills/      ← skills ที่ Hermes โหลด
+    ├── /opt/data/A-Wiki/      ← canonical clone (สมองที่ Hermes ใช้จริง — config cwd ชี้ที่นี่)
+    ├── /opt/data/skills/      ← symlinks → canonical clone
     └── (sudo docker exec เพื่อเข้าถึง)
 ```
 
-**Flow:** host `git pull` → `docker cp` tarball เข้า container → `hermes profile import` → gateway rescan → skills โหลด
+**Flow (rewritten 2026-07-10):** host `git pull` → `docker exec` เข้า container → `git fetch` + FF `/opt/data/A-Wiki` (stash/pop กัน device-only files, auto-gen conflict คืนจาก HEAD) → SIGHUP gateway → skills เนื้อหาใหม่ถูกโหลด
+> flow เก่า (docker cp tarball + profile import) ตายโดยดีไซน์ — `.gitignore` กัน `*.tar.gz` ทำให้ package ไม่เคยมาถึงผ่าน git; tarball ยังใช้เฉพาะ provisioning ครั้งแรก (ดู IMPORT-NOTES.md)
+
+### One-time setup สำหรับ cron (จำเป็น — sudo บน Pi5 ต้องใส่รหัสผ่าน)
+
+```bash
+# cron ไม่มี stdin ให้พิมพ์รหัสผ่าน → ต้องอนุญาต docker exec แบบ NOPASSWD ครั้งเดียว:
+echo 'umbrel ALL=(root) NOPASSWD: /usr/bin/docker exec *' | sudo tee /etc/sudoers.d/awiki-hermes-sync
+# ยังไม่ตั้ง = cron จะ fail เร็วพร้อม error ชัดเจน (ไม่ hang) — manual sync ใช้ได้ปกติ
+```
 
 ---
 
