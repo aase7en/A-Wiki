@@ -71,17 +71,19 @@ git awiki-sync
 
 ### Pi5
 
-**Automatic:** Cron job runs every 6 hours — no action needed.
+**Automatic:** systemd timer runs every 6 hours (+5min after boot). The Umbrel
+host has NO crontab binary — cron references in older docs never worked.
 ```bash
-# Verify cron is active:
-crontab -l | grep auto-sync
-# Expected: 0 */6 * * * cd ~/A-Wiki && bash scripts/hermes/auto-sync-from-git.sh
+# One-time install / verify (idempotent):
+sudo bash scripts/hermes/install-pi5-systemd.sh           # install/refresh
+sudo bash scripts/hermes/install-pi5-systemd.sh --status  # check timers
+# Also installs awiki-pi5-reboot.timer: weekly reboot Sun 04:30 (hang prevention)
 ```
 
-**Manual (when you don't want to wait for cron):**
+**Manual (when you don't want to wait for the timer):**
 ```bash
 bash scripts/hermes/awiki-pi5-sync.sh
-# = git pull + docker cp + profile import + gateway rescan + verify
+# = host git pull + FF clone in container + gateway rescan + verify
 ```
 
 ---
@@ -105,8 +107,8 @@ bash scripts/hermes/awiki-pi5-sync.sh
 # 3. If still missing, restart container (forces full rescan)
 sudo docker restart hermes-agent_web_1
 
-# 4. Check cron is active
-crontab -l | grep auto-sync
+# 4. Check the systemd timer is active (host has no crontab)
+sudo bash scripts/hermes/install-pi5-systemd.sh --status
 ```
 
 ### "post-merge hook didn't run"

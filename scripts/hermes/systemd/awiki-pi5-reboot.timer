@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly Pi5 reboot, Sunday 04:30 (off-peak)
+
+[Timer]
+OnCalendar=Sun *-*-* 04:30:00
+# Deliberately NOT persistent: a reboot timer must never "catch up" right
+# after boot — that would reboot-loop a machine that was down over its window.
+
+[Install]
+WantedBy=timers.target

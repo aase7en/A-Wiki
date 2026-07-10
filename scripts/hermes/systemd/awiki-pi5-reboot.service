@@ -1,0 +1,6 @@
+[Unit]
+Description=Scheduled Pi5 reboot (hang prevention — clears leaks, restarts all Umbrel apps)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl reboot

@@ -27,7 +27,7 @@ ssh umbrel@umbrel-1.tail<id>.ts.net
 cd ~/A-Wiki
 git log --oneline -3                          # ดูว่าอยู่ commit ล่าสุดไหม
 sudo docker ps | grep hermes                  # container รันอยู่ไหม
-crontab -l | grep auto-sync                   # cron 6h active ไหม
+sudo bash scripts/hermes/install-pi5-systemd.sh --status   # timer 6h active ไหม
 ```
 
 ### Manual sync (ไม่รอ cron 6h)
@@ -50,11 +50,15 @@ sudo docker logs --tail 50 hermes-agent_web_1
 sudo docker exec hermes-agent_web_1 bash -c 'ls /opt/data/skills/ | wc -l'
 ```
 
-### ตั้ง/แก้ cron (ถ้าหาย)
+### ตั้ง/ซ่อม scheduler (systemd — host นี้ไม่มี crontab!)
 ```bash
-crontab -e
-# เพิ่มบรรทัดนี้ (sync ทุก 6 ชั่วโมง):
-0 */6 * * * cd ~/A-Wiki && bash scripts/hermes/auto-sync-from-git.sh
+# ⚠️ Umbrel host ไม่มีคำสั่ง crontab เลย (ตรวจพบ 2026-07-10) — ใช้ systemd timers:
+cd ~/A-Wiki
+sudo bash scripts/hermes/install-pi5-systemd.sh          # ติดตั้ง/refresh (idempotent)
+sudo bash scripts/hermes/install-pi5-systemd.sh --status # เช็ค timers
+# ได้ 2 ตัว: awiki-hermes-sync.timer (ทุก 6h + หลัง boot 5 นาที)
+#          awiki-pi5-reboot.timer (reboot ทุกอาทิตย์ 04:30 กันระบบค้าง)
+# ดู log รอบล่าสุด: journalctl -u awiki-hermes-sync.service -n 30 --no-pager
 ```
 
 ---
@@ -105,8 +109,8 @@ echo 'umbrel ALL=(root) NOPASSWD: /usr/bin/docker exec *' | sudo tee /etc/sudoer
 |---|---|
 | แก้ skill แล้วให้ Pi5 เห็น | Windows/Mac: แก้ → `git push` → Pi5 auto-pull ใน 6h (หรือ SSH เข้า Pi5 รัน `awiki-pi5-sync.sh`) |
 | ดู Hermes chat | App Hermes UI บนเบราว์เซอร์ (`http://umbrel.local` หรือ Tailscale URL) |
-| ตรวจ sync logs | SSH host: `sudo docker logs hermes-agent_web_1` |
-| แก้ cron | SSH host: `crontab -e` |
+| ตรวจ sync logs | SSH host: `journalctl -u awiki-hermes-sync.service -n 30` |
+| แก้ scheduler | SSH host: `sudo bash scripts/hermes/install-pi5-systemd.sh --status` |
 
 ---
 
