@@ -101,10 +101,13 @@ class TestBuildContainerSyncScript:
     def test_fetches_origin_main(self) -> None:
         assert "git fetch origin main" in self.script
 
-    def test_up_to_date_guard_short_circuits(self) -> None:
-        # Already-current clone must exit 0 without stashing anything.
+    def test_up_to_date_guard_short_circuits_with_exit_3(self) -> None:
+        # Already-current clone must exit 3 (distinct from "synced" 0) so the
+        # caller can skip the pointless gateway HUP — live run 2026-07-10
+        # showed a no-op sync HUP-ing a stale pid and failing the rescan leg.
         assert "merge-base --is-ancestor" in self.script
-        assert "UP-TO-DATE" in self.script
+        up_idx = self.script.index("UP-TO-DATE")
+        assert "exit 3" in self.script[up_idx : up_idx + 120]
 
     def test_stashes_untracked_device_files(self) -> None:
         assert "stash push --include-untracked" in self.script
@@ -176,6 +179,15 @@ class TestBuildRescanArgv:
         joined = " ".join(pbs.build_rescan_argv(CONTAINER))
         assert "grep -o" in joined or "tr -cd" in joined
 
+    def test_rescan_is_fail_soft_on_stale_pid(self) -> None:
+        # Live 2026-07-10: s6 respawns the gateway after HUP but gateway.pid
+        # can lag, so `kill` may hit a dead pid. Rescan is best-effort — a
+        # failed HUP must warn and exit 0, never fail the sync run.
+        joined = " ".join(pbs.build_rescan_argv(CONTAINER))
+        assert "if kill -HUP" in joined  # kill guarded, not bare
+        assert "stale" in joined or "next" in joined  # warning text
+        assert "2>/dev/null" in joined  # kill error suppressed, message wins
+
 
 # ---------------------------------------------------------------------------
 # build_plan + execute — orchestration with an injectable runner
@@ -223,6 +235,19 @@ class TestPlanAndExecute:
         rc = pbs.execute(pbs.build_plan(CONTAINER, CLONE_DIR), runner)
         assert calls == ["container-sync"]
         assert rc == 1
+
+    def test_execute_skips_rescan_when_up_to_date_and_reports_success(self) -> None:
+        # exit 3 = UP-TO-DATE: nothing changed → no HUP, and the overall run
+        # is a SUCCESS (0) — cron must not log a no-op as an error.
+        calls: list[str] = []
+
+        def runner(name: str, argv: list[str]) -> int:
+            calls.append(name)
+            return 3 if name == "container-sync" else 0
+
+        rc = pbs.execute(pbs.build_plan(CONTAINER, CLONE_DIR), runner)
+        assert calls == ["container-sync"]
+        assert rc == 0
 
 
 # ---------------------------------------------------------------------------

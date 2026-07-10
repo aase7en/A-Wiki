@@ -82,7 +82,7 @@ cd {clone_dir}
 git fetch origin main
 if git merge-base --is-ancestor origin/main HEAD; then
   echo "UP-TO-DATE: HEAD already contains origin/main"
-  exit 0
+  exit 3
 fi
 STASHED=0
 if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git status --porcelain)" ]; then
@@ -139,10 +139,13 @@ def build_rescan_argv(container: str) -> List[str]:
     # The gateway only rescans /opt/data/skills on SIGHUP or restart.
     # gateway.pid contains JSON (Phase 3 discovery), not a bare int — extract
     # the first digit-run instead of `cat`-ing the whole file into kill.
+    # Best-effort: s6 respawns the gateway after HUP and gateway.pid can lag
+    # (live 2026-07-10: stale pid 538), so a failed kill warns and exits 0.
     script = (
         f'PID=$(grep -o "[0-9]\\+" {GATEWAY_PID_FILE} 2>/dev/null | head -1); '
-        f'if [ -n "$PID" ]; then kill -HUP "$PID" && echo "HUP sent to $PID"; '
-        f'else echo "no gateway.pid — skills load on next container restart"; fi'
+        f'if [ -z "$PID" ]; then echo "no gateway.pid — skills load on next container restart"; '
+        f'elif kill -HUP "$PID" 2>/dev/null; then echo "HUP sent to $PID"; '
+        f'else echo "HUP failed (stale pid $PID?) — skills load on next gateway restart"; fi'
     )
     return build_docker_exec_argv(container, script)
 
@@ -156,19 +159,20 @@ def build_plan(container: str, clone_dir: str) -> Plan:
 
 
 def execute(plan: Plan, runner: Runner) -> int:
-    """Run the plan. Rescan is skipped only when the sync changed nothing
-    (rc 1); a manual-conflict sync (rc 2) DID update the tree, so the gateway
-    still rescans and the overall rc stays 2 for cron logs."""
+    """Run the plan. Sync exit codes: 0 = synced (rescan), 1 = FF failed
+    (skip rescan, error), 2 = manual conflict parked in stash (tree DID
+    update — still rescan, keep rc 2 for cron logs), 3 = already up-to-date
+    (skip rescan, SUCCESS — a no-op is not an error)."""
     overall = 0
     for name, argv in plan:
-        if name == "gateway-rescan" and overall == 1:
+        if name == "gateway-rescan" and overall in (1, 3):
             print("[skip] gateway-rescan — clone unchanged")
             continue
         rc = runner(name, argv)
         print(f"[{name}] exit {rc}")
         if rc != 0 and overall == 0:
             overall = rc
-    return overall
+    return 0 if overall == 3 else overall
 
 
 def _subprocess_runner(name: str, argv: List[str]) -> int:
