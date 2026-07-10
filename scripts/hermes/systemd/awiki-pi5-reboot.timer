@@ -1,8 +1,8 @@
 [Unit]
-Description=Weekly Pi5 reboot, Sunday 04:30 (off-peak)
+Description=Weekly Pi5 reboot, Sunday 04:30 Thai time (off-peak; host clock is UTC)
 
 [Timer]
-OnCalendar=Sun *-*-* 04:30:00
+OnCalendar=Sun *-*-* 04:30:00 Asia/Bangkok
 # Deliberately NOT persistent: a reboot timer must never "catch up" right
 # after boot — that would reboot-loop a machine that was down over its window.
 
