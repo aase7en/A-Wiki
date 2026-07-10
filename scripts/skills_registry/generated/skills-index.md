@@ -119,6 +119,7 @@
 | `exa-search` | code | none | ecosystem | `skills/ecosystem/exa-search/SKILL.md` |
 | `excel-generator` | document | none | wiki | `skills/claude-code/excel-generator/SKILL.md` |
 | `export-notebooklm` | wiki | none | wiki | `skills/claude-code/export-notebooklm/SKILL.md` |
+| `fable5-standards` | engineering | ship | engineering | `agent-skills/engineering/fable5-standards/SKILL.md` |
 | `fal-ai-media` | media | none | ecosystem | `skills/ecosystem/fal-ai-media/SKILL.md` |
 | `fastapi-patterns` | code | none | ecosystem | `skills/ecosystem/fastapi-patterns/SKILL.md` |
 | `finance-billing-ops` | business | none | ecosystem | `skills/ecosystem/finance-billing-ops/SKILL.md` |
@@ -374,7 +375,7 @@
 | debug | 8 |
 | design | 10 |
 | document | 9 |
-| engineering | 41 |
+| engineering | 42 |
 | env | 1 |
 | logistics | 7 |
 | media | 13 |

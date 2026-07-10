@@ -57,7 +57,7 @@ new machine) and is checked by `scripts/verify-next-machine.py`.
 | Hermes | `~/.hermes/skills/` (or `$HERMES_HOME`) | **yes** → `drive/.agents/hermes/.env` |
 | Gemini CLI | `~/.gemini/skills/` | no |
 | ZCode | `~/.zcode/skills/` | **yes** → `drive/.agents/zcode/.env` |
-| Antigravity | `~/.antigravity/skills/` | no |
+| Antigravity | `~/.gemini/config/skills/` (IDE+CLI read global skills only from here, not `~/.antigravity` — verified 2026-07-10) | no |
 | Windsurf | `~/.windsurf/skills/` | no |
 | OpenClaw | `~/.openclaw/skills/` | no |
 | Kilo | `~/.config/kilo/` | rendered separately by `scripts/setup-kilo-config.sh` (not duplicated here) |

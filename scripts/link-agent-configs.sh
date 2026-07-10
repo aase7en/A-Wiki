@@ -13,6 +13,8 @@
 # Covered agents (auto-detected on this machine):
 #   claude codex cline hermes gemini zcode antigravity windsurf openclaw
 # Kilo is rendered by scripts/setup-kilo-config.sh — not duplicated here.
+# Antigravity's home is ~/.gemini/config (NOT ~/.antigravity) — the IDE and
+# CLI read global skills only from ~/.gemini/config/skills (verified 2026-07-10).
 #
 # Usage:
 #   bash scripts/link-agent-configs.sh                # link all detected agents
@@ -63,7 +65,7 @@ REQUESTED_AGENTS=""
 PROBLEMS=0
 
 usage() {
-    sed -n '2,44p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,46p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 # ── agent dir resolution ────────────────────────────────────────────────────
@@ -76,7 +78,7 @@ agent_default_dir() {
         hermes)      echo "${HERMES_HOME:-$HOME/.hermes}" ;;
         gemini)      echo "$HOME/.gemini" ;;
         zcode)       echo "$HOME/.zcode" ;;
-        antigravity) echo "$HOME/.antigravity" ;;
+        antigravity) echo "$HOME/.gemini/config" ;;  # IDE+CLI read global skills ONLY from ~/.gemini/config/skills (verified 2026-07-10)
         windsurf)    echo "$HOME/.windsurf" ;;
         openclaw)    echo "$HOME/.openclaw" ;;
         *) return 1 ;;

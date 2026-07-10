@@ -88,7 +88,7 @@ def run_script(
 
 
 def make_env(
-    tmp_path: Path, agents: tuple[str, ...] = (".claude", ".hermes", ".antigravity")
+    tmp_path: Path, agents: tuple[str, ...] = (".claude", ".hermes", ".gemini/config")
 ) -> tuple[Path, Path]:
     home = tmp_path / "home"
     drive = tmp_path / "drive"
@@ -117,7 +117,7 @@ def test_links_skills_for_detected_agents(tmp_path):
     assert result.returncode == 0, result.stderr + result.stdout
 
     expected = REPO_ROOT / "agent-skills" / "engineering" / "debug-mantra"
-    for agent in (".claude", ".hermes", ".antigravity"):
+    for agent in (".claude", ".hermes", ".gemini/config"):
         link = home / agent / "skills" / "debug-mantra"
         assert _is_managed_link(link, expected), (
             f"{link} not linked to {expected}\n{result.stdout}"
@@ -125,6 +125,36 @@ def test_links_skills_for_detected_agents(tmp_path):
 
     # Agents not installed on this machine are skipped, not created.
     assert not (home / ".zcode").exists()
+
+
+def test_antigravity_default_dir_is_gemini_config(tmp_path):
+    """Antigravity (IDE + CLI) reads global skills ONLY from
+    ~/.gemini/config/skills, never ~/.antigravity — verified 2026-07-10.
+    agent_default_dir() must resolve antigravity there, not to a made-up
+    ~/.antigravity home the app never reads.
+    """
+    home, drive = make_env(tmp_path, agents=())
+    (home / ".gemini" / "config").mkdir(parents=True)
+
+    result = run_script("--list", home=home, drive=drive)
+    assert result.returncode == 0, result.stderr + result.stdout
+
+    lines = [
+        line for line in result.stdout.splitlines() if line.strip().startswith("antigravity")
+    ]
+    assert lines, f"no antigravity line in --list output:\n{result.stdout}"
+    # Git Bash prints HOME in POSIX form (/tmp/... not C:\...), so compare the
+    # path suffix in a separator-agnostic way rather than the absolute prefix.
+    line = lines[0].replace("\\", "/").rstrip()
+
+    assert line.endswith(".gemini/config (installed)"), (
+        f"antigravity should resolve to <home>/.gemini/config and be detected "
+        f"as installed, got: {line}"
+    )
+    # The old, wrong default must never be used again.
+    assert ".antigravity" not in line, (
+        f"antigravity must not resolve to the old ~/.antigravity: {line}"
+    )
 
 
 def test_keeps_existing_real_directory(tmp_path):

@@ -40,6 +40,15 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# Emoji in status prints crash on non-UTF-8 consoles (Thai Windows = cp874),
+# turning a clean --check into exit 1 — the pre-commit hook then misreads the
+# crash as registry drift. Degrade unencodable characters instead of dying.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass  # non-reconfigurable stream (pipes/tests) — already safe
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 

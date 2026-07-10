@@ -2058,6 +2058,23 @@
       "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges"
     },
     {
+      "name": "fable5-standards",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "ship",
+      "category": "engineering",
+      "source": "repo",
+      "path": "agent-skills/engineering/fable5-standards/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Deeper reasoning standards for architecture decisions, debugging, data migrations, and other non-trivial technical work — problem decomposition, trade-off comparison, root-cause debugging, and playbooks for planning vs implementing vs analyzing vs writing."
+    },
+    {
       "name": "fal-ai-media",
       "aliases": [],
       "domain": [

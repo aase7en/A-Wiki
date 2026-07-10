@@ -634,3 +634,31 @@ class TestConstants:
 
     def test_statuses_match_design(self) -> None:
         assert VALID_STATUSES == {"canonical", "alias", "deprecated"}
+
+
+class TestConsoleEncodingResilience:
+    """regen-skill-surfaces.py must not die on non-UTF-8 consoles.
+
+    Root cause (2026-07-11, Thai-locale Windows): the script prints emoji
+    (✅/✓); on a cp874 console stdout encoding can't represent them, the
+    print raises UnicodeEncodeError, the process exits 1, and the
+    pre-commit hook misreads the crash as "surfaces drifted" — blocking
+    every commit on that machine even when there is zero drift.
+    """
+
+    def test_check_survives_cp874_console(self) -> None:
+        import os
+        import subprocess
+        import sys
+
+        env = {**os.environ, "PYTHONIOENCODING": "cp874"}
+        result = subprocess.run(
+            [sys.executable, str(REPO_ROOT / "scripts" / "regen-skill-surfaces.py"), "--check"],
+            capture_output=True,
+            env=env,
+            cwd=REPO_ROOT,
+        )
+        assert result.returncode == 0, (
+            "regen --check must exit 0 on a cp874 console (no real drift); "
+            f"stderr tail: {result.stderr[-400:]!r}"
+        )
