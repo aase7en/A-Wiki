@@ -31,12 +31,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # Upload ONLY the live-dashboard payload. Uploading '.' shipped the
+      # whole repo — including tracked symlinks (.codex/hooks, .kilo/*),
+      # which the Pages artifact tar rejects and the deploy fails.
+      - name: Stage Pages payload
+        run: |
+          mkdir -p _site
+          cp awiki-live.html _site/
+          cp awiki-live.html _site/index.html
+          touch _site/.nojekyll
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
-          # Only upload HTML + static files for Pages
-          # (Pages ignores everything else)
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

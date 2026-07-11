@@ -24,6 +24,11 @@ jobs:
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
+          if [ -z "${{ secrets.TELEGRAM_BOT_TOKEN }}" ]; then
+            echo "telegram=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "telegram=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check Provider Balances
         if: steps.cfg.outputs.configured == 'true'
@@ -38,8 +43,10 @@ jobs:
           FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
 
+      # NOTE: the `secrets` context is not usable in step-level `if` —
+      # gate via the cfg step outputs instead.
       - name: Post results to Telegram
-        if: steps.cfg.outputs.configured == 'true' && secrets.TELEGRAM_BOT_TOKEN != ''
+        if: steps.cfg.outputs.configured == 'true' && steps.cfg.outputs.telegram == 'true'
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
