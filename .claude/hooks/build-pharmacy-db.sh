@@ -2,6 +2,9 @@
 # SessionStart hook — auto-rebuild drugs.db when JSON sources are newer
 # Level 0: free, runs every session, ~2-3 seconds
 
+# Lean mode (token-save): skip — rebuild resumes on the next full session
+if [ "${AWIKI_LEAN_SESSION_START:-0}" = "1" ]; then exit 0; fi
+
 DB="wiki/entities/pharmacy/drugs.db"
 SP_JSON="raw/pharmacy/sp_drugs_full_3760.json"
 ALT_JSON="wiki/entities/pharmacy/alternative-source-items.json"

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # SessionStart: scan raw/ for gitignored files not yet in local-sources.md manifest
+
+# Lean mode (token-save): skip informational session-start output
+if [ "${AWIKI_LEAN_SESSION_START:-0}" = "1" ]; then exit 0; fi
+
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO"
 

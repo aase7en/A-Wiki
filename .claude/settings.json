@@ -125,6 +125,16 @@
                 ]
             }
         ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/check_compaction_suggest.py"
+                    }
+                ]
+            }
+        ],
         "PreToolUse": [
             {
                 "matcher": "Edit|Write|MultiEdit",

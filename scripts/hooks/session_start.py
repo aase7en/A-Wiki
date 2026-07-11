@@ -244,6 +244,44 @@ def _ensure_dashboard() -> None:
         pass
 
 
+def run_vendor_watch():
+    """Vendor upstream-watch: notify when a vendored-skill upstream has new
+    commits. Fully fail-soft — session start must never break."""
+    try:
+        from scripts.lib.vendor_watch import check_vendors
+        for notice in check_vendors():
+            print(notice)
+    except Exception:
+        pass
+
+
+def is_lean() -> bool:
+    """AWIKI_LEAN_SESSION_START=1 → token-save mode: essentials only."""
+    return os.environ.get("AWIKI_LEAN_SESSION_START", "0") == "1"
+
+
+def run_steps(repo_root, lean: bool) -> None:
+    """Run session-start steps. Lean mode keeps sync + gate + TODOs and skips
+    the informational emitters (each line of hook output is injected into
+    context every session — see docs/protocols/context-compaction.md)."""
+    git_pull(repo_root)
+    clean_stale_cost_declarations(repo_root)
+    show_todos(repo_root)
+
+    if lean:
+        sys.stderr.write(
+            "🍃 Lean SessionStart (AWIKI_LEAN_SESSION_START=1) — ข้าม freshness/api-keys/model-intel/tier-hint/scout/vendor-watch\n"
+        )
+        return
+
+    check_wiki_freshness(repo_root)
+    check_api_keys(repo_root)
+    maybe_update_model_intel(repo_root)
+    show_model_tier_hint()
+    check_model_scout_freshness(repo_root)
+    run_vendor_watch()
+
+
 def main():
     try:
         input_data = json.load(sys.stdin)
@@ -253,26 +291,7 @@ def main():
     _emit_session_start()
     _ensure_dashboard()
 
-    # Only run on SessionStart-like events (or always — lightweight enough)
-    repo_root = REPO_ROOT
-
-    git_pull(repo_root)
-    check_wiki_freshness(repo_root)
-    check_api_keys(repo_root)
-    maybe_update_model_intel(repo_root)
-    show_model_tier_hint()
-    show_todos(repo_root)
-    clean_stale_cost_declarations(repo_root)
-    check_model_scout_freshness(repo_root)
-
-    # Vendor upstream-watch (Task #5): notify when a vendored-skill upstream
-    # has new commits. Fully fail-soft — session start must never break.
-    try:
-        from scripts.lib.vendor_watch import check_vendors
-        for notice in check_vendors():
-            print(notice)
-    except Exception:
-        pass
+    run_steps(REPO_ROOT, is_lean())
 
     sys.exit(0)
 

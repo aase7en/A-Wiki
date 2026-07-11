@@ -5,6 +5,9 @@
 
 set -euo pipefail
 
+# Lean mode (token-save): skip informational session-start output
+if [ "${AWIKI_LEAN_SESSION_START:-0}" = "1" ]; then exit 0; fi
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 LOAD_KEYS="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"
 if [[ -f "$LOAD_KEYS" ]]; then

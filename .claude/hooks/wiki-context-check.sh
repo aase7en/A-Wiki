@@ -2,6 +2,9 @@
 # SessionStart hook: ตรวจ wiki-overview.md freshness + auto-rebuild เมื่อ stale (0 token)
 # ผล: Claude รู้ state ทันทีโดยไม่ต้องอ่านไฟล์เอง + index ไม่มีวัน stale
 
+# Lean mode (token-save): skip — freshness check resumes on the next full session
+if [ "${AWIKI_LEAN_SESSION_START:-0}" = "1" ]; then exit 0; fi
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 OVERVIEW="$REPO_ROOT/wiki/context/wiki-overview.md"
 
