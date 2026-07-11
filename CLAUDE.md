@@ -218,7 +218,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 
 ---
 
-## 🪝 Active Hooks (15 Hooks — Auto-Orchestrated by `hooks_runner.py`)
+## 🪝 Active Hooks (16 Hooks — Auto-Orchestrated by `hooks_runner.py`)
 
 > Hook system runs on every agent tool call. All hooks in `scripts/hooks/` are auto-discovered.
 > Blocking hooks (exit 2) stop the action; non-blocking hooks (exit 0) log only.
@@ -241,6 +241,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 | 13 | **Output Format Guard** | `check_output_format.py` | 🔴 Block/📋 Warn | Block `.html` ลง source-of-truth (wiki/docs/CLAUDE.md/AGENTS.md) หรือนอก exports/html/; เตือน render-don't-dump สำหรับ .md ตารางใหญ่+report keywords |
 | 14 | **Cost-First Gate** | `check_cost_tier.py` | 🔴 Block | Block Edit/Write/Agent ถ้าไม่มี `.tmp/cost-tier-YYYY-MM-DD.txt` — บังคับ classify tier (L1-L4) ก่อนใช้ primary model; Bash/PS exempt; `HOOK_SKIP=check_cost_tier` หรือ `CI=true` bypass ได้; ดู `docs/protocols/cost-gate.md` |
 | 15 | **Skill Registry Gate** | `check_skill_registry.py` | 🔴 Block/📋 Warn | Block Write/Edit/MultiEdit `SKILL.md` ที่ไม่ได้ลงทะเบียนใน `skills-registry.json`; warn เมื่อ frontmatter ขาด `domain`/`lifecycle_phase`; warn เมื่อแก้ deprecated skill; path-traversal guard. Iron Law #10. `HOOK_SKIP=check_skill_registry` |
+| 16 | **Compaction Suggest** | `check_compaction_suggest.py` | 📋 Warn | UserPromptSubmit (wired **direct** ใน settings.json — hooks_runner กลืน stdout): อ่าน `usage` จริงจาก transcript → เสนอ strategic `/compact` เมื่อ context ≥75% window, เตือนซ้ำ +10pp, reset หลัง compact; ปิดด้วย `AWIKI_COMPACT_SUGGEST=0`; คู่กับ `AWIKI_LEAN_SESSION_START=1` (lean SessionStart); ดู `docs/protocols/context-compaction.md` |
 
 > **Overrides**: `HOOK_SKIP=check_apikey,check_secret_leak` environment variable to skip specific hooks.
 > **Test**: `python3 scripts/hooks_runner.py < tests/fixtures/sample-input.json`
