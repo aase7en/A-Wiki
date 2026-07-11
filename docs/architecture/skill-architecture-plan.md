@@ -40,6 +40,12 @@ LAYER 4 (Chunk 3):  Enforcement (PreToolUse hook + pre-commit + CI)
 Agents never edit generated surfaces by hand. **Adding a NEW agent = add one
 generator module + one line in the `GENERATORS` dict.** Nothing else changes.
 
+**Adding a NEW skill:** don't hand-edit `skills-registry.json` + `SKILL.md`
+separately — use the scaffolder, which writes them in the hook-#15-safe order
+(registry entry before `SKILL.md`) and runs regen `--check` for you:
+`python scripts/new-skill.py <name> --domain <d> --phase <p> [--apply]`
+(dry-run by default; see `scripts/new-skill.py --help`).
+
 ---
 
 ## 3. Execution — 5 Phased Chunks (commit + push each)

@@ -44,6 +44,12 @@ It's OK to briefly explain terms if you're in doubt, and feel free to clarify te
 
 ## Creating a skill
 
+> **A-Wiki note:** once the shape of the skill is clear, scaffold+register it
+> with `python scripts/new-skill.py <name> --domain <d> --phase <p> [--apply]`
+> instead of hand-editing `skills-registry.json` and `SKILL.md` separately —
+> it writes the registry entry before `SKILL.md` (hook #15 ordering) and runs
+> `regen-skill-surfaces.py --check`. Dry-run by default.
+
 ### Capture Intent
 
 Start by understanding the user's intent. The current conversation might already contain a workflow the user wants to capture (e.g., they say "turn this into a skill"). If so, extract answers from the conversation history first — the tools used, the sequence of steps, corrections the user made, input/output formats observed. The user may need to fill the gaps, and should confirm before proceeding to the next step.
