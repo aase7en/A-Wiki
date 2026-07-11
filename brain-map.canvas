@@ -223,7 +223,7 @@
     {
       "id": "group-domain-synthesis",
       "type": "group",
-      "label": "SYNTHESIS DOMAIN (206 pages)",
+      "label": "SYNTHESIS DOMAIN (205 pages)",
       "x": 1420,
       "y": 0,
       "width": 1020,
@@ -371,21 +371,11 @@
       "color": "6"
     },
     {
-      "id": "wiki-synthesis-synth-good-uiux-practices-md",
-      "type": "file",
-      "file": "wiki/synthesis/synth-good-uiux-practices.md",
-      "x": 2140,
-      "y": 800,
-      "width": 260,
-      "height": 120,
-      "color": "6"
-    },
-    {
       "id": "wiki-synthesis-synth-supabase-overview-2026-05-02-md",
       "type": "file",
       "file": "wiki/synthesis/synth-supabase-overview-2026-05-02.md",
-      "x": 1460,
-      "y": 980,
+      "x": 2140,
+      "y": 800,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -394,7 +384,7 @@
       "id": "wiki-synthesis-synth-rabies-vaccine-guidelines-th-2026-05-02-md",
       "type": "file",
       "file": "wiki/synthesis/synth-rabies-vaccine-guidelines-th-2026-05-02.md",
-      "x": 1800,
+      "x": 1460,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -404,7 +394,7 @@
       "id": "wiki-synthesis-synth-mac-studio-used-thailand-2026-05-05-md",
       "type": "file",
       "file": "wiki/synthesis/synth-mac-studio-used-thailand-2026-05-05.md",
-      "x": 2140,
+      "x": 1800,
       "y": 980,
       "width": 260,
       "height": 120,
@@ -414,8 +404,8 @@
       "id": "wiki-synthesis-synth-ai-iot-server-build-v3-final-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-iot-server-build-v3-final.md",
-      "x": 1460,
-      "y": 1160,
+      "x": 2140,
+      "y": 980,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -424,7 +414,7 @@
       "id": "wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md",
       "type": "file",
       "file": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
-      "x": 1800,
+      "x": 1460,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -434,7 +424,7 @@
       "id": "wiki-synthesis-synth-web-local-llm-mac-mini-2026-04-19-md",
       "type": "file",
       "file": "wiki/synthesis/synth-web-local-llm-mac-mini-2026-04-19.md",
-      "x": 2140,
+      "x": 1800,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -444,8 +434,8 @@
       "id": "wiki-synthesis-synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19-md",
       "type": "file",
       "file": "wiki/synthesis/synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19.md",
-      "x": 1460,
-      "y": 1340,
+      "x": 2140,
+      "y": 1160,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -454,7 +444,7 @@
       "id": "wiki-synthesis-synth-web-raspberry-pi-ai-bot-recommendation-2026-md",
       "type": "file",
       "file": "wiki/synthesis/synth-web-raspberry-pi-ai-bot-recommendation-2026.md",
-      "x": 1800,
+      "x": 1460,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -464,7 +454,7 @@
       "id": "wiki-synthesis-synth-web-appsheet-export-yaml-2026-05-04-md",
       "type": "file",
       "file": "wiki/synthesis/synth-web-appsheet-export-yaml-2026-05-04.md",
-      "x": 2140,
+      "x": 1800,
       "y": 1340,
       "width": 260,
       "height": 120,
@@ -474,8 +464,8 @@
       "id": "wiki-synthesis-synth-manual-input-appsheet-env-2026-05-04-md",
       "type": "file",
       "file": "wiki/synthesis/synth-manual-input-appsheet-env-2026-05-04.md",
-      "x": 1460,
-      "y": 1520,
+      "x": 2140,
+      "y": 1340,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -484,7 +474,7 @@
       "id": "wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md",
       "type": "file",
       "file": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "x": 1800,
+      "x": 1460,
       "y": 1520,
       "width": 260,
       "height": 120,
@@ -494,7 +484,7 @@
       "id": "wiki-synthesis-synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
-      "x": 2140,
+      "x": 1800,
       "y": 1520,
       "width": 260,
       "height": 120,
@@ -504,8 +494,8 @@
       "id": "wiki-synthesis-synth-ai-engineering-glossary-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-engineering-glossary.md",
-      "x": 1460,
-      "y": 1700,
+      "x": 2140,
+      "y": 1520,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -514,7 +504,7 @@
       "id": "wiki-synthesis-synth-ai-engineering-myths-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-engineering-myths.md",
-      "x": 1800,
+      "x": 1460,
       "y": 1700,
       "width": 260,
       "height": 120,
@@ -524,7 +514,7 @@
       "id": "wiki-synthesis-synthesis-ai-tools-md",
       "type": "file",
       "file": "wiki/synthesis/synthesis-ai-tools.md",
-      "x": 2140,
+      "x": 1800,
       "y": 1700,
       "width": 260,
       "height": 120,
@@ -534,8 +524,8 @@
       "id": "wiki-synthesis-ai-for-drug-safety-md",
       "type": "file",
       "file": "wiki/synthesis/ai-for-drug-safety.md",
-      "x": 1460,
-      "y": 1880,
+      "x": 2140,
+      "y": 1700,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -544,7 +534,7 @@
       "id": "wiki-synthesis-ai-driven-environmental-modeling-md",
       "type": "file",
       "file": "wiki/synthesis/ai-driven-environmental-modeling.md",
-      "x": 1800,
+      "x": 1460,
       "y": 1880,
       "width": 260,
       "height": 120,
@@ -554,7 +544,7 @@
       "id": "wiki-synthesis-synth-air-quality-iot-lora-network-md",
       "type": "file",
       "file": "wiki/synthesis/synth-air-quality-iot-lora-network.md",
-      "x": 2140,
+      "x": 1800,
       "y": 1880,
       "width": 260,
       "height": 120,
@@ -564,8 +554,8 @@
       "id": "wiki-synthesis-synth-strix-halo-research-2026-05-05-md",
       "type": "file",
       "file": "wiki/synthesis/synth-strix-halo-research-2026-05-05.md",
-      "x": 1460,
-      "y": 2060,
+      "x": 2140,
+      "y": 1880,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -574,7 +564,7 @@
       "id": "wiki-synthesis-synth-ai-engineering-agent-patterns-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-engineering-agent-patterns.md",
-      "x": 1800,
+      "x": 1460,
       "y": 2060,
       "width": 260,
       "height": 120,
@@ -584,7 +574,7 @@
       "id": "wiki-synthesis-synth-appsheet-env-datadict-md",
       "type": "file",
       "file": "wiki/synthesis/synth-appsheet-env-datadict.md",
-      "x": 2140,
+      "x": 1800,
       "y": 2060,
       "width": 260,
       "height": 120,
@@ -594,8 +584,8 @@
       "id": "wiki-synthesis-synth-arduino-ide-esp32-arduino-2025-md",
       "type": "file",
       "file": "wiki/synthesis/synth-arduino-ide-esp32-arduino-2025.md",
-      "x": 1460,
-      "y": 2240,
+      "x": 2140,
+      "y": 2060,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -604,7 +594,7 @@
       "id": "wiki-synthesis-synth-arduino-ide-esp32-setup-md",
       "type": "file",
       "file": "wiki/synthesis/synth-arduino-ide-esp32-setup.md",
-      "x": 1800,
+      "x": 1460,
       "y": 2240,
       "width": 260,
       "height": 120,
@@ -614,18 +604,8 @@
       "id": "wiki-synthesis-synth-how-lorawan-network-works-a-beginner-md",
       "type": "file",
       "file": "wiki/synthesis/synth-how-lorawan-network-works-a-beginner.md",
-      "x": 2140,
+      "x": 1800,
       "y": 2240,
-      "width": 260,
-      "height": 120,
-      "color": "6"
-    },
-    {
-      "id": "wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "type": "file",
-      "file": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "x": 1460,
-      "y": 2420,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -634,8 +614,8 @@
       "id": "wiki-synthesis-waste-form-automation-md",
       "type": "file",
       "file": "wiki/synthesis/waste-form-automation.md",
-      "x": 1800,
-      "y": 2420,
+      "x": 2140,
+      "y": 2240,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -644,7 +624,7 @@
       "id": "wiki-synthesis-synth-cloudflare-tunnel-pi5-md",
       "type": "file",
       "file": "wiki/synthesis/synth-cloudflare-tunnel-pi5.md",
-      "x": 2140,
+      "x": 1460,
       "y": 2420,
       "width": 260,
       "height": 120,
@@ -654,8 +634,8 @@
       "id": "wiki-synthesis-synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md",
-      "x": 1460,
-      "y": 2600,
+      "x": 1800,
+      "y": 2420,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -664,8 +644,8 @@
       "id": "wiki-synthesis-synth-platformio-esp32-guide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-platformio-esp32-guide.md",
-      "x": 1800,
-      "y": 2600,
+      "x": 2140,
+      "y": 2420,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -674,7 +654,7 @@
       "id": "wiki-synthesis-synth-create-an-esp32-project-with-platformio-an-guide-for-beginners-md",
       "type": "file",
       "file": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
-      "x": 2140,
+      "x": 1460,
       "y": 2600,
       "width": 260,
       "height": 120,
@@ -684,8 +664,8 @@
       "id": "wiki-synthesis-synth-dx-lr02-official-arduino-library-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dx-lr02-official-arduino-library.md",
-      "x": 1460,
-      "y": 2780,
+      "x": 1800,
+      "y": 2600,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -694,8 +674,8 @@
       "id": "wiki-synthesis-synth-dx-lr02-module-spec-official-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dx-lr02-module-spec-official.md",
-      "x": 1800,
-      "y": 2780,
+      "x": 2140,
+      "y": 2600,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -704,7 +684,7 @@
       "id": "wiki-synthesis-synth-dx-lr02-serial-guide-v2-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dx-lr02-serial-guide-v2.md",
-      "x": 2140,
+      "x": 1460,
       "y": 2780,
       "width": 260,
       "height": 120,
@@ -714,8 +694,8 @@
       "id": "wiki-synthesis-synth-dx-lr02-at-commands-demo-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dx-lr02-at-commands-demo.md",
-      "x": 1460,
-      "y": 2960,
+      "x": 1800,
+      "y": 2780,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -724,8 +704,8 @@
       "id": "wiki-synthesis-synth-dashboard-design-best-practices-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dashboard-design-best-practices.md",
-      "x": 1800,
-      "y": 2960,
+      "x": 2140,
+      "y": 2780,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -734,7 +714,7 @@
       "id": "wiki-synthesis-design-web-capability-hub-md",
       "type": "file",
       "file": "wiki/synthesis/design-web-capability-hub.md",
-      "x": 2140,
+      "x": 1460,
       "y": 2960,
       "width": 260,
       "height": 120,
@@ -744,8 +724,8 @@
       "id": "wiki-synthesis-digital-legacy-ai-architecture-md",
       "type": "file",
       "file": "wiki/synthesis/digital-legacy-ai-architecture.md",
-      "x": 1460,
-      "y": 3140,
+      "x": 1800,
+      "y": 2960,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -754,8 +734,8 @@
       "id": "wiki-synthesis-dream-projects-md",
       "type": "file",
       "file": "wiki/synthesis/dream-projects.md",
-      "x": 1800,
-      "y": 3140,
+      "x": 2140,
+      "y": 2960,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -764,7 +744,7 @@
       "id": "wiki-synthesis-synth-drug-aliases-reference-md",
       "type": "file",
       "file": "wiki/synthesis/synth-drug-aliases-reference.md",
-      "x": 2140,
+      "x": 1460,
       "y": 3140,
       "width": 260,
       "height": 120,
@@ -774,8 +754,8 @@
       "id": "wiki-synthesis-dual-ai-workflow-md",
       "type": "file",
       "file": "wiki/synthesis/dual-ai-workflow.md",
-      "x": 1460,
-      "y": 3320,
+      "x": 1800,
+      "y": 3140,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -784,8 +764,8 @@
       "id": "wiki-synthesis-synth-esp-idf-docs-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp-idf-docs.md",
-      "x": 1800,
-      "y": 3320,
+      "x": 2140,
+      "y": 3140,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -794,7 +774,7 @@
       "id": "wiki-synthesis-synth-ds18b20-esp32-randomnerd-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ds18b20-esp32-randomnerd.md",
-      "x": 2140,
+      "x": 1460,
       "y": 3320,
       "width": 260,
       "height": 120,
@@ -804,8 +784,8 @@
       "id": "wiki-synthesis-synth-esp32-weather-epd-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-weather-epd.md",
-      "x": 1460,
-      "y": 3500,
+      "x": 1800,
+      "y": 3320,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -814,8 +794,8 @@
       "id": "wiki-synthesis-synth-esp32-lora-gateway-sparkfun-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-gateway-sparkfun.md",
-      "x": 1800,
-      "y": 3500,
+      "x": 2140,
+      "y": 3320,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -824,7 +804,7 @@
       "id": "wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
-      "x": 2140,
+      "x": 1460,
       "y": 3500,
       "width": 260,
       "height": 120,
@@ -834,8 +814,8 @@
       "id": "wiki-synthesis-synth-esp32-lora-sensor-webserver-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-sensor-webserver.md",
-      "x": 1460,
-      "y": 3680,
+      "x": 1800,
+      "y": 3500,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -844,8 +824,8 @@
       "id": "wiki-synthesis-synth-pzem-004t-guide-2025-md",
       "type": "file",
       "file": "wiki/synthesis/synth-pzem-004t-guide-2025.md",
-      "x": 1800,
-      "y": 3680,
+      "x": 2140,
+      "y": 3500,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -854,7 +834,7 @@
       "id": "wiki-synthesis-synth-esp32-tank-level-mqtt-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-tank-level-mqtt.md",
-      "x": 2140,
+      "x": 1460,
       "y": 3680,
       "width": 260,
       "height": 120,
@@ -864,8 +844,8 @@
       "id": "wiki-synthesis-synth-esp32-weather-dashboard-16day-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-weather-dashboard-16day.md",
-      "x": 1460,
-      "y": 3860,
+      "x": 1800,
+      "y": 3680,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -874,8 +854,8 @@
       "id": "wiki-synthesis-synth-esp32-lora-arduino-ide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-arduino-ide.md",
-      "x": 1800,
-      "y": 3860,
+      "x": 2140,
+      "y": 3680,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -884,7 +864,7 @@
       "id": "wiki-synthesis-synth-esp32-hx711-randomnerd-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-hx711-randomnerd.md",
-      "x": 2140,
+      "x": 1460,
       "y": 3860,
       "width": 260,
       "height": 120,
@@ -894,8 +874,8 @@
       "id": "wiki-synthesis-synth-esp32-complete-guide-thai-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-complete-guide-thai.md",
-      "x": 1460,
-      "y": 4040,
+      "x": 1800,
+      "y": 3860,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -904,8 +884,8 @@
       "id": "wiki-synthesis-synth-esp32-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32.md",
-      "x": 1800,
-      "y": 4040,
+      "x": 2140,
+      "y": 3860,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -914,7 +894,7 @@
       "id": "wiki-synthesis-synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "x": 2140,
+      "x": 1460,
       "y": 4040,
       "width": 260,
       "height": 120,
@@ -924,8 +904,8 @@
       "id": "wiki-synthesis-synth-esp32-hx711-mqtt-github-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-hx711-mqtt-github.md",
-      "x": 1460,
-      "y": 4220,
+      "x": 1800,
+      "y": 4040,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -934,8 +914,8 @@
       "id": "wiki-synthesis-synth-easyloranode-tracker-md",
       "type": "file",
       "file": "wiki/synthesis/synth-easyloranode-tracker.md",
-      "x": 1800,
-      "y": 4220,
+      "x": 2140,
+      "y": 4040,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -944,7 +924,7 @@
       "id": "wiki-synthesis-synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md",
       "type": "file",
       "file": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "x": 2140,
+      "x": 1460,
       "y": 4220,
       "width": 260,
       "height": 120,
@@ -954,8 +934,8 @@
       "id": "wiki-synthesis-synthesis-env-md",
       "type": "file",
       "file": "wiki/synthesis/synthesis-env.md",
-      "x": 1460,
-      "y": 4400,
+      "x": 1800,
+      "y": 4220,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -964,8 +944,8 @@
       "id": "wiki-synthesis-environmental-iot-sensing-md",
       "type": "file",
       "file": "wiki/synthesis/environmental-iot-sensing.md",
-      "x": 1800,
-      "y": 4400,
+      "x": 2140,
+      "y": 4220,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -974,7 +954,7 @@
       "id": "wiki-synthesis-environmental-monitoring-it-md",
       "type": "file",
       "file": "wiki/synthesis/environmental-monitoring-it.md",
-      "x": 2140,
+      "x": 1460,
       "y": 4400,
       "width": 260,
       "height": 120,
@@ -984,8 +964,8 @@
       "id": "wiki-synthesis-environmental-pharmaceutical-risk-md",
       "type": "file",
       "file": "wiki/synthesis/environmental-pharmaceutical-risk.md",
-      "x": 1460,
-      "y": 4580,
+      "x": 1800,
+      "y": 4400,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -994,8 +974,8 @@
       "id": "wiki-synthesis-synth-freqtrade-pi5-md",
       "type": "file",
       "file": "wiki/synthesis/synth-freqtrade-pi5.md",
-      "x": 1800,
-      "y": 4580,
+      "x": 2140,
+      "y": 4400,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1004,7 +984,7 @@
       "id": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
       "type": "file",
       "file": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
-      "x": 2140,
+      "x": 1460,
       "y": 4580,
       "width": 260,
       "height": 120,
@@ -1014,8 +994,8 @@
       "id": "wiki-synthesis-synth-get-started-esp32-esp-idf-programming-guide-v44-documentation-md",
       "type": "file",
       "file": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
-      "x": 1460,
-      "y": 4760,
+      "x": 1800,
+      "y": 4580,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1024,8 +1004,8 @@
       "id": "wiki-synthesis-synth-github-0x0funky-agent-sprite-forge-md",
       "type": "file",
       "file": "wiki/synthesis/synth-github-0x0funky-agent-sprite-forge.md",
-      "x": 1800,
-      "y": 4760,
+      "x": 2140,
+      "y": 4580,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1034,7 +1014,17 @@
       "id": "wiki-synthesis-synth-github-blendi-remade-sprite-sheet-creator-md",
       "type": "file",
       "file": "wiki/synthesis/synth-github-blendi-remade-sprite-sheet-creator.md",
-      "x": 2140,
+      "x": 1460,
+      "y": 4760,
+      "width": 260,
+      "height": 120,
+      "color": "6"
+    },
+    {
+      "id": "wiki-synthesis-synth-good-uiux-practices-md",
+      "type": "file",
+      "file": "wiki/synthesis/synth-good-uiux-practices.md",
+      "x": 1800,
       "y": 4760,
       "width": 260,
       "height": 120,
@@ -1044,8 +1034,8 @@
       "id": "wiki-synthesis-synth-hardware-inventory-2026-04-18-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hardware-inventory-2026-04-18.md",
-      "x": 1460,
-      "y": 4940,
+      "x": 2140,
+      "y": 4760,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1054,7 +1044,7 @@
       "id": "wiki-synthesis-healthcare-it-infrastructure-md",
       "type": "file",
       "file": "wiki/synthesis/healthcare-it-infrastructure.md",
-      "x": 1800,
+      "x": 1460,
       "y": 4940,
       "width": 260,
       "height": 120,
@@ -1064,7 +1054,7 @@
       "id": "wiki-synthesis-synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md",
       "type": "file",
       "file": "wiki/synthesis/synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
-      "x": 2140,
+      "x": 1800,
       "y": 4940,
       "width": 260,
       "height": 120,
@@ -1074,8 +1064,8 @@
       "id": "wiki-synthesis-synth-heltec-libraries-md",
       "type": "file",
       "file": "wiki/synthesis/synth-heltec-libraries.md",
-      "x": 1460,
-      "y": 5120,
+      "x": 2140,
+      "y": 4940,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1084,7 +1074,7 @@
       "id": "wiki-synthesis-synth-hermes-agent-readme-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hermes-agent-readme.md",
-      "x": 1800,
+      "x": 1460,
       "y": 5120,
       "width": 260,
       "height": 120,
@@ -1094,7 +1084,7 @@
       "id": "wiki-synthesis-synth-lorawan-network-beginner-md",
       "type": "file",
       "file": "wiki/synthesis/synth-lorawan-network-beginner.md",
-      "x": 2140,
+      "x": 1800,
       "y": 5120,
       "width": 260,
       "height": 120,
@@ -1104,8 +1094,8 @@
       "id": "wiki-synthesis-synth-hyperframes-official-docs-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hyperframes-official-docs.md",
-      "x": 1460,
-      "y": 5300,
+      "x": 2140,
+      "y": 5120,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1114,7 +1104,7 @@
       "id": "wiki-synthesis-synthesis-it-md",
       "type": "file",
       "file": "wiki/synthesis/synthesis-it.md",
-      "x": 1800,
+      "x": 1460,
       "y": 5300,
       "width": 260,
       "height": 120,
@@ -1124,7 +1114,7 @@
       "id": "wiki-synthesis-synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "x": 2140,
+      "x": 1800,
       "y": 5300,
       "width": 260,
       "height": 120,
@@ -1134,8 +1124,8 @@
       "id": "wiki-synthesis-synth-esp32-with-lora-using-arduino-ide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-with-lora-using-arduino-ide.md",
-      "x": 1460,
-      "y": 5480,
+      "x": 2140,
+      "y": 5300,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1144,7 +1134,7 @@
       "id": "wiki-synthesis-synth-agent-frameworks-local-debug-2026-md",
       "type": "file",
       "file": "wiki/synthesis/synth-agent-frameworks-local-debug-2026.md",
-      "x": 1800,
+      "x": 1460,
       "y": 5480,
       "width": 260,
       "height": 120,
@@ -1154,7 +1144,7 @@
       "id": "wiki-synthesis-intelligent-iot-pipelines-md",
       "type": "file",
       "file": "wiki/synthesis/intelligent-iot-pipelines.md",
-      "x": 2140,
+      "x": 1800,
       "y": 5480,
       "width": 260,
       "height": 120,
@@ -1164,8 +1154,8 @@
       "id": "wiki-synthesis-synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md",
       "type": "file",
       "file": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
-      "x": 1460,
-      "y": 5660,
+      "x": 2140,
+      "y": 5480,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1174,7 +1164,7 @@
       "id": "wiki-synthesis-synth-iot-lora-gateway-architecture-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-lora-gateway-architecture.md",
-      "x": 1800,
+      "x": 1460,
       "y": 5660,
       "width": 260,
       "height": 120,
@@ -1184,7 +1174,7 @@
       "id": "wiki-synthesis-iot-network-infrastructure-md",
       "type": "file",
       "file": "wiki/synthesis/iot-network-infrastructure.md",
-      "x": 2140,
+      "x": 1800,
       "y": 5660,
       "width": 260,
       "height": 120,
@@ -1194,8 +1184,8 @@
       "id": "wiki-synthesis-synth-iot-nodered-mqtt-sql-course-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md",
-      "x": 1460,
-      "y": 5840,
+      "x": 2140,
+      "y": 5660,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1204,7 +1194,7 @@
       "id": "wiki-synthesis-synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
-      "x": 1800,
+      "x": 1460,
       "y": 5840,
       "width": 260,
       "height": 120,
@@ -1214,7 +1204,7 @@
       "id": "wiki-synthesis-synth-iot-visualization-guide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-visualization-guide.md",
-      "x": 2140,
+      "x": 1800,
       "y": 5840,
       "width": 260,
       "height": 120,
@@ -1224,8 +1214,8 @@
       "id": "wiki-synthesis-iot-in-pharmacy-md",
       "type": "file",
       "file": "wiki/synthesis/iot-in-pharmacy.md",
-      "x": 1460,
-      "y": 6020,
+      "x": 2140,
+      "y": 5840,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1234,7 +1224,7 @@
       "id": "wiki-synthesis-synthesis-iot-md",
       "type": "file",
       "file": "wiki/synthesis/synthesis-iot.md",
-      "x": 1800,
+      "x": 1460,
       "y": 6020,
       "width": 260,
       "height": 120,
@@ -1244,7 +1234,7 @@
       "id": "wiki-synthesis-synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
-      "x": 2140,
+      "x": 1800,
       "y": 6020,
       "width": 260,
       "height": 120,
@@ -1254,8 +1244,8 @@
       "id": "wiki-synthesis-synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md",
       "type": "file",
       "file": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "x": 1460,
-      "y": 6200,
+      "x": 2140,
+      "y": 6020,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1264,7 +1254,7 @@
       "id": "wiki-synthesis-synth-ai-engineering-llm-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-engineering-llm.md",
-      "x": 1800,
+      "x": 1460,
       "y": 6200,
       "width": 260,
       "height": 120,
@@ -1274,6 +1264,16 @@
       "id": "wiki-synthesis-synth-lora-getting-started-dronebot-md",
       "type": "file",
       "file": "wiki/synthesis/synth-lora-getting-started-dronebot.md",
+      "x": 1800,
+      "y": 6200,
+      "width": 260,
+      "height": 120,
+      "color": "6"
+    },
+    {
+      "id": "wiki-synthesis-synth-lora-getting-started-with-arduino-esp32-pico-md",
+      "type": "file",
+      "file": "wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md",
       "x": 2140,
       "y": 6200,
       "width": 260,
@@ -1661,21 +1661,11 @@
       "color": "6"
     },
     {
-      "id": "wiki-synthesis-synth-lora-getting-started-with-arduino-esp32-pico-md",
-      "type": "file",
-      "file": "wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md",
-      "x": 2140,
-      "y": 8540,
-      "width": 260,
-      "height": 120,
-      "color": "6"
-    },
-    {
       "id": "wiki-synthesis-synth-telegram-ai-agent-setup-md",
       "type": "file",
       "file": "wiki/synthesis/synth-telegram-ai-agent-setup.md",
-      "x": 1460,
-      "y": 8720,
+      "x": 2140,
+      "y": 8540,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1684,7 +1674,7 @@
       "id": "wiki-synthesis-synth-telegram-ai-router-design-md",
       "type": "file",
       "file": "wiki/synthesis/synth-telegram-ai-router-design.md",
-      "x": 1800,
+      "x": 1460,
       "y": 8720,
       "width": 260,
       "height": 120,
@@ -1694,7 +1684,7 @@
       "id": "wiki-synthesis-synth-ai-engineering-tools-protocols-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-engineering-tools-protocols.md",
-      "x": 2140,
+      "x": 1800,
       "y": 8720,
       "width": 260,
       "height": 120,
@@ -1704,8 +1694,8 @@
       "id": "wiki-synthesis-synth-umbrel-pi5-setup-md",
       "type": "file",
       "file": "wiki/synthesis/synth-umbrel-pi5-setup.md",
-      "x": 1460,
-      "y": 8900,
+      "x": 2140,
+      "y": 8720,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1714,7 +1704,7 @@
       "id": "wiki-synthesis-synth-vaccine-temp-monitoring-iot-md",
       "type": "file",
       "file": "wiki/synthesis/synth-vaccine-temp-monitoring-iot.md",
-      "x": 1800,
+      "x": 1460,
       "y": 8900,
       "width": 260,
       "height": 120,
@@ -1724,7 +1714,7 @@
       "id": "wiki-synthesis-synth-velxio-arduino-esp32-pi-simulator-md",
       "type": "file",
       "file": "wiki/synthesis/synth-velxio-arduino-esp32-pi-simulator.md",
-      "x": 2140,
+      "x": 1800,
       "y": 8900,
       "width": 260,
       "height": 120,
@@ -1734,8 +1724,8 @@
       "id": "wiki-synthesis-vibe-pocketbase-project-md",
       "type": "file",
       "file": "wiki/synthesis/vibe-pocketbase-project.md",
-      "x": 1460,
-      "y": 9080,
+      "x": 2140,
+      "y": 8900,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1744,7 +1734,7 @@
       "id": "wiki-synthesis-wiki-to-video-pipeline-md",
       "type": "file",
       "file": "wiki/synthesis/wiki-to-video-pipeline.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9080,
       "width": 260,
       "height": 120,
@@ -1754,7 +1744,7 @@
       "id": "wiki-synthesis-synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย-md",
       "type": "file",
       "file": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9080,
       "width": 260,
       "height": 120,
@@ -1764,8 +1754,8 @@
       "id": "wiki-synthesis-synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk-md",
       "type": "file",
       "file": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "x": 1460,
-      "y": 9260,
+      "x": 2140,
+      "y": 9080,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1774,7 +1764,7 @@
       "id": "wiki-synthesis-synth-arduino-librariesarduino-powermanagement-md",
       "type": "file",
       "file": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9260,
       "width": 260,
       "height": 120,
@@ -1784,7 +1774,7 @@
       "id": "wiki-synthesis-synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9260,
       "width": 260,
       "height": 120,
@@ -1794,8 +1784,8 @@
       "id": "wiki-synthesis-synth-raspberry-pi-documentation-md",
       "type": "file",
       "file": "wiki/synthesis/synth-raspberry-pi-documentation.md",
-      "x": 1460,
-      "y": 9440,
+      "x": 2140,
+      "y": 9260,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1804,7 +1794,7 @@
       "id": "wiki-synthesis-synth-deepseek-aideepseek-v4-pro-at-main-md",
       "type": "file",
       "file": "wiki/synthesis/synth-deepseek-aideepseek-v4-pro-at-main.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9440,
       "width": 260,
       "height": 120,
@@ -1814,7 +1804,7 @@
       "id": "wiki-synthesis-synth-building-an-iot-application-with-raspberry-pi-and-python-md",
       "type": "file",
       "file": "wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9440,
       "width": 260,
       "height": 120,
@@ -1824,8 +1814,8 @@
       "id": "wiki-synthesis-synth-dashboard-design-best-practices-and-examples-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dashboard-design-best-practices-and-examples.md",
-      "x": 1460,
-      "y": 9620,
+      "x": 2140,
+      "y": 9440,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1834,7 +1824,7 @@
       "id": "wiki-synthesis-synth-raspberry-pi-5-16gb-made-in-uk-md",
       "type": "file",
       "file": "wiki/synthesis/synth-raspberry-pi-5-16gb-made-in-uk.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9620,
       "width": 260,
       "height": 120,
@@ -1844,7 +1834,7 @@
       "id": "wiki-synthesis-synth-arduino-librariesarduinopowermanagement-md",
       "type": "file",
       "file": "wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9620,
       "width": 260,
       "height": 120,
@@ -1854,8 +1844,8 @@
       "id": "wiki-synthesis-synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand-md",
       "type": "file",
       "file": "wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "x": 1460,
-      "y": 9800,
+      "x": 2140,
+      "y": 9620,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1864,7 +1854,7 @@
       "id": "wiki-synthesis-synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md",
       "type": "file",
       "file": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9800,
       "width": 260,
       "height": 120,
@@ -1874,7 +1864,7 @@
       "id": "wiki-synthesis-synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9800,
       "width": 260,
       "height": 120,
@@ -1884,8 +1874,8 @@
       "id": "wiki-synthesis-synth-thai-tax-deduction-document-guide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-thai-tax-deduction-document-guide.md",
-      "x": 1460,
-      "y": 9980,
+      "x": 2140,
+      "y": 9800,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1894,7 +1884,7 @@
       "id": "wiki-synthesis-synth-espem-energy-monitor-md",
       "type": "file",
       "file": "wiki/synthesis/synth-espem-energy-monitor.md",
-      "x": 1800,
+      "x": 1460,
       "y": 9980,
       "width": 260,
       "height": 120,
@@ -1904,7 +1894,7 @@
       "id": "wiki-synthesis-synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con-md",
       "type": "file",
       "file": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
-      "x": 2140,
+      "x": 1800,
       "y": 9980,
       "width": 260,
       "height": 120,
@@ -1914,8 +1904,8 @@
       "id": "wiki-synthesis-synth-infectious-waste-th-law-md",
       "type": "file",
       "file": "wiki/synthesis/synth-infectious-waste-th-law.md",
-      "x": 1460,
-      "y": 10160,
+      "x": 2140,
+      "y": 9980,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1924,7 +1914,7 @@
       "id": "wiki-synthesis-synth-hospital-wastewater-treatment-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hospital-wastewater-treatment.md",
-      "x": 1800,
+      "x": 1460,
       "y": 10160,
       "width": 260,
       "height": 120,
@@ -1934,7 +1924,7 @@
       "id": "wiki-synthesis-synth-claude-model-cost-switching-strategy-2026-06-md",
       "type": "file",
       "file": "wiki/synthesis/synth-claude-model-cost-switching-strategy-2026-06.md",
-      "x": 2140,
+      "x": 1800,
       "y": 10160,
       "width": 260,
       "height": 120,
@@ -1944,8 +1934,8 @@
       "id": "wiki-synthesis-synth-esp32-s3-intro-thai-md",
       "type": "file",
       "file": "wiki/synthesis/synth-esp32-s3-intro-thai.md",
-      "x": 1460,
-      "y": 10340,
+      "x": 2140,
+      "y": 10160,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1954,7 +1944,7 @@
       "id": "wiki-synthesis-synth-espressif-esp32-s3-iot-engineering-education-md",
       "type": "file",
       "file": "wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md",
-      "x": 1800,
+      "x": 1460,
       "y": 10340,
       "width": 260,
       "height": 120,
@@ -1964,7 +1954,7 @@
       "id": "wiki-synthesis-synth-dx-lr02-datasheet-md",
       "type": "file",
       "file": "wiki/synthesis/synth-dx-lr02-datasheet.md",
-      "x": 2140,
+      "x": 1800,
       "y": 10340,
       "width": 260,
       "height": 120,
@@ -1974,8 +1964,8 @@
       "id": "wiki-synthesis-synth-datasheet-dx-lr02-md",
       "type": "file",
       "file": "wiki/synthesis/synth-datasheet-dx-lr02.md",
-      "x": 1460,
-      "y": 10520,
+      "x": 2140,
+      "y": 10340,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -1984,7 +1974,7 @@
       "id": "wiki-synthesis-synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "x": 1800,
+      "x": 1460,
       "y": 10520,
       "width": 260,
       "height": 120,
@@ -1994,7 +1984,7 @@
       "id": "wiki-synthesis-synth-note-taking-research-assistant-powered-by-ai-md",
       "type": "file",
       "file": "wiki/synthesis/synth-note-taking-research-assistant-powered-by-ai.md",
-      "x": 2140,
+      "x": 1800,
       "y": 10520,
       "width": 260,
       "height": 120,
@@ -2004,8 +1994,8 @@
       "id": "wiki-synthesis-synth-hermes-agent-guide-th-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hermes-agent-guide-th.md",
-      "x": 1460,
-      "y": 10700,
+      "x": 2140,
+      "y": 10520,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2014,7 +2004,7 @@
       "id": "wiki-synthesis-synth-hermes-agent-md",
       "type": "file",
       "file": "wiki/synthesis/synth-hermes-agent.md",
-      "x": 1800,
+      "x": 1460,
       "y": 10700,
       "width": 260,
       "height": 120,
@@ -2024,7 +2014,7 @@
       "id": "wiki-synthesis-synth-ai-agents-integration-guide-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ai-agents-integration-guide.md",
-      "x": 2140,
+      "x": 1800,
       "y": 10700,
       "width": 260,
       "height": 120,
@@ -2034,8 +2024,8 @@
       "id": "wiki-synthesis-synth-คู่มือ-hermes-agent-md",
       "type": "file",
       "file": "wiki/synthesis/synth-คู่มือ-hermes-agent.md",
-      "x": 1460,
-      "y": 10880,
+      "x": 2140,
+      "y": 10700,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2044,7 +2034,7 @@
       "id": "wiki-synthesis-synth-3-dashboard-node-red-md",
       "type": "file",
       "file": "wiki/synthesis/synth-3-dashboard-node-red.md",
-      "x": 1800,
+      "x": 1460,
       "y": 10880,
       "width": 260,
       "height": 120,
@@ -2054,7 +2044,7 @@
       "id": "wiki-synthesis-synth-nodered-dashboard-ui-md",
       "type": "file",
       "file": "wiki/synthesis/synth-nodered-dashboard-ui.md",
-      "x": 2140,
+      "x": 1800,
       "y": 10880,
       "width": 260,
       "height": 120,
@@ -2064,8 +2054,8 @@
       "id": "wiki-synthesis-synth-ข้อมูล-datasheet-ของ-dx-lr02-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "x": 1460,
-      "y": 11060,
+      "x": 2140,
+      "y": 10880,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2074,7 +2064,7 @@
       "id": "wiki-synthesis-synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ-md",
       "type": "file",
       "file": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11060,
       "width": 260,
       "height": 120,
@@ -2084,7 +2074,7 @@
       "id": "wiki-synthesis-synth-uthai-equipment-price-2568-md",
       "type": "file",
       "file": "wiki/synthesis/synth-uthai-equipment-price-2568.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11060,
       "width": 260,
       "height": 120,
@@ -2094,8 +2084,8 @@
       "id": "wiki-synthesis-air-quality-monitoring-md",
       "type": "file",
       "file": "wiki/synthesis/air-quality-monitoring.md",
-      "x": 1460,
-      "y": 11240,
+      "x": 2140,
+      "y": 11060,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2104,7 +2094,7 @@
       "id": "wiki-synthesis-cold-chain-vaccine-md",
       "type": "file",
       "file": "wiki/synthesis/cold-chain-vaccine.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11240,
       "width": 260,
       "height": 120,
@@ -2114,7 +2104,7 @@
       "id": "wiki-synthesis-energy-power-monitoring-md",
       "type": "file",
       "file": "wiki/synthesis/energy-power-monitoring.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11240,
       "width": 260,
       "height": 120,
@@ -2124,8 +2114,8 @@
       "id": "wiki-synthesis-fuel-tank-level-md",
       "type": "file",
       "file": "wiki/synthesis/fuel-tank-level.md",
-      "x": 1460,
-      "y": 11420,
+      "x": 2140,
+      "y": 11240,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2134,7 +2124,7 @@
       "id": "wiki-synthesis-waste-weight-monitoring-md",
       "type": "file",
       "file": "wiki/synthesis/waste-weight-monitoring.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11420,
       "width": 260,
       "height": 120,
@@ -2144,7 +2134,7 @@
       "id": "wiki-synthesis-pharmacy-order-checker-md",
       "type": "file",
       "file": "wiki/synthesis/pharmacy-order-checker.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11420,
       "width": 260,
       "height": 120,
@@ -2154,8 +2144,8 @@
       "id": "wiki-synthesis-garbage-report-ocr-md",
       "type": "file",
       "file": "wiki/synthesis/garbage-report-ocr.md",
-      "x": 1460,
-      "y": 11600,
+      "x": 2140,
+      "y": 11420,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2164,7 +2154,7 @@
       "id": "wiki-synthesis-synth-iot-engineering-education-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-engineering-education.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11600,
       "width": 260,
       "height": 120,
@@ -2174,7 +2164,7 @@
       "id": "wiki-synthesis-iot-lora-architecture-md",
       "type": "file",
       "file": "wiki/synthesis/iot-lora-architecture.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11600,
       "width": 260,
       "height": 120,
@@ -2184,8 +2174,8 @@
       "id": "wiki-synthesis-synth-iot-edge-ai-esp32-c6-2026-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-edge-ai-esp32-c6-2026.md",
-      "x": 1460,
-      "y": 11780,
+      "x": 2140,
+      "y": 11600,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2194,7 +2184,7 @@
       "id": "wiki-synthesis-synth-lora-vs-nbiot-md",
       "type": "file",
       "file": "wiki/synthesis/synth-lora-vs-nbiot.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11780,
       "width": 260,
       "height": 120,
@@ -2204,7 +2194,7 @@
       "id": "wiki-synthesis-synth-lora-nb-iot-md",
       "type": "file",
       "file": "wiki/synthesis/synth-lora-nb-iot.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11780,
       "width": 260,
       "height": 120,
@@ -2214,8 +2204,8 @@
       "id": "wiki-synthesis-synth-sp-drugstore-2020-catalog-md",
       "type": "file",
       "file": "wiki/synthesis/synth-sp-drugstore-2020-catalog.md",
-      "x": 1460,
-      "y": 11960,
+      "x": 2140,
+      "y": 11780,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2224,7 +2214,7 @@
       "id": "wiki-synthesis-synth-saovabha-rabies-pep-2565-md",
       "type": "file",
       "file": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
-      "x": 1800,
+      "x": 1460,
       "y": 11960,
       "width": 260,
       "height": 120,
@@ -2234,7 +2224,7 @@
       "id": "wiki-synthesis-synth-source-5e4074bd-md",
       "type": "file",
       "file": "wiki/synthesis/synth-source-5e4074bd.md",
-      "x": 2140,
+      "x": 1800,
       "y": 11960,
       "width": 260,
       "height": 120,
@@ -2244,8 +2234,8 @@
       "id": "wiki-synthesis-synth-ddc-cpg-rabies-2564-md",
       "type": "file",
       "file": "wiki/synthesis/synth-ddc-cpg-rabies-2564.md",
-      "x": 1460,
-      "y": 12140,
+      "x": 2140,
+      "y": 11960,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2254,7 +2244,7 @@
       "id": "wiki-synthesis-synth-vibe-pocketbase-gemini-plan-md",
       "type": "file",
       "file": "wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md",
-      "x": 1800,
+      "x": 1460,
       "y": 12140,
       "width": 260,
       "height": 120,
@@ -2264,7 +2254,7 @@
       "id": "wiki-synthesis-appsheet-to-webapp-pi5-md",
       "type": "file",
       "file": "wiki/synthesis/appsheet-to-webapp-pi5.md",
-      "x": 2140,
+      "x": 1800,
       "y": 12140,
       "width": 260,
       "height": 120,
@@ -2274,8 +2264,8 @@
       "id": "wiki-synthesis-temperature-monitor-project-md",
       "type": "file",
       "file": "wiki/synthesis/temperature-monitor-project.md",
-      "x": 1460,
-      "y": 12320,
+      "x": 2140,
+      "y": 12140,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -2284,7 +2274,7 @@
       "id": "wiki-synthesis-synth-iot-node-red-mqtt-sql-data-logger-dashboard-md",
       "type": "file",
       "file": "wiki/synthesis/synth-iot-node-red-mqtt-sql-data-logger-dashboard.md",
-      "x": 1800,
+      "x": 1460,
       "y": 12320,
       "width": 260,
       "height": 120,
@@ -2293,11 +2283,11 @@
     {
       "id": "group-domain-ai-tools",
       "type": "group",
-      "label": "AI-TOOLS DOMAIN (61 pages)",
+      "label": "AI-TOOLS DOMAIN (60 pages)",
       "x": 2840,
       "y": 0,
       "width": 1020,
-      "height": 3840,
+      "height": 3660,
       "color": "2"
     },
     {
@@ -2771,21 +2761,11 @@
       "color": "2"
     },
     {
-      "id": "wiki-entities-ai-tools-sunday-estate-md",
-      "type": "file",
-      "file": "wiki/entities/ai-tools/sunday-estate.md",
-      "x": 3560,
-      "y": 2780,
-      "width": 260,
-      "height": 120,
-      "color": "2"
-    },
-    {
       "id": "wiki-concepts-ai-tools-swarm-optimization-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/swarm-optimization.md",
-      "x": 2880,
-      "y": 2960,
+      "x": 3560,
+      "y": 2780,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2794,7 +2774,7 @@
       "id": "wiki-concepts-ai-tools-symlinks-ssot-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/symlinks-ssot.md",
-      "x": 3220,
+      "x": 2880,
       "y": 2960,
       "width": 260,
       "height": 120,
@@ -2804,7 +2784,7 @@
       "id": "wiki-entities-ai-tools-telegram-ai-router-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/telegram-ai-router.md",
-      "x": 3560,
+      "x": 3220,
       "y": 2960,
       "width": 260,
       "height": 120,
@@ -2814,8 +2794,8 @@
       "id": "wiki-concepts-ai-tools-ui-to-vue-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/ui-to-vue.md",
-      "x": 2880,
-      "y": 3140,
+      "x": 3560,
+      "y": 2960,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2824,7 +2804,7 @@
       "id": "wiki-concepts-ai-tools-vector-search-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/vector-search.md",
-      "x": 3220,
+      "x": 2880,
       "y": 3140,
       "width": 260,
       "height": 120,
@@ -2834,7 +2814,7 @@
       "id": "wiki-concepts-ai-tools-vibe-coding-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/vibe-coding.md",
-      "x": 3560,
+      "x": 3220,
       "y": 3140,
       "width": 260,
       "height": 120,
@@ -2844,8 +2824,8 @@
       "id": "wiki-entities-ai-tools-zai-glm-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/zai-glm.md",
-      "x": 2880,
-      "y": 3320,
+      "x": 3560,
+      "y": 3140,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2854,7 +2834,7 @@
       "id": "wiki-entities-ai-tools-deer-flow-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/deer-flow.md",
-      "x": 3220,
+      "x": 2880,
       "y": 3320,
       "width": 260,
       "height": 120,
@@ -2864,7 +2844,7 @@
       "id": "wiki-entities-ai-tools-mattpocock-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/mattpocock-skills.md",
-      "x": 3560,
+      "x": 3220,
       "y": 3320,
       "width": 260,
       "height": 120,
@@ -2874,8 +2854,8 @@
       "id": "wiki-entities-ai-tools-react-doctor-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/react-doctor.md",
-      "x": 2880,
-      "y": 3500,
+      "x": 3560,
+      "y": 3320,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -2884,7 +2864,7 @@
       "id": "wiki-concepts-ai-tools-sqlite-vec-md",
       "type": "file",
       "file": "wiki/concepts/ai-tools/sqlite-vec.md",
-      "x": 3220,
+      "x": 2880,
       "y": 3500,
       "width": 260,
       "height": 120,
@@ -2894,7 +2874,7 @@
       "id": "wiki-entities-ai-tools-9arm-skills-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/9arm-skills.md",
-      "x": 3560,
+      "x": 3220,
       "y": 3500,
       "width": 260,
       "height": 120,
@@ -2904,8 +2884,8 @@
       "id": "wiki-entities-ai-tools-turbovec-md",
       "type": "file",
       "file": "wiki/entities/ai-tools/turbovec.md",
-      "x": 2880,
-      "y": 3680,
+      "x": 3560,
+      "y": 3500,
       "width": 260,
       "height": 120,
       "color": "2"
@@ -3653,7 +3633,7 @@
     {
       "id": "group-domain-pharmacy",
       "type": "group",
-      "label": "PHARMACY DOMAIN (14 pages)",
+      "label": "PHARMACY DOMAIN (13 pages)",
       "x": 1420,
       "y": 16020,
       "width": 1020,
@@ -3741,21 +3721,11 @@
       "color": "4"
     },
     {
-      "id": "wiki-entities-pharmacy-sunday-estate-tax-knowledge-md",
-      "type": "file",
-      "file": "wiki/entities/pharmacy/sunday-estate-tax-knowledge.md",
-      "x": 2140,
-      "y": 16460,
-      "width": 260,
-      "height": 120,
-      "color": "4"
-    },
-    {
       "id": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
       "type": "file",
       "file": "wiki/concepts/pharmacy/ui-design-pharmacy.md",
-      "x": 1460,
-      "y": 16640,
+      "x": 2140,
+      "y": 16460,
       "width": 260,
       "height": 120,
       "color": "4"
@@ -3764,7 +3734,7 @@
       "id": "wiki-concepts-pharmacy-ordering-workflow-md",
       "type": "file",
       "file": "wiki/concepts/pharmacy/ordering-workflow.md",
-      "x": 1800,
+      "x": 1460,
       "y": 16640,
       "width": 260,
       "height": 120,
@@ -3774,7 +3744,7 @@
       "id": "wiki-concepts-pharmacy-drug-classification-md",
       "type": "file",
       "file": "wiki/concepts/pharmacy/drug-classification.md",
-      "x": 2140,
+      "x": 1800,
       "y": 16640,
       "width": 260,
       "height": 120,
@@ -3784,8 +3754,8 @@
       "id": "wiki-entities-pharmacy-pharmacy-business-md",
       "type": "file",
       "file": "wiki/entities/pharmacy/pharmacy-business.md",
-      "x": 1460,
-      "y": 16820,
+      "x": 2140,
+      "y": 16640,
       "width": 260,
       "height": 120,
       "color": "4"
@@ -3794,7 +3764,7 @@
       "id": "wiki-concepts-pharmacy-pharmacy-context-md",
       "type": "file",
       "file": "wiki/concepts/pharmacy/pharmacy-context.md",
-      "x": 1800,
+      "x": 1460,
       "y": 16820,
       "width": 260,
       "height": 120,
@@ -3803,11 +3773,11 @@
     {
       "id": "group-domain-sources",
       "type": "group",
-      "label": "SOURCES DOMAIN (169 pages)",
+      "label": "SOURCES DOMAIN (168 pages)",
       "x": 2840,
       "y": 16020,
       "width": 1020,
-      "height": 10320,
+      "height": 10140,
       "color": "6"
     },
     {
@@ -5381,20 +5351,10 @@
       "color": "6"
     },
     {
-      "id": "wiki-sources-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "type": "file",
-      "file": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "x": 3220,
-      "y": 25460,
-      "width": 260,
-      "height": 120,
-      "color": "6"
-    },
-    {
       "id": "wiki-sources-uthai-equipment-price-2568-md",
       "type": "file",
       "file": "wiki/sources/uthai-equipment-price-2568.md",
-      "x": 3560,
+      "x": 3220,
       "y": 25460,
       "width": 260,
       "height": 120,
@@ -5404,8 +5364,8 @@
       "id": "wiki-sources-sp-drugstore-2020-catalog-md",
       "type": "file",
       "file": "wiki/sources/sp-drugstore-2020-catalog.md",
-      "x": 2880,
-      "y": 25640,
+      "x": 3560,
+      "y": 25460,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5414,7 +5374,7 @@
       "id": "wiki-sources-web-appsheet-export-yaml-2026-05-04-md",
       "type": "file",
       "file": "wiki/sources/web-appsheet-export-yaml-2026-05-04.md",
-      "x": 3220,
+      "x": 2880,
       "y": 25640,
       "width": 260,
       "height": 120,
@@ -5424,7 +5384,7 @@
       "id": "wiki-sources-iot-edge-ai-esp32-c6-2026-md",
       "type": "file",
       "file": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
-      "x": 3560,
+      "x": 3220,
       "y": 25640,
       "width": 260,
       "height": 120,
@@ -5434,8 +5394,8 @@
       "id": "wiki-sources-lora-vs-nbiot-md",
       "type": "file",
       "file": "wiki/sources/lora-vs-nbiot.md",
-      "x": 2880,
-      "y": 25820,
+      "x": 3560,
+      "y": 25640,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5444,7 +5404,7 @@
       "id": "wiki-sources-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
       "type": "file",
       "file": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "x": 3220,
+      "x": 2880,
       "y": 25820,
       "width": 260,
       "height": 120,
@@ -5454,7 +5414,7 @@
       "id": "wiki-sources-saovabha-rabies-pep-2565-md",
       "type": "file",
       "file": "wiki/sources/saovabha-rabies-pep-2565.md",
-      "x": 3560,
+      "x": 3220,
       "y": 25820,
       "width": 260,
       "height": 120,
@@ -5464,8 +5424,8 @@
       "id": "wiki-sources-rabies-vaccine-guidelines-th-2026-05-02-md",
       "type": "file",
       "file": "wiki/sources/rabies-vaccine-guidelines-th-2026-05-02.md",
-      "x": 2880,
-      "y": 26000,
+      "x": 3560,
+      "y": 25820,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5474,7 +5434,7 @@
       "id": "wiki-sources-source-5e4074bd-md",
       "type": "file",
       "file": "wiki/sources/source-5e4074bd.md",
-      "x": 3220,
+      "x": 2880,
       "y": 26000,
       "width": 260,
       "height": 120,
@@ -5484,7 +5444,7 @@
       "id": "wiki-sources-ddc-cpg-rabies-2564-md",
       "type": "file",
       "file": "wiki/sources/ddc-cpg-rabies-2564.md",
-      "x": 3560,
+      "x": 3220,
       "y": 26000,
       "width": 260,
       "height": 120,
@@ -5494,8 +5454,8 @@
       "id": "wiki-sources-vibe-pocketbase-gemini-plan-md",
       "type": "file",
       "file": "wiki/sources/vibe-pocketbase-gemini-plan.md",
-      "x": 2880,
-      "y": 26180,
+      "x": 3560,
+      "y": 26000,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -7103,14 +7063,6 @@
       "color": "none"
     },
     {
-      "id": "edge-index-iot-md-wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "fromNode": "index-iot-md",
-      "fromSide": "right",
-      "toNode": "wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "toSide": "left",
-      "color": "none"
-    },
-    {
       "id": "edge-index-iot-md-wiki-synthesis-synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
       "fromNode": "index-iot-md",
       "fromSide": "right",
@@ -8297,9 +8249,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -8577,9 +8529,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-claude-skills-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8641,9 +8593,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-embedding-models-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -8689,9 +8641,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-hooks-skills-plugins-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -8977,9 +8929,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-multi-agent-theory-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -9057,9 +9009,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-openrouter-claude-code-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -9105,9 +9057,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-sqlite-vec-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9129,81 +9081,81 @@
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-sources-ai-engineering-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-ai-engineering-swarm-optimization-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-concepts-ai-tools-multi-agent-theory-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-multi-agent-theory-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-concepts-ai-tools-ai-myths-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-ai-myths-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-concepts-ai-tools-ai-glossary-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-ai-glossary-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-sources-ai-engineering-swarm-optimization-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-sources-ai-engineering-swarm-optimization-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-swarm-optimization-md-wiki-sources-ai-engineering-multi-agent-md",
       "fromNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-sources-ai-engineering-multi-agent-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-sources-ai-agents-integration-guide-md",
+      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-ai-agents-integration-guide-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
+      "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-multi-agent-failover-md",
+      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
+      "fromSide": "right",
+      "toNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
       "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-sources-ai-agents-integration-guide-md",
       "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-ai-agents-integration-guide-md",
-      "toSide": "top",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "top",
-      "toNode": "wiki-concepts-ai-tools-hooks-skills-plugins-md",
-      "toSide": "bottom",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-concepts-ai-tools-multi-agent-failover-md",
-      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "top",
-      "toNode": "wiki-concepts-ai-tools-multi-agent-failover-md",
-      "toSide": "bottom",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-concepts-ai-tools-symlinks-ssot-md-wiki-sources-ai-agents-integration-guide-md",
-      "fromNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "fromSide": "bottom",
-      "toNode": "wiki-sources-ai-agents-integration-guide-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -9217,9 +9169,9 @@
     {
       "id": "edge-wiki-concepts-ai-tools-ui-to-vue-md-wiki-entities-ai-tools-frontend-slides-md",
       "fromNode": "wiki-concepts-ai-tools-ui-to-vue-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-frontend-slides-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -9249,25 +9201,25 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vector-search-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-concepts-ai-tools-vector-search-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-pocketbase-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -9289,17 +9241,17 @@
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-vibe-coding-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10345,9 +10297,9 @@
     {
       "id": "edge-wiki-concepts-pharmacy-drug-aliases-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-concepts-pharmacy-drug-aliases-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "4"
     },
     {
@@ -10385,9 +10337,9 @@
     {
       "id": "edge-wiki-concepts-pharmacy-drug-classification-md-wiki-concepts-pharmacy-fuzzy-match-md",
       "fromNode": "wiki-concepts-pharmacy-drug-classification-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-pharmacy-fuzzy-match-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "4"
     },
     {
@@ -10425,9 +10377,9 @@
     {
       "id": "edge-wiki-concepts-pharmacy-drug-validation-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-concepts-pharmacy-drug-validation-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "4"
     },
     {
@@ -10441,9 +10393,9 @@
     {
       "id": "edge-wiki-concepts-pharmacy-drug-validation-md-wiki-concepts-pharmacy-ui-design-pharmacy-md",
       "fromNode": "wiki-concepts-pharmacy-drug-validation-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "4"
     },
     {
@@ -10473,25 +10425,25 @@
     {
       "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-synthesis-pharmacy-order-checker-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-concepts-pharmacy-drug-classification-md",
       "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-pharmacy-drug-classification-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-fuzzy-match-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-concepts-pharmacy-fuzzy-match-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "4"
     },
     {
@@ -10513,33 +10465,33 @@
     {
       "id": "edge-wiki-concepts-pharmacy-ordering-workflow-md-wiki-concepts-pharmacy-drug-aliases-md",
       "fromNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-pharmacy-drug-aliases-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ordering-workflow-md-wiki-concepts-pharmacy-drug-validation-md",
       "fromNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-pharmacy-drug-validation-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ordering-workflow-md-wiki-concepts-pharmacy-fuzzy-match-md",
       "fromNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-pharmacy-fuzzy-match-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ordering-workflow-md-wiki-concepts-pharmacy-ui-design-pharmacy-md",
       "fromNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "4"
     },
     {
@@ -10593,9 +10545,9 @@
     {
       "id": "edge-wiki-concepts-pharmacy-pharmacy-context-md-wiki-concepts-pharmacy-drug-aliases-md",
       "fromNode": "wiki-concepts-pharmacy-pharmacy-context-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-pharmacy-drug-aliases-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "4"
     },
     {
@@ -10609,33 +10561,33 @@
     {
       "id": "edge-wiki-concepts-pharmacy-ui-design-pharmacy-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ui-design-pharmacy-md-wiki-concepts-pharmacy-drug-validation-md",
       "fromNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-drug-validation-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ui-design-pharmacy-md-wiki-concepts-pharmacy-drug-aliases-md",
       "fromNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-drug-aliases-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "4"
     },
     {
       "id": "edge-wiki-concepts-pharmacy-ui-design-pharmacy-md-wiki-entities-pharmacy-drug-matching-system-md",
       "fromNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-pharmacy-drug-matching-system-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "4"
     },
     {
@@ -10649,17 +10601,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-9arm-skills-md-wiki-concepts-ai-tools-claude-skills-md",
       "fromNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -10745,9 +10697,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ecc-md-wiki-entities-ai-tools-9arm-skills-md",
       "fromNode": "wiki-entities-ai-tools-ecc-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-9arm-skills-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -10801,9 +10753,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-frontend-slides-md-wiki-concepts-ai-tools-ui-to-vue-md",
       "fromNode": "wiki-entities-ai-tools-frontend-slides-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-ui-to-vue-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10857,9 +10809,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-gitnexus-md-wiki-entities-ai-tools-turbovec-md",
       "fromNode": "wiki-entities-ai-tools-gitnexus-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-entities-ai-tools-turbovec-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -10961,9 +10913,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-hyperframes-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-hyperframes-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -11025,9 +10977,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-live-dashboard-md-wiki-entities-ai-tools-zai-glm-md",
       "fromNode": "wiki-entities-ai-tools-live-dashboard-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-zai-glm-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -11049,9 +11001,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-mattpocock-skills-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-mattpocock-skills-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ecc-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -11065,9 +11017,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-model-capability-bench-md-wiki-entities-ai-tools-zai-glm-md",
       "fromNode": "wiki-entities-ai-tools-model-capability-bench-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-zai-glm-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -11089,9 +11041,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-ollama-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-entities-ai-tools-ollama-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -11137,9 +11089,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-omniroute-md-wiki-entities-ai-tools-zai-glm-md",
       "fromNode": "wiki-entities-ai-tools-omniroute-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-ai-tools-zai-glm-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -11185,17 +11137,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "2"
     },
     {
@@ -11217,17 +11169,17 @@
     {
       "id": "edge-wiki-entities-ai-tools-pocketbase-md-wiki-sources-vibe-pocketbase-gemini-plan-md",
       "fromNode": "wiki-entities-ai-tools-pocketbase-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-react-doctor-md-wiki-concepts-ai-tools-claude-skills-md",
       "fromNode": "wiki-entities-ai-tools-react-doctor-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-claude-skills-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -11263,19 +11215,11 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-entities-ai-tools-sunday-estate-md-wiki-entities-ai-tools-hermes-agent-md",
-      "fromNode": "wiki-entities-ai-tools-sunday-estate-md",
-      "fromSide": "left",
-      "toNode": "wiki-entities-ai-tools-hermes-agent-md",
-      "toSide": "right",
-      "color": "2"
-    },
-    {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-sources-telegram-ai-router-design-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
@@ -11289,9 +11233,9 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-concepts-ai-tools-openrouter-claude-code-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-openrouter-claude-code-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -11321,65 +11265,65 @@
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-entities-ai-tools-ollama-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-ollama-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-telegram-ai-router-md-wiki-sources-telegram-ai-router-design-md",
       "fromNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-sources-telegram-ai-router-design-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-sqlite-vec-md",
       "fromNode": "wiki-entities-ai-tools-turbovec-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-sqlite-vec-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-embedding-models-md",
       "fromNode": "wiki-entities-ai-tools-turbovec-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-embedding-models-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-turbovec-md-wiki-concepts-ai-tools-vector-search-md",
       "fromNode": "wiki-entities-ai-tools-turbovec-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vector-search-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-entities-ai-tools-model-capability-bench-md",
       "fromNode": "wiki-entities-ai-tools-zai-glm-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-model-capability-bench-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-concepts-ai-tools-openrouter-api-md",
       "fromNode": "wiki-entities-ai-tools-zai-glm-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-concepts-ai-tools-openrouter-api-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
       "id": "edge-wiki-entities-ai-tools-zai-glm-md-wiki-entities-ai-tools-live-dashboard-md",
       "fromNode": "wiki-entities-ai-tools-zai-glm-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-live-dashboard-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "2"
     },
     {
@@ -13681,9 +13625,9 @@
     {
       "id": "edge-wiki-entities-pharmacy-drug-database-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-entities-pharmacy-drug-database-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "4"
     },
     {
@@ -13753,33 +13697,33 @@
     {
       "id": "edge-wiki-entities-pharmacy-pharmacy-business-md-wiki-entities-pharmacy-sp-drugstore-2020-md",
       "fromNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-pharmacy-sp-drugstore-2020-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "4"
     },
     {
       "id": "edge-wiki-entities-pharmacy-pharmacy-business-md-wiki-entities-pharmacy-drug-matching-system-md",
       "fromNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-pharmacy-drug-matching-system-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "4"
     },
     {
       "id": "edge-wiki-entities-pharmacy-pharmacy-business-md-wiki-concepts-pharmacy-ordering-workflow-md",
       "fromNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-pharmacy-ordering-workflow-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "4"
     },
     {
       "id": "edge-wiki-entities-pharmacy-pharmacy-business-md-wiki-synthesis-pharmacy-web-app-roadmap-md",
       "fromNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "4"
     },
     {
@@ -13801,9 +13745,9 @@
     {
       "id": "edge-wiki-entities-pharmacy-sp-drugstore-2020-md-wiki-entities-pharmacy-pharmacy-business-md",
       "fromNode": "wiki-entities-pharmacy-sp-drugstore-2020-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "4"
     },
     {
@@ -13827,14 +13771,6 @@
       "fromNode": "wiki-entities-pharmacy-sp-drugstore-2020-md",
       "fromSide": "right",
       "toNode": "wiki-sources-pharmacy-context-md",
-      "toSide": "left",
-      "color": "4"
-    },
-    {
-      "id": "edge-wiki-entities-pharmacy-sunday-estate-tax-knowledge-md-wiki-sources-thai-tax-deduction-document-guide-md",
-      "fromNode": "wiki-entities-pharmacy-sunday-estate-tax-knowledge-md",
-      "fromSide": "right",
-      "toNode": "wiki-sources-thai-tax-deduction-document-guide-md",
       "toSide": "left",
       "color": "4"
     },
@@ -13865,9 +13801,9 @@
     {
       "id": "edge-wiki-sources-ai-agents-integration-guide-md-wiki-concepts-ai-tools-symlinks-ssot-md",
       "fromNode": "wiki-sources-ai-agents-integration-guide-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-symlinks-ssot-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -13961,9 +13897,9 @@
     {
       "id": "edge-wiki-sources-ai-engineering-swarm-optimization-md-wiki-concepts-ai-tools-swarm-optimization-md",
       "fromNode": "wiki-sources-ai-engineering-swarm-optimization-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-concepts-ai-tools-swarm-optimization-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -14729,9 +14665,9 @@
     {
       "id": "edge-wiki-sources-local-llm-mac-mini-guide-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-local-llm-mac-mini-guide-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
@@ -15057,9 +14993,9 @@
     {
       "id": "edge-wiki-sources-telegram-ai-router-design-md-wiki-entities-ai-tools-telegram-ai-router-md",
       "fromNode": "wiki-sources-telegram-ai-router-design-md",
-      "fromSide": "top",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-telegram-ai-router-md",
-      "toSide": "bottom",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -15193,17 +15129,17 @@
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-entities-ai-tools-pocketbase-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-pocketbase-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-sources-vibe-pocketbase-gemini-plan-md-wiki-concepts-ai-tools-vibe-coding-md",
       "fromNode": "wiki-sources-vibe-pocketbase-gemini-plan-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-ai-tools-vibe-coding-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -15313,89 +15249,89 @@
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-pms5003-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-pms5003-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-influxdb-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-influxdb-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-grafana-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-grafana-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-dx-lr02-lora-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-dx-lr02-lora-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-esp32-s3-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-esp32-s3-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-entities-iot-18650-battery-shield-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-18650-battery-shield-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-concepts-iot-air-quality-index-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-concepts-iot-air-quality-index-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-concepts-iot-lora-p2p-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-iot-lora-p2p-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-concepts-iot-tinyml-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-concepts-iot-tinyml-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-air-quality-monitoring-md-wiki-synthesis-iot-lora-architecture-md",
       "fromNode": "wiki-synthesis-air-quality-monitoring-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -15425,25 +15361,25 @@
     {
       "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-entities-iot-mqtt-protocol-md",
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-mqtt-protocol-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-entities-iot-raspberry-pi-md",
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-raspberry-pi-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -15457,9 +15393,9 @@
     {
       "id": "edge-wiki-synthesis-appsheet-to-webapp-pi5-md-wiki-synthesis-temperature-monitor-project-md",
       "fromNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-synthesis-temperature-monitor-project-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15513,9 +15449,9 @@
     {
       "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-entities-iot-ds18b20-md",
       "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-ds18b20-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15537,9 +15473,9 @@
     {
       "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-entities-iot-18650-battery-shield-md",
       "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-18650-battery-shield-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -15561,17 +15497,17 @@
     {
       "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-concepts-iot-tinyml-md",
       "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-iot-tinyml-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-cold-chain-vaccine-md-wiki-entities-iot-esp32-s3-md",
       "fromNode": "wiki-synthesis-cold-chain-vaccine-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-esp32-s3-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15617,9 +15553,9 @@
     {
       "id": "edge-wiki-synthesis-design-web-capability-hub-md-wiki-concepts-iot-dashboard-design-md",
       "fromNode": "wiki-synthesis-design-web-capability-hub-md",
-      "fromSide": "left",
+      "fromSide": "right",
       "toNode": "wiki-concepts-iot-dashboard-design-md",
-      "toSide": "right",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15689,41 +15625,41 @@
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-synthesis-energy-power-monitoring-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-energy-power-monitoring-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-synthesis-waste-weight-monitoring-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-synthesis-air-quality-monitoring-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-synthesis-air-quality-monitoring-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-synthesis-cold-chain-vaccine-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-cold-chain-vaccine-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-synthesis-iot-lora-architecture-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -15793,9 +15729,9 @@
     {
       "id": "edge-wiki-synthesis-dream-projects-md-wiki-entities-iot-raspberry-pi-md",
       "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-raspberry-pi-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -15889,25 +15825,25 @@
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-entities-iot-mosquitto-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-mosquitto-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-entities-iot-influxdb-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-influxdb-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15921,33 +15857,33 @@
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-entities-iot-telegram-bot-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-telegram-bot-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-concepts-iot-modbus-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-iot-modbus-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-concepts-iot-data-logger-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-iot-data-logger-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-energy-power-monitoring-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-synthesis-energy-power-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-node-red-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -15985,9 +15921,9 @@
     {
       "id": "edge-wiki-synthesis-env-webapp-schema-wastewater-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-synthesis-env-webapp-schema-wastewater-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16033,57 +15969,57 @@
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-entities-iot-hc-sr04-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-hc-sr04-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-entities-iot-mosquitto-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-mosquitto-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-entities-iot-telegram-bot-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-telegram-bot-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-concepts-iot-data-logger-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-iot-data-logger-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-node-red-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-fuel-tank-level-md-wiki-synthesis-iot-lora-architecture-md",
       "fromNode": "wiki-synthesis-fuel-tank-level-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -16113,41 +16049,41 @@
     {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-8-bit-trading-rpg-blueprint-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromSide": "left",
+      "fromSide": "top",
       "toNode": "wiki-synthesis-8-bit-trading-rpg-blueprint-md",
-      "toSide": "right",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-pixel-wealth-quest-gdd-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-synthesis-pixel-wealth-quest-gdd-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-sunday-invest-moon-roadmap-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-synthesis-sunday-invest-moon-roadmap-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-game-lightweight-highend-capability-hub-md-wiki-synthesis-pixellab-phaser-asset-convention-md",
       "fromNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16161,9 +16097,9 @@
     {
       "id": "edge-wiki-synthesis-garbage-report-ocr-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-synthesis-garbage-report-ocr-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-pharmacy-order-checker-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -16177,9 +16113,9 @@
     {
       "id": "edge-wiki-synthesis-garbage-report-ocr-md-wiki-synthesis-waste-weight-monitoring-md",
       "fromNode": "wiki-synthesis-garbage-report-ocr-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -16193,17 +16129,17 @@
     {
       "id": "edge-wiki-synthesis-garbage-report-ocr-md-wiki-synthesis-waste-form-automation-md",
       "fromNode": "wiki-synthesis-garbage-report-ocr-md",
-      "fromSide": "right",
+      "fromSide": "top",
       "toNode": "wiki-synthesis-waste-form-automation-md",
-      "toSide": "left",
+      "toSide": "bottom",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-garbage-report-ocr-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-synthesis-garbage-report-ocr-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -16249,9 +16185,9 @@
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -16265,17 +16201,17 @@
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-dx-lr02-lora-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-dx-lr02-lora-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-esp32-s3-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-esp32-s3-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16289,33 +16225,33 @@
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-mosquitto-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-mosquitto-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-node-red-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-node-red-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-influxdb-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-influxdb-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-mysql-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-mysql-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -16329,9 +16265,9 @@
     {
       "id": "edge-wiki-synthesis-iot-lora-architecture-md-wiki-entities-iot-telegram-bot-md",
       "fromNode": "wiki-synthesis-iot-lora-architecture-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-telegram-bot-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16593,9 +16529,9 @@
     {
       "id": "edge-wiki-synthesis-pharmacy-project-specs-md-wiki-concepts-pharmacy-pharmacy-context-md",
       "fromNode": "wiki-synthesis-pharmacy-project-specs-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-pharmacy-pharmacy-context-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16617,9 +16553,9 @@
     {
       "id": "edge-wiki-synthesis-pharmacy-web-app-roadmap-md-wiki-entities-pharmacy-pharmacy-business-md",
       "fromNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-pharmacy-pharmacy-business-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -16633,9 +16569,9 @@
     {
       "id": "edge-wiki-synthesis-pharmacy-web-app-roadmap-md-wiki-concepts-pharmacy-ui-design-pharmacy-md",
       "fromNode": "wiki-synthesis-pharmacy-web-app-roadmap-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-pharmacy-ui-design-pharmacy-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -18367,14 +18303,6 @@
       "color": "6"
     },
     {
-      "id": "edge-wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md-wiki-sources-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "fromNode": "wiki-synthesis-synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "fromSide": "right",
-      "toNode": "wiki-sources-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง-md",
-      "toSide": "left",
-      "color": "6"
-    },
-    {
       "id": "edge-wiki-synthesis-synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md-wiki-sources-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
       "fromNode": "wiki-synthesis-synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย-md",
       "fromSide": "right",
@@ -18481,57 +18409,57 @@
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-synthesis-iot-lora-architecture-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-esp32-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-esp32-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-dht11-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-dht11-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-18650-battery-shield-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-18650-battery-shield-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-mosquitto-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-mosquitto-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-dx-lr02-lora-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "right",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-dx-lr02-lora-md",
-      "toSide": "left",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-temperature-monitor-project-md-wiki-entities-iot-esp32-s3-md",
       "fromNode": "wiki-synthesis-temperature-monitor-project-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-entities-iot-esp32-s3-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -18561,17 +18489,17 @@
     {
       "id": "edge-wiki-synthesis-vibe-pocketbase-project-md-wiki-synthesis-pharmacy-order-checker-md",
       "fromNode": "wiki-synthesis-vibe-pocketbase-project-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-pharmacy-order-checker-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-vibe-pocketbase-project-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-synthesis-vibe-pocketbase-project-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -18609,25 +18537,25 @@
     {
       "id": "edge-wiki-synthesis-waste-form-automation-md-wiki-synthesis-garbage-report-ocr-md",
       "fromNode": "wiki-synthesis-waste-form-automation-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-synthesis-garbage-report-ocr-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-waste-form-automation-md-wiki-synthesis-waste-weight-monitoring-md",
       "fromNode": "wiki-synthesis-waste-form-automation-md",
-      "fromSide": "bottom",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "toSide": "top",
+      "toSide": "right",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-waste-form-automation-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-synthesis-waste-form-automation-md",
-      "fromSide": "right",
+      "fromSide": "left",
       "toNode": "wiki-synthesis-appsheet-to-webapp-pi5-md",
-      "toSide": "left",
+      "toSide": "right",
       "color": "6"
     },
     {
@@ -18665,17 +18593,17 @@
     {
       "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-entities-iot-load-cell-md",
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-entities-iot-load-cell-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-entities-iot-hx711-md",
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-hx711-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -18697,9 +18625,9 @@
     {
       "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-entities-iot-18650-battery-shield-md",
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-entities-iot-18650-battery-shield-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -18721,17 +18649,17 @@
     {
       "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-concepts-iot-dashboard-design-md",
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "fromSide": "bottom",
+      "fromSide": "right",
       "toNode": "wiki-concepts-iot-dashboard-design-md",
-      "toSide": "top",
+      "toSide": "left",
       "color": "6"
     },
     {
       "id": "edge-wiki-synthesis-waste-weight-monitoring-md-wiki-concepts-iot-tinyml-md",
       "fromNode": "wiki-synthesis-waste-weight-monitoring-md",
-      "fromSide": "left",
+      "fromSide": "bottom",
       "toNode": "wiki-concepts-iot-tinyml-md",
-      "toSide": "right",
+      "toSide": "top",
       "color": "6"
     },
     {
@@ -18801,9 +18729,9 @@
     {
       "id": "edge-wiki-synthesis-wiki-to-video-pipeline-md-wiki-synthesis-env-webapp-schema-wastewater-md",
       "fromNode": "wiki-synthesis-wiki-to-video-pipeline-md",
-      "fromSide": "top",
+      "fromSide": "right",
       "toNode": "wiki-synthesis-env-webapp-schema-wastewater-md",
-      "toSide": "bottom",
+      "toSide": "left",
       "color": "6"
     },
     {

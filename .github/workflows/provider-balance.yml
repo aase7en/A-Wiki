@@ -13,7 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Repo secrets are optional on forks / before setup — skip gracefully
+      # (with a visible notice) instead of failing every day.
+      - name: Check secrets configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::API-key secrets not configured in repo settings — balance check skipped"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Check Provider Balances
+        if: steps.cfg.outputs.configured == 'true'
         run: python3 scripts/hermes/provider-balance-check.py
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
@@ -26,6 +39,7 @@ jobs:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
 
       - name: Post results to Telegram
+        if: steps.cfg.outputs.configured == 'true' && secrets.TELEGRAM_BOT_TOKEN != ''
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}

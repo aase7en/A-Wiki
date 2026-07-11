@@ -130,14 +130,14 @@ def test_non_license_file_email_is_still_flagged_control_case(tmp_path, monkeypa
 # ---------------------------------------------------------------------------
 
 def test_bot_email_is_not_personal():
-    assert not check_privacy.email_is_personal("bot@sunday-estate.duckdns.org")
+    assert not check_privacy.email_is_personal("bot@examplecorp.duckdns.org")
     assert not check_privacy.email_is_personal("bot@example-internal.net")
 
 
 def test_bot_email_finding_is_suppressed_in_scan(tmp_path, monkeypatch):
     monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
     f = tmp_path / "webhook.md"
-    f.write_text("Webhook sender: bot@sunday-estate.duckdns.org")
+    f.write_text("Webhook sender: bot@examplecorp.duckdns.org")
 
     findings = check_privacy.scan(files=[f])
 
@@ -147,7 +147,7 @@ def test_bot_email_finding_is_suppressed_in_scan(tmp_path, monkeypatch):
 def test_non_bot_email_at_same_domain_is_still_flagged_control_case(tmp_path, monkeypatch):
     monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
     f = tmp_path / "webhook.md"
-    f.write_text("Human contact: owner@sunday-estate-personal.duckdns.org")
+    f.write_text("Human contact: owner@examplecorp-personal.duckdns.org")
 
     findings = check_privacy.scan(files=[f])
 
@@ -367,3 +367,75 @@ def test_codename_still_flagged_in_ordinary_context_control_case(tmp_path, monke
     findings = check_privacy.scan(files=[f])
 
     assert any(x["kind"] == "codename" for x in findings)
+
+
+# ---------------------------------------------------------------------------
+# Fix 8 — files that legitimately contain scan patterns / fake fixtures are
+# skipped: this test file itself, the handoff doc with its verification grep,
+# and vendored .kilo skills (upstream examples, same class as skills/_upstream)
+# ---------------------------------------------------------------------------
+
+def test_own_test_fixture_file_is_skipped():
+    path = check_privacy.REPO_ROOT / "tests" / "test_check_privacy.py"
+
+    assert check_privacy.should_skip(path)
+
+
+def test_handoff_doc_with_verification_grep_is_skipped():
+    path = (check_privacy.REPO_ROOT / "docs" / "architecture"
+            / "skill-architecture-handoff.md")
+
+    assert check_privacy.should_skip(path)
+
+
+def test_kilo_vendored_skills_are_skipped():
+    path = check_privacy.REPO_ROOT / ".kilo" / "skills" / "dbt" / "SKILL.md"
+
+    assert check_privacy.should_skip(path)
+
+
+# ---------------------------------------------------------------------------
+# Fix 9 — public org contact emails (research@<org>.com in source summaries)
+# ---------------------------------------------------------------------------
+
+def test_deepseek_org_contact_email_is_not_personal():
+    assert not check_privacy.email_is_personal("research@deepseek.com")
+
+
+# ---------------------------------------------------------------------------
+# Fix 10 — dot-prefixed captures under /home are config dirs, not usernames
+# (e.g. /opt/data/home/.cloudflared/config.yml on the Pi5)
+# ---------------------------------------------------------------------------
+
+def test_dot_config_dir_under_home_is_not_flagged(tmp_path, monkeypatch):
+    monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
+    f = tmp_path / "setup.sh"
+    f.write_text("CREDFILE=$(ls /opt/data/home/.cloudflared/*.json | head -1)\n")
+
+    findings = check_privacy.scan(files=[f])
+
+    assert not any(x["kind"] == "home_path" for x in findings)
+
+
+# ---------------------------------------------------------------------------
+# Fix 11 — public scanner may hardcode ONLY public-handle variants; every
+# other personal pattern (company names, email local-parts, real names)
+# belongs in the private drive/personal/privacy-patterns.txt loader.
+# ---------------------------------------------------------------------------
+
+def test_personal_codenames_only_contain_public_handle_variants():
+    for pat in check_privacy.PERSONAL_CODENAMES:
+        assert pat.lower().startswith(("aase7en", "asse7en")), (
+            "non-handle pattern hardcoded in public scanner — move it to "
+            "drive/personal/privacy-patterns.txt"
+        )
+
+
+def test_codename_allows_sibling_repo_url(tmp_path, monkeypatch):
+    monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
+    f = tmp_path / "page.md"
+    f.write_text("Repo: https://github.com/aase7en/env-wastewater-webapp (private)\n")
+
+    findings = check_privacy.scan(files=[f])
+
+    assert not any(x["kind"] == "codename" for x in findings)

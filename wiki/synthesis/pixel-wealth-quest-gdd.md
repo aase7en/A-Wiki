@@ -14,13 +14,13 @@ updated: 2026-06-04
 
 ## คำถามที่ตอบ
 
-"จะออกแบบ *Pixel Wealth Quest* — เกม pixel-art cozy ที่แปลงพฤติกรรมการออม/ลงทุนจริงให้เป็น gamification loop — เป็นโมดูลในเว็บบริษัท Sunday Estate อย่างไร โดย reuse ของที่มีอยู่ (Tide & Tally + PixelLab pipeline + A-Wiki) ให้มากที่สุด เบา ปลอดภัย และต่อยอดขายได้?"
+"จะออกแบบ *Pixel Wealth Quest* — เกม pixel-art cozy ที่แปลงพฤติกรรมการออม/ลงทุนจริงให้เป็น gamification loop — เป็นโมดูลในเว็บของบริษัทเจ้าของ (private) อย่างไร โดย reuse ของที่มีอยู่ (Tide & Tally + PixelLab pipeline + A-Wiki) ให้มากที่สุด เบา ปลอดภัย และต่อยอดขายได้?"
 
 > เอกสารนี้ประมวลผลจาก prompt ต้นฉบับ (`~/Downloads/gemini-code-1780419550203.md`) แล้วปรับให้ตรงสถานะจริงของโค้ดเบส (ดู [[8-bit-trading-rpg-blueprint]]). แผน execution เต็ม + handoff อยู่ที่ `pixel-wealth-quest/HANDOFF.md` ใน product repo.
 
 ## สรุป
 
-[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `<product-repo>/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **บ้านหลายห้อง → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ Sunday Estate).
+[verified 2026-06-03] *Pixel Wealth Quest* (PWQ) = **โมดูลเกม cozy life-sim ใหม่** ใน `<product-repo>/pixel-wealth-quest/` (React + Vite + TS + Phaser + Zustand) แยกจากเกม **Tide & Tally** (เรือโจรสลัดเทรดบอท) แต่ **reuse asset/ธีม/logic เดิมหนัก** และเชื่อมเป็น "โลกเดียว" ทางพื้นที่: **บ้านหลายห้อง → ฟาร์มติดทะเล → (อนาคต) เรือโจรสลัด**. ตัวเอกคือ **น้องซันเดย์** เด็กชายชุดกั๊กกรมท่า (โทนแบรนด์ของบริษัท).
 
 **กฎเหล็ก (Iron Law) — ไม่ต่อรอง:** เกมเป็น **visualization/reward layer เท่านั้น** — ไม่ถือ API key, ไม่ส่ง order, ไม่ทำ trade. ตัวเลขการเงินทั้งหมดเป็น **mock** ก่อน แล้วต่อ **feed จริงแบบ read-only** ภายหลังหลัง compliance (สืบทอดจาก [[8-bit-trading-rpg-blueprint]]).
 

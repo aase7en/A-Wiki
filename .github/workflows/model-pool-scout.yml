@@ -7,13 +7,29 @@ on:
     - cron: '0 */6 * * *'   # Every 6 hours
   workflow_dispatch:          # Manual trigger
 
+permissions:
+  contents: write   # required for the auto-commit push step
+
 jobs:
   scout-models:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      # Repo secrets are optional on forks / before setup — skip gracefully
+      # (with a visible notice) instead of failing every 6 hours.
+      - name: Check secrets configured
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::API-key secrets not configured in repo settings — model pool scan skipped"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run model pool scanner
+        if: steps.cfg.outputs.configured == 'true'
         run: python3 scripts/hermes/model-pool/model-pool-scanner.py
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
@@ -21,15 +37,17 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
       - name: Upload updated pool
+        if: steps.cfg.outputs.configured == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: model-pool
           path: scripts/hermes/model-pool/model-pool.json
 
       - name: Auto-commit if changed
+        if: steps.cfg.outputs.configured == 'true'
         run: |
           git config user.name "A-Wiki Bot"
-          git config user.email "bot@awiki.nousresearch.com"
+          git config user.email "bot@awiki.local"
           git add scripts/hermes/model-pool/model-pool.json
           git diff --staged --quiet || git commit -m "chore(swarm): auto-update model pool [skip ci]"
           git push

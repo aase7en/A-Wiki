@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-07-11",
+  "generated_at": "2026-07-12",
   "stats": {
-    "nodes": 541,
-    "edges": 1716,
+    "nodes": 537,
+    "edges": 1712,
     "edges_by_type": {
-      "wikilink": 1204,
-      "depends": 374,
+      "wikilink": 1202,
+      "depends": 372,
       "implements": 49,
       "mdlink": 49,
       "extends": 40
@@ -19,7 +19,7 @@
     "hubs": [
       {
         "path": "index-iot.md",
-        "score": 135
+        "score": 134
       },
       {
         "path": "index.md",
@@ -492,7 +492,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-11",
+      "title": "Review Report — 2026-07-12",
       "domain": "context"
     },
     {
@@ -653,11 +653,6 @@
     {
       "path": "wiki/entities/ai-tools/social-media-skills.md",
       "title": "Social Media Skills — Creator Workflow Source",
-      "domain": "ai-tools"
-    },
-    {
-      "path": "wiki/entities/ai-tools/sunday-estate.md",
-      "title": "Sunday Estate Co., Ltd.",
       "domain": "ai-tools"
     },
     {
@@ -898,11 +893,6 @@
     {
       "path": "wiki/entities/pharmacy/sp-drugstore-2020.md",
       "title": "S.P. Drugstore 2020 (ผู้จัดจำหน่าย)",
-      "domain": "pharmacy"
-    },
-    {
-      "path": "wiki/entities/pharmacy/sunday-estate-tax-knowledge.md",
-      "title": "Sunday Estate Tax Knowledge Base",
       "domain": "pharmacy"
     },
     {
@@ -1741,11 +1731,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "title": "ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
       "title": "เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย",
       "domain": "sources"
@@ -2282,7 +2267,7 @@
     },
     {
       "path": "wiki/synthesis/synth-good-uiux-practices.md",
-      "title": "<iframe src=\"https://projector.datacamp.com/?auto_play=pause&amp;projector_key=c — Synthesis",
+      "title": "Good UI/UX Practices — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2422,7 +2407,7 @@
     },
     {
       "path": "wiki/synthesis/synth-lora-getting-started-with-arduino-esp32-pico.md",
-      "title": "Table of Contents \\[[show](#)\\] — Synthesis",
+      "title": "LoRa Getting Started with Arduino / ESP32 / Pico — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2718,11 +2703,6 @@
     {
       "path": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
       "title": "[![Arduitronics](https://o.lnwfile.com/_/o/_raw/oj/ob/fq.png)](https://www.ardui — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "title": "Audio Player <audio src=\"https://www.techsourcegroups.com/wp-content/uploads/202 — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -4189,9 +4169,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
+      "to": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -7989,20 +7969,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/sunday-estate.md",
-      "to": "entities/ai-tools/a-wiki",
-      "type": "wikilink",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/sunday-estate.md",
-      "to": "wiki/entities/ai-tools/hermes-agent.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/entities/ai-tools/telegram-ai-router.md",
       "to": "wiki/sources/telegram-ai-router-design.md",
       "type": "depends",
@@ -10253,13 +10219,6 @@
       "from": "wiki/entities/pharmacy/sp-drugstore-2020.md",
       "to": "wiki/sources/pharmacy-context.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/pharmacy/sunday-estate-tax-knowledge.md",
-      "to": "wiki/sources/thai-tax-deduction-document-guide.md",
-      "type": "depends",
       "broken": false,
       "external": false
     },
@@ -14389,13 +14348,6 @@
     {
       "from": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
       "to": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
-      "to": "wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md",
       "type": "depends",
       "broken": false,
       "external": false

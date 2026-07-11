@@ -1,5 +1,4 @@
 ---
-> 2026-06-13 codex-poppy-javis: 13.3 done -- AnimalPanel + FarmScene animal render/click bridge + placeholder chicken/cow textures; targeted 53 tests + typecheck green. RESUME HERE -> 12.6 / 13.4 asset tickets.
 type: synthesis
 title: "Sunday Invest Moon — Cross-Agent Roadmap"
 slug: sunday-invest-moon-roadmap
@@ -8,6 +7,8 @@ sources: [pixel-wealth-quest-gdd]
 created: 2026-06-04
 updated: 2026-06-14
 ---
+
+> 2026-06-13 codex-poppy-javis: 13.3 done -- AnimalPanel + FarmScene animal render/click bridge + placeholder chicken/cow textures; targeted 53 tests + typecheck green. RESUME HERE -> 12.6 / 13.4 asset tickets.
 
 # Sunday Invest Moon — Roadmap (cross-agent handoff)
 
@@ -136,7 +137,7 @@ Foundation. Every later phase depends on this.
 - `A-Wiki/wiki/synthesis/pixel-wealth-quest-gdd.md` — add "Renamed to **Sunday Invest Moon** in Phase 2c.1" note
 - New copy: `<product-repo>/pixel-wealth-quest/ROADMAP.md` ← copy this file
 - New copy: `A-Wiki/wiki/synthesis/sunday-invest-moon-roadmap.md` ← copy this file
-**Tagline**: "AI Market Ventures" · **Footer**: "© 2006 Sunday Estate Co.,Ltd"
+**Tagline**: "AI Market Ventures" · **Footer**: "© 2006 <company> Co.,Ltd" (ชื่อจริงอยู่ใน product repo — private)
 **Done when**:
 - [x] No user-visible label still says "Pixel Wealth Quest"
 - [x] `grep -rln "Pixel Wealth Quest"` only matches internal comments / legacy ADR / historical headers
@@ -894,7 +895,7 @@ Promoted after the sale-ready mock/read-only preflight and prototype iframe smok
 **Goal**: Address the user's runtime polish list before the larger PixelLab/Gemini asset generation pass.
 **Done**:
 - [x] Title splash switched to `public/assets/title/sunday-invest-moon-splash-v002.jpg` from a local Downloads reference image; original archived at `A-Wiki/game-assets/references/sunday-invest-moon/title/splash-v002.png`.
-- [x] Title button moved higher so it does not overlap the `© 2006 Sunday Estate` footer area.
+- [x] Title button moved higher so it does not overlap the `© 2006 <company>` footer area.
 - [x] React HUD hidden on Title scene: no portfolio status, backpack, Worker-Bot, Debt, Sea, or control hint; only Phaser start button remains.
 - [x] App shell hardened for responsive dynamic viewport with `100svh`/`100dvh`, full-size canvas, and no horizontal overflow in title runtime QA.
 - [x] Living-room dogs are stationary by passing `wander:false` to `PetPack`; Farm dogs still wander.

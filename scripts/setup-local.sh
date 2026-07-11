@@ -234,7 +234,7 @@ setup_model_router_policy() {
 
 # ── 10. (optional) react-doctor — Claude Code skill for React audits ────────
 # Off by default. Enable with: INSTALL_REACT_DOCTOR=1 bash scripts/setup-local.sh
-# A-Wiki itself has no React; this benefits dream projects (Sunday Estate, etc.).
+# A-Wiki itself has no React; this benefits the React-based dream projects.
 # See: wiki/entities/ai-tools/react-doctor.md
 
 setup_react_doctor() {

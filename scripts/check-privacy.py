@@ -59,12 +59,14 @@ for _stream in (sys.stdout, sys.stderr):
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Codenames / handles to scrub. Add yours here when forking.
+# Codenames / handles to scrub. ONLY public-handle variants may live here —
+# company names, email local-parts, and real names go in the private
+# drive/personal/privacy-patterns.txt loader (never hardcoded in this public
+# script; enforced by tests/test_check_privacy.py).
 PERSONAL_CODENAMES = [
-    r"aase7en(?!/A-Wiki|\.github\.io)",  # github handle in repo URLs / Pages domain is OK
+    # github handle: own repo URLs / Pages domain are OK (public, intended)
+    r"aase7en(?!/A-Wiki|/env-wastewater-webapp|\.github\.io)",
     r"Asse7en",
-    r"sunday-estate",
-    r"richbusinessman",
 ]
 
 # Hardcoded home directory paths (any platform).
@@ -116,6 +118,7 @@ EMAIL_WHITELIST_DOMAINS = {
     "example.co.th",
     "etda.or.th",
     "pdpc.or.th",
+    "deepseek.com",   # public org contact in source summaries, not personal
 }
 
 # Substrings that mark a line as a template/example, not a real value.
@@ -141,6 +144,8 @@ SECRET_PATTERNS = [
 # Files we never scan (binaries, lock files, our own audit code).
 SKIP_PATHS = {
     "scripts/check-privacy.py",      # this file documents the patterns
+    "tests/test_check_privacy.py",   # fixtures are deliberate fake leaks
+    "docs/architecture/skill-architecture-handoff.md",  # verification grep cites patterns
     "CHANGELOG.md",                  # historical record may cite redacted artifacts
     "CLAUDE.md",                     # protected doc; scrub only with explicit user permission
 }
@@ -153,6 +158,7 @@ SKIP_PREFIXES = (
     "skills/claude-code/",
     "skills/delegation/",
     "skills/claude-thai/",
+    ".kilo/skills/",
 )
 SKIP_SUFFIXES = {
     ".db", ".sqlite", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".pdf",
@@ -299,7 +305,9 @@ def _is_system_user(match: re.Match) -> bool:
     """
     for user in match.groups():
         if user is not None:
-            return user in SYSTEM_USERS
+            # Dot-prefixed captures (/home/.cloudflared/) are config dirs
+            # living under a home mount, never a person's username.
+            return user.startswith(".") or user in SYSTEM_USERS
     return False
 
 

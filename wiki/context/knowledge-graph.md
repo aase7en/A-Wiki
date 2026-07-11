@@ -1,17 +1,17 @@
 # Knowledge Graph (auto-generated)
 
-_Generated: 2026-07-11_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
+_Generated: 2026-07-12_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
 
 ## Stats
 
-- **Nodes**: 541
-- **Edges**: 1716
+- **Nodes**: 537
+- **Edges**: 1712
 - **Broken links**: 11 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 18 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
-- `index-iot.md` (135 edges)
+- `index-iot.md` (134 edges)
 - `index.md` (102 edges)
 - `wiki/entities/iot/esp32.md` (58 edges)
 - `index-pharmacy.md` (37 edges)

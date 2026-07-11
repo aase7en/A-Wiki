@@ -5,7 +5,7 @@
 # Called by Claude when user says "เสร็จแล้ว" / "done" / "ทำเสร็จ"
 #
 # Usage:
-#   bash scripts/done.sh "Sunday Estate"      # fuzzy match, case-insensitive
+#   bash scripts/done.sh "Pharmacy App"       # fuzzy match, case-insensitive
 #   bash scripts/done.sh "[dream]"            # match entire tag
 #   bash scripts/done.sh "gen-index"          # match keyword in description
 #

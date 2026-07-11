@@ -32,7 +32,7 @@ react-doctor scan codebase React (Next.js, Vite, TanStack, RN, Expo) → detect 
 
 | Dream project | Stack | Benefit |
 |---------------|-------|---------|
-| Sunday Estate webapp | Next.js (probable) | state/effects audit, security, perf |
+| Company webapp (private) | Next.js (probable) | state/effects audit, security, perf |
 | Pharmacy App | TBD (อาจเป็น React Native + Expo) | mobile patterns |
 | IoT Dashboard | TBD | dashboard component review |
 

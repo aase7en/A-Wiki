@@ -92,7 +92,9 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 
 <script>
 // ── Config ──
-const HERMES_URL = 'https://awiki.sunday-estate.com';
+// Hermes endpoint is personal infra — never hardcode it in this public file.
+// Set once per browser: localStorage.setItem('AWIKI_HERMES_URL', 'https://...')
+const HERMES_URL = localStorage.getItem('AWIKI_HERMES_URL') || '';
 let _chatFiles = [];
 let _chatLoading = false;
 let _connected = false;

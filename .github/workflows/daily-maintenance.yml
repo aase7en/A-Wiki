@@ -5,6 +5,9 @@ on:
     - cron: '0 2 * * *'  # 9 AM Thai time
   workflow_dispatch:
 
+permissions:
+  contents: write   # required for the auto-commit push step
+
 jobs:
   maintain:
     runs-on: ubuntu-latest

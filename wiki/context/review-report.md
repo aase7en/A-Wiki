@@ -1,12 +1,12 @@
-# Review Report — 2026-07-11
+# Review Report — 2026-07-12
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 844
-- ⚠ Warnings: 274
-- ❌ Failures: 11
+- ✓ Passed: 839
+- ⚠ Warnings: 270
+- ❌ Failures: 10
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 265 more issue(s) below
+- … 260 more issue(s) below
 
 ---
 
@@ -44,7 +44,6 @@
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
 - wiki\entities\ai-tools\pake.md: broken link: [[entities/ai-tools/a-wiki]]
-- wiki\entities\ai-tools\sunday-estate.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
@@ -119,7 +118,6 @@
 - wiki\entities\ai-tools\pake.md: missing frontmatter key: title
 - wiki\entities\ai-tools\pocketbase.md: missing frontmatter key: title
 - wiki\entities\ai-tools\react-doctor.md: missing frontmatter key: title
-- wiki\entities\ai-tools\sunday-estate.md: missing frontmatter key: title
 - wiki\entities\ai-tools\telegram-ai-router.md: missing frontmatter key: title
 - wiki\entities\ai-tools\turbovec.md: missing frontmatter key: title
 - wiki\entities\ai-tools\zai-glm.md: missing frontmatter key: title
@@ -165,7 +163,6 @@
 - wiki\entities\pharmacy\drug-matching-system.md: missing frontmatter key: title
 - wiki\entities\pharmacy\pharmacy-business.md: missing frontmatter key: title
 - wiki\entities\pharmacy\sp-drugstore-2020.md: missing frontmatter key: title
-- wiki\entities\pharmacy\sunday-estate-tax-knowledge.md: missing frontmatter key: title
 - wiki\sources\thai-tax-deduction-document-guide.md: no frontmatter (missing --- delimiter)
 - wiki\synthesis\ai-driven-environmental-modeling.md: missing frontmatter key: title
 - wiki\synthesis\ai-for-drug-safety.md: missing frontmatter key: title
@@ -284,7 +281,6 @@
 - wiki\entities\ai-tools\pake.md: missing TL;DR line
 - wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
 - wiki\entities\ai-tools\react-doctor.md: missing TL;DR line
-- wiki\entities\ai-tools\sunday-estate.md: missing TL;DR line
 - wiki\entities\ai-tools\telegram-ai-router.md: missing TL;DR line
 - wiki\entities\ai-tools\turbovec.md: missing TL;DR line
 - wiki\entities\ai-tools\zai-glm.md: missing TL;DR line
@@ -330,14 +326,13 @@
 - wiki\entities\pharmacy\drug-matching-system.md: missing TL;DR line
 - wiki\entities\pharmacy\pharmacy-business.md: missing TL;DR line
 - wiki\entities\pharmacy\sp-drugstore-2020.md: missing TL;DR line
-- wiki\entities\pharmacy\sunday-estate-tax-knowledge.md: missing TL;DR line
 
 ---
 
-## ✓ Passed Checks (844 total)
+## ✓ Passed Checks (839 total)
 
-- **L2**: 349 passed
-- **L3**: 492 passed
+- **L2**: 347 passed
+- **L3**: 489 passed
 - **L6**: 3 passed
 
 ---
