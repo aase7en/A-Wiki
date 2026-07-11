@@ -13,11 +13,24 @@ Detects:
   - Known developer codenames / handles (configurable below)
   - Real API keys (sk-..., AIza..., gho_..., etc.)
   - GoogleDrive-* / OneDrive-* CloudStorage paths with account name in them
+  - Tracked-but-gitignored files (escaped-private-file bug class — a file
+    that got `git add -f`'d once and stayed tracked even though .gitignore
+    now excludes it)
+  - Extra P0 personal-data regexes, loaded at runtime from the private,
+    gitignored drive/personal/privacy-patterns.txt (never hardcoded here)
+
+Skips:
+  - Binary files (null-byte sniff on the first 8KB) — an .xlsx is never
+    scanned as text
+  - Font/OSS license boilerplate (*-OFL.txt, LICENSE*) for email checks only
 
 Safe patterns (whitelisted):
   - example.com, example.org, a-wiki.local domains
+  - .local / .ts.net hostnames (LAN mDNS, Tailscale MagicDNS) — not emails
+  - `ssh user@host` targets — not an email address
+  - bot@<anything> — a bot identity, not a personal email
   - `<your-...>`, `${...}`, `$HOME`, `~/...` template forms
-  - `aase7en/A-Wiki` (the GitHub handle in README badges — public, intended)
+  - `aase7en/A-Wiki` and `aase7en.github.io` (public, intended)
 
 Usage:
   python3 scripts/check-privacy.py             # exit 0 = clean
@@ -28,16 +41,27 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 
+# Emoji in status prints (✅ / 🚨) crash on non-UTF-8 consoles (Thai Windows =
+# cp874), turning a clean scan into a crash instead of a clean exit code.
+# Same fix as scripts/regen-skill-surfaces.py — degrade unencodable characters
+# instead of dying.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass  # non-reconfigurable stream (pipes/tests) — already safe
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Codenames / handles to scrub. Add yours here when forking.
 PERSONAL_CODENAMES = [
-    r"aase7en(?!/A-Wiki)",  # github handle in repo URLs is OK
+    r"aase7en(?!/A-Wiki|\.github\.io)",  # github handle in repo URLs / Pages domain is OK
     r"Asse7en",
     r"sunday-estate",
     r"richbusinessman",
@@ -67,6 +91,9 @@ SYSTEM_USERS: frozenset[str] = frozenset({
     "root",        # universal superuser (system, not personal)
     "nobody",      # unprivileged system account (nginx, etc.)
     "app", "appuser", "www-data", "wwwrun",  # common service accounts
+    # Doc-placeholder home paths, e.g. C:/Users/you/, /home/user/ — generic
+    # example usernames in READMEs/runbooks, never real people.
+    "name", "user", "work", "you",
 })
 
 # CloudStorage paths with account names embedded.
@@ -156,11 +183,109 @@ def should_skip(p: Path) -> bool:
     return False
 
 
+EMAIL_WHITELIST_DOMAIN_SUFFIXES = (
+    ".local",   # mDNS / LAN hostnames (umbrel.local, myhost.local) — not real email
+    ".ts.net",  # Tailscale MagicDNS hostnames (host.tailXXXX.ts.net)
+)
+
+
 def email_is_personal(addr: str) -> bool:
+    local = addr.split("@", 1)[0].lower() if "@" in addr else ""
     domain = addr.split("@", 1)[1].lower() if "@" in addr else ""
     if domain in EMAIL_WHITELIST_DOMAINS:
         return False
+    if domain.endswith(EMAIL_WHITELIST_DOMAIN_SUFFIXES):
+        return False
+    if local == "bot":  # bot@<anything> — a bot identity, not a personal email
+        return False
     return True
+
+
+_SSH_TARGET_PREFIX_RE = re.compile(r"(?:^|\s)ssh\s+$")
+
+
+def _preceded_by_ssh(line: str, match_start: int) -> bool:
+    """True if the text right before an email-shaped match is ``ssh ``.
+
+    ``ssh user@host`` names an SSH target, not an email address — e.g.
+    ``ssh umbrel@umbrel-1.tail<id>.ts.net`` in docs/runbooks/pi5-quick-start.md.
+    """
+    return bool(_SSH_TARGET_PREFIX_RE.search(line[:match_start]))
+
+
+def _is_license_like(rel: str) -> bool:
+    """Font/OSS license files carry example emails in their own boilerplate
+    (SIL OFL, MIT, etc.) — not repo-owner personal data. Skip email checks
+    for them (only email checks — other kinds still apply)."""
+    name = Path(rel).name
+    if name.upper().startswith("LICENSE"):
+        return True
+    if name.endswith("-OFL.txt"):
+        return True
+    return False
+
+
+def is_binary(path: Path, sniff_bytes: int = 8192) -> bool:
+    """True if the file looks binary (a NUL byte in the first N bytes).
+
+    Prevents false positives like an .xlsx being flagged for "containing an
+    email" when the match is actually inside compressed/binary bytes.
+    """
+    try:
+        with path.open("rb") as fh:
+            chunk = fh.read(sniff_bytes)
+    except OSError:
+        return False
+    return b"\x00" in chunk
+
+
+PRIVACY_PATTERNS_ENV = "AWIKI_PRIVACY_PATTERNS_FILE"
+DEFAULT_PRIVACY_PATTERNS_FILE = REPO_ROOT / "drive" / "personal" / "privacy-patterns.txt"
+
+
+def load_extra_personal_patterns(path: "Path | None" = None) -> list["re.Pattern[str]"]:
+    """Load extra personal-data regexes from a private, gitignored file.
+
+    Public-safe repo rule: real name/address/PII patterns must NEVER be
+    hardcoded in this public script. Instead, each user drops their own
+    regexes (one per line; blank lines and ``#``-prefixed lines are skipped)
+    into ``drive/personal/privacy-patterns.txt`` — already gitignored via the
+    ``drive`` and ``drive/personal/`` rules in .gitignore — and the scanner
+    picks them up automatically. Override the file location with
+    ``$AWIKI_PRIVACY_PATTERNS_FILE`` (used by tests) or the ``path`` argument.
+    """
+    if path is None:
+        env_override = os.environ.get(PRIVACY_PATTERNS_ENV)
+        path = Path(env_override) if env_override else DEFAULT_PRIVACY_PATTERNS_FILE
+    if not path.exists():
+        return []
+    patterns: list[re.Pattern[str]] = []
+    for raw in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        try:
+            patterns.append(re.compile(line))
+        except re.error:
+            continue
+    return patterns
+
+
+def tracked_but_ignored() -> list[str]:
+    """Tracked files that WOULD be ignored under the current .gitignore rules.
+
+    This is the "escaped-private-file" bug class (the session-memory.md
+    incident): a gitignored path got ``git add -f``'d once and silently stays
+    tracked forever after, even though .gitignore says it shouldn't be.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "-ci", "--exclude-standard"],
+            cwd=REPO_ROOT, check=True, capture_output=True, text=True,
+        ).stdout.splitlines()
+    except (subprocess.CalledProcessError, OSError):
+        return []
+    return [p for p in out if p]
 
 
 def _is_system_user(match: re.Match) -> bool:
@@ -178,16 +303,34 @@ def _is_system_user(match: re.Match) -> bool:
     return False
 
 
-def scan(verbose: bool = False) -> list[dict]:
+def scan(
+    verbose: bool = False,
+    files: "list[Path] | None" = None,
+    extra_patterns_path: "Path | None" = None,
+) -> list[dict]:
+    """Scan tracked files (or an injected ``files`` list, for tests) for
+    personal/private data.
+
+    ``files=None`` (the default / real CLI usage) scans every git-tracked
+    file AND runs the repo-wide ``tracked_but_ignored()`` check. Passing an
+    explicit ``files`` list (as tests do) scopes the scan to just those
+    paths and skips the repo-wide check, which needs a real git repo rooted
+    at ``REPO_ROOT``.
+    """
     findings: list[dict] = []
     codename_re = re.compile("|".join(PERSONAL_CODENAMES))
     home_re = re.compile("|".join(HOME_PATH_PATTERNS))
     cloud_re = re.compile("|".join(CLOUDSTORAGE_PATTERNS))
     email_re = re.compile(EMAIL_PATTERN)
     secret_res = [(re.compile(p), label) for p, label in SECRET_PATTERNS]
+    extra_patterns = load_extra_personal_patterns(extra_patterns_path)
 
-    for path in tracked_files():
+    scan_files = tracked_files() if files is None else files
+
+    for path in scan_files:
         if should_skip(path):
+            continue
+        if is_binary(path):
             continue
         try:
             text = path.read_text(encoding="utf-8", errors="ignore")
@@ -195,6 +338,7 @@ def scan(verbose: bool = False) -> list[dict]:
             continue
 
         rel = path.relative_to(REPO_ROOT).as_posix()
+        license_like = _is_license_like(rel)
         for lineno, line in enumerate(text.splitlines(), 1):
             for m in codename_re.finditer(line):
                 findings.append({
@@ -215,12 +359,15 @@ def scan(verbose: bool = False) -> list[dict]:
                     "file": rel, "line": lineno, "kind": "cloudstorage",
                     "match": m.group(0), "context": line.strip()[:160],
                 })
-            for m in email_re.finditer(line):
-                if email_is_personal(m.group(0)):
-                    findings.append({
-                        "file": rel, "line": lineno, "kind": "email",
-                        "match": m.group(0), "context": line.strip()[:160],
-                    })
+            if not license_like:
+                for m in email_re.finditer(line):
+                    if _preceded_by_ssh(line, m.start()):
+                        continue
+                    if email_is_personal(m.group(0)):
+                        findings.append({
+                            "file": rel, "line": lineno, "kind": "email",
+                            "match": m.group(0), "context": line.strip()[:160],
+                        })
             for rx, label in secret_res:
                 for m in rx.finditer(line):
                     # Skip obvious template values like `sk-or-v1-YOUR_KEY_HERE`
@@ -231,6 +378,21 @@ def scan(verbose: bool = False) -> list[dict]:
                         "match": m.group(0)[:20] + "…",
                         "context": "(redacted)",
                     })
+            for rx in extra_patterns:
+                for m in rx.finditer(line):
+                    findings.append({
+                        "file": rel, "line": lineno, "kind": "P0/personal-data",
+                        "match": m.group(0), "context": line.strip()[:160],
+                    })
+
+    if files is None:
+        for rel in tracked_but_ignored():
+            findings.append({
+                "file": rel, "line": 0, "kind": "tracked-but-gitignored",
+                "match": rel,
+                "context": "tracked in git but matches current .gitignore rules "
+                           "— escaped-private-file risk",
+            })
 
     return findings
 
@@ -259,8 +421,17 @@ def main() -> int:
     for f in findings:
         by_kind.setdefault(f["kind"], []).append(f)
 
+    # High-priority kinds (structural leaks / explicit PII) surface first,
+    # ahead of the alphabetically-sorted rest.
+    _HIGH_PRIORITY_KINDS = ("tracked-but-gitignored", "P0/personal-data")
+
+    def _kind_sort_key(kind: str) -> tuple[int, str]:
+        if kind in _HIGH_PRIORITY_KINDS:
+            return (0, str(_HIGH_PRIORITY_KINDS.index(kind)))
+        return (1, kind)
+
     print(f"🚨 check-privacy: {len(findings)} finding(s) across {len({f['file'] for f in findings})} file(s)\n")
-    for kind in sorted(by_kind):
+    for kind in sorted(by_kind, key=_kind_sort_key):
         items = by_kind[kind]
         print(f"── {kind} ({len(items)}) ──")
         if args.verbose:
