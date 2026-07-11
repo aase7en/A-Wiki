@@ -115,8 +115,8 @@ AMK 650mg       AMK 625 (Amox+Clav625)   Amox500+…         ✅ (100%)
 betadine 15ml   BETADINE 15ml            15ml              ✅ (92%)
 ```
 
-Excel: `wiki/entities/pharmacy/exports/order_YYYYMMDD_HHMMSS.xlsx`
-History: `wiki/entities/pharmacy/order-history.json` (append per session)
+Excel: `drive/pharmacy/exports/order_YYYYMMDD_HHMMSS.xlsx`
+History: `drive/pharmacy/order-history.json` (append per session)
 LINE format: copy-paste ได้ทันที พร้อม `___` ช่องกรอกจำนวน
 
 ---
@@ -141,10 +141,11 @@ wiki/entities/pharmacy/drugs.db
 | ไฟล์ | หน้าที่ |
 |------|---------|
 | `raw/pharmacy/sp_drugs_full_3760.json` | ฐานข้อมูล SP (immutable) |
-| `wiki/entities/pharmacy/alternative-source-items.json` | รายการ verified-search (อัปเดตได้) |
-| `wiki/entities/pharmacy/drugs.db` | SQLite compiled (auto-rebuilt) |
-| `wiki/entities/pharmacy/order-history.json` | ประวัติการสั่งทุก session |
-| `wiki/entities/pharmacy/exports/` | ไฟล์ CSV/Excel ที่ export |
+| `drive/pharmacy/alternative-source-items.json` | รายการ verified-search (อัปเดตได้; real business data → drive/, ดู `scripts/drive_path.py::get_pharmacy_dir()`) |
+| `wiki/entities/pharmacy/drugs.db` | SQLite compiled (auto-rebuilt, gitignored) |
+| `drive/pharmacy/order-history.json` | ประวัติการสั่งทุก session |
+| `drive/pharmacy/exports/` | ไฟล์ CSV/Excel ที่ export |
+| `drive/pharmacy/deliveries/` | ใบส่งสินค้า (invoice JSON) สำหรับ `compare_delivery.py` |
 | `scripts/build_pharmacy_db.py` | Build/rebuild drugs.db จาก JSON |
 | `scripts/pharmacy_lookup.py` | Lookup + fuzzy match + export + history |
 | `.claude/hooks/build-pharmacy-db.sh` | Auto-rebuild hook (SessionStart) |

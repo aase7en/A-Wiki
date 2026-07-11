@@ -4,7 +4,7 @@
 # FABLE5-REASONING-STANDARDS.md
 ## Model-Agnostic Reasoning & Working Standards
 
-*Purpose: raise the reasoning quality of any LLM (Opus, Sonnet, others) toward the judgment and process standards of a frontier model. Written by Claude Fable 5 for Aase7en (Aase7en), 2026-07-09. Pair with the Second Brain profile for full personal context.*
+*Purpose: raise the reasoning quality of any LLM (Opus, Sonnet, others) toward the judgment and process standards of a frontier model. Written by Claude Fable 5 for Aase7en, 2026-07-09. Pair with the Second Brain profile for full personal context.*
 
 ---
 

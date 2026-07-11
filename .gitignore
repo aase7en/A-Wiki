@@ -136,6 +136,16 @@ raw/
 drive
 .drive-path
 
+# --- Real pharmacy business data — lives in drive/pharmacy/ only (Iron Law #6) ---
+# Delivery invoices, order history, verified-search items, and exports are real
+# business records, not wiki knowledge. Scripts resolve them via
+# scripts/drive_path.py::get_pharmacy_dir(). Keep these ignored even if a stale
+# script writes back into wiki/entities/pharmacy/ by mistake.
+wiki/entities/pharmacy/deliveries/
+wiki/entities/pharmacy/order-history.json
+wiki/entities/pharmacy/alternative-source-items.json
+wiki/entities/pharmacy/exports/
+
 # --- Personal / per-user artifacts (untracked since v2026.05.0 for public-clone safety) ---
 # Session journals, NotebookLM exports, and other operational logs belong on
 # the user's machine, not in the public repo. See SECURITY.md.
@@ -152,15 +162,24 @@ scripts/personal/
 log.md
 session-memory.md
 wiki/context/session-memory.md
+wiki/context/session-memory-*.md
+wiki/context/session-summary-*.md
+!wiki/context/session-memory.md.example
 handoff.md
 goals.md
 !handoff.md.example
 !goals.md.example
 inw-wiki-critique.md
 exports/notebooklm/
-core-knowledge/exports/
 *.local.md
 .A-Wiki-config
+
+# --- docs/handoff/ — cross-agent handoff notes (local/private, may contain
+# machine paths + in-progress task context; see docs/protocols/cross-agent-plan-handoff.md)
+docs/handoff/
+
+# --- .local/ — machine-local personal data (profile.md, session-memory.md) ---
+.local/
 
 # --- Archive / Downloads ---
 *.zip

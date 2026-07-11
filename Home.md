@@ -34,7 +34,6 @@ bash agent-skills/automations/run-task.sh scout-models
 | [AGENTS.md](AGENTS.md) | Agent instruction manifest — read by every AI agent |
 | [CLAUDE.md](CLAUDE.md) | Session rules and enforcement protocol |
 | [agent-skills/](agent-skills/README.md) | Active skill layer (debug-mantra, scrutinize, management-talk, model-scouter) |
-| [core-knowledge/](core-knowledge/README.md) | Safeguarded knowledge archive (read-only) |
 | [scripts/](scripts/) | Utility scripts (link-my-skills, agent-switch, sync, graph builders) |
 
 ## 🛡️ Iron Laws (Unbreachable)

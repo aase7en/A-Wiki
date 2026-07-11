@@ -119,7 +119,66 @@ def get_ocr_feedback_dir() -> Path:
     return p
 
 
+class DriveNotLinkedError(RuntimeError):
+    """Raised when drive/ has no real link and only the emergency
+    ~/.a-wiki-data fallback is available — used by callers that hold real
+    (non-recreatable) business data and must not silently write into an
+    unsynced, machine-local fallback directory."""
+
+
+def is_drive_linked() -> bool:
+    """Return True if drive/ resolves to a real symlink/junction, an actual
+    directory committed at REPO_ROOT/drive, or a valid .drive-path override —
+    i.e. anything other than the ~/.a-wiki-data emergency fallback."""
+    link = REPO_ROOT / "drive"
+    if link.is_symlink() or is_reparse_point(link):
+        return path_exists(resolve_link_target(link))
+
+    try:
+        is_dir = link.is_dir()
+    except OSError:
+        is_dir = False
+    if is_dir and path_exists(link):
+        return True
+
+    cfg = REPO_ROOT / ".drive-path"
+    if path_exists(cfg):
+        p = Path(cfg.read_text(encoding="utf-8").strip())
+        if path_exists(p):
+            return True
+
+    return False
+
+
+def get_pharmacy_dir(create: bool = True) -> Path:
+    """Return drive/pharmacy/ — real pharmacy business data (delivery
+    invoices, order history, alternative-source items, exports).
+
+    Unlike get_waste_reports_dir()/get_ocr_feedback_dir(), this does NOT fall
+    back to the unsynced ~/.a-wiki-data emergency directory: pharmacy records
+    are real business data, not regenerable cache, so silently writing them
+    to a machine-local directory that never syncs would risk quietly
+    fragmenting/losing order history across devices. Raises
+    DriveNotLinkedError with setup instructions instead.
+    """
+    if not is_drive_linked():
+        raise DriveNotLinkedError(
+            "drive/ is not linked — pharmacy scripts need real, synced business "
+            "data storage (order history, delivery invoices) and refuse to fall "
+            "back to an unsynced local directory.\n"
+            "Fix with one of:\n"
+            "  bash scripts/setup-cloud-link.sh --auto\n"
+            "  bash scripts/setup-cloud-link.sh --status   # diagnose\n"
+            "  echo /path/to/your/drive > .drive-path       # manual override"
+        )
+    base = get_drive_root() / "pharmacy"
+    if create:
+        base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
 if __name__ == "__main__":
     print(f"Drive root: {get_drive_root()}")
+    print(f"Drive linked: {is_drive_linked()}")
     print(f"Waste reports: {get_waste_reports_dir()}")
     print(f"OCR feedback: {get_ocr_feedback_dir()}")

@@ -22,12 +22,34 @@ import sqlite3, json, re, sys, csv, pathlib, argparse
 from datetime import datetime
 from difflib import SequenceMatcher
 
-ROOT         = pathlib.Path(__file__).parent.parent
-DB_PATH      = ROOT / "wiki/entities/pharmacy/drugs.db"
-ALT_JSON     = ROOT / "wiki/entities/pharmacy/alternative-source-items.json"
-HISTORY_JSON = ROOT / "wiki/entities/pharmacy/order-history.json"
-EXPORTS_DIR  = ROOT / "wiki/entities/pharmacy/exports"
-ALIASES_MD   = ROOT / "wiki/concepts/pharmacy/drug-aliases.md"
+ROOT = pathlib.Path(__file__).parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+from drive_path import get_pharmacy_dir, DriveNotLinkedError  # noqa: E402
+
+DB_PATH    = ROOT / "wiki/entities/pharmacy/drugs.db"
+ALIASES_MD = ROOT / "wiki/concepts/pharmacy/drug-aliases.md"
+
+
+def _pharmacy_path(filename: str) -> pathlib.Path:
+    """Resolve a real pharmacy business-data file under drive/pharmacy/.
+
+    Real business records (order history, delivery invoices, exports) live
+    only in drive/pharmacy/ — never in the tracked wiki/ tree. Raises
+    DriveNotLinkedError with setup instructions if drive/ isn't linked; callers
+    that mutate business data should let this propagate and exit(1) rather
+    than silently writing into an unsynced fallback directory.
+    """
+    return get_pharmacy_dir() / filename
+
+
+def _require_pharmacy_path(filename: str, action: str) -> pathlib.Path:
+    """Like _pharmacy_path(), but prints a clear error + exits(1) on failure
+    instead of raising — for CLI entry points (--save/--export)."""
+    try:
+        return _pharmacy_path(filename)
+    except DriveNotLinkedError as e:
+        print(f"⚠️  Cannot {action}: {e}", file=sys.stderr)
+        sys.exit(1)
 
 SHOP_NAME = "ร้านภูฟาร์มาซี"
 SHOP_ADDR = "บางปูใหม่ จ.สมุทรปราการ"
@@ -364,14 +386,15 @@ def search_db(conn: sqlite3.Connection, query: str, top_n: int = 3):
 
 
 def add_to_alt_db(item: dict):
+    alt_json = _require_pharmacy_path("alternative-source-items.json", "update verified-search DB")
     data = []
-    if ALT_JSON.exists():
-        with open(ALT_JSON, encoding="utf-8") as f:
+    if alt_json.exists():
+        with open(alt_json, encoding="utf-8") as f:
             data = json.load(f)
     existing = {norm(d["name"]) for d in data}
     if norm(item["name"]) not in existing:
         data.append(item)
-        with open(ALT_JSON, "w", encoding="utf-8") as f:
+        with open(alt_json, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         return True
     return False
@@ -562,9 +585,10 @@ def print_line_format(matched: list, candidates: list, not_found: list):
 # ── Export: CSV ──────────────────────────────────────────────────────────────
 
 def export_csv(matched: list, candidates: list, not_found: list) -> pathlib.Path:
-    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    exports_dir = _require_pharmacy_path("exports", "export CSV")
+    exports_dir.mkdir(parents=True, exist_ok=True)
     ts   = datetime.now().strftime("%Y%m%d_%H%M%S")
-    path = EXPORTS_DIR / f"order_{ts}.csv"
+    path = exports_dir / f"order_{ts}.csv"
 
     rows, seq = [], 1
     for r in sorted(matched, key=lambda x: (x.get("category_code",""), x["matched"].lower())):
@@ -602,9 +626,10 @@ def export_excel(matched: list, candidates: list, not_found: list) -> pathlib.Pa
         print("⚠️  openpyxl not installed → pip install openpyxl")
         sys.exit(1)
 
-    EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    exports_dir = _require_pharmacy_path("exports", "export Excel")
+    exports_dir.mkdir(parents=True, exist_ok=True)
     ts   = datetime.now().strftime("%Y%m%d_%H%M%S")
-    path = EXPORTS_DIR / f"order_{ts}.xlsx"
+    path = exports_dir / f"order_{ts}.xlsx"
 
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -704,9 +729,10 @@ def export_excel(matched: list, candidates: list, not_found: list) -> pathlib.Pa
 # ── Order history ─────────────────────────────────────────────────────────────
 
 def save_history(items: list[str], matched: list, candidates: list, not_found: list):
+    history_json = _require_pharmacy_path("order-history.json", "save order history")
     data: list = []
-    if HISTORY_JSON.exists():
-        with open(HISTORY_JSON, encoding="utf-8") as f:
+    if history_json.exists():
+        with open(history_json, encoding="utf-8") as f:
             try: data = json.load(f)
             except Exception: data = []
 
@@ -737,9 +763,9 @@ def save_history(items: list[str], matched: list, candidates: list, not_found: l
         "items":      all_items,
     })
 
-    with open(HISTORY_JSON, "w", encoding="utf-8") as f:
+    with open(history_json, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"📝 บันทึกประวัติแล้ว: {HISTORY_JSON.name}  (รวม {len(data)} session)")
+    print(f"📝 บันทึกประวัติแล้ว: {history_json.name}  (รวม {len(data)} session)")
 
 
 # ── Main lookup ───────────────────────────────────────────────────────────────

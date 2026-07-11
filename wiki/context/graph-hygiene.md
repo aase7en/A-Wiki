@@ -7,10 +7,10 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 540 |
+| Nodes | 539 |
 | Edges | 1713 |
 | Broken links | 11 |
-| Orphans | 18 |
+| Orphans | 17 |
 
 ## Broken links by source domain
 
@@ -24,7 +24,7 @@
 
 | Domain | Count |
 |---|---:|
-| context | 16 |
+| context | 15 |
 | ai-tools | 2 |
 
 ## Orphan samples

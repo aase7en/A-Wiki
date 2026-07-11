@@ -4,17 +4,26 @@ Build pharmacy SQLite database from JSON source files.
 Run automatically by SessionStart hook when DB is stale.
 
 Sources:
-  raw/pharmacy/sp_drugs_full_3760.json          → source = 'sp_2020'
-  wiki/entities/pharmacy/alternative-source-items.json → source = 'verified_search'
+  raw/pharmacy/sp_drugs_full_3760.json         → source = 'sp_2020'
+  drive/pharmacy/alternative-source-items.json → source = 'verified_search'
 Output:
-  wiki/entities/pharmacy/drugs.db               (SQLite + FTS5)
+  wiki/entities/pharmacy/drugs.db              (SQLite + FTS5)
 """
 import json, sqlite3, pathlib, sys, time
 
 ROOT = pathlib.Path(__file__).parent.parent
-DB_PATH   = ROOT / "wiki/entities/pharmacy/drugs.db"
-SP_JSON   = ROOT / "raw/pharmacy/sp_drugs_full_3760.json"
-ALT_JSON  = ROOT / "wiki/entities/pharmacy/alternative-source-items.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+from drive_path import get_pharmacy_dir, DriveNotLinkedError  # noqa: E402
+
+DB_PATH  = ROOT / "wiki/entities/pharmacy/drugs.db"
+SP_JSON  = ROOT / "raw/pharmacy/sp_drugs_full_3760.json"
+
+try:
+    ALT_JSON = get_pharmacy_dir() / "alternative-source-items.json"
+except DriveNotLinkedError as e:
+    print(f"⚠️  {e}", file=sys.stderr)
+    print("⚠️  Continuing without verified-search items (drive/ not linked).", file=sys.stderr)
+    ALT_JSON = None
 
 SCHEMA = """
 PRAGMA journal_mode=WAL;
@@ -95,7 +104,7 @@ def build():
 
     # ── Verified-search items ────────────────────────────────────────────────
     alt_count = 0
-    if ALT_JSON.exists():
+    if ALT_JSON is not None and ALT_JSON.exists():
         with open(ALT_JSON, encoding="utf-8") as f:
             alt_data = json.load(f)
 
