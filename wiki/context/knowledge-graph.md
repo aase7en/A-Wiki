@@ -4,8 +4,8 @@ _Generated: 2026-07-11_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 ## Stats
 
-- **Nodes**: 540
-- **Edges**: 1713
+- **Nodes**: 541
+- **Edges**: 1716
 - **Broken links**: 11 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 18 (run `python3 scripts/query-graph.py --orphans`)
 

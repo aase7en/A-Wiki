@@ -10,7 +10,7 @@
 
 ## Stats
 
-- Entities: **28**
+- Entities: **29**
 - Concepts: **32**
 
 ---
@@ -38,6 +38,7 @@
 | `model-capability-bench` | ระบบจัดลำดับ model ตาม **ความสามารถ (capability)** ก่อนแจกจ่ายงา… |
 | `news-intelligence-pipeline` | Layer 1: DATA COLLECTION 🆓 Cron (no_agent, ทุก 4h) RSS + free AP… |
 | `ollama` | Ollama เป็น runtime สำหรับรัน LLM แบบ local บนเครื่องตัวเอง — แพ… |
+| `omniroute` | OmniRoute เป็น open-source local gateway ที่รวม LLM provider หลา… |
 | `openmed` | OpenMed คือ open-source healthcare AI framework ที่ประมวลผล clin… |
 | `pake` | Pake แปลงหน้าเว็บใดๆ ให้เป็น native desktop app (.dmg/.exe/.AppI… |
 | `pocketbase` | PocketBase คือ open-source backend framework ที่รวม SQLite datab… |

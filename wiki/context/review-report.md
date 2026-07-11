@@ -4,8 +4,8 @@
 
 ## Summary
 
-- ✓ Passed: 843
-- ⚠ Warnings: 272
+- ✓ Passed: 844
+- ⚠ Warnings: 274
 - ❌ Failures: 11
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 263 more issue(s) below
+- … 265 more issue(s) below
 
 ---
 
@@ -114,6 +114,7 @@
 - wiki\entities\ai-tools\model-capability-bench.md: missing frontmatter key: title
 - wiki\entities\ai-tools\news-intelligence-pipeline.md: no frontmatter (missing --- delimiter)
 - wiki\entities\ai-tools\ollama.md: missing frontmatter key: title
+- wiki\entities\ai-tools\omniroute.md: missing frontmatter key: title
 - wiki\entities\ai-tools\openmed.md: missing frontmatter key: title
 - wiki\entities\ai-tools\pake.md: missing frontmatter key: title
 - wiki\entities\ai-tools\pocketbase.md: missing frontmatter key: title
@@ -278,6 +279,7 @@
 - wiki\entities\ai-tools\model-capability-bench.md: missing TL;DR line
 - wiki\entities\ai-tools\news-intelligence-pipeline.md: missing TL;DR line
 - wiki\entities\ai-tools\ollama.md: missing TL;DR line
+- wiki\entities\ai-tools\omniroute.md: missing TL;DR line
 - wiki\entities\ai-tools\openmed.md: missing TL;DR line
 - wiki\entities\ai-tools\pake.md: missing TL;DR line
 - wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
@@ -332,10 +334,10 @@
 
 ---
 
-## ✓ Passed Checks (843 total)
+## ✓ Passed Checks (844 total)
 
 - **L2**: 349 passed
-- **L3**: 491 passed
+- **L3**: 492 passed
 - **L6**: 3 passed
 
 ---

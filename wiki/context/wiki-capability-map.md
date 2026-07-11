@@ -7,7 +7,7 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 508 |
+| Wiki pages | 509 |
 | Owned skills | 43 |
 | Script capabilities | 13 |
 | Protocols/runbooks | 55 |
@@ -17,7 +17,7 @@
 
 | Type | Count |
 |---|---:|
-| Entities | 74 |
+| Entities | 75 |
 | Concepts | 59 |
 | Synthesis | 206 |
 | Sources | 169 |

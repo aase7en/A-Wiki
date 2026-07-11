@@ -1,10 +1,10 @@
 {
   "generated_at": "2026-07-11",
   "stats": {
-    "nodes": 540,
-    "edges": 1713,
+    "nodes": 541,
+    "edges": 1716,
     "edges_by_type": {
-      "wikilink": 1201,
+      "wikilink": 1204,
       "depends": 374,
       "implements": 49,
       "mdlink": 49,
@@ -492,7 +492,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-10",
+      "title": "Review Report — 2026-07-11",
       "domain": "context"
     },
     {
@@ -623,6 +623,11 @@
     {
       "path": "wiki/entities/ai-tools/ollama.md",
       "title": "Ollama",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/omniroute.md",
+      "title": "OmniRoute",
       "domain": "ai-tools"
     },
     {
@@ -7854,6 +7859,27 @@
       "from": "wiki/entities/ai-tools/ollama.md",
       "to": "wiki/sources/ollama-pi5.md",
       "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/omniroute.md",
+      "to": "wiki/entities/ai-tools/zai-glm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/omniroute.md",
+      "to": "wiki/entities/ai-tools/live-dashboard.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/omniroute.md",
+      "to": "wiki/entities/ai-tools/model-capability-bench.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },

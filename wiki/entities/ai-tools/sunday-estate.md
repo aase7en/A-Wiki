@@ -14,7 +14,7 @@ verify_tool: training
 **ประเภท**: บริษัทจำกัด  
 **สถานะ**: ดำเนินกิจการ  
 **ก่อตั้ง**: 2006  
-**เจ้าของ**: Aase7en (Aase7en)  
+**เจ้าของ**: Aase7en  
 **Domain**: Sunday-estate.com (Google Workspace)
 
 ## ภาพรวม
