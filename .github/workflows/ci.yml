@@ -71,7 +71,16 @@ jobs:
           python scripts/regen-skill-surfaces.py --check
 
       - name: Unit tests
-        run: python -m pytest -q
+        # Surface failing test ids as ::error annotations so they are
+        # readable via the public check-runs API (logs need auth).
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tee pytest-out.txt || {
+            grep -E "^(FAILED|ERROR) " pytest-out.txt | head -20 | while IFS= read -r line; do
+              echo "::error::${line}"
+            done
+            exit 1
+          }
 
       - name: Readiness smoke
         run: python scripts/verify-awiki-ready.py --skip-remote --skip-evals
