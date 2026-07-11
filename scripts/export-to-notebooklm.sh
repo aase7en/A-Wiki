@@ -16,9 +16,16 @@
 
 set -euo pipefail
 
-# Resolve repo root (script may be run from anywhere)
+# Resolve repo root (script may be run from anywhere).
+# git-based: when invoked via the scripts/wiki/ SYMLINK, BASH_SOURCE keeps
+# the symlink's directory, so "${SCRIPT_DIR}/.." landed on scripts/ and the
+# export silently bundled from a nonexistent tree (11-line empty bundles).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "${REPO_ROOT}" ] || [ ! -d "${REPO_ROOT}/wiki" ]; then
+  echo "ERROR: cannot locate A-Wiki repo root from ${SCRIPT_DIR}" >&2
+  exit 1
+fi
 cd "${REPO_ROOT}"
 
 OUT_DIR="exports/notebooklm"

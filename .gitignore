@@ -23,6 +23,14 @@
 *secrets*
 !scripts/lib/drive_secrets.py
 !scripts/hooks/check_secret_leak.py
+# Essential tracked scripts caught by the name globs above (no secrets inside):
+!scripts/hermes/sync-secrets-from-drive.sh
+!scripts/hermes/sync-secrets-to-drive.sh
+!scripts/hooks/check_token_waste.py
+!scripts/set-admin-password.py
+# Registered skills whose names contain "token" (caught by *token*):
+!skills/ecosystem/evm-token-decimals/
+!skills/ecosystem/token-budget-advisor/
 
 # --- OS ---
 .DS_Store
@@ -117,10 +125,16 @@ skills-registry.draft.json
 .kilo/plans/
 .kilo/worktrees/
 .kilo/agent-manager.json
-.agents/
+# Root-anchored: unanchored ".agents/" also swallowed vendor-internal
+# .agents/ dirs inside skills/_upstream/ecc (83 tracked files flagged as
+# escaped-ignored). Vendor snapshots are tracked by design.
+/.agents/*
 # Exception: react-doctor is a public bootstrap skill (INSTALL_REACT_DOCTOR=1),
-# tracked intentionally — not machine-local state.
-!.agents/skills/react-doctor/
+# tracked intentionally — not machine-local state. (Dir-level re-include
+# chain required: a child negation is dead if its parent dir stays excluded.)
+!/.agents/skills/
+/.agents/skills/*
+!/.agents/skills/react-doctor/
 # .gemini/settings.json is tracked by design (public skill config);
 # only ignore local overrides.
 .gemini/settings.local.json
@@ -170,7 +184,8 @@ goals.md
 !handoff.md.example
 !goals.md.example
 inw-wiki-critique.md
-exports/notebooklm/
+exports/notebooklm/*
+!exports/notebooklm/README.md
 *.local.md
 .A-Wiki-config
 
@@ -205,6 +220,16 @@ docker-compose.override.yml
 # --- Agent / AI configs with secrets ---
 .claude*
 .gemini*
+# Shared-by-design pieces under those globs (cross-device sync Layer 1):
+!.claude/
+.claude/*
+!.claude/hooks/
+!.claude/agents/
+!.claude/settings.json
+!.claude-plugin/
+!.gemini/
+.gemini/*
+!.gemini/settings.json
 
 # .clinerules/ — directory with tracked rules.md + machine-local hooks/
 .clinerules/hooks/
