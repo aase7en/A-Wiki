@@ -181,6 +181,20 @@ python scripts/verify-cross-platform.py
 
 ---
 
+## 🔐 Public-Safe by Construction
+
+A-Wiki is a public repo with a private brain layered on top — never the other way around. `scripts/check-privacy.py` is the gate that keeps the two from mixing:
+
+| Check | Catches |
+|---|---|
+| Binary skip | Sniffs for a NUL byte in the first 8KB so `.xlsx`/images are never scanned as text — no false positives. |
+| Tracked-but-gitignored | Files that got `git add -f`'d once and stayed tracked even after `.gitignore` said they shouldn't be — a real leak class, not a hypothetical one. |
+| Personal-data patterns | Hardcoded paths, personal emails, live API keys, cloud-account folder names — plus extra P0 regexes loaded at runtime from gitignored `drive/personal/privacy-patterns.txt`, never hardcoded in the tracked scanner itself. |
+
+Everything private — journals, session memory, secrets, raw sources — lives in the gitignored `drive/` layer. Git history itself was rewritten to strip identity and business-data leakage that had crept into earlier commits, before this repo went public.
+
+---
+
 ## 🌐 Platform Support
 
 A-Wiki works out-of-the-box with **9+ AI platforms**. Each reads a dedicated config file — no setup required beyond `git clone` + `setup-local.sh`.
@@ -198,6 +212,23 @@ A-Wiki works out-of-the-box with **9+ AI platforms**. Each reads a dedicated con
 | **Jules / Devin / Zed / Warp** | [`AGENTS.md`](AGENTS.md) | Industry standard — auto-detected |
 
 > **The hierarchy**: `AGENTS.md` = universal brain shared by most platforms. `CLAUDE.md` / `GEMINI.md` = platform-specific extensions that add tool-specific commands on top.
+
+---
+
+## 🔧 One Skill, Every Agent — The Universal Skill Registry
+
+Skills used to fork per-tool — a Claude skill here, a Cursor rule there, a Codex prompt somewhere else. A-Wiki collapses that into one **agentskills.io-standard** registry.
+
+| Layer | What It Is |
+|---|---|
+| **Source of truth** | `skills-registry.json` — 367 registered skills (361 canonical, 5 aliases, 1 deprecated), each tagged with `domain`, `lifecycle_phase`, and `status`. |
+| **Generators** | 6 scripts in `scripts/skills_registry/generators/` turn the registry into native surfaces: AGENTS.md, Antigravity, Cline, Gemini CLI, Hermes, Kilo. |
+| **One command, every harness** | `bash scripts/link-agent-configs.sh` symlinks the whole skill set into **9 agent runtimes** — Claude, Codex, Cline, Hermes, Gemini CLI, ZCode, **Antigravity**, Windsurf, OpenClaw — in one idempotent pass. |
+| **Enforcement** | A dedicated hook blocks any `SKILL.md` that isn't registered, so agent surfaces can never silently drift from what's on disk. |
+
+```bash
+bash scripts/link-agent-configs.sh --status      # verify all 9 harnesses are linked
+```
 
 ---
 
@@ -272,6 +303,22 @@ Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` 
 
 ---
 
+## 📡 Autonomous Brain Sync — A Pi5 Telegram Bot That Never Falls Behind
+
+The knowledge brain doesn't stop at your laptop. `scripts/hermes/pi5-brain-sync.py` keeps a Raspberry Pi 5 running the Hermes agent gateway in lockstep with `main` — fully unattended, no SSH babysitting.
+
+| Stage | What Happens |
+|---|---|
+| **Safe fast-forward** | `git stash push --include-untracked` protects device-only files inside the container before the FF merge, then pops the stash back. |
+| **Self-healing conflicts** | Auto-generated files that conflict on stash-pop are silently restored from `HEAD` (they regenerate anyway). Any other conflict aborts safely, leaving the stash intact for a human. |
+| **Live rescan** | The gateway gets `SIGHUP`'d after every sync so newly linked skills load without a container restart. |
+| **Scheduling** | Two systemd timers on the Pi5 — sync every 6h (+5 min after boot), plus a weekly Sunday 04:30 Asia/Bangkok reboot to keep the host healthy. |
+| **Remote control** | The same Pi5 runs a Telegram bot (`scripts/hermes/telegram-command-router.py`) exposing `/wiki`, `/search`, `/review`, `/spec`, `/plan`, `/build`, `/ship` as slash commands from your phone. |
+
+Push to `main` from any machine — the Pi5 catches up on its own schedule, or instantly on `/wiki` demand.
+
+---
+
 ## 🤖 Daily Workflow — How to Operate with the Swarm
 
 Once onboarded, your AI agent is a disciplined swarm. Here's how you direct it:
@@ -308,6 +355,10 @@ Only after all four steps pass does it present a root cause and a fix.
 ```
 
 Strips function names, file paths, and code identifiers — rewrites everything in plain-English cause-and-effect.
+
+### 🧭 Non-Trivial Technical Task? `fable5-standards` Kicks In.
+
+Any multi-step plan, security-sensitive design, or data migration pulls in `agent-skills/engineering/fable5-standards` — one `SKILL.md`, registered once, available on **every agentskills.io-compatible tool** you run. It forces: restate the real problem, generate ≥2 approaches with trade-offs, root-cause before symptom-patching, and a pre-mortem before you ship.
 
 ### 🔍 Want to Scout for Free Compute?
 
@@ -394,6 +445,7 @@ A-Wiki/
 ├── AGENTS.md                    ← Universal brain (20+ AI platforms)
 ├── CLAUDE.md                    ← Claude Code edition
 ├── GEMINI.md                    ← Gemini CLI edition
+├── skills-registry.json         ← Single source of truth — 367 registered skills
 ├── .cursorrules                 ← Cursor
 ├── .windsurfrules               ← Windsurf
 ├── .clinerules                  ← Cline (VSCode extension)
@@ -421,8 +473,10 @@ A-Wiki/
 │
 ├── scripts/                     ← Automation
 │   ├── setup-local.sh           ← First-time machine setup (run once)
+│   ├── link-agent-configs.sh    ← One command: link 367 skills into 9 harnesses
 │   ├── search-wiki.py           ← FTS5 wiki search
 │   ├── update-model-roster.sh   ← Dynamic free model discovery
+│   ├── hermes/                  ← Pi5 cross-device brain sync + Telegram bot
 │   └── swarm/delegate.sh        ← Route task to free model
 │
 ├── raw/                         ← Symlink/Junction → Google Drive (immutable)
@@ -441,6 +495,8 @@ A-Wiki/
 | [CLAUDE.md](CLAUDE.md) | Claude Code full config: hooks, /commands, session protocol |
 | [GEMINI.md](GEMINI.md) | Gemini CLI config |
 | [agent-skills/README.md](agent-skills/README.md) | Full skill catalog with enforcement details |
+| [skills-registry.json](skills-registry.json) | Single source of truth for all 367 registered skills |
+| [scripts/link-agent-configs.sh](scripts/link-agent-configs.sh) | One command — link skills into all 9 agent harnesses |
 | [wiki/context/wiki-overview.md](wiki/context/wiki-overview.md) | Wiki stats, domain index, session memory |
 | [scripts/setup-local.sh](scripts/setup-local.sh) | First-time machine setup script |
 | [docs/runbooks/setup-new-machine.md](docs/runbooks/setup-new-machine.md) | Cross-platform onboarding runbook for Mac, Windows, Linux, and GitHub Actions |
