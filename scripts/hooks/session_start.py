@@ -265,6 +265,15 @@ def main():
     clean_stale_cost_declarations(repo_root)
     check_model_scout_freshness(repo_root)
 
+    # Vendor upstream-watch (Task #5): notify when a vendored-skill upstream
+    # has new commits. Fully fail-soft — session start must never break.
+    try:
+        from scripts.lib.vendor_watch import check_vendors
+        for notice in check_vendors():
+            print(notice)
+    except Exception:
+        pass
+
     sys.exit(0)
 
 
