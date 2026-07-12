@@ -16,13 +16,17 @@
 
 | Domain | Count |
 |---|---:|
-| none | 0 |
+| ai-tools | 7 |
+| env | 2 |
+| pharmacy | 1 |
+| repo-root | 1 |
 
 ## Orphans by domain
 
 | Domain | Count |
 |---|---:|
-| none | 0 |
+| context | 16 |
+| ai-tools | 2 |
 
 ## Orphan samples
 
