@@ -439,3 +439,27 @@ def test_codename_allows_sibling_repo_url(tmp_path, monkeypatch):
     findings = check_privacy.scan(files=[f])
 
     assert not any(x["kind"] == "codename" for x in findings)
+
+
+# ---------------------------------------------------------------------------
+# Fix 7 — untracked files must not evade the default scan
+# (2026-07-12: a P0 fixture in a brand-new, not-yet-`git add`ed test file
+# passed the pre-commit scan — git ls-files only reads the index — and
+# reached origin/main; required a tip history rewrite to remove.)
+# ---------------------------------------------------------------------------
+
+def test_untracked_file_is_scanned_by_default(tmp_path, monkeypatch):
+    _init_tmp_git_repo(tmp_path)
+    (tmp_path / ".gitignore").write_text("ignored.md\n")
+    subprocess.run(["git", "add", ".gitignore"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=tmp_path, check=True)
+    (tmp_path / "brand-new.md").write_text("path is /Users/realperson/Desktop/x\n")
+    (tmp_path / "ignored.md").write_text("path is /Users/realperson/Desktop/x\n")
+
+    monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
+
+    findings = check_privacy.scan()
+
+    files = {f["file"] for f in findings}
+    assert "brand-new.md" in files, "untracked non-ignored file must be scanned"
+    assert "ignored.md" not in files, "properly gitignored file stays exempt"

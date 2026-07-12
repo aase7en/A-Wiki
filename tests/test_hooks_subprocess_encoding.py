@@ -33,7 +33,13 @@ HOOKS_DIR = REPO_ROOT / "scripts" / "hooks"
 
 SUBPROCESS_FUNCS = {"run", "check_output", "check_call", "call", "Popen"}
 
-LINTED_FILES = sorted(HOOKS_DIR.glob("*.py")) + [REPO_ROOT / "scripts" / "hooks_runner.py"]
+LINTED_FILES = sorted(HOOKS_DIR.glob("*.py")) + [
+    REPO_ROOT / "scripts" / "hooks_runner.py",
+    # Ratchet: add more scripts here as their text-mode calls get pinned.
+    REPO_ROOT / "scripts" / "check-privacy.py",
+    REPO_ROOT / "scripts" / "lib" / "council_room.py",
+    REPO_ROOT / "scripts" / "lib" / "skill_learning.py",
+]
 
 
 def _text_mode_calls_missing_encoding(path: Path) -> list[int]:

@@ -170,8 +170,28 @@ def tracked_files() -> list[Path]:
     """Return git-tracked files relative to repo root."""
     out = subprocess.run(
         ["git", "ls-files"], cwd=REPO_ROOT, check=True,
-        capture_output=True, text=True,
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
     ).stdout.splitlines()
+    return [REPO_ROOT / p for p in out if p]
+
+
+def untracked_files() -> list[Path]:
+    """Untracked, non-gitignored files.
+
+    A brand-new file that hasn't been ``git add``'ed yet is invisible to
+    ``git ls-files`` — on 2026-07-12 a P0 fixture in exactly such a file
+    passed a pre-commit scan and reached origin/main (tip rewrite required).
+    The default scan must therefore cover what WOULD enter the repo on the
+    next ``git add .``, not just what's already in the index.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            cwd=REPO_ROOT, check=True,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        ).stdout.splitlines()
+    except (subprocess.CalledProcessError, OSError):
+        return []
     return [REPO_ROOT / p for p in out if p]
 
 
@@ -288,6 +308,7 @@ def tracked_but_ignored() -> list[str]:
         out = subprocess.run(
             ["git", "ls-files", "-ci", "--exclude-standard"],
             cwd=REPO_ROOT, check=True, capture_output=True, text=True,
+            encoding="utf-8", errors="replace",
         ).stdout.splitlines()
     except (subprocess.CalledProcessError, OSError):
         return []
@@ -333,7 +354,7 @@ def scan(
     secret_res = [(re.compile(p), label) for p, label in SECRET_PATTERNS]
     extra_patterns = load_extra_personal_patterns(extra_patterns_path)
 
-    scan_files = tracked_files() if files is None else files
+    scan_files = (tracked_files() + untracked_files()) if files is None else files
 
     for path in scan_files:
         if should_skip(path):
