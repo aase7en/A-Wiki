@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -114,6 +115,13 @@ def check_branch() -> CheckResult:
     branch = proc.stdout.strip() if proc.returncode == 0 else ""
     if branch == "main":
         return CheckResult("OK", "git branch", "main")
+    # GitHub Actions checks out a detached HEAD; the real branch lives in
+    # GITHUB_REF_NAME. Detached-at-main on CI satisfies the main-only policy.
+    if not branch and os.environ.get("GITHUB_ACTIONS") == "true":
+        ref = os.environ.get("GITHUB_REF_NAME", "")
+        if ref == "main":
+            return CheckResult("OK", "git branch", "detached HEAD on CI (GITHUB_REF_NAME=main)")
+        return CheckResult("FAIL", "git branch", f"CI ref {ref or 'unknown'}; expected main")
     return CheckResult("FAIL", "git branch", branch or "unknown; expected main")
 
 

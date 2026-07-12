@@ -44,7 +44,9 @@ jobs:
           from drive_path import get_drive_root
 
           root = get_drive_root()
-          (root / "raw").mkdir(parents=True, exist_ok=True)
+          # full agent-preflight EXPECTED_DRIVE_FOLDERS contract
+          for name in ("raw", "waste-reports", "personal-tools", "ocr-feedback", "individual-tasks"):
+              (root / name).mkdir(parents=True, exist_ok=True)
           (root / "raw" / "ci-smoke.md").write_text("# CI smoke source\n", encoding="utf-8")
           (root / ".secrets").write_text(
               "OPENROUTER_API_KEY=sk-or-v1-example\n"
@@ -86,7 +88,10 @@ jobs:
         # Surface [FAIL] lines as ::error annotations (public-API readable).
         run: |
           set -o pipefail
-          python scripts/verify-awiki-ready.py --skip-remote --skip-evals 2>&1 | tee ready-out.txt || {
+          # direct preflight run first: its per-check lines land in ready-out.txt
+          # so failures annotate precisely (verify only reports the last line)
+          python scripts/agent-preflight.py --skip-remote 2>&1 | tee ready-out.txt || true
+          python scripts/verify-awiki-ready.py --skip-remote --skip-evals 2>&1 | tee -a ready-out.txt || {
             grep -E "FAIL" ready-out.txt | head -10 | while IFS= read -r line; do
               echo "::error::${line}"
             done

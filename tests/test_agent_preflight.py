@@ -124,3 +124,33 @@ def test_hook_command_audit_warns_for_missing_local_config(monkeypatch, tmp_path
 
     assert result.level == "WARN"
     assert "local config missing" in result.detail
+
+
+# ---------------------------------------------------------------------------
+# CI detached HEAD: actions/checkout leaves no current branch — GITHUB_REF_NAME
+# carries the real branch and must satisfy the main-only policy.
+# ---------------------------------------------------------------------------
+
+def test_check_branch_accepts_ci_detached_head_on_main(monkeypatch):
+    monkeypatch.setattr(
+        agent_preflight, "run_git",
+        lambda args, timeout=10: __import__("subprocess").CompletedProcess(args, 0, stdout="", stderr=""),
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF_NAME", "main")
+
+    result = agent_preflight.check_branch()
+
+    assert result.level == "OK", result.detail
+
+
+def test_check_branch_still_fails_detached_head_outside_ci(monkeypatch):
+    monkeypatch.setattr(
+        agent_preflight, "run_git",
+        lambda args, timeout=10: __import__("subprocess").CompletedProcess(args, 0, stdout="", stderr=""),
+    )
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+
+    result = agent_preflight.check_branch()
+
+    assert result.level == "FAIL"
