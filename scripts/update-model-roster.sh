@@ -212,6 +212,13 @@ else:
     lines.append("# Race models (parallel)")
     lines.append(f"RACE_MODELS=\"{FALLBACK_RACE}\"")
 
+# Pinned paid candidates — subscription-covered models that the free-only
+# scan can never emit but must stay routable (Z.ai coding plan covers GLM).
+# tests/test_provider_registry.py::test_roster_includes_glm_via_openrouter
+lines.append("")
+lines.append("# Pinned paid candidates (subscription-covered, survives regeneration)")
+lines.append("PINNED_PAID_CANDIDATES=\"z-ai/glm-4.6\"")
+
 for line in lines:
     print(line)
 PY

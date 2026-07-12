@@ -42,6 +42,8 @@ def test_policy_generator_merges_roster_and_intel_cache(tmp_path):
             str(roster),
             "--intel",
             str(intel),
+            "--scout",
+            str(tmp_path / "missing-scout.json"),  # hermetic: never read repo .tmp
             "--out",
             str(out),
             "--json",
@@ -77,6 +79,8 @@ def test_policy_generator_falls_back_without_intel(tmp_path):
             str(roster),
             "--intel",
             str(tmp_path / "missing.md"),
+            "--scout",
+            str(tmp_path / "missing-scout.json"),  # hermetic: never read repo .tmp
             "--out",
             str(out),
             "--json",
@@ -120,8 +124,10 @@ def test_policy_generator_escapes_shell_active_intel_summary(tmp_path):
     )
 
     assert result.returncode == 0, result.stderr
+    # Quote the path: unquoted backslashes in Windows temp paths get eaten
+    # by bash, making `source` a silent no-op (empty vars, rc 0).
     source_result = subprocess.run(
-        ["bash", "-c", f"source {out}; printf '%s' \"$MODEL_INTEL_SUMMARY\""],
+        ["bash", "-c", f'source "{out}"; printf \'%s\' "$MODEL_INTEL_SUMMARY"'],
         capture_output=True,
         text=True,
         check=False,

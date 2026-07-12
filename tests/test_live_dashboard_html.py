@@ -32,8 +32,12 @@ def test_no_dead_dom_refs_from_old_layout():
 def test_file_under_60kb():
     size = HTML.stat().st_size
     # raised to 68 KB to accommodate operational features (SVG icons, filters,
-    # error rail, cost tile) beyond Phase 0–1 decoration removal
-    assert size < 68 * 1024, f"HTML too large: {size} bytes (limit 68 KB)"
+    # error rail, cost tile) beyond Phase 0–1 decoration removal;
+    # raised to 112 KB (user-approved 2026-07-12) for the 2026-07-11 feature
+    # wave: chat pane, cost tile, failures rail, event filters, green-white
+    # theme. Local-only tool served from localhost — payload is not a real
+    # bottleneck; the gate now guards against unbounded growth, not leanness.
+    assert size < 112 * 1024, f"HTML too large: {size} bytes (limit 112 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
