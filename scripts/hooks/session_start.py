@@ -32,7 +32,7 @@ def git_pull(repo_root):
             ["git", "pull", "--rebase", "origin", "main"],
             cwd=repo_root,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=30,
         )
         if result.returncode == 0:
@@ -99,7 +99,7 @@ def maybe_update_model_intel(repo_root):
             ["bash", script, "--offline-ok"],
             cwd=repo_root,
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=timeout,
         )
     except subprocess.TimeoutExpired:
@@ -255,6 +255,17 @@ def run_vendor_watch():
         pass
 
 
+def run_skill_learning_watch():
+    """Self-learning skill loop: notify when a recurring work pattern has no
+    covering skill. Fully fail-soft — session start must never break."""
+    try:
+        from scripts.lib.skill_learning import check_skill_patterns
+        for notice in check_skill_patterns():
+            print(notice)
+    except Exception:
+        pass
+
+
 def is_lean() -> bool:
     """AWIKI_LEAN_SESSION_START=1 → token-save mode: essentials only."""
     return os.environ.get("AWIKI_LEAN_SESSION_START", "0") == "1"
@@ -280,6 +291,7 @@ def run_steps(repo_root, lean: bool) -> None:
     show_model_tier_hint()
     check_model_scout_freshness(repo_root)
     run_vendor_watch()
+    run_skill_learning_watch()
 
 
 def main():

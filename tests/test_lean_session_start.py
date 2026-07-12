@@ -39,6 +39,7 @@ SKIPPABLE = [
     "show_model_tier_hint",
     "check_model_scout_freshness",
     "run_vendor_watch",
+    "run_skill_learning_watch",
 ]
 
 
