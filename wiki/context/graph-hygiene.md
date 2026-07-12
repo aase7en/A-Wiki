@@ -7,9 +7,9 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 539 |
-| Edges | 1713 |
-| Broken links | 10 |
+| Nodes | 535 |
+| Edges | 1704 |
+| Broken links | 13 |
 | Orphans | 18 |
 
 ## Broken links by source domain

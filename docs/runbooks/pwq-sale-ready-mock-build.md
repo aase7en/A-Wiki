@@ -61,14 +61,15 @@ For automation, use the existing Playwright CLI session pattern and save files u
 
 ## A-Wiki Preflight
 
-From `A-Wiki/` after any roadmap/HANDOFF/wiki edit:
+> **Roadmap moved (2026-07-12)**: the canonical roadmap now lives in the product
+> repo at `pixel-wealth-quest/ROADMAP.md` — the A-Wiki mirror and sync script
+> are retired. Edit it in the product repo directly.
+
+From `A-Wiki/` after any wiki edit:
 
 ```bash
-python3 scripts/game/sync_sunday_invest_moon_roadmap.py --sync
-python3 scripts/game/sync_sunday_invest_moon_roadmap.py
 python3 scripts/gen-index.py
 python3 scripts/gen-index.py --check
-python3 -m pytest tests/test_sync_sunday_invest_moon_roadmap.py -v
 python3 scripts/check-privacy.py
 ```
 

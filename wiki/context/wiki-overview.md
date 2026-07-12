@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 73 |
 | CONCEPTS | 59 |
-| SYNTHESIS | 205 |
+| SYNTHESIS | 203 |
 | SOURCES | 168 |
-| **Total** | **505 pages** |
+| **Total** | **503 pages** |
 
 ---
 
@@ -70,13 +70,11 @@
 | `pharmacy-web-app-roadmap` | สร้าง **FastAPI + React web app** บน **Raspberry Pi 5** พร้อมการ… |
 | `pi4-lora-gateway-server` | [ESP32 Node A] → DX-LR02 TX ~~LoRa~~ [ESP32 Node B] → DX-LR02 TX… |
 | `pixel-animation-sprite-pipeline` | ใช้หน้านี้เมื่อ A-Wiki/Codex ต้องสร้างหรือแก้ **pixel animation*… |
-| `pixel-wealth-quest-gdd` | "จะออกแบบ *Pixel Wealth Quest* — เกม pixel-art cozy ที่แปลงพฤติก… |
 | `pixellab-api-endpoint-matrix` | [verified 2026-06-01] หน้านี้เป็น operational catalog ของ PixelL… |
 | `pixellab-asset-pipeline-for-trading-rpg` | "จะใช้ PixelLab API/MCP สร้างตัวละคร เรือ ฉาก และ animation สำหร… |
 | `pixellab-phaser-asset-convention` | "ถ้า PixelLab สร้าง asset ได้แล้ว จะตั้งชื่อไฟล์ จัดโฟลเดอร์ เก็… |
 | `premium-auto-trading-capability-hub` | (no abstract) |
 | `revenue-engine-capability-hub` | (no abstract) |
-| `sunday-invest-moon-roadmap` | 1. Read `## RESUME HERE`; it overrides stale TODOs in `HANDOFF.m… |
 | `synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (awaiting human summary) |
 | `synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (awaiting human summary) |
 | `synth-3-dashboard-node-red` | (awaiting human summary) |
@@ -247,4 +245,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 505 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 503 pages across 4 sections.*

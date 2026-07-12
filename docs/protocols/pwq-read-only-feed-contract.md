@@ -64,14 +64,10 @@ npm run build
 npx react-doctor@latest --verbose --diff
 ```
 
-From `A-Wiki/` after roadmap/HANDOFF edits:
-
-```bash
-python3 scripts/game/sync_sunday_invest_moon_roadmap.py --sync
-python3 scripts/game/sync_sunday_invest_moon_roadmap.py
-python3 scripts/gen-index.py --check
-python3 -m pytest tests/test_sync_sunday_invest_moon_roadmap.py -v
-```
+> **Roadmap moved (2026-07-12)**: the single canonical roadmap now lives in the
+> product repo at `pixel-wealth-quest/ROADMAP.md` — the A-Wiki mirror and
+> `sync_sunday_invest_moon_roadmap.py` (+ its test) are retired. Edit the
+> roadmap in the product repo directly; no sync step needed.
 
 ## Agent Checklist
 

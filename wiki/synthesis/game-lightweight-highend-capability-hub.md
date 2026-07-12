@@ -30,8 +30,7 @@ updated: 2026-06-12
 ## Related
 
 - [[synthesis/8-bit-trading-rpg-blueprint]]
-- [[synthesis/pixel-wealth-quest-gdd]]
-- [[synthesis/sunday-invest-moon-roadmap]]
+- PWQ GDD + roadmap — ย้ายไป product repo แล้ว (2026-07-12): `pixel-wealth-quest/docs/pixel-wealth-quest-gdd.md` + `pixel-wealth-quest/ROADMAP.md`
 - [[synthesis/pixellab-asset-pipeline-for-trading-rpg]]
 - [[synthesis/pixellab-phaser-asset-convention]]
 - `docs/protocols/pwq-read-only-feed-contract.md`

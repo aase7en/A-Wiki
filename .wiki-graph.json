@@ -1,14 +1,14 @@
 {
   "generated_at": "2026-07-12",
   "stats": {
-    "nodes": 537,
-    "edges": 1712,
+    "nodes": 535,
+    "edges": 1702,
     "edges_by_type": {
-      "wikilink": 1202,
-      "depends": 372,
+      "wikilink": 1196,
+      "depends": 370,
       "implements": 49,
       "mdlink": 49,
-      "extends": 40
+      "extends": 38
     },
     "broken_links": 11,
     "orphans": 18,
@@ -1891,11 +1891,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "title": "Pixel Wealth Quest — Game Design Document",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
       "title": "PixelLab API Endpoint Matrix",
       "domain": "synthesis"
@@ -1918,11 +1913,6 @@
     {
       "path": "wiki/synthesis/revenue-engine-capability-hub.md",
       "title": "Revenue Engine Capability Hub",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/sunday-invest-moon-roadmap.md",
-      "title": "Sunday Invest Moon — Roadmap (cross-agent handoff)",
       "domain": "synthesis"
     },
     {
@@ -12373,20 +12363,6 @@
     },
     {
       "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
-      "to": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "type": "extends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
-      "to": "wiki/synthesis/sunday-invest-moon-roadmap.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
       "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
       "type": "wikilink",
       "broken": false,
@@ -12988,55 +12964,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
-      "type": "extends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "to": "wiki/sources/trading-rpg-project-brief-2026-05-30.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
       "to": "wiki/sources/pixellab-api-v2-openapi-2026-06-01.md",
       "type": "depends",
@@ -13201,13 +13128,6 @@
       "from": "wiki/synthesis/revenue-engine-capability-hub.md",
       "to": "wiki/concepts/ai-tools/hooks-skills-plugins.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/sunday-invest-moon-roadmap.md",
-      "to": "wiki/synthesis/pixel-wealth-quest-gdd.md",
-      "type": "depends",
       "broken": false,
       "external": false
     },
