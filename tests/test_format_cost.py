@@ -55,6 +55,42 @@ class TestDemoSmoke:
         assert r.returncode == 0
         assert "demo" in r.stdout.lower()
 
+    def test_demo_falls_back_to_proxy_when_anthropic_has_no_key(self, tmp_path):
+        """CI regression: `anthropic` is installed (requirements.txt) but no
+        ANTHROPIC_API_KEY exists → backend selection must NOT pick the API
+        backend, or --demo crashes before printing anything."""
+        import os
+
+        # Fake SDK that mimics the real one: constructs fine without a key,
+        # raises only when the API is actually called.
+        (tmp_path / "anthropic.py").write_text(
+            "class _Raiser:\n"
+            "    def __getattr__(self, name):\n"
+            "        raise RuntimeError('no api key — API call attempted')\n"
+            "class Anthropic:\n"
+            "    def __init__(self, *a, **k):\n"
+            "        pass\n"
+            "    @property\n"
+            "    def beta(self):\n"
+            "        return _Raiser()\n",
+            encoding="utf-8",
+        )
+        env = os.environ.copy()
+        env.pop("ANTHROPIC_API_KEY", None)
+        env["PYTHONPATH"] = str(tmp_path)
+        env["PYTHONIOENCODING"] = "utf-8"
+
+        r = subprocess.run(
+            [sys.executable, str(SCRIPT), "--demo"],
+            capture_output=True, cwd=str(REPO_ROOT), env=env,
+            # child prints UTF-8 (PYTHONIOENCODING) — decode the same way,
+            # not with the parent's locale codec (cp874 on Thai Windows)
+            encoding="utf-8", errors="replace",
+        )
+
+        assert r.returncode == 0, r.stderr
+        assert "proxy" in r.stdout.lower()
+
 
 # ── format ordering ──────────────────────────────────────────────────────
 

@@ -23,9 +23,18 @@ import argparse
 import csv
 import io
 import json
+import os
 import re
 import sys
 from typing import Any
+
+# Degrade unencodable characters instead of crashing on non-UTF-8 consoles
+# (Thai Windows = cp874) — same pattern as scripts/check-privacy.py.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
 
 
 # ── tokenizer ────────────────────────────────────────────────────────────
@@ -49,6 +58,11 @@ def _build_counter(requested: str):
 
     if requested in ("auto", "anthropic"):
         try:
+            # The SDK constructs fine without a key and only raises when the
+            # API is called — by then output is mid-flight. Never select this
+            # backend without a usable key (CI has the package but no key).
+            if not os.environ.get("ANTHROPIC_API_KEY"):
+                raise RuntimeError("anthropic installed but ANTHROPIC_API_KEY unset")
             import anthropic  # type: ignore
             client = anthropic.Anthropic()
 
