@@ -18,6 +18,8 @@ Endpoints:
   GET /api/keys      → key names + set/unset status (never values)
   POST /api/keys     → save one API key to .tmp/live-dashboard-keys.env
   GET /api/capabilities → capability scorecard + recommended_by_task
+  GET /api/council    → Brainstorm Council rounds ({"councils": [...]})
+  GET /api/council/<id> → full council transcript; 404 on unknown/invalid id
 
 Port: 7790  (separate from render-html-preview on 7788)
 """
@@ -36,6 +38,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+# scripts/lib is not an installed package — same sys.path convention as
+# tests/test_council_room.py uses to import council_room.
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+import council_room  # noqa: E402
+
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
 DASHBOARD_HTML_FALLBACK = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
@@ -552,6 +560,10 @@ class Handler(BaseHTTPRequestHandler):
             self._api_capabilities_get()
         elif path == "/api/graph":
             self._json_response(_graph_snapshot())
+        elif path == "/api/council":
+            self._api_council_get()
+        elif path.startswith("/api/council/"):
+            self._api_council_detail_get(path[len("/api/council/"):])
         elif path == "/api/admin/status":
             self._api_admin_status()
         elif path == "/api/agents":
@@ -620,6 +632,27 @@ class Handler(BaseHTTPRequestHandler):
         caps = dict(caps)
         caps["recommended_by_task"] = _recommended_by_task()
         self._json_response(caps)
+
+    # ── Brainstorm Council (Live Dashboard "Council" pane) ──────
+    def _api_council_get(self):
+        try:
+            self._json_response({"councils": council_room.list_councils()})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_council_detail_get(self, council_id):
+        try:
+            transcript = council_room.load_council(council_id)
+        except ValueError as e:
+            # covers both malformed/path-traversal ids and unknown ids —
+            # council_room validates the id against COUNCIL_ID_RE before
+            # touching the filesystem (see council_room._council_path).
+            self._json_response({"error": str(e)}, 404)
+            return
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+            return
+        self._json_response(transcript)
 
     def _api_keys_post(self):
         data = self._read_body()
