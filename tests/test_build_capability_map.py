@@ -53,7 +53,6 @@ description: Should not appear.
     )
     write(root / "scripts" / "wiki" / "search-wiki.py", "#!/usr/bin/env python3\n")
     write(root / "scripts" / "wiki" / "query-graph.py", "#!/usr/bin/env python3\n")
-    write(root / "scripts" / "game" / "report_phaser_asset_pack.py", "#!/usr/bin/env python3\n")
     write(root / "scripts" / "agent-preflight.py", "#!/usr/bin/env python3\n")
     write(root / "docs" / "protocols" / "brain-improvement-gate.md", "# Brain Gate\n")
     write(root / "docs" / "runbooks" / "setup-new-machine.md", "# Setup\n")
@@ -118,14 +117,16 @@ def test_build_capability_map_discovers_owned_surfaces(tmp_path):
     data = build_capability_map.build_capability_map(tmp_path)
 
     assert data["summary"]["owned_skill_count"] == 2
-    assert data["summary"]["script_count"] == 4
+    assert data["summary"]["script_count"] == 3
     assert data["summary"]["protocol_count"] == 2
     assert data["summary"]["render_surface_count"] == 2
     skill_names = {skill["name"] for skill in data["skills"]}
     assert {"foo-skill", "debug-mantra"} <= skill_names
     assert "ignored" not in skill_names
     assert any(item["capability"] == "Local Search" for item in data["capabilities"])
-    assert any(item["capability"] == "Asset Pack Reporting" for item in data["capabilities"])
+    # game asset pipeline moved to the product repo (2026-07-12) — its CLI
+    # capabilities must no longer be advertised by the A-Wiki map
+    assert not any(item["capability"] == "Asset Pack Reporting" for item in data["capabilities"])
     assert {lane["id"] for lane in data["strategic_lanes"]} == {
         "design-web",
         "game-lightweight-highend",
