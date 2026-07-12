@@ -97,7 +97,7 @@
 | `wiki-search-local` | skills/claude-code | Search A-Wiki through local FTS5 before higher-cost model or web routes. | `skills/claude-code/wiki-search-local/SKILL.md` |
 | `thai-address` | skills/claude-thai | Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user ask… | `skills/claude-thai/thai-address/SKILL.md` |
 | `thai-customer-service` | skills/claude-thai | Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies o… | `skills/claude-thai/thai-customer-service/SKILL.md` |
-| `thai-date-format` | skills/claude-thai | Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ? Gregorian (ค.ศ.) year conversion, or Arabic ? Thai numeral conversi… | `skills/claude-thai/thai-date-format/SKILL.md` |
+| `thai-date-format` | skills/claude-thai | Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversi… | `skills/claude-thai/thai-date-format/SKILL.md` |
 | `thai-festival-card` | skills/claude-thai | Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenev… | `skills/claude-thai/thai-festival-card/SKILL.md` |
 | `thai-government-form` | skills/claude-thai | Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ร… | `skills/claude-thai/thai-government-form/SKILL.md` |
 | `thai-id-validate` | skills/claude-thai | Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger… | `skills/claude-thai/thai-id-validate/SKILL.md` |
@@ -123,8 +123,8 @@
 | `delivery` | Delivery Reconciliation | Order vs delivery invoice diff — qty mismatches, missing and extra items highlighted | `scripts/compare_delivery.py --json --delivery <file>` |
 | `graph` | A-Wiki Knowledge Graph | Interactive force-directed view of wiki nodes and links | `.wiki-graph.json (scripts/build-wiki-graph.py)` |
 | `health` | A-Wiki Health Digest | Dashboard of wiki health checks, stats, and TODOs | `scripts/wiki-health-digest.py --json` |
-| `live-dashboard` | A-Wiki Live Dashboard | Live action view: primary-agent model + cost tier, planned model lanes (route_plan), delegate events, and hook results streaming from .tmp/live-event… | `scripts/live-dashboard/event_logger.py ? .tmp/live-events.jsonl (SSE via server.py)` |
-| `models` | Model Chooser — Primary & Secondary | Per-provider catalog of scouted models grouped into primary (flagship) vs secondary (cheap/fast/free) with price/token; pick a main + backup and roun… | `scripts/model-scout-current.py --catalog ? .tmp/model-catalog.json` |
+| `live-dashboard` | A-Wiki Live Dashboard | Live action view: primary-agent model + cost tier, planned model lanes (route_plan), delegate events, and hook results streaming from .tmp/live-event… | `scripts/live-dashboard/event_logger.py → .tmp/live-events.jsonl (SSE via server.py)` |
+| `models` | Model Chooser — Primary & Secondary | Per-provider catalog of scouted models grouped into primary (flagship) vs secondary (cheap/fast/free) with price/token; pick a main + backup and roun… | `scripts/model-scout-current.py --catalog → .tmp/model-catalog.json` |
 | `pharmacy` | Pharmacy Order Review | Drug-order lookup review: confidence-coded matches, items needing confirmation, not-found list — confirm the order before sending | `scripts/pharmacy_lookup.py --json` |
 | `plan` | A-Wiki Plan Viewer | Interactive data-journalist view of a plan .md file — progressive disclosure, phase approval cards, round-trip JSON decision to agent | `skills/render-html/scripts/parse_plan.py <plan.md>` |
 | `report` | Engineering Report | Post-mortem / code-review with severity badges, diffs, and timeline | `post-mortem / scrutinize / code-review agent output` |
@@ -161,7 +161,7 @@
 | NotebookLM-first Protocol | docs/protocols | `docs/protocols/notebooklm.md` |
 | Portable Global Kilo Config (Drive-synced, cross-machine) | docs/protocols | `docs/protocols/portable-kilo-config.md` |
 | Quick Commands — คำสั่งลัดทุก session | docs/protocols | `docs/protocols/quick-commands.md` |
-| ?? Skeptical Reviewer Protocol | docs/protocols | `docs/protocols/review.md` |
+| 🕵️ Skeptical Reviewer Protocol | docs/protocols | `docs/protocols/review.md` |
 | Shopee Automation Safety | docs/protocols | `docs/protocols/shopee-automation-safety.md` |
 | Skill Consolidation Protocol | docs/protocols | `docs/protocols/skill-consolidation.md` |
 | SKILL.md Frontmatter Schema | docs/protocols | `docs/protocols/skill-frontmatter-schema.md` |

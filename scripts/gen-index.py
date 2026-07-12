@@ -345,7 +345,10 @@ def _extract_graph_hygiene() -> dict | None:
                 [sys.executable, str(cap_builder), "--json", "--out", "-"],
                 check=True,
                 capture_output=True,
-                text=True,
+                # UTF-8 end-to-end: a locale pipe (cp874 on Thai Windows)
+                # silently mangles ↔/→/emoji into "?" in generated files
+                encoding="utf-8",
+                env={**os.environ, "PYTHONIOENCODING": "utf-8"},
             )
             return json.loads(proc.stdout).get("graph_hygiene")
         except (subprocess.CalledProcessError, json.JSONDecodeError, ValueError) as e:
@@ -462,7 +465,10 @@ def main() -> int:
                 [sys.executable, str(cap_builder), "--out", "-"],
                 check=True,
                 capture_output=True,
-                text=True,
+                # UTF-8 end-to-end: a locale pipe (cp874 on Thai Windows)
+                # silently mangles ↔/→/emoji into "?" in generated files
+                encoding="utf-8",
+                env={**os.environ, "PYTHONIOENCODING": "utf-8"},
             )
             outputs[CONTEXT_DIR / "wiki-capability-map.md"] = cap.stdout
         except subprocess.CalledProcessError as e:
