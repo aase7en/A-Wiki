@@ -10,7 +10,7 @@
 | Wiki pages | 503 |
 | Owned skills | 42 |
 | Script capabilities | 11 |
-| Protocols/runbooks | 53 |
+| Protocols/runbooks | 55 |
 | HTML surfaces | 13 |
 
 ## Wiki Knowledge Surface
@@ -144,6 +144,7 @@
 | Antigravity Integration Playbook | docs/protocols | `docs/protocols/antigravity-playbook.md` |
 | Product | docs/protocols | `docs/protocols/bot-trading-iron-law.md` |
 | A-Wiki Brain Improvement Gate | docs/protocols | `docs/protocols/brain-improvement-gate.md` |
+| Brainstorm Council Protocol | docs/protocols | `docs/protocols/brainstorm-council.md` |
 | Context Compaction Protocol | docs/protocols | `docs/protocols/context-compaction.md` |
 | Cost Gate Protocol | docs/protocols | `docs/protocols/cost-gate.md` |
 | Straw Hat Wiki Crew Protocol | docs/protocols | `docs/protocols/crew.md` |
@@ -165,6 +166,7 @@
 | Shopee Automation Safety | docs/protocols | `docs/protocols/shopee-automation-safety.md` |
 | Skill Consolidation Protocol | docs/protocols | `docs/protocols/skill-consolidation.md` |
 | SKILL.md Frontmatter Schema | docs/protocols | `docs/protocols/skill-frontmatter-schema.md` |
+| Self-Learning Skill Loop Protocol | docs/protocols | `docs/protocols/skill-learning-loop.md` |
 | Universal Cost-First Routing Protocol | docs/protocols | `docs/protocols/universal-routing.md` |
 | A-Wiki Capability Upgrade Roadmap | docs/runbooks | `docs/runbooks/a-wiki-capability-upgrade-roadmap.md` |
 | A-Wiki Handoff Priority Plan | docs/runbooks | `docs/runbooks/a-wiki-handoff-priority-plan.md` |
