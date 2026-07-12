@@ -83,4 +83,12 @@ jobs:
           }
 
       - name: Readiness smoke
-        run: python scripts/verify-awiki-ready.py --skip-remote --skip-evals
+        # Surface [FAIL] lines as ::error annotations (public-API readable).
+        run: |
+          set -o pipefail
+          python scripts/verify-awiki-ready.py --skip-remote --skip-evals 2>&1 | tee ready-out.txt || {
+            grep -E "FAIL" ready-out.txt | head -10 | while IFS= read -r line; do
+              echo "::error::${line}"
+            done
+            exit 1
+          }
