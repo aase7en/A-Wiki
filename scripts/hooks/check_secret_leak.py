@@ -99,7 +99,7 @@ def _staged_diff() -> str:
             ["git", "diff", "--cached", "--no-ext-diff"],
             cwd=os.getcwd(),
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=10,
         )
     except Exception:

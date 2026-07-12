@@ -92,7 +92,7 @@ def main():
     # Check if working tree is dirty
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
     try:
-        status_result = subprocess.run(["git", "status", "--porcelain"], cwd=repo_root, capture_output=True, text=True, check=True)
+        status_result = subprocess.run(["git", "status", "--porcelain"], cwd=repo_root, capture_output=True, text=True, encoding="utf-8", errors="replace", check=True)
         dirty = status_result.stdout.strip()
     except Exception:
         dirty = ""

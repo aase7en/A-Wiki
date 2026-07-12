@@ -264,7 +264,7 @@ def main() -> None:
                 [sys.executable, str(regen), "--check"],
                 cwd=str(repo_root),
                 capture_output=True,
-                text=True,
+                text=True, encoding="utf-8", errors="replace",
                 timeout=10,
             )
             if proc.returncode != 0:

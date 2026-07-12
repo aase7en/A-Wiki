@@ -54,7 +54,7 @@ def run_index_async():
             try:
                 result = subprocess.run(
                     [sys.executable, script],
-                    capture_output=True, text=True, timeout=timeout_s,
+                    capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout_s,
                     cwd=os.path.join(SCRIPTS_DIR, ".."),
                 )
                 if result.returncode != 0:

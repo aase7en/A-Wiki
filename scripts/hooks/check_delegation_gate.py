@@ -100,7 +100,7 @@ def get_staged_files() -> set:
     try:
         result = subprocess.run(
             ["git", "diff", "--cached", "--name-only"],
-            cwd=REPO_ROOT, capture_output=True, text=True, check=False, timeout=10,
+            cwd=REPO_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", check=False, timeout=10,
         )
         if result.returncode == 0:
             return set(f.strip() for f in result.stdout.splitlines() if f.strip())
@@ -114,7 +114,7 @@ def get_most_recent_commit_message() -> str:
     try:
         result = subprocess.run(
             ["git", "log", "-1", "--format=%s"],
-            cwd=REPO_ROOT, capture_output=True, text=True, check=False, timeout=10,
+            cwd=REPO_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", check=False, timeout=10,
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -174,7 +174,7 @@ def main():
     try:
         status_result = subprocess.run(
             ["git", "status", "--short"],
-            cwd=REPO_ROOT, capture_output=True, text=True, check=False, timeout=5,
+            cwd=REPO_ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", check=False, timeout=5,
         )
         status_lines = status_result.stdout.splitlines() if status_result.returncode == 0 else []
     except Exception:

@@ -82,7 +82,7 @@ def run_hook(hook_name, input_data):
             [sys.executable, hook_path],
             input=json.dumps(input_data),
             capture_output=True,
-            text=True,
+            text=True, encoding="utf-8", errors="replace",
             timeout=HOOK_TIMEOUT,
         )
         passed = proc.returncode != 2
