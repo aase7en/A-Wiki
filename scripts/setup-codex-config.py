@@ -24,6 +24,14 @@ import json
 import os
 import shutil
 import sys
+
+# Degrade unencodable characters instead of crashing on non-UTF-8 consoles
+# (Thai Windows = cp874) — same pattern as scripts/check-privacy.py.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -42,6 +50,7 @@ REQUIRED_GUARDRAILS = [
     "check-output-format",
     "check-source-original-file",
     "check-external-editor-drift",
+    "check-skill-registry",
 ]
 
 # These guardrails MUST be in PreToolUse Bash hooks.
@@ -70,6 +79,7 @@ HOOKS_CONFIG: dict = {
                         "check-external-editor-drift",
                         "check-output-format",
                         "check-harness-routing",
+                        "check-skill-registry",
                     ]
                 ] + [
                     {"type": "command", "command": "bash .codex/hooks/pre-edit-staleness-check.sh"},

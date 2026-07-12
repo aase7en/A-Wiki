@@ -6,6 +6,14 @@ import argparse
 import json
 import re
 import sys
+
+# Degrade unencodable characters instead of crashing on non-UTF-8 consoles
+# (Thai Windows = cp874) — same pattern as scripts/check-privacy.py.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -210,10 +218,12 @@ MCP_ALLOWLIST = [
 
 
 def rel(path: Path, root: Path) -> str:
+    # posix form always — Windows backslashes made the generated map differ
+    # from the Linux CI regen, tripping the gen-index --check staleness gate
     try:
-        return str(path.relative_to(root))
+        return path.relative_to(root).as_posix()
     except ValueError:
-        return str(path)
+        return path.as_posix()
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], str]:
