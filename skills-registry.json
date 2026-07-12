@@ -3914,23 +3914,6 @@
       "description": ">"
     },
     {
-      "name": "pixellab-asset-ingest",
-      "aliases": [],
-      "domain": [
-        "media"
-      ],
-      "lifecycle_phase": "none",
-      "category": "wiki",
-      "source": "repo",
-      "path": "skills/claude-code/pixellab-asset-ingest/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Use when ingesting PixelLab-generated pixel art assets into A-Wiki, creating or updating Phaser asset manifests, validating PixelLab asset packs, generating Pha"
-    },
-    {
       "name": "plan-orchestrate",
       "aliases": [],
       "domain": [

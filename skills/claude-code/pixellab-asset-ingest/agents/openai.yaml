@@ -1,4 +1,0 @@
-interface:
-  display_name: "PixelLab Asset Ingest"
-  short_description: "Ingest PixelLab assets into A-Wiki and Phaser manifests"
-  default_prompt: "Ingest a PixelLab-generated asset into the A-Wiki Phaser asset pipeline."

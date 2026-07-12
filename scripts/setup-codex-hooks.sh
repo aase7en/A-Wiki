@@ -40,7 +40,8 @@ cat > .codex/hooks.json <<'JSON'
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-source-original-file"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-external-editor-drift"},
           {"type": "command", "command": "python3 scripts/hooks_runner.py check-output-format"},
-          {"type": "command", "command": "python3 scripts/hooks_runner.py check-harness-routing"}
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-harness-routing"},
+          {"type": "command", "command": "python3 scripts/hooks_runner.py check-skill-registry"}
         ]
       },
       {

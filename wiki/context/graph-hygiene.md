@@ -8,8 +8,8 @@
 | Metric | Count |
 |---|---:|
 | Nodes | 535 |
-| Edges | 1704 |
-| Broken links | 13 |
+| Edges | 1702 |
+| Broken links | 11 |
 | Orphans | 18 |
 
 ## Broken links by source domain

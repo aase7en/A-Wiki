@@ -101,20 +101,8 @@ SCRIPT_CAPABILITIES = [
         "command": "python3 scripts/compare_delivery.py --json --delivery <file>",
         "use_when": "Compare ordered vs received pharmacy items.",
     },
-    {
-        "capability": "Asset Pack Reporting",
-        "path": "scripts/game/report_phaser_asset_pack.py",
-        "surface": "CLI",
-        "command": "python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files",
-        "use_when": "Inspect PixelLab/Phaser asset-pack readiness before bootstrap or project copy.",
-    },
-    {
-        "capability": "Phaser Asset Bootstrap",
-        "path": "scripts/game/bootstrap_phaser_asset_pack.py",
-        "surface": "CLI",
-        "command": "python3 scripts/game/bootstrap_phaser_asset_pack.py game-assets/manifests --out-dir game-assets/generated --root .",
-        "use_when": "Generate Phaser JSON, loader TS, scene stub, and README from manifests.",
-    },
+    # PixelLab/Phaser asset pipeline moved to the product repo (2026-07-12):
+    # scripts/game/ + game-assets/ now live in the company webapp repo.
 ]
 
 STRATEGIC_LANES = [
@@ -169,9 +157,9 @@ CAPABILITY_UPGRADE_MATRIX = [
     },
     {
         "area": "High-end lightweight game",
-        "current": "Phaser, Sunday Invest Moon, PixelLab, and manifest scripts exist.",
+        "current": "Phaser game + PixelLab pipeline live in the product repo (moved 2026-07-12).",
         "upgrade": "Game lane locks performance budget, asset manifest validation, and no-secret runtime rules.",
-        "verify": "python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files",
+        "verify": "python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files (run in product repo)",
     },
     {
         "area": "Revenue engine",

@@ -71,6 +71,7 @@ jobs:
         run: |
           python scripts/regen-skill-surfaces.py --validate
           python scripts/regen-skill-surfaces.py --check
+          python scripts/verify-skill-surfaces.py
 
       - name: Unit tests
         # Surface failing test ids as ::error annotations so they are

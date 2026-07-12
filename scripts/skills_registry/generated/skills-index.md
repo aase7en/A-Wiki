@@ -234,7 +234,6 @@
 | `perl-security` | code | none | ecosystem | `skills/ecosystem/perl-security/SKILL.md` |
 | `perl-testing` | code | none | ecosystem | `skills/ecosystem/perl-testing/SKILL.md` |
 | `pharmacy-order-lookup` | medical, pharmacy | none | wiki | `skills/claude-code/pharmacy-order-lookup/SKILL.md` |
-| `pixellab-asset-ingest` | media | none | wiki | `skills/claude-code/pixellab-asset-ingest/SKILL.md` |
 | `plan` | ai-ops | plan | awiki | `skills/awiki/plan/SKILL.md` |
 | `plan-orchestrate` | productivity | none | ecosystem | `skills/ecosystem/plan-orchestrate/SKILL.md` |
 | `plankton-code-quality` | code | none | ecosystem | `skills/ecosystem/plankton-code-quality/SKILL.md` |
@@ -378,7 +377,7 @@
 | engineering | 42 |
 | env | 1 |
 | logistics | 7 |
-| media | 13 |
+| media | 12 |
 | medical | 6 |
 | network | 10 |
 | pharmacy | 1 |

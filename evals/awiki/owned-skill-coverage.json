@@ -5,203 +5,280 @@
     {
       "id": "debug-mantra",
       "skill": "agent-skills/engineering/debug-mantra/SKILL.md",
-      "required": ["Debug Mantra"]
+      "required": [
+        "Debug Mantra"
+      ]
     },
     {
       "id": "post-mortem",
       "skill": "agent-skills/engineering/post-mortem/SKILL.md",
-      "required": ["Post-mortem"]
+      "required": [
+        "Post-mortem"
+      ]
     },
     {
       "id": "scrutinize",
       "skill": "agent-skills/engineering/scrutinize/SKILL.md",
-      "required": ["Scrutinize"]
+      "required": [
+        "Scrutinize"
+      ]
     },
     {
       "id": "management-talk",
       "skill": "agent-skills/productivity/management-talk/SKILL.md",
-      "required": ["Management Talk"]
+      "required": [
+        "Management Talk"
+      ]
     },
     {
       "id": "ask-notebooklm",
       "skill": "skills/claude-code/ask-notebooklm/SKILL.md",
-      "required": ["Ask NotebookLM", "Gemini API"]
+      "required": [
+        "Ask NotebookLM",
+        "Gemini API"
+      ]
     },
     {
       "id": "awiki-creator-layer",
       "skill": "skills/claude-code/awiki-creator-layer/SKILL.md",
-      "required": ["A-Wiki Creator Layer", "drive/personal/creator", "Thai-first"]
+      "required": [
+        "A-Wiki Creator Layer",
+        "drive/personal/creator",
+        "Thai-first"
+      ]
     },
     {
       "id": "awiki-brain-improvement-gate",
       "skill": "skills/claude-code/awiki-brain-improvement-gate/SKILL.md",
-      "required": ["A-Wiki Brain Improvement Gate", "brain-improvement-gate", "Cost-first"]
-    },
-    {
-      "id": "pixellab-asset-ingest",
-      "skill": "skills/claude-code/pixellab-asset-ingest/SKILL.md",
       "required": [
-        "PixelLab Asset Ingest",
-        "write_phaser_manifest_template.py",
-        "report_phaser_asset_pack.py",
-        "bootstrap_phaser_asset_pack.py",
-        "Do not put secret tokens"
+        "A-Wiki Brain Improvement Gate",
+        "brain-improvement-gate",
+        "Cost-first"
       ]
     },
     {
       "id": "brainstorm-before-build",
       "skill": "skills/claude-code/brainstorm-before-build/SKILL.md",
-      "required": ["brainstorm-before-build"]
+      "required": [
+        "brainstorm-before-build"
+      ]
     },
     {
       "id": "crew-dispatch-claude-code",
       "skill": "skills/claude-code/crew-dispatch/SKILL.md",
-      "required": ["Crew Dispatch", "parallel"]
+      "required": [
+        "Crew Dispatch",
+        "parallel"
+      ]
     },
     {
       "id": "delegate-subagent-claude-code",
       "skill": "skills/claude-code/delegate-subagent/SKILL.md",
-      "required": ["delegate-subagent"]
+      "required": [
+        "delegate-subagent"
+      ]
     },
     {
       "id": "excel-generator-claude-code",
       "skill": "skills/claude-code/excel-generator/SKILL.md",
-      "required": ["Excel Generator Skill", "Core Principle"]
+      "required": [
+        "Excel Generator Skill",
+        "Core Principle"
+      ]
     },
     {
       "id": "export-notebooklm",
       "skill": "skills/claude-code/export-notebooklm/SKILL.md",
-      "required": ["export-notebooklm"]
+      "required": [
+        "export-notebooklm"
+      ]
     },
     {
       "id": "hook-suggest",
       "skill": "skills/claude-code/hook-suggest/SKILL.md",
-      "required": ["hook-suggest"]
+      "required": [
+        "hook-suggest"
+      ]
     },
     {
       "id": "skill-scout",
       "skill": "skills/claude-code/skill-scout/SKILL.md",
-      "required": ["Skill Scout"]
+      "required": [
+        "Skill Scout"
+      ]
     },
     {
       "id": "lint-wiki",
       "skill": "skills/claude-code/lint-wiki/SKILL.md",
-      "required": ["lint-wiki"]
+      "required": [
+        "lint-wiki"
+      ]
     },
     {
       "id": "obsidian",
       "skill": "skills/claude-code/obsidian/SKILL.md",
-      "required": ["Obsidian Skills"]
+      "required": [
+        "Obsidian Skills"
+      ]
     },
     {
       "id": "pharmacy-order-lookup-claude-code",
       "skill": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
-      "required": ["pharmacy-order-lookup"]
+      "required": [
+        "pharmacy-order-lookup"
+      ]
     },
     {
       "id": "root-cause-first",
       "skill": "skills/claude-code/root-cause-first/SKILL.md",
-      "required": ["root-cause-first"]
+      "required": [
+        "root-cause-first"
+      ]
     },
     {
       "id": "skill-creator-claude-code",
       "skill": "skills/claude-code/skill-creator/SKILL.md",
-      "required": ["Skill Creator"]
+      "required": [
+        "Skill Creator"
+      ]
     },
     {
       "id": "token-optimization",
       "skill": "skills/claude-code/token-optimization/SKILL.md",
-      "required": ["Token Optimization", "compact"]
+      "required": [
+        "Token Optimization",
+        "compact"
+      ]
     },
     {
       "id": "web-research",
       "skill": "skills/claude-code/web-research/SKILL.md",
-      "required": ["Web Research"]
+      "required": [
+        "Web Research"
+      ]
     },
     {
       "id": "thai-address",
       "skill": "skills/claude-thai/thai-address/SKILL.md",
-      "required": ["Thai Address"]
+      "required": [
+        "Thai Address"
+      ]
     },
     {
       "id": "thai-customer-service",
       "skill": "skills/claude-thai/thai-customer-service/SKILL.md",
-      "required": ["Thai Customer Service"]
+      "required": [
+        "Thai Customer Service"
+      ]
     },
     {
       "id": "thai-date-format",
       "skill": "skills/claude-thai/thai-date-format/SKILL.md",
-      "required": ["Thai Date Format"]
+      "required": [
+        "Thai Date Format"
+      ]
     },
     {
       "id": "thai-festival-card",
       "skill": "skills/claude-thai/thai-festival-card/SKILL.md",
-      "required": ["Thai Festival"]
+      "required": [
+        "Thai Festival"
+      ]
     },
     {
       "id": "thai-government-form",
       "skill": "skills/claude-thai/thai-government-form/SKILL.md",
-      "required": ["Thai Government"]
+      "required": [
+        "Thai Government"
+      ]
     },
     {
       "id": "thai-id-validate",
       "skill": "skills/claude-thai/thai-id-validate/SKILL.md",
-      "required": ["Thai ID"]
+      "required": [
+        "Thai ID"
+      ]
     },
     {
       "id": "thai-invoice",
       "skill": "skills/claude-thai/thai-invoice/SKILL.md",
-      "required": ["Thai Tax Documents"]
+      "required": [
+        "Thai Tax Documents"
+      ]
     },
     {
       "id": "thai-pdpa",
       "skill": "skills/claude-thai/thai-pdpa/SKILL.md",
-      "required": ["PDPA"]
+      "required": [
+        "PDPA"
+      ]
     },
     {
       "id": "thai-resume",
       "skill": "skills/claude-thai/thai-resume/SKILL.md",
-      "required": ["Thai Resume"]
+      "required": [
+        "Thai Resume"
+      ]
     },
     {
       "id": "thai-social-caption",
       "skill": "skills/claude-thai/thai-social-caption/SKILL.md",
-      "required": ["Thai Social Caption"]
+      "required": [
+        "Thai Social Caption"
+      ]
     },
     {
       "id": "thai-text-processing",
       "skill": "skills/claude-thai/thai-text-processing/SKILL.md",
-      "required": ["Thai Text Processing"]
+      "required": [
+        "Thai Text Processing"
+      ]
     },
     {
       "id": "ag2-goal-delegation",
       "skill": "skills/delegation/ag2-goal/SKILL.md",
-      "required": ["AG2 Goal Orchestrator", "goal.sh", "delegate.sh"]
+      "required": [
+        "AG2 Goal Orchestrator",
+        "goal.sh",
+        "delegate.sh"
+      ]
     },
     {
       "id": "crew-dispatch-delegation",
       "skill": "skills/delegation/crew-dispatch/SKILL.md",
-      "required": ["Crew Dispatch", "parallel"]
+      "required": [
+        "Crew Dispatch",
+        "parallel"
+      ]
     },
     {
       "id": "delegate-subagent-delegation",
       "skill": "skills/delegation/delegate-subagent/SKILL.md",
-      "required": ["delegate-subagent"]
+      "required": [
+        "delegate-subagent"
+      ]
     },
     {
       "id": "skill-creator-delegation",
       "skill": "skills/delegation/skill-creator/SKILL.md",
-      "required": ["Skill Creator"]
+      "required": [
+        "Skill Creator"
+      ]
     },
     {
       "id": "excel-generator-domain",
       "skill": "skills/domain/excel-generator/SKILL.md",
-      "required": ["Excel Generator Skill", "Core Principle"]
+      "required": [
+        "Excel Generator Skill",
+        "Core Principle"
+      ]
     },
     {
       "id": "pharmacy-order-lookup-domain",
       "skill": "skills/domain/pharmacy-order-lookup/SKILL.md",
-      "required": ["pharmacy-order-lookup"]
+      "required": [
+        "pharmacy-order-lookup"
+      ]
     }
   ]
 }

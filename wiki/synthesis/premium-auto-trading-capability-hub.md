@@ -40,4 +40,4 @@ updated: 2026-06-12
 - [[synthesis/8-bit-trading-rpg-blueprint]]
 - [[sources/freqtrade-pi5]]
 - `docs/protocols/bot-trading-iron-law.md`
-- `docs/protocols/pwq-read-only-feed-contract.md`
+- PWQ feed contract — ย้ายไป product repo แล้ว (2026-07-12): `docs/pwq-read-only-feed-contract.md`

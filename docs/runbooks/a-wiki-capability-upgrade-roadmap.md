@@ -88,6 +88,7 @@ Use these official upstreams for volatile capability decisions. Record the retri
 
 ## Verification Notes
 
-- `python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files` is the right gate for real game asset work.
-- If `game-assets/manifests/` has no manifest JSON files, `BLOCKED` means no asset pack is configured in this repo yet, not that the capability upgrade broke assets.
+- Game asset pipeline moved to the product repo (2026-07-12): run
+  `python3 scripts/game/report_phaser_asset_pack.py game-assets/manifests --root . --check-files`
+  from the company webapp repo — that remains the right gate for real game asset work.
 - Do not create placeholder manifests just to make the report green; manifests must represent real PixelLab/Phaser assets.

@@ -28,6 +28,14 @@ import json
 import sys
 from pathlib import Path
 
+# Degrade unencodable characters instead of crashing on non-UTF-8 consoles
+# (Thai Windows = cp874) — same pattern as scripts/check-privacy.py.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 

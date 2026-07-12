@@ -267,7 +267,7 @@ python3 scripts/game/pixellab_generate_image.py \
 
 ### Manifest-driven character/object packs
 
-ถ้า agent ต้องทำ workflow นี้ซ้ำ ให้ใช้ skill `skills/claude-code/pixellab-asset-ingest/SKILL.md` เป็นตัวนำทางก่อน แล้วค่อยใช้ command ด้านล่างตาม state ของ asset.
+ถ้า agent ต้องทำ workflow นี้ซ้ำ ให้ใช้ skill `pixellab-asset-ingest` — ย้ายไป product repo แล้ว (2026-07-12): `.claude/skills/pixellab-asset-ingest/SKILL.md` ใน company webapp repo — เป็นตัวนำทางก่อน แล้วค่อยใช้ command ด้านล่างตาม state ของ asset (รันจาก product repo).
 
 เริ่ม asset ใหม่เร็วสุด:
 
