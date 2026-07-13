@@ -341,6 +341,37 @@ to{transform:translateY(0);opacity:1}
 .chat-test-result.fail{color:var(--accent-danger)}
 .chat-status-badge{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-2xs);padding:2px 8px;border-radius:var(--r-full);margin-left:6px}
 
+/* === SKILLS PANEL === */
+#skills-panel{padding:10px 14px}
+.skill-card{background:linear-gradient(145deg,rgba(20,20,42,.85),rgba(30,30,58,.7));border:1px solid var(--border2);border-radius:var(--r-lg);padding:11px 13px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:96px;display:flex;flex-direction:column;gap:5px}
+.skill-card:hover{border-color:var(--accent-brand);box-shadow:var(--shadow-glow);transform:translateY(-1px)}
+.skill-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sk-color,var(--accent-brand));border-radius:3px 0 0 3px}
+.skill-card.has-thai::before{background:var(--accent-success)}
+.skill-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.skill-card-name{font-size:var(--fs-sm);font-weight:700;color:var(--text-primary);font-family:var(--font-mono);line-height:1.3;word-break:break-word}
+.skill-card-inv{font-size:var(--fs-2xs);padding:2px 7px;border-radius:var(--r-full);flex-shrink:0;white-space:nowrap}
+.skill-card-inv.auto{background:rgba(94,234,212,.15);color:var(--accent-brand);border:1px solid rgba(94,234,212,.4)}
+.skill-card-inv.manual{background:rgba(148,163,184,.12);color:var(--text-secondary);border:1px solid var(--border2)}
+.skill-card-inv.both{background:rgba(167,139,250,.15);color:var(--accent-violet);border:1px solid rgba(167,139,250,.4)}
+.skill-card-desc{font-size:var(--fs-2xs);color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+.skill-card-when{font-size:10px;color:var(--accent-warm);font-style:italic;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.skill-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
+.skill-tag{font-size:10px;font-family:var(--font-mono);padding:1px 6px;border-radius:var(--r-sm);background:var(--elev-3);color:var(--text-tertiary);border:1px solid var(--border)}
+.skills-inv-btn.active{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.1)}
+.skill-detail-hdr{padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--elev-1);z-index:5}
+.skill-detail-name{font-size:var(--fs-lg);font-weight:800;font-family:var(--font-mono);color:var(--accent-brand);margin-bottom:4px;word-break:break-word}
+.skill-detail-body{padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px}
+.skill-detail-section h5{font-size:var(--fs-2xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-weight:700}
+.skill-detail-section p{font-size:var(--fs-sm);color:var(--text-primary);line-height:1.6}
+.skill-example{background:var(--elev-2);border:1px solid var(--border);border-left:3px solid var(--accent-warm);border-radius:var(--r-sm);padding:8px 11px;margin-bottom:6px}
+.skill-example-scenario{font-size:var(--fs-2xs);color:var(--accent-warm);margin-bottom:2px;font-weight:600}
+.skill-example-how{font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.5}
+.skill-process-step{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:var(--fs-xs);color:var(--text-secondary)}
+.skill-process-step-num{width:22px;height:22px;border-radius:50%;background:var(--accent-brand);color:var(--elev-0);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.skill-sim-btn{width:100%;padding:11px;border-radius:var(--r-md);cursor:pointer;background:linear-gradient(135deg,var(--accent-brand),var(--accent-cool));border:none;color:var(--elev-0);font-size:var(--fs-base);font-weight:700;margin-top:6px;min-height:44px;transition:opacity .2s}
+.skill-sim-btn:hover{opacity:.85}
+.skill-sim-btn:disabled{opacity:.4;cursor:not-allowed}
+
 /* === COUNCIL PANEL === */
 #council-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;gap:8px;padding:4px 0}
 .council-item{cursor:pointer;transition:border-color .15s}
@@ -409,6 +440,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-flow" onclick="setView('flow')">🌊 Flow</button>
       <button class="view-btn" id="btn-timeline" onclick="setView('timeline')">🏊 Timeline</button>
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
+      <button class="view-btn" id="btn-skills" onclick="setView('skills')">🧩 Skills</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
       <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="Toggle theme">🌙</button>💬 Chat</button>
@@ -462,6 +494,31 @@ to{transform:translateY(0);opacity:1}
     <div id="graph-vis">
     <div id="graph-unavailable" class="graph-fallback" style="display:none;align-items:center;justify-content:center;height:100%;color:var(--text-disabled);font-size:var(--fs-xs);text-align:center;padding:24px">🔗 Graph unavailable offline<br><small>vis-network CDN not loaded</small></div>
   </div>
+
+  <!-- 🧩 SKILLS VIEW — Universal second brain: skill catalog + Thai guide -->
+  <div id="skills-panel" style="display:none;flex-direction:column;overflow:hidden;height:100%">
+    <div id="skills-toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 4px;flex-shrink:0">
+      <input id="skills-search" type="text" placeholder="🔍 ค้นหา skill (ชื่อ / คำอธิบายไทย)..." style="flex:1;min-width:180px;padding:7px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-sm);min-height:36px" oninput="skillsSearchDebounced()">
+      <select id="skills-agent-filter" onchange="skillsLoad()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
+        <option value="all">🌐 ทุก Agent</option>
+      </select>
+      <select id="skills-domain-filter" onchange="skillsLoad()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
+        <option value="">📂 ทุก Domain</option>
+      </select>
+      <div style="display:flex;gap:3px">
+        <button class="chat-quick-btn skills-inv-btn active" data-inv="all" onclick="skillsSetInv('all')" style="padding:5px 10px;font-size:var(--fs-2xs)">ทั้งหมด</button>
+        <button class="chat-quick-btn skills-inv-btn" data-inv="auto" onclick="skillsSetInv('auto')" style="padding:5px 10px;font-size:var(--fs-2xs)">🤖 Auto</button>
+        <button class="chat-quick-btn skills-inv-btn" data-inv="manual" onclick="skillsSetInv('manual')" style="padding:5px 10px;font-size:var(--fs-2xs)">👆 Manual</button>
+      </div>
+    </div>
+    <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
+    <div id="skills-grid" style="flex:1;overflow-y:auto;padding:4px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;align-content:start"></div>
+    <div id="skills-empty" style="display:none;text-align:center;color:var(--text-disabled);padding:40px 20px;font-size:var(--fs-sm)">🧩 ยังไม่พบ skill — ลองเปลี่ยน filter หรือคำค้น</div>
+  </div>
+
+  <!-- Skills detail drawer -->
+  <div id="skills-detail-backdrop" onclick="skillsCloseDetail()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.6);backdrop-filter:blur(2px);z-index:300"></div>
+  <div id="skills-detail" style="position:fixed;top:0;right:0;bottom:0;width:min(480px,92vw);background:var(--elev-1);border-left:1px solid var(--border2);z-index:301;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow-y:auto"></div>
 
   <!-- 💬 CHAT VIEW — Hermes AI Interface -->
   <div id="chat-panel" style="display:none">
@@ -806,17 +863,19 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),ch=$('btn-chat'),co=$('btn-council');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
 $('graph-vis').style.display=v==='graph'?'block':'none';
+$('skills-panel').style.display=v==='skills'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
+if(v==='skills')skillsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 }
 // === COUNCIL PANE — list -> detail, polls /api/council every 10s only while visible ===
@@ -1192,6 +1251,101 @@ strip.innerHTML=`<span id="typed-intro" data-typed></span>`+parts.join('');
 if(_typedRAF)clearTimeout(_typedRAF);typedStep();
 }catch(e){}}
 buildOrigin();
+// === SKILLS PANE — universal second brain: load/filter/render skill cards ===
+let _skillsCache=[],_skillsInv='all',_skillsSearchTimer=null;
+const SKILL_DOMAIN_COLORS={code:'#60a5fa',debug:'#f87171',design:'#a78bfa','ux-ui':'#f472b6',trader:'#34d399',medical:'#22d3ee',business:'#fbbf24',data:'#5eead4',engineering:'#fb923c',security:'#ef4444','ai-ops':'#818cf8',productivity:'#a3e635',wiki:'#5eead4',iot:'#06b6d4',env:'#84cc16',pharmacy:'#22d3ee',thai:'#fbbf24',logistics:'#fb923c',network:'#06b6d4',media:'#ec4899',document:'#a78bfa',sre:'#f59e0b'};
+function skillsDomainColor(d){return SKILL_DOMAIN_COLORS[d]||'var(--accent-brand)';}
+function skillsSearchDebounced(){
+if(_skillsSearchTimer)clearTimeout(_skillsSearchTimer);
+_skillsSearchTimer=setTimeout(skillsLoad,250);
+}
+function skillsSetInv(inv){
+_skillsInv=inv;
+document.querySelectorAll('.skills-inv-btn').forEach(b=>b.classList.toggle('active',b.dataset.inv===inv));
+skillsLoad();
+}
+function skillsBuildQs(){
+const qs=new URLSearchParams();
+const agent=$('skills-agent-filter').value;if(agent&&agent!=='all')qs.set('agent',agent);
+const dom=$('skills-domain-filter').value;if(dom)qs.set('domain',dom);
+const q=$('skills-search').value.trim();if(q)qs.set('q',q);
+if(_skillsInv!=='all')qs.set('invocation',_skillsInv);
+return qs.toString();
+}
+async function skillsLoad(){
+const grid=$('skills-grid'),stats=$('skills-stats'),empty=$('skills-empty');if(!grid)return;
+grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-tertiary);padding:30px">⏳ กำลังโหลด...</div>';
+try{
+const qs=skillsBuildQs();
+const r=await fetch('/api/skills'+(qs?('?'+qs):'')).then(r=>r.json());
+if(r.error)throw new Error(r.error);
+_skillsCache=r.skills||[];
+// Populate agent dropdown on first load
+if($('skills-agent-filter').options.length<=1&&(r.agents||[]).length){
+(r.agents||[]).forEach(a=>{if(a==='all')return;const o=document.createElement('option');o.value=a;o.textContent='🤖 '+a.charAt(0).toUpperCase()+a.slice(1);$('skills-agent-filter').appendChild(o);});
+}
+// Populate domain dropdown
+const curDom=$('skills-domain-filter').value;
+const stats_by_domain=r.stats&&r.stats.by_domain||{};
+if($('skills-domain-filter').options.length<=1){
+Object.keys(stats_by_domain).forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=`${d} (${stats_by_domain[d]})`;$('skills-domain-filter').appendChild(o);});
+}
+// Render
+if(!_skillsCache.length){grid.innerHTML='';empty.style.display='block';}
+else{empty.style.display='none';grid.innerHTML=_skillsCache.map(skillsRenderCard).join('');}
+// Stats line
+const st=r.stats||{};
+const agentLbl=$('skills-agent-filter').value;
+const agentTxt=agentLbl==='all'?'ทุก agent':agentLbl;
+stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · 🤖 ${st.by_invocation?.auto||0} auto · 👆 ${st.by_invocation?.manual||0} manual · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
+}catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
+}
+function skillsRenderCard(s){
+const inv=s.invocation||'manual';
+const invIcon=inv==='auto'?'🤖':inv==='both'?'🔀':'👆';
+const hasThai=s.th_description?'has-thai':'';
+const desc=s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>';
+const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
+const when=s.when_to_use?`<div class="skill-card-when">💡 ${s.when_to_use}</div>`:'';
+return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}">
+<div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
+<div class="skill-card-desc">${desc}</div>${when}
+<div class="skill-card-tags">${domains}</div></div>`;
+}
+async function skillsOpenDetail(name){
+const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
+drawer.style.transform='translateX(0)';bd.style.display='block';
+drawer.innerHTML='<div style="padding:30px;text-align:center;color:var(--text-tertiary)">⏳ กำลังโหลด...</div>';
+try{
+const s=await fetch('/api/skills/'+encodeURIComponent(name)).then(r=>r.json());
+if(s.error)throw new Error(s.error);
+const inv=s.invocation||'manual';
+const invIcon=inv==='auto'?'🤖 โหลดอัตโนมัติ':inv==='both'?'🔀 อัตโนมัติ/แมนนวล':'👆 เรียกเอง';
+const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
+const examples=(s.examples||[]).map(ex=>`<div class="skill-example"><div class="skill-example-scenario">📌 ${ex.scenario}</div><div class="skill-example-how">→ ${ex.how}</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ยังไม่มีตัวอย่าง</p>';
+const steps=(s.process_steps||[]).map((st,i)=>`<div class="skill-process-step"><span class="skill-process-step-num">${i+1}</span>${st}</div>`).join('');
+const simBtn=steps?`<button class="skill-sim-btn" onclick="simulateSkill('${s.name}')">🎬 จำลองขั้นตอน (${s.process_steps.length} ขั้น)</button>`:'';
+drawer.innerHTML=`
+<div class="skill-detail-hdr">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+<div><div class="skill-detail-name">${s.name}</div>
+<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag">🔄 ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span></div></div>
+<button onclick="skillsCloseDetail()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:var(--fs-lg);cursor:pointer;min-width:32px;min-height:32px">✕</button>
+</div></div>
+<div class="skill-detail-body">
+<div class="skill-detail-section"><h5>📝 คำอธิบาย</h5><p>${s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>'}</p></div>
+${s.when_to_use?`<div class="skill-detail-section"><h5>💡 ใช้เมื่อไหร่</h5><p style="color:var(--accent-warn)">${s.when_to_use}</p></div>`:''}
+<div class="skill-detail-section"><h5>📌 ตัวอย่างการใช้งาน</h5>${examples}</div>
+${steps?`<div class="skill-detail-section"><h5>🎬 ขั้นตอน (สำหรับ simulation)</h5>${steps}${simBtn}</div>`:''}
+<div class="skill-detail-section"><h5>🔍 รายละเอียดเทคนิค</h5>
+<p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
+</div>`;
+}catch(e){drawer.innerHTML='<div style="padding:30px;color:var(--accent-danger)">⚠️ '+e.message+'</div>';}
+}
+function skillsCloseDetail(){
+$('skills-detail').style.transform='translateX(100%)';
+$('skills-detail-backdrop').style.display='none';
+}
 setView('summary');
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
