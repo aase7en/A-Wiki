@@ -166,6 +166,22 @@ THAI_GUIDE: dict[str, dict] = {
             {"scenario": "state กระจาย", "how": "/swiftui-patterns ใช้ @Observable + environment"},
         ],
     },
+    "golang-patterns": {
+        "invocation": "manual",
+        "th_description": "แนวทางเขียนโค้ดภาษา Go ที่ใช้กันทั่วไป — concurrency ด้วย goroutine และ channel, การจัดการ error, โครงสร้างแพ็กเกจ, interface แบบ implicit รวมถึงการทำ context",
+        "when_to_use": "เขียนเซอร์วิสด้วย Go, อยากทำตามฉันทามติของชุมชน, หรือเริ่มโปรเจกต์ใหม่",
+        "examples": [
+            {"scenario": "เซอร์วิส HTTP ใน Go", "how": "/golang-patterns แนะนำโครงและ best practice"},
+        ],
+    },
+    "kotlin-patterns": {
+        "invocation": "manual",
+        "th_description": "แนวทางเขียนโค้ดภาษา Kotlin ที่นิยม — coroutine, scope function, data class, sealed class, null safety และการขยายความสามารถด้วย extension function",
+        "when_to_use": "เขียนแอป Android หรือเซอร์วิสด้วย Kotlin, อยากเขียนให้กระชับและปลอดภัยกว่า Java",
+        "examples": [
+            {"scenario": "โมเดลข้อมูล + API", "how": "/kotlin-patterns แนะ data class + coroutine"},
+        ],
+    },
 
     # ── Iron Law / Engineering ─────────────────────────────────────────────
     "debug-mantra": {

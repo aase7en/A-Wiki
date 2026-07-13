@@ -14,7 +14,7 @@ Checks (in order):
   3. th_description: 80-400 chars, ≥30% Thai chars (U+0E00-0E7F)
   4. when_to_use: 20-150 chars, ≥20% Thai chars
   5. examples: list of 1-2 dicts, each with 'scenario' and 'how'
-  6. process_steps (if present): list of 3-6 non-empty strings, each <40 chars
+  6. process_steps (if present): list of 3-6 non-empty strings, each ≤60 chars
   7. invocation (if present): one of {auto, manual, both}
   8. No secret/path leaks: /Users, C:\\Users, account names, API key patterns
 """
@@ -159,8 +159,12 @@ def validate(output: str, skill_name: str = "") -> tuple[bool, str, dict[str, An
             for i, step in enumerate(ps):
                 if not isinstance(step, str) or not step.strip():
                     return False, f"{prefix}process_steps[{i}] must be non-empty string", {}
-                if len(step) > 40:
-                    return False, f"{prefix}process_steps[{i}] length {len(step)} > 40", {}
+                # Thai has no inter-word spaces, so a single "step" is naturally
+                # ~1.5× the char count of an equivalent English phrase. Cap of
+                # 60 chars accommodates Thai compound words while still keeping
+                # each step concise enough for the simulation station UI.
+                if len(step) > 60:
+                    return False, f"{prefix}process_steps[{i}] length {len(step)} > 60", {}
 
     # invocation (optional, default manual)
     inv = data.get("invocation", "manual")

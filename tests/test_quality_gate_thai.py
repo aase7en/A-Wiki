@@ -6,6 +6,7 @@ and tolerance to markdown fences.
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -193,6 +194,33 @@ def test_process_steps_too_short():
     ok, reason, _ = validate(body)
     assert not ok
     assert "process_steps length" in reason
+
+
+def test_process_steps_too_long():
+    # 60 chars is the cap (relaxed from 40 for Thai compound words).
+    long_step = "x" * 61
+    body = json.dumps({
+        "th_description": "สกิลนี้ช่วยค้นหาใน wiki ด้วย FTS5 แบบ local ไม่ต้องเชื่อมเน็ต เร็วและฟรี เหมาะกับการดูข้อมูลในเครื่อง",
+        "when_to_use": "เมื่อต้องการค้นหาใน wiki",
+        "examples": [{"scenario": "a", "how": "b"}],
+        "process_steps": [long_step, "y", "z"],
+    })
+    ok, reason, _ = validate(body)
+    assert not ok
+    assert "process_steps[0] length 61 > 60" in reason
+
+
+def test_process_steps_at_cap_60_passes():
+    at_cap = "x" * 60  # exactly the cap — should pass
+    body = json.dumps({
+        "th_description": "สกิลนี้ช่วยค้นหาใน wiki ด้วย FTS5 แบบ local ไม่ต้องเชื่อมเน็ต เร็วและฟรี เหมาะกับการดูข้อมูลในเครื่อง",
+        "when_to_use": "เมื่อต้องการค้นหาใน wiki",
+        "examples": [{"scenario": "a", "how": "b"}],
+        "process_steps": [at_cap, "y", "z"],
+    })
+    ok, reason, data = validate(body)
+    assert ok, reason
+    assert len(data["process_steps"]) == 3
 
 
 def test_process_steps_null_is_tolerated():

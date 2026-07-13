@@ -17,7 +17,24 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ผ่าน Telegram ได้โดยตรง สะดวกสำหรับการทำงานระยะไกล",
+      "when_to_use": "เมื่อต้องการค้นหาหรือจัดการ wiki ผ่าน Telegram",
+      "examples": [
+        {
+          "scenario": "ต้องการค้นหาข้อมูลใน wiki ขณะอยู่ระหว่างประชุม",
+          "how": "พิมพ์ /wiki search <คำค้น> ใน Telegram"
+        },
+        {
+          "scenario": "ต้องการ backup wiki ผ่านมือถือ",
+          "how": "พิมพ์ /wiki backup ใน Telegram"
+        }
+      ],
+      "process_steps": [
+        "เชื่อมต่อ bot กับ Telegram",
+        "ส่งคำสั่ง /wiki",
+        "รอผลลัพธ์จาก bot"
+      ]
     },
     {
       "name": "ask-notebooklm",
@@ -138,7 +155,27 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-orchestrator.py สำหรับการพัฒนาแบบเพิ่มทีละขั้น พร้อมแนะนำ TDD",
+      "when_to_use": "เมื่อต้องการเริ่มพัฒนาโค้ดแบบ incremental พร้อม TDD guidance",
+      "examples": [
+        {
+          "scenario": "ต้องการสร้างฟังก์ชันใหม่ในโปรเจกต์",
+          "how": "พิมพ์ /build สร้างฟังก์ชัน login ด้วย OAuth"
+        },
+        {
+          "scenario": "ต้องการเพิ่มฟีเจอร์และทดสอบทีละขั้น",
+          "how": "พิมพ์ /build เพิ่ม endpoint /users พร้อม unit test"
+        }
+      ],
+      "process_steps": [
+        "รับคำสั่ง /build",
+        "แยก task จากข้อความ",
+        "เรียก telegram-command-router",
+        "ส่งต่อไปยัง persona-orchestrator.py",
+        "ดำเนินการแบบ incremental",
+        "แนะนำ TDD"
+      ]
     },
     {
       "name": "ci-cd-and-automation",
@@ -334,7 +371,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สร้างหรือรีเฟรช snapshot ของ wiki เพื่อส่งออกไปยัง NotebookLM โดยเฉพาะเมื่อผู้ใช้พิมพ์ /snapshot-nb หรือขอให้อัปเดตเนื้อหาหลังจาก ingest ข้อมูลใหม่",
+      "when_to_use": "เมื่อผู้ใช้ต้องการ export wiki ไปยัง NotebookLM หรือรีเฟรช snapshot",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้พิมพ์ /snapshot-nb เพื่อสร้าง snapshot ล่าสุดของ wiki",
+          "how": "พิมพ์ /snapshot-nb"
+        },
+        {
+          "scenario": "ผู้ใช้ขอให้อัปเดต NotebookLM หลังจากเพิ่มเนื้อหาใหม่ใน wiki",
+          "how": "พิมพ์ /snapshot-nb หรือพูดว่า 'รีเฟรช NotebookLM snapshot'"
+        }
+      ]
     },
     {
       "name": "git-workflow-and-versioning",
@@ -381,7 +430,25 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "รัน persona หลายตัวตามลำดับสำหรับ Hermes (ไม่มี concurrency ดั้งเดิม) — code-reviewer, test-engineer, security-auditor ทำงานทีละตัว แล้วรวมเป็นรายงาน triaged",
+      "when_to_use": "เมื่อต้องการตรวจสอบโค้ดแบบหลายมุมมองโดยไม่ต้องรันพร้อมกัน",
+      "examples": [
+        {
+          "scenario": "ต้องการตรวจสอบ pull request ใหม่ทั้งด้านโค้ด, ทดสอบ, และความปลอดภัย",
+          "how": "ใช้คำสั่ง /fan-out ตามด้วย path ของ PR"
+        },
+        {
+          "scenario": "ต้องการรายงาน triaged จากหลาย persona ก่อน merge",
+          "how": "เรียกใช้สคริปต์ hermes-fan-out.sh --pr <PR_URL>"
+        }
+      ],
+      "process_steps": [
+        "รัน code-reviewer",
+        "รัน test-engineer",
+        "รัน security-auditor",
+        "รวมผลลัพธ์เป็นรายงาน triaged"
+      ]
     },
     {
       "name": "ingest-source",
@@ -462,7 +529,26 @@
       "version": "",
       "status": "canonical",
       "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างการ build เพื่อให้ระบบมี telemetry พร้อม ship ทันที เน้นการ instrument ตั้งแต่แรก ไม่ใช่เพิ่มทีหลัง",
+      "when_to_use": "เมื่อต้องการเพิ่ม telemetry หรือ ship service ใหม่",
+      "examples": [
+        {
+          "scenario": "กำลัง deploy service ใหม่ ต้องการเพิ่ม structured logging และ metrics",
+          "how": "ใช้คำสั่ง /instrument service-name พร้อมระบุ logging format และ RED metrics endpoints"
+        },
+        {
+          "scenario": "ต้องการเพิ่ม OpenTelemetry tracing ใน API endpoint ที่มีอยู่",
+          "how": "ใช้คำสั่ง /add-tracing endpoint-path พร้อมระบุ sampling rate และ exporter"
+        }
+      ],
+      "process_steps": [
+        "เพิ่ม structured logging",
+        "ตั้งค่า RED metrics",
+        "เปิด OpenTelemetry tracing",
+        "กำหนด symptom-based alerting",
+        "ทดสอบ telemetry pipeline"
+      ]
     },
     {
       "name": "obsidian",
@@ -537,7 +623,19 @@
       "version": "",
       "status": "canonical",
       "description": ">",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ค้นหาข้อมูลใบสั่งยาจากร้านขายยา โดยใช้หมายเลขใบสั่งยา (Order ID) หรือชื่อผู้ป่วย เพื่อดึงรายละเอียด เช่น รายการยา จำนวน และสถานะการจัดส่ง",
+      "when_to_use": "เมื่อต้องการตรวจสอบใบสั่งยาจากร้านขายยา",
+      "examples": [
+        {
+          "scenario": "ลูกค้าต้องการตรวจสอบสถานะใบสั่งยาที่สั่งไว้",
+          "how": "ใช้คำสั่ง /pharmacy-order-lookup order_id=ORD-12345"
+        },
+        {
+          "scenario": "เภสัชกรต้องการดูรายละเอียดใบสั่งยาของผู้ป่วยชื่อ สมชาย",
+          "how": "ใช้คำสั่ง /pharmacy-order-lookup patient_name=สมชาย"
+        }
+      ]
     },
     {
       "name": "plan",
@@ -556,7 +654,22 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สกิลนี้ใช้รับคำสั่ง /plan จาก Telegram เพื่อแยกงานที่ซับซ้อนออกเป็นงานย่อยที่ตรวจสอบได้ โดยเรียกใช้ telegram-command-router และ persona-orchestrator.py เพื่อวางแผนการทำงานในเฟส PLAN",
+      "when_to_use": "เมื่อต้องการแยกงานใหญ่เป็นงานย่อยที่ตรวจสอบได้ผ่าน Telegram",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้ส่ง /plan พร้อมรายละเอียดงานที่ต้องทำ",
+          "how": "พิมพ์ /plan <คำอธิบายงาน> ใน Telegram"
+        }
+      ],
+      "process_steps": [
+        "รับคำสั่ง /plan จาก Telegram",
+        "เรียก telegram-command-router",
+        "ส่งต่อให้ persona-orchestrator.py",
+        "แยกงานเป็นงานย่อยที่ตรวจสอบได้",
+        "ส่งผลลัพธ์กลับไปยัง Telegram"
+      ]
     },
     {
       "name": "planning-and-task-breakdown",
@@ -664,7 +777,27 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor).",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-command-router และ persona-orchestrator.py เพื่อดำเนินการตรวจสอบแบบหลายบทบาทตามลำดับ ได้แก่ code-reviewer, test-engineer และ security-auditor",
+      "when_to_use": "เมื่อต้องการให้ AI ตรวจสอบโค้ด การทดสอบ และความปลอดภัยแบบหลายมุมมอง",
+      "examples": [
+        {
+          "scenario": "นักพัฒนาต้องการให้ตรวจสอบ pull request ล่าสุด",
+          "how": "พิมพ์ /review ใน Telegram พร้อมลิงก์หรือข้อความอ้างอิงงาน"
+        },
+        {
+          "scenario": "ต้องการตรวจสอบโค้ดที่เขียนเสร็จใหม่",
+          "how": "ส่ง /review ตามด้วยโค้ดหรือไฟล์ที่ต้องการให้ตรวจสอบ"
+        }
+      ],
+      "process_steps": [
+        "รับคำสั่ง /review",
+        "ดึงงานจากข้อความ",
+        "เรียก telegram-command-router",
+        "รัน persona-orchestrator.py",
+        "ตรวจสอบตามลำดับบทบาท",
+        "ส่งผลลัพธ์กลับ"
+      ]
     },
     {
       "name": "scrutinize",
@@ -710,7 +843,19 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ค้นหาข้อมูลในวิกิด้วยคำสั่ง /search ซึ่งเป็น alias ของ /wiki ใช้ FTS5 ในการค้นหาแบบเต็มข้อความ ส่งคำค้นหาไปยัง telegram-command-router แล้วเรียกสคริปต์ search-wiki.py เพื่อแสดงผลลัพธ์",
+      "when_to_use": "เมื่อต้องการค้นหาข้อมูลในวิกิอย่างรวดเร็ว",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้ต้องการค้นหาคำว่า 'MCP protocol' ในวิกิ",
+          "how": "พิมพ์ /search MCP protocol"
+        },
+        {
+          "scenario": "ผู้ใช้ต้องการค้นหาบทความเกี่ยวกับ 'deploy'",
+          "how": "พิมพ์ /search deploy"
+        }
+      ]
     },
     {
       "name": "security-and-hardening",
@@ -758,7 +903,22 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router และ persona-orchestrator.py เพื่อรัน pre-launch checklist และให้ persona ตรวจสอบแบบ parallel ก่อน deploy จริง",
+      "when_to_use": "เมื่อต้องการตรวจสอบความพร้อมก่อน deploy หรือ ship งาน",
+      "examples": [
+        {
+          "scenario": "ทีมกำลังจะ deploy ฟีเจอร์ใหม่ ต้องการตรวจสอบ checklist และให้ persona ตรวจสอบ",
+          "how": "พิมพ์ /ship ตามด้วยชื่อ task หรือ link task"
+        }
+      ],
+      "process_steps": [
+        "รับ task จาก Telegram",
+        "เรียก telegram-command-router",
+        "รัน pre-launch checklist",
+        "ให้ persona ตรวจสอบแบบ parallel",
+        "สรุปผลและแจ้งกลับ"
+      ]
     },
     {
       "name": "shipping-and-launch",
@@ -805,7 +965,27 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-router และ persona-orchestrator.py เพื่อร่าง specification ก่อนเริ่มเขียนโค้ด",
+      "when_to_use": "เมื่อต้องการร่าง specification ก่อนเริ่มพัฒนาโค้ด",
+      "examples": [
+        {
+          "scenario": "ต้องการร่าง spec สำหรับฟีเจอร์ login ด้วย OAuth",
+          "how": "พิมพ์ /spec login ด้วย OAuth"
+        },
+        {
+          "scenario": "ต้องการร่าง spec สำหรับ API ใหม่ในระบบ",
+          "how": "พิมพ์ /spec สร้าง API สำหรับดึงข้อมูลผู้ใช้"
+        }
+      ],
+      "process_steps": [
+        "รับคำสั่ง /spec",
+        "ดึงข้อมูลงานจาก Telegram",
+        "เรียก telegram-command-router",
+        "เรียก persona-orchestrator.py",
+        "ร่าง specification",
+        "ส่งกลับผลลัพธ์"
+      ]
     },
     {
       "name": "spec-driven-development",
@@ -862,7 +1042,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองรับการ parse ที่อยู่จากข้อความที่ไม่เป็นทางการให้เป็นโครงสร้างที่ชัดเจน",
+      "when_to_use": "เมื่อต้องการ parse หรือตรวจสอบที่อยู่ของไทย",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้ป้อนที่อยู่ '123 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110' ต้องการแยกเป็นส่วนประกอบ",
+          "how": "ใช้คำสั่ง /parse-address ตามด้วยที่อยู่"
+        },
+        {
+          "scenario": "ต้องการค้นหารหัสไปรษณีย์ของจังหวัดเชียงใหม่",
+          "how": "ใช้คำสั่ง /lookup-postcode จังหวัดเชียงใหม่"
+        }
+      ]
     },
     {
       "name": "thai-customer-service",
@@ -881,7 +1073,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์คืนเงิน/คืนสินค้า และข้อความตอบกลับอัตโนมัติบน LINE OA",
+      "when_to_use": "เมื่อต้องการข้อความบริการลูกค้าภาษาไทย",
+      "examples": [
+        {
+          "scenario": "ลูกค้าสอบถามสถานะคำสั่งซื้อที่ล่าช้า",
+          "how": "ใช้คำสั่ง /thai-customer-service พร้อมระบุสถานการณ์ เช่น 'แจ้งลูกค้าว่าสินค้าล่าช้าเนื่องจากปัญหาการขนส่ง'"
+        },
+        {
+          "scenario": "ต้องการสคริปต์ขอโทษและเสนอส่วนลดสำหรับสินค้าชำรุด",
+          "how": "ใช้คำสั่ง /thai-customer-service พร้อมรายละเอียด เช่น 'เขียนข้อความขอโทษและเสนอคูปองส่วนลด 20% สำหรับสินค้าที่เสียหาย'"
+        }
+      ]
     },
     {
       "name": "thai-date-format",
@@ -927,7 +1131,25 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สร้างข้อความอวยพรหรือแสดงความเสียใจในโอกาสต่าง ๆ ของไทย เช่น วันสงกรานต์ วันลอยกระทง งานแต่งงาน งานศพ หรือวันสำคัญของราชวงศ์ โดยปรับภาษาให้เหมาะสมกับกาลเทศะและระดับความสุภาพ",
+      "when_to_use": "เมื่อต้องการข้อความอวยพรหรือแสดงความเสียใจในเทศกาลหรือโอกาสสำคัญของไทย",
+      "examples": [
+        {
+          "scenario": "ต้องการส่งการ์ดอวยพรวันปีใหม่ไทยให้ลูกค้า",
+          "how": "พิมพ์ '/thai-festival-card 新年快乐' หรือระบุโอกาสและผู้รับ"
+        },
+        {
+          "scenario": "ต้องการข้อความแสดงความเสียใจในงานศพ",
+          "how": "พิมพ์ '/thai-festival-card งานศพ' พร้อมชื่อผู้วายชนม์"
+        }
+      ],
+      "process_steps": [
+        "ระบุโอกาส (เช่น สงกรานต์ แต่งงาน)",
+        "ระบุผู้รับและระดับความสัมพันธ์",
+        "เลือกรูปแบบภาษา (ทางการ/กันเอง)",
+        "สร้างข้อความพร้อมตรวจสอบความเหมาะสม"
+      ]
     },
     {
       "name": "thai-government-form",
@@ -946,7 +1168,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับสร้างเอกสารราชการไทย เช่น หนังสือราชการ หนังสือมอบอำนาจ หนังสือลา หนังสือร้องเรียน หรือแบบฟอร์มต่างๆ ที่ต้องใช้ภาษาไทยทางการ พร้อมรูปแบบที่ถูกต้องตามระเบียบ",
+      "when_to_use": "เมื่อต้องการสร้างเอกสารราชการหรือหนังสือทางการเป็นภาษาไทย",
+      "examples": [
+        {
+          "scenario": "ต้องการเขียนหนังสือลากิจถึงหัวหน้าแผนก",
+          "how": "ใช้คำสั่ง /thai-government-form พร้อมระบุประเภท 'หนังสือลา' และรายละเอียดผู้ลา วันที่ และเหตุผล"
+        },
+        {
+          "scenario": "ต้องการทำหนังสือมอบอำนาจให้คนอื่นไปติดต่อราชการแทน",
+          "how": "ใช้คำสั่ง /thai-government-form ประเภท 'หนังสือมอบอำนาจ' พร้อมระบุชื่อผู้มอบ ผู้รับมอบ และอำนาจที่มอบ"
+        }
+      ]
     },
     {
       "name": "thai-id-validate",
@@ -965,7 +1199,26 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับตรวจสอบความถูกต้องของเลขบัตรประจำตัวประชาชนไทย เลขประจำตัวผู้เสียภาษี เบอร์โทรศัพท์ และ QR PromptPay รวมถึงการปรับรูปแบบให้เป็นมาตรฐานและการสร้าง QR PromptPay",
+      "when_to_use": "เมื่อต้องการตรวจสอบหรือสร้างข้อมูลระบุตัวตนของไทย",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้ป้อนเลขบัตรประชาชน 13 หลักมา ต้องการตรวจสอบว่าเลขถูกต้องตาม algorithm หรือไม่",
+          "how": "ใช้คำสั่ง /validate-id ตามด้วยเลขบัตร"
+        },
+        {
+          "scenario": "ต้องการสร้าง QR PromptPay สำหรับรับเงินจากลูกค้า",
+          "how": "ใช้คำสั่ง /generate-promptpay ตามด้วยหมายเลขบัตรหรือเบอร์โทรศัพท์"
+        }
+      ],
+      "process_steps": [
+        "รับข้อมูลเข้า",
+        "ตรวจสอบรูปแบบ",
+        "ตรวจสอบ checksum",
+        "ปรับรูปแบบมาตรฐาน",
+        "ส่งผลลัพธ์"
+      ]
     },
     {
       "name": "thai-invoice",
@@ -984,7 +1237,27 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับงานที่เกี่ยวข้องกับเอกสารภาษีไทย เช่น ใบกำกับภาษี ใบเสร็จรับเงิน ใบเสนอราคา และหนังสือรับรองการหักภาษี ณ ที่จ่าย ช่วยร่างและจัดการเอกสารให้ถูกต้องตามกฎหมายไทย",
+      "when_to_use": "เมื่อต้องการร่างหรือจัดการเอกสารภาษีไทย",
+      "examples": [
+        {
+          "scenario": "ลูกค้าขอใบกำกับภาษีแบบเต็มรูปแบบสำหรับการขายสินค้า",
+          "how": "พิมพ์ /thai-invoice draft full-tax-invoice --customer \"บริษัท ตัวอย่าง จำกัด\" --amount 50000"
+        },
+        {
+          "scenario": "ต้องการออกใบเสนอราคาให้ลูกค้าต่างประเทศ",
+          "how": "พิมพ์ /thai-invoice draft quotation --customer \"ABC Corp\" --currency USD --items \"consulting service 100 hrs\""
+        }
+      ],
+      "process_steps": [
+        "ระบุประเภทเอกสาร",
+        "กรอกรายละเอียดคู่สัญญา",
+        "ระบุรายการสินค้าหรือบริการ",
+        "คำนวณภาษีและส่วนลด",
+        "ตรวจสอบความถูกต้อง",
+        "ส่งออกเป็น PDF"
+      ]
     },
     {
       "name": "thai-pdpa",
@@ -1030,7 +1303,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับงานที่เกี่ยวข้องกับเรซูเม่และ CV ภาษาไทยหรือสองภาษา (ไทย/อังกฤษ) ช่วยร่าง เขียน หรือปรับปรุงเนื้อหาให้เหมาะสมกับตำแหน่งงานและวัฒนธรรมไทย",
+      "when_to_use": "เมื่อต้องการเขียนหรือปรับปรุงเรซูเม่ภาษาไทย",
+      "examples": [
+        {
+          "scenario": "ต้องการสมัครงานตำแหน่งวิศวกรซอฟต์แวร์และต้องการเรซูเม่ภาษาไทย",
+          "how": "พิมพ์ '/thai-resume เขียนเรซูเม่ภาษาไทยสำหรับตำแหน่งวิศวกรซอฟต์แวร์'"
+        },
+        {
+          "scenario": "มีเรซูเม่ภาษาอังกฤษอยู่แล้ว ต้องการแปลเป็นภาษาไทย",
+          "how": "วางเนื้อหาเรซูเม่ภาษาอังกฤษแล้วพิมพ์ '/thai-resume แปลเรซูเม่นี้เป็นภาษาไทย'"
+        }
+      ]
     },
     {
       "name": "thai-social-caption",
@@ -1049,7 +1334,19 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้สำหรับเขียนแคปชั่นภาษาไทยสำหรับโซเชียลมีเดีย โพสต์ หรือข้อความสั้น ๆ เหมาะกับงานที่ต้องการเนื้อหาที่กระชับ เข้าใจง่าย และตรงกับกลุ่มเป้าหมาย",
+      "when_to_use": "เมื่อต้องการเขียนแคปชั่นภาษาไทย",
+      "examples": [
+        {
+          "scenario": "ต้องการแคปชั่นโปรโมทสินค้าลง Instagram",
+          "how": "พิมพ์ /thai-social-caption เขียนแคปชั่นโปรโมทสินค้า 'รองเท้าผ้าใบรุ่นใหม่' สำหรับ Instagram"
+        },
+        {
+          "scenario": "ต้องการโพสต์ประชาสัมพันธ์กิจกรรมบริษัท",
+          "how": "พิมพ์ /thai-social-caption เขียนโพสต์ประชาสัมพันธ์งาน 'เปิดตัวผลิตภัณฑ์ใหม่' สำหรับ Facebook"
+        }
+      ]
     },
     {
       "name": "thai-text-processing",
@@ -1122,7 +1419,19 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap).",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ค้นหาข้อมูลจาก Wikipedia ผ่านคำสั่ง /wiki โดยส่งคำค้นหาไปยัง Telegram-command-router แล้วเรียกใช้ search-wiki.py เพื่อค้นหาแบบ FTS5 และส่งกลับ 5 ผลลัพธ์แรก ช่วยปิดช่องว่าง C4 สำหรับ Pi5 gateway",
+      "when_to_use": "เมื่อต้องการค้นหาข้อมูลจาก Wikipedia อย่างรวดเร็ว",
+      "examples": [
+        {
+          "scenario": "ผู้ใช้ต้องการหาข้อมูลเกี่ยวกับ 'กรุงเทพมหานคร'",
+          "how": "พิมพ์ /wiki กรุงเทพมหานคร"
+        },
+        {
+          "scenario": "ผู้ใช้ต้องการหาข้อมูลเกี่ยวกับ 'machine learning'",
+          "how": "พิมพ์ /wiki machine learning"
+        }
+      ]
     },
     {
       "name": "wiki-search-local",
