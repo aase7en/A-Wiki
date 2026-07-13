@@ -3,7 +3,7 @@ type: entity
 title: Social Media Skills — Creator Workflow Source
 category: tool
 tags: [claude-skills, content-system, creator-layer, social-media, second-brain, public-safe]
-sources: [github-social-media-skills]
+sources: [github-social-media-skills, charliejhills-claude-skills-org-chart-2026]
 created: 2026-05-30
 updated: 2026-05-30
 last_verified: 2026-05-30
@@ -77,3 +77,4 @@ verify_tool: git-clone
 - GitHub: https://github.com/charlie947/social-media-skills
 - License: MIT
 - [verified 2026-05-30] `git clone --depth 1`, `validate-skills.sh` ผ่าน 17 skills, repo size ประมาณ 356K
+- [[sources/charliejhills-claude-skills-org-chart-2026]] — Charlie Hills ชู repo นี้เองในโพสต์ 42-skill org chart (แผนก Social Media) [verified 2026-07-13]

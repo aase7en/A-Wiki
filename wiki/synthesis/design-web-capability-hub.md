@@ -5,7 +5,7 @@ slug: design-web-capability-hub
 tags: [capability-lane, design-web, frontend, ui-ux, visual-qa, second-brain]
 sources: [dashboard-design-best-practices, good-uiux-practices]
 created: 2026-06-12
-updated: 2026-06-12
+updated: 2026-07-13
 ---
 
 # Design/Web Capability Hub
@@ -33,3 +33,4 @@ updated: 2026-06-12
 - [[entities/ai-tools/frontend-slides]]
 - [[entities/ai-tools/react-doctor]]
 - `docs/runbooks/a-wiki-capability-upgrade-roadmap.md`
+- [[synthesis/claude-skills-gap-web-game-2026]] — candidates ยังไม่ติดตั้ง: [[entities/ai-tools/taste-skill]] · [[entities/ai-tools/ui-ux-pro-max]] · [[entities/ai-tools/transitions-dev]] (gap analysis 2026-07-13)

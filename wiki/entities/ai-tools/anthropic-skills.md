@@ -2,10 +2,10 @@
 type: entity
 category: tool
 tags: [claude-code, skills, anthropic, document-processing, creative, cross-agent]
-sources: []
+sources: [charliejhills-claude-skills-org-chart-2026]
 created: 2026-06-09
-updated: 2026-06-09
-last_verified: 2026-06-09
+updated: 2026-07-13
+last_verified: 2026-07-13
 verify_tool: WebFetch
 ---
 
@@ -20,6 +20,8 @@ verify_tool: WebFetch
 `anthropics/skills` คือ repo ทางการของ Anthropic ที่รวบรวม 17 curated skills แบ่งเป็น 3 กลุ่ม: document-skills (Office/PDF), example-skills (creative + dev tools), และ claude-api (API reference) [verified 2026-06-09]
 
 Skills เหล่านี้เป็น SKILL.md format เดียวกับ A-Wiki ecosystem — Claude Code load จาก `~/.claude/skills/` หรือผ่าน plugin marketplace
+
+ณ 2026-07-13 upstream อยู่ที่ **161k★** และถูกชูใน [[sources/charliejhills-claude-skills-org-chart-2026]] (5 ตัว: skill-creator, mcp-builder, webapp-testing, web-artifacts-builder, brand-guidelines — A-Wiki vendor ครบแล้วทั้งหมด) [verified 2026-07-13]
 
 ## Skills Inventory
 

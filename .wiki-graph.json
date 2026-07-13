@@ -1,19 +1,19 @@
 {
-  "generated_at": "2026-07-12",
+  "generated_at": "2026-07-13",
   "stats": {
-    "nodes": 535,
-    "edges": 1702,
+    "nodes": 542,
+    "edges": 1779,
     "edges_by_type": {
-      "wikilink": 1196,
-      "depends": 370,
-      "implements": 49,
+      "wikilink": 1260,
       "mdlink": 49,
+      "depends": 382,
+      "implements": 50,
       "extends": 38
     },
     "broken_links": 11,
-    "orphans": 18,
+    "orphans": 16,
     "orphan_by_domain": {
-      "context": 16,
+      "context": 14,
       "ai-tools": 2
     },
     "hubs": [
@@ -71,9 +71,7 @@
       "wiki/context/overview-sources.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory-2026-06-24.md",
       "wiki/context/session-memory.md",
-      "wiki/context/session-summary-2026-06-24.md",
       "wiki/context/wiki-capability-map.md",
       "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "wiki/entities/ai-tools/news-intelligence-pipeline.md"
@@ -83,6 +81,11 @@
     {
       "path": "CLAUDE.md",
       "title": "A-Wiki — Hybrid Agent Wiki (Swarm + Knowledge) — Session Rules",
+      "domain": "other"
+    },
+    {
+      "path": "README.md",
+      "title": "A-Wiki — The AI Operating System That Ships",
       "domain": "other"
     },
     {
@@ -121,14 +124,14 @@
       "domain": "other"
     },
     {
-      "path": "README.md",
-      "title": "A-Wiki — The AI Operating System That Ships",
-      "domain": "other"
-    },
-    {
       "path": "wiki/CLAUDE.md",
       "title": "ชื่อ Entity",
       "domain": "other"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Concepts",
+      "domain": "ai-tools"
     },
     {
       "path": "wiki/concepts/ai-tools/a2a-protocol.md",
@@ -168,11 +171,6 @@
     {
       "path": "wiki/concepts/ai-tools/claude-thai-skills.md",
       "title": "Claude Thai Skills",
-      "domain": "ai-tools"
-    },
-    {
-      "path": "wiki/concepts/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Concepts",
       "domain": "ai-tools"
     },
     {
@@ -316,13 +314,13 @@
       "domain": "env"
     },
     {
-      "path": "wiki/concepts/iot/air-quality-index.md",
-      "title": "Air Quality Index (AQI)",
+      "path": "wiki/concepts/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Concepts",
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Concepts",
+      "path": "wiki/concepts/iot/air-quality-index.md",
+      "title": "Air Quality Index (AQI)",
       "domain": "iot"
     },
     {
@@ -376,13 +374,13 @@
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
-      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
+      "path": "wiki/concepts/it-support/CLAUDE.md",
+      "title": "IT Support — Domain Rules",
       "domain": "it-support"
     },
     {
-      "path": "wiki/concepts/it-support/CLAUDE.md",
-      "title": "IT Support — Domain Rules",
+      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
       "domain": "it-support"
     },
     {
@@ -492,22 +490,12 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-12",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory-2026-06-24.md",
-      "title": "session-memory-2026-06-24",
+      "title": "Review Report — 2026-07-13",
       "domain": "context"
     },
     {
       "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-summary-2026-06-24.md",
-      "title": "session-summary-2026-06-24",
+      "title": "Session Memory (local)",
       "domain": "context"
     },
     {
@@ -536,6 +524,11 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Entities",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "title": "A-Wiki Universal Skill Architecture",
       "domain": "ai-tools"
@@ -556,8 +549,13 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Entities",
+      "path": "wiki/entities/ai-tools/claude-mem.md",
+      "title": "Claude-Mem (thedotmack/claude-mem)",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/context7.md",
+      "title": "Context7 (upstash/context7)",
       "domain": "ai-tools"
     },
     {
@@ -656,8 +654,23 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/superpowers.md",
+      "title": "Superpowers (obra/superpowers)",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/taste-skill.md",
+      "title": "Taste Skill (Leonxlnx/taste-skill)",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/telegram-ai-router.md",
       "title": "Telegram AI Router Bot",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/transitions-dev.md",
+      "title": "Transitions.dev (Jakubantalik/transitions.dev)",
       "domain": "ai-tools"
     },
     {
@@ -666,18 +679,23 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "title": "UI UX Pro Max (nextlevelbuilder/ui-ux-pro-max-skill)",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/zai-glm.md",
       "title": "Z.ai — GLM Series",
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/env/activated-sludge-system.md",
-      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
+      "path": "wiki/entities/env/CLAUDE.md",
+      "title": "Scoped Context — Environmental Health Entities",
       "domain": "env"
     },
     {
-      "path": "wiki/entities/env/CLAUDE.md",
-      "title": "Scoped Context — Environmental Health Entities",
+      "path": "wiki/entities/env/activated-sludge-system.md",
+      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
       "domain": "env"
     },
     {
@@ -696,6 +714,11 @@
       "domain": "iot"
     },
     {
+      "path": "wiki/entities/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Entities",
+      "domain": "iot"
+    },
+    {
       "path": "wiki/entities/iot/arduino-ide.md",
       "title": "Arduino IDE",
       "domain": "iot"
@@ -708,11 +731,6 @@
     {
       "path": "wiki/entities/iot/chirpstack.md",
       "title": "ChirpStack",
-      "domain": "iot"
-    },
-    {
-      "path": "wiki/entities/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -911,6 +929,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/CLAUDE.md",
+      "title": "Scoped Context — Source Summaries",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "title": "Agent Framework Insights — thClaws / Hermes / OpenClaw บน Local LLM",
       "domain": "sources"
@@ -1026,13 +1049,13 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
-      "title": "การวางแผนสลับ model + บริหาร token cost (Fable 5 / Sonnet / Haiku)",
+      "path": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "title": "Charlie Hills — \"I turned Claude into an entire company\" (42-skill org chart)",
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/CLAUDE.md",
-      "title": "Scoped Context — Source Summaries",
+      "path": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
+      "title": "การวางแผนสลับ model + บริหาร token cost (Fable 5 / Sonnet / Haiku)",
       "domain": "sources"
     },
     {
@@ -1741,6 +1764,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/CLAUDE.md",
+      "title": "Scoped Context — Synthesis (Cross-domain)",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/ai-driven-environmental-modeling.md",
       "title": "AI-driven Environmental Modeling",
       "domain": "synthesis"
@@ -1761,8 +1789,8 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/CLAUDE.md",
-      "title": "Scoped Context — Synthesis (Cross-domain)",
+      "path": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "title": "Claude Skills Gap Analysis — Web Design + Game (2026-07)",
       "domain": "synthesis"
     },
     {
@@ -2033,6 +2061,11 @@
     {
       "path": "wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md",
       "title": "[Mastodon](https://me.dm/@webcluesinfotech) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-charliejhills-claude-skills-org-chart-2026.md",
+      "title": "Charlie Hills — I turned Claude into an entire company (42-skill org chart) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2840,6 +2873,62 @@
       "type": "wikilink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "AGENTS.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "GEMINI.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "agent-skills/README.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "wiki/context/wiki-overview.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/setup-new-machine.md",
+      "type": "depends",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/upstream-refresh.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CHANGELOG.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "index-ai-tools.md",
@@ -5159,60 +5248,11 @@
       "external": false
     },
     {
-      "from": "README.md",
-      "to": "AGENTS.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
+      "from": "wiki/concepts/ai-tools/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "GEMINI.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "agent-skills/README.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "wiki/context/wiki-overview.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/setup-new-machine.md",
-      "type": "depends",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/upstream-refresh.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "CHANGELOG.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/concepts/ai-tools/a2a-protocol.md",
@@ -5526,13 +5566,6 @@
       "from": "wiki/concepts/ai-tools/claude-thai-skills.md",
       "to": "wiki/entities/ai-tools/ecc.md",
       "type": "extends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/concepts/ai-tools/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -6300,6 +6333,13 @@
       "external": false
     },
     {
+      "from": "wiki/concepts/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-sensors-dronebot.md",
       "type": "depends",
@@ -6366,13 +6406,6 @@
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/concepts/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -7364,6 +7397,13 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "to": "skill-frontmatter-schema",
       "type": "extends",
@@ -7442,6 +7482,20 @@
     },
     {
       "from": "wiki/entities/ai-tools/anthropic-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/anthropic-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/anthropic-skills.md",
       "to": "wiki/entities/ai-tools/ecc.md",
       "type": "wikilink",
       "broken": false,
@@ -7462,9 +7516,79 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
+      "from": "wiki/entities/ai-tools/claude-mem.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/claude-mem.md",
+      "to": "wiki/entities/ai-tools/gbrain.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/claude-mem.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/claude-mem.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/entities/ai-tools/gitnexus.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/entities/ai-tools/gitnexus.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/context7.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -7932,6 +8056,13 @@
     },
     {
       "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
       "to": "wiki/entities/ai-tools/ecc.md",
       "type": "wikilink",
       "broken": false,
@@ -7954,6 +8085,97 @@
     {
       "from": "wiki/entities/ai-tools/social-media-skills.md",
       "to": "wiki/synthesis/openrouter-agent-routing.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/social-media-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/superpowers.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/superpowers.md",
+      "to": "wiki/entities/ai-tools/9arm-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/superpowers.md",
+      "to": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/superpowers.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/superpowers.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/entities/ai-tools/transitions-dev.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/taste-skill.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8015,6 +8237,62 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/entities/ai-tools/ecc.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/entities/ai-tools/taste-skill.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/transitions-dev.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/turbovec.md",
       "to": "wiki/concepts/ai-tools/sqlite-vec.md",
       "type": "wikilink",
@@ -8031,6 +8309,55 @@
     {
       "from": "wiki/entities/ai-tools/turbovec.md",
       "to": "wiki/concepts/ai-tools/vector-search.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/entities/ai-tools/mattpocock-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/entities/ai-tools/taste-skill.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/entities/ai-tools/transitions-dev.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8064,6 +8391,13 @@
       "external": false
     },
     {
+      "from": "wiki/entities/env/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/concepts/env/water-quality-parameters.md",
       "type": "wikilink",
@@ -8088,13 +8422,6 @@
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/env/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -8214,6 +8541,13 @@
       "from": "wiki/entities/iot/18650-battery-shield.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -8382,13 +8716,6 @@
       "from": "wiki/entities/iot/chirpstack.md",
       "to": "wiki/sources/lorawan-network-beginner.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -10213,6 +10540,13 @@
       "external": false
     },
     {
+      "from": "wiki/sources/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "to": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "type": "wikilink",
@@ -10500,16 +10834,86 @@
       "external": true
     },
     {
-      "from": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
-      "to": "wiki/context/model-roster.md",
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/social-media-skills.md",
       "type": "wikilink",
       "broken": false,
       "external": false
     },
     {
-      "from": "wiki/sources/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/anthropic-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/taste-skill.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/transitions-dev.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/claude-mem.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/superpowers.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/entities/ai-tools/context7.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
+      "to": "wiki/context/model-roster.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -11620,6 +12024,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/air-quality-monitoring.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "depends",
@@ -11788,9 +12199,128 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/taste-skill.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/transitions-dev.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/anthropic-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/superpowers.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/context7.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/gbrain.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/claude-mem.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/social-media-skills.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/frontend-slides.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/react-doctor.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/synthesis/design-web-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/synthesis/8-bit-trading-rpg-blueprint.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -11923,6 +12453,34 @@
     {
       "from": "wiki/synthesis/design-web-capability-hub.md",
       "to": "wiki/entities/ai-tools/react-doctor.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/entities/ai-tools/taste-skill.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/entities/ai-tools/ui-ux-pro-max.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/entities/ai-tools/transitions-dev.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -12371,6 +12929,13 @@
     {
       "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
       "to": "wiki/synthesis/pixellab-phaser-asset-convention.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -13295,6 +13860,13 @@
     {
       "from": "wiki/synthesis/synth-building-an-iot-application-with-raspberry-pi-and-python.md",
       "to": "wiki/sources/building-an-iot-application-with-raspberry-pi-and-python.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-charliejhills-claude-skills-org-chart-2026.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "depends",
       "broken": false,
       "external": false

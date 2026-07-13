@@ -5,7 +5,7 @@ slug: game-lightweight-highend-capability-hub
 tags: [capability-lane, game-design, phaser, pixellab, performance, sunday-invest-moon]
 sources: [trading-rpg-project-brief-2026-05-30, pixellab-api-v2-openapi-2026-06-01]
 created: 2026-06-12
-updated: 2026-06-12
+updated: 2026-07-13
 ---
 
 # Game Lightweight High-end Capability Hub
@@ -34,3 +34,4 @@ updated: 2026-06-12
 - [[synthesis/pixellab-asset-pipeline-for-trading-rpg]]
 - [[synthesis/pixellab-phaser-asset-convention]]
 - PWQ feed contract — ย้ายไป product repo แล้ว (2026-07-12): `docs/pwq-read-only-feed-contract.md`
+- [[synthesis/claude-skills-gap-web-game-2026]] — game SKILL ยังเป็น gap (2026-07-13): แนะนำ authoring `game-phaser-pipeline` จาก synthesis เดิม + vendored subset `gamedev-skills/awesome-gamedev-agent-skills` (Phaser/PixiJS/three.js) — ยังไม่ติดตั้ง

@@ -8,12 +8,12 @@
 # Scoped Context — AI Tools Entities
 
 > **โดเมน**: AI Tools
-> **Last updated**: 2026-07-12
+> **Last updated**: 2026-07-13
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/ai-tools/ เท่านั้น**
 
 ---
 
-## Entities ที่มีอยู่ (17)
+## Entities ที่มีอยู่ (33)
 
 | Slug | Abstract |
 |------|----------|
@@ -34,6 +34,12 @@
 | `pocketbase` | PocketBase — lightweight backend-as-a-service สำหรับ IoT + dream projects |
 | `graphify` | Graphify — แปลงไฟล์ (code/PDF/image) เป็น interactive knowledge graph, 71.5x token reduction, MCP server |
 | `openmed` | OpenMed v1.5.5 — on-device healthcare AI: drug/disease NER, HIPAA PII detection, de-identification, 1000+ models |
+| `taste-skill` | Taste Skill (59.4k★) — anti-slop frontend taste layer, 11 variants — candidate ยังไม่ติดตั้ง |
+| `ui-ux-pro-max` | UI UX Pro Max — searchable design DB (161 palettes/57 font pairs/99 UX rules, 10 stacks) — candidate |
+| `transitions-dev` | Transitions.dev — 18 CSS transitions + audit workflow, framework-agnostic — candidate |
+| `claude-mem` | Claude-Mem (87k★) — auto-capture memory (SQLite+vector) — ประเมินก่อน เทียบ gbrain/session-memory |
+| `superpowers` | Superpowers (253k★, obra) — methodology framework — track upstream, keep ours |
+| `context7` | Context7 (59k★, Upstash) — live version-specific library docs MCP — candidate opt-in |
 
 ---
 
