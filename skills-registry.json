@@ -233,7 +233,15 @@
       "version": "1.0",
       "status": "canonical",
       "description": "Orchestrate multi-step goals using AG2 agents — Planner decomposes, free Executors execute, Planner validates.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "orchestrate multi-step goal ด้วย AG2 — planner แตกเป้า, free executor รัน, planner ตรวจ",
+      "when_to_use": "เป้าซับซ้อนเกิน one-shot, ต้องการ planner+executor แยกบทบาท",
+      "examples": [
+        {
+          "scenario": "research และสรุป 10 paper",
+          "how": "/ag2-goal planner แตกงาน → executor ทำ → รวม"
+        }
+      ]
     },
     {
       "name": "agent-architecture-audit",
@@ -304,7 +312,15 @@
       "version": "",
       "status": "canonical",
       "description": "Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ออกแบบ action space, tool definitions, observation formatting สำหรับ agent harness — ให้ agent ตัดสินใจได้แม่นขึ้น",
+      "when_to_use": "สร้างหรือปรับ agent harness, agent ตัดสินใจผิดบ่อย, อยากเพิ่ม success rate",
+      "examples": [
+        {
+          "scenario": "agent เลือก tool ผิดบ่อย",
+          "how": "/agent-harness-construction ปรับ description + schema"
+        }
+      ]
     },
     {
       "name": "agent-introspection-debugging",
@@ -323,7 +339,21 @@
       "version": "",
       "status": "canonical",
       "description": "Structured self-debugging workflow for AI agent failures using capture, diagnosis, contained recovery, and introspection reports.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลองใหม่",
+      "when_to_use": "agent ล้มเหลวซ้ำๆ, ไม่รู้ว่าผิดตรงไหน, อยากแก้ที่สาเหตุ",
+      "examples": [
+        {
+          "scenario": "agent loop ไม่จบ",
+          "how": "/agent-introspection-debugging capture state → diagnose → fix"
+        }
+      ],
+      "process_steps": [
+        "capture failure",
+        "diagnose root cause",
+        "contained recovery",
+        "prevent regression"
+      ]
     },
     {
       "name": "agent-payment-x402",
@@ -359,7 +389,15 @@
       "version": "",
       "status": "canonical",
       "description": "Build an evidence-backed ECC install plan for a specific repo by sorting skills, commands, rules, hooks, and extras into DAILY vs LIBRARY buckets using parallel",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เรียง skills/commands/rules/hooks สำหรับ repo หนึ่งๆ เป็น install plan โดยอ้างหลักฐาน — ไม่เดา",
+      "when_to_use": "เริ่ม repo ใหม่หรืออยากทำความสะอาด skill catalog ที่ล้น",
+      "examples": [
+        {
+          "scenario": "repo ใหม่ ไม่รู้จะใส่ skill ไหน",
+          "how": "/agent-sort ได้ลำดับ install พร้อมเหตุผล"
+        }
+      ]
     },
     {
       "name": "agentic-engineering",
@@ -784,7 +822,15 @@
       "version": "",
       "status": "canonical",
       "description": "Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "design pattern ฝั่ง backend — API design, database optimization, server-side best practice สำหรับ service ที่ scale",
+      "when_to_use": "ออกแบบ backend ใหม่, ปรับ API/database, หรือเตรียมรองรับโหลดสูง",
+      "examples": [
+        {
+          "scenario": "API ช้า",
+          "how": "/backend-patterns ตรวจ N+1 query, caching, indexing"
+        }
+      ]
     },
     {
       "name": "benchmark",
@@ -963,7 +1009,22 @@
       "version": "",
       "status": "canonical",
       "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, performance",
+      "when_to_use": "debug frontend, ตรวจ layout, วัด performance, หา error ใน console",
+      "examples": [
+        {
+          "scenario": "หน้าโหลดช้า",
+          "how": "/browser-testing-with-devtools trace network + measure"
+        }
+      ],
+      "process_steps": [
+        "inspect DOM",
+        "read console",
+        "trace network",
+        "profile performance",
+        "report"
+      ]
     },
     {
       "name": "bun-runtime",
@@ -1921,7 +1982,15 @@
       "version": "",
       "status": "canonical",
       "description": "Django architecture patterns, REST API design with DRF, ORM best practices, caching, signals, middleware, and production-grade Django apps.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "design pattern Django — architecture, DRF REST API, ORM best practice, caching, signals, middleware",
+      "when_to_use": "ใช้ Django/DRF แล้วอยากทำตามมาตรฐาน, ปรับ ORM/API ให้เร็วและสะอาด",
+      "examples": [
+        {
+          "scenario": "Django API ช้า",
+          "how": "/django-patterns select_related + caching + pagination"
+        }
+      ]
     },
     {
       "name": "django-security",
@@ -1939,7 +2008,15 @@
       "version": "",
       "status": "canonical",
       "description": "Django security best practices, authentication, authorization, CSRF protection, SQL injection prevention, XSS prevention, and secure deployment configurations.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "security ของ Django — auth, authorization, CSRF, SQL injection, ป้องกันช่องโหว่ทั่วไป",
+      "when_to_use": "Django app ขึ้น production, audit ความปลอดภัย, เพิ่ม auth ที่แข็งแรง",
+      "examples": [
+        {
+          "scenario": "ตั้ง auth ใหม่",
+          "how": "/django-security session, CSRF, password policy"
+        }
+      ]
     },
     {
       "name": "django-tdd",
@@ -1957,7 +2034,15 @@
       "version": "",
       "status": "canonical",
       "description": "Django testing strategies with pytest-django, TDD methodology, factory_boy, mocking, coverage, and testing Django REST Framework APIs.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "กลยุทธ์ test Django ด้วย pytest-django + factory_boy + mocking + coverage — TDD แบบ Django",
+      "when_to_use": "เขียน Django แล้วอยากมี test ที่ทน ไม่ซับซ้อนเกิน",
+      "examples": [
+        {
+          "scenario": "test model + view",
+          "how": "/django-tdd factory + pytest + coverage ≥ 80%"
+        }
+      ]
     },
     {
       "name": "django-verification",
@@ -2075,7 +2160,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use up-to-date library and framework docs via Context7 MCP instead of training data. Activates for setup questions, API references, code examples, or when the u",
-      "invocation": "manual"
+      "invocation": "auto",
+      "th_description": "ดึง docs ล่าสุดของ lib/framework ผ่าน context7 MCP แทนการใช้ข้อมูลในโมเดล — กันใช้ API เก่า",
+      "when_to_use": "ใช้ lib ที่ API เปลี่ยนเร็ว (React, Next.js, FastAPI) หรือเกรงว่าโมเดลจำผิด",
+      "examples": [
+        {
+          "scenario": "ใช้ Next.js App Router",
+          "how": "auto-load context7 → ดึง official docs ปัจจุบัน"
+        }
+      ]
     },
     {
       "name": "docx",
@@ -2534,7 +2627,15 @@
       "version": "",
       "status": "canonical",
       "description": "Set an ECC-specific frontend design direction for production UI work. Use when building or improving websites, dashboards, applications, components, landing pag",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตั้ง design direction เฉพาะของ ECC สำหรับ production UI — เลือก style, color, motion ให้เข้ากับงาน",
+      "when_to_use": "เริ่ม production UI ใหม่, อยากให้ design ชัดและสม่ำเสมอ",
+      "examples": [
+        {
+          "scenario": "ทำ SaaS dashboard",
+          "how": "/frontend-design-direction เลือก direction ก่อนเขียน"
+        }
+      ]
     },
     {
       "name": "frontend-patterns",
@@ -2870,7 +2971,21 @@
       "version": "",
       "status": "canonical",
       "description": "Design, implement, and refactor Ports & Adapters systems with clear domain boundaries, dependency inversion, and testable use-case orchestration across TypeScri",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ออกแบบ/ปรับ ports & adapters ให้ domain boundary ชัด — แยก core logic จาก external (DB, API, UI)",
+      "when_to_use": "โค้ดเก่าผสม domain กับ infra ไว้ด้วยกัน, test ยาก, swap DB/API ไม่ได้",
+      "examples": [
+        {
+          "scenario": "จะ swap MySQL เป็น Postgres",
+          "how": "/hexagonal-architecture แยก port ก่อนแก้"
+        }
+      ],
+      "process_steps": [
+        "identify domain core",
+        "define ports",
+        "isolate adapters",
+        "test domain in isolation"
+      ]
     },
     {
       "name": "hipaa-compliance",
@@ -3362,7 +3477,15 @@
       "version": "",
       "status": "canonical",
       "description": "Kotlin Coroutines and Flow patterns for Android and KMP — structured concurrency, Flow operators, StateFlow, error handling, and testing.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "coroutine + Flow ของ Kotlin สำหรับ Android/KMP — structured concurrency, Flow operator, state/cold/hot flow",
+      "when_to_use": "เขียน Android/KMP แล้วใช้ async/Flow ไม่คล่อง หรือเจอ bug สาย concurrency",
+      "examples": [
+        {
+          "scenario": "รวมหลาย Flow",
+          "how": "/kotlin-coroutines-flows combine + flatMapMerge"
+        }
+      ]
     },
     {
       "name": "kotlin-exposed-patterns",
@@ -3606,7 +3729,15 @@
       "version": "",
       "status": "canonical",
       "description": "iOS 26 Liquid Glass design system — dynamic glass material with blur, reflection, and interactive morphing for SwiftUI, UIKit, and WidgetKit.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ระบบ design แบบ Liquid Glass ของ iOS 26 — glass material ที่มี blur, reflection, motion โต้ตอบ",
+      "when_to_use": "ทำ iOS app, อยากใช้ material ใหม่ของ iOS 26 อย่างถูกวิธี",
+      "examples": [
+        {
+          "scenario": "ออกแบบ iOS widget",
+          "how": "/liquid-glass-design ใช้ dynamic glass material"
+        }
+      ]
     },
     {
       "name": "literature-review",
@@ -3804,7 +3935,22 @@
       "version": "",
       "status": "canonical",
       "description": "Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP docs for latest A",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สร้าง MCP server ด้วย Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs streamable HTTP transport",
+      "when_to_use": "อยากสร้าง MCP server ใหม่ให้ agent เรียกใช้ tool/resource",
+      "examples": [
+        {
+          "scenario": "สร้าง MCP server query DB",
+          "how": "/mcp-server-patterns เลือก transport + define tool"
+        }
+      ],
+      "process_steps": [
+        "เลือก transport",
+        "define tools/resources",
+        "Zod validate",
+        "wire handler",
+        "test stdio"
+      ]
     },
     {
       "name": "messages-ops",
@@ -4414,7 +4560,21 @@
       "version": "",
       "status": "canonical",
       "description": "Read a plan document, decompose it into steps, design a per-step agent chain from the ECC catalogue, and emit ready-to-paste /orchestrate custom prompts. Genera",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบมีระเบียบ",
+      "when_to_use": "มี plan ยาว, ต้องการ orchestrate หลาย skill/agent ตามลำดับ",
+      "examples": [
+        {
+          "scenario": "deploy หลาย service",
+          "how": "/plan-orchestrate อ่าน plan → แตก chain → execute"
+        }
+      ],
+      "process_steps": [
+        "อ่าน plan",
+        "decompose steps",
+        "design agent chain",
+        "execute + monitor"
+      ]
     },
     {
       "name": "plankton-code-quality",
@@ -4957,7 +5117,15 @@
       "version": "",
       "status": "canonical",
       "description": "React and Next.js performance optimization patterns adapted from Vercel Engineering's React Best Practices (https://github.com/vercel-labs/agent-skills). Organi",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "optimize React/Next.js — memo, code-splitting, lazy loading, render budget ตามแนวทาง Vercel engineering",
+      "when_to_use": "React app ช้า, re-render เยอะ, bundle ใหญ่, Lighthouse คะแนนต่ำ",
+      "examples": [
+        {
+          "scenario": "list 1000 แถวกระตุก",
+          "how": "/react-performance memo + virtualization"
+        }
+      ]
     },
     {
       "name": "react-testing",
@@ -4975,7 +5143,15 @@
       "version": "",
       "status": "canonical",
       "description": "React component testing with React Testing Library, Vitest/Jest, MSW for network mocking, accessibility assertions with axe, and the decision boundary between c",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "test React component ด้วย React Testing Library + Vitest/Jest + MSW mock network + accessibility check",
+      "when_to_use": "เขียน React แล้วต้องการ test ที่เชื่อถือได้ ไม่ fragile",
+      "examples": [
+        {
+          "scenario": "test form submit",
+          "how": "/react-testing RTL + MSW mock API + assert"
+        }
+      ]
     },
     {
       "name": "recsys-pipeline-architect",
@@ -5228,7 +5404,15 @@
       "version": "",
       "status": "canonical",
       "description": "Rust testing patterns including unit tests, integration tests, async testing, property-based testing, mocking, and coverage. Follows TDD methodology.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "กลยุทธ์ test Rust — unit, integration, async test, property-based test, doctest",
+      "when_to_use": "เขียน Rust แล้วอยากมี test ครอบคลุม รวม async/property",
+      "examples": [
+        {
+          "scenario": "test async fn",
+          "how": "/rust-testing tokio::test + property-based"
+        }
+      ]
     },
     {
       "name": "safety-guard",
@@ -5500,7 +5684,15 @@
       "version": "",
       "status": "canonical",
       "description": "Visualize whether skills, rules, and agent definitions are actually followed — auto-generates scenarios at 3 prompt strictness levels, runs agents, classifies b",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจว่า skills/rules/agent definitions ถูก follow จริงไหม — สร้าง scenario test อัตโนมัติ",
+      "when_to_use": "อยากวัดว่า Iron Law หรือ rule ที่ตั้งไว้ถูกปฏิบัติจริง",
+      "examples": [
+        {
+          "scenario": "ตั้ง rule 'test ก่อนโค้ด'",
+          "how": "/skill-comply สร้าง scenario ทดสอบการ follow"
+        }
+      ]
     },
     {
       "name": "skill-creator",
@@ -5686,7 +5878,15 @@
       "version": "",
       "status": "canonical",
       "description": "Spring Boot architecture patterns, REST API design, layered services, data access, caching, async processing, and logging. Use for Java Spring Boot backend work",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "design pattern Spring Boot — REST API, layered services, data access, caching, async processing",
+      "when_to_use": "สร้าง/ปรับ service Spring Boot, อยากทำตาม pattern ที่คนทั่วไปใช้",
+      "examples": [
+        {
+          "scenario": "REST API ของ service",
+          "how": "/springboot-patterns controller-service-repository"
+        }
+      ]
     },
     {
       "name": "springboot-security",
@@ -5831,7 +6031,15 @@
       "version": "",
       "status": "canonical",
       "description": "SwiftUI architecture patterns, state management with @Observable, view composition, navigation, performance optimization, and modern iOS/macOS UI best practices",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "pattern SwiftUI — state ด้วย @Observable, view composition, navigation, performance",
+      "when_to_use": "เขียน SwiftUI แล้วอยากมีโครงสะอาด, view ซับซ้อน, หรือกระตุกเรื่อง state",
+      "examples": [
+        {
+          "scenario": "state กระจาย",
+          "how": "/swiftui-patterns ใช้ @Observable + environment"
+        }
+      ]
     },
     {
       "name": "tdd-workflow",
@@ -6450,7 +6658,15 @@
       "version": "",
       "status": "canonical",
       "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สร้าง HTML artifact หลาย component บน claude.ai ด้วย modern frontend — ดีไซน์สวย, โต้ตอบได้",
+      "when_to_use": "อยากได้หน้า HTML สวยให้ user ดู, หรือ prototype UI ใน artifact",
+      "examples": [
+        {
+          "scenario": "prototype landing page",
+          "how": "/web-artifacts-builder สร้าง multi-component HTML"
+        }
+      ]
     },
     {
       "name": "web-research",
@@ -6567,7 +6783,15 @@
       "version": "",
       "status": "canonical",
       "description": "Audit the active repo, MCP servers, plugins, connectors, env surfaces, and harness setup, then recommend the highest-value ECC-native skills, hooks, agents, and",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจ repo, MCP servers, plugins, connectors, env surfaces, harness setup แล้วแนะนำของที่ขาด/เกิน",
+      "when_to_use": "repo รกแล้ว อยากรู้ว่ามีอะไรบ้าง และอะไรควรเสีย",
+      "examples": [
+        {
+          "scenario": "เข้า repo ใหม่",
+          "how": "/workspace-surface-audit สรุป surface ทั้งหมด"
+        }
+      ]
     },
     {
       "name": "x-api",
@@ -6725,7 +6949,21 @@
       "version": "",
       "status": "canonical",
       "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADRs and glossary) as it goes.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน",
+      "when_to_use": "ต้องการทั้งลับแผนและได้เอกสาร ADR/glossary ในรอบเดียว",
+      "examples": [
+        {
+          "scenario": "วาง schema ใหม่",
+          "how": "/grill-with-docs ได้ทั้ง decision + ADR บันทึก"
+        }
+      ],
+      "process_steps": [
+        "สัมภาษณ์แผน",
+        "บันทึก glossary",
+        "สร้าง ADR",
+        "สรุป decision"
+      ]
     },
     {
       "name": "implement",
@@ -6799,7 +7037,21 @@
       "version": "",
       "status": "canonical",
       "description": "Investigate a question against high-trust primary sources and capture findings as a Markdown file via a background agent.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สืบค้นคำถามกับแหล่งขั้นต้นที่เชื่อถือได้ แล้วบันทึกผลเป็น markdown — cite, synthesize ไม่เอาจาก memory",
+      "when_to_use": "ต้องการคำตอบที่ verify ได้, งานวิจัย, due diligence",
+      "examples": [
+        {
+          "scenario": "เทรนด์ LLM ปีนี้",
+          "how": "/research สืบจาก primary sources → สรุป cite ครบ"
+        }
+      ],
+      "process_steps": [
+        "ตั้งคำถาม",
+        "หา primary source",
+        "verify credibility",
+        "synthesize + cite"
+      ]
     },
     {
       "name": "resolving-merge-conflicts",
@@ -6887,7 +7139,15 @@
       "version": "",
       "status": "canonical",
       "description": "Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "แตก plan/spec/PRD เป็น issue แบบ tracer-bullet slice — แต่ละ issue ทำได้ทีละอันอิสระ",
+      "when_to_use": "มีแผนใหญ่ ต้องการแบ่งเป็น issue ที่คว้าทำได้ทันที",
+      "examples": [
+        {
+          "scenario": "สเปกระบบ login",
+          "how": "/to-issues แตกเป็น issue 5 อัน แต่ละอันครบ vertical slice"
+        }
+      ]
     },
     {
       "name": "to-prd",
@@ -6925,7 +7185,22 @@
       "version": "",
       "status": "canonical",
       "description": "Move issues and external PRs through a state machine of triage roles — categorise, verify, grill, write agent-ready briefs.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ขับ issue/PR ผ่าน state machine ของการตัดสินใจ — categorise, verify, grill, write-up, merge",
+      "when_to_use": "มี issue/PR ค้างเยอะ, อยากไล่อย่างเป็นระบบไม่ปล่อยค้าง",
+      "examples": [
+        {
+          "scenario": "PR ค้าง 20 รายการ",
+          "how": "/triage แยกหมวด → verify → grill → ตัดสินใจ"
+        }
+      ],
+      "process_steps": [
+        "categorise",
+        "verify repro",
+        "grill design",
+        "write-up",
+        "merge/close"
+      ]
     },
     {
       "name": "grill-me",
@@ -6943,7 +7218,21 @@
       "version": "",
       "status": "canonical",
       "description": "A relentless interview to sharpen a plan or design.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สัมภาษณ์ยืดเยื้อเพื่อลับแผนหรือดีไซน์ — ถามทีละคำถาม เสนอคำตอบให้คุณปฏิเสธ บังคับให้คิดลึกก่อนสร้าง",
+      "when_to_use": "มีแผนหรือไอเดียแต่ยังไม่ชัด อยากถูกท้าทายก่อน commit ลงไป",
+      "examples": [
+        {
+          "scenario": "จะทำฟีเจอร์ใหม่",
+          "how": "/grill-me ถามจนกว่าจะเจาะจงได้ว่าทำเพราะอะไร"
+        }
+      ],
+      "process_steps": [
+        "ตั้งคำถามใหญ่",
+        "เสนอคำตอบให้ปฏิเสธ",
+        "ขุดลึกแต่ละจุด",
+        "สรุปแผนที่ผ่านการท้าทาย"
+      ]
     },
     {
       "name": "grilling",
@@ -6961,7 +7250,15 @@
       "version": "",
       "status": "canonical",
       "description": "Grill the user relentlessly about a plan or design — one question at a time, recommend an answer, resolve the decision tree.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สอบสวนแบบไม่ยอมแพ้ — ทีละคำถาม เสนอแนะคำตอบ ใช้ซ้ำเมื่อไอเดียยังหลวมๆ",
+      "when_to_use": "อยากฝืนเยอะกว่า grill-me, มีเวลา, หรือเดิมพันสูง",
+      "examples": [
+        {
+          "scenario": "เลือก architecture",
+          "how": "/grilling ไล่แต่ละ option จนเหลือตัวเดียว"
+        }
+      ]
     },
     {
       "name": "handoff",
@@ -7098,7 +7395,15 @@
       "version": "",
       "status": "canonical",
       "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ติดตั้ง Husky pre-commit hooks กับ lint-staged (prettier), type check, test — กัน commit โค้ดเสีย",
+      "when_to_use": "repo ใหม่, หรืออยากให้ทีม commit สะอาดขึ้นอัตโนมัติ",
+      "examples": [
+        {
+          "scenario": "ทีม commit โค้ดไม่ format",
+          "how": "/setup-pre-commit ติด Husky + lint-staged"
+        }
+      ]
     },
     {
       "name": "symlink-connector",
@@ -7119,7 +7424,15 @@
       "version": "2.0.0",
       "status": "canonical",
       "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "linker สากล — symlink skills ของ harness ทุกตัวไปยัง A-Wiki repo, .env ไป Google Drive",
+      "when_to_use": "อยากใช้ skill/config ร่วมกันข้าม Claude/Codex/Cline/Hermes/Gemini/ZCode",
+      "examples": [
+        {
+          "scenario": "เพิ่ม skill ใหม่ใช้ทุก agent",
+          "how": "/symlink-connector ลิงก์ครั้งเดียวครบทุก harness"
+        }
+      ]
     }
   ]
 }

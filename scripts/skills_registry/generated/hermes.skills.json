@@ -104,7 +104,22 @@
       "version": "",
       "status": "canonical",
       "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, performance",
+      "when_to_use": "debug frontend, ตรวจ layout, วัด performance, หา error ใน console",
+      "examples": [
+        {
+          "scenario": "หน้าโหลดช้า",
+          "how": "/browser-testing-with-devtools trace network + measure"
+        }
+      ],
+      "process_steps": [
+        "inspect DOM",
+        "read console",
+        "trace network",
+        "profile performance",
+        "report"
+      ]
     },
     {
       "name": "build",
