@@ -33,10 +33,95 @@ KNOWN_AGENTS = ["all", "claude", "codex", "zcode", "gemini", "antigravity",
 # Fields exposed in list view (compact). Detail view returns everything.
 LIST_FIELDS = (
     "name", "domain", "lifecycle_phase", "category", "invocation",
-    "th_description", "when_to_use", "agents", "status", "path",
+    "th_description", "when_to_use", "agents", "status", "path", "source",
 )
 
 _cache: dict[str, Any] = {"registry": None, "mtime": 0.0, "loaded": 0.0}
+
+# Lifecycle phase order — used to compute "related skills" (prev/next phase).
+PHASE_ORDER = ("define", "plan", "build", "verify", "review", "ship", "meta", "none")
+
+
+def _is_installed(skill: dict[str, Any]) -> bool:
+    """Whether the SKILL.md exists on disk for this skill.
+
+    `source=repo` skills are checked under the repo. `external-installed`
+    skills are always treated as installed (they exist on this machine).
+    `external-system` skills (vendored snapshots) are checked under the repo.
+    """
+    src = skill.get("source")
+    if src == "external-installed":
+        return True
+    if src == "external-system":
+        # Vendored snapshot path — check existence.
+        p = skill.get("path")
+        if not p:
+            return False
+        return (REPO_ROOT / p).is_file()
+    if src == "repo":
+        p = skill.get("path")
+        if not p:
+            return False
+        return (REPO_ROOT / p).is_file()
+    return False
+
+
+def _invocation_hint(skill: dict[str, Any]) -> str:
+    """Best-effort copyable invocation string for the 📋 button.
+
+    Heuristic: if name starts with `a-wiki-` or matches a known command
+    pattern, emit `/<name>` (slash command). Otherwise emit the bare name —
+    agents like Claude/Codex accept the skill name directly.
+    """
+    name = skill.get("name", "")
+    # Slash-command skills (Telegram bot, A-Wiki core commands).
+    if name.startswith("a-wiki-") or name in {"wiki", "search", "review", "spec", "plan", "build", "ship"}:
+        return f"/{name}"
+    # Script-backed skills with a known path → emit `python <path>`.
+    path = skill.get("path") or ""
+    if path.endswith(".py"):
+        return f"python {path}"
+    return name
+
+
+def _related_skills(reg: Registry, skill: dict[str, Any], limit: int = 5) -> list[dict[str, Any]]:
+    """Compute related skills: same phase first, then same domain.
+
+    Returns compact list items (name + th_description + invocation).
+    """
+    name = skill.get("name")
+    phase = skill.get("lifecycle_phase", "none")
+    domains = skill.get("domain") or []
+    if isinstance(domains, str):
+        domains = [domains]
+
+    candidates: list[tuple[int, dict[str, Any]]] = []  # (score, skill)
+    for s in reg.skills:
+        if s.get("status") != "canonical" or s.get("name") == name:
+            continue
+        s_phase = s.get("lifecycle_phase", "none")
+        s_domains = s.get("domain") or []
+        if isinstance(s_domains, str):
+            s_domains = [s_domains]
+        score = 0
+        if phase != "none" and s_phase == phase:
+            score += 3
+        shared = set(domains) & set(s_domains)
+        score += len(shared)
+        if score > 0:
+            candidates.append((score, s))
+    candidates.sort(key=lambda kv: (-kv[0], kv[1].get("name", "")))
+    out = []
+    for _, s in candidates[:limit]:
+        out.append({
+            "name": s.get("name"),
+            "th_description": s.get("th_description", ""),
+            "invocation": s.get("invocation", "manual"),
+            "phase": s.get("lifecycle_phase", "none"),
+            "domains": s.get("domain", []),
+            "installed": _is_installed(s),
+        })
+    return out
 
 
 def _load_registry() -> Registry:
@@ -60,7 +145,10 @@ def _load_registry() -> Registry:
 
 def _skill_list_item(skill: dict[str, Any]) -> dict[str, Any]:
     """Compact view of a skill for the list endpoint."""
-    return {k: skill.get(k) for k in LIST_FIELDS}
+    item = {k: skill.get(k) for k in LIST_FIELDS}
+    item["installed"] = _is_installed(skill)
+    item["invocation_hint"] = _invocation_hint(skill)
+    return item
 
 
 def _matches_query(skill: dict[str, Any], q: str) -> bool:
@@ -121,6 +209,7 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
     agent = (params.get("agent", ["all"])[0]).lower()
     invocation = params.get("invocation", [None])[0]
     domain = params.get("domain", [None])[0]
+    installed_only = params.get("installed", ["0"])[0] in ("1", "true", "yes")
     q = params.get("q", [""])[0]
     try:
         limit = int(params.get("limit", ["500"])[0])
@@ -145,6 +234,8 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
             if domain in (s.get("domain") if isinstance(s.get("domain"), list)
                           else [s.get("domain")] if s.get("domain") else [])
         ]
+    if installed_only:
+        skills = [s for s in skills if _is_installed(s)]
     skills = [s for s in skills if _matches_query(s, q)]
 
     # Sort: has Thai first (most useful), then alphabetical
@@ -155,7 +246,7 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
         "skills": items,
         "count": len(items),
         "total_matched": len(skills),
-        "filters": {"agent": agent, "invocation": invocation, "domain": domain, "q": q},
+        "filters": {"agent": agent, "invocation": invocation, "domain": domain, "installed": installed_only, "q": q},
         "stats": _stats(skills),
         "agents": KNOWN_AGENTS,
         "loaded_at": _cache["loaded"],
@@ -163,13 +254,23 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
 
 
 def get_skill(name: str) -> dict[str, Any] | None:
-    """GET /api/skills/<name> — full detail for one skill."""
+    """GET /api/skills/<name> — full detail for one skill.
+
+    Augments the raw registry entry with:
+      - installed: bool — whether SKILL.md exists on disk
+      - invocation_hint: str — copyable command for the 📋 button
+      - related: list — up to 5 skills sharing phase/domain (with th_description)
+    """
     reg = _load_registry()
     skill = reg.get(name)
     if skill is None:
         return None
-    # Resolve alias → canonical metadata for display
-    return skill
+    # Copy so we don't mutate the cached registry entry.
+    out = dict(skill)
+    out["installed"] = _is_installed(skill)
+    out["invocation_hint"] = _invocation_hint(skill)
+    out["related"] = _related_skills(reg, skill)
+    return out
 
 
 def agent_overview() -> dict[str, Any]:

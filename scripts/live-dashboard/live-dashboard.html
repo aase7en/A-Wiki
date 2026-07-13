@@ -356,6 +356,12 @@ to{transform:translateY(0);opacity:1}
 .skill-card-desc{font-size:var(--fs-2xs);color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}
 .skill-card-when{font-size:10px;color:var(--accent-warm);font-style:italic;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 .skill-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:auto}
+.skill-card-inst{font-size:10px;padding:1px 6px;border-radius:var(--r-full);white-space:nowrap;font-weight:500}
+.skill-card-inst.installed{background:rgba(94,234,212,.12);color:var(--accent-success);border:1px solid rgba(94,234,212,.3)}
+.skill-card-inst.catalog{background:rgba(148,163,184,.08);color:var(--text-tertiary);border:1px solid var(--border2)}
+.skill-card-copy{position:absolute;top:8px;right:8px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--text-tertiary);background:var(--elev-2);border-radius:var(--r-sm);opacity:0;transition:opacity .15s,border-color .15s}
+.skill-card:hover .skill-card-copy{opacity:1}
+.skill-card-copy:hover{color:var(--accent-brand);border:1px solid var(--accent-brand)}
 .skill-tag{font-size:10px;font-family:var(--font-mono);padding:1px 6px;border-radius:var(--r-sm);background:var(--elev-3);color:var(--text-tertiary);border:1px solid var(--border)}
 .skills-inv-btn.active{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.1)}
 .skill-detail-hdr{padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--elev-1);z-index:5}
@@ -537,6 +543,9 @@ to{transform:translateY(0);opacity:1}
         <button class="chat-quick-btn skills-inv-btn" data-inv="auto" onclick="skillsSetInv('auto')" style="padding:5px 10px;font-size:var(--fs-2xs)">🤖 Auto</button>
         <button class="chat-quick-btn skills-inv-btn" data-inv="manual" onclick="skillsSetInv('manual')" style="padding:5px 10px;font-size:var(--fs-2xs)">👆 Manual</button>
       </div>
+      <label style="display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer;user-select:none">
+        <input type="checkbox" id="skills-installed-only" onchange="skillsLoad()" style="cursor:pointer">📦 ติดตั้งเท่านั้น
+      </label>
     </div>
     <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
     <!-- 🎬 Multi-skill flows (collapsible) -->
@@ -1331,6 +1340,7 @@ const agent=$('skills-agent-filter').value;if(agent&&agent!=='all')qs.set('agent
 const dom=$('skills-domain-filter').value;if(dom)qs.set('domain',dom);
 const q=$('skills-search').value.trim();if(q)qs.set('q',q);
 if(_skillsInv!=='all')qs.set('invocation',_skillsInv);
+const inst=$('skills-installed-only');if(inst&&inst.checked)qs.set('installed','1');
 return qs.toString();
 }
 async function skillsLoad(){
@@ -1368,10 +1378,13 @@ const hasThai=s.th_description?'has-thai':'';
 const desc=s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>';
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
 const when=s.when_to_use?`<div class="skill-card-when">💡 ${s.when_to_use}</div>`:'';
+const instBadge=s.installed===false?`<span class="skill-card-inst catalog" title="catalog-only (SKILL.md ไม่ได้ติดตั้งบนเครื่องนี้)">📦 catalog</span>`:`<span class="skill-card-inst installed" title="ติดตั้งแล้วบนเครื่องนี้">✅ ติดตั้ง</span>`;
 return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}">
 <div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
 <div class="skill-card-desc">${desc}</div>${when}
-<div class="skill-card-tags">${domains}</div></div>`;
+<div class="skill-card-tags">${domains}${instBadge}</div>
+<div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง">📋</div>
+</div>`;
 }
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
@@ -1383,21 +1396,31 @@ if(s.error)throw new Error(s.error);
 const inv=s.invocation||'manual';
 const invIcon=inv==='auto'?'🤖 โหลดอัตโนมัติ':inv==='both'?'🔀 อัตโนมัติ/แมนนวล':'👆 เรียกเอง';
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
-const examples=(s.examples||[]).map(ex=>`<div class="skill-example"><div class="skill-example-scenario">📌 ${ex.scenario}</div><div class="skill-example-how">→ ${ex.how}</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ยังไม่มีตัวอย่าง</p>';
-const steps=(s.process_steps||[]).map((st,i)=>`<div class="skill-process-step"><span class="skill-process-step-num">${i+1}</span>${st}</div>`).join('');
-const simBtn=steps?`<button class="skill-sim-btn" onclick="simulateSkill('${s.name}')">🎬 จำลองขั้นตอน (${s.process_steps.length} ขั้น)</button>`:'';
-drawer.innerHTML=`
+	const examples=(s.examples||[]).map(ex=>`<div class="skill-example"><div class="skill-example-scenario">📌 ${ex.scenario}</div><div class="skill-example-how">→ ${ex.how}</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ยังไม่มีตัวอย่าง</p>';
+	const steps=(s.process_steps||[]).map((st,i)=>`<div class="skill-process-step"><span class="skill-process-step-num">${i+1}</span>${st}</div>`).join('');
+	const simBtn=steps?`<button class="skill-sim-btn" onclick="simulateSkill('${s.name}')">🎬 จำลองขั้นตอน (${s.process_steps.length} ขั้น)</button>`:'';
+	const instBadge=s.installed?`<span class="skill-tag" style="border-color:var(--accent-success);color:var(--accent-success)">✅ ติดตั้ง</span>`:`<span class="skill-tag" style="border-color:var(--border2);color:var(--text-tertiary)">📦 catalog</span>`;
+	const copyBtn=`<button onclick="copyInvocation('${(s.invocation_hint||s.name).replace(/'/g,\"\\\\'\")}','${s.name}')" style="background:var(--elev-2);border:1px solid var(--border2);color:var(--text-secondary);border-radius:var(--r-md);padding:6px 10px;cursor:pointer;font-size:var(--fs-2xs);min-height:32px" title="คัดลอกคำสั่งเรียก">📋 ${s.invocation_hint||s.name}</button>`;
+	const related=(s.related||[]).map(r=>`<div class="skill-related-item" onclick="skillsOpenDetail('${r.name}')" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--border2);background:var(--elev-2)">
+<span style="font-size:14px">${r.installed?'✅':'📦'}</span>
+<div style="flex:1;min-width:0">
+<div style="font-size:var(--fs-2xs);font-weight:600;color:var(--text-primary);font-family:var(--font-mono)">${r.name}</div>
+<div style="font-size:10px;color:var(--text-tertiary);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${r.th_description||'(ยังไม่มีคำอธิบาย)'}</div>
+</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ไม่พบ skill ที่เกี่ยวข้อง</p>';
+	drawer.innerHTML=`
 <div class="skill-detail-hdr">
 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
 <div><div class="skill-detail-name">${s.name}</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag">🔄 ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span></div></div>
+<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag">🔄 ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span>${instBadge}</div></div>
 <button onclick="skillsCloseDetail()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:var(--fs-lg);cursor:pointer;min-width:32px;min-height:32px">✕</button>
 </div></div>
 <div class="skill-detail-body">
 <div class="skill-detail-section"><h5>📝 คำอธิบาย</h5><p>${s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>'}</p></div>
+<div class="skill-detail-section"><h5>📋 เรียกใช้</h5>${copyBtn}</div>
 ${s.when_to_use?`<div class="skill-detail-section"><h5>💡 ใช้เมื่อไหร่</h5><p style="color:var(--accent-warn)">${s.when_to_use}</p></div>`:''}
 <div class="skill-detail-section"><h5>📌 ตัวอย่างการใช้งาน</h5>${examples}</div>
 ${steps?`<div class="skill-detail-section"><h5>🎬 ขั้นตอน (สำหรับ simulation)</h5>${steps}${simBtn}</div>`:''}
+<div class="skill-detail-section"><h5>🔗 Skills ที่เกี่ยวข้อง</h5><div style="display:flex;flex-direction:column;gap:4px">${related}</div></div>
 <div class="skill-detail-section"><h5>🔍 รายละเอียดเทคนิค</h5>
 <p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
 </div>`;
@@ -1472,6 +1495,20 @@ $('sim-backdrop').classList.remove('show');
 
 // ===== WALKTHROUGHS (multi-skill flows) =====
 let _walkthroughsLoaded=false;
+
+// ===== COPY INVOCATION (📋 button on skill card) =====
+function copyInvocation(hint,name){
+  const text=hint||name||'';
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast('📋 คัดลอก: '+text),()=>toast('📋 คัดลอกไม่สำเร็จ','err'));
+  }else{
+    // Fallback for older browsers / non-secure context.
+    const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');toast('📋 คัดลอก: '+text);}catch(e){toast('📋 คัดลอกไม่สำเร็จ','err');}
+    document.body.removeChild(ta);
+  }
+}
 
 // ===== LIVE AGENT DETECTION (?agent=) =====
 // On page load, if ?agent=zcode (etc.) is in the URL, auto-select that agent
