@@ -45,7 +45,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. Read `wiki/context/session-memory.md` — local/private cross-session decisions + TODOs. If missing, use `wiki/context/session-memory.md.example` and run `bash scripts/setup-local.sh`.
 4. Run `python scripts/agent-preflight.py` — portable safety check when hooks are missing or before significant work
-5. `bash scripts/dashboard-ensure.sh` — Live Dashboard (auto-starts on Claude/Codex/Kilo via hooks; ZCode/Hermes/Antigravity/Cursor/Windsurf/Cline run manually or via VS Code folderOpen task). The dashboard's **🧩 Skills tab** shows every skill *this agent* can invoke — filter by agent to see your own capabilities with Thai descriptions + examples + process simulation.
+5. `bash scripts/dashboard-ensure.sh [agent_name]` — Live Dashboard (auto-starts on Claude/Codex/Kilo via hooks with auto-detected `?agent=<name>` URL; ZCode/Hermes/Antigravity/Cursor/Windsurf/Cline run manually or via VS Code folderOpen task). Pass your agent name (`zcode`, `codex`, `gemini`, etc.) as arg 1 so the browser opens with `?agent=<name>` pre-filtered — the **🧩 Skills tab** then shows only skills *this agent* can invoke, with Thai descriptions + examples + process simulation + multi-skill flow walkthroughs. Override detection via `AWIKI_DASHBOARD_AGENT=<name>`; disable browser-open via `AWIKI_DISABLE_DASHBOARD_OPEN_BROWSER=1`.
 
 **Load on demand** (do NOT load every session):
 - `wiki/context/overview-{iot,env,ai,pharmacy}.md` — by domain

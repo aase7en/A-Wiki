@@ -668,18 +668,19 @@ to{transform:translateY(0);opacity:1}
         <h4>🚀 dashboard เปิดอัตโนมัติ</h4>
         <table class="help-table">
           <tr><th>Agent / IDE</th><th>Auto-start mechanism</th></tr>
-          <tr><td>Claude Code</td><td class="yes">✅ SessionStart hook</td></tr>
+          <tr><td>Claude Code</td><td class="yes">✅ SessionStart hook (auto-detect ?agent=)</td></tr>
           <tr><td>Codex / OpenAI</td><td class="yes">✅ SessionStart hook (via .codex/hooks symlink)</td></tr>
           <tr><td>Kilo Code</td><td class="yes">✅ VS Code folderOpen task</td></tr>
           <tr><td>Cline</td><td class="yes">✅ VS Code folderOpen task (.vscode/tasks.json)</td></tr>
           <tr><td>Cursor / Windsurf</td><td class="yes">✅ VS Code folderOpen task</td></tr>
-          <tr><td>ZCode</td><td class="no">👆 AGENTS.md step 5 (reads config, no runtime hook)</td></tr>
+          <tr><td>ZCode</td><td class="yes">✅ AGENTS.md step 5 + auto-detect from ZCODE_SESSION</td></tr>
           <tr><td>Hermes (dev)</td><td class="no">👆 AGENTS.md step 5 (Pi5 Docker = no GUI)</td></tr>
-          <tr><td>Antigravity / Gemini CLI</td><td class="no">👆 GEMINI.md First Action</td></tr>
+          <tr><td>Antigravity / Gemini CLI</td><td class="yes">✅ GEMINI.md + auto-detect GEMINI_CLI</td></tr>
           <tr><td>OpenClaw</td><td class="no">👆 fallback script</td></tr>
         </table>
-        <p>เปิดเอง (ทุก agent): <code>bash scripts/dashboard-ensure.sh</code> · ปิด: <code>bash scripts/dashboard-stop.sh</code></p>
-        <p style="margin-top:6px">💡 <b>🧩 Skills tab</b> — filter ตาม agent เพื่อดูว่า agent ที่คุณใช้มี skill อะไรบ้าง (คำอธิบายไทย + ตัวอย่าง + simulation)</p>
+        <p>เปิดเอง (ทุก agent): <code>bash scripts/dashboard-ensure.sh [agent_name]</code> · ปิด: <code>bash scripts/dashboard-stop.sh</code></p>
+        <p style="margin-top:6px">💡 <b>?agent= URL</b> — เปิด <code>http://localhost:7790/?agent=zcode</code> เพื่อกรอง skills อัตโนมัติตาม agent นั้น (แสดงเฉพาะสิ่งที่ agent เรียกได้จริง)</p>
+        <p>💡 <b>🧩 Skills tab</b> — filter ตาม agent เพื่อดูว่า agent ที่คุณใช้มี skill อะไรบ้าง (คำอธิบายไทย + ตัวอย่าง + simulation + multi-skill flow)</p>
       </div>
       <div class="help-section">
         <h4>📊 Capability Legend</h4>
@@ -935,7 +936,7 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
-if(v==='skills'){skillsLoad();loadWalkthroughs();}
+if(v==='skills'){skillsLoad();loadWalkthroughs();applyAgentParam();}
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 }
 // === COUNCIL PANE — list -> detail, polls /api/council every 10s only while visible ===
@@ -1471,6 +1472,40 @@ $('sim-backdrop').classList.remove('show');
 
 // ===== WALKTHROUGHS (multi-skill flows) =====
 let _walkthroughsLoaded=false;
+
+// ===== LIVE AGENT DETECTION (?agent=) =====
+// On page load, if ?agent=zcode (etc.) is in the URL, auto-select that agent
+// in the skills dropdown + filter the skills list. This lets users open the
+// dashboard from their CLI agent and instantly see "what MY agent can do".
+function applyAgentParam(){
+  const url=new URL(window.location.href);
+  const agent=url.searchParams.get('agent');
+  if(!agent)return;
+  const sel=$('skills-agent-filter');
+  if(!sel)return;
+  // Set the dropdown if the agent option exists.
+  for(const opt of sel.options){
+    if(opt.value.toLowerCase()===agent.toLowerCase()){sel.value=opt.value;break;}
+  }
+  // Show a banner so the user knows the filter came from the URL.
+  let banner=$('skills-agent-banner');
+  if(!banner){
+    banner=document.createElement('div');
+    banner.id='skills-agent-banner';
+    banner.style.cssText='padding:6px 10px;background:var(--accent-brand-soft,rgba(120,170,255,.12));border:1px solid var(--accent-brand,rgba(120,170,255,.4));border-radius:var(--r-md);font-size:var(--fs-2xs);color:var(--text-secondary);margin-bottom:6px;flex-shrink:0';
+    const tb=$('skills-toolbar');if(tb)tb.parentNode.insertBefore(banner,tb.nextSibling);
+  }
+  banner.innerHTML='👁 กำลังดู skills ของ <b style="color:var(--accent-brand)">'+agent+'</b> · <a href="#" onclick="clearAgentParam();return false" style="color:var(--text-tertiary);text-decoration:underline">ดูทั้งหมด</a>';
+  skillsLoad();
+}
+function clearAgentParam(){
+  const url=new URL(window.location.href);
+  url.searchParams.delete('agent');
+  window.history.replaceState({},'',url);
+  const banner=$('skills-agent-banner');if(banner)banner.remove();
+  $('skills-agent-filter').value='all';
+  skillsLoad();
+}
 async function loadWalkthroughs(){
   if(_walkthroughsLoaded)return;
   try{

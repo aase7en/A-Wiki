@@ -253,21 +253,70 @@ def _emit_session_start() -> None:
 
 
 def _ensure_dashboard() -> None:
-    """Start Live Dashboard daemon if not running (fire-and-forget, non-blocking)."""
+    """Start Live Dashboard daemon if not running (fire-and-forget, non-blocking).
+
+    Auto-detects the current agent from env vars and passes it as ?agent= so
+    the dashboard's Skills tab auto-filters to what THIS agent can invoke.
+    Set AWIKI_DASHBOARD_AGENT=<name> to override; AWIKI_DISABLE_DASHBOARD_AUTOSTART=1 to skip.
+    """
     if os.environ.get("AWIKI_DISABLE_DASHBOARD_AUTOSTART", "0") == "1":
         return
     ensure_sh = Path(REPO_ROOT) / "scripts" / "dashboard-ensure.sh"
     if not ensure_sh.exists():
         return
+    agent = os.environ.get("AWIKI_DASHBOARD_AGENT") or _detect_agent()
     try:
+        args = ["bash", str(ensure_sh)]
+        if agent:
+            args.append(agent)
         subprocess.Popen(
-            ["bash", str(ensure_sh)],
+            args,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             start_new_session=True,
         )
     except Exception:
         pass
+
+
+def _detect_agent() -> str | None:
+    """Best-effort detection of the calling agent from environment variables.
+
+    Each CLI agent leaves a distinctive env fingerprint. Returns lowercase
+    agent name (claude, codex, zcode, gemini, cursor, windsurf, cline,
+    antigravity, hermes, kilo, copilot) or None.
+    """
+    env = os.environ
+    # Direct override / fingerprint vars (most specific).
+    checks = [
+        ("CLAUDE_PROJECT_DIR", "claude"),
+        ("CLAUDECODE", "claude"),
+        ("CODEX_HOME", "codex"),
+        ("CODEX_AGENT", "codex"),
+        ("ZCODE_SESSION", "zcode"),
+        ("ZCODE_CLI", "zcode"),
+        ("GEMINI_CLI", "gemini"),
+        ("GEMINI_MODEL", "gemini"),
+        ("CURSOR_TRACE_DIR", "cursor"),
+        ("CURSOR_DEBUG", "cursor"),
+        ("WINDSURF_USER_DATA_DIR", "windsurf"),
+        ("WINDSURF_MACHINE_GUID", "windsurf"),
+        ("CLINE_", "cline"),  # prefix check
+        ("ANTIGRAVITY_", "antigravity"),
+        ("HERMES_AGENT_HOME", "hermes"),
+        ("HERMES_CONFIG", "hermes"),
+        ("KILO_", "kilo"),
+        ("COPILOT_INTEGRATION_ID", "copilot"),
+        ("GITHUB_COPILOT_TOKEN", "copilot"),
+    ]
+    for key, agent in checks:
+        if key.endswith("_"):
+            # Prefix match (CLINE_*, ANTIGRAVITY_*, KILO_*).
+            if any(k.startswith(key) for k in env):
+                return agent
+        elif key in env:
+            return agent
+    return None
 
 
 def run_vendor_watch():
@@ -329,22 +378,7 @@ def main():
     _emit_session_start()
     _ensure_dashboard()
 
-<<<<<<< Updated upstream
     run_steps(REPO_ROOT, is_lean())
-=======
-    # Only run on SessionStart-like events (or always — lightweight enough)
-    repo_root = REPO_ROOT
-
-    git_pull(repo_root)
-    check_wiki_freshness(repo_root)
-    check_api_keys(repo_root)
-    maybe_update_model_intel(repo_root)
-    show_model_tier_hint()
-    show_todos(repo_root)
-    clean_stale_cost_declarations(repo_root)
-    check_model_scout_freshness(repo_root)
-    check_vendor_upstream(repo_root)
->>>>>>> Stashed changes
 
     sys.exit(0)
 
