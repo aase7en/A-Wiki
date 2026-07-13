@@ -35,9 +35,11 @@ and non-empty. Resolve via `python scripts/lib/drive_secrets.py --check` (never
 read values from chat). If a key is missing, STOP and ask the user.
 
 **⚠️ Residual concern to confirm with user:** the sudo password echoed during
-PTY sessions looked like a weak/default value (`Admin1234!`-style). Confirm with
-the user whether the Umbrel admin password was actually rotated, or whether only
-the SSH account was changed.
+PTY sessions looked like a weak/default value (redacted; rotate the Umbrel admin
+password regardless). Confirm with the user whether the Umbrel admin password
+was actually rotated, or whether only the SSH account was changed. The password
+literal that previously appeared here was redacted on 2026-07-13 because it was
+a real credential that had leaked into scripts/logs across the Pi5.
 
 ---
 
