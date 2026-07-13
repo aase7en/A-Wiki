@@ -39,6 +39,23 @@ keep the frontmatter simple: scalars and inline lists only.
 | `tools` | list | `[Read, Bash]` |
 | `origin` | string | `ECC` |
 
+### v2 fields — Live Dashboard Skills view (schema_version 2)
+
+| Field | Type | Default | Example |
+|-------|------|---------|---------|
+| `invocation` | enum `auto\|manual\|both` | `manual` | `auto` |
+| `th_description` | string | _(absent)_ | Thai คำอธิบาย skill (2-3 ประโยค) |
+| `when_to_use` | string | _(absent)_ | ทริกเกอร์สั้นๆ ว่าเมื่อไหร่ควรเรียก |
+| `examples` | list of `{scenario, how}` | _(absent)_ | `[{scenario: "แอปช้า", how: "/performance-optimization"}]` |
+| `process_steps` | list of strings | _(absent)_ | ขั้นตอนสำหรับ simulation animation |
+
+**`invocation` meaning:**
+- `auto` — SessionStart hook โหลดอัตโนมัติ (เช่น `awiki-lifecycle-router`, `debug-mantra` ผ่าน hook)
+- `manual` — ผู้ใช้พิมพ์ `/skill-name`
+- `both` — auto ใน context บางอย่าง, manual ได้ปกติ
+
+ทั้ง 5 fields เป็น optional — registry เดิมที่ไม่มียัง validate ผ่าน (migration v1→v2 เซ็ต `invocation: "manual"` ให้อัตโนมัติ)
+
 ---
 
 ## Domain taxonomy (22 domains)

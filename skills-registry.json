@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_at": "DRAFT-NEEDS-HUMAN-REVIEW",
   "skills": [
     {
@@ -17,7 +17,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "A-Wiki slash commands — /wiki, /search, /backup, /status, /spec, /plan, /build, /test, /review, /code-simplify, /ship"
+      "description": "A-Wiki slash commands — /wiki, /search, /backup, /status, /spec, /plan, /build, /test, /review, /code-simplify, /ship",
+      "invocation": "manual"
     },
     {
       "name": "a-wiki-telegram",
@@ -35,7 +36,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot"
+      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
+      "invocation": "manual"
     },
     {
       "name": "hermes-fan-out",
@@ -53,7 +55,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report."
+      "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report.",
+      "invocation": "manual"
     },
     {
       "name": "wiki",
@@ -71,7 +74,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap)."
+      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap).",
+      "invocation": "manual"
     },
     {
       "name": "search",
@@ -89,7 +93,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py."
+      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py.",
+      "invocation": "manual"
     },
     {
       "name": "review",
@@ -107,7 +112,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor)."
+      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor).",
+      "invocation": "manual"
     },
     {
       "name": "spec",
@@ -125,7 +131,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code."
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
+      "invocation": "manual"
     },
     {
       "name": "plan",
@@ -143,7 +150,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks."
+      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks.",
+      "invocation": "manual"
     },
     {
       "name": "build",
@@ -161,7 +169,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance."
+      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance.",
+      "invocation": "manual"
     },
     {
       "name": "ship",
@@ -179,7 +188,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review."
+      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review.",
+      "invocation": "manual"
     },
     {
       "name": "accessibility",
@@ -196,7 +206,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Design, implement, and audit inclusive digital products using WCAG 2.2 Level AA"
+      "description": "Design, implement, and audit inclusive digital products using WCAG 2.2 Level AA",
+      "invocation": "manual"
     },
     {
       "name": "ag2-goal",
@@ -213,7 +224,8 @@
       ],
       "version": "1.0",
       "status": "canonical",
-      "description": "Orchestrate multi-step goals using AG2 agents — Planner decomposes, free Executors execute, Planner validates."
+      "description": "Orchestrate multi-step goals using AG2 agents — Planner decomposes, free Executors execute, Planner validates.",
+      "invocation": "manual"
     },
     {
       "name": "agent-architecture-audit",
@@ -231,7 +243,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden"
+      "description": "Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden",
+      "invocation": "manual"
     },
     {
       "name": "agent-eval",
@@ -248,7 +261,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics"
+      "description": "Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics",
+      "invocation": "manual"
     },
     {
       "name": "agent-harness-construction",
@@ -265,7 +279,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates."
+      "description": "Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates.",
+      "invocation": "manual"
     },
     {
       "name": "agent-introspection-debugging",
@@ -283,7 +298,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Structured self-debugging workflow for AI agent failures using capture, diagnosis, contained recovery, and introspection reports."
+      "description": "Structured self-debugging workflow for AI agent failures using capture, diagnosis, contained recovery, and introspection reports.",
+      "invocation": "manual"
     },
     {
       "name": "agent-payment-x402",
@@ -300,7 +316,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Add x402 payment execution to AI agents with per-task budgets, spending controls, and non-custodial wallets. Supports Base through agentwallet-sdk and X Layer t"
+      "description": "Add x402 payment execution to AI agents with per-task budgets, spending controls, and non-custodial wallets. Supports Base through agentwallet-sdk and X Layer t",
+      "invocation": "manual"
     },
     {
       "name": "agent-sort",
@@ -317,7 +334,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build an evidence-backed ECC install plan for a specific repo by sorting skills, commands, rules, hooks, and extras into DAILY vs LIBRARY buckets using parallel"
+      "description": "Build an evidence-backed ECC install plan for a specific repo by sorting skills, commands, rules, hooks, and extras into DAILY vs LIBRARY buckets using parallel",
+      "invocation": "manual"
     },
     {
       "name": "agentic-engineering",
@@ -334,7 +352,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing."
+      "description": "Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing.",
+      "invocation": "manual"
     },
     {
       "name": "agentic-os",
@@ -351,7 +370,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build persistent multi-agent operating systems on Claude Code. Covers kernel architecture, specialist agents, slash commands, file-based memory, scheduled autom"
+      "description": "Build persistent multi-agent operating systems on Claude Code. Covers kernel architecture, specialist agents, slash commands, file-based memory, scheduled autom",
+      "invocation": "manual"
     },
     {
       "name": "ai-first-engineering",
@@ -368,7 +388,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Engineering operating model for teams where AI agents generate a large share of implementation output."
+      "description": "Engineering operating model for teams where AI agents generate a large share of implementation output.",
+      "invocation": "manual"
     },
     {
       "name": "ai-regression-testing",
@@ -385,7 +406,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns t"
+      "description": "Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns t",
+      "invocation": "manual"
     },
     {
       "name": "algorithmic-art",
@@ -402,7 +424,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generati"
+      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generati",
+      "invocation": "manual"
     },
     {
       "name": "android-clean-architecture",
@@ -419,7 +442,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Clean Architecture patterns for Android and Kotlin Multiplatform projects — module structure, dependency rules, UseCases, Repositories, and data layer patterns."
+      "description": "Clean Architecture patterns for Android and Kotlin Multiplatform projects — module structure, dependency rules, UseCases, Repositories, and data layer patterns.",
+      "invocation": "manual"
     },
     {
       "name": "angular-developer",
@@ -436,7 +460,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Generates Angular code and provides architectural guidance. Trigger when creating projects, components, or services, or for best practices on reactivity (signal"
+      "description": "Generates Angular code and provides architectural guidance. Trigger when creating projects, components, or services, or for best practices on reactivity (signal",
+      "invocation": "manual"
     },
     {
       "name": "api-connector-builder",
@@ -453,7 +478,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Build a new API connector or provider by matching the target repo's existing integration pattern exactly. Use when adding one more integration without inventing"
+      "description": "Build a new API connector or provider by matching the target repo's existing integration pattern exactly. Use when adding one more integration without inventing",
+      "invocation": "manual"
     },
     {
       "name": "api-design",
@@ -470,7 +496,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs."
+      "description": "REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs.",
+      "invocation": "manual"
     },
     {
       "name": "architecture-decision-records",
@@ -487,7 +514,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Capture architectural decisions made during Claude Code sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, an"
+      "description": "Capture architectural decisions made during Claude Code sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, an",
+      "invocation": "manual"
     },
     {
       "name": "article-writing",
@@ -504,7 +532,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Write articles, guides, blog posts, tutorials, newsletter issues, and other long-form content in a distinctive voice derived from supplied examples or brand gui"
+      "description": "Write articles, guides, blog posts, tutorials, newsletter issues, and other long-form content in a distinctive voice derived from supplied examples or brand gui",
+      "invocation": "manual"
     },
     {
       "name": "ask-notebooklm",
@@ -522,7 +551,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient."
+      "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient.",
+      "invocation": "manual"
     },
     {
       "name": "assessment-generator",
@@ -539,7 +569,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ""
+      "description": "",
+      "invocation": "manual"
     },
     {
       "name": "autoglm-browser-agent",
@@ -556,7 +587,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">-"
+      "description": ">-",
+      "invocation": "manual"
     },
     {
       "name": "automation-audit-ops",
@@ -573,7 +605,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first automation inventory and overlap audit workflow for ECC. Use when the user wants to know which jobs, hooks, connectors, MCP servers, or wrappers "
+      "description": "Evidence-first automation inventory and overlap audit workflow for ECC. Use when the user wants to know which jobs, hooks, connectors, MCP servers, or wrappers ",
+      "invocation": "manual"
     },
     {
       "name": "autonomous-agent-harness",
@@ -590,7 +623,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Transform Claude Code into a fully autonomous agent system with persistent memory, scheduled operations, computer use, and task queuing. Replaces standalone age"
+      "description": "Transform Claude Code into a fully autonomous agent system with persistent memory, scheduled operations, computer use, and task queuing. Replaces standalone age",
+      "invocation": "manual"
     },
     {
       "name": "autonomous-loops",
@@ -607,7 +641,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Patterns and architectures for autonomous Claude Code loops — from simple sequential pipelines to RFC-driven multi-agent DAG systems."
+      "description": "Patterns and architectures for autonomous Claude Code loops — from simple sequential pipelines to RFC-driven multi-agent DAG systems.",
+      "invocation": "manual"
     },
     {
       "name": "awiki-brain-improvement-gate",
@@ -624,7 +659,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use before changing A-Wiki brain capabilities, agent instructions, skills, hooks, plugins, scripts, sync behavior, external data layout, or public-safe repo pol"
+      "description": "Use before changing A-Wiki brain capabilities, agent instructions, skills, hooks, plugins, scripts, sync behavior, external data layout, or public-safe repo pol",
+      "invocation": "manual"
     },
     {
       "name": "awiki-creator-layer",
@@ -641,7 +677,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Turn A-Wiki notes, wiki pages, source summaries, and personal voice files into public-safe Thai-first posts, newsletters, content matrices, hooks, and publishin"
+      "description": "Turn A-Wiki notes, wiki pages, source summaries, and personal voice files into public-safe Thai-first posts, newsletters, content matrices, hooks, and publishin",
+      "invocation": "manual"
     },
     {
       "name": "awiki-lifecycle-router",
@@ -660,7 +697,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i"
+      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i",
+      "invocation": "manual"
     },
     {
       "name": "backend-patterns",
@@ -677,7 +715,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes."
+      "description": "Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.",
+      "invocation": "manual"
     },
     {
       "name": "benchmark",
@@ -694,7 +733,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to measure performance baselines, detect regressions before/after PRs, and compare stack alternatives."
+      "description": "Use this skill to measure performance baselines, detect regressions before/after PRs, and compare stack alternatives.",
+      "invocation": "manual"
     },
     {
       "name": "benchmark-optimization-loop",
@@ -711,7 +751,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user asks to make something faster, try many variants, run recursive optimization, benchmark latency/throughput/cost, or choose the best implementa"
+      "description": "Use when the user asks to make something faster, try many variants, run recursive optimization, benchmark latency/throughput/cost, or choose the best implementa",
+      "invocation": "manual"
     },
     {
       "name": "blender-motion-state-inspection",
@@ -728,7 +769,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground contact, facing direction, or model-vs-motion alignment where scre"
+      "description": "Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground contact, facing direction, or model-vs-motion alignment where scre",
+      "invocation": "manual"
     },
     {
       "name": "blueprint",
@@ -745,7 +787,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">-"
+      "description": ">-",
+      "invocation": "manual"
     },
     {
       "name": "brainstorm-before-build",
@@ -762,7 +805,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use BEFORE designing/building anything new — features, systems, wiki domains, scripts, hooks, skills. Triggers: \"ออกแบบ\", \"วางระบบ\", \"สร้างฟีเจอร์\", \"สร้าง skil"
+      "description": "Use BEFORE designing/building anything new — features, systems, wiki domains, scripts, hooks, skills. Triggers: \"ออกแบบ\", \"วางระบบ\", \"สร้างฟีเจอร์\", \"สร้าง skil",
+      "invocation": "manual"
     },
     {
       "name": "brand-guidelines",
@@ -779,7 +823,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand color"
+      "description": "Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand color",
+      "invocation": "manual"
     },
     {
       "name": "brand-voice",
@@ -796,7 +841,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build a source-derived writing style profile from real posts, essays, launch notes, docs, or site copy, then reuse that profile across content, outreach, and so"
+      "description": "Build a source-derived writing style profile from real posts, essays, launch notes, docs, or site copy, then reuse that profile across content, outreach, and so",
+      "invocation": "manual"
     },
     {
       "name": "browser-qa",
@@ -814,7 +860,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to automate visual testing and UI interaction verification using browser automation after deploying features."
+      "description": "Use this skill to automate visual testing and UI interaction verification using browser automation after deploying features.",
+      "invocation": "manual"
     },
     {
       "name": "browser-testing-with-devtools",
@@ -833,7 +880,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru"
+      "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru",
+      "invocation": "manual"
     },
     {
       "name": "bun-runtime",
@@ -850,7 +898,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Bun as runtime, package manager, bundler, and test runner. When to choose Bun vs Node, migration notes, and Vercel support."
+      "description": "Bun as runtime, package manager, bundler, and test runner. When to choose Bun vs Node, migration notes, and Vercel support.",
+      "invocation": "manual"
     },
     {
       "name": "canary-watch",
@@ -867,7 +916,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to monitor and verify a deployed URL after releases — checks HTTP endpoints, SSE streams, static assets, console errors, and performance regressi"
+      "description": "Use this skill to monitor and verify a deployed URL after releases — checks HTTP endpoints, SSE streams, static assets, console errors, and performance regressi",
+      "invocation": "manual"
     },
     {
       "name": "canvas-design",
@@ -884,7 +934,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this skill when the user asks to create a poster, piece of art, d"
+      "description": "Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this skill when the user asks to create a poster, piece of art, d",
+      "invocation": "manual"
     },
     {
       "name": "carrier-relationship-management",
@@ -901,7 +952,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "ci-cd-and-automation",
@@ -921,7 +973,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch"
+      "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch",
+      "invocation": "manual"
     },
     {
       "name": "cisco-ios-patterns",
@@ -939,7 +992,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Cisco IOS and IOS-XE review patterns for show commands, config hierarchy, wildcard masks, ACL placement, interface hygiene, and safe change-window verification."
+      "description": "Cisco IOS and IOS-XE review patterns for show commands, config hierarchy, wildcard masks, ACL placement, interface hygiene, and safe change-window verification.",
+      "invocation": "manual"
     },
     {
       "name": "ck",
@@ -956,7 +1010,8 @@
       ],
       "version": "2.0.0",
       "status": "canonical",
-      "description": "Persistent per-project memory for Claude Code. Auto-loads project context on session start, tracks sessions with git activity, and writes to native memory. Comm"
+      "description": "Persistent per-project memory for Claude Code. Auto-loads project context on session start, tracks sessions with git activity, and writes to native memory. Comm",
+      "invocation": "manual"
     },
     {
       "name": "claude-api",
@@ -973,7 +1028,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "|-"
+      "description": "|-",
+      "invocation": "manual"
     },
     {
       "name": "claude-devfleet",
@@ -990,7 +1046,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Orchestrate multi-agent coding tasks via Claude DevFleet — plan projects, dispatch parallel agents in isolated worktrees, monitor progress, and read structured "
+      "description": "Orchestrate multi-agent coding tasks via Claude DevFleet — plan projects, dispatch parallel agents in isolated worktrees, monitor progress, and read structured ",
+      "invocation": "manual"
     },
     {
       "name": "click-path-audit",
@@ -1007,7 +1064,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Trace every user-facing button/touchpoint through its full state change sequence to find bugs where functions individually work but cancel each other out, produ"
+      "description": "Trace every user-facing button/touchpoint through its full state change sequence to find bugs where functions individually work but cancel each other out, produ",
+      "invocation": "manual"
     },
     {
       "name": "clickhouse-io",
@@ -1024,7 +1082,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads."
+      "description": "ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads.",
+      "invocation": "manual"
     },
     {
       "name": "code-simplification",
@@ -1043,7 +1102,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code "
+      "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code ",
+      "invocation": "manual"
     },
     {
       "name": "code-tour",
@@ -1060,7 +1120,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create CodeTour `.tour` files — persona-targeted, step-by-step walkthroughs with real file and line anchors. Use for onboarding tours, architecture walkthroughs"
+      "description": "Create CodeTour `.tour` files — persona-targeted, step-by-step walkthroughs with real file and line anchors. Use for onboarding tours, architecture walkthroughs",
+      "invocation": "manual"
     },
     {
       "name": "codebase-onboarding",
@@ -1077,7 +1138,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Analyze an unfamiliar codebase and generate a structured onboarding guide with architecture map, key entry points, conventions, and a starter CLAUDE.md. Use whe"
+      "description": "Analyze an unfamiliar codebase and generate a structured onboarding guide with architecture map, key entry points, conventions, and a starter CLAUDE.md. Use whe",
+      "invocation": "manual"
     },
     {
       "name": "coding-standards",
@@ -1094,7 +1156,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Baseline cross-project coding conventions for naming, readability, immutability, and code-quality review. Use detailed frontend or backend skills for framework-"
+      "description": "Baseline cross-project coding conventions for naming, readability, immutability, and code-quality review. Use detailed frontend or backend skills for framework-",
+      "invocation": "manual"
     },
     {
       "name": "compose-multiplatform-patterns",
@@ -1111,7 +1174,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Compose Multiplatform and Jetpack Compose patterns for KMP projects — state management, navigation, theming, performance, and platform-specific UI."
+      "description": "Compose Multiplatform and Jetpack Compose patterns for KMP projects — state management, navigation, theming, performance, and platform-specific UI.",
+      "invocation": "manual"
     },
     {
       "name": "configure-ecc",
@@ -1128,7 +1192,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Interactive installer for Everything Claude Code — guides users through selecting and installing skills and rules to user-level or project-level directories, ve"
+      "description": "Interactive installer for Everything Claude Code — guides users through selecting and installing skills and rules to user-level or project-level directories, ve",
+      "invocation": "manual"
     },
     {
       "name": "connections-optimizer",
@@ -1145,7 +1210,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Reorganize the user's X and LinkedIn network with review-first pruning, add/follow recommendations, and channel-specific warm outreach drafted in the user's rea"
+      "description": "Reorganize the user's X and LinkedIn network with review-first pruning, add/follow recommendations, and channel-specific warm outreach drafted in the user's rea",
+      "invocation": "manual"
     },
     {
       "name": "content-engine",
@@ -1162,7 +1228,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed multi-platform campaigns. Use when the user wants social po"
+      "description": "Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed multi-platform campaigns. Use when the user wants social po",
+      "invocation": "manual"
     },
     {
       "name": "content-hash-cache-pattern",
@@ -1179,7 +1246,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Cache expensive file processing results using SHA-256 content hashes — path-independent, auto-invalidating, with service layer separation."
+      "description": "Cache expensive file processing results using SHA-256 content hashes — path-independent, auto-invalidating, with service layer separation.",
+      "invocation": "manual"
     },
     {
       "name": "context-budget",
@@ -1196,7 +1264,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Audits Claude Code context window consumption across agents, skills, MCP servers, and rules. Identifies bloat, redundant components, and produces prioritized to"
+      "description": "Audits Claude Code context window consumption across agents, skills, MCP servers, and rules. Identifies bloat, redundant components, and produces prioritized to",
+      "invocation": "manual"
     },
     {
       "name": "continuous-agent-loop",
@@ -1213,7 +1282,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls."
+      "description": "Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls.",
+      "invocation": "manual"
     },
     {
       "name": "continuous-learning",
@@ -1230,7 +1300,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "[DEPRECATED - use continuous-learning-v2] Legacy v1 stop-hook skill extractor. v2 is a strict superset with instinct-based, project-scoped, hook-reliable learni"
+      "description": "[DEPRECATED - use continuous-learning-v2] Legacy v1 stop-hook skill extractor. v2 is a strict superset with instinct-based, project-scoped, hook-reliable learni",
+      "invocation": "manual"
     },
     {
       "name": "continuous-learning-v2",
@@ -1247,7 +1318,8 @@
       ],
       "version": "2.1.0",
       "status": "canonical",
-      "description": "Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and evolves them into skills/commands/agents."
+      "description": "Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and evolves them into skills/commands/agents.",
+      "invocation": "manual"
     },
     {
       "name": "cost-aware-llm-pipeline",
@@ -1264,7 +1336,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching."
+      "description": "Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching.",
+      "invocation": "manual"
     },
     {
       "name": "cost-tracking",
@@ -1281,7 +1354,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Track and report Claude Code token usage, spending, and budgets from a local cost-tracking database. Use when the user asks about costs, spending, usage, tokens"
+      "description": "Track and report Claude Code token usage, spending, and budgets from a local cost-tracking database. Use when the user asks about costs, spending, usage, tokens",
+      "invocation": "manual"
     },
     {
       "name": "council",
@@ -1298,7 +1372,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Convene a four-voice council for ambiguous decisions, tradeoffs, and go/no-go calls. Use when multiple valid paths exist and you need structured disagreement be"
+      "description": "Convene a four-voice council for ambiguous decisions, tradeoffs, and go/no-go calls. Use when multiple valid paths exist and you need structured disagreement be",
+      "invocation": "manual"
     },
     {
       "name": "cpp-coding-standards",
@@ -1315,7 +1390,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use when writing, reviewing, or refactoring C++ code to enforce modern, safe, and idio"
+      "description": "C++ coding standards based on the C++ Core Guidelines (isocpp.github.io). Use when writing, reviewing, or refactoring C++ code to enforce modern, safe, and idio",
+      "invocation": "manual"
     },
     {
       "name": "cpp-testing",
@@ -1332,7 +1408,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use only when writing/updating/fixing C++ tests, configuring GoogleTest/CTest, diagnosing failing or flaky tests, or adding coverage/sanitizers."
+      "description": "Use only when writing/updating/fixing C++ tests, configuring GoogleTest/CTest, diagnosing failing or flaky tests, or adding coverage/sanitizers.",
+      "invocation": "manual"
     },
     {
       "name": "crew-dispatch",
@@ -1349,7 +1426,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Split multi-dimensional A-Wiki questions into parallel delegated subtasks while keeping primary-agent validation."
+      "description": "Split multi-dimensional A-Wiki questions into parallel delegated subtasks while keeping primary-agent validation.",
+      "invocation": "manual"
     },
     {
       "name": "crosspost",
@@ -1366,7 +1444,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Multi-platform content distribution across X, LinkedIn, Threads, and Bluesky. Adapts content per platform using content-engine patterns. Never posts identical c"
+      "description": "Multi-platform content distribution across X, LinkedIn, Threads, and Bluesky. Adapts content per platform using content-engine patterns. Never posts identical c",
+      "invocation": "manual"
     },
     {
       "name": "csharp-testing",
@@ -1383,7 +1462,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "C# and .NET testing patterns with xUnit, FluentAssertions, mocking, integration tests, and test organization best practices."
+      "description": "C# and .NET testing patterns with xUnit, FluentAssertions, mocking, integration tests, and test organization best practices.",
+      "invocation": "manual"
     },
     {
       "name": "customer-billing-ops",
@@ -1400,7 +1480,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate customer billing workflows such as subscriptions, refunds, churn triage, billing-portal recovery, and plan analysis using connected billing tools like S"
+      "description": "Operate customer billing workflows such as subscriptions, refunds, churn triage, billing-portal recovery, and plan analysis using connected billing tools like S",
+      "invocation": "manual"
     },
     {
       "name": "customs-trade-compliance",
@@ -1417,7 +1498,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "dart-flutter-patterns",
@@ -1434,7 +1516,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Production-ready Dart and Flutter patterns covering null safety, immutable state, async composition, widget architecture, popular state management frameworks (B"
+      "description": "Production-ready Dart and Flutter patterns covering null safety, immutable state, async composition, widget architecture, popular state management frameworks (B",
+      "invocation": "manual"
     },
     {
       "name": "dashboard-builder",
@@ -1451,7 +1534,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Build monitoring dashboards that answer real operator questions for Grafana, SigNoz, and similar platforms. Use when turning metrics into a working dashboard in"
+      "description": "Build monitoring dashboards that answer real operator questions for Grafana, SigNoz, and similar platforms. Use when turning metrics into a working dashboard in",
+      "invocation": "manual"
     },
     {
       "name": "data-scraper-agent",
@@ -1468,7 +1552,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build a fully automated AI-powered data collection agent for any public source — job boards, prices, news, GitHub, sports, anything. Scrapes on a schedule, enri"
+      "description": "Build a fully automated AI-powered data collection agent for any public source — job boards, prices, news, GitHub, sports, anything. Scrapes on a schedule, enri",
+      "invocation": "manual"
     },
     {
       "name": "data-throughput-accelerator",
@@ -1485,7 +1570,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when large data ingestion, backfill, export, ETL, warehouse loading, manifest catch-up, or table synchronization needs to become much faster while preservin"
+      "description": "Use when large data ingestion, backfill, export, ETL, warehouse loading, manifest catch-up, or table synchronization needs to become much faster while preservin",
+      "invocation": "manual"
     },
     {
       "name": "database-migrations",
@@ -1502,7 +1588,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments across PostgreSQL, MySQL, and common ORMs (Prism"
+      "description": "Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments across PostgreSQL, MySQL, and common ORMs (Prism",
+      "invocation": "manual"
     },
     {
       "name": "debug-mantra",
@@ -1520,7 +1607,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at"
+      "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
+      "invocation": "manual"
     },
     {
       "name": "deep-research",
@@ -1537,7 +1625,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Multi-source deep research using firecrawl and exa MCPs. Searches the web, synthesizes findings, and delivers cited reports with source attribution. Use when th"
+      "description": "Multi-source deep research using firecrawl and exa MCPs. Searches the web, synthesizes findings, and delivers cited reports with source attribution. Use when th",
+      "invocation": "manual"
     },
     {
       "name": "defi-amm-security",
@@ -1555,7 +1644,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Security checklist for Solidity AMM contracts, liquidity pools, and swap flows. Covers reentrancy, CEI ordering, donation or inflation attacks, oracle manipulat"
+      "description": "Security checklist for Solidity AMM contracts, liquidity pools, and swap flows. Covers reentrancy, CEI ordering, donation or inflation attacks, oracle manipulat",
+      "invocation": "manual"
     },
     {
       "name": "delegate-subagent",
@@ -1573,7 +1663,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros"
+      "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros",
+      "invocation": "manual"
     },
     {
       "name": "deployment-patterns",
@@ -1591,7 +1682,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness checklists for web applicat"
+      "description": "Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness checklists for web applicat",
+      "invocation": "manual"
     },
     {
       "name": "deprecation-and-migration",
@@ -1610,7 +1702,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan"
+      "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan",
+      "invocation": "manual"
     },
     {
       "name": "design-system",
@@ -1627,7 +1720,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to generate or audit design systems, check visual consistency, and review PRs that touch styling."
+      "description": "Use this skill to generate or audit design systems, check visual consistency, and review PRs that touch styling.",
+      "invocation": "manual"
     },
     {
       "name": "django-celery",
@@ -1644,7 +1738,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Django + Celery async task patterns — configuration, task design, beat scheduling, retries, canvas workflows, monitoring, and testing. Use when adding backgroun"
+      "description": "Django + Celery async task patterns — configuration, task design, beat scheduling, retries, canvas workflows, monitoring, and testing. Use when adding backgroun",
+      "invocation": "manual"
     },
     {
       "name": "django-patterns",
@@ -1661,7 +1756,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Django architecture patterns, REST API design with DRF, ORM best practices, caching, signals, middleware, and production-grade Django apps."
+      "description": "Django architecture patterns, REST API design with DRF, ORM best practices, caching, signals, middleware, and production-grade Django apps.",
+      "invocation": "manual"
     },
     {
       "name": "django-security",
@@ -1678,7 +1774,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Django security best practices, authentication, authorization, CSRF protection, SQL injection prevention, XSS prevention, and secure deployment configurations."
+      "description": "Django security best practices, authentication, authorization, CSRF protection, SQL injection prevention, XSS prevention, and secure deployment configurations.",
+      "invocation": "manual"
     },
     {
       "name": "django-tdd",
@@ -1695,7 +1792,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Django testing strategies with pytest-django, TDD methodology, factory_boy, mocking, coverage, and testing Django REST Framework APIs."
+      "description": "Django testing strategies with pytest-django, TDD methodology, factory_boy, mocking, coverage, and testing Django REST Framework APIs.",
+      "invocation": "manual"
     },
     {
       "name": "django-verification",
@@ -1712,7 +1810,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Verification loop for Django projects: migrations, linting, tests with coverage, security scans, and deployment readiness checks before release or PR."
+      "description": "Verification loop for Django projects: migrations, linting, tests with coverage, security scans, and deployment readiness checks before release or PR.",
+      "invocation": "manual"
     },
     {
       "name": "dmux-workflows",
@@ -1729,7 +1828,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Multi-agent orchestration using dmux (tmux pane manager for AI agents). Patterns for parallel agent workflows across Claude Code, Codex, OpenCode, and other har"
+      "description": "Multi-agent orchestration using dmux (tmux pane manager for AI agents). Patterns for parallel agent workflows across Claude Code, Codex, OpenCode, and other har",
+      "invocation": "manual"
     },
     {
       "name": "doc-coauthoring",
@@ -1746,7 +1846,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs,"
+      "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs,",
+      "invocation": "manual"
     },
     {
       "name": "docker-patterns",
@@ -1763,7 +1864,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Docker and Docker Compose patterns for local development, container security, networking, volume strategies, and multi-service orchestration."
+      "description": "Docker and Docker Compose patterns for local development, container security, networking, volume strategies, and multi-service orchestration.",
+      "invocation": "manual"
     },
     {
       "name": "documentation-and-adrs",
@@ -1782,7 +1884,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,"
+      "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,",
+      "invocation": "manual"
     },
     {
       "name": "documentation-lookup",
@@ -1799,7 +1902,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use up-to-date library and framework docs via Context7 MCP instead of training data. Activates for setup questions, API references, code examples, or when the u"
+      "description": "Use up-to-date library and framework docs via Context7 MCP instead of training data. Activates for setup questions, API references, code examples, or when the u",
+      "invocation": "manual"
     },
     {
       "name": "docx",
@@ -1816,7 +1920,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word doc"
+      "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word doc",
+      "invocation": "manual"
     },
     {
       "name": "dotnet-patterns",
@@ -1833,7 +1938,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Idiomatic C# and .NET patterns, conventions, dependency injection, async/await, and best practices for building robust, maintainable .NET applications."
+      "description": "Idiomatic C# and .NET patterns, conventions, dependency injection, async/await, and best practices for building robust, maintainable .NET applications.",
+      "invocation": "manual"
     },
     {
       "name": "e2e-testing",
@@ -1850,7 +1956,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies."
+      "description": "Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies.",
+      "invocation": "manual"
     },
     {
       "name": "ecc-guide",
@@ -1867,7 +1974,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Guide users through ECC's current agents, skills, commands, hooks, rules, install profiles, and project onboarding by reading the live repository surface before"
+      "description": "Guide users through ECC's current agents, skills, commands, hooks, rules, install profiles, and project onboarding by reading the live repository surface before",
+      "invocation": "manual"
     },
     {
       "name": "ecc-tools-cost-audit",
@@ -1884,7 +1992,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first ECC Tools burn and billing audit workflow. Use when investigating runaway PR creation, quota bypass, premium-model leakage, duplicate jobs, or Gi"
+      "description": "Evidence-first ECC Tools burn and billing audit workflow. Use when investigating runaway PR creation, quota bypass, premium-model leakage, duplicate jobs, or Gi",
+      "invocation": "manual"
     },
     {
       "name": "email-ops",
@@ -1901,7 +2010,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first mailbox triage, drafting, send verification, and sent-mail-safe follow-up workflow for ECC. Use when the user wants to organize email, draft or s"
+      "description": "Evidence-first mailbox triage, drafting, send verification, and sent-mail-safe follow-up workflow for ECC. Use when the user wants to organize email, draft or s",
+      "invocation": "manual"
     },
     {
       "name": "energy-procurement",
@@ -1918,7 +2028,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "enterprise-agent-ops",
@@ -1935,7 +2046,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate long-lived agent workloads with observability, security boundaries, and lifecycle management."
+      "description": "Operate long-lived agent workloads with observability, security boundaries, and lifecycle management.",
+      "invocation": "manual"
     },
     {
       "name": "error-handling",
@@ -1952,7 +2064,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error me"
+      "description": "Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error me",
+      "invocation": "manual"
     },
     {
       "name": "eval-harness",
@@ -1969,7 +2082,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles"
+      "description": "Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles",
+      "invocation": "manual"
     },
     {
       "name": "everything-claude-code",
@@ -1986,7 +2100,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Development conventions and patterns for everything-claude-code. JavaScript project with conventional commits."
+      "description": "Development conventions and patterns for everything-claude-code. JavaScript project with conventional commits.",
+      "invocation": "manual"
     },
     {
       "name": "evm-token-decimals",
@@ -2003,7 +2118,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Prevent silent decimal mismatch bugs across EVM chains. Covers runtime decimal lookup, chain-aware caching, bridged-token precision drift, and safe normalizatio"
+      "description": "Prevent silent decimal mismatch bugs across EVM chains. Covers runtime decimal lookup, chain-aware caching, bridged-token precision drift, and safe normalizatio",
+      "invocation": "manual"
     },
     {
       "name": "exa-search",
@@ -2020,7 +2136,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Neural search via Exa MCP for web, code, and company research. Use when the user needs web search, code examples, company intel, people lookup, or AI-powered de"
+      "description": "Neural search via Exa MCP for web, code, and company research. Use when the user needs web search, code examples, company intel, people lookup, or AI-powered de",
+      "invocation": "manual"
     },
     {
       "name": "excel-generator",
@@ -2037,7 +2154,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Professional Excel spreadsheet creation with a focus on aesthetics and data analysis. Use when creating spreadsheets for organizing, analyzing, and presenting s"
+      "description": "Professional Excel spreadsheet creation with a focus on aesthetics and data analysis. Use when creating spreadsheets for organizing, analyzing, and presenting s",
+      "invocation": "manual"
     },
     {
       "name": "export-notebooklm",
@@ -2055,7 +2173,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges"
+      "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges",
+      "invocation": "manual"
     },
     {
       "name": "fable5-standards",
@@ -2072,7 +2191,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Deeper reasoning standards for architecture decisions, debugging, data migrations, and other non-trivial technical work — problem decomposition, trade-off comparison, root-cause debugging, and playbooks for planning vs implementing vs analyzing vs writing."
+      "description": "Deeper reasoning standards for architecture decisions, debugging, data migrations, and other non-trivial technical work — problem decomposition, trade-off comparison, root-cause debugging, and playbooks for planning vs implementing vs analyzing vs writing.",
+      "invocation": "manual"
     },
     {
       "name": "fal-ai-media",
@@ -2089,7 +2209,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-spe"
+      "description": "Unified media generation via fal.ai MCP — image, video, and audio. Covers text-to-image (Nano Banana), text/image-to-video (Seedance, Kling, Veo 3), text-to-spe",
+      "invocation": "manual"
     },
     {
       "name": "fastapi-patterns",
@@ -2106,7 +2227,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "FastAPI patterns for async APIs, dependency injection, Pydantic request and response models, OpenAPI docs, tests, security, and production readiness."
+      "description": "FastAPI patterns for async APIs, dependency injection, Pydantic request and response models, OpenAPI docs, tests, security, and production readiness.",
+      "invocation": "manual"
     },
     {
       "name": "finance-billing-ops",
@@ -2123,7 +2245,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first revenue, pricing, refunds, team-billing, and billing-model truth workflow for ECC. Use when the user wants a sales snapshot, pricing comparison, "
+      "description": "Evidence-first revenue, pricing, refunds, team-billing, and billing-model truth workflow for ECC. Use when the user wants a sales snapshot, pricing comparison, ",
+      "invocation": "manual"
     },
     {
       "name": "flox-environments",
@@ -2140,7 +2263,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create reproducible, cross-platform development environments with Flox — a declarative environment manager built on Nix. ALWAYS use this skill when the user nee"
+      "description": "Create reproducible, cross-platform development environments with Flox — a declarative environment manager built on Nix. ALWAYS use this skill when the user nee",
+      "invocation": "manual"
     },
     {
       "name": "flutter-dart-code-review",
@@ -2157,7 +2281,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Library-agnostic Flutter/Dart code review checklist covering widget best practices, state management patterns (BLoC, Riverpod, Provider, GetX, MobX, Signals), D"
+      "description": "Library-agnostic Flutter/Dart code review checklist covering widget best practices, state management patterns (BLoC, Riverpod, Provider, GetX, MobX, Signals), D",
+      "invocation": "manual"
     },
     {
       "name": "foundation-models-on-device",
@@ -2174,7 +2299,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Apple FoundationModels framework for on-device LLM — text generation, guided generation with @Generable, tool calling, and snapshot streaming in iOS 26+."
+      "description": "Apple FoundationModels framework for on-device LLM — text generation, guided generation with @Generable, tool calling, and snapshot streaming in iOS 26+.",
+      "invocation": "manual"
     },
     {
       "name": "frontend-a11y",
@@ -2191,7 +2317,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "frontend-design",
@@ -2208,7 +2335,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, "
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, ",
+      "invocation": "manual"
     },
     {
       "name": "frontend-design-direction",
@@ -2225,7 +2353,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Set an ECC-specific frontend design direction for production UI work. Use when building or improving websites, dashboards, applications, components, landing pag"
+      "description": "Set an ECC-specific frontend design direction for production UI work. Use when building or improving websites, dashboards, applications, components, landing pag",
+      "invocation": "manual"
     },
     {
       "name": "frontend-patterns",
@@ -2242,7 +2371,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices."
+      "description": "Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.",
+      "invocation": "manual"
     },
     {
       "name": "frontend-slides",
@@ -2259,7 +2389,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PP"
+      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PP",
+      "invocation": "manual"
     },
     {
       "name": "fsharp-testing",
@@ -2276,7 +2407,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "F# testing patterns with xUnit, FsUnit, Unquote, FsCheck property-based testing, integration tests, and test organization best practices."
+      "description": "F# testing patterns with xUnit, FsUnit, Unquote, FsCheck property-based testing, integration tests, and test organization best practices.",
+      "invocation": "manual"
     },
     {
       "name": "gan-style-harness",
@@ -2293,7 +2425,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "GAN-inspired Generator-Evaluator agent harness for building high-quality applications autonomously. Based on Anthropic's March 2026 harness design paper."
+      "description": "GAN-inspired Generator-Evaluator agent harness for building high-quality applications autonomously. Based on Anthropic's March 2026 harness design paper.",
+      "invocation": "manual"
     },
     {
       "name": "gateguard",
@@ -2310,7 +2443,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Fact-forcing gate that blocks Edit/Write/Bash (including MultiEdit) and demands concrete investigation (importers, data schemas, user instruction) before allowi"
+      "description": "Fact-forcing gate that blocks Edit/Write/Bash (including MultiEdit) and demands concrete investigation (importers, data schemas, user instruction) before allowi",
+      "invocation": "manual"
     },
     {
       "name": "gget",
@@ -2327,7 +2461,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "gget CLI and Python workflow for quick genomic database queries, sequence lookup, BLAST-style searches, enrichment checks, and reproducible bioinformatics evide"
+      "description": "gget CLI and Python workflow for quick genomic database queries, sequence lookup, BLAST-style searches, enrichment checks, and reproducible bioinformatics evide",
+      "invocation": "manual"
     },
     {
       "name": "git-workflow",
@@ -2344,7 +2479,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Git workflow patterns including branching strategies, commit conventions, merge vs rebase, conflict resolution, and collaborative development best practices for"
+      "description": "Git workflow patterns including branching strategies, commit conventions, merge vs rebase, conflict resolution, and collaborative development best practices for",
+      "invocation": "manual"
     },
     {
       "name": "git-workflow-and-versioning",
@@ -2363,7 +2499,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev"
+      "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev",
+      "invocation": "manual"
     },
     {
       "name": "github-ops",
@@ -2380,7 +2517,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "GitHub repository operations, automation, and management. Issue triage, PR management, CI/CD operations, release management, and security monitoring using the g"
+      "description": "GitHub repository operations, automation, and management. Issue triage, PR management, CI/CD operations, release management, and security monitoring using the g",
+      "invocation": "manual"
     },
     {
       "name": "golang-patterns",
@@ -2397,7 +2535,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Idiomatic Go patterns, best practices, and conventions for building robust, efficient, and maintainable Go applications."
+      "description": "Idiomatic Go patterns, best practices, and conventions for building robust, efficient, and maintainable Go applications.",
+      "invocation": "manual"
     },
     {
       "name": "golang-testing",
@@ -2414,7 +2553,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Go testing patterns including table-driven tests, subtests, benchmarks, fuzzing, and test coverage. Follows TDD methodology with idiomatic Go practices."
+      "description": "Go testing patterns including table-driven tests, subtests, benchmarks, fuzzing, and test coverage. Follows TDD methodology with idiomatic Go practices.",
+      "invocation": "manual"
     },
     {
       "name": "google-workspace-ops",
@@ -2431,7 +2571,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate across Google Drive, Docs, Sheets, and Slides as one workflow surface for plans, trackers, decks, and shared documents. Use when the user needs to find,"
+      "description": "Operate across Google Drive, Docs, Sheets, and Slides as one workflow surface for plans, trackers, decks, and shared documents. Use when the user needs to find,",
+      "invocation": "manual"
     },
     {
       "name": "healthcare-cdss-patterns",
@@ -2449,7 +2590,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Clinical Decision Support System (CDSS) development patterns. Drug interaction checking, dose validation, clinical scoring (NEWS2, qSOFA), alert severity classi"
+      "description": "Clinical Decision Support System (CDSS) development patterns. Drug interaction checking, dose validation, clinical scoring (NEWS2, qSOFA), alert severity classi",
+      "invocation": "manual"
     },
     {
       "name": "healthcare-emr-patterns",
@@ -2467,7 +2609,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "EMR/EHR development patterns for healthcare applications. Clinical safety, encounter workflows, prescription generation, clinical decision support integration, "
+      "description": "EMR/EHR development patterns for healthcare applications. Clinical safety, encounter workflows, prescription generation, clinical decision support integration, ",
+      "invocation": "manual"
     },
     {
       "name": "healthcare-eval-harness",
@@ -2484,7 +2627,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Patient safety evaluation harness for healthcare application deployments. Automated test suites for CDSS accuracy, PHI exposure, clinical workflow integrity, an"
+      "description": "Patient safety evaluation harness for healthcare application deployments. Automated test suites for CDSS accuracy, PHI exposure, clinical workflow integrity, an",
+      "invocation": "manual"
     },
     {
       "name": "healthcare-phi-compliance",
@@ -2501,7 +2645,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Protected Health Information (PHI) and Personally Identifiable Information (PII) compliance patterns for healthcare applications. Covers data classification, ac"
+      "description": "Protected Health Information (PHI) and Personally Identifiable Information (PII) compliance patterns for healthcare applications. Covers data classification, ac",
+      "invocation": "manual"
     },
     {
       "name": "hermes-imports",
@@ -2518,7 +2663,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Convert local Hermes operator workflows into sanitized ECC skills and release-pack artifacts. Use when preparing a Hermes workflow for public ECC reuse without "
+      "description": "Convert local Hermes operator workflows into sanitized ECC skills and release-pack artifacts. Use when preparing a Hermes workflow for public ECC reuse without ",
+      "invocation": "manual"
     },
     {
       "name": "hexagonal-architecture",
@@ -2535,7 +2681,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Design, implement, and refactor Ports & Adapters systems with clear domain boundaries, dependency inversion, and testable use-case orchestration across TypeScri"
+      "description": "Design, implement, and refactor Ports & Adapters systems with clear domain boundaries, dependency inversion, and testable use-case orchestration across TypeScri",
+      "invocation": "manual"
     },
     {
       "name": "hipaa-compliance",
@@ -2553,7 +2700,8 @@
       "version": "1.0.0",
       "status": "alias",
       "description": "HIPAA-specific entrypoint for healthcare privacy and security work. Use when a task is explicitly framed around HIPAA, PHI handling, covered entities, BAAs, bre",
-      "canonical": "healthcare-phi-compliance"
+      "canonical": "healthcare-phi-compliance",
+      "invocation": "manual"
     },
     {
       "name": "homelab-network-readiness",
@@ -2570,7 +2718,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Readiness checklist for homelab VLAN segmentation, local DNS filtering, and WireGuard-style remote access before changing router, firewall, DHCP, or VPN configu"
+      "description": "Readiness checklist for homelab VLAN segmentation, local DNS filtering, and WireGuard-style remote access before changing router, firewall, DHCP, or VPN configu",
+      "invocation": "manual"
     },
     {
       "name": "homelab-network-setup",
@@ -2587,7 +2736,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Practical home and homelab network planning for gateways, switches, access points, IP ranges, DHCP reservations, DNS, cabling, and common beginner mistakes."
+      "description": "Practical home and homelab network planning for gateways, switches, access points, IP ranges, DHCP reservations, DNS, cabling, and common beginner mistakes.",
+      "invocation": "manual"
     },
     {
       "name": "homelab-pihole-dns",
@@ -2604,7 +2754,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pi-hole installation, blocklist management, DNS-over-HTTPS setup, DHCP integration, local DNS records, and troubleshooting broken DNS resolution on a home netwo"
+      "description": "Pi-hole installation, blocklist management, DNS-over-HTTPS setup, DHCP integration, local DNS records, and troubleshooting broken DNS resolution on a home netwo",
+      "invocation": "manual"
     },
     {
       "name": "homelab-vlan-segmentation",
@@ -2621,7 +2772,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Segmenting home networks into VLANs for IoT, guest, trusted, and server traffic using UniFi, pfSense/OPNsense, and MikroTik — including switch trunk config, fir"
+      "description": "Segmenting home networks into VLANs for IoT, guest, trusted, and server traffic using UniFi, pfSense/OPNsense, and MikroTik — including switch trunk config, fir",
+      "invocation": "manual"
     },
     {
       "name": "homelab-wireguard-vpn",
@@ -2638,7 +2790,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "WireGuard VPN server setup, peer configuration, key generation, split tunneling vs full tunnel routing, and remote access to a home network from mobile and lapt"
+      "description": "WireGuard VPN server setup, peer configuration, key generation, split tunneling vs full tunnel routing, and remote access to a home network from mobile and lapt",
+      "invocation": "manual"
     },
     {
       "name": "hook-suggest",
@@ -2655,7 +2808,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "hookify-rules",
@@ -2672,7 +2826,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "This skill should be used when the user asks to create a hookify rule, write a hook rule, configure hookify, add a hookify rule, or needs guidance on hookify ru"
+      "description": "This skill should be used when the user asks to create a hookify rule, write a hook rule, configure hookify, add a hookify rule, or needs guidance on hookify ru",
+      "invocation": "manual"
     },
     {
       "name": "imagegen",
@@ -2689,7 +2844,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-b"
+      "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-b",
+      "invocation": "manual"
     },
     {
       "name": "ingest-source",
@@ -2707,7 +2863,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic."
+      "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic.",
+      "invocation": "manual"
     },
     {
       "name": "internal-comms",
@@ -2724,7 +2881,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever "
+      "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever ",
+      "invocation": "manual"
     },
     {
       "name": "internet-skill-finder",
@@ -2741,7 +2899,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Search and recommend Agent Skills from verified GitHub repositories. Use when users ask to find, discover, search for, or recommend skills/plugins for specific "
+      "description": "Search and recommend Agent Skills from verified GitHub repositories. Use when users ask to find, discover, search for, or recommend skills/plugins for specific ",
+      "invocation": "manual"
     },
     {
       "name": "inventory-demand-planning",
@@ -2758,7 +2917,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "investor-materials",
@@ -2775,7 +2935,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create and update pitch decks, one-pagers, investor memos, accelerator applications, financial models, and fundraising materials. Use when the user needs invest"
+      "description": "Create and update pitch decks, one-pagers, investor memos, accelerator applications, financial models, and fundraising materials. Use when the user needs invest",
+      "invocation": "manual"
     },
     {
       "name": "investor-outreach",
@@ -2792,7 +2953,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Draft cold emails, warm intro blurbs, follow-ups, update emails, and investor communications for fundraising. Use when the user wants outreach to angels, VCs, s"
+      "description": "Draft cold emails, warm intro blurbs, follow-ups, update emails, and investor communications for fundraising. Use when the user wants outreach to angels, VCs, s",
+      "invocation": "manual"
     },
     {
       "name": "ios-icon-gen",
@@ -2809,7 +2971,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs from SF Symbols (5000+ Apple-native) or Iconify API (275k+ open source icons from 200+ collecti"
+      "description": "Generate iOS app icons as PNG imagesets for Xcode asset catalogs from SF Symbols (5000+ Apple-native) or Iconify API (275k+ open source icons from 200+ collecti",
+      "invocation": "manual"
     },
     {
       "name": "iterative-retrieval",
@@ -2826,7 +2989,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pattern for progressively refining context retrieval to solve the subagent context problem"
+      "description": "Pattern for progressively refining context retrieval to solve the subagent context problem",
+      "invocation": "manual"
     },
     {
       "name": "ito-basket-compare",
@@ -2843,7 +3007,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Compare Itô prediction-market baskets against a user's knowledge base, portfolio notes, financial context, watchlist, or research thesis. Use for read-only bask"
+      "description": "Compare Itô prediction-market baskets against a user's knowledge base, portfolio notes, financial context, watchlist, or research thesis. Use for read-only bask",
+      "invocation": "manual"
     },
     {
       "name": "ito-data-atlas-agent",
@@ -2860,7 +3025,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Design background Data Atlas style agents for Itô basket research, market discovery, parameter drafting, and human-in-the-loop editing. Use for architecture and"
+      "description": "Design background Data Atlas style agents for Itô basket research, market discovery, parameter drafting, and human-in-the-loop editing. Use for architecture and",
+      "invocation": "manual"
     },
     {
       "name": "ito-market-intelligence",
@@ -2877,7 +3043,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Research prediction-market events, venues, underliers, liquidity, and news context for Itô basket workflows. Use for read-only market intelligence, API-gated It"
+      "description": "Research prediction-market events, venues, underliers, liquidity, and news context for Itô basket workflows. Use for read-only market intelligence, API-gated It",
+      "invocation": "manual"
     },
     {
       "name": "ito-trade-planner",
@@ -2894,7 +3061,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build a non-advisory prediction-market trade planning worksheet for Itô or venue workflows. Use to inspect venues, underliers, constraints, order prerequisites,"
+      "description": "Build a non-advisory prediction-market trade planning worksheet for Itô or venue workflows. Use to inspect venues, underliers, constraints, order prerequisites,",
+      "invocation": "manual"
     },
     {
       "name": "java-coding-standards",
@@ -2911,7 +3079,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Java coding standards for Spring Boot and Quarkus services: naming, immutability, Optional usage, streams, exceptions, generics, CDI, reactive patterns, and pro"
+      "description": "Java coding standards for Spring Boot and Quarkus services: naming, immutability, Optional usage, streams, exceptions, generics, CDI, reactive patterns, and pro",
+      "invocation": "manual"
     },
     {
       "name": "jira-integration",
@@ -2928,7 +3097,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when retrieving Jira tickets, analyzing requirements, updating ticket status, adding comments, or transitioning issues. Provides Jira API pattern"
+      "description": "Use this skill when retrieving Jira tickets, analyzing requirements, updating ticket status, adding comments, or transitioning issues. Provides Jira API pattern",
+      "invocation": "manual"
     },
     {
       "name": "jpa-patterns",
@@ -2945,7 +3115,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, auditing, indexing, pagination, and pooling in Spring Boot."
+      "description": "JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, auditing, indexing, pagination, and pooling in Spring Boot.",
+      "invocation": "manual"
     },
     {
       "name": "knowledge-ops",
@@ -2962,7 +3133,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Knowledge base management, ingestion, sync, and retrieval across multiple storage layers (local files, MCP memory, vector stores, Git repos). Use when the user "
+      "description": "Knowledge base management, ingestion, sync, and retrieval across multiple storage layers (local files, MCP memory, vector stores, Git repos). Use when the user ",
+      "invocation": "manual"
     },
     {
       "name": "kotlin-coroutines-flows",
@@ -2979,7 +3151,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Kotlin Coroutines and Flow patterns for Android and KMP — structured concurrency, Flow operators, StateFlow, error handling, and testing."
+      "description": "Kotlin Coroutines and Flow patterns for Android and KMP — structured concurrency, Flow operators, StateFlow, error handling, and testing.",
+      "invocation": "manual"
     },
     {
       "name": "kotlin-exposed-patterns",
@@ -2996,7 +3169,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "JetBrains Exposed ORM patterns including DSL queries, DAO pattern, transactions, HikariCP connection pooling, Flyway migrations, and repository pattern."
+      "description": "JetBrains Exposed ORM patterns including DSL queries, DAO pattern, transactions, HikariCP connection pooling, Flyway migrations, and repository pattern.",
+      "invocation": "manual"
     },
     {
       "name": "kotlin-ktor-patterns",
@@ -3013,7 +3187,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Ktor server patterns including routing DSL, plugins, authentication, Koin DI, kotlinx.serialization, WebSockets, and testApplication testing."
+      "description": "Ktor server patterns including routing DSL, plugins, authentication, Koin DI, kotlinx.serialization, WebSockets, and testApplication testing.",
+      "invocation": "manual"
     },
     {
       "name": "kotlin-patterns",
@@ -3030,7 +3205,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Idiomatic Kotlin patterns, best practices, and conventions for building robust, efficient, and maintainable Kotlin applications with coroutines, null safety, an"
+      "description": "Idiomatic Kotlin patterns, best practices, and conventions for building robust, efficient, and maintainable Kotlin applications with coroutines, null safety, an",
+      "invocation": "manual"
     },
     {
       "name": "kotlin-testing",
@@ -3047,7 +3223,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Kotlin testing patterns with Kotest, MockK, coroutine testing, property-based testing, and Kover coverage. Follows TDD methodology with idiomatic Kotlin practic"
+      "description": "Kotlin testing patterns with Kotest, MockK, coroutine testing, property-based testing, and Kover coverage. Follows TDD methodology with idiomatic Kotlin practic",
+      "invocation": "manual"
     },
     {
       "name": "laravel-patterns",
@@ -3064,7 +3241,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Laravel architecture patterns, routing/controllers, Eloquent ORM, service layers, queues, events, caching, and API resources for production apps."
+      "description": "Laravel architecture patterns, routing/controllers, Eloquent ORM, service layers, queues, events, caching, and API resources for production apps.",
+      "invocation": "manual"
     },
     {
       "name": "laravel-plugin-discovery",
@@ -3081,7 +3259,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Discover and evaluate Laravel packages via LaraPlugins.io MCP. Use when the user wants to find plugins, check package health, or assess Laravel/PHP compatibilit"
+      "description": "Discover and evaluate Laravel packages via LaraPlugins.io MCP. Use when the user wants to find plugins, check package health, or assess Laravel/PHP compatibilit",
+      "invocation": "manual"
     },
     {
       "name": "laravel-security",
@@ -3098,7 +3277,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Laravel security best practices for authn/authz, validation, CSRF, mass assignment, file uploads, secrets, rate limiting, and secure deployment."
+      "description": "Laravel security best practices for authn/authz, validation, CSRF, mass assignment, file uploads, secrets, rate limiting, and secure deployment.",
+      "invocation": "manual"
     },
     {
       "name": "laravel-tdd",
@@ -3115,7 +3295,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Test-driven development for Laravel with PHPUnit and Pest, factories, database testing, fakes, and coverage targets."
+      "description": "Test-driven development for Laravel with PHPUnit and Pest, factories, database testing, fakes, and coverage targets.",
+      "invocation": "manual"
     },
     {
       "name": "laravel-verification",
@@ -3133,7 +3314,8 @@
       "version": "",
       "status": "alias",
       "description": "Verification loop for Laravel projects: env checks, linting, static analysis, tests with coverage, security scans, and deployment readiness.",
-      "canonical": "django-verification"
+      "canonical": "django-verification",
+      "invocation": "manual"
     },
     {
       "name": "latency-critical-systems",
@@ -3150,7 +3332,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use for latency-sensitive systems such as realtime dashboards, market data, streaming agents, execution gateways, queues, caches, or HFT-like infrastructure whe"
+      "description": "Use for latency-sensitive systems such as realtime dashboards, market data, streaming agents, execution gateways, queues, caches, or HFT-like infrastructure whe",
+      "invocation": "manual"
     },
     {
       "name": "lead-intelligence",
@@ -3167,7 +3350,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "AI-native lead intelligence and outreach pipeline. Replaces Apollo, Clay, and ZoomInfo with agent-powered signal scoring, mutual ranking, warm path discovery, s"
+      "description": "AI-native lead intelligence and outreach pipeline. Replaces Apollo, Clay, and ZoomInfo with agent-powered signal scoring, mutual ranking, warm path discovery, s",
+      "invocation": "manual"
     },
     {
       "name": "lint-wiki",
@@ -3185,7 +3369,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic."
+      "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic.",
+      "invocation": "manual"
     },
     {
       "name": "liquid-glass-design",
@@ -3202,7 +3387,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "iOS 26 Liquid Glass design system — dynamic glass material with blur, reflection, and interactive morphing for SwiftUI, UIKit, and WidgetKit."
+      "description": "iOS 26 Liquid Glass design system — dynamic glass material with blur, reflection, and interactive morphing for SwiftUI, UIKit, and WidgetKit.",
+      "invocation": "manual"
     },
     {
       "name": "literature-review",
@@ -3219,7 +3405,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Systematic literature-review workflow for academic, biomedical, technical, and scientific topics, including search planning, source screening, synthesis, citati"
+      "description": "Systematic literature-review workflow for academic, biomedical, technical, and scientific topics, including search planning, source screening, synthesis, citati",
+      "invocation": "manual"
     },
     {
       "name": "llm-trading-agent-security",
@@ -3237,7 +3424,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Security patterns for autonomous trading agents with wallet or transaction authority. Covers prompt injection, spend limits, pre-send simulation, circuit breake"
+      "description": "Security patterns for autonomous trading agents with wallet or transaction authority. Covers prompt injection, spend limits, pre-send simulation, circuit breake",
+      "invocation": "manual"
     },
     {
       "name": "logistics-exception-management",
@@ -3254,7 +3442,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "make-interfaces-feel-better",
@@ -3271,7 +3460,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Apply concrete design-engineering details that make interfaces feel polished. Use when reviewing or improving UI spacing, typography, borders, shadows, motion, "
+      "description": "Apply concrete design-engineering details that make interfaces feel polished. Use when reviewing or improving UI spacing, typography, borders, shadows, motion, ",
+      "invocation": "manual"
     },
     {
       "name": "management-talk",
@@ -3288,7 +3478,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Rewrite engineer-to-engineer content for engineering-org leadership (VPs, directors, PMs, release managers, execs) and shape it for the channel it is going to —"
+      "description": "Rewrite engineer-to-engineer content for engineering-org leadership (VPs, directors, PMs, release managers, execs) and shape it for the channel it is going to —",
+      "invocation": "manual"
     },
     {
       "name": "manim-video",
@@ -3305,7 +3496,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build reusable Manim explainers for technical concepts, graphs, system diagrams, and product walkthroughs, then hand off to the wider ECC video stack if needed."
+      "description": "Build reusable Manim explainers for technical concepts, graphs, system diagrams, and product walkthroughs, then hand off to the wider ECC video stack if needed.",
+      "invocation": "manual"
     },
     {
       "name": "market-research",
@@ -3322,7 +3514,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Conduct market research, competitive analysis, investor due diligence, and industry intelligence with source attribution and decision-oriented summaries. Use wh"
+      "description": "Conduct market research, competitive analysis, investor due diligence, and industry intelligence with source attribution and decision-oriented summaries. Use wh",
+      "invocation": "manual"
     },
     {
       "name": "marketing-campaign",
@@ -3339,7 +3532,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "End-to-end marketing campaign planning and execution. Covers audience research, positioning, campaign angle definition, landing page copy, email sequences, soci"
+      "description": "End-to-end marketing campaign planning and execution. Covers audience research, positioning, campaign angle definition, landing page copy, email sequences, soci",
+      "invocation": "manual"
     },
     {
       "name": "mcp-builder",
@@ -3356,7 +3550,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when b"
+      "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when b",
+      "invocation": "manual"
     },
     {
       "name": "mcp-server-patterns",
@@ -3374,7 +3569,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP docs for latest A"
+      "description": "Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP docs for latest A",
+      "invocation": "manual"
     },
     {
       "name": "messages-ops",
@@ -3391,7 +3587,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first live messaging workflow for ECC. Use when the user wants to read texts or DMs, recover a recent one-time code, inspect a thread before replying, "
+      "description": "Evidence-first live messaging workflow for ECC. Use when the user wants to read texts or DMs, recover a recent one-time code, inspect a thread before replying, ",
+      "invocation": "manual"
     },
     {
       "name": "mle-workflow",
@@ -3408,7 +3605,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Production machine-learning engineering workflow for data contracts, reproducible training, model evaluation, deployment, monitoring, and rollback. Use when bui"
+      "description": "Production machine-learning engineering workflow for data contracts, reproducible training, model evaluation, deployment, monitoring, and rollback. Use when bui",
+      "invocation": "manual"
     },
     {
       "name": "model-cost-switching",
@@ -3425,7 +3623,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Choose the cheapest capable primary-model tier and effort before expensive multi-step work, architecture, subagent spawning, or cost-sensitive tasks."
+      "description": "Choose the cheapest capable primary-model tier and effort before expensive multi-step work, architecture, subagent spawning, or cost-sensitive tasks.",
+      "invocation": "manual"
     },
     {
       "name": "motion-advanced",
@@ -3442,7 +3641,8 @@
       ],
       "version": "1.0",
       "status": "canonical",
-      "description": "Advanced motion patterns for React / Next.js — drag & drop, gestures, text animations, SVG path drawing, custom hooks, imperative sequences (useAnimate), loader"
+      "description": "Advanced motion patterns for React / Next.js — drag & drop, gestures, text animations, SVG path drawing, custom hooks, imperative sequences (useAnimate), loader",
+      "invocation": "manual"
     },
     {
       "name": "motion-foundations",
@@ -3459,7 +3659,8 @@
       ],
       "version": "1.0",
       "status": "canonical",
-      "description": "Motion tokens, spring presets, performance rules, device adaptation, accessibility enforcement, and SSR safety for React / Next.js using motion/react. Foundatio"
+      "description": "Motion tokens, spring presets, performance rules, device adaptation, accessibility enforcement, and SSR safety for React / Next.js using motion/react. Foundatio",
+      "invocation": "manual"
     },
     {
       "name": "motion-patterns",
@@ -3477,7 +3678,8 @@
       ],
       "version": "1.0",
       "status": "canonical",
-      "description": "Production-ready animation patterns for React / Next.js — button, modal, toast, stagger, page transitions, exit animations, scroll, and layout — built on motion"
+      "description": "Production-ready animation patterns for React / Next.js — button, modal, toast, stagger, page transitions, exit animations, scroll, and layout — built on motion",
+      "invocation": "manual"
     },
     {
       "name": "motion-ui",
@@ -3494,7 +3696,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Production-ready UI motion system for React/Next.js. Use when implementing animations, transitions, or motion patterns."
+      "description": "Production-ready UI motion system for React/Next.js. Use when implementing animations, transitions, or motion patterns.",
+      "invocation": "manual"
     },
     {
       "name": "mysql-patterns",
@@ -3512,7 +3715,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns for production backends."
+      "description": "MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns for production backends.",
+      "invocation": "manual"
     },
     {
       "name": "nanoclaw-repl",
@@ -3529,7 +3733,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate and extend NanoClaw v2, ECC's zero-dependency session-aware REPL built on claude -p."
+      "description": "Operate and extend NanoClaw v2, ECC's zero-dependency session-aware REPL built on claude -p.",
+      "invocation": "manual"
     },
     {
       "name": "nestjs-patterns",
@@ -3546,7 +3751,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "NestJS architecture patterns for modules, controllers, providers, DTO validation, guards, interceptors, config, and production-grade TypeScript backends."
+      "description": "NestJS architecture patterns for modules, controllers, providers, DTO validation, guards, interceptors, config, and production-grade TypeScript backends.",
+      "invocation": "manual"
     },
     {
       "name": "netmiko-ssh-automation",
@@ -3563,7 +3769,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Safe Python Netmiko patterns for read-only collection, bounded batch SSH, TextFSM parsing, guarded config changes, timeouts, and network automation error handli"
+      "description": "Safe Python Netmiko patterns for read-only collection, bounded batch SSH, TextFSM parsing, guarded config changes, timeouts, and network automation error handli",
+      "invocation": "manual"
     },
     {
       "name": "network-bgp-diagnostics",
@@ -3580,7 +3787,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Diagnostics-only BGP troubleshooting patterns for neighbor state, route exchange, prefix policy, AS path inspection, and safe evidence collection."
+      "description": "Diagnostics-only BGP troubleshooting patterns for neighbor state, route exchange, prefix policy, AS path inspection, and safe evidence collection.",
+      "invocation": "manual"
     },
     {
       "name": "network-config-validation",
@@ -3597,7 +3805,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pre-deployment checks for router and switch configuration, including dangerous commands, duplicate addresses, subnet overlaps, stale references, management-plan"
+      "description": "Pre-deployment checks for router and switch configuration, including dangerous commands, duplicate addresses, subnet overlaps, stale references, management-plan",
+      "invocation": "manual"
     },
     {
       "name": "network-interface-health",
@@ -3614,7 +3823,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Diagnose interface errors, drops, CRCs, duplex mismatches, flapping, speed negotiation issues, and counter trends on routers, switches, and Linux hosts."
+      "description": "Diagnose interface errors, drops, CRCs, duplex mismatches, flapping, speed negotiation issues, and counter trends on routers, switches, and Linux hosts.",
+      "invocation": "manual"
     },
     {
       "name": "nextjs-turbopack",
@@ -3631,7 +3841,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Next.js 16+ and Turbopack — incremental bundling, FS caching, dev speed, and when to use Turbopack vs webpack."
+      "description": "Next.js 16+ and Turbopack — incremental bundling, FS caching, dev speed, and when to use Turbopack vs webpack.",
+      "invocation": "manual"
     },
     {
       "name": "nodejs-keccak256",
@@ -3648,7 +3859,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Prevent Ethereum hashing bugs in JavaScript and TypeScript. Node's sha3-256 is NIST SHA3, not Ethereum Keccak-256, and silently breaks selectors, signatures, st"
+      "description": "Prevent Ethereum hashing bugs in JavaScript and TypeScript. Node's sha3-256 is NIST SHA3, not Ethereum Keccak-256, and silently breaks selectors, signatures, st",
+      "invocation": "manual"
     },
     {
       "name": "nutrient-document-processing",
@@ -3665,7 +3877,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Process, convert, OCR, extract, redact, sign, and fill documents using the Nutrient DWS API. Works with PDFs, DOCX, XLSX, PPTX, HTML, and images."
+      "description": "Process, convert, OCR, extract, redact, sign, and fill documents using the Nutrient DWS API. Works with PDFs, DOCX, XLSX, PPTX, HTML, and images.",
+      "invocation": "manual"
     },
     {
       "name": "nuxt4-patterns",
@@ -3682,7 +3895,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Nuxt 4 app patterns for hydration safety, performance, route rules, lazy loading, and SSR-safe data fetching with useFetch and useAsyncData."
+      "description": "Nuxt 4 app patterns for hydration safety, performance, route rules, lazy loading, and SSR-safe data fetching with useFetch and useAsyncData.",
+      "invocation": "manual"
     },
     {
       "name": "observability-and-instrumentation",
@@ -3702,7 +3916,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r"
+      "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r",
+      "invocation": "manual"
     },
     {
       "name": "obsidian",
@@ -3720,7 +3935,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy"
+      "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy",
+      "invocation": "manual"
     },
     {
       "name": "openai-docs",
@@ -3737,7 +3953,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user asks how to build with OpenAI products or APIs, asks about Codex itself or choosing Codex surfaces, needs up-to-date official documentation wi"
+      "description": "Use when the user asks how to build with OpenAI products or APIs, asks about Codex itself or choosing Codex surfaces, needs up-to-date official documentation wi",
+      "invocation": "manual"
     },
     {
       "name": "openclaw-persona-forge",
@@ -3754,7 +3971,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "为 OpenClaw AI Agent 锻造完整的龙虾灵魂方案。根据用户偏好或随机抽卡， 输出身份定位、灵魂描述(SOUL.md)、角色化底线规则、名字和头像生图提示词。 如当前环境提供已审核的生图 skill，可自动生成统一风格头像图片。 当用户需要创建、设计或定制 OpenClaw 龙虾灵魂时使用。 不适用于：微调"
+      "description": "为 OpenClaw AI Agent 锻造完整的龙虾灵魂方案。根据用户偏好或随机抽卡， 输出身份定位、灵魂描述(SOUL.md)、角色化底线规则、名字和头像生图提示词。 如当前环境提供已审核的生图 skill，可自动生成统一风格头像图片。 当用户需要创建、设计或定制 OpenClaw 龙虾灵魂时使用。 不适用于：微调",
+      "invocation": "manual"
     },
     {
       "name": "openmed",
@@ -3771,7 +3989,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Medical entity extraction, PII detection, and clinical text de-identification using OpenMed. Use when working with healthcare text, patient records, drug names,"
+      "description": "Medical entity extraction, PII detection, and clinical text de-identification using OpenMed. Use when working with healthcare text, patient records, drug names,",
+      "invocation": "manual"
     },
     {
       "name": "opensource-pipeline",
@@ -3788,7 +4007,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Open-source pipeline: fork, sanitize, and package private projects for safe public release. Chains 3 agents (forker, sanitizer, packager). Triggers: '/opensourc"
+      "description": "Open-source pipeline: fork, sanitize, and package private projects for safe public release. Chains 3 agents (forker, sanitizer, packager). Triggers: '/opensourc",
+      "invocation": "manual"
     },
     {
       "name": "parallel-execution-optimizer",
@@ -3805,7 +4025,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user wants a task done much faster through parallel work, concurrent agents, batched tool calls, isolated worktrees, or many independent verificati"
+      "description": "Use when the user wants a task done much faster through parallel work, concurrent agents, batched tool calls, isolated worktrees, or many independent verificati",
+      "invocation": "manual"
     },
     {
       "name": "pdf",
@@ -3822,7 +4043,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple P"
+      "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple P",
+      "invocation": "manual"
     },
     {
       "name": "performance-optimization",
@@ -3841,7 +4063,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when"
+      "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when",
+      "invocation": "manual"
     },
     {
       "name": "perl-patterns",
@@ -3858,7 +4081,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Modern Perl 5.36+ idioms, best practices, and conventions for building robust, maintainable Perl applications."
+      "description": "Modern Perl 5.36+ idioms, best practices, and conventions for building robust, maintainable Perl applications.",
+      "invocation": "manual"
     },
     {
       "name": "perl-security",
@@ -3875,7 +4099,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Comprehensive Perl security covering taint mode, input validation, safe process execution, DBI parameterized queries, web security (XSS/SQLi/CSRF), and perlcrit"
+      "description": "Comprehensive Perl security covering taint mode, input validation, safe process execution, DBI parameterized queries, web security (XSS/SQLi/CSRF), and perlcrit",
+      "invocation": "manual"
     },
     {
       "name": "perl-testing",
@@ -3892,7 +4117,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Perl testing patterns using Test2::V0, Test::More, prove runner, mocking, coverage with Devel::Cover, and TDD methodology."
+      "description": "Perl testing patterns using Test2::V0, Test::More, prove runner, mocking, coverage with Devel::Cover, and TDD methodology.",
+      "invocation": "manual"
     },
     {
       "name": "pharmacy-order-lookup",
@@ -3911,7 +4137,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "plan-orchestrate",
@@ -3928,7 +4155,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Read a plan document, decompose it into steps, design a per-step agent chain from the ECC catalogue, and emit ready-to-paste /orchestrate custom prompts. Genera"
+      "description": "Read a plan document, decompose it into steps, design a per-step agent chain from the ECC catalogue, and emit ready-to-paste /orchestrate custom prompts. Genera",
+      "invocation": "manual"
     },
     {
       "name": "plankton-code-quality",
@@ -3945,7 +4173,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Write-time code quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes on every file edit via hooks."
+      "description": "Write-time code quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes on every file edit via hooks.",
+      "invocation": "manual"
     },
     {
       "name": "planning-and-task-breakdown",
@@ -3965,7 +4194,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. "
+      "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. ",
+      "invocation": "manual"
     },
     {
       "name": "plugin-creator",
@@ -3982,7 +4212,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create and scaffold plugin directories for Codex with a required `.codex-plugin/plugin.json`, optional plugin folders/files, valid manifest defaults, and person"
+      "description": "Create and scaffold plugin directories for Codex with a required `.codex-plugin/plugin.json`, optional plugin folders/files, valid manifest defaults, and person",
+      "invocation": "manual"
     },
     {
       "name": "post-mortem",
@@ -4000,7 +4231,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers "
+      "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers ",
+      "invocation": "manual"
     },
     {
       "name": "postgres-patterns",
@@ -4018,7 +4250,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices."
+      "description": "PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices.",
+      "invocation": "manual"
     },
     {
       "name": "pptx",
@@ -4035,7 +4268,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; rea"
+      "description": "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; rea",
+      "invocation": "manual"
     },
     {
       "name": "prediction-market-oracle-research",
@@ -4052,7 +4286,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Research prediction markets as data sources or oracle signals for products, agents, dashboards, and corporate decision intelligence. Use for source-grounded ana"
+      "description": "Research prediction markets as data sources or oracle signals for products, agents, dashboards, and corporate decision intelligence. Use for source-grounded ana",
+      "invocation": "manual"
     },
     {
       "name": "prediction-market-risk-review",
@@ -4069,7 +4304,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Review prediction-market, basket, oracle, and trading-agent workflows for compliance, safety, data-quality, privacy, and execution risk. Use before any workflow"
+      "description": "Review prediction-market, basket, oracle, and trading-agent workflows for compliance, safety, data-quality, privacy, and execution risk. Use before any workflow",
+      "invocation": "manual"
     },
     {
       "name": "prisma-patterns",
@@ -4087,7 +4323,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pagination, and critical traps like updateMany returning count no"
+      "description": "Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pagination, and critical traps like updateMany returning count no",
+      "invocation": "manual"
     },
     {
       "name": "product-capability",
@@ -4104,7 +4341,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Translate PRD intent, roadmap asks, or product discussions into an implementation-ready capability plan that exposes constraints, invariants, interfaces, and un"
+      "description": "Translate PRD intent, roadmap asks, or product discussions into an implementation-ready capability plan that exposes constraints, invariants, interfaces, and un",
+      "invocation": "manual"
     },
     {
       "name": "product-lens",
@@ -4121,7 +4359,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to validate the \"why\" before building, run product diagnostics, and pressure-test product direction before the request becomes an implementation "
+      "description": "Use this skill to validate the \"why\" before building, run product diagnostics, and pressure-test product direction before the request becomes an implementation ",
+      "invocation": "manual"
     },
     {
       "name": "production-audit",
@@ -4139,7 +4378,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Local-evidence production readiness audit for shipped apps, pre-launch reviews, post-merge checks, and \"what breaks in prod?\" questions without sending repo dat"
+      "description": "Local-evidence production readiness audit for shipped apps, pre-launch reviews, post-merge checks, and \"what breaks in prod?\" questions without sending repo dat",
+      "invocation": "manual"
     },
     {
       "name": "production-scheduling",
@@ -4157,7 +4397,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "project-flow-ops",
@@ -4174,7 +4415,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate execution flow across GitHub and Linear by triaging issues and pull requests, linking active work, and keeping GitHub public-facing while Linear remains"
+      "description": "Operate execution flow across GitHub and Linear by triaging issues and pull requests, linking active work, and keeping GitHub public-facing while Linear remains",
+      "invocation": "manual"
     },
     {
       "name": "project-guidelines-example",
@@ -4191,7 +4433,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ""
+      "description": "",
+      "invocation": "manual"
     },
     {
       "name": "prompt-optimizer",
@@ -4208,7 +4451,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">-"
+      "description": ">-",
+      "invocation": "manual"
     },
     {
       "name": "pubmed-database",
@@ -4225,7 +4469,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Direct PubMed and NCBI E-utilities search workflows for biomedical literature, MeSH queries, PMID lookup, citation retrieval, and API-backed literature monitori"
+      "description": "Direct PubMed and NCBI E-utilities search workflows for biomedical literature, MeSH queries, PMID lookup, citation retrieval, and API-backed literature monitori",
+      "invocation": "manual"
     },
     {
       "name": "python-patterns",
@@ -4242,7 +4487,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications."
+      "description": "Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications.",
+      "invocation": "manual"
     },
     {
       "name": "python-testing",
@@ -4259,7 +4505,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage requirements."
+      "description": "Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage requirements.",
+      "invocation": "manual"
     },
     {
       "name": "pytorch-patterns",
@@ -4276,7 +4523,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "PyTorch deep learning patterns and best practices for building robust, efficient, and reproducible training pipelines, model architectures, and data loading."
+      "description": "PyTorch deep learning patterns and best practices for building robust, efficient, and reproducible training pipelines, model architectures, and data loading.",
+      "invocation": "manual"
     },
     {
       "name": "quality-nonconformance",
@@ -4293,7 +4541,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "quarkus-patterns",
@@ -4310,7 +4559,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Quarkus 3.x LTS architecture patterns with Camel for messaging, RESTful API design, CDI services, data access with Panache, and async processing. Use for Java Q"
+      "description": "Quarkus 3.x LTS architecture patterns with Camel for messaging, RESTful API design, CDI services, data access with Panache, and async processing. Use for Java Q",
+      "invocation": "manual"
     },
     {
       "name": "quarkus-security",
@@ -4327,7 +4577,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Quarkus Security best practices for authentication, authorization, JWT/OIDC, RBAC, input validation, CSRF, secrets management, and dependency security."
+      "description": "Quarkus Security best practices for authentication, authorization, JWT/OIDC, RBAC, input validation, CSRF, secrets management, and dependency security.",
+      "invocation": "manual"
     },
     {
       "name": "quarkus-tdd",
@@ -4344,7 +4595,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Test-driven development for Quarkus 3.x LTS using JUnit 5, Mockito, REST Assured, Camel testing, and JaCoCo. Use when adding features, fixing bugs, or refactori"
+      "description": "Test-driven development for Quarkus 3.x LTS using JUnit 5, Mockito, REST Assured, Camel testing, and JaCoCo. Use when adding features, fixing bugs, or refactori",
+      "invocation": "manual"
     },
     {
       "name": "quarkus-verification",
@@ -4362,7 +4614,8 @@
       "version": "",
       "status": "alias",
       "description": "Verification loop for Quarkus projects: build, static analysis, tests with coverage, security scans, native compilation, and diff review before release or PR.",
-      "canonical": "django-verification"
+      "canonical": "django-verification",
+      "invocation": "manual"
     },
     {
       "name": "ralphinho-rfc-pipeline",
@@ -4379,7 +4632,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "RFC-driven multi-agent DAG execution pattern with quality gates, merge queues, and work unit orchestration."
+      "description": "RFC-driven multi-agent DAG execution pattern with quality gates, merge queues, and work unit orchestration.",
+      "invocation": "manual"
     },
     {
       "name": "react-patterns",
@@ -4396,7 +4650,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management "
+      "description": "React 18/19 patterns including hooks discipline, server/client component boundaries, Suspense + error boundaries, form actions, data fetching, state management ",
+      "invocation": "manual"
     },
     {
       "name": "react-performance",
@@ -4413,7 +4668,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "React and Next.js performance optimization patterns adapted from Vercel Engineering's React Best Practices (https://github.com/vercel-labs/agent-skills). Organi"
+      "description": "React and Next.js performance optimization patterns adapted from Vercel Engineering's React Best Practices (https://github.com/vercel-labs/agent-skills). Organi",
+      "invocation": "manual"
     },
     {
       "name": "react-testing",
@@ -4430,7 +4686,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "React component testing with React Testing Library, Vitest/Jest, MSW for network mocking, accessibility assertions with axe, and the decision boundary between c"
+      "description": "React component testing with React Testing Library, Vitest/Jest, MSW for network mocking, accessibility assertions with axe, and the decision boundary between c",
+      "invocation": "manual"
     },
     {
       "name": "recsys-pipeline-architect",
@@ -4447,7 +4704,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Design composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect framework popularized by xAI"
+      "description": "Design composable recommendation, ranking, and feed pipelines using the six-stage Source→Hydrator→Filter→Scorer→Selector→SideEffect framework popularized by xAI",
+      "invocation": "manual"
     },
     {
       "name": "recursive-decision-ledger",
@@ -4464,7 +4722,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user asks for repeated rollouts, marked decision processes, high-dimensional search, stochastic optimization, local-optima exploration, ensemble co"
+      "description": "Use when the user asks for repeated rollouts, marked decision processes, high-dimensional search, stochastic optimization, local-optima exploration, ensemble co",
+      "invocation": "manual"
     },
     {
       "name": "redis-patterns",
@@ -4482,7 +4741,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and connection management for production applications."
+      "description": "Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and connection management for production applications.",
+      "invocation": "manual"
     },
     {
       "name": "regex-vs-llm-structured-text",
@@ -4499,7 +4759,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Decision framework for choosing between regex and LLM when parsing structured text — start with regex, add LLM only for low-confidence edge cases."
+      "description": "Decision framework for choosing between regex and LLM when parsing structured text — start with regex, add LLM only for low-confidence edge cases.",
+      "invocation": "manual"
     },
     {
       "name": "remotion-video-creation",
@@ -4516,7 +4777,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Best practices for Remotion - Video creation in React. 29 domain-specific rules covering 3D, animations, audio, captions, charts, transitions, and more."
+      "description": "Best practices for Remotion - Video creation in React. 29 domain-specific rules covering 3D, animations, audio, captions, charts, transitions, and more.",
+      "invocation": "manual"
     },
     {
       "name": "render-html",
@@ -4534,7 +4796,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM"
+      "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM",
+      "invocation": "manual"
     },
     {
       "name": "repo-scan",
@@ -4551,7 +4814,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Cross-stack source code asset audit — classifies every file, detects embedded third-party libraries, and delivers actionable four-level verdicts per module with"
+      "description": "Cross-stack source code asset audit — classifies every file, detects embedded third-party libraries, and delivers actionable four-level verdicts per module with",
+      "invocation": "manual"
     },
     {
       "name": "research-ops",
@@ -4568,7 +4832,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first current-state research workflow for ECC. Use when the user wants fresh facts, comparisons, enrichment, or a recommendation built from current pub"
+      "description": "Evidence-first current-state research workflow for ECC. Use when the user wants fresh facts, comparisons, enrichment, or a recommendation built from current pub",
+      "invocation": "manual"
     },
     {
       "name": "returns-reverse-logistics",
@@ -4585,7 +4850,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "root-cause-first",
@@ -4603,7 +4869,8 @@
       "version": "",
       "status": "deprecated",
       "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro",
-      "migrated_to": "debug-mantra"
+      "migrated_to": "debug-mantra",
+      "invocation": "manual"
     },
     {
       "name": "rules-distill",
@@ -4620,7 +4887,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Scan skills to extract cross-cutting principles and distill them into rules — append, revise, or create new rule files"
+      "description": "Scan skills to extract cross-cutting principles and distill them into rules — append, revise, or create new rule files",
+      "invocation": "manual"
     },
     {
       "name": "rust-patterns",
@@ -4637,7 +4905,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Idiomatic Rust patterns, ownership, error handling, traits, concurrency, and best practices for building safe, performant applications."
+      "description": "Idiomatic Rust patterns, ownership, error handling, traits, concurrency, and best practices for building safe, performant applications.",
+      "invocation": "manual"
     },
     {
       "name": "rust-testing",
@@ -4654,7 +4923,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Rust testing patterns including unit tests, integration tests, async testing, property-based testing, mocking, and coverage. Follows TDD methodology."
+      "description": "Rust testing patterns including unit tests, integration tests, async testing, property-based testing, mocking, and coverage. Follows TDD methodology.",
+      "invocation": "manual"
     },
     {
       "name": "safety-guard",
@@ -4671,7 +4941,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill to prevent destructive operations when working on production systems or running agents autonomously."
+      "description": "Use this skill to prevent destructive operations when working on production systems or running agents autonomously.",
+      "invocation": "manual"
     },
     {
       "name": "santa-method",
@@ -4688,7 +4959,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Multi-agent adversarial verification with convergence loop. Two independent review agents must both pass before output ships."
+      "description": "Multi-agent adversarial verification with convergence loop. Two independent review agents must both pass before output ships.",
+      "invocation": "manual"
     },
     {
       "name": "scholar-evaluation",
@@ -4705,7 +4977,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Structured scholarly-work evaluation for papers, proposals, literature reviews, methods sections, evidence quality, citation support, and research-writing feedb"
+      "description": "Structured scholarly-work evaluation for papers, proposals, literature reviews, methods sections, evidence quality, citation support, and research-writing feedb",
+      "invocation": "manual"
     },
     {
       "name": "scrape-web",
@@ -4722,7 +4995,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Route a URL to the best available scraper (curl → Scrapling → Crawl4AI → Firecrawl → Browser Use) with device-aware degradation and raw/ provenance."
+      "description": "Route a URL to the best available scraper (curl → Scrapling → Crawl4AI → Firecrawl → Browser Use) with device-aware degradation and raw/ provenance.",
+      "invocation": "manual"
     },
     {
       "name": "scrutinize",
@@ -4740,7 +5014,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same "
+      "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same ",
+      "invocation": "manual"
     },
     {
       "name": "search-first",
@@ -4757,7 +5032,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent."
+      "description": "Research-before-coding workflow. Search for existing tools, libraries, and patterns before writing custom code. Invokes the researcher agent.",
+      "invocation": "manual"
     },
     {
       "name": "security-and-hardening",
@@ -4777,7 +5053,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d"
+      "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d",
+      "invocation": "manual"
     },
     {
       "name": "security-bounty-hunter",
@@ -4794,7 +5071,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Hunt for exploitable, bounty-worthy security issues in repositories. Focuses on remotely reachable vulnerabilities that qualify for real reports instead of nois"
+      "description": "Hunt for exploitable, bounty-worthy security issues in repositories. Focuses on remotely reachable vulnerabilities that qualify for real reports instead of nois",
+      "invocation": "manual"
     },
     {
       "name": "security-review",
@@ -4811,7 +5089,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provid"
+      "description": "Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provid",
+      "invocation": "manual"
     },
     {
       "name": "security-scan",
@@ -4828,7 +5107,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Scan your Claude Code configuration (.claude/ directory) for security vulnerabilities, misconfigurations, and injection risks using AgentShield. Checks CLAUDE.m"
+      "description": "Scan your Claude Code configuration (.claude/ directory) for security vulnerabilities, misconfigurations, and injection risks using AgentShield. Checks CLAUDE.m",
+      "invocation": "manual"
     },
     {
       "name": "seo",
@@ -4845,7 +5125,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Audit, plan, and implement SEO improvements across technical SEO, on-page optimization, structured data, Core Web Vitals, and content strategy. Use when the use"
+      "description": "Audit, plan, and implement SEO improvements across technical SEO, on-page optimization, structured data, Core Web Vitals, and content strategy. Use when the use",
+      "invocation": "manual"
     },
     {
       "name": "shipping-and-launch",
@@ -4864,7 +5145,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production."
+      "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production.",
+      "invocation": "manual"
     },
     {
       "name": "skill-comply",
@@ -4881,7 +5163,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Visualize whether skills, rules, and agent definitions are actually followed — auto-generates scenarios at 3 prompt strictness levels, runs agents, classifies b"
+      "description": "Visualize whether skills, rules, and agent definitions are actually followed — auto-generates scenarios at 3 prompt strictness levels, runs agents, classifies b",
+      "invocation": "manual"
     },
     {
       "name": "skill-creator",
@@ -4902,7 +5185,8 @@
       "mirror_paths": [
         "skills/claude-code/skill-creator",
         "skills/delegation/skill-creator"
-      ]
+      ],
+      "invocation": "manual"
     },
     {
       "name": "skill-installer",
@@ -4919,7 +5203,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill"
+      "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill",
+      "invocation": "manual"
     },
     {
       "name": "skill-scout",
@@ -4936,7 +5221,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Search existing local, marketplace, GitHub, and web skill sources before creating a new skill. Use when the user wants to create, build, fork, or find a skill f"
+      "description": "Search existing local, marketplace, GitHub, and web skill sources before creating a new skill. Use when the user wants to create, build, fork, or find a skill f",
+      "invocation": "manual"
     },
     {
       "name": "skill-stocktake",
@@ -4953,7 +5239,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when auditing Claude skills and commands for quality. Supports Quick Scan (changed skills only) and Full Stocktake modes with sequential subagent batch eval"
+      "description": "Use when auditing Claude skills and commands for quality. Supports Quick Scan (changed skills only) and Full Stocktake modes with sequential subagent batch eval",
+      "invocation": "manual"
     },
     {
       "name": "slack-gif-creator",
@@ -4970,7 +5257,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request a"
+      "description": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request a",
+      "invocation": "manual"
     },
     {
       "name": "social-graph-ranker",
@@ -4987,7 +5275,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Weighted social-graph ranking for warm intro discovery, bridge scoring, and network gap analysis across X and LinkedIn. Use when the user wants the reusable gra"
+      "description": "Weighted social-graph ranking for warm intro discovery, bridge scoring, and network gap analysis across X and LinkedIn. Use when the user wants the reusable gra",
+      "invocation": "manual"
     },
     {
       "name": "social-publisher",
@@ -5004,7 +5293,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Agent-driven scheduling and publishing of social media posts across 13 platforms via SocialClaw. Use when the user wants to publish to X, LinkedIn, Instagram, F"
+      "description": "Agent-driven scheduling and publishing of social media posts across 13 platforms via SocialClaw. Use when the user wants to publish to X, LinkedIn, Instagram, F",
+      "invocation": "manual"
     },
     {
       "name": "spec-driven-development",
@@ -5023,7 +5313,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,"
+      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,",
+      "invocation": "manual"
     },
     {
       "name": "springboot-patterns",
@@ -5040,7 +5331,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Spring Boot architecture patterns, REST API design, layered services, data access, caching, async processing, and logging. Use for Java Spring Boot backend work"
+      "description": "Spring Boot architecture patterns, REST API design, layered services, data access, caching, async processing, and logging. Use for Java Spring Boot backend work",
+      "invocation": "manual"
     },
     {
       "name": "springboot-security",
@@ -5057,7 +5349,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Spring Security best practices for authn/authz, validation, CSRF, secrets, headers, rate limiting, and dependency security in Java Spring Boot services."
+      "description": "Spring Security best practices for authn/authz, validation, CSRF, secrets, headers, rate limiting, and dependency security in Java Spring Boot services.",
+      "invocation": "manual"
     },
     {
       "name": "springboot-tdd",
@@ -5074,7 +5367,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Test-driven development for Spring Boot using JUnit 5, Mockito, MockMvc, Testcontainers, and JaCoCo. Use when adding features, fixing bugs, or refactoring."
+      "description": "Test-driven development for Spring Boot using JUnit 5, Mockito, MockMvc, Testcontainers, and JaCoCo. Use when adding features, fixing bugs, or refactoring.",
+      "invocation": "manual"
     },
     {
       "name": "springboot-verification",
@@ -5092,7 +5386,8 @@
       "version": "",
       "status": "alias",
       "description": "Verification loop for Spring Boot projects: build, static analysis, tests with coverage, security scans, and diff review before release or PR.",
-      "canonical": "django-verification"
+      "canonical": "django-verification",
+      "invocation": "manual"
     },
     {
       "name": "strategic-compact",
@@ -5109,7 +5404,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction."
+      "description": "Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction.",
+      "invocation": "manual"
     },
     {
       "name": "swift-actor-persistence",
@@ -5126,7 +5422,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Thread-safe data persistence in Swift using actors — in-memory cache with file-backed storage, eliminating data races by design."
+      "description": "Thread-safe data persistence in Swift using actors — in-memory cache with file-backed storage, eliminating data races by design.",
+      "invocation": "manual"
     },
     {
       "name": "swift-concurrency-6-2",
@@ -5143,7 +5440,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Swift 6.2 Approachable Concurrency — single-threaded by default, @concurrent for explicit background offloading, isolated conformances for main actor types."
+      "description": "Swift 6.2 Approachable Concurrency — single-threaded by default, @concurrent for explicit background offloading, isolated conformances for main actor types.",
+      "invocation": "manual"
     },
     {
       "name": "swift-protocol-di-testing",
@@ -5160,7 +5458,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Protocol-based dependency injection for testable Swift code — mock file system, network, and external APIs using focused protocols and Swift Testing."
+      "description": "Protocol-based dependency injection for testable Swift code — mock file system, network, and external APIs using focused protocols and Swift Testing.",
+      "invocation": "manual"
     },
     {
       "name": "swiftui-patterns",
@@ -5177,7 +5476,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "SwiftUI architecture patterns, state management with @Observable, view composition, navigation, performance optimization, and modern iOS/macOS UI best practices"
+      "description": "SwiftUI architecture patterns, state management with @Observable, view composition, navigation, performance optimization, and modern iOS/macOS UI best practices",
+      "invocation": "manual"
     },
     {
       "name": "tdd-workflow",
@@ -5194,7 +5494,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and"
+      "description": "Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and",
+      "invocation": "manual"
     },
     {
       "name": "team-builder",
@@ -5211,7 +5512,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Interactive agent picker for composing and dispatching parallel teams"
+      "description": "Interactive agent picker for composing and dispatching parallel teams",
+      "invocation": "manual"
     },
     {
       "name": "terminal-ops",
@@ -5228,7 +5530,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Evidence-first repo execution workflow for ECC. Use when the user wants a command run, a repo checked, a CI failure debugged, or a narrow fix pushed with exact "
+      "description": "Evidence-first repo execution workflow for ECC. Use when the user wants a command run, a repo checked, a CI failure debugged, or a narrow fix pushed with exact ",
+      "invocation": "manual"
     },
     {
       "name": "thai-address",
@@ -5246,7 +5549,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse"
+      "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse",
+      "invocation": "manual"
     },
     {
       "name": "thai-customer-service",
@@ -5264,7 +5568,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, "
+      "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, ",
+      "invocation": "manual"
     },
     {
       "name": "thai-date-format",
@@ -5282,7 +5587,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger"
+      "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger",
+      "invocation": "manual"
     },
     {
       "name": "thai-festival-card",
@@ -5300,7 +5606,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user"
+      "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user",
+      "invocation": "manual"
     },
     {
       "name": "thai-government-form",
@@ -5318,7 +5625,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms"
+      "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms",
+      "invocation": "manual"
     },
     {
       "name": "thai-id-validate",
@@ -5336,7 +5644,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th"
+      "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th",
+      "invocation": "manual"
     },
     {
       "name": "thai-invoice",
@@ -5354,7 +5663,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai "
+      "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai ",
+      "invocation": "manual"
     },
     {
       "name": "thai-pdpa",
@@ -5372,7 +5682,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w"
+      "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w",
+      "invocation": "manual"
     },
     {
       "name": "thai-resume",
@@ -5390,7 +5701,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in "
+      "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in ",
+      "invocation": "manual"
     },
     {
       "name": "thai-social-caption",
@@ -5408,7 +5720,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption"
+      "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption",
+      "invocation": "manual"
     },
     {
       "name": "thai-text-processing",
@@ -5426,7 +5739,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation"
+      "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation",
+      "invocation": "manual"
     },
     {
       "name": "thai-translate",
@@ -5444,7 +5758,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be"
+      "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be",
+      "invocation": "manual"
     },
     {
       "name": "theme-factory",
@@ -5461,7 +5776,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fo"
+      "description": "Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fo",
+      "invocation": "manual"
     },
     {
       "name": "tinystruct-patterns",
@@ -5478,7 +5794,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Expert guidance for developing with the tinystruct Java framework. Use when working on the tinystruct codebase or any project built on tinystruct — including cr"
+      "description": "Expert guidance for developing with the tinystruct Java framework. Use when working on the tinystruct codebase or any project built on tinystruct — including cr",
+      "invocation": "manual"
     },
     {
       "name": "token-budget-advisor",
@@ -5496,7 +5813,8 @@
       "version": "",
       "status": "alias",
       "description": ">-",
-      "canonical": "context-budget"
+      "canonical": "context-budget",
+      "invocation": "manual"
     },
     {
       "name": "token-optimization",
@@ -5513,7 +5831,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Reduce context cost with compaction, clearing, and focused reload decisions before large wiki or agent tasks."
+      "description": "Reduce context cost with compaction, clearing, and focused reload decisions before large wiki or agent tasks.",
+      "invocation": "manual"
     },
     {
       "name": "ui-demo",
@@ -5530,7 +5849,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Record polished UI demo videos using Playwright. Use when the user asks to create a demo, walkthrough, screen recording, or tutorial video of a web application."
+      "description": "Record polished UI demo videos using Playwright. Use when the user asks to create a demo, walkthrough, screen recording, or tutorial video of a web application.",
+      "invocation": "manual"
     },
     {
       "name": "ui-to-vue",
@@ -5547,7 +5867,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user has UI screenshots or design exports that need batch conversion into Vue 3 components, especially with Vant, Element Plus, or Ant Design Vue."
+      "description": "Use when the user has UI screenshots or design exports that need batch conversion into Vue 3 components, especially with Vant, Element Plus, or Ant Design Vue.",
+      "invocation": "manual"
     },
     {
       "name": "uncloud",
@@ -5564,7 +5885,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when managing an Uncloud cluster — deploying services, configuring Caddy ingress, adding static proxy routes for non-cluster devices, publishing ports, scal"
+      "description": "Use when managing an Uncloud cluster — deploying services, configuring Caddy ingress, adding static proxy routes for non-cluster devices, publishing ports, scal",
+      "invocation": "manual"
     },
     {
       "name": "unified-notifications-ops",
@@ -5581,7 +5903,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Operate notifications as one ECC-native workflow across GitHub, Linear, desktop alerts, hooks, and connected communication surfaces. Use when the real problem i"
+      "description": "Operate notifications as one ECC-native workflow across GitHub, Linear, desktop alerts, hooks, and connected communication surfaces. Use when the real problem i",
+      "invocation": "manual"
     },
     {
       "name": "uspto-database",
@@ -5598,7 +5921,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "USPTO patent and trademark data workflow for official record lookup, PatentSearch queries, TSDR checks, assignment data, and reproducible IP research logs."
+      "description": "USPTO patent and trademark data workflow for official record lookup, PatentSearch queries, TSDR checks, assignment data, and reproducible IP research logs.",
+      "invocation": "manual"
     },
     {
       "name": "verification-loop",
@@ -5615,7 +5939,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "A comprehensive verification system for Claude Code sessions."
+      "description": "A comprehensive verification system for Claude Code sessions.",
+      "invocation": "manual"
     },
     {
       "name": "verify-before-done",
@@ -5632,7 +5957,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use BEFORE declaring task complete OR before any destructive git op (reset --hard, clean -f, checkout --, restore, branch -D). Triggers: \"เสร็จแล้ว\", \"done\", \"/"
+      "description": "Use BEFORE declaring task complete OR before any destructive git op (reset --hard, clean -f, checkout --, restore, branch -D). Triggers: \"เสร็จแล้ว\", \"done\", \"/",
+      "invocation": "manual"
     },
     {
       "name": "video-editing",
@@ -5649,7 +5975,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers the full pipeline from raw capture through FFmpeg, Remotion, E"
+      "description": "AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers the full pipeline from raw capture through FFmpeg, Remotion, E",
+      "invocation": "manual"
     },
     {
       "name": "videodb",
@@ -5666,7 +5993,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "See, Understand, Act on video and audio. See- ingest from local files, URLs, RTSP/live feeds, or live record desktop; return realtime context and playable strea"
+      "description": "See, Understand, Act on video and audio. See- ingest from local files, URLs, RTSP/live feeds, or live record desktop; return realtime context and playable strea",
+      "invocation": "manual"
     },
     {
       "name": "visa-doc-translate",
@@ -5683,7 +6011,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Translate visa application documents (images) to English and create a bilingual PDF with original and translation"
+      "description": "Translate visa application documents (images) to English and create a bilingual PDF with original and translation",
+      "invocation": "manual"
     },
     {
       "name": "vite-patterns",
@@ -5700,7 +6029,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Vite build tool patterns including config, plugins, HMR, env variables, proxy setup, SSR, library mode, dependency pre-bundling, and build optimization. Activat"
+      "description": "Vite build tool patterns including config, plugins, HMR, env variables, proxy setup, SSR, library mode, dependency pre-bundling, and build optimization. Activat",
+      "invocation": "manual"
     },
     {
       "name": "web-artifacts-builder",
@@ -5717,7 +6047,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for"
+      "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for",
+      "invocation": "manual"
     },
     {
       "name": "web-research",
@@ -5734,7 +6065,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user asks you to find information from the web — price check, datasheet, alternatives, fact verification. Multi-engine auto-fallback. Mo"
+      "description": "Use this skill when the user asks you to find information from the web — price check, datasheet, alternatives, fact verification. Multi-engine auto-fallback. Mo",
+      "invocation": "manual"
     },
     {
       "name": "webapp-testing",
@@ -5751,7 +6083,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing br"
+      "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing br",
+      "invocation": "manual"
     },
     {
       "name": "wiki-search-local",
@@ -5769,7 +6102,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes."
+      "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes.",
+      "invocation": "manual"
     },
     {
       "name": "windows-desktop-e2e",
@@ -5786,7 +6120,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "E2E testing for Windows native desktop apps (WPF, WinForms, Win32/MFC, Qt) using pywinauto and Windows UI Automation."
+      "description": "E2E testing for Windows native desktop apps (WPF, WinForms, Win32/MFC, Qt) using pywinauto and Windows UI Automation.",
+      "invocation": "manual"
     },
     {
       "name": "word-generator",
@@ -5803,7 +6138,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ""
+      "description": "",
+      "invocation": "manual"
     },
     {
       "name": "workspace-surface-audit",
@@ -5820,7 +6156,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Audit the active repo, MCP servers, plugins, connectors, env surfaces, and harness setup, then recommend the highest-value ECC-native skills, hooks, agents, and"
+      "description": "Audit the active repo, MCP servers, plugins, connectors, env surfaces, and harness setup, then recommend the highest-value ECC-native skills, hooks, agents, and",
+      "invocation": "manual"
     },
     {
       "name": "x-api",
@@ -5837,7 +6174,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "X/Twitter API integration for posting tweets, threads, reading timelines, search, and analytics. Covers OAuth auth patterns, rate limits, and platform-native co"
+      "description": "X/Twitter API integration for posting tweets, threads, reading timelines, search, and analytics. Covers OAuth auth patterns, rate limits, and platform-native co",
+      "invocation": "manual"
     },
     {
       "name": "xlsx",
@@ -5854,7 +6192,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xl"
+      "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xl",
+      "invocation": "manual"
     },
     {
       "name": "ask-matt",
@@ -5871,7 +6210,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Ask which skill or flow fits your situation. A router over the skills in this repo."
+      "description": "Ask which skill or flow fits your situation. A router over the skills in this repo.",
+      "invocation": "manual"
     },
     {
       "name": "two-axis-code-review",
@@ -5891,7 +6231,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards and Spec — via parallel sub-agents."
+      "description": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards and Spec — via parallel sub-agents.",
+      "invocation": "manual"
     },
     {
       "name": "codebase-design",
@@ -5909,7 +6250,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Shared vocabulary for designing deep modules — deepening opportunities, seams, testability, AI-navigability."
+      "description": "Shared vocabulary for designing deep modules — deepening opportunities, seams, testability, AI-navigability.",
+      "invocation": "manual"
     },
     {
       "name": "diagnosing-bugs",
@@ -5927,7 +6269,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Diagnosis loop for hard bugs and performance regressions."
+      "description": "Diagnosis loop for hard bugs and performance regressions.",
+      "invocation": "manual"
     },
     {
       "name": "domain-modeling",
@@ -5945,7 +6288,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build and sharpen a project's domain model — terminology, ubiquitous language, ADRs."
+      "description": "Build and sharpen a project's domain model — terminology, ubiquitous language, ADRs.",
+      "invocation": "manual"
     },
     {
       "name": "grill-with-docs",
@@ -5962,7 +6306,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADRs and glossary) as it goes."
+      "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADRs and glossary) as it goes.",
+      "invocation": "manual"
     },
     {
       "name": "implement",
@@ -5980,7 +6325,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Implement a piece of work based on a PRD or set of issues, using TDD where possible."
+      "description": "Implement a piece of work based on a PRD or set of issues, using TDD where possible.",
+      "invocation": "manual"
     },
     {
       "name": "improve-codebase-architecture",
@@ -5997,7 +6343,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Scan a codebase for deepening opportunities, present as a visual HTML report, then grill through the one picked."
+      "description": "Scan a codebase for deepening opportunities, present as a visual HTML report, then grill through the one picked.",
+      "invocation": "manual"
     },
     {
       "name": "prototype",
@@ -6015,7 +6362,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Build a throwaway prototype to answer a design question."
+      "description": "Build a throwaway prototype to answer a design question.",
+      "invocation": "manual"
     },
     {
       "name": "research",
@@ -6032,7 +6380,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Investigate a question against high-trust primary sources and capture findings as a Markdown file via a background agent."
+      "description": "Investigate a question against high-trust primary sources and capture findings as a Markdown file via a background agent.",
+      "invocation": "manual"
     },
     {
       "name": "resolving-merge-conflicts",
@@ -6050,7 +6399,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Resolve an in-progress git merge/rebase conflict by understanding the intent behind each hunk — never --abort."
+      "description": "Resolve an in-progress git merge/rebase conflict by understanding the intent behind each hunk — never --abort.",
+      "invocation": "manual"
     },
     {
       "name": "setup-matt-pocock-skills",
@@ -6067,7 +6417,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Configure this repo for the engineering skills — issue tracker, triage labels, domain doc layout. Run once."
+      "description": "Configure this repo for the engineering skills — issue tracker, triage labels, domain doc layout. Run once.",
+      "invocation": "manual"
     },
     {
       "name": "tdd",
@@ -6085,7 +6436,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Test-driven development — the red-green-refactor loop, what makes a test worth keeping, anti-patterns."
+      "description": "Test-driven development — the red-green-refactor loop, what makes a test worth keeping, anti-patterns.",
+      "invocation": "manual"
     },
     {
       "name": "to-issues",
@@ -6103,7 +6455,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices."
+      "description": "Break a plan, spec, or PRD into independently-grabbable issues using tracer-bullet vertical slices.",
+      "invocation": "manual"
     },
     {
       "name": "to-prd",
@@ -6121,7 +6474,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Turn the current conversation into a PRD and publish it — synthesis only, no interview."
+      "description": "Turn the current conversation into a PRD and publish it — synthesis only, no interview.",
+      "invocation": "manual"
     },
     {
       "name": "triage",
@@ -6139,7 +6493,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Move issues and external PRs through a state machine of triage roles — categorise, verify, grill, write agent-ready briefs."
+      "description": "Move issues and external PRs through a state machine of triage roles — categorise, verify, grill, write agent-ready briefs.",
+      "invocation": "manual"
     },
     {
       "name": "grill-me",
@@ -6156,7 +6511,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "A relentless interview to sharpen a plan or design."
+      "description": "A relentless interview to sharpen a plan or design.",
+      "invocation": "manual"
     },
     {
       "name": "grilling",
@@ -6173,7 +6529,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Grill the user relentlessly about a plan or design — one question at a time, recommend an answer, resolve the decision tree."
+      "description": "Grill the user relentlessly about a plan or design — one question at a time, recommend an answer, resolve the decision tree.",
+      "invocation": "manual"
     },
     {
       "name": "handoff",
@@ -6191,7 +6548,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Compact the current conversation into a handoff document for another agent to pick up, with suggested next skills."
+      "description": "Compact the current conversation into a handoff document for another agent to pick up, with suggested next skills.",
+      "invocation": "manual"
     },
     {
       "name": "teach",
@@ -6208,7 +6566,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Teach the user a new skill or concept within this workspace, across multiple sessions."
+      "description": "Teach the user a new skill or concept within this workspace, across multiple sessions.",
+      "invocation": "manual"
     },
     {
       "name": "writing-great-skills",
@@ -6226,7 +6585,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Reference for writing and editing skills well — the vocabulary and principles that make a skill predictable."
+      "description": "Reference for writing and editing skills well — the vocabulary and principles that make a skill predictable.",
+      "invocation": "manual"
     },
     {
       "name": "git-guardrails-claude-code",
@@ -6244,7 +6604,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, branch -D) before they execute."
+      "description": "Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, branch -D) before they execute.",
+      "invocation": "manual"
     },
     {
       "name": "migrate-to-shoehorn",
@@ -6261,7 +6622,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Migrate test files from `as` type assertions to @total-typescript/shoehorn (TypeScript-specific)."
+      "description": "Migrate test files from `as` type assertions to @total-typescript/shoehorn (TypeScript-specific).",
+      "invocation": "manual"
     },
     {
       "name": "scaffold-exercises",
@@ -6278,7 +6640,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Create exercise directory structures with sections, problems, solutions, and explainers that pass linting."
+      "description": "Create exercise directory structures with sections, problems, solutions, and explainers that pass linting.",
+      "invocation": "manual"
     },
     {
       "name": "setup-pre-commit",
@@ -6295,7 +6658,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests."
+      "description": "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests.",
+      "invocation": "manual"
     },
     {
       "name": "symlink-connector",
@@ -6315,7 +6679,8 @@
       ],
       "version": "2.0.0",
       "status": "canonical",
-      "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup."
+      "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup.",
+      "invocation": "manual"
     }
   ]
 }

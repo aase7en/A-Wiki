@@ -27,7 +27,7 @@ from typing import Any
 # Adding a domain/phase here automatically makes it usable everywhere.
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION: int = 1
+SCHEMA_VERSION: int = 2
 
 # Goal #5 domains (Code, debug, Design, UX/UI, Trader, Medical, Business,
 # Data, Engineering Architect) + A-Wiki-native extensions.
@@ -62,6 +62,12 @@ VALID_STATUSES: frozenset[str] = frozenset({
     "alias",       # thin entrypoint that re-routes to a canonical (needs `canonical`)
     "deprecated",  # do not use; routes to `migrated_to` if present
 })
+
+# v2 — how a skill is invoked. Used by the live dashboard "Skills" view.
+#   auto   = SessionStart hook loads it (e.g. lifecycle-router, debug-mantra)
+#   manual = user types /skill-name
+#   both   = auto in some contexts, manual otherwise
+VALID_INVOCATIONS: frozenset[str] = frozenset({"auto", "manual", "both"})
 
 REQUIRED_SKILL_FIELDS: tuple[str, ...] = (
     "name", "domain", "lifecycle_phase", "category", "source", "path", "status",
@@ -154,12 +160,16 @@ def migrate_registry(data: dict[str, Any]) -> dict[str, Any]:
     (never drop fields silently) and idempotent.
     """
     version = data.get("schema_version", 0)
-    # Example placeholder for the v1→v2 transition (uncomment + adapt when v2 ships):
-    # if version < 2:
-    #     for skill in data.get("skills", []):
-    #         skill.setdefault("new_v2_field", "default")
-    #     data["schema_version"] = 2
-    #     version = 2
+    # v1 → v2: add optional dashboard/guide fields. Backward-compatible —
+    # skills without these fields default sensibly and still validate.
+    #   invocation defaults to "manual" (most skills are user-invoked).
+    #   th_description, when_to_use, examples, process_steps stay absent
+    #   until the Thai guide content (CHUNK 2) populates them.
+    if version < 2:
+        for skill in data.get("skills", []):
+            skill.setdefault("invocation", "manual")
+        data["schema_version"] = 2
+        version = 2
     return data
 
 
@@ -232,6 +242,34 @@ def validate_registry(path: Path | str) -> list[str]:
         if status is not None and status not in VALID_STATUSES:
             errors.append(f"{ctx} ({name}): invalid status {status!r}; valid: {sorted(VALID_STATUSES)}")
 
+        # v2 — invocation (auto/manual/both) for the dashboard Skills view
+        invocation = skill.get("invocation")
+        if invocation is not None and invocation not in VALID_INVOCATIONS:
+            errors.append(
+                f"{ctx} ({name}): invalid invocation {invocation!r}; "
+                f"valid: {sorted(VALID_INVOCATIONS)}"
+            )
+
+        # v2 — examples must be a list of {scenario, how} objects (if present)
+        examples = skill.get("examples")
+        if examples is not None:
+            if not isinstance(examples, list):
+                errors.append(f"{ctx} ({name}): examples must be a list")
+            else:
+                for j, ex in enumerate(examples):
+                    if not isinstance(ex, dict) or "scenario" not in ex or "how" not in ex:
+                        errors.append(
+                            f"{ctx} ({name}): examples[{j}] must have 'scenario' and 'how' keys"
+                        )
+
+        # v2 — process_steps must be a list of strings (if present)
+        process_steps = skill.get("process_steps")
+        if process_steps is not None and not (
+            isinstance(process_steps, list)
+            and all(isinstance(s, str) for s in process_steps)
+        ):
+            errors.append(f"{ctx} ({name}): process_steps must be a list of strings")
+
         # Status-specific requirements
         if status == "alias":
             canonical = skill.get("canonical")
@@ -284,6 +322,7 @@ __all__ = [
     "VALID_LIFECYCLE_PHASES",
     "VALID_SOURCES",
     "VALID_STATUSES",
+    "VALID_INVOCATIONS",
     "REQUIRED_SKILL_FIELDS",
     "DriftError",
     "Registry",

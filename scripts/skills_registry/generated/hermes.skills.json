@@ -16,7 +16,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot"
+      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
+      "invocation": "manual"
     },
     {
       "name": "ask-notebooklm",
@@ -34,7 +35,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient."
+      "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient.",
+      "invocation": "manual"
     },
     {
       "name": "awiki-lifecycle-router",
@@ -53,7 +55,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i"
+      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i",
+      "invocation": "manual"
     },
     {
       "name": "browser-testing-with-devtools",
@@ -72,7 +75,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru"
+      "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru",
+      "invocation": "manual"
     },
     {
       "name": "build",
@@ -90,7 +94,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance."
+      "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance.",
+      "invocation": "manual"
     },
     {
       "name": "ci-cd-and-automation",
@@ -110,7 +115,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch"
+      "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch",
+      "invocation": "manual"
     },
     {
       "name": "code-simplification",
@@ -129,7 +135,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code "
+      "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code ",
+      "invocation": "manual"
     },
     {
       "name": "debug-mantra",
@@ -147,7 +154,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at"
+      "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
+      "invocation": "manual"
     },
     {
       "name": "delegate-subagent",
@@ -165,7 +173,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros"
+      "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros",
+      "invocation": "manual"
     },
     {
       "name": "deprecation-and-migration",
@@ -184,7 +193,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan"
+      "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan",
+      "invocation": "manual"
     },
     {
       "name": "documentation-and-adrs",
@@ -203,7 +213,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,"
+      "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,",
+      "invocation": "manual"
     },
     {
       "name": "export-notebooklm",
@@ -221,7 +232,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges"
+      "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges",
+      "invocation": "manual"
     },
     {
       "name": "git-workflow-and-versioning",
@@ -240,7 +252,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev"
+      "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev",
+      "invocation": "manual"
     },
     {
       "name": "hermes-fan-out",
@@ -258,7 +271,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report."
+      "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report.",
+      "invocation": "manual"
     },
     {
       "name": "ingest-source",
@@ -276,7 +290,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic."
+      "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic.",
+      "invocation": "manual"
     },
     {
       "name": "lint-wiki",
@@ -294,7 +309,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic."
+      "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic.",
+      "invocation": "manual"
     },
     {
       "name": "observability-and-instrumentation",
@@ -314,7 +330,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r"
+      "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r",
+      "invocation": "manual"
     },
     {
       "name": "obsidian",
@@ -332,7 +349,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy"
+      "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy",
+      "invocation": "manual"
     },
     {
       "name": "performance-optimization",
@@ -351,7 +369,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when"
+      "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when",
+      "invocation": "manual"
     },
     {
       "name": "pharmacy-order-lookup",
@@ -370,7 +389,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": ">"
+      "description": ">",
+      "invocation": "manual"
     },
     {
       "name": "plan",
@@ -388,7 +408,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks."
+      "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks.",
+      "invocation": "manual"
     },
     {
       "name": "planning-and-task-breakdown",
@@ -408,7 +429,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. "
+      "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. ",
+      "invocation": "manual"
     },
     {
       "name": "post-mortem",
@@ -426,7 +448,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers "
+      "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers ",
+      "invocation": "manual"
     },
     {
       "name": "render-html",
@@ -444,7 +467,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM"
+      "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM",
+      "invocation": "manual"
     },
     {
       "name": "review",
@@ -462,7 +486,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor)."
+      "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor).",
+      "invocation": "manual"
     },
     {
       "name": "scrutinize",
@@ -480,7 +505,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same "
+      "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same ",
+      "invocation": "manual"
     },
     {
       "name": "search",
@@ -498,7 +524,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py."
+      "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py.",
+      "invocation": "manual"
     },
     {
       "name": "security-and-hardening",
@@ -518,7 +545,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d"
+      "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d",
+      "invocation": "manual"
     },
     {
       "name": "ship",
@@ -536,7 +564,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review."
+      "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review.",
+      "invocation": "manual"
     },
     {
       "name": "shipping-and-launch",
@@ -555,7 +584,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production."
+      "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production.",
+      "invocation": "manual"
     },
     {
       "name": "spec",
@@ -573,7 +603,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code."
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
+      "invocation": "manual"
     },
     {
       "name": "spec-driven-development",
@@ -592,7 +623,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,"
+      "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,",
+      "invocation": "manual"
     },
     {
       "name": "thai-address",
@@ -610,7 +642,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse"
+      "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse",
+      "invocation": "manual"
     },
     {
       "name": "thai-customer-service",
@@ -628,7 +661,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, "
+      "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, ",
+      "invocation": "manual"
     },
     {
       "name": "thai-date-format",
@@ -646,7 +680,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger"
+      "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger",
+      "invocation": "manual"
     },
     {
       "name": "thai-festival-card",
@@ -664,7 +699,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user"
+      "description": "Use this skill for any task involving Thai festival greetings, condolences, wedding cards, royal-occasion messages, or seasonal cards. Trigger whenever the user",
+      "invocation": "manual"
     },
     {
       "name": "thai-government-form",
@@ -682,7 +718,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms"
+      "description": "Use this skill for any task involving Thai government letters, official correspondence, formal petitions, authorization letters, leave requests, or ราชการ forms",
+      "invocation": "manual"
     },
     {
       "name": "thai-id-validate",
@@ -700,7 +737,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th"
+      "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th",
+      "invocation": "manual"
     },
     {
       "name": "thai-invoice",
@@ -718,7 +756,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai "
+      "description": "Use this skill for any task involving Thai tax invoices, receipts, quotations, or withholding-tax certificates. Trigger whenever the user asks to: draft a Thai ",
+      "invocation": "manual"
     },
     {
       "name": "thai-pdpa",
@@ -736,7 +775,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w"
+      "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w",
+      "invocation": "manual"
     },
     {
       "name": "thai-resume",
@@ -754,7 +794,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in "
+      "description": "Use this skill for any task involving Thai-language or bilingual (TH/EN) resumes and CVs. Trigger whenever the user asks to: write a Thai resume, draft a CV in ",
+      "invocation": "manual"
     },
     {
       "name": "thai-social-caption",
@@ -772,7 +813,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption"
+      "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption",
+      "invocation": "manual"
     },
     {
       "name": "thai-text-processing",
@@ -790,7 +832,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation"
+      "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation",
+      "invocation": "manual"
     },
     {
       "name": "thai-translate",
@@ -808,7 +851,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be"
+      "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be",
+      "invocation": "manual"
     },
     {
       "name": "wiki",
@@ -826,7 +870,8 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap)."
+      "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap).",
+      "invocation": "manual"
     },
     {
       "name": "wiki-search-local",
@@ -844,7 +889,8 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes."
+      "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes.",
+      "invocation": "manual"
     }
   ]
 }
