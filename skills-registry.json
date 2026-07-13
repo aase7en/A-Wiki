@@ -18,7 +18,15 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "A-Wiki slash commands — /wiki, /search, /backup, /status, /spec, /plan, /build, /test, /review, /code-simplify, /ship",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ",
+      "when_to_use": "อยากรู้คำสั่ง A-Wiki ที่มี, หรือหาคำสั่งที่เหมาะกับงาน",
+      "examples": [
+        {
+          "scenario": "อยาก ingest URL",
+          "how": "/ingest <URL>"
+        }
+      ]
     },
     {
       "name": "a-wiki-telegram",
@@ -244,7 +252,15 @@
       "version": "",
       "status": "canonical",
       "description": "Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจสอบสถาปัตยกรรมของ agent system — skill ทำงานร่วมกันไหม, มี loop ไหม, ซ้ำซ้อนไหม",
+      "when_to_use": "agent system ซับซ้อนแล้ว, อยากปรับ architecture",
+      "examples": [
+        {
+          "scenario": "มี 50 skills แล้ว",
+          "how": "audit: ซ้ำไหม, conflict ไหม, ขาดอะไร"
+        }
+      ]
     },
     {
       "name": "agent-eval",
@@ -262,7 +278,15 @@
       "version": "",
       "status": "canonical",
       "description": "Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ประเมินคุณภาพของ agent/prompt — วัด accuracy, cost, latency และหาจุดปรับปรุง",
+      "when_to_use": "สร้าง agent ใหม่, แก้ prompt, หรือเปรียบเทียบ model",
+      "examples": [
+        {
+          "scenario": "เปลี่ยน prompt",
+          "how": "eval ก่อน/หลัง เพื่อดูว่าดีขึ้นจริง"
+        }
+      ]
     },
     {
       "name": "agent-harness-construction",
@@ -497,7 +521,15 @@
       "version": "",
       "status": "canonical",
       "description": "REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ออกแบบ REST/GraphQL API — endpoint, schema, versioning, error format",
+      "when_to_use": "สร้าง API ใหม่, หรือปรับ API เก่า",
+      "examples": [
+        {
+          "scenario": "API สั่งซื้อ",
+          "how": "ออกแบบ /orders, /orders/{id}, error code"
+        }
+      ]
     },
     {
       "name": "architecture-decision-records",
@@ -533,7 +565,15 @@
       "version": "",
       "status": "canonical",
       "description": "Write articles, guides, blog posts, tutorials, newsletter issues, and other long-form content in a distinctive voice derived from supplied examples or brand gui",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียนบทความ/บล็อก — มีโครง, hook, สาระ, ปิดท้าย",
+      "when_to_use": "เขียน blog, tutorial, หรือ content marketing",
+      "examples": [
+        {
+          "scenario": "สอนใช้ MQTT",
+          "how": "/article-writing โครง intro → concept → example → summary"
+        }
+      ]
     },
     {
       "name": "ask-notebooklm",
@@ -552,7 +592,15 @@
       "version": "",
       "status": "canonical",
       "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สังเคราะห์คำตอบข้ามหลายไฟล์ใน wiki โดยใช้ Gemini API — เหมาะกับคำถามที่ต้องรวมข้อมูลหลายแหล่ง",
+      "when_to_use": "คำถามที่คำตอบอยู่กระจายในหลายหน้า wiki, ต้องการ synthesis ไม่ใช่แค่ search",
+      "examples": [
+        {
+          "scenario": "'ระบบ IoT มีอะไรบ้าง'",
+          "how": "ask-notebooklm รวมข้อมูลจากทุกหน้า iot/"
+        }
+      ]
     },
     {
       "name": "assessment-generator",
@@ -698,7 +746,27 @@
       "version": "",
       "status": "canonical",
       "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i",
-      "invocation": "manual"
+      "invocation": "auto",
+      "th_description": "ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติตอน session start",
+      "when_to_use": "อัตโนมัติทุก session — เป็นตัวตัดสินใจว่าจะใช้ skill ไหน",
+      "examples": [
+        {
+          "scenario": "user พิมพ์ 'bug นี้'",
+          "how": "router → debug-mantra"
+        },
+        {
+          "scenario": "user พิมพ์ 'deploy'",
+          "how": "router → shipping-and-launch"
+        }
+      ],
+      "process_steps": [
+        "define",
+        "plan",
+        "build",
+        "verify",
+        "review",
+        "ship"
+      ]
     },
     {
       "name": "backend-patterns",
@@ -806,7 +874,21 @@
       "version": "",
       "status": "canonical",
       "description": "Use BEFORE designing/building anything new — features, systems, wiki domains, scripts, hooks, skills. Triggers: \"ออกแบบ\", \"วางระบบ\", \"สร้างฟีเจอร์\", \"สร้าง skil",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "บังคับให้ถาม user 3 คำถาม (scope/constraint/success) ก่อนเริ่มสร้างสิ่งใหม่ ป้องกันการเขียนผิดทิศทาง",
+      "when_to_use": "ก่อนสร้าง skill/hook/script/feature ใหม่ หรือ refactor ที่กระทบ >3 ไฟล์",
+      "examples": [
+        {
+          "scenario": "user ขอ 'ทำสกิล superpowers'",
+          "how": "ถามก่อน: ติดเต็มหรือ cherry-pick? เน้น coding หรือ wiki?"
+        }
+      ],
+      "process_steps": [
+        "ถาม clarify (≤3 คำถาม)",
+        "เสนอ 2-3 approach",
+        "รอ user เลือก",
+        "เขียน plan"
+      ]
     },
     {
       "name": "brand-guidelines",
@@ -974,7 +1056,15 @@
       "version": "",
       "status": "canonical",
       "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตั้ง CI/CD pipeline — auto test, lint, build, deploy เพื่อลดมนุษย์ผิดพลาด",
+      "when_to_use": "project ใหม่, หรืออยาก automate งานที่ทำซ้ำ",
+      "examples": [
+        {
+          "scenario": "ทุก push ต้อง test",
+          "how": "CI: run pytest + lint ก่อน merge"
+        }
+      ]
     },
     {
       "name": "cisco-ios-patterns",
@@ -1103,7 +1193,15 @@
       "version": "",
       "status": "canonical",
       "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น",
+      "when_to_use": "โค้ดอ่านยาก, มี duplicate, ฟังก์ชันยาวเกินไป หรือหลัง implement เสร็จ",
+      "examples": [
+        {
+          "scenario": "ฟังก์ชัน 200 บรรทัด",
+          "how": "แยกเป็น 3-4 ฟังก์ชันเล็ก ตั้งชื่อให้อธิบายตัวเอง"
+        }
+      ]
     },
     {
       "name": "code-tour",
@@ -1211,7 +1309,15 @@
       "version": "",
       "status": "canonical",
       "description": "Reorganize the user's X and LinkedIn network with review-first pruning, add/follow recommendations, and channel-specific warm outreach drafted in the user's rea",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "วิเคราะห์และเสนอ [[wikilinks]] ระหว่างหน้า เพื่อให้ knowledge graph แน่นขึ้น",
+      "when_to_use": "หลังเพิ่มหน้าใหม่, หรือเป็น periodic maintenance",
+      "examples": [
+        {
+          "scenario": "เพิ่มหน้า ESP32",
+          "how": "optimizer เสนอลิงก์ไป MQTT, OTA, pinout ที่เกี่ยวข้อง"
+        }
+      ]
     },
     {
       "name": "content-engine",
@@ -1265,7 +1371,15 @@
       "version": "",
       "status": "canonical",
       "description": "Audits Claude Code context window consumption across agents, skills, MCP servers, and rules. Identifies bloat, redundant components, and produces prioritized to",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "จัดการ context window — โหลดเฉพาะข้อมูลที่จำเป็น, compact เมื่อใกล้เต็ม",
+      "when_to_use": "งานยาว, หรือเริ่มรู้สึกว่า agent 'ลืม' เพราะ context เต็ม",
+      "examples": [
+        {
+          "scenario": "session ยาว 50+ turn",
+          "how": "compact: เก็บ summary สละ detail"
+        }
+      ]
     },
     {
       "name": "continuous-agent-loop",
@@ -1319,7 +1433,15 @@
       "version": "2.1.0",
       "status": "canonical",
       "description": "Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and evolves them into skills/commands/agents.",
-      "invocation": "manual"
+      "invocation": "auto",
+      "th_description": "เรียนรู้จาก pattern ที่เกิดซ้ำ — ถ้าทำงานแบบเดิมบ่อย แนะนำให้สร้าง skill/hook",
+      "when_to_use": "อัตโนมัติทุก session — detect recurring patterns",
+      "examples": [
+        {
+          "scenario": "ทำ git workflow ซ้ำๆ",
+          "how": "เสนอสร้าง skill git-workflow"
+        }
+      ]
     },
     {
       "name": "cost-aware-llm-pipeline",
@@ -1355,7 +1477,15 @@
       "version": "",
       "status": "canonical",
       "description": "Track and report Claude Code token usage, spending, and budgets from a local cost-tracking database. Use when the user asks about costs, spending, usage, tokens",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ติดตามต้นทุนการใช้ model/token — รู้ว่างานไหนแพง และหาทางลด",
+      "when_to_use": "งาน multi-step, หรืออยากรู้ว่าใช้ token เยอะเพราะอะไร",
+      "examples": [
+        {
+          "scenario": "session ใช้เงินเยอะ",
+          "how": "/cost-tracking ดูว่า task ไหนแพง ปรับ tier"
+        }
+      ]
     },
     {
       "name": "council",
@@ -1608,7 +1738,25 @@
       "version": "",
       "status": "canonical",
       "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "วินัย 4 ข้อสำหรับ debug: (1) reproduce ให้ได้ก่อน (2) รู้ fail path (3) ตั้งข้อสงสัยแล้วหาที่หักล้าง (4) เก็บ breadcrumb ทุกครั้ง. บังคับ Iron Law #2",
+      "when_to_use": "ทุกครั้งที่เจอ bug — ห้ามแก้โดยไม่หา root cause ก่อน",
+      "examples": [
+        {
+          "scenario": "แอป crash บางครั้ง",
+          "how": "reproduce ให้ได้ก่อน, trace stack, ตั้งสมมติฐาน แล้วหา evidence หักล้าง"
+        },
+        {
+          "scenario": "production error ไม่ชัด",
+          "how": "ดู log ทุก layer, cross-reference, ห้าม patch ลอยๆ"
+        }
+      ],
+      "process_steps": [
+        "Reproduce ให้ได้",
+        "Trace fail path",
+        "ตั้งและหักล้างสมมติฐาน",
+        "Cross-reference breadcrumbs"
+      ]
     },
     {
       "name": "deep-research",
@@ -1664,7 +1812,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "มอบหมายงานย่อยให้ subagent/worker model — เพื่อประหยัด context ของ primary agent",
+      "when_to_use": "งานซ้ำๆ (scan, lint, gather), หรือเมื่อ primary agent เริ่มเต็ม context",
+      "examples": [
+        {
+          "scenario": "ค้นหา symbol ใน codebase ใหญ่",
+          "how": "delegate ให้ Explore agent"
+        }
+      ]
     },
     {
       "name": "deployment-patterns",
@@ -1703,7 +1859,15 @@
       "version": "",
       "status": "canonical",
       "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback",
+      "when_to_use": "ย้าย API, เปลี่ยน library, หรือปิดฟีเจอร์เก่า",
+      "examples": [
+        {
+          "scenario": "เลิก API v1",
+          "how": "deprecate → แจ้ง → ให้เวลา → migrate → sunset"
+        }
+      ]
     },
     {
       "name": "design-system",
@@ -1885,7 +2049,15 @@
       "version": "",
       "status": "canonical",
       "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้",
+      "when_to_use": "ตัดสินใจ architecture, เปลี่ยนเทคโนโลยี, หรือ doc สำคัญ",
+      "examples": [
+        {
+          "scenario": "เลือก Postgres แทน MySQL",
+          "how": "เขียน ADR: context, options, decision, consequences"
+        }
+      ]
     },
     {
       "name": "documentation-lookup",
@@ -2336,7 +2508,15 @@
       "version": "",
       "status": "canonical",
       "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ออกแบบ UI/UX หน้าเว็บ — layout, color, typography, component",
+      "when_to_use": "สร้างหน้าเว็บใหม่, ปรับ design หรือทำ prototype",
+      "examples": [
+        {
+          "scenario": "หน้า dashboard",
+          "how": "/frontend-design layout + color + chart"
+        }
+      ]
     },
     {
       "name": "frontend-design-direction",
@@ -2500,7 +2680,15 @@
       "version": "",
       "status": "canonical",
       "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "มาตรฐาน git: commit message format, branching, versioning, tagging",
+      "when_to_use": "เริ่ม project, ตั้ง convention, หรือก่อน release",
+      "examples": [
+        {
+          "scenario": "ทำ semantic versioning",
+          "how": "ตั้งกฎ: feat→minor, fix→patch, break→major"
+        }
+      ]
     },
     {
       "name": "github-ops",
@@ -2864,7 +3052,21 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เอา source ใหม่ (URL, PDF, text) เข้า wiki — บันทึก raw ก่อน, สร้าง source summary, อัปเดต index",
+      "when_to_use": "user ส่ง URL/PDF/file ให้เก็บเป็นความรู้ใน wiki",
+      "examples": [
+        {
+          "scenario": "user ส่งลิงก์บทความ MQTT",
+          "how": "save raw → harness route → wiki/sources/mqtt.md → gen-index"
+        }
+      ],
+      "process_steps": [
+        "save ลง raw/",
+        "ผ่าน harness route",
+        "สร้าง wiki/sources/",
+        "regen index"
+      ]
     },
     {
       "name": "internal-comms",
@@ -2882,7 +3084,15 @@
       "version": "",
       "status": "canonical",
       "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียนสื่อสารภายในองค์กร — memo, announcement, changelog",
+      "when_to_use": "ประกาศ policy, release note, หรือสื่อสารข้ามทีม",
+      "examples": [
+        {
+          "scenario": "ประกาศเปลี่ยน policy WFH",
+          "how": "internal-comms เขียน memo ชัดเจน"
+        }
+      ]
     },
     {
       "name": "internet-skill-finder",
@@ -3370,7 +3580,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจสุขภาพ wiki: broken links, missing frontmatter, ชื่อไฟล์ผิด format, confidence markers",
+      "when_to_use": "หลังแก้ wiki เยอะ, หรือเป็น routine health check",
+      "examples": [
+        {
+          "scenario": "เพิ่มหน้า wiki 10 หน้า",
+          "how": "/lint-wiki ตรวจ link + frontmatter ให้ครบ"
+        }
+      ]
     },
     {
       "name": "liquid-glass-design",
@@ -3479,7 +3697,15 @@
       "version": "",
       "status": "canonical",
       "description": "Rewrite engineer-to-engineer content for engineering-org leadership (VPs, directors, PMs, release managers, execs) and shape it for the channel it is going to —",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ",
+      "when_to_use": "เขียน status update, นำทีม, หรือสื่อสารกับ stakeholder",
+      "examples": [
+        {
+          "scenario": "สรุปงานสัปดาห์",
+          "how": "/management-talk สรุป progress, blocker, next"
+        }
+      ]
     },
     {
       "name": "manim-video",
@@ -3551,7 +3777,15 @@
       "version": "",
       "status": "canonical",
       "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when b",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สร้าง MCP server — expose tool/resource ให้ agent เรียกใช้ผ่าน Model Context Protocol",
+      "when_to_use": "อยากให้ agent เรียก API/DB/tool ของตัวเองได้",
+      "examples": [
+        {
+          "scenario": "อยากให้ agent ค้น DB ได้",
+          "how": "/mcp-builder สร้าง MCP server query DB"
+        }
+      ]
     },
     {
       "name": "mcp-server-patterns",
@@ -3624,7 +3858,15 @@
       "version": "",
       "status": "canonical",
       "description": "Choose the cheapest capable primary-model tier and effort before expensive multi-step work, architecture, subagent spawning, or cost-sensitive tasks.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "จัดลำดับ model ตามต้นทุน — ใช้ model ถูกก่อน แพงทีหลัง. บังคับ cost-first decision pyramid",
+      "when_to_use": "ก่อนเริ่มงาน multi-step หรือ task มีต้นทุนสูง — classify ก่อนเลือก tier",
+      "examples": [
+        {
+          "scenario": "ต้อง scan 50 ไฟล์",
+          "how": "ใช้ tier ถูก (free/cheap) ก่อน ไม่ใช่ primary model"
+        }
+      ]
     },
     {
       "name": "motion-advanced",
@@ -3936,7 +4178,15 @@
       "version": "",
       "status": "canonical",
       "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "จัดการ notes ใน Obsidian — wikilinks, tags, template, graph view",
+      "when_to_use": "ใช้ Obsidian เป็น knowledge base ส่วนตัว",
+      "examples": [
+        {
+          "scenario": "สร้าง note ใหม่",
+          "how": "ใช้ template, tag, ลิงก์ไป note ที่เกี่ยวข้อง"
+        }
+      ]
     },
     {
       "name": "openai-docs",
@@ -4064,7 +4314,15 @@
       "version": "",
       "status": "canonical",
       "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา",
+      "when_to_use": "แอป/API ช้า, ใช้ CPU/DB เยอะ, หรือ user ร้องเรียนความเร็ว",
+      "examples": [
+        {
+          "scenario": "API ตอบช้า 2 วิ",
+          "how": "profile → พบ N+1 query → แก้ → วัดใหม่"
+        }
+      ]
     },
     {
       "name": "perl-patterns",
@@ -4195,7 +4453,15 @@
       "version": "",
       "status": "canonical",
       "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ",
+      "when_to_use": "งานมีหลายขั้นตอน, ต้องประเมินเวลา, หรือแบ่งงานให้หลายคน/หลาย agent",
+      "examples": [
+        {
+          "scenario": "ย้ายระบบจาก REST เป็น GraphQL",
+          "how": "แตกเป็น: schema → resolver → migration → test → cutover"
+        }
+      ]
     },
     {
       "name": "plugin-creator",
@@ -4232,7 +4498,21 @@
       "version": "",
       "status": "canonical",
       "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียนบทเรียนหลัง incident: เกิดอะไรขึ้น, root cause, impact, แก้อย่างไร, ป้องกันยังไงคราวหน้า",
+      "when_to_use": "หลัง production incident, outage, หรือ bug รุนแรง",
+      "examples": [
+        {
+          "scenario": "DB down 2 ชม.",
+          "how": "เขียน post-mortem: timeline, root cause, action items"
+        }
+      ],
+      "process_steps": [
+        "สรุปเหตุการณ์",
+        "หา root cause",
+        "ประเมิน impact",
+        "กำหนด action items"
+      ]
     },
     {
       "name": "postgres-patterns",
@@ -4379,7 +4659,15 @@
       "version": "",
       "status": "canonical",
       "description": "Local-evidence production readiness audit for shipped apps, pre-launch reviews, post-merge checks, and \"what breaks in prod?\" questions without sending repo dat",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจสุขภาพระบบ production: logs, monitoring, alerting, runbook, SLO",
+      "when_to_use": "เข้ามาดูแลระบบใหม่, หลัง incident, หรือ periodic audit",
+      "examples": [
+        {
+          "scenario": "รับลูกค้าใหม่",
+          "how": "audit: monitoring ครบไหม, alert ทำงานไหม"
+        }
+      ]
     },
     {
       "name": "production-scheduling",
@@ -4797,7 +5085,15 @@
       "version": "",
       "status": "canonical",
       "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "render JSON/report เป็น HTML สวยๆ สำหรับดู — ประหยัด token เพราะ HTML ไม่กลับเข้า context",
+      "when_to_use": "ต้องการดู report/ตารางแบบสวย แต่ไม่อยากเปลือง context window",
+      "examples": [
+        {
+          "scenario": "report 1000 บรรทัด",
+          "how": "emit JSON → render-html → ได้ไฟล์ดู ไม่เปลือง token"
+        }
+      ]
     },
     {
       "name": "repo-scan",
@@ -4870,7 +5166,15 @@
       "status": "deprecated",
       "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro",
       "migrated_to": "debug-mantra",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "หา root cause ก่อนแก้ — ไม่ใช่แก้ symptom. ใช้ 5-Whys หรือ fishbone",
+      "when_to_use": "bug ซ้ำ, ปัญหาเรื้อรัง, หรือก่อนแก้ production issue",
+      "examples": [
+        {
+          "scenario": "แอปช้าเป็นบางครั้ง",
+          "how": "ถาม why 5 ครั้งจนถึง root: query N+1? cache miss? DB lock?"
+        }
+      ]
     },
     {
       "name": "rules-distill",
@@ -4942,7 +5246,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill to prevent destructive operations when working on production systems or running agents autonomously.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจสอบความปลอดภัยก่อนทำการที่เสียหายได้ยาก — delete, force push, ส่งข้อมูลออก, เปลี่ยน production",
+      "when_to_use": "ก่อนลบไฟล์, force push, ส่ง request ออก outside, หรือแก้ production config",
+      "examples": [
+        {
+          "scenario": "จะ git push --force",
+          "how": "safety-guard บังคับยืนยันก่อน, เช็ค branch"
+        }
+      ]
     },
     {
       "name": "santa-method",
@@ -5015,7 +5327,15 @@
       "version": "",
       "status": "canonical",
       "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same ",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "รีวิวแบบเข้ม — ตั้งคำถามทุก assumption, หา edge case, เช็ค security/perf. ใช้คู่กับ code-review",
+      "when_to_use": "รีวิวงานก่อน merge, audit ระบบเก่า, หรือตรวจงานที่ risky",
+      "examples": [
+        {
+          "scenario": "PR ใหญ่ก่อน merge",
+          "how": "scrutinize ทุกไฟล์: logic, test, security, perf"
+        }
+      ]
     },
     {
       "name": "search-first",
@@ -5054,7 +5374,15 @@
       "version": "",
       "status": "canonical",
       "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation",
+      "when_to_use": "รีวิว security, ก่อน deploy, หรือรับงานที่ sensitive",
+      "examples": [
+        {
+          "scenario": "API มี input จาก user",
+          "how": "ตรวจ SQL injection, XSS, auth"
+        }
+      ]
     },
     {
       "name": "security-bounty-hunter",
@@ -5146,7 +5474,15 @@
       "version": "",
       "status": "canonical",
       "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เช็คลิสต์ก่อน release: test, docs, migration, rollback plan, monitoring — ให้มั่นใจว่า launch ปลอดภัย",
+      "when_to_use": "ก่อน deploy ขึ้น production, release ฟีเจอร์ใหญ่, หรือส่งมอบงาน",
+      "examples": [
+        {
+          "scenario": "deploy ฟีเจอร์ checkout ใหม่",
+          "how": "เช็ค: test ผ่าน, migration dry-run, rollback script พร้อม, alert ตั้ง"
+        }
+      ]
     },
     {
       "name": "skill-comply",
@@ -5314,7 +5650,25 @@
       "version": "",
       "status": "canonical",
       "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียนสเปก/requirements ให้ชัดก่อนเริ่มเขียนโค้ด เพื่อให้ทุกคน (และ AI) เข้าใจตรงกันว่าต้องทำอะไร ถึงเงื่อนไขไหนถือว่าเสร็จ",
+      "when_to_use": "เริ่มฟีเจอร์ใหม่, แก้ bug ใหญ่, หรือทำงานที่ซับซ้อนเกิน 1 ไฟล์",
+      "examples": [
+        {
+          "scenario": "จะทำระบบ login OAuth",
+          "how": "เขียนสเปกก่อน: flow, error cases, acceptance criteria แล้วค่อยโค้ด"
+        },
+        {
+          "scenario": "ลูกค้าขอฟีเจอร์ export PDF",
+          "how": "ระบุ field, layout, ขนาดก่อนเขียน 1 บรรทัด"
+        }
+      ],
+      "process_steps": [
+        "ระบุปัญหา",
+        "เขียน acceptance criteria",
+        "แยกหน้า concern",
+        "เอาสเปกมาทำ TDD"
+      ]
     },
     {
       "name": "springboot-patterns",
@@ -5588,7 +5942,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "จัดรูปวันที่แบบไทย (พ.ศ., ปี ค.ศ. → พ.ศ.) — กันสับสน",
+      "when_to_use": "แสดงวันที่ให้ user ไทย, หรือออกเอกสาร",
+      "examples": [
+        {
+          "scenario": "วันที่ 2026-07-13",
+          "how": "แปลงเป็น 13 กรกฎาคม 2569"
+        }
+      ]
     },
     {
       "name": "thai-festival-card",
@@ -5683,7 +6045,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตรวจสอบการปฏิบัติตาม พ.ร.บ. PDPA — การเก็บ/ใช้/เปิดเผยข้อมูลส่วนบุคคล",
+      "when_to_use": "แอปเก็บข้อมูล user, หรือต้อง compliance ไทย",
+      "examples": [
+        {
+          "scenario": "ฟอร์มเก็บ email",
+          "how": "ตรวจ consent, purpose, สิทธิ์ user"
+        }
+      ]
     },
     {
       "name": "thai-resume",
@@ -5740,7 +6110,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ตัดคำ/normalize ข้อความไทย — จัดการกับ tokenization ที่ไทยไม่มีวรรคตอน",
+      "when_to_use": "ประมวลผล text ไทย, search, หรือ NLP",
+      "examples": [
+        {
+          "scenario": "สร้าง search ภาษาไทย",
+          "how": "ใช้ word segmentation ก่อน index"
+        }
+      ]
     },
     {
       "name": "thai-translate",
@@ -5759,7 +6137,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "แปลไทย-อังกฤษ คำศัพท์เทคนิค — รักษา context, ใช้คำเทคนิคที่คนไทยคุ้น",
+      "when_to_use": "แปล doc, สื่อสารกับคนไทย, หรือทำ content สองภาษา",
+      "examples": [
+        {
+          "scenario": "แปล README อังกฤษ",
+          "how": "/thai-translate รักษาคำเทคนิค (deploy, API) แปลที่เหลือ"
+        }
+      ]
     },
     {
       "name": "theme-factory",
@@ -5832,7 +6218,15 @@
       "version": "",
       "status": "canonical",
       "description": "Reduce context cost with compaction, clearing, and focused reload decisions before large wiki or agent tasks.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ลดการใช้ token — ใช้ Markdown แทน HTML, compact JSON, ตัด verbose output",
+      "when_to_use": "เมื่อต้องการประหยัดค่าใช้จ่าย หรือ context เริ่มเต็ม",
+      "examples": [
+        {
+          "scenario": "report ยาว 5000 token",
+          "how": "แปลงเป็น compact JSON + render-html แทน"
+        }
+      ]
     },
     {
       "name": "ui-demo",
@@ -5958,7 +6352,15 @@
       "version": "",
       "status": "canonical",
       "description": "Use BEFORE declaring task complete OR before any destructive git op (reset --hard, clean -f, checkout --, restore, branch -D). Triggers: \"เสร็จแล้ว\", \"done\", \"/",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "บังคับตรวจสอบก่อนบอกว่า 'เสร็จแล้ว' — รัน test, ตรวจ output, ยืนยันจริงไม่ใช่แค่คิดว่าเสร็จ",
+      "when_to_use": "ก่อนบอก user ว่าทำเสร็จ, ก่อน commit, หรือหลัง refactor",
+      "examples": [
+        {
+          "scenario": "แก้ bug เสร็จ",
+          "how": "รัน test, reproduce bug อีกครั้งให้แน่ใจหาย, แล้วค่อยบอกเสร็จ"
+        }
+      ]
     },
     {
       "name": "video-editing",
@@ -6103,7 +6505,15 @@
       "version": "",
       "status": "canonical",
       "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "ค้น wiki แบบ offline ผ่าน FTS5 — เร็ว, ฟรี, ไม่ต้องเรียก LLM",
+      "when_to_use": "อยากค้นความรู้ใน wiki, หาหน้าที่เกี่ยวข้อง, ก่อนเขียนหน้าใหม่เพื่อกันซ้ำ",
+      "examples": [
+        {
+          "scenario": "อยากรู้เรื่อง DS18B20",
+          "how": "search 'DS18B20' ก่อนเขียนหน้าใหม่"
+        }
+      ]
     },
     {
       "name": "windows-desktop-e2e",
@@ -6232,7 +6642,15 @@
       "version": "",
       "status": "canonical",
       "description": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards and Spec — via parallel sub-agents.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "รีวิวโค้ดแบบ 2 แกน: (1) correctness/logic (2) style/maintainability",
+      "when_to_use": "ก่อน merge PR, หลัง implement เสร็จ, หรือ audit โค้ดเก่า",
+      "examples": [
+        {
+          "scenario": "เพื่อนส่ง PR",
+          "how": "/two-axis-code-review ดูทั้ง logic และ style"
+        }
+      ]
     },
     {
       "name": "codebase-design",
@@ -6437,7 +6855,20 @@
       "version": "",
       "status": "canonical",
       "description": "Test-driven development — the red-green-refactor loop, what makes a test worth keeping, anti-patterns.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression",
+      "when_to_use": "เขียนฟังก์ชันใหม่, แก้ bug (เขียน test สำหรับ bug ก่อน), หรือ refactor",
+      "examples": [
+        {
+          "scenario": "เขียนฟังก์ชันคำนวณส่วนลด",
+          "how": "เขียน test ว่า input X ต้องได้ Y ก่อน, รันให้ fail, แล้วเขียนโค้ด"
+        }
+      ],
+      "process_steps": [
+        "เขียน test (Red)",
+        "เขียนโค้ดให้ผ่าน (Green)",
+        "ปรับให้สะอาด (Refactor)"
+      ]
     },
     {
       "name": "to-issues",
@@ -6549,7 +6980,15 @@
       "version": "",
       "status": "canonical",
       "description": "Compact the current conversation into a handoff document for another agent to pick up, with suggested next skills.",
-      "invocation": "manual"
+      "invocation": "manual",
+      "th_description": "สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ",
+      "when_to_use": "switch agent, ปิด session กลางคัน, หรือส่งต่อให้คนอื่น",
+      "examples": [
+        {
+          "scenario": "switch Claude → Codex",
+          "how": "เขียน handoff.md แล้ว push"
+        }
+      ]
     },
     {
       "name": "teach",
