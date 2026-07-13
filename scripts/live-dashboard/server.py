@@ -44,6 +44,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
 import council_room  # noqa: E402
 
+# Skills service lives next to this server file.
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "live-dashboard"))
+import skills_service  # noqa: E402
+
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
 DASHBOARD_HTML_FALLBACK = REPO_ROOT / "exports" / "html" / "live-dashboard.html"
@@ -568,6 +572,12 @@ class Handler(BaseHTTPRequestHandler):
             self._api_admin_status()
         elif path == "/api/agents":
             self._api_agents_get()
+        elif path == "/api/skills":
+            self._api_skills_list()
+        elif path == "/api/skills/agents":
+            self._json_response(skills_service.agent_overview())
+        elif path.startswith("/api/skills/"):
+            self._api_skills_detail(path[len("/api/skills/"):])
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
@@ -751,7 +761,41 @@ class Handler(BaseHTTPRequestHandler):
                 config = json.loads(AGENT_CONFIG_FILE.read_text())
             except Exception:
                 pass
-        self._json_response({"registry": registry, "config": config})
+        # Merge skill counts from the skills registry so the Agents panel can
+        # show "this agent can see N skills" alongside its model config.
+        try:
+            overview = skills_service.agent_overview()
+            skill_counts = overview.get("skill_counts", {})
+        except Exception:
+            skill_counts = {}
+        self._json_response({
+            "registry": registry, "config": config,
+            "skill_counts": skill_counts,
+        })
+
+    # ── Skills (Live Dashboard "Skills" tab) ─────────────────
+    def _api_skills_list(self):
+        # Parse query string from self.path (may contain ?agent=...&q=...)
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        try:
+            payload = skills_service.list_skills(qs)
+            self._json_response(payload)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_detail(self, name: str):
+        # Guard against path traversal — skill names are kebab-case identifiers.
+        if "/" in name or ".." in name or not name:
+            self._json_response({"error": "invalid skill name"}, 400)
+            return
+        try:
+            skill = skills_service.get_skill(name)
+            if skill is None:
+                self._json_response({"error": f"skill '{name}' not found"}, 404)
+                return
+            self._json_response(skill)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
 
     def _api_agents_post(self):
         data = self._read_body()
