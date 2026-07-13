@@ -23,6 +23,12 @@ Then read:
 3. `wiki/context/session-memory.md` — cross-session decisions + TODOs
 4. *(optional)* `wiki/context/model-roster.conf` — current free model availability
 
+**Live Dashboard** (auto-starts on Claude/Codex; for Gemini CLI run manually):
+```bash
+bash scripts/dashboard-ensure.sh   # idempotent — opens http://localhost:7790
+```
+The dashboard now has a **🧩 Skills tab** showing every skill this agent can invoke, with Thai descriptions + examples + process simulation. Filter by agent to see exactly what *you* can do.
+
 ## External Data Layer
 
 - Heavy/raw/private files live outside git in Google Drive `A-Wiki-Data`.

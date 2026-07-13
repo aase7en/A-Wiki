@@ -651,19 +651,26 @@ to{transform:translateY(0);opacity:1}
           <li><b>🌊 Flow</b> — จุดกำเนิด (🧠 Senior Critic) ส่งข้อมูลไหลทางท่อไปยังแต่ละ model; ท่อสว่าง + อนุภาค = กำลังทำงาน</li>
           <li><b>🏊 Timeline</b> — lanes แตกแขนงตามเวลา; เขียว=สำเร็จ แดง=ล้มเหลว เป็นลูกคลื่น=กำลังทำ</li>
           <li><b>🔗 Graph</b> — knowledge-graph ของ session/task/agent</li>
+          <li><b>🧩 Skills</b> — catalog ของ skill ทั้งหมด พร้อมคำอธิบายไทย + ตัวอย่าง + simulation; filter ตาม agent เพื่อดูความสามารถของ agent ที่คุณใช้</li>
           <li><b>Event Log</b> — timeline เหตุการณ์สด · <b>แถบ hook</b> ✅/🔴 · <b>cost tier</b> — L-1 ถูก → L4 แพง</li>
         </ul>
       </div>
       <div class="help-section">
         <h4>🚀 dashboard เปิดอัตโนมัติ</h4>
         <table class="help-table">
-          <tr><th>Agent / IDE</th><th>Auto-start</th></tr>
+          <tr><th>Agent / IDE</th><th>Auto-start mechanism</th></tr>
           <tr><td>Claude Code</td><td class="yes">✅ SessionStart hook</td></tr>
-          <tr><td>Codex</td><td class="yes">✅ SessionStart hook</td></tr>
-          <tr><td>Kilo Code (VS Code)</td><td class="yes">✅ folderOpen task</td></tr>
-          <tr><td>Cline / Cursor</td><td class="no">⚠ รันเอง / lazy บน delegate</td></tr>
+          <tr><td>Codex / OpenAI</td><td class="yes">✅ SessionStart hook (via .codex/hooks symlink)</td></tr>
+          <tr><td>Kilo Code</td><td class="yes">✅ VS Code folderOpen task</td></tr>
+          <tr><td>Cline</td><td class="yes">✅ VS Code folderOpen task (.vscode/tasks.json)</td></tr>
+          <tr><td>Cursor / Windsurf</td><td class="yes">✅ VS Code folderOpen task</td></tr>
+          <tr><td>ZCode</td><td class="no">👆 AGENTS.md step 5 (reads config, no runtime hook)</td></tr>
+          <tr><td>Hermes (dev)</td><td class="no">👆 AGENTS.md step 5 (Pi5 Docker = no GUI)</td></tr>
+          <tr><td>Antigravity / Gemini CLI</td><td class="no">👆 GEMINI.md First Action</td></tr>
+          <tr><td>OpenClaw</td><td class="no">👆 fallback script</td></tr>
         </table>
-        <p>เปิดเอง: <code>bash scripts/dashboard-ensure.sh</code> · ปิด: <code>bash scripts/dashboard-stop.sh</code></p>
+        <p>เปิดเอง (ทุก agent): <code>bash scripts/dashboard-ensure.sh</code> · ปิด: <code>bash scripts/dashboard-stop.sh</code></p>
+        <p style="margin-top:6px">💡 <b>🧩 Skills tab</b> — filter ตาม agent เพื่อดูว่า agent ที่คุณใช้มี skill อะไรบ้าง (คำอธิบายไทย + ตัวอย่าง + simulation)</p>
       </div>
       <div class="help-section">
         <h4>📊 Capability Legend</h4>

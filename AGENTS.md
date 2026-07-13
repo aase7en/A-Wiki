@@ -45,6 +45,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. Read `wiki/context/session-memory.md` — local/private cross-session decisions + TODOs. If missing, use `wiki/context/session-memory.md.example` and run `bash scripts/setup-local.sh`.
 4. Run `python scripts/agent-preflight.py` — portable safety check when hooks are missing or before significant work
+5. `bash scripts/dashboard-ensure.sh` — Live Dashboard (auto-starts on Claude/Codex/Kilo via hooks; ZCode/Hermes/Antigravity/Cursor/Windsurf/Cline run manually or via VS Code folderOpen task). The dashboard's **🧩 Skills tab** shows every skill *this agent* can invoke — filter by agent to see your own capabilities with Thai descriptions + examples + process simulation.
 
 **Load on demand** (do NOT load every session):
 - `wiki/context/overview-{iot,env,ai,pharmacy}.md` — by domain
