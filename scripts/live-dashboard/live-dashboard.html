@@ -372,6 +372,33 @@ to{transform:translateY(0);opacity:1}
 .skill-sim-btn:hover{opacity:.85}
 .skill-sim-btn:disabled{opacity:.4;cursor:not-allowed}
 
+/* === SKILL SIMULATION MODAL === */
+#sim-backdrop{display:none;position:fixed;inset:0;background:rgba(3,3,10,.92);backdrop-filter:blur(6px);z-index:400;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px}
+#sim-backdrop.show{display:flex}
+#sim-stage{width:min(720px,94vw);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-xl);padding:24px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+#sim-stage::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-brand),var(--accent-violet))}
+#sim-title{font-size:var(--fs-lg);font-weight:800;color:var(--accent-brand);font-family:var(--font-mono);margin-bottom:4px}
+#sim-subtitle{font-size:var(--fs-xs);color:var(--text-tertiary);margin-bottom:20px}
+#sim-track{position:relative;height:8px;background:var(--elev-3);border-radius:var(--r-full);margin:0 30px 24px;overflow:hidden}
+#sim-progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-brand),var(--accent-cool));border-radius:var(--r-full);transition:width .5s cubic-bezier(.4,0,.2,1)}
+#sim-stations{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin:0 10px 20px;position:relative}
+.sim-station{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:all .4s;opacity:.4}
+.sim-station.active{opacity:1;transform:translateY(-4px) scale(1.05)}
+.sim-station.done{opacity:.7}
+.sim-core{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--elev-2);border:2px solid var(--border2);transition:all .4s;position:relative}
+.sim-station.active .sim-core{border-color:var(--accent-brand);box-shadow:0 0 20px rgba(94,234,212,.6);background:rgba(94,234,212,.15)}
+.sim-station.active .sim-core::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--accent-brand);animation:sim-ring 1.2s ease-out infinite}
+@keyframes sim-ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.4);opacity:0}}
+.sim-station.done .sim-core{border-color:var(--accent-success);background:rgba(52,211,153,.12)}
+.sim-num{font-family:var(--font-mono);font-size:9px;color:var(--text-tertiary)}
+.sim-label{font-size:var(--fs-2xs);color:var(--text-secondary);line-height:1.3;max-width:90px;font-weight:600}
+.sim-station.active .sim-label{color:var(--accent-brand)}
+.sim-station.done .sim-label{color:var(--accent-success)}
+#sim-explain{background:var(--elev-2);border:1px solid var(--border);border-left:3px solid var(--accent-brand);border-radius:var(--r-md);padding:14px 16px;min-height:70px;font-size:var(--fs-sm);color:var(--text-primary);line-height:1.6;transition:all .3s}
+#sim-explain.empty{color:var(--text-disabled);font-style:italic}
+#sim-controls{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+#sim-particle{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent-brand);box-shadow:0 0 12px var(--accent-brand);pointer-events:none;transition:left .5s linear,top .5s linear;z-index:5}
+
 /* === COUNCIL PANEL === */
 #council-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;gap:8px;padding:4px 0}
 .council-item{cursor:pointer;transition:border-color .15s}
@@ -567,6 +594,23 @@ to{transform:translateY(0);opacity:1}
 <!-- Recommendation strip with typed rotator -->
 <div id="rec-strip">
   <span id="typed-intro" data-typed></span>
+</div>
+
+<!-- Skill Simulation Modal -->
+<div id="sim-backdrop" onclick="simClose(event)">
+<div id="sim-stage" onclick="event.stopPropagation()">
+<div id="sim-title">🎬 Simulation</div>
+<div id="sim-subtitle"></div>
+<div id="sim-track"><div id="sim-progress"></div></div>
+<div id="sim-stations"></div>
+<div id="sim-explain" class="empty">กด ▶ เริ่มเพื่อดูขั้นตอน</div>
+<div id="sim-controls">
+<button class="set-btn sm" onclick="simPlay()">▶ เริ่ม</button>
+<button class="set-btn sm" onclick="simStep()">⏭ ถัดไป</button>
+<button class="set-btn sm" onclick="simReset()">🔄 รีเซ็ต</button>
+<button class="set-btn sm" onclick="simClose()" style="color:var(--text-tertiary)">✕ ปิด</button>
+</div>
+</div>
 </div>
 
 <!-- Settings -->
@@ -1345,6 +1389,68 @@ ${steps?`<div class="skill-detail-section"><h5>🎬 ขั้นตอน (ส�
 function skillsCloseDetail(){
 $('skills-detail').style.transform='translateX(100%)';
 $('skills-detail-backdrop').style.display='none';
+}
+// === SKILL SIMULATION — particle walkthrough of process_steps ===
+const SIM_ICONS=['📥','🔍','🛠️','✅','📋','🚀','🔄','⚙️','🧪','📊'];
+let _simSteps=[],_simIdx=-1,_simTimer=null;
+async function simulateSkill(name){
+// Fetch full skill detail (process_steps may already be in detail view, but refetch to be safe)
+try{
+const s=await fetch('/api/skills/'+encodeURIComponent(name)).then(r=>r.json());
+if(!s||s.error||!(s.process_steps||[]).length){
+toast('Skill นี้ไม่มี process_steps สำหรับ simulation','err');return;
+}
+_simSteps=s.process_steps;_simIdx=-1;
+$('sim-title').textContent='🎬 '+s.name;
+$('sim-subtitle').textContent=s.th_description?s.th_description.slice(0,100):'';
+$('sim-explain').className='empty';$('sim-explain').textContent='กด ▶ เริ่มเพื่อดู '+_simSteps.length+' ขั้นตอน';
+$('sim-progress').style.width='0%';
+// Render stations
+$('sim-stations').innerHTML=_simSteps.map((st,i)=>`
+<div class="sim-station" data-i="${i}">
+<div class="sim-core">${SIM_ICONS[i%SIM_ICONS.length]}</div>
+<div class="sim-num">${String(i+1).padStart(2,'0')}</div>
+<div class="sim-label">${st.length>40?st.slice(0,37)+'...':st}</div>
+</div>`).join('');
+$('sim-backdrop').classList.add('show');
+}catch(e){toast('โหลด skill ไม่ได้: '+e.message,'err');}
+}
+function simPlay(){
+if(_simTimer){clearInterval(_simTimer);_simTimer=null;return;}
+if(_simIdx>=_simSteps.length-1)_simIdx=-1; // replay
+_simTimer=setInterval(simStep,2200);
+simStep();
+}
+function simStep(){
+if(!_simSteps.length)return;
+_simIdx++;
+if(_simIdx>=_simSteps.length){
+if(_simTimer){clearInterval(_simTimer);_simTimer=null;}
+$('sim-explain').className='';$('sim-explain').innerHTML='✅ <b>เสร็จสิ้น!</b> ครบ '+_simSteps.length+' ขั้นตอน';
+return;
+}
+// Update stations
+document.querySelectorAll('.sim-station').forEach((el,i)=>{
+el.classList.toggle('active',i===_simIdx);
+el.classList.toggle('done',i<_simIdx);
+});
+// Progress bar
+$('sim-progress').style.width=((_simIdx+1)/_simSteps.length*100)+'%';
+// Explanation
+$('sim-explain').className='';
+$('sim-explain').innerHTML=`<b style="color:var(--accent-brand)">ขั้นที่ ${_simIdx+1}/${_simSteps.length}:</b> ${_simSteps[_simIdx]}`;
+}
+function simReset(){
+if(_simTimer){clearInterval(_simTimer);_simTimer=null;}
+_simIdx=-1;
+document.querySelectorAll('.sim-station').forEach(el=>{el.classList.remove('active','done');});
+$('sim-progress').style.width='0%';
+$('sim-explain').className='empty';$('sim-explain').textContent='กด ▶ เริ่มเพื่อดู '+_simSteps.length+' ขั้นตอน';
+}
+function simClose(e){
+if(e&&e.target&&e.target.id!=='sim-backdrop'&&e.type==='click')return;
+if(_simTimer){clearInterval(_simTimer);_simTimer=null;}
+$('sim-backdrop').classList.remove('show');
 }
 setView('summary');
 _stageRO.observe(flowStage);
