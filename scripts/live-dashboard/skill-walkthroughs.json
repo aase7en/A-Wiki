@@ -1,0 +1,144 @@
+{
+  "_meta": {
+    "purpose": "Multi-skill flow templates for the Live Dashboard walkthrough modal. Each flow chains 4-7 skills in order — particle animation shows users (including non-technical) how A-Wiki orchestrates a real workflow.",
+    "schema": {
+      "title_th": "Thai title (short)",
+      "summary_th": "Thai summary (1-2 sentences)",
+      "level_th": "Difficulty: เริ่มต้น | ปานกลาง | ขั้นสูง",
+      "duration_th": "Time estimate (Thai)",
+      "steps": [
+        {
+          "skill": "<canonical skill name from registry>",
+          "label_th": "Thai step label",
+          "icon": "<emoji>"
+        }
+      ]
+    },
+    "rules": [
+      "Every skill referenced must exist as canonical in skills-registry.json.",
+      "Icons are single emoji characters.",
+      "Order matters — it's the execution sequence.",
+      "Public-safe: no real paths, account names, or secrets."
+    ]
+  },
+
+  "deploy-flask-app": {
+    "title_th": "Deploy Flask/Django ขึ้น production",
+    "summary_th": "จากโค้ดเสร็จ สู่ live production — ครอบคลุม test, audit, CI, deploy และ monitor",
+    "level_th": "ปานกลาง",
+    "duration_th": "ครึ่งวัน – 1 วัน",
+    "steps": [
+      {"skill": "tdd", "label_th": "รัน test ให้ครบผ่าน", "icon": "🧪"},
+      {"skill": "code-simplification", "label_th": "ลด complexity รอบสุดท้าย", "icon": "✂️"},
+      {"skill": "security-and-hardening", "label_th": "OWASP + auth audit", "icon": "🔒"},
+      {"skill": "ci-cd-and-automation", "label_th": "ตั้ง CI pipeline อัตโนมัติ", "icon": "⚙️"},
+      {"skill": "shipping-and-launch", "label_th": "Deploy + rollback plan", "icon": "🚀"},
+      {"skill": "observability-and-instrumentation", "label_th": "ตั้ง logs/metrics/alerts", "icon": "📊"}
+    ]
+  },
+
+  "ingest-research-paper": {
+    "title_th": "นำ paper/บทความเข้า wiki",
+    "summary_th": "จากไฟล์ดิบหรือ URL สู่หน้า wiki/sources ที่ค้นหาได้ พร้อมเชื่อมโยง knowledge graph",
+    "level_th": "เริ่มต้น",
+    "duration_th": "5-15 นาที",
+    "steps": [
+      {"skill": "ingest-source", "label_th": "เก็บไฟล์ดิบใน raw/", "icon": "📥"},
+      {"skill": "ingest-source", "label_th": "ส่งเข้า harness route (Tier 1/2/3)", "icon": "🔀"},
+      {"skill": "ingest-source", "label_th": "เขียน wiki/sources/<slug>.md", "icon": "📝"},
+      {"skill": "lint-wiki", "label_th": "ตรวจโครง + frontmatter", "icon": "🔍"},
+      {"skill": "connections-optimizer", "label_th": "เชื่อมโยง knowledge graph", "icon": "🔗"},
+      {"skill": "ask-notebooklm", "label_th": "สังเคราะห์ข้ามแหล่ง (ถ้าต้อง)", "icon": "🧠"}
+    ]
+  },
+
+  "debug-production-issue": {
+    "title_th": "ดับไฟปัญหา production",
+    "summary_th": "เมื่อผู้ใช้แจ้ง bug — ระบบช่วยให้หา root cause อย่างเป็นระบบ ไม่ใช่เดา",
+    "level_th": "ขั้นสูง",
+    "duration_th": "30 นาที – หลายชั่วโมง",
+    "steps": [
+      {"skill": "safety-guard", "label_th": "ประเมินความรุนแรงก่อน", "icon": "🚨"},
+      {"skill": "observability-and-instrumentation", "label_th": "ดู logs/metrics/traces", "icon": "📊"},
+      {"skill": "debug-mantra", "label_th": "Reproduce + trace fail path", "icon": "🔍"},
+      {"skill": "debug-mantra", "label_th": "Falsify hypothesis + cross-ref", "icon": "🧪"},
+      {"skill": "verify-before-done", "label_th": "ยืนยันว่าแก้จริง ไม่ใช่อาการ", "icon": "✅"},
+      {"skill": "post-mortem", "label_th": "บันทึกเหตุการณ์ + ป้องกัน", "icon": "📋"}
+    ]
+  },
+
+  "secure-existing-api": {
+    "title_th": "ตรวจและแข็งแรก API ที่มีอยู่",
+    "summary_th": "Audit ช่องโหว่ API แบบเป็นระบบ — auth, input validation, rate limit, OWASP top 10",
+    "level_th": "ปานกลาง",
+    "duration_th": "ครึ่งวัน",
+    "steps": [
+      {"skill": "api-design", "label_th": "ทบทวน contract + schema", "icon": "📐"},
+      {"skill": "security-scan", "label_th": "สแกนอัตโนมัติ + dependency", "icon": "🔬"},
+      {"skill": "security-and-hardening", "label_th": "แก้ OWASP top 10", "icon": "🛡️"},
+      {"skill": "scrutinize", "label_th": "บุคคลที่สามตรวจอีกรอบ", "icon": "👁️"},
+      {"skill": "tdd", "label_th": "เขียน test ครอบช่องโหว่เดิม", "icon": "🧪"},
+      {"skill": "documentation-and-adrs", "label_th": "บันทึก decision + ADR", "icon": "📚"}
+    ]
+  },
+
+  "migrate-database": {
+    "title_th": "ย้าย database อย่างปลอดภัย",
+    "summary_th": "เปลี่ยน schema/engine โดยไม่ตกข้อมูล — migration test, dry-run, rollback plan",
+    "level_th": "ขั้นสูง",
+    "duration_th": "หลายวัน (มี cutover)",
+    "steps": [
+      {"skill": "spec-driven-development", "label_th": "เขียนสเปก migration + เป้าหมาย", "icon": "📋"},
+      {"skill": "database-migrations", "label_th": "สร้าง migration script (idempotent)", "icon": "🗄️"},
+      {"skill": "tdd", "label_th": "ทดสอบกับ dump จริง", "icon": "🧪"},
+      {"skill": "deprecation-and-migration", "label_th": "วางแผน cutover + rollback", "icon": "🔀"},
+      {"skill": "shipping-and-launch", "label_th": "Deploy + monitor ใกล้ชิด", "icon": "🚀"},
+      {"skill": "observability-and-instrumentation", "label_th": "เช็ค metric หลังย้าย", "icon": "📊"}
+    ]
+  },
+
+  "refactor-legacy-module": {
+    "title_th": "ปรับโครงโมดูลเก่า",
+    "summary_th": "เขียนใหม่ทีละส่วนโดยพฤติกรรมเดิมไม่เปลี่ยน — มี test กัน มี hexagonal boundary",
+    "level_th": "ปานกลาง",
+    "duration_th": "หลายวัน",
+    "steps": [
+      {"skill": "scrutinize", "label_th": "เข้าใจโค้ดเดิมก่อน", "icon": "🔍"},
+      {"skill": "tdd", "label_th": "เขียน test ครอบพฤติกรรมเดิม", "icon": "🧪"},
+      {"skill": "hexagonal-architecture", "label_th": "แยก domain จาก infra", "icon": "⬡"},
+      {"skill": "code-simplification", "label_th": "ตัดส่วนซ้ำ/ซับซ้อน", "icon": "✂️"},
+      {"skill": "scrutinize", "label_th": "บุคคลที่สามตรวจผล", "icon": "👁️"},
+      {"skill": "documentation-and-adrs", "label_th": "บันทึกสถาปัตยกรรมใหม่", "icon": "📚"}
+    ]
+  },
+
+  "ship-new-feature": {
+    "title_th": "ส่งมอบฟีเจอร์ใหม่",
+    "summary_th": "ครบ lifecycle — define → plan → build → verify → review → ship ตามมาตรฐาน",
+    "level_th": "ปานกลาง",
+    "duration_th": "1-2 สัปดาห์",
+    "steps": [
+      {"skill": "brainstorm-before-build", "label_th": "ถาม clarify ก่อนทำ", "icon": "💭"},
+      {"skill": "spec-driven-development", "label_th": "เขียนสเปก + acceptance", "icon": "📋"},
+      {"skill": "planning-and-task-breakdown", "label_th": "แตก task เป็น chunk", "icon": "🧩"},
+      {"skill": "tdd", "label_th": "เขียนโค้ดทีละ chunk + test", "icon": "🧪"},
+      {"skill": "scrutinize", "label_th": "Review ก่อน merge", "icon": "👁️"},
+      {"skill": "shipping-and-launch", "label_th": "Deploy + monitor", "icon": "🚀"}
+    ]
+  },
+
+  "audit-agent-architecture": {
+    "title_th": "ตรวจสถาปัตยกรรมระบบ agent",
+    "summary_th": "ระบบ agent ซับซ้อนแล้ว — ตรวจซ้ำ/ขัดแย้ง/วน, เรียง skill ใหม่, วัด follow rule",
+    "level_th": "ขั้นสูง",
+    "duration_th": "ครึ่งวัน",
+    "steps": [
+      {"skill": "workspace-surface-audit", "label_th": "แมป surface ทั้งหมด", "icon": "🗺️"},
+      {"skill": "agent-architecture-audit", "label_th": "ตรวจ loop + conflict + overlap", "icon": "🔍"},
+      {"skill": "agent-sort", "label_th": "เรียง skill ตาม evidence", "icon": "📊"},
+      {"skill": "skill-comply", "label_th": "วัด Iron Law follow rate", "icon": "📏"},
+      {"skill": "agent-eval", "label_th": "วัด success rate", "icon": "🎯"},
+      {"skill": "documentation-and-adrs", "label_th": "บันทึก ADR ปรับปรุง", "icon": "📚"}
+    ]
+  }
+}

@@ -38,6 +38,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+DASHBOARD_DIR = Path(__file__).resolve().parent  # scripts/live-dashboard/
 
 # scripts/lib is not an installed package — same sys.path convention as
 # tests/test_council_room.py uses to import council_room.
@@ -578,6 +579,10 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response(skills_service.agent_overview())
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
+        elif path == "/api/walkthroughs":
+            self._api_walkthroughs_list()
+        elif path.startswith("/api/walkthroughs/"):
+            self._api_walkthroughs_detail(path[len("/api/walkthroughs/"):])
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
@@ -796,6 +801,75 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response(skill)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
+
+    # ── Walkthroughs (multi-skill flow templates) ──────────────
+    def _api_walkthroughs_list(self):
+        """Return all walkthrough flows (without _meta) — title, summary, level, duration, step count."""
+        try:
+            data = self._load_walkthroughs()
+            flows = []
+            for key, flow in data.items():
+                if key == "_meta":
+                    continue
+                flows.append({
+                    "id": key,
+                    "title_th": flow.get("title_th", key),
+                    "summary_th": flow.get("summary_th", ""),
+                    "level_th": flow.get("level_th", ""),
+                    "duration_th": flow.get("duration_th", ""),
+                    "step_count": len(flow.get("steps", [])),
+                })
+            self._json_response({"flows": flows, "total": len(flows)})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_walkthroughs_detail(self, flow_id: str):
+        """Return one walkthrough flow with full step details + resolved skill metadata."""
+        if "/" in flow_id or ".." in flow_id or not flow_id:
+            self._json_response({"error": "invalid flow id"}, 400)
+            return
+        try:
+            data = self._load_walkthroughs()
+            flow = data.get(flow_id)
+            if flow is None or flow_id == "_meta":
+                self._json_response({"error": f"flow '{flow_id}' not found"}, 404)
+                return
+            # Resolve each step's skill metadata so the client doesn't need a
+            # second round-trip per step.
+            steps_resolved = []
+            for step in flow.get("steps", []):
+                skill = skills_service.get_skill(step["skill"])
+                steps_resolved.append({
+                    "skill": step["skill"],
+                    "label_th": step.get("label_th", ""),
+                    "icon": step.get("icon", "🔧"),
+                    "skill_th_description": (skill or {}).get("th_description", ""),
+                    "skill_invocation": (skill or {}).get("invocation", "manual"),
+                })
+            self._json_response({
+                "id": flow_id,
+                "title_th": flow.get("title_th", flow_id),
+                "summary_th": flow.get("summary_th", ""),
+                "level_th": flow.get("level_th", ""),
+                "duration_th": flow.get("duration_th", ""),
+                "steps": steps_resolved,
+            })
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _load_walkthroughs(self) -> dict:
+        """Lazy-load skill-walkthroughs.json. mtime-cached so edits show up without restart."""
+        import os
+        path = DASHBOARD_DIR / "skill-walkthroughs.json"
+        mtime = os.path.getmtime(path) if path.exists() else 0
+        cache = getattr(self, "_walkthroughs_cache", None)
+        cache_mtime = getattr(self, "_walkthroughs_mtime", 0)
+        if cache is None or mtime != cache_mtime:
+            with open(path, "r", encoding="utf-8") as f:
+                cache = json.load(f)
+            self._walkthroughs_cache = cache
+            self._walkthroughs_mtime = mtime
+        return cache
 
     def _api_agents_post(self):
         data = self._read_body()
