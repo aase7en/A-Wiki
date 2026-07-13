@@ -298,6 +298,8 @@ A real-time monitor showing **which AI is working, on what, in which workflow, h
 - **⚙️ Settings → Models** — toggle any model on/off and edit its `model_id`. Each card shows a **capability scorecard** (SWE-bench · Terminal-Bench · NL2Repo · reasoning · speed). If you change nothing, sensible **defaults** apply.
 - **⚙️ Settings → API Keys** — paste a provider key (incl. **GLM 5.2 / Z.ai**). Keys are stored gitignored in `.tmp/` + `drive/.secrets` (never in the repo, never shown back).
 - **Capability-aware routing** — the router ranks models by leaderboard capability **within each cost class**, so `cost_rank` always wins: a paid model never jumps ahead of a free one. Capability only breaks ties among models you've enabled.
+- **🧩 Skills tab** — universal second-brain view: every skill in the registry with **Thai descriptions**, **when-to-use triggers**, **1-2 examples**, and **process-step simulation**. Filter by agent to see exactly what *your* AI agent can do. Auto/manual invocation badges show which skills load automatically vs. which need `/skill-name`.
+- **🎬 Process simulation** — click any skill with `process_steps` → animated walkthrough shows each step as a glowing station, so non-technical users understand *how* a skill works without reading code.
 
 Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` (written by the panel) and `wiki/context/model-capability-scores.json`. See [`scripts/live-dashboard/README.md`](scripts/live-dashboard/README.md).
 

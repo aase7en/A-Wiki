@@ -18,6 +18,15 @@ import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Emoji written to stderr below crashes on non-UTF-8 consoles (Thai Windows =
+# cp874). Degrade unencodable characters instead of dying — same pattern as
+# scripts/regen-skill-surfaces.py / scripts/check-privacy.py.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass  # non-reconfigurable stream (pipes/tests) — already safe
+
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
@@ -213,6 +222,23 @@ def check_model_scout_freshness(repo_root: str) -> None:
         pass
 
 
+def check_vendor_upstream(repo_root: str) -> None:
+    """Warn (best-effort) when a vendored upstream repo has a new HEAD commit.
+
+    Throttled to one `git ls-remote` per vendor per 24h (cache in
+    .tmp/vendor-check-cache.json). Quiet when current or offline. Any
+    exception here — including a broken import — must degrade to silence,
+    it must never break SessionStart.
+    """
+    try:
+        from scripts.lib.vendor_watch import check_vendors
+
+        for notice in check_vendors():
+            sys.stderr.write(f"{notice}\n")
+    except Exception:
+        pass
+
+
 def _emit_session_start() -> None:
     """Emit session_start event to live dashboard (best-effort)."""
     try:
@@ -303,7 +329,22 @@ def main():
     _emit_session_start()
     _ensure_dashboard()
 
+<<<<<<< Updated upstream
     run_steps(REPO_ROOT, is_lean())
+=======
+    # Only run on SessionStart-like events (or always — lightweight enough)
+    repo_root = REPO_ROOT
+
+    git_pull(repo_root)
+    check_wiki_freshness(repo_root)
+    check_api_keys(repo_root)
+    maybe_update_model_intel(repo_root)
+    show_model_tier_hint()
+    show_todos(repo_root)
+    clean_stale_cost_declarations(repo_root)
+    check_model_scout_freshness(repo_root)
+    check_vendor_upstream(repo_root)
+>>>>>>> Stashed changes
 
     sys.exit(0)
 
