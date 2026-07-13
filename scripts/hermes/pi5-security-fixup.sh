@@ -5,10 +5,11 @@
 # Run ONCE on the Pi5 (as user umbrel, via SSH or Umbrel Terminal widget).
 # Fixes two issues in the legacy /home/umbrel/pi5-sync.sh:
 #
-#   1. SECURITY: the legacy script hardcodes the sudo password in plaintext:
-#        echo "Admin1234!" | sudo -S docker ...
+#   1. SECURITY: the legacy script hardcoded the sudo password in plaintext:
+#        echo "<redacted>" | sudo -S docker ...
 #      This installs a NOPASSWD sudoers drop-in for docker only, then removes
-#      the password from the script.
+#      the password from the script. (The literal password is intentionally
+#      not reproduced here — see git history or ask the user.)
 #
 #   2. QUALITY: the legacy script `docker restart`s the whole container every
 #      6h (heavy). This repoints the systemd timer to scripts/hermes/awiki-pi5-sync.sh
@@ -134,7 +135,7 @@ echo "  2. Legacy /home/umbrel/pi5-sync.sh backed up (had hardcoded password)"
 echo "  3. hermes-sync.service now calls awiki-pi5-sync.sh (uses gateway rescan, not container restart)"
 echo "  4. Timer still runs every 6h (OnCalendar=*-*-* 00,06,12,18:00:00)"
 echo ""
-echo "Security note: rotate the umbrel password if 'Admin1234!' was ever shared."
+echo "Security note: rotate the umbrel password if the old one was ever shared."
 echo "  sudo passwd umbrel"
 echo ""
 echo "Next sync: $(systemctl --user list-timers hermes-sync.timer --no-pager 2>/dev/null | grep hermes-sync | head -1)"
