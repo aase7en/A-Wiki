@@ -70,8 +70,11 @@ step "Step 2/3: Gateway rescan (pick up newly imported skills)..."
 # force an immediate rescan.
 PID_FILE="/opt/data/gateway.pid"
 # gateway.pid contains JSON (Phase 3 discovery) — extract the digits, don't cat.
-if sudo -S -p '' docker exec "$CONTAINER" test -f "$PID_FILE" 2>/dev/null; then
-  if sudo -S -p '' docker exec "$CONTAINER" bash -c "kill -HUP \$(grep -o '[0-9]\+' $PID_FILE | head -1)" 2>/dev/null; then
+# `sudo -n` (non-interactive): fails fast if NOPASSWD isn't set, instead of
+# hanging waiting for a password. The Pi5 setup installs a NOPASSWD sudoers
+# drop-in for the umbrel user; see docs/runbooks/pi5-quick-start.md.
+if sudo -n docker exec "$CONTAINER" test -f "$PID_FILE" 2>/dev/null; then
+  if sudo -n docker exec "$CONTAINER" bash -c "kill -HUP \$(grep -o '[0-9]\+' $PID_FILE | head -1)" 2>/dev/null; then
     info "Gateway rescanned — new skills now visible"
   else
     warn "SIGHUP failed — skills will load on next container restart"
@@ -82,10 +85,10 @@ else
 fi
 
 step "Step 3/3: Verify..."
-SKILL_COUNT=$(sudo -S -p '' docker exec "$CONTAINER" \
+SKILL_COUNT=$(sudo -n docker exec "$CONTAINER" \
   bash -c 'find /opt/data/skills -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l' 2>/dev/null || echo "?")
 if [ "$SKILL_COUNT" = "?" ]; then
-  warn "Could not count skills (container may be down)"
+  warn "Could not count skills (container may be down, or NOPASSWD docker not set — see pi5-quick-start.md)"
 else
   info "Skills in /opt/data/skills/: $SKILL_COUNT directories"
 fi
