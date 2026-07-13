@@ -6316,6 +6316,24 @@
       "version": "2.0.0",
       "status": "canonical",
       "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup."
+    },
+    {
+      "name": "game-phaser-pipeline",
+      "aliases": [],
+      "domain": [
+        "code",
+        "media"
+      ],
+      "lifecycle_phase": "build",
+      "category": "game",
+      "source": "repo",
+      "path": "skills/awiki/game-phaser-pipeline/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Phaser + Vite + TypeScript + PixelLab game pipeline for A-Wiki game projects (PWQ): route, asset naming/manifest convention, verify steps, and the visualization-only client safety gate."
     }
   ]
 }

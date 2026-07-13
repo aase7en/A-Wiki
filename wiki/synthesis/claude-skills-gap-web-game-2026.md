@@ -59,7 +59,7 @@ Registry 365 skills มี design/frontend coverage หนาแล้ว [wiki]
 
 **คำแนะนำ (เรียงตาม gate)**:
 
-1. **สร้าง skill ของตัวเอง game-phaser-pipeline** (เบาสุด, ตรง stack สุด) — distill route + asset convention + safety gate (client = visualization-only ตาม Iron Law #7) จาก synthesis 4 หน้าข้างบนเป็น SKILL.md เดียว + ลง registry — ไม่มี dependency ภายนอก ใช้ได้ทุก agent ทันที
+1. **สร้าง skill ของตัวเอง game-phaser-pipeline** (เบาสุด, ตรง stack สุด) — distill route + asset convention + safety gate (client = visualization-only ตาม Iron Law #7) จาก synthesis 4 หน้าข้างบนเป็น SKILL.md เดียว + ลง registry — ไม่มี dependency ภายนอก ใช้ได้ทุก agent ทันที → **✅ ทำแล้ว 2026-07-13**: `skills/awiki/game-phaser-pipeline/SKILL.md` (registry: domain `code,media`, category `game`, ผ่าน regen --check + verify-skill-surfaces + pytest 93 passed)
 2. **Vendored subset ของ gamedev-skills/awesome-gamedev-agent-skills** [verified 2026-07-13 via search] — 66 version-pinned skills + master router, ครอบคลุม Phaser/PixiJS/three.js/Godot/Unity, SKILL.md format เดียวกัน — ใช้ pattern remote+refresh เหมือน mattpocock, cherry-pick เฉพาะ web-game (Phaser/PixiJS/three.js) ไม่เอาทั้ง 66
 3. ตัวเลือกเสริมถ้าขยับ engine อื่น: Randroids-Dojo/Godot-Claude-Skills (Godot 4.x + GdUnit4), htdt/godogen (autonomous Godot/Bevy/Babylon) — ยังไม่จำเป็นตอนนี้ [verified 2026-07-13 via search]
 4. 3D preview ใน Cowork session มี Three.js MCP (show_threejs_scene) ให้ใช้อยู่แล้ว — จดเป็น capability ไม่ต้องติดตั้งอะไร
@@ -75,7 +75,7 @@ Registry 365 skills มี design/frontend coverage หนาแล้ว [wiki]
 ### ลำดับติดตั้งที่แนะนำ (รอไฟเขียว — ทำบนเครื่องหลักที่มี drive/)
 
 ```bash
-# 1. game-phaser-pipeline (เขียนเอง — งาน authoring + registry + regen, ไม่มีคำสั่งติดตั้ง)
+# 1. game-phaser-pipeline — ✅ done 2026-07-13 → skills/awiki/game-phaser-pipeline/
 # 2. taste-skill
 npx skills add Leonxlnx/taste-skill --skill "design-taste-frontend"
 # 3. transitions-dev

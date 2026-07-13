@@ -132,6 +132,7 @@
 | `frontend-patterns` | code | none | ecosystem | `skills/ecosystem/frontend-patterns/SKILL.md` |
 | `frontend-slides` | document | none | ecosystem | `skills/ecosystem/frontend-slides/SKILL.md` |
 | `fsharp-testing` | code | none | ecosystem | `skills/ecosystem/fsharp-testing/SKILL.md` |
+| `game-phaser-pipeline` | code, media | build | game | `skills/awiki/game-phaser-pipeline/SKILL.md` |
 | `gan-style-harness` | code | none | ecosystem | `skills/ecosystem/gan-style-harness/SKILL.md` |
 | `gateguard` | security | none | ecosystem | `skills/ecosystem/gateguard/SKILL.md` |
 | `gget` | data | none | ecosystem | `skills/ecosystem/scientific-pkg-gget/SKILL.md` |
@@ -369,7 +370,7 @@
 |--------|------------|
 | ai-ops | 32 |
 | business | 10 |
-| code | 180 |
+| code | 181 |
 | data | 15 |
 | debug | 8 |
 | design | 10 |
@@ -377,7 +378,7 @@
 | engineering | 42 |
 | env | 1 |
 | logistics | 7 |
-| media | 12 |
+| media | 13 |
 | medical | 6 |
 | network | 10 |
 | pharmacy | 1 |
