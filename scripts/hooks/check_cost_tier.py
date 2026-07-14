@@ -94,6 +94,13 @@ def emit_model_active(tier: str) -> None:
 
 
 def main() -> None:
+    # Windows consoles default to cp874/cp1252 — force UTF-8 for the Thai message
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError):
+            pass
+
     # Skip in CI — but make the bypass VISIBLE (not silent) so it shows in logs.
     if os.environ.get("CI", "").lower() in ("true", "1"):
         sys.stderr.write("💰 Cost gate: BYPASSED (CI=true) — no tier enforced this run\n")

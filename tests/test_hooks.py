@@ -400,7 +400,7 @@ def _run_cost_gate(payload: dict, tmp_dir: Path, extra_env: dict | None = None) 
     return subprocess.run(
         [sys.executable, HOOK_PATH],
         input=json.dumps(payload),
-        capture_output=True, text=True,
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
         env=env,
         cwd=str(REPO_ROOT),
     )

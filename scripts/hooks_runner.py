@@ -28,6 +28,16 @@ import subprocess
 import time
 import glob
 
+# Windows consoles default to cp874/cp1252 — force UTF-8 for hook output this
+# runner re-emits itself (e.g. a blocked hook's Thai stderr message,
+# forwarded verbatim in main() below). Same strong pattern as
+# scripts/hooks/check_compaction_suggest.py:114-120.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
 HOOKS_DIR = os.path.join(os.path.dirname(__file__), "hooks")
 HOOK_TIMEOUT = int(os.environ.get("HOOK_TIMEOUT", "5"))
 
@@ -84,6 +94,7 @@ def run_hook(hook_name, input_data):
             capture_output=True,
             text=True, encoding="utf-8", errors="replace",
             timeout=HOOK_TIMEOUT,
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         )
         passed = proc.returncode != 2
         if proc.returncode == 2:
