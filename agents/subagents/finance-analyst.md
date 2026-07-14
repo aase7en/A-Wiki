@@ -76,7 +76,9 @@ Synthesize numbers + qualitative context into a thesis with:
 - **Thai context**: THB currency, Thai-specific regulations, foreign ownership
   limits when relevant.
 - Reuse A-Wiki skills `ito-trade-planner`, `ito-basket-compare`,
-  `prediction-market-risk-review`, `defi-amm-security`.
+  `prediction-market-risk-review`, `defi-amm-security`,
+  `monte-carlo-quant-analysis` (ใช้สำหรับ distribution-based risk analysis:
+  VaR/CVaR/RRR/Sharpe ผ่าน Monte Carlo simulation — paper-only, non-advisory).
 
 ## When NOT to use
 

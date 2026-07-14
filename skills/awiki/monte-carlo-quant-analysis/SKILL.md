@@ -246,6 +246,9 @@ QMC อาจไม่ preserve path structure ได้ดีเท่า pseud
 - `ito-trade-planner` — non-executing trade planning worksheet
 - `defi-amm-security` — DeFi/smart-contract security (different domain, same advice boundary)
 
+### Subagent routing
+- `finance-analyst` (`agents/subagents/finance-analyst.md`) — เรียก skill นี้เมื่อต้องการ distribution-based risk analysis (VaR/CVaR/RRR ผ่าน MC simulation)
+
 ### Approved paper-data feed pattern
 - `CannedMarketDataFeed` — see `docs/protocols/bot-trading-iron-law.md` §Amendment 2026-06-12 (read-only `listSymbols()`/`getKlines()`, zero write methods, flag-gated `RemoteMarketDataFeed` fallback)
 
