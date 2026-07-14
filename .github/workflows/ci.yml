@@ -67,6 +67,26 @@ jobs:
           python scripts/check-privacy.py
           bash -n scripts/setup-local.sh scripts/setup-cloud-link.sh scripts/update-model-roster.sh scripts/delegate.sh scripts/swarm/delegate.sh
 
+      - name: Security pattern scan (USA-1 §5 Layer 3)
+        # Scan the whole tracked tree for secret + machine-path patterns using
+        # the shared scripts/hooks/security_patterns.yaml. Catches what the
+        # privacy check's hardcoded patterns miss (machine-specific paths).
+        run: |
+          set -eu
+          # Reuse the pre-commit scanner on the full tracked file set.
+          EXIT=0
+          for f in $(git ls-files '*.py' '*.sh' '*.md' '*.json' '*.yaml' '*.yml' '*.toml' | head -5000); do
+            # Build a fake "added" diff line so the scanner's +line filter catches it.
+            if ! printf '+%s\n' "$(cat "$f" 2>/dev/null)" | python scripts/hooks/_scan_staged_diff.py 2>/dev/null | grep -q .; then
+              :
+            else
+              printf '::error::Security finding in %s\n' "$f"
+              printf '+%s\n' "$(cat "$f")" | python scripts/hooks/_scan_staged_diff.py 2>/dev/null | head -3 | sed "s/^/  /"
+              EXIT=1
+            fi
+          done
+          exit $EXIT
+
       - name: Skill registry consistency
         run: |
           python scripts/regen-skill-surfaces.py --validate
