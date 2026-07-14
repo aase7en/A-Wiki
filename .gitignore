@@ -150,6 +150,14 @@ raw/
 drive
 .drive-path
 
+# --- USA-1 §4: per-agent Drive isolation (.~<agent>/ on A-Wiki-Data) ---
+# Agent-specific state (sessions, worktrees, memory, hooks-state, large-artifacts)
+# lives on Drive, never in the repo. Matches .~<agent> dirs at repo root
+# (accidental) and under drive/. Run: bash scripts/setup-agent-drive.sh
+.\~
+drive/.~*
+.~*/
+
 # --- Real pharmacy business data — lives in drive/pharmacy/ only (Iron Law #6) ---
 # Delivery invoices, order history, verified-search items, and exports are real
 # business records, not wiki knowledge. Scripts resolve them via
