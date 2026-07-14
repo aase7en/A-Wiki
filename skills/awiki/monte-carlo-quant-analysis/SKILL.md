@@ -202,7 +202,29 @@ def ci_95(x: np.ndarray):
 
 ## Extensions (advanced, out of scope สำหรับ v1)
 
-- **Quasi-Monte Carlo** (Sobol/Halton sequences) — variance reduction, converge เร็วกว่า pseudo-random
+### Quasi-Monte Carlo (variance reduction)
+
+Pseudo-random MC converge ที่ O(1/√N). Quasi-MC ใช้ low-discrepancy sequences
+(Sobol, Halton) ที่กระจาย "สม่ำเสมอกว่าสุ่ม" → converge ที่ O(1/N) — เร็วขึ้น ~10-100×
+สำหรับ tail-risk accuracy เดียวกัน. เหมาะกับ VaR/CVaR ที่ต้องการ tail precision.
+
+```python
+from scipy.stats import qmc, norm  # scipy ≥ 1.7
+
+def sobol_paths(mu: float, sigma: float, T: int, N: int = 4096, seed: int = 42):
+    """QMC paths via Sobol — N ควรเป็น power of 2 สำหรับ balance property."""
+    sampler = qmc.Sobol(d=T, scramble=True, seed=seed)
+    u = sampler.random(N)                    # shape (N, T) uniform [0,1)
+    z = norm.ppf(u)                           # → standard normal via inverse CDF
+    return mu + sigma * z                     # shape (N, T) simulated returns
+```
+
+**เลือกเมื่อ**: tail-risk metric (VaR/CVaR) ต้องการ precision สูง + N ใหญ่.
+**ไม่เลือกเมื่อ**: path-dependent metric (max drawdown) ที่ sequential structure สำคัญ —
+QMC อาจไม่ preserve path structure ได้ดีเท่า pseudo-random.
+
+### อื่นๆ
+
 - **Importance sampling** — oversample rare events สำหรับ tail-risk accuracy
 - **Stochastic processes ที่ซับซ้อน** — Heston (stochastic vol), SABR, jump-diffusion
 - **Multi-level MC** — variance reduction hierarchy
