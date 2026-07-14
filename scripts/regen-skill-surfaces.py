@@ -67,6 +67,7 @@ from skills_registry.generators import (  # noqa: E402
     gen_hermes,
     gen_kilo,
     gen_openclaw,
+    gen_skill_index,
     gen_windsurf,
     gen_zcode,
 )
@@ -89,6 +90,9 @@ GENERATORS = {
     gen_windsurf.filename: gen_windsurf,
     gen_openclaw.filename: gen_openclaw,
     gen_zcode.filename: gen_zcode,
+    # USA-1 chunk C8 — central skill brain (USA-1 §6). Written to wiki/, not
+    # generated/, because it is the agent-readable brain consumed at session start.
+    gen_skill_index.filename: gen_skill_index,
 }
 
 
@@ -106,10 +110,23 @@ def _load_registry(path: Path) -> Registry:
     return Registry.load(path)
 
 
+def _output_path(filename: str) -> Path:
+    """Resolve where a generated surface should be written.
+
+    Most surfaces live under SURFACES_DIR (generated/, gitignored machine files).
+    The central skill brain (SKILL-INDEX.md, USA-1 §6) lives under wiki/ because
+    it is the agent-readable brain consumed at session start, not a machine blob.
+    """
+    if filename == "SKILL-INDEX.md":
+        return REPO_ROOT / "wiki" / filename
+    return SURFACES_DIR / filename
+
+
 def cmd_regenerate(args: argparse.Namespace) -> int:
     """Regenerate all surfaces from the registry (default action)."""
     reg = _load_registry(REGISTRY_PATH)
     SURFACES_DIR.mkdir(parents=True, exist_ok=True)
+    (REPO_ROOT / "wiki").mkdir(parents=True, exist_ok=True)
 
     # Touch a .gitkeep so the dir is tracked even before first generation.
     (SURFACES_DIR / ".gitkeep").touch()
@@ -118,24 +135,52 @@ def cmd_regenerate(args: argparse.Namespace) -> int:
     print(f"   ({len(reg.skills)} skills, {len(reg.canonical_names())} canonical)")
     for filename, gen in GENERATORS.items():
         content = gen.render(reg)
-        out = SURFACES_DIR / filename
+        out = _output_path(filename)
+        out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(content, encoding="utf-8")
-        print(f"   ✓ {filename} ({len(content)} bytes)")
-    print(f"✅ Surfaces written to {SURFACES_DIR.relative_to(REPO_ROOT)}/")
+        rel = out.relative_to(REPO_ROOT)
+        print(f"   ✓ {rel} ({len(content)} bytes)")
+    print(f"✅ Surfaces regenerated.")
     return 0
 
 
 def cmd_check(args: argparse.Namespace) -> int:
-    """CI mode: exit 1 if any generated surface has drifted from the registry."""
+    """CI mode: exit 1 if any generated surface has drifted from the registry.
+
+    Surfaces may live in different dirs (most in generated/, the skill brain
+    SKILL-INDEX.md in wiki/ per USA-1 §6), so we resolve each output path via
+    _output_path rather than assuming a single surfaces_dir.
+    """
     reg = _load_registry(REGISTRY_PATH)
     generated = {filename: gen.render(reg) for filename, gen in GENERATORS.items()}
 
+    # First, the standard generated/-dir surfaces via the drift module.
+    gen_dir_surfaces = {
+        fn: content for fn, content in generated.items()
+        if _output_path(fn).parent == SURFACES_DIR
+    }
     try:
-        drift_mod.detect_and_raise(REGISTRY_PATH, SURFACES_DIR, generated)
+        drift_mod.detect_and_raise(REGISTRY_PATH, SURFACES_DIR, gen_dir_surfaces)
     except DriftError as exc:
         print(f"🚨 Drift detected: {exc}", file=sys.stderr)
         print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
         return 1
+
+    # Then, out-of-dir surfaces (currently just the wiki/SKILL-INDEX.md brain).
+    for filename, expected in generated.items():
+        out = _output_path(filename)
+        if out.parent == SURFACES_DIR:
+            continue  # already checked above
+        if not out.exists():
+            print(f"🚨 Drift detected: {filename} missing at {out}", file=sys.stderr)
+            print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
+            return 1
+        actual = out.read_text(encoding="utf-8")
+        # Use the same timestamp normaliser as the drift module.
+        if drift_mod._normalize(actual) != drift_mod._normalize(expected):
+            print(f"🚨 Drift detected: {filename} content does not match registry output", file=sys.stderr)
+            print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
+            return 1
 
     print(f"✅ No drift — {len(generated)} surface(s) match the registry.")
     return 0
