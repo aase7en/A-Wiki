@@ -113,7 +113,7 @@
 | `foundation-models-on-device` | none | ecosystem | ใช้ Apple FoundationModels framework สำหรับรัน LLM บนอุปกรณ์ iOS 26+ รองรับ text generation, guid... |
 | `frontend-patterns` | none | ecosystem | รวบรวมแนวทางการพัฒนา frontend สำหรับ React, Next.js, การจัดการ state, การเพิ่มประสิทธิภาพ และ UI ... |
 | `fsharp-testing` | none | ecosystem | ทักษะสำหรับการเขียนเทสต์ใน F# โดยใช้ xUnit, FsUnit, Unquote และ FsCheck สำหรับ property-based tes... |
-| `game-phaser-pipeline` | build | game | Phaser + Vite + TypeScript + PixelLab game pipeline for A-Wiki game projects (PWQ): route, asset ... |
+| `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
 | `gan-style-harness` | none | ecosystem | GAN-style harness ที่ใช้ Generator และ Evaluator ในการสร้างแอปพลิเคชันคุณภาพสูงแบบอัตโนมัติ โดยอิ... |
 | `git-workflow` | none | ecosystem | ทักษะนี้ครอบคลุมรูปแบบการทำงานกับ Git ตั้งแต่กลยุทธ์การแตก branch, หลักการตั้งชื่อ commit, การเลื... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
@@ -516,7 +516,7 @@
 |-------|-----------|----------|-------------|
 | `algorithmic-art` | none | uncategorized | สร้างงานศิลปะเชิงอัลกอริทึมด้วย p5.js โดยใช้ seeded randomness เพื่อให้ผลลัพธ์ reproducible และให... |
 | `fal-ai-media` | none | ecosystem | สร้างภาพ วิดีโอ และเสียงผ่าน fal.ai MCP รองรับโมเดลหลากหลาย เช่น Nano Banana สำหรับ text-to-image... |
-| `game-phaser-pipeline` | build | game | Phaser + Vite + TypeScript + PixelLab game pipeline for A-Wiki game projects (PWQ): route, asset ... |
+| `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
 | `imagegen` | none | uncategorized | สร้างหรือแก้ไขภาพบิตแมปเมื่อต้องการภาพถ่าย ภาพประกอบ พื้นผิว สไปรต์ หรือภาพโปร่งใสที่ AI สร้างขึ้... |
 | `manim-video` | none | ecosystem | สร้างวิดีโออธิบายแนวคิดทางเทคนิค กราฟ ไดอะแกรมระบบ และการสาธิตผลิตภัณฑ์ด้วย Manim พร้อมส่งต่อให้ท... |
 | `motion-advanced` | none | ecosystem | ทักษะนี้รวบรวมเทคนิค motion ขั้นสูงสำหรับ React และ Next.js ครอบคลุม drag & drop, gesture, text a... |

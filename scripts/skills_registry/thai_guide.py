@@ -730,6 +730,63 @@ THAI_GUIDE: dict[str, dict] = {
             {"scenario": "อยาก ingest URL", "how": "/ingest <URL>"},
         ],
     },
+
+    # ── Aliases (alias → canonical mapping) ───────────────────────────────
+    # Each alias gets a standalone th_description that points at its canonical
+    # skill, so the dashboard shows what each alias is for instead of a blank
+    # card. The alias entries stay lightweight — detail lives on the canonical.
+    "hipaa-compliance": {
+        "invocation": "manual",
+        "th_description": "Alias ของ healthcare-phi-compliance — มาตรฐานคุ้มครองข้อมูลสุขภาพ (PHI/HIPAA) สำหรับระบบ medical/healthcare",
+        "when_to_use": "ทำระบบ healthcare ที่ต้องจัดการ PHI หรือ comply HIPAA",
+        "examples": [
+            {"scenario": "เก็บข้อมูลคนไข้", "how": "ดู healthcare-phi-compliance สำหรับแนวทางครบ"},
+        ],
+    },
+    "laravel-verification": {
+        "invocation": "manual",
+        "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Laravel จาก django-verification มาใช้ (แนวทาง cross-framework เดียวกัน)",
+        "when_to_use": "verify งาน Laravel ผ่านแนวทางเดียวกับ django-verification",
+        "examples": [
+            {"scenario": "ตรวจ Laravel service", "how": "เปิด django-verification แล้ว map ไป Laravel"},
+        ],
+    },
+    "quarkus-verification": {
+        "invocation": "manual",
+        "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Quarkus จาก django-verification มาใช้",
+        "when_to_use": "verify งาน Quarkus ผ่านแนวทางเดียวกับ django-verification",
+        "examples": [
+            {"scenario": "ตรวจ Quarkus service", "how": "เปิด django-verification แล้ว map ไป Quarkus"},
+        ],
+    },
+    "springboot-verification": {
+        "invocation": "manual",
+        "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Spring Boot จาก django-verification มาใช้",
+        "when_to_use": "verify งาน Spring Boot ผ่านแนวทางเดียวกับ django-verification",
+        "examples": [
+            {"scenario": "ตรวจ Spring Boot app", "how": "เปิด django-verification แล้ว map ไป Spring"},
+        ],
+    },
+    "token-budget-advisor": {
+        "invocation": "manual",
+        "th_description": "Alias ของ context-budget — คำนวณและแนะนำ token budget ต่อ task/context เพื่อใช้ model budget อย่างคุ้มค่า",
+        "when_to_use": "ทำ multi-step task ที่กลัว token บาน หรือต้องการ budget estimate",
+        "examples": [
+            {"scenario": "ทำ long ingest", "how": "ดู context-budget ก่อนเริ่ม"},
+        ],
+    },
+
+    # ── Game / media pipeline ─────────────────────────────────────────────
+    "game-phaser-pipeline": {
+        "invocation": "manual",
+        "th_description": "Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route, asset naming/manifest, ขั้นตอน verify, และ safety gate สำหรับ client (visualization-only)",
+        "when_to_use": "เริ่ม/ปรับโปรเจก game Phaser ของ A-Wiki หรือเพิ่ม asset/mechanic ใหม่",
+        "examples": [
+            {"scenario": "เพิ่ม sprite ตัวละครใหม่", "how": "ตั้งชื่อตาม manifest convention → import → verify route"},
+            {"scenario": "ตั้ง client ใหม่", "how": "ทำตาม visualization-only safety gate ห้าม signed request/execution"},
+        ],
+        "process_steps": ["ตั้งชื่อ asset", "อัปเดต manifest", "wire route Phaser", "verify ในเกม", "เช็ค safety gate"],
+    },
 }
 
 
