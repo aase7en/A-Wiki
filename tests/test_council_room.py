@@ -67,6 +67,83 @@ class TestPlanParticipants:
     def test_empty_when_none_available(self):
         assert cr.plan_participants(3, {}) == []
 
+    # ── drive/.secrets visibility (Fix 3) ───────────────────────────────
+
+    def test_engine_available_via_drive_secret_name_only(self):
+        result = cr.plan_participants(6, {}, list_secret_names=lambda: ["GEMINI_API_KEY"])
+        assert result == ["GEMINI"]
+
+    def test_engine_absent_from_both_env_and_drive_is_excluded(self):
+        result = cr.plan_participants(6, {}, list_secret_names=lambda: ["ANTHROPIC_API_KEY"])
+        assert "GEMINI" not in result
+        assert result == ["ANTHROPIC"]
+
+    def test_key_in_both_env_and_drive_not_double_counted(self):
+        env = {"GEMINI_API_KEY": "g"}
+        result = cr.plan_participants(6, env, list_secret_names=lambda: ["GEMINI_API_KEY"])
+        assert result.count("GEMINI") == 1
+
+    def test_drive_disabled_engine_still_excluded(self):
+        env = {"AWIKI_DISABLE_GEMINI": "1"}
+        result = cr.plan_participants(6, env, list_secret_names=lambda: ["GEMINI_API_KEY"])
+        assert "GEMINI" not in result
+
+    def test_default_list_secret_names_performs_no_io(self):
+        # No list_secret_names passed at all — must never touch the real
+        # drive/.secrets file. Regression guard for a machine-dependence bug
+        # found during planning: this repo's own dev machine has real drive
+        # secrets configured, which would otherwise leak into this result
+        # if the pure module defaulted to the real drive_secrets function.
+        assert cr.plan_participants(3, {}) == []
+
+    def test_raising_list_secret_names_degrades_to_empty(self):
+        def boom():
+            raise RuntimeError("drive unreachable")
+
+        result = cr.plan_participants(6, {"GEMINI_API_KEY": "g"}, list_secret_names=boom)
+        assert result == ["GEMINI"]  # env-only result, no crash
+
+
+# ── plan_participants task_type tier filtering (Fix 4) ──────────────────
+
+class TestPlanParticipantsTaskTypeTierFiltering:
+    def _all_keys_env(self) -> dict:
+        return {v: "x" for v in cr.ENGINE_KEY_ENV.values()}
+
+    def test_no_task_type_applies_no_filtering(self):
+        assert cr.plan_participants(6, self._all_keys_env()) == list(cr.FREE_FIRST_ORDER)
+
+    def test_groq_excluded_for_reason_task_type(self):
+        result = cr.plan_participants(6, self._all_keys_env(), task_type="reason")
+        assert "GROQ" not in result
+        assert {"GEMINI", "OPENROUTER"} <= set(result)
+
+    def test_groq_excluded_for_scan_task_type(self):
+        result = cr.plan_participants(6, self._all_keys_env(), task_type="scan")
+        assert "GROQ" not in result
+
+    def test_groq_included_for_summarize_search_lookup(self):
+        for tt in ("summarize", "search", "lookup"):
+            result = cr.plan_participants(6, self._all_keys_env(), task_type=tt)
+            assert "GROQ" in result, tt
+
+    def test_anthropic_only_for_scan(self):
+        assert "ANTHROPIC" in cr.plan_participants(6, self._all_keys_env(), task_type="scan")
+        assert "ANTHROPIC" not in cr.plan_participants(6, self._all_keys_env(), task_type="reason")
+
+    def test_race_task_type_only_gemini_and_openrouter(self):
+        result = cr.plan_participants(6, self._all_keys_env(), task_type="race")
+        assert set(result) == {"GEMINI", "OPENROUTER"}
+
+    def test_unknown_task_type_applies_no_filtering(self):
+        result = cr.plan_participants(6, self._all_keys_env(), task_type="bogus")
+        assert result == list(cr.FREE_FIRST_ORDER)
+
+    def test_tier_filtering_combines_with_key_availability(self):
+        env = {"GEMINI_API_KEY": "g", "GROQ_API_KEY": "q"}
+        result = cr.plan_participants(6, env, task_type="reason")
+        assert result == ["GEMINI"]
+
 
 # ── force_engine_env ────────────────────────────────────────────────────
 
@@ -102,8 +179,15 @@ class TestConvene:
         def runner(engine, question, task_type, timeout, env_):
             return True, f"answer-from-{engine}"
 
+        # task_type="summarize" (tier 1) — was previously omitted (implicit
+        # default "reason", tier 2), which relied on GROQ being selected for
+        # a task type it can never actually succeed at per delegate.sh's
+        # run_tier() (GROQ only appears in the tier-1 branch). Fixed by
+        # plan_participants()'s tier-aware filtering (Fix 4) — this test now
+        # asks for a tier GROQ genuinely supports, preserving its "3 engines
+        # run in parallel" intent without the stale assumption.
         transcript = cr.convene(
-            "what is 2+2", n=3, runner=runner, emit=_noop_emit,
+            "what is 2+2", n=3, task_type="summarize", runner=runner, emit=_noop_emit,
             env=env, council_dir=tmp_path,
         )
         engines = {p["engine"] for p in transcript["participants"]}
@@ -112,6 +196,16 @@ class TestConvene:
             assert p["status"] == "ok"
             assert p["answer"] == f"answer-from-{p['engine']}"
             assert "latency_s" in p
+
+    def test_race_task_type_narrows_participants(self, tmp_path):
+        env = {v: "x" for v in cr.ENGINE_KEY_ENV.values()}
+        transcript = cr.convene(
+            "q", n=6, task_type="race",
+            runner=lambda *a, **k: (True, "x"), emit=_noop_emit,
+            env=env, council_dir=tmp_path,
+        )
+        engines = {p["engine"] for p in transcript["participants"]}
+        assert engines == {"GEMINI", "OPENROUTER"}
 
     def test_one_fail_others_ok(self, tmp_path):
         env = {"GEMINI_API_KEY": "g", "OPENROUTER_API_KEY": "o"}

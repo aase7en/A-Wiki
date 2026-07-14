@@ -45,6 +45,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
 
+# Sibling module in scripts/lib/ — importable because every caller that
+# imports council_room (server.py, tests/test_council_room.py) already puts
+# scripts/lib on sys.path before doing so.
+import drive_secrets
+
 # Emoji/Thai text in CLI output crashes on non-UTF-8 consoles (Thai Windows
 # = cp874). Degrade unencodable characters instead of dying — same pattern
 # as scripts/lib/vendor_watch.py / scripts/lib/skill_learning.py.
@@ -84,8 +89,69 @@ ENGINE_KEY_ENV: dict[str, str] = {
     "ANTHROPIC": "ANTHROPIC_API_KEY",
 }
 
+# Task type -> delegate.sh tier (mirrors scripts/swarm/delegate.sh:166-175's
+# case statement: search|lookup|summarize=1, reason|compare=2, scan=3,
+# race=0).
+TASK_TIER: dict[str, int] = {
+    "search": 1, "lookup": 1, "summarize": 1,
+    "reason": 2, "compare": 2,
+    "scan": 3,
+    "race": 0,
+}
+
+# Engine id -> set of delegate.sh tiers it actually runs in. Hand-mirrors
+# scripts/swarm/delegate.sh::run_tier() (tiers 1-3, its three case branches)
+# and run_race() (tier 0 — dispatches via try_openrouter_model() with
+# try_gemini_direct() as sole fallback; GROQ/ZHIPU/DEEPSEEK/ANTHROPIC never
+# run in race mode, so tier 0 is NOT "all engines"). NOT auto-generated —
+# re-derive by hand if delegate.sh's engine wrappers in those branches ever
+# change (delegate.sh is frozen under a zero-edit contract, see
+# docs/protocols/brainstorm-council.md, so drift here can only happen if
+# that contract is deliberately revisited).
+ENGINE_TIER_SUPPORT: dict[str, set] = {
+    "GEMINI":     {0, 1, 2, 3},
+    "OPENROUTER": {0, 1, 2, 3},
+    "GROQ":       {1},
+    "ZHIPU":      {2, 3},
+    "DEEPSEEK":   {1, 2},
+    "ANTHROPIC":  {3},
+}
+
 RunnerFn = Callable[[str, str, str, float, dict], "tuple[bool, str]"]
 EmitFn = Callable[..., None]
+SecretNamesFn = Callable[[], "list[str]"]
+
+
+def _empty_secret_names() -> "list[str]":
+    """Safe default for the list_secret_names parameter — performs NO I/O.
+
+    plan_participants()/convene() intentionally do NOT default this
+    parameter to the real drive_secrets.list_secret_names(). Doing so would
+    make every caller/test that omits the parameter silently start reading
+    a real drive/.secrets file if one happens to be configured on the
+    machine running them — this repo's own dev machine has drive/.secrets
+    populated, which would otherwise leak into test results and violate
+    this module's "tests never touch anything outside tmp_path" contract
+    (see module docstring). The real function is wired explicitly at the
+    one production call site instead — see default_list_secret_names()
+    below and scripts/swarm/council.py's _cmd_ask().
+    """
+    return []
+
+
+def default_list_secret_names() -> "list[str]":
+    """Fail-soft wrapper around drive_secrets.list_secret_names() — a
+    missing/unreadable drive/.secrets file (Drive not mounted, no
+    A_WIKI_DRIVE_PATH configured) degrades to "no drive-only keys visible",
+    never raises. This is the real-usage function scripts/swarm/council.py
+    passes explicitly to convene() for actual council rounds — see
+    _empty_secret_names()'s docstring for why it isn't council_room's own
+    signature default instead.
+    """
+    try:
+        return drive_secrets.list_secret_names()
+    except Exception:
+        return []
 
 
 # ---------------------------------------------------------------------------
@@ -93,21 +159,56 @@ EmitFn = Callable[..., None]
 # ---------------------------------------------------------------------------
 
 
-def plan_participants(n: int, env: dict) -> list[str]:
+def plan_participants(
+    n: int,
+    env: dict,
+    list_secret_names: SecretNamesFn = _empty_secret_names,
+    task_type: Optional[str] = None,
+) -> list[str]:
     """Pick up to `n` engine ids from FREE_FIRST_ORDER, cost-first.
 
-    Skips an engine if `AWIKI_DISABLE_<ID>=1` is set in `env`, or if its API
-    key env var (ENGINE_KEY_ENV) is missing/empty in `env`. Returns fewer
-    than `n` (down to an empty list) if not enough engines are available —
-    never raises, never pads with unavailable engines.
+    An engine is "available" if its API key env var (ENGINE_KEY_ENV) is
+    truthy in `env`, OR the same key NAME (never the value — see
+    scripts/lib/drive_secrets.py::list_secret_names(), which returns names
+    only) is present in `list_secret_names()`. This makes drive/.secrets-
+    only keys visible to planning even though they never touch process env
+    — delegate.sh already uses them at call time via load-drive-keys.sh
+    (scripts/swarm/delegate.sh), so this only fixes PLANNING, not
+    execution. `list_secret_names` defaults to a no-op (see
+    _empty_secret_names) so this stays offline/pure unless a caller
+    explicitly opts in (see default_list_secret_names, wired by
+    scripts/swarm/council.py). A raising `list_secret_names` degrades to
+    "no drive-only keys" rather than propagating — fail-soft, consistent
+    with the rest of this module.
+
+    `task_type`, if given and recognized (see TASK_TIER), additionally
+    filters out engines whose ENGINE_TIER_SUPPORT set excludes
+    TASK_TIER[task_type] — mirrors delegate.sh's run_tier()/run_race()
+    branches so a tier-incapable engine (e.g. GROQ for task_type="reason")
+    is never picked over an available tier-capable alternative further down
+    FREE_FIRST_ORDER. task_type=None (default) or an unrecognized task_type
+    applies NO filtering — byte-identical to pre-Fix-4 behavior.
+
+    Skips an engine if `AWIKI_DISABLE_<ID>=1` is set in `env`. Returns
+    fewer than `n` (down to an empty list) if not enough engines are
+    available — never raises, never pads with unavailable engines.
     """
     n = max(0, n)
+    try:
+        drive_names = set(list_secret_names())
+    except Exception:
+        drive_names = set()
+
+    tier = TASK_TIER.get(task_type) if task_type is not None else None
+
     available: list[str] = []
     for engine in FREE_FIRST_ORDER:
         if str(env.get(f"AWIKI_DISABLE_{engine}", "")) == "1":
             continue
         key_var = ENGINE_KEY_ENV[engine]
-        if not env.get(key_var):
+        if not env.get(key_var) and key_var not in drive_names:
+            continue
+        if tier is not None and tier not in ENGINE_TIER_SUPPORT.get(engine, set()):
             continue
         available.append(engine)
     return available[:n]
@@ -253,6 +354,7 @@ def convene(
     env: Optional[dict] = None,
     now: Optional[datetime] = None,
     council_dir: Optional[Path] = None,
+    list_secret_names: SecretNamesFn = _empty_secret_names,
 ) -> dict:
     """Fan `question` out to up to `n` free/cheap models in parallel.
 
@@ -275,7 +377,7 @@ def convene(
     council_dir = Path(council_dir) if council_dir is not None else COUNCIL_DIR
     council_id = _generate_id(now)
 
-    engines = plan_participants(n, env)
+    engines = plan_participants(n, env, list_secret_names=list_secret_names, task_type=task_type)
 
     emit("council_start", question=question[:120], n=len(engines))
 

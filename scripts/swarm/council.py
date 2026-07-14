@@ -42,6 +42,7 @@ def _cmd_ask(args: argparse.Namespace) -> int:
         n=args.participants,
         task_type=args.task_type,
         timeout=args.timeout,
+        list_secret_names=cr.default_list_secret_names,
     )
 
     ok_count = 0
