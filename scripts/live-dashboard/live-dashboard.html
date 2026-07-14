@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A-Wiki Live — Real-time AI Monitor</title>
 <style>
-:root{--elev-0:#06060d;--elev-1:#0c0c18;--elev-2:#14142a;--elev-3:#1e1e3a;--border:#15153a;--border2:#26265a;--accent-brand:#5eead4;--accent-warm:#fbbf24;--accent-cool:#60a5fa;--accent-violet:#a78bfa;--accent-success:#34d399;--accent-danger:#f87171;--accent-neutral:#94a3b8;--role-primary:#fbbf24;--role-architect:#22d3ee;--role-executioner:#34d399;--role-subagent:#a78bfa;--role-tool:#94a3b8;--role-session:#fbbf24;--role-task:#60a5fa;--text-primary:#f1f5f9;--text-secondary:#cbd5e1;--text-tertiary:#64748b;--text-disabled:#475569;--fs-2xs:clamp(10px,1.4vw,11px);--fs-xs:clamp(11px,1.7vw,12px);--fs-sm:clamp(12px,2vw,13px);--fs-base:clamp(14px,2.3vw,15px);--fs-lg:clamp(16px,2.8vw,18px);--fs-xl:clamp(20px,3.5vw,24px);--fs-2xl:clamp(26px,4.5vw,32px);--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-full:9999px;--shadow-sm:0 1px 2px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.35);--shadow-lg:0 8px 24px rgba(0,0,0,.45);--shadow-glow:0 0 16px rgba(94,234,212,.25);--google:#4285F4;--deepseek:#00c4d4;--groq:#ff6b6b;--qwen:#ffb347;--anthropic:#d4a574;--openai:#74b9d4;--zhipu:#34d399;--font-mono:'SF Mono','JetBrains Mono','Fira Code',ui-monospace,monospace;
+:root{--elev-0:#06060d;--elev-1:#0c0c18;--elev-2:#14142a;--elev-3:#1e1e3a;--border:#15153a;--border2:#26265a;--accent-brand:#5eead4;--accent-warm:#fbbf24;--accent-cool:#60a5fa;--accent-violet:#a78bfa;--accent-success:#34d399;--accent-danger:#f87171;--accent-neutral:#94a3b8;--accent-green:#34d399;--accent-warn:#fbbf24;--role-primary:#fbbf24;--role-architect:#22d3ee;--role-executioner:#34d399;--role-subagent:#a78bfa;--role-tool:#94a3b8;--role-session:#fbbf24;--role-task:#60a5fa;--text-primary:#f1f5f9;--text-secondary:#cbd5e1;--text-tertiary:#64748b;--text-disabled:#475569;--fs-2xs:clamp(10px,1.4vw,11px);--fs-xs:clamp(11px,1.7vw,12px);--fs-sm:clamp(12px,2vw,13px);--fs-base:clamp(14px,2.3vw,15px);--fs-lg:clamp(16px,2.8vw,18px);--fs-xl:clamp(20px,3.5vw,24px);--fs-2xl:clamp(26px,4.5vw,32px);--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-full:9999px;--shadow-sm:0 1px 2px rgba(0,0,0,.3);--shadow-md:0 4px 12px rgba(0,0,0,.35);--shadow-lg:0 8px 24px rgba(0,0,0,.45);--shadow-glow:0 0 16px rgba(94,234,212,.25);--google:#4285F4;--deepseek:#00c4d4;--groq:#ff6b6b;--qwen:#ffb347;--anthropic:#d4a574;--openai:#74b9d4;--zhipu:#34d399;--font-mono:'SF Mono','JetBrains Mono','Fira Code',ui-monospace,monospace;
   /* green-white theme palette (hex lives in :root only - design-system DoD) */
   --gw-elev-0:#f0faf5;--gw-elev-1:#ffffff;--gw-elev-2:#ecfdf5;--gw-elev-3:#d1fae5;--gw-border:#a7f3d0;--gw-border2:#86efac;--gw-text-primary:#052e16;--gw-text-secondary:#166534;--gw-text-tertiary:#6b7280;--gw-accent-brand:#16a34a;--gw-accent-success:#15803d;--gw-accent-warn:#ea580c;--gw-accent-danger:#dc2626;
 }
@@ -14,6 +14,7 @@
   --border:var(--gw-border);--border2:var(--gw-border2);
   --text-primary:var(--gw-text-primary);--text-secondary:var(--gw-text-secondary);--text-tertiary:var(--gw-text-tertiary);
   --accent-brand:var(--gw-accent-brand);--accent-success:var(--gw-accent-success);--accent-warn:var(--gw-accent-warn);--accent-danger:var(--gw-accent-danger);
+  --accent-green:var(--gw-accent-success);--accent-warm:var(--gw-accent-warn);
   --fs-2xs:clamp(10px,1.2vw,11px);--fs-xs:clamp(11px,1.4vw,12px);--fs-sm:clamp(12px,1.6vw,13px);
   --fs-md:clamp(14px,2vw,15px);--fs-lg:clamp(16px,2.4vw,18px);--fs-xl:clamp(20px,3vw,24px);
   --r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-full:9999px;
@@ -1812,9 +1813,9 @@ const COVERAGE_FIELD_LABELS={
   invocation:'invocation enum'
 };
 function coverageBarColor(pct){
-  if(pct>=90)return 'var(--accent-green,#10b981)';
-  if(pct>=60)return 'var(--accent-warn,#f59e0b)';
-  return 'var(--accent-danger,#ef4444)';
+  if(pct>=90)return 'var(--accent-green)';
+  if(pct>=60)return 'var(--accent-warn)';
+  return 'var(--accent-danger)';
 }
 function coverageRenderOverall(container,data){
   // Big horizontal bars — one per tracked field, sorted by coverage asc (worst first).
@@ -1864,7 +1865,7 @@ function coverageRenderMissing(container,data){
   const rows=fields.map(f=>({f,label:COVERAGE_FIELD_LABELS[f],missing:data.missing[f]||[]}))
     .filter(r=>r.missing.length>0)
     .sort((a,b)=>b.missing.length-a.missing.length);
-  if(!rows.length){container.innerHTML='<p style="color:var(--accent-green,#10b981);font-size:var(--fs-2xs)">✅ ครบทุก field แล้ว</p>';return;}
+  if(!rows.length){container.innerHTML='<p style="color:var(--accent-green);font-size:var(--fs-2xs)">✅ ครบทุก field แล้ว</p>';return;}
   container.innerHTML=rows.map(r=>{
     const preview=r.missing.slice(0,8).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px" onclick="coverageOpenSkill('${n}')">${n}</span>`).join(' ');
     const extra=r.missing.length>8?`<span style="color:var(--text-tertiary);font-size:10px">+${r.missing.length-8} อื่นๆ</span>`:'';
