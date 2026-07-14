@@ -91,10 +91,39 @@ Subagent prompt:
 ส่ง path + 1 บรรทัด context ของแต่ละ match
 ```
 
+## Parallel Fan-out Rules (Anti Rate-Limit)
+
+เมื่อ delegate หลาย subagent ในข้อความเดียว (parallel fan-out) ต้องกระจาย model/provider เพื่อไม่ให้ชน rate limit ของ free tier — ดูรายละเอียด `docs/protocols/subagent-model-routing.md`
+
+**กฎ:** ห้าม fan-out ≥3 subagent ไปที่ provider/bucket เดียวกันพร้อมกัน
+
+| N parallel | ตัวที่ 1 | ตัวที่ 2 | ตัวที่ 3 | ตัวที่ 4 |
+|---|---|---|---|---|
+| 2 | DeepSeek v4-flash | GLM-5.2 | — | — |
+| 3 | DeepSeek v4-flash | GLM-5.2 | OpenRouter free | — |
+| 4 | DeepSeek v4-flash | GLM-5.2 | OpenRouter free | DeepSeek v4-pro |
+
+**อย่า:** 3× Gemini Flash, 3× free-tier key เดียวกัน — bucket เดียวกัน = ชนแน่นอน
+
+> Pattern อ้างอิง FinRobot Director Agent ที่หน้าที่คือ "ensuring model diversity" ตอน fan-out
+
+## Rate-Limit Fallback
+
+ถ้า subagent คืน `Provider rate limited the model request` (HTTP 429) ให้ retry ผ่าน fallback chain:
+
+```bash
+bash scripts/swarm/subagent_fallback.sh "<subagent_type>" "<prompt>"
+```
+
+chain: DeepSeek → OpenRouter free → GLM-5.2 → Gemini (last resort, single call)
+
+หรือ primary agent จัดการเอง: รับ error → สลับ `model` ของ subagent นั้นเป็น provider ถัดไป → re-invoke
+
 ## ตัวชี้วัดความสำเร็จ
 
 - Token main context ลดลง 30-50% ในงาน lint/ingest ใหญ่
 - Claude หลักยังเป็นคนเขียน wiki ทั้งหมด (รักษา consistency)
 - Subagent output ส่งกลับเป็น summary ไม่ใช่ raw file content
+- Parallel fan-out ≥3 ตัวไม่ชน rate limit (กระจาย provider หรือใช้ fallback)
 
-ดูรายละเอียดเต็มใน [CLAUDE.md > 🧩 Subagent Delegation](../../../CLAUDE.md)
+ดูรายละเอียดเต็มใน [CLAUDE.md > 🧩 Subagent Delegation](../../../CLAUDE.md) และ `docs/protocols/subagent-model-routing.md`
