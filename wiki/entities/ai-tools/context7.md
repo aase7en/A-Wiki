@@ -13,7 +13,7 @@ verify_tool: WebFetch
 # Context7 (upstash/context7)
 
 **ประเภท**: MCP server + CLI — ส่ง documentation สด version-specific เข้า LLM prompt
-**สถานะ**: **candidate — แนะนำเพิ่มเป็น opt-in MCP** (pattern เดียวกับ gitnexus/graphify)
+**สถานะ**: ✅ **ติดตั้งได้แล้ว — `--context7` flag ใน `scripts/setup-optional-mcp.sh`** (opt-in, ยังไม่ auto-install; ต้องมี `CONTEXT7_API_KEY` ของผู้ใช้เอง — hosted MCP ไม่ใช่ local/free แบบ gitnexus/graphify)
 **License**: open-source (Upstash) · 59k★ [verified 2026-07-13]
 
 ## ภาพรวม

@@ -117,9 +117,14 @@ def main() -> int:
     if tool not in mutating:
         return 0
 
-    # Gather every string field that could carry a path.
+    # Gather every string field that could carry a path. Deliberately excludes
+    # file_path/filePath itself: that's the edit's own target location (always
+    # an absolute, container-specific path), never content embedded into a
+    # repo file. Scanning it produced false positives on any container whose
+    # generic home dir matches a machine-path pattern (e.g. /home/user/...).
+    # Fix authorized by user 2026-07-13 after this blocked every Edit/Write
+    # in a container whose repo path is /home/user/A-Wiki/.
     candidates = [
-        _flatten(tool_input.get("file_path") or tool_input.get("filePath")),
         _flatten(tool_input.get("content")),
         _flatten(tool_input.get("new_string") or tool_input.get("newString")),
         _flatten(tool_input.get("old_string") or tool_input.get("oldString")),

@@ -17,6 +17,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
+# Secrets that must NEVER be satisfied by an env-var fallback. WIKI_UNLOCK is
+# independently read from os.environ by check_claudemd_lock.py as the
+# *provided* password and compared against fetch_secret("WIKI_UNLOCK") as the
+# *expected* password; if fetch_secret also fell back to the same env var,
+# expected == provided trivially and the CLAUDE.md lock would be a no-op.
+# Mirrors scripts/import-keys.py::NEVER_CACHE.
+NEVER_CACHE = {"WIKI_UNLOCK"}
+
 try:
     from drive_path import get_drive_root
 except Exception:  # pragma: no cover - defensive fallback for standalone use
@@ -154,8 +162,20 @@ def load_secrets() -> dict[str, str]:
 
 
 def fetch_secret(name: str) -> str | None:
-    """Return a secret value by name, or None if unavailable."""
-    return load_secrets().get(name)
+    """Return a secret value by name, or None if unavailable.
+
+    Falls back to os.environ when the .secrets file doesn't have it — remote
+    / cloud containers commonly have high-frequency API keys (OPENROUTER_API_KEY,
+    GROQ_API_KEY, ...) set as real env vars but no drive mount to read a
+    .secrets file from. NEVER_CACHE entries (WIKI_UNLOCK) are excluded: see
+    the NEVER_CACHE docstring above for why.
+    """
+    value = load_secrets().get(name)
+    if value is not None:
+        return value
+    if name in NEVER_CACHE:
+        return None
+    return os.environ.get(name)
 
 
 def list_secret_names() -> list[str]:

@@ -40,6 +40,16 @@
 | `claude-mem` | Claude-Mem (87k★) — auto-capture memory (SQLite+vector) — ประเมินก่อน เทียบ gbrain/session-memory |
 | `superpowers` | Superpowers (253k★, obra) — methodology framework — track upstream, keep ours |
 | `context7` | Context7 (59k★, Upstash) — live version-specific library docs MCP — candidate opt-in |
+| `a-wiki-skill-architecture` | A-Wiki's universal 5-layer skill architecture — one registry, every agent surface auto-updates |
+| `deer-flow` | DeerFlow (ByteDance) — full agent harness on LangGraph/LangChain — evaluated, rejected/not integrated |
+| `gbrain` | GBrain (Garry Tan) — memory layer with synthesis + self-wiring knowledge graph, opt-in MCP |
+| `live-dashboard` | Live Dashboard v2.2 — A-Wiki's own real-time HTTP+SSE monitor, auto-starts every session on :7790 |
+| `mattpocock-skills` | Matt Pocock / AI Hero skills — grilling, TDD enforcement, deep-module architecture, upstream-tracked |
+| `model-capability-bench` | Capability-based model ranking (SWE-bench/Terminal-Bench/NL2RepoBench) for swarm task allocation |
+| `news-intelligence-pipeline` | News collection → filtering → light analysis → deep prediction, live on Hermes cron (Pi5), ~$0.50/mo |
+| `omniroute` | OmniRoute — open-source multi-provider LLM gateway, 17 routing strategies, RTK+Caveman compression |
+| `pake` | Pake — converts any webpage into a ~5MB native desktop app (Rust/Tauri), 20x lighter than Electron |
+| `zai-glm` | Z.ai / GLM series — cost-first direct-API provider (OpenAI-compatible), reasoning/coding/agentic |
 
 ---
 
