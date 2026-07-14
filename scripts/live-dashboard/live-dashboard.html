@@ -549,6 +549,11 @@ to{transform:translateY(0);opacity:1}
       </label>
     </div>
     <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
+    <!-- 🕹 Discovery bar: skill-of-the-day + recently used -->
+    <div id="skills-discovery" style="padding:6px 8px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <div id="sotd-chip" style="display:none;cursor:pointer" onclick="sotdOpen()"></div>
+      <div id="recent-chips" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+    </div>
     <!-- 🎬 Multi-skill flows (collapsible) -->
     <div id="walkthroughs-bar" style="padding:6px 8px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="toggleWalkthroughsBar()">
@@ -600,6 +605,18 @@ to{transform:translateY(0);opacity:1}
     <div class="glass-card" style="padding:14px 16px">
       <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🔄 แยกตาม Lifecycle Phase</h4>
       <div id="coverage-by-phase"></div>
+    </div>
+
+    <!-- Agent comparison — diff two agents' visible skills -->
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">⚔️ เปรียบเทียบ Agent</h4>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+        <select id="cov-cmp-a" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)"></select>
+        <span style="color:var(--text-tertiary);font-size:var(--fs-2xs)">vs</span>
+        <select id="cov-cmp-b" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)"></select>
+        <button onclick="coverageCompare()" style="padding:5px 12px;border-radius:var(--r-md);border:1px solid var(--accent-brand,rgba(120,170,255,.4));background:var(--elev-2);color:var(--accent-brand);font-size:var(--fs-2xs);cursor:pointer">เปรียบเทียบ</button>
+      </div>
+      <div id="coverage-compare"></div>
     </div>
 
     <!-- Missing lists — quick-fill targets -->
@@ -991,7 +1008,7 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
-if(v==='skills'){skillsLoad();loadWalkthroughs();applyAgentParam();}
+if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();}
 if(v==='coverage')coverageLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 }
@@ -1440,6 +1457,8 @@ drawer.innerHTML='<div style="padding:30px;text-align:center;color:var(--text-te
 try{
 const s=await fetch('/api/skills/'+encodeURIComponent(name)).then(r=>r.json());
 if(s.error)throw new Error(s.error);
+// Track recently opened skill for discovery bar.
+recordRecentSkill(s.name);
 const inv=s.invocation||'manual';
 const invIcon=inv==='auto'?'🤖 โหลดอัตโนมัติ':inv==='both'?'🔀 อัตโนมัติ/แมนนวล':'👆 เรียกเอง';
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
@@ -1546,6 +1565,53 @@ async function skillRunExecute(script,needsArgs){
   }catch(e){
     out.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--accent-danger);padding:8px">❌ ${e.message}</div>`;
   }
+}
+// === DISCOVERY: recently used + skill-of-the-day ===
+const RECENT_KEY='awiki-recent-skills';
+const SOTD_KEY='awiki-sotd';
+function _lsGet(key,def){try{return JSON.parse(localStorage.getItem(key)||'null')||def;}catch(e){return def;}}
+function _lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+function recordRecentSkill(name){
+  let recent=_lsGet(RECENT_KEY,[]);
+  recent=[name,...recent.filter(n=>n!==name)].slice(0,8);
+  _lsSet(RECENT_KEY,recent);
+  renderDiscoveryBar();
+}
+function renderDiscoveryBar(){
+  const rc=$('recent-chips');if(!rc)return;
+  const recent=_lsGet(RECENT_KEY,[]);
+  if(!recent.length){rc.innerHTML='';return;}
+  rc.innerHTML='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:2px">🕘 ล่าสุด:</span>'+
+    recent.slice(0,5).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--border2)" onclick="skillsOpenDetail('${n}')">${n}</span>`).join('');
+}
+function sotdPick(allSkills){
+  // Deterministic by date seed — same skill all day, changes at midnight.
+  const today=new Date().toISOString().slice(0,10);
+  const stored=_lsGet(SOTD_KEY,{});
+  if(stored.date===today&&stored.name){return stored.name;}
+  // Pick from skills that have th_description + process_steps (richest view).
+  const pool=allSkills.filter(s=>s.th_description&&s.process_steps);
+  if(!pool.length)return null;
+  // Simple date-seed hash → index.
+  let h=0;for(const c of today)h=(h*31+c.charCodeAt(0))>>>0;
+  const pick=pool[h%pool.length].name;
+  _lsSet(SOTD_KEY,{date:today,name:pick});
+  return pick;
+}
+function sotdOpen(){
+  const sotd=_lsGet(SOTD_KEY,{});
+  if(sotd.name)skillsOpenDetail(sotd.name);
+}
+async function loadSotd(){
+  // Fetch all skills once (no filter) to pick from.
+  try{
+    const r=await fetch('/api/skills?limit=500').then(r=>r.json());
+    const name=sotdPick(r.skills||[]);
+    const chip=$('sotd-chip');
+    if(!chip||!name)return;
+    chip.style.display='inline-flex';
+    chip.innerHTML=`<span style="font-size:var(--fs-2xs);background:var(--elev-2);border:1px solid var(--accent-brand,rgba(120,170,255,.4));color:var(--accent-brand);border-radius:var(--r-md);padding:4px 10px">🎲 Skill แห่งวัน: <b>${name}</b></span>`;
+  }catch(e){}
 }
 function skillsCloseDetail(){
 $('skills-detail').style.transform='translateX(100%)';
@@ -1689,9 +1755,41 @@ async function coverageLoad(){
       return `🔄 ${phaseNames[x]||x}`;
     });
     coverageRenderMissing($('coverage-missing'),data);
+    // Populate comparison dropdowns if empty.
+    const selA=$('cov-cmp-a'),selB=$('cov-cmp-b');
+    if(selA&&selA.options.length===0){
+      const agents=Object.keys(data.by_agent||{});
+      for(const sel of [selA,selB]){
+        for(const a of agents){
+          const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);
+        }
+      }
+      if(agents.length>=2){selA.value=agents[0];selB.value=agents[1];}
+    }
   }catch(e){
     if(overall){overall.innerHTML=`<div style="color:var(--accent-danger);font-size:var(--fs-2xs)">❌ ${e.message}</div>`;}
   }
+}
+async function coverageCompare(){
+  const a=$('cov-cmp-a').value,b=$('cov-cmp-b').value;
+  const out=$('coverage-compare');
+  if(!a||!b){out.innerHTML='<p style="color:var(--text-disabled);font-size:var(--fs-2xs)">เลือก agent 2 ตัว</p>';return;}
+  out.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px">⏳ กำลังเปรียบเทียบ...</div>';
+  try{
+    const data=await fetch('/api/coverage?compare='+encodeURIComponent(a+','+b)).then(r=>r.json());
+    const diff=data.diff;
+    if(!diff){out.innerHTML='<p style="color:var(--text-disabled);font-size:var(--fs-2xs)">ไม่มีข้อมูล diff</p>';return;}
+    const onlyA=diff.only_a||[],onlyB=diff.only_b||[];
+    out.innerHTML=`
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">
+        <div style="text-align:center"><div style="font-size:var(--fs-lg);font-weight:700;color:var(--accent-success)">${diff.shared}</div><div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">shared</div></div>
+        <div style="text-align:center"><div style="font-size:var(--fs-lg);font-weight:700;color:var(--accent-warn)">${diff.only_a_count}</div><div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">เฉพาะ ${diff.agent_a}</div></div>
+        <div style="text-align:center"><div style="font-size:var(--fs-lg);font-weight:700;color:var(--accent-cool)">${diff.only_b_count}</div><div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">เฉพาะ ${diff.agent_b}</div></div>
+      </div>
+      ${onlyA.length?`<div style="margin-bottom:8px"><div style="font-size:var(--fs-2xs);color:var(--accent-warn);margin-bottom:4px">เฉพาะ ${diff.agent_a} (${onlyA.length}):</div><div style="display:flex;flex-wrap:wrap;gap:3px">${onlyA.slice(0,15).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px" onclick="coverageOpenSkill('${n}')">${n}</span>`).join('')}</div></div>`:''}
+      ${onlyB.length?`<div><div style="font-size:var(--fs-2xs);color:var(--accent-cool);margin-bottom:4px">เฉพาะ ${diff.agent_b} (${onlyB.length}):</div><div style="display:flex;flex-wrap:wrap;gap:3px">${onlyB.slice(0,15).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px" onclick="coverageOpenSkill('${n}')">${n}</span>`).join('')}</div></div>`:''}
+    `;
+  }catch(e){out.innerHTML=`<div style="color:var(--accent-danger);font-size:var(--fs-2xs)">❌ ${e.message}</div>`;}
 }
 async function simulateSkill(name){
 // Fetch full skill detail (process_steps may already be in detail view, but refetch to be safe)

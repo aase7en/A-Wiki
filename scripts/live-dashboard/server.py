@@ -616,7 +616,11 @@ class Handler(BaseHTTPRequestHandler):
             self._api_walkthroughs_detail(path[len("/api/walkthroughs/"):])
         elif path == "/api/coverage":
             try:
-                self._json_response(skills_service.coverage_stats())
+                from urllib.parse import parse_qs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                compare = params.get("compare", [None])[0]
+                self._json_response(skills_service.coverage_stats(compare=compare))
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
         elif path == "/api/run/allowlist":

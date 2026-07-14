@@ -320,11 +320,16 @@ def _skill_has(skill: dict[str, Any], field: str) -> bool:
     return True
 
 
-def coverage_stats() -> dict[str, Any]:
+def coverage_stats(compare: str | None = None) -> dict[str, Any]:
     """GET /api/coverage — coverage metrics for the Coverage tab.
 
     Returns overall %, broken down by domain / agent / phase, plus lists of
     skills still missing each tracked field (for quick-fill UI).
+
+    If compare="agentA,agentB" is given, also returns a `diff` object with:
+      - only_a: skills visible to A but not B (names)
+      - only_b: skills visible to B but not A (names)
+      - shared: skills visible to both
     """
     reg = _load_registry()
     skills = [s for s in reg.skills if s.get("status") == "canonical"]
@@ -397,7 +402,7 @@ def coverage_stats() -> dict[str, Any]:
             bucket[field] = round(n_have * 100.0 / p_total, 1) if p_total else 0.0
         by_phase[p] = bucket
 
-    return {
+    result = {
         "overall": overall,
         "by_domain": by_domain,
         "by_agent": by_agent,
@@ -406,6 +411,25 @@ def coverage_stats() -> dict[str, Any]:
         "total": total,
         "fields": list(_COVERAGE_FIELDS),
     }
+
+    # Agent comparison: ?compare=claude,zcode → diff of visible skill sets.
+    if compare:
+        parts = [p.strip().lower() for p in compare.split(",") if p.strip()]
+        if len(parts) >= 2:
+            a, b = parts[0], parts[1]
+            set_a = {s["name"] for s in reg.canonical_for_agent(a)} if a != "all" else {s["name"] for s in skills}
+            set_b = {s["name"] for s in reg.canonical_for_agent(b)} if b != "all" else {s["name"] for s in skills}
+            result["diff"] = {
+                "agent_a": a,
+                "agent_b": b,
+                "only_a": sorted(set_a - set_b)[:50],
+                "only_b": sorted(set_b - set_a)[:50],
+                "shared": len(set_a & set_b),
+                "only_a_count": len(set_a - set_b),
+                "only_b_count": len(set_b - set_a),
+            }
+
+    return result
 
 
 __all__ = ["list_skills", "get_skill", "agent_overview", "coverage_stats", "KNOWN_AGENTS"]
