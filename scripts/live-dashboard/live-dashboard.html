@@ -365,6 +365,7 @@ to{transform:translateY(0);opacity:1}
 .skill-card-copy:hover{color:var(--accent-brand);border:1px solid var(--accent-brand)}
 .skill-tag{font-size:10px;font-family:var(--font-mono);padding:1px 6px;border-radius:var(--r-sm);background:var(--elev-3);color:var(--text-tertiary);border:1px solid var(--border)}
 .skills-inv-btn.active{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.1)}
+.skills-cat-btn.active{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,.12)}
 .skill-detail-hdr{padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--elev-1);z-index:5}
 .skill-detail-name{font-size:var(--fs-lg);font-weight:800;font-family:var(--font-mono);color:var(--accent-brand);margin-bottom:4px;word-break:break-word}
 .skill-detail-body{padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px}
@@ -544,6 +545,11 @@ to{transform:translateY(0);opacity:1}
         <button class="chat-quick-btn skills-inv-btn active" data-inv="all" onclick="skillsSetInv('all')" style="padding:5px 10px;font-size:var(--fs-2xs)">ทั้งหมด</button>
         <button class="chat-quick-btn skills-inv-btn" data-inv="auto" onclick="skillsSetInv('auto')" style="padding:5px 10px;font-size:var(--fs-2xs)">🤖 Auto</button>
         <button class="chat-quick-btn skills-inv-btn" data-inv="manual" onclick="skillsSetInv('manual')" style="padding:5px 10px;font-size:var(--fs-2xs)">👆 Manual</button>
+      </div>
+      <div style="display:flex;gap:3px" id="skills-cat-row">
+        <button class="chat-quick-btn skills-cat-btn active" data-cat="" onclick="skillsSetCat('')" style="padding:5px 10px;font-size:var(--fs-2xs)">📂 ทุกประเภท</button>
+        <button class="chat-quick-btn skills-cat-btn" data-cat="subagent" onclick="skillsSetCat('subagent')" style="padding:5px 10px;font-size:var(--fs-2xs)">🔬 Subagents</button>
+        <button class="chat-quick-btn skills-cat-btn" data-cat="skill" onclick="skillsSetCat('skill')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧩 Skills</button>
       </div>
       <label style="display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer;user-select:none">
         <input type="checkbox" id="skills-installed-only" onchange="skillsRefresh()" style="cursor:pointer">📦 ติดตั้งเท่านั้น
@@ -1490,7 +1496,7 @@ if(_typedRAF)clearTimeout(_typedRAF);typedStep();
 }catch(e){}}
 buildOrigin();
 // === SKILLS PANE — universal second brain: load/filter/render skill cards ===
-let _skillsCache=[],_skillsInv='all',_skillsSearchTimer=null;
+let _skillsCache=[],_skillsInv='all',_skillsCat='',_skillsSearchTimer=null;
 const SKILL_DOMAIN_COLORS={code:'#60a5fa',debug:'#f87171',design:'#a78bfa','ux-ui':'#f472b6',trader:'#34d399',medical:'#22d3ee',business:'#fbbf24',data:'#5eead4',engineering:'#fb923c',security:'#ef4444','ai-ops':'#818cf8',productivity:'#a3e635',wiki:'#5eead4',iot:'#06b6d4',env:'#84cc16',pharmacy:'#22d3ee',thai:'#fbbf24',logistics:'#fb923c',network:'#06b6d4',media:'#ec4899',document:'#a78bfa',sre:'#f59e0b'};
 function skillsDomainColor(d){return SKILL_DOMAIN_COLORS[d]||'var(--accent-brand)';}
 function skillsSearchDebounced(){
@@ -1500,6 +1506,11 @@ _skillsSearchTimer=setTimeout(skillsLoad,250);
 function skillsSetInv(inv){
 _skillsInv=inv;
 document.querySelectorAll('.skills-inv-btn').forEach(b=>b.classList.toggle('active',b.dataset.inv===inv));
+skillsRefresh();
+}
+function skillsSetCat(cat){
+_skillsCat=cat||'';
+document.querySelectorAll('.skills-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
 skillsRefresh();
 }
 function skillsRefresh(){
@@ -1517,19 +1528,27 @@ results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs
 try{
 const r=await fetch('/api/skills/recommend?q='+encodeURIComponent(q)+'&limit=5').then(r=>r.json());
 if(r.error)throw new Error(r.error);
-if(!r.results.length){
-results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px">😕 ไม่พบ skill ที่ตรง — ลองคำอื่น</div>';
+if(!r.results.length && !(r.walkthroughs||[]).length){
+results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px">😕 ไม่พบ skill หรือ flow ที่ตรง — ลองคำอื่น</div>';
 return;
 }
-results.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'":</div>'+
+// Walkthrough suggestions (shown first — whole flows beat single skills).
+const flows=(r.walkthroughs||[]).map(w=>`<div onclick="simWalkthrough('${w.id}')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--accent-violet);cursor:pointer;margin-bottom:4px">
+<span style="font-size:14px;flex-shrink:0">🎬</span>
+<span style="flex:1;font-size:var(--fs-xs);color:var(--accent-violet);font-weight:600">${w.title_th}</span>
+<span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0">${w.step_count} ขั้น · ⚡${w.score}</span>
+</div>`).join('');
+const flowHtml=flows?('<div style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-bottom:4px">🎬 แนะนำ flow:</div>'+flows):'';
+const skillHtml=r.results.length?('<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px'+(flows?';margin-top:6px':'')+'">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'":</div>'+
 r.results.map(res=>{
 const d=skillsDomainColor((res.domain||[])[0]||'');
-return `<div onclick="skillsOpenDetail('${res.name}')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--border2);cursor:pointer;margin-bottom:4px">
-<span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:${d};font-weight:600;min-width:0;flex-shrink:0">${res.name}</span>
-<span style="flex:1;font-size:var(--fs-2xs);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${res.th_description||''}</span>
-<span style="font-size:10px;color:var(--accent-warn);flex-shrink:0" title="${res.match_reason}">⚡${res.score}</span>
-</div>`;
-}).join('')+'<div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">⚡ = คะแนนความตรง · คลิกเพื่อดูรายละเอียด</div>';
+return '<div onclick="skillsOpenDetail(\''+res.name+'\')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--border2);cursor:pointer;margin-bottom:4px">'+
+'<span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:'+d+';font-weight:600;min-width:0;flex-shrink:0">'+res.name+'</span>'+
+'<span style="flex:1;font-size:var(--fs-2xs);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(res.th_description||'')+'</span>'+
+'<span style="font-size:10px;color:var(--accent-warn);flex-shrink:0" title="'+res.match_reason+'">⚡'+res.score+'</span>'+
+'</div>';
+}).join()):'';
+results.innerHTML=flowHtml+skillHtml+'<div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">⚡ = คะแนนความตรง · คลิกเพื่อดูรายละเอียด</div>';
 }catch(e){
 results.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-2xs);padding:4px">❌ '+e.message+'</div>';
 }
@@ -1661,6 +1680,7 @@ const agent=$('skills-agent-filter').value;if(agent&&agent!=='all')qs.set('agent
 const dom=$('skills-domain-filter').value;if(dom)qs.set('domain',dom);
 const q=$('skills-search').value.trim();if(q)qs.set('q',q);
 if(_skillsInv!=='all')qs.set('invocation',_skillsInv);
+if(_skillsCat)qs.set('category',_skillsCat);
 const inst=$('skills-installed-only');if(inst&&inst.checked)qs.set('installed','1');
 return qs.toString();
 }
@@ -1689,7 +1709,7 @@ else{empty.style.display='none';grid.innerHTML=_skillsCache.map(skillsRenderCard
 const st=r.stats||{};
 const agentLbl=$('skills-agent-filter').value;
 const agentTxt=agentLbl==='all'?'ทุก agent':agentLbl;
-stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · 🤖 ${st.by_invocation?.auto||0} auto · 👆 ${st.by_invocation?.manual||0} manual · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
+stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · 🤖 ${st.by_invocation?.auto||0} auto · 👆 ${st.by_invocation?.manual||0} manual · 🔬 ${st.by_category?.subagent||0} subagents · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
 }catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
 }
 function skillsRenderCard(s){

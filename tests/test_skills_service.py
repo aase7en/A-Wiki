@@ -125,6 +125,49 @@ def test_limit_param():
 
 
 # ---------------------------------------------------------------------------
+# CHUNK SO3 — category= filter (separates subagents from regular skills)
+# ---------------------------------------------------------------------------
+
+def test_filter_by_category_subagent():
+    """?category=subagent should return only subagent-category skills."""
+    r = skills_service.list_skills("category=subagent")
+    assert r["count"] > 0, "expected at least one subagent"
+    for s in r["skills"]:
+        assert s.get("category") == "subagent", (
+            f"{s.get('name')} has category={s.get('category')!r}, expected 'subagent'"
+        )
+
+
+def test_filter_by_category_excludes_subagents_when_unset():
+    """Without category filter, both regular skills and subagents appear.
+    With category=skill (or any non-subagent value), subagents are filtered out."""
+    r_all = skills_service.list_skills("")
+    r_no_sub = skills_service.list_skills("category=skill")
+    # The default view includes everything; restricting to category=skill drops subagents
+    assert r_all["count"] >= r_no_sub["count"]
+    for s in r_no_sub["skills"]:
+        assert s.get("category") != "subagent"
+
+
+def test_stats_include_by_category():
+    """Stats should carry a by_category breakdown for filter chips."""
+    r = skills_service.list_skills("")
+    assert "by_category" in r["stats"], "stats missing by_category"
+    # We registered 28 subagents — they should show up in the breakdown.
+    assert r["stats"]["by_category"].get("subagent", 0) >= 20, (
+        f"expected >=20 subagents in by_category, got {r['stats']['by_category']}"
+    )
+
+
+def test_filters_echo_category():
+    """The returned `filters` object should echo the category param (or None)."""
+    r1 = skills_service.list_skills("category=subagent")
+    assert r1["filters"]["category"] == "subagent"
+    r2 = skills_service.list_skills("")
+    assert r2["filters"]["category"] is None
+
+
+# ---------------------------------------------------------------------------
 # CHUNK K — skill_graph() — skill dependency graph for vis-network
 # ---------------------------------------------------------------------------
 
@@ -271,8 +314,24 @@ def test_recommend_limit_respected():
 
 
 # ---------------------------------------------------------------------------
-# CHUNK S — skill_history() — version + git last-modified (no schema change)
+# CHUNK V — recommend_skills() walkthrough matching
 # ---------------------------------------------------------------------------
+
+def test_recommend_includes_walkthroughs_when_matching():
+    """When query matches a walkthrough title/summary, suggest the flow too."""
+    r = skills_service.recommend_skills("debug", limit=5)
+    assert "walkthroughs" in r, "recommend response must include walkthroughs key"
+    assert isinstance(r["walkthroughs"], list)
+    # "debug" should match at least one walkthrough (e.g. debug-production-issue)
+    if r["walkthroughs"]:
+        w = r["walkthroughs"][0]
+        assert "id" in w and "title_th" in w and "score" in w and "match_reason" in w
+
+
+def test_recommend_walkthroughs_empty_when_no_match():
+    """Gibberish query should return empty walkthroughs list."""
+    r = skills_service.recommend_skills("xyzzyqwerty123", limit=5)
+    assert r["walkthroughs"] == []
 
 def test_skill_history_returns_dict_for_known_skill():
     """skill_history should return a dict with expected keys for a real skill."""

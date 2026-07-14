@@ -25,6 +25,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from skills_registry import Registry  # noqa: E402
 
 REGISTRY_FILE = REPO_ROOT / "skills-registry.json"
+WALKTHROUGHS_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "skill-walkthroughs.json"
 
 # Known agents — used for the agent dropdown + skill_count per agent.
 KNOWN_AGENTS = ["all", "claude", "codex", "zcode", "gemini", "antigravity",
@@ -175,6 +176,7 @@ def _stats(skills: list[dict[str, Any]]) -> dict[str, Any]:
     by_domain: dict[str, int] = {}
     by_invocation: dict[str, int] = {}
     by_agent: dict[str, int] = {}
+    by_category: dict[str, int] = {}
     has_thai = 0
     for s in skills:
         domains = s.get("domain") or []
@@ -192,6 +194,8 @@ def _stats(skills: list[dict[str, Any]]) -> dict[str, Any]:
         else:
             for a in agents:
                 by_agent[a] = by_agent.get(a, 0) + 1
+        cat = s.get("category") or "uncategorized"
+        by_category[cat] = by_category.get(cat, 0) + 1
         if s.get("th_description"):
             has_thai += 1
     return {
@@ -199,6 +203,7 @@ def _stats(skills: list[dict[str, Any]]) -> dict[str, Any]:
         "by_domain": dict(sorted(by_domain.items(), key=lambda kv: -kv[1])),
         "by_invocation": by_invocation,
         "by_agent": dict(sorted(by_agent.items(), key=lambda kv: -kv[1])),
+        "by_category": dict(sorted(by_category.items(), key=lambda kv: -kv[1])),
         "has_thai": has_thai,
     }
 
@@ -210,6 +215,9 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
       agent=<name>       — only skills visible to that agent (uses canonical_for_agent)
       invocation=auto|manual|both
       domain=<d>         — domain filter (matches any of the skill's domains)
+      category=<c>       — category filter (e.g. 'subagent', 'skill'); matches
+                           the registry's 'category' field. Uncategorised skills
+                           report category='uncategorized' for filter purposes.
       q=<text>           — substring search across name + th_description + when_to_use
       limit=<n>          — cap results (default 500)
     """
@@ -217,6 +225,7 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
     agent = (params.get("agent", ["all"])[0]).lower()
     invocation = params.get("invocation", [None])[0]
     domain = params.get("domain", [None])[0]
+    category = params.get("category", [None])[0]
     installed_only = params.get("installed", ["0"])[0] in ("1", "true", "yes")
     q = params.get("q", [""])[0]
     try:
@@ -242,6 +251,10 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
             if domain in (s.get("domain") if isinstance(s.get("domain"), list)
                           else [s.get("domain")] if s.get("domain") else [])
         ]
+    if category:
+        # Normalize missing category to 'uncategorized' so category=uncategorized
+        # still matches skills without an explicit category field.
+        skills = [s for s in skills if (s.get("category") or "uncategorized") == category]
     if installed_only:
         skills = [s for s in skills if _is_installed(s)]
     skills = [s for s in skills if _matches_query(s, q)]
@@ -254,7 +267,10 @@ def list_skills(query_string: str = "") -> dict[str, Any]:
         "skills": items,
         "count": len(items),
         "total_matched": len(skills),
-        "filters": {"agent": agent, "invocation": invocation, "domain": domain, "installed": installed_only, "q": q},
+        "filters": {
+            "agent": agent, "invocation": invocation, "domain": domain,
+            "category": category, "installed": installed_only, "q": q,
+        },
         "stats": _stats(skills),
         "agents": KNOWN_AGENTS,
         "loaded_at": _cache["loaded"],
@@ -720,7 +736,7 @@ def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
     """
     query = (query or "").strip().lower()
     if not query:
-        return {"query": query, "results": [], "total_matched": 0}
+        return {"query": query, "results": [], "total_matched": 0, "walkthroughs": []}
 
     reg = _load_registry()
     skills = [s for s in reg.skills if s.get("status") == "canonical"]
@@ -772,8 +788,56 @@ def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
         })
 
     results.sort(key=lambda r: (-r["score"], r["name"]))
+
+    # Also match walkthroughs (multi-skill flows) by title/summary.
+    walkthrough_matches: list[dict[str, Any]] = []
+    try:
+        walk_data = _load_walkthroughs_for_recommend()
+        for wid, flow in walk_data.items():
+            if wid == "_meta":
+                continue
+            title = (flow.get("title_th") or "").lower()
+            summary = (flow.get("summary_th") or "").lower()
+            w_score = 0
+            if query in title:
+                w_score += 5
+            if query in summary:
+                w_score += 3
+            if w_score > 0:
+                walkthrough_matches.append({
+                    "id": wid,
+                    "title_th": flow.get("title_th", wid),
+                    "score": w_score,
+                    "step_count": len(flow.get("steps", [])),
+                    "match_reason": "ตรงชื่อ/สรุป flow",
+                })
+        walkthrough_matches.sort(key=lambda w: -w["score"])
+    except Exception:
+        pass  # walk file missing — return empty list
+
     return {
         "query": query,
         "results": results[:limit],
         "total_matched": len(results),
+        "walkthroughs": walkthrough_matches[:3],
     }
+
+
+def _load_walkthroughs_for_recommend() -> dict[str, Any]:
+    """Load skill-walkthroughs.json for the recommender. Cached by mtime."""
+    if not WALKTHROUGHS_FILE.is_file():
+        return {}
+    try:
+        mtime = WALKTHROUGHS_FILE.stat().st_mtime
+    except OSError:
+        mtime = 0.0
+    cache = _cache.get("walkthroughs")
+    cache_mtime = _cache.get("walkthroughs_mtime", 0.0)
+    if cache is None or mtime != cache_mtime:
+        try:
+            with open(WALKTHROUGHS_FILE, "r", encoding="utf-8") as f:
+                _cache["walkthroughs"] = json.load(f)
+            _cache["walkthroughs_mtime"] = mtime
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return _cache.get("walkthroughs") or {}
