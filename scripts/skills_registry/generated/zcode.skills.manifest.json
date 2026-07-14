@@ -1,0 +1,1657 @@
+{
+  "schema": "zcode-skills-manifest/v1",
+  "source": "skills-registry.json",
+  "link_root": ".zcode/skills",
+  "skills": [
+    {
+      "name": "a-wiki-commands",
+      "target": "skills/awiki/a-wiki-commands/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "a-wiki-telegram",
+      "target": "skills/awiki/a-wiki-telegram/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "accessibility",
+      "target": "skills/ecosystem/accessibility/SKILL.md",
+      "domain": "ux-ui"
+    },
+    {
+      "name": "ag2-goal",
+      "target": "skills/delegation/ag2-goal/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "agent-architecture-audit",
+      "target": "skills/ecosystem/agent-architecture-audit/SKILL.md",
+      "domain": "ai-ops,engineering"
+    },
+    {
+      "name": "agent-eval",
+      "target": "skills/ecosystem/agent-eval/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "agent-harness-construction",
+      "target": "skills/ecosystem/agent-harness-construction/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "agent-introspection-debugging",
+      "target": "skills/ecosystem/agent-introspection-debugging/SKILL.md",
+      "domain": "ai-ops,debug"
+    },
+    {
+      "name": "agent-payment-x402",
+      "target": "skills/ecosystem/agent-payment-x402/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "agent-sort",
+      "target": "skills/ecosystem/agent-sort/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "agentic-engineering",
+      "target": "skills/ecosystem/agentic-engineering/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "agentic-os",
+      "target": "skills/ecosystem/agentic-os/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "ai-first-engineering",
+      "target": "skills/ecosystem/ai-first-engineering/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "ai-regression-testing",
+      "target": "skills/ecosystem/ai-regression-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "algorithmic-art",
+      "target": "skills/anthropic-skills/algorithmic-art/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "android-clean-architecture",
+      "target": "skills/ecosystem/android-clean-architecture/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "angular-developer",
+      "target": "skills/ecosystem/angular-developer/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "api-connector-builder",
+      "target": "skills/ecosystem/api-connector-builder/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "api-design",
+      "target": "skills/ecosystem/api-design/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "article-writing",
+      "target": "skills/ecosystem/article-writing/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "ask-matt",
+      "target": "skills/mattpocock/ask-matt/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "ask-notebooklm",
+      "target": "skills/claude-code/ask-notebooklm/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "assessment-generator",
+      "target": "skills/assessment-generator/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "automation-audit-ops",
+      "target": "skills/ecosystem/automation-audit-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "autonomous-agent-harness",
+      "target": "skills/ecosystem/autonomous-agent-harness/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "autonomous-loops",
+      "target": "skills/ecosystem/autonomous-loops/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "awiki-brain-improvement-gate",
+      "target": "skills/claude-code/awiki-brain-improvement-gate/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "awiki-creator-layer",
+      "target": "skills/claude-code/awiki-creator-layer/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "awiki-lifecycle-router",
+      "target": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "backend-patterns",
+      "target": "skills/ecosystem/backend-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "benchmark",
+      "target": "skills/ecosystem/benchmark/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "blender-motion-state-inspection",
+      "target": "skills/ecosystem/blender-motion-state-inspection/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "blueprint",
+      "target": "skills/ecosystem/blueprint/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "brainstorm-before-build",
+      "target": "skills/claude-code/brainstorm-before-build/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "brand-guidelines",
+      "target": "skills/anthropic-skills/brand-guidelines/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "brand-voice",
+      "target": "skills/ecosystem/brand-voice/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "browser-qa",
+      "target": "skills/ecosystem/browser-qa/SKILL.md",
+      "domain": "code,debug"
+    },
+    {
+      "name": "browser-testing-with-devtools",
+      "target": "skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "build",
+      "target": "skills/awiki/build/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "bun-runtime",
+      "target": "skills/ecosystem/bun-runtime/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "canary-watch",
+      "target": "skills/ecosystem/canary-watch/SKILL.md",
+      "domain": "sre"
+    },
+    {
+      "name": "canvas-design",
+      "target": "skills/anthropic-skills/canvas-design/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "carrier-relationship-management",
+      "target": "skills/ecosystem/carrier-relationship-management/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "ci-cd-and-automation",
+      "target": "skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md",
+      "domain": "code,engineering,sre"
+    },
+    {
+      "name": "cisco-ios-patterns",
+      "target": "skills/ecosystem/cisco-ios-patterns/SKILL.md",
+      "domain": "code,network"
+    },
+    {
+      "name": "ck",
+      "target": "skills/ecosystem/ck/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "claude-api",
+      "target": "skills/anthropic-skills/claude-api/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "claude-devfleet",
+      "target": "skills/ecosystem/claude-devfleet/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "click-path-audit",
+      "target": "skills/ecosystem/click-path-audit/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "clickhouse-io",
+      "target": "skills/ecosystem/clickhouse-io/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "code-simplification",
+      "target": "skills/engineering-lifecycle/review/code-simplification/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "code-tour",
+      "target": "skills/ecosystem/code-tour/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "codebase-design",
+      "target": "skills/mattpocock/codebase-design/SKILL.md",
+      "domain": "engineering,design"
+    },
+    {
+      "name": "codebase-onboarding",
+      "target": "skills/ecosystem/codebase-onboarding/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "coding-standards",
+      "target": "skills/ecosystem/coding-standards/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "compose-multiplatform-patterns",
+      "target": "skills/ecosystem/compose-multiplatform-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "configure-ecc",
+      "target": "skills/ecosystem/configure-ecc/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "connections-optimizer",
+      "target": "skills/ecosystem/connections-optimizer/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "content-engine",
+      "target": "skills/ecosystem/content-engine/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "content-hash-cache-pattern",
+      "target": "skills/ecosystem/content-hash-cache-pattern/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "context-budget",
+      "target": "skills/ecosystem/context-budget/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "continuous-agent-loop",
+      "target": "skills/ecosystem/continuous-agent-loop/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "continuous-learning-v2",
+      "target": "skills/ecosystem/continuous-learning-v2/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "cost-aware-llm-pipeline",
+      "target": "skills/ecosystem/cost-aware-llm-pipeline/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "cost-tracking",
+      "target": "skills/ecosystem/cost-tracking/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "council",
+      "target": "skills/ecosystem/council/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "cpp-coding-standards",
+      "target": "skills/ecosystem/cpp-coding-standards/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "cpp-testing",
+      "target": "skills/ecosystem/cpp-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "crew-dispatch",
+      "target": "skills/claude-code/crew-dispatch/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "crosspost",
+      "target": "skills/ecosystem/crosspost/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "csharp-testing",
+      "target": "skills/ecosystem/csharp-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "customer-billing-ops",
+      "target": "skills/ecosystem/customer-billing-ops/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "customs-trade-compliance",
+      "target": "skills/ecosystem/customs-trade-compliance/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "dart-flutter-patterns",
+      "target": "skills/ecosystem/dart-flutter-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "dashboard-builder",
+      "target": "skills/ecosystem/dashboard-builder/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "data-scraper-agent",
+      "target": "skills/ecosystem/data-scraper-agent/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "database-migrations",
+      "target": "skills/ecosystem/database-migrations/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "debug-mantra",
+      "target": "skills/engineering/debug-mantra/SKILL.md",
+      "domain": "debug"
+    },
+    {
+      "name": "deep-research",
+      "target": "skills/ecosystem/deep-research/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "defi-amm-security",
+      "target": "skills/ecosystem/defi-amm-security/SKILL.md",
+      "domain": "security,trader"
+    },
+    {
+      "name": "delegate-subagent",
+      "target": "skills/claude-code/delegate-subagent/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "deployment-patterns",
+      "target": "skills/ecosystem/deployment-patterns/SKILL.md",
+      "domain": "code,sre"
+    },
+    {
+      "name": "deprecation-and-migration",
+      "target": "skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "design-system",
+      "target": "skills/ecosystem/design-system/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "diagnosing-bugs",
+      "target": "skills/mattpocock/diagnosing-bugs/SKILL.md",
+      "domain": "debug,engineering"
+    },
+    {
+      "name": "django-celery",
+      "target": "skills/ecosystem/django-celery/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "django-patterns",
+      "target": "skills/ecosystem/django-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "django-security",
+      "target": "skills/ecosystem/django-security/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "django-tdd",
+      "target": "skills/ecosystem/django-tdd/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "django-verification",
+      "target": "skills/ecosystem/django-verification/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "dmux-workflows",
+      "target": "skills/ecosystem/dmux-workflows/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "doc-coauthoring",
+      "target": "skills/anthropic-skills/doc-coauthoring/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "docker-patterns",
+      "target": "skills/ecosystem/docker-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "documentation-and-adrs",
+      "target": "skills/engineering-lifecycle/ship/documentation-and-adrs/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "documentation-lookup",
+      "target": "skills/ecosystem/documentation-lookup/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "docx",
+      "target": "skills/anthropic-skills/docx/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "domain-modeling",
+      "target": "skills/mattpocock/domain-modeling/SKILL.md",
+      "domain": "engineering,design"
+    },
+    {
+      "name": "dotnet-patterns",
+      "target": "skills/ecosystem/dotnet-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "e2e-testing",
+      "target": "skills/ecosystem/e2e-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "ecc-guide",
+      "target": "skills/ecosystem/ecc-guide/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "ecc-tools-cost-audit",
+      "target": "skills/ecosystem/ecc-tools-cost-audit/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "email-ops",
+      "target": "skills/ecosystem/email-ops/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "energy-procurement",
+      "target": "skills/ecosystem/energy-procurement/SKILL.md",
+      "domain": "env"
+    },
+    {
+      "name": "enterprise-agent-ops",
+      "target": "skills/ecosystem/enterprise-agent-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "error-handling",
+      "target": "skills/ecosystem/error-handling/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "eval-harness",
+      "target": "skills/ecosystem/eval-harness/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "evm-token-decimals",
+      "target": "skills/ecosystem/evm-token-decimals/SKILL.md",
+      "domain": "trader"
+    },
+    {
+      "name": "exa-search",
+      "target": "skills/ecosystem/exa-search/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "excel-generator",
+      "target": "skills/claude-code/excel-generator/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "export-notebooklm",
+      "target": "skills/claude-code/export-notebooklm/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "fable5-standards",
+      "target": "agent-skills/engineering/fable5-standards/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "fal-ai-media",
+      "target": "skills/ecosystem/fal-ai-media/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "fastapi-patterns",
+      "target": "skills/ecosystem/fastapi-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "finance-billing-ops",
+      "target": "skills/ecosystem/finance-billing-ops/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "flox-environments",
+      "target": "skills/ecosystem/flox-environments/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "flutter-dart-code-review",
+      "target": "skills/ecosystem/flutter-dart-code-review/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "foundation-models-on-device",
+      "target": "skills/ecosystem/foundation-models-on-device/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "frontend-design",
+      "target": "skills/anthropic-skills/frontend-design/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "frontend-design-direction",
+      "target": "skills/ecosystem/frontend-design-direction/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "frontend-patterns",
+      "target": "skills/ecosystem/frontend-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "frontend-slides",
+      "target": "skills/ecosystem/frontend-slides/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "fsharp-testing",
+      "target": "skills/ecosystem/fsharp-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "gan-style-harness",
+      "target": "skills/ecosystem/gan-style-harness/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "gateguard",
+      "target": "skills/ecosystem/gateguard/SKILL.md",
+      "domain": "security"
+    },
+    {
+      "name": "gget",
+      "target": "skills/ecosystem/scientific-pkg-gget/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "git-guardrails-claude-code",
+      "target": "skills/mattpocock/git-guardrails-claude-code/SKILL.md",
+      "domain": "engineering,security"
+    },
+    {
+      "name": "git-workflow",
+      "target": "skills/ecosystem/git-workflow/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "git-workflow-and-versioning",
+      "target": "skills/engineering-lifecycle/ship/git-workflow-and-versioning/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "github-ops",
+      "target": "skills/ecosystem/github-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "golang-patterns",
+      "target": "skills/ecosystem/golang-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "golang-testing",
+      "target": "skills/ecosystem/golang-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "google-workspace-ops",
+      "target": "skills/ecosystem/google-workspace-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "grill-me",
+      "target": "skills/mattpocock/grill-me/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "grill-with-docs",
+      "target": "skills/mattpocock/grill-with-docs/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "grilling",
+      "target": "skills/mattpocock/grilling/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "handoff",
+      "target": "skills/mattpocock/handoff/SKILL.md",
+      "domain": "productivity,ai-ops"
+    },
+    {
+      "name": "healthcare-cdss-patterns",
+      "target": "skills/ecosystem/healthcare-cdss-patterns/SKILL.md",
+      "domain": "code,medical"
+    },
+    {
+      "name": "healthcare-emr-patterns",
+      "target": "skills/ecosystem/healthcare-emr-patterns/SKILL.md",
+      "domain": "code,medical"
+    },
+    {
+      "name": "healthcare-eval-harness",
+      "target": "skills/ecosystem/healthcare-eval-harness/SKILL.md",
+      "domain": "medical"
+    },
+    {
+      "name": "healthcare-phi-compliance",
+      "target": "skills/ecosystem/healthcare-phi-compliance/SKILL.md",
+      "domain": "medical"
+    },
+    {
+      "name": "hermes-fan-out",
+      "target": "skills/awiki/hermes-fan-out/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "hermes-imports",
+      "target": "skills/ecosystem/hermes-imports/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "hexagonal-architecture",
+      "target": "skills/ecosystem/hexagonal-architecture/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "homelab-network-readiness",
+      "target": "skills/ecosystem/homelab-network-readiness/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "homelab-network-setup",
+      "target": "skills/ecosystem/homelab-network-setup/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "homelab-pihole-dns",
+      "target": "skills/ecosystem/homelab-pihole-dns/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "homelab-vlan-segmentation",
+      "target": "skills/ecosystem/homelab-vlan-segmentation/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "homelab-wireguard-vpn",
+      "target": "skills/ecosystem/homelab-wireguard-vpn/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "hook-suggest",
+      "target": "skills/claude-code/hook-suggest/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "hookify-rules",
+      "target": "skills/ecosystem/hookify-rules/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "implement",
+      "target": "skills/mattpocock/implement/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "target": "skills/mattpocock/improve-codebase-architecture/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "ingest-source",
+      "target": "skills/claude-code/ingest-source/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "internal-comms",
+      "target": "skills/anthropic-skills/internal-comms/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "inventory-demand-planning",
+      "target": "skills/ecosystem/inventory-demand-planning/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "investor-materials",
+      "target": "skills/ecosystem/investor-materials/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "investor-outreach",
+      "target": "skills/ecosystem/investor-outreach/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "ios-icon-gen",
+      "target": "skills/ecosystem/ios-icon-gen/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "iterative-retrieval",
+      "target": "skills/ecosystem/iterative-retrieval/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "java-coding-standards",
+      "target": "skills/ecosystem/java-coding-standards/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "jira-integration",
+      "target": "skills/ecosystem/jira-integration/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "jpa-patterns",
+      "target": "skills/ecosystem/jpa-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "knowledge-ops",
+      "target": "skills/ecosystem/knowledge-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "kotlin-coroutines-flows",
+      "target": "skills/ecosystem/kotlin-coroutines-flows/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "kotlin-exposed-patterns",
+      "target": "skills/ecosystem/kotlin-exposed-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "kotlin-ktor-patterns",
+      "target": "skills/ecosystem/kotlin-ktor-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "kotlin-patterns",
+      "target": "skills/ecosystem/kotlin-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "kotlin-testing",
+      "target": "skills/ecosystem/kotlin-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "laravel-patterns",
+      "target": "skills/ecosystem/laravel-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "laravel-plugin-discovery",
+      "target": "skills/ecosystem/laravel-plugin-discovery/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "laravel-security",
+      "target": "skills/ecosystem/laravel-security/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "laravel-tdd",
+      "target": "skills/ecosystem/laravel-tdd/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "lead-intelligence",
+      "target": "skills/ecosystem/lead-intelligence/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "lint-wiki",
+      "target": "skills/claude-code/lint-wiki/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "liquid-glass-design",
+      "target": "skills/ecosystem/liquid-glass-design/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "literature-review",
+      "target": "skills/ecosystem/scientific-thinking-literature-review/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "llm-trading-agent-security",
+      "target": "skills/ecosystem/llm-trading-agent-security/SKILL.md",
+      "domain": "security,trader"
+    },
+    {
+      "name": "logistics-exception-management",
+      "target": "skills/ecosystem/logistics-exception-management/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "make-interfaces-feel-better",
+      "target": "skills/ecosystem/make-interfaces-feel-better/SKILL.md",
+      "domain": "ux-ui"
+    },
+    {
+      "name": "management-talk",
+      "target": "skills/productivity/management-talk/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "manim-video",
+      "target": "skills/ecosystem/manim-video/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "market-research",
+      "target": "skills/ecosystem/market-research/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "mcp-builder",
+      "target": "skills/anthropic-skills/mcp-builder/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "mcp-server-patterns",
+      "target": "skills/ecosystem/mcp-server-patterns/SKILL.md",
+      "domain": "ai-ops,code"
+    },
+    {
+      "name": "messages-ops",
+      "target": "skills/ecosystem/messages-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "migrate-to-shoehorn",
+      "target": "skills/mattpocock/migrate-to-shoehorn/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "mle-workflow",
+      "target": "skills/ecosystem/mle-workflow/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "model-cost-switching",
+      "target": "agent-skills/swarm-intelligence/model-cost-switching/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "motion-advanced",
+      "target": "skills/ecosystem/motion-advanced/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "motion-foundations",
+      "target": "skills/ecosystem/motion-foundations/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "motion-patterns",
+      "target": "skills/ecosystem/motion-patterns/SKILL.md",
+      "domain": "code,media"
+    },
+    {
+      "name": "mysql-patterns",
+      "target": "skills/ecosystem/mysql-patterns/SKILL.md",
+      "domain": "code,data"
+    },
+    {
+      "name": "nanoclaw-repl",
+      "target": "skills/ecosystem/nanoclaw-repl/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "nestjs-patterns",
+      "target": "skills/ecosystem/nestjs-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "netmiko-ssh-automation",
+      "target": "skills/ecosystem/netmiko-ssh-automation/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "network-bgp-diagnostics",
+      "target": "skills/ecosystem/network-bgp-diagnostics/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "network-config-validation",
+      "target": "skills/ecosystem/network-config-validation/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "network-interface-health",
+      "target": "skills/ecosystem/network-interface-health/SKILL.md",
+      "domain": "network"
+    },
+    {
+      "name": "nextjs-turbopack",
+      "target": "skills/ecosystem/nextjs-turbopack/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "nodejs-keccak256",
+      "target": "skills/ecosystem/nodejs-keccak256/SKILL.md",
+      "domain": "trader"
+    },
+    {
+      "name": "nutrient-document-processing",
+      "target": "skills/ecosystem/nutrient-document-processing/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "nuxt4-patterns",
+      "target": "skills/ecosystem/nuxt4-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "observability-and-instrumentation",
+      "target": "skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md",
+      "domain": "code,engineering,sre"
+    },
+    {
+      "name": "obsidian",
+      "target": "skills/claude-code/obsidian/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "openclaw-persona-forge",
+      "target": "skills/ecosystem/openclaw-persona-forge/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "openmed",
+      "target": "skills/openmed/SKILL.md",
+      "domain": "medical"
+    },
+    {
+      "name": "opensource-pipeline",
+      "target": "skills/ecosystem/opensource-pipeline/SKILL.md",
+      "domain": "sre"
+    },
+    {
+      "name": "pdf",
+      "target": "skills/anthropic-skills/pdf/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "performance-optimization",
+      "target": "skills/engineering-lifecycle/review/performance-optimization/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "perl-patterns",
+      "target": "skills/ecosystem/perl-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "perl-security",
+      "target": "skills/ecosystem/perl-security/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "perl-testing",
+      "target": "skills/ecosystem/perl-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "pharmacy-order-lookup",
+      "target": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
+      "domain": "medical,pharmacy"
+    },
+    {
+      "name": "plan",
+      "target": "skills/awiki/plan/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "plan-orchestrate",
+      "target": "skills/ecosystem/plan-orchestrate/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "plankton-code-quality",
+      "target": "skills/ecosystem/plankton-code-quality/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "planning-and-task-breakdown",
+      "target": "skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md",
+      "domain": "code,engineering,productivity"
+    },
+    {
+      "name": "post-mortem",
+      "target": "skills/engineering/post-mortem/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "postgres-patterns",
+      "target": "skills/ecosystem/postgres-patterns/SKILL.md",
+      "domain": "code,data"
+    },
+    {
+      "name": "pptx",
+      "target": "skills/anthropic-skills/pptx/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "prisma-patterns",
+      "target": "skills/ecosystem/prisma-patterns/SKILL.md",
+      "domain": "code,data"
+    },
+    {
+      "name": "product-capability",
+      "target": "skills/ecosystem/product-capability/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "product-lens",
+      "target": "skills/ecosystem/product-lens/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "production-audit",
+      "target": "skills/ecosystem/production-audit/SKILL.md",
+      "domain": "engineering,sre"
+    },
+    {
+      "name": "production-scheduling",
+      "target": "skills/ecosystem/production-scheduling/SKILL.md",
+      "domain": "engineering,logistics"
+    },
+    {
+      "name": "project-flow-ops",
+      "target": "skills/ecosystem/project-flow-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "prompt-optimizer",
+      "target": "skills/ecosystem/prompt-optimizer/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "prototype",
+      "target": "skills/mattpocock/prototype/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
+      "name": "pubmed-database",
+      "target": "skills/ecosystem/scientific-db-pubmed-database/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "python-patterns",
+      "target": "skills/ecosystem/python-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "python-testing",
+      "target": "skills/ecosystem/python-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "pytorch-patterns",
+      "target": "skills/ecosystem/pytorch-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "quality-nonconformance",
+      "target": "skills/ecosystem/quality-nonconformance/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "quarkus-patterns",
+      "target": "skills/ecosystem/quarkus-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "quarkus-security",
+      "target": "skills/ecosystem/quarkus-security/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "quarkus-tdd",
+      "target": "skills/ecosystem/quarkus-tdd/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "ralphinho-rfc-pipeline",
+      "target": "skills/ecosystem/ralphinho-rfc-pipeline/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "recsys-pipeline-architect",
+      "target": "skills/ecosystem/recsys-pipeline-architect/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "redis-patterns",
+      "target": "skills/ecosystem/redis-patterns/SKILL.md",
+      "domain": "code,data"
+    },
+    {
+      "name": "regex-vs-llm-structured-text",
+      "target": "skills/ecosystem/regex-vs-llm-structured-text/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "remotion-video-creation",
+      "target": "skills/ecosystem/remotion-video-creation/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "render-html",
+      "target": "skills/render-html/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "repo-scan",
+      "target": "skills/ecosystem/repo-scan/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "research",
+      "target": "skills/mattpocock/research/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "research-ops",
+      "target": "skills/ecosystem/research-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "resolving-merge-conflicts",
+      "target": "skills/mattpocock/resolving-merge-conflicts/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
+      "name": "returns-reverse-logistics",
+      "target": "skills/ecosystem/returns-reverse-logistics/SKILL.md",
+      "domain": "logistics"
+    },
+    {
+      "name": "review",
+      "target": "skills/awiki/review/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "rules-distill",
+      "target": "skills/ecosystem/rules-distill/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "rust-patterns",
+      "target": "skills/ecosystem/rust-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "rust-testing",
+      "target": "skills/ecosystem/rust-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "safety-guard",
+      "target": "skills/ecosystem/safety-guard/SKILL.md",
+      "domain": "security"
+    },
+    {
+      "name": "santa-method",
+      "target": "skills/ecosystem/santa-method/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "scaffold-exercises",
+      "target": "skills/mattpocock/scaffold-exercises/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "scholar-evaluation",
+      "target": "skills/ecosystem/scientific-thinking-scholar-evaluation/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "scrape-web",
+      "target": "skills/wiki/scrape-web/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "scrutinize",
+      "target": "skills/engineering/scrutinize/SKILL.md",
+      "domain": "debug"
+    },
+    {
+      "name": "search",
+      "target": "skills/awiki/search/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "search-first",
+      "target": "skills/ecosystem/search-first/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "security-and-hardening",
+      "target": "skills/engineering-lifecycle/review/security-and-hardening/SKILL.md",
+      "domain": "code,engineering,security"
+    },
+    {
+      "name": "security-bounty-hunter",
+      "target": "skills/ecosystem/security-bounty-hunter/SKILL.md",
+      "domain": "security"
+    },
+    {
+      "name": "security-scan",
+      "target": "skills/ecosystem/security-scan/SKILL.md",
+      "domain": "security"
+    },
+    {
+      "name": "seo",
+      "target": "skills/ecosystem/seo/SKILL.md",
+      "domain": "business"
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "target": "skills/mattpocock/setup-matt-pocock-skills/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "setup-pre-commit",
+      "target": "skills/mattpocock/setup-pre-commit/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "ship",
+      "target": "skills/awiki/ship/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "shipping-and-launch",
+      "target": "skills/engineering-lifecycle/ship/shipping-and-launch/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "skill-comply",
+      "target": "skills/ecosystem/skill-comply/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "skill-creator",
+      "target": "skills/anthropic-skills/skill-creator/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "skill-scout",
+      "target": "skills/ecosystem/skill-scout/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "skill-stocktake",
+      "target": "skills/ecosystem/skill-stocktake/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "slack-gif-creator",
+      "target": "skills/anthropic-skills/slack-gif-creator/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "social-graph-ranker",
+      "target": "skills/ecosystem/social-graph-ranker/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "spec",
+      "target": "skills/awiki/spec/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "spec-driven-development",
+      "target": "skills/engineering-lifecycle/define/spec-driven-development/SKILL.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "springboot-patterns",
+      "target": "skills/ecosystem/springboot-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "springboot-security",
+      "target": "skills/ecosystem/springboot-security/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "springboot-tdd",
+      "target": "skills/ecosystem/springboot-tdd/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "strategic-compact",
+      "target": "skills/ecosystem/strategic-compact/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "swift-actor-persistence",
+      "target": "skills/ecosystem/swift-actor-persistence/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "swift-concurrency-6-2",
+      "target": "skills/ecosystem/swift-concurrency-6-2/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "swift-protocol-di-testing",
+      "target": "skills/ecosystem/swift-protocol-di-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "swiftui-patterns",
+      "target": "skills/ecosystem/swiftui-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "symlink-connector",
+      "target": "agent-skills/extensibility/symlink-connector/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "tdd",
+      "target": "skills/mattpocock/tdd/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
+      "name": "tdd-workflow",
+      "target": "skills/ecosystem/tdd-workflow/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "teach",
+      "target": "skills/mattpocock/teach/SKILL.md",
+      "domain": "productivity"
+    },
+    {
+      "name": "team-builder",
+      "target": "skills/ecosystem/team-builder/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "terminal-ops",
+      "target": "skills/ecosystem/terminal-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "thai-address",
+      "target": "skills/claude-thai/thai-address/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-customer-service",
+      "target": "skills/claude-thai/thai-customer-service/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-date-format",
+      "target": "skills/claude-thai/thai-date-format/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-festival-card",
+      "target": "skills/claude-thai/thai-festival-card/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-government-form",
+      "target": "skills/claude-thai/thai-government-form/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-id-validate",
+      "target": "skills/claude-thai/thai-id-validate/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-invoice",
+      "target": "skills/claude-thai/thai-invoice/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-pdpa",
+      "target": "skills/claude-thai/thai-pdpa/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-resume",
+      "target": "skills/claude-thai/thai-resume/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-social-caption",
+      "target": "skills/claude-thai/thai-social-caption/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-text-processing",
+      "target": "skills/claude-thai/thai-text-processing/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "thai-translate",
+      "target": "skills/claude-thai/thai-translate/SKILL.md",
+      "domain": "thai"
+    },
+    {
+      "name": "theme-factory",
+      "target": "skills/anthropic-skills/theme-factory/SKILL.md",
+      "domain": "design"
+    },
+    {
+      "name": "tinystruct-patterns",
+      "target": "skills/ecosystem/tinystruct-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "to-issues",
+      "target": "skills/mattpocock/to-issues/SKILL.md",
+      "domain": "engineering,productivity"
+    },
+    {
+      "name": "to-prd",
+      "target": "skills/mattpocock/to-prd/SKILL.md",
+      "domain": "engineering,productivity"
+    },
+    {
+      "name": "token-optimization",
+      "target": "skills/claude-code/token-optimization/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "triage",
+      "target": "skills/mattpocock/triage/SKILL.md",
+      "domain": "engineering,debug"
+    },
+    {
+      "name": "two-axis-code-review",
+      "target": "skills/mattpocock/two-axis-code-review/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
+      "name": "ui-demo",
+      "target": "skills/ecosystem/ui-demo/SKILL.md",
+      "domain": "ux-ui"
+    },
+    {
+      "name": "ui-to-vue",
+      "target": "skills/ecosystem/ui-to-vue/SKILL.md",
+      "domain": "ux-ui"
+    },
+    {
+      "name": "uncloud",
+      "target": "skills/ecosystem/uncloud/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "unified-notifications-ops",
+      "target": "skills/ecosystem/unified-notifications-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "uspto-database",
+      "target": "skills/ecosystem/scientific-db-uspto-database/SKILL.md",
+      "domain": "data"
+    },
+    {
+      "name": "verification-loop",
+      "target": "skills/ecosystem/verification-loop/SKILL.md",
+      "domain": "debug"
+    },
+    {
+      "name": "verify-before-done",
+      "target": "skills/claude-code/verify-before-done/SKILL.md",
+      "domain": "debug"
+    },
+    {
+      "name": "video-editing",
+      "target": "skills/ecosystem/video-editing/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "videodb",
+      "target": "skills/ecosystem/videodb/SKILL.md",
+      "domain": "media"
+    },
+    {
+      "name": "visa-doc-translate",
+      "target": "skills/ecosystem/visa-doc-translate/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "vite-patterns",
+      "target": "skills/ecosystem/vite-patterns/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "web-artifacts-builder",
+      "target": "skills/anthropic-skills/web-artifacts-builder/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "web-research",
+      "target": "skills/claude-code/web-research/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "webapp-testing",
+      "target": "skills/anthropic-skills/webapp-testing/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "wiki",
+      "target": "skills/awiki/wiki/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "wiki-search-local",
+      "target": "skills/claude-code/wiki-search-local/SKILL.md",
+      "domain": "wiki"
+    },
+    {
+      "name": "windows-desktop-e2e",
+      "target": "skills/ecosystem/windows-desktop-e2e/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "word-generator",
+      "target": "skills/word-generator/SKILL.md",
+      "domain": "document"
+    },
+    {
+      "name": "workspace-surface-audit",
+      "target": "skills/ecosystem/workspace-surface-audit/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "writing-great-skills",
+      "target": "skills/mattpocock/writing-great-skills/SKILL.md",
+      "domain": "productivity,ai-ops"
+    },
+    {
+      "name": "x-api",
+      "target": "skills/ecosystem/x-api/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "xlsx",
+      "target": "skills/anthropic-skills/xlsx/SKILL.md",
+      "domain": "document"
+    }
+  ]
+}

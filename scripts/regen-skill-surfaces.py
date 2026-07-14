@@ -62,9 +62,13 @@ from skills_registry.generators import (  # noqa: E402
     gen_agents_md,
     gen_antigravity,
     gen_cline,
+    gen_codex,
     gen_gemini,
     gen_hermes,
     gen_kilo,
+    gen_openclaw,
+    gen_windsurf,
+    gen_zcode,
 )
 from skills_registry.scan import build_draft_registry  # noqa: E402
 
@@ -80,6 +84,11 @@ GENERATORS = {
     gen_antigravity.filename: gen_antigravity,
     gen_hermes.filename: gen_hermes,
     gen_agents_md.filename: gen_agents_md,
+    # USA-1 chunk C1 — four missing agent surfaces (was 6/9, now 10/9 + future).
+    gen_codex.filename: gen_codex,
+    gen_windsurf.filename: gen_windsurf,
+    gen_openclaw.filename: gen_openclaw,
+    gen_zcode.filename: gen_zcode,
 }
 
 
