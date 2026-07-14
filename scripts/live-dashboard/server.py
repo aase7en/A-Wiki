@@ -28,6 +28,7 @@ import os
 import argparse
 import os
 import queue
+import re
 import signal
 import socket
 import subprocess
@@ -63,6 +64,20 @@ AGENT_REGISTRY_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "agent-registry
 AGENT_CONFIG_FILE = REPO_ROOT / ".tmp" / "agent-config.json"
 CHAT_LOG_FILE = REPO_ROOT / ".tmp" / "chat-log.jsonl"
 UPLOAD_DIR = REPO_ROOT / ".tmp" / "uploads"
+
+# ── Run-this-skill: explicit allowlist (security) ──────────────────────────
+# Only scripts in this dict can be executed via POST /api/run. Each entry
+# declares whether args are expected. Default OFF: env AWIKI_DASHBOARD_ALLOW_RUN=1
+# must be set, otherwise /api/run returns 403.
+ALLOW_RUN_SCRIPTS = {
+    "scripts/wiki/search-wiki.py": {"desc": "FTS5 wiki search", "needs_args": True},
+    "scripts/wiki/query-graph.py": {"desc": "Knowledge graph query", "needs_args": False},
+    "scripts/agent-preflight.py": {"desc": "Cross-platform safety check", "needs_args": False},
+    "scripts/regen-skill-surfaces.py": {"desc": "Regenerate + validate skill surfaces", "needs_args": False},
+    "scripts/check-privacy.py": {"desc": "Pre-publish privacy scan", "needs_args": False},
+}
+# Shell metacharacters that must never appear in args (injection defense).
+_ARG_BLOCKLIST = re.compile(r"[;&|`$(){}!\n\r]")
 
 PID_FILE = REPO_ROOT / ".tmp" / "live-dashboard.pid"
 DAEMON_LOG = REPO_ROOT / ".tmp" / "live-dashboard.log"
@@ -604,6 +619,11 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response(skills_service.coverage_stats())
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/run/allowlist":
+            self._json_response({
+                "enabled": os.environ.get("AWIKI_DASHBOARD_ALLOW_RUN", "0") == "1",
+                "scripts": ALLOW_RUN_SCRIPTS,
+            })
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
@@ -625,6 +645,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_chat_post()
         elif path == "/api/upload":
             self._api_upload_post()
+        elif path == "/api/run":
+            self._api_run_post()
         else:
             self.send_error(404, "Not found")
 
@@ -704,6 +726,83 @@ class Handler(BaseHTTPRequestHandler):
             _save_key(key_name, key_value)
             os.environ[key_name] = key_value
             self._json_response({"ok": True})
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_run_post(self):
+        """POST /api/run — execute an allowlisted script.
+
+        Body: {"script": "scripts/wiki/search-wiki.py", "args": ["MQTT"]}
+        Returns: {"ok": bool, "stdout": str, "stderr": str, "exit_code": int,
+                  "duration_ms": int}
+
+        Security:
+          - Env AWIKI_DASHBOARD_ALLOW_RUN=1 required (default OFF)
+          - Script must be in ALLOW_RUN_SCRIPTS dict (explicit allowlist)
+          - Args checked against shell-metachar blocklist
+          - subprocess.run with cwd=REPO_ROOT, timeout=30s, no shell=True
+        """
+        # Guard 1: feature must be explicitly enabled.
+        if os.environ.get("AWIKI_DASHBOARD_ALLOW_RUN", "0") != "1":
+            self._json_response({"error": "Run feature disabled. Set AWIKI_DASHBOARD_ALLOW_RUN=1 to enable."}, 403)
+            return
+        data = self._read_body()
+        script = (data.get("script") or "").strip()
+        args = data.get("args") or []
+        if not script:
+            self._json_response({"error": "script required"}, 400)
+            return
+        # Guard 2: allowlist check.
+        if script not in ALLOW_RUN_SCRIPTS:
+            self._json_response({"error": f"script not in allowlist: {script}"}, 403)
+            return
+        meta = ALLOW_RUN_SCRIPTS[script]
+        # Guard 3: if script doesn't take args but user sent some, ignore them.
+        if not meta.get("needs_args"):
+            args = []
+        # Guard 4: args must be strings, no shell metacharacters.
+        if not isinstance(args, list):
+            self._json_response({"error": "args must be a list"}, 400)
+            return
+        clean_args = []
+        for a in args:
+            if not isinstance(a, str):
+                self._json_response({"error": "args must be strings"}, 400)
+                return
+            if _ARG_BLOCKLIST.search(a):
+                self._json_response({"error": f"arg contains blocked char: {a!r}"}, 400)
+                return
+            clean_args.append(a)
+        # Guard 5: script path must resolve inside REPO_ROOT (no ../ escape).
+        script_path = (REPO_ROOT / script).resolve()
+        try:
+            script_path.relative_to(REPO_ROOT.resolve())
+        except ValueError:
+            self._json_response({"error": "script path escapes repo root"}, 403)
+            return
+        if not script_path.is_file():
+            self._json_response({"error": f"script not found: {script}"}, 404)
+            return
+        # Execute: no shell=True, cwd=REPO_ROOT, 30s timeout.
+        cmd = [sys.executable, str(script_path)] + clean_args
+        t0 = time.time()
+        try:
+            result = subprocess.run(
+                cmd, cwd=str(REPO_ROOT), capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=30,
+            )
+            duration_ms = int((time.time() - t0) * 1000)
+            self._json_response({
+                "ok": result.returncode == 0,
+                "stdout": result.stdout[-8000:],  # cap output size
+                "stderr": result.stderr[-4000:],
+                "exit_code": result.returncode,
+                "duration_ms": duration_ms,
+                "script": script,
+                "args": clean_args,
+            })
+        except subprocess.TimeoutExpired:
+            self._json_response({"error": "script timed out (30s)", "script": script}, 504)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 
