@@ -81,4 +81,5 @@ Game client = **visualization/reward layer only**. Full protocol with the 7 clie
 | `wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md` | PixelLab endpoint per asset type, prompt baseline, credit-saving order |
 | `wiki/synthesis/8-bit-trading-rpg-blueprint.md` | architecture, stack decisions, safe gameplay loop, MVP sequencing |
 | `docs/protocols/bot-trading-iron-law.md` | client prohibitions + approved read-only data amendments |
+| `skills/gamedev-skills/{phaser-core,phaser-arcade-physics}/` | engine-API depth beyond this skill's route/convention scope (vendored Apache-2.0 subset) |
 | Product repo `pixel-wealth-quest`: `docs/pixel-wealth-quest-gdd.md`, `ROADMAP.md`, `docs/pwq-read-only-feed-contract.md` | product-specific decisions |

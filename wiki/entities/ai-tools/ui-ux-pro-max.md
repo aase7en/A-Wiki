@@ -13,7 +13,7 @@ verify_tool: WebSearch
 # UI UX Pro Max (nextlevelbuilder/ui-ux-pro-max-skill)
 
 **ประเภท**: Agent skill + searchable local design-intelligence database
-**สถานะ**: **candidate — ยังไม่ติดตั้ง** (ผ่าน gap analysis 2026-07-13, รอไฟเขียว)
+**สถานะ**: ✅ **ติดตั้งแล้ว** — `skills/ui-ux-pro-max/` (vendored 2026-07-14, registry: domain `design,ux-ui`, category `design`)
 **License**: open-source (repo public)
 
 ## ภาพรวม

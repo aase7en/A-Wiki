@@ -1,22 +1,21 @@
 {
   "generated_at": "2026-07-14",
   "stats": {
-    "nodes": 553,
-    "edges": 1792,
+    "nodes": 555,
+    "edges": 1810,
     "edges_by_type": {
-      "wikilink": 1270,
-      "depends": 384,
+      "wikilink": 1283,
+      "mdlink": 49,
+      "depends": 390,
       "implements": 50,
-      "mdlink": 50,
       "extends": 38
     },
     "broken_links": 15,
-    "orphans": 21,
+    "orphans": 17,
     "orphan_by_domain": {
-      "context": 17,
-      "ai-tools": 2,
-      "other": 1,
-      "sources": 1
+      "context": 15,
+      "ai-tools": 1,
+      "other": 1
     },
     "hubs": [
       {
@@ -48,15 +47,15 @@
         "score": 36
       },
       {
+        "path": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+        "score": 32
+      },
+      {
         "path": "index-env.md",
         "score": 30
       },
       {
         "path": "wiki/concepts/iot/lora.md",
-        "score": 30
-      },
-      {
-        "path": "wiki/entities/iot/grafana.md",
         "score": 30
       }
     ],
@@ -75,11 +74,8 @@
       "wiki/context/overview-trader.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory-2026-06-24.md",
       "wiki/context/session-memory.md",
-      "wiki/context/session-summary-2026-06-24.md",
       "wiki/context/wiki-capability-map.md",
-      "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "wiki/entities/ai-tools/news-intelligence-pipeline.md"
     ]
   },
@@ -87,6 +83,11 @@
     {
       "path": "CLAUDE.md",
       "title": "A-Wiki — Hybrid Agent Wiki (Swarm + Knowledge) — Session Rules",
+      "domain": "other"
+    },
+    {
+      "path": "README.md",
+      "title": "A-Wiki — The AI Operating System That Ships",
       "domain": "other"
     },
     {
@@ -125,14 +126,19 @@
       "domain": "other"
     },
     {
-      "path": "README.md",
-      "title": "A-Wiki — The AI Operating System That Ships",
-      "domain": "other"
-    },
-    {
       "path": "wiki/CLAUDE.md",
       "title": "ชื่อ Entity",
       "domain": "other"
+    },
+    {
+      "path": "wiki/SKILL-INDEX.md",
+      "title": "🧠 SKILL-INDEX — A-Wiki Central Skill Brain",
+      "domain": "other"
+    },
+    {
+      "path": "wiki/concepts/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Concepts",
+      "domain": "ai-tools"
     },
     {
       "path": "wiki/concepts/ai-tools/a2a-protocol.md",
@@ -172,11 +178,6 @@
     {
       "path": "wiki/concepts/ai-tools/claude-thai-skills.md",
       "title": "Claude Thai Skills",
-      "domain": "ai-tools"
-    },
-    {
-      "path": "wiki/concepts/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Concepts",
       "domain": "ai-tools"
     },
     {
@@ -320,13 +321,13 @@
       "domain": "env"
     },
     {
-      "path": "wiki/concepts/iot/air-quality-index.md",
-      "title": "Air Quality Index (AQI)",
+      "path": "wiki/concepts/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Concepts",
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Concepts",
+      "path": "wiki/concepts/iot/air-quality-index.md",
+      "title": "Air Quality Index (AQI)",
       "domain": "iot"
     },
     {
@@ -380,13 +381,13 @@
       "domain": "iot"
     },
     {
-      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
-      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
+      "path": "wiki/concepts/it-support/CLAUDE.md",
+      "title": "IT Support — Domain Rules",
       "domain": "it-support"
     },
     {
-      "path": "wiki/concepts/it-support/CLAUDE.md",
-      "title": "IT Support — Domain Rules",
+      "path": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "title": "Brother HL-L3270CDW — ปริ้นไม่ได้ Error (WSD Port เสีย)",
       "domain": "it-support"
     },
     {
@@ -505,18 +506,8 @@
       "domain": "context"
     },
     {
-      "path": "wiki/context/session-memory-2026-06-24.md",
-      "title": "session-memory-2026-06-24",
-      "domain": "context"
-    },
-    {
       "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-summary-2026-06-24.md",
-      "title": "session-summary-2026-06-24",
+      "title": "Session Memory (local)",
       "domain": "context"
     },
     {
@@ -545,6 +536,11 @@
       "domain": "ai-tools"
     },
     {
+      "path": "wiki/entities/ai-tools/CLAUDE.md",
+      "title": "Scoped Context — AI Tools Entities",
+      "domain": "ai-tools"
+    },
+    {
       "path": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "title": "A-Wiki Universal Skill Architecture",
       "domain": "ai-tools"
@@ -570,11 +566,6 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/ai-tools/CLAUDE.md",
-      "title": "Scoped Context — AI Tools Entities",
-      "domain": "ai-tools"
-    },
-    {
       "path": "wiki/entities/ai-tools/context7.md",
       "title": "Context7 (upstash/context7)",
       "domain": "ai-tools"
@@ -592,6 +583,11 @@
     {
       "path": "wiki/entities/ai-tools/frontend-slides.md",
       "title": "Frontend Slides — Zero-Dependency HTML Presentations",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/gamedev-skills.md",
+      "title": "gamedev-skills/awesome-gamedev-agent-skills (web-engines subset)",
       "domain": "ai-tools"
     },
     {
@@ -632,6 +628,11 @@
     {
       "path": "wiki/entities/ai-tools/model-capability-bench.md",
       "title": "Model Capability Benchmarks (Routing)",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "title": "Monte Carlo Simulation (Quant Risk Analysis)",
       "domain": "ai-tools"
     },
     {
@@ -710,13 +711,13 @@
       "domain": "ai-tools"
     },
     {
-      "path": "wiki/entities/env/activated-sludge-system.md",
-      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
+      "path": "wiki/entities/env/CLAUDE.md",
+      "title": "Scoped Context — Environmental Health Entities",
       "domain": "env"
     },
     {
-      "path": "wiki/entities/env/CLAUDE.md",
-      "title": "Scoped Context — Environmental Health Entities",
+      "path": "wiki/entities/env/activated-sludge-system.md",
+      "title": "ระบบบำบัดน้ำเสีย (Activated Sludge System)",
       "domain": "env"
     },
     {
@@ -735,6 +736,11 @@
       "domain": "iot"
     },
     {
+      "path": "wiki/entities/iot/CLAUDE.md",
+      "title": "Scoped Context — IoT Entities",
+      "domain": "iot"
+    },
+    {
       "path": "wiki/entities/iot/arduino-ide.md",
       "title": "Arduino IDE",
       "domain": "iot"
@@ -747,11 +753,6 @@
     {
       "path": "wiki/entities/iot/chirpstack.md",
       "title": "ChirpStack",
-      "domain": "iot"
-    },
-    {
-      "path": "wiki/entities/iot/CLAUDE.md",
-      "title": "Scoped Context — IoT Entities",
       "domain": "iot"
     },
     {
@@ -935,11 +936,6 @@
       "domain": "pharmacy"
     },
     {
-      "path": "wiki/SKILL-INDEX.md",
-      "title": "🧠 SKILL-INDEX — A-Wiki Central Skill Brain",
-      "domain": "other"
-    },
-    {
       "path": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
       "title": "1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย",
       "domain": "sources"
@@ -952,6 +948,11 @@
     {
       "path": "wiki/sources/3-dashboard-node-red.md",
       "title": "3-dashboard-node-red",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/CLAUDE.md",
+      "title": "Scoped Context — Source Summaries",
       "domain": "sources"
     },
     {
@@ -1090,11 +1091,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/CLAUDE.md",
-      "title": "Scoped Context — Source Summaries",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/cloudflare-tunnel-pi5.md",
       "title": "cloudflare-tunnel-pi5",
       "domain": "sources"
@@ -1102,6 +1098,11 @@
     {
       "path": "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
       "title": "context-claude-code-dev-vibe-coding-thailand",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/copula-multivariate-finance.md",
+      "title": "Copula — multivariate dependency modeling for quant finance",
       "domain": "sources"
     },
     {
@@ -1302,11 +1303,6 @@
     {
       "path": "wiki/sources/firmai-financial-machine-learning.md",
       "title": "firmai/financial-machine-learning",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/firmai-financial-ml-readme.md",
-      "title": "Financial Machine Learning and Data Science",
       "domain": "sources"
     },
     {
@@ -1815,6 +1811,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/CLAUDE.md",
+      "title": "Scoped Context — Synthesis (Cross-domain)",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/ai-driven-environmental-modeling.md",
       "title": "AI-driven Environmental Modeling",
       "domain": "synthesis"
@@ -1837,11 +1838,6 @@
     {
       "path": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
       "title": "Claude Skills Gap Analysis — Web Design + Game (2026-07)",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/CLAUDE.md",
-      "title": "Scoped Context — Synthesis (Cross-domain)",
       "domain": "synthesis"
     },
     {
@@ -2325,6 +2321,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-firmai-financial-machine-learning.md",
+      "title": "firmai/financial-machine-learning — curated ML-in-finance project index (Sov.ai / ml-quant.com) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-freqtrade-pi5.md",
       "title": "Freqtrade — Crypto Trading Bot on Raspberry Pi — Synthesis",
       "domain": "synthesis"
@@ -2705,6 +2706,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-unpingco-python-stats-ml.md",
+      "title": "unpingco/Python-for-Probability-Statistics-and-Machine-Learning — Springer book Jupyter notebooks — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-uthai-equipment-price-2568.md",
       "title": "บัญชีราคามาตรฐานครุภัณฑ์ ธ.ค. 2568 — Synthesis",
       "domain": "synthesis"
@@ -2934,6 +2940,62 @@
       "type": "wikilink",
       "broken": false,
       "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "AGENTS.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "GEMINI.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "agent-skills/README.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "wiki/context/wiki-overview.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/setup-new-machine.md",
+      "type": "depends",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "docs/runbooks/upstream-refresh.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "CHANGELOG.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
     },
     {
       "from": "index-ai-tools.md",
@@ -5253,60 +5315,18 @@
       "external": false
     },
     {
-      "from": "README.md",
-      "to": "AGENTS.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
+      "from": "wiki/SKILL-INDEX.md",
+      "to": "wikilinks",
+      "type": "wikilink",
+      "broken": true,
+      "external": false
     },
     {
-      "from": "README.md",
+      "from": "wiki/concepts/ai-tools/CLAUDE.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "GEMINI.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "agent-skills/README.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "wiki/context/wiki-overview.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/setup-new-machine.md",
-      "type": "depends",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "docs/runbooks/upstream-refresh.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
-      "to": "CHANGELOG.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/concepts/ai-tools/a2a-protocol.md",
@@ -5620,13 +5640,6 @@
       "from": "wiki/concepts/ai-tools/claude-thai-skills.md",
       "to": "wiki/entities/ai-tools/ecc.md",
       "type": "extends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/concepts/ai-tools/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -6394,6 +6407,13 @@
       "external": false
     },
     {
+      "from": "wiki/concepts/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-sensors-dronebot.md",
       "type": "depends",
@@ -6460,13 +6480,6 @@
       "from": "wiki/concepts/iot/air-quality-index.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/concepts/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -7458,6 +7471,13 @@
       "external": false
     },
     {
+      "from": "wiki/entities/ai-tools/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
       "to": "skill-frontmatter-schema",
       "type": "extends",
@@ -7598,13 +7618,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/entities/ai-tools/context7.md",
       "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "depends",
@@ -7740,6 +7753,41 @@
     {
       "from": "wiki/entities/ai-tools/frontend-slides.md",
       "to": "wiki/concepts/ai-tools/remotion-video-creation.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gamedev-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gamedev-skills.md",
+      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gamedev-skills.md",
+      "to": "wiki/entities/ai-tools/a-wiki-skill-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gamedev-skills.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/gamedev-skills.md",
+      "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -7957,6 +8005,48 @@
     {
       "from": "wiki/entities/ai-tools/model-capability-bench.md",
       "to": "wiki/entities/ai-tools/zai-glm.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/akashdeepo-monte-carlo-rrr.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/firmai-financial-machine-learning.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/unpingco-python-stats-ml.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/akashdeepo-monte-carlo-rrr.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/firmai-financial-machine-learning.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "to": "wiki/sources/unpingco-python-stats-ml.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -8452,6 +8542,13 @@
       "external": false
     },
     {
+      "from": "wiki/entities/env/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/concepts/env/water-quality-parameters.md",
       "type": "wikilink",
@@ -8476,13 +8573,6 @@
       "from": "wiki/entities/env/activated-sludge-system.md",
       "to": "wiki/synthesis/iot-lora-architecture.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/env/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -8602,6 +8692,13 @@
       "from": "wiki/entities/iot/18650-battery-shield.md",
       "to": "wiki/sources/hardware-inventory-2026-04-18.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -8770,13 +8867,6 @@
       "from": "wiki/entities/iot/chirpstack.md",
       "to": "wiki/sources/lorawan-network-beginner.md",
       "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/iot/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
       "broken": false,
       "external": false
     },
@@ -10601,10 +10691,10 @@
       "external": false
     },
     {
-      "from": "wiki/SKILL-INDEX.md",
-      "to": "wikilinks",
-      "type": "wikilink",
-      "broken": true,
+      "from": "wiki/sources/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
       "external": false
     },
     {
@@ -11000,9 +11090,30 @@
       "external": false
     },
     {
-      "from": "wiki/sources/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
+      "from": "wiki/sources/copula-multivariate-finance.md",
+      "to": "wiki/entities/ai-tools/monte-carlo-simulation.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/copula-multivariate-finance.md",
+      "to": "wiki/sources/firmai-financial-machine-learning.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/copula-multivariate-finance.md",
+      "to": "wiki/sources/akashdeepo-monte-carlo-rrr.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/copula-multivariate-finance.md",
+      "to": "wiki/sources/unpingco-python-stats-ml.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -11348,13 +11459,6 @@
       "type": "wikilink",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "wiki/sources/firmai-financial-ml-readme.md",
-      "to": "https://github.com/borisbanushev/stockpredictionai/blob/master/readme2.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/sources/freqtrade-pi5.md",
@@ -12162,6 +12266,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/CLAUDE.md",
+      "to": "CLAUDE.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/air-quality-monitoring.md",
       "to": "wiki/sources/air-quality-iot-lora-network.md",
       "type": "depends",
@@ -12456,9 +12567,9 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/CLAUDE.md",
-      "to": "CLAUDE.md",
-      "type": "mdlink",
+      "from": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "to": "wiki/entities/ai-tools/gamedev-skills.md",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -12597,13 +12708,6 @@
     },
     {
       "from": "wiki/synthesis/design-web-capability-hub.md",
-      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/design-web-capability-hub.md",
       "to": "wiki/entities/ai-tools/taste-skill.md",
       "type": "wikilink",
       "broken": false,
@@ -12619,6 +12723,13 @@
     {
       "from": "wiki/synthesis/design-web-capability-hub.md",
       "to": "wiki/entities/ai-tools/transitions-dev.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/design-web-capability-hub.md",
+      "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -13074,6 +13185,13 @@
     {
       "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
       "to": "wiki/synthesis/claude-skills-gap-web-game-2026.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
+      "to": "wiki/entities/ai-tools/gamedev-skills.md",
       "type": "wikilink",
       "broken": false,
       "external": false
@@ -14304,6 +14422,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-firmai-financial-machine-learning.md",
+      "to": "wiki/sources/firmai-financial-machine-learning.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-freqtrade-pi5.md",
       "to": "wiki/sources/freqtrade-pi5.md",
       "type": "depends",
@@ -14866,6 +14991,13 @@
     {
       "from": "wiki/synthesis/synth-umbrel-pi5-setup.md",
       "to": "wiki/sources/umbrel-pi5-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-unpingco-python-stats-ml.md",
+      "to": "wiki/sources/unpingco-python-stats-ml.md",
       "type": "depends",
       "broken": false,
       "external": false

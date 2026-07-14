@@ -4,405 +4,350 @@
 
 ## Summary
 
-- ✓ Passed: 877
-- ⚠ Warnings: 277
-- ❌ Failures: 73
+- ✓ Passed: 872
+- ⚠ Warnings: 280
+- ❌ Failures: 15
 
 ## Top Actionable Issues
 
-- ⚠ **L2** wiki\concepts\ai-tools\a2a-protocol.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\agent-memory-systems.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\agent-planning-loops.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\mcp-architecture.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\multi-agent-theory.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 330 more issue(s) below
+- ⚠ **L2** wiki/SKILL-INDEX.md: no frontmatter (missing --- delimiter)
+- ⚠ **L2** wiki/concepts/ai-tools/a2a-protocol.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/agent-memory-systems.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/agent-planning-loops.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/ai-glossary.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/ai-myths.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/llm-eval-frameworks.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/llm-rag-architecture.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/mcp-architecture.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/multi-agent-theory.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/swarm-optimization.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
+- ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
+- … 275 more issue(s) below
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki\concepts\env\water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-frontmatter-schema]]
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-consolidation]]
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
-- wiki\entities\ai-tools\pake.md: broken link: [[entities/ai-tools/a-wiki]]
-- wiki\SKILL-INDEX.md: broken link: [[wikilinks]]
-- wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki\sources\akashdeepo-monte-carlo-rrr.md: broken link: [[monte-carlo-quant-analysis]]
-- wiki\sources\firmai-financial-machine-learning.md: broken link: [[monte-carlo-quant-analysis]]
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-fundamentals](skills/context-fundamentals/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-degradation](skills/context-degradation/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-compression](skills/context-compression/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [multi-agent-patterns](skills/multi-agent-patterns/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [long-horizon-prompting](skills/long-horizon-prompting/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [memory-systems](skills/memory-systems/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [tool-design](skills/tool-design/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [filesystem-context](skills/filesystem-context/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [hosted-agents](skills/hosted-agents/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-optimization](skills/context-optimization/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [latent-briefing](skills/latent-briefing/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [evaluation](skills/evaluation/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [advanced-evaluation](skills/advanced-evaluation/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [harness-engineering](skills/harness-engineering/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [self-improvement-loops](skills/self-improvement-loops/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [project-development](skills/project-development/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [bdi-mental-states](skills/bdi-mental-states/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [examples](examples/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [digital-brain-skill](examples/digital-brain-skill/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [x-to-book-system](examples/x-to-book-system/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [llm-as-judge-skills](examples/llm-as-judge-skills/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [book-sft-pipeline](examples/book-sft-pipeline/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [interleaved-thinking](examples/interleaved-thinking/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [digital-brain-skill](examples/digital-brain-skill/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [HOW-SKILLS-BUILT-THIS.md](examples/digital-brain-skill/HOW-SKILLS-BUILT-THIS.md)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [llm-as-judge-skills](examples/llm-as-judge-skills/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [book-sft-pipeline](examples/book-sft-pipeline/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [researcher](researcher/)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-15.md`](researcher/benchmarks/router/results-published/2026-05-15.md)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-15-v2.md`](researcher/benchmarks/router/results-published/2026-05-15-v2.md)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-19.md`](researcher/benchmarks/router/results-published/2026-05-19.md)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [researcher/runbooks/continuous-operation.md](researcher/runbooks/continuous-operation.md)
-- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [template](template/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Knowledge Capture](./notion-knowledge-capture/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Meeting Intelligence](./notion-meeting-intelligence/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Research Documentation](./notion-research-documentation/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Spec To Implementation](./notion-spec-to-implementation/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Changelog Generator](./changelog-generator/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [MCP Builder](./mcp-builder/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Skill Creator](./skill-creator/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Webapp Testing](./webapp-testing/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Brand Guidelines](./brand-guidelines/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Competitive Ads Extractor](./competitive-ads-extractor/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Domain Name Brainstormer](./domain-name-brainstormer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Internal Comms](./internal-comms/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Lead Research Assistant](./lead-research-assistant/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Content Research Writer](./content-research-writer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Meeting Insights Analyzer](./meeting-insights-analyzer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Canvas Design](./canvas-design/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Image Enhancer](./image-enhancer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Slack GIF Creator](./slack-gif-creator/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Theme Factory](./theme-factory/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Video Downloader](./video-downloader/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [File Organizer](./file-organizer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Invoice Organizer](./invoice-organizer/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Raffle Winner Picker](./raffle-winner-picker/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [resemble-detect](./resemble-detect/)
-- wiki\sources\prat011-llm-skills-ref.md: broken link: [Contributing Guidelines](CONTRIBUTING.md)
-- wiki\sources\unpingco-pystats-readme.md: broken link: [Draft cover](./python_for_probability_statistics_and_machine_learning.jpg)
-- wiki\sources\unpingco-python-stats-ml.md: broken link: [[monte-carlo-quant-analysis]]
-- wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/SKILL-INDEX.md: broken link: [[wikilinks]]
+- wiki/concepts/ai-tools/ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
+- wiki/concepts/env/water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-frontmatter-schema]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-consolidation]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
+- wiki/entities/ai-tools/gamedev-skills.md: broken link: [[entities/ai-tools/game-lightweight-highend-capability-hub]]
+- wiki/entities/ai-tools/pake.md: broken link: [[entities/ai-tools/a-wiki]]
+- wiki/sources/ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
+- wiki/sources/akashdeepo-monte-carlo-rrr.md: broken link: [[monte-carlo-quant-analysis]]
+- wiki/sources/firmai-financial-machine-learning.md: broken link: [[monte-carlo-quant-analysis]]
+- wiki/sources/unpingco-python-stats-ml.md: broken link: [[monte-carlo-quant-analysis]]
+- wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
 ---
 
 ## ⚠ L2: Frontmatter Completeness (title, type, tags) — Warnings
 
-- wiki\concepts\ai-tools\a2a-protocol.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\agent-memory-systems.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\agent-planning-loops.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\local-llm-routing.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\mcp-architecture.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\multi-agent-theory.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\openrouter-api.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\openrouter-claude-code.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
-- wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- wiki\concepts\env\infectious-waste-management.md: missing frontmatter key: title
-- wiki\concepts\env\rabies-pep-protocol.md: missing frontmatter key: title
-- wiki\concepts\env\water-quality-parameters.md: missing frontmatter key: title
-- wiki\concepts\iot\air-quality-index.md: missing frontmatter key: title
-- wiki\concepts\iot\cold-chain-monitoring.md: missing frontmatter key: title
-- wiki\concepts\iot\dashboard-design.md: missing frontmatter key: title
-- wiki\concepts\iot\data-logger.md: missing frontmatter key: title
-- wiki\concepts\iot\lora-p2p.md: missing frontmatter key: title
-- wiki\concepts\iot\lora.md: missing frontmatter key: title
-- wiki\concepts\iot\lorawan.md: missing frontmatter key: title
-- wiki\concepts\iot\modbus.md: missing frontmatter key: title
-- wiki\concepts\iot\mqtt-qos.md: missing frontmatter key: title
-- wiki\concepts\iot\publish-subscribe.md: missing frontmatter key: title
-- wiki\concepts\iot\tinyml.md: missing frontmatter key: title
-- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\drug-aliases.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\drug-classification.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\drug-validation.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\fuzzy-match.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\ordering-workflow.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\pharmacy-context.md: missing frontmatter key: title
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing frontmatter key: title
-- wiki\entities\ai-tools\9arm-skills.md: missing frontmatter key: title
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: missing frontmatter key: title
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: missing frontmatter key: type
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: missing frontmatter key: tags
-- wiki\entities\ai-tools\ag2-orchestrator.md: missing frontmatter key: title
-- wiki\entities\ai-tools\agents-md-spec.md: missing frontmatter key: title
-- wiki\entities\ai-tools\anthropic-skills.md: missing frontmatter key: title
-- wiki\entities\ai-tools\deer-flow.md: missing frontmatter key: title
-- wiki\entities\ai-tools\ecc.md: missing frontmatter key: title
-- wiki\entities\ai-tools\frontend-slides.md: missing frontmatter key: title
-- wiki\entities\ai-tools\gbrain.md: missing frontmatter key: title
-- wiki\entities\ai-tools\gitnexus.md: missing frontmatter key: title
-- wiki\entities\ai-tools\graphify.md: missing frontmatter key: title
-- wiki\entities\ai-tools\hermes-agent.md: missing frontmatter key: title
-- wiki\entities\ai-tools\hyperframes.md: missing frontmatter key: title
-- wiki\entities\ai-tools\live-dashboard.md: missing frontmatter key: title
-- wiki\entities\ai-tools\mattpocock-skills.md: missing frontmatter key: title
-- wiki\entities\ai-tools\model-capability-bench.md: missing frontmatter key: title
-- wiki\entities\ai-tools\news-intelligence-pipeline.md: no frontmatter (missing --- delimiter)
-- wiki\entities\ai-tools\ollama.md: missing frontmatter key: title
-- wiki\entities\ai-tools\omniroute.md: missing frontmatter key: title
-- wiki\entities\ai-tools\openmed.md: missing frontmatter key: title
-- wiki\entities\ai-tools\pake.md: missing frontmatter key: title
-- wiki\entities\ai-tools\pocketbase.md: missing frontmatter key: title
-- wiki\entities\ai-tools\react-doctor.md: missing frontmatter key: title
-- wiki\entities\ai-tools\telegram-ai-router.md: missing frontmatter key: title
-- wiki\entities\ai-tools\turbovec.md: missing frontmatter key: title
-- wiki\entities\ai-tools\zai-glm.md: missing frontmatter key: title
-- wiki\entities\env\activated-sludge-system.md: missing frontmatter key: title
-- wiki\entities\env\env-webapp-project.md: missing frontmatter key: title
-- wiki\entities\env\rabies-pep-surveillance.md: missing frontmatter key: title
-- wiki\entities\iot\18650-battery-shield.md: missing frontmatter key: title
-- wiki\entities\iot\arduino-ide.md: missing frontmatter key: title
-- wiki\entities\iot\arduino-uno-r3.md: missing frontmatter key: title
-- wiki\entities\iot\chirpstack.md: missing frontmatter key: title
-- wiki\entities\iot\dht11.md: missing frontmatter key: title
-- wiki\entities\iot\ds18b20.md: missing frontmatter key: title
-- wiki\entities\iot\dx-lr02-lora.md: missing frontmatter key: title
-- wiki\entities\iot\dx-smart-ttl.md: missing frontmatter key: title
-- wiki\entities\iot\emqx.md: missing frontmatter key: title
-- wiki\entities\iot\esp-idf.md: missing frontmatter key: title
-- wiki\entities\iot\esp32-c6.md: missing frontmatter key: title
-- wiki\entities\iot\esp32-s3.md: missing frontmatter key: title
-- wiki\entities\iot\esp32.md: missing frontmatter key: title
-- wiki\entities\iot\grafana.md: missing frontmatter key: title
-- wiki\entities\iot\hc-sr04.md: missing frontmatter key: title
-- wiki\entities\iot\hc-sr501.md: missing frontmatter key: title
-- wiki\entities\iot\home-assistant.md: missing frontmatter key: title
-- wiki\entities\iot\hx711.md: missing frontmatter key: title
-- wiki\entities\iot\influxdb.md: missing frontmatter key: title
-- wiki\entities\iot\line-notify.md: missing frontmatter key: title
-- wiki\entities\iot\load-cell.md: missing frontmatter key: title
-- wiki\entities\iot\mosquitto.md: missing frontmatter key: title
-- wiki\entities\iot\mqtt-protocol.md: missing frontmatter key: title
-- wiki\entities\iot\mysql.md: missing frontmatter key: title
-- wiki\entities\iot\nb-iot.md: missing frontmatter key: title
-- wiki\entities\iot\node-red.md: missing frontmatter key: title
-- wiki\entities\iot\platformio.md: missing frontmatter key: title
-- wiki\entities\iot\pms5003.md: missing frontmatter key: title
-- wiki\entities\iot\pzem-004t.md: missing frontmatter key: title
-- wiki\entities\iot\raspberry-pi.md: missing frontmatter key: title
-- wiki\entities\iot\rfm95-sx1276.md: missing frontmatter key: title
-- wiki\entities\iot\telegram-bot.md: missing frontmatter key: title
-- wiki\entities\iot\the-things-network.md: missing frontmatter key: title
-- wiki\entities\iot\vapcell-m35-18650.md: missing frontmatter key: title
-- wiki\entities\iot\velxio.md: missing frontmatter key: title
-- wiki\entities\pharmacy\drug-database.md: missing frontmatter key: title
-- wiki\entities\pharmacy\drug-matching-system.md: missing frontmatter key: title
-- wiki\entities\pharmacy\pharmacy-business.md: missing frontmatter key: title
-- wiki\entities\pharmacy\sp-drugstore-2020.md: missing frontmatter key: title
-- wiki\SKILL-INDEX.md: no frontmatter (missing --- delimiter)
-- wiki\sources\thai-tax-deduction-document-guide.md: no frontmatter (missing --- delimiter)
-- wiki\synthesis\ai-driven-environmental-modeling.md: missing frontmatter key: title
-- wiki\synthesis\ai-for-drug-safety.md: missing frontmatter key: title
-- wiki\synthesis\air-quality-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\appsheet-to-webapp-pi5.md: missing frontmatter key: title
-- wiki\synthesis\cold-chain-vaccine.md: missing frontmatter key: title
-- wiki\synthesis\digital-legacy-ai-architecture.md: missing frontmatter key: title
-- wiki\synthesis\dream-projects.md: missing frontmatter key: title
-- wiki\synthesis\dual-ai-workflow.md: missing frontmatter key: title
-- wiki\synthesis\energy-power-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\env-webapp-schema-wastewater.md: missing frontmatter key: title
-- wiki\synthesis\environmental-iot-sensing.md: missing frontmatter key: title
-- wiki\synthesis\environmental-monitoring-it.md: missing frontmatter key: title
-- wiki\synthesis\environmental-pharmaceutical-risk.md: missing frontmatter key: title
-- wiki\synthesis\fuel-tank-level.md: missing frontmatter key: title
-- wiki\synthesis\garbage-report-ocr.md: missing frontmatter key: title
-- wiki\synthesis\healthcare-it-infrastructure.md: missing frontmatter key: title
-- wiki\synthesis\intelligent-iot-pipelines.md: missing frontmatter key: title
-- wiki\synthesis\iot-in-pharmacy.md: missing frontmatter key: title
-- wiki\synthesis\iot-lora-architecture.md: missing frontmatter key: title
-- wiki\synthesis\iot-network-infrastructure.md: missing frontmatter key: title
-- wiki\synthesis\local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
-- wiki\synthesis\openrouter-agent-routing.md: missing frontmatter key: title
-- wiki\synthesis\pharmacy-order-checker.md: missing frontmatter key: title
-- wiki\synthesis\pharmacy-project-specs.md: missing frontmatter key: title
-- wiki\synthesis\pharmacy-web-app-roadmap.md: missing frontmatter key: title
-- wiki\synthesis\pi4-lora-gateway-server.md: missing frontmatter key: title
-- wiki\synthesis\synthesis-ai-tools.md: missing frontmatter key: title
-- wiki\synthesis\synthesis-env.md: missing frontmatter key: title
-- wiki\synthesis\synthesis-iot.md: missing frontmatter key: title
-- wiki\synthesis\synthesis-it.md: missing frontmatter key: title
-- wiki\synthesis\synthesis-pharmacy.md: missing frontmatter key: title
-- wiki\synthesis\temperature-monitor-project.md: missing frontmatter key: title
-- wiki\synthesis\vibe-pocketbase-project.md: missing frontmatter key: title
-- wiki\synthesis\waste-form-automation.md: missing frontmatter key: title
-- wiki\synthesis\waste-weight-monitoring.md: missing frontmatter key: title
-- wiki\synthesis\wiki-to-video-pipeline.md: missing frontmatter key: title
-- wiki\templates\td-21-power-of-attorney.md: missing frontmatter key: title
+- wiki/SKILL-INDEX.md: no frontmatter (missing --- delimiter)
+- wiki/concepts/ai-tools/a2a-protocol.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/agent-memory-systems.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/agent-planning-loops.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/ai-glossary.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/ai-myths.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/context-management.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/llm-eval-frameworks.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/llm-rag-architecture.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/local-llm-routing.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/mcp-architecture.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/multi-agent-theory.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/openrouter-api.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/openrouter-claude-code.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/swarm-optimization.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
+- wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
+- wiki/concepts/env/hospital-wastewater-treatment.md: missing frontmatter key: title
+- wiki/concepts/env/infectious-waste-management.md: missing frontmatter key: title
+- wiki/concepts/env/rabies-pep-protocol.md: missing frontmatter key: title
+- wiki/concepts/env/water-quality-parameters.md: missing frontmatter key: title
+- wiki/concepts/iot/air-quality-index.md: missing frontmatter key: title
+- wiki/concepts/iot/cold-chain-monitoring.md: missing frontmatter key: title
+- wiki/concepts/iot/dashboard-design.md: missing frontmatter key: title
+- wiki/concepts/iot/data-logger.md: missing frontmatter key: title
+- wiki/concepts/iot/lora-p2p.md: missing frontmatter key: title
+- wiki/concepts/iot/lora.md: missing frontmatter key: title
+- wiki/concepts/iot/lorawan.md: missing frontmatter key: title
+- wiki/concepts/iot/modbus.md: missing frontmatter key: title
+- wiki/concepts/iot/mqtt-qos.md: missing frontmatter key: title
+- wiki/concepts/iot/publish-subscribe.md: missing frontmatter key: title
+- wiki/concepts/iot/tinyml.md: missing frontmatter key: title
+- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/drug-aliases.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/drug-classification.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/drug-validation.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/fuzzy-match.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/ordering-workflow.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/pharmacy-context.md: missing frontmatter key: title
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing frontmatter key: title
+- wiki/entities/ai-tools/9arm-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: title
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: type
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing frontmatter key: tags
+- wiki/entities/ai-tools/ag2-orchestrator.md: missing frontmatter key: title
+- wiki/entities/ai-tools/agents-md-spec.md: missing frontmatter key: title
+- wiki/entities/ai-tools/anthropic-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/deer-flow.md: missing frontmatter key: title
+- wiki/entities/ai-tools/ecc.md: missing frontmatter key: title
+- wiki/entities/ai-tools/frontend-slides.md: missing frontmatter key: title
+- wiki/entities/ai-tools/gbrain.md: missing frontmatter key: title
+- wiki/entities/ai-tools/gitnexus.md: missing frontmatter key: title
+- wiki/entities/ai-tools/graphify.md: missing frontmatter key: title
+- wiki/entities/ai-tools/hermes-agent.md: missing frontmatter key: title
+- wiki/entities/ai-tools/hyperframes.md: missing frontmatter key: title
+- wiki/entities/ai-tools/live-dashboard.md: missing frontmatter key: title
+- wiki/entities/ai-tools/mattpocock-skills.md: missing frontmatter key: title
+- wiki/entities/ai-tools/model-capability-bench.md: missing frontmatter key: title
+- wiki/entities/ai-tools/monte-carlo-simulation.md: missing frontmatter key: title
+- wiki/entities/ai-tools/news-intelligence-pipeline.md: no frontmatter (missing --- delimiter)
+- wiki/entities/ai-tools/ollama.md: missing frontmatter key: title
+- wiki/entities/ai-tools/omniroute.md: missing frontmatter key: title
+- wiki/entities/ai-tools/openmed.md: missing frontmatter key: title
+- wiki/entities/ai-tools/pake.md: missing frontmatter key: title
+- wiki/entities/ai-tools/pocketbase.md: missing frontmatter key: title
+- wiki/entities/ai-tools/react-doctor.md: missing frontmatter key: title
+- wiki/entities/ai-tools/telegram-ai-router.md: missing frontmatter key: title
+- wiki/entities/ai-tools/turbovec.md: missing frontmatter key: title
+- wiki/entities/ai-tools/zai-glm.md: missing frontmatter key: title
+- wiki/entities/env/activated-sludge-system.md: missing frontmatter key: title
+- wiki/entities/env/env-webapp-project.md: missing frontmatter key: title
+- wiki/entities/env/rabies-pep-surveillance.md: missing frontmatter key: title
+- wiki/entities/iot/18650-battery-shield.md: missing frontmatter key: title
+- wiki/entities/iot/arduino-ide.md: missing frontmatter key: title
+- wiki/entities/iot/arduino-uno-r3.md: missing frontmatter key: title
+- wiki/entities/iot/chirpstack.md: missing frontmatter key: title
+- wiki/entities/iot/dht11.md: missing frontmatter key: title
+- wiki/entities/iot/ds18b20.md: missing frontmatter key: title
+- wiki/entities/iot/dx-lr02-lora.md: missing frontmatter key: title
+- wiki/entities/iot/dx-smart-ttl.md: missing frontmatter key: title
+- wiki/entities/iot/emqx.md: missing frontmatter key: title
+- wiki/entities/iot/esp-idf.md: missing frontmatter key: title
+- wiki/entities/iot/esp32-c6.md: missing frontmatter key: title
+- wiki/entities/iot/esp32-s3.md: missing frontmatter key: title
+- wiki/entities/iot/esp32.md: missing frontmatter key: title
+- wiki/entities/iot/grafana.md: missing frontmatter key: title
+- wiki/entities/iot/hc-sr04.md: missing frontmatter key: title
+- wiki/entities/iot/hc-sr501.md: missing frontmatter key: title
+- wiki/entities/iot/home-assistant.md: missing frontmatter key: title
+- wiki/entities/iot/hx711.md: missing frontmatter key: title
+- wiki/entities/iot/influxdb.md: missing frontmatter key: title
+- wiki/entities/iot/line-notify.md: missing frontmatter key: title
+- wiki/entities/iot/load-cell.md: missing frontmatter key: title
+- wiki/entities/iot/mosquitto.md: missing frontmatter key: title
+- wiki/entities/iot/mqtt-protocol.md: missing frontmatter key: title
+- wiki/entities/iot/mysql.md: missing frontmatter key: title
+- wiki/entities/iot/nb-iot.md: missing frontmatter key: title
+- wiki/entities/iot/node-red.md: missing frontmatter key: title
+- wiki/entities/iot/platformio.md: missing frontmatter key: title
+- wiki/entities/iot/pms5003.md: missing frontmatter key: title
+- wiki/entities/iot/pzem-004t.md: missing frontmatter key: title
+- wiki/entities/iot/raspberry-pi.md: missing frontmatter key: title
+- wiki/entities/iot/rfm95-sx1276.md: missing frontmatter key: title
+- wiki/entities/iot/telegram-bot.md: missing frontmatter key: title
+- wiki/entities/iot/the-things-network.md: missing frontmatter key: title
+- wiki/entities/iot/vapcell-m35-18650.md: missing frontmatter key: title
+- wiki/entities/iot/velxio.md: missing frontmatter key: title
+- wiki/entities/pharmacy/drug-database.md: missing frontmatter key: title
+- wiki/entities/pharmacy/drug-matching-system.md: missing frontmatter key: title
+- wiki/entities/pharmacy/pharmacy-business.md: missing frontmatter key: title
+- wiki/entities/pharmacy/sp-drugstore-2020.md: missing frontmatter key: title
+- wiki/sources/thai-tax-deduction-document-guide.md: no frontmatter (missing --- delimiter)
+- wiki/synthesis/ai-driven-environmental-modeling.md: missing frontmatter key: title
+- wiki/synthesis/ai-for-drug-safety.md: missing frontmatter key: title
+- wiki/synthesis/air-quality-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/appsheet-to-webapp-pi5.md: missing frontmatter key: title
+- wiki/synthesis/cold-chain-vaccine.md: missing frontmatter key: title
+- wiki/synthesis/digital-legacy-ai-architecture.md: missing frontmatter key: title
+- wiki/synthesis/dream-projects.md: missing frontmatter key: title
+- wiki/synthesis/dual-ai-workflow.md: missing frontmatter key: title
+- wiki/synthesis/energy-power-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/env-webapp-schema-wastewater.md: missing frontmatter key: title
+- wiki/synthesis/environmental-iot-sensing.md: missing frontmatter key: title
+- wiki/synthesis/environmental-monitoring-it.md: missing frontmatter key: title
+- wiki/synthesis/environmental-pharmaceutical-risk.md: missing frontmatter key: title
+- wiki/synthesis/fuel-tank-level.md: missing frontmatter key: title
+- wiki/synthesis/garbage-report-ocr.md: missing frontmatter key: title
+- wiki/synthesis/healthcare-it-infrastructure.md: missing frontmatter key: title
+- wiki/synthesis/intelligent-iot-pipelines.md: missing frontmatter key: title
+- wiki/synthesis/iot-in-pharmacy.md: missing frontmatter key: title
+- wiki/synthesis/iot-lora-architecture.md: missing frontmatter key: title
+- wiki/synthesis/iot-network-infrastructure.md: missing frontmatter key: title
+- wiki/synthesis/local-llm-pc-vs-mac-2026.md: missing frontmatter key: title
+- wiki/synthesis/openrouter-agent-routing.md: missing frontmatter key: title
+- wiki/synthesis/pharmacy-order-checker.md: missing frontmatter key: title
+- wiki/synthesis/pharmacy-project-specs.md: missing frontmatter key: title
+- wiki/synthesis/pharmacy-web-app-roadmap.md: missing frontmatter key: title
+- wiki/synthesis/pi4-lora-gateway-server.md: missing frontmatter key: title
+- wiki/synthesis/synthesis-ai-tools.md: missing frontmatter key: title
+- wiki/synthesis/synthesis-env.md: missing frontmatter key: title
+- wiki/synthesis/synthesis-iot.md: missing frontmatter key: title
+- wiki/synthesis/synthesis-it.md: missing frontmatter key: title
+- wiki/synthesis/synthesis-pharmacy.md: missing frontmatter key: title
+- wiki/synthesis/temperature-monitor-project.md: missing frontmatter key: title
+- wiki/synthesis/vibe-pocketbase-project.md: missing frontmatter key: title
+- wiki/synthesis/waste-form-automation.md: missing frontmatter key: title
+- wiki/synthesis/waste-weight-monitoring.md: missing frontmatter key: title
+- wiki/synthesis/wiki-to-video-pipeline.md: missing frontmatter key: title
+- wiki/templates/td-21-power-of-attorney.md: missing frontmatter key: title
 
 ---
 
 ## ⚠ L6: Quality Floor (body length, TL;DR) — Warnings
 
-- wiki\concepts\ai-tools\a2a-protocol.md: missing TL;DR line
-- wiki\concepts\ai-tools\agent-framework-tradeoffs.md: missing TL;DR line
-- wiki\concepts\ai-tools\agent-memory-systems.md: missing TL;DR line
-- wiki\concepts\ai-tools\agent-planning-loops.md: missing TL;DR line
-- wiki\concepts\ai-tools\ai-glossary.md: missing TL;DR line
-- wiki\concepts\ai-tools\ai-myths.md: missing TL;DR line
-- wiki\concepts\ai-tools\claude-skills.md: missing TL;DR line
-- wiki\concepts\ai-tools\claude-thai-skills.md: missing TL;DR line
-- wiki\concepts\ai-tools\context-management.md: missing TL;DR line
-- wiki\concepts\ai-tools\embedding-models.md: missing TL;DR line
-- wiki\concepts\ai-tools\frontend-design-direction.md: missing TL;DR line
-- wiki\concepts\ai-tools\git-subtree-workflow.md: missing TL;DR line
-- wiki\concepts\ai-tools\hooks-skills-plugins.md: missing TL;DR line
-- wiki\concepts\ai-tools\liquid-glass-design.md: missing TL;DR line
-- wiki\concepts\ai-tools\llm-eval-frameworks.md: missing TL;DR line
-- wiki\concepts\ai-tools\llm-rag-architecture.md: missing TL;DR line
-- wiki\concepts\ai-tools\local-llm-routing.md: missing TL;DR line
-- wiki\concepts\ai-tools\mcp-architecture.md: missing TL;DR line
-- wiki\concepts\ai-tools\motion-patterns.md: missing TL;DR line
-- wiki\concepts\ai-tools\multi-agent-theory.md: missing TL;DR line
-- wiki\concepts\ai-tools\openrouter-api.md: missing TL;DR line
-- wiki\concepts\ai-tools\remotion-video-creation.md: missing TL;DR line
-- wiki\concepts\ai-tools\session-setup.md: missing TL;DR line
-- wiki\concepts\ai-tools\sqlite-vec.md: missing TL;DR line
-- wiki\concepts\ai-tools\swarm-optimization.md: missing TL;DR line
-- wiki\concepts\ai-tools\symlinks-ssot.md: missing TL;DR line
-- wiki\concepts\ai-tools\ui-to-vue.md: missing TL;DR line
-- wiki\concepts\ai-tools\vector-search.md: missing TL;DR line
-- wiki\concepts\ai-tools\vibe-coding.md: missing TL;DR line
-- wiki\concepts\env\hospital-wastewater-treatment.md: missing TL;DR line
-- wiki\concepts\env\infectious-waste-management.md: missing TL;DR line
-- wiki\concepts\env\rabies-pep-protocol.md: missing TL;DR line
-- wiki\concepts\env\water-quality-parameters.md: missing TL;DR line
-- wiki\concepts\iot\air-quality-index.md: missing TL;DR line
-- wiki\concepts\iot\cold-chain-monitoring.md: missing TL;DR line
-- wiki\concepts\iot\dashboard-design.md: missing TL;DR line
-- wiki\concepts\iot\data-logger.md: missing TL;DR line
-- wiki\concepts\iot\lora-p2p.md: missing TL;DR line
-- wiki\concepts\iot\lora.md: missing TL;DR line
-- wiki\concepts\iot\lorawan.md: missing TL;DR line
-- wiki\concepts\iot\modbus.md: missing TL;DR line
-- wiki\concepts\iot\mqtt-qos.md: missing TL;DR line
-- wiki\concepts\iot\publish-subscribe.md: missing TL;DR line
-- wiki\concepts\iot\tinyml.md: missing TL;DR line
-- wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-aliases.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-classification.md: missing TL;DR line
-- wiki\concepts\pharmacy\drug-validation.md: missing TL;DR line
-- wiki\concepts\pharmacy\fuzzy-match.md: missing TL;DR line
-- wiki\concepts\pharmacy\ordering-workflow.md: missing TL;DR line
-- wiki\concepts\pharmacy\pharmacy-context.md: missing TL;DR line
-- wiki\concepts\pharmacy\ui-design-pharmacy.md: missing TL;DR line
-- wiki\entities\ai-tools\9arm-skills.md: missing TL;DR line
-- wiki\entities\ai-tools\a-wiki-skill-architecture.md: missing TL;DR line
-- wiki\entities\ai-tools\ag2-orchestrator.md: missing TL;DR line
-- wiki\entities\ai-tools\agents-md-spec.md: missing TL;DR line
-- wiki\entities\ai-tools\anthropic-skills.md: missing TL;DR line
-- wiki\entities\ai-tools\claude-mem.md: missing TL;DR line
-- wiki\entities\ai-tools\context7.md: missing TL;DR line
-- wiki\entities\ai-tools\deer-flow.md: missing TL;DR line
-- wiki\entities\ai-tools\ecc.md: missing TL;DR line
-- wiki\entities\ai-tools\frontend-slides.md: missing TL;DR line
-- wiki\entities\ai-tools\gbrain.md: missing TL;DR line
-- wiki\entities\ai-tools\gitnexus.md: missing TL;DR line
-- wiki\entities\ai-tools\graphify.md: missing TL;DR line
-- wiki\entities\ai-tools\hermes-agent.md: missing TL;DR line
-- wiki\entities\ai-tools\hyperframes.md: missing TL;DR line
-- wiki\entities\ai-tools\live-dashboard.md: missing TL;DR line
-- wiki\entities\ai-tools\mattpocock-skills.md: missing TL;DR line
-- wiki\entities\ai-tools\model-capability-bench.md: missing TL;DR line
-- wiki\entities\ai-tools\news-intelligence-pipeline.md: missing TL;DR line
-- wiki\entities\ai-tools\ollama.md: missing TL;DR line
-- wiki\entities\ai-tools\omniroute.md: missing TL;DR line
-- wiki\entities\ai-tools\openmed.md: missing TL;DR line
-- wiki\entities\ai-tools\pake.md: missing TL;DR line
-- wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
-- wiki\entities\ai-tools\react-doctor.md: missing TL;DR line
-- wiki\entities\ai-tools\superpowers.md: missing TL;DR line
-- wiki\entities\ai-tools\taste-skill.md: missing TL;DR line
-- wiki\entities\ai-tools\telegram-ai-router.md: missing TL;DR line
-- wiki\entities\ai-tools\transitions-dev.md: missing TL;DR line
-- wiki\entities\ai-tools\turbovec.md: missing TL;DR line
-- wiki\entities\ai-tools\ui-ux-pro-max.md: missing TL;DR line
-- wiki\entities\ai-tools\zai-glm.md: missing TL;DR line
-- wiki\entities\env\activated-sludge-system.md: missing TL;DR line
-- wiki\entities\env\env-webapp-project.md: missing TL;DR line
-- wiki\entities\env\rabies-pep-surveillance.md: missing TL;DR line
-- wiki\entities\iot\18650-battery-shield.md: missing TL;DR line
-- wiki\entities\iot\arduino-ide.md: missing TL;DR line
-- wiki\entities\iot\arduino-uno-r3.md: missing TL;DR line
-- wiki\entities\iot\chirpstack.md: missing TL;DR line
-- wiki\entities\iot\dht11.md: missing TL;DR line
-- wiki\entities\iot\ds18b20.md: missing TL;DR line
-- wiki\entities\iot\dx-lr02-lora.md: missing TL;DR line
-- wiki\entities\iot\dx-smart-ttl.md: missing TL;DR line
-- wiki\entities\iot\emqx.md: missing TL;DR line
-- wiki\entities\iot\esp-idf.md: missing TL;DR line
-- wiki\entities\iot\esp32-c6.md: missing TL;DR line
-- wiki\entities\iot\esp32-s3.md: missing TL;DR line
-- wiki\entities\iot\esp32.md: missing TL;DR line
-- wiki\entities\iot\grafana.md: missing TL;DR line
-- wiki\entities\iot\hc-sr04.md: missing TL;DR line
-- wiki\entities\iot\hc-sr501.md: missing TL;DR line
-- wiki\entities\iot\home-assistant.md: missing TL;DR line
-- wiki\entities\iot\hx711.md: missing TL;DR line
-- wiki\entities\iot\influxdb.md: missing TL;DR line
-- wiki\entities\iot\line-notify.md: missing TL;DR line
-- wiki\entities\iot\load-cell.md: missing TL;DR line
-- wiki\entities\iot\mosquitto.md: missing TL;DR line
-- wiki\entities\iot\mqtt-protocol.md: missing TL;DR line
-- wiki\entities\iot\mysql.md: missing TL;DR line
-- wiki\entities\iot\nb-iot.md: missing TL;DR line
-- wiki\entities\iot\node-red.md: missing TL;DR line
-- wiki\entities\iot\platformio.md: missing TL;DR line
-- wiki\entities\iot\pms5003.md: missing TL;DR line
-- wiki\entities\iot\pzem-004t.md: missing TL;DR line
-- wiki\entities\iot\raspberry-pi.md: missing TL;DR line
-- wiki\entities\iot\rfm95-sx1276.md: missing TL;DR line
-- wiki\entities\iot\telegram-bot.md: missing TL;DR line
-- wiki\entities\iot\the-things-network.md: missing TL;DR line
-- wiki\entities\iot\vapcell-m35-18650.md: missing TL;DR line
-- wiki\entities\iot\velxio.md: missing TL;DR line
-- wiki\entities\pharmacy\drug-database.md: missing TL;DR line
-- wiki\entities\pharmacy\drug-matching-system.md: missing TL;DR line
-- wiki\entities\pharmacy\pharmacy-business.md: missing TL;DR line
-- wiki\entities\pharmacy\sp-drugstore-2020.md: missing TL;DR line
+- wiki/concepts/ai-tools/a2a-protocol.md: missing TL;DR line
+- wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing TL;DR line
+- wiki/concepts/ai-tools/agent-memory-systems.md: missing TL;DR line
+- wiki/concepts/ai-tools/agent-planning-loops.md: missing TL;DR line
+- wiki/concepts/ai-tools/ai-glossary.md: missing TL;DR line
+- wiki/concepts/ai-tools/ai-myths.md: missing TL;DR line
+- wiki/concepts/ai-tools/claude-skills.md: missing TL;DR line
+- wiki/concepts/ai-tools/claude-thai-skills.md: missing TL;DR line
+- wiki/concepts/ai-tools/context-management.md: missing TL;DR line
+- wiki/concepts/ai-tools/embedding-models.md: missing TL;DR line
+- wiki/concepts/ai-tools/frontend-design-direction.md: missing TL;DR line
+- wiki/concepts/ai-tools/git-subtree-workflow.md: missing TL;DR line
+- wiki/concepts/ai-tools/hooks-skills-plugins.md: missing TL;DR line
+- wiki/concepts/ai-tools/liquid-glass-design.md: missing TL;DR line
+- wiki/concepts/ai-tools/llm-eval-frameworks.md: missing TL;DR line
+- wiki/concepts/ai-tools/llm-rag-architecture.md: missing TL;DR line
+- wiki/concepts/ai-tools/local-llm-routing.md: missing TL;DR line
+- wiki/concepts/ai-tools/mcp-architecture.md: missing TL;DR line
+- wiki/concepts/ai-tools/motion-patterns.md: missing TL;DR line
+- wiki/concepts/ai-tools/multi-agent-theory.md: missing TL;DR line
+- wiki/concepts/ai-tools/openrouter-api.md: missing TL;DR line
+- wiki/concepts/ai-tools/remotion-video-creation.md: missing TL;DR line
+- wiki/concepts/ai-tools/session-setup.md: missing TL;DR line
+- wiki/concepts/ai-tools/sqlite-vec.md: missing TL;DR line
+- wiki/concepts/ai-tools/swarm-optimization.md: missing TL;DR line
+- wiki/concepts/ai-tools/symlinks-ssot.md: missing TL;DR line
+- wiki/concepts/ai-tools/ui-to-vue.md: missing TL;DR line
+- wiki/concepts/ai-tools/vector-search.md: missing TL;DR line
+- wiki/concepts/ai-tools/vibe-coding.md: missing TL;DR line
+- wiki/concepts/env/hospital-wastewater-treatment.md: missing TL;DR line
+- wiki/concepts/env/infectious-waste-management.md: missing TL;DR line
+- wiki/concepts/env/rabies-pep-protocol.md: missing TL;DR line
+- wiki/concepts/env/water-quality-parameters.md: missing TL;DR line
+- wiki/concepts/iot/air-quality-index.md: missing TL;DR line
+- wiki/concepts/iot/cold-chain-monitoring.md: missing TL;DR line
+- wiki/concepts/iot/dashboard-design.md: missing TL;DR line
+- wiki/concepts/iot/data-logger.md: missing TL;DR line
+- wiki/concepts/iot/lora-p2p.md: missing TL;DR line
+- wiki/concepts/iot/lora.md: missing TL;DR line
+- wiki/concepts/iot/lorawan.md: missing TL;DR line
+- wiki/concepts/iot/modbus.md: missing TL;DR line
+- wiki/concepts/iot/mqtt-qos.md: missing TL;DR line
+- wiki/concepts/iot/publish-subscribe.md: missing TL;DR line
+- wiki/concepts/iot/tinyml.md: missing TL;DR line
+- wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-aliases.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-classification.md: missing TL;DR line
+- wiki/concepts/pharmacy/drug-validation.md: missing TL;DR line
+- wiki/concepts/pharmacy/fuzzy-match.md: missing TL;DR line
+- wiki/concepts/pharmacy/ordering-workflow.md: missing TL;DR line
+- wiki/concepts/pharmacy/pharmacy-context.md: missing TL;DR line
+- wiki/concepts/pharmacy/ui-design-pharmacy.md: missing TL;DR line
+- wiki/entities/ai-tools/9arm-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/a-wiki-skill-architecture.md: missing TL;DR line
+- wiki/entities/ai-tools/ag2-orchestrator.md: missing TL;DR line
+- wiki/entities/ai-tools/agents-md-spec.md: missing TL;DR line
+- wiki/entities/ai-tools/anthropic-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/claude-mem.md: missing TL;DR line
+- wiki/entities/ai-tools/context7.md: missing TL;DR line
+- wiki/entities/ai-tools/deer-flow.md: missing TL;DR line
+- wiki/entities/ai-tools/ecc.md: missing TL;DR line
+- wiki/entities/ai-tools/frontend-slides.md: missing TL;DR line
+- wiki/entities/ai-tools/gamedev-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/gbrain.md: missing TL;DR line
+- wiki/entities/ai-tools/gitnexus.md: missing TL;DR line
+- wiki/entities/ai-tools/graphify.md: missing TL;DR line
+- wiki/entities/ai-tools/hermes-agent.md: missing TL;DR line
+- wiki/entities/ai-tools/hyperframes.md: missing TL;DR line
+- wiki/entities/ai-tools/live-dashboard.md: missing TL;DR line
+- wiki/entities/ai-tools/mattpocock-skills.md: missing TL;DR line
+- wiki/entities/ai-tools/model-capability-bench.md: missing TL;DR line
+- wiki/entities/ai-tools/monte-carlo-simulation.md: missing TL;DR line
+- wiki/entities/ai-tools/news-intelligence-pipeline.md: missing TL;DR line
+- wiki/entities/ai-tools/ollama.md: missing TL;DR line
+- wiki/entities/ai-tools/omniroute.md: missing TL;DR line
+- wiki/entities/ai-tools/openmed.md: missing TL;DR line
+- wiki/entities/ai-tools/pake.md: missing TL;DR line
+- wiki/entities/ai-tools/pocketbase.md: missing TL;DR line
+- wiki/entities/ai-tools/react-doctor.md: missing TL;DR line
+- wiki/entities/ai-tools/superpowers.md: missing TL;DR line
+- wiki/entities/ai-tools/taste-skill.md: missing TL;DR line
+- wiki/entities/ai-tools/telegram-ai-router.md: missing TL;DR line
+- wiki/entities/ai-tools/transitions-dev.md: missing TL;DR line
+- wiki/entities/ai-tools/turbovec.md: missing TL;DR line
+- wiki/entities/ai-tools/ui-ux-pro-max.md: missing TL;DR line
+- wiki/entities/ai-tools/zai-glm.md: missing TL;DR line
+- wiki/entities/env/activated-sludge-system.md: missing TL;DR line
+- wiki/entities/env/env-webapp-project.md: missing TL;DR line
+- wiki/entities/env/rabies-pep-surveillance.md: missing TL;DR line
+- wiki/entities/iot/18650-battery-shield.md: missing TL;DR line
+- wiki/entities/iot/arduino-ide.md: missing TL;DR line
+- wiki/entities/iot/arduino-uno-r3.md: missing TL;DR line
+- wiki/entities/iot/chirpstack.md: missing TL;DR line
+- wiki/entities/iot/dht11.md: missing TL;DR line
+- wiki/entities/iot/ds18b20.md: missing TL;DR line
+- wiki/entities/iot/dx-lr02-lora.md: missing TL;DR line
+- wiki/entities/iot/dx-smart-ttl.md: missing TL;DR line
+- wiki/entities/iot/emqx.md: missing TL;DR line
+- wiki/entities/iot/esp-idf.md: missing TL;DR line
+- wiki/entities/iot/esp32-c6.md: missing TL;DR line
+- wiki/entities/iot/esp32-s3.md: missing TL;DR line
+- wiki/entities/iot/esp32.md: missing TL;DR line
+- wiki/entities/iot/grafana.md: missing TL;DR line
+- wiki/entities/iot/hc-sr04.md: missing TL;DR line
+- wiki/entities/iot/hc-sr501.md: missing TL;DR line
+- wiki/entities/iot/home-assistant.md: missing TL;DR line
+- wiki/entities/iot/hx711.md: missing TL;DR line
+- wiki/entities/iot/influxdb.md: missing TL;DR line
+- wiki/entities/iot/line-notify.md: missing TL;DR line
+- wiki/entities/iot/load-cell.md: missing TL;DR line
+- wiki/entities/iot/mosquitto.md: missing TL;DR line
+- wiki/entities/iot/mqtt-protocol.md: missing TL;DR line
+- wiki/entities/iot/mysql.md: missing TL;DR line
+- wiki/entities/iot/nb-iot.md: missing TL;DR line
+- wiki/entities/iot/node-red.md: missing TL;DR line
+- wiki/entities/iot/platformio.md: missing TL;DR line
+- wiki/entities/iot/pms5003.md: missing TL;DR line
+- wiki/entities/iot/pzem-004t.md: missing TL;DR line
+- wiki/entities/iot/raspberry-pi.md: missing TL;DR line
+- wiki/entities/iot/rfm95-sx1276.md: missing TL;DR line
+- wiki/entities/iot/telegram-bot.md: missing TL;DR line
+- wiki/entities/iot/the-things-network.md: missing TL;DR line
+- wiki/entities/iot/vapcell-m35-18650.md: missing TL;DR line
+- wiki/entities/iot/velxio.md: missing TL;DR line
+- wiki/entities/pharmacy/drug-database.md: missing TL;DR line
+- wiki/entities/pharmacy/drug-matching-system.md: missing TL;DR line
+- wiki/entities/pharmacy/pharmacy-business.md: missing TL;DR line
+- wiki/entities/pharmacy/sp-drugstore-2020.md: missing TL;DR line
 
 ---
 
-## ✓ Passed Checks (877 total)
+## ✓ Passed Checks (872 total)
 
-- **L2**: 369 passed
-- **L3**: 505 passed
+- **L2**: 365 passed
+- **L3**: 504 passed
 - **L6**: 3 passed
 
 ---

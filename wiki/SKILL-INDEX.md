@@ -7,16 +7,16 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 359 · **Aliases/deprecated**: 8
+**Total canonical skills**: 368 · **Aliases/deprecated**: 8
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 181 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 187 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
-| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 10 |
-| `ux-ui` | UX/UI / Frontend / a11y | 5 |
+| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
+| `ux-ui` | UX/UI / Frontend / a11y | 8 |
 | `engineering` | วิศวกร / Architect / Agent harness | 41 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 6 |
@@ -31,7 +31,7 @@
 | `thai` | ภาษาไทย / เอกสารไทย | 12 |
 | `logistics` | ลอจิสติกส์ / ซัพพลายเชน | 7 |
 | `network` | เครือข่าย / Homelab | 10 |
-| `media` | สื่อ / วิดีโอ / รูปภาพ | 13 |
+| `media` | สื่อ / วิดีโอ / รูปภาพ | 19 |
 | `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
 | `sre` | SRE / Observability / Deploy | 6 |
 
@@ -160,6 +160,9 @@
 | `perl-patterns` | none | ecosystem | รวบรวม idioms, best practices และ conventions สำหรับการเขียน Perl 5.36+ ให้แข็งแรงและบำรุงรักษาง่... |
 | `perl-security` | none | ecosystem | ครอบคลุมการเขียน Perl อย่างปลอดภัย ตั้งแต่ taint mode, การตรวจสอบ input, การเรียก process อย่างปล... |
 | `perl-testing` | none | ecosystem | ทักษะสำหรับการทดสอบ Perl โดยใช้ Test2::V0, Test::More, prove runner, การ mock, การวัด coverage ด้... |
+| `phaser-arcade-physics` | build | game | Phaser 3 Arcade Physics reference (colliders, overlap, velocity/gravity tuning) — vendored from g... |
+| `phaser-core` | build | game | Phaser 3 core engine reference (scenes, game config, loader, sprites) — vendored from gamedev-ski... |
+| `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
 | `plankton-code-quality` | none | ecosystem | บังคับใช้คุณภาพโค้ดอัตโนมัติขณะเขียนด้วย Plankton — จัดรูปแบบ, lint, และแก้ไขโค้ดโดย Claude ทุกคร... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `plugin-creator` | none | uncategorized | สร้างและจัดโครงสร้าง plugin สำหรับ Codex โดยสร้างโฟลเดอร์ .codex-plugin/ พร้อมไฟล์ plugin.json ที... |
@@ -213,6 +216,9 @@
 | `tdd-workflow` | none | ecosystem | ใช้ทักษะนี้เมื่อเขียนฟีเจอร์ใหม่ แก้บั๊ก หรือ refactor โค้ด โดยบังคับใช้ test-driven development ... |
 | `team-builder` | none | ecosystem | เครื่องมือเลือก agent แบบโต้ตอบสำหรับประกอบทีมและส่งงานแบบขนาน ช่วยให้คุณเลือก agent ที่เหมาะสมจา... |
 | `terminal-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณรันคำสั่ง terminal ตรวจสอบ repo แก้ปัญหา CI ที่ล้มเหลว หรือ push การแก้ไขเล็กน้... |
+| `threejs-gltf-loading` | build | game | three.js glTF model loading reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
+| `threejs-materials-lighting` | build | game | three.js materials + lighting reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
+| `threejs-scene-setup` | build | game | three.js scene/camera/renderer setup reference — vendored from gamedev-skills/awesome-gamedev-age... |
 | `tinystruct-patterns` | none | ecosystem | ให้คำแนะนำเชิงลึกสำหรับการพัฒนาแอปพลิเคชันด้วยเฟรมเวิร์ก tinystruct ในภาษา Java ครอบคลุมการใช้งาน... |
 | `two-axis-code-review` | review | mattpocock | รีวิวโค้ดแบบ 2 แกน: (1) correctness/logic (2) style/maintainability |
 | `uncloud` | none | ecosystem | ใช้สำหรับจัดการคลัสเตอร์ Uncloud — deploy service, ตั้งค่า Caddy ingress, เพิ่ม static proxy rout... |
@@ -250,7 +256,10 @@
 | `frontend-design` | none | uncategorized | ออกแบบ UI/UX หน้าเว็บ — layout, color, typography, component |
 | `frontend-design-direction` | none | ecosystem | ตั้ง design direction เฉพาะของ ECC สำหรับ production UI — เลือก style, color, motion ให้เข้ากับงาน |
 | `liquid-glass-design` | none | ecosystem | ระบบ design แบบ Liquid Glass ของ iOS 26 — glass material ที่มี blur, reflection, motion โต้ตอบ |
+| `taste-skill` | build | design | Anti-slop frontend taste layer (Leonxlnx/taste-skill, MIT, 59.4k star) — infers design intent for... |
 | `theme-factory` | none | uncategorized | ชุดเครื่องมือสำหรับปรับแต่งสไตล์ของ artifacts เช่น สไลด์ เอกสาร รายงาน หรือหน้า HTML Landing Page... |
+| `transitions-dev` | build | design | 18 production-ready CSS transitions + reveal/review/apply audit workflow (Jakubantalik/transition... |
+| `ui-ux-pro-max` | build | design | Searchable local design-intelligence database (nextlevelbuilder/ui-ux-pro-max-skill, MIT) — 161 p... |
 
 ### `ux-ui` — UX/UI / Frontend / a11y
 
@@ -259,8 +268,11 @@
 | `accessibility` | none | ecosystem | ออกแบบ พัฒนา และตรวจสอบความสามารถในการเข้าถึงของผลิตภัณฑ์ดิจิทัลให้สอดคล้องกับมาตรฐาน WCAG 2.2 ระ... |
 | `frontend-a11y` | none | uncategorized | ทักษะนี้ช่วยตรวจสอบและปรับปรุงการเข้าถึง (accessibility) ของส่วนติดต่อผู้ใช้ (UI) โดยวิเคราะห์โคร... |
 | `make-interfaces-feel-better` | none | ecosystem | ใช้ปรับแต่งรายละเอียดทางวิศวกรรมดีไซน์ให้อินเทอร์เฟซดูพรีเมียมและใช้งานลื่นไหล เน้นการปรับ spacin... |
+| `taste-skill` | build | design | Anti-slop frontend taste layer (Leonxlnx/taste-skill, MIT, 59.4k star) — infers design intent for... |
+| `transitions-dev` | build | design | 18 production-ready CSS transitions + reveal/review/apply audit workflow (Jakubantalik/transition... |
 | `ui-demo` | none | ecosystem | สร้างวิดีโอสาธิต UI ที่สวยงามโดยอัตโนมัติด้วย Playwright ใช้สำหรับบันทึกการเดินทางของผู้ใช้ การสอ... |
 | `ui-to-vue` | none | ecosystem | แปลง UI screenshot หรือ design export หลายไฟล์เป็น Vue 3 components โดยรองรับ Vant, Element Plus ... |
+| `ui-ux-pro-max` | build | design | Searchable local design-intelligence database (nextlevelbuilder/ui-ux-pro-max-skill, MIT) — 161 p... |
 
 ### `engineering` — วิศวกร / Architect / Agent harness
 
@@ -525,8 +537,14 @@
 | `motion-foundations` | none | ecosystem | จัดการ motion tokens, spring presets, และกฎ performance สำหรับ React/Next.js ด้วย motion/react คร... |
 | `motion-patterns` | none | ecosystem | รวมแพทเทิร์น animation สำหรับ React / Next.js ที่พร้อมใช้งานจริง ครอบคลุมปุ่มกด, modal, toast, st... |
 | `motion-ui` | none | uncategorized | ระบบ motion สำหรับ UI ที่พร้อมใช้งานจริงใน React/Next.js ใช้สำหรับเพิ่ม animation, transition และ... |
+| `phaser-arcade-physics` | build | game | Phaser 3 Arcade Physics reference (colliders, overlap, velocity/gravity tuning) — vendored from g... |
+| `phaser-core` | build | game | Phaser 3 core engine reference (scenes, game config, loader, sprites) — vendored from gamedev-ski... |
+| `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
 | `remotion-video-creation` | none | ecosystem | รวบรวมแนวปฏิบัติที่ดีที่สุดสำหรับการสร้างวิดีโอด้วย Remotion ใน React ครอบคลุม 29 กฎเฉพาะด้าน เช่... |
 | `slack-gif-creator` | none | uncategorized | ความรู้และเครื่องมือสำหรับสร้าง GIF แบบเคลื่อนไหวที่เหมาะกับ Slack โดยเฉพาะ มีข้อจำกัดด้านขนาดและ... |
+| `threejs-gltf-loading` | build | game | three.js glTF model loading reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
+| `threejs-materials-lighting` | build | game | three.js materials + lighting reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
+| `threejs-scene-setup` | build | game | three.js scene/camera/renderer setup reference — vendored from gamedev-skills/awesome-gamedev-age... |
 | `video-editing` | none | ecosystem | ทักษะนี้ช่วยจัดการ workflow การตัดต่อวิดีโอแบบ AI-assisted ตั้งแต่ raw footage จนถึงไฟล์สำเร็จ รอ... |
 | `videodb` | none | ecosystem | ดู เข้าใจ และดำเนินการกับวิดีโอและเสียงได้ทันที รองรับการนำเข้าจากไฟล์ในเครื่อง, URL, ฟีดสด RTSP ... |
 
@@ -561,7 +579,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `domain-modeling`, `grill-me`, `grill-with-docs`, `grilling`, `research`, `spec`, `spec-driven-development`, `to-prd`
 - **PLAN**: `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `prototype`, `scaffold-exercises`, `tdd`
+- **BUILD**: `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `fable5-standards`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`

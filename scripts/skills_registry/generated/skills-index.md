@@ -234,6 +234,9 @@
 | `perl-security` | code | none | ecosystem | `skills/ecosystem/perl-security/SKILL.md` |
 | `perl-testing` | code | none | ecosystem | `skills/ecosystem/perl-testing/SKILL.md` |
 | `pharmacy-order-lookup` | medical, pharmacy | none | wiki | `skills/claude-code/pharmacy-order-lookup/SKILL.md` |
+| `phaser-arcade-physics` | code, media | build | game | `skills/gamedev-skills/phaser-arcade-physics/SKILL.md` |
+| `phaser-core` | code, media | build | game | `skills/gamedev-skills/phaser-core/SKILL.md` |
+| `pixijs-rendering` | code, media | build | game | `skills/gamedev-skills/pixijs-rendering/SKILL.md` |
 | `plan` | ai-ops | plan | awiki | `skills/awiki/plan/SKILL.md` |
 | `plan-orchestrate` | productivity | none | ecosystem | `skills/ecosystem/plan-orchestrate/SKILL.md` |
 | `plankton-code-quality` | code | none | ecosystem | `skills/ecosystem/plankton-code-quality/SKILL.md` |
@@ -316,6 +319,7 @@
 | `swift-protocol-di-testing` | code | none | ecosystem | `skills/ecosystem/swift-protocol-di-testing/SKILL.md` |
 | `swiftui-patterns` | code | none | ecosystem | `skills/ecosystem/swiftui-patterns/SKILL.md` |
 | `symlink-connector` | engineering | ship | extensibility | `agent-skills/extensibility/symlink-connector/SKILL.md` |
+| `taste-skill` | design, ux-ui | build | design | `skills/taste-skill/SKILL.md` |
 | `tdd` | engineering, code | build | mattpocock | `skills/mattpocock/tdd/SKILL.md` |
 | `tdd-workflow` | code | none | ecosystem | `skills/ecosystem/tdd-workflow/SKILL.md` |
 | `teach` | productivity | none | mattpocock | `skills/mattpocock/teach/SKILL.md` |
@@ -334,14 +338,19 @@
 | `thai-text-processing` | thai | none | thai | `skills/claude-thai/thai-text-processing/SKILL.md` |
 | `thai-translate` | thai | none | thai | `skills/claude-thai/thai-translate/SKILL.md` |
 | `theme-factory` | design | none | uncategorized | `skills/anthropic-skills/theme-factory/SKILL.md` |
+| `threejs-gltf-loading` | code, media | build | game | `skills/gamedev-skills/threejs-gltf-loading/SKILL.md` |
+| `threejs-materials-lighting` | code, media | build | game | `skills/gamedev-skills/threejs-materials-lighting/SKILL.md` |
+| `threejs-scene-setup` | code, media | build | game | `skills/gamedev-skills/threejs-scene-setup/SKILL.md` |
 | `tinystruct-patterns` | code | none | ecosystem | `skills/ecosystem/tinystruct-patterns/SKILL.md` |
 | `to-issues` | engineering, productivity | plan | mattpocock | `skills/mattpocock/to-issues/SKILL.md` |
 | `to-prd` | engineering, productivity | define | mattpocock | `skills/mattpocock/to-prd/SKILL.md` |
 | `token-optimization` | ai-ops | none | wiki | `skills/claude-code/token-optimization/SKILL.md` |
+| `transitions-dev` | design, ux-ui | build | design | `skills/transitions-dev/SKILL.md` |
 | `triage` | engineering, debug | verify | mattpocock | `skills/mattpocock/triage/SKILL.md` |
 | `two-axis-code-review` | engineering, code | review | mattpocock | `skills/mattpocock/two-axis-code-review/SKILL.md` |
 | `ui-demo` | ux-ui | none | ecosystem | `skills/ecosystem/ui-demo/SKILL.md` |
 | `ui-to-vue` | ux-ui | none | ecosystem | `skills/ecosystem/ui-to-vue/SKILL.md` |
+| `ui-ux-pro-max` | design, ux-ui | build | design | `skills/ui-ux-pro-max/SKILL.md` |
 | `uncloud` | code | none | ecosystem | `skills/ecosystem/uncloud/SKILL.md` |
 | `unified-notifications-ops` | code | none | ecosystem | `skills/ecosystem/unified-notifications-ops/SKILL.md` |
 | `uspto-database` | data | none | ecosystem | `skills/ecosystem/scientific-db-uspto-database/SKILL.md` |
@@ -369,15 +378,15 @@
 |--------|------------|
 | ai-ops | 31 |
 | business | 10 |
-| code | 181 |
+| code | 187 |
 | data | 16 |
 | debug | 7 |
-| design | 10 |
+| design | 13 |
 | document | 9 |
 | engineering | 41 |
 | env | 1 |
 | logistics | 7 |
-| media | 13 |
+| media | 19 |
 | medical | 6 |
 | network | 10 |
 | pharmacy | 1 |
@@ -386,5 +395,5 @@
 | sre | 6 |
 | thai | 12 |
 | trader | 11 |
-| ux-ui | 5 |
+| ux-ui | 8 |
 | wiki | 9 |

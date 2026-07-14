@@ -13,7 +13,7 @@ verify_tool: WebSearch
 # Transitions.dev (Jakubantalik/transitions.dev)
 
 **ประเภท**: Agent skill — curated CSS transitions collection + audit/apply workflow
-**สถานะ**: **candidate — ยังไม่ติดตั้ง** (ผ่าน gap analysis 2026-07-13, รอไฟเขียว)
+**สถานะ**: ✅ **ติดตั้งแล้ว** — `skills/transitions-dev/` (vendored 2026-07-14, registry: domain `design,ux-ui`, category `design`)
 **License**: open-source (repo public)
 
 ## ภาพรวม

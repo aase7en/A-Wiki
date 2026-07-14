@@ -3,6 +3,7 @@
     "ai-ops": "../agent-skills/swarm-intelligence",
     "awiki": "../skills/awiki",
     "delegation": "../skills/delegation",
+    "design": "../skills/taste-skill",
     "ecosystem": "../skills/ecosystem",
     "engineering": "../agent-skills/engineering",
     "engineering-lifecycle": "../skills/engineering-lifecycle",

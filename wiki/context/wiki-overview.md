@@ -13,11 +13,11 @@
 
 | Type | Count |
 |------|-------|
-| ENTITIES | 79 |
+| ENTITIES | 81 |
 | CONCEPTS | 59 |
-| SYNTHESIS | 207 |
+| SYNTHESIS | 209 |
 | SOURCES | 174 |
-| **Total** | **519 pages** |
+| **Total** | **523 pages** |
 
 ---
 
@@ -27,7 +27,7 @@
 |--------|----------|----------|--------------|------------|
 | IoT | 36 | 12 | `wiki/context/overview-iot.md` | `index-iot.md` |
 | Environmental Health | 4 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
-| AI Tools | 34 | 32 | `wiki/context/overview-ai.md` | `index-ai.md` |
+| AI Tools | 36 | 32 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 | Trading & Finance | 0 | 0 | `wiki/context/overview-trader.md` | `index-trader.md` |
 
@@ -143,6 +143,7 @@
 | `synth-espressif-esp32-s3-iot-engineering-education` | print("System info:") print("- Flash size:", esp.flash_size(), "… |
 | `synth-espressifesp-idf-espressif-iot-development-framework-officia` | (awaiting human summary) |
 | `synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (awaiting human summary) |
+| `synth-firmai-financial-machine-learning` | _To be filled in by human review._ |
 | `synth-freqtrade-pi5` | _To be filled in by human review._ |
 | `synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (awaiting human summary) |
 | `synth-get-started-esp32-esp-idf-programming-guide-v44-documentation` | (awaiting human summary) |
@@ -219,6 +220,7 @@
 | `synth-tinyml-esp32-applications` | _To be filled in by human review._ |
 | `synth-trading-rpg-project-brief-2026-05-30` | [verified 2026-05-30] User brief proposes an 8-bit RPG layer for… |
 | `synth-umbrel-pi5-setup` | _To be filled in by human review._ |
+| `synth-unpingco-python-stats-ml` | _To be filled in by human review._ |
 | `synth-uthai-equipment-price-2568` | _To be filled in by human review._ |
 | `synth-ux-design-in-iot` | (awaiting human summary) |
 | `synth-vaccine-cae-anomaly-detection` | _To be filled in by human review._ |
@@ -250,4 +252,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 519 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 523 pages across 4 sections.*

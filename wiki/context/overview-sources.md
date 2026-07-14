@@ -44,6 +44,7 @@
 | `claude-model-cost-switching-strategy-2026-06` | 1. **Fable 5 = model แพงสุดในตลาด** ($10/M input, $50/M output ≈… |
 | `cloudflare-tunnel-pi5` | (no abstract) |
 | `context-claude-code-dev-vibe-coding-thailand` | (no abstract) |
+| `copula-multivariate-finance` | 1. **Copula** = multivariate CDF ที่ marginals ทุกตัว uniform บน… |
 | `create-an-esp32-project-with-platformio-an-guide-for-beginne` | (no abstract) |
 | `create-an-esp32-project-with-platformio-an-guide-for-beginners` | (no abstract) |
 | `dashboard-design-best-practices` | 1. **Dashboard = critical info at a glance** — เหมือน dashboard… |
@@ -83,7 +84,6 @@
 | `espressifesp-idf-espressif-iot-development-framework-officia` | (no abstract) |
 | `espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (no abstract) |
 | `firmai-financial-machine-learning` | 1. **Map ก่อน dive** — README ทำหน้าที่เป็น index ของหมวดวิธีการ… |
-| `firmai-financial-ml-readme` | ___ |
 | `freqtrade-pi5` | 1. Freqtrade รองรับ ARM64 (Pi 5) ผ่าน Docker image เฉพาะ `*_pi`… |
 | `get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (no abstract) |
 | `get-started-esp32-esp-idf-programming-guide-v44-documentation` | (no abstract) |

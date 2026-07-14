@@ -33,4 +33,4 @@ updated: 2026-07-13
 - [[entities/ai-tools/frontend-slides]]
 - [[entities/ai-tools/react-doctor]]
 - `docs/runbooks/a-wiki-capability-upgrade-roadmap.md`
-- [[synthesis/claude-skills-gap-web-game-2026]] — candidates ยังไม่ติดตั้ง: [[entities/ai-tools/taste-skill]] · [[entities/ai-tools/ui-ux-pro-max]] · [[entities/ai-tools/transitions-dev]] (gap analysis 2026-07-13)
+- [[entities/ai-tools/taste-skill]] · [[entities/ai-tools/ui-ux-pro-max]] · [[entities/ai-tools/transitions-dev]] — **ติดตั้งแล้ว 2026-07-14** (`skills/{taste-skill,ui-ux-pro-max,transitions-dev}/`) จาก [[synthesis/claude-skills-gap-web-game-2026]]: taste layer + design-intelligence DB + motion audit เติมชั้นที่ route ด้านบนยังไม่มี

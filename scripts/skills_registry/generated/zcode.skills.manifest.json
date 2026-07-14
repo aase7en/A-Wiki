@@ -1174,6 +1174,21 @@
       "domain": "medical,pharmacy"
     },
     {
+      "name": "phaser-arcade-physics",
+      "target": "skills/gamedev-skills/phaser-arcade-physics/SKILL.md",
+      "domain": "code,media"
+    },
+    {
+      "name": "phaser-core",
+      "target": "skills/gamedev-skills/phaser-core/SKILL.md",
+      "domain": "code,media"
+    },
+    {
+      "name": "pixijs-rendering",
+      "target": "skills/gamedev-skills/pixijs-rendering/SKILL.md",
+      "domain": "code,media"
+    },
+    {
       "name": "plan",
       "target": "skills/awiki/plan/SKILL.md",
       "domain": "ai-ops"
@@ -1544,6 +1559,11 @@
       "domain": "engineering"
     },
     {
+      "name": "taste-skill",
+      "target": "skills/taste-skill/SKILL.md",
+      "domain": "design,ux-ui"
+    },
+    {
       "name": "tdd",
       "target": "skills/mattpocock/tdd/SKILL.md",
       "domain": "engineering,code"
@@ -1639,6 +1659,21 @@
       "domain": "design"
     },
     {
+      "name": "threejs-gltf-loading",
+      "target": "skills/gamedev-skills/threejs-gltf-loading/SKILL.md",
+      "domain": "code,media"
+    },
+    {
+      "name": "threejs-materials-lighting",
+      "target": "skills/gamedev-skills/threejs-materials-lighting/SKILL.md",
+      "domain": "code,media"
+    },
+    {
+      "name": "threejs-scene-setup",
+      "target": "skills/gamedev-skills/threejs-scene-setup/SKILL.md",
+      "domain": "code,media"
+    },
+    {
       "name": "tinystruct-patterns",
       "target": "skills/ecosystem/tinystruct-patterns/SKILL.md",
       "domain": "code"
@@ -1664,6 +1699,11 @@
       "domain": "ai-ops"
     },
     {
+      "name": "transitions-dev",
+      "target": "skills/transitions-dev/SKILL.md",
+      "domain": "design,ux-ui"
+    },
+    {
       "name": "triage",
       "target": "skills/mattpocock/triage/SKILL.md",
       "domain": "engineering,debug"
@@ -1682,6 +1722,11 @@
       "name": "ui-to-vue",
       "target": "skills/ecosystem/ui-to-vue/SKILL.md",
       "domain": "ux-ui"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "target": "skills/ui-ux-pro-max/SKILL.md",
+      "domain": "design,ux-ui"
     },
     {
       "name": "ui-ux-reviewer",

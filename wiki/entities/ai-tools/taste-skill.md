@@ -13,7 +13,7 @@ verify_tool: WebSearch
 # Taste Skill (Leonxlnx/taste-skill)
 
 **ประเภท**: Agent skill suite — frontend design taste ("anti-slop")
-**สถานะ**: **candidate — ยังไม่ติดตั้ง** (ผ่าน gap analysis 2026-07-13, รอไฟเขียว + Brain Improvement Gate)
+**สถานะ**: ✅ **ติดตั้งแล้ว** — `skills/taste-skill/` (vendored 2026-07-14, registry: domain `design,ux-ui`, category `design`)
 **License**: open-source (repo public)
 
 ## ภาพรวม

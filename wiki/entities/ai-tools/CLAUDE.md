@@ -50,6 +50,7 @@
 | `omniroute` | OmniRoute — open-source multi-provider LLM gateway, 17 routing strategies, RTK+Caveman compression |
 | `pake` | Pake — converts any webpage into a ~5MB native desktop app (Rust/Tauri), 20x lighter than Electron |
 | `zai-glm` | Z.ai / GLM series — cost-first direct-API provider (OpenAI-compatible), reasoning/coding/agentic |
+| `gamedev-skills` | gamedev-skills/awesome-gamedev-agent-skills — 6-skill Phaser/PixiJS/three.js subset, vendored 2026-07-14 |
 
 ---
 
