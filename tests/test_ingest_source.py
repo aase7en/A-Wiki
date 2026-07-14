@@ -202,3 +202,56 @@ class TestIngestSource:
         assert path.read_text(encoding="utf-8") == original
         captured = capsys.readouterr()
         assert "already exists" in captured.err
+
+
+# ── B6: trader source-domain — Iron Law #1 (test written FIRST, must fail before code change) ──
+
+def _load_module(rel_path: str, mod_name: str):
+    """Load a hyphenated script as a module via importlib (same pattern as ingest_source_mod)."""
+    spec = importlib.util.spec_from_file_location(mod_name, REPO_ROOT / rel_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class TestTraderDomain:
+    """B6 — trader domain must work end-to-end across the ingest pipeline.
+
+    The skill registry already has `trader` as a classification domain
+    (scripts/skills_registry/__init__.py), but the wiki ingest pipeline
+    (4 files duplicating VALID_DOMAINS) does NOT. This inconsistency blocks
+    proper trader/quant source ingestion. These tests pin the contract;
+    they must FAIL before the 4-file code change and PASS after.
+    """
+
+    def test_trader_in_ingest_valid_domains(self):
+        """ingest-source.py must accept 'trader'."""
+        assert "trader" in ingest_source_mod.VALID_DOMAINS
+
+    def test_trader_has_domain_title(self):
+        """DOMAIN_TITLES must have a display title for trader."""
+        assert ingest_source_mod.DOMAIN_TITLES.get("trader") == "Trading & Finance"
+
+    def test_trader_creates_file_in_subdir(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+        """End-to-end: ingesting with domain='trader' must land in sources/trader/<slug>.md."""
+        monkeypatch.setattr(ingest_source_mod, "SOURCES_DIR", tmp_path / "sources")
+        result = ingest_source_mod.ingest_source(
+            title="MC Portfolio Sim", domain="trader", source_type="article",
+            ref="https://example.com", tags=["monte-carlo"],
+            raw_text="# MC Portfolio Sim\n\nSynthetic data demo.\n",
+        )
+        assert result is not None
+        assert result.exists()
+        assert result.parent.name == "trader"
+        assert result.stem == "mc-portfolio-sim"
+
+    def test_trader_in_scrape_advanced_domains(self):
+        """scrape-advanced.py duplicates VALID_DOMAINS — must stay consistent."""
+        mod = _load_module(Path("scripts") / "wiki" / "scrape-advanced.py", "scrape_advanced")
+        assert "trader" in mod.VALID_DOMAINS
+
+    def test_trader_in_batch_prompt_template(self):
+        """batch/prompt_template.py duplicates VALID_DOMAINS AND mentions domains in SYSTEM_PROMPT text."""
+        mod = _load_module(Path("scripts") / "batch" / "prompt_template.py", "prompt_template")
+        assert "trader" in mod.VALID_DOMAINS
+        assert "trader" in mod.SYSTEM_PROMPT

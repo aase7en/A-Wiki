@@ -55,7 +55,7 @@ def frontmatter(**kwargs) -> str:
     return "\n".join(lines)
 
 # Valid domains (must match ingest-source.py)
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general")
+VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
 
 # Tier metadata for --list
 TIERS: list[dict] = [

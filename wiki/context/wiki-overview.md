@@ -29,6 +29,7 @@
 | Environmental Health | 4 | 5 | `wiki/context/overview-env.md` | `index-env.md` |
 | AI Tools | 34 | 32 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
+| Trading & Finance | 0 | 0 | `wiki/context/overview-trader.md` | `index-trader.md` |
 
 - **Sources** (174): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`

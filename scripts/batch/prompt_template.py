@@ -13,7 +13,7 @@ import re
 import unicodedata
 from pathlib import Path
 
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general")
+VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
 
 SYSTEM_PROMPT = """You are A-Wiki's source ingestion agent. Your job: read one source document and emit ONE markdown file that summarizes it for a Thai-first technical knowledge base.
 
@@ -26,7 +26,7 @@ Output requirements (strict — file will be REJECTED by hooks if violated):
    date_ingested: <YYYY-MM-DD from user message>
    original_file: raw/<exact filename given in the user message>
    tags: [tag1, tag2, ...]
-   domain: <one of: iot | env | ai-tools | pharmacy | it | general>
+   domain: <one of: iot | env | ai-tools | pharmacy | it | general | trader>
    routed_via: harness@v1
    tier: <integer 1, 2, or 3 — given in user message>
 

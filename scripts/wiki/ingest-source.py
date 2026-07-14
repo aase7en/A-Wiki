@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_DIR = REPO_ROOT / "wiki" / "sources"
 
 # Domains we recognise
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general")
+VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
 
 # File extensions handled directly by read_text
 PLAIN_TEXT_EXTS = {".md", ".txt", ".json", ".csv", ".yaml", ".yml", ".xml", ".ini", ".cfg", ".conf", ".log", ".tsv"}
@@ -40,6 +40,7 @@ DOMAIN_TITLES = {
     "pharmacy": "Pharmacy",
     "it": "IT",
     "general": "General",
+    "trader": "Trading & Finance",
 }
 
 

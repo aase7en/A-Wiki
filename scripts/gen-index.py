@@ -37,7 +37,7 @@ MAIN_OUTPUT = CONTEXT_DIR / "wiki-overview.md"
 
 # Sections + domain order (controls output layout)
 SECTION_ORDER = ["entities", "concepts", "synthesis", "sources"]
-DOMAIN_ORDER = ["iot", "env", "ai-tools", "pharmacy"]
+DOMAIN_ORDER = ["iot", "env", "ai-tools", "pharmacy", "trader"]
 SECTION_TITLES = {
     "entities": "ENTITIES",
     "concepts": "CONCEPTS",
@@ -49,6 +49,7 @@ DOMAIN_TITLES = {
     "env": "Environmental Health",
     "ai-tools": "AI Tools",
     "pharmacy": "Pharmacy",
+    "trader": "Trading & Finance",
 }
 # Short slug used in per-domain output filename (e.g. "ai-tools" → "ai")
 DOMAIN_FILE_SLUG = {
@@ -56,6 +57,7 @@ DOMAIN_FILE_SLUG = {
     "env": "env",
     "ai-tools": "ai",
     "pharmacy": "pharmacy",
+    "trader": "trader",
 }
 
 ABSTRACT_MAX = 65
