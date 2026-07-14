@@ -140,5 +140,125 @@
       {"skill": "agent-eval", "label_th": "วัด success rate", "icon": "🎯"},
       {"skill": "documentation-and-adrs", "label_th": "บันทึก ADR ปรับปรุง", "icon": "📚"}
     ]
+  },
+
+  "onboard-new-dev": {
+    "title_th": "รับ dev ใหม่เข้า A-Wiki",
+    "summary_th": "รู้ใจโปรเจกในวันแรก — อ่าน AGENTS.md, เข้าใจสถาปัตยกรรม, เขียน chunk แรก + commit อย่างปลอดภัย",
+    "level_th": "เริ่มต้น",
+    "duration_th": "ครึ่งวัน",
+    "steps": [
+      {"skill": "codebase-onboarding", "label_th": "อ่าน onboarding guide อัตโนมัติ", "icon": "📖"},
+      {"skill": "a-wiki-commands", "label_th": "เรียนคำสั่งหลัก (/today, /search, /ingest)", "icon": "⌨️"},
+      {"skill": "brainstorm-before-build", "label_th": "ถาม scope ก่อนเริ่ม task แรก", "icon": "💭"},
+      {"skill": "spec-driven-development", "label_th": "เขียนสเปกเล็กๆ ก่อนโค้ด", "icon": "📋"},
+      {"skill": "tdd", "label_th": "เขียน test ก่อน + ทำตาม red-green-refactor", "icon": "🧪"},
+      {"skill": "verify-before-done", "label_th": "เช็คอีกครั้งก่อน commit แรก", "icon": "✅"}
+    ]
+  },
+
+  "onboard-new-machine": {
+    "title_th": "เตรียมเครื่องใหม่ใช้ A-Wiki",
+    "summary_th": "setup เครื่องใหม่ให้พร้อมใช้ในครั้งเดียว — link Drive, sync skills ข้าม agent, pre-commit, ทดสอบ",
+    "level_th": "เริ่มต้น",
+    "duration_th": "30 นาที – 1 ชั่วโมง",
+    "steps": [
+      {"skill": "symlink-connector", "label_th": "link skills + .env ข้ามทุก agent", "icon": "🔗"},
+      {"skill": "setup-pre-commit", "label_th": "ติดตั้ง Husky + lint-staged", "icon": "🪝"},
+      {"skill": "ecc-guide", "label_th": "เรียนรู้ ECC skill catalog", "icon": "📚"},
+      {"skill": "workspace-surface-audit", "label_th": "แมป surface หลัง setup", "icon": "🗺️"},
+      {"skill": "skill-stocktake", "label_th": "ทดสอบ skill audit ก่อนใช้จริง", "icon": "🚦"},
+      {"skill": "verify-before-done", "label_th": "ยืนยันเครื่องใช้ได้", "icon": "✅"}
+    ]
+  },
+
+  "write-new-skill": {
+    "title_th": "สร้าง skill ใหม่",
+    "summary_th": "จากไอเดีย → SKILL.md ใน registry → surface visible ในทุก agent อย่างถูก Iron Law #9",
+    "level_th": "ปานกลาง",
+    "duration_th": "1-2 ชั่วโมง",
+    "steps": [
+      {"skill": "brainstorm-before-build", "label_th": "ถาม 3 คำถามก่อนสร้าง", "icon": "💭"},
+      {"skill": "spec-driven-development", "label_th": "เขียนสเปก + acceptance", "icon": "📋"},
+      {"skill": "skill-creator", "label_th": "สร้าง SKILL.md ตาม template", "icon": "🛠️"},
+      {"skill": "skill-installer", "label_th": "ติดตั้ง registry entry + validate", "icon": "📥"},
+      {"skill": "two-axis-code-review", "label_th": "review ก่อน merge", "icon": "👁️"},
+      {"skill": "verify-before-done", "label_th": "ยืนยัน surface + regen สะอาด", "icon": "✅"}
+    ]
+  },
+
+  "review-pr-thoroughly": {
+    "title_th": "ตรวจ PR อย่างละเอียด",
+    "summary_th": "PR review แบบหลายมุม — code quality, security, test coverage, persona fan-out",
+    "level_th": "ปานกลาง",
+    "duration_th": "1 ชั่วโมง",
+    "steps": [
+      {"skill": "two-axis-code-review", "label_th": "review 2 แกน (correctness + style)", "icon": "👁️"},
+      {"skill": "scrutinize", "label_th": "outsider perspective รอบสุดท้าย", "icon": "🔍"},
+      {"skill": "security-and-hardening", "label_th": "OWASP + auth + secrets audit", "icon": "🛡️"},
+      {"skill": "agent-eval", "label_th": "เช็ค test coverage ครบไหม", "icon": "🧪"},
+      {"skill": "documentation-and-adrs", "label_th": "เช็ค doc + ADR ถ้าจำเป็น", "icon": "📚"},
+      {"skill": "verify-before-done", "label_th": "sign-off ก่อน merge", "icon": "✅"}
+    ]
+  },
+
+  "upgrade-dependency-safely": {
+    "title_th": "อัป dependency อย่างปลอดภัย",
+    "summary_th": "อัป package/engine โดยไม่พัง production — changelog, security scan, test, CI green, ship",
+    "level_th": "ปานกลาง",
+    "duration_th": "1-3 ชั่วโมง",
+    "steps": [
+      {"skill": "documentation-lookup", "label_th": "อ่าน changelog/breaking changes", "icon": "📄"},
+      {"skill": "security-scan", "label_th": "สแกน CVE + dependency audit", "icon": "🔬"},
+      {"skill": "tdd", "label_th": "แก้ test ที่พังจาก breaking change", "icon": "🧪"},
+      {"skill": "ci-cd-and-automation", "label_th": "รอ CI green ทุก platform", "icon": "⚙️"},
+      {"skill": "scrutinize", "label_th": "บุคคลที่สามตรวจ diff อีกรอบ", "icon": "👁️"},
+      {"skill": "shipping-and-launch", "label_th": "staged rollout + monitor", "icon": "🚀"}
+    ]
+  },
+
+  "investigate-perf-regression": {
+    "title_th": "สืบหา perf regression",
+    "summary_th": "เมื่อแอปช้าลง — หา commit/regression อย่างเป็นระบบ, benchmark, verify",
+    "level_th": "ขั้นสูง",
+    "duration_th": "ครึ่งวัน – 1 วัน",
+    "steps": [
+      {"skill": "observability-and-instrumentation", "label_th": "ดู metrics/traces หา spike", "icon": "📊"},
+      {"skill": "debug-mantra", "label_th": "reproduce + trace fail path", "icon": "🔍"},
+      {"skill": "performance-optimization", "label_th": "profile + หา bottleneck", "icon": "⚡"},
+      {"skill": "benchmark", "label_th": "วัด before/after เทียบเป็นตัวเลข", "icon": "📏"},
+      {"skill": "verify-before-done", "label_th": "ยืนยัน perf กลับเหมือนเดิม", "icon": "✅"},
+      {"skill": "post-mortem", "label_th": "บันทึก + ป้องกัน regression หน้า", "icon": "📋"}
+    ]
+  },
+
+  "respond-to-security-advisory": {
+    "title_th": "ตอบรับ security advisory",
+    "summary_th": "รับ advisory/CVE — ประเมินความรุนแรง, patch, test, ship ภายใน SLA",
+    "level_th": "ขั้นสูง",
+    "duration_th": "2-6 ชั่วโมง",
+    "steps": [
+      {"skill": "safety-guard", "label_th": "ประเมิน severity + impact ก่อน", "icon": "🚨"},
+      {"skill": "security-scan", "label_th": "สแกน scope ที่ได้รับผล", "icon": "🔬"},
+      {"skill": "scrutinize", "label_th": "verify patch ปิดช่องจริง", "icon": "👁️"},
+      {"skill": "tdd", "label_th": "เขียน test ครอบช่องที่ patch", "icon": "🧪"},
+      {"skill": "shipping-and-launch", "label_th": "hotfix + rollback plan", "icon": "🚀"},
+      {"skill": "post-mortem", "label_th": "บันทึกเหตุ + ป้องกัน", "icon": "📋"}
+    ]
+  },
+
+  "cleanup-stale-skills": {
+    "title_th": "ทำความสะอาด registry",
+    "summary_th": "registry บวมแล้ว — ตรวจซ้ำ/เก่า/เหลื่อม, dedup, เก็บไว้แค่ที่ใช้จริง",
+    "level_th": "ปานกลาง",
+    "duration_th": "ครึ่งวัน",
+    "steps": [
+      {"skill": "skill-stocktake", "label_th": "Quick/Deep audit skills + commands", "icon": "📋"},
+      {"skill": "workspace-surface-audit", "label_th": "แมป surface ทั้งหมด", "icon": "🗺️"},
+      {"skill": "automation-audit-ops", "label_th": "ตรวจ overlap ของ automation", "icon": "♻️"},
+      {"skill": "agent-sort", "label_th": "เรียง skill ตาม evidence", "icon": "📊"},
+      {"skill": "skill-comply", "label_th": "วัด Iron Law follow rate", "icon": "📏"},
+      {"skill": "documentation-and-adrs", "label_th": "บันทึก ADR cleanup", "icon": "📚"}
+    ]
   }
 }
