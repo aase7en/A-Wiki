@@ -182,3 +182,54 @@ def test_skill_graph_node_colors_set():
     g = skills_service.skill_graph()
     for n in g["nodes"]:
         assert "color" in n and n["color"]
+
+
+# ---------------------------------------------------------------------------
+# CHUNK P — walkthrough_difficulty() — auto-score 0-100
+# ---------------------------------------------------------------------------
+
+def test_walkthrough_difficulty_returns_score_and_level():
+    """Difficulty must return score (0-100), level (Thai), and factors dict."""
+    flow = {
+        "title_th": "test flow",
+        "steps": [
+            {"skill": "debug-mantra"},
+            {"skill": "scrutinize"},
+        ],
+    }
+    d = skills_service.walkthrough_difficulty(flow)
+    assert 0 <= d["score"] <= 100
+    assert d["level"] in ("เริ่มต้น", "ปานกลาง", "ขั้นสูง")
+    assert "factors" in d and isinstance(d["factors"], dict)
+
+
+def test_walkthrough_difficulty_more_steps_higher_score():
+    """A flow with more steps should score >= a flow with fewer steps."""
+    small = {"steps": [{"skill": "debug-mantra"}]}
+    large = {"steps": [{"skill": "debug-mantra"}, {"skill": "scrutinize"},
+                        {"skill": "post-mortem"}, {"skill": "security-and-hardening"},
+                        {"skill": "performance-optimization"}, {"skill": "shipping-and-launch"},
+                        {"skill": "ci-cd-and-automation"}, {"skill": "documentation-and-adrs"}]}
+    d_small = skills_service.walkthrough_difficulty(small)
+    d_large = skills_service.walkthrough_difficulty(large)
+    assert d_large["score"] >= d_small["score"], (
+        f"large ({d_large['score']}) should >= small ({d_small['score']})"
+    )
+
+
+def test_walkthrough_difficulty_level_mapping():
+    """Score <=33 = เริ่มต้น, <=66 = ปานกลาง, >66 = ขั้นสูง."""
+    # Force a low score by using a single simple skill.
+    d1 = skills_service.walkthrough_difficulty({"steps": [{"skill": "debug-mantra"}]})
+    assert d1["level"] in ("เริ่มต้น", "ปานกลาง", "ขั้นสูง")
+    # Check mapping logic directly via score.
+    assert d1["level"] == ("เริ่มต้น" if d1["score"] <= 33
+                           else "ปานกลาง" if d1["score"] <= 66
+                           else "ขั้นสูง")
+
+
+def test_walkthrough_difficulty_empty_flow():
+    """Empty steps list should return score 0, level เริ่มต้น."""
+    d = skills_service.walkthrough_difficulty({"steps": []})
+    assert d["score"] == 0
+    assert d["level"] == "เริ่มต้น"

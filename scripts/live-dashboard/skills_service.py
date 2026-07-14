@@ -555,7 +555,82 @@ def skill_graph(
     }
 
 
+# ---------------------------------------------------------------------------
+# Walkthrough difficulty scoring — auto-score 0-100 from step count + skill complexity
+# ---------------------------------------------------------------------------
+
+# Phases/domains that add complexity when present in a walkthrough.
+_HARD_PHASES = frozenset({"review", "ship", "verify"})
+_HARD_DOMAINS = frozenset({"security", "sre", "debug"})
+
+
+def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
+    """Score a walkthrough flow's difficulty from 0-100.
+
+    Factors (max scores in parens):
+      - step_count (0-30): 1 step=5pts, 8+ steps=30pts (linear)
+      - skill complexity (0-25): hard phases/domains = +5 each (max 25)
+      - process_steps richness (0-20): skills with 4+ process_steps = +3 each (max 20)
+      - phase diversity (0-25): distinct phases = +5 each (max 25)
+
+    Returns: {score, level, factors}.
+    """
+    steps = flow.get("steps", []) if isinstance(flow, dict) else []
+    reg = _load_registry()
+
+    # Factor 1: step count (0-30)
+    n = len(steps)
+    step_score = min(30, max(0, n * 5)) if n > 0 else 0
+
+    # Factor 2: skill complexity — hard phases/domains (0-25)
+    hard_count = 0
+    phases_seen: set[str] = set()
+    process_rich_count = 0
+    for step in steps:
+        skill_name = step.get("skill", "") if isinstance(step, dict) else ""
+        skill = reg.get(skill_name) if skill_name else None
+        if not skill:
+            continue
+        p = skill.get("lifecycle_phase", "none")
+        domains = skill.get("domain") or []
+        if isinstance(domains, str):
+            domains = [domains]
+        if p in _HARD_PHASES or any(d in _HARD_DOMAINS for d in domains):
+            hard_count += 1
+        if p != "none":
+            phases_seen.add(p)
+        ps = skill.get("process_steps") or []
+        if isinstance(ps, list) and len(ps) >= 4:
+            process_rich_count += 1
+
+    complexity_score = min(25, hard_count * 5)
+
+    # Factor 3: process_steps richness (0-20)
+    process_score = min(20, process_rich_count * 3)
+
+    # Factor 4: phase diversity (0-25)
+    diversity_score = min(25, len(phases_seen) * 5)
+
+    score = step_score + complexity_score + process_score + diversity_score
+    score = max(0, min(100, score))
+    level = "เริ่มต้น" if score <= 33 else "ปานกลาง" if score <= 66 else "ขั้นสูง"
+
+    return {
+        "score": score,
+        "level": level,
+        "factors": {
+            "step_count": step_score,
+            "skill_complexity": complexity_score,
+            "process_steps_richness": process_score,
+            "phase_diversity": diversity_score,
+            "steps": n,
+            "hard_skills": hard_count,
+            "distinct_phases": len(phases_seen),
+        },
+    }
+
+
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
-    "skill_graph", "KNOWN_AGENTS",
+    "skill_graph", "walkthrough_difficulty", "KNOWN_AGENTS",
 ]

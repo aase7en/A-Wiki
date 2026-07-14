@@ -34,6 +34,14 @@ if REPO_ROOT not in sys.path:
 from scripts.lib.personal_paths import session_memory_path
 
 
+# Windows-only flag that suppresses the console window flash when spawning
+# subprocesses (git, bash) from this hook. POSIX returns 0 (no-op).
+# Without this, every SessionStart pops a cmd/bash window on Windows when
+# the user's `python`/`git` resolve to native Win32 binaries (e.g. when
+# the hermes venv sits early in PATH). See session-memory 2026-07-14.
+_WIN_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
+
+
 def git_pull(repo_root):
     """git pull --rebase to stay in sync."""
     try:
@@ -43,6 +51,7 @@ def git_pull(repo_root):
             capture_output=True,
             text=True, encoding="utf-8", errors="replace",
             timeout=30,
+            creationflags=_WIN_NO_WINDOW,
         )
         if result.returncode == 0:
             if "Already up to date" not in result.stdout:
@@ -110,6 +119,7 @@ def maybe_update_model_intel(repo_root):
             capture_output=True,
             text=True, encoding="utf-8", errors="replace",
             timeout=timeout,
+            creationflags=_WIN_NO_WINDOW,
         )
     except subprocess.TimeoutExpired:
         sys.stderr.write("⚠️ model intel refresh timed out — using cached roster\n")
@@ -269,12 +279,15 @@ def _ensure_dashboard() -> None:
         args = ["bash", str(ensure_sh)]
         if agent:
             args.append(agent)
-        subprocess.Popen(
-            args,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            start_new_session=True,
-        )
+        # start_new_session only works on POSIX; on Windows it raises and the
+        # console window would flash. Use CREATE_NO_WINDOW instead so the
+        # dashboard daemon spawn stays silent.
+        popen_kwargs = dict(stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if os.name == "nt":
+            popen_kwargs["creationflags"] = _WIN_NO_WINDOW
+        else:
+            popen_kwargs["start_new_session"] = True
+        subprocess.Popen(args, **popen_kwargs)
     except Exception:
         pass
 

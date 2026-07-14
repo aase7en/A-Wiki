@@ -960,6 +960,7 @@ class Handler(BaseHTTPRequestHandler):
                     "level_th": flow.get("level_th", ""),
                     "duration_th": flow.get("duration_th", ""),
                     "step_count": len(flow.get("steps", [])),
+                    "difficulty": skills_service.walkthrough_difficulty(flow),
                 })
             self._json_response({"flows": flows, "total": len(flows)})
         except Exception as e:
@@ -994,6 +995,7 @@ class Handler(BaseHTTPRequestHandler):
                 "summary_th": flow.get("summary_th", ""),
                 "level_th": flow.get("level_th", ""),
                 "duration_th": flow.get("duration_th", ""),
+                "difficulty": skills_service.walkthrough_difficulty(flow),
                 "steps": steps_resolved,
             })
         except Exception as e:

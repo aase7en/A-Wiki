@@ -2290,10 +2290,16 @@ async function loadWalkthroughs(){
     const list=$('walkthroughs-list');
     const count=$('walkthroughs-count');
     count.textContent=`(${j.total} กระแส)`;
-    list.innerHTML=j.flows.map(f=>`
+    list.innerHTML=j.flows.map(f=>{
+      const d=f.difficulty||{};
+      const diffColor=d.level==='ขั้นสูง'?'var(--accent-danger)':d.level==='ปานกลาง'?'var(--accent-warn)':'var(--accent-green)';
+      const diffBadge=d.score!==undefined?`<span style="color:${diffColor};font-weight:600;margin-left:4px" title="auto-score: ${d.score}/100">${d.level||''} ${d.score}</span>`:'';
+      const manualBadge=f.level_th&&d.level&&f.level_th!==d.level?`<span style="color:var(--text-tertiary)" title="manual level">${f.level_th}</span>`:'';
+      return `
       <button class="chat-quick-btn" style="padding:5px 11px;font-size:var(--fs-2xs);background:var(--elev-2);border:1px solid var(--border2);color:var(--text-primary)" onclick="simWalkthrough('${f.id}')">
-        ${f.title_th} <span style="color:var(--text-tertiary)">· ${f.step_count} ขั้น</span>
-      </button>`).join('');
+        ${f.title_th} <span style="color:var(--text-tertiary)">· ${f.step_count} ขั้น</span>${manualBadge?' / '+manualBadge:''}${diffBadge}
+      </button>`;
+    }).join('');
     _walkthroughsLoaded=true;
   }catch(e){console.warn('walkthroughs load fail',e);}
 }
