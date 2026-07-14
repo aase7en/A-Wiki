@@ -25,23 +25,14 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_DIR = REPO_ROOT / "wiki" / "sources"
 
-# Domains we recognise
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
+# Import shared domain constants from lib (F8 dedup — was inline tuple/dict)
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from lib.wiki_domains import VALID_DOMAINS, DOMAIN_TITLES  # noqa: E402
 
 # File extensions handled directly by read_text
 PLAIN_TEXT_EXTS = {".md", ".txt", ".json", ".csv", ".yaml", ".yml", ".xml", ".ini", ".cfg", ".conf", ".log", ".tsv"}
 # Binary/office formats convertible via MarkItDown
 BINARY_EXTS = {".pdf", ".docx", ".xlsx", ".pptx", ".epub", ".html", ".htm"}
-
-DOMAIN_TITLES = {
-    "iot": "IoT",
-    "env": "Environmental Health",
-    "ai-tools": "AI Tools",
-    "pharmacy": "Pharmacy",
-    "it": "IT",
-    "general": "General",
-    "trader": "Trading & Finance",
-}
 
 
 def slugify(text: str) -> str:

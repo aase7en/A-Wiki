@@ -29,6 +29,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 RAW_DIR = REPO_ROOT / "raw"
 
+# Import shared domain constants from lib (F8 dedup — was inline tuple)
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from lib.wiki_domains import VALID_DOMAINS  # noqa: E402
+
 # ── Reused helpers from ingest-source.py (copied to avoid import magic) ────
 
 def slugify(text: str) -> str:
@@ -54,8 +58,7 @@ def frontmatter(**kwargs) -> str:
     lines.append("---")
     return "\n".join(lines)
 
-# Valid domains (must match ingest-source.py)
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
+# Valid domains imported from lib.wiki_domains above (F8 dedup).
 
 # Tier metadata for --list
 TIERS: list[dict] = [

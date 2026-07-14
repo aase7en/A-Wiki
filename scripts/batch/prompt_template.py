@@ -10,10 +10,14 @@ from __future__ import annotations
 
 import hashlib
 import re
+import sys
 import unicodedata
 from pathlib import Path
 
-VALID_DOMAINS = ("iot", "env", "ai-tools", "pharmacy", "it", "general", "trader")
+# Import shared domain constants from lib (F8 dedup — was inline tuple)
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+from lib.wiki_domains import VALID_DOMAINS  # noqa: E402
 
 SYSTEM_PROMPT = """You are A-Wiki's source ingestion agent. Your job: read one source document and emit ONE markdown file that summarizes it for a Thai-first technical knowledge base.
 

@@ -255,3 +255,54 @@ class TestTraderDomain:
         mod = _load_module(Path("scripts") / "batch" / "prompt_template.py", "prompt_template")
         assert "trader" in mod.VALID_DOMAINS
         assert "trader" in mod.SYSTEM_PROMPT
+
+
+# ── F8: dedup VALID_DOMAINS to shared lib (Iron Law #1 — test written FIRST) ──
+
+class TestDomainDedup:
+    """F8 — VALID_DOMAINS should be imported from scripts/lib/wiki_domains.py,
+    not defined inline in each of the 3 wiki-script files.
+
+    These tests pin the refactor contract: they FAIL before the lib exists
+    (or before the 3 files import from it), and PASS after.
+    """
+
+    def test_lib_wiki_domains_exists(self):
+        """scripts/lib/wiki_domains.py must exist and expose VALID_DOMAINS."""
+        import importlib
+        # lib.wiki_domains resolves because tests/conftest.py adds scripts/ to sys.path
+        mod = importlib.import_module("lib.wiki_domains")
+        assert hasattr(mod, "VALID_DOMAINS")
+        assert "trader" in mod.VALID_DOMAINS
+
+    def test_lib_wiki_domains_has_domain_titles(self):
+        import importlib
+        mod = importlib.import_module("lib.wiki_domains")
+        assert hasattr(mod, "DOMAIN_TITLES")
+        assert mod.DOMAIN_TITLES.get("trader") == "Trading & Finance"
+
+    def test_ingest_source_imports_from_lib(self):
+        """ingest-source.py must import VALID_DOMAINS from lib.wiki_domains, not define inline."""
+        src = (REPO_ROOT / "scripts" / "wiki" / "ingest-source.py").read_text(encoding="utf-8")
+        assert "from lib.wiki_domains import" in src
+        # The inline definition must be gone
+        assert 'VALID_DOMAINS = ("iot"' not in src
+
+    def test_scrape_advanced_imports_from_lib(self):
+        """scrape-advanced.py must import VALID_DOMAINS from lib.wiki_domains."""
+        src = (REPO_ROOT / "scripts" / "wiki" / "scrape-advanced.py").read_text(encoding="utf-8")
+        assert "from lib.wiki_domains import" in src
+        assert 'VALID_DOMAINS = ("iot"' not in src
+
+    def test_prompt_template_imports_from_lib(self):
+        """batch/prompt_template.py must import VALID_DOMAINS from lib.wiki_domains."""
+        src = (REPO_ROOT / "scripts" / "batch" / "prompt_template.py").read_text(encoding="utf-8")
+        assert "from lib.wiki_domains import" in src
+        assert 'VALID_DOMAINS = ("iot"' not in src
+
+    def test_lib_domains_match_ingest_source(self):
+        """The imported lib values must equal what ingest-source uses at runtime."""
+        import importlib
+        lib_mod = importlib.import_module("lib.wiki_domains")
+        assert lib_mod.VALID_DOMAINS == ingest_source_mod.VALID_DOMAINS
+        assert lib_mod.DOMAIN_TITLES == ingest_source_mod.DOMAIN_TITLES
