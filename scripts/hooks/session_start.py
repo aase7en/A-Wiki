@@ -282,41 +282,15 @@ def _ensure_dashboard() -> None:
 def _detect_agent() -> str | None:
     """Best-effort detection of the calling agent from environment variables.
 
-    Each CLI agent leaves a distinctive env fingerprint. Returns lowercase
-    agent name (claude, codex, zcode, gemini, cursor, windsurf, cline,
-    antigravity, hermes, kilo, copilot) or None.
+    Thin wrapper around scripts/lib/agent_detect.py — kept as a local helper
+    so callers don't need to import the shared module directly. The shared
+    module is also used by scripts/detect-agent.sh (for VS Code folderOpen).
     """
-    env = os.environ
-    # Direct override / fingerprint vars (most specific).
-    checks = [
-        ("CLAUDE_PROJECT_DIR", "claude"),
-        ("CLAUDECODE", "claude"),
-        ("CODEX_HOME", "codex"),
-        ("CODEX_AGENT", "codex"),
-        ("ZCODE_SESSION", "zcode"),
-        ("ZCODE_CLI", "zcode"),
-        ("GEMINI_CLI", "gemini"),
-        ("GEMINI_MODEL", "gemini"),
-        ("CURSOR_TRACE_DIR", "cursor"),
-        ("CURSOR_DEBUG", "cursor"),
-        ("WINDSURF_USER_DATA_DIR", "windsurf"),
-        ("WINDSURF_MACHINE_GUID", "windsurf"),
-        ("CLINE_", "cline"),  # prefix check
-        ("ANTIGRAVITY_", "antigravity"),
-        ("HERMES_AGENT_HOME", "hermes"),
-        ("HERMES_CONFIG", "hermes"),
-        ("KILO_", "kilo"),
-        ("COPILOT_INTEGRATION_ID", "copilot"),
-        ("GITHUB_COPILOT_TOKEN", "copilot"),
-    ]
-    for key, agent in checks:
-        if key.endswith("_"):
-            # Prefix match (CLINE_*, ANTIGRAVITY_*, KILO_*).
-            if any(k.startswith(key) for k in env):
-                return agent
-        elif key in env:
-            return agent
-    return None
+    try:
+        from scripts.lib.agent_detect import detect_agent
+        return detect_agent()
+    except Exception:
+        return None
 
 
 def run_vendor_watch():
