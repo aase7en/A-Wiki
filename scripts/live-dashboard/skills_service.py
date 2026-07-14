@@ -278,6 +278,7 @@ def get_skill(name: str) -> dict[str, Any] | None:
     out["installed"] = _is_installed(skill)
     out["invocation_hint"] = _invocation_hint(skill)
     out["related"] = _related_skills(reg, skill)
+    out["history"] = skill_history(name)
     return out
 
 
@@ -632,8 +633,70 @@ def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
 
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
-    "skill_graph", "walkthrough_difficulty", "recommend_skills", "KNOWN_AGENTS",
+    "skill_graph", "walkthrough_difficulty", "recommend_skills",
+    "skill_history", "KNOWN_AGENTS",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Skill versioning + git history — display-only (no registry schema change)
+# ---------------------------------------------------------------------------
+
+import subprocess  # noqa: E402 — late import, isolated to this function
+
+
+def skill_history(name: str) -> dict[str, Any]:
+    """Get version + last-modified info for a skill via git log of its SKILL.md.
+
+    Uses subprocess with arg list (never shell=True) for security.
+    Returns: {version, last_commit_date, last_commit_hash, commit_count}.
+    Fails gracefully (returns empty dict) if git fails or path missing.
+    """
+    reg = _load_registry()
+    skill = reg.get(name)
+    if not skill:
+        return {}
+
+    version = skill.get("version", "") or ""
+    path = skill.get("path", "")
+    if not path:
+        return {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+
+    skill_file = REPO_ROOT / path
+    if not skill_file.is_file():
+        return {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+
+    result: dict[str, Any] = {
+        "version": version,
+        "last_commit_date": "",
+        "last_commit_hash": "",
+        "commit_count": 0,
+    }
+    try:
+        # Last commit info: git log -1 --format=%cd|%h --date=short -- <path>
+        proc = subprocess.run(
+            ["git", "log", "-1", "--format=%cd|%h", "--date=short", "--", path],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=5, cwd=str(REPO_ROOT),
+        )
+        if proc.returncode == 0 and proc.stdout.strip():
+            parts = proc.stdout.strip().split("|", 1)
+            if len(parts) == 2:
+                result["last_commit_date"] = parts[0].strip()
+                result["last_commit_hash"] = parts[1].strip()
+
+        # Commit count: git rev-list --count HEAD -- <path>
+        proc2 = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD", "--", path],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=5, cwd=str(REPO_ROOT),
+        )
+        if proc2.returncode == 0 and proc2.stdout.strip().isdigit():
+            result["commit_count"] = int(proc2.stdout.strip())
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        # Git not available or timed out — return what we have (version only).
+        pass
+    return result
 
 
 # ---------------------------------------------------------------------------
