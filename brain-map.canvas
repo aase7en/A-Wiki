@@ -3,7 +3,7 @@
     {
       "id": "group-domain-context",
       "type": "group",
-      "label": "CONTEXT DOMAIN (19 pages)",
+      "label": "CONTEXT DOMAIN (21 pages)",
       "x": 0,
       "y": 0,
       "width": 1020,
@@ -195,6 +195,26 @@
       "type": "file",
       "file": "wiki/context/wiki-guide.md",
       "x": 40,
+      "y": 1160,
+      "width": 260,
+      "height": 120,
+      "color": "1"
+    },
+    {
+      "id": "wiki-context-session-memory-2026-06-24-md",
+      "type": "file",
+      "file": "wiki/context/session-memory-2026-06-24.md",
+      "x": 380,
+      "y": 1160,
+      "width": 260,
+      "height": 120,
+      "color": "1"
+    },
+    {
+      "id": "wiki-context-session-summary-2026-06-24-md",
+      "type": "file",
+      "file": "wiki/context/session-summary-2026-06-24.md",
+      "x": 720,
       "y": 1160,
       "width": 260,
       "height": 120,
@@ -3553,7 +3573,7 @@
     {
       "id": "group-domain-other",
       "type": "group",
-      "label": "OTHER DOMAIN (11 pages)",
+      "label": "OTHER DOMAIN (12 pages)",
       "x": 0,
       "y": 16020,
       "width": 1020,
@@ -3665,6 +3685,16 @@
       "type": "file",
       "file": "wiki/templates/td-21-power-of-attorney.md",
       "x": 380,
+      "y": 16640,
+      "width": 260,
+      "height": 120,
+      "color": "none"
+    },
+    {
+      "id": "wiki-SKILL-INDEX-md",
+      "type": "file",
+      "file": "wiki/SKILL-INDEX.md",
+      "x": 720,
       "y": 16640,
       "width": 260,
       "height": 120,
@@ -3813,11 +3843,11 @@
     {
       "id": "group-domain-sources",
       "type": "group",
-      "label": "SOURCES DOMAIN (169 pages)",
+      "label": "SOURCES DOMAIN (172 pages)",
       "x": 2840,
       "y": 16020,
       "width": 1020,
-      "height": 10320,
+      "height": 10500,
       "color": "6"
     },
     {
@@ -4761,10 +4791,20 @@
       "color": "6"
     },
     {
+      "id": "wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "type": "file",
+      "file": "wiki/sources/akashdeepo-monte-carlo-rrr.md",
+      "x": 3220,
+      "y": 21680,
+      "width": 260,
+      "height": 120,
+      "color": "6"
+    },
+    {
       "id": "wiki-sources-arduino-ide-esp32-arduino-2025-md",
       "type": "file",
       "file": "wiki/sources/arduino-ide-esp32-arduino-2025.md",
-      "x": 3220,
+      "x": 3560,
       "y": 21680,
       "width": 260,
       "height": 120,
@@ -4774,8 +4814,8 @@
       "id": "wiki-sources-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป-md",
       "type": "file",
       "file": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "x": 3560,
-      "y": 21680,
+      "x": 2880,
+      "y": 21860,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4784,7 +4824,7 @@
       "id": "wiki-sources-arduino-librariesarduino-powermanagement-md",
       "type": "file",
       "file": "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "x": 2880,
+      "x": 3220,
       "y": 21860,
       "width": 260,
       "height": 120,
@@ -4794,7 +4834,7 @@
       "id": "wiki-sources-arduino-librariesarduinopowermanagement-md",
       "type": "file",
       "file": "wiki/sources/arduino-librariesarduinopowermanagement.md",
-      "x": 3220,
+      "x": 3560,
       "y": 21860,
       "width": 260,
       "height": 120,
@@ -4804,8 +4844,8 @@
       "id": "wiki-sources-cloudflare-tunnel-pi5-md",
       "type": "file",
       "file": "wiki/sources/cloudflare-tunnel-pi5.md",
-      "x": 3560,
-      "y": 21860,
+      "x": 2880,
+      "y": 22040,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4814,7 +4854,7 @@
       "id": "wiki-sources-context-claude-code-dev-vibe-coding-thailand-md",
       "type": "file",
       "file": "wiki/sources/context-claude-code-dev-vibe-coding-thailand.md",
-      "x": 2880,
+      "x": 3220,
       "y": 22040,
       "width": 260,
       "height": 120,
@@ -4824,7 +4864,7 @@
       "id": "wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginne-md",
       "type": "file",
       "file": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "x": 3220,
+      "x": 3560,
       "y": 22040,
       "width": 260,
       "height": 120,
@@ -4834,8 +4874,8 @@
       "id": "wiki-sources-create-an-esp32-project-with-platformio-an-guide-for-beginners-md",
       "type": "file",
       "file": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginners.md",
-      "x": 3560,
-      "y": 22040,
+      "x": 2880,
+      "y": 22220,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4844,7 +4884,7 @@
       "id": "wiki-sources-dashboard-design-best-practices-and-examples-md",
       "type": "file",
       "file": "wiki/sources/dashboard-design-best-practices-and-examples.md",
-      "x": 2880,
+      "x": 3220,
       "y": 22220,
       "width": 260,
       "height": 120,
@@ -4854,7 +4894,7 @@
       "id": "wiki-sources-datasheet-dx-lr02-md",
       "type": "file",
       "file": "wiki/sources/datasheet-dx-lr02.md",
-      "x": 3220,
+      "x": 3560,
       "y": 22220,
       "width": 260,
       "height": 120,
@@ -4864,8 +4904,8 @@
       "id": "wiki-sources-deepseek-aideepseek-v4-pro-at-main-md",
       "type": "file",
       "file": "wiki/sources/deepseek-aideepseek-v4-pro-at-main.md",
-      "x": 3560,
-      "y": 22220,
+      "x": 2880,
+      "y": 22400,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4874,7 +4914,7 @@
       "id": "wiki-sources-esp32-md",
       "type": "file",
       "file": "wiki/sources/esp32.md",
-      "x": 2880,
+      "x": 3220,
       "y": 22400,
       "width": 260,
       "height": 120,
@@ -4884,7 +4924,7 @@
       "id": "wiki-sources-esp32-lora-1-ch-gateway-lorawan-and-the-things-network-md",
       "type": "file",
       "file": "wiki/sources/esp32-lora-1-ch-gateway-lorawan-and-the-things-network.md",
-      "x": 3220,
+      "x": 3560,
       "y": 22400,
       "width": 260,
       "height": 120,
@@ -4894,8 +4934,8 @@
       "id": "wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-comm-md",
       "type": "file",
       "file": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "x": 3560,
-      "y": 22400,
+      "x": 2880,
+      "y": 22580,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4904,7 +4944,7 @@
       "id": "wiki-sources-esp32-lora-sensor-monitoring-with-web-server-long-range-communication-md",
       "type": "file",
       "file": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
-      "x": 2880,
+      "x": 3220,
       "y": 22580,
       "width": 260,
       "height": 120,
@@ -4914,7 +4954,7 @@
       "id": "wiki-sources-esp32-with-lora-using-arduino-ide-md",
       "type": "file",
       "file": "wiki/sources/esp32-with-lora-using-arduino-ide.md",
-      "x": 3220,
+      "x": 3560,
       "y": 22580,
       "width": 260,
       "height": 120,
@@ -4924,8 +4964,8 @@
       "id": "wiki-sources-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน-md",
       "type": "file",
       "file": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "x": 3560,
-      "y": 22580,
+      "x": 2880,
+      "y": 22760,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4934,7 +4974,7 @@
       "id": "wiki-sources-espressifesp-idf-espressif-iot-development-framework-officia-md",
       "type": "file",
       "file": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "x": 2880,
+      "x": 3220,
       "y": 22760,
       "width": 260,
       "height": 120,
@@ -4944,8 +4984,18 @@
       "id": "wiki-sources-espressifesp-idf-espressif-iot-development-framework-official-development-framew-md",
       "type": "file",
       "file": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
-      "x": 3220,
+      "x": 3560,
       "y": 22760,
+      "width": 260,
+      "height": 120,
+      "color": "6"
+    },
+    {
+      "id": "wiki-sources-firmai-financial-machine-learning-md",
+      "type": "file",
+      "file": "wiki/sources/firmai-financial-machine-learning.md",
+      "x": 2880,
+      "y": 22940,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4954,8 +5004,8 @@
       "id": "wiki-sources-get-started-esp32-esp-idf-programming-guide-v4-4-documentati-md",
       "type": "file",
       "file": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
-      "x": 3560,
-      "y": 22760,
+      "x": 3220,
+      "y": 22940,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4964,7 +5014,7 @@
       "id": "wiki-sources-get-started-esp32-esp-idf-programming-guide-v44-documentation-md",
       "type": "file",
       "file": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v44-documentation.md",
-      "x": 2880,
+      "x": 3560,
       "y": 22940,
       "width": 260,
       "height": 120,
@@ -4974,8 +5024,8 @@
       "id": "wiki-sources-good-uiux-practices-md",
       "type": "file",
       "file": "wiki/sources/good-uiux-practices.md",
-      "x": 3220,
-      "y": 22940,
+      "x": 2880,
+      "y": 23120,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4984,8 +5034,8 @@
       "id": "wiki-sources-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3-md",
       "type": "file",
       "file": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "x": 3560,
-      "y": 22940,
+      "x": 3220,
+      "y": 23120,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -4994,7 +5044,7 @@
       "id": "wiki-sources-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based-md",
       "type": "file",
       "file": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
-      "x": 2880,
+      "x": 3560,
       "y": 23120,
       "width": 260,
       "height": 120,
@@ -5004,8 +5054,8 @@
       "id": "wiki-sources-hermes-agent-md",
       "type": "file",
       "file": "wiki/sources/hermes-agent.md",
-      "x": 3220,
-      "y": 23120,
+      "x": 2880,
+      "y": 23300,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5014,8 +5064,8 @@
       "id": "wiki-sources-hermes-agent-readme-md",
       "type": "file",
       "file": "wiki/sources/hermes-agent-readme.md",
-      "x": 3560,
-      "y": 23120,
+      "x": 3220,
+      "y": 23300,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5024,7 +5074,7 @@
       "id": "wiki-sources-how-lorawan-network-works-a-beginner-md",
       "type": "file",
       "file": "wiki/sources/how-lorawan-network-works-a-beginner.md",
-      "x": 2880,
+      "x": 3560,
       "y": 23300,
       "width": 260,
       "height": 120,
@@ -5034,8 +5084,8 @@
       "id": "wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb-md",
       "type": "file",
       "file": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "x": 3220,
-      "y": 23300,
+      "x": 2880,
+      "y": 23480,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5044,8 +5094,8 @@
       "id": "wiki-sources-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5-md",
       "type": "file",
       "file": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
-      "x": 3560,
-      "y": 23300,
+      "x": 3220,
+      "y": 23480,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5054,7 +5104,7 @@
       "id": "wiki-sources-iot-engineering-education-md",
       "type": "file",
       "file": "wiki/sources/iot-engineering-education.md",
-      "x": 2880,
+      "x": 3560,
       "y": 23480,
       "width": 260,
       "height": 120,
@@ -5064,8 +5114,8 @@
       "id": "wiki-sources-iot-node-red-mqtt-sql-data-logger-dashboard-md",
       "type": "file",
       "file": "wiki/sources/iot-node-red-mqtt-sql-data-logger-dashboard.md",
-      "x": 3220,
-      "y": 23480,
+      "x": 2880,
+      "y": 23660,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5074,8 +5124,8 @@
       "id": "wiki-sources-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม-md",
       "type": "file",
       "file": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "x": 3560,
-      "y": 23480,
+      "x": 3220,
+      "y": 23660,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5084,7 +5134,7 @@
       "id": "wiki-sources-iot-visualization-guide-designing-effective-dashboards-monit-md",
       "type": "file",
       "file": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md",
-      "x": 2880,
+      "x": 3560,
       "y": 23660,
       "width": 260,
       "height": 120,
@@ -5094,8 +5144,8 @@
       "id": "wiki-sources-iot-visualization-guide-designing-effective-dashboards-monitoring-uis-md",
       "type": "file",
       "file": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monitoring-uis.md",
-      "x": 3220,
-      "y": 23660,
+      "x": 2880,
+      "y": 23840,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5104,8 +5154,8 @@
       "id": "wiki-sources-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt-md",
       "type": "file",
       "file": "wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
-      "x": 3560,
-      "y": 23660,
+      "x": 3220,
+      "y": 23840,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5114,7 +5164,7 @@
       "id": "wiki-sources-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we-md",
       "type": "file",
       "file": "wiki/sources/iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we.md",
-      "x": 2880,
+      "x": 3560,
       "y": 23840,
       "width": 260,
       "height": 120,
@@ -5124,8 +5174,8 @@
       "id": "wiki-sources-lora-arduino-esp8266-esp32-iot-lora-lora-md",
       "type": "file",
       "file": "wiki/sources/lora-arduino-esp8266-esp32-iot-lora-lora.md",
-      "x": 3220,
-      "y": 23840,
+      "x": 2880,
+      "y": 24020,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5134,8 +5184,8 @@
       "id": "wiki-sources-lora-getting-started-with-arduino-esp32-pico-md",
       "type": "file",
       "file": "wiki/sources/lora-getting-started-with-arduino-esp32-pico.md",
-      "x": 3560,
-      "y": 23840,
+      "x": 3220,
+      "y": 24020,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5144,7 +5194,7 @@
       "id": "wiki-sources-lora-nb-iot-md",
       "type": "file",
       "file": "wiki/sources/lora-nb-iot.md",
-      "x": 2880,
+      "x": 3560,
       "y": 24020,
       "width": 260,
       "height": 120,
@@ -5154,8 +5204,8 @@
       "id": "wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-md",
       "type": "file",
       "file": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
-      "x": 3220,
-      "y": 24020,
+      "x": 2880,
+      "y": 24200,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5164,8 +5214,8 @@
       "id": "wiki-sources-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo-md",
       "type": "file",
       "file": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
-      "x": 3560,
-      "y": 24020,
+      "x": 3220,
+      "y": 24200,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5174,7 +5224,7 @@
       "id": "wiki-sources-note-taking-research-assistant-powered-by-ai-md",
       "type": "file",
       "file": "wiki/sources/note-taking-research-assistant-powered-by-ai.md",
-      "x": 2880,
+      "x": 3560,
       "y": 24200,
       "width": 260,
       "height": 120,
@@ -5184,8 +5234,8 @@
       "id": "wiki-sources-raspberry-pi-5-16gb-made-in-uk-md",
       "type": "file",
       "file": "wiki/sources/raspberry-pi-5-16gb-made-in-uk.md",
-      "x": 3220,
-      "y": 24200,
+      "x": 2880,
+      "y": 24380,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5194,8 +5244,8 @@
       "id": "wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i-md",
       "type": "file",
       "file": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "x": 3560,
-      "y": 24200,
+      "x": 3220,
+      "y": 24380,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5204,7 +5254,7 @@
       "id": "wiki-sources-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th-md",
       "type": "file",
       "file": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
-      "x": 2880,
+      "x": 3560,
       "y": 24380,
       "width": 260,
       "height": 120,
@@ -5214,8 +5264,8 @@
       "id": "wiki-sources-raspberry-pi-documentation-md",
       "type": "file",
       "file": "wiki/sources/raspberry-pi-documentation.md",
-      "x": 3220,
-      "y": 24380,
+      "x": 2880,
+      "y": 24560,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5224,8 +5274,8 @@
       "id": "wiki-sources-readme-md",
       "type": "file",
       "file": "wiki/sources/readme.md",
-      "x": 3560,
-      "y": 24380,
+      "x": 3220,
+      "y": 24560,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5234,7 +5284,7 @@
       "id": "wiki-sources-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for-md",
       "type": "file",
       "file": "wiki/sources/ropgheltec-esp32-lora-v3-proper-working-arduino-library-for.md",
-      "x": 2880,
+      "x": 3560,
       "y": 24560,
       "width": 260,
       "height": 120,
@@ -5244,8 +5294,18 @@
       "id": "wiki-sources-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v-md",
       "type": "file",
       "file": "wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
+      "x": 2880,
+      "y": 24740,
+      "width": 260,
+      "height": 120,
+      "color": "6"
+    },
+    {
+      "id": "wiki-sources-unpingco-python-stats-ml-md",
+      "type": "file",
+      "file": "wiki/sources/unpingco-python-stats-ml.md",
       "x": 3220,
-      "y": 24560,
+      "y": 24740,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5255,7 +5315,7 @@
       "type": "file",
       "file": "wiki/sources/ux-design-in-iot.md",
       "x": 3560,
-      "y": 24560,
+      "y": 24740,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5265,7 +5325,7 @@
       "type": "file",
       "file": "wiki/sources/espem-energy-monitor.md",
       "x": 2880,
-      "y": 24740,
+      "y": 24920,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5275,7 +5335,7 @@
       "type": "file",
       "file": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
       "x": 3220,
-      "y": 24740,
+      "y": 24920,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5285,7 +5345,7 @@
       "type": "file",
       "file": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "x": 3560,
-      "y": 24740,
+      "y": 24920,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5295,7 +5355,7 @@
       "type": "file",
       "file": "wiki/sources/infectious-waste-th-law.md",
       "x": 2880,
-      "y": 24920,
+      "y": 25100,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5305,7 +5365,7 @@
       "type": "file",
       "file": "wiki/sources/hospital-wastewater-treatment.md",
       "x": 3220,
-      "y": 24920,
+      "y": 25100,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5315,7 +5375,7 @@
       "type": "file",
       "file": "wiki/sources/claude-model-cost-switching-strategy-2026-06.md",
       "x": 3560,
-      "y": 24920,
+      "y": 25100,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5325,7 +5385,7 @@
       "type": "file",
       "file": "wiki/sources/esp32-s3-intro-thai.md",
       "x": 2880,
-      "y": 25100,
+      "y": 25280,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5335,7 +5395,7 @@
       "type": "file",
       "file": "wiki/sources/dx-lr02-datasheet.md",
       "x": 3220,
-      "y": 25100,
+      "y": 25280,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5345,7 +5405,7 @@
       "type": "file",
       "file": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
       "x": 3560,
-      "y": 25100,
+      "y": 25280,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5355,7 +5415,7 @@
       "type": "file",
       "file": "wiki/sources/hermes-agent-guide-th.md",
       "x": 2880,
-      "y": 25280,
+      "y": 25460,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5365,7 +5425,7 @@
       "type": "file",
       "file": "wiki/sources/คู่มือ-hermes-agent.md",
       "x": 3220,
-      "y": 25280,
+      "y": 25460,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5375,7 +5435,7 @@
       "type": "file",
       "file": "wiki/sources/ai-agents-integration-guide.md",
       "x": 3560,
-      "y": 25280,
+      "y": 25460,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5385,7 +5445,7 @@
       "type": "file",
       "file": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
       "x": 2880,
-      "y": 25460,
+      "y": 25640,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5395,7 +5455,7 @@
       "type": "file",
       "file": "wiki/sources/nodered-dashboard-ui.md",
       "x": 3220,
-      "y": 25460,
+      "y": 25640,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5405,7 +5465,7 @@
       "type": "file",
       "file": "wiki/sources/uthai-equipment-price-2568.md",
       "x": 3560,
-      "y": 25460,
+      "y": 25640,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5415,7 +5475,7 @@
       "type": "file",
       "file": "wiki/sources/sp-drugstore-2020-catalog.md",
       "x": 2880,
-      "y": 25640,
+      "y": 25820,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5425,7 +5485,7 @@
       "type": "file",
       "file": "wiki/sources/web-appsheet-export-yaml-2026-05-04.md",
       "x": 3220,
-      "y": 25640,
+      "y": 25820,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5435,7 +5495,7 @@
       "type": "file",
       "file": "wiki/sources/iot-edge-ai-esp32-c6-2026.md",
       "x": 3560,
-      "y": 25640,
+      "y": 25820,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5445,7 +5505,7 @@
       "type": "file",
       "file": "wiki/sources/lora-vs-nbiot.md",
       "x": 2880,
-      "y": 25820,
+      "y": 26000,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5455,7 +5515,7 @@
       "type": "file",
       "file": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
       "x": 3220,
-      "y": 25820,
+      "y": 26000,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5465,7 +5525,7 @@
       "type": "file",
       "file": "wiki/sources/saovabha-rabies-pep-2565.md",
       "x": 3560,
-      "y": 25820,
+      "y": 26000,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5475,7 +5535,7 @@
       "type": "file",
       "file": "wiki/sources/rabies-vaccine-guidelines-th-2026-05-02.md",
       "x": 2880,
-      "y": 26000,
+      "y": 26180,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5485,7 +5545,7 @@
       "type": "file",
       "file": "wiki/sources/source-5e4074bd.md",
       "x": 3220,
-      "y": 26000,
+      "y": 26180,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5495,7 +5555,7 @@
       "type": "file",
       "file": "wiki/sources/ddc-cpg-rabies-2564.md",
       "x": 3560,
-      "y": 26000,
+      "y": 26180,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5505,7 +5565,7 @@
       "type": "file",
       "file": "wiki/sources/vibe-pocketbase-gemini-plan.md",
       "x": 2880,
-      "y": 26180,
+      "y": 26360,
       "width": 260,
       "height": 120,
       "color": "6"
@@ -5605,22 +5665,6 @@
       "fromNode": "CLAUDE-md",
       "fromSide": "top",
       "toNode": "wiki-entities-env-env-webapp-project-md",
-      "toSide": "bottom",
-      "color": "none"
-    },
-    {
-      "id": "edge-README-md-CLAUDE-md",
-      "fromNode": "README-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "none"
-    },
-    {
-      "id": "edge-README-md-wiki-context-wiki-overview-md",
-      "fromNode": "README-md",
-      "fromSide": "top",
-      "toNode": "wiki-context-wiki-overview-md",
       "toSide": "bottom",
       "color": "none"
     },
@@ -8265,12 +8309,20 @@
       "color": "none"
     },
     {
-      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
+      "id": "edge-README-md-CLAUDE-md",
+      "fromNode": "README-md",
       "fromSide": "left",
       "toNode": "CLAUDE-md",
       "toSide": "right",
-      "color": "2"
+      "color": "none"
+    },
+    {
+      "id": "edge-README-md-wiki-context-wiki-overview-md",
+      "fromNode": "README-md",
+      "fromSide": "top",
+      "toNode": "wiki-context-wiki-overview-md",
+      "toSide": "bottom",
+      "color": "none"
     },
     {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-sources-ai-engineering-tools-protocols-md",
@@ -8605,6 +8657,14 @@
       "fromNode": "wiki-concepts-ai-tools-claude-thai-skills-md",
       "fromSide": "left",
       "toNode": "wiki-entities-ai-tools-ecc-md",
+      "toSide": "right",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-concepts-ai-tools-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-ai-tools-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "2"
     },
@@ -9465,14 +9525,6 @@
       "color": "5"
     },
     {
-      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-concepts-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "3"
-    },
-    {
       "id": "edge-wiki-concepts-iot-air-quality-index-md-wiki-sources-air-quality-sensors-dronebot-md",
       "fromNode": "wiki-concepts-iot-air-quality-index-md",
       "fromSide": "right",
@@ -9550,6 +9602,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-air-quality-iot-lora-network-md",
       "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-concepts-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-concepts-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "3"
     },
     {
@@ -10673,14 +10733,6 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "2"
-    },
-    {
       "id": "edge-wiki-entities-ai-tools-ag2-orchestrator-md-wiki-entities-ai-tools-ecc-md",
       "fromNode": "wiki-entities-ai-tools-ag2-orchestrator-md",
       "fromSide": "left",
@@ -10774,6 +10826,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-charliejhills-claude-skills-org-chart-2026-md",
       "toSide": "left",
+      "color": "2"
+    },
+    {
+      "id": "edge-wiki-entities-ai-tools-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-ai-tools-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "2"
     },
     {
@@ -11721,14 +11781,6 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-env-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "5"
-    },
-    {
       "id": "edge-wiki-entities-env-activated-sludge-system-md-wiki-concepts-env-water-quality-parameters-md",
       "fromNode": "wiki-entities-env-activated-sludge-system-md",
       "fromSide": "right",
@@ -11758,6 +11810,14 @@
       "fromSide": "right",
       "toNode": "wiki-synthesis-iot-lora-architecture-md",
       "toSide": "left",
+      "color": "5"
+    },
+    {
+      "id": "edge-wiki-entities-env-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-env-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "5"
     },
     {
@@ -11878,14 +11938,6 @@
       "fromSide": "right",
       "toNode": "wiki-sources-hardware-inventory-2026-04-18-md",
       "toSide": "left",
-      "color": "3"
-    },
-    {
-      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-entities-iot-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "3"
     },
     {
@@ -12078,6 +12130,14 @@
       "fromSide": "right",
       "toNode": "wiki-sources-lorawan-network-beginner-md",
       "toSide": "left",
+      "color": "3"
+    },
+    {
+      "id": "edge-wiki-entities-iot-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-entities-iot-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "3"
     },
     {
@@ -14161,14 +14221,6 @@
       "color": "4"
     },
     {
-      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-sources-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
-      "color": "6"
-    },
-    {
       "id": "edge-wiki-sources-agent-frameworks-local-debug-2026-md-wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromNode": "wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromSide": "left",
@@ -14433,6 +14485,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-sources-akashdeepo-monte-carlo-rrr-md-wiki-sources-firmai-financial-machine-learning-md",
+      "fromNode": "wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-firmai-financial-machine-learning-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-akashdeepo-monte-carlo-rrr-md-wiki-sources-unpingco-python-stats-ml-md",
+      "fromNode": "wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-sources-unpingco-python-stats-ml-md",
+      "toSide": "top",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-sources-appsheet-env-datadict-md-wiki-synthesis-appsheet-to-webapp-pi5-md",
       "fromNode": "wiki-sources-appsheet-env-datadict-md",
       "fromSide": "left",
@@ -14565,6 +14633,14 @@
       "fromNode": "wiki-sources-claude-model-cost-switching-strategy-2026-06-md",
       "fromSide": "left",
       "toNode": "wiki-context-model-roster-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-sources-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
       "toSide": "right",
       "color": "6"
     },
@@ -14886,6 +14962,22 @@
       "fromSide": "left",
       "toNode": "wiki-entities-iot-pzem-004t-md",
       "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-firmai-financial-machine-learning-md-wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "fromNode": "wiki-sources-firmai-financial-machine-learning-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "toSide": "left",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-firmai-financial-machine-learning-md-wiki-sources-unpingco-python-stats-ml-md",
+      "fromNode": "wiki-sources-firmai-financial-machine-learning-md",
+      "fromSide": "right",
+      "toNode": "wiki-sources-unpingco-python-stats-ml-md",
+      "toSide": "left",
       "color": "6"
     },
     {
@@ -15537,6 +15629,22 @@
       "color": "6"
     },
     {
+      "id": "edge-wiki-sources-unpingco-python-stats-ml-md-wiki-sources-firmai-financial-machine-learning-md",
+      "fromNode": "wiki-sources-unpingco-python-stats-ml-md",
+      "fromSide": "left",
+      "toNode": "wiki-sources-firmai-financial-machine-learning-md",
+      "toSide": "right",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-sources-unpingco-python-stats-ml-md-wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "fromNode": "wiki-sources-unpingco-python-stats-ml-md",
+      "fromSide": "top",
+      "toNode": "wiki-sources-akashdeepo-monte-carlo-rrr-md",
+      "toSide": "bottom",
+      "color": "6"
+    },
+    {
       "id": "edge-wiki-sources-vaccine-cae-anomaly-detection-md-wiki-concepts-iot-tinyml-md",
       "fromNode": "wiki-sources-vaccine-cae-anomaly-detection-md",
       "fromSide": "left",
@@ -15694,14 +15802,6 @@
       "fromSide": "right",
       "toNode": "wiki-concepts-iot-dashboard-design-md",
       "toSide": "left",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
-      "fromNode": "wiki-synthesis-CLAUDE-md",
-      "fromSide": "left",
-      "toNode": "CLAUDE-md",
-      "toSide": "right",
       "color": "6"
     },
     {
@@ -16038,6 +16138,14 @@
       "fromSide": "bottom",
       "toNode": "wiki-synthesis-pixellab-phaser-asset-convention-md",
       "toSide": "top",
+      "color": "6"
+    },
+    {
+      "id": "edge-wiki-synthesis-CLAUDE-md-CLAUDE-md",
+      "fromNode": "wiki-synthesis-CLAUDE-md",
+      "fromSide": "left",
+      "toNode": "CLAUDE-md",
+      "toSide": "right",
       "color": "6"
     },
     {

@@ -8,7 +8,7 @@
 # Scoped Context — Environmental Health Entities
 
 > **โดเมน**: Environmental Health (อนามัยสิ่งแวดล้อม)
-> **Last updated**: 2026-07-13
+> **Last updated**: 2026-07-14
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/env/ เท่านั้น**
 
 ---
