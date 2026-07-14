@@ -398,8 +398,31 @@ def main(argv: list[str] | None = None) -> int:
         else:
             # Field-specific: only keep the target field in .proposed
             # (avoids overwriting other fields edited elsewhere).
-            if args.field == "process_steps" and "process_steps" in parsed:
-                proposed[s["name"]] = {"process_steps": parsed["process_steps"]}
+            if args.field == "process_steps":
+                # When targeting process_steps, the LLM may legitimately omit
+                # it (skill has no clear workflow). In that case, skip the
+                # entry entirely — do NOT write the full dict back, which
+                # would clobber existing th_description/when_to_use/examples.
+                if "process_steps" in parsed:
+                    proposed[s["name"]] = {"process_steps": parsed["process_steps"]}
+                else:
+                    # Legitimate "no workflow" — count as pass (gate passed)
+                    # but don't add to proposed (nothing to apply).
+                    passed += 1
+                    print(f"  [{i}/{len(candidates)}] {s['name']} ⏭️  no workflow (omitted)  [${cumulative_cost:.4f}]")
+                    if i % 5 == 0:
+                        save_proposed(proposed)
+                    if cumulative_cost > args.max_cost_usd:
+                        print(f"\n🛑 Cost cap reached: ${cumulative_cost:.4f} > ${args.max_cost_usd:.2f}")
+                        print(f"   {len(candidates) - i} skill(s) not processed. Re-run with --resume to continue.")
+                        break
+                    if i >= 10 and failed >= 3:
+                        fail_pct = failed * 100 // i
+                        if fail_pct >= FAIL_RATE_ABORT_PCT:
+                            print(f"\n🛑 Fail rate {fail_pct}% (>= {FAIL_RATE_ABORT_PCT}%) after {i} skills — aborting.")
+                            break
+                    time.sleep(args.sleep)
+                    continue
             elif args.field == "invocation_hint" and "invocation_hint" in parsed:
                 proposed[s["name"]] = {"invocation_hint": parsed["invocation_hint"]}
             else:

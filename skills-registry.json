@@ -422,7 +422,14 @@
           "how": "/ag2-goal planner แตกงาน → executor ทำ → รวม"
         }
       ],
-      "invocation_hint": "/ag2-goal"
+      "invocation_hint": "/ag2-goal",
+      "process_steps": [
+        "Planner วิเคราะห์เป้าหมาย",
+        "แตกงานเป็น subtasks",
+        "Executor ดำเนินการทีละขั้น",
+        "Planner ตรวจสอบผลลัพธ์",
+        "วนซ้ำจนงานสำเร็จ"
+      ]
     },
     {
       "name": "agent-architecture-audit",
@@ -450,7 +457,13 @@
           "how": "audit: ซ้ำไหม, conflict ไหม, ขาดอะไร"
         }
       ],
-      "invocation_hint": "/agent-architecture-audit"
+      "invocation_hint": "/agent-architecture-audit",
+      "process_steps": [
+        "ตรวจสอบ wrapper regression",
+        "วิเคราะห์ memory pollution",
+        "ตรวจสอบ tool discipline failures",
+        "รายงานปัญหาที่ซ่อนอยู่"
+      ]
     },
     {
       "name": "agent-eval",
@@ -477,7 +490,15 @@
           "how": "eval ก่อน/หลัง เพื่อดูว่าดีขึ้นจริง"
         }
       ],
-      "invocation_hint": "/agent-eval"
+      "invocation_hint": "/agent-eval",
+      "process_steps": [
+        "กำหนดงานทดสอบ",
+        "เลือก agents ที่ต้องการเปรียบเทียบ",
+        "รันการทดสอบ",
+        "รวบรวมผลลัพธ์",
+        "วิเคราะห์ pass rate, cost, time",
+        "สรุปผลและแนะนำ agent ที่ดีที่สุด"
+      ]
     },
     {
       "name": "agent-harness-construction",
@@ -504,7 +525,14 @@
           "how": "/agent-harness-construction ปรับ description + schema"
         }
       ],
-      "invocation_hint": "/agent-harness-construction"
+      "invocation_hint": "/agent-harness-construction",
+      "process_steps": [
+        "วิเคราะห์ task domain และ user intent",
+        "ออกแบบ action space ที่ครอบคลุม",
+        "กำหนด tool definitions และพารามิเตอร์",
+        "จัดรูปแบบ observation output",
+        "ทดสอบ completion rate และปรับแต่ง"
+      ]
     },
     {
       "name": "agent-introspection-debugging",
@@ -603,7 +631,13 @@
           "how": "/agent-sort ได้ลำดับ install พร้อมเหตุผล"
         }
       ],
-      "invocation_hint": "/agent-sort"
+      "invocation_hint": "/agent-sort",
+      "process_steps": [
+        "รวบรวมรายการทรัพยากร ECC ทั้งหมด",
+        "วิเคราะห์หลักฐานการใช้งาน",
+        "จัดเรียงเป็น DAILY หรือ LIBRARY",
+        "สร้างแผนติดตั้งแบบ parallel"
+      ]
     },
     {
       "name": "agentic-engineering",
@@ -930,7 +964,15 @@
           "how": "ออกแบบ /orders, /orders/{id}, error code"
         }
       ],
-      "invocation_hint": "/api-design"
+      "invocation_hint": "/api-design",
+      "process_steps": [
+        "กำหนด resource และ endpoint",
+        "เลือก HTTP methods และ status codes",
+        "ออกแบบ pagination และ filtering",
+        "จัดการ error responses",
+        "วางแผน versioning",
+        "กำหนด rate limiting"
+      ]
     },
     {
       "name": "architecture-decision-records",
@@ -994,7 +1036,14 @@
           "how": "/article-writing โครง intro → concept → example → summary"
         }
       ],
-      "invocation_hint": "/article-writing"
+      "invocation_hint": "/article-writing",
+      "process_steps": [
+        "รวบรวมตัวอย่างเสียงหรือแนวทางแบรนด์",
+        "กำหนดหัวข้อและโครงสร้างเนื้อหา",
+        "ร่างเนื้อหาตามเสียงที่กำหนด",
+        "ตรวจสอบความสอดคล้องกับแนวทาง",
+        "ปรับแก้และส่งออกไฟล์"
+      ]
     },
     {
       "name": "ask-notebooklm",
@@ -1053,7 +1102,14 @@
           "how": "ใช้คำสั่ง /generate-assessment --file path/to/document.pdf --type multiple-choice"
         }
       ],
-      "invocation_hint": "/assessment-generator"
+      "invocation_hint": "/assessment-generator",
+      "process_steps": [
+        "วิเคราะห์เนื้อหาและหัวข้อสำคัญ",
+        "กำหนดประเภทคำถาม (เลือกตอบ/เติมคำ)",
+        "สร้างคำถามและตัวเลือก",
+        "ตรวจสอบความถูกต้องของคำตอบ",
+        "ส่งออกเป็นไฟล์ข้อสอบ"
+      ]
     },
     {
       "name": "autoglm-browser-agent",
@@ -1342,7 +1398,15 @@
           "how": "/backend-patterns ตรวจ N+1 query, caching, indexing"
         }
       ],
-      "invocation_hint": "/backend-patterns"
+      "invocation_hint": "/backend-patterns",
+      "process_steps": [
+        "วิเคราะห์ข้อกำหนด",
+        "ออกแบบรูปแบบสถาปัตยกรรม",
+        "เลือกเครื่องมือและเฟรมเวิร์ก",
+        "พัฒนาและทดสอบ API",
+        "ปรับแต่งประสิทธิภาพ",
+        "ตรวจสอบความปลอดภัย"
+      ]
     },
     {
       "name": "benchmark",
@@ -1595,7 +1659,13 @@
           "how": "เรียกใช้สคริปต์ brand-voice-check.py พร้อมไฟล์ข้อความที่ต้องการตรวจสอบ"
         }
       ],
-      "invocation_hint": "/brand-voice"
+      "invocation_hint": "/brand-voice",
+      "process_steps": [
+        "รวบรวมตัวอย่างเนื้อหาจริงของแบรนด์",
+        "วิเคราะห์รูปแบบภาษาและน้ำเสียง",
+        "สร้างโปรไฟล์สไตล์การเขียน",
+        "นำโปรไฟล์ไปใช้กับเนื้อหาใหม่"
+      ]
     },
     {
       "name": "browser-qa",
@@ -1778,7 +1848,14 @@
           "how": "ใช้คำสั่ง /canvas-design พร้อมอธิบายแนวคิดศิลปะที่ต้องการ"
         }
       ],
-      "invocation_hint": "/canvas-design"
+      "invocation_hint": "/canvas-design",
+      "process_steps": [
+        "กำหนดแนวคิดและธีม",
+        "เลือกขนาดและรูปแบบ",
+        "ออกแบบองค์ประกอบภาพ",
+        "ปรับแต่งสีและแสง",
+        "ส่งออกเป็น .png หรือ .pdf"
+      ]
     },
     {
       "name": "carrier-relationship-management",
@@ -1809,7 +1886,15 @@
           "how": "ใช้คำสั่ง /carrier history --id \"รหัส carrier\""
         }
       ],
-      "invocation_hint": "/carrier-relationship-management"
+      "invocation_hint": "/carrier-relationship-management",
+      "process_steps": [
+        "ลงทะเบียนผู้ให้บริการ",
+        "ตรวจสอบเอกสารและสัญญา",
+        "ตั้งค่าอัตราค่าขนส่ง",
+        "ติดตามสถานะการจัดส่ง",
+        "จัดการข้อร้องเรียน",
+        "ประเมินผลรายเดือน"
+      ]
     },
     {
       "name": "ci-cd-and-automation",
@@ -1839,7 +1924,15 @@
           "how": "CI: run pytest + lint ก่อน merge"
         }
       ],
-      "invocation_hint": "/ci-cd-and-automation"
+      "invocation_hint": "/ci-cd-and-automation",
+      "process_steps": [
+        "กำหนด trigger event",
+        "เพิ่ม build step",
+        "เพิ่ม test step",
+        "ตั้งค่า quality gate",
+        "กำหนด deploy target",
+        "ทดสอบ pipeline"
+      ]
     },
     {
       "name": "cisco-ios-patterns",
@@ -2089,7 +2182,14 @@
           "how": "แยกเป็น 3-4 ฟังก์ชันเล็ก ตั้งชื่อให้อธิบายตัวเอง"
         }
       ],
-      "invocation_hint": "/code-simplification"
+      "invocation_hint": "/code-simplification",
+      "process_steps": [
+        "ระบุจุดที่ซับซ้อน",
+        "แยก logic ออกจากกัน",
+        "ลด nesting และเงื่อนไข",
+        "ใช้ guard clause หรือ early return",
+        "ตรวจสอบว่า behavior ไม่เปลี่ยน"
+      ]
     },
     {
       "name": "code-tour",
@@ -2195,7 +2295,13 @@
           "how": "เรียกใช้สคริปต์ skills/ecosystem/coding-standards/check-quality.sh"
         }
       ],
-      "invocation_hint": "/coding-standards"
+      "invocation_hint": "/coding-standards",
+      "process_steps": [
+        "ตรวจสอบชื่อตัวแปรและฟังก์ชัน",
+        "ตรวจสอบความอ่านง่าย",
+        "ตรวจสอบ immutability",
+        "ตรวจสอบคุณภาพโค้ดโดยรวม"
+      ]
     },
     {
       "name": "compose-multiplatform-patterns",
@@ -2296,7 +2402,14 @@
           "how": "optimizer เสนอลิงก์ไป MQTT, OTA, pinout ที่เกี่ยวข้อง"
         }
       ],
-      "invocation_hint": "/connections-optimizer"
+      "invocation_hint": "/connections-optimizer",
+      "process_steps": [
+        "วิเคราะห์เครือข่ายปัจจุบัน",
+        "ตรวจสอบและตัดเพื่อนที่ไม่เกี่ยวข้อง",
+        "แนะนำบุคคลที่ควรเพิ่มหรือติดตาม",
+        "ร่างข้อความ warm outreach",
+        "ปรับแต่งข้อความตามช่องทาง"
+      ]
     },
     {
       "name": "content-engine",
@@ -2398,7 +2511,14 @@
           "how": "compact: เก็บ summary สละ detail"
         }
       ],
-      "invocation_hint": "/context-budget"
+      "invocation_hint": "/context-budget",
+      "process_steps": [
+        "สแกน context ทั้งหมด",
+        "จัดกลุ่มตาม agent/skill/MCP",
+        "คำนวณขนาดแต่ละส่วน",
+        "ระบุ bloat และ redundancy",
+        "แสดงลำดับการตัดที่แนะนำ"
+      ]
     },
     {
       "name": "continuous-agent-loop",
@@ -2491,7 +2611,14 @@
           "how": "เสนอสร้าง skill git-workflow"
         }
       ],
-      "invocation_hint": "/continuous-learning-v2"
+      "invocation_hint": "/continuous-learning-v2",
+      "process_steps": [
+        "สังเกต session ผ่าน hooks",
+        "สร้าง atomic instinct พร้อมคะแนนความมั่นใจ",
+        "รวม instinct ที่คล้ายกันเป็น skill",
+        "ทดสอบ skill ใน sandbox",
+        "เลื่อนเป็น command หรือ agent เมื่อพร้อม"
+      ]
     },
     {
       "name": "cost-aware-llm-pipeline",
@@ -2556,7 +2683,13 @@
           "how": "/cost-tracking ดูว่า task ไหนแพง ปรับ tier"
         }
       ],
-      "invocation_hint": "/cost-tracking"
+      "invocation_hint": "/cost-tracking",
+      "process_steps": [
+        "สอบถามช่วงเวลา",
+        "ดึงข้อมูลจากฐานข้อมูล",
+        "คำนวณยอดรวมและเปรียบเทียบงบประมาณ",
+        "แสดงรายงานสรุป"
+      ]
     },
     {
       "name": "council",
@@ -2853,7 +2986,14 @@
           "how": "พิมพ์คำสั่ง /customs fta thailand japan"
         }
       ],
-      "invocation_hint": "/customs-trade-compliance"
+      "invocation_hint": "/customs-trade-compliance",
+      "process_steps": [
+        "ระบุประเภทสินค้าและรหัส HS",
+        "ตรวจสอบกฎระเบียบของประเทศต้นทางและปลายทาง",
+        "คำนวณภาษีศุลกากรและค่าธรรมเนียม",
+        "จัดเตรียมเอกสารที่จำเป็น",
+        "ยื่นข้อมูลผ่านระบบศุลกากร"
+      ]
     },
     {
       "name": "dart-flutter-patterns",
@@ -2921,7 +3061,15 @@
           "how": "ใช้คำสั่ง /dashboard-builder build --platform signoz --metrics latency,error_rate"
         }
       ],
-      "invocation_hint": "/dashboard-builder"
+      "invocation_hint": "/dashboard-builder",
+      "process_steps": [
+        "ระบุคำถามของ operator",
+        "เลือก metrics ที่เกี่ยวข้อง",
+        "ออกแบบ layout และ panel",
+        "ตั้งค่า alert และ threshold",
+        "ทดสอบกับข้อมูลจริง",
+        "ปรับแต่งและ deploy"
+      ]
     },
     {
       "name": "data-scraper-agent",
@@ -3177,7 +3325,14 @@
           "how": "delegate ให้ Explore agent"
         }
       ],
-      "invocation_hint": "/delegate-subagent"
+      "invocation_hint": "/delegate-subagent",
+      "process_steps": [
+        "วิเคราะห์งานหลัก",
+        "แยกงานย่อยที่ต้องใช้ sub-agent",
+        "เรียก sub-agent ที่เหมาะสม",
+        "รวบรวมผลลัพธ์จาก sub-agent",
+        "สรุปและตอบกลับผู้ใช้"
+      ]
     },
     {
       "name": "deployment-patterns",
@@ -3245,7 +3400,15 @@
           "how": "deprecate → แจ้ง → ให้เวลา → migrate → sunset"
         }
       ],
-      "invocation_hint": "/deprecation-and-migration"
+      "invocation_hint": "/deprecation-and-migration",
+      "process_steps": [
+        "ประกาศ deprecation",
+        "แจ้งผู้ใช้และให้ timeline",
+        "เตรียม migration path",
+        "ทดสอบ migration",
+        "ย้ายผู้ใช้เป็นกลุ่ม",
+        "ปิดระบบเก่า"
+      ]
     },
     {
       "name": "design-system",
@@ -3348,7 +3511,14 @@
           "how": "/django-patterns select_related + caching + pagination"
         }
       ],
-      "invocation_hint": "/django-patterns"
+      "invocation_hint": "/django-patterns",
+      "process_steps": [
+        "วิเคราะห์ความต้องการ",
+        "ออกแบบโมเดลและ ORM",
+        "สร้าง API endpoints",
+        "เพิ่ม caching และ middleware",
+        "ทดสอบและปรับปรุงประสิทธิภาพ"
+      ]
     },
     {
       "name": "django-security",
@@ -3375,7 +3545,15 @@
           "how": "/django-security session, CSRF, password policy"
         }
       ],
-      "invocation_hint": "/django-security"
+      "invocation_hint": "/django-security",
+      "process_steps": [
+        "ตรวจสอบการตั้งค่า SECRET_KEY",
+        "เปิด CSRF middleware",
+        "ใช้ ORM แทน raw SQL",
+        "escape output ใน template",
+        "ปิด DEBUG ใน production",
+        "ตั้งค่า HTTPS และ HSTS"
+      ]
     },
     {
       "name": "django-tdd",
@@ -3402,7 +3580,13 @@
           "how": "/django-tdd factory + pytest + coverage ≥ 80%"
         }
       ],
-      "invocation_hint": "/django-tdd"
+      "invocation_hint": "/django-tdd",
+      "process_steps": [
+        "เขียนเทสก่อน (Red)",
+        "เขียนโค้ดให้ผ่านเทส (Green)",
+        "รีแฟกเตอร์โค้ด (Refactor)",
+        "รันเทสซ้ำและตรวจ coverage"
+      ]
     },
     {
       "name": "django-verification",
@@ -3583,7 +3767,13 @@
           "how": "เขียน ADR: context, options, decision, consequences"
         }
       ],
-      "invocation_hint": "/documentation-and-adrs"
+      "invocation_hint": "/documentation-and-adrs",
+      "process_steps": [
+        "ระบุปัญหาและตัวเลือก",
+        "บันทึกการตัดสินใจพร้อมเหตุผล",
+        "อัปเดตเอกสาร API",
+        "รีวิวและอนุมัติ ADR"
+      ]
     },
     {
       "name": "documentation-lookup",
@@ -3787,7 +3977,14 @@
           "how": "ใช้คำสั่ง /ecc-cost-audit --focus=premium-leakage เพื่อวิเคราะห์การเรียกใช้ API และระบุผู้ใช้หรือ service ที่ผิดปกติ"
         }
       ],
-      "invocation_hint": "/ecc-tools-cost-audit"
+      "invocation_hint": "/ecc-tools-cost-audit",
+      "process_steps": [
+        "รวบรวมข้อมูลการใช้งานจาก log",
+        "วิเคราะห์รูปแบบที่ผิดปกติ",
+        "ตรวจสอบ quota และ billing",
+        "สรุปสาเหตุและค่าใช้จ่าย",
+        "รายงานผลและแนะนำแนวทางแก้ไข"
+      ]
     },
     {
       "name": "email-ops",
@@ -4475,7 +4672,14 @@
           "how": "/frontend-design layout + color + chart"
         }
       ],
-      "invocation_hint": "/frontend-design"
+      "invocation_hint": "/frontend-design",
+      "process_steps": [
+        "วิเคราะห์ความต้องการ UI",
+        "ออกแบบ wireframe หรือ mockup",
+        "พัฒนา component ด้วย HTML/CSS/JS",
+        "ทดสอบการตอบสนองและการใช้งาน",
+        "ปรับแต่งให้พร้อม deploy"
+      ]
     },
     {
       "name": "frontend-design-direction",
@@ -4564,7 +4768,14 @@
           "how": "ใช้คำสั่ง /frontend-slides convert --input path/to/file.pptx"
         }
       ],
-      "invocation_hint": "/frontend-slides"
+      "invocation_hint": "/frontend-slides",
+      "process_steps": [
+        "เลือกธีมและโครงสร้างสไลด์",
+        "เพิ่มเนื้อหาและอนิเมชั่น",
+        "ปรับแต่ง CSS และ Tailwind",
+        "แสดงตัวอย่างและแก้ไข",
+        "export เป็น HTML หรือ PDF"
+      ]
     },
     {
       "name": "fsharp-testing",
@@ -4783,7 +4994,14 @@
           "how": "ตั้งกฎ: feat→minor, fix→patch, break→major"
         }
       ],
-      "invocation_hint": "/git-workflow-and-versioning"
+      "invocation_hint": "/git-workflow-and-versioning",
+      "process_steps": [
+        "ดึงโค้ดล่าสุดจาก trunk",
+        "สร้าง branch เล็กสำหรับงานเดียว",
+        "ทำ atomic commits ด้วยข้อความที่ชัดเจน",
+        "rebase ก่อน merge เพื่อประวัติสะอาด",
+        "merge กลับ trunk ด้วย fast-forward"
+      ]
     },
     {
       "name": "github-ops",
@@ -5232,7 +5450,15 @@
           "how": "ใช้คำสั่ง /homelab-network-setup พร้อมระบุปัญหาที่พบ เช่น 'Wi-Fi ไม่เสถียร'"
         }
       ],
-      "invocation_hint": "/homelab-network-setup"
+      "invocation_hint": "/homelab-network-setup",
+      "process_steps": [
+        "วางแผน topology และ IP range",
+        "ตั้งค่า gateway และ DHCP",
+        "กำหนด VLAN และ subnet",
+        "ติดตั้ง switch และ access point",
+        "ตั้งค่า DNS และ reservation",
+        "ทดสอบและแก้ไขข้อผิดพลาด"
+      ]
     },
     {
       "name": "homelab-pihole-dns",
@@ -5416,7 +5642,13 @@
           "how": "ใช้คำสั่ง /hookify list rules"
         }
       ],
-      "invocation_hint": "/hookify-rules"
+      "invocation_hint": "/hookify-rules",
+      "process_steps": [
+        "ระบุเหตุการณ์ trigger",
+        "กำหนด action ที่ต้องการ",
+        "ทดสอบ rule ด้วย dry-run",
+        "เปิดใช้งาน rule"
+      ]
     },
     {
       "name": "imagegen",
@@ -5846,7 +6078,12 @@
           "how": "ใช้คำสั่ง /liquidity <underlier_name> หรือเรียกฟังก์ชัน ito_market_intelligence('liquidity', underlier='BTC')"
         }
       ],
-      "invocation_hint": "/ito-market-intelligence"
+      "invocation_hint": "/ito-market-intelligence",
+      "process_steps": [
+        "ระบุพารามิเตอร์ที่ต้องการ",
+        "เรียก API อ่านข้อมูล",
+        "แสดงผลสภาพคล่องและข่าวสาร"
+      ]
     },
     {
       "name": "ito-trade-planner",
@@ -6062,7 +6299,15 @@
           "how": "/kotlin-coroutines-flows combine + flatMapMerge"
         }
       ],
-      "invocation_hint": "/kotlin-coroutines-flows"
+      "invocation_hint": "/kotlin-coroutines-flows",
+      "process_steps": [
+        "เลือก CoroutineScope",
+        "สร้าง Flow ด้วย flow { }",
+        "ใช้ operator เช่น map, filter",
+        "จัดการ error ด้วย catch",
+        "รวบรวมด้วย collect",
+        "ทดสอบด้วย runTest"
+      ]
     },
     {
       "name": "kotlin-exposed-patterns",
@@ -6445,7 +6690,14 @@
           "how": "ใช้คำสั่ง /warm-path ตามด้วยชื่อบริษัทและชื่อผู้ติดต่อ"
         }
       ],
-      "invocation_hint": "/lead-intelligence"
+      "invocation_hint": "/lead-intelligence",
+      "process_steps": [
+        "รวบรวมสัญญาณจากหลายแหล่ง",
+        "ให้คะแนนลีดตามความน่าสนใจ",
+        "จัดอันดับลีดแบบ mutual ranking",
+        "ค้นหา warm path ที่ดีที่สุด",
+        "สร้าง outreach pipeline"
+      ]
     },
     {
       "name": "lint-wiki",
@@ -6473,7 +6725,13 @@
           "how": "/lint-wiki ตรวจ link + frontmatter ให้ครบ"
         }
       ],
-      "invocation_hint": "/lint-wiki"
+      "invocation_hint": "/lint-wiki",
+      "process_steps": [
+        "รวบรวมไฟล์ wiki ทั้งหมด",
+        "ตรวจสอบลิงก์ภายใน",
+        "ตรวจสอบโครงสร้างโฟลเดอร์",
+        "รายงานข้อผิดพลาดที่พบ"
+      ]
     },
     {
       "name": "liquid-glass-design",
@@ -6500,7 +6758,14 @@
           "how": "/liquid-glass-design ใช้ dynamic glass material"
         }
       ],
-      "invocation_hint": "/liquid-glass-design"
+      "invocation_hint": "/liquid-glass-design",
+      "process_steps": [
+        "เลือกประเภท view (SwiftUI/UIKit/WidgetKit)",
+        "กำหนดระดับ blur และ reflection",
+        "เปิดใช้งาน interactive morphing",
+        "ทดสอบบน simulator จริง",
+        "ปรับแต่งตาม feedback"
+      ]
     },
     {
       "name": "literature-review",
@@ -6609,7 +6874,14 @@
           "how": "ใช้คำสั่ง /logistics-exception list --status open"
         }
       ],
-      "invocation_hint": "logistics-exception-management"
+      "invocation_hint": "logistics-exception-management",
+      "process_steps": [
+        "ตรวจจับเหตุการณ์ผิดปกติ",
+        "วิเคราะห์สาเหตุของปัญหา",
+        "แจ้งเตือนผู้เกี่ยวข้อง",
+        "ดำเนินการแก้ไขตามขั้นตอน",
+        "บันทึกและติดตามผล"
+      ]
     },
     {
       "name": "make-interfaces-feel-better",
@@ -6674,7 +6946,14 @@
           "how": "/management-talk สรุป progress, blocker, next"
         }
       ],
-      "invocation_hint": "/management-talk"
+      "invocation_hint": "/management-talk",
+      "process_steps": [
+        "รับข้อความต้นฉบับจากวิศวกร",
+        "วิเคราะห์ผู้รับและช่องทาง",
+        "ปรับภาษาและโครงสร้างให้กระชับ",
+        "เน้นผลกระทบทางธุรกิจและ timeline",
+        "ตรวจสอบโทนให้เหมาะสมกับระดับผู้บริหาร"
+      ]
     },
     {
       "name": "manim-video",
@@ -6705,7 +6984,14 @@
           "how": "ใช้คำสั่ง /manim-video system_architecture_diagram"
         }
       ],
-      "invocation_hint": "/manim-video"
+      "invocation_hint": "/manim-video",
+      "process_steps": [
+        "กำหนดแนวคิดและโครงสร้างเนื้อหา",
+        "เขียน Manim script ด้วย Python",
+        "ทดสอบ render เบื้องต้น",
+        "ปรับแต่ง animation และ timing",
+        "ส่งออกวิดีโอและส่งต่อ ECC stack"
+      ]
     },
     {
       "name": "market-research",
@@ -6809,7 +7095,14 @@
           "how": "/mcp-builder สร้าง MCP server query DB"
         }
       ],
-      "invocation_hint": "/mcp-builder"
+      "invocation_hint": "/mcp-builder",
+      "process_steps": [
+        "กำหนดขอบเขต tool",
+        "ออกแบบ input schema",
+        "เขียน handler function",
+        "ทดสอบด้วย MCP Inspector",
+        "deploy ไปยัง production"
+      ]
     },
     {
       "name": "mcp-server-patterns",
@@ -6947,7 +7240,14 @@
           "how": "ใช้ tier ถูก (free/cheap) ก่อน ไม่ใช่ primary model"
         }
       ],
-      "invocation_hint": "/model-cost-switching"
+      "invocation_hint": "/model-cost-switching",
+      "process_steps": [
+        "ประเมินความซับซ้อนของงาน",
+        "เลือกโมเดลราคาถูกที่สุดที่รองรับ",
+        "กำหนด effort level (low/medium/high)",
+        "ดำเนินงานด้วยโมเดลที่เลือก",
+        "ตรวจสอบผลลัพธ์และปรับโมเดลถ้าจำเป็น"
+      ]
     },
     {
       "name": "motion-advanced",
@@ -7830,7 +8130,14 @@
           "how": "profile → พบ N+1 query → แก้ → วัดใหม่"
         }
       ],
-      "invocation_hint": "/performance-optimization"
+      "invocation_hint": "/performance-optimization",
+      "process_steps": [
+        "วัด baseline ด้วย Lighthouse",
+        "วิเคราะห์ bottleneck",
+        "ปรับแต่ง resource (รูป, JS, CSS)",
+        "วัดซ้ำเพื่อยืนยันผล",
+        "บันทึกผลลัพธ์ใน PR"
+      ]
     },
     {
       "name": "perl-patterns",
@@ -8076,7 +8383,14 @@
           "how": "แตกเป็น: schema → resolver → migration → test → cutover"
         }
       ],
-      "invocation_hint": "/planning-and-task-breakdown"
+      "invocation_hint": "/planning-and-task-breakdown",
+      "process_steps": [
+        "อ่าน spec และระบุขอบเขต",
+        "แตกเป็นงานย่อยที่ตรวจสอบได้",
+        "กำหนด acceptance criteria แต่ละงาน",
+        "จัดลำดับ dependencies",
+        "ตรวจสอบความครบถ้วนและปรับแก้"
+      ]
     },
     {
       "name": "plugin-creator",
@@ -8257,7 +8571,14 @@
           "how": "ใช้ script ~/.claude/skills/prediction-market-oracle-research/research.sh --output oracle-signal --format json"
         }
       ],
-      "invocation_hint": "/prediction-market-oracle-research"
+      "invocation_hint": "/prediction-market-oracle-research",
+      "process_steps": [
+        "ระบุ prediction market ที่ต้องการ",
+        "ดึงข้อมูลราคาหรือความน่าจะเป็น",
+        "ตรวจสอบความน่าเชื่อถือของแหล่ง",
+        "แปลงเป็นสัญญาณ oracle",
+        "ผสานเข้ากับระบบตัดสินใจ"
+      ]
     },
     {
       "name": "prediction-market-risk-review",
@@ -8403,7 +8724,13 @@
           "how": "ใช้คำสั่ง /product-lens diagnose เพื่อรัน product diagnostics"
         }
       ],
-      "invocation_hint": "/product-lens"
+      "invocation_hint": "/product-lens",
+      "process_steps": [
+        "รวบรวม context และเป้าหมาย",
+        "ตั้งคำถาม 'ทำไม' กับแต่ละ requirement",
+        "วิเคราะห์ความเสี่ยงและสมมติฐาน",
+        "สรุป product direction ที่ชัดเจน"
+      ]
     },
     {
       "name": "production-audit",
@@ -8431,7 +8758,13 @@
           "how": "audit: monitoring ครบไหม, alert ทำงานไหม"
         }
       ],
-      "invocation_hint": "/production-audit"
+      "invocation_hint": "/production-audit",
+      "process_steps": [
+        "รวบรวมข้อมูลจาก local evidence",
+        "วิเคราะห์ความเสี่ยงด้าน production",
+        "สร้างรายงาน audit พร้อมคำแนะนำ",
+        "แสดงผลลัพธ์ให้ทีมตรวจสอบ"
+      ]
     },
     {
       "name": "production-scheduling",
@@ -9004,7 +9337,15 @@
           "how": "/react-performance memo + virtualization"
         }
       ],
-      "invocation_hint": "/react-performance"
+      "invocation_hint": "/react-performance",
+      "process_steps": [
+        "วิเคราะห์ performance ด้วย Lighthouse หรือ React DevTools",
+        "ใช้ React.memo สำหรับ pure component",
+        "ใช้ useMemo/useCallback ลด re-render",
+        "lazy load component ด้วย dynamic import",
+        "optimize images ด้วย next/image",
+        "ลด bundle size ด้วย tree shaking"
+      ]
     },
     {
       "name": "react-testing",
@@ -9031,7 +9372,14 @@
           "how": "/react-testing RTL + MSW mock API + assert"
         }
       ],
-      "invocation_hint": "/react-testing"
+      "invocation_hint": "/react-testing",
+      "process_steps": [
+        "ตั้งค่า test environment",
+        "เขียนเทสด้วย React Testing Library",
+        "mock network ด้วย MSW",
+        "เพิ่ม accessibility assertions",
+        "รันเทสและตรวจสอบ coverage"
+      ]
     },
     {
       "name": "recsys-pipeline-architect",
@@ -9252,7 +9600,13 @@
           "how": "emit JSON → render-html → ได้ไฟล์ดู ไม่เปลือง token"
         }
       ],
-      "invocation_hint": "/render-html"
+      "invocation_hint": "/render-html",
+      "process_steps": [
+        "ดึงข้อมูลจาก A-Wiki",
+        "จัดโครงสร้าง HTML",
+        "ฝัง CSS/JS แบบ inline",
+        "สร้างไฟล์ .html สำเร็จรูป"
+      ]
     },
     {
       "name": "repo-scan",
@@ -9495,7 +9849,13 @@
           "how": "/rust-testing tokio::test + property-based"
         }
       ],
-      "invocation_hint": "/rust-testing"
+      "invocation_hint": "/rust-testing",
+      "process_steps": [
+        "เขียน test ก่อน (Red)",
+        "เขียนโค้ดให้ผ่าน (Green)",
+        "ปรับปรุงโค้ด (Refactor)",
+        "รัน coverage เพื่อตรวจสอบ"
+      ]
     },
     {
       "name": "safety-guard",
@@ -9663,7 +10023,13 @@
           "how": "scrutinize ทุกไฟล์: logic, test, security, perf"
         }
       ],
-      "invocation_hint": "/scrutinize"
+      "invocation_hint": "/scrutinize",
+      "process_steps": [
+        "ถามเจตนาของการเปลี่ยนแปลง",
+        "มองหาวิธีที่เรียบง่ายกว่า",
+        "ตรวจสอบความสอดคล้องกับเป้าหมาย",
+        "ให้ข้อเสนอแนะเชิงสร้างสรรค์"
+      ]
     },
     {
       "name": "search-first",
@@ -9694,7 +10060,14 @@
           "how": "ใช้คำสั่ง /search-first เพื่อค้นหาไลบรารี CSV ที่มีอยู่แล้วในภาษาโปรแกรมที่ใช้"
         }
       ],
-      "invocation_hint": "/search-first"
+      "invocation_hint": "/search-first",
+      "process_steps": [
+        "ระบุปัญหาหรือความต้องการ",
+        "ค้นหาเครื่องมือที่มีอยู่",
+        "ประเมินตัวเลือกที่พบ",
+        "เลือกใช้หรือปรับแต่ง",
+        "เริ่มเขียนโค้ดเฉพาะส่วนที่ขาด"
+      ]
     },
     {
       "name": "security-and-hardening",
@@ -9724,7 +10097,15 @@
           "how": "ตรวจ SQL injection, XSS, auth"
         }
       ],
-      "invocation_hint": "/security-and-hardening"
+      "invocation_hint": "/security-and-hardening",
+      "process_steps": [
+        "สแกน OWASP Top 10",
+        "ตรวจสอบ authentication pattern",
+        "ตรวจสอบ secrets leak",
+        "audit dependency",
+        "ตรวจสอบ input validation",
+        "สรุปผลและแนะนำ fix"
+      ]
     },
     {
       "name": "security-bounty-hunter",
@@ -9902,7 +10283,14 @@
           "how": "เช็ค: test ผ่าน, migration dry-run, rollback script พร้อม, alert ตั้ง"
         }
       ],
-      "invocation_hint": "/shipping-and-launch"
+      "invocation_hint": "/shipping-and-launch",
+      "process_steps": [
+        "ตรวจสอบ checklist ก่อน deploy",
+        "เปิด feature flag แบบ staged",
+        "มอนิเตอร์ metrics และ logs",
+        "ถ้ามีปัญหาให้ rollback ทันที",
+        "ปิด feature flag หลัง rollout สำเร็จ"
+      ]
     },
     {
       "name": "skill-comply",
@@ -9929,7 +10317,13 @@
           "how": "/skill-comply สร้าง scenario ทดสอบการ follow"
         }
       ],
-      "invocation_hint": "/skill-comply"
+      "invocation_hint": "/skill-comply",
+      "process_steps": [
+        "สร้างสถานการณ์ทดสอบ 3 ระดับ",
+        "รัน agent กับแต่ละสถานการณ์",
+        "จำแนกผลลัพธ์ว่าปฏิบัติตามหรือไม่",
+        "สรุปรายงานความสอดคล้อง"
+      ]
     },
     {
       "name": "skill-creator",
@@ -10002,7 +10396,13 @@
           "how": "ใช้คำสั่ง /install https://github.com/username/custom-skill"
         }
       ],
-      "invocation_hint": "/skill-installer"
+      "invocation_hint": "/skill-installer",
+      "process_steps": [
+        "ตรวจสอบรายการสกิลที่พร้อมติดตั้ง",
+        "เลือกสกิลหรือระบุ GitHub repo",
+        "ดาวน์โหลดและติดตั้งลง $CODEX_HOME/skills",
+        "ยืนยันการติดตั้งสำเร็จ"
+      ]
     },
     {
       "name": "skill-scout",
@@ -10107,7 +10507,14 @@
           "how": "ใช้ /slack-gif-validate --file path/to/animation.gif"
         }
       ],
-      "invocation_hint": "/slack-gif-creator"
+      "invocation_hint": "/slack-gif-creator",
+      "process_steps": [
+        "กำหนดขนาดและความยาว GIF",
+        "เลือกเฟรมและความเร็ว",
+        "สร้าง GIF ด้วยเครื่องมือ",
+        "ตรวจสอบข้อจำกัด Slack",
+        "ปรับแต่งและ export"
+      ]
     },
     {
       "name": "social-graph-ranker",
@@ -10249,7 +10656,15 @@
           "how": "/springboot-patterns controller-service-repository"
         }
       ],
-      "invocation_hint": "/springboot-patterns"
+      "invocation_hint": "/springboot-patterns",
+      "process_steps": [
+        "กำหนดโครงสร้างโปรเจกต์",
+        "ออกแบบ REST API endpoints",
+        "สร้าง service layer",
+        "เพิ่ม data access layer",
+        "ปรับแต่ง caching และ async",
+        "ตั้งค่า logging"
+      ]
     },
     {
       "name": "springboot-security",
@@ -10380,7 +10795,13 @@
           "how": "เรียกใช้ /compact หรือระบุจุดที่ต้องการบีบอัด"
         }
       ],
-      "invocation_hint": "/strategic-compact"
+      "invocation_hint": "/strategic-compact",
+      "process_steps": [
+        "ระบุจุดตัดที่เหมาะสม",
+        "เลือกข้อมูลสำคัญที่ต้องเก็บ",
+        "บีบอัด context ด้วยตนเอง",
+        "ตรวจสอบความครบถ้วนหลังบีบอัด"
+      ]
     },
     {
       "name": "swift-actor-persistence",
@@ -10515,7 +10936,15 @@
           "how": "/swiftui-patterns ใช้ @Observable + environment"
         }
       ],
-      "invocation_hint": "/swiftui-patterns"
+      "invocation_hint": "/swiftui-patterns",
+      "process_steps": [
+        "วิเคราะห์ความต้องการ UI",
+        "เลือกสถาปัตยกรรม (MVVM, TCA, ฯลฯ)",
+        "ออกแบบ state model ด้วย @Observable",
+        "ประกอบ view เป็น component ย่อย",
+        "เพิ่ม navigation และ routing",
+        "ปรับประสิทธิภาพและทดสอบ"
+      ]
     },
     {
       "name": "tdd-workflow",
@@ -10656,7 +11085,14 @@
           "how": "ใช้คำสั่ง /lookup-postcode จังหวัดเชียงใหม่"
         }
       ],
-      "invocation_hint": "/thai-address"
+      "invocation_hint": "/thai-address",
+      "process_steps": [
+        "รับข้อความที่อยู่ภาษาไทย",
+        "แยกองค์ประกอบ: บ้าน/ถนน/แขวง/เขต/จังหวัด/รหัส",
+        "ตรวจสอบรหัสไปรษณีย์กับฐานข้อมูล",
+        "จัดรูปแบบที่อยู่มาตรฐาน",
+        "ส่งคืนผลลัพธ์ JSON"
+      ]
     },
     {
       "name": "thai-customer-service",
@@ -10786,7 +11222,14 @@
           "how": "ใช้คำสั่ง /thai-government-form ประเภท 'หนังสือมอบอำนาจ' พร้อมระบุชื่อผู้มอบ ผู้รับมอบ และอำนาจที่มอบ"
         }
       ],
-      "invocation_hint": "thai-government-form"
+      "invocation_hint": "thai-government-form",
+      "process_steps": [
+        "ระบุประเภทเอกสาร",
+        "กรอกข้อมูลผู้เกี่ยวข้อง",
+        "เลือกคำขึ้นต้น/ลงท้าย",
+        "ตรวจสอบภาษาและรูปแบบ",
+        "ส่งออกเป็นไฟล์ .docx"
+      ]
     },
     {
       "name": "thai-id-validate",
@@ -10957,7 +11400,14 @@
           "how": "พิมพ์ /thai-social-caption เขียนโพสต์ประชาสัมพันธ์งาน 'เปิดตัวผลิตภัณฑ์ใหม่' สำหรับ Facebook"
         }
       ],
-      "invocation_hint": "thai-social-caption"
+      "invocation_hint": "thai-social-caption",
+      "process_steps": [
+        "รับข้อมูลหัวข้อหรือสินค้า",
+        "กำหนดโทนและแพลตฟอร์ม",
+        "ร่างแคปชันภาษาไทย",
+        "ปรับความยาวให้เหมาะสม",
+        "ตรวจสอบภาษาและความน่าสนใจ"
+      ]
     },
     {
       "name": "thai-text-processing",
@@ -11142,7 +11592,13 @@
           "how": "แปลงเป็น compact JSON + render-html แทน"
         }
       ],
-      "invocation_hint": "/token-optimization"
+      "invocation_hint": "/token-optimization",
+      "process_steps": [
+        "ประเมิน context ปัจจุบัน",
+        "บีบอัดหรือล้างข้อมูลที่ไม่จำเป็น",
+        "ตัดสินใจโหลดข้อมูลใหม่แบบ focused",
+        "ยืนยัน token ที่ใช้ลดลง"
+      ]
     },
     {
       "name": "ui-demo",
@@ -11210,7 +11666,14 @@
           "how": "รันคำสั่ง ui-to-vue --input ./designs --output ./components --library vant"
         }
       ],
-      "invocation_hint": "/ui-to-vue"
+      "invocation_hint": "/ui-to-vue",
+      "process_steps": [
+        "วิเคราะห์ภาพ UI",
+        "แยกองค์ประกอบและ layout",
+        "สร้าง Vue 3 component structure",
+        "แมปกับ UI library (Vant/Element Plus/Ant Design Vue)",
+        "export component files"
+      ]
     },
     {
       "name": "uncloud",
@@ -11316,7 +11779,14 @@
           "how": "ใช้คำสั่ง /uspto-assignment <เลขที่เครื่องหมายการค้า>"
         }
       ],
-      "invocation_hint": "/uspto-database"
+      "invocation_hint": "/uspto-database",
+      "process_steps": [
+        "ระบุหมายเลขหรือคำค้น",
+        "เลือกประเภทข้อมูล (สิทธิบัตร/เครื่องหมายการค้า)",
+        "เรียก API USPTO",
+        "แสดงผลลัพธ์แบบสรุป",
+        "บันทึก log การค้นหา"
+      ]
     },
     {
       "name": "verification-loop",
@@ -11380,7 +11850,14 @@
           "how": "รัน test, reproduce bug อีกครั้งให้แน่ใจหาย, แล้วค่อยบอกเสร็จ"
         }
       ],
-      "invocation_hint": "/verify-before-done"
+      "invocation_hint": "/verify-before-done",
+      "process_steps": [
+        "ตรวจสอบ git status",
+        "ตรวจสอบ uncommitted changes",
+        "ตรวจสอบ untracked files",
+        "ตรวจสอบ branch ที่ใช้งาน",
+        "สรุปผลให้ผู้ใช้ตัดสินใจ"
+      ]
     },
     {
       "name": "video-editing",
@@ -11555,7 +12032,15 @@
           "how": "/web-artifacts-builder สร้าง multi-component HTML"
         }
       ],
-      "invocation_hint": "/web-artifacts-builder"
+      "invocation_hint": "/web-artifacts-builder",
+      "process_steps": [
+        "วางแผนโครงสร้าง component",
+        "สร้าง component ด้วย React + JSX",
+        "เพิ่มสไตล์ด้วย Tailwind CSS",
+        "ใช้ shadcn/ui สำหรับ UI สำเร็จรูป",
+        "ทดสอบการทำงานและปรับแต่ง",
+        "export เป็น artifact สำหรับ claude.ai"
+      ]
     },
     {
       "name": "web-research",
@@ -11660,7 +12145,12 @@
           "how": "search 'DS18B20' ก่อนเขียนหน้าใหม่"
         }
       ],
-      "invocation_hint": "/wiki-search-local"
+      "invocation_hint": "/wiki-search-local",
+      "process_steps": [
+        "รับคำค้นหาจากผู้ใช้",
+        "ค้นหา FTS5 ในฐานข้อมูล A-Wiki",
+        "ส่งผลลัพธ์กลับทันที"
+      ]
     },
     {
       "name": "windows-desktop-e2e",
@@ -11755,7 +12245,14 @@
           "how": "/workspace-surface-audit สรุป surface ทั้งหมด"
         }
       ],
-      "invocation_hint": "/workspace-surface-audit"
+      "invocation_hint": "/workspace-surface-audit",
+      "process_steps": [
+        "สแกน repo และ MCP servers",
+        "ตรวจสอบ plugins และ connectors",
+        "วิเคราะห์ environment surfaces",
+        "ประเมิน harness setup",
+        "แนะนำ ECC-native skills และ hooks"
+      ]
     },
     {
       "name": "x-api",
@@ -11891,7 +12388,13 @@
           "how": "/two-axis-code-review ดูทั้ง logic และ style"
         }
       ],
-      "invocation_hint": "/two-axis-code-review"
+      "invocation_hint": "/two-axis-code-review",
+      "process_steps": [
+        "ระบุจุดอ้างอิง (commit/branch/tag)",
+        "แยก sub-agent ตามแกน Standards และ Spec",
+        "รันตรวจสอบแบบขนาน",
+        "รวบรวมผลลัพธ์และสรุป"
+      ]
     },
     {
       "name": "codebase-design",
@@ -12251,7 +12754,12 @@
           "how": "รันคำสั่ง /setup-matt-pocock-skills"
         }
       ],
-      "invocation_hint": "/setup-matt-pocock-skills"
+      "invocation_hint": "/setup-matt-pocock-skills",
+      "process_steps": [
+        "สร้าง issue tracker",
+        "เพิ่ม triage labels",
+        "ตั้งค่า domain doc layout"
+      ]
     },
     {
       "name": "tdd",
@@ -12312,7 +12820,14 @@
           "how": "/to-issues แตกเป็น issue 5 อัน แต่ละอันครบ vertical slice"
         }
       ],
-      "invocation_hint": "/to-issues"
+      "invocation_hint": "/to-issues",
+      "process_steps": [
+        "อ่านแผน/PRD/สเปก",
+        "ระบุ vertical slices หลัก",
+        "แยกแต่ละ slice เป็น issue",
+        "ตรวจสอบว่าแต่ละ issue ส่งมอบค่าได้",
+        "จัดลำดับความสำคัญ"
+      ]
     },
     {
       "name": "to-prd",
@@ -12344,7 +12859,13 @@
           "how": "พิมพ์ /to-prd แล้ววางลิงก์บันทึกการประชุม"
         }
       ],
-      "invocation_hint": "/to-prd"
+      "invocation_hint": "/to-prd",
+      "process_steps": [
+        "รวบรวมข้อมูลจากบทสนทนา",
+        "สังเคราะห์เป็นโครงสร้าง PRD",
+        "ตรวจสอบความครบถ้วน",
+        "เผยแพร่เอกสาร"
+      ]
     },
     {
       "name": "triage",
@@ -12439,7 +12960,13 @@
           "how": "/grilling ไล่แต่ละ option จนเหลือตัวเดียว"
         }
       ],
-      "invocation_hint": "/grilling"
+      "invocation_hint": "/grilling",
+      "process_steps": [
+        "ถามคำถามทีละข้อ",
+        "แนะนำคำตอบที่เป็นไปได้",
+        "ให้ผู้ใช้เลือกหรือแก้ไข",
+        "ปิดประเด็นและสรุปผล"
+      ]
     },
     {
       "name": "handoff",
@@ -12467,7 +12994,12 @@
           "how": "เขียน handoff.md แล้ว push"
         }
       ],
-      "invocation_hint": "/handoff"
+      "invocation_hint": "/handoff",
+      "process_steps": [
+        "รวบรวมประเด็นสำคัญจากการสนทนา",
+        "จัดรูปแบบเป็นเอกสาร handoff",
+        "แนะนำทักษะถัดไปที่เหมาะสม"
+      ]
     },
     {
       "name": "teach",
@@ -12498,7 +13030,14 @@
           "how": "ใช้คำสั่ง /teach deploy-ci-cd เพื่อสร้างบทเรียน"
         }
       ],
-      "invocation_hint": "/teach"
+      "invocation_hint": "/teach",
+      "process_steps": [
+        "ระบุหัวข้อที่ต้องการสอน",
+        "อธิบายแนวคิดหลัก",
+        "ยกตัวอย่างการใช้งาน",
+        "ให้แบบฝึกหัดหรือทดสอบความเข้าใจ",
+        "สรุปและแนะนำแหล่งเรียนรู้เพิ่มเติม"
+      ]
     },
     {
       "name": "writing-great-skills",
@@ -12679,7 +13218,14 @@
           "how": "/setup-pre-commit ติด Husky + lint-staged"
         }
       ],
-      "invocation_hint": "/setup-pre-commit"
+      "invocation_hint": "/setup-pre-commit",
+      "process_steps": [
+        "ติดตั้ง Husky และ lint-staged",
+        "กำหนดค่า lint-staged ใน package.json",
+        "สร้าง pre-commit hook",
+        "เพิ่ม type checking และ test",
+        "ทดสอบ hook ด้วยการ commit"
+      ]
     },
     {
       "name": "symlink-connector",
@@ -12709,7 +13255,13 @@
           "how": "/symlink-connector ลิงก์ครั้งเดียวครบทุก harness"
         }
       ],
-      "invocation_hint": "/symlink-connector"
+      "invocation_hint": "/symlink-connector",
+      "process_steps": [
+        "ตรวจสอบ symlink ปัจจุบัน",
+        "สร้าง symlink ไปยัง A-Wiki repo",
+        "เชื่อม .env จาก Google Drive",
+        "ยืนยันการเชื่อมโยงสำเร็จ"
+      ]
     },
     {
       "name": "game-phaser-pipeline",
@@ -12776,6 +13328,13 @@
           "scenario": "ประเมิน portfolio VaR",
           "how": "วิ่ง simulation N ครั้ง → distribution → percentile"
         }
+      ],
+      "process_steps": [
+        "กำหนดพารามิเตอร์อินพุต",
+        "สุ่มตัวอย่างซ้ำหลายรอบ",
+        "คำนวณเมตริกความเสี่ยง",
+        "วิเคราะห์การกระจายตัวของผลลัพธ์",
+        "สรุปผลเป็นความน่าจะเป็น"
       ]
     },
     {
@@ -12797,7 +13356,13 @@
       "invocation": "manual",
       "th_description": "ค้นและสรุปวรรณกรรมการแพทย์พร้อม citation",
       "when_to_use": "ถามเรื่องโรค/ยา/แนวทางการรักษา ต้องการ evidence",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "รับคำค้นหาจากผู้ใช้",
+        "สืบค้นจาก PubMed และฐานข้อมูล",
+        "สรุปหลักฐานพร้อมการอ้างอิง",
+        "แสดงผลลัพธ์เป็นภาษาไทย"
+      ]
     },
     {
       "name": "clinical-reasoner",
@@ -12818,7 +13383,14 @@
       "invocation": "manual",
       "th_description": "วิเคราะห์ differential diagnosis จากเคส",
       "when_to_use": "นำเสนอเคส ต้องการ differential หรือ treatment reasoning",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
+      "process_steps": [
+        "รับสรุปเคสจากผู้ใช้",
+        "วิเคราะห์อาการและข้อมูล",
+        "สร้างรายการวินิจฉัยแยกโรค",
+        "ให้เหตุผลสนับสนุนแต่ละข้อ",
+        "เสนอแนวทางการตรวจเพิ่มเติม"
+      ]
     },
     {
       "name": "medical-safety-checker",
@@ -12839,7 +13411,14 @@
       "invocation": "manual",
       "th_description": "ตรวจ drug interaction/contraindication ก่อนสรุปยา",
       "when_to_use": "ตรวจความปลอดภัยของแผนยา/การรักษา",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "รับข้อมูลยาและผู้ป่วย",
+        "ตรวจสอบปฏิกิริยาระหว่างยา",
+        "ตรวจสอบข้อห้ามใช้และอาการแพ้",
+        "ตรวจสอบขนาดยาเกิน",
+        "รายงานธงแดงที่พบ"
+      ]
     },
     {
       "name": "finance-data-fetcher",
@@ -12861,7 +13440,13 @@
       "invocation": "manual",
       "th_description": "ดึงข้อมูลตลาด/งบการเงินแบบ deterministic",
       "when_to_use": "ต้องการ raw numbers ราคา/งบ/filings",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ระบุ ticker และประเภทข้อมูล",
+        "เรียก API หรือสคริปต์ที่เกี่ยวข้อง",
+        "ตรวจสอบความถูกต้องของข้อมูล",
+        "คืนค่าเป็นตัวเลขในรูปแบบ JSON"
+      ]
     },
     {
       "name": "finance-analyst",
@@ -12883,7 +13468,14 @@
       "invocation": "manual",
       "th_description": "วิเคราะห์ technical/fundamental/sentiment",
       "when_to_use": "วิเคราะห์หุ้น/crypto/ตลาด",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
+      "process_steps": [
+        "รับข้อมูลดิบจาก data-fetcher",
+        "วิเคราะห์ทางเทคนิค (แนวโน้ม, RSI, MACD)",
+        "วิเคราะห์พื้นฐาน (P/E, งบการเงิน)",
+        "ประเมินความรู้สึกตลาด (ข่าว, sentiment)",
+        "สังเคราะห์เป็นข้อเสนอการลงทุน"
+      ]
     },
     {
       "name": "finance-debater",
@@ -12904,7 +13496,14 @@
       "invocation": "manual",
       "th_description": "critic โต้แย้ง thesis แบบ bull/bear/judge",
       "when_to_use": "ทดสอบ thesis ก่อนตัดสินใจ",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "รับ thesis จาก finance-analyst",
+        "สร้างข้อโต้แย้งฝั่งขาขึ้น",
+        "สร้างข้อโต้แย้งฝั่งขาลง",
+        "ประเมินความแข็งแกร่งของ thesis",
+        "ส่งผลการตัดสินกลับ"
+      ]
     },
     {
       "name": "data-profiler",
@@ -12925,7 +13524,15 @@
       "invocation": "manual",
       "th_description": "EDA/profiling/outlier ของ dataset",
       "when_to_use": "เริ่มดู dataset ก่อสร้าง model",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "โหลดข้อมูลจากแหล่งที่มา",
+        "ตรวจจับ schema และชนิดข้อมูล",
+        "คำนวณสถิติพื้นฐาน (ค่าเฉลี่ย, มัธยฐาน, ส่วนเบี่ยงเบน)",
+        "ตรวจหาค่าที่หายไปและค่าซ้ำ",
+        "ตรวจจับค่าผิดปกติด้วย IQR หรือ Z-score",
+        "สรุปผลและรายงานคุณภาพข้อมูล"
+      ]
     },
     {
       "name": "cost-auditor",
@@ -12946,7 +13553,14 @@
       "invocation": "manual",
       "th_description": "ตรวจ token cost/usage หา waste",
       "when_to_use": "ถามเรื่องค่าใช้จ่าย LLM/ตัด cost",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ดึงข้อมูล usage logs ล่าสุด",
+        "คำนวณค่าใช้จ่ายต่อโมเดล",
+        "เปรียบเทียบกับงบประมาณ",
+        "ระบุ waste และแนะนำการปรับ",
+        "สร้างรายงานสรุป"
+      ]
     },
     {
       "name": "model-router-advisor",
@@ -12967,7 +13581,13 @@
       "invocation": "manual",
       "th_description": "แนะนำ model/tier ตาม task",
       "when_to_use": "เลือก model ก่อนเริ่มงาน multi-step",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ระบุประเภทงาน",
+        "ตรวจสอบราคาโมเดลปัจจุบัน",
+        "เปรียบเทียบโมเดลฟรีและเสียเงิน",
+        "แนะนำโมเดลและระดับราคา"
+      ]
     },
     {
       "name": "token-optimizer",
@@ -12988,7 +13608,14 @@
       "invocation": "manual",
       "th_description": "ลด token waste ใน prompt/context/output",
       "when_to_use": "prompt กิน token เยอะ/ต้องการ compact",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "วิเคราะห์ prompt และ context",
+        "หา token waste",
+        "เสนอวิธีแก้ไข",
+        "ปรับ prompt หรือ format",
+        "ตรวจสอบผลลัพธ์"
+      ]
     },
     {
       "name": "frontend-architect",
@@ -13010,7 +13637,14 @@
       "invocation": "manual",
       "th_description": "วางแผน component/layout ก่อน code",
       "when_to_use": "เริ่ม build/refactor frontend",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "วิเคราะห์ requirement และ user flow",
+        "ออกแบบ component tree และ hierarchy",
+        "กำหนด data flow และ state management",
+        "สร้างแผนผังไฟล์และโฟลเดอร์",
+        "บันทึก design decisions"
+      ]
     },
     {
       "name": "ui-ux-reviewer",
@@ -13032,7 +13666,14 @@
       "invocation": "manual",
       "th_description": "critic ตรวจ a11y/consistency/responsive",
       "when_to_use": "review UI ก่อน ship",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "วิเคราะห์ WCAG contrast และ label",
+        "ตรวจสอบความสม่ำเสมอของดีไซน์",
+        "ทดสอบ responsive breakpoints",
+        "ประเมิน interaction feedback",
+        "สรุปปัญหาพร้อมคำแนะนำ"
+      ]
     },
     {
       "name": "db-schema-designer",
@@ -13054,7 +13695,15 @@
       "invocation": "manual",
       "th_description": "ออกแบบ/refactor schema + migration",
       "when_to_use": "ออกแบบ data model ใหม่/เปลี่ยน schema",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
+      "process_steps": [
+        "วิเคราะห์ entities และความสัมพันธ์",
+        "ออกแบบตารางและ constraint",
+        "สร้าง index และ foreign key",
+        "สร้าง migration DDL",
+        "ประเมิน trade-offs",
+        "ส่งออกแผนการเปลี่ยนแปลง"
+      ]
     },
     {
       "name": "mobile-pattern-advisor",
@@ -13076,7 +13725,13 @@
       "invocation": "manual",
       "th_description": "แนะ pattern iOS/Android/Flutter/RN",
       "when_to_use": "build/refactor mobile app",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "รับข้อมูลฟีเจอร์และแพลตฟอร์ม",
+        "วิเคราะห์ความต้องการ",
+        "แนะนำแพทเทิร์นที่เหมาะสม",
+        "ประเมินความเข้ากันได้กับสถาปัตยกรรมเดิม"
+      ]
     },
     {
       "name": "marketing-strategist",
@@ -13097,7 +13752,14 @@
       "invocation": "manual",
       "th_description": "วางแผน campaign/SEO/brand",
       "when_to_use": "วางแผนการตลาด/SEO",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "วิเคราะห์เป้าหมายและกลุ่มลูกค้า",
+        "เลือกช่องทางและ Funnel",
+        "กำหนด KPI และงบประมาณ",
+        "สร้าง Content Brief",
+        "สรุปแผนแคมเปญ"
+      ]
     },
     {
       "name": "realestate-tax-advisor",
@@ -13142,7 +13804,14 @@
       "invocation": "manual",
       "th_description": "ร่าง invoice/contract/proposal",
       "when_to_use": "สร้างเอกสารธุรกิจ",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ระบุประเภทเอกสาร",
+        "กรอกรายละเอียดที่จำเป็น",
+        "เลือกรูปแบบภาษา",
+        "ตรวจสอบและแก้ไข",
+        "ส่งออกเป็นไฟล์"
+      ]
     },
     {
       "name": "code-architect",
@@ -13164,7 +13833,14 @@
       "invocation": "manual",
       "th_description": "วางแผน code change ไม่แก้ (Aider architect)",
       "when_to_use": "เริ่ม task coding ที่ไม่ trivial",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "วิเคราะห์ requirement",
+        "ออกแบบแผนผังไฟล์",
+        "ตัดสินใจออกแบบ",
+        "วางแผนทดสอบ",
+        "ส่งแผนปฏิบัติการ"
+      ]
     },
     {
       "name": "debug-investigator",
@@ -13186,7 +13862,13 @@
       "invocation": "manual",
       "th_description": "debug-mantra 4-step root cause",
       "when_to_use": "มี bug — ห้ามแก้ก่อนหาสาเหตุ",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
+      "process_steps": [
+        "ทำซ้ำบั๊กให้ได้",
+        "แยกส่วนที่ผิดปกติ",
+        "ตั้งสมมติฐานสาเหตุ",
+        "ยืนยันสมมติฐาน"
+      ]
     },
     {
       "name": "test-engineer-agent",
@@ -13207,7 +13889,14 @@
       "invocation": "manual",
       "th_description": "เขียน/ตรวจ tests แบบ TDD",
       "when_to_use": "implement feature — เขียน test ก่อน",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "เขียนเทสต์ที่ล้มเหลวก่อน",
+        "เขียนโค้ดให้ผ่านเทสต์",
+        "รันเทสต์ทั้งหมด",
+        "ตรวจสอบ coverage",
+        "ปรับปรุงเทสต์เพิ่มเติม"
+      ]
     },
     {
       "name": "code-explorer-repo",
@@ -13228,7 +13917,13 @@
       "invocation": "manual",
       "th_description": "trace execution path ใน repo (read-only)",
       "when_to_use": "สำรวจ code ก่อนวางแผนแก้",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ระบุเป้าหมายการสำรวจ",
+        "เรียกใช้คำสั่ง trace หรือ map",
+        "วิเคราะห์ผลลัพธ์ที่ได้",
+        "บันทึกข้อค้นพบสำคัญ"
+      ]
     },
     {
       "name": "inbox-triage",
@@ -13249,7 +13944,13 @@
       "invocation": "manual",
       "th_description": "จัดหมวด inbox สกัด action items",
       "when_to_use": "triage email/messages backlog",
-      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2"
+      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2",
+      "process_steps": [
+        "สแกนอีเมลขาเข้า",
+        "จัดหมวดหมู่ตามประเภท",
+        "ดึง action items และ deadline",
+        "สรุปรายการที่ต้องทำ"
+      ]
     },
     {
       "name": "schedule-planner",
@@ -13270,7 +13971,14 @@
       "invocation": "manual",
       "th_description": "จัดตาราง/หาช่วงเวลา/แก้ conflict",
       "when_to_use": "นัดหมาย/หา focus block",
-      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2"
+      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2",
+      "process_steps": [
+        "รับคำขอและข้อมูลตาราง",
+        "ตรวจสอบตารางและหาช่องว่าง",
+        "เสนอเวลาที่เหมาะสม",
+        "ยืนยันและเพิ่มลงตาราง",
+        "ตั้งค่าการแจ้งเตือน"
+      ]
     },
     {
       "name": "draft-responder",
@@ -13291,7 +13999,15 @@
       "invocation": "manual",
       "th_description": "ร่าง reply + QA tone/accuracy",
       "when_to_use": "ตอบ email/message",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "วิเคราะห์ข้อความต้นฉบับ",
+        "ร่างตอบกลับเบื้องต้น",
+        "ตรวจสอบโทนและรูปแบบ",
+        "ตรวจสอบความถูกต้องของข้อมูล",
+        "ปรับแก้ตามคำแนะนำ",
+        "แสดงร่างตอบกลับสุดท้าย"
+      ]
     },
     {
       "name": "workflow-simplifier",
@@ -13313,7 +14029,14 @@
       "invocation": "manual",
       "th_description": "วิเคราะห์งานซ้ำ เสนอระบบเร็วขึ้น",
       "when_to_use": "งานซ้ำๆ ช้า อยาก systematize",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "รวบรวมขั้นตอนปัจจุบัน",
+        "ระบุจุดที่ซ้ำซาก",
+        "ออกแบบ workflow ใหม่",
+        "เสนอเครื่องมือหรือ automation",
+        "ทดสอบและปรับปรุง"
+      ]
     },
     {
       "name": "copywriting-partner",
@@ -13335,7 +14058,14 @@
       "invocation": "manual",
       "th_description": "co-write copy/doc หลาย variant",
       "when_to_use": "เขียน copy/article/doc",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "รับ brief จากผู้ใช้",
+        "เสนอ draft ฉบับแรก",
+        "รับ feedback ปรับโทน/โครงสร้าง",
+        "ปรับแก้ตามรอบ",
+        "ส่งฉบับสุดท้าย"
+      ]
     },
     {
       "name": "language-tutor",
@@ -13357,7 +14087,14 @@
       "invocation": "manual",
       "th_description": "สอน EN/CN แบบ Socratic",
       "when_to_use": "ฝึกภาษาอังกฤษ/จีน",
-      "model": "sonnet"
+      "model": "sonnet",
+      "process_steps": [
+        "ถามคำถามเปิดประเด็น",
+        "ฟังคำตอบผู้ใช้",
+        "ให้คำอธิบายเฉพาะจุด",
+        "ถามต่อเพื่อตรวจสอบความเข้าใจ",
+        "สรุปและแนะนำจุดที่ต้องฝึก"
+      ]
     },
     {
       "name": "skill-coach",
@@ -13378,7 +14115,13 @@
       "invocation": "manual",
       "th_description": "coach ทักษะ time-mgmt/health/data",
       "when_to_use": "อยากพัฒนาทักษะที่ไม่ใช่ภาษา",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
+      "process_steps": [
+        "ประเมินทักษะปัจจุบัน",
+        "วางแผนเป้าหมายและขั้นตอน",
+        "ฝึกฝนตามแผน",
+        "ทบทวนและปรับปรุง"
+      ]
     }
   ]
 }

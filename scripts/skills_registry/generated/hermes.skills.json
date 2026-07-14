@@ -210,7 +210,15 @@
           "how": "CI: run pytest + lint ก่อน merge"
         }
       ],
-      "invocation_hint": "/ci-cd-and-automation"
+      "invocation_hint": "/ci-cd-and-automation",
+      "process_steps": [
+        "กำหนด trigger event",
+        "เพิ่ม build step",
+        "เพิ่ม test step",
+        "ตั้งค่า quality gate",
+        "กำหนด deploy target",
+        "ทดสอบ pipeline"
+      ]
     },
     {
       "name": "code-simplification",
@@ -239,7 +247,14 @@
           "how": "แยกเป็น 3-4 ฟังก์ชันเล็ก ตั้งชื่อให้อธิบายตัวเอง"
         }
       ],
-      "invocation_hint": "/code-simplification"
+      "invocation_hint": "/code-simplification",
+      "process_steps": [
+        "ระบุจุดที่ซับซ้อน",
+        "แยก logic ออกจากกัน",
+        "ลด nesting และเงื่อนไข",
+        "ใช้ guard clause หรือ early return",
+        "ตรวจสอบว่า behavior ไม่เปลี่ยน"
+      ]
     },
     {
       "name": "debug-mantra",
@@ -305,7 +320,14 @@
           "how": "delegate ให้ Explore agent"
         }
       ],
-      "invocation_hint": "/delegate-subagent"
+      "invocation_hint": "/delegate-subagent",
+      "process_steps": [
+        "วิเคราะห์งานหลัก",
+        "แยกงานย่อยที่ต้องใช้ sub-agent",
+        "เรียก sub-agent ที่เหมาะสม",
+        "รวบรวมผลลัพธ์จาก sub-agent",
+        "สรุปและตอบกลับผู้ใช้"
+      ]
     },
     {
       "name": "deprecation-and-migration",
@@ -334,7 +356,15 @@
           "how": "deprecate → แจ้ง → ให้เวลา → migrate → sunset"
         }
       ],
-      "invocation_hint": "/deprecation-and-migration"
+      "invocation_hint": "/deprecation-and-migration",
+      "process_steps": [
+        "ประกาศ deprecation",
+        "แจ้งผู้ใช้และให้ timeline",
+        "เตรียม migration path",
+        "ทดสอบ migration",
+        "ย้ายผู้ใช้เป็นกลุ่ม",
+        "ปิดระบบเก่า"
+      ]
     },
     {
       "name": "documentation-and-adrs",
@@ -363,7 +393,13 @@
           "how": "เขียน ADR: context, options, decision, consequences"
         }
       ],
-      "invocation_hint": "/documentation-and-adrs"
+      "invocation_hint": "/documentation-and-adrs",
+      "process_steps": [
+        "ระบุปัญหาและตัวเลือก",
+        "บันทึกการตัดสินใจพร้อมเหตุผล",
+        "อัปเดตเอกสาร API",
+        "รีวิวและอนุมัติ ADR"
+      ]
     },
     {
       "name": "export-notebooklm",
@@ -424,7 +460,14 @@
           "how": "ตั้งกฎ: feat→minor, fix→patch, break→major"
         }
       ],
-      "invocation_hint": "/git-workflow-and-versioning"
+      "invocation_hint": "/git-workflow-and-versioning",
+      "process_steps": [
+        "ดึงโค้ดล่าสุดจาก trunk",
+        "สร้าง branch เล็กสำหรับงานเดียว",
+        "ทำ atomic commits ด้วยข้อความที่ชัดเจน",
+        "rebase ก่อน merge เพื่อประวัติสะอาด",
+        "merge กลับ trunk ด้วย fast-forward"
+      ]
     },
     {
       "name": "hermes-fan-out",
@@ -524,7 +567,13 @@
           "how": "/lint-wiki ตรวจ link + frontmatter ให้ครบ"
         }
       ],
-      "invocation_hint": "/lint-wiki"
+      "invocation_hint": "/lint-wiki",
+      "process_steps": [
+        "รวบรวมไฟล์ wiki ทั้งหมด",
+        "ตรวจสอบลิงก์ภายใน",
+        "ตรวจสอบโครงสร้างโฟลเดอร์",
+        "รายงานข้อผิดพลาดที่พบ"
+      ]
     },
     {
       "name": "observability-and-instrumentation",
@@ -622,7 +671,14 @@
           "how": "profile → พบ N+1 query → แก้ → วัดใหม่"
         }
       ],
-      "invocation_hint": "/performance-optimization"
+      "invocation_hint": "/performance-optimization",
+      "process_steps": [
+        "วัด baseline ด้วย Lighthouse",
+        "วิเคราะห์ bottleneck",
+        "ปรับแต่ง resource (รูป, JS, CSS)",
+        "วัดซ้ำเพื่อยืนยันผล",
+        "บันทึกผลลัพธ์ใน PR"
+      ]
     },
     {
       "name": "pharmacy-order-lookup",
@@ -720,7 +776,14 @@
           "how": "แตกเป็น: schema → resolver → migration → test → cutover"
         }
       ],
-      "invocation_hint": "/planning-and-task-breakdown"
+      "invocation_hint": "/planning-and-task-breakdown",
+      "process_steps": [
+        "อ่าน spec และระบุขอบเขต",
+        "แตกเป็นงานย่อยที่ตรวจสอบได้",
+        "กำหนด acceptance criteria แต่ละงาน",
+        "จัดลำดับ dependencies",
+        "ตรวจสอบความครบถ้วนและปรับแก้"
+      ]
     },
     {
       "name": "post-mortem",
@@ -782,7 +845,13 @@
           "how": "emit JSON → render-html → ได้ไฟล์ดู ไม่เปลือง token"
         }
       ],
-      "invocation_hint": "/render-html"
+      "invocation_hint": "/render-html",
+      "process_steps": [
+        "ดึงข้อมูลจาก A-Wiki",
+        "จัดโครงสร้าง HTML",
+        "ฝัง CSS/JS แบบ inline",
+        "สร้างไฟล์ .html สำเร็จรูป"
+      ]
     },
     {
       "name": "review",
@@ -850,7 +919,13 @@
           "how": "scrutinize ทุกไฟล์: logic, test, security, perf"
         }
       ],
-      "invocation_hint": "/scrutinize"
+      "invocation_hint": "/scrutinize",
+      "process_steps": [
+        "ถามเจตนาของการเปลี่ยนแปลง",
+        "มองหาวิธีที่เรียบง่ายกว่า",
+        "ตรวจสอบความสอดคล้องกับเป้าหมาย",
+        "ให้ข้อเสนอแนะเชิงสร้างสรรค์"
+      ]
     },
     {
       "name": "search",
@@ -912,7 +987,15 @@
           "how": "ตรวจ SQL injection, XSS, auth"
         }
       ],
-      "invocation_hint": "/security-and-hardening"
+      "invocation_hint": "/security-and-hardening",
+      "process_steps": [
+        "สแกน OWASP Top 10",
+        "ตรวจสอบ authentication pattern",
+        "ตรวจสอบ secrets leak",
+        "audit dependency",
+        "ตรวจสอบ input validation",
+        "สรุปผลและแนะนำ fix"
+      ]
     },
     {
       "name": "ship",
@@ -976,7 +1059,14 @@
           "how": "เช็ค: test ผ่าน, migration dry-run, rollback script พร้อม, alert ตั้ง"
         }
       ],
-      "invocation_hint": "/shipping-and-launch"
+      "invocation_hint": "/shipping-and-launch",
+      "process_steps": [
+        "ตรวจสอบ checklist ก่อน deploy",
+        "เปิด feature flag แบบ staged",
+        "มอนิเตอร์ metrics และ logs",
+        "ถ้ามีปัญหาให้ rollback ทันที",
+        "ปิด feature flag หลัง rollout สำเร็จ"
+      ]
     },
     {
       "name": "spec",
@@ -1087,7 +1177,14 @@
           "how": "ใช้คำสั่ง /lookup-postcode จังหวัดเชียงใหม่"
         }
       ],
-      "invocation_hint": "/thai-address"
+      "invocation_hint": "/thai-address",
+      "process_steps": [
+        "รับข้อความที่อยู่ภาษาไทย",
+        "แยกองค์ประกอบ: บ้าน/ถนน/แขวง/เขต/จังหวัด/รหัส",
+        "ตรวจสอบรหัสไปรษณีย์กับฐานข้อมูล",
+        "จัดรูปแบบที่อยู่มาตรฐาน",
+        "ส่งคืนผลลัพธ์ JSON"
+      ]
     },
     {
       "name": "thai-customer-service",
@@ -1217,7 +1314,14 @@
           "how": "ใช้คำสั่ง /thai-government-form ประเภท 'หนังสือมอบอำนาจ' พร้อมระบุชื่อผู้มอบ ผู้รับมอบ และอำนาจที่มอบ"
         }
       ],
-      "invocation_hint": "thai-government-form"
+      "invocation_hint": "thai-government-form",
+      "process_steps": [
+        "ระบุประเภทเอกสาร",
+        "กรอกข้อมูลผู้เกี่ยวข้อง",
+        "เลือกคำขึ้นต้น/ลงท้าย",
+        "ตรวจสอบภาษาและรูปแบบ",
+        "ส่งออกเป็นไฟล์ .docx"
+      ]
     },
     {
       "name": "thai-id-validate",
@@ -1388,7 +1492,14 @@
           "how": "พิมพ์ /thai-social-caption เขียนโพสต์ประชาสัมพันธ์งาน 'เปิดตัวผลิตภัณฑ์ใหม่' สำหรับ Facebook"
         }
       ],
-      "invocation_hint": "thai-social-caption"
+      "invocation_hint": "thai-social-caption",
+      "process_steps": [
+        "รับข้อมูลหัวข้อหรือสินค้า",
+        "กำหนดโทนและแพลตฟอร์ม",
+        "ร่างแคปชันภาษาไทย",
+        "ปรับความยาวให้เหมาะสม",
+        "ตรวจสอบภาษาและความน่าสนใจ"
+      ]
     },
     {
       "name": "thai-text-processing",
@@ -1504,7 +1615,12 @@
           "how": "search 'DS18B20' ก่อนเขียนหน้าใหม่"
         }
       ],
-      "invocation_hint": "/wiki-search-local"
+      "invocation_hint": "/wiki-search-local",
+      "process_steps": [
+        "รับคำค้นหาจากผู้ใช้",
+        "ค้นหา FTS5 ในฐานข้อมูล A-Wiki",
+        "ส่งผลลัพธ์กลับทันที"
+      ]
     }
   ]
 }
