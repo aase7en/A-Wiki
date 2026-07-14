@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 172 sources
+## Stats — 173 sources
 
 | slug | abstract |
 |------|----------|
@@ -30,6 +30,7 @@
 | `air-quality-iot-lora-network` | 1. **Distributed network**: Sensor nodes → LoRa → Gateway → RPi… |
 | `air-quality-monitoring` | Air quality monitoring combines reference-grade stations (FRM/FE… |
 | `air-quality-sensors-dronebot` | 1. **ไม่มี sensor ตัวเดียวที่วัดได้ทุกอย่าง** — ต้องใช้หลายตัวร่… |
+| `akashdeepo-mc-rrr-readme` | This repository hosts the code and associated data for the proje… |
 | `akashdeepo-monte-carlo-rrr` | 1. **ครบทั้ง pipeline ใน notebook เดียว** (`main.ipynb`, 1.1MB)… |
 | `appsheet-env-datadict` | เอกสารโครงสร้างแอป AppSheet "ENV" ที่ใช้งานอยู่ในกลุ่มงานอนามัยส… |
 | `arduino-ide-esp32-arduino-2025` | (no abstract) |

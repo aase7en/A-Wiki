@@ -7,10 +7,10 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 515 |
+| Wiki pages | 517 |
 | Owned skills | 42 |
 | Script capabilities | 11 |
-| Protocols/runbooks | 58 |
+| Protocols/runbooks | 59 |
 | HTML surfaces | 13 |
 
 ## Wiki Knowledge Surface
@@ -19,8 +19,8 @@
 |---|---:|
 | Entities | 79 |
 | Concepts | 59 |
-| Synthesis | 205 |
-| Sources | 172 |
+| Synthesis | 206 |
+| Sources | 173 |
 
 ## Strategic Capability Lanes
 
@@ -170,6 +170,7 @@
 | Skill Consolidation Protocol | docs/protocols | `docs/protocols/skill-consolidation.md` |
 | SKILL.md Frontmatter Schema | docs/protocols | `docs/protocols/skill-frontmatter-schema.md` |
 | Self-Learning Skill Loop Protocol | docs/protocols | `docs/protocols/skill-learning-loop.md` |
+| Subagent Model Routing — Anti Rate-Limit Protocol | docs/protocols | `docs/protocols/subagent-model-routing.md` |
 | Universal Cost-First Routing Protocol | docs/protocols | `docs/protocols/universal-routing.md` |
 | A-Wiki Capability Upgrade Roadmap | docs/runbooks | `docs/runbooks/a-wiki-capability-upgrade-roadmap.md` |
 | A-Wiki Handoff Priority Plan | docs/runbooks | `docs/runbooks/a-wiki-handoff-priority-plan.md` |

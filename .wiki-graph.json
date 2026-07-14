@@ -1,11 +1,11 @@
 {
   "generated_at": "2026-07-14",
   "stats": {
-    "nodes": 548,
-    "edges": 1789,
+    "nodes": 550,
+    "edges": 1790,
     "edges_by_type": {
       "wikilink": 1270,
-      "depends": 382,
+      "depends": 383,
       "implements": 50,
       "mdlink": 49,
       "extends": 38
@@ -494,7 +494,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-13",
+      "title": "Review Report — 2026-07-14",
       "domain": "context"
     },
     {
@@ -1020,6 +1020,11 @@
     {
       "path": "wiki/sources/air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/akashdeepo-mc-rrr-readme.md",
+      "title": "ML-Finance-Monte-Carlo-RRR",
       "domain": "sources"
     },
     {
@@ -2055,6 +2060,11 @@
     {
       "path": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "title": "Measure Air Quality with Microcontrollers — DroneBot Workshop — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-akashdeepo-mc-rrr-readme.md",
+      "title": "ML-Finance-Monte-Carlo-RRR — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -13908,6 +13918,13 @@
     {
       "from": "wiki/synthesis/synth-air-quality-sensors-dronebot.md",
       "to": "wiki/sources/air-quality-sensors-dronebot.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-akashdeepo-mc-rrr-readme.md",
+      "to": "wiki/sources/akashdeepo-mc-rrr-readme.md",
       "type": "depends",
       "broken": false,
       "external": false

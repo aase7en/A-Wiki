@@ -7,27 +7,30 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 542 |
-| Edges | 1779 |
-| Broken links | 11 |
-| Orphans | 16 |
+| Nodes | 548 |
+| Edges | 1789 |
+| Broken links | 15 |
+| Orphans | 19 |
 
 ## Broken links by source domain
 
 | Domain | Count |
 |---|---:|
 | ai-tools | 7 |
+| sources | 3 |
 | env | 2 |
 | pharmacy | 1 |
 | repo-root | 1 |
+| wiki-other | 1 |
 
 ## Orphans by domain
 
 | Domain | Count |
 |---|---:|
-| context | 14 |
+| context | 16 |
 | ai-tools | 2 |
+| other | 1 |
 
 ## Orphan samples
 
-`wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`, `wiki/context/overview-sources.md`
+`wiki/SKILL-INDEX.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`, `wiki/context/overview-pharmacy.md`

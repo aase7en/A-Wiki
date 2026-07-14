@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 79 |
 | CONCEPTS | 59 |
-| SYNTHESIS | 205 |
-| SOURCES | 172 |
-| **Total** | **515 pages** |
+| SYNTHESIS | 206 |
+| SOURCES | 173 |
+| **Total** | **517 pages** |
 
 ---
 
@@ -30,7 +30,7 @@
 | AI Tools | 34 | 32 | `wiki/context/overview-ai.md` | `index-ai.md` |
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 
-- **Sources** (172): `wiki/context/overview-sources.md`
+- **Sources** (173): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -92,6 +92,7 @@
 | `synth-ai-iot-server-build-v3-final` | _To be filled in by human review._ |
 | `synth-air-quality-iot-lora-network` | _To be filled in by human review._ |
 | `synth-air-quality-sensors-dronebot` | _To be filled in by human review._ |
+| `synth-akashdeepo-mc-rrr-readme` | This repository hosts the code and associated data for the proje… |
 | `synth-appsheet-env-datadict` | _To be filled in by human review._ |
 | `synth-arduino-ide-esp32-arduino-2025` | (awaiting human summary) |
 | `synth-arduino-ide-esp32-setup` | _To be filled in by human review._ |
@@ -247,4 +248,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 515 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 517 pages across 4 sections.*
