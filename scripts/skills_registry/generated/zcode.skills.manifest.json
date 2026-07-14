@@ -199,6 +199,11 @@
       "domain": "code"
     },
     {
+      "name": "business-doc-drafter",
+      "target": "agents/subagents/business-doc-drafter.md",
+      "domain": "business,document,thai"
+    },
+    {
       "name": "canary-watch",
       "target": "skills/ecosystem/canary-watch/SKILL.md",
       "domain": "sre"
@@ -247,6 +252,21 @@
       "name": "clickhouse-io",
       "target": "skills/ecosystem/clickhouse-io/SKILL.md",
       "domain": "data"
+    },
+    {
+      "name": "clinical-reasoner",
+      "target": "agents/subagents/clinical-reasoner.md",
+      "domain": "medical"
+    },
+    {
+      "name": "code-architect",
+      "target": "agents/subagents/code-architect.md",
+      "domain": "code,engineering"
+    },
+    {
+      "name": "code-explorer-repo",
+      "target": "agents/subagents/code-explorer-repo.md",
+      "domain": "code"
     },
     {
       "name": "code-simplification",
@@ -314,6 +334,16 @@
       "domain": "ai-ops"
     },
     {
+      "name": "copywriting-partner",
+      "target": "agents/subagents/copywriting-partner.md",
+      "domain": "business,productivity"
+    },
+    {
+      "name": "cost-auditor",
+      "target": "agents/subagents/cost-auditor.md",
+      "domain": "ai-ops"
+    },
+    {
       "name": "cost-aware-llm-pipeline",
       "target": "skills/ecosystem/cost-aware-llm-pipeline/SKILL.md",
       "domain": "ai-ops"
@@ -374,6 +404,11 @@
       "domain": "code"
     },
     {
+      "name": "data-profiler",
+      "target": "agents/subagents/data-profiler.md",
+      "domain": "data"
+    },
+    {
       "name": "data-scraper-agent",
       "target": "skills/ecosystem/data-scraper-agent/SKILL.md",
       "domain": "data"
@@ -382,6 +417,16 @@
       "name": "database-migrations",
       "target": "skills/ecosystem/database-migrations/SKILL.md",
       "domain": "data"
+    },
+    {
+      "name": "db-schema-designer",
+      "target": "agents/subagents/db-schema-designer.md",
+      "domain": "code,data"
+    },
+    {
+      "name": "debug-investigator",
+      "target": "agents/subagents/debug-investigator.md",
+      "domain": "debug,code"
     },
     {
       "name": "debug-mantra",
@@ -484,6 +529,11 @@
       "domain": "code"
     },
     {
+      "name": "draft-responder",
+      "target": "agents/subagents/draft-responder.md",
+      "domain": "productivity"
+    },
+    {
       "name": "e2e-testing",
       "target": "skills/ecosystem/e2e-testing/SKILL.md",
       "domain": "code"
@@ -559,9 +609,24 @@
       "domain": "code"
     },
     {
+      "name": "finance-analyst",
+      "target": "agents/subagents/finance-analyst.md",
+      "domain": "trader,data"
+    },
+    {
       "name": "finance-billing-ops",
       "target": "skills/ecosystem/finance-billing-ops/SKILL.md",
       "domain": "business"
+    },
+    {
+      "name": "finance-data-fetcher",
+      "target": "agents/subagents/finance-data-fetcher.md",
+      "domain": "trader,data"
+    },
+    {
+      "name": "finance-debater",
+      "target": "agents/subagents/finance-debater.md",
+      "domain": "trader"
     },
     {
       "name": "flox-environments",
@@ -577,6 +642,11 @@
       "name": "foundation-models-on-device",
       "target": "skills/ecosystem/foundation-models-on-device/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "frontend-architect",
+      "target": "agents/subagents/frontend-architect.md",
+      "domain": "code,design"
     },
     {
       "name": "frontend-design",
@@ -759,6 +829,11 @@
       "domain": "engineering"
     },
     {
+      "name": "inbox-triage",
+      "target": "agents/subagents/inbox-triage.md",
+      "domain": "productivity"
+    },
+    {
       "name": "ingest-source",
       "target": "skills/claude-code/ingest-source/SKILL.md",
       "domain": "wiki"
@@ -839,6 +914,11 @@
       "domain": "code"
     },
     {
+      "name": "language-tutor",
+      "target": "agents/subagents/language-tutor.md",
+      "domain": "productivity,thai"
+    },
+    {
       "name": "laravel-patterns",
       "target": "skills/ecosystem/laravel-patterns/SKILL.md",
       "domain": "code"
@@ -909,6 +989,11 @@
       "domain": "business"
     },
     {
+      "name": "marketing-strategist",
+      "target": "agents/subagents/marketing-strategist.md",
+      "domain": "business"
+    },
+    {
       "name": "mcp-builder",
       "target": "skills/anthropic-skills/mcp-builder/SKILL.md",
       "domain": "ai-ops"
@@ -917,6 +1002,16 @@
       "name": "mcp-server-patterns",
       "target": "skills/ecosystem/mcp-server-patterns/SKILL.md",
       "domain": "ai-ops,code"
+    },
+    {
+      "name": "medical-lit-reviewer",
+      "target": "agents/subagents/medical-lit-reviewer.md",
+      "domain": "medical"
+    },
+    {
+      "name": "medical-safety-checker",
+      "target": "agents/subagents/medical-safety-checker.md",
+      "domain": "medical"
     },
     {
       "name": "messages-ops",
@@ -934,8 +1029,18 @@
       "domain": "data"
     },
     {
+      "name": "mobile-pattern-advisor",
+      "target": "agents/subagents/mobile-pattern-advisor.md",
+      "domain": "code,design"
+    },
+    {
       "name": "model-cost-switching",
       "target": "agent-skills/swarm-intelligence/model-cost-switching/SKILL.md",
+      "domain": "ai-ops"
+    },
+    {
+      "name": "model-router-advisor",
+      "target": "agents/subagents/model-router-advisor.md",
       "domain": "ai-ops"
     },
     {
@@ -1189,6 +1294,11 @@
       "domain": "code"
     },
     {
+      "name": "realestate-tax-advisor",
+      "target": "agents/subagents/realestate-tax-advisor.md",
+      "domain": "business,thai"
+    },
+    {
       "name": "recsys-pipeline-architect",
       "target": "skills/ecosystem/recsys-pipeline-architect/SKILL.md",
       "domain": "data"
@@ -1274,6 +1384,11 @@
       "domain": "engineering"
     },
     {
+      "name": "schedule-planner",
+      "target": "agents/subagents/schedule-planner.md",
+      "domain": "productivity"
+    },
+    {
       "name": "scholar-evaluation",
       "target": "skills/ecosystem/scientific-thinking-scholar-evaluation/SKILL.md",
       "domain": "data"
@@ -1337,6 +1452,11 @@
       "name": "shipping-and-launch",
       "target": "skills/engineering-lifecycle/ship/shipping-and-launch/SKILL.md",
       "domain": "code,engineering"
+    },
+    {
+      "name": "skill-coach",
+      "target": "agents/subagents/skill-coach.md",
+      "domain": "productivity"
     },
     {
       "name": "skill-comply",
@@ -1449,6 +1569,11 @@
       "domain": "code"
     },
     {
+      "name": "test-engineer-agent",
+      "target": "agents/subagents/test-engineer-agent.md",
+      "domain": "code"
+    },
+    {
       "name": "thai-address",
       "target": "skills/claude-thai/thai-address/SKILL.md",
       "domain": "thai"
@@ -1534,6 +1659,11 @@
       "domain": "ai-ops"
     },
     {
+      "name": "token-optimizer",
+      "target": "agents/subagents/token-optimizer.md",
+      "domain": "ai-ops"
+    },
+    {
       "name": "triage",
       "target": "skills/mattpocock/triage/SKILL.md",
       "domain": "engineering,debug"
@@ -1552,6 +1682,11 @@
       "name": "ui-to-vue",
       "target": "skills/ecosystem/ui-to-vue/SKILL.md",
       "domain": "ux-ui"
+    },
+    {
+      "name": "ui-ux-reviewer",
+      "target": "agents/subagents/ui-ux-reviewer.md",
+      "domain": "ux-ui,design"
     },
     {
       "name": "uncloud",
@@ -1632,6 +1767,11 @@
       "name": "word-generator",
       "target": "skills/word-generator/SKILL.md",
       "domain": "document"
+    },
+    {
+      "name": "workflow-simplifier",
+      "target": "agents/subagents/workflow-simplifier.md",
+      "domain": "productivity,business"
     },
     {
       "name": "workspace-surface-audit",

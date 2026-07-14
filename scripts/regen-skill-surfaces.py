@@ -70,6 +70,7 @@ from skills_registry.generators import (  # noqa: E402
     gen_skill_index,
     gen_windsurf,
     gen_zcode,
+    gen_zcode_agents,
 )
 from skills_registry.scan import build_draft_registry  # noqa: E402
 
@@ -90,6 +91,8 @@ GENERATORS = {
     gen_windsurf.filename: gen_windsurf,
     gen_openclaw.filename: gen_openclaw,
     gen_zcode.filename: gen_zcode,
+    # SA2 — ZCode *agents* manifest (subagent definitions, not skills).
+    gen_zcode_agents.filename: gen_zcode_agents,
     # USA-1 chunk C8 — central skill brain (USA-1 §6). Written to wiki/, not
     # generated/, because it is the agent-readable brain consumed at session start.
     gen_skill_index.filename: gen_skill_index,

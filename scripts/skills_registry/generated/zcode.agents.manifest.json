@@ -1,0 +1,175 @@
+{
+  "schema": "zcode-agents-manifest/v1",
+  "source": "skills-registry.json",
+  "link_root": ".zcode/agents",
+  "agents": [
+    {
+      "name": "business-doc-drafter",
+      "target": "agents/subagents/business-doc-drafter.md",
+      "domain": "business,document,thai",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "clinical-reasoner",
+      "target": "agents/subagents/clinical-reasoner.md",
+      "domain": "medical",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "code-architect",
+      "target": "agents/subagents/code-architect.md",
+      "domain": "code,engineering",
+      "model": "sonnet"
+    },
+    {
+      "name": "code-explorer-repo",
+      "target": "agents/subagents/code-explorer-repo.md",
+      "domain": "code",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "copywriting-partner",
+      "target": "agents/subagents/copywriting-partner.md",
+      "domain": "business,productivity",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "cost-auditor",
+      "target": "agents/subagents/cost-auditor.md",
+      "domain": "ai-ops",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "data-profiler",
+      "target": "agents/subagents/data-profiler.md",
+      "domain": "data",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "db-schema-designer",
+      "target": "agents/subagents/db-schema-designer.md",
+      "domain": "code,data",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "debug-investigator",
+      "target": "agents/subagents/debug-investigator.md",
+      "domain": "debug,code",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "draft-responder",
+      "target": "agents/subagents/draft-responder.md",
+      "domain": "productivity",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "finance-analyst",
+      "target": "agents/subagents/finance-analyst.md",
+      "domain": "trader,data",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "finance-data-fetcher",
+      "target": "agents/subagents/finance-data-fetcher.md",
+      "domain": "trader,data",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "finance-debater",
+      "target": "agents/subagents/finance-debater.md",
+      "domain": "trader",
+      "model": "sonnet"
+    },
+    {
+      "name": "frontend-architect",
+      "target": "agents/subagents/frontend-architect.md",
+      "domain": "code,design",
+      "model": "sonnet"
+    },
+    {
+      "name": "inbox-triage",
+      "target": "agents/subagents/inbox-triage.md",
+      "domain": "productivity",
+      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2"
+    },
+    {
+      "name": "language-tutor",
+      "target": "agents/subagents/language-tutor.md",
+      "domain": "productivity,thai",
+      "model": "sonnet"
+    },
+    {
+      "name": "marketing-strategist",
+      "target": "agents/subagents/marketing-strategist.md",
+      "domain": "business",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "medical-lit-reviewer",
+      "target": "agents/subagents/medical-lit-reviewer.md",
+      "domain": "medical",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "medical-safety-checker",
+      "target": "agents/subagents/medical-safety-checker.md",
+      "domain": "medical",
+      "model": "sonnet"
+    },
+    {
+      "name": "mobile-pattern-advisor",
+      "target": "agents/subagents/mobile-pattern-advisor.md",
+      "domain": "code,design",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "model-router-advisor",
+      "target": "agents/subagents/model-router-advisor.md",
+      "domain": "ai-ops",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "realestate-tax-advisor",
+      "target": "agents/subagents/realestate-tax-advisor.md",
+      "domain": "business,thai",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "schedule-planner",
+      "target": "agents/subagents/schedule-planner.md",
+      "domain": "productivity",
+      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2"
+    },
+    {
+      "name": "skill-coach",
+      "target": "agents/subagents/skill-coach.md",
+      "domain": "productivity",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "test-engineer-agent",
+      "target": "agents/subagents/test-engineer-agent.md",
+      "domain": "code",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "token-optimizer",
+      "target": "agents/subagents/token-optimizer.md",
+      "domain": "ai-ops",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "ui-ux-reviewer",
+      "target": "agents/subagents/ui-ux-reviewer.md",
+      "domain": "ux-ui,design",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "workflow-simplifier",
+      "target": "agents/subagents/workflow-simplifier.md",
+      "domain": "productivity,business",
+      "model": "sonnet"
+    }
+  ]
+}
