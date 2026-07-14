@@ -12391,6 +12391,24 @@
         "verify ในเกม",
         "เช็ค safety gate"
       ]
+    },
+    {
+      "name": "monte-carlo-quant-analysis",
+      "aliases": [],
+      "domain": [
+        "trader",
+        "data"
+      ],
+      "lifecycle_phase": "none",
+      "category": "awiki",
+      "source": "repo",
+      "path": "skills/awiki/monte-carlo-quant-analysis/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Monte Carlo simulation + synthetic data + quant risk analysis for portfolio/stock/fund/robot-trading PREDICTION (paper/simulation-only, non-advisory). Use when forecasting outcomes via repeated random sampling, generating synthetic scenarios, or computing risk metrics (VaR/CVaR/Sharpe/drawdown/RRR) as probability distributions rather than point estimates."
     }
   ]
 }

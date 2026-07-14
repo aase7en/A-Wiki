@@ -939,6 +939,11 @@
       "domain": "ai-ops"
     },
     {
+      "name": "monte-carlo-quant-analysis",
+      "target": "skills/awiki/monte-carlo-quant-analysis/SKILL.md",
+      "domain": "trader,data"
+    },
+    {
       "name": "motion-advanced",
       "target": "skills/ecosystem/motion-advanced/SKILL.md",
       "domain": "media"

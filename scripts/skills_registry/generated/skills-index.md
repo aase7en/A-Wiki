@@ -205,6 +205,7 @@
 | `migrate-to-shoehorn` | engineering | none | mattpocock | `skills/mattpocock/migrate-to-shoehorn/SKILL.md` |
 | `mle-workflow` | data | none | ecosystem | `skills/ecosystem/mle-workflow/SKILL.md` |
 | `model-cost-switching` | ai-ops | none | ai-ops | `agent-skills/swarm-intelligence/model-cost-switching/SKILL.md` |
+| `monte-carlo-quant-analysis` | trader, data | none | awiki | `skills/awiki/monte-carlo-quant-analysis/SKILL.md` |
 | `motion-advanced` | media | none | ecosystem | `skills/ecosystem/motion-advanced/SKILL.md` |
 | `motion-foundations` | media | none | ecosystem | `skills/ecosystem/motion-foundations/SKILL.md` |
 | `motion-patterns` | code, media | none | ecosystem | `skills/ecosystem/motion-patterns/SKILL.md` |
@@ -369,7 +370,7 @@
 | ai-ops | 31 |
 | business | 10 |
 | code | 181 |
-| data | 15 |
+| data | 16 |
 | debug | 7 |
 | design | 10 |
 | document | 9 |
@@ -384,6 +385,6 @@
 | security | 9 |
 | sre | 6 |
 | thai | 12 |
-| trader | 10 |
+| trader | 11 |
 | ux-ui | 5 |
 | wiki | 9 |
