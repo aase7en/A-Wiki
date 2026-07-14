@@ -26,3 +26,14 @@ markitdown>=0.1.0
 # Binary alternative: brew install curl-impersonate-chrome (macOS)
 # See: scripts/wiki/ingest-source.py (curl-impersonate fallback)
 curl_cffi>=0.7.0
+
+# Monte Carlo / quant analysis — monte-carlo-quant-analysis skill.
+# Required to execute the runnable notebook at
+# skills/awiki/monte-carlo-quant-analysis/examples/portfolio_mc_1yr.ipynb
+# (simulate portfolio returns, compute VaR/CVaR/RRR, convergence diagnostics).
+# See: skills/awiki/monte-carlo-quant-analysis/SKILL.md
+numpy>=1.21
+matplotlib>=3.4
+scipy>=1.7              # scipy.stats.qmc (Sobol/Halton Quasi-MC), scipy.stats.norm (Importance Sampling)
+nbconvert>=7.0          # jupyter nbconvert --execute (re-run notebook with outputs)
+ipykernel>=6.0          # kernel for nbconvert execution
