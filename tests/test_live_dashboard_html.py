@@ -37,7 +37,11 @@ def test_file_under_60kb():
     # wave: chat pane, cost tile, failures rail, event filters, green-white
     # theme. Local-only tool served from localhost — payload is not a real
     # bottleneck; the gate now guards against unbounded growth, not leanness.
-    assert size < 112 * 1024, f"HTML too large: {size} bytes (limit 112 KB)"
+    # raised to 200 KB (2026-07-14) for the Skills Expansion v4 wave: skill
+    # dependency graph, sim export (SVG/PNG), keyboard shortcuts, skill
+    # comparison, walkthrough difficulty, trending analytics, AI recommender,
+    # and skill versioning. All client-side JS — no external dependency added.
+    assert size < 200 * 1024, f"HTML too large: {size} bytes (limit 200 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
