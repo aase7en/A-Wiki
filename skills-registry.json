@@ -1143,7 +1143,9 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
+      "canonical": "continuous-agent-loop",
+      "migrated_to": "continuous-agent-loop (USA-1 C9, 2026-07-14): canonical loop-routing skill; autonomous-loops kept on disk as a pattern encyclopedia but no longer invoked directly.",
       "description": "Patterns and architectures for autonomous Claude Code loops — from simple sequential pipelines to RFC-driven multi-agent DAG systems.",
       "invocation": "manual",
       "th_description": "รูปแบบและสถาปัตยกรรมสำหรับสร้าง autonomous loop ของ Claude Code ตั้งแต่ pipeline แบบ sequential ธรรมดาไปจนถึงระบบ multi-agent DAG ที่ขับเคลื่อนด้วย RFC ช่วยให้ Agent ทำงานต่อเนื่องโดยไม่ต้องรอคำสั่งจากมนุษย์",
@@ -9092,6 +9094,9 @@
       "agents": [
         "all"
       ],
+      "status": "deprecated",
+      "canonical": "debug-mantra",
+      "migrated_to": "debug-mantra (USA-1 C9, 2026-07-14): debug-mantra IS the root-cause-first discipline (Iron Law #2); root-cause-first is the older name, already in the plugin.json deprecated list.",
       "version": "",
       "status": "deprecated",
       "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro",
@@ -11568,8 +11573,9 @@
       "agents": [
         "all"
       ],
-      "version": "",
-      "status": "canonical",
+      "status": "deprecated",
+      "canonical": "debug-mantra",
+      "migrated_to": "debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill.",
       "description": "Diagnosis loop for hard bugs and performance regressions.",
       "invocation": "manual",
       "th_description": "วนซ้ำการวินิจฉัยสำหรับบั๊กที่ยากและ regression ด้านประสิทธิภาพ โดยใช้แนวทางที่เป็นระบบเพื่อระบุสาเหตุที่แท้จริงและแก้ไขอย่างตรงจุด",

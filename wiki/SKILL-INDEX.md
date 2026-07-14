@@ -7,23 +7,23 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 359 · **Aliases/deprecated**: 6
+**Total canonical skills**: 357 · **Aliases/deprecated**: 8
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
 | `code` | เขียนโค้ด / ภาษาโปรแกรม | 180 |
-| `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
+| `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 10 |
 | `ux-ui` | UX/UI / Frontend / a11y | 5 |
-| `engineering` | วิศวกร / Architect / Agent harness | 42 |
+| `engineering` | วิศวกร / Architect / Agent harness | 41 |
 | `trader` | เทรด / DeFi / ตลาด | 10 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 6 |
 | `business` | ธุรกิจ / การเงิน / CRM | 10 |
 | `data` | Data Visualization / DB / Query | 15 |
 | `security` | ความปลอดภัย / Hardening | 9 |
-| `ai-ops` | AI ops / LLM / Cost | 32 |
+| `ai-ops` | AI ops / LLM / Cost | 31 |
 | `productivity` | Productivity / Management | 14 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
@@ -231,7 +231,6 @@
 | `agent-introspection-debugging` | none | ecosystem | debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลอง... |
 | `browser-qa` | none | ecosystem | ใช้ทักษะนี้เพื่อทดสอบ UI อัตโนมัติและตรวจสอบการทำงานของหน้าเว็บหลัง deploy ฟีเจอร์ โดยจำลองการคลิ... |
 | `debug-mantra` | none | uncategorized | วินัย 4 ข้อสำหรับ debug: (1) reproduce ให้ได้ก่อน (2) รู้ fail path (3) ตั้งข้อสงสัยแล้วหาที่หักล... |
-| `diagnosing-bugs` | verify | mattpocock | วนซ้ำการวินิจฉัยสำหรับบั๊กที่ยากและ regression ด้านประสิทธิภาพ โดยใช้แนวทางที่เป็นระบบเพื่อระบุสา... |
 | `scrutinize` | none | uncategorized | รีวิวแบบเข้ม — ตั้งคำถามทุก assumption, หา edge case, เช็ค security/perf. ใช้คู่กับ code-review |
 | `triage` | verify | mattpocock | ขับ issue/PR ผ่าน state machine ของการตัดสินใจ — categorise, verify, grill, write-up, merge |
 | `verification-loop` | none | ecosystem | ระบบตรวจสอบความถูกต้องแบบครบวงจรสำหรับเซสชัน Claude Code ช่วยให้มั่นใจว่าโค้ดที่สร้างขึ้นทำงานได้... |
@@ -276,7 +275,6 @@
 | `code-simplification` | review | engineering-lifecycle | ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น |
 | `codebase-design` | build | mattpocock | ชุดคำศัพท์และแนวคิดสำหรับออกแบบโมดูลที่ลึก (deep modules) โดยเน้นการหาโอกาสในการขยาย (deepening o... |
 | `deprecation-and-migration` | ship | engineering-lifecycle | เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback |
-| `diagnosing-bugs` | verify | mattpocock | วนซ้ำการวินิจฉัยสำหรับบั๊กที่ยากและ regression ด้านประสิทธิภาพ โดยใช้แนวทางที่เป็นระบบเพื่อระบุสา... |
 | `documentation-and-adrs` | ship | engineering-lifecycle | เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้ |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
 | `fable5-standards` | ship | engineering | มาตรฐานการให้เหตุผลเชิงลึกสำหรับการตัดสินใจด้านสถาปัตยกรรม การดีบัก การย้ายข้อมูล และงานเทคนิคอื่... |
@@ -397,7 +395,6 @@
 | `agent-payment-x402` | none | ecosystem | เพิ่มความสามารถในการชำระเงินแบบ x402 ให้กับ AI agent ของคุณ รองรับการตั้งงบประมาณต่อ task การควบค... |
 | `agent-sort` | none | ecosystem | เรียง skills/commands/rules/hooks สำหรับ repo หนึ่งๆ เป็น install plan โดยอ้างหลักฐาน — ไม่เดา |
 | `autonomous-agent-harness` | none | ecosystem | เปลี่ยน Claude Code ให้เป็นระบบเอเจนต์อัตโนมัติเต็มรูปแบบ พร้อมหน่วยความจำถาวร การทำงานตามตารางเว... |
-| `autonomous-loops` | none | ecosystem | รูปแบบและสถาปัตยกรรมสำหรับสร้าง autonomous loop ของ Claude Code ตั้งแต่ pipeline แบบ sequential ธ... |
 | `benchmark` | none | ecosystem | วัดประสิทธิภาพ baseline ก่อนและหลัง PR เพื่อตรวจจับ regression และเปรียบเทียบ stack ทางเลือก ช่วย... |
 | `benchmark-optimization-loop` | none | uncategorized | ใช้เมื่อต้องการปรับปรุงประสิทธิภาพของโค้ดหรือระบบ โดยลองหลายรูปแบบ วัด latency/throughput/cost แล... |
 | `build` | build | awiki | สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-... |
@@ -561,7 +558,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **DEFINE**: `domain-modeling`, `grill-me`, `grill-with-docs`, `grilling`, `research`, `spec`, `spec-driven-development`, `to-prd`
 - **PLAN**: `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `build`, `codebase-design`, `implement`, `prototype`, `scaffold-exercises`, `tdd`
-- **VERIFY**: `browser-testing-with-devtools`, `diagnosing-bugs`, `triage`
+- **VERIFY**: `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `fable5-standards`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `awiki-lifecycle-router`, `handoff`, `hermes-fan-out`, `writing-great-skills`
@@ -573,6 +570,8 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 
 | Alias / Deprecated | → Canonical | Note |
 |--------------------|-------------|------|
+| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop (USA-1 C9, 2026-07-14): canonical loop-routing skill; autonomous-loops kept on disk as a pattern encyclopedia but no longer invoked directly. |
+| `diagnosing-bugs` | `debug-mantra` | debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill. |
 | `hipaa-compliance` | `healthcare-phi-compliance` |  |
 | `laravel-verification` | `django-verification` |  |
 | `quarkus-verification` | `django-verification` |  |

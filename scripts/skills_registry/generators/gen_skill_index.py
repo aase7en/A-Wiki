@@ -72,13 +72,20 @@ def render(registry: Registry) -> str:
     by_domain = _group_by_domain(canonical)
 
     # Collect alias→canonical entries for the resolution table.
-    aliases: list[tuple[str, str, str]] = []  # (alias_name, canonical_name, migrated_to)
+    aliases: list[tuple[str, str, str]] = []  # (alias_name, canonical_name, note)
     for s in registry.skills:
         if s.get("status") == "alias" and s.get("canonical"):
             aliases.append((s["name"], s["canonical"], s.get("migrated_to", "")))
-        # deprecated skills with a migrated_to pointer also belong here
-        if s.get("status") == "deprecated" and s.get("migrated_to"):
-            aliases.append((s["name"], s.get("migrated_to", ""), s.get("migrated_to", "")))
+        # deprecated skills with a canonical pointer also belong here.
+        # canonical field = the replacement name; migrated_to = the human note.
+        if s.get("status") == "deprecated":
+            canonical_name = s.get("canonical") or s.get("migrated_to", "")
+            # migrated_to may embed "name (note): ..." — extract just the name if so.
+            if canonical_name and "(" in canonical_name:
+                canonical_name = canonical_name.split("(")[0].strip()
+            note = s.get("migrated_to", "")
+            if canonical_name:
+                aliases.append((s["name"], canonical_name, note))
     aliases.sort()
 
     out: list[str] = []

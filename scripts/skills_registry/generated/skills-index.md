@@ -30,7 +30,6 @@
 | `autoglm-browser-agent` | code | none | uncategorized | `~/.agents/skills/autoglm-browser-agent/SKILL.md` |
 | `automation-audit-ops` | code | none | ecosystem | `skills/ecosystem/automation-audit-ops/SKILL.md` |
 | `autonomous-agent-harness` | ai-ops | none | ecosystem | `skills/ecosystem/autonomous-agent-harness/SKILL.md` |
-| `autonomous-loops` | ai-ops | none | ecosystem | `skills/ecosystem/autonomous-loops/SKILL.md` |
 | `awiki-brain-improvement-gate` | code | none | wiki | `skills/claude-code/awiki-brain-improvement-gate/SKILL.md` |
 | `awiki-creator-layer` | code | none | wiki | `skills/claude-code/awiki-creator-layer/SKILL.md` |
 | `awiki-lifecycle-router` | code, engineering | meta | engineering-lifecycle | `skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` |
@@ -92,7 +91,6 @@
 | `deployment-patterns` | code, sre | none | ecosystem | `skills/ecosystem/deployment-patterns/SKILL.md` |
 | `deprecation-and-migration` | code, engineering | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md` |
 | `design-system` | design | none | ecosystem | `skills/ecosystem/design-system/SKILL.md` |
-| `diagnosing-bugs` | debug, engineering | verify | mattpocock | `skills/mattpocock/diagnosing-bugs/SKILL.md` |
 | `django-celery` | code | none | ecosystem | `skills/ecosystem/django-celery/SKILL.md` |
 | `django-patterns` | code | none | ecosystem | `skills/ecosystem/django-patterns/SKILL.md` |
 | `django-security` | code | none | ecosystem | `skills/ecosystem/django-security/SKILL.md` |
@@ -367,14 +365,14 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 32 |
+| ai-ops | 31 |
 | business | 10 |
 | code | 180 |
 | data | 15 |
-| debug | 8 |
+| debug | 7 |
 | design | 10 |
 | document | 9 |
-| engineering | 42 |
+| engineering | 41 |
 | env | 1 |
 | logistics | 7 |
 | media | 12 |

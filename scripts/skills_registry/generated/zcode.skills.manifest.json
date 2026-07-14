@@ -129,11 +129,6 @@
       "domain": "ai-ops"
     },
     {
-      "name": "autonomous-loops",
-      "target": "skills/ecosystem/autonomous-loops/SKILL.md",
-      "domain": "ai-ops"
-    },
-    {
       "name": "awiki-brain-improvement-gate",
       "target": "skills/claude-code/awiki-brain-improvement-gate/SKILL.md",
       "domain": "code"
@@ -422,11 +417,6 @@
       "name": "design-system",
       "target": "skills/ecosystem/design-system/SKILL.md",
       "domain": "design"
-    },
-    {
-      "name": "diagnosing-bugs",
-      "target": "skills/mattpocock/diagnosing-bugs/SKILL.md",
-      "domain": "debug,engineering"
     },
     {
       "name": "django-celery",
