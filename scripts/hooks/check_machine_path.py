@@ -154,7 +154,9 @@ def main() -> int:
             }
         }
         print(json.dumps(verdict, ensure_ascii=False))
-        return 0
+        # Emit verdict JSON for agents that read stdout (Claude), AND exit 2 so
+        # hooks_runner.py (which keys on exit code) registers the block.
+        return 2
 
     # Fallback: stderr + exit 2 (hook-blocking convention).
     print(msg, file=sys.stderr)

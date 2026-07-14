@@ -39,6 +39,14 @@
           {
             "type": "command",
             "command": "bash .codex/hooks/pre-edit-staleness-check.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-machine-path"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-secret-leak"
           }
         ]
       },
