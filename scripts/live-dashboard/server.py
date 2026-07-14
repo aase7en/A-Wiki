@@ -44,6 +44,7 @@ DASHBOARD_DIR = Path(__file__).resolve().parent  # scripts/live-dashboard/
 # tests/test_council_room.py uses to import council_room.
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
 import council_room  # noqa: E402
+import pid_check  # noqa: E402
 
 # Skills service lives next to this server file.
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "live-dashboard"))
@@ -258,16 +259,31 @@ def _graph_snapshot() -> dict:
 # ---------------------------------------------------------------------------
 
 def is_already_running() -> bool:
-    """Return True if a live-dashboard.pid process is still alive."""
+    """Return True if a live-dashboard.pid process is still alive.
+
+    Uses pid_check.is_pid_alive() rather than a bare os.kill(pid, 0). On
+    Windows, CPython special-cases signal 0 to GenerateConsoleCtrlEvent()
+    rather than TerminateProcess() (confirmed on this machine — it does not
+    instantly kill the target), but that event's delivery depends on
+    console/process-group configuration this caller doesn't control and can
+    raise OSError for a process in a different process group (exactly the
+    case here: server.py's daemonize() spawns with
+    DETACHED_PROCESS|CREATE_NEW_PROCESS_GROUP). It's the wrong primitive for
+    "is this PID alive" regardless of the instant-kill question — see
+    scripts/lib/pid_check.py's docstring for the full write-up.
+    is_pid_alive() is well-defined and safe on both platforms.
+    """
     if not PID_FILE.exists():
         return False
     try:
         pid = int(PID_FILE.read_text().strip())
-        os.kill(pid, 0)  # signal 0 = existence check
-        return True
-    except (ValueError, ProcessLookupError, PermissionError):
+    except ValueError:
         PID_FILE.unlink(missing_ok=True)
         return False
+    if pid_check.is_pid_alive(pid):
+        return True
+    PID_FILE.unlink(missing_ok=True)
+    return False
 
 
 def _is_port_free(port: int) -> bool:
