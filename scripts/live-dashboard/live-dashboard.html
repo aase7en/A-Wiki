@@ -847,6 +847,16 @@ to{transform:translateY(0);opacity:1}
   </div>
 </div>
 <div class="set-toast" id="set-toast"></div>
+<!-- Keyboard Shortcuts Help Modal -->
+<div id="shortcuts-backdrop" onclick="_closeShortcutsHelp()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:400"></div>
+<div id="shortcuts-help" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:24px 28px;z-index:401;max-width:440px;width:90vw;box-shadow:var(--shadow-lg)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <h3 style="margin:0;font-size:var(--fs-md);color:var(--accent-brand)">⌨️ Keyboard Shortcuts</h3>
+    <button onclick="_closeShortcutsHelp()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;min-width:32px;min-height:32px">✕</button>
+  </div>
+  <div id="shortcuts-list" style="display:flex;flex-direction:column;gap:8px;font-size:var(--fs-sm)"></div>
+  <p style="margin:16px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อเปิด/ปิดหน้าต่างนี้</p>
+</div>
 <div id="aria-live" class="sr-only" aria-live="polite"></div>
 
 <script>
@@ -1321,7 +1331,65 @@ let _caps={families:{},recommended_by_task:{}};
 function toast(msg,err){const t=$('set-toast');t.textContent=msg;t.className='set-toast show'+(err?' err':'');setTimeout(()=>t.className='set-toast',2200);}
 function openSettings(){$('settings-backdrop').classList.add('show');$('settings').classList.add('show');loadSettings();}
 function closeSettings(){$('settings-backdrop').classList.remove('show');$('settings').classList.remove('show');}
-window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('settings-backdrop').classList.contains('show'))closeSettings();});
+
+// === CHUNK M — Keyboard Shortcuts ===
+const SHORTCUTS=[
+{key:'/',desc:'โฟกัสช่องค้นหา Skills',action:()=>{setView('skills');setTimeout(()=>$('skills-search')&&$('skills-search').focus(),100);}},
+{key:'g s',desc:'ไปที่ Skills tab',action:()=>setView('skills')},
+{key:'g c',desc:'ไปที่ Coverage tab',action:()=>setView('coverage')},
+{key:'g g',desc:'ไปที่ Graph tab (log)',action:()=>setView('graph')},
+{key:'g f',desc:'ไปที่ Flow tab',action:()=>setView('flow')},
+{key:'g t',desc:'ไปที่ Timeline tab',action:()=>setView('timeline')},
+{key:'g h',desc:'กลับหน้าแรก (Summary)',action:()=>setView('summary')},
+{key:'?',desc:'แสดง/ซ่อน shortcuts help',action:()=>_toggleShortcutsHelp()},
+{key:'Escape',desc:'ปิดหน้าต่างบนสุด',action:()=>_closeTopmost()},
+];
+let _gKey=null,_gKeyTimer=null;
+function _closeTopmost(){
+// Priority: sim modal > skills drawer > shortcuts help > settings
+if($('sim-backdrop')&&$('sim-backdrop').classList.contains('show')){simClose();return;}
+if($('skills-detail')&&$('skills-detail').style.transform==='translateX(0)'){skillsCloseDetail();return;}
+if($('shortcuts-backdrop')&&$('shortcuts-backdrop').style.display!=='none'){_closeShortcutsHelp();return;}
+if($('settings-backdrop')&&$('settings-backdrop').classList.contains('show')){closeSettings();return;}
+}
+function _toggleShortcutsHelp(){
+const bd=$('shortcuts-backdrop'),help=$('shortcuts-help');
+const isOpen=bd.style.display!=='none';
+if(isOpen){_closeShortcutsHelp();return;}
+const list=$('shortcuts-list');
+list.innerHTML=SHORTCUTS.map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="color:var(--text-secondary)">${s.desc}</span><kbd style="background:var(--elev-2);padding:3px 10px;border-radius:var(--r-sm);border:1px solid var(--border2);font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--accent-brand);white-space:nowrap">${s.key===' '?'Space':s.key}</kbd></div>`).join('');
+bd.style.display='block';help.style.display='block';
+}
+function _closeShortcutsHelp(){
+$('shortcuts-backdrop').style.display='none';
+$('shortcuts-help').style.display='none';
+}
+window.addEventListener('keydown',function(e){
+const tag=(e.target&&e.target.tagName)||'';
+const isInput=(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT');
+// Escape always works (even in inputs).
+if(e.key==='Escape'){_closeTopmost();return;}
+// '?' works everywhere except inputs (to avoid blocking typed question mark).
+if(e.key==='?'&&!isInput){e.preventDefault();_toggleShortcutsHelp();return;}
+// Skip all other shortcuts when typing in inputs.
+if(isInput)return;
+// Two-key sequence: g <key>
+if(e.key==='g'){
+_gKey='g';
+clearTimeout(_gKeyTimer);
+_gKeyTimer=setTimeout(()=>{_gKey=null;},700);
+return;
+}
+if(_gKey==='g'){
+const combo='g '+e.key.toLowerCase();
+const sc=SHORTCUTS.find(s=>s.key===combo);
+if(sc){e.preventDefault();_gKey=null;clearTimeout(_gKeyTimer);sc.action();}
+return;
+}
+// Single-key shortcuts: '/' etc.
+const sc=SHORTCUTS.find(s=>s.key===e.key);
+if(sc){e.preventDefault();sc.action();}
+});
 function setTab(b){document.querySelectorAll('.set-tab').forEach(x=>x.classList.remove('active'));
 document.querySelectorAll('.set-pane').forEach(p=>p.classList.remove('active'));b.classList.add('active');$(b.dataset.pane).classList.add('active');}
 async function loadSettings(){
