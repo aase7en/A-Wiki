@@ -610,6 +610,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response(skills_service.agent_overview())
         elif path == "/api/skills/graph":
             self._api_skills_graph()
+        elif path == "/api/skills/recommend":
+            self._api_skills_recommend()
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
         elif path == "/api/walkthroughs":
@@ -939,6 +941,20 @@ class Handler(BaseHTTPRequestHandler):
                 phase=params.get("phase", [None])[0],
                 all_skills=params.get("all", ["0"])[0] in ("1", "true", "yes"),
                 limit=int(params.get("limit", ["500"])[0]),
+            )
+            self._json_response(payload)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_recommend(self):
+        """GET /api/skills/recommend?q=<text>&limit=5 — text-based skill recommendation."""
+        from urllib.parse import parse_qs
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        params = parse_qs(qs)
+        try:
+            payload = skills_service.recommend_skills(
+                query=params.get("q", [""])[0],
+                limit=int(params.get("limit", ["5"])[0]),
             )
             self._json_response(payload)
         except Exception as e:

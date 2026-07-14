@@ -632,5 +632,85 @@ def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
 
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
-    "skill_graph", "walkthrough_difficulty", "KNOWN_AGENTS",
+    "skill_graph", "walkthrough_difficulty", "recommend_skills", "KNOWN_AGENTS",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Skill recommender — text-based multi-field scoring with match reasons
+# ---------------------------------------------------------------------------
+
+def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
+    """Recommend skills based on a text query (natural language OK).
+
+    Scoring per matched field:
+      - th_description substring → 3 pts
+      - when_to_use substring → 2 pts
+      - name substring → 2 pts
+      - examples[].how substring → 1 pt
+    Boosts:
+      - has process_steps → +2
+      - has invocation_hint → +1
+
+    Returns top N skills with score + match_reason (which fields matched).
+    Empty query → empty results.
+    """
+    query = (query or "").strip().lower()
+    if not query:
+        return {"query": query, "results": [], "total_matched": 0}
+
+    reg = _load_registry()
+    skills = [s for s in reg.skills if s.get("status") == "canonical"]
+
+    results: list[dict[str, Any]] = []
+    for s in skills:
+        score = 0
+        reasons: list[str] = []
+
+        th_desc = (s.get("th_description") or "").lower()
+        when = (s.get("when_to_use") or "").lower()
+        name = (s.get("name") or "").lower()
+
+        if query in th_desc:
+            score += 3
+            reasons.append("ตรงคำอธิบายไทย")
+        if query in when:
+            score += 2
+            reasons.append("ตรง 'ใช้เมื่อไหร่'")
+        if query in name:
+            score += 2
+            reasons.append("ตรงชื่อ skill")
+        # examples[].how
+        for ex in (s.get("examples") or []):
+            if isinstance(ex, dict):
+                how = (ex.get("how") or "").lower()
+                if query in how:
+                    score += 1
+                    reasons.append("ตรงตัวอย่าง")
+                    break  # only count once
+
+        if score == 0:
+            continue
+
+        # Boosts.
+        if s.get("process_steps"):
+            score += 2
+        if s.get("invocation_hint"):
+            score += 1
+
+        results.append({
+            "name": s.get("name"),
+            "score": score,
+            "match_reason": ", ".join(reasons) or "partial match",
+            "th_description": (s.get("th_description") or "")[:100],
+            "invocation_hint": _invocation_hint(s),
+            "domain": s.get("domain") or [],
+            "lifecycle_phase": s.get("lifecycle_phase", "none"),
+        })
+
+    results.sort(key=lambda r: (-r["score"], r["name"]))
+    return {
+        "query": query,
+        "results": results[:limit],
+        "total_matched": len(results),
+    }

@@ -552,6 +552,7 @@ to{transform:translateY(0);opacity:1}
         <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
         <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
       </div>
+      <input id="skills-recommend" type="text" placeholder="💡 อยากทำ... (เช่น แก้ bug, เขียน test)" style="flex:1;min-width:180px;padding:7px 12px;border-radius:var(--r-md);border:1px solid var(--accent-brand);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-sm);min-height:36px" onkeydown="if(event.key==='Enter'){recommendSearch();}">
     </div>
     <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
     <!-- 🕹 Discovery bar: skill-of-the-day + recently used -->
@@ -559,6 +560,8 @@ to{transform:translateY(0);opacity:1}
       <div id="sotd-chip" style="display:none;cursor:pointer" onclick="sotdOpen()"></div>
       <div id="recent-chips" style="display:flex;gap:4px;flex-wrap:wrap"></div>
     </div>
+    <!-- 💡 Recommender results (shown when recommendSearch is used) -->
+    <div id="skills-recommend-results" style="display:none;padding:8px;border-bottom:1px solid var(--border);flex-shrink:0"></div>
     <!-- 🎬 Multi-skill flows (collapsible) -->
     <div id="walkthroughs-bar" style="padding:6px 8px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="toggleWalkthroughsBar()">
@@ -1497,6 +1500,35 @@ skillsRefresh();
 }
 function skillsRefresh(){
 if(_skillsView==='graph')skillGraphLoad();else skillsLoad();
+}
+// === CHUNK R — AI-powered skill recommender ===
+async function recommendSearch(){
+const input=$('skills-recommend');
+const q=(input&&input.value||'').trim();
+const results=$('skills-recommend-results');
+if(!results)return;
+if(!q){results.style.display='none';results.innerHTML='';return;}
+results.style.display='block';
+results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px">⏳ แนะนำ...</div>';
+try{
+const r=await fetch('/api/skills/recommend?q='+encodeURIComponent(q)+'&limit=5').then(r=>r.json());
+if(r.error)throw new Error(r.error);
+if(!r.results.length){
+results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px">😕 ไม่พบ skill ที่ตรง — ลองคำอื่น</div>';
+return;
+}
+results.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'":</div>'+
+r.results.map(res=>{
+const d=skillsDomainColor((res.domain||[])[0]||'');
+return `<div onclick="skillsOpenDetail('${res.name}')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--border2);cursor:pointer;margin-bottom:4px">
+<span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:${d};font-weight:600;min-width:0;flex-shrink:0">${res.name}</span>
+<span style="flex:1;font-size:var(--fs-2xs);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${res.th_description||''}</span>
+<span style="font-size:10px;color:var(--accent-warn);flex-shrink:0" title="${res.match_reason}">⚡${res.score}</span>
+</div>`;
+}).join('')+'<div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">⚡ = คะแนนความตรง · คลิกเพื่อดูรายละเอียด</div>';
+}catch(e){
+results.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-2xs);padding:4px">❌ '+e.message+'</div>';
+}
 }
 // === CHUNK K — Skill dependency graph (vis-network, separate instance from log graph) ===
 let _skillsView='list',_skillGraphNet=null,_skillGraphData=null;

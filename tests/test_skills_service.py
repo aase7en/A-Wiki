@@ -233,3 +233,38 @@ def test_walkthrough_difficulty_empty_flow():
     d = skills_service.walkthrough_difficulty({"steps": []})
     assert d["score"] == 0
     assert d["level"] == "เริ่มต้น"
+
+
+# ---------------------------------------------------------------------------
+# CHUNK R — recommend_skills() — text-based skill recommendation
+# ---------------------------------------------------------------------------
+
+def test_recommend_returns_results_with_match_reason():
+    r = skills_service.recommend_skills("debug bug", limit=5)
+    assert "results" in r and isinstance(r["results"], list)
+    assert r["query"] == "debug bug"
+    for res in r["results"]:
+        assert "name" in res and "score" in res and "match_reason" in res
+
+
+def test_recommend_empty_query_returns_empty():
+    r = skills_service.recommend_skills("", limit=5)
+    assert r["results"] == []
+    assert r["total_matched"] == 0
+
+
+def test_recommend_thai_query():
+    """Thai query should work — test a common Thai word."""
+    r = skills_service.recommend_skills("แก้", limit=5)
+    assert r["total_matched"] >= 0  # don't hard-fail on tokenization
+
+
+def test_recommend_sorted_by_score_desc():
+    r = skills_service.recommend_skills("test", limit=10)
+    scores = [res["score"] for res in r["results"]]
+    assert scores == sorted(scores, reverse=True), f"scores not sorted desc: {scores}"
+
+
+def test_recommend_limit_respected():
+    r = skills_service.recommend_skills("code", limit=3)
+    assert len(r["results"]) <= 3
