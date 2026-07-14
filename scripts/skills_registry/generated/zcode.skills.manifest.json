@@ -604,6 +604,11 @@
       "domain": "code"
     },
     {
+      "name": "game-phaser-pipeline",
+      "target": "skills/awiki/game-phaser-pipeline/SKILL.md",
+      "domain": "code,media"
+    },
+    {
       "name": "gan-style-harness",
       "target": "skills/ecosystem/gan-style-harness/SKILL.md",
       "domain": "code"

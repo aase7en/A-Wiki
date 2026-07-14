@@ -7,6 +7,7 @@
     "engineering": "../agent-skills/engineering",
     "engineering-lifecycle": "../skills/engineering-lifecycle",
     "extensibility": "../agent-skills/extensibility",
+    "game": "../skills/awiki",
     "mattpocock": "../skills/mattpocock",
     "swarm": "../skills/awiki",
     "thai": "../skills/claude-thai",
