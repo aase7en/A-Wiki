@@ -798,11 +798,14 @@ def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
                 continue
             title = (flow.get("title_th") or "").lower()
             summary = (flow.get("summary_th") or "").lower()
+            fid = wid.lower()
             w_score = 0
             if query in title:
                 w_score += 5
             if query in summary:
                 w_score += 3
+            if query in fid:
+                w_score += 4  # id match (English) is strong signal for Thai titles
             if w_score > 0:
                 walkthrough_matches.append({
                     "id": wid,
