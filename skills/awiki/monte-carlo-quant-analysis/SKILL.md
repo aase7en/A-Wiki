@@ -223,9 +223,36 @@ def sobol_paths(mu: float, sigma: float, T: int, N: int = 4096, seed: int = 42):
 **ไม่เลือกเมื่อ**: path-dependent metric (max drawdown) ที่ sequential structure สำคัญ —
 QMC อาจไม่ preserve path structure ได้ดีเท่า pseudo-random.
 
+### Importance Sampling (variance reduction สำหรับ tail-risk)
+
+Oversample เหตุการณ์หายาก (tail losses) เพื่อลด variance ของ VaR/CVaR estimate.
+เลือก proposal distribution `q(x)` ที่ "หนักกว่า" target `p(x)` ใน tail region
+แล้ว weight ด้วย likelihood ratio `w = p(x)/q(x)`.
+
+```python
+from scipy.stats import norm  # scipy ≥ 1.7 (มีอยู่แล้วใน QMC section)
+import numpy as np
+
+def importance_sampling_var(mu: float, sigma: float, alpha: float = 0.05,
+                            N: int = 10_000, shift: float = 1.5, seed: int = 42):
+    """IS-VaR: sample from shifted proposal, weight back to target."""
+    rng = np.random.default_rng(seed)
+    # Proposal: normal shifted left (into the loss tail)
+    x = rng.normal(mu - shift * sigma, sigma, N)
+    # Likelihood ratio weights: p(x) / q(x)
+    w = norm.pdf(x, mu, sigma) / norm.pdf(x, mu - shift * sigma, sigma)
+    # Weighted VaR via cumulative weights
+    sorted_idx = np.argsort(x)
+    cum_w = np.cumsum(w[sorted_idx]) / w.sum()
+    var_idx = np.searchsorted(cum_w, alpha)
+    return x[sorted_idx[var_idx]]
+```
+
+**เลือกเมื่อ**: tail probability ต่ำมาก (เช่น VaR 99%) และ pseudo-random MC ต้องการ N ใหญ่เกินไป.
+**ไม่เลือกเมื่อ**: tail ไม่ไกล (VaR 95%) — IS อาจเพิ่ม variance ถ้า proposal ไม่ match target ดีพอ.
+
 ### อื่นๆ
 
-- **Importance sampling** — oversample rare events สำหรับ tail-risk accuracy
 - **Stochastic processes ที่ซับซ้อน** — Heston (stochastic vol), SABR, jump-diffusion
 - **Multi-level MC** — variance reduction hierarchy
 - **ML-augmented MC** (akashdeepo's ensemble approach) — ML forecast distribution params → MC propagate
