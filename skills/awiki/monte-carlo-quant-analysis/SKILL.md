@@ -71,6 +71,18 @@ process_steps:
 
 **Key principle**: ผลลัพธ์เป็น **distribution** ไม่ใช่ single number. P50 = median estimate, P5/P95 = uncertainty band.
 
+#### Paper-data feed seam (Iron Law #8 compliant)
+
+เมื่อต้องการ MC simulate บน historical-ish data โดยไม่ละเมิด Iron Law #8 ให้ใช้
+`CannedMarketDataFeed` pattern (approved 2026-06-12 amendment ใน
+`docs/protocols/bot-trading-iron-law.md`) — embedded historical data,
+read-only `listSymbols()`/`getKlines()` interface, zero write methods.
+MC output (synthetic paths) เข้ากับ `MockBotFeed` paper-settlement workflow ได้ตรงๆ
+— simulated fills only, ไม่มี real order ทุก layer.
+
+> ดู `examples/portfolio_mc_1yr.ipynb` สำหรับ runnable demo ที่ใช้ canned synthetic CSV
+> (seeded `np.random.default_rng(42)`, reproducible 100%, no external download).
+
 ### §2 — Distribution Selection (synthetic data generation)
 
 เลือก distribution ตามลักษณะข้อมูล (สังเคราะห์จาก Unpingco foundations + firmai risk taxonomy):
@@ -211,6 +223,9 @@ def ci_95(x: np.ndarray):
 - `prediction-market-risk-review` — review trading workflows for compliance/safety
 - `ito-trade-planner` — non-executing trade planning worksheet
 - `defi-amm-security` — DeFi/smart-contract security (different domain, same advice boundary)
+
+### Approved paper-data feed pattern
+- `CannedMarketDataFeed` — see `docs/protocols/bot-trading-iron-law.md` §Amendment 2026-06-12 (read-only `listSymbols()`/`getKlines()`, zero write methods, flag-gated `RemoteMarketDataFeed` fallback)
 
 ### Protocols
 - `docs/protocols/bot-trading-iron-law.md` — Iron Law #8 (MOCK-only, no secrets, no execution)
