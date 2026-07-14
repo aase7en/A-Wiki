@@ -209,6 +209,75 @@ list_skill_sources() {
     fi
 }
 
+# ── subagent sources (SA2-SA6 — .zcode/agents/ symlink farm) ────────────────
+# Reads the generated manifest (zcode.agents.manifest.json) emitted by
+# gen_zcode_agents.py, and yields repo-relative .md paths. The linker then
+# creates ~/.zcode/agents/<name>.md -> repo file for each, mirroring how
+# link_skills_into builds ~/.zcode/skills/<name>.
+list_agent_sources() {
+    local manifest="$REPO_ROOT/scripts/skills_registry/generated/zcode.agents.manifest.json"
+    [ -f "$manifest" ] || return 0
+    # Emit <name>\t<repo-relative-target> lines; manifest stores target as a
+    # repo-relative path (e.g. agents/subagents/foo.md).
+    python3 - "$manifest" <<'PY' 2>/dev/null
+import json, sys
+try:
+    d = json.load(open(sys.argv[1], encoding="utf-8"))
+    for a in d.get("agents", []):
+        name = a.get("name", "")
+        target = a.get("target", "")
+        if name and target:
+            print(f"{name}\t{target}")
+except Exception:
+    pass
+PY
+}
+
+link_agents_into() {
+    local dest="$1"
+    local line name target link_src linked=0 failed=0
+
+    if [ "$DRY_RUN" = "1" ]; then
+        echo "  [dry-run] would link agents into $dest"
+        return 0
+    fi
+    mkdir -p "$dest"
+
+    while IFS=$'\t' read -r name target; do
+        [ -z "$name" ] && continue
+        # Strip a trailing CR (python3 on Windows can emit \r\n; the \r then
+        # suffixes $target and breaks the -f check).
+        name="${name%$'\r'}"
+        target="${target%$'\r'}"
+        link_src="$REPO_ROOT/$target"
+        if [ ! -f "$link_src" ]; then
+            echo "  ⚠️  agent source missing: $link_src"
+            failed=$((failed + 1))
+            continue
+        fi
+        local dest_link="$dest/$name.md"
+        # Replace stale links/files only (never clobber a real dir).
+        if [ -L "$dest_link" ] || [ -f "$dest_link" ]; then
+            rm -f "$dest_link"
+        elif [ -d "$dest_link" ]; then
+            echo "  ⚠️  Skipping existing directory: $dest_link"
+            continue
+        fi
+        if create_link "$link_src" "$dest_link"; then
+            linked=$((linked + 1))
+        else
+            # Symlink to a single file may fail without Developer Mode on
+            # Windows; fall back to a copy so the agent is at least loadable.
+            cp "$link_src" "$dest_link" && linked=$((linked + 1)) || failed=$((failed + 1))
+        fi
+    done < <(list_agent_sources)
+
+    echo "  ✅ $linked agents linked into $dest"
+    if [ "$failed" -gt 0 ]; then
+        echo "  ⚠️  $failed agents failed to link"
+    fi
+}
+
 link_skills_into() {
     local dest="$1"
     local skill_dir skill_name target linked=0 failed=0
@@ -368,6 +437,12 @@ do_link() {
         echo "▶ $a ($dir)"
         if [ "$DO_SKILLS" = "1" ]; then
             link_skills_into "$dir/skills"
+        fi
+        # SA6 — ZCode loads subagents from ~/.zcode/agents/. Only zcode has
+        # this surface; other agents consume the same definitions via the
+        # generated AGENTS.md table (gen_agents_md.py).
+        if [ "$DO_SKILLS" = "1" ] && [ "$a" = "zcode" ]; then
+            link_agents_into "$dir/agents"
         fi
         if [ "$DO_ENV" = "1" ] && is_env_agent "$a"; then
             ensure_env_link "$dir/.env" "$DRIVE_ROOT/.agents/$a/.env" "" "$a/.env"
