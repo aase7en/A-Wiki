@@ -1,0 +1,74 @@
+# Security + privacy patterns — single source for A-Wiki's defense layers.
+#
+# USA-1 §5.3. Cited by:
+#   - scripts/hooks/check_secret_leak.py   (Layer 1: PreToolUse, all agents)
+#   - scripts/hooks/check_machine_path.py  (Layer 1: PreToolUse, all agents)
+#   - scripts/check-privacy.py             (Layer 2/3: pre-commit + CI batch)
+#
+# Adding a pattern here automatically extends every layer. Security skills
+# (security-and-hardening, hipaa-compliance, thai-pdpa, defi-amm-security,
+# llm-trading-agent-security) review changes to this file (USA-1 §5.3).
+#
+# Format: each list item is {name, regex, allowlist}. `regex` is a Python
+# re.Pattern; `allowlist` is a list of substrings that mark a match as a
+# safe placeholder/example (case-insensitive substring match).
+
+# ── API keys / tokens ────────────────────────────────────────────────────────
+secret_patterns:
+  - name: "OpenAI/Anthropic/OpenRouter style key"
+    regex: 'sk-[A-Za-z0-9_-]{24,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "OpenRouter v1 key"
+    regex: 'sk-or-v1-[A-Za-z0-9_-]{24,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "Google API key"
+    regex: 'AIza[0-9A-Za-z_-]{30,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "Groq API key"
+    regex: 'gsk_[0-9A-Za-z]{24,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "GitHub classic token"
+    regex: 'gh[pousr]_[A-Za-z0-9_]{30,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "GitHub fine-grained token"
+    regex: 'github_pat_[A-Za-z0-9_]{40,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "AWS access key"
+    regex: 'AKIA[0-9A-Z]{16}'
+    allowlist: []
+  - name: "Slack token"
+    regex: 'xox[baprs]-[A-Za-z0-9-]{20,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+  - name: "JWT"
+    regex: 'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
+    allowlist: ["...", "example", "placeholder", "redacted", "your_", "your-", "xxxx", "<", ">", "test", "demo", "sample"]
+
+# ── Machine-specific paths (never in public repo) ───────────────────────────
+# USA-1 §5.1 Layer 1 / Hybrid Drive Rule §4.3. Block writes that embed
+# machine-specific paths into repo files — they must resolve via .drive-path /
+# drive/ junction / A_WIKI_DRIVE_PATH instead.
+#
+# YAML escaping note: a single backslash in the matched text needs `\\` in a
+# YAML double-quoted string (YAML unescapes once, leaving one `\` for regex).
+# We use double-quoted YAML strings here so the regex sees `C:\Users\` exactly.
+machine_path_patterns:
+  - name: "Windows user home (C:\\Users\\<user>\\)"
+    regex: "C:\\\\Users\\\\([A-Za-z0-9._-]+)\\\\"
+    allowlist: []
+    note: "Personal Windows user path. Resolve via drive/ or $HOME."
+  - name: "Windows drive absolute path (e.g. L:\\...)"
+    regex: "\\b[A-Z]:\\\\[A-Za-z0-9._-]"
+    allowlist: []
+    note: "Absolute drive paths leak the machine's mount layout. Use drive/ junction or A_WIKI_DRIVE_PATH."
+  - name: "macOS user home (/Users/<user>/)"
+    regex: "/Users/([A-Za-z0-9._-]+)/"
+    allowlist: []
+    note: "Personal macOS user path. Resolve via drive/ or $HOME."
+  - name: "Linux user home (/home/<user>/)"
+    regex: "/home/([A-Za-z0-9._-]+)/"
+    allowlist: []
+    note: "Personal Linux user path. Resolve via drive/ or $HOME."
+  - name: "Google Drive CloudStorage account path"
+    regex: "CloudStorage/GoogleDrive-([A-Za-z0-9._-]+)"
+    allowlist: []
+    note: "Leaks Google account name. Resolve via drive/ junction."
