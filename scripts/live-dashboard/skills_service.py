@@ -432,4 +432,130 @@ def coverage_stats(compare: str | None = None) -> dict[str, Any]:
     return result
 
 
-__all__ = ["list_skills", "get_skill", "agent_overview", "coverage_stats", "KNOWN_AGENTS"]
+# ---------------------------------------------------------------------------
+# Skill dependency graph — powers the "🧬 Graph" toggle in the Skills tab
+# ---------------------------------------------------------------------------
+
+# Domain → color mapping (mirrors skillsDomainColor() in the HTML).
+_DOMAIN_COLORS: dict[str, str] = {
+    "code": "#60a5fa", "debug": "#f87171", "design": "#a78bfa", "ux-ui": "#f472b6",
+    "trader": "#fbbf24", "medical": "#34d399", "business": "#22d3ee", "data": "#60a5fa",
+    "engineering": "#5eead4", "security": "#f87171", "ai-ops": "#a78bfa",
+    "productivity": "#fbbf24", "wiki": "#34d399", "iot": "#94a3b8", "env": "#34d399",
+    "pharmacy": "#34d399", "thai": "#f472b6", "logistics": "#fb923c", "network": "#22d3ee",
+    "media": "#c084fc", "document": "#e2e8f0", "sre": "#f87171",
+}
+_DOMAIN_COLOR_DEFAULT = "#94a3b8"
+
+
+def _domain_color(domains: list[str] | str) -> str:
+    if isinstance(domains, str):
+        domains = [domains]
+    for d in domains:
+        if d in _DOMAIN_COLORS:
+            return _DOMAIN_COLORS[d]
+    return _DOMAIN_COLOR_DEFAULT
+
+
+def skill_graph(
+    domain: str | None = None,
+    phase: str | None = None,
+    all_skills: bool = False,
+    limit: int = 500,
+) -> dict[str, Any]:
+    """GET /api/skills/graph — build a skill relationship graph for vis-network.
+
+    Nodes are canonical skills. Edges represent meaningful relationships:
+      - Same lifecycle_phase (phase != "none") → weight 3
+      - 2+ shared domains → weight 2
+      - 1 shared domain → weight 1 (only included if also same phase → combined 4)
+
+    By default (all_skills=False) only skills with lifecycle_phase != "none" are
+    included, producing a focused graph of ~40 skills. Pass all_skills=True to
+    include all canonical skills (slower but complete).
+
+    Optional domain/phase filters narrow the node set further.
+    """
+    reg = _load_registry()
+    skills = [s for s in reg.skills if s.get("status") == "canonical"]
+
+    # Default: exclude phase=none (they have no lifecycle relationships).
+    if not all_skills:
+        skills = [s for s in skills if (s.get("lifecycle_phase") or "none") != "none"]
+
+    # Optional filters.
+    if domain:
+        skills = [
+            s for s in skills
+            if domain in (s.get("domain") if isinstance(s.get("domain"), list)
+                          else [s.get("domain")] if s.get("domain") else [])
+        ]
+    if phase:
+        skills = [s for s in skills if (s.get("lifecycle_phase") or "none") == phase]
+
+    skills = skills[:limit]
+
+    # Build nodes.
+    nodes: list[dict[str, Any]] = []
+    for s in skills:
+        name = s.get("name", "")
+        domains = s.get("domain") or []
+        if isinstance(domains, str):
+            domains = [domains]
+        p = s.get("lifecycle_phase") or "none"
+        color = _domain_color(domains)
+        nodes.append({
+            "id": name,
+            "label": name,
+            "title": s.get("th_description", "")[:80] or name,
+            "domain": domains,
+            "phase": p,
+            "color": color,
+            "installed": _is_installed(s),
+        })
+
+    # Build edges: pairwise scoring (only weight >= 2 kept).
+    edges: list[dict[str, Any]] = []
+    n = len(skills)
+    for i in range(n):
+        a = skills[i]
+        a_phase = a.get("lifecycle_phase") or "none"
+        a_domains = a.get("domain") or []
+        if isinstance(a_domains, str):
+            a_domains = [a_domains]
+        a_name = a.get("name", "")
+        for j in range(i + 1, n):
+            b = skills[j]
+            b_phase = b.get("lifecycle_phase") or "none"
+            b_domains = b.get("domain") or []
+            if isinstance(b_domains, str):
+                b_domains = [b_domains]
+            b_name = b.get("name", "")
+            weight = 0
+            if a_phase != "none" and a_phase == b_phase:
+                weight += 3
+            shared = len(set(a_domains) & set(b_domains))
+            if shared >= 2:
+                weight += 2
+            elif shared == 1:
+                weight += 1
+            if weight >= 2:
+                edges.append({
+                    "from": a_name,
+                    "to": b_name,
+                    "weight": weight,
+                    "id": f"{a_name}→{b_name}",
+                })
+
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "stats": {"nodes": len(nodes), "edges": len(edges)},
+        "filters": {"domain": domain, "phase": phase, "all": all_skills},
+    }
+
+
+__all__ = [
+    "list_skills", "get_skill", "agent_overview", "coverage_stats",
+    "skill_graph", "KNOWN_AGENTS",
+]

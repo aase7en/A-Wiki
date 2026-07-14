@@ -608,6 +608,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_skills_list()
         elif path == "/api/skills/agents":
             self._json_response(skills_service.agent_overview())
+        elif path == "/api/skills/graph":
+            self._api_skills_graph()
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
         elif path == "/api/walkthroughs":
@@ -923,6 +925,22 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"error": f"skill '{name}' not found"}, 404)
                 return
             self._json_response(skill)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_graph(self):
+        """GET /api/skills/graph?domain=&phase=&all=1 — skill relationship graph for vis-network."""
+        from urllib.parse import parse_qs
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        params = parse_qs(qs)
+        try:
+            payload = skills_service.skill_graph(
+                domain=params.get("domain", [None])[0],
+                phase=params.get("phase", [None])[0],
+                all_skills=params.get("all", ["0"])[0] in ("1", "true", "yes"),
+                limit=int(params.get("limit", ["500"])[0]),
+            )
+            self._json_response(payload)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 

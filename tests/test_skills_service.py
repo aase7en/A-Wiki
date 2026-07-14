@@ -122,3 +122,63 @@ def test_limit_param():
     r = skills_service.list_skills("limit=5")
     assert r["count"] <= 5
     assert r["total_matched"] >= r["count"]
+
+
+# ---------------------------------------------------------------------------
+# CHUNK K — skill_graph() — skill dependency graph for vis-network
+# ---------------------------------------------------------------------------
+
+def test_skill_graph_returns_nodes_and_edges():
+    g = skills_service.skill_graph()
+    assert "nodes" in g and "edges" in g
+    assert isinstance(g["nodes"], list) and len(g["nodes"]) > 0
+    assert isinstance(g["edges"], list)
+    assert g["stats"]["nodes"] == len(g["nodes"])
+    assert g["stats"]["edges"] == len(g["edges"])
+    # Every node must have id + label + domain + phase
+    for n in g["nodes"]:
+        assert "id" in n and "label" in n
+        assert "domain" in n and "phase" in n
+
+
+def test_skill_graph_edges_have_weight_gte_2():
+    """Edges represent meaningful relationships — same phase (+3) or 2+ shared domains (+2)."""
+    g = skills_service.skill_graph()
+    for e in g["edges"]:
+        assert e["weight"] >= 2, f"edge {e} has weight < 2"
+        assert "from" in e and "to" in e
+
+
+def test_skill_graph_default_excludes_none_phase():
+    """Default graph shows skills with lifecycle_phase != 'none' for a usable graph."""
+    g = skills_service.skill_graph()
+    phases = {n["phase"] for n in g["nodes"]}
+    # Default mode should not include 'none' phase (those have no lifecycle relationships)
+    assert "none" not in phases, "default graph should exclude phase=none skills"
+
+
+def test_skill_graph_all_includes_none_phase():
+    """?all=1 shows all canonical skills including phase=none."""
+    g = skills_service.skill_graph(all_skills=True)
+    phases = {n["phase"] for n in g["nodes"]}
+    assert "none" in phases
+
+
+def test_skill_graph_domain_filter():
+    g = skills_service.skill_graph(domain="code")
+    for n in g["nodes"]:
+        domains = n["domain"] if isinstance(n["domain"], list) else [n["domain"]]
+        assert "code" in domains
+
+
+def test_skill_graph_phase_filter():
+    g = skills_service.skill_graph(phase="build")
+    for n in g["nodes"]:
+        assert n["phase"] == "build"
+
+
+def test_skill_graph_node_colors_set():
+    """Each node should carry a color field for vis-network styling."""
+    g = skills_service.skill_graph()
+    for n in g["nodes"]:
+        assert "color" in n and n["color"]

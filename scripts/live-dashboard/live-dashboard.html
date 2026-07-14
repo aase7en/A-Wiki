@@ -533,10 +533,10 @@ to{transform:translateY(0);opacity:1}
   <div id="skills-panel" style="display:none;flex-direction:column;overflow:hidden;height:100%">
     <div id="skills-toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 4px;flex-shrink:0">
       <input id="skills-search" type="text" placeholder="🔍 ค้นหา skill (ชื่อ / คำอธิบายไทย)..." style="flex:1;min-width:180px;padding:7px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-sm);min-height:36px" oninput="skillsSearchDebounced()">
-      <select id="skills-agent-filter" onchange="skillsLoad()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
+      <select id="skills-agent-filter" onchange="skillsRefresh()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
         <option value="all">🌐 ทุก Agent</option>
       </select>
-      <select id="skills-domain-filter" onchange="skillsLoad()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
+      <select id="skills-domain-filter" onchange="skillsRefresh()" style="padding:7px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-xs);min-height:36px">
         <option value="">📂 ทุก Domain</option>
       </select>
       <div style="display:flex;gap:3px">
@@ -545,8 +545,12 @@ to{transform:translateY(0);opacity:1}
         <button class="chat-quick-btn skills-inv-btn" data-inv="manual" onclick="skillsSetInv('manual')" style="padding:5px 10px;font-size:var(--fs-2xs)">👆 Manual</button>
       </div>
       <label style="display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer;user-select:none">
-        <input type="checkbox" id="skills-installed-only" onchange="skillsLoad()" style="cursor:pointer">📦 ติดตั้งเท่านั้น
+        <input type="checkbox" id="skills-installed-only" onchange="skillsRefresh()" style="cursor:pointer">📦 ติดตั้งเท่านั้น
       </label>
+      <div style="display:flex;gap:2px;margin-left:auto">
+        <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
+        <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
+      </div>
     </div>
     <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
     <!-- 🕹 Discovery bar: skill-of-the-day + recently used -->
@@ -564,6 +568,11 @@ to{transform:translateY(0);opacity:1}
       <div id="walkthroughs-list" style="display:none;flex-wrap:wrap;gap:5px;margin-top:6px"></div>
     </div>
     <div id="skills-grid" style="flex:1;overflow-y:auto;padding:4px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;align-content:start"></div>
+    <div id="skills-graph-vis" style="flex:1;overflow:hidden;display:none;position:relative">
+      <div id="skills-graph-canvas" style="width:100%;height:100%"></div>
+      <div id="skills-graph-stats" style="position:absolute;top:8px;left:8px;font-size:var(--fs-2xs);color:var(--text-tertiary);background:var(--elev-1);padding:4px 8px;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
+      <div id="skills-graph-unavailable" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:var(--text-disabled);font-size:var(--fs-xs);text-align:center;padding:24px">🧬 vis-network ไม่พร้อม<br><small>ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</small></div>
+    </div>
     <div id="skills-empty" style="display:none;text-align:center;color:var(--text-disabled);padding:40px 20px;font-size:var(--fs-sm)">🧩 ยังไม่พบ skill — ลองเปลี่ยน filter หรือคำค้น</div>
   </div>
 
@@ -1396,7 +1405,72 @@ _skillsSearchTimer=setTimeout(skillsLoad,250);
 function skillsSetInv(inv){
 _skillsInv=inv;
 document.querySelectorAll('.skills-inv-btn').forEach(b=>b.classList.toggle('active',b.dataset.inv===inv));
-skillsLoad();
+skillsRefresh();
+}
+function skillsRefresh(){
+if(_skillsView==='graph')skillGraphLoad();else skillsLoad();
+}
+// === CHUNK K — Skill dependency graph (vis-network, separate instance from log graph) ===
+let _skillsView='list',_skillGraphNet=null,_skillGraphData=null;
+function skillsSetView(v){
+_skillsView=v;
+document.querySelectorAll('.skills-view-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+const grid=$('skills-grid'),gv=$('skills-graph-vis');
+if(v==='graph'){
+if(grid)grid.style.display='none';
+if(gv)gv.style.display='block';
+skillGraphLoad();
+}else{
+if(grid)grid.style.display='grid';
+if(gv)gv.style.display='none';
+}
+}
+async function skillGraphLoad(){
+const canvas=$('skills-graph-canvas');
+if(!canvas)return;
+// Check vis-network availability (CDN may not load offline)
+if(typeof vis==='undefined'||!vis.Network){
+$('skills-graph-unavailable').style.display='flex';
+$('skills-graph-canvas').style.display='none';
+return;
+}
+$('skills-graph-unavailable').style.display='none';
+$('skills-graph-canvas').style.display='block';
+const stats=$('skills-graph-stats');
+if(stats)stats.textContent='⏳ กำลังโหลด graph...';
+try{
+const qs=skillsBuildQs();
+const r=await fetch('/api/skills/graph?all=0'+(qs?('&'+qs):'')).then(r=>r.json());
+if(r.error)throw new Error(r.error);
+_skillGraphData=r;
+const nodes=new vis.DataSet(r.nodes.map(n=>({
+id:n.id,label:n.label,
+title:(n.title||n.id)+'\n📊 '+(Array.isArray(n.domain)?n.domain.join(','):n.domain)+' · 🔄 '+n.phase,
+color:{background:n.color,border:n.color,highlight:{background:n.color,border:'#fff'}},
+font:{color:'#f1f5f9',size:13},
+})));
+const edges=new vis.DataSet(r.edges.map(e=>({
+from:e.from,to:e.to,id:e.id,
+width:Math.min(e.weight,5),
+color:{color:'rgba(148,163,184,'+(0.2+e.weight*0.15)+')',highlight:'#5eead4'},
+smooth:{type:'continuous'},
+})));
+const data={nodes,edges};
+const options={
+physics:{enabled:true,solver:'barnesHut',barnesHut:{gravitationalConstant:-3000,centralGravity:0.3,springLength:120,springConstant:0.04,damping:0.4}},
+interaction:{hover:true,tooltipDelay:50,zoomView:true,dragView:true},
+nodes:{shape:'dot',size:14,borderWidth:2},
+edges:{arrows:{to:{enabled:false}}},
+};
+if(_skillGraphNet){_skillGraphNet.destroy();}
+_skillGraphNet=new vis.Network(canvas,data,options);
+_skillGraphNet.on('click',function(params){
+if(params.nodes.length>0){skillsOpenDetail(params.nodes[0]);}
+});
+if(stats)stats.textContent=`🧬 ${r.stats.nodes} skills · ${r.stats.edges} ความสัมพันธ์`;
+}catch(e){
+if(stats)stats.textContent='❌ '+e.message;
+}
 }
 function skillsBuildQs(){
 const qs=new URLSearchParams();
