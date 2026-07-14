@@ -452,6 +452,10 @@ def main() -> int:
                     help="Regenerate only a single domain overview file (iot|env|ai-tools|pharmacy)")
     ap.add_argument("--fetch-arxiv", action="store_true",
                     help="Also refresh arXiv source suggestions (network; can be slow)")
+    ap.add_argument("--no-chain", action="store_true",
+                    help="Skip all downstream chain scripts (raw-to-source, raw-to-synth, "
+                         "build-wiki-index/graph/canvas, review-check, build-vec-index) — "
+                         "useful to refresh context without triggering auto-gen noise")
     args = ap.parse_args()
 
     pages = collect_pages()
@@ -593,32 +597,34 @@ def main() -> int:
     # Chain: rebuild local search index + knowledge graph + embeddings (Phase 2-4 upgrade)
     # Best-effort — don't fail gen-index if these aren't installed yet
     scripts_dir = REPO_ROOT / "scripts"
-    for chained in ("build-wiki-index.py", "build-wiki-graph.py", "build-canvas.py"):
-        sp = scripts_dir / chained
-        if sp.exists():
-            try:
-                subprocess.run([sys.executable, str(sp)], check=True, capture_output=True)
-                print(f"[OK] chained: {chained}")
-            except subprocess.CalledProcessError as e:
-                print(f"[WARN] {chained} failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+    if not args.no_chain:
+        for chained in ("build-wiki-index.py", "build-wiki-graph.py", "build-canvas.py"):
+            sp = scripts_dir / chained
+            if sp.exists():
+                try:
+                    subprocess.run([sys.executable, str(sp)], check=True, capture_output=True)
+                    print(f"[OK] chained: {chained}")
+                except subprocess.CalledProcessError as e:
+                    print(f"[WARN] {chained} failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Chain: auto-synthesis pipeline (Phase 4c)
-    for chained_script in ("raw-to-source.py", "raw-to-synth.py"):
-        sp = scripts_dir / chained_script
-        if sp.exists():
-            try:
-                subprocess.run(
-                    [sys.executable, str(sp), "--apply"] if chained_script == "raw-to-source.py" else [sys.executable, str(sp)],
-                    check=True, capture_output=True
-                )
-                print(f"[OK] chained: {chained_script}")
-            except subprocess.CalledProcessError as e:
-                print(f"[WARN] raw-to-synth.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
+    if not args.no_chain:
+        for chained_script in ("raw-to-source.py", "raw-to-synth.py"):
+            sp = scripts_dir / chained_script
+            if sp.exists():
+                try:
+                    subprocess.run(
+                        [sys.executable, str(sp), "--apply"] if chained_script == "raw-to-source.py" else [sys.executable, str(sp)],
+                        check=True, capture_output=True
+                    )
+                    print(f"[OK] chained: {chained_script}")
+                except subprocess.CalledProcessError as e:
+                    print(f"[WARN] raw-to-synth.py failed: {e.stderr.decode('utf-8', 'replace')[:200]}", file=sys.stderr)
 
     # Chain: arXiv fetch (Phase 4) — Tier 1 search for domain-relevant papers, silent for speed
     arxiv_fetcher = scripts_dir / "fetch-arxiv.py"
     fetch_arxiv = args.fetch_arxiv or os.environ.get("AWIKI_GEN_INDEX_FETCH_ARXIV") == "1"
-    if arxiv_fetcher.exists() and fetch_arxiv and not args.check:
+    if arxiv_fetcher.exists() and fetch_arxiv and not args.check and not args.no_chain:
         arxiv_queries = {
             "iot":       'cat:cs.NI AND (IoT OR LoRa OR "embedded systems" OR "edge computing")',
             "ai-tools":  'cat:cs.AI AND (LLM OR "large language model" OR "agent benchmark" OR MCP)',
@@ -638,7 +644,7 @@ def main() -> int:
 
     # Chain: Skeptical Reviewer (Phase 5) — deterministic health check
     reviewer = scripts_dir / "review-check.py"
-    if reviewer.exists() and not args.check:
+    if reviewer.exists() and not args.check and not args.no_chain:
         try:
             subprocess.run([sys.executable, str(reviewer), "--profile", "content"], check=True, capture_output=True)
             print(f"[OK] chained: review-check.py --profile content (report -> wiki/context/review-report.md)")
@@ -647,7 +653,7 @@ def main() -> int:
 
     # Chain: build sqlite-vec semantic index (fastembed paraphrase-multilingual-MiniLM-L12-v2)
     vec_builder = scripts_dir / "build-vec-index.py"
-    if vec_builder.exists():
+    if vec_builder.exists() and not args.no_chain:
         try:
             subprocess.run([sys.executable, str(vec_builder)], check=True, capture_output=True, timeout=300)
             print(f"[OK] chained: build-vec-index.py")
