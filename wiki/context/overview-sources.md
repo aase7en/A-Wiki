@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 173 sources
+## Stats — 174 sources
 
 | slug | abstract |
 |------|----------|
@@ -83,6 +83,7 @@
 | `espressifesp-idf-espressif-iot-development-framework-officia` | (no abstract) |
 | `espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (no abstract) |
 | `firmai-financial-machine-learning` | 1. **Map ก่อน dive** — README ทำหน้าที่เป็น index ของหมวดวิธีการ… |
+| `firmai-financial-ml-readme` | ___ |
 | `freqtrade-pi5` | 1. Freqtrade รองรับ ARM64 (Pi 5) ผ่าน Docker image เฉพาะ `*_pi`… |
 | `get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (no abstract) |
 | `get-started-esp32-esp-idf-programming-guide-v44-documentation` | (no abstract) |

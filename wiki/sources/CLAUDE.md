@@ -14,7 +14,7 @@
 
 ---
 
-## Sources ที่มีอยู่ (172 files)
+## Sources ที่มีอยู่ (173 files)
 
 ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Tools, Pharmacy
 
