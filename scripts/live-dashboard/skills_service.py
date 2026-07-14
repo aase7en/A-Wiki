@@ -298,4 +298,114 @@ def agent_overview() -> dict[str, Any]:
     }
 
 
-__all__ = ["list_skills", "get_skill", "agent_overview", "KNOWN_AGENTS"]
+# ---------------------------------------------------------------------------
+# Coverage stats — powers the "📊 Coverage" dashboard tab
+# ---------------------------------------------------------------------------
+
+# Fields whose coverage we track. Each must be an optional v2 field; coverage
+# is the fraction of canonical skills that have it populated.
+_COVERAGE_FIELDS = ("th_description", "when_to_use", "examples",
+                    "process_steps", "invocation_hint", "invocation")
+
+
+def _skill_has(skill: dict[str, Any], field: str) -> bool:
+    """True if the skill has a non-empty value for the field."""
+    v = skill.get(field)
+    if v is None:
+        return False
+    if isinstance(v, str):
+        return bool(v.strip())
+    if isinstance(v, list):
+        return len(v) > 0
+    return True
+
+
+def coverage_stats() -> dict[str, Any]:
+    """GET /api/coverage — coverage metrics for the Coverage tab.
+
+    Returns overall %, broken down by domain / agent / phase, plus lists of
+    skills still missing each tracked field (for quick-fill UI).
+    """
+    reg = _load_registry()
+    skills = [s for s in reg.skills if s.get("status") == "canonical"]
+    total = len(skills)
+    if total == 0:
+        return {"overall": {}, "by_domain": {}, "by_agent": {}, "by_phase": {},
+                "missing": {}, "total": 0}
+
+    def _pct(n: int) -> float:
+        return round(n * 100.0 / total, 1)
+
+    # Overall
+    overall: dict[str, float] = {}
+    missing: dict[str, list[str]] = {}
+    for field in _COVERAGE_FIELDS:
+        n_have = sum(1 for s in skills if _skill_has(s, field))
+        overall[field] = _pct(n_have)
+        miss_list = [s["name"] for s in skills if not _skill_has(s, field)]
+        # Keep it short — UI shows top 10 with a "see all" hint.
+        missing[field] = miss_list[:50]
+
+    # By domain
+    by_domain: dict[str, dict[str, float]] = {}
+    domain_totals: dict[str, int] = {}
+    for s in skills:
+        domains = s.get("domain") or []
+        if isinstance(domains, str):
+            domains = [domains]
+        for d in domains:
+            domain_totals[d] = domain_totals.get(d, 0) + 1
+    for d, d_total in domain_totals.items():
+        bucket: dict[str, float] = {}
+        for field in _COVERAGE_FIELDS:
+            n_have = sum(
+                1 for s in skills
+                if d in (s.get("domain") if isinstance(s.get("domain"), list)
+                         else [s.get("domain")] if s.get("domain") else [])
+                and _skill_has(s, field)
+            )
+            bucket[field] = round(n_have * 100.0 / d_total, 1) if d_total else 0.0
+        by_domain[d] = bucket
+
+    # By agent (canonical_for_agent gives the per-agent view)
+    by_agent: dict[str, dict[str, float]] = {}
+    for agent in KNOWN_AGENTS:
+        if agent == "all":
+            view = skills
+        else:
+            allowed = {s["name"] for s in reg.canonical_for_agent(agent)}
+            view = [s for s in skills if s["name"] in allowed]
+        if not view:
+            continue
+        bucket = {}
+        for field in _COVERAGE_FIELDS:
+            n_have = sum(1 for s in view if _skill_has(s, field))
+            bucket[field] = round(n_have * 100.0 / len(view), 1)
+        by_agent[agent] = bucket
+
+    # By lifecycle phase
+    by_phase: dict[str, dict[str, float]] = {}
+    phase_totals: dict[str, int] = {}
+    for s in skills:
+        p = s.get("lifecycle_phase") or "none"
+        phase_totals[p] = phase_totals.get(p, 0) + 1
+    for p, p_total in phase_totals.items():
+        view = [s for s in skills if (s.get("lifecycle_phase") or "none") == p]
+        bucket = {}
+        for field in _COVERAGE_FIELDS:
+            n_have = sum(1 for s in view if _skill_has(s, field))
+            bucket[field] = round(n_have * 100.0 / p_total, 1) if p_total else 0.0
+        by_phase[p] = bucket
+
+    return {
+        "overall": overall,
+        "by_domain": by_domain,
+        "by_agent": by_agent,
+        "by_phase": by_phase,
+        "missing": missing,
+        "total": total,
+        "fields": list(_COVERAGE_FIELDS),
+    }
+
+
+__all__ = ["list_skills", "get_skill", "agent_overview", "coverage_stats", "KNOWN_AGENTS"]

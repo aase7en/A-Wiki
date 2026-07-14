@@ -583,6 +583,11 @@ class Handler(BaseHTTPRequestHandler):
             self._api_walkthroughs_list()
         elif path.startswith("/api/walkthroughs/"):
             self._api_walkthroughs_detail(path[len("/api/walkthroughs/"):])
+        elif path == "/api/coverage":
+            try:
+                self._json_response(skills_service.coverage_stats())
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
