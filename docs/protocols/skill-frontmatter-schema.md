@@ -173,3 +173,25 @@ needs no special order — the hook passes because the name is already in the
 registry. Just remember to re-run `python scripts/regen-skill-surfaces.py` if
 the edit changes the skill's `domain`/`lifecycle_phase`/`name` (frontmatter
 changes flow into generated surfaces), then commit.
+
+---
+
+## Skill folder layout convention
+
+นอกจาก `SKILL.md` (บังคับ) skills สามารถมี optional subdirectories:
+
+| Subfolder | Purpose | Examples in repo |
+|-----------|---------|------------------|
+| `examples/` | Runnable demos, notebooks, reference scripts สำหรับ agent หยิบใช้ได้เลย | `skills/awiki/monte-carlo-quant-analysis/examples/`, `skills/anthropic-skills/webapp-testing/examples/`, `skills/claude-thai/thai-text-processing/examples/` |
+| `references/` | External reference materials, supplementary docs | `skills/ecosystem/angular-developer/references/`, `skills/ecosystem/brand-voice/references/` |
+
+**Rules:**
+
+- `scripts/skills_registry/scan.py` ใช้ `rglob("SKILL.md")` → หา `SKILL.md` ที่ depth ใดก็ได้ แต่ **ไม่อ่าน** non-`SKILL.md` content
+- ไฟล์ใน `examples/`/`references/` ไม่ affect registry/surfaces — เป็น artifact สำหรับ agent หยิบใช้ ไม่ hook-enforced
+- **ไม่บังคับ** — skill ที่มีแค่ `SKILL.md` อย่างเดียวใช้ได้ปกติ
+- ถ้ามี `examples/` notebook ที่ต้องการ dependencies เพิ่ม → ระบุใน `requirements-optional.txt` (repo root) หรือ doc ใน skill เอง
+
+**เมื่อใช้ `examples/`:**
+- Skill มี code pattern ใน `SKILL.md` ที่ agent ควรรันได้จริง → ย้ายเป็น runnable notebook/script ใน `examples/`
+- ต้องการให้ agent เห็นผลลัพธ์จริง (executed notebook with outputs) เพื่ออ้างอิงโดยไม่ต้องรันใหม่
