@@ -581,6 +581,22 @@ to{transform:translateY(0);opacity:1}
   <div id="skills-detail-backdrop" onclick="skillsCloseDetail()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.6);backdrop-filter:blur(2px);z-index:300"></div>
   <div id="skills-detail" style="position:fixed;top:0;right:0;bottom:0;width:min(480px,92vw);background:var(--elev-1);border-left:1px solid var(--border2);z-index:301;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--shadow-lg);overflow-y:auto"></div>
 
+  <!-- CHUNK O — Skill Comparison bar + modal -->
+  <div id="compare-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--elev-2);border-top:1px solid var(--border2);padding:10px 16px;z-index:250;display:flex;align-items:center;gap:10px;box-shadow:0 -4px 16px rgba(0,0,0,.3)">
+    <span style="font-size:var(--fs-sm);color:var(--text-secondary)">⚖️ เปรียบเทียบ <b id="compare-count" style="color:var(--accent-brand)">0</b> skills</span>
+    <div id="compare-names" style="flex:1;display:flex;gap:6px;flex-wrap:wrap;overflow:hidden"></div>
+    <button class="set-btn sm" onclick="openCompareModal()" style="background:var(--accent-brand);color:var(--elev-0);font-weight:600">⚖️ เปรียบเทียบ</button>
+    <button class="set-btn sm" onclick="clearCompare()" style="color:var(--text-tertiary)">ล้าง</button>
+  </div>
+  <div id="compare-backdrop" onclick="closeCompareModal()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:350"></div>
+  <div id="compare-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px 24px;z-index:351;max-width:90vw;max-height:85vh;overflow:auto;box-shadow:var(--shadow-lg)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin:0;font-size:var(--fs-md);color:var(--accent-brand)">⚖️ เปรียบเทียบ Skills</h3>
+      <button onclick="closeCompareModal()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;min-width:32px;min-height:32px">✕</button>
+    </div>
+    <div id="compare-content"></div>
+  </div>
+
   <!-- 📊 COVERAGE VIEW — registry health: % Thai / invocation_hint / process_steps per dimension -->
   <div id="coverage-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
     <div class="glass-card" style="padding:14px 16px">
@@ -1347,7 +1363,8 @@ const SHORTCUTS=[
 ];
 let _gKey=null,_gKeyTimer=null;
 function _closeTopmost(){
-// Priority: sim modal > skills drawer > shortcuts help > settings
+// Priority: compare modal > sim modal > skills drawer > shortcuts help > settings
+if($('compare-backdrop')&&$('compare-backdrop').style.display!=='none'){closeCompareModal();return;}
 if($('sim-backdrop')&&$('sim-backdrop').classList.contains('show')){simClose();return;}
 if($('skills-detail')&&$('skills-detail').style.transform==='translateX(0)'){skillsCloseDetail();return;}
 if($('shortcuts-backdrop')&&$('shortcuts-backdrop').style.display!=='none'){_closeShortcutsHelp();return;}
@@ -1593,6 +1610,7 @@ return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}'
 <div class="skill-card-desc">${desc}</div>${when}
 <div class="skill-card-tags">${domains}${instBadge}</div>
 <div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง">📋</div>
+<input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" style="position:absolute;top:6px;right:34px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
 </div>`;
 }
 async function skillsOpenDetail(name){
@@ -1761,6 +1779,93 @@ async function loadSotd(){
 function skillsCloseDetail(){
 $('skills-detail').style.transform='translateX(100%)';
 $('skills-detail-backdrop').style.display='none';
+}
+
+// === CHUNK O — Skill Comparison Mode ===
+let _compareSet=new Set();
+const COMPARE_MAX=3;
+function toggleCompare(name){
+if(_compareSet.has(name)){
+_compareSet.delete(name);
+}else{
+if(_compareSet.size>=COMPARE_MAX){
+toast(`เปรียบเทียบได้สูงสุด ${COMPARE_MAX} skills`,'err');
+// Uncheck the checkbox that was just clicked.
+document.querySelectorAll('.skill-card').forEach(card=>{
+if(card.querySelector('.skill-card-name')&&card.querySelector('.skill-card-name').textContent===name){
+const cb=card.querySelector('.skill-card-compare');if(cb)cb.checked=false;
+}
+});
+return;
+}
+_compareSet.add(name);
+}
+updateCompareBar();
+// Sync all checkboxes (in case of re-render).
+document.querySelectorAll('.skill-card-compare').forEach(cb=>{
+const card=cb.closest('.skill-card');
+const nm=card&&card.querySelector('.skill-card-name')?card.querySelector('.skill-card-name').textContent:'';
+cb.checked=_compareSet.has(nm);
+});
+}
+function updateCompareBar(){
+const bar=$('compare-bar');
+if(_compareSet.size===0){bar.style.display='none';return;}
+bar.style.display='flex';
+$('compare-count').textContent=_compareSet.size;
+$('compare-names').innerHTML=Array.from(_compareSet).map(n=>
+`<span class="skill-tag" style="cursor:pointer;border-color:var(--accent-brand);color:var(--accent-brand)" onclick="toggleCompare('${n}');updateCompareBar();skillsLoad()">${n} ✕</span>`
+).join('');
+}
+function clearCompare(){
+_compareSet.clear();
+updateCompareBar();
+document.querySelectorAll('.skill-card-compare').forEach(cb=>cb.checked=false);
+}
+async function openCompareModal(){
+if(_compareSet.size<2){toast('เลือกอย่างน้อย 2 skills เพื่อเปรียบเทียบ','err');return;}
+const names=Array.from(_compareSet);
+const content=$('compare-content');
+content.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:30px">⏳ กำลังโหลด...</div>';
+$('compare-backdrop').style.display='block';
+$('compare-modal').style.display='block';
+try{
+const skills=await Promise.all(names.map(n=>fetch('/api/skills/'+encodeURIComponent(n)).then(r=>r.json())));
+if(skills.some(s=>s.error))throw new Error('บาง skill โหลดไม่ได้');
+renderCompareTable(skills);
+// Save last comparison.
+_lsSet('awiki-compare-last',names);
+}catch(e){
+content.innerHTML=`<div style="color:var(--accent-danger);padding:20px">❌ ${e.message}</div>`;
+}
+}
+function closeCompareModal(){
+$('compare-backdrop').style.display='none';
+$('compare-modal').style.display='none';
+}
+function _cmpCell(val,defaultValue){
+if(val===undefined||val===null||val==='')return `<td style="padding:6px 8px;color:var(--text-disabled);font-style:italic">${defaultValue||'—'}</td>`;
+if(Array.isArray(val))return `<td style="padding:6px 8px;color:var(--text-secondary)">${val.length?val.join(', '):(defaultValue||'—')}</td>`;
+return `<td style="padding:6px 8px;color:var(--text-secondary)">${val}</td>`;
+}
+function renderCompareTable(skills){
+const fields=[
+{label:'📝 คำอธิบายไทย',get:s=>s.th_description||''},
+{label:'💡 ใช้เมื่อไหร่',get:s=>s.when_to_use||''},
+{label:'📋 invocation_hint',get:s=>s.invocation_hint||''},
+{label:'🔄 lifecycle_phase',get:s=>s.lifecycle_phase||'none'},
+{label:'📂 domain',get:s=>Array.isArray(s.domain)?s.domain.join(', '):(s.domain||'')},
+{label:'🤖 invocation',get:s=>s.invocation||'manual'},
+{label:'#️⃣ process_steps',get:s=>(s.process_steps||[]).length+' ขั้น'},
+{label:'📦 ติดตั้ง',get:s=>s.installed?'✅':'📦 catalog'},
+{label:'#️⃣ version',get:s=>s.version||''},
+];
+const headerCells=skills.map(s=>`<th style="padding:8px;border-bottom:2px solid var(--border2);text-align:left;font-family:var(--font-mono);color:${skillsDomainColor((s.domain||[])[0]||'')};cursor:pointer" onclick="skillsOpenDetail('${s.name}');closeCompareModal()">${s.name}</th>`).join('');
+const rows=fields.map(f=>{
+const cells=skills.map(s=>_cmpCell(f.get(s))).join('');
+return `<tr><td style="padding:6px 8px;font-weight:600;color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap;border-right:1px solid var(--border)">${f.label}</td>${cells}</tr>`;
+}).join('');
+$('compare-content').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:var(--fs-xs)"><thead><tr><th style="padding:8px;border-bottom:2px solid var(--border2)"></th>${headerCells}</tr></thead><tbody>${rows}</tbody></table><p style="margin:12px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 คลิกชื่อ skill เพื่อดูรายละเอียดเต็ม</p>`;
 }
 // Copy a deep-link URL for a skill (?skill=<name>) to clipboard.
 function copySkillLink(name){
