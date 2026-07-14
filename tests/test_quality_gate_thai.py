@@ -15,7 +15,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import pytest  # noqa: E402
 
-from skills_registry.quality_gate_thai import validate  # noqa: E402
+from skills_registry.quality_gate_thai import validate, validate_invocation_hint  # noqa: E402
 
 
 # ---------- fixtures ----------
@@ -280,3 +280,97 @@ def test_secret_leak_drive_path():
     }"""
     ok, reason, _ = validate(body)
     assert not ok
+
+
+# ---------- invocation_hint validation ----------
+
+def test_inv_hint_slash_command():
+    ok, reason, data = validate_invocation_hint('{"invocation_hint": "/debug-mantra"}', "debug-mantra")
+    assert ok, reason
+    assert data == {"invocation_hint": "/debug-mantra"}
+
+
+def test_inv_hint_python_script():
+    ok, reason, data = validate_invocation_hint('{"invocation_hint": "python scripts/wiki/search-wiki.py"}')
+    assert ok, reason
+    assert data["invocation_hint"].startswith("python ")
+
+
+def test_inv_hint_bash_script():
+    ok, reason, data = validate_invocation_hint('{"invocation_hint": "bash scripts/dashboard-ensure.sh"}')
+    assert ok, reason
+    assert data["invocation_hint"].startswith("bash ")
+
+
+def test_inv_hint_bare_name():
+    ok, reason, data = validate_invocation_hint('{"invocation_hint": "context-budget"}')
+    assert ok, reason
+    assert data == {"invocation_hint": "context-budget"}
+
+
+def test_inv_hint_missing_key():
+    ok, reason, _ = validate_invocation_hint('{"foo": "bar"}')
+    assert not ok
+    assert "invocation_hint" in reason
+
+
+def test_inv_hint_not_string():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": 42}')
+    assert not ok
+
+
+def test_inv_hint_empty_string():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "   "}')
+    assert not ok
+
+
+def test_inv_hint_too_long():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "' + "x" * 200 + '"}')
+    assert not ok
+    assert "length" in reason.lower() or ">" in reason
+
+
+def test_inv_hint_has_newline():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "/foo\\nbar"}')
+    assert not ok
+    assert "control" in reason.lower()
+
+
+def test_inv_hint_has_quote():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "/foo \\"bar\\""}')
+    assert not ok
+    assert "quote" in reason.lower()
+
+
+def test_inv_hint_bad_shape():
+    # Neither slash, python, bash, nor bare-name shape
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "just some sentence"}')
+    assert not ok
+    assert "slash" in reason.lower() or "bare" in reason.lower() or "form" in reason.lower()
+
+
+def test_inv_hint_secret_leak():
+    ok, reason, _ = validate_invocation_hint('{"invocation_hint": "/Users/john/script.sh"}')
+    assert not ok
+    assert "leak" in reason.lower() or "Users" in reason
+
+
+def test_inv_hint_with_fences():
+    body = """```json
+    {"invocation_hint": "/debug-mantra"}
+    ```"""
+    ok, reason, data = validate_invocation_hint(body)
+    assert ok, reason
+    assert data["invocation_hint"] == "/debug-mantra"
+
+
+def test_inv_hint_empty_output():
+    ok, reason, _ = validate_invocation_hint("")
+    assert not ok
+    assert "empty" in reason.lower()
+
+
+def test_inv_hint_bad_json():
+    ok, reason, _ = validate_invocation_hint("{not json")
+    assert not ok
+    assert "parse" in reason.lower() or "json" in reason.lower()

@@ -44,9 +44,12 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
 from drive_secrets import fetch_secret  # noqa: E402
 
 from skills_registry.quality_gate_thai import validate as gate_validate  # noqa: E402
+from skills_registry.quality_gate_thai import validate_invocation_hint as gate_validate_hint  # noqa: E402
 from skills_registry.prompt_template_thai import (  # noqa: E402
     SYSTEM_PROMPT,
     build_user_message,
+    INVOCATION_HINT_SYSTEM_PROMPT,
+    build_invocation_hint_message,
 )
 
 REGISTRY = REPO_ROOT / "skills-registry.json"
@@ -66,9 +69,13 @@ SEED_PRICING = {
 CHARS_PER_TOKEN = 3
 # Estimated input size per skill (prompt + skill context).
 PROMPT_OVERHEAD_CHARS = 1800  # SYSTEM_PROMPT + user message wrapper
-# Estimated output size: ~600 chars (th_description 250 + when_to_use 60 +
-# examples 200 + process_steps 90).
-EXPECTED_OUTPUT_CHARS = 600
+# Estimated output size by field (chars). th_description/full emit ~600;
+# invocation_hint emits a tiny one-liner (~50).
+EXPECTED_OUTPUT_CHARS = {
+    "th_description": 600,
+    "process_steps": 600,  # uses the same full prompt + gate
+    "invocation_hint": 80,  # {"invocation_hint": "/<name>"} ≈ 40-60 chars
+}
 
 FAIL_RATE_ABORT_PCT = 25  # abort if quality_gate fail rate exceeds this
 
@@ -148,33 +155,47 @@ def call_llm(
     if not api_key:
         return "", 0, 0, f"missing secret {tier_cfg['secret_name']}"
 
-    user_msg = build_user_message(
-        skill_name=skill["name"],
-        en_description=skill.get("description", ""),
-        domain=", ".join(skill.get("domain") or []),
-        lifecycle_phase=skill.get("lifecycle_phase", ""),
-        category=skill.get("category", ""),
-        path_hint=skill.get("path", ""),
-    )
-    # When targeting process_steps only, narrow the prompt.
-    if field == "process_steps":
-        user_msg += (
-            "\n\nNote: this skill already has th_description and when_to_use. "
-            "Focus on producing good process_steps ONLY IF this skill has a clear "
-            "ordered workflow. If it does not, still emit valid JSON but you may "
-            "omit process_steps. Re-emit th_description/when_to_use/examples as "
-            "best you can so the gate passes."
+    # Field-specific prompt selection.
+    if field == "invocation_hint":
+        system_prompt = INVOCATION_HINT_SYSTEM_PROMPT
+        user_msg = build_invocation_hint_message(
+            skill_name=skill["name"],
+            en_description=skill.get("description", ""),
+            domain=", ".join(skill.get("domain") or []),
+            lifecycle_phase=skill.get("lifecycle_phase", ""),
+            path_hint=skill.get("path", ""),
         )
+        max_tokens = 120  # tiny output
+    else:
+        system_prompt = SYSTEM_PROMPT
+        user_msg = build_user_message(
+            skill_name=skill["name"],
+            en_description=skill.get("description", ""),
+            domain=", ".join(skill.get("domain") or []),
+            lifecycle_phase=skill.get("lifecycle_phase", ""),
+            category=skill.get("category", ""),
+            path_hint=skill.get("path", ""),
+        )
+        # When targeting process_steps only, narrow the prompt.
+        if field == "process_steps":
+            user_msg += (
+                "\n\nNote: this skill already has th_description and when_to_use. "
+                "Focus on producing good process_steps ONLY IF this skill has a clear "
+                "ordered workflow. If it does not, still emit valid JSON but you may "
+                "omit process_steps. Re-emit th_description/when_to_use/examples as "
+                "best you can so the gate passes."
+            )
+        max_tokens = 800
 
     payload = {
         "model": tier_cfg["model"],
         "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_msg},
         ],
         "temperature": 0.3,
         "stream": False,
-        "max_tokens": 800,
+        "max_tokens": max_tokens,
     }
     url = tier_cfg["endpoint"].rstrip("/") + "/chat/completions"
     request = urllib.request.Request(
@@ -237,15 +258,17 @@ def save_proposed(proposed: dict[str, dict[str, Any]]) -> None:
 # Estimate
 # ---------------------------------------------------------------------------
 
-def estimate(n_skills: int, tier_cfg: dict[str, Any]) -> dict[str, Any]:
+def estimate(n_skills: int, tier_cfg: dict[str, Any], field: str = "th_description") -> dict[str, Any]:
     """Project token usage + cost for n skills."""
     in_chars = n_skills * (PROMPT_OVERHEAD_CHARS + 100)  # 100 ≈ skill context
-    out_chars = n_skills * EXPECTED_OUTPUT_CHARS
+    expected_out = EXPECTED_OUTPUT_CHARS.get(field, 600)
+    out_chars = n_skills * expected_out
     in_tok = in_chars / CHARS_PER_TOKEN
     out_tok = out_chars / CHARS_PER_TOKEN
     cost = in_tok / 1_000_000 * tier_cfg["in_per_mtok"] + out_tok / 1_000_000 * tier_cfg["out_per_mtok"]
     return {
         "n_skills": n_skills,
+        "field": field,
         "tier_model": tier_cfg["model"],
         "tokens_in_est": int(in_tok),
         "tokens_out_est": int(out_tok),
@@ -264,7 +287,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--limit", type=int, default=50, help="Max skills to process")
     p.add_argument("--tier", type=int, default=1, choices=[1, 2], help="LLM tier (1=DeepSeek realtime, 2=OpenAI realtime)")
     p.add_argument("--domain", help="Filter by domain (e.g. ai-tools, code, security)")
-    p.add_argument("--field", default="th_description", choices=["th_description", "process_steps"],
+    p.add_argument("--field", default="th_description", choices=["th_description", "process_steps", "invocation_hint"],
                    help="Which field to fill (th_description is the default)")
     p.add_argument("--estimate", action="store_true", help="Print cost estimate and exit (no API call)")
     p.add_argument("--dry-run", action="store_true", help="Plan + show first 3 prompts, no API call")
@@ -301,7 +324,7 @@ def main(argv: list[str] | None = None) -> int:
               f"(limit={args.limit}, domain={args.domain or 'any'}, resume={len(resume_set)} skipped)")
         return 0
 
-    est = estimate(len(candidates), tier_cfg)
+    est = estimate(len(candidates), tier_cfg, args.field)
 
     if args.estimate:
         print(json.dumps(est, indent=2, ensure_ascii=False))
@@ -319,12 +342,21 @@ def main(argv: list[str] | None = None) -> int:
         print("\n--- DRY-RUN: first 3 prompts ---")
         for s in candidates[:3]:
             print(f"\n[{s['name']}] ({', '.join(s.get('domain') or [])})")
-            print(build_user_message(
-                skill_name=s["name"], en_description=s.get("description", ""),
-                domain=", ".join(s.get("domain") or []),
-                lifecycle_phase=s.get("lifecycle_phase", ""),
-                category=s.get("category", ""), path_hint=s.get("path", ""),
-            )[:300] + "...")
+            if args.field == "invocation_hint":
+                msg = build_invocation_hint_message(
+                    skill_name=s["name"], en_description=s.get("description", ""),
+                    domain=", ".join(s.get("domain") or []),
+                    lifecycle_phase=s.get("lifecycle_phase", ""),
+                    path_hint=s.get("path", ""),
+                )
+            else:
+                msg = build_user_message(
+                    skill_name=s["name"], en_description=s.get("description", ""),
+                    domain=", ".join(s.get("domain") or []),
+                    lifecycle_phase=s.get("lifecycle_phase", ""),
+                    category=s.get("category", ""), path_hint=s.get("path", ""),
+                )
+            print(msg[:300] + "...")
         print(f"\n(dry-run — would call LLM for {len(candidates)} skills, no API call made)")
         return 0
 
@@ -354,15 +386,22 @@ def main(argv: list[str] | None = None) -> int:
                      + tok_out / 1_000_000 * tier_cfg["out_per_mtok"])
         cumulative_cost += call_cost
 
-        ok, reason, parsed = gate_validate(content, skill_name=s["name"])
+        # Field-specific validation dispatch.
+        if args.field == "invocation_hint":
+            ok, reason, parsed = gate_validate_hint(content, skill_name=s["name"])
+        else:
+            ok, reason, parsed = gate_validate(content, skill_name=s["name"])
         if not ok:
             failed += 1
             errors.append(f"{s['name']}: gate fail — {reason}")
             print(f"  [{i}/{len(candidates)}] {s['name']} ⚠️  gate fail ({reason[:80]})  [${cumulative_cost:.4f}]")
         else:
-            # When targeting process_steps, only keep process_steps (+invocation)
+            # Field-specific: only keep the target field in .proposed
+            # (avoids overwriting other fields edited elsewhere).
             if args.field == "process_steps" and "process_steps" in parsed:
                 proposed[s["name"]] = {"process_steps": parsed["process_steps"]}
+            elif args.field == "invocation_hint" and "invocation_hint" in parsed:
+                proposed[s["name"]] = {"invocation_hint": parsed["invocation_hint"]}
             else:
                 proposed[s["name"]] = parsed
             passed += 1

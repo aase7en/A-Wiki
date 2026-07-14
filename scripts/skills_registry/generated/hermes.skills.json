@@ -34,7 +34,8 @@
         "เชื่อมต่อ bot กับ Telegram",
         "ส่งคำสั่ง /wiki",
         "รอผลลัพธ์จาก bot"
-      ]
+      ],
+      "invocation_hint": "/a-wiki-telegram"
     },
     {
       "name": "ask-notebooklm",
@@ -61,7 +62,8 @@
           "scenario": "'ระบบ IoT มีอะไรบ้าง'",
           "how": "ask-notebooklm รวมข้อมูลจากทุกหน้า iot/"
         }
-      ]
+      ],
+      "invocation_hint": "/ask-notebooklm"
     },
     {
       "name": "awiki-lifecycle-router",
@@ -101,7 +103,8 @@
         "verify",
         "review",
         "ship"
-      ]
+      ],
+      "invocation_hint": "/awiki-lifecycle-router"
     },
     {
       "name": "browser-testing-with-devtools",
@@ -136,7 +139,8 @@
         "trace network",
         "profile performance",
         "report"
-      ]
+      ],
+      "invocation_hint": "/browser-testing-with-devtools"
     },
     {
       "name": "build",
@@ -175,7 +179,8 @@
         "ส่งต่อไปยัง persona-orchestrator.py",
         "ดำเนินการแบบ incremental",
         "แนะนำ TDD"
-      ]
+      ],
+      "invocation_hint": "/build"
     },
     {
       "name": "ci-cd-and-automation",
@@ -204,7 +209,8 @@
           "scenario": "ทุก push ต้อง test",
           "how": "CI: run pytest + lint ก่อน merge"
         }
-      ]
+      ],
+      "invocation_hint": "/ci-cd-and-automation"
     },
     {
       "name": "code-simplification",
@@ -232,7 +238,8 @@
           "scenario": "ฟังก์ชัน 200 บรรทัด",
           "how": "แยกเป็น 3-4 ฟังก์ชันเล็ก ตั้งชื่อให้อธิบายตัวเอง"
         }
-      ]
+      ],
+      "invocation_hint": "/code-simplification"
     },
     {
       "name": "debug-mantra",
@@ -269,7 +276,8 @@
         "Trace fail path",
         "ตั้งและหักล้างสมมติฐาน",
         "Cross-reference breadcrumbs"
-      ]
+      ],
+      "invocation_hint": "/debug-mantra"
     },
     {
       "name": "delegate-subagent",
@@ -296,7 +304,8 @@
           "scenario": "ค้นหา symbol ใน codebase ใหญ่",
           "how": "delegate ให้ Explore agent"
         }
-      ]
+      ],
+      "invocation_hint": "/delegate-subagent"
     },
     {
       "name": "deprecation-and-migration",
@@ -324,7 +333,8 @@
           "scenario": "เลิก API v1",
           "how": "deprecate → แจ้ง → ให้เวลา → migrate → sunset"
         }
-      ]
+      ],
+      "invocation_hint": "/deprecation-and-migration"
     },
     {
       "name": "documentation-and-adrs",
@@ -352,7 +362,8 @@
           "scenario": "เลือก Postgres แทน MySQL",
           "how": "เขียน ADR: context, options, decision, consequences"
         }
-      ]
+      ],
+      "invocation_hint": "/documentation-and-adrs"
     },
     {
       "name": "export-notebooklm",
@@ -383,7 +394,8 @@
           "scenario": "ผู้ใช้ขอให้อัปเดต NotebookLM หลังจากเพิ่มเนื้อหาใหม่ใน wiki",
           "how": "พิมพ์ /snapshot-nb หรือพูดว่า 'รีเฟรช NotebookLM snapshot'"
         }
-      ]
+      ],
+      "invocation_hint": "/export-notebooklm"
     },
     {
       "name": "git-workflow-and-versioning",
@@ -411,7 +423,8 @@
           "scenario": "ทำ semantic versioning",
           "how": "ตั้งกฎ: feat→minor, fix→patch, break→major"
         }
-      ]
+      ],
+      "invocation_hint": "/git-workflow-and-versioning"
     },
     {
       "name": "hermes-fan-out",
@@ -448,7 +461,8 @@
         "รัน test-engineer",
         "รัน security-auditor",
         "รวมผลลัพธ์เป็นรายงาน triaged"
-      ]
+      ],
+      "invocation_hint": "/hermes-fan-out"
     },
     {
       "name": "ingest-source",
@@ -481,7 +495,8 @@
         "ผ่าน harness route",
         "สร้าง wiki/sources/",
         "regen index"
-      ]
+      ],
+      "invocation_hint": "/ingest-source"
     },
     {
       "name": "lint-wiki",
@@ -508,7 +523,8 @@
           "scenario": "เพิ่มหน้า wiki 10 หน้า",
           "how": "/lint-wiki ตรวจ link + frontmatter ให้ครบ"
         }
-      ]
+      ],
+      "invocation_hint": "/lint-wiki"
     },
     {
       "name": "observability-and-instrumentation",
@@ -548,7 +564,8 @@
         "เปิด OpenTelemetry tracing",
         "กำหนด symptom-based alerting",
         "ทดสอบ telemetry pipeline"
-      ]
+      ],
+      "invocation_hint": "/observability-and-instrumentation"
     },
     {
       "name": "obsidian",
@@ -575,7 +592,8 @@
           "scenario": "สร้าง note ใหม่",
           "how": "ใช้ template, tag, ลิงก์ไป note ที่เกี่ยวข้อง"
         }
-      ]
+      ],
+      "invocation_hint": "/obsidian"
     },
     {
       "name": "performance-optimization",
@@ -603,7 +621,8 @@
           "scenario": "API ตอบช้า 2 วิ",
           "how": "profile → พบ N+1 query → แก้ → วัดใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/performance-optimization"
     },
     {
       "name": "pharmacy-order-lookup",
@@ -635,7 +654,8 @@
           "scenario": "เภสัชกรต้องการดูรายละเอียดใบสั่งยาของผู้ป่วยชื่อ สมชาย",
           "how": "ใช้คำสั่ง /pharmacy-order-lookup patient_name=สมชาย"
         }
-      ]
+      ],
+      "invocation_hint": "/pharmacy-order-lookup"
     },
     {
       "name": "plan",
@@ -669,7 +689,8 @@
         "ส่งต่อให้ persona-orchestrator.py",
         "แยกงานเป็นงานย่อยที่ตรวจสอบได้",
         "ส่งผลลัพธ์กลับไปยัง Telegram"
-      ]
+      ],
+      "invocation_hint": "/plan"
     },
     {
       "name": "planning-and-task-breakdown",
@@ -698,7 +719,8 @@
           "scenario": "ย้ายระบบจาก REST เป็น GraphQL",
           "how": "แตกเป็น: schema → resolver → migration → test → cutover"
         }
-      ]
+      ],
+      "invocation_hint": "/planning-and-task-breakdown"
     },
     {
       "name": "post-mortem",
@@ -731,7 +753,8 @@
         "หา root cause",
         "ประเมิน impact",
         "กำหนด action items"
-      ]
+      ],
+      "invocation_hint": "/post-mortem"
     },
     {
       "name": "render-html",
@@ -758,7 +781,8 @@
           "scenario": "report 1000 บรรทัด",
           "how": "emit JSON → render-html → ได้ไฟล์ดู ไม่เปลือง token"
         }
-      ]
+      ],
+      "invocation_hint": "/render-html"
     },
     {
       "name": "review",
@@ -797,7 +821,8 @@
         "รัน persona-orchestrator.py",
         "ตรวจสอบตามลำดับบทบาท",
         "ส่งผลลัพธ์กลับ"
-      ]
+      ],
+      "invocation_hint": "/review"
     },
     {
       "name": "scrutinize",
@@ -824,7 +849,8 @@
           "scenario": "PR ใหญ่ก่อน merge",
           "how": "scrutinize ทุกไฟล์: logic, test, security, perf"
         }
-      ]
+      ],
+      "invocation_hint": "/scrutinize"
     },
     {
       "name": "search",
@@ -855,7 +881,8 @@
           "scenario": "ผู้ใช้ต้องการค้นหาบทความเกี่ยวกับ 'deploy'",
           "how": "พิมพ์ /search deploy"
         }
-      ]
+      ],
+      "invocation_hint": "/search"
     },
     {
       "name": "security-and-hardening",
@@ -884,7 +911,8 @@
           "scenario": "API มี input จาก user",
           "how": "ตรวจ SQL injection, XSS, auth"
         }
-      ]
+      ],
+      "invocation_hint": "/security-and-hardening"
     },
     {
       "name": "ship",
@@ -918,7 +946,8 @@
         "รัน pre-launch checklist",
         "ให้ persona ตรวจสอบแบบ parallel",
         "สรุปผลและแจ้งกลับ"
-      ]
+      ],
+      "invocation_hint": "/ship"
     },
     {
       "name": "shipping-and-launch",
@@ -946,7 +975,8 @@
           "scenario": "deploy ฟีเจอร์ checkout ใหม่",
           "how": "เช็ค: test ผ่าน, migration dry-run, rollback script พร้อม, alert ตั้ง"
         }
-      ]
+      ],
+      "invocation_hint": "/shipping-and-launch"
     },
     {
       "name": "spec",
@@ -985,7 +1015,8 @@
         "เรียก persona-orchestrator.py",
         "ร่าง specification",
         "ส่งกลับผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/spec"
     },
     {
       "name": "spec-driven-development",
@@ -1023,7 +1054,8 @@
         "เขียน acceptance criteria",
         "แยกหน้า concern",
         "เอาสเปกมาทำ TDD"
-      ]
+      ],
+      "invocation_hint": "/spec-driven-development"
     },
     {
       "name": "thai-address",
@@ -1054,7 +1086,8 @@
           "scenario": "ต้องการค้นหารหัสไปรษณีย์ของจังหวัดเชียงใหม่",
           "how": "ใช้คำสั่ง /lookup-postcode จังหวัดเชียงใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-address"
     },
     {
       "name": "thai-customer-service",
@@ -1085,7 +1118,8 @@
           "scenario": "ต้องการสคริปต์ขอโทษและเสนอส่วนลดสำหรับสินค้าชำรุด",
           "how": "ใช้คำสั่ง /thai-customer-service พร้อมรายละเอียด เช่น 'เขียนข้อความขอโทษและเสนอคูปองส่วนลด 20% สำหรับสินค้าที่เสียหาย'"
         }
-      ]
+      ],
+      "invocation_hint": "thai-customer-service"
     },
     {
       "name": "thai-date-format",
@@ -1112,7 +1146,8 @@
           "scenario": "วันที่ 2026-07-13",
           "how": "แปลงเป็น 13 กรกฎาคม 2569"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-date-format"
     },
     {
       "name": "thai-festival-card",
@@ -1149,7 +1184,8 @@
         "ระบุผู้รับและระดับความสัมพันธ์",
         "เลือกรูปแบบภาษา (ทางการ/กันเอง)",
         "สร้างข้อความพร้อมตรวจสอบความเหมาะสม"
-      ]
+      ],
+      "invocation_hint": "/thai-festival-card"
     },
     {
       "name": "thai-government-form",
@@ -1180,7 +1216,8 @@
           "scenario": "ต้องการทำหนังสือมอบอำนาจให้คนอื่นไปติดต่อราชการแทน",
           "how": "ใช้คำสั่ง /thai-government-form ประเภท 'หนังสือมอบอำนาจ' พร้อมระบุชื่อผู้มอบ ผู้รับมอบ และอำนาจที่มอบ"
         }
-      ]
+      ],
+      "invocation_hint": "thai-government-form"
     },
     {
       "name": "thai-id-validate",
@@ -1218,7 +1255,8 @@
         "ตรวจสอบ checksum",
         "ปรับรูปแบบมาตรฐาน",
         "ส่งผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/thai-id-validate"
     },
     {
       "name": "thai-invoice",
@@ -1257,7 +1295,8 @@
         "คำนวณภาษีและส่วนลด",
         "ตรวจสอบความถูกต้อง",
         "ส่งออกเป็น PDF"
-      ]
+      ],
+      "invocation_hint": "/thai-invoice"
     },
     {
       "name": "thai-pdpa",
@@ -1284,7 +1323,8 @@
           "scenario": "ฟอร์มเก็บ email",
           "how": "ตรวจ consent, purpose, สิทธิ์ user"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-pdpa"
     },
     {
       "name": "thai-resume",
@@ -1315,7 +1355,8 @@
           "scenario": "มีเรซูเม่ภาษาอังกฤษอยู่แล้ว ต้องการแปลเป็นภาษาไทย",
           "how": "วางเนื้อหาเรซูเม่ภาษาอังกฤษแล้วพิมพ์ '/thai-resume แปลเรซูเม่นี้เป็นภาษาไทย'"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-resume"
     },
     {
       "name": "thai-social-caption",
@@ -1346,7 +1387,8 @@
           "scenario": "ต้องการโพสต์ประชาสัมพันธ์กิจกรรมบริษัท",
           "how": "พิมพ์ /thai-social-caption เขียนโพสต์ประชาสัมพันธ์งาน 'เปิดตัวผลิตภัณฑ์ใหม่' สำหรับ Facebook"
         }
-      ]
+      ],
+      "invocation_hint": "thai-social-caption"
     },
     {
       "name": "thai-text-processing",
@@ -1373,7 +1415,8 @@
           "scenario": "สร้าง search ภาษาไทย",
           "how": "ใช้ word segmentation ก่อน index"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-text-processing"
     },
     {
       "name": "thai-translate",
@@ -1400,7 +1443,8 @@
           "scenario": "แปล README อังกฤษ",
           "how": "/thai-translate รักษาคำเทคนิค (deploy, API) แปลที่เหลือ"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-translate"
     },
     {
       "name": "wiki",
@@ -1431,7 +1475,8 @@
           "scenario": "ผู้ใช้ต้องการหาข้อมูลเกี่ยวกับ 'machine learning'",
           "how": "พิมพ์ /wiki machine learning"
         }
-      ]
+      ],
+      "invocation_hint": "/wiki"
     },
     {
       "name": "wiki-search-local",
@@ -1458,7 +1503,8 @@
           "scenario": "อยากรู้เรื่อง DS18B20",
           "how": "search 'DS18B20' ก่อนเขียนหน้าใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/wiki-search-local"
     }
   ]
 }

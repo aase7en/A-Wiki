@@ -26,7 +26,8 @@
           "scenario": "อยาก ingest URL",
           "how": "/ingest <URL>"
         }
-      ]
+      ],
+      "invocation_hint": "/a-wiki-commands"
     },
     {
       "name": "a-wiki-telegram",
@@ -62,7 +63,8 @@
         "เชื่อมต่อ bot กับ Telegram",
         "ส่งคำสั่ง /wiki",
         "รอผลลัพธ์จาก bot"
-      ]
+      ],
+      "invocation_hint": "/a-wiki-telegram"
     },
     {
       "name": "hermes-fan-out",
@@ -99,7 +101,8 @@
         "รัน test-engineer",
         "รัน security-auditor",
         "รวมผลลัพธ์เป็นรายงาน triaged"
-      ]
+      ],
+      "invocation_hint": "/hermes-fan-out"
     },
     {
       "name": "wiki",
@@ -130,7 +133,8 @@
           "scenario": "ผู้ใช้ต้องการหาข้อมูลเกี่ยวกับ 'machine learning'",
           "how": "พิมพ์ /wiki machine learning"
         }
-      ]
+      ],
+      "invocation_hint": "/wiki"
     },
     {
       "name": "search",
@@ -161,7 +165,8 @@
           "scenario": "ผู้ใช้ต้องการค้นหาบทความเกี่ยวกับ 'deploy'",
           "how": "พิมพ์ /search deploy"
         }
-      ]
+      ],
+      "invocation_hint": "/search"
     },
     {
       "name": "review",
@@ -200,7 +205,8 @@
         "รัน persona-orchestrator.py",
         "ตรวจสอบตามลำดับบทบาท",
         "ส่งผลลัพธ์กลับ"
-      ]
+      ],
+      "invocation_hint": "/review"
     },
     {
       "name": "spec",
@@ -239,7 +245,8 @@
         "เรียก persona-orchestrator.py",
         "ร่าง specification",
         "ส่งกลับผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/spec"
     },
     {
       "name": "plan",
@@ -273,7 +280,8 @@
         "ส่งต่อให้ persona-orchestrator.py",
         "แยกงานเป็นงานย่อยที่ตรวจสอบได้",
         "ส่งผลลัพธ์กลับไปยัง Telegram"
-      ]
+      ],
+      "invocation_hint": "/plan"
     },
     {
       "name": "build",
@@ -312,7 +320,8 @@
         "ส่งต่อไปยัง persona-orchestrator.py",
         "ดำเนินการแบบ incremental",
         "แนะนำ TDD"
-      ]
+      ],
+      "invocation_hint": "/build"
     },
     {
       "name": "ship",
@@ -346,7 +355,8 @@
         "รัน pre-launch checklist",
         "ให้ persona ตรวจสอบแบบ parallel",
         "สรุปผลและแจ้งกลับ"
-      ]
+      ],
+      "invocation_hint": "/ship"
     },
     {
       "name": "accessibility",
@@ -384,7 +394,8 @@
         "ทดสอบด้วยเครื่องมืออัตโนมัติ",
         "ทดสอบกับผู้ใช้จริง",
         "ตรวจสอบและปรับปรุงซ้ำ"
-      ]
+      ],
+      "invocation_hint": "/accessibility"
     },
     {
       "name": "ag2-goal",
@@ -410,7 +421,8 @@
           "scenario": "research และสรุป 10 paper",
           "how": "/ag2-goal planner แตกงาน → executor ทำ → รวม"
         }
-      ]
+      ],
+      "invocation_hint": "/ag2-goal"
     },
     {
       "name": "agent-architecture-audit",
@@ -437,7 +449,8 @@
           "scenario": "มี 50 skills แล้ว",
           "how": "audit: ซ้ำไหม, conflict ไหม, ขาดอะไร"
         }
-      ]
+      ],
+      "invocation_hint": "/agent-architecture-audit"
     },
     {
       "name": "agent-eval",
@@ -463,7 +476,8 @@
           "scenario": "เปลี่ยน prompt",
           "how": "eval ก่อน/หลัง เพื่อดูว่าดีขึ้นจริง"
         }
-      ]
+      ],
+      "invocation_hint": "/agent-eval"
     },
     {
       "name": "agent-harness-construction",
@@ -489,7 +503,8 @@
           "scenario": "agent เลือก tool ผิดบ่อย",
           "how": "/agent-harness-construction ปรับ description + schema"
         }
-      ]
+      ],
+      "invocation_hint": "/agent-harness-construction"
     },
     {
       "name": "agent-introspection-debugging",
@@ -522,7 +537,8 @@
         "diagnose root cause",
         "contained recovery",
         "prevent regression"
-      ]
+      ],
+      "invocation_hint": "/agent-introspection-debugging"
     },
     {
       "name": "agent-payment-x402",
@@ -559,7 +575,8 @@
         "กำหนดวงเงินใช้จ่ายสูงสุด",
         "เรียกใช้ agent พร้อม payment x402",
         "ตรวจสอบประวัติการชำระเงิน"
-      ]
+      ],
+      "invocation_hint": "/agent-payment-x402"
     },
     {
       "name": "agent-sort",
@@ -585,7 +602,8 @@
           "scenario": "repo ใหม่ ไม่รู้จะใส่ skill ไหน",
           "how": "/agent-sort ได้ลำดับ install พร้อมเหตุผล"
         }
-      ]
+      ],
+      "invocation_hint": "/agent-sort"
     },
     {
       "name": "agentic-engineering",
@@ -622,7 +640,8 @@
         "เลือกโมเดลตามต้นทุน",
         "execute งาน",
         "ตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/agentic-engineering"
     },
     {
       "name": "agentic-os",
@@ -659,7 +678,8 @@
         "กำหนด slash commands",
         "ตั้งค่าหน่วยความจำแบบไฟล์",
         "กำหนด scheduled automation"
-      ]
+      ],
+      "invocation_hint": "/agentic-os"
     },
     {
       "name": "ai-first-engineering",
@@ -696,7 +716,8 @@
         "ตรวจสอบและปรับแต่งผลลัพธ์",
         "ทดสอบและ integrate",
         "deploy และ monitor"
-      ]
+      ],
+      "invocation_hint": "/ai-first-engineering"
     },
     {
       "name": "ai-regression-testing",
@@ -733,7 +754,8 @@
         "รัน regression test suite",
         "ตรวจสอบผลลัพธ์และรายงานบั๊ก",
         "แก้ไขและทดสอบซ้ำ"
-      ]
+      ],
+      "invocation_hint": "/ai-regression-testing"
     },
     {
       "name": "algorithmic-art",
@@ -770,7 +792,8 @@
         "วาดตามอัลกอริทึมที่กำหนด",
         "แสดงผลลัพธ์ให้ผู้ใช้",
         "ปรับพารามิเตอร์ตาม feedback"
-      ]
+      ],
+      "invocation_hint": "/algorithmic-art"
     },
     {
       "name": "android-clean-architecture",
@@ -807,7 +830,8 @@
         "สร้าง UseCase และ Repository interface",
         "implement data layer",
         "เชื่อมต่อกับ presentation layer"
-      ]
+      ],
+      "invocation_hint": "/android-clean-architecture"
     },
     {
       "name": "angular-developer",
@@ -844,7 +868,8 @@
         "เขียน code ตามแนวทาง Angular",
         "ตรวจสอบ reactivity ด้วย signal",
         "ทดสอบและปรับปรุง"
-      ]
+      ],
+      "invocation_hint": "/angular-developer"
     },
     {
       "name": "api-connector-builder",
@@ -877,7 +902,8 @@
         "สร้าง connector ตาม pattern",
         "ทดสอบการเชื่อมต่อ",
         "เพิ่มเอกสารการใช้งาน"
-      ]
+      ],
+      "invocation_hint": "/api-connector-builder"
     },
     {
       "name": "api-design",
@@ -903,7 +929,8 @@
           "scenario": "API สั่งซื้อ",
           "how": "ออกแบบ /orders, /orders/{id}, error code"
         }
-      ]
+      ],
+      "invocation_hint": "/api-design"
     },
     {
       "name": "architecture-decision-records",
@@ -939,7 +966,8 @@
         "บันทึกบริบทและทางเลือก",
         "สรุปข้อตัดสินใจ",
         "จัดเก็บ ADR เป็นไฟล์"
-      ]
+      ],
+      "invocation_hint": "/architecture-decision-records"
     },
     {
       "name": "article-writing",
@@ -965,7 +993,8 @@
           "scenario": "สอนใช้ MQTT",
           "how": "/article-writing โครง intro → concept → example → summary"
         }
-      ]
+      ],
+      "invocation_hint": "/article-writing"
     },
     {
       "name": "ask-notebooklm",
@@ -992,7 +1021,8 @@
           "scenario": "'ระบบ IoT มีอะไรบ้าง'",
           "how": "ask-notebooklm รวมข้อมูลจากทุกหน้า iot/"
         }
-      ]
+      ],
+      "invocation_hint": "/ask-notebooklm"
     },
     {
       "name": "assessment-generator",
@@ -1022,7 +1052,8 @@
           "scenario": "ต้องการแบบประเมินแบบเลือกตอบจากเอกสาร PDF ที่อัปโหลด",
           "how": "ใช้คำสั่ง /generate-assessment --file path/to/document.pdf --type multiple-choice"
         }
-      ]
+      ],
+      "invocation_hint": "/assessment-generator"
     },
     {
       "name": "autoglm-browser-agent",
@@ -1052,7 +1083,8 @@
           "scenario": "ต้องการกรอกฟอร์มลงทะเบียนอัตโนมัติ",
           "how": "ใช้คำสั่ง /browser fill form พร้อมระบุฟิลด์และค่าที่ต้องการ"
         }
-      ]
+      ],
+      "invocation_hint": "/autoglm-browser-agent"
     },
     {
       "name": "automation-audit-ops",
@@ -1089,7 +1121,8 @@
         "วิเคราะห์ความซ้ำซ้อนและ overlap",
         "สร้างรายงาน evidence-first",
         "เสนอแนะการปรับปรุง"
-      ]
+      ],
+      "invocation_hint": "/automation-audit-ops"
     },
     {
       "name": "autonomous-agent-harness",
@@ -1127,7 +1160,8 @@
         "เพิ่มคิวงาน",
         "เปิดใช้งาน computer use",
         "ตรวจสอบและปรับแต่ง"
-      ]
+      ],
+      "invocation_hint": "/autonomous-agent-harness"
     },
     {
       "name": "autonomous-loops",
@@ -1202,7 +1236,8 @@
         "ประเมินผลกระทบต่อระบบ",
         "ยืนยันความถูกต้อง",
         "ดำเนินการเปลี่ยนแปลง"
-      ]
+      ],
+      "invocation_hint": "/awiki-brain-improvement-gate"
     },
     {
       "name": "awiki-creator-layer",
@@ -1238,7 +1273,8 @@
         "กรองข้อมูลที่ไม่ปลอดภัย",
         "จัดรูปแบบเป็นภาษาไทย",
         "สร้าง output ตามประเภทที่เลือก"
-      ]
+      ],
+      "invocation_hint": "/awiki-creator-layer"
     },
     {
       "name": "awiki-lifecycle-router",
@@ -1278,7 +1314,8 @@
         "verify",
         "review",
         "ship"
-      ]
+      ],
+      "invocation_hint": "/awiki-lifecycle-router"
     },
     {
       "name": "backend-patterns",
@@ -1304,7 +1341,8 @@
           "scenario": "API ช้า",
           "how": "/backend-patterns ตรวจ N+1 query, caching, indexing"
         }
-      ]
+      ],
+      "invocation_hint": "/backend-patterns"
     },
     {
       "name": "benchmark",
@@ -1341,7 +1379,8 @@
         "รัน benchmark หลัง PR",
         "เปรียบเทียบผลลัพธ์",
         "สรุป regression หรือ improvement"
-      ]
+      ],
+      "invocation_hint": "/benchmark"
     },
     {
       "name": "benchmark-optimization-loop",
@@ -1379,7 +1418,8 @@
         "วัดและเปรียบเทียบผล",
         "เลือก variant ที่ดีที่สุด",
         "วนซ้ำถ้ายังไม่พอใจ"
-      ]
+      ],
+      "invocation_hint": "/benchmark-optimization-loop"
     },
     {
       "name": "blender-motion-state-inspection",
@@ -1416,7 +1456,8 @@
         "ตรวจสอบท่าโพสและ keyframe",
         "ประเมินการสัมผัสพื้น",
         "รายงานผลการตรวจสอบ"
-      ]
+      ],
+      "invocation_hint": "/blender-motion-state-inspection"
     },
     {
       "name": "blueprint",
@@ -1453,7 +1494,8 @@
         "สร้างโครงสร้างไฟล์และโฟลเดอร์",
         "ติดตั้ง dependencies พื้นฐาน",
         "ตั้งค่า config เริ่มต้น"
-      ]
+      ],
+      "invocation_hint": "/blueprint"
     },
     {
       "name": "brainstorm-before-build",
@@ -1485,7 +1527,8 @@
         "เสนอ 2-3 approach",
         "รอ user เลือก",
         "เขียน plan"
-      ]
+      ],
+      "invocation_hint": "/brainstorm-before-build"
     },
     {
       "name": "brand-guidelines",
@@ -1520,7 +1563,8 @@
         "เลือก artifact ที่ต้องการ",
         "ระบุสีหรือฟอนต์ที่ต้องการ",
         "ใช้คำสั่ง /brand-guidelines apply"
-      ]
+      ],
+      "invocation_hint": "/brand-guidelines"
     },
     {
       "name": "brand-voice",
@@ -1550,7 +1594,8 @@
           "scenario": "นักเขียนคอนเทนต์ต้องการตรวจสอบว่าข้อความใหม่สอดคล้องกับสไตล์ของแบรนด์หรือไม่",
           "how": "เรียกใช้สคริปต์ brand-voice-check.py พร้อมไฟล์ข้อความที่ต้องการตรวจสอบ"
         }
-      ]
+      ],
+      "invocation_hint": "/brand-voice"
     },
     {
       "name": "browser-qa",
@@ -1588,7 +1633,8 @@
         "รอผลลัพธ์จาก automation",
         "ตรวจสอบ assertion",
         "รายงานผล"
-      ]
+      ],
+      "invocation_hint": "/browser-qa"
     },
     {
       "name": "browser-testing-with-devtools",
@@ -1623,7 +1669,8 @@
         "trace network",
         "profile performance",
         "report"
-      ]
+      ],
+      "invocation_hint": "/browser-testing-with-devtools"
     },
     {
       "name": "bun-runtime",
@@ -1661,7 +1708,8 @@
         "รันสคริปต์ด้วย bun run",
         "รันเทสด้วย bun test",
         "deploy ไป Vercel"
-      ]
+      ],
+      "invocation_hint": "/bun-runtime"
     },
     {
       "name": "canary-watch",
@@ -1698,7 +1746,8 @@
         "รัน canary-watch และรอผล",
         "ตรวจสอบรายงานข้อผิดพลาดและ performance",
         "ยืนยันผลหรือดำเนินการแก้ไข"
-      ]
+      ],
+      "invocation_hint": "/canary-watch"
     },
     {
       "name": "canvas-design",
@@ -1728,7 +1777,8 @@
           "scenario": "ต้องการสร้างภาพศิลป์นามธรรมสำหรับเว็บไซต์",
           "how": "ใช้คำสั่ง /canvas-design พร้อมอธิบายแนวคิดศิลปะที่ต้องการ"
         }
-      ]
+      ],
+      "invocation_hint": "/canvas-design"
     },
     {
       "name": "carrier-relationship-management",
@@ -1758,7 +1808,8 @@
           "scenario": "ต้องการตรวจสอบประวัติการทำงานของ carrier",
           "how": "ใช้คำสั่ง /carrier history --id \"รหัส carrier\""
         }
-      ]
+      ],
+      "invocation_hint": "/carrier-relationship-management"
     },
     {
       "name": "ci-cd-and-automation",
@@ -1787,7 +1838,8 @@
           "scenario": "ทุก push ต้อง test",
           "how": "CI: run pytest + lint ก่อน merge"
         }
-      ]
+      ],
+      "invocation_hint": "/ci-cd-and-automation"
     },
     {
       "name": "cisco-ios-patterns",
@@ -1826,7 +1878,8 @@
         "วาง ACL ตามลำดับ",
         "ตรวจสอบ interface hygiene",
         "ยืนยัน safe change-window"
-      ]
+      ],
+      "invocation_hint": "/cisco-ios-patterns"
     },
     {
       "name": "ck",
@@ -1862,7 +1915,8 @@
         "ติดตาม git activity",
         "เขียนข้อมูลลง native memory",
         "บันทึก session history"
-      ]
+      ],
+      "invocation_hint": "/ck"
     },
     {
       "name": "claude-api",
@@ -1892,7 +1946,8 @@
           "scenario": "ต้องการให้ Claude สร้างตัวอย่างการใช้งาน API",
           "how": "ใช้คำสั่ง /claude \"สร้างตัวอย่างการเรียก REST API ด้วย axios\""
         }
-      ]
+      ],
+      "invocation_hint": "/claude-api"
     },
     {
       "name": "claude-devfleet",
@@ -1928,7 +1983,8 @@
         "ส่ง agent ไปทำงาน",
         "ติดตามความคืบหน้า",
         "อ่านผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/claude-devfleet"
     },
     {
       "name": "click-path-audit",
@@ -1965,7 +2021,8 @@
         "ตรวจสอบลำดับการเปลี่ยนสถานะ",
         "จำลองการคลิกย้อนกลับ",
         "รายงานจุดที่ฟังก์ชันขัดแย้งกัน"
-      ]
+      ],
+      "invocation_hint": "/click-path-audit"
     },
     {
       "name": "clickhouse-io",
@@ -2002,7 +2059,8 @@
         "เลือก engine ที่เหมาะสม",
         "ทดสอบ performance",
         "ปรับแต่ง indexing"
-      ]
+      ],
+      "invocation_hint": "/clickhouse-io"
     },
     {
       "name": "code-simplification",
@@ -2030,7 +2088,8 @@
           "scenario": "ฟังก์ชัน 200 บรรทัด",
           "how": "แยกเป็น 3-4 ฟังก์ชันเล็ก ตั้งชื่อให้อธิบายตัวเอง"
         }
-      ]
+      ],
+      "invocation_hint": "/code-simplification"
     },
     {
       "name": "code-tour",
@@ -2066,7 +2125,8 @@
         "ระบุไฟล์และบรรทัดเป้าหมาย",
         "เขียนคำอธิบายแต่ละขั้นตอน",
         "บันทึกเป็นไฟล์ .tour"
-      ]
+      ],
+      "invocation_hint": "/code-tour"
     },
     {
       "name": "codebase-onboarding",
@@ -2103,7 +2163,8 @@
         "วิเคราะห์ข้อตกลงร่วม",
         "สร้างแผนผังสถาปัตยกรรม",
         "สร้างไฟล์ CLAUDE.md"
-      ]
+      ],
+      "invocation_hint": "/codebase-onboarding"
     },
     {
       "name": "coding-standards",
@@ -2133,7 +2194,8 @@
           "scenario": "ต้องการตรวจสอบว่าโค้ดที่เขียนมีคุณภาพตามมาตรฐานที่กำหนดหรือไม่",
           "how": "เรียกใช้สคริปต์ skills/ecosystem/coding-standards/check-quality.sh"
         }
-      ]
+      ],
+      "invocation_hint": "/coding-standards"
     },
     {
       "name": "compose-multiplatform-patterns",
@@ -2169,7 +2231,8 @@
         "ดูตัวอย่างโค้ด",
         "ปรับใช้กับโปรเจกต์",
         "ทดสอบบนหลายแพลตฟอร์ม"
-      ]
+      ],
+      "invocation_hint": "/compose-multiplatform-patterns"
     },
     {
       "name": "configure-ecc",
@@ -2205,7 +2268,8 @@
         "เลือก skills หรือ rules",
         "ยืนยันตำแหน่งไดเรกทอรี",
         "ดำเนินการติดตั้ง"
-      ]
+      ],
+      "invocation_hint": "/configure-ecc"
     },
     {
       "name": "connections-optimizer",
@@ -2231,7 +2295,8 @@
           "scenario": "เพิ่มหน้า ESP32",
           "how": "optimizer เสนอลิงก์ไป MQTT, OTA, pinout ที่เกี่ยวข้อง"
         }
-      ]
+      ],
+      "invocation_hint": "/connections-optimizer"
     },
     {
       "name": "content-engine",
@@ -2268,7 +2333,8 @@
         "สร้างโพสต์พร้อม hashtag",
         "ตรวจสอบความสอดคล้อง",
         "ส่งออกหรือ publish"
-      ]
+      ],
+      "invocation_hint": "/content-engine"
     },
     {
       "name": "content-hash-cache-pattern",
@@ -2304,7 +2370,8 @@
         "ตรวจสอบ cache ว่ามีผลลัพธ์สำหรับ hash นี้หรือไม่",
         "ถ้ามี: คืนค่าจาก cache",
         "ถ้าไม่มี: ประมวลผลและบันทึกผลลัพธ์ลง cache"
-      ]
+      ],
+      "invocation_hint": "/content-hash-cache-pattern"
     },
     {
       "name": "context-budget",
@@ -2330,7 +2397,8 @@
           "scenario": "session ยาว 50+ turn",
           "how": "compact: เก็บ summary สละ detail"
         }
-      ]
+      ],
+      "invocation_hint": "/context-budget"
     },
     {
       "name": "continuous-agent-loop",
@@ -2368,7 +2436,8 @@
         "ปรับปรุงตามผล eval",
         "กู้คืนถ้าเกิดข้อผิดพลาด",
         "วนซ้ำจนกว่าจะผ่านเกณฑ์"
-      ]
+      ],
+      "invocation_hint": "/continuous-agent-loop"
     },
     {
       "name": "continuous-learning",
@@ -2394,7 +2463,8 @@
           "scenario": "ต้องการบันทึกการเรียนรู้จาก session ที่เพิ่งจบ",
           "how": "เรียกใช้สคริปต์ ~/.claude/skills/continuous-learning/SKILL.md หรือใช้คำสั่ง /learn"
         }
-      ]
+      ],
+      "invocation_hint": "/continuous-learning"
     },
     {
       "name": "continuous-learning-v2",
@@ -2420,7 +2490,8 @@
           "scenario": "ทำ git workflow ซ้ำๆ",
           "how": "เสนอสร้าง skill git-workflow"
         }
-      ]
+      ],
+      "invocation_hint": "/continuous-learning-v2"
     },
     {
       "name": "cost-aware-llm-pipeline",
@@ -2457,7 +2528,8 @@
         "ตั้งค่าการแคช prompt",
         "กำหนด retry logic",
         "ติดตามงบประมาณ"
-      ]
+      ],
+      "invocation_hint": "/cost-aware-llm-pipeline"
     },
     {
       "name": "cost-tracking",
@@ -2483,7 +2555,8 @@
           "scenario": "session ใช้เงินเยอะ",
           "how": "/cost-tracking ดูว่า task ไหนแพง ปรับ tier"
         }
-      ]
+      ],
+      "invocation_hint": "/cost-tracking"
     },
     {
       "name": "council",
@@ -2521,7 +2594,8 @@
         "ฟังเสียงที่ 3: วิเคราะห์ความเสี่ยง",
         "ฟังเสียงที่ 4: สรุปทางเลือก",
         "ลงมติหรือตัดสินใจ"
-      ]
+      ],
+      "invocation_hint": "/council"
     },
     {
       "name": "cpp-coding-standards",
@@ -2557,7 +2631,8 @@
         "วิเคราะห์ตาม C++ Core Guidelines",
         "ให้คำแนะนำการปรับปรุง",
         "แสดงตัวอย่างโค้ดที่ถูกต้อง"
-      ]
+      ],
+      "invocation_hint": "/cpp-coding-standards"
     },
     {
       "name": "cpp-testing",
@@ -2594,7 +2669,8 @@
         "รันและตรวจสอบผล",
         "แก้ไขข้อผิดพลาด",
         "เพิ่ม coverage/sanitizers"
-      ]
+      ],
+      "invocation_hint": "/cpp-testing"
     },
     {
       "name": "crew-dispatch",
@@ -2632,7 +2708,8 @@
         "รวบรวมผลลัพธ์",
         "primary agent ตรวจสอบและปรับแก้",
         "ส่งคำตอบรวมกลับ"
-      ]
+      ],
+      "invocation_hint": "/crew-dispatch"
     },
     {
       "name": "crosspost",
@@ -2669,7 +2746,8 @@
         "ปรับรูปแบบตามแต่ละแพลตฟอร์ม",
         "ตรวจสอบและยืนยันก่อนโพสต์",
         "โพสต์ไปยังทุกแพลตฟอร์ม"
-      ]
+      ],
+      "invocation_hint": "/crosspost"
     },
     {
       "name": "csharp-testing",
@@ -2706,7 +2784,8 @@
         "ใช้ mocking สำหรับ dependencies",
         "เพิ่ม integration test สำหรับ database",
         "รันเทสต์และตรวจสอบ coverage"
-      ]
+      ],
+      "invocation_hint": "/csharp-testing"
     },
     {
       "name": "customer-billing-ops",
@@ -2742,7 +2821,8 @@
         "ตรวจสอบสิทธิ์และประวัติ",
         "ดำเนินการตามเวิร์กโฟลว์",
         "ยืนยันผลและแจ้งลูกค้า"
-      ]
+      ],
+      "invocation_hint": "/customer-billing-ops"
     },
     {
       "name": "customs-trade-compliance",
@@ -2772,7 +2852,8 @@
           "scenario": "ผู้ใช้ต้องการตรวจสอบข้อกำหนด FTA ระหว่างไทยกับญี่ปุ่น",
           "how": "พิมพ์คำสั่ง /customs fta thailand japan"
         }
-      ]
+      ],
+      "invocation_hint": "/customs-trade-compliance"
     },
     {
       "name": "dart-flutter-patterns",
@@ -2808,7 +2889,8 @@
         "อ่านตัวอย่างโค้ดและคำอธิบาย",
         "ปรับใช้กับโปรเจกต์จริง",
         "ทดสอบและรีแฟกเตอร์ตาม pattern"
-      ]
+      ],
+      "invocation_hint": "/dart-flutter-patterns"
     },
     {
       "name": "dashboard-builder",
@@ -2838,7 +2920,8 @@
           "scenario": "ต้องการสร้าง SigNoz dashboard สำหรับติดตาม API latency และ error rate",
           "how": "ใช้คำสั่ง /dashboard-builder build --platform signoz --metrics latency,error_rate"
         }
-      ]
+      ],
+      "invocation_hint": "/dashboard-builder"
     },
     {
       "name": "data-scraper-agent",
@@ -2875,7 +2958,8 @@
         "รัน scraping",
         "ทำความสะอาดข้อมูล",
         "บันทึกผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/data-scraper-agent"
     },
     {
       "name": "data-throughput-accelerator",
@@ -2912,7 +2996,8 @@
         "ใช้ partitioning และ clustering",
         "ทดสอบ performance",
         "ปรับแต่งซ้ำจนได้ throughput ตามเป้า"
-      ]
+      ],
+      "invocation_hint": "/data-throughput-accelerator"
     },
     {
       "name": "database-migrations",
@@ -2949,7 +3034,8 @@
         "ทดสอบใน staging",
         "deploy พร้อม zero-downtime",
         "ตรวจสอบและ rollback ถ้าจำเป็น"
-      ]
+      ],
+      "invocation_hint": "/database-migrations"
     },
     {
       "name": "debug-mantra",
@@ -2986,7 +3072,8 @@
         "Trace fail path",
         "ตั้งและหักล้างสมมติฐาน",
         "Cross-reference breadcrumbs"
-      ]
+      ],
+      "invocation_hint": "/debug-mantra"
     },
     {
       "name": "deep-research",
@@ -3022,7 +3109,8 @@
         "ค้นหาจากหลายแหล่ง",
         "สังเคราะห์ข้อมูล",
         "สร้างรายงานพร้อมอ้างอิง"
-      ]
+      ],
+      "invocation_hint": "/deep-research"
     },
     {
       "name": "defi-amm-security",
@@ -3060,7 +3148,8 @@
         "ทดสอบ donation/inflation attack",
         "ตรวจสอบ oracle manipulation",
         "ตรวจสอบ slippage และ fee logic"
-      ]
+      ],
+      "invocation_hint": "/defi-amm-security"
     },
     {
       "name": "delegate-subagent",
@@ -3087,7 +3176,8 @@
           "scenario": "ค้นหา symbol ใน codebase ใหญ่",
           "how": "delegate ให้ Explore agent"
         }
-      ]
+      ],
+      "invocation_hint": "/delegate-subagent"
     },
     {
       "name": "deployment-patterns",
@@ -3125,7 +3215,8 @@
         "กำหนด health check",
         "วางแผน rollback",
         "ตรวจสอบ production readiness"
-      ]
+      ],
+      "invocation_hint": "/deployment-patterns"
     },
     {
       "name": "deprecation-and-migration",
@@ -3153,7 +3244,8 @@
           "scenario": "เลิก API v1",
           "how": "deprecate → แจ้ง → ให้เวลา → migrate → sunset"
         }
-      ]
+      ],
+      "invocation_hint": "/deprecation-and-migration"
     },
     {
       "name": "design-system",
@@ -3189,7 +3281,8 @@
         "ตรวจสอบสีและขนาด",
         "เปรียบเทียบกับ design system",
         "รายงานผล"
-      ]
+      ],
+      "invocation_hint": "/design-system"
     },
     {
       "name": "django-celery",
@@ -3227,7 +3320,8 @@
         "เรียก task ด้วย .delay() หรือ .apply_async()",
         "ตั้งค่า beat schedule",
         "ทดสอบและ monitor ด้วย flower"
-      ]
+      ],
+      "invocation_hint": "/django-celery"
     },
     {
       "name": "django-patterns",
@@ -3253,7 +3347,8 @@
           "scenario": "Django API ช้า",
           "how": "/django-patterns select_related + caching + pagination"
         }
-      ]
+      ],
+      "invocation_hint": "/django-patterns"
     },
     {
       "name": "django-security",
@@ -3279,7 +3374,8 @@
           "scenario": "ตั้ง auth ใหม่",
           "how": "/django-security session, CSRF, password policy"
         }
-      ]
+      ],
+      "invocation_hint": "/django-security"
     },
     {
       "name": "django-tdd",
@@ -3305,7 +3401,8 @@
           "scenario": "test model + view",
           "how": "/django-tdd factory + pytest + coverage ≥ 80%"
         }
-      ]
+      ],
+      "invocation_hint": "/django-tdd"
     },
     {
       "name": "django-verification",
@@ -3342,7 +3439,8 @@
         "รัน test พร้อม coverage",
         "สแกน security (bandit/pip-audit)",
         "ตรวจสอบ deployment readiness"
-      ]
+      ],
+      "invocation_hint": "/django-verification"
     },
     {
       "name": "dmux-workflows",
@@ -3379,7 +3477,8 @@
         "กำหนด task ให้แต่ละ pane",
         "รันงานแบบ parallel",
         "รวบรวมผลลัพธ์จากทุก pane"
-      ]
+      ],
+      "invocation_hint": "/dmux-workflows"
     },
     {
       "name": "doc-coauthoring",
@@ -3416,7 +3515,8 @@
         "ร่างเนื้อหาแต่ละส่วน",
         "ตรวจสอบและแก้ไขร่วมกัน",
         "อนุมัติและเผยแพร่"
-      ]
+      ],
+      "invocation_hint": "/doc-coauthoring"
     },
     {
       "name": "docker-patterns",
@@ -3453,7 +3553,8 @@
         "กำหนด network และ volume",
         "ทดสอบการทำงานของ container",
         "ปรับแต่ง security และ performance"
-      ]
+      ],
+      "invocation_hint": "/docker-patterns"
     },
     {
       "name": "documentation-and-adrs",
@@ -3481,7 +3582,8 @@
           "scenario": "เลือก Postgres แทน MySQL",
           "how": "เขียน ADR: context, options, decision, consequences"
         }
-      ]
+      ],
+      "invocation_hint": "/documentation-and-adrs"
     },
     {
       "name": "documentation-lookup",
@@ -3507,7 +3609,8 @@
           "scenario": "ใช้ Next.js App Router",
           "how": "auto-load context7 → ดึง official docs ปัจจุบัน"
         }
-      ]
+      ],
+      "invocation_hint": "/documentation-lookup"
     },
     {
       "name": "docx",
@@ -3537,7 +3640,8 @@
           "scenario": "ผู้ใช้ต้องการแก้ไขเอกสาร Word ที่มีอยู่แล้ว",
           "how": "ใช้คำสั่ง /docx edit \"ชื่อไฟล์.docx\" พร้อมระบุการเปลี่ยนแปลง"
         }
-      ]
+      ],
+      "invocation_hint": "/docx"
     },
     {
       "name": "dotnet-patterns",
@@ -3574,7 +3678,8 @@
         "เขียนโค้ดตาม convention",
         "ตรวจสอบ async/await",
         "ทดสอบและปรับปรุง"
-      ]
+      ],
+      "invocation_hint": "/dotnet-patterns"
     },
     {
       "name": "e2e-testing",
@@ -3611,7 +3716,8 @@
         "เขียน test case ด้วย Playwright",
         "รัน test และตรวจสอบผล",
         "จัดการ flaky test และ artifact"
-      ]
+      ],
+      "invocation_hint": "/e2e-testing"
     },
     {
       "name": "ecc-guide",
@@ -3649,7 +3755,8 @@
         "รวบรวมรายการ commands",
         "รวบรวมรายการ hooks และ rules",
         "แสดงผลสรุป ecosystem"
-      ]
+      ],
+      "invocation_hint": "/ecc-guide"
     },
     {
       "name": "ecc-tools-cost-audit",
@@ -3679,7 +3786,8 @@
           "scenario": "ต้องการตรวจสอบว่ามีการเรียกใช้ premium model โดยไม่ได้รับอนุญาตหรือไม่",
           "how": "ใช้คำสั่ง /ecc-cost-audit --focus=premium-leakage เพื่อวิเคราะห์การเรียกใช้ API และระบุผู้ใช้หรือ service ที่ผิดปกติ"
         }
-      ]
+      ],
+      "invocation_hint": "/ecc-tools-cost-audit"
     },
     {
       "name": "email-ops",
@@ -3715,7 +3823,8 @@
         "ร่างข้อความตอบกลับ",
         "ตรวจสอบการส่ง",
         "ติดตามผลอย่างปลอดภัย"
-      ]
+      ],
+      "invocation_hint": "/email-ops"
     },
     {
       "name": "energy-procurement",
@@ -3752,7 +3861,8 @@
         "เปรียบเทียบข้อเสนอ PPA",
         "ตรวจสอบเงื่อนไขสัญญา",
         "ดำเนินการลงนามสัญญา"
-      ]
+      ],
+      "invocation_hint": "energy-procurement"
     },
     {
       "name": "enterprise-agent-ops",
@@ -3789,7 +3899,8 @@
         "เริ่มต้น Agent workload",
         "ตรวจสอบและปรับแต่ง lifecycle",
         "หยุดหรือรีสตาร์ทเมื่อจำเป็น"
-      ]
+      ],
+      "invocation_hint": "/enterprise-agent-ops"
     },
     {
       "name": "error-handling",
@@ -3826,7 +3937,8 @@
         "เพิ่ม error boundary หรือ retry",
         "ทดสอบสถานการณ์ผิดพลาด",
         "ปรับปรุงข้อความแสดงข้อผิดพลาด"
-      ]
+      ],
+      "invocation_hint": "/error-handling"
     },
     {
       "name": "eval-harness",
@@ -3862,7 +3974,8 @@
         "รัน eval suite",
         "วิเคราะห์ผลลัพธ์",
         "ปรับปรุงโค้ดตามผล"
-      ]
+      ],
+      "invocation_hint": "/eval-harness"
     },
     {
       "name": "everything-claude-code",
@@ -3898,7 +4011,8 @@
         "ใช้ conventional commit สำหรับคอมมิต",
         "ตรวจสอบความถูกต้องของ commit message",
         "พุชโค้ดขึ้น remote repository"
-      ]
+      ],
+      "invocation_hint": "/everything-claude-code"
     },
     {
       "name": "evm-token-decimals",
@@ -3934,7 +4048,8 @@
         "cache แบบ chain-aware",
         "ตรวจสอบ bridged token drift",
         "normalize ค่าให้ปลอดภัย"
-      ]
+      ],
+      "invocation_hint": "/evm-token-decimals"
     },
     {
       "name": "exa-search",
@@ -3964,7 +4079,8 @@
           "scenario": "ต้องการข้อมูลบริษัทคู่แข่ง",
           "how": "ใช้คำสั่ง /exa-search \"บริษัท [ชื่อบริษัท]\""
         }
-      ]
+      ],
+      "invocation_hint": "/exa-search"
     },
     {
       "name": "excel-generator",
@@ -4002,7 +4118,8 @@
         "ปรับแต่งการจัดรูปแบบ",
         "สร้างกราฟหรือตารางสรุป",
         "ตรวจสอบและส่งออกไฟล์"
-      ]
+      ],
+      "invocation_hint": "/excel-generator"
     },
     {
       "name": "export-notebooklm",
@@ -4033,7 +4150,8 @@
           "scenario": "ผู้ใช้ขอให้อัปเดต NotebookLM หลังจากเพิ่มเนื้อหาใหม่ใน wiki",
           "how": "พิมพ์ /snapshot-nb หรือพูดว่า 'รีเฟรช NotebookLM snapshot'"
         }
-      ]
+      ],
+      "invocation_hint": "/export-notebooklm"
     },
     {
       "name": "fable5-standards",
@@ -4070,7 +4188,8 @@
         "เปรียบเทียบทางเลือกแบบมีหลักการ",
         "เลือกแนวทางและให้เหตุผล",
         "จัดทำ playbook สำหรับการดำเนินการ"
-      ]
+      ],
+      "invocation_hint": "/fable5-standards"
     },
     {
       "name": "fal-ai-media",
@@ -4107,7 +4226,8 @@
         "เลือกโมเดลที่ต้องการ",
         "รอผลลัพธ์จาก fal.ai",
         "รับไฟล์หรือ URL ที่สร้างเสร็จ"
-      ]
+      ],
+      "invocation_hint": "/fal-ai-media"
     },
     {
       "name": "fastapi-patterns",
@@ -4145,7 +4265,8 @@
         "เพิ่ม security",
         "เขียน tests",
         "deploy พร้อม production config"
-      ]
+      ],
+      "invocation_hint": "/fastapi-patterns"
     },
     {
       "name": "finance-billing-ops",
@@ -4175,7 +4296,8 @@
           "scenario": "ต้องการเปรียบเทียบราคาแพ็กเกจต่างๆ",
           "how": "พิมพ์คำสั่ง /finance-billing-ops pricing-compare --plan1 <แพ็กเกจ1> --plan2 <แพ็กเกจ2>"
         }
-      ]
+      ],
+      "invocation_hint": "/finance-billing-ops"
     },
     {
       "name": "flox-environments",
@@ -4212,7 +4334,8 @@
         "flox install",
         "flox activate",
         "flox push"
-      ]
+      ],
+      "invocation_hint": "/flox-environments"
     },
     {
       "name": "flutter-dart-code-review",
@@ -4249,7 +4372,8 @@
         "ตรวจสอบ dependency injection",
         "ตรวจสอบ error handling",
         "ตรวจสอบ performance"
-      ]
+      ],
+      "invocation_hint": "/flutter-dart-code-review"
     },
     {
       "name": "foundation-models-on-device",
@@ -4285,7 +4409,8 @@
         "กำหนด guided generation ด้วย @Generable",
         "เรียก text generation หรือ tool calling",
         "รับผลลัพธ์แบบ snapshot streaming"
-      ]
+      ],
+      "invocation_hint": "/foundation-models-on-device"
     },
     {
       "name": "frontend-a11y",
@@ -4322,7 +4447,8 @@
         "ทดสอบการนำทางด้วยคีย์บอร์ด",
         "ตรวจสอบ contrast ratio",
         "แนะนำแนวทางแก้ไขตาม WCAG"
-      ]
+      ],
+      "invocation_hint": "/frontend-a11y"
     },
     {
       "name": "frontend-design",
@@ -4348,7 +4474,8 @@
           "scenario": "หน้า dashboard",
           "how": "/frontend-design layout + color + chart"
         }
-      ]
+      ],
+      "invocation_hint": "/frontend-design"
     },
     {
       "name": "frontend-design-direction",
@@ -4374,7 +4501,8 @@
           "scenario": "ทำ SaaS dashboard",
           "how": "/frontend-design-direction เลือก direction ก่อนเขียน"
         }
-      ]
+      ],
+      "invocation_hint": "/frontend-design-direction"
     },
     {
       "name": "frontend-patterns",
@@ -4404,7 +4532,8 @@
           "scenario": "ต้องการเลือก pattern การจัดการ state ที่เหมาะสมกับโปรเจกต์",
           "how": "ใช้คำสั่ง /frontend-patterns state-management"
         }
-      ]
+      ],
+      "invocation_hint": "/frontend-patterns"
     },
     {
       "name": "frontend-slides",
@@ -4434,7 +4563,8 @@
           "scenario": "มีไฟล์ PowerPoint เก่าที่ต้องการแปลงเป็น HTML slides",
           "how": "ใช้คำสั่ง /frontend-slides convert --input path/to/file.pptx"
         }
-      ]
+      ],
+      "invocation_hint": "/frontend-slides"
     },
     {
       "name": "fsharp-testing",
@@ -4471,7 +4601,8 @@
         "เพิ่ม property-based test ด้วย FsCheck",
         "จัดระเบียบเทสต์ตามโฟลเดอร์",
         "รันเทสต์และตรวจสอบผล"
-      ]
+      ],
+      "invocation_hint": "/fsharp-testing"
     },
     {
       "name": "gan-style-harness",
@@ -4508,7 +4639,8 @@
         "Feedback ส่งกลับ Generator",
         "Generator ปรับปรุงโค้ด",
         "วนลูปจนผ่านเกณฑ์"
-      ]
+      ],
+      "invocation_hint": "/gan-style-harness"
     },
     {
       "name": "gateguard",
@@ -4545,7 +4677,8 @@
         "ขอ importers หรือ data schemas",
         "ตรวจสอบ user instruction",
         "อนุญาตเมื่อผ่านเงื่อนไข"
-      ]
+      ],
+      "invocation_hint": "/gateguard"
     },
     {
       "name": "gget",
@@ -4582,7 +4715,8 @@
         "รันคำสั่ง gget",
         "ตรวจสอบผลลัพธ์",
         "บันทึกหรือนำไปใช้ต่อ"
-      ]
+      ],
+      "invocation_hint": "/gget"
     },
     {
       "name": "git-workflow",
@@ -4619,7 +4753,8 @@
         "เลือก merge หรือ rebase",
         "แก้ไข conflict ถ้ามี",
         "push และ review ก่อน merge"
-      ]
+      ],
+      "invocation_hint": "/git-workflow"
     },
     {
       "name": "git-workflow-and-versioning",
@@ -4647,7 +4782,8 @@
           "scenario": "ทำ semantic versioning",
           "how": "ตั้งกฎ: feat→minor, fix→patch, break→major"
         }
-      ]
+      ],
+      "invocation_hint": "/git-workflow-and-versioning"
     },
     {
       "name": "github-ops",
@@ -4682,7 +4818,8 @@
         "ตรวจสอบสถานะ repository",
         "ดำเนินการตามคำสั่ง (Issue/PR/CI)",
         "ยืนยันผลลัพธ์และแจ้งเตือน"
-      ]
+      ],
+      "invocation_hint": "/github-ops"
     },
     {
       "name": "golang-patterns",
@@ -4708,7 +4845,8 @@
           "scenario": "เซอร์วิส HTTP ใน Go",
           "how": "/golang-patterns แนะนำโครงและ best practice"
         }
-      ]
+      ],
+      "invocation_hint": "/golang-patterns"
     },
     {
       "name": "golang-testing",
@@ -4745,7 +4883,8 @@
         "รัน go test",
         "ตรวจสอบ coverage",
         "เพิ่ม benchmark หรือ fuzz test"
-      ]
+      ],
+      "invocation_hint": "/golang-testing"
     },
     {
       "name": "google-workspace-ops",
@@ -4775,7 +4914,8 @@
           "scenario": "ต้องการสร้างสเปรดชีตใหม่สำหรับติดตามงาน",
           "how": "ใช้คำสั่ง /google-workspace-ops create sheet \"ตัวติดตามงาน\""
         }
-      ]
+      ],
+      "invocation_hint": "/google-workspace-ops"
     },
     {
       "name": "healthcare-cdss-patterns",
@@ -4813,7 +4953,8 @@
         "พัฒนาโมดูลตรวจสอบปฏิกิริยา",
         "ทดสอบความถูกต้องของแจ้งเตือน",
         "ปรับระดับความรุนแรงของแจ้งเตือน"
-      ]
+      ],
+      "invocation_hint": "/healthcare-cdss-patterns"
     },
     {
       "name": "healthcare-emr-patterns",
@@ -4851,7 +4992,8 @@
         "พัฒนาโมดูลความปลอดภัย",
         "บูรณาการระบบสนับสนุนการตัดสินใจ",
         "ทดสอบความถูกต้องทางคลินิก"
-      ]
+      ],
+      "invocation_hint": "/healthcare-emr-patterns"
     },
     {
       "name": "healthcare-eval-harness",
@@ -4888,7 +5030,8 @@
         "สแกน PHI exposure",
         "ตรวจสอบ workflow ทางคลินิก",
         "สรุปรายงานความปลอดภัย"
-      ]
+      ],
+      "invocation_hint": "/healthcare-eval-harness"
     },
     {
       "name": "healthcare-phi-compliance",
@@ -4925,7 +5068,8 @@
         "ใช้มาตรการเข้ารหัส",
         "ควบคุมการเข้าถึง",
         "ตรวจสอบการปฏิบัติตาม"
-      ]
+      ],
+      "invocation_hint": "/healthcare-phi-compliance"
     },
     {
       "name": "hermes-imports",
@@ -4957,7 +5101,8 @@
         "ลบข้อมูลที่ละเอียดอ่อน",
         "สร้างสกิล ECC ใหม่",
         "สร้าง artifacts สำหรับ release-pack"
-      ]
+      ],
+      "invocation_hint": "/hermes-imports"
     },
     {
       "name": "hexagonal-architecture",
@@ -4989,7 +5134,8 @@
         "define ports",
         "isolate adapters",
         "test domain in isolation"
-      ]
+      ],
+      "invocation_hint": "/hexagonal-architecture"
     },
     {
       "name": "hipaa-compliance",
@@ -5054,7 +5200,8 @@
         "ตรวจสอบ DHCP configuration",
         "ตรวจสอบ firewall rules",
         "ยืนยันความพร้อมก่อน deploy"
-      ]
+      ],
+      "invocation_hint": "/homelab-network-readiness"
     },
     {
       "name": "homelab-network-setup",
@@ -5084,7 +5231,8 @@
           "scenario": "พบปัญหา Wi-Fi ไม่เสถียรในบ้าน ต้องการคำแนะนำการวางตำแหน่ง access point และการเลือก switch",
           "how": "ใช้คำสั่ง /homelab-network-setup พร้อมระบุปัญหาที่พบ เช่น 'Wi-Fi ไม่เสถียร'"
         }
-      ]
+      ],
+      "invocation_hint": "/homelab-network-setup"
     },
     {
       "name": "homelab-pihole-dns",
@@ -5122,7 +5270,8 @@
         "ผสาน DHCP",
         "เพิ่ม local DNS record",
         "ทดสอบ DNS resolution"
-      ]
+      ],
+      "invocation_hint": "/homelab-pihole-dns"
     },
     {
       "name": "homelab-vlan-segmentation",
@@ -5159,7 +5308,8 @@
         "ตั้งค่า trunk บนสวิตช์",
         "กำหนดกฎไฟร์วอลล์ระหว่าง VLAN",
         "ทดสอบการเชื่อมต่อและการแยก"
-      ]
+      ],
+      "invocation_hint": "/homelab-vlan-segmentation"
     },
     {
       "name": "homelab-wireguard-vpn",
@@ -5197,7 +5347,8 @@
         "เลือก routing split หรือ full tunnel",
         "เปิดพอร์ตและตั้งค่า firewall",
         "ทดสอบการเชื่อมต่อจากอุปกรณ์ภายนอก"
-      ]
+      ],
+      "invocation_hint": "/homelab-wireguard-vpn"
     },
     {
       "name": "hook-suggest",
@@ -5233,7 +5384,8 @@
         "ระบุคำสั่งหรือเครื่องมือที่ใช้",
         "รับคำแนะนำ hook ที่เหมาะสม",
         "นำไปติดตั้งในโปรเจกต์"
-      ]
+      ],
+      "invocation_hint": "/hook-suggest"
     },
     {
       "name": "hookify-rules",
@@ -5263,7 +5415,8 @@
           "scenario": "ต้องการดูรายการ hookify rule ที่มีอยู่",
           "how": "ใช้คำสั่ง /hookify list rules"
         }
-      ]
+      ],
+      "invocation_hint": "/hookify-rules"
     },
     {
       "name": "imagegen",
@@ -5299,7 +5452,8 @@
         "เลือกสไตล์หรือรูปแบบ",
         "รอ AI สร้างภาพ",
         "ตรวจสอบและปรับแต่งเพิ่มเติม"
-      ]
+      ],
+      "invocation_hint": "/imagegen"
     },
     {
       "name": "ingest-source",
@@ -5332,7 +5486,8 @@
         "ผ่าน harness route",
         "สร้าง wiki/sources/",
         "regen index"
-      ]
+      ],
+      "invocation_hint": "/ingest-source"
     },
     {
       "name": "internal-comms",
@@ -5358,7 +5513,8 @@
           "scenario": "ประกาศเปลี่ยน policy WFH",
           "how": "internal-comms เขียน memo ชัดเจน"
         }
-      ]
+      ],
+      "invocation_hint": "/internal-comms"
     },
     {
       "name": "internet-skill-finder",
@@ -5394,7 +5550,8 @@
         "ค้นหาใน GitHub repositories",
         "กรองเฉพาะที่ผ่านการตรวจสอบ",
         "แสดงผลลัพธ์พร้อมคำแนะนำ"
-      ]
+      ],
+      "invocation_hint": "/internet-skill-finder"
     },
     {
       "name": "inventory-demand-planning",
@@ -5431,7 +5588,8 @@
         "คำนวณปริมาณความต้องการ",
         "ปรับค่าพารามิเตอร์ตามสถานการณ์",
         "แสดงผลรายงานคาดการณ์"
-      ]
+      ],
+      "invocation_hint": "/inventory-demand-planning"
     },
     {
       "name": "investor-materials",
@@ -5468,7 +5626,8 @@
         "สร้างหรืออัปเดตเนื้อหา",
         "ตรวจสอบความถูกต้องและความน่าสนใจ",
         "ส่งออกเป็น PDF หรือส่งตรงให้นักลงทุน"
-      ]
+      ],
+      "invocation_hint": "/investor-materials"
     },
     {
       "name": "investor-outreach",
@@ -5505,7 +5664,8 @@
         "ร่างเนื้อหาตามเทมเพลต",
         "ปรับแต่งให้เข้ากับผู้รับ",
         "ตรวจสอบและส่ง"
-      ]
+      ],
+      "invocation_hint": "/investor-outreach"
     },
     {
       "name": "ios-icon-gen",
@@ -5541,7 +5701,8 @@
         "กำหนด output path สำหรับ imageset",
         "รันคำสั่งสร้าง PNG ทุกขนาด",
         "นำ imageset ไปใส่ใน Xcode asset catalog"
-      ]
+      ],
+      "invocation_hint": "/ios-icon-gen"
     },
     {
       "name": "iterative-retrieval",
@@ -5579,7 +5740,8 @@
         "ดึงข้อมูลเพิ่มเติม",
         "รวมบริบททั้งหมด",
         "ส่งต่อให้ subagent"
-      ]
+      ],
+      "invocation_hint": "/iterative-retrieval"
     },
     {
       "name": "ito-basket-compare",
@@ -5614,7 +5776,8 @@
         "รับข้อมูลตะกร้า Itô",
         "รับข้อมูลผู้ใช้ (ฐานความรู้/พอร์ต/ฯลฯ)",
         "เปรียบเทียบและแสดงผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/ito-basket-compare"
     },
     {
       "name": "ito-data-atlas-agent",
@@ -5651,7 +5814,8 @@
         "ร่างพารามิเตอร์เบื้องต้น",
         "human-in-the-loop แก้ไข",
         "ยืนยันและ deploy agent"
-      ]
+      ],
+      "invocation_hint": "/ito-data-atlas-agent"
     },
     {
       "name": "ito-market-intelligence",
@@ -5681,7 +5845,8 @@
           "scenario": "ต้องการเช็คสภาพคล่องของ underlier ก่อนเข้าเทรด",
           "how": "ใช้คำสั่ง /liquidity <underlier_name> หรือเรียกฟังก์ชัน ito_market_intelligence('liquidity', underlier='BTC')"
         }
-      ]
+      ],
+      "invocation_hint": "/ito-market-intelligence"
     },
     {
       "name": "ito-trade-planner",
@@ -5718,7 +5883,8 @@
         "กำหนดข้อจำกัด",
         "ตรวจสอบข้อกำหนดก่อนออเดอร์",
         "สร้างเวิร์กชีต"
-      ]
+      ],
+      "invocation_hint": "/ito-trade-planner"
     },
     {
       "name": "java-coding-standards",
@@ -5755,7 +5921,8 @@
         "แก้ไขตามมาตรฐาน",
         "รัน unit test ยืนยัน",
         "ขอ code review"
-      ]
+      ],
+      "invocation_hint": "/java-coding-standards"
     },
     {
       "name": "jira-integration",
@@ -5792,7 +5959,8 @@
         "วิเคราะห์ requirements",
         "อัปเดตสถานะหรือ comment",
         "ยืนยันการเปลี่ยนแปลง"
-      ]
+      ],
+      "invocation_hint": "/jira-integration"
     },
     {
       "name": "jpa-patterns",
@@ -5829,7 +5997,8 @@
         "ปรับ Query ด้วย JPQL/Criteria",
         "เพิ่ม Index สำหรับคอลัมน์ที่ค้นหาบ่อย",
         "ตั้งค่า Transaction และ Pooling"
-      ]
+      ],
+      "invocation_hint": "/jpa-patterns"
     },
     {
       "name": "knowledge-ops",
@@ -5865,7 +6034,8 @@
         "เลือกประเภทการทำงาน (เพิ่ม/ค้นหา/ซิงค์)",
         "รันคำสั่งที่เกี่ยวข้อง",
         "ตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/knowledge-ops"
     },
     {
       "name": "kotlin-coroutines-flows",
@@ -5891,7 +6061,8 @@
           "scenario": "รวมหลาย Flow",
           "how": "/kotlin-coroutines-flows combine + flatMapMerge"
         }
-      ]
+      ],
+      "invocation_hint": "/kotlin-coroutines-flows"
     },
     {
       "name": "kotlin-exposed-patterns",
@@ -5929,7 +6100,8 @@
         "ตั้งค่า HikariCP pool",
         "รัน Flyway migration",
         "ทดสอบ repository pattern"
-      ]
+      ],
+      "invocation_hint": "/kotlin-exposed-patterns"
     },
     {
       "name": "kotlin-ktor-patterns",
@@ -5967,7 +6139,8 @@
         "ใช้ kotlinx.serialization",
         "เพิ่ม WebSocket support",
         "ทดสอบด้วย testApplication"
-      ]
+      ],
+      "invocation_hint": "kotlin-ktor-patterns"
     },
     {
       "name": "kotlin-patterns",
@@ -5993,7 +6166,8 @@
           "scenario": "โมเดลข้อมูล + API",
           "how": "/kotlin-patterns แนะ data class + coroutine"
         }
-      ]
+      ],
+      "invocation_hint": "/kotlin-patterns"
     },
     {
       "name": "kotlin-testing",
@@ -6029,7 +6203,8 @@
         "เขียนโค้ดให้ผ่าน test (Green)",
         "ปรับปรุงโค้ดให้สะอาด (Refactor)",
         "รัน coverage ด้วย Kover"
-      ]
+      ],
+      "invocation_hint": "kotlin-testing"
     },
     {
       "name": "laravel-patterns",
@@ -6067,7 +6242,8 @@
         "สร้าง service layers และ repositories",
         "เพิ่ม events, queues, และ caching",
         "ทดสอบและปรับแต่ง performance"
-      ]
+      ],
+      "invocation_hint": "/laravel-patterns"
     },
     {
       "name": "laravel-plugin-discovery",
@@ -6097,7 +6273,8 @@
           "scenario": "ต้องการตรวจสอบความเข้ากันได้ของแพ็กเกจกับ Laravel 10",
           "how": "ใช้คำสั่ง /laravel-plugin-discovery check <package-name> --laravel-version 10"
         }
-      ]
+      ],
+      "invocation_hint": "/laravel-plugin-discovery"
     },
     {
       "name": "laravel-security",
@@ -6135,7 +6312,8 @@
         "ตรวจสอบ file uploads",
         "จัดการ secrets ผ่าน .env",
         "ตั้งค่า rate limiting"
-      ]
+      ],
+      "invocation_hint": "/laravel-security"
     },
     {
       "name": "laravel-tdd",
@@ -6171,7 +6349,8 @@
         "เขียนโค้ดให้เทสผ่าน (Green)",
         "รีแฟกเตอร์โค้ดให้สะอาด (Refactor)",
         "รันเทสทั้งหมดเพื่อยืนยัน"
-      ]
+      ],
+      "invocation_hint": "/laravel-tdd"
     },
     {
       "name": "laravel-verification",
@@ -6234,7 +6413,8 @@
         "ระบุ bottleneck",
         "ปรับแต่ง code หรือ config",
         "ทดสอบซ้ำเพื่อยืนยันผล"
-      ]
+      ],
+      "invocation_hint": "/latency-critical-systems"
     },
     {
       "name": "lead-intelligence",
@@ -6264,7 +6444,8 @@
           "scenario": "ต้องการหา warm path ไปยังผู้ติดต่อในบริษัทเป้าหมาย",
           "how": "ใช้คำสั่ง /warm-path ตามด้วยชื่อบริษัทและชื่อผู้ติดต่อ"
         }
-      ]
+      ],
+      "invocation_hint": "/lead-intelligence"
     },
     {
       "name": "lint-wiki",
@@ -6291,7 +6472,8 @@
           "scenario": "เพิ่มหน้า wiki 10 หน้า",
           "how": "/lint-wiki ตรวจ link + frontmatter ให้ครบ"
         }
-      ]
+      ],
+      "invocation_hint": "/lint-wiki"
     },
     {
       "name": "liquid-glass-design",
@@ -6317,7 +6499,8 @@
           "scenario": "ออกแบบ iOS widget",
           "how": "/liquid-glass-design ใช้ dynamic glass material"
         }
-      ]
+      ],
+      "invocation_hint": "/liquid-glass-design"
     },
     {
       "name": "literature-review",
@@ -6355,7 +6538,8 @@
         "ประเมินคุณภาพ",
         "สังเคราะห์ผล",
         "เขียนรายงาน"
-      ]
+      ],
+      "invocation_hint": "/literature-review"
     },
     {
       "name": "llm-trading-agent-security",
@@ -6393,7 +6577,8 @@
         "ตรวจสอบวงเงินใช้จ่าย",
         "เปิด circuit breaker ถ้าเกินเกณฑ์",
         "อนุมัติหรือปฏิเสธธุรกรรม"
-      ]
+      ],
+      "invocation_hint": "/llm-trading-agent-security"
     },
     {
       "name": "logistics-exception-management",
@@ -6423,7 +6608,8 @@
           "scenario": "ต้องการตรวจสอบสถานะการแก้ไขข้อยกเว้นที่เกิดขึ้นก่อนหน้านี้",
           "how": "ใช้คำสั่ง /logistics-exception list --status open"
         }
-      ]
+      ],
+      "invocation_hint": "logistics-exception-management"
     },
     {
       "name": "make-interfaces-feel-better",
@@ -6460,7 +6646,8 @@
         "เพิ่ม border และ shadow ที่เหมาะสม",
         "ใส่ motion และ transition",
         "ทดสอบความรู้สึกบนอุปกรณ์จริง"
-      ]
+      ],
+      "invocation_hint": "/make-interfaces-feel-better"
     },
     {
       "name": "management-talk",
@@ -6486,7 +6673,8 @@
           "scenario": "สรุปงานสัปดาห์",
           "how": "/management-talk สรุป progress, blocker, next"
         }
-      ]
+      ],
+      "invocation_hint": "/management-talk"
     },
     {
       "name": "manim-video",
@@ -6516,7 +6704,8 @@
           "scenario": "ต้องการสร้างไดอะแกรมสถาปัตยกรรมระบบแบบเคลื่อนไหวสำหรับการนำเสนอ",
           "how": "ใช้คำสั่ง /manim-video system_architecture_diagram"
         }
-      ]
+      ],
+      "invocation_hint": "/manim-video"
     },
     {
       "name": "market-research",
@@ -6553,7 +6742,8 @@
         "วิเคราะห์และจัดหมวดหมู่",
         "สรุปผลพร้อมแหล่งอ้างอิง",
         "นำเสนอข้อเสนอแนะเชิงกลยุทธ์"
-      ]
+      ],
+      "invocation_hint": "/market-research"
     },
     {
       "name": "marketing-campaign",
@@ -6591,7 +6781,8 @@
         "เขียน Landing Page copy",
         "สร้างลำดับอีเมล",
         "ดำเนินการและติดตามผล"
-      ]
+      ],
+      "invocation_hint": "/marketing-campaign"
     },
     {
       "name": "mcp-builder",
@@ -6617,7 +6808,8 @@
           "scenario": "อยากให้ agent ค้น DB ได้",
           "how": "/mcp-builder สร้าง MCP server query DB"
         }
-      ]
+      ],
+      "invocation_hint": "/mcp-builder"
     },
     {
       "name": "mcp-server-patterns",
@@ -6651,7 +6843,8 @@
         "Zod validate",
         "wire handler",
         "test stdio"
-      ]
+      ],
+      "invocation_hint": "mcp-server-patterns"
     },
     {
       "name": "messages-ops",
@@ -6687,7 +6880,8 @@
         "ตรวจสอบรหัส OTP",
         "ตรวจสอบเธรด",
         "ตอบกลับตามข้อมูล"
-      ]
+      ],
+      "invocation_hint": "/messages-ops"
     },
     {
       "name": "mle-workflow",
@@ -6725,7 +6919,8 @@
         "deploy สู่ production",
         "ตั้งค่า monitoring",
         "เตรียม rollback plan"
-      ]
+      ],
+      "invocation_hint": "/mle-workflow"
     },
     {
       "name": "model-cost-switching",
@@ -6751,7 +6946,8 @@
           "scenario": "ต้อง scan 50 ไฟล์",
           "how": "ใช้ tier ถูก (free/cheap) ก่อน ไม่ใช่ primary model"
         }
-      ]
+      ],
+      "invocation_hint": "/model-cost-switching"
     },
     {
       "name": "motion-advanced",
@@ -6788,7 +6984,8 @@
         "เพิ่ม gesture handler",
         "ทดสอบบน browser",
         "ปรับ easing และ duration"
-      ]
+      ],
+      "invocation_hint": "/motion-advanced"
     },
     {
       "name": "motion-foundations",
@@ -6825,7 +7022,8 @@
         "ปรับตามอุปกรณ์",
         "บังคับใช้ accessibility",
         "ตรวจสอบ SSR safety"
-      ]
+      ],
+      "invocation_hint": "/motion-foundations"
     },
     {
       "name": "motion-patterns",
@@ -6862,7 +7060,8 @@
         "ปรับแต่งพารามิเตอร์",
         "วาง component ในโค้ด",
         "ทดสอบการทำงาน"
-      ]
+      ],
+      "invocation_hint": "/motion-patterns"
     },
     {
       "name": "motion-ui",
@@ -6899,7 +7098,8 @@
         "เพิ่ม animation props",
         "ทดสอบการทำงาน",
         "ปรับแต่งตาม feedback"
-      ]
+      ],
+      "invocation_hint": "/motion-ui"
     },
     {
       "name": "mysql-patterns",
@@ -6938,7 +7138,8 @@
         "ทดสอบด้วย EXPLAIN และ benchmark",
         "ปรับแต่ง transaction และ connection pool",
         "ตรวจสอบ replication และ failover"
-      ]
+      ],
+      "invocation_hint": "/mysql-patterns"
     },
     {
       "name": "nanoclaw-repl",
@@ -6974,7 +7175,8 @@
         "รันคำสั่ง",
         "ขยายด้วย custom command",
         "ปิด session"
-      ]
+      ],
+      "invocation_hint": "/nanoclaw-repl"
     },
     {
       "name": "nestjs-patterns",
@@ -7011,7 +7213,8 @@
         "สร้างโพรไวเดอร์และ DTO",
         "เพิ่มการ์ดและอินเตอร์เซปเตอร์",
         "ตั้งค่าและทดสอบ"
-      ]
+      ],
+      "invocation_hint": "/nestjs-patterns"
     },
     {
       "name": "netmiko-ssh-automation",
@@ -7048,7 +7251,8 @@
         "แยกวิเคราะห์ผลลัพธ์",
         "ตรวจสอบข้อผิดพลาด",
         "ปิดการเชื่อมต่อ"
-      ]
+      ],
+      "invocation_hint": "/netmiko-ssh-automation"
     },
     {
       "name": "network-bgp-diagnostics",
@@ -7085,7 +7289,8 @@
         "ตรวจสอบ prefix policy",
         "ตรวจสอบ AS path",
         "เก็บหลักฐานอย่างปลอดภัย"
-      ]
+      ],
+      "invocation_hint": "/network-bgp-diagnostics"
     },
     {
       "name": "network-config-validation",
@@ -7123,7 +7328,8 @@
         "ตรวจสอบ subnet ทับซ้อน",
         "ตรวจสอบ stale reference",
         "รายงานผลการ validate"
-      ]
+      ],
+      "invocation_hint": "/network-config-validation"
     },
     {
       "name": "network-interface-health",
@@ -7160,7 +7366,8 @@
         "ตรวจสอบ duplex และ speed",
         "ระบุแนวโน้ม flapping",
         "สรุปสาเหตุและแนะนำการแก้ไข"
-      ]
+      ],
+      "invocation_hint": "/network-interface-health"
     },
     {
       "name": "nextjs-turbopack",
@@ -7197,7 +7404,8 @@
         "รัน dev server ด้วย --turbo",
         "ทดสอบ hot reload และ FS caching",
         "เปรียบเทียบ build time กับ webpack"
-      ]
+      ],
+      "invocation_hint": "/nextjs-turbopack"
     },
     {
       "name": "nodejs-keccak256",
@@ -7232,7 +7440,8 @@
         "ระบุข้อความที่ต้องการ hash",
         "เรียกใช้ Keccak-256 library",
         "ตรวจสอบผลลัพธ์กับ Ethereum spec"
-      ]
+      ],
+      "invocation_hint": "/nodejs-keccak256"
     },
     {
       "name": "nutrient-document-processing",
@@ -7268,7 +7477,8 @@
         "เลือกประเภทการประมวลผล",
         "เรียกใช้ API พร้อมพารามิเตอร์",
         "รับผลลัพธ์และดาวน์โหลด"
-      ]
+      ],
+      "invocation_hint": "/nutrient-document-processing"
     },
     {
       "name": "nuxt4-patterns",
@@ -7304,7 +7514,8 @@
         "กำหนด lazy loading สำหรับ component ที่ไม่จำเป็น",
         "ตั้งค่า route rules เพื่อ optimize การ render",
         "ทดสอบ hydration error ด้วย nuxt devtools"
-      ]
+      ],
+      "invocation_hint": "/nuxt4-patterns"
     },
     {
       "name": "observability-and-instrumentation",
@@ -7344,7 +7555,8 @@
         "เปิด OpenTelemetry tracing",
         "กำหนด symptom-based alerting",
         "ทดสอบ telemetry pipeline"
-      ]
+      ],
+      "invocation_hint": "/observability-and-instrumentation"
     },
     {
       "name": "obsidian",
@@ -7371,7 +7583,8 @@
           "scenario": "สร้าง note ใหม่",
           "how": "ใช้ template, tag, ลิงก์ไป note ที่เกี่ยวข้อง"
         }
-      ]
+      ],
+      "invocation_hint": "/obsidian"
     },
     {
       "name": "openai-docs",
@@ -7401,7 +7614,8 @@
           "scenario": "ต้องการทราบความแตกต่างระหว่าง Codex surface ต่างๆ",
           "how": "พิมพ์ /openai-docs choosing Codex surfaces"
         }
-      ]
+      ],
+      "invocation_hint": "/openai-docs"
     },
     {
       "name": "openclaw-persona-forge",
@@ -7438,7 +7652,8 @@
         "กำหนดกฎ底线และชื่อ",
         "สร้าง prompt สำหรับ头像",
         "เรียก skill สร้างรูป (ถ้ามี)"
-      ]
+      ],
+      "invocation_hint": "/openclaw-persona-forge"
     },
     {
       "name": "openmed",
@@ -7474,7 +7689,8 @@
         "เลือกโหมด (extract/detect/deidentify)",
         "รอผลลัพธ์จาก OpenMed",
         "ตรวจสอบและนำไปใช้ต่อ"
-      ]
+      ],
+      "invocation_hint": "/openmed"
     },
     {
       "name": "opensource-pipeline",
@@ -7510,7 +7726,8 @@
         "Sanitize ข้อมูลอ่อนไหว",
         "Package เป็น release พร้อม docs",
         "สร้าง PR หรือ push ไปยัง public repo"
-      ]
+      ],
+      "invocation_hint": "/opensource-pipeline"
     },
     {
       "name": "parallel-execution-optimizer",
@@ -7546,7 +7763,8 @@
         "กำหนด batched tool calls",
         "รันงานแบบ concurrent",
         "รวบรวมและตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/parallel-execution-optimizer"
     },
     {
       "name": "pdf",
@@ -7582,7 +7800,8 @@
         "เลือกการดำเนินการ (อ่าน/รวม/ดึง)",
         "รันคำสั่ง",
         "ตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/pdf"
     },
     {
       "name": "performance-optimization",
@@ -7610,7 +7829,8 @@
           "scenario": "API ตอบช้า 2 วิ",
           "how": "profile → พบ N+1 query → แก้ → วัดใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/performance-optimization"
     },
     {
       "name": "perl-patterns",
@@ -7647,7 +7867,8 @@
         "ปรับปรุง error handling",
         "เพิ่ม testing patterns",
         "ตรวจสอบความสอดคล้อง"
-      ]
+      ],
+      "invocation_hint": "/perl-patterns"
     },
     {
       "name": "perl-security",
@@ -7684,7 +7905,8 @@
         "ใช้ parameterized queries",
         "ป้องกัน XSS ด้วย HTML escaping",
         "ใช้ perlcrit ตรวจสอบโค้ด"
-      ]
+      ],
+      "invocation_hint": "/perl-security"
     },
     {
       "name": "perl-testing",
@@ -7720,7 +7942,8 @@
         "รันเทสด้วย prove",
         "ตรวจสอบ coverage ด้วย Devel::Cover",
         "ปรับปรุงเทสตามผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/perl-testing"
     },
     {
       "name": "pharmacy-order-lookup",
@@ -7752,7 +7975,8 @@
           "scenario": "เภสัชกรต้องการดูรายละเอียดใบสั่งยาของผู้ป่วยชื่อ สมชาย",
           "how": "ใช้คำสั่ง /pharmacy-order-lookup patient_name=สมชาย"
         }
-      ]
+      ],
+      "invocation_hint": "/pharmacy-order-lookup"
     },
     {
       "name": "plan-orchestrate",
@@ -7784,7 +8008,8 @@
         "decompose steps",
         "design agent chain",
         "execute + monitor"
-      ]
+      ],
+      "invocation_hint": "/plan-orchestrate"
     },
     {
       "name": "plankton-code-quality",
@@ -7820,7 +8045,8 @@
         "รัน linter และ formatter",
         "ส่งผลลัพธ์ให้ Claude แก้ไข",
         "บันทึกการเปลี่ยนแปลง"
-      ]
+      ],
+      "invocation_hint": "/plankton-code-quality"
     },
     {
       "name": "planning-and-task-breakdown",
@@ -7849,7 +8075,8 @@
           "scenario": "ย้ายระบบจาก REST เป็น GraphQL",
           "how": "แตกเป็น: schema → resolver → migration → test → cutover"
         }
-      ]
+      ],
+      "invocation_hint": "/planning-and-task-breakdown"
     },
     {
       "name": "plugin-creator",
@@ -7887,7 +8114,8 @@
         "สร้าง .codex-plugin/plugin.json",
         "สร้างโฟลเดอร์และไฟล์ตามที่เลือก",
         "ตรวจสอบความถูกต้องของ manifest"
-      ]
+      ],
+      "invocation_hint": "/plugin-creator"
     },
     {
       "name": "post-mortem",
@@ -7920,7 +8148,8 @@
         "หา root cause",
         "ประเมิน impact",
         "กำหนด action items"
-      ]
+      ],
+      "invocation_hint": "/post-mortem"
     },
     {
       "name": "postgres-patterns",
@@ -7959,7 +8188,8 @@
         "เพิ่ม security policies",
         "ทดสอบประสิทธิภาพ",
         "ปรับแต่งซ้ำตามผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/postgres-patterns"
     },
     {
       "name": "pptx",
@@ -7995,7 +8225,8 @@
         "เลือกการดำเนินการ (สร้าง/อ่าน/แปลง)",
         "ปรับแต่งเนื้อหาและรูปแบบ",
         "บันทึกหรือส่งออกไฟล์ .pptx"
-      ]
+      ],
+      "invocation_hint": "/pptx"
     },
     {
       "name": "prediction-market-oracle-research",
@@ -8025,7 +8256,8 @@
           "scenario": "ต้องการนำข้อมูล prediction market มาเป็น oracle signal สำหรับ dashboard การตัดสินใจของทีม",
           "how": "ใช้ script ~/.claude/skills/prediction-market-oracle-research/research.sh --output oracle-signal --format json"
         }
-      ]
+      ],
+      "invocation_hint": "/prediction-market-oracle-research"
     },
     {
       "name": "prediction-market-risk-review",
@@ -8063,7 +8295,8 @@
         "ตรวจสอบความเป็นส่วนตัว",
         "ประเมิน execution risk",
         "สรุปรายงานความเสี่ยง"
-      ]
+      ],
+      "invocation_hint": "/prediction-market-risk-review"
     },
     {
       "name": "prisma-patterns",
@@ -8101,7 +8334,8 @@
         "ใช้ transactions เมื่อต้องการ atomicity",
         "เลือก pagination ที่เหมาะสม",
         "หลีกเลี่ยงกับดักที่พบบ่อย"
-      ]
+      ],
+      "invocation_hint": "/prisma-patterns"
     },
     {
       "name": "product-capability",
@@ -8137,7 +8371,8 @@
         "ระบุข้อจำกัดและค่าคงที่",
         "กำหนดอินเทอร์เฟซ",
         "สร้างแผนความสามารถ"
-      ]
+      ],
+      "invocation_hint": "/product-capability"
     },
     {
       "name": "product-lens",
@@ -8167,7 +8402,8 @@
           "scenario": "ต้องการตรวจสอบว่า product direction ปัจจุบันยังสอดคล้องกับเป้าหมายหรือไม่",
           "how": "ใช้คำสั่ง /product-lens diagnose เพื่อรัน product diagnostics"
         }
-      ]
+      ],
+      "invocation_hint": "/product-lens"
     },
     {
       "name": "production-audit",
@@ -8194,7 +8430,8 @@
           "scenario": "รับลูกค้าใหม่",
           "how": "audit: monitoring ครบไหม, alert ทำงานไหม"
         }
-      ]
+      ],
+      "invocation_hint": "/production-audit"
     },
     {
       "name": "production-scheduling",
@@ -8233,7 +8470,8 @@
         "ตรวจสอบความขัดแย้งของทรัพยากร",
         "ปรับตารางตามข้อจำกัด",
         "เผยแพร่ตารางให้ทีมงาน"
-      ]
+      ],
+      "invocation_hint": "/production-scheduling"
     },
     {
       "name": "project-flow-ops",
@@ -8269,7 +8507,8 @@
         "เชื่อมโยงงานกับ Linear",
         "อัปเดตสถานะ",
         "ปิดงานที่เสร็จแล้ว"
-      ]
+      ],
+      "invocation_hint": "/project-flow-ops"
     },
     {
       "name": "project-guidelines-example",
@@ -8299,7 +8538,8 @@
           "scenario": "ต้องการดูตัวอย่างโครงสร้างไฟล์สำหรับ React component",
           "how": "พิมพ์ /guidelines react-component"
         }
-      ]
+      ],
+      "invocation_hint": "/project-guidelines-example"
     },
     {
       "name": "prompt-optimizer",
@@ -8336,7 +8576,8 @@
         "เพิ่มตัวอย่างหรือบริบท",
         "ตรวจสอบความชัดเจนของภาษา",
         "แสดง prompt ที่ปรับปรุงแล้ว"
-      ]
+      ],
+      "invocation_hint": "/prompt-optimizer"
     },
     {
       "name": "pubmed-database",
@@ -8372,7 +8613,8 @@
         "ส่งคำขอไปยัง NCBI E-utilities",
         "รับผลลัพธ์เป็น JSON",
         "แสดงข้อมูลบทความหรือ citation"
-      ]
+      ],
+      "invocation_hint": "/pubmed-database"
     },
     {
       "name": "python-patterns",
@@ -8409,7 +8651,8 @@
         "เพิ่ม type hints",
         "ตรวจสอบ PEP 8",
         "ปรับปรุงให้ maintainable"
-      ]
+      ],
+      "invocation_hint": "/python-patterns"
     },
     {
       "name": "python-testing",
@@ -8446,7 +8689,8 @@
         "รีแฟกเตอร์โค้ดให้สะอาด (Refactor)",
         "รัน pytest และตรวจ coverage",
         "แก้ไขจน coverage ถึงเกณฑ์"
-      ]
+      ],
+      "invocation_hint": "/python-testing"
     },
     {
       "name": "pytorch-patterns",
@@ -8481,7 +8725,8 @@
         "เลือกแพทเทิร์นที่ต้องการ",
         "ดูตัวอย่างโค้ดและคำอธิบาย",
         "ปรับใช้กับโปรเจกต์ของคุณ"
-      ]
+      ],
+      "invocation_hint": "/pytorch-patterns"
     },
     {
       "name": "quality-nonconformance",
@@ -8518,7 +8763,8 @@
         "กำหนดแนวทางแก้ไข",
         "ดำเนินการแก้ไข",
         "ตรวจสอบและปิดรายการ"
-      ]
+      ],
+      "invocation_hint": "/quality-nonconformance"
     },
     {
       "name": "quarkus-patterns",
@@ -8553,7 +8799,8 @@
         "เลือกแพทเทิร์นที่ต้องการ",
         "ดูตัวอย่างโค้ดและคำอธิบาย",
         "ปรับใช้กับโปรเจกต์ของคุณ"
-      ]
+      ],
+      "invocation_hint": "quarkus-patterns"
     },
     {
       "name": "quarkus-security",
@@ -8590,7 +8837,8 @@
         "กำหนด RBAC และ authorization rules",
         "เพิ่ม input validation และ CSRF protection",
         "จัดการ secrets และ dependencies"
-      ]
+      ],
+      "invocation_hint": "/quarkus-security"
     },
     {
       "name": "quarkus-tdd",
@@ -8626,7 +8874,8 @@
         "เขียนโค้ดให้ test ผ่าน (Green)",
         "Refactor โค้ดให้สะอาด (Refactor)",
         "รัน test ทั้งหมดยืนยันไม่พัง"
-      ]
+      ],
+      "invocation_hint": "/quarkus-tdd"
     },
     {
       "name": "quarkus-verification",
@@ -8690,7 +8939,8 @@
         "รัน quality gates",
         "จัดการ merge queue",
         "ตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/ralphinho-rfc-pipeline"
     },
     {
       "name": "react-patterns",
@@ -8726,7 +8976,8 @@
         "เลือกแพทเทิร์นที่เหมาะสม (hooks, boundary, form)",
         "ปรับโค้ดตามแนวทาง React 18/19",
         "ทดสอบการทำงานและ fallback UI"
-      ]
+      ],
+      "invocation_hint": "/react-patterns"
     },
     {
       "name": "react-performance",
@@ -8752,7 +9003,8 @@
           "scenario": "list 1000 แถวกระตุก",
           "how": "/react-performance memo + virtualization"
         }
-      ]
+      ],
+      "invocation_hint": "/react-performance"
     },
     {
       "name": "react-testing",
@@ -8778,7 +9030,8 @@
           "scenario": "test form submit",
           "how": "/react-testing RTL + MSW mock API + assert"
         }
-      ]
+      ],
+      "invocation_hint": "/react-testing"
     },
     {
       "name": "recsys-pipeline-architect",
@@ -8816,7 +9069,8 @@
         "ตั้งค่า Scorer (ให้คะแนน)",
         "เลือก Selector (คัดเลือก)",
         "เพิ่ม SideEffect (บันทึกผล)"
-      ]
+      ],
+      "invocation_hint": "/recsys-pipeline-architect"
     },
     {
       "name": "recursive-decision-ledger",
@@ -8853,7 +9107,8 @@
         "สร้างสาขาเมื่อมีทางเลือก",
         "สลับระหว่างสาขาเพื่อเปรียบเทียบ",
         "ย้อนกลับหรือเลือกเส้นทางที่ดีที่สุด"
-      ]
+      ],
+      "invocation_hint": "/recursive-decision-ledger"
     },
     {
       "name": "redis-patterns",
@@ -8891,7 +9146,8 @@
         "ออกแบบ lock key และ timeout",
         "ทดสอบ concurrency และ latency",
         "ตรวจสอบ connection pool"
-      ]
+      ],
+      "invocation_hint": "/redis-patterns"
     },
     {
       "name": "regex-vs-llm-structured-text",
@@ -8929,7 +9185,8 @@
         "ตรวจสอบ edge case ที่ regex พลาด",
         "เพิ่ม LLM สำหรับกรณีความเชื่อมั่นต่ำ",
         "ประเมินผลลัพธ์รวม"
-      ]
+      ],
+      "invocation_hint": "/regex-vs-llm-structured-text"
     },
     {
       "name": "remotion-video-creation",
@@ -8966,7 +9223,8 @@
         "เพิ่ม audio และ captions",
         "ปรับแต่ง transition และ timing",
         "ทดสอบและ render วิดีโอ"
-      ]
+      ],
+      "invocation_hint": "/remotion-video-creation"
     },
     {
       "name": "render-html",
@@ -8993,7 +9251,8 @@
           "scenario": "report 1000 บรรทัด",
           "how": "emit JSON → render-html → ได้ไฟล์ดู ไม่เปลือง token"
         }
-      ]
+      ],
+      "invocation_hint": "/render-html"
     },
     {
       "name": "repo-scan",
@@ -9030,7 +9289,8 @@
         "ตรวจจับไลบรารีฝัง",
         "ประเมินผลสี่ระดับ",
         "รายงานผล"
-      ]
+      ],
+      "invocation_hint": "/repo-scan"
     },
     {
       "name": "research-ops",
@@ -9066,7 +9326,8 @@
         "ค้นหาจากแหล่งข้อมูลปัจจุบัน",
         "รวบรวมและตรวจสอบหลักฐาน",
         "สรุปผลพร้อมอ้างอิง"
-      ]
+      ],
+      "invocation_hint": "/research-ops"
     },
     {
       "name": "returns-reverse-logistics",
@@ -9103,7 +9364,8 @@
         "อนุมัติหรือปฏิเสธ",
         "จัดการการส่งคืน",
         "ติดตามสถานะการจัดส่ง"
-      ]
+      ],
+      "invocation_hint": "/returns-reverse-logistics"
     },
     {
       "name": "root-cause-first",
@@ -9167,7 +9429,8 @@
         "วิเคราะห์รูปแบบที่ซ้ำ",
         "กลั่นเป็นกฎ",
         "เพิ่ม/แก้ไขไฟล์กฎ"
-      ]
+      ],
+      "invocation_hint": "/rules-distill"
     },
     {
       "name": "rust-patterns",
@@ -9204,7 +9467,8 @@
         "ออกแบบ Traits และ Generics",
         "ใช้ Concurrency Patterns",
         "ทดสอบและปรับปรุง Performance"
-      ]
+      ],
+      "invocation_hint": "/rust-patterns"
     },
     {
       "name": "rust-testing",
@@ -9230,7 +9494,8 @@
           "scenario": "test async fn",
           "how": "/rust-testing tokio::test + property-based"
         }
-      ]
+      ],
+      "invocation_hint": "/rust-testing"
     },
     {
       "name": "safety-guard",
@@ -9256,7 +9521,8 @@
           "scenario": "จะ git push --force",
           "how": "safety-guard บังคับยืนยันก่อน, เช็ค branch"
         }
-      ]
+      ],
+      "invocation_hint": "/safety-guard"
     },
     {
       "name": "santa-method",
@@ -9293,7 +9559,8 @@
         "เปรียบเทียบผล ถ้าไม่ตรงกันให้ปรับปรุง",
         "วนซ้ำจนกว่าทั้งสองเห็นพ้อง",
         "ส่งมอบ output ที่ผ่านการรับรอง"
-      ]
+      ],
+      "invocation_hint": "/santa-method"
     },
     {
       "name": "scholar-evaluation",
@@ -9329,7 +9596,8 @@
         "วิเคราะห์โครงสร้างและเนื้อหา",
         "ประเมินคุณภาพหลักฐานและการอ้างอิง",
         "ให้ข้อเสนอแนะเชิงโครงสร้าง"
-      ]
+      ],
+      "invocation_hint": "/scholar-evaluation"
     },
     {
       "name": "scrape-web",
@@ -9366,7 +9634,8 @@
         "เลือก scraper ที่เหมาะสม",
         "รันการ scrape",
         "ส่งคืนผลลัพธ์พร้อม provenance"
-      ]
+      ],
+      "invocation_hint": "/scrape-web"
     },
     {
       "name": "scrutinize",
@@ -9393,7 +9662,8 @@
           "scenario": "PR ใหญ่ก่อน merge",
           "how": "scrutinize ทุกไฟล์: logic, test, security, perf"
         }
-      ]
+      ],
+      "invocation_hint": "/scrutinize"
     },
     {
       "name": "search-first",
@@ -9423,7 +9693,8 @@
           "scenario": "กำลังจะเขียนฟังก์ชัน parse CSV ด้วยตัวเอง",
           "how": "ใช้คำสั่ง /search-first เพื่อค้นหาไลบรารี CSV ที่มีอยู่แล้วในภาษาโปรแกรมที่ใช้"
         }
-      ]
+      ],
+      "invocation_hint": "/search-first"
     },
     {
       "name": "security-and-hardening",
@@ -9452,7 +9723,8 @@
           "scenario": "API มี input จาก user",
           "how": "ตรวจ SQL injection, XSS, auth"
         }
-      ]
+      ],
+      "invocation_hint": "/security-and-hardening"
     },
     {
       "name": "security-bounty-hunter",
@@ -9488,7 +9760,8 @@
         "วิเคราะห์ช่องโหว่ที่เข้าถึงได้จากระยะไกล",
         "ประเมินความรุนแรงและมูลค่า bounty",
         "รายงานผลพร้อมแนวทางแก้ไข"
-      ]
+      ],
+      "invocation_hint": "/security-bounty-hunter"
     },
     {
       "name": "security-review",
@@ -9525,7 +9798,8 @@
         "ตรวจสอบ input/output",
         "ประเมินความเสี่ยง",
         "แนะนำแนวทางแก้ไข"
-      ]
+      ],
+      "invocation_hint": "/security-review"
     },
     {
       "name": "security-scan",
@@ -9561,7 +9835,8 @@
         "ตรวจสอบการตั้งค่าที่ผิดปกติ",
         "วิเคราะห์ความเสี่ยง injection",
         "รายงานผล vulnerabilities"
-      ]
+      ],
+      "invocation_hint": "/security-scan"
     },
     {
       "name": "seo",
@@ -9597,7 +9872,8 @@
         "วางแผนกลยุทธ์ SEO",
         "ปรับปรุงเทคนิคและเนื้อหา",
         "ตรวจสอบผลลัพธ์และปรับแต่ง"
-      ]
+      ],
+      "invocation_hint": "/seo"
     },
     {
       "name": "shipping-and-launch",
@@ -9625,7 +9901,8 @@
           "scenario": "deploy ฟีเจอร์ checkout ใหม่",
           "how": "เช็ค: test ผ่าน, migration dry-run, rollback script พร้อม, alert ตั้ง"
         }
-      ]
+      ],
+      "invocation_hint": "/shipping-and-launch"
     },
     {
       "name": "skill-comply",
@@ -9651,7 +9928,8 @@
           "scenario": "ตั้ง rule 'test ก่อนโค้ด'",
           "how": "/skill-comply สร้าง scenario ทดสอบการ follow"
         }
-      ]
+      ],
+      "invocation_hint": "/skill-comply"
     },
     {
       "name": "skill-creator",
@@ -9692,7 +9970,8 @@
         "เขียนโค้ดและทดสอบ",
         "ปรับปรุงตามผลลัพธ์",
         "วัดประสิทธิภาพและปรับแต่ง"
-      ]
+      ],
+      "invocation_hint": "/skill-creator"
     },
     {
       "name": "skill-installer",
@@ -9722,7 +10001,8 @@
           "scenario": "ผู้ใช้ต้องการติดตั้งสกิลจาก GitHub repo ส่วนตัว",
           "how": "ใช้คำสั่ง /install https://github.com/username/custom-skill"
         }
-      ]
+      ],
+      "invocation_hint": "/skill-installer"
     },
     {
       "name": "skill-scout",
@@ -9758,7 +10038,8 @@
         "สแกนแหล่งที่มาทั้งหมด",
         "แสดงผลลัพธ์ที่ตรงกัน",
         "แนะนำให้ใช้หรือ fork สกิลที่มีอยู่"
-      ]
+      ],
+      "invocation_hint": "/skill-scout"
     },
     {
       "name": "skill-stocktake",
@@ -9794,7 +10075,8 @@
         "รัน subagent ประเมินทีละสกิล",
         "รวบรวมผลประเมิน",
         "แสดงรายงานคุณภาพ"
-      ]
+      ],
+      "invocation_hint": "/skill-stocktake"
     },
     {
       "name": "slack-gif-creator",
@@ -9824,7 +10106,8 @@
           "scenario": "ผู้ใช้ต้องการตรวจสอบว่า GIF ตรงตามข้อจำกัดของ Slack หรือไม่",
           "how": "ใช้ /slack-gif-validate --file path/to/animation.gif"
         }
-      ]
+      ],
+      "invocation_hint": "/slack-gif-creator"
     },
     {
       "name": "social-graph-ranker",
@@ -9861,7 +10144,8 @@
         "จัดอันดับ warm intro",
         "ประเมิน bridge score",
         "วิเคราะห์ช่องว่างเครือข่าย"
-      ]
+      ],
+      "invocation_hint": "/social-graph-ranker"
     },
     {
       "name": "social-publisher",
@@ -9898,7 +10182,8 @@
         "แนบสื่อ (รูปภาพ/วิดีโอ) ถ้ามี",
         "ยืนยันและส่งให้ SocialClaw ดำเนินการ",
         "ตรวจสอบสถานะการโพสต์"
-      ]
+      ],
+      "invocation_hint": "/social-publisher"
     },
     {
       "name": "spec-driven-development",
@@ -9936,7 +10221,8 @@
         "เขียน acceptance criteria",
         "แยกหน้า concern",
         "เอาสเปกมาทำ TDD"
-      ]
+      ],
+      "invocation_hint": "/spec-driven-development"
     },
     {
       "name": "springboot-patterns",
@@ -9962,7 +10248,8 @@
           "scenario": "REST API ของ service",
           "how": "/springboot-patterns controller-service-repository"
         }
-      ]
+      ],
+      "invocation_hint": "/springboot-patterns"
     },
     {
       "name": "springboot-security",
@@ -10000,7 +10287,8 @@
         "เพิ่ม CSRF protection และ headers",
         "ตั้งค่า rate limiting",
         "ตรวจสอบ dependency security"
-      ]
+      ],
+      "invocation_hint": "/springboot-security"
     },
     {
       "name": "springboot-tdd",
@@ -10037,7 +10325,8 @@
         "refactor โค้ดให้สะอาด",
         "รัน test ทั้งหมดด้วย JaCoCo",
         "ตรวจสอบ coverage"
-      ]
+      ],
+      "invocation_hint": "/springboot-tdd"
     },
     {
       "name": "springboot-verification",
@@ -10090,7 +10379,8 @@
           "scenario": "กำลังพัฒนาโปรเจกต์ที่ต้องเปลี่ยนขั้นตอนหลายครั้ง ต้องการเก็บข้อมูลสำคัญไว้",
           "how": "เรียกใช้ /compact หรือระบุจุดที่ต้องการบีบอัด"
         }
-      ]
+      ],
+      "invocation_hint": "/strategic-compact"
     },
     {
       "name": "swift-actor-persistence",
@@ -10123,7 +10413,8 @@
         "เพิ่ม file-backed persistence",
         "จัดการ read/write ผ่าน actor",
         "ทดสอบ thread safety"
-      ]
+      ],
+      "invocation_hint": "/swift-actor-persistence"
     },
     {
       "name": "swift-concurrency-6-2",
@@ -10159,7 +10450,8 @@
         "เพิ่ม @concurrent ที่ฟังก์ชัน",
         "จัดการผลลัพธ์กลับมาที่ main actor",
         "ใช้ isolated conformances ถ้าจำเป็น"
-      ]
+      ],
+      "invocation_hint": "/swift-concurrency-6-2"
     },
     {
       "name": "swift-protocol-di-testing",
@@ -10195,7 +10487,8 @@
         "สร้าง mock object ตาม protocol",
         "Inject mock เข้าไปในโค้ดที่ต้องการทดสอบ",
         "เขียน test ด้วย Swift Testing"
-      ]
+      ],
+      "invocation_hint": "/swift-protocol-di-testing"
     },
     {
       "name": "swiftui-patterns",
@@ -10221,7 +10514,8 @@
           "scenario": "state กระจาย",
           "how": "/swiftui-patterns ใช้ @Observable + environment"
         }
-      ]
+      ],
+      "invocation_hint": "/swiftui-patterns"
     },
     {
       "name": "tdd-workflow",
@@ -10258,7 +10552,8 @@
         "Refactor โค้ดให้สะอาด",
         "รัน test ทั้งหมดอีกครั้ง",
         "ตรวจสอบ coverage ≥ 80%"
-      ]
+      ],
+      "invocation_hint": "/tdd-workflow"
     },
     {
       "name": "team-builder",
@@ -10290,7 +10585,8 @@
         "กำหนดภารกิจให้แต่ละ agent",
         "ส่งงานแบบขนาน",
         "รวบรวมผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/team-builder"
     },
     {
       "name": "terminal-ops",
@@ -10327,7 +10623,8 @@
         "วิเคราะห์ปัญหา",
         "แก้ไขและ push",
         "ยืนยันผ่าน ECC"
-      ]
+      ],
+      "invocation_hint": "/terminal-ops"
     },
     {
       "name": "thai-address",
@@ -10358,7 +10655,8 @@
           "scenario": "ต้องการค้นหารหัสไปรษณีย์ของจังหวัดเชียงใหม่",
           "how": "ใช้คำสั่ง /lookup-postcode จังหวัดเชียงใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-address"
     },
     {
       "name": "thai-customer-service",
@@ -10389,7 +10687,8 @@
           "scenario": "ต้องการสคริปต์ขอโทษและเสนอส่วนลดสำหรับสินค้าชำรุด",
           "how": "ใช้คำสั่ง /thai-customer-service พร้อมรายละเอียด เช่น 'เขียนข้อความขอโทษและเสนอคูปองส่วนลด 20% สำหรับสินค้าที่เสียหาย'"
         }
-      ]
+      ],
+      "invocation_hint": "thai-customer-service"
     },
     {
       "name": "thai-date-format",
@@ -10416,7 +10715,8 @@
           "scenario": "วันที่ 2026-07-13",
           "how": "แปลงเป็น 13 กรกฎาคม 2569"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-date-format"
     },
     {
       "name": "thai-festival-card",
@@ -10453,7 +10753,8 @@
         "ระบุผู้รับและระดับความสัมพันธ์",
         "เลือกรูปแบบภาษา (ทางการ/กันเอง)",
         "สร้างข้อความพร้อมตรวจสอบความเหมาะสม"
-      ]
+      ],
+      "invocation_hint": "/thai-festival-card"
     },
     {
       "name": "thai-government-form",
@@ -10484,7 +10785,8 @@
           "scenario": "ต้องการทำหนังสือมอบอำนาจให้คนอื่นไปติดต่อราชการแทน",
           "how": "ใช้คำสั่ง /thai-government-form ประเภท 'หนังสือมอบอำนาจ' พร้อมระบุชื่อผู้มอบ ผู้รับมอบ และอำนาจที่มอบ"
         }
-      ]
+      ],
+      "invocation_hint": "thai-government-form"
     },
     {
       "name": "thai-id-validate",
@@ -10522,7 +10824,8 @@
         "ตรวจสอบ checksum",
         "ปรับรูปแบบมาตรฐาน",
         "ส่งผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/thai-id-validate"
     },
     {
       "name": "thai-invoice",
@@ -10561,7 +10864,8 @@
         "คำนวณภาษีและส่วนลด",
         "ตรวจสอบความถูกต้อง",
         "ส่งออกเป็น PDF"
-      ]
+      ],
+      "invocation_hint": "/thai-invoice"
     },
     {
       "name": "thai-pdpa",
@@ -10588,7 +10892,8 @@
           "scenario": "ฟอร์มเก็บ email",
           "how": "ตรวจ consent, purpose, สิทธิ์ user"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-pdpa"
     },
     {
       "name": "thai-resume",
@@ -10619,7 +10924,8 @@
           "scenario": "มีเรซูเม่ภาษาอังกฤษอยู่แล้ว ต้องการแปลเป็นภาษาไทย",
           "how": "วางเนื้อหาเรซูเม่ภาษาอังกฤษแล้วพิมพ์ '/thai-resume แปลเรซูเม่นี้เป็นภาษาไทย'"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-resume"
     },
     {
       "name": "thai-social-caption",
@@ -10650,7 +10956,8 @@
           "scenario": "ต้องการโพสต์ประชาสัมพันธ์กิจกรรมบริษัท",
           "how": "พิมพ์ /thai-social-caption เขียนโพสต์ประชาสัมพันธ์งาน 'เปิดตัวผลิตภัณฑ์ใหม่' สำหรับ Facebook"
         }
-      ]
+      ],
+      "invocation_hint": "thai-social-caption"
     },
     {
       "name": "thai-text-processing",
@@ -10677,7 +10984,8 @@
           "scenario": "สร้าง search ภาษาไทย",
           "how": "ใช้ word segmentation ก่อน index"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-text-processing"
     },
     {
       "name": "thai-translate",
@@ -10704,7 +11012,8 @@
           "scenario": "แปล README อังกฤษ",
           "how": "/thai-translate รักษาคำเทคนิค (deploy, API) แปลที่เหลือ"
         }
-      ]
+      ],
+      "invocation_hint": "/thai-translate"
     },
     {
       "name": "theme-factory",
@@ -10740,7 +11049,8 @@
         "ระบุ target artifact",
         "ปรับแต่งสี/ฟอนต์เพิ่มเติม (ถ้าต้องการ)",
         "apply ธีม"
-      ]
+      ],
+      "invocation_hint": "/theme-factory"
     },
     {
       "name": "tinystruct-patterns",
@@ -10777,7 +11087,8 @@
         "ปรับใช้กับ Dispatcher และ Annotation",
         "ทดสอบการทำงานของ API",
         "ตรวจสอบ lifecycle ของแอปพลิเคชัน"
-      ]
+      ],
+      "invocation_hint": "/tinystruct-patterns"
     },
     {
       "name": "token-budget-advisor",
@@ -10830,7 +11141,8 @@
           "scenario": "report ยาว 5000 token",
           "how": "แปลงเป็น compact JSON + render-html แทน"
         }
-      ]
+      ],
+      "invocation_hint": "/token-optimization"
     },
     {
       "name": "ui-demo",
@@ -10866,7 +11178,8 @@
         "รันเทสเพื่อบันทึกวิดีโอ",
         "ตรวจสอบและตัดต่อวิดีโอ",
         "ส่งออกไฟล์วิดีโอ"
-      ]
+      ],
+      "invocation_hint": "/ui-demo"
     },
     {
       "name": "ui-to-vue",
@@ -10896,7 +11209,8 @@
           "scenario": "ต้องการ batch convert หน้าจอ login และ dashboard จาก design เป็น Vue component",
           "how": "รันคำสั่ง ui-to-vue --input ./designs --output ./components --library vant"
         }
-      ]
+      ],
+      "invocation_hint": "/ui-to-vue"
     },
     {
       "name": "uncloud",
@@ -10933,7 +11247,8 @@
         "deploy หรือ publish service",
         "ปรับขนาด service ตามต้องการ",
         "ตรวจสอบผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/uncloud"
     },
     {
       "name": "unified-notifications-ops",
@@ -10969,7 +11284,8 @@
         "กำหนดเส้นทางแจ้งเตือน",
         "ตรวจสอบและจัดการแจ้งเตือน",
         "ปรับแต่งการแจ้งเตือนอัตโนมัติ"
-      ]
+      ],
+      "invocation_hint": "/unified-notifications-ops"
     },
     {
       "name": "uspto-database",
@@ -10999,7 +11315,8 @@
           "scenario": "ต้องการดูประวัติการโอนสิทธิ์ของเครื่องหมายการค้า",
           "how": "ใช้คำสั่ง /uspto-assignment <เลขที่เครื่องหมายการค้า>"
         }
-      ]
+      ],
+      "invocation_hint": "/uspto-database"
     },
     {
       "name": "verification-loop",
@@ -11035,7 +11352,8 @@
         "ตรวจสอบความถูกต้องเบื้องต้น",
         "ตรวจสอบซ้ำเพื่อยืนยัน",
         "รายงานผลการตรวจสอบ"
-      ]
+      ],
+      "invocation_hint": "/verification-loop"
     },
     {
       "name": "verify-before-done",
@@ -11061,7 +11379,8 @@
           "scenario": "แก้ bug เสร็จ",
           "how": "รัน test, reproduce bug อีกครั้งให้แน่ใจหาย, แล้วค่อยบอกเสร็จ"
         }
-      ]
+      ],
+      "invocation_hint": "/verify-before-done"
     },
     {
       "name": "video-editing",
@@ -11097,7 +11416,8 @@
         "ตัดและปรับโครงสร้าง",
         "เพิ่มเอฟเฟกต์หรือข้อความ",
         "เรนเดอร์ไฟล์สำเร็จ"
-      ]
+      ],
+      "invocation_hint": "/video-editing"
     },
     {
       "name": "videodb",
@@ -11132,7 +11452,8 @@
         "นำเข้าแหล่งที่มา",
         "ประมวลผลแบบเรียลไทม์",
         "ส่งคืนบริบทและสตรีม"
-      ]
+      ],
+      "invocation_hint": "/videodb"
     },
     {
       "name": "visa-doc-translate",
@@ -11168,7 +11489,8 @@
         "OCR เพื่อแยกข้อความต้นฉบับ",
         "แปลข้อความเป็นภาษาอังกฤษ",
         "สร้าง PDF สองภาษาพร้อมต้นฉบับและคำแปล"
-      ]
+      ],
+      "invocation_hint": "/visa-doc-translate"
     },
     {
       "name": "vite-patterns",
@@ -11205,7 +11527,8 @@
         "เพิ่ม plugin ที่จำเป็น",
         "ตั้งค่า proxy และ env",
         "ทดสอบ HMR และ build"
-      ]
+      ],
+      "invocation_hint": "/vite-patterns"
     },
     {
       "name": "web-artifacts-builder",
@@ -11231,7 +11554,8 @@
           "scenario": "prototype landing page",
           "how": "/web-artifacts-builder สร้าง multi-component HTML"
         }
-      ]
+      ],
+      "invocation_hint": "/web-artifacts-builder"
     },
     {
       "name": "web-research",
@@ -11268,7 +11592,8 @@
         "ตรวจสอบผลลัพธ์ ถ้าไม่พอให้ fallback",
         "รวบรวมและสรุปข้อมูลที่เกี่ยวข้อง",
         "แสดงผลลัพธ์ให้ผู้ใช้"
-      ]
+      ],
+      "invocation_hint": "/web-research"
     },
     {
       "name": "webapp-testing",
@@ -11306,7 +11631,8 @@
         "ตรวจสอบผลลัพธ์ UI",
         "บันทึกข้อมูลหรือภาพหน้าจอ",
         "ปิดเบราว์เซอร์"
-      ]
+      ],
+      "invocation_hint": "/webapp-testing"
     },
     {
       "name": "wiki-search-local",
@@ -11333,7 +11659,8 @@
           "scenario": "อยากรู้เรื่อง DS18B20",
           "how": "search 'DS18B20' ก่อนเขียนหน้าใหม่"
         }
-      ]
+      ],
+      "invocation_hint": "/wiki-search-local"
     },
     {
       "name": "windows-desktop-e2e",
@@ -11369,7 +11696,8 @@
         "เขียนสคริปต์ควบคุม UI",
         "รันเทสและตรวจสอบผลลัพธ์",
         "วิเคราะห์ log และข้อผิดพลาด"
-      ]
+      ],
+      "invocation_hint": "/windows-desktop-e2e"
     },
     {
       "name": "word-generator",
@@ -11399,7 +11727,8 @@
           "scenario": "ต้องการสร้างประโยคสุ่มสำหรับเติมเนื้อหาในเอกสารตัวอย่าง",
           "how": "ใช้คำสั่ง /word-generator --type sentence --count 3"
         }
-      ]
+      ],
+      "invocation_hint": "/word-generator"
     },
     {
       "name": "workspace-surface-audit",
@@ -11425,7 +11754,8 @@
           "scenario": "เข้า repo ใหม่",
           "how": "/workspace-surface-audit สรุป surface ทั้งหมด"
         }
-      ]
+      ],
+      "invocation_hint": "/workspace-surface-audit"
     },
     {
       "name": "x-api",
@@ -11462,7 +11792,8 @@
         "ส่ง request พร้อม parameters",
         "จัดการ rate limits และ retry",
         "ประมวลผล response"
-      ]
+      ],
+      "invocation_hint": "/x-api"
     },
     {
       "name": "xlsx",
@@ -11498,7 +11829,8 @@
         "ตรวจสอบโครงสร้าง",
         "ดำเนินการตามคำขอ",
         "ส่งออกผลลัพธ์"
-      ]
+      ],
+      "invocation_hint": "/xlsx"
     },
     {
       "name": "ask-matt",
@@ -11528,7 +11860,8 @@
           "scenario": "กำลัง debug bug และอยากรู้ flow ที่เหมาะสม",
           "how": "พิมพ์ /ask-matt ฉันกำลัง debug bug ควรใช้ skill อะไร"
         }
-      ]
+      ],
+      "invocation_hint": "/ask-matt"
     },
     {
       "name": "two-axis-code-review",
@@ -11557,7 +11890,8 @@
           "scenario": "เพื่อนส่ง PR",
           "how": "/two-axis-code-review ดูทั้ง logic และ style"
         }
-      ]
+      ],
+      "invocation_hint": "/two-axis-code-review"
     },
     {
       "name": "codebase-design",
@@ -11595,7 +11929,8 @@
         "ออกแบบ seams",
         "ประเมิน testability",
         "ปรับปรุง AI-navigability"
-      ]
+      ],
+      "invocation_hint": "/codebase-design"
     },
     {
       "name": "diagnosing-bugs",
@@ -11672,7 +12007,8 @@
         "สร้าง ubiquitous language",
         "บันทึก ADRs สำหรับการตัดสินใจ",
         "ตรวจสอบความสอดคล้องกับทีม"
-      ]
+      ],
+      "invocation_hint": "/domain-modeling"
     },
     {
       "name": "grill-with-docs",
@@ -11704,7 +12040,8 @@
         "บันทึก glossary",
         "สร้าง ADR",
         "สรุป decision"
-      ]
+      ],
+      "invocation_hint": "/grill-with-docs"
     },
     {
       "name": "implement",
@@ -11742,7 +12079,8 @@
         "implement โค้ด",
         "รัน test และแก้ไข",
         "review และ deploy"
-      ]
+      ],
+      "invocation_hint": "/implement"
     },
     {
       "name": "improve-codebase-architecture",
@@ -11779,7 +12117,8 @@
         "เลือกประเด็นที่ต้องการเจาะลึก",
         "ซักถามและวิเคราะห์เชิงลึก",
         "สรุปแนวทางปรับปรุง"
-      ]
+      ],
+      "invocation_hint": "/improve-codebase-architecture"
     },
     {
       "name": "prototype",
@@ -11817,7 +12156,8 @@
         "ทดสอบกับข้อมูลตัวอย่าง",
         "วิเคราะห์ผลและสรุปบทเรียน",
         "ทิ้ง prototype หรือเก็บเป็น reference"
-      ]
+      ],
+      "invocation_hint": "/prototype"
     },
     {
       "name": "research",
@@ -11849,7 +12189,8 @@
         "หา primary source",
         "verify credibility",
         "synthesize + cite"
-      ]
+      ],
+      "invocation_hint": "/research"
     },
     {
       "name": "resolving-merge-conflicts",
@@ -11882,7 +12223,8 @@
         "วิเคราะห์ความตั้งใจของแต่ละ hunk",
         "เลือกหรือรวมโค้ดที่ถูกต้อง",
         "ตรวจสอบผลลัพธ์และ commit"
-      ]
+      ],
+      "invocation_hint": "/resolving-merge-conflicts"
     },
     {
       "name": "setup-matt-pocock-skills",
@@ -11908,7 +12250,8 @@
           "scenario": "เริ่มต้นโปรเจกต์ใหม่ที่ใช้ทักษะ Matt Pocock",
           "how": "รันคำสั่ง /setup-matt-pocock-skills"
         }
-      ]
+      ],
+      "invocation_hint": "/setup-matt-pocock-skills"
     },
     {
       "name": "tdd",
@@ -11940,7 +12283,8 @@
         "เขียน test (Red)",
         "เขียนโค้ดให้ผ่าน (Green)",
         "ปรับให้สะอาด (Refactor)"
-      ]
+      ],
+      "invocation_hint": "/tdd"
     },
     {
       "name": "to-issues",
@@ -11967,7 +12311,8 @@
           "scenario": "สเปกระบบ login",
           "how": "/to-issues แตกเป็น issue 5 อัน แต่ละอันครบ vertical slice"
         }
-      ]
+      ],
+      "invocation_hint": "/to-issues"
     },
     {
       "name": "to-prd",
@@ -11998,7 +12343,8 @@
           "scenario": "หลังจากประชุมสั้นๆ กับ Product Owner อยากได้เอกสารความต้องการที่ชัดเจน",
           "how": "พิมพ์ /to-prd แล้ววางลิงก์บันทึกการประชุม"
         }
-      ]
+      ],
+      "invocation_hint": "/to-prd"
     },
     {
       "name": "triage",
@@ -12032,7 +12378,8 @@
         "grill design",
         "write-up",
         "merge/close"
-      ]
+      ],
+      "invocation_hint": "/triage"
     },
     {
       "name": "grill-me",
@@ -12064,7 +12411,8 @@
         "เสนอคำตอบให้ปฏิเสธ",
         "ขุดลึกแต่ละจุด",
         "สรุปแผนที่ผ่านการท้าทาย"
-      ]
+      ],
+      "invocation_hint": "/grill-me"
     },
     {
       "name": "grilling",
@@ -12090,7 +12438,8 @@
           "scenario": "เลือก architecture",
           "how": "/grilling ไล่แต่ละ option จนเหลือตัวเดียว"
         }
-      ]
+      ],
+      "invocation_hint": "/grilling"
     },
     {
       "name": "handoff",
@@ -12117,7 +12466,8 @@
           "scenario": "switch Claude → Codex",
           "how": "เขียน handoff.md แล้ว push"
         }
-      ]
+      ],
+      "invocation_hint": "/handoff"
     },
     {
       "name": "teach",
@@ -12147,7 +12497,8 @@
           "scenario": "ผู้ใช้ต้องการสอนเพื่อนร่วมงานเกี่ยวกับการ deploy ด้วย CI/CD",
           "how": "ใช้คำสั่ง /teach deploy-ci-cd เพื่อสร้างบทเรียน"
         }
-      ]
+      ],
+      "invocation_hint": "/teach"
     },
     {
       "name": "writing-great-skills",
@@ -12186,7 +12537,8 @@
         "กำหนด parameters และ return values",
         "เพิ่มตัวอย่างการใช้งาน",
         "ตรวจสอบความสอดคล้อง"
-      ]
+      ],
+      "invocation_hint": "/writing-great-skills"
     },
     {
       "name": "git-guardrails-claude-code",
@@ -12223,7 +12575,8 @@
         "กำหนดคำสั่ง git ที่ต้องการบล็อก",
         "ทดสอบ hook ด้วยคำสั่งอันตราย",
         "ยืนยันการทำงานของ hook"
-      ]
+      ],
+      "invocation_hint": "/git-guardrails-claude-code"
     },
     {
       "name": "migrate-to-shoehorn",
@@ -12259,7 +12612,8 @@
         "สแกนหา `as` assertion",
         "แทนที่ด้วย shoehorn utility",
         "ตรวจสอบ type ผ่าน TypeScript compiler"
-      ]
+      ],
+      "invocation_hint": "/migrate-to-shoehorn"
     },
     {
       "name": "scaffold-exercises",
@@ -12297,7 +12651,8 @@
         "เพิ่มไฟล์ solutions",
         "เพิ่มไฟล์ explainers",
         "รัน lint เพื่อตรวจสอบ"
-      ]
+      ],
+      "invocation_hint": "/scaffold-exercises"
     },
     {
       "name": "setup-pre-commit",
@@ -12323,7 +12678,8 @@
           "scenario": "ทีม commit โค้ดไม่ format",
           "how": "/setup-pre-commit ติด Husky + lint-staged"
         }
-      ]
+      ],
+      "invocation_hint": "/setup-pre-commit"
     },
     {
       "name": "symlink-connector",
@@ -12352,7 +12708,8 @@
           "scenario": "เพิ่ม skill ใหม่ใช้ทุก agent",
           "how": "/symlink-connector ลิงก์ครั้งเดียวครบทุก harness"
         }
-      ]
+      ],
+      "invocation_hint": "/symlink-connector"
     },
     {
       "name": "game-phaser-pipeline",
@@ -12390,7 +12747,8 @@
         "wire route Phaser",
         "verify ในเกม",
         "เช็ค safety gate"
-      ]
+      ],
+      "invocation_hint": "/game-phaser-pipeline"
     },
     {
       "name": "monte-carlo-quant-analysis",
@@ -12408,7 +12766,17 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Monte Carlo simulation + synthetic data + quant risk analysis for portfolio/stock/fund/robot-trading PREDICTION (paper/simulation-only, non-advisory). Use when forecasting outcomes via repeated random sampling, generating synthetic scenarios, or computing risk metrics (VaR/CVaR/Sharpe/drawdown/RRR) as probability distributions rather than point estimates."
+      "description": "Monte Carlo simulation + synthetic data + quant risk analysis for portfolio/stock/fund/robot-trading PREDICTION (paper/simulation-only, non-advisory). Use when forecasting outcomes via repeated random sampling, generating synthetic scenarios, or computing risk metrics (VaR/CVaR/Sharpe/drawdown/RRR) as probability distributions rather than point estimates.",
+      "invocation_hint": "/monte-carlo-quant-analysis",
+      "invocation": "manual",
+      "th_description": "Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfolio/trading PREDICTION — paper/simulation-only ไม่ใช่คำแนะนำการลงทุน",
+      "when_to_use": "forecast ผลลัพธ์ผ่าน repeated random sampling, สร้าง synthetic scenarios, คำนวณ risk เป็น distribution",
+      "examples": [
+        {
+          "scenario": "ประเมิน portfolio VaR",
+          "how": "วิ่ง simulation N ครั้ง → distribution → percentile"
+        }
+      ]
     }
   ]
 }

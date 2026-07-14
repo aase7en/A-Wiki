@@ -319,7 +319,7 @@
 | `ito-market-intelligence` | none | uncategorized | ใช้สำหรับค้นหาข้อมูลเกี่ยวกับ prediction market เช่น อีเวนต์ เวนิว underlier สภาพคล่อง และข่าวสาร... |
 | `ito-trade-planner` | none | uncategorized | สร้างเวิร์กชีตวางแผนการซื้อขายสำหรับตลาดทำนายแบบ Itô หรือ venue workflows โดยไม่ให้คำแนะนำทางการเ... |
 | `llm-trading-agent-security` | none | ecosystem | รูปแบบความปลอดภัยสำหรับเอเจนต์เทรดดิ้งอัตโนมัติที่มีสิทธิ์เข้าถึงกระเป๋าเงินหรือทำธุรกรรม ครอบคลุ... |
-| `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk analysis for portfolio/stock/fund/robot-trad... |
+| `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfo... |
 | `nodejs-keccak256` | none | ecosystem | ป้องกันบั๊กการแฮช Ethereum ใน JavaScript และ TypeScript โดย Node.js sha3-256 คือ NIST SHA3 ไม่ใช่... |
 | `prediction-market-oracle-research` | none | uncategorized | ค้นคว้าข้อมูลจาก prediction market เพื่อใช้เป็น oracle signal หรือ data source สำหรับผลิตภัณฑ์, A... |
 | `prediction-market-risk-review` | none | uncategorized | ตรวจสอบเวิร์กโฟลว์ของ prediction market, basket, oracle และ trading agent ด้าน compliance, ความปล... |
@@ -361,7 +361,7 @@
 | `gget` | none | ecosystem | ใช้ gget CLI หรือ Python เพื่อค้นหาข้อมูลจีโนมจากฐานข้อมูลสาธารณะอย่างรวดเร็ว เช่น การดึงลำดับดีเ... |
 | `literature-review` | none | ecosystem | ทักษะนี้ช่วยวางแผนการค้นหา คัดกรองแหล่งข้อมูล สังเคราะห์ และจัดการอ้างอิงสำหรับงานทบทวนวรรณกรรมอย... |
 | `mle-workflow` | none | ecosystem | ทักษะนี้ครอบคลุม workflow วิศวกรรม machine learning ระดับ production ตั้งแต่ data contracts, การฝ... |
-| `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk analysis for portfolio/stock/fund/robot-trad... |
+| `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfo... |
 | `mysql-patterns` | none | ecosystem | รวบรวมแนวทางปฏิบัติที่ดีที่สุดสำหรับ MySQL และ MariaDB ครอบคลุมการออกแบบ schema, การเขียน query, ... |
 | `postgres-patterns` | none | ecosystem | รวบรวมแนวทางการออกแบบฐานข้อมูล PostgreSQL ที่เน้นการปรับแต่ง query, การออกแบบ schema, การสร้าง in... |
 | `prisma-patterns` | none | ecosystem | รวบรวมแพทเทิร์นการใช้งาน Prisma ORM สำหรับ TypeScript backend ครอบคลุมการออกแบบ schema, การ optim... |

@@ -69,10 +69,18 @@ def _is_installed(skill: dict[str, Any]) -> bool:
 def _invocation_hint(skill: dict[str, Any]) -> str:
     """Best-effort copyable invocation string for the 📋 button.
 
-    Heuristic: if name starts with `a-wiki-` or matches a known command
-    pattern, emit `/<name>` (slash command). Otherwise emit the bare name —
-    agents like Claude/Codex accept the skill name directly.
+    Source-of-truth priority:
+      1. registry `invocation_hint` field (authoritative, batch-LLM-filled)
+      2. heuristic fallback (slash command / script path / bare name)
+
+    The heuristic covers skills that have not yet been batch-filled.
     """
+    # Priority 1 — registry field (set by batch_thai.py --field invocation_hint).
+    hint = skill.get("invocation_hint")
+    if isinstance(hint, str) and hint.strip():
+        return hint.strip()
+
+    # Priority 2 — heuristic fallback.
     name = skill.get("name", "")
     # Slash-command skills (Telegram bot, A-Wiki core commands).
     if name.startswith("a-wiki-") or name in {"wiki", "search", "review", "spec", "plan", "build", "ship"}:

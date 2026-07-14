@@ -81,3 +81,60 @@ def build_user_message(
     lines.append(f"")
     lines.append(f"Emit strict JSON per the contract. No fences, no preamble.")
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Field-specific: invocation_hint
+# ---------------------------------------------------------------------------
+
+INVOCATION_HINT_SYSTEM_PROMPT = """You are A-Wiki's skill-invocation generator. Given a skill's name, English description, file path, and lifecycle phase, you produce ONE short copyable invocation string that a Thai developer would paste into their AI agent to invoke this skill.
+
+Output contract (STRICT):
+1. Output is ONE JSON object on a single line: {"invocation_hint": "<string>"}
+2. No markdown fences, no preamble. First char '{', last '}'.
+3. invocation_hint rules (pick exactly ONE form):
+   - "/<name>"               — if the skill is a slash command (most lifecycle skills, A-Wiki core commands, short prompt-style skills). Example: "/debug-mantra"
+   - "python <script>.py"    — if the skill is backed by a Python script (path ends in .py). Use the registry's path value.
+   - "bash <script>.sh"      — if the skill is backed by a shell script (path ends in .sh).
+   - "<bare-name>"           — if the skill is prompt-only and has no command or script. Just the skill name as-is.
+4. Keep it ≤ 80 chars. No newlines, no quotes inside.
+5. Public-safe: never include /Users/<name>, C:\\Users\\<name>, API keys, or real account names.
+6. Do NOT translate — invocation_hint is always in English/code form, even though the dashboard is Thai.
+"""
+
+INVOCATION_HINT_RULES_HINT = """Heuristic (use as a guide, not a strict rule):
+- Names starting with "a-wiki-" or in {wiki, search, review, spec, plan, build, ship, today, lint, ingest} → "/<name>"
+- Names like "debug-mantra", "tdd", "grill-me", "scrutinize", "post-mortem" (short, no spaces, all letters) → "/<name>"
+- Paths ending in .py → "python <path>"
+- Paths ending in .sh → "bash <path>"
+- Otherwise → bare name
+"""
+
+
+def build_invocation_hint_message(
+    *,
+    skill_name: str,
+    en_description: str = "",
+    domain: str = "",
+    lifecycle_phase: str = "",
+    path_hint: str = "",
+) -> str:
+    """Build a field-specific prompt for invocation_hint only.
+
+    Returns a short user message; pair with INVOCATION_HINT_SYSTEM_PROMPT.
+    """
+    lines = ["Generate the invocation_hint for this A-Wiki skill:"]
+    lines.append("")
+    lines.append(f"skill_name: {skill_name}")
+    if en_description:
+        lines.append(f"english_description: {en_description}")
+    if domain:
+        lines.append(f"domain: {domain}")
+    if lifecycle_phase:
+        lines.append(f"lifecycle_phase: {lifecycle_phase}")
+    if path_hint:
+        lines.append(f"path: {path_hint}")
+    lines.append("")
+    lines.append(INVOCATION_HINT_RULES_HINT)
+    lines.append("Emit strict JSON: {\"invocation_hint\": \"...\"}. One line, no fences.")
+    return "\n".join(lines)

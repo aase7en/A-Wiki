@@ -181,4 +181,86 @@ def validate(output: str, skill_name: str = "") -> tuple[bool, str, dict[str, An
     return True, "ok", data
 
 
-__all__ = ["validate", "REQUIRED_KEYS", "OPTIONAL_KEYS", "VALID_INVOCATIONS"]
+# ---------------------------------------------------------------------------
+# Field-specific validation: invocation_hint
+# ---------------------------------------------------------------------------
+
+# invocation_hint must look like one of:
+#   "/<name>"          (slash command)
+#   "python <path>.py" (Python script)
+#   "bash <path>.sh"   (shell script)
+#   "<bare-name>"      (prompt-only)
+# Enforced loosely — we check shape, not correctness of the underlying command.
+_INV_HINT_MAX_LEN = 100
+
+
+def validate_invocation_hint(output: str, skill_name: str = "") -> tuple[bool, str, dict[str, Any]]:
+    """Validate a field-specific LLM output for `invocation_hint` only.
+
+    Expected JSON: {"invocation_hint": "<string>"}
+
+    Returns (is_valid, reason, parsed_dict). parsed_dict on success is
+    {"invocation_hint": "<str>"} ready to merge into the registry.
+    """
+    if not output or not output.strip():
+        return False, "empty output", {}
+
+    cleaned = _strip_fences(output)
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError as e:
+        return False, f"JSON parse failed: {e}", {}
+
+    if not isinstance(data, dict):
+        return False, "top-level JSON must be an object", {}
+
+    prefix = f"[{skill_name}] " if skill_name else ""
+
+    if "invocation_hint" not in data:
+        return False, f"{prefix}missing key: invocation_hint", {}
+
+    hint = data["invocation_hint"]
+    if not isinstance(hint, str):
+        return False, f"{prefix}invocation_hint must be a string", {}
+
+    hint = hint.strip()
+    if not hint:
+        return False, f"{prefix}invocation_hint must be non-empty", {}
+
+    if len(hint) > _INV_HINT_MAX_LEN:
+        return False, f"{prefix}invocation_hint length {len(hint)} > {_INV_HINT_MAX_LEN}", {}
+
+    # Reject newlines / control chars
+    if any(ord(c) < 0x20 for c in hint):
+        return False, f"{prefix}invocation_hint contains control chars", {}
+
+    # Reject embedded quotes (would break copy-paste into a shell)
+    if '"' in hint or "'" in hint:
+        return False, f"{prefix}invocation_hint contains quotes: {hint!r}", {}
+
+    # Shape check — must start with one of the allowed prefixes or be a bare name.
+    # Bare names are kebab-case identifiers (letters, digits, hyphens).
+    looks_slash = hint.startswith("/")
+    looks_python = hint.startswith("python ") and hint.endswith(".py")
+    looks_bash = hint.startswith("bash ") and (hint.endswith(".sh") or "scripts/" in hint)
+    bare_ok = bool(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", hint))
+    if not (looks_slash or looks_python or looks_bash or bare_ok):
+        return False, (
+            f"{prefix}invocation_hint {hint!r} not in slash/python/bash/bare form"
+        ), {}
+
+    # Secret/path leak scan
+    leak = _has_secret(hint)
+    if leak:
+        return False, f"{prefix}leaked private data: {leak!r}", {}
+
+    return True, "ok", {"invocation_hint": hint}
+
+
+__all__ = [
+    "validate",
+    "validate_invocation_hint",
+    "REQUIRED_KEYS",
+    "OPTIONAL_KEYS",
+    "VALID_INVOCATIONS",
+]

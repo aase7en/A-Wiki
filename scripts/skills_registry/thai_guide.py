@@ -787,6 +787,16 @@ THAI_GUIDE: dict[str, dict] = {
         ],
         "process_steps": ["ตั้งชื่อ asset", "อัปเดต manifest", "wire route Phaser", "verify ในเกม", "เช็ค safety gate"],
     },
+
+    # ── Quant / simulation (was missing `invocation` field — fix here) ────
+    "monte-carlo-quant-analysis": {
+        "invocation": "manual",
+        "th_description": "Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfolio/trading PREDICTION — paper/simulation-only ไม่ใช่คำแนะนำการลงทุน",
+        "when_to_use": "forecast ผลลัพธ์ผ่าน repeated random sampling, สร้าง synthetic scenarios, คำนวณ risk เป็น distribution",
+        "examples": [
+            {"scenario": "ประเมิน portfolio VaR", "how": "วิ่ง simulation N ครั้ง → distribution → percentile"},
+        ],
+    },
 }
 
 
