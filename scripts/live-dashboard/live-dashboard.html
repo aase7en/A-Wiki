@@ -1732,20 +1732,52 @@ async function skillRunExecute(script,needsArgs){
 // === DISCOVERY: recently used + skill-of-the-day ===
 const RECENT_KEY='awiki-recent-skills';
 const SOTD_KEY='awiki-sotd';
+const OPENS_KEY='awiki-skill-opens';
+const OPENS_MAX=200;
 function _lsGet(key,def){try{return JSON.parse(localStorage.getItem(key)||'null')||def;}catch(e){return def;}}
 function _lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
 function recordRecentSkill(name){
   let recent=_lsGet(RECENT_KEY,[]);
   recent=[name,...recent.filter(n=>n!==name)].slice(0,8);
   _lsSet(RECENT_KEY,recent);
+  // CHUNK Q — also append to full open log (FIFO, max 200).
+  let opens=_lsGet(OPENS_KEY,[]);
+  opens.push({name:name,ts:Date.now()});
+  if(opens.length>OPENS_MAX)opens=opens.slice(opens.length-OPENS_MAX);
+  _lsSet(OPENS_KEY,opens);
   renderDiscoveryBar();
+}
+function trendingSkills(days=7,limit=5){
+  const opens=_lsGet(OPENS_KEY,[]);
+  if(!opens.length)return [];
+  const cutoff=Date.now()-days*24*60*60*1000;
+  const recent=opens.filter(o=>o.ts>=cutoff);
+  if(!recent.length)return [];
+  // Count by name.
+  const counts={};
+  recent.forEach(o=>{counts[o.name]=(counts[o.name]||0)+1;});
+  return Object.entries(counts)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,limit)
+    .map(([name,count])=>({name:name,count:count}));
 }
 function renderDiscoveryBar(){
   const rc=$('recent-chips');if(!rc)return;
   const recent=_lsGet(RECENT_KEY,[]);
-  if(!recent.length){rc.innerHTML='';return;}
-  rc.innerHTML='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:2px">🕘 ล่าสุด:</span>'+
-    recent.slice(0,5).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--border2)" onclick="skillsOpenDetail('${n}')">${n}</span>`).join('');
+  const trending=trendingSkills(7,5);
+  let html='';
+  // Trending section (only if there's data).
+  if(trending.length){
+    html+='<span style="font-size:var(--fs-2xs);color:var(--accent-warm);margin-right:2px">📈 Trending (7ว):</span>';
+    html+=trending.map(t=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-warn);color:var(--accent-warn)" onclick="skillsOpenDetail('${t.name}')" title="เปิด ${t.count} ครั้งใน 7 วัน">${t.name} <b>${t.count}</b></span>`).join('');
+  }
+  // Recent section.
+  if(recent.length){
+    if(html)html+='<span style="width:8px"></span>';
+    html+='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:2px">🕘 ล่าสุด:</span>';
+    html+=recent.slice(0,5).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--border2)" onclick="skillsOpenDetail('${n}')">${n}</span>`).join('');
+  }
+  rc.innerHTML=html;
 }
 function sotdPick(allSkills){
   // Deterministic by date seed — same skill all day, changes at midnight.
