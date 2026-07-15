@@ -562,3 +562,47 @@ def test_skill_health_score_in_list_item():
         assert "health" in s, f"skill {s.get('name')} missing health field"
         h = s["health"]
         assert "score" in h and "level" in h
+
+
+# ---------------------------------------------------------------------------
+# CHUNK GG — registry push (SSE auto-refresh on registry mtime change)
+# ---------------------------------------------------------------------------
+
+def test_registry_push_event_format():
+    """The SSE event broadcast for registry changes must be valid JSON with
+    type='registry_update' and a numeric ts. Tested via the pure helper.
+    """
+    import importlib
+    server = importlib.import_module("server")
+    evt = server.build_registry_event()
+    import json
+    parsed = json.loads(evt)
+    assert parsed["type"] == "registry_update", f"wrong type: {parsed.get('type')}"
+    assert isinstance(parsed["ts"], (int, float)) and parsed["ts"] > 0
+
+
+def test_registry_push_detects_mtime_change():
+    """check_registry_changed() must return True once after mtime advances,
+    then False on the next call (idempotent within the same mtime window).
+    """
+    import importlib
+    server = importlib.import_module("server")
+    # Reset internal last-mtime so the first call seeds it.
+    server._registry_last_mtime = 0.0
+    # First call seeds and reports no change.
+    assert server.check_registry_changed() is False, "first call should seed, not change"
+    # Force a fake newer mtime by monkeypatching the stat call path.
+    import skills_service as ss
+    orig = ss.REGISTRY_FILE
+    class _FakePath:
+        def stat(self):
+            class _S:
+                st_mtime = 9999999999.0
+            return _S()
+    ss.REGISTRY_FILE = _FakePath()
+    try:
+        assert server.check_registry_changed() is True, "newer mtime must trigger True"
+        # Second call at same mtime must be False (debounce).
+        assert server.check_registry_changed() is False, "same mtime must not re-trigger"
+    finally:
+        ss.REGISTRY_FILE = orig

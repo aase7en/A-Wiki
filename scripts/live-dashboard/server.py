@@ -399,6 +399,49 @@ def broadcast(line):
             _clients.remove(q)
 
 
+# ---------------------------------------------------------------------------
+# CHUNK GG — registry push: detect skills-registry.json mtime change and
+# broadcast an SSE event so dashboards auto-refresh without polling.
+# Helpers are pure + module-level so tests can exercise them directly.
+# ---------------------------------------------------------------------------
+_registry_last_mtime = 0.0
+
+
+def build_registry_event() -> str:
+    """Build the SSE payload for a registry change. Pure + JSON-safe."""
+    return json.dumps({"type": "registry_update", "ts": time.time()},
+                      ensure_ascii=False)
+
+
+def check_registry_changed() -> bool:
+    """Return True once when skills-registry.json mtime advances since the
+    last call, then False until it changes again. Seeds on the first call.
+    """
+    global _registry_last_mtime
+    try:
+        mtime = skills_service.REGISTRY_FILE.stat().st_mtime
+    except OSError:
+        return False
+    if _registry_last_mtime == 0.0:
+        _registry_last_mtime = mtime
+        return False
+    if mtime != _registry_last_mtime:
+        _registry_last_mtime = mtime
+        return True
+    return False
+
+
+def registry_watchdog():
+    """Background thread: poll registry mtime every 2s, broadcast on change."""
+    while True:
+        try:
+            if check_registry_changed():
+                broadcast(build_registry_event())
+        except Exception:
+            pass
+        time.sleep(2.0)
+
+
 def tail_log():
     """Poll log file every 100ms for new lines and broadcast to all SSE clients."""
     pos = 0
@@ -1293,6 +1336,10 @@ if __name__ == "__main__":
 
     t = threading.Thread(target=tail_log, daemon=True)
     t.start()
+
+    # CHUNK GG: registry mtime watchdog -> SSE auto-refresh
+    rw = threading.Thread(target=registry_watchdog, daemon=True)
+    rw.start()
 
     server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     server.daemon_threads = True

@@ -1343,6 +1343,15 @@ if(ev.type==='backlog_complete'){renderLanes();layoutFlow();return;}
 if(ev.type==='log_cleared'){doClearLocal();return;}
 if(ev.type==='config_update'){loadRecommendations();loadModelStationsConfig();return;}
 if(ev.type==='graph_update'){updateGraph(ev);return;}
+if(ev.type==='registry_update'){
+// CHUNK GG: registry changed on disk — silently reload the active data
+// view so the dashboard reflects new/edited skills without a manual refresh.
+try{
+if(currentView==='skills'){skillsLoad();}
+else if(currentView==='coverage'){coverageLoad();}
+}catch(_){}
+return;
+}
 switch(ev.type){
 case'session_start':onSession(ev);break;
 case'hook_check':onHook(ev);break;
