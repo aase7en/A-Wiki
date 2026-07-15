@@ -11,6 +11,34 @@ function _downloadBlob(blob,filename){
   a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+// CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
+// Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
+let _trapLastFocused=null,_trapHandler=null;
+function _focusableEls(container){
+  return Array.from(container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(el=>el.offsetParent!==null&&!el.disabled);
+}
+function _openModalTrap(modalEl){
+  if(!modalEl)return;
+  _trapLastFocused=document.activeElement;
+  // Move focus into modal
+  const focusable=_focusableEls(modalEl);
+  if(focusable.length)focusable[0].focus();else modalEl.setAttribute('tabindex','-1'),modalEl.focus();
+  // Trap Tab/Shift+Tab
+  _trapHandler=function(e){
+    if(e.key!=='Tab')return;
+    const f=_focusableEls(modalEl);
+    if(!f.length)return;
+    const first=f[0],last=f[f.length-1];
+    if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+    else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+  };
+  modalEl.addEventListener('keydown',_trapHandler);
+}
+function _closeModalTrap(){
+  if(_trapHandler){document.removeEventListener('keydown',_trapHandler);_trapHandler=null;}
+  if(_trapLastFocused&&typeof _trapLastFocused.focus==='function'){try{_trapLastFocused.focus();}catch(_){}}
+  _trapLastFocused=null;
+}
 function animateCounter(el,target){
 if(!el)return;
 const cur=parseInt(el.textContent||'0',10)||0;

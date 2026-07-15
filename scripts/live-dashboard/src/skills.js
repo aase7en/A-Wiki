@@ -820,10 +820,12 @@ _lsSet('awiki-compare-last',names);
 }catch(e){
 content.innerHTML=`<div style="color:var(--accent-danger);padding:20px">❌ ${e.message}</div>`;
 }
+_openModalTrap($('compare-modal'));
 }
 function closeCompareModal(){
 $('compare-backdrop').style.display='none';
 $('compare-modal').style.display='none';
+_closeModalTrap();
 }
 function _cmpCell(val,defaultValue,isUnique,isEmpty){
 // Diff highlight: empty=red bg, unique=green bg, same=normal.

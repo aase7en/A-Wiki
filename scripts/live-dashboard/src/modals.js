@@ -30,10 +30,12 @@ const list=$('shortcuts-list');
 const kbQQ=_loadKeybindings();
 list.innerHTML=SHORTCUTS.map(s=>{const eff=kbQQ[s.key]||s.key;const isCustom=!!kbQQ[s.key];return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="color:var(--text-secondary)">${s.desc}</span><kbd style="background:var(--elev-2);padding:3px 10px;border-radius:var(--r-sm);border:1px solid ${isCustom?'var(--accent-warm)':'var(--border2)'};font-family:var(--font-mono);font-size:var(--fs-2xs);color:${isCustom?'var(--accent-warm)':'var(--accent-brand)'};white-space:nowrap">${eff===' '?'Space':eff}${isCustom?' ⚙️':''}</kbd></div>`;}).join('');
 bd.style.display='block';help.style.display='block';
+_openModalTrap($('shortcuts-help'));
 }
 function _closeShortcutsHelp(){
 $('shortcuts-backdrop').style.display='none';
 $('shortcuts-help').style.display='none';
+_closeModalTrap();
 }
 // === CHUNK QQ — Shortcut Customization ===
 // Keybindings store: {action_id: user_sequence}. Default = identity (each action
@@ -95,10 +97,12 @@ function _openKeybindCustomize(){
   $('keybind-backdrop').style.display='block';
   $('keybind-modal').style.display='block';
   _renderKeybindList();
+  _openModalTrap($('keybind-modal'));
 }
 function _closeKeybindCustomize(){
   $('keybind-backdrop').style.display='none';
   $('keybind-modal').style.display='none';
+  _closeModalTrap();
   _keybindCapture=null;
 }
 function _renderKeybindList(){
@@ -191,10 +195,12 @@ function openNotifPrefs(){
   $('notif-backdrop').style.display='block';
   $('notif-modal').style.display='block';
   _renderNotifPrefs();
+  _openModalTrap($('notif-modal'));
 }
 function closeNotifPrefs(){
   $('notif-backdrop').style.display='none';
   $('notif-modal').style.display='none';
+  _closeModalTrap();
 }
 function _renderNotifPrefs(){
   const perm=_notifPerm();
@@ -301,10 +307,12 @@ function openWorkspaceMenu(){
   _renderWorkspaceList();
   const ar=$('workspace-autorestore');
   if(ar)ar.checked=_lsGet(WORKSPACE_AUTORESTORE_KEY,false);
+  _openModalTrap($('workspace-modal'));
 }
 function closeWorkspaceMenu(){
   $('workspace-backdrop').style.display='none';
   $('workspace-modal').style.display='none';
+  _closeModalTrap();
 }
 function _renderWorkspaceList(){
   const list=$('workspace-list');if(!list)return;
@@ -419,10 +427,12 @@ async function openPalette(){
   // Pre-render with no query (shows first 10 of index)
   _paletteRender(_paletteRank(''));
   setTimeout(()=>inp.focus(),50);
+  _openModalTrap($('palette-modal'));
 }
 function closePalette(){
   $('palette-backdrop').style.display='none';
   $('palette-modal').style.display='none';
+  _closeModalTrap();
 }
 // Palette keyboard nav (arrows + enter) — bound within palette input
 window.addEventListener('keydown',function(e){
