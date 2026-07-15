@@ -151,3 +151,47 @@ def test_cli_summary_dry(tmp_path, capsys):
     text = st.render_summary(stats)
     assert "a" in text
     assert "pass" in text.lower() or "100" in text
+
+
+# ---------------------------------------------------------------------------
+# R4: by_ab_phase aggregation
+# ---------------------------------------------------------------------------
+def test_aggregate_by_ab_phase(tmp_path):
+    """Events tagged with ab_phase → by_ab_phase breakdown per subagent."""
+    log = tmp_path / "live-events.jsonl"
+    _write_events(log, [
+        {"ts": 1.0, "type": "subagent_invoke", "subagent_type": "clinical-reasoner",
+         "model": "deepseek-v4-pro", "bucket": "deepseek", "result": "pass",
+         "ab_phase": "A", "latency_ms": 100, "tokens_out": 50},
+        {"ts": 2.0, "type": "subagent_invoke", "subagent_type": "clinical-reasoner",
+         "model": "deepseek-v4-pro", "bucket": "deepseek", "result": "fail",
+         "ab_phase": "A", "latency_ms": 110, "tokens_out": 50},
+        {"ts": 3.0, "type": "subagent_invoke", "subagent_type": "clinical-reasoner",
+         "model": "glm-5.2", "bucket": "glm", "result": "pass",
+         "ab_phase": "B", "latency_ms": 90, "tokens_out": 50},
+        {"ts": 4.0, "type": "subagent_invoke", "subagent_type": "clinical-reasoner",
+         "model": "glm-5.2", "bucket": "glm", "result": "pass",
+         "ab_phase": "B", "latency_ms": 95, "tokens_out": 50},
+    ])
+    out = st.aggregate(log_file=log)
+    sa = out["by_subagent"]["clinical-reasoner"]
+    assert "by_ab_phase" in sa
+    assert sa["by_ab_phase"]["A"]["count"] == 2
+    assert sa["by_ab_phase"]["A"]["pass"] == 1
+    assert sa["by_ab_phase"]["A"]["pass_rate"] == 0.5
+    assert sa["by_ab_phase"]["B"]["count"] == 2
+    assert sa["by_ab_phase"]["B"]["pass"] == 2
+    assert sa["by_ab_phase"]["B"]["pass_rate"] == 1.0
+
+
+def test_aggregate_no_ab_phase_when_untagged(tmp_path):
+    """Events without ab_phase → no by_ab_phase key (zero overhead)."""
+    log = tmp_path / "live-events.jsonl"
+    _write_events(log, [
+        {"ts": 1.0, "type": "subagent_invoke", "subagent_type": "x",
+         "model": "m", "bucket": "b", "result": "pass", "latency_ms": 100,
+         "tokens_out": 50},
+    ])
+    out = st.aggregate(log_file=log)
+    sa = out["by_subagent"]["x"]
+    assert "by_ab_phase" not in sa  # no tag → no key

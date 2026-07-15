@@ -1,0 +1,14 @@
+{
+  "_comment": "A/B model routing experiments (R4). Opt-in: active:false default. To start an experiment, set active:true and run `python scripts/eval/ab_rotator.py --advance-all` periodically (or via cron/timer). The rotator flips the subagent frontmatter model between champion (phase A) and challenger (phase B) every phase_size invocations. The PostToolUse hook tags each event with ab_phase. Run `python scripts/eval/ab_report.py --list` to see status. See docs/protocols/ab-routing.md (if present) or scripts/eval/ab_routing.py docstring.",
+  "experiments": [
+    {
+      "subagent": "clinical-reasoner",
+      "champion": "deepseek-v4-pro",
+      "challenger": "glm-5.2",
+      "active": false,
+      "phase_size": 20,
+      "total_phases": 4,
+      "reason": "compare DeepSeek reasoning vs GLM on clinical tasks (Thai-strong GLM may win on Thai-heavy clinical prompts)"
+    }
+  ]
+}

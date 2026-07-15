@@ -123,6 +123,13 @@ def aggregate(
                 sa["_model_pass"][model] = sa["_model_pass"].get(model, 0) + (1 if is_pass else 0)
                 sa.setdefault("_model_total", {})
                 sa["_model_total"][model] = sa["_model_total"].get(model, 0) + 1
+                # R4: per-ab-phase pass tracking (only if event is tagged)
+                ab_phase = ev.get("ab_phase")
+                if ab_phase:
+                    sa.setdefault("_ab_phase_pass", {})
+                    sa.setdefault("_ab_phase_total", {})
+                    sa["_ab_phase_pass"][ab_phase] = sa["_ab_phase_pass"].get(ab_phase, 0) + (1 if is_pass else 0)
+                    sa["_ab_phase_total"][ab_phase] = sa["_ab_phase_total"].get(ab_phase, 0) + 1
 
                 bk = by_bucket.setdefault(bucket, {"count": 0, "pass": 0, "fail": 0, "pass_rate": 0.0})
                 bk["count"] += 1
@@ -151,6 +158,18 @@ def aggregate(
                 best = m
         sa["best_model"] = best
         sa["models"] = dict(sorted(sa["models"].items(), key=lambda kv: -kv[1]))
+        # R4: finalize by_ab_phase (only present if events were tagged)
+        ab_pass = sa.pop("_ab_phase_pass", {})
+        ab_total = sa.pop("_ab_phase_total", {})
+        if ab_total:
+            sa["by_ab_phase"] = {}
+            for phase, tot in ab_total.items():
+                pa = ab_pass.get(phase, 0)
+                sa["by_ab_phase"][phase] = {
+                    "count": tot,
+                    "pass": pa,
+                    "pass_rate": round(pa / tot, 3) if tot else 0.0,
+                }
 
     for bk in by_bucket.values():
         bk["pass_rate"] = round(bk["pass"] / bk["count"], 3) if bk["count"] else 0.0

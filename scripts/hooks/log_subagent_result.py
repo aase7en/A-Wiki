@@ -59,6 +59,33 @@ except Exception:
         return "unknown"
 
 
+# R4: A/B experiment tagging (best-effort, zero-overhead when no experiment
+# is active). Reads .tmp/ab-experiment-state.json + agents/ab-experiments.json.
+# If anything fails, the event is emitted WITHOUT ab_phase (graceful degrade).
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "eval"))
+try:
+    import ab_routing  # noqa: E402
+    _AB_OK = True
+except Exception:
+    _AB_OK = False
+
+
+def _ab_tag(subagent_type: str) -> dict | None:
+    """Return {ab_phase, ab_model} if an active A/B experiment targets this
+    subagent, else None. Best-effort — never raises.
+    """
+    if not _AB_OK:
+        return None
+    try:
+        experiments = ab_routing.load_experiments()
+        if not experiments:
+            return None
+        state = ab_routing.load_state()
+        return ab_routing.tag_for_event(subagent_type, experiments, state)
+    except Exception:
+        return None
+
+
 # ---------------------------------------------------------------------------
 # Error detection
 # ---------------------------------------------------------------------------
@@ -262,6 +289,7 @@ def main() -> int:
         latency_ms=latency_ms,
         tokens_in=tokens_in or None,
         tokens_out=tokens_out,
+        **(_ab_tag(subagent_type) or {}),  # R4: ab_phase + ab_model if active
     )
     return 0
 

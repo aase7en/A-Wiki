@@ -133,3 +133,103 @@ def test_hook_never_blocks(tmp_path):
     # Even a catastrophic-looking input shouldn't block.
     rc = _run_hook_with_input({"tool_name": "Agent", "tool_response": {}}, log_file)
     assert rc == 0
+
+
+# ---------------------------------------------------------------------------
+# R4: A/B phase tagging
+# ---------------------------------------------------------------------------
+def test_ab_tag_returns_none_when_no_experiment(monkeypatch, tmp_path):
+    """No active experiment → _ab_tag returns None (zero overhead)."""
+    if not hook._AB_OK:
+        import pytest
+        pytest.skip("ab_routing not importable")
+    # Point config + state at non-existent paths → load_experiments returns [].
+    import ab_routing
+    monkeypatch.setattr(ab_routing, "DEFAULT_CONFIG", tmp_path / "nope.json")
+    monkeypatch.setattr(ab_routing, "DEFAULT_STATE", tmp_path / "nostate.json")
+    tag = hook._ab_tag("any-subagent")
+    assert tag is None
+
+
+def test_ab_tag_returns_phase_when_active(monkeypatch, tmp_path):
+    """An active experiment + matching state → _ab_tag returns {ab_phase, ab_model}."""
+    if not hook._AB_OK:
+        import pytest
+        pytest.skip("ab_routing not importable")
+    import ab_routing
+    config = tmp_path / "ab-experiments.json"
+    config.write_text(json.dumps({"experiments": [
+        {"subagent": "test-agent", "champion": "model-a", "challenger": "model-b",
+         "active": True, "phase_size": 10, "total_phases": 4}
+    ]}), encoding="utf-8")
+    state = tmp_path / "ab-state.json"
+    state.write_text(json.dumps({"test-agent": {"current_phase": "B", "current_model": "model-b"}}),
+                     encoding="utf-8")
+    monkeypatch.setattr(ab_routing, "DEFAULT_CONFIG", config)
+    monkeypatch.setattr(ab_routing, "DEFAULT_STATE", state)
+    tag = hook._ab_tag("test-agent")
+    assert tag == {"ab_phase": "B", "ab_model": "model-b"}
+
+
+def test_hook_emits_ab_phase_tag_when_active(monkeypatch, tmp_path):
+    """End-to-end: when an active experiment targets the subagent, the emitted
+    event includes ab_phase + ab_model fields."""
+    if not hook._AB_OK:
+        import pytest
+        pytest.skip("ab_routing not importable")
+    import ab_routing
+    config = tmp_path / "ab-experiments.json"
+    config.write_text(json.dumps({"experiments": [
+        {"subagent": "test-agent", "champion": "model-a", "challenger": "model-b",
+         "active": True, "phase_size": 10, "total_phases": 4}
+    ]}), encoding="utf-8")
+    state = tmp_path / "ab-state.json"
+    state.write_text(json.dumps({"test-agent": {"current_phase": "A", "current_model": "model-a"}}),
+                     encoding="utf-8")
+    monkeypatch.setattr(ab_routing, "DEFAULT_CONFIG", config)
+    monkeypatch.setattr(ab_routing, "DEFAULT_STATE", state)
+
+    log_file = tmp_path / "live-events.jsonl"
+    hook.STATE_FILE = tmp_path / "fanout_state.json"
+    input_data = {
+        "tool_name": "Agent",
+        "tool_input": {"subagent_type": "test-agent", "prompt": "do something"},
+        "tool_response": {"content": [{"type": "text", "text": "done"}]},
+    }
+    rc = _run_hook_with_input(input_data, log_file)
+    assert rc == 0
+    events = [json.loads(l) for l in log_file.read_text().strip().split("\n") if l.strip()]
+    assert len(events) == 1
+    assert events[0]["ab_phase"] == "A"
+    assert events[0]["ab_model"] == "model-a"
+
+
+def test_hook_no_ab_tag_when_no_experiment(tmp_path):
+    """When no experiment is active, the emitted event has NO ab_phase field."""
+    if not hook._AB_OK:
+        import pytest
+        pytest.skip("ab_routing not importable")
+    import ab_routing
+    # Point at non-existent config → no experiments.
+    monkeypatch_global = type("M", (), {"setattr": staticmethod(lambda *a: None)})()
+    # Use the real tmp_path override approach:
+    ab_routing.DEFAULT_CONFIG = tmp_path / "nope.json"
+    ab_routing.DEFAULT_STATE = tmp_path / "nostate.json"
+    try:
+        log_file = tmp_path / "live-events.jsonl"
+        hook.STATE_FILE = tmp_path / "fanout_state.json"
+        input_data = {
+            "tool_name": "Agent",
+            "tool_input": {"subagent_type": "some-agent", "prompt": "do something"},
+            "tool_response": {"content": [{"type": "text", "text": "done"}]},
+        }
+        rc = _run_hook_with_input(input_data, log_file)
+        assert rc == 0
+        events = [json.loads(l) for l in log_file.read_text().strip().split("\n") if l.strip()]
+        assert len(events) == 1
+        assert "ab_phase" not in events[0]  # zero overhead — no tag
+    finally:
+        # Restore defaults so other tests aren't affected.
+        from pathlib import Path as _P
+        ab_routing.DEFAULT_CONFIG = _P(hook.REPO_ROOT) / "agents" / "ab-experiments.json"
+        ab_routing.DEFAULT_STATE = _P(hook.REPO_ROOT) / ".tmp" / "ab-experiment-state.json"
