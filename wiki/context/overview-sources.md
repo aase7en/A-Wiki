@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 174 sources
+## Stats — 175 sources
 
 | slug | abstract |
 |------|----------|
@@ -157,6 +157,7 @@
 | `soil-moisture-sensing` | Soil moisture sensing is critical for precision agriculture, irr… |
 | `source-5e4074bd` | 1. **การล้างแผล**: ล้างด้วยน้ำสะอาดและสบู่นานอย่างน้อย 15 นาที +… |
 | `sp-drugstore-2020-catalog` | (no abstract) |
+| `stochastic-vol-heston-sabr` | 1. **Stochastic volatility (SV)** = vol ไม่ใช่ค่าคงที่ แต่เป็น s… |
 | `strix-halo-research-2026-05-05` | ก่อนหน้านี้ผมประเมิน Strix Halo 70B Q4 = 8-12 tok/s — **ผิด** ตั… |
 | `supabase-overview-2026-05-02` | 1. **PostgreSQL จริง** — ไม่ใช่ NoSQL เลียนแบบ → query ซับซ้อน,… |
 | `telegram-ai-agent-setup` | 1. มีหลาย framework ที่ใช้ได้: Nanobot, NClaw, Hermes Agent, cus… |

@@ -7,10 +7,10 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 524 |
+| Wiki pages | 525 |
 | Owned skills | 42 |
 | Script capabilities | 11 |
-| Protocols/runbooks | 60 |
+| Protocols/runbooks | 61 |
 | HTML surfaces | 13 |
 
 ## Wiki Knowledge Surface
@@ -20,7 +20,7 @@
 | Entities | 81 |
 | Concepts | 59 |
 | Synthesis | 210 |
-| Sources | 174 |
+| Sources | 175 |
 
 ## Strategic Capability Lanes
 
@@ -170,6 +170,7 @@
 | Skill Consolidation Protocol | docs/protocols | `docs/protocols/skill-consolidation.md` |
 | SKILL.md Frontmatter Schema | docs/protocols | `docs/protocols/skill-frontmatter-schema.md` |
 | Self-Learning Skill Loop Protocol | docs/protocols | `docs/protocols/skill-learning-loop.md` |
+| Subagent Eval CI Protocol | docs/protocols | `docs/protocols/subagent-eval-ci.md` |
 | Subagent Eval Protocol | docs/protocols | `docs/protocols/subagent-eval.md` |
 | Subagent Model Routing — Anti Rate-Limit Protocol | docs/protocols | `docs/protocols/subagent-model-routing.md` |
 | Universal Cost-First Routing Protocol | docs/protocols | `docs/protocols/universal-routing.md` |

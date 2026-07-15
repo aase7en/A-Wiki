@@ -2,7 +2,7 @@
 type: entity
 category: concept
 tags: [monte-carlo, simulation, quant, risk, statistics, variance-reduction, synthetic-data, copula]
-sources: [akashdeepo-monte-carlo-rrr, firmai-financial-machine-learning, unpingco-python-stats-ml, copula-multivariate-finance]
+sources: [akashdeepo-monte-carlo-rrr, firmai-financial-machine-learning, unpingco-python-stats-ml, copula-multivariate-finance, stochastic-vol-heston-sabr]
 created: 2026-07-14
 updated: 2026-07-14
 last_verified: 2026-07-14
@@ -70,4 +70,4 @@ estimate). ใช้ใน quant finance สำหรับ portfolio forecastin
   - [[firmai-financial-machine-learning]] — ML-in-finance taxonomy (portfolio/risk/derivatives) · `raw/firmai-financial-ml-readme.md`
   - [[unpingco-python-stats-ml]] — Springer book probability/statistics/ML foundations · `raw/unpingco-sampling-monte-carlo.ipynb`
 - **Protocol**: `docs/protocols/bot-trading-iron-law.md` — Iron Law #8 (MOCK-only); `CannedMarketDataFeed` amendment 2026-06-12 = approved paper-data feed seam
-- **Related concepts**: copula ([[copula-multivariate-finance]] — multivariate dependency modeling, includes vine copulas for high-dim portfolios), law of large numbers, central limit theorem, bootstrap
+- **Related concepts**: copula ([[copula-multivariate-finance]] — multivariate dependency modeling, includes vine copulas for high-dim portfolios), stochastic volatility ([[stochastic-vol-heston-sabr]] — Heston/SABR, vol clustering, fat tails), law of large numbers, central limit theorem, bootstrap

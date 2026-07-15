@@ -16,8 +16,8 @@
 | ENTITIES | 81 |
 | CONCEPTS | 59 |
 | SYNTHESIS | 210 |
-| SOURCES | 174 |
-| **Total** | **524 pages** |
+| SOURCES | 175 |
+| **Total** | **525 pages** |
 
 ---
 
@@ -31,7 +31,7 @@
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 | Trading & Finance | 0 | 0 | `wiki/context/overview-trader.md` | `index-trader.md` |
 
-- **Sources** (174): `wiki/context/overview-sources.md`
+- **Sources** (175): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -253,4 +253,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 524 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 525 pages across 4 sections.*

@@ -290,9 +290,85 @@ Clayton @ theta=5 (τ≈0.71) ต้องมี VaR(5%) ต่ำกว่า G
 **เลือกเมื่อ**: ≥2 assets + tail dependence สำคัญกว่า correlation เฉลย (regime shift, crisis).
 **ไม่เลือกเมื่อ**: single asset, dependence อ่อน (rho ≈ 0), หรือ dimension สูงมาก (>5) → ใช้ vine copulas.
 
+### Stochastic volatility (Heston/SABR)
+
+เมื่อ vol ไม่คงที่แต่เป็น stochastic process ที่ mean-revert — จับ **volatility clustering**
+(Mandelbrot: "large changes → large changes") ที่ GBM พลาด → fat tails (kurtosis > 3)
+แม้ marginal เป็น normal. ดูทฤษฎี + SDE + comparison table ได้ที่
+[[stochastic-vol-heston-sabr]].
+
+**Heston (equity, mean-reverting)** — Euler-Maruyama discretization ของ CIR variance process:
+
+```python
+import numpy as np
+
+def heston_paths(v0, kappa, theta, xi, rho, mu, dt, n_steps, n_paths, rng):
+    """Heston MC: variance (CIR) + correlated asset. คืน (log_return_sum, final_var).
+
+    v0=initial var, theta=long-run var, kappa=mean-reversion speed,
+    xi=vol-of-vol, rho=leverage corr (equity: ρ<0 — price down → vol up).
+    Absorption (max(v,0)) รับมือ Feller violation (2κθ ≤ ξ²) อย่างปลอดภัย.
+    """
+    v = np.full(n_paths, v0, dtype=float)
+    log_s = np.zeros(n_paths)
+    sqrt_dt = np.sqrt(dt)
+    sqrt_1mr2 = np.sqrt(1.0 - rho * rho)
+    for _ in range(n_steps):
+        zv = rng.standard_normal(n_paths)
+        zs = rho * zv + sqrt_1mr2 * rng.standard_normal(n_paths)  # Cholesky
+        v = v + kappa * (theta - v) * dt + xi * np.sqrt(np.maximum(v, 0.0)) * sqrt_dt * zv
+        v = np.maximum(v, 0.0)  # absorption — กัน negative variance
+        log_s += (mu - 0.5 * v) * dt + np.sqrt(np.maximum(v, 0.0)) * sqrt_dt * zs
+    return log_s, v
+
+# ใช้: lr, v = heston_paths(0.09, 2.0, 0.09, 0.4, -0.8, 0.05, 1/252, 252, 10_000, rng)
+#       var_5pct = np.quantile(lr, 0.05)  # portfolio VaR(5%)
+```
+
+**SABR (rates/FX/forward — Hagan 2002)** — β exponent กำหนด backbone, α = vol-of-vol:
+
+| β | backbone | ใช้เมื่อ |
+|---|----------|---------|
+| 1 | lognormal (Black) | ATM vol flat, positive rates |
+| 0 | normal (Bachelier) | negative rates (shifted SABR) |
+| 1/2 | CEV | equity-like skew |
+| 0<β<1 | intermediate | calibration-driven |
+
+Hagan 2002 asymptotic implied vol (closed-form, ใช้แทน MC สำหรับ European options):
+
+```python
+def sabr_implied_vol(F, K, T, alpha, beta, rho, sigma0):
+    """Hagan 2002 lognormal implied vol approximation."""
+    if abs(F - K) < 1e-10:  # ATM — use limit
+        return sigma0 * (1 + ((2 - 3*rho*rho)/24) * alpha*alpha * T)
+    z = alpha / sigma0 * (F**(1-beta) - K**(1-beta)) / (1 - beta)
+    D = np.log((np.sqrt(1 - 2*rho*z + z*z) + z - rho) / (1 - rho))
+    Fmid = np.sqrt(F * K)
+    g1 = beta / Fmid
+    g2 = -beta * (1 - beta) / Fmid**2
+    corr = ((2*g2 - g1*g1)/24 * (sigma0 * Fmid**beta / alpha)**2
+            + rho*g1/4 * sigma0 * Fmid**beta / alpha
+            + (2 - 3*rho*rho)/24) * alpha*alpha * T
+    return alpha * (np.log(F/K) / D) * (1 + corr)
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_stochastic_vol.py`):**
+1. Long-run mean v_t → θ (mean reversion, 5% tolerance)
+2. Feller condition `2κθ > ξ²` + absorption → v_t ≥ 0 เสมอ
+3. SV-sampled returns มี excess kurtosis > GBM ที่ long-run variance เดียวกัน (fat tails)
+
+| โมเดล | Domain | Vol process | Closed-form option |
+|-------|--------|-------------|-------------------|
+| **Heston** | equity, index | CIR (mean-reverting) | Heston 1993 (Fourier) |
+| **SABR** | rates, FX, forward | lognormal | Hagan 2002 (asymptotic) |
+| **GARCH(p,q)** | time-series | discrete ARMA-GARCH | simulation-only |
+| **Bates** | equity+jumps | Heston + Merton | affine-jump-diffusion |
+
+**เลือกเมื่อ**: vol clustering / vol smile significant (deep-tail risk, option pricing, skew-sensitive metrics).
+**ไม่เลือกเมื่อ**: constant-vol GBM พอ (short horizon, low precision ต้องการ), หรือ jumps dominate (ใช้ Merton — ดู subsection ถัดไป).
+
 ### อื่นๆ
 
-- **Stochastic processes ที่ซับซ้อน** — Heston (stochastic vol), SABR, jump-diffusion
 - **Multi-level MC** — variance reduction hierarchy
 - **ML-augmented MC** (akashdeepo's ensemble approach) — ML forecast distribution params → MC propagate
 
