@@ -112,6 +112,11 @@ Compute แต่ละ metric บน **distribution ของ N simulations** (
 | **Risk-Reward Ratio (RRR)** | expected gain vs expected loss | E[upside] / E[downside] หรือ reward:risk จาก path |
 | **Hitting probability** | P(reaching target before stop) | fraction of paths hitting target first |
 
+→ **Reusable API**: VaR / CVaR / Sharpe / RRR rows ข้างต้น computed by
+`scripts/mc_quant.py` (`var_estimate`, `cvar_estimate`, `sharpe_distribution`,
+`rr_distribution`) — ที่ agent/skill อื่นเรียกได้ตรง, contract pinned by
+`tests/test_mc_quant.py`. Iron Law #8: paper-only, non-advisory.
+
 ### §4 — Probability Foundations (from Unpingco)
 
 ทำความเข้าใจก่อนอ้างผล MC:

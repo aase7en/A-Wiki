@@ -141,8 +141,9 @@ jobs:
           # M4: extend coverage from copula-only to ALL scipy-gated MC tests.
           # H7 step already installs scipy+numpy; previously only ran copula.
           # Now runs the full skill regression suite so CI catches drift in
-          # Heston/Merton/Bates/Kou/Hawkes/QMC/MLMC/bootstrap/convergence/VaR.
-          python -m pytest tests/test_monte_carlo_copula.py tests/test_monte_carlo_stochastic_vol.py tests/test_monte_carlo_jump_diffusion.py tests/test_monte_carlo_multilevel.py tests/test_monte_carlo_bootstrap.py tests/test_monte_carlo_convergence.py tests/test_monte_carlo_bates.py tests/test_monte_carlo_kou.py tests/test_monte_carlo_hawkes.py tests/test_monte_carlo_qmc.py tests/test_var_backtest.py tests/test_benchmark_mc.py -v
+          # Heston/Merton/Bates/Kou/Hawkes/QMC/MLMC/bootstrap/convergence/VaR
+          # + the reusable quant-risk API (mc_quant.py).
+          python -m pytest tests/test_monte_carlo_copula.py tests/test_monte_carlo_stochastic_vol.py tests/test_monte_carlo_jump_diffusion.py tests/test_monte_carlo_multilevel.py tests/test_monte_carlo_bootstrap.py tests/test_monte_carlo_convergence.py tests/test_monte_carlo_bates.py tests/test_monte_carlo_kou.py tests/test_monte_carlo_hawkes.py tests/test_monte_carlo_qmc.py tests/test_var_backtest.py tests/test_benchmark_mc.py tests/test_mc_quant.py -v
 
       - name: Readiness smoke
         # Surface [FAIL] lines as ::error annotations (public-API readable).
