@@ -460,6 +460,49 @@ def mlmc_telescoping(g_fine, g_coarse, n_levels, n_per_level, rng):
 **เลือกเมื่อ**: nested expectation (option pricing, Bermudan exercise, nested risk), ค่าใช้จ่ายของ g_fine >> g_coarse.
 **ไม่เลือกเมื่อ**: ไม่มี nested structure, หรือ variance reduction ไม่คุ้ม overhead (simple payoff, single-level MC พอ).
 
+### Bootstrap historical simulation
+
+เมื่อไม่อยาก assume distribution (Normal/Student-t) เลย — resample จาก empirical
+data โดยตรง. **iid bootstrap** สำหรับ stationary independent; **block bootstrap**
+สำหรับ time series ที่มี autocorrelation (preserve temporal structure).
+
+```python
+import numpy as np
+
+def bootstrap_returns(historical, n, rng, block_size=None):
+    """Resample n returns จาก historical.
+
+    block_size=None → iid bootstrap (ทำลาย serial correlation — เหมาะ independent data)
+    block_size=int  → circular block bootstrap (preserves autocorrelation ใน block —
+                      จำเป็นสำหรับ AR/GARCH/vol-clustering time series)
+    """
+    N = len(historical)
+    if block_size is None:
+        idx = rng.integers(0, N, size=n)
+        return historical[idx]
+    n_blocks = (n + block_size - 1) // block_size
+    starts = rng.integers(0, N, size=n_blocks)
+    idx = np.concatenate([np.arange(s, s + block_size) % N for s in starts])[:n]
+    return historical[idx]
+
+# ใช้: boot = bootstrap_returns(hist_returns, 10_000, rng, block_size=20)  # block สำหรับ AR(1)
+#       var_5pct = np.quantile(boot, 0.05)  # VaR — guaranteed อยู่ใน [min, max] ของ historical
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_bootstrap.py`):**
+1. Block bootstrap preserves AR(1) autocorrelation; iid destroys it (lag-1 AC: block > 0.5·original, iid < 0.1)
+2. VaR(5%) ∈ [min, max] ของ historical เสมอ (empirical resampling ไม่ extrapolate)
+3. iid bootstrap ทำให้ autocorr → 0 (sanity — ใช้ผิด context บน time series = regression)
+
+| Mode | ใช้เมื่อ | Preserves |
+|------|---------|-----------|
+| **iid** | cross-sectional, independent observations | marginal distribution เท่านั้น |
+| **block** (circular) | time series, AR/GARCH, vol-clustering | marginal + short-range autocorrelation |
+| **stationary** (Politis-Romano) | time series ที่ unknown dependence length | marginal + auto-adaptive block size |
+
+**เลือกเมื่อ**: ไม่ assume distribution (empirical), tails within historical range, parameter uncertainty (double bootstrap).
+**ไม่เลือกเมื่อ**: tail เกิน historical max (ใช้ EVT/parametric), หรือ regime shift ทำให้ history non-representative.
+
 ### อื่นๆ
 
 - **ML-augmented MC** (akashdeepo's ensemble approach) — ML forecast distribution params → MC propagate
