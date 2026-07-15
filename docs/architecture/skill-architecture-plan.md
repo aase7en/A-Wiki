@@ -65,6 +65,25 @@ handoff rule #8), and pushes at the boundary.
 - `tests/test_skills_registry.py` — 34 tests green
 - Domain taxonomy: `code | debug | design | ux-ui | trader | medical | business | data | engineering | security | ai-ops | productivity | wiki | iot | env | pharmacy | thai | logistics | network | media | document | sre`
 
+**Skill subfolder convention** (enforced by `scan.py` line 197):
+
+`scan.py` uses `rglob("SKILL.md")` (walks all depths) but **excludes** these
+subdirs so stray SKILL.md files there never pollute the registry:
+
+| Subdir | Excluded? | Purpose |
+|--------|-----------|---------|
+| `_upstream/` | ✅ | vendored mirrors (read-only snapshots) |
+| `deprecated/` | ✅ | retired skills kept for history |
+| `.git/` | ✅ | git internals |
+| `examples/` | ✅ | runnable demos, notebooks, reference scripts (e.g. `monte-carlo-quant-analysis/examples/`) |
+| `references/` | ✅ | external materials, supplementary docs |
+
+> ⚠️ **Do not place `SKILL.md` inside `examples/` or `references/`** — it will
+> be silently skipped. These subdirs hold artifacts agents pick up at runtime
+> (notebooks, reference PDFs), not registry entries. Documented in
+> `docs/protocols/skill-frontmatter-schema.md` §Skill folder layout convention;
+> enforced by `tests/test_scan_exclusions.py`.
+
 ### Chunk 2 (dedup): ⬜ PENDING — collapse true dups + alias near-dups (Moderate)
 
 **Action matrix (from deep audit):**
