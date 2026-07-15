@@ -568,6 +568,7 @@ to{transform:translateY(0);opacity:1}
         <option value="">📋 Presets</option>
       </select>
       <button class="set-btn sm" onclick="exportMatrixCSV()" style="padding:5px 10px;font-size:var(--fs-2xs);min-height:30px;color:var(--accent-success)" title="ดาวน์โหลดตาราง skills × agents เป็น CSV">📥 Matrix CSV</button>
+      <button class="set-btn sm" onclick="copyShareUrl()" style="padding:5px 10px;font-size:var(--fs-2xs);min-height:30px;color:var(--accent-brand)" title="คัดลอก URL ปัจจุบัน (รวม filter/tab) เพื่อแชร์หรือเปิดที่เครื่องอื่น">🔗 Share URL</button>
       <div style="display:flex;gap:2px;margin-left:auto">
         <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
         <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
@@ -1133,6 +1134,7 @@ if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscover
 if(v==='coverage')coverageLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
+syncUrlState();
 }
 // === SUBAGENTS PANE — Observatory: live per-subagent metrics ===
 async function subagentsLoad(){
@@ -1777,6 +1779,7 @@ skillsRefresh();
 }
 function skillsRefresh(){
 if(_skillsView==='graph')skillGraphLoad();else skillsLoad();
+syncUrlState();
 }
 // === CHUNK R — AI-powered skill recommender ===
 async function recommendSearch(){
@@ -2032,6 +2035,7 @@ const grid=$('skills-grid'),empty=$('skills-empty');
 if(!_skillsCache.length){return;}
 empty.style.display='none';
 grid.innerHTML=skillsSortedView().map(skillsRenderCard).join('');
+syncUrlState();
 }
 // === CHUNK II — Filter Presets ===
 const PRESETS_KEY='awiki-filter-presets';
@@ -3047,6 +3051,83 @@ function applyUrlParams(){
     },600);
   }
 }
+// === CHUNK PP — Dashboard URL State Sync ===
+// Build a query string representing the CURRENT dashboard state: active view + all
+// Skills-tab filters + sort. Used by syncUrlState() to keep the URL shareable and by
+// the popstate handler to restore state on browser back/forward.
+let _urlSyncSuspend=false;  // guard: while applying URL-driven state, don't re-sync
+function _buildStateQs(){
+  const qs=new URLSearchParams();
+  if(currentView&&currentView!=='summary')qs.set('view',currentView);
+  // Skills-tab filters (only meaningful when skills DOM exists)
+  const sel=$('skills-agent-filter');if(sel&&sel.value&&sel.value!=='all')qs.set('agent',sel.value);
+  const dom=$('skills-domain-filter');if(dom&&dom.value)qs.set('domain',dom.value);
+  const srch=$('skills-search');if(srch){const q=srch.value.trim();if(q)qs.set('q',q);}
+  const srt=$('skills-sort');if(srt&&srt.value)qs.set('sort',srt.value);
+  if(_skillsInv&&_skillsInv!=='all')qs.set('invocation',_skillsInv);
+  if(_skillsCat)qs.set('category',_skillsCat);
+  const inst=$('skills-installed-only');if(inst&&inst.checked)qs.set('installed','1');
+  return qs.toString();
+}
+// Reflect current state into the URL (replaceState — no extra history entry per change).
+function syncUrlState(){
+  if(_urlSyncSuspend)return;
+  try{
+    const qs=_buildStateQs();
+    const newSearch=qs?('?'+qs):'';
+    const cur=window.location.search;
+    if(cur!==newSearch){
+      const nu=window.location.pathname+newSearch+window.location.hash;
+      window.history.replaceState({},'',nu);
+    }
+  }catch(_){}
+}
+// Copy the current URL (with full state) to clipboard for sharing.
+async function copyShareUrl(){
+  try{
+    syncUrlState();  // ensure URL reflects latest state first
+    const url=window.location.href;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(url);
+    }else{
+      // Fallback: transient textarea select.
+      const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');ta.remove();
+    }
+    toast('🔗 คัดลอก URL แล้ว — วางที่เครื่องอื่นได้เลย');
+  }catch(e){toast('คัดลอก URL ไม่สำเร็จ: '+e.message,true);}
+}
+// Restore dashboard state from the URL on load / back / forward.
+// Called from setView boot AND from popstate. Guarded so applying state does not
+// recursively push history entries.
+function applyFullStateFromUrl(){
+  _urlSyncSuspend=true;
+  try{
+    const url=new URL(window.location.href);
+    const view=url.searchParams.get('view');
+    if(view){try{setView(view);}catch(_){}}
+    // Skills-tab filters
+    const dom=url.searchParams.get('domain');
+    if(dom){const el=$('skills-domain-filter');if(el){el.value=dom;}}
+    const q=url.searchParams.get('q');
+    if(q){const el=$('skills-search');if(el){el.value=q;}}
+    const sort=url.searchParams.get('sort');
+    if(sort){const el=$('skills-sort');if(el){el.value=sort;}}
+    const inv=url.searchParams.get('invocation');
+    if(inv){try{skillsSetInv(inv);}catch(_){}}
+    const cat=url.searchParams.get('category');
+    if(cat){try{skillsSetCat(cat);}catch(_){}}
+    const inst=url.searchParams.get('installed');
+    if(inst==='1'){const el=$('skills-installed-only');if(el)el.checked=true;}
+    // agent/skill/flow handled by existing applyUrlParams below (kept for compat).
+  }finally{
+    _urlSyncSuspend=false;
+  }
+}
+// Browser back/forward → re-apply URL state. Idempotent.
+window.addEventListener('popstate',function(){
+  try{applyFullStateFromUrl();}catch(_){}
+});
 function clearAgentParam(){
   const url=new URL(window.location.href);
   url.searchParams.delete('agent');
@@ -3153,6 +3234,8 @@ simClose=function(e){
 };
 
 setView('summary');
+// CHUNK PP: if URL carries state (?view=, filters), apply it after initial paint.
+try{applyFullStateFromUrl();}catch(_){}
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
