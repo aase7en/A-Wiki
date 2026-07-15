@@ -75,6 +75,20 @@ See `scripts/eval/regression_check.py`:
 - **severity**: `regression` (drop > threshold) | `improvement` (gain > threshold) | `flat` | `removed` (in baseline, absent from new)
 - **first run** (no baseline): all entries flat (nothing to regress from)
 
+## Multi-Model Race (S5 — concurrent head-to-head comparison)
+
+หลัง eval หลักเสร็จ + commit ผลลัพธ์ CI จะรัน **race step** เพิ่มเติม:
+
+- **ทำอะไร**: ยิง 3 candidate models (`deepseek-v4-flash`, `deepseek-v4-pro`, `glm-5.2`) ที่ `medical` suite พร้อมกันแบบ concurrent (ThreadPool, k=1, max-workers=6)
+- **continue-on-error: true** — race failure (rate limit, timeout) **ไม่บล็อค** eval pipeline หลัก เป็น bonus comparison เท่านั้น
+- **ผลลัพธ์**: `.tmp/subagent-eval/race-result.json` (JSON ใน artifact `subagent-eval-report`)
+- **วิธีอ่านผล**:
+  - `winner` = model ที่ pass sample แรกเร็วที่สุด (first-past-the-post — เหมาะกับ latency-sensitive routing)
+  - `best` = model ที่ pass@k สูงสุด (quality-sensitive)
+  - `overall` = mean pass@k + win counts รวมทุก case
+
+ดู `scripts/eval/race_eval.py` (R2) สำหรับรายละเอียด race logic + CLI options
+
 ## CI Auto-Apply (Q6 — optional, tight guardrails)
 
 When enabled (Q6), the workflow can auto-apply adaptive routing recommendations after eval:

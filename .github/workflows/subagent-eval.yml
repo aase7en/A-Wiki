@@ -190,6 +190,23 @@ jobs:
             echo "No new results file to commit."
           fi
 
+      # ── S5: Multi-model race (concurrent head-to-head comparison) ──
+      # Fires 3 candidate models at the medical suite concurrently (k=1, cheap),
+      # picks the winner (first-past-the-post) + best (highest pass@k).
+      # continue-on-error: race failure (rate limit, timeout) MUST NOT block
+      # the main eval pipeline — it's a bonus comparison, not a gate.
+      - name: Multi-model race (concurrent comparison)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          mkdir -p .tmp/subagent-eval
+          python3 scripts/eval/race_eval.py \
+            --suite medical --models deepseek-v4-flash,deepseek-v4-pro,glm-5.2 \
+            --k 1 --max-workers 6 --json \
+            > .tmp/subagent-eval/race-result.json 2>/dev/null || true
+          echo "=== Race result (medical) ==="
+          cat .tmp/subagent-eval/race-result.json | python3 -m json.tool 2>/dev/null | head -40 || echo "(race skipped or failed)"
+
       # ── Q6: Adaptive routing (preview always, auto-apply on manual trigger) ──
       # Guardrails are intentionally tight: min 30 samples (3× default) + min_delta
       # 0.20 (1.33× default). schedule trigger = preview-only (no writes);
