@@ -456,6 +456,7 @@ to{transform:translateY(0);opacity:1}
     <div class="stat-item" id="si-fail"><span class="stat-lbl">failures</span><span class="stat-val" data-counter id="s-fail">0</span></div>
   </div>
   <button class="hdr-btn accent" onclick="openSettings()">⚙️</button>
+  <button class="hdr-btn" onclick="openWorkspaceMenu()" id="btn-workspace" title="บันทึก/เรียกคืน workspace (tab + scroll + filters)">💾</button>
   <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป">🔔</button>
   <button class="hdr-btn" onclick="doClear()">🗑</button>
 </div>
@@ -950,6 +951,20 @@ to{transform:translateY(0);opacity:1}
     <input type="file" id="keybind-import-file" accept="application/json,.json" style="display:none" onchange="importKeybindings(event)">
   </div>
   <p style="margin:12px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อเปิด/ปิดหน้าต่างนี้ · <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">Ctrl/⌘+K</kbd> เพื่อเปิด Command Palette</p>
+</div>
+<!-- CHUNK UU — Workspace Menu Modal -->
+<div id="workspace-backdrop" onclick="closeWorkspaceMenu()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:420"></div>
+<div id="workspace-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px 24px;z-index:421;max-width:420px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <h3 style="margin:0;font-size:var(--fs-md);color:var(--accent-brand)">💾 Workspaces</h3>
+    <button onclick="closeWorkspaceMenu()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;min-width:32px;min-height:32px">✕</button>
+  </div>
+  <button class="set-btn sm" onclick="saveWorkspacePrompt()" style="width:100%;font-size:var(--fs-xs);padding:8px;color:var(--accent-success);margin-bottom:12px">💾 บันทึก workspace ปัจจุบัน</button>
+  <div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:6px">Workspaces ที่บันทึก (บันทึกล่าสุดด้านบน):</div>
+  <div id="workspace-list" style="display:flex;flex-direction:column;gap:6px;font-size:var(--fs-sm)"></div>
+  <label style="display:flex;align-items:center;gap:6px;margin-top:12px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer">
+    <input type="checkbox" id="workspace-autorestore" onchange="toggleWorkspaceAutorestore(this.checked)" style="cursor:pointer;accent-color:var(--accent-brand)"> เมื่อเปิด dashboard → เรียกคืน workspace ล่าสุดอัตโนมัติ
+  </label>
 </div>
 <!-- CHUNK RR — Notification Prefs Modal -->
 <div id="notif-backdrop" onclick="closeNotifPrefs()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:420"></div>
@@ -1775,6 +1790,112 @@ function _renderNotifPrefs(){
 }
 function toggleNotifPref(key,val){
   const prefs=_loadNotifPrefs();prefs[key]=val;_saveNotifPrefs(prefs);
+}
+
+// === CHUNK UU — Workspace Save/Restore ===
+// Snapshot the current dashboard layout (active view + scroll position + open
+// detail drawers + all Skills-tab filters) into a named workspace, persisted
+// in localStorage. Restore on demand or auto-restore last on boot.
+const WORKSPACES_KEY='awiki-workspaces';
+const WORKSPACE_LAST_KEY='awiki-workspace-last';
+const WORKSPACE_AUTORESTORE_KEY='awiki-workspace-autorestore';
+const WORKSPACES_MAX=10;
+function _loadWorkspaces(){return _lsGet(WORKSPACES_KEY,[]);}
+function _saveWorkspaces(ws){_lsSet(WORKSPACES_KEY,ws);}
+// Capture current state into a plain object.
+function captureWorkspace(){
+  const filters={};
+  const a=$('skills-agent-filter');if(a)filters.agent=a.value;
+  const d=$('skills-domain-filter');if(d)filters.domain=d.value;
+  const q=$('skills-search');if(q)filters.q=q.value;
+  const s=$('skills-sort');if(s)filters.sort=s.value;
+  filters.invocation=_skillsInv;filters.category=_skillsCat;
+  const inst=$('skills-installed-only');filters.installed=!!(inst&&inst.checked);
+  // Open drawers: track if skills detail is open + its name.
+  const openDrawers=[];
+  const sd=$('skills-detail');
+  if(sd&&sd.style.transform==='translateX(0)'){openDrawers.push('_skills-detail');}
+  return{
+    view:currentView,
+    scrollY:window.scrollY,
+    openDrawers:openDrawers,
+    filters:filters,
+    savedAt:new Date().toISOString(),
+  };
+}
+function saveWorkspacePrompt(){
+  const name=prompt('ตั้งชื่อ workspace:','workspace-'+new Date().toLocaleDateString('th-TH'));
+  if(!name||!name.trim())return;
+  const ws=_loadWorkspaces();
+  // Replace if same name exists; cap at WORKSPACES_MAX.
+  const filtered=ws.filter(w=>w.name!==name.trim());
+  filtered.unshift({name:name.trim(),...captureWorkspace()});
+  _saveWorkspaces(filtered.slice(0,WORKSPACES_MAX));
+  _renderWorkspaceList();
+  toast('💾 บันทึก workspace "'+name.trim()+'" แล้ว');
+}
+function restoreWorkspace(ws){
+  if(!ws)return;
+  closeWorkspaceMenu();
+  // Restore view first.
+  if(ws.view){try{setView(ws.view);}catch(_){}}
+  // Restore Skills filters (apply after skillsLoad if needed).
+  const f=ws.filters||{};
+  const applyFilters=()=>{
+    if(f.agent){const el=$('skills-agent-filter');if(el)el.value=f.agent;}
+    if(f.domain){const el=$('skills-domain-filter');if(el)el.value=f.domain;}
+    if(f.q){const el=$('skills-search');if(el)el.value=f.q;}
+    if(f.sort){const el=$('skills-sort');if(el)el.value=f.sort;}
+    if(f.invocation){try{skillsSetInv(f.invocation);}catch(_){}}
+    if(f.category){try{skillsSetCat(f.category);}catch(_){}}
+    const inst=$('skills-installed-only');if(inst)inst.checked=!!f.installed;
+    try{skillsRefresh();}catch(_){}
+  };
+  if(ws.view==='skills'){setTimeout(applyFilters,350);}
+  else{applyFilters();}
+  // Restore scroll.
+  if(ws.scrollY){setTimeout(()=>window.scrollTo(0,ws.scrollY),500);}
+  _lsSet(WORKSPACE_LAST_KEY,{name:ws.name,savedAt:ws.savedAt});
+  toast('💾 เรียกคืน workspace "'+ws.name+'" แล้ว');
+}
+function deleteWorkspace(name){
+  const ws=_loadWorkspaces().filter(w=>w.name!==name);
+  _saveWorkspaces(ws);
+  _renderWorkspaceList();
+  toast('ลบ workspace "'+name+'" แล้ว');
+}
+function openWorkspaceMenu(){
+  $('workspace-backdrop').style.display='block';
+  $('workspace-modal').style.display='block';
+  _renderWorkspaceList();
+  const ar=$('workspace-autorestore');
+  if(ar)ar.checked=_lsGet(WORKSPACE_AUTORESTORE_KEY,false);
+}
+function closeWorkspaceMenu(){
+  $('workspace-backdrop').style.display='none';
+  $('workspace-modal').style.display='none';
+}
+function _renderWorkspaceList(){
+  const list=$('workspace-list');if(!list)return;
+  const ws=_loadWorkspaces();
+  if(!ws.length){list.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px 0">ยังไม่มี workspace บันทึก</div>';return;}
+  list.innerHTML=ws.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border:1px solid var(--border2);border-radius:var(--r-md);background:var(--elev-2)">
+    <div style="flex:1;cursor:pointer" onclick="restoreWorkspace(${_wsEscape(w)})">
+      <div style="color:var(--text-primary);font-weight:600">${w.name}</div>
+      <div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${w.view} · ${(w.savedAt||'').slice(0,10)}</div>
+    </div>
+    <button onclick="deleteWorkspace('${w.name.replace(/'/g,"")}') " style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px" title="ลบ">✕</button>
+  </div>`).join('');
+}
+// Escape a workspace object into a JSON literal safe for onclick="restoreWorkspace(...)".
+function _wsEscape(w){return "'"+JSON.stringify(w).replace(/'/g,"\\'")+"'";}
+function toggleWorkspaceAutorestore(on){_lsSet(WORKSPACE_AUTORESTORE_KEY,!!on);}
+// Boot-time auto-restore (called from boot sequence).
+function maybeAutoRestoreWorkspace(){
+  if(!_lsGet(WORKSPACE_AUTORESTORE_KEY,false))return;
+  const ws=_loadWorkspaces();if(!ws.length)return;
+  // Restore the most recent workspace.
+  setTimeout(()=>restoreWorkspace(ws[0]),400);
 }
 
 // === CHUNK EE — Command Palette ===
@@ -3535,6 +3656,8 @@ setView('summary');
 try{applyFullStateFromUrl();}catch(_){}
 // CHUNK TT: auto-detect agent from env (only if no explicit ?agent= in URL).
 try{autoDetectAgent();}catch(_){}
+// CHUNK UU: auto-restore last workspace if user opted in.
+try{maybeAutoRestoreWorkspace();}catch(_){}
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
