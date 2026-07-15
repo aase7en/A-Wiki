@@ -4,6 +4,13 @@ active:{},activeCount:0,parallelCount:0,failCount:0,failures:[],delegateFree:0,d
 const $=id=>document.getElementById(id);
 const mk=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// CHUNK G8: shared download helper (deduplicates Blob→<a>→click→revoke pattern).
+function _downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
 function animateCounter(el,target){
 if(!el)return;
 const cur=parseInt(el.textContent||'0',10)||0;

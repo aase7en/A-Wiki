@@ -142,11 +142,7 @@ if(!canvas){toast('ไม่พบ canvas','err');return;}
 try{
 canvas.toBlob(function(blob){
 if(!blob){toast('❌ export ล้มเหลว','err');return;}
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;a.download='awiki-skill-graph.png';
-document.body.appendChild(a);a.click();document.body.removeChild(a);
-setTimeout(()=>URL.revokeObjectURL(url),1000);
+_downloadBlob(blob,'awiki-skill-graph.png');
 toast('📥 ดาวน์โหลด PNG แล้ว');
 },'image/png');
 }catch(e){toast('❌ '+e.message,'err');}
@@ -185,11 +181,7 @@ nodeSvg+=`<text x="${cx}" y="${parseInt(cy)+22}" text-anchor="middle" font-famil
 }
 const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="100%" height="100%" fill="#06060d"/>${edgeSvg}${nodeSvg}<text x="${pad}" y="24" font-family="monospace" font-size="14" fill="#5eead4">🧬 Skill Dependency Graph — ${nodes.length} nodes, ${edges.length} edges</text></svg>`;
 const blob=new Blob([svg],{type:'image/svg+xml'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;a.download='awiki-skill-graph.svg';
-document.body.appendChild(a);a.click();document.body.removeChild(a);
-setTimeout(()=>URL.revokeObjectURL(url),1000);
+_downloadBlob(blob,'awiki-skill-graph.svg');
 toast('📥 ดาวน์โหลด SVG แล้ว');
 }
 function skillsBuildQs(){
@@ -390,11 +382,7 @@ const s=String(c);
 return i===0?'"'+s.replace(/"/g,'""')+'"':s;
 }).join(',')).join('\r\n');
 const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;a.download='awiki-skill-agent-matrix.csv';
-document.body.appendChild(a);a.click();document.body.removeChild(a);
-setTimeout(()=>URL.revokeObjectURL(url),1000);
+_downloadBlob(blob,'awiki-skill-agent-matrix.csv');
 toast('📥 ดาวน์โหลด CSV แล้ว ('+skills.length+' skills × '+agents.length+' agents)');
 }catch(e){toast('❌ '+e.message,'err');}
 }

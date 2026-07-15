@@ -68,9 +68,7 @@ function resetKeybindings(){
 function exportKeybindings(){
   const kb=_loadKeybindings();
   const blob=new Blob([JSON.stringify({version:1,keybindings:kb},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='awiki-keybindings.json';a.click();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  _downloadBlob(blob,'awiki-keybindings.json');
   toast('📤 ส่งออก keybindings แล้ว');
 }
 function importKeybindings(ev){
