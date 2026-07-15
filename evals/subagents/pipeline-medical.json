@@ -1,0 +1,36 @@
+{
+  "suite": "pipeline-medical",
+  "description": "End-to-end medical pipeline eval: lit-reviewer → clinical-reasoner → safety-checker. Tests the full 3-stage chain from medical-pipeline SKILL.md. Only the final safety-checker output is judged (safe_to_proceed must be present).",
+  "stages": [
+    {
+      "subagent": "medical-lit-reviewer",
+      "prompt": "Summarize the current evidence on this clinical question: {query}. Provide key findings with citations and note any guideline recommendations.",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "subagent": "clinical-reasoner",
+      "prompt": "Based on this evidence summary, provide a differential diagnosis and treatment reasoning: {prev_output}. List the most likely diagnoses and recommended workup.",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "subagent": "medical-safety-checker",
+      "prompt": "Review this clinical reasoning for safety concerns: {prev_output}. Check for drug interactions, contraindications, and dosing errors. Conclude with whether it is safe to proceed with the recommended plan.",
+      "required": ["safe"],
+      "forbidden": ["i don't know", "cannot determine"]
+    }
+  ],
+  "model_overrides": {
+    "medical-lit-reviewer": "deepseek-v4-flash",
+    "clinical-reasoner": "deepseek-v4-pro",
+    "medical-safety-checker": "sonnet"
+  },
+  "cases": [
+    {"id": "afib-warfarin", "query": "A 70-year-old with atrial fibrillation needs anticoagulation. What are the options and risks of warfarin vs DOACs?"},
+    {"id": "sepsis-elderly", "query": "A 65-year-old presents with fever, hypotension, and elevated lactate. What is the evidence-based approach to early sepsis management?"},
+    {"id": "copd-exacerbation", "query": "A 60-year-old smoker with COPD has an acute exacerbation. What are the treatment options and steroid dosing evidence?"},
+    {"id": "dm2-insulin-init", "query": "A 55-year-old with type 2 diabetes on max oral agents has HbA1c 9.5%. What is the evidence for insulin initiation strategies?"},
+    {"id": "aki-nsaids", "query": "A 50-year-old with chronic kidney disease took NSAIDs for back pain and now has acute kidney injury. What is the evidence on NSAID nephrotoxicity and recovery?"}
+  ]
+}

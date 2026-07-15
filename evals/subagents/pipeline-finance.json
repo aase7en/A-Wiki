@@ -1,0 +1,36 @@
+{
+  "suite": "pipeline-finance",
+  "description": "End-to-end finance pipeline eval: data-fetcher → analyst → debater. Tests the full 3-stage chain from finance-pipeline SKILL.md. Only the final debater output is judged (verdict must be present).",
+  "stages": [
+    {
+      "subagent": "finance-data-fetcher",
+      "prompt": "Retrieve current market data for {symbol}. Return the stock price, P/E ratio, market cap, and revenue TTM as a structured summary.",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "subagent": "finance-analyst",
+      "prompt": "Analyze this market data and form an investment thesis: {prev_output}. Cover technical, fundamental, and sentiment factors. End with a rating (buy/hold/sell).",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "subagent": "finance-debater",
+      "prompt": "Challenge this investment thesis with bull and bear cases: {prev_output}. Identify key risks. Conclude with a final verdict on whether the thesis holds.",
+      "required": ["verdict"],
+      "forbidden": ["i don't know", "cannot determine"]
+    }
+  ],
+  "model_overrides": {
+    "finance-data-fetcher": "deepseek-v4-flash",
+    "finance-analyst": "deepseek-v4-pro",
+    "finance-debater": "sonnet"
+  },
+  "cases": [
+    {"id": "aapl", "symbol": "AAPL (Apple)"},
+    {"id": "tsla", "symbol": "TSLA (Tesla)"},
+    {"id": "msft", "symbol": "MSFT (Microsoft)"},
+    {"id": "amzn", "symbol": "AMZN (Amazon)"},
+    {"id": "googl", "symbol": "GOOGL (Alphabet)"}
+  ]
+}
