@@ -192,9 +192,14 @@ def find_skill_files(repo_root: Path) -> list[dict[str, Any]]:
             continue
         for skill_md in base.rglob("SKILL.md"):
             rel = skill_md.relative_to(repo_root).as_posix()
-            # Skip vendored mirrors and deprecation graveyards.
+            # Skip vendored mirrors, deprecation graveyards, and skill-local
+            # artifact subdirs (examples/, references/) — these hold runnable
+            # demos / notebooks / external materials, never standalone skills.
+            # Documented in docs/protocols/skill-frontmatter-schema.md §Skill
+            # folder layout convention.
             low = rel.lower()
-            if "/_upstream/" in low or "/deprecated/" in low or "/.git/" in low:
+            if ("/_upstream/" in low or "/deprecated/" in low or "/.git/" in low
+                    or "/examples/" in low or "/references/" in low):
                 continue
             fm = parse_frontmatter(skill_md.read_text(encoding="utf-8", errors="replace"))
             name = fm.get("name") or skill_md.parent.name
