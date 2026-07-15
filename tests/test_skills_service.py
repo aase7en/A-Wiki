@@ -780,3 +780,39 @@ def test_skill_history_first_seen_missing_skill_safe():
     assert h == {}
     assert "first_seen" not in h
 
+
+# =============================================================================
+# CHUNK VV — review_queue (low-health skills, sorted asc)
+# =============================================================================
+
+def test_review_queue_shape():
+    """review_queue must return a list of dicts with expected keys."""
+    q = skills_service.review_queue(threshold=60)
+    assert isinstance(q, list)
+    for item in q:
+        assert "name" in item
+        assert "score" in item
+        assert "missing" in item
+        assert "domain" in item
+
+
+def test_review_queue_filters_by_threshold():
+    """All returned skills must have score < threshold."""
+    q = skills_service.review_queue(threshold=60)
+    for item in q:
+        assert item["score"] < 60, f"{item['name']} score {item['score']} >= 60"
+
+
+def test_review_queue_sorted_ascending():
+    """Queue must be sorted by score ascending (worst first)."""
+    q = skills_service.review_queue(threshold=60)
+    scores = [item["score"] for item in q]
+    assert scores == sorted(scores), "review_queue not sorted ascending by score"
+
+
+def test_review_queue_high_threshold_empty():
+    """With threshold=0, no skill qualifies (score < 0 impossible)."""
+    q = skills_service.review_queue(threshold=0)
+    assert q == []
+
+

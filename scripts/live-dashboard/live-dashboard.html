@@ -683,6 +683,23 @@ to{transform:translateY(0);opacity:1}
       <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🔧 ยังขาด (สำหรับ quick-fill)</h4>
       <div id="coverage-missing"></div>
     </div>
+
+    <!-- CHUNK VV — Review Queue: low-health skills prioritized for fixing -->
+    <div class="glass-card" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <h4 style="margin:0;font-size:var(--fs-sm);color:var(--text-secondary)">📋 Review Queue <span id="review-queue-count" style="color:var(--text-tertiary);font-size:var(--fs-2xs)"></span></h4>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label style="font-size:var(--fs-2xs);color:var(--text-tertiary)">threshold:</label>
+          <select id="review-threshold" onchange="reviewQueueLoad()" style="padding:3px 6px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)">
+            <option value="30">&lt;30 (critical)</option>
+            <option value="60" selected>&lt;60 (weak)</option>
+            <option value="85">&lt;85 (ok+weak)</option>
+          </select>
+        </div>
+      </div>
+      <div id="review-queue-progress" style="margin-bottom:8px"></div>
+      <div id="review-queue-list"></div>
+    </div>
   </div>
 
   <!-- 🔬 SUBAGENTS VIEW — Observatory: per-subagent latency/pass/token stats -->
@@ -3151,6 +3168,8 @@ async function coverageLoad(){
       return `🔄 ${phaseNames[x]||x}`;
     });
     coverageRenderMissing($('coverage-missing'),data);
+    // CHUNK VV: load review queue alongside.
+    reviewQueueLoad();
     // Populate comparison dropdowns if empty.
     const selA=$('cov-cmp-a'),selB=$('cov-cmp-b');
     if(selA&&selA.options.length===0){
@@ -3165,6 +3184,44 @@ async function coverageLoad(){
   }catch(e){
     if(overall){overall.innerHTML=`<div style="color:var(--accent-danger);font-size:var(--fs-2xs)">❌ ${e.message}</div>`;}
   }
+}
+// === CHUNK VV — Review Queue (low-health skills, fix-tracked) ===
+const REVIEW_DONE_KEY='awiki-review-done';
+async function reviewQueueLoad(){
+  const list=$('review-queue-list'),count=$('review-queue-count'),prog=$('review-queue-progress');
+  if(!list)return;
+  const thrSel=$('review-threshold');
+  const threshold=thrSel?parseInt(thrSel.value,10):60;
+  list.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px">⏳ กำลังโหลด...</div>';
+  try{
+    const r=await fetch('/api/skills/review?threshold='+threshold).then(r=>r.json());
+    const queue=r.queue||[];
+    count.textContent='('+queue.length+' skills)';
+    if(!queue.length){list.innerHTML='<div style="color:var(--accent-success);font-size:var(--fs-2xs);padding:8px">✅ ไม่มี skills ที่ต่ำกว่า threshold — ดีมาก!</div>';prog.innerHTML='';return;}
+    const done=_lsGet(REVIEW_DONE_KEY,[]);
+    const doneCount=queue.filter(s=>done.includes(s.name)).length;
+    prog.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:4px">ทำเสร็จ ${doneCount}/${queue.length}</div><div style="height:6px;background:var(--elev-2);border-radius:3px;overflow:hidden"><div style="height:100%;width:${queue.length?(doneCount/queue.length*100):0}%;background:var(--accent-success);transition:width .3s"></div></div>`;
+    list.innerHTML=queue.map(s=>{
+      const isDone=done.includes(s.name);
+      const lvlColor=s.level==='critical'?'var(--accent-danger)':s.level==='weak'?'var(--accent-warm)':'var(--text-tertiary)';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px;border:1px solid var(--border2);border-radius:var(--r-md);background:${isDone?'var(--elev-1)':'var(--elev-2)'};margin-bottom:6px;${isDone?'opacity:.6':''}">
+        <input type="checkbox" ${isDone?'checked':''} onchange="toggleReviewDone('${s.name}',this.checked)" style="cursor:pointer;accent-color:var(--accent-success)" title="ทำเสร็จ">
+        <div style="flex:1;cursor:pointer" onclick="setView('skills');setTimeout(()=>skillsOpenDetail('${s.name}'),300)">
+          <div style="color:var(--text-primary);font-weight:600;${isDone?'text-decoration:line-through':''}">${s.name}</div>
+          <div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">ขาด ${(s.missing||[]).length} fields · ${(s.domain||[]).join(', ')||'-'}</div>
+        </div>
+        <span class="skill-tag" style="border-color:${lvlColor};color:${lvlColor};font-size:var(--fs-2xs)">${s.level} ${s.score}</span>
+        <button class="set-btn sm" onclick="coverageEditInline('${s.name}','${(s.missing||[])[0]||'th_description'}')" style="padding:3px 8px;font-size:var(--fs-2xs);color:var(--accent-brand)" title="แก้ไข field ที่ขาด">✏️</button>
+      </div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-2xs);padding:8px">⚠️ '+e.message+'</div>';}
+}
+function toggleReviewDone(name,done){
+  const arr=_lsGet(REVIEW_DONE_KEY,[]);
+  if(done){if(!arr.includes(name))arr.push(name);}
+  else{const i=arr.indexOf(name);if(i>=0)arr.splice(i,1);}
+  _lsSet(REVIEW_DONE_KEY,arr);
+  reviewQueueLoad();  // refresh progress bar
 }
 async function coverageCompare(){
   const a=$('cov-cmp-a').value,b=$('cov-cmp-b').value;

@@ -678,6 +678,16 @@ class Handler(BaseHTTPRequestHandler):
             self._api_skills_cycles()
         elif path == "/api/skills/matrix":
             self._api_skills_matrix()
+        elif path == "/api/skills/review":
+            # CHUNK VV: low-health skills queue for the Coverage tab.
+            try:
+                from urllib.parse import parse_qs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                threshold = int(params.get("threshold", ["60"])[0])
+                self._json_response({"queue": skills_service.review_queue(threshold=threshold)})
+            except Exception as e:
+                self._json_response({"error": str(e), "queue": []})
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
         elif path == "/api/walkthroughs":

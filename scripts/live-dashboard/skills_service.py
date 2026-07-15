@@ -378,6 +378,30 @@ def skill_health_score(skill: dict[str, Any]) -> dict[str, Any]:
     return {"score": score, "level": level, "missing": missing}
 
 
+def review_queue(threshold: int = 60) -> list[dict[str, Any]]:
+    """GET /api/skills/review — skills with health score < threshold, worst first.
+
+    Used by the Coverage tab "Review Queue" to surface skills needing docs love.
+    Each item: {name, score, level, missing, domain}.
+    """
+    reg = _load_registry()
+    out: list[dict[str, Any]] = []
+    for skill in reg.skills:
+        if skill.get("status") != "canonical":
+            continue
+        h = skill_health_score(skill)
+        if h["score"] < threshold:
+            out.append({
+                "name": skill.get("name", ""),
+                "score": h["score"],
+                "level": h["level"],
+                "missing": h["missing"],
+                "domain": skill.get("domain", []),
+            })
+    out.sort(key=lambda x: x["score"])
+    return out
+
+
 def agent_skill_matrix() -> dict[str, Any]:
     """GET /api/skills/matrix — skills × agents visibility matrix for CSV export.
 
@@ -771,7 +795,7 @@ __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
     "skill_graph", "walkthrough_difficulty", "recommend_skills",
     "skill_history", "update_skill_field", "skill_health_score",
-    "detect_cycles", "agent_skill_matrix", "KNOWN_AGENTS",
+    "detect_cycles", "agent_skill_matrix", "review_queue", "KNOWN_AGENTS",
 ]
 
 
