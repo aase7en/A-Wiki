@@ -191,6 +191,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks_runner.py check-cost-tier"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-subagent-fanout"
                     }
                 ]
             },
@@ -221,6 +225,15 @@
             }
         ],
         "PostToolUse": [
+            {
+                "matcher": "Agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py log-subagent-result"
+                    }
+                ]
+            },
             {
                 "matcher": "Edit|Write|MultiEdit",
                 "hooks": [
