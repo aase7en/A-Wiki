@@ -427,6 +427,7 @@ to{transform:translateY(0);opacity:1}
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -481,6 +482,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
       <button class="view-btn" id="btn-skills" onclick="setView('skills')">🧩 Skills</button>
       <button class="view-btn" id="btn-coverage" onclick="setView('coverage')">📊 Coverage</button>
+      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')">📈 Analytics</button>
       <button class="view-btn" id="btn-subagents" onclick="setView('subagents')">🔬 Subagents</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
@@ -703,6 +705,42 @@ to{transform:translateY(0);opacity:1}
       </div>
       <div id="review-queue-progress" style="margin-bottom:8px"></div>
       <div id="review-queue-list"></div>
+    </div>
+  </div>
+
+  <!-- 📈 ANALYTICS VIEW (CHUNK XX) — usage insights from local opens log -->
+  <div id="analytics-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
+    <div class="glass-card" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="margin:0;font-size:var(--fs-md);color:var(--text-primary)">📈 Usage Analytics</h3>
+          <p id="analytics-subtitle" style="margin:4px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">ภาพรวมการใช้งาน skills จากข้อมูลในเครื่องนี้</p>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="analyticsLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+          <button onclick="clearAnalyticsData()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--accent-danger);font-size:var(--fs-2xs);cursor:pointer" title="ล้าง opens log + health snapshots">🗑️ ล้างข้อมูล</button>
+        </div>
+      </div>
+    </div>
+    <div id="analytics-unavailable" style="display:none;padding:24px;text-align:center;color:var(--text-tertiary);font-size:var(--fs-sm)">📈 Chart.js ไม่พร้อม<br><small>ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต (CDN)</small></div>
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🔥 เปิดบ่อยสุด (30 วัน)</h4>
+      <canvas id="chart-top-opened" height="160"></canvas>
+    </div>
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🔗 คู่ที่เปิดใกล้กัน (co-occurrence)</h4>
+      <canvas id="chart-cooccur" height="160"></canvas>
+    </div>
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">📅 Opens รายวัน (14 วัน)</h4>
+      <canvas id="chart-opens-daily" height="120"></canvas>
+    </div>
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🩺 สุขภาพ Registry (distribution + trend)</h4>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:240px"><canvas id="chart-health-dist" height="160"></canvas></div>
+        <div style="flex:1;min-width:240px"><canvas id="chart-health-trend" height="160"></canvas></div>
+      </div>
     </div>
   </div>
 
@@ -1181,14 +1219,15 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
 $('graph-vis').style.display=v==='graph'?'block':'none';
 $('skills-panel').style.display=v==='skills'?'flex':'none';
 $('coverage-panel').style.display=v==='coverage'?'flex':'none';
+$('analytics-panel').style.display=v==='analytics'?'flex':'none';
 $('subagents-panel').style.display=v==='subagents'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
@@ -1197,6 +1236,7 @@ else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
 if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();_initPresetDropdown();if(window._autoDetectedAgent)_applyAutoDetectedAgent();}
 if(v==='coverage')coverageLoad();
+if(v==='analytics')analyticsLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 syncUrlState();
@@ -3462,6 +3502,96 @@ function copyInvocation(hint,name){
     try{document.execCommand('copy');toast('📋 คัดลอก: '+text);}catch(e){toast('📋 คัดลอกไม่สำเร็จ','err');}
     document.body.removeChild(ta);
   }
+}
+
+// ===== CHUNK XX — Usage Analytics Dashboard (Chart.js) =====
+const HEALTH_SNAPSHOTS_KEY='awiki-health-snapshots';
+const HEALTH_SNAPSHOTS_MAX=90;
+let _analyticsCharts={};  // canvasId → Chart instance (destroy before re-render)
+function _destroyChart(id){if(_analyticsCharts[id]){try{_analyticsCharts[id].destroy();}catch(_){}delete _analyticsCharts[id];}}
+// Persist a daily health snapshot (once per day) for the trend chart.
+function _maybeSnapshotHealth(dist){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const snaps=_lsGet(HEALTH_SNAPSHOTS_KEY,[]);
+    if(snaps.length&&snaps[snaps.length-1].date===today){
+      snaps[snaps.length-1]={date:today,dist:dist};
+    }else{
+      const avg=Math.round((dist.good*85+dist.ok*72+dist.weak*45+dist.critical*15)/Math.max(1,dist.good+dist.ok+dist.weak+dist.critical));
+      snaps.push({date:today,dist:dist,avg:avg});
+      while(snaps.length>HEALTH_SNAPSHOTS_MAX)snaps.shift();
+    }
+    _lsSet(HEALTH_SNAPSHOTS_KEY,snaps);
+    return snaps;
+  }catch(_){return _lsGet(HEALTH_SNAPSHOTS_KEY,[]);}
+}
+async function analyticsLoad(){
+  const unavail=$('analytics-unavailable');
+  if(typeof Chart==='undefined'){if(unavail)unavail.style.display='block';return;}
+  if(unavail)unavail.style.display='none';
+  const opens=_lsGet(OPENS_KEY,[]);
+  const sub=$('analytics-subtitle');
+  if(sub)sub.textContent=`${opens.length} opens บันทึกในเครื่องนี้ · ข้อมูลเฉพาะที่ (ไม่ sync)`;
+  // Chart 1: top opened (30d) — reuse trendingSkills.
+  const top=trendingSkills(30,10);
+  _destroyChart('chart-top-opened');
+  _analyticsCharts['chart-top-opened']=new Chart($('chart-top-opened'),{
+    type:'bar',
+    data:{labels:top.map(t=>t.name),datasets:[{label:'opens',data:top.map(t=>t.count),backgroundColor:'rgba(94,234,212,.6)',borderColor:'rgba(94,234,212,1)',borderWidth:1}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#888'}},y:{ticks:{color:'#aaa',font:{size:10}}}}}
+  });
+  // Chart 2: co-occurrence pairs.
+  const co=_mineCoOccurrence();
+  const coEdges=co?(co.edges||[]):[];
+  coEdges.sort((a,b)=>(b.weight||0)-(a.weight||0));
+  const topCo=coEdges.slice(0,10);
+  _destroyChart('chart-cooccur');
+  _analyticsCharts['chart-cooccur']=new Chart($('chart-cooccur'),{
+    type:'bar',
+    data:{labels:topCo.map(e=>e.from+' ↔ '+e.to),datasets:[{label:'weight',data:topCo.map(e=>e.weight),backgroundColor:'rgba(167,139,250,.6)',borderColor:'rgba(167,139,250,1)',borderWidth:1}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#888'}},y:{ticks:{color:'#aaa',font:{size:9}}}}}
+  });
+  // Chart 3: opens daily (14d).
+  const cutoff=Date.now()-14*24*60*60*1000;
+  const dayBuckets={};
+  for(let i=13;i>=0;i--){const d=new Date(Date.now()-i*24*60*60*1000).toISOString().slice(0,10);dayBuckets[d]=0;}
+  opens.forEach(o=>{if(o.ts>=cutoff){const d=new Date(o.ts).toISOString().slice(0,10);if(d in dayBuckets)dayBuckets[d]++;}});
+  const dayLabels=Object.keys(dayBuckets);
+  _destroyChart('chart-opens-daily');
+  _analyticsCharts['chart-opens-daily']=new Chart($('chart-opens-daily'),{
+    type:'line',
+    data:{labels:dayLabels.map(d=>d.slice(5)),datasets:[{label:'opens/day',data:dayLabels.map(d=>dayBuckets[d]),borderColor:'rgba(94,234,212,1)',backgroundColor:'rgba(94,234,212,.15)',fill:true,tension:.3}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:9}}},y:{beginAtZero:true,ticks:{color:'#888'}}}}
+  });
+  // Chart 4a: health distribution (doughnut) — needs skills data.
+  let skills=_skillsCache;
+  if(!skills.length){
+    try{const r=await fetch('/api/skills?limit=500').then(r=>r.json());skills=r.skills||[];}catch(_){}
+  }
+  const dist={critical:0,weak:0,ok:0,good:0};
+  skills.forEach(s=>{if(s.health&&s.health.level)dist[s.health.level]++;});
+  const snaps=_maybeSnapshotHealth(dist);
+  _destroyChart('chart-health-dist');
+  _analyticsCharts['chart-health-dist']=new Chart($('chart-health-dist'),{
+    type:'doughnut',
+    data:{labels:['critical','weak','ok','good'],datasets:[{data:[dist.critical,dist.weak,dist.ok,dist.good],backgroundColor:['#f87171','#fbbf24','#86efac','#34d399']}]},
+    options:{plugins:{legend:{position:'right',labels:{color:'#aaa',font:{size:10}}}}}
+  });
+  // Chart 4b: health trend (avg over time).
+  _destroyChart('chart-health-trend');
+  _analyticsCharts['chart-health-trend']=new Chart($('chart-health-trend'),{
+    type:'line',
+    data:{labels:snaps.map(s=>s.date.slice(5)),datasets:[{label:'avg health',data:snaps.map(s=>s.avg||0),borderColor:'rgba(52,211,153,1)',backgroundColor:'rgba(52,211,153,.15)',fill:true,tension:.3}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:9}}},y:{min:0,max:100,ticks:{color:'#888'}}}}
+  });
+}
+function clearAnalyticsData(){
+  if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
+  _lsSet(OPENS_KEY,[]);
+  _lsSet(HEALTH_SNAPSHOTS_KEY,[]);
+  _lsSet(RECENT_KEY,[]);
+  toast('🗑️ ล้างข้อมูล usage แล้ว');
+  analyticsLoad();
 }
 
 // ===== CHUNK TT — Smart Default Agent (auto-detect from env) =====
