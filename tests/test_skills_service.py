@@ -606,3 +606,73 @@ def test_registry_push_detects_mtime_change():
         assert server.check_registry_changed() is False, "same mtime must not re-trigger"
     finally:
         ss.REGISTRY_FILE = orig
+
+
+# ---------------------------------------------------------------------------
+# CHUNK HH — detect_cycles() on skill graph edges
+# ---------------------------------------------------------------------------
+
+def test_detect_cycles_returns_expected_shape():
+    """detect_cycles must return dict with cycles, has_cycle, count."""
+    r = skills_service.detect_cycles([])
+    assert set(r.keys()) >= {"cycles", "has_cycle", "count"}
+    assert isinstance(r["cycles"], list)
+    assert r["has_cycle"] is False
+    assert r["count"] == 0
+
+
+def test_detect_cycles_none_on_linear():
+    """A→B→C (no back edge) has no cycle."""
+    edges = [
+        {"from": "A", "to": "B"},
+        {"from": "B", "to": "C"},
+    ]
+    r = skills_service.detect_cycles(edges)
+    assert r["has_cycle"] is False
+    assert r["cycles"] == []
+
+
+def test_detect_cycles_simple_two_node():
+    """A→B, B→A is a 2-cycle."""
+    edges = [
+        {"from": "A", "to": "B"},
+        {"from": "B", "to": "A"},
+    ]
+    r = skills_service.detect_cycles(edges)
+    assert r["has_cycle"] is True
+    assert r["count"] >= 1
+    # Each cycle is a list of node names; the pair {A,B} must be in one.
+    found = any(set(c) == {"A", "B"} for c in r["cycles"])
+    assert found, f"A-B cycle missing from {r['cycles']}"
+
+
+def test_detect_cycles_three_node():
+    """A→B, B→C, C→A is a 3-cycle."""
+    edges = [
+        {"from": "A", "to": "B"},
+        {"from": "B", "to": "C"},
+        {"from": "C", "to": "A"},
+    ]
+    r = skills_service.detect_cycles(edges)
+    assert r["has_cycle"] is True
+    assert r["count"] >= 1
+    found = any(set(c) == {"A", "B", "C"} for c in r["cycles"])
+    assert found, f"A-B-C cycle missing from {r['cycles']}"
+
+
+def test_detect_cycles_respects_max_depth():
+    """A long chain longer than max_depth should not be reported as a cycle
+    even if it eventually loops back — we cap exploration to avoid pathological
+    O(n!) blowups on huge graphs.
+    """
+    # Build a 20-node ring A0→A1→...→A19→A0.
+    edges = [{"from": f"A{i}", "to": f"A{(i+1) % 20}"} for i in range(20)]
+    r = skills_service.detect_cycles(edges, max_depth=5)
+    # With max_depth=5, the 20-ring exceeds the cap -> no cycle reported.
+    assert r["has_cycle"] is False
+    # With default max_depth=10, still too long -> no cycle.
+    r2 = skills_service.detect_cycles(edges)
+    assert r2["has_cycle"] is False
+    # But with max_depth=25, the ring is within cap -> detected.
+    r3 = skills_service.detect_cycles(edges, max_depth=25)
+    assert r3["has_cycle"] is True

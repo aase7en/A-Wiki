@@ -622,6 +622,58 @@ _HARD_PHASES = frozenset({"review", "ship", "verify"})
 _HARD_DOMAINS = frozenset({"security", "sre", "debug"})
 
 
+def detect_cycles(edges: list[dict], max_depth: int = 10) -> dict[str, Any]:
+    """Detect circular dependencies in a skill graph's edge list.
+
+    Each edge is {"from": name, "to": name}. We do a bounded DFS from
+    every node, tracking the current path; if we revisit a node on the
+    path, that slice is a cycle. max_depth caps exploration to avoid
+    pathological blow-ups on huge graphs (cycles we care about in the
+    skill graph are short — phase/domain neighbors).
+
+    Returns {cycles: [[name, ...], ...], has_cycle: bool, count: int}.
+    Cycles are de-duplicated by their frozenset, and each is rotated to
+    start from its lexicographically smallest member for stable output.
+    """
+    # Build adjacency list.
+    adj: dict[str, list[str]] = {}
+    for e in edges:
+        a, b = e.get("from"), e.get("to")
+        if a and b:
+            adj.setdefault(a, []).append(b)
+            adj.setdefault(b, adj.get(b, []))  # ensure both nodes exist
+
+    seen_cycles: set[frozenset] = set()
+    cycles: list[list[str]] = []
+
+    def _dfs(start: str, node: str, path: list[str], visited_in_path: set[str]):
+        if len(path) > max_depth:
+            return
+        for nxt in adj.get(node, []):
+            if nxt == start and len(path) >= 1:
+                # Closed a cycle back to start.
+                key = frozenset(path)
+                if key not in seen_cycles:
+                    seen_cycles.add(key)
+                    # Rotate to smallest member for stable output.
+                    ordered = sorted(path)
+                    pivot = path.index(ordered[0])
+                    cycles.append(path[pivot:] + path[:pivot])
+                continue
+            if nxt in visited_in_path:
+                continue  # inner repeat, not back to start — skip
+            visited_in_path.add(nxt)
+            path.append(nxt)
+            _dfs(start, nxt, path, visited_in_path)
+            path.pop()
+            visited_in_path.discard(nxt)
+
+    for root in adj:
+        _dfs(root, root, [root], {root})
+
+    return {"cycles": cycles, "has_cycle": len(cycles) > 0, "count": len(cycles)}
+
+
 def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
     """Score a walkthrough flow's difficulty from 0-100.
 
@@ -691,7 +743,8 @@ def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
     "skill_graph", "walkthrough_difficulty", "recommend_skills",
-    "skill_history", "update_skill_field", "skill_health_score", "KNOWN_AGENTS",
+    "skill_history", "update_skill_field", "skill_health_score",
+    "detect_cycles", "KNOWN_AGENTS",
 ]
 
 

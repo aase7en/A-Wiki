@@ -660,6 +660,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_skills_graph()
         elif path == "/api/skills/recommend":
             self._api_skills_recommend()
+        elif path == "/api/skills/cycles":
+            self._api_skills_cycles()
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
         elif path == "/api/walkthroughs":
@@ -1015,6 +1017,15 @@ class Handler(BaseHTTPRequestHandler):
                 limit=int(params.get("limit", ["500"])[0]),
             )
             self._json_response(payload)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_cycles(self):
+        """GET /api/skills/cycles — detect circular dependencies in the skill graph."""
+        try:
+            g = skills_service.skill_graph(all_skills=True, limit=500)
+            result = skills_service.detect_cycles(g.get("edges", []))
+            self._json_response(result)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 
