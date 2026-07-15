@@ -111,12 +111,16 @@ jobs:
             exit 1
           }
 
-      - name: MC notebook re-execution (drift gate)
-        # Re-run the seeded MC portfolio notebook (seeds 42/123) and fail if
-        # any output drifted — catches numpy/scipy API regressions silently
-        # changing the skill's canonical example outputs. Deterministic on
-        # x86_64; verified locally byte-identical after stripping per-run
-        # execution_count + metadata.execution.
+      - name: MC notebook re-execution + copula math tests
+        # Two guards run together (both need the scipy/numpy optional stack):
+        #  (1) Re-run the seeded MC portfolio notebook (seeds 42/123) and fail
+        #      if any output drifted — catches numpy/scipy API regressions
+        #      silently changing the skill's canonical example outputs.
+        #      Deterministic on x86_64; verified locally byte-identical after
+        #      stripping per-run execution_count + metadata.execution.
+        #  (2) Run the copula + MC integration tests (tests/test_monte_carlo_
+        #      copula.py) which are skipped in the default Unit tests step
+        #      because scipy is optional — but scipy is installed here.
         run: |
           python -m pip install nbconvert ipykernel numpy scipy -r requirements-optional.txt
           NB="skills/awiki/monte-carlo-quant-analysis/examples/portfolio_mc_1yr.ipynb"
@@ -134,6 +138,7 @@ jobs:
               'MC notebook outputs drifted — re-baseline or fix numpy/scipy regression'
           "
           rm -f reexec_tmp.ipynb
+          python -m pytest tests/test_monte_carlo_copula.py -v
 
       - name: Readiness smoke
         # Surface [FAIL] lines as ::error annotations (public-API readable).
