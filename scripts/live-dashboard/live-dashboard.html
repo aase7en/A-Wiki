@@ -564,7 +564,11 @@ to{transform:translateY(0);opacity:1}
         <option value="health-asc">🩺 Health ต่ำก่อน</option>
         <option value="health-desc">💪 Health สูงก่อน</option>
         <option value="name-asc">🔤 ชื่อ A→Z</option>
+        <option value="pinned-first">📌 Pinned ก่อน</option>
       </select>
+      <label style="display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer;user-select:none">
+        <input type="checkbox" id="skills-pinned-only" onchange="skillsRefresh()" style="cursor:pointer;accent-color:var(--accent-warm)">📌 pinned เท่านั้น
+      </label>
       <button class="set-btn sm" onclick="savePreset()" style="padding:5px 10px;font-size:var(--fs-2xs);min-height:30px;color:var(--accent-warm)" title="บันทึกชุดตัวกรองปัจจุบันเป็น preset">⭐ บันทึก</button>
       <select id="skills-preset" onchange="applyPresetSelect()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:30px;cursor:pointer" title="โหลด preset">
         <option value="">📋 Presets</option>
@@ -2383,12 +2387,16 @@ const when=s.when_to_use?`<div class="skill-card-when">💡 ${s.when_to_use}</di
 const instBadge=s.installed===false?`<span class="skill-card-inst catalog" title="catalog-only (SKILL.md ไม่ได้ติดตั้งบนเครื่องนี้)">📦 catalog</span>`:`<span class="skill-card-inst installed" title="ติดตั้งแล้วบนเครื่องนี้">✅ ติดตั้ง</span>`;
 // CHUNK FF: health badge from s.health (score/level/missing).
 const healthBadge=s.health?skillsHealthBadge(s.health):'';
-return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}">
+// CHUNK WW: pinned badge + toggle (syncs via public registry).
+const isPinned=!!s.pinned;
+const pinBadge=isPinned?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)">📌 pinned</span>':'';
+return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}${isPinned?';box-shadow:0 0 0 2px var(--accent-warm)':''}">
 <div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
 <div class="skill-card-desc">${desc}</div>${when}
-<div class="skill-card-tags">${domains}${instBadge}${healthBadge}</div>
+<div class="skill-card-tags">${pinBadge}${domains}${instBadge}${healthBadge}</div>
 <div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง">📋</div>
-<input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" style="position:absolute;top:6px;right:34px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
+<div class="skill-card-copy" onclick="event.stopPropagation();togglePin('${s.name}')" title="${isPinned?'เลิกปักหมุด':'ปักหมุด (sync ผ่าน git registry)'}" style="right:36px">${isPinned?'⭐':'☆'}</div>
+<input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" style="position:absolute;top:6px;right:62px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
 </div>`;
 }
 function skillsHealthBadge(h){
@@ -2402,12 +2410,34 @@ return `<span class="skill-tag" style="border-color:${c};color:${c}" title="Heal
 // CHUNK FF: client-side sort over the rendered cache.
 function skillsSortedView(){
 const sel=$('skills-sort');const mode=sel?sel.value:'';
-if(!mode)return _skillsCache;
-const arr=_skillsCache.slice();
+// CHUNK WW: client-side pinned-only filter (applied before sort).
+const pinFilter=$('skills-pinned-only');
+let base=_skillsCache;
+if(pinFilter&&pinFilter.checked)base=_skillsCache.filter(s=>s.pinned);
+if(!mode)return base;
+const arr=base.slice();
 if(mode==='health-asc')arr.sort((a,b)=>((a.health&&a.health.score)||0)-((b.health&&b.health.score)||0));
 else if(mode==='health-desc')arr.sort((a,b)=>((b.health&&b.health.score)||0)-((a.health&&a.health.score)||0));
 else if(mode==='name-asc')arr.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+// CHUNK WW: pinned first, then by name.
+else if(mode==='pinned-first')arr.sort((a,b)=>(!!b.pinned===!!a.pinned?0:(!!b.pinned?1:-1))||(a.name||'').localeCompare(b.name||''));
 return arr;
+}
+// CHUNK WW — cross-device pin toggle (writes pinned bool to registry via API).
+async function togglePin(name){
+const s=_skillsCache.find(x=>x.name===name);
+const newVal=!(s&&s.pinned);
+try{
+const r=await fetch('/api/skills/'+encodeURIComponent(name)+'/edit',{
+method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({field:'pinned',value:newVal?'true':'false'})
+}).then(r=>r.json());
+if(r.error&&!r.ok)throw new Error(r.error);
+// Optimistic update of cache + re-render.
+if(s)s.pinned=newVal;
+skillsApplySort();
+toast(newVal?'⭐ ปักหมุดแล้ว (sync ผ่าน git registry — public)':'เลิกปักหมุดแล้ว');
+}catch(e){toast('ปักหมุดไม่สำเร็จ: '+e.message,true);}
 }
 function skillsApplySort(){
 // Re-render the grid from the cache (no refetch needed).

@@ -816,3 +816,60 @@ def test_review_queue_high_threshold_empty():
     assert q == []
 
 
+# =============================================================================
+# CHUNK WW — pinned field (cross-device pin via registry)
+# =============================================================================
+
+def test_update_skill_field_pinned_widens_allowlist():
+    """update_skill_field must accept 'pinned' field (added to allowlist)."""
+    # Use a low-risk skill; save + restore to avoid permanent mutation.
+    import skills_service as ss
+    name = "debug-mantra"
+    with open(ss.REGISTRY_FILE, "r", encoding="utf-8") as f:
+        original = f.read()
+    try:
+        r = ss.update_skill_field(name, "pinned", "true")
+        assert r.get("ok") is True, f"pinned write failed: {r.get('error')}"
+        # Verify the registry now has pinned=True on the skill.
+        import json as _json
+        with open(ss.REGISTRY_FILE, "r", encoding="utf-8") as f:
+            data = _json.load(f)
+        skill = next((s for s in data["skills"] if s["name"] == name), None)
+        assert skill is not None
+        assert skill.get("pinned") is True, f"pinned not persisted as True (got {skill.get('pinned')})"
+    finally:
+        with open(ss.REGISTRY_FILE, "w", encoding="utf-8") as f:
+            f.write(original)
+        ss._cache["registry"] = None
+
+
+def test_update_skill_field_pinned_rejects_non_bool():
+    """pinned must reject non-boolean string values (e.g. 'maybe')."""
+    import skills_service as ss
+    r = ss.update_skill_field("debug-mantra", "pinned", "maybe")
+    assert r.get("ok") is False
+    assert "bool" in r.get("error", "").lower() or "true/false" in r.get("error", "").lower()
+
+
+def test_update_skill_field_pinned_false_persists():
+    """pinned='false' must set the field to boolean False."""
+    import skills_service as ss
+    name = "debug-mantra"
+    with open(ss.REGISTRY_FILE, "r", encoding="utf-8") as f:
+        original = f.read()
+    try:
+        r = ss.update_skill_field(name, "pinned", "false")
+        assert r.get("ok") is True, f"pinned=false failed: {r.get('error')}"
+        import json as _json
+        with open(ss.REGISTRY_FILE, "r", encoding="utf-8") as f:
+            data = _json.load(f)
+        skill = next((s for s in data["skills"] if s["name"] == name), None)
+        assert skill is not None
+        assert skill.get("pinned") is False
+    finally:
+        with open(ss.REGISTRY_FILE, "w", encoding="utf-8") as f:
+            f.write(original)
+        ss._cache["registry"] = None
+
+
+

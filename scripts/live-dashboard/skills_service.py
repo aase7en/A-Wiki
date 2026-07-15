@@ -35,6 +35,7 @@ KNOWN_AGENTS = ["all", "claude", "codex", "zcode", "gemini", "antigravity",
 LIST_FIELDS = (
     "name", "domain", "lifecycle_phase", "category", "invocation",
     "th_description", "when_to_use", "agents", "status", "path", "source",
+    "pinned",  # CHUNK WW: cross-device pin (bool, default falsy)
 )
 
 _cache: dict[str, Any] = {"registry": None, "mtime": 0.0, "loaded": 0.0}
@@ -806,8 +807,10 @@ __all__ = [
 # Allowlist of fields the inline editor may modify. Never include structural
 # fields (name, path, status, domain, lifecycle_phase) — those need full
 # regen-skill-surfaces + Iron Law #9 compliance.
-EDITABLE_FIELDS = frozenset({"th_description", "when_to_use", "invocation_hint"})
+# CHUNK WW: 'pinned' (bool) added — cross-device pin syncs via public registry.
+EDITABLE_FIELDS = frozenset({"th_description", "when_to_use", "invocation_hint", "pinned"})
 _EDIT_MAX_LEN = 2000
+_BOOL_FIELDS = frozenset({"pinned"})
 
 
 def update_skill_field(name: str, field: str, value: str) -> dict[str, Any]:
@@ -815,16 +818,30 @@ def update_skill_field(name: str, field: str, value: str) -> dict[str, Any]:
 
     Security:
       - field must be in EDITABLE_FIELDS allowlist
-      - value must be a string ≤ _EDIT_MAX_LEN chars
+      - value must be a string ≤ _EDIT_MAX_LEN chars (for text fields)
+      - for _BOOL_FIELDS, value must parse to a bool ('true'/'false'/'1'/'0')
       - registry is validated after write; rolls back on validation failure
     Pattern mirrors apply_thai_guide.py.
     """
     if field not in EDITABLE_FIELDS:
         return {"ok": False, "error": f"field '{field}' not in editable allowlist {sorted(EDITABLE_FIELDS)}"}
-    if not isinstance(value, str):
-        return {"ok": False, "error": "value must be a string"}
-    if len(value) > _EDIT_MAX_LEN:
-        return {"ok": False, "error": f"value too long ({len(value)} > {_EDIT_MAX_LEN})"}
+
+    # CHUNK WW: bool fields have their own validation (no length check, strict parse).
+    if field in _BOOL_FIELDS:
+        if isinstance(value, bool):
+            typed_value: Any = value
+        elif isinstance(value, str) and value.strip().lower() in ("true", "1"):
+            typed_value = True
+        elif isinstance(value, str) and value.strip().lower() in ("false", "0"):
+            typed_value = False
+        else:
+            return {"ok": False, "error": f"field '{field}' requires a bool (true/false), got: {value!r}"}
+    else:
+        if not isinstance(value, str):
+            return {"ok": False, "error": "value must be a string"}
+        if len(value) > _EDIT_MAX_LEN:
+            return {"ok": False, "error": f"value too long ({len(value)} > {_EDIT_MAX_LEN})"}
+        typed_value = value
 
     try:
         with open(REGISTRY_FILE, "r", encoding="utf-8") as f:
@@ -843,7 +860,7 @@ def update_skill_field(name: str, field: str, value: str) -> dict[str, Any]:
     found = False
     for s in data.get("skills", []):
         if s.get("name") == canonical_name:
-            s[field] = value
+            s[field] = typed_value
             found = True
             break
     if not found:
