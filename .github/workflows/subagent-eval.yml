@@ -1,0 +1,206 @@
+name: A-Wiki Subagent Eval
+
+# P3 — weekly eval regression detection. Runs scripts/eval/run_subagent_eval.py
+# across all domains, compares pass@k against the previous results file
+# (evals/subagents/results/results-*.json), and opens a regression issue if any
+# (suite, model) pair dropped > 0.10.
+#
+# NOTE: starts workflow_dispatch-ONLY. The schedule trigger is commented out
+# until the workflow has been verified green at least once manually (avoids
+# burning free-tier API quota weekly if there is a logic bug). After a
+# successful manual run, uncomment the schedule block.
+
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: "Comma-separated domain suites to run (empty = all)"
+        required: false
+        default: ""
+      k:
+        description: "Samples per case (lower = cheaper; CI default 2)"
+        required: false
+        default: "2"
+      create_issue:
+        description: "Create or update a regression issue when pass@k dropped"
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+  # schedule:
+  #   # Mon 3:23 UTC (after agent-model-scan 2:41 + cross-platform 3:17)
+  #   - cron: "23 3 * * 1"
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+concurrency:
+  group: subagent-eval
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    name: Run subagent eval + regression check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # need previous results file for baseline
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          # eval runner + regression check have no third-party deps (stdlib only)
+          pip install pytest  # for a quick smoke of the regression tests
+
+      - name: Smoke-test regression logic (offline)
+        run: |
+          python -m pytest tests/test_regression_check.py tests/test_run_subagent_eval.py -q
+
+      - name: Snapshot baseline (latest results file before this run)
+        id: baseline
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp/subagent-eval
+          latest="$(ls -t evals/subagents/results/results-*.json 2>/dev/null | head -1 || true)"
+          if [ -n "$latest" ]; then
+            cp "$latest" .tmp/subagent-eval/baseline.json
+            echo "has_baseline=true" >> "$GITHUB_OUTPUT"
+            echo "Using baseline: $latest"
+          else
+            echo "has_baseline=false" >> "$GITHUB_OUTPUT"
+            echo "No prior results file — first run, no regression baseline."
+          fi
+
+      - name: Run eval (real API)
+        id: eval
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          AWIKI_DISABLE_DASHBOARD_AUTOSTART: "1"
+        run: |
+          set -euo pipefail
+          DOMAINS="${{ github.event.inputs.domains || '' }}"
+          K="${{ github.event.inputs.k || '2' }}"
+          if [ -n "$DOMAINS" ]; then
+            # Run each requested domain individually.
+            IFS=',' read -ra SUITES <<< "$DOMAINS"
+            for s in "${SUITES[@]}"; do
+              s="$(echo "$s" | xargs)"  # trim whitespace
+              [ -z "$s" ] && continue
+              echo "::group::Eval suite: $s"
+              python3 scripts/eval/run_subagent_eval.py --domain "$s" --apply --k "$K" || \
+                echo "::warning::Eval failed for $s (rate limit?) — continuing"
+              echo "::endgroup::"
+            done
+          else
+            echo "::group::Eval all suites"
+            python3 scripts/eval/run_subagent_eval.py --all --apply --k "$K" || \
+              echo "::warning::Eval --all failed (rate limit?) — partial results may exist"
+            echo "::endgroup::"
+          fi
+
+      - name: Regression check (new vs baseline)
+        id: regression
+        run: |
+          set -euo pipefail
+          python3 - <<'PYEOF'
+          import json, glob, os, sys
+          sys.path.insert(0, "scripts/eval")
+          import regression_check as rc
+
+          new_files = sorted(glob.glob("evals/subagents/results/results-*.json"))
+          if not new_files:
+              print("::warning::No results file produced — eval may have failed entirely.")
+              open(".tmp/subagent-eval/regression-report.md", "w").write(
+                  "## Subagent Eval — No Results\n\nEval produced no results file. "
+                  "Check the workflow log for API errors.\n")
+              # Mark no-regression so we don't open an issue for a missing-results case.
+              open(".tmp/subagent-eval/has-regression", "w").write("false")
+              sys.exit(0)
+
+          new_path = new_files[-1]
+          new = json.loads(open(new_path, encoding="utf-8").read())
+          baseline = {}
+          if os.path.exists(".tmp/subagent-eval/baseline.json"):
+              baseline = json.loads(open(".tmp/subagent-eval/baseline.json", encoding="utf-8").read())
+
+          rows = rc.detect_regression(baseline, new, threshold=0.10)
+          report = rc.render_regression_report(rows)
+          open(".tmp/subagent-eval/regression-report.md", "w", encoding="utf-8").write(report)
+
+          has_regression = any(r["severity"] in ("regression", "removed") for r in rows)
+          open(".tmp/subagent-eval/has-regression", "w").write("true" if has_regression else "false")
+          print(report)
+          PYEOF
+
+      - name: Commit new results file
+        run: |
+          set -euo pipefail
+          git config user.name "a-wiki-subagent-eval"
+          git config user.email "subagent-eval@a-wiki"
+          git add evals/subagents/results/results-*.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "test(eval): subagent eval results $(date -u +%Y-%m-%d)"
+            git push
+          else
+            echo "No new results file to commit."
+          fi
+
+      - name: Upload report + results
+        uses: actions/upload-artifact@v4
+        with:
+          name: subagent-eval-report
+          path: |
+            .tmp/subagent-eval/
+            evals/subagents/results/
+          if-no-files-found: ignore
+
+      - name: Create or update regression issue
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.create_issue != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          HAS_REG="$(cat .tmp/subagent-eval/has-regression 2>/dev/null || echo false)"
+          if [ "$HAS_REG" != "true" ]; then
+            echo "No regression detected — skipping issue creation."
+            exit 0
+          fi
+          title="🚨 Subagent eval regression detected"
+          existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')"
+          body_file=".tmp/subagent-eval/regression-report.md"
+          {
+            # Prepend the workflow link to the report.
+            tmp="$(mktemp)"
+            echo "A scheduled subagent eval run detected pass\@k regressions." > "$tmp"
+            echo "" >> "$tmp"
+            echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$tmp"
+            echo "" >> "$tmp"
+            cat "$body_file" >> "$tmp"
+            mv "$tmp" "$body_file"
+          }
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body-file "$body_file"
+            echo "Updated existing issue #$existing."
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+            echo "Created new regression issue."
+          fi
