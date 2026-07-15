@@ -563,6 +563,10 @@ to{transform:translateY(0);opacity:1}
         <option value="health-desc">💪 Health สูงก่อน</option>
         <option value="name-asc">🔤 ชื่อ A→Z</option>
       </select>
+      <button class="set-btn sm" onclick="savePreset()" style="padding:5px 10px;font-size:var(--fs-2xs);min-height:30px;color:var(--accent-warm)" title="บันทึกชุดตัวกรองปัจจุบันเป็น preset">⭐ บันทึก</button>
+      <select id="skills-preset" onchange="applyPresetSelect()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:30px;cursor:pointer" title="โหลด preset">
+        <option value="">📋 Presets</option>
+      </select>
       <div style="display:flex;gap:2px;margin-left:auto">
         <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
         <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
@@ -1120,7 +1124,7 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
-if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();}
+if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();_initPresetDropdown();}
 if(v==='coverage')coverageLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
@@ -1993,6 +1997,70 @@ if(!_skillsCache.length){return;}
 empty.style.display='none';
 grid.innerHTML=skillsSortedView().map(skillsRenderCard).join('');
 }
+// === CHUNK II — Filter Presets ===
+const PRESETS_KEY='awiki-filter-presets';
+function _currentFilterState(){
+return{
+agent:$('skills-agent-filter').value||'all',
+domain:$('skills-domain-filter').value||'',
+inv:_skillsInv||'all',
+cat:_skillsCat||'',
+installed:($('skills-installed-only')&&$('skills-installed-only').checked)?'1':'',
+sort:($('skills-sort')||{}).value||''
+};
+}
+function _loadPresets(){try{return JSON.parse(localStorage.getItem(PRESETS_KEY)||'[]');}catch(_){return[];}}
+function _savePresets(arr){try{localStorage.setItem(PRESETS_KEY,JSON.stringify(arr));}catch(_){}}
+function renderPresetDropdown(){
+const sel=$('skills-preset');if(!sel)return;
+const presets=_loadPresets();
+const cur=sel.value;
+sel.innerHTML='<option value="">📋 Presets</option>'+
+presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+
+(presets.length?'<option value="__clear">🗑 ล้างทั้งหมด</option>':'');
+if(cur)sel.value=cur;
+}
+function savePreset(){
+const presets=_loadPresets();
+const name=prompt('ตั้งชื่อ preset:','preset '+(presets.length+1));
+if(!name)return;
+const state=_currentFilterState();
+// Dedupe by name (overwrite).
+const idx=presets.findIndex(p=>p.name===name);
+const entry={name,state};
+if(idx>=0)presets[idx]=entry;else presets.push(entry);
+if(presets.length>10)presets.shift();
+_savePresets(presets);
+renderPresetDropdown();
+toast('⭐ บันทึก preset "'+name+'"');
+}
+function applyPresetSelect(){
+const sel=$('skills-preset');const v=sel.value;if(!v)return;
+if(v==='__clear'){
+if(confirm('ล้าง preset ทั้งหมด?')){_savePresets([]);renderPresetDropdown();toast('🗑 ล้าง preset แล้ว');}
+else{sel.value='';}
+return;
+}
+const presets=_loadPresets();const p=presets[parseInt(v,10)];
+if(!p){return;}
+applyPresetState(p.state);
+sel.value='';
+toast('📋 โหลด preset "'+p.name+'"');
+}
+function applyPresetState(st){
+if(!st)return;
+$('skills-agent-filter').value=st.agent||'all';
+$('skills-domain-filter').value=st.domain||'';
+_skillsInv=st.inv||'all';
+document.querySelectorAll('.skills-inv-btn').forEach(b=>b.classList.toggle('active',b.dataset.inv===_skillsInv));
+_skillsCat=st.cat||'';
+document.querySelectorAll('.skills-cat-btn').forEach(b=>b.classList.toggle('active',b.dataset.cat===_skillsCat));
+const inst=$('skills-installed-only');if(inst)inst.checked=st.installed==='1';
+const srt=$('skills-sort');if(srt)srt.value=st.sort||'';
+skillsRefresh();
+}
+// Initialize preset dropdown on skills load.
+function _initPresetDropdown(){renderPresetDropdown();}
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
 drawer.style.transform='translateX(0)';bd.style.display='block';

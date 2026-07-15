@@ -45,7 +45,11 @@ def test_file_under_60kb():
     # export, walkthrough suggestions, coverage inline editor, compare diff
     # highlights, trending toggle, CLI deep-link, skill changelog, semantic
     # search, PWA offline. Still client-side — no external dep added.
-    assert size < 220 * 1024, f"HTML too large: {size} bytes (limit 220 KB)"
+    # raised to 250 KB (2026-07-15) for the Skills Expansion v6 wave: command
+    # palette (Ctrl+K), skill health score badge + sort, registry push SSE,
+    # cycle detection banner, filter presets, matrix CSV export, co-occurrence
+    # mining, auto theme (prefers-color-scheme), search history. All client-side.
+    assert size < 250 * 1024, f"HTML too large: {size} bytes (limit 250 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────

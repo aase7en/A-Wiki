@@ -143,3 +143,76 @@ def test_apply_plan_estimates_api_calls(tmp_path):
     plan = ev.build_plan(suite_paths=[p], models=["deepseek-v4-flash", "glm-5.2"], k=3, dry_run=False)
     # 1 case × 2 models × 3 samples = 6 calls
     assert plan["estimated_calls"] == 6
+
+
+# ---------------------------------------------------------------------------
+# P1 fix: delegate_to_model must use positional args + AWIKI_FORCE_MODEL env
+# (delegate.sh does NOT parse a --model flag — it takes <task_type> <prompt>)
+# ---------------------------------------------------------------------------
+
+def test_delegate_uses_positional_args_not_model_flag(monkeypatch):
+    """delegate_to_model must call delegate.sh with positional `reason <prompt>`,
+    NOT `--model <model> <prompt>` — delegate.sh has no --model flag (would exit 3).
+
+    argv layout after fix: ["bash", "<delegate.sh path>", "reason", "<prompt>"]
+    (the --model form was ["bash", "<path>", "--model", model, prompt] → exit 3)
+    """
+    captured = {}
+
+    class FakeProc:
+        stdout = "ok"
+        stderr = ""
+
+    def fake_run(argv, **kw):
+        captured["argv"] = argv
+        captured["env"] = kw.get("env")
+        return FakeProc()
+
+    import subprocess
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    ev.delegate_to_model("deepseek-v4-flash", "hello")
+    argv = captured["argv"]
+    # The delegate.sh path is argv[1]; the positional task_type is argv[2];
+    # the prompt is argv[3]. There must be NO "--model" anywhere.
+    assert "--model" not in argv, "delegate.sh has no --model flag"
+    assert argv[2] == "reason", "eval prompts are reasoning tasks → tier 2"
+    assert argv[3] == "hello"
+
+
+def test_delegate_sets_awiki_force_model_env(monkeypatch):
+    """The target model must reach delegate.sh via AWIKI_FORCE_MODEL env override,
+    not via a CLI flag — otherwise delegate.sh picks ANY tier-2 model (invalid eval)."""
+    captured = {}
+
+    class FakeProc:
+        stdout = "ok"
+        stderr = ""
+
+    def fake_run(argv, **kw):
+        captured["env"] = kw.get("env")
+        return FakeProc()
+
+    import subprocess
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    ev.delegate_to_model("glm-5.2", "hello")
+    env = captured.get("env") or {}
+    assert "AWIKI_FORCE_MODEL" in env, "must force the exact model under test"
+    # The forced model must be the resolved full id (provider/model or alias-resolved),
+    # not the bare alias when an alias was given.
+    assert "glm" in env["AWIKI_FORCE_MODEL"].lower()
+
+
+def test_resolve_model_for_eval_alias():
+    """resolve_model_for_eval maps short aliases to provider-qualified model ids.
+    Bare aliases like `sonnet` cannot be passed verbatim to delegate.sh's
+    AWIKI_FORCE_MODEL because provider_registry.py needs a provider-qualified id."""
+    # sonnet alias should expand to something provider-qualified
+    resolved = ev.resolve_model_for_eval("sonnet")
+    assert "/" in resolved or resolved.startswith("custom:"), \
+        f"alias must expand to provider-qualified form, got {resolved!r}"
+    # already-qualified ids pass through unchanged
+    assert ev.resolve_model_for_eval("deepseek/deepseek-chat-v3-0324:free") == \
+        "deepseek/deepseek-chat-v3-0324:free"
+    # custom: prefix passes through unchanged (used by ZCode agent format)
+    custom = "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
+    assert ev.resolve_model_for_eval(custom) == custom

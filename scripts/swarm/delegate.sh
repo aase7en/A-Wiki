@@ -703,4 +703,79 @@ if [ ! -f "$EXTRACT_PY" ]; then
   exit 1
 fi
 
+# ─── AWIKI_FORCE_MODEL override (eval + targeted testing) ────────────────────
+# When set, skip ALL tier logic and route direct to the named model. This is
+# an env-only escape hatch for scripts/eval/run_subagent_eval.py, which must
+# test a SPECIFIC model (otherwise eval results are invalid because delegate.sh
+# would pick any tier-appropriate model). Not set → no behavior change.
+#
+# Accepted forms:
+#   <provider>/<model>          OpenRouter-qualified (deepseek/..., google/...,
+#                               anthropic/..., qwen/..., meta-llama/...).
+#                               Routes via try_openrouter_model.
+#   zai/<model>                 Z.ai / GLM direct. Sets ZHIPU_DIRECT_MODEL then
+#                               routes via try_zhipu_direct.
+#   gemini/<model>              Google AI Studio direct. Sets GEMINI_DIRECT_MODEL
+#                               then routes via try_gemini_direct.
+#   custom:<uuid>:<model>       ZCode agent format. Strips the uuid prefix and
+#                               treats the trailing <model> as provider-qualified
+#                               (falls into the OpenRouter branch above unless it
+#                               starts with zai/ or gemini/).
+if [ -n "${AWIKI_FORCE_MODEL:-}" ]; then
+  FORCED="${AWIKI_FORCE_MODEL}"
+  # Strip custom:<uuid>: prefix (ZCode agent frontmatter format).
+  case "$FORCED" in
+    custom:*) FORCED="${FORCED##*:}" ;;
+  esac
+
+  _log_event "delegate_start" "model=$FORCED(forced)" "task=$TASK_TYPE"
+  _t0_forced=$(date +%s 2>/dev/null || echo 0)
+  FORCED_OK=0
+
+  case "$FORCED" in
+    zai/*)
+      ZHIPU_DIRECT_MODEL="${FORCED#zai/}"
+      if try_zhipu_direct; then FORCED_OK=1; fi
+      ;;
+    gemini/*|google/gemini*)
+      GEMINI_DIRECT_MODEL="${FORCED#*/}"
+      if try_gemini_direct; then FORCED_OK=1; fi
+      ;;
+    */*)
+      # Provider-qualified → OpenRouter (handles deepseek/, anthropic/, qwen/,
+      # meta-llama/, openai/, mistralai/, etc.).
+      if try_openrouter_model "$FORCED"; then FORCED_OK=1; fi
+      ;;
+    *)
+      # Bare id with no provider → try the direct engines by family guess.
+      case "$FORCED" in
+        glm-*|glm[0-9]*|zhipu*)
+          ZHIPU_DIRECT_MODEL="$FORCED"
+          if try_zhipu_direct; then FORCED_OK=1; fi
+          ;;
+        gemini*)
+          GEMINI_DIRECT_MODEL="$FORCED"
+          if try_gemini_direct; then FORCED_OK=1; fi
+          ;;
+        *)
+          if try_openrouter_model "$FORCED"; then FORCED_OK=1; fi
+          ;;
+      esac
+      ;;
+  esac
+
+  if [ "$FORCED_OK" = "1" ]; then
+    _log_event "delegate_done" "model=$FORCED(forced)" \
+      "duration_ms=$(( ( $(date +%s 2>/dev/null || echo $_t0_forced) - $_t0_forced ) * 1000 ))"
+    _cost_annotate "$FORCED(forced)"
+    exit 0
+  fi
+
+  _track_fail "$FORCED(forced)" "${LAST_ERROR:-forced-model-unavailable}"
+  echo "❌ AWIKI_FORCE_MODEL='$AWIKI_FORCE_MODEL' failed: ${LAST_ERROR:-unavailable}" >&2
+  echo "   Tried: ${TRIED_MODELS[*]:-none}" >&2
+  echo "   Unset AWIKI_FORCE_MODEL to fall back to normal tier routing." >&2
+  exit 1
+fi
+
 run_tier 1

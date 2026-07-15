@@ -25,7 +25,8 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SUBAGENTS_DIR = REPO_ROOT / "agents" / "subagents"
-RESULTS_DIR = REPO_ROOT / "evals" / "subagents" / "results"
+SUITES_DIR = REPO_ROOT / "evals" / "subagents"
+RESULTS_DIR = SUITES_DIR / "results"
 
 
 def load_results(path: Path) -> dict[str, Any]:
@@ -34,6 +35,44 @@ def load_results(path: Path) -> dict[str, Any]:
         return json.loads(Path(path).read_text(encoding="utf-8"))
     except Exception:
         return {}
+
+
+def build_suite_to_subagents(suites_dir: Path) -> dict[str, list[str]]:
+    """Derive {suite_name: [unique subagent names]} from eval suite files.
+
+    Reads each evals/subagents/*.json (NOT the results/ subdir), extracts the
+    `subagent` field from every case, and dedups while preserving first-seen
+    order. This map lets build_change_preview resolve a suite recommendation
+    to the concrete agents/subagents/<name>.md files that --write must edit.
+
+    P1 fix: before this existed, main() called build_change_preview(recs) with
+    suite_to_subagents=None, producing "<all in suite:...>" placeholders that
+    --write could never resolve to a file — so no frontmatter was ever edited.
+    """
+    suites_dir = Path(suites_dir)
+    mapping: dict[str, list[str]] = {}
+    if not suites_dir.is_dir():
+        return mapping
+    for p in sorted(suites_dir.glob("*.json")):
+        # Skip the results/ subdir if suites_dir is the parent.
+        if p.parent.name == "results":
+            continue
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        suite_name = data.get("suite")
+        cases = data.get("cases")
+        if not suite_name or not isinstance(cases, list):
+            continue  # not an eval suite (e.g. a results file at top level)
+        seen: list[str] = []
+        for c in cases:
+            sa = c.get("subagent")
+            if sa and sa not in seen:
+                seen.append(sa)
+        if seen:
+            mapping[suite_name] = seen
+    return mapping
 
 
 def best_model_per_suite(results: dict) -> dict[str, dict]:
@@ -144,7 +183,11 @@ def main() -> int:
         merged.update(load_results(f))
 
     recs = best_model_per_suite(merged)
-    changes = build_change_preview(recs)
+    # P1 fix: map suites → concrete subagent files so --write can find them.
+    # Without this, build_change_preview emits "<all in suite:...>" placeholders
+    # and --write silently edits zero files.
+    suite_to_subagents = build_suite_to_subagents(SUITES_DIR)
+    changes = build_change_preview(recs, suite_to_subagents=suite_to_subagents)
 
     if args.json:
         print(json.dumps({"recommendations": recs, "changes": changes}, indent=2, ensure_ascii=False))

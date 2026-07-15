@@ -117,6 +117,53 @@ def pass_at_k(results: list[dict], k: int) -> float:
 
 
 # ---------------------------------------------------------------------------
+# Model alias resolution — maps eval-suite shorthand to provider-qualified ids
+# ---------------------------------------------------------------------------
+# delegate.sh's AWIKI_FORCE_MODEL override must receive a provider-qualified
+# model id (e.g. "deepseek/deepseek-chat-v3-0324:free") OR a custom:<uuid>:<id>
+# triple — NOT a bare ZCode alias like "sonnet", because delegate.sh's tier
+# machinery and provider_registry.py do not understand ZCode's alias table.
+#
+# Eval suites use shorthand ids that match the `model:` field values in
+# agents/subagents/*.md frontmatter (e.g. "deepseek-v4-flash", "glm-5.2").
+# This map expands those to the OpenRouter-qualified form delegate.sh expects.
+MODEL_ALIAS_MAP = {
+    # ZCode tier aliases → Anthropic via OpenRouter
+    "sonnet": "anthropic/claude-sonnet-4",
+    "opus": "anthropic/claude-opus-4.1",
+    "haiku": "anthropic/claude-haiku-4.5",
+    # DeepSeek (free tier on OpenRouter; matches delegate.sh TIER seeds)
+    "deepseek-v4-flash": "deepseek/deepseek-chat-v3-0324:free",
+    "deepseek-v4-pro": "deepseek/deepseek-r1:free",
+    "deepseek-chat": "deepseek/deepseek-chat-v3-0324:free",
+    # GLM via Z.ai
+    "glm-5.2": "zai/glm-5.2",
+    "glm-4.6": "zai/glm-4.6",
+    # Gemini free tier
+    "gemini-flash": "google/gemini-2.5-flash:free",
+}
+
+
+def resolve_model_for_eval(model: str) -> str:
+    """Expand an eval-suite model shorthand to a provider-qualified id.
+
+    Rules (in order):
+      1. custom:<uuid>:<id> triples pass through unchanged (ZCode agent format).
+      2. ids already containing '/' (provider-qualified) pass through unchanged.
+      3. otherwise look up the shorthand in MODEL_ALIAS_MAP.
+      4. unknown shorthands pass through verbatim (let delegate.sh reject it,
+         so the user sees a clear error rather than eval silently testing the
+         wrong model).
+    Pure function — never makes an API call.
+    """
+    if not model:
+        return model
+    if model.startswith("custom:") or "/" in model:
+        return model
+    return MODEL_ALIAS_MAP.get(model, model)
+
+
+# ---------------------------------------------------------------------------
 # Model delegation (real path routes through delegate.sh; tests monkeypatch this)
 # ---------------------------------------------------------------------------
 def delegate_to_model(model: str, prompt: str) -> str:
@@ -124,14 +171,25 @@ def delegate_to_model(model: str, prompt: str) -> str:
 
     Returns the model's text response. Best-effort: on failure returns "".
     This is the ONE API-touching function; tests monkeypatch it.
+
+    Implementation note (P1 fix): delegate.sh does NOT parse a --model flag —
+    its declared interface is `<task_type> <prompt>` (positional). We pass the
+    target model via the AWIKI_FORCE_MODEL env override (added to delegate.sh
+    in the same P1 change) and use the "reason" task_type so delegate.sh picks
+    tier 2 (DeepSeek / Anthropic low tier). The env override short-circuits
+    the tier selection entirely, routing direct to the forced model.
     """
+    import os
     import subprocess
     try:
+        full_model = resolve_model_for_eval(model)
+        env = {**os.environ, "AWIKI_FORCE_MODEL": full_model}
         proc = subprocess.run(
             ["bash", str(REPO_ROOT / "scripts" / "swarm" / "delegate.sh"),
-             "--model", model, prompt],
+             "reason", prompt],
             capture_output=True, text=True, encoding="utf-8", errors="replace",
             timeout=120,
+            env=env,
         )
         return proc.stdout or ""
     except Exception:
