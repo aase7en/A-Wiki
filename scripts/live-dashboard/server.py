@@ -51,6 +51,7 @@ import pid_check  # noqa: E402
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "live-dashboard"))
 import skills_service  # noqa: E402
 import subagent_stats  # noqa: E402
+import alerts  # noqa: E402
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -681,18 +682,23 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"error": str(e)}, 500)
         elif path == "/api/subagents/stats":
             try:
-                from urllib.parse import parse_qs
-                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
-                params = parse_qs(qs)
-                since_raw = params.get("since", ["0"])[0]
-                try:
-                    window = int(since_raw)
-                except ValueError:
-                    # accept '24h' / '30m' forms too
-                    v = since_raw.strip().lower()
-                    mult = 3600 if v.endswith("h") else 60 if v.endswith("m") else 1
-                    window = int(float(v.rstrip("hms")) * mult)
+                window = self._parse_since_window()
                 self._json_response(subagent_stats.aggregate(window_seconds=window))
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/subagents/alerts":
+            try:
+                # Default to a 24h window so the banner reflects recent health.
+                window = self._parse_since_window(default=86400)
+                stats = subagent_stats.aggregate(window_seconds=window)
+                alert_list = alerts.evaluate_alerts(stats)
+                summary = alerts.summarize(stats)
+                self._json_response({
+                    "alerts": alert_list,
+                    "summary": summary,
+                    "window_seconds": window,
+                    "generated_at": stats.get("generated_at"),
+                })
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
         elif path == "/api/run/allowlist":
@@ -744,6 +750,26 @@ class Handler(BaseHTTPRequestHandler):
         self._cors()
         self.end_headers()
         self.wfile.write(body)
+
+    def _parse_since_window(self, default=0):
+        """Parse the `?since=` query param into a window-seconds int.
+
+        Accepts: integer seconds ("3600"), or shorthand ("24h", "30m", "90s").
+        Missing/empty → `default` (callers pick 0 = all-time for stats,
+        86400 = 24h for alerts so the banner reflects recent health).
+        """
+        from urllib.parse import parse_qs
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        params = parse_qs(qs)
+        raw = params.get("since")
+        if not raw or not raw[0]:
+            return default
+        v = raw[0].strip().lower()
+        try:
+            return int(v)
+        except ValueError:
+            mult = 3600 if v.endswith("h") else 60 if v.endswith("m") else 1
+            return int(float(v.rstrip("hms")) * mult)
 
     def _api_models_get(self):
         self._json_response(_load_model_config())

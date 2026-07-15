@@ -574,6 +574,7 @@ to{transform:translateY(0);opacity:1}
       </div>
       <input id="skills-recommend" type="text" placeholder="💡 อยากทำ... (เช่น แก้ bug, เขียน test)" style="flex:1;min-width:180px;padding:7px 12px;border-radius:var(--r-md);border:1px solid var(--accent-brand);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-sm);min-height:36px" onkeydown="if(event.key==='Enter'){recommendSearch();}">
     </div>
+    <div id="skills-search-history" style="display:none;padding:4px 4px 6px;flex-wrap:wrap;gap:4px;align-items:center;flex-shrink:0"></div>
     <div id="skills-stats" style="padding:2px 4px 6px;font-size:var(--fs-2xs);color:var(--text-tertiary);flex-shrink:0"></div>
     <!-- 🕹 Discovery bar: skill-of-the-day + recently used -->
     <div id="skills-discovery" style="padding:6px 8px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1140,6 +1141,8 @@ if(!grid)return;
 grid.innerHTML='<div style="color:var(--text-tertiary);padding:20px;text-align:center">⏳ กำลังโหลด...</div>';
 const winSel=$('subagents-window');
 const win=winSel?winSel.value:'86400';
+// P2: load alerts in parallel with stats (uses the same window)
+subagentsLoadAlerts(win);
 try{
 const d=await fetch('/api/subagents/stats?since='+encodeURIComponent(win)).then(r=>r.json());
 if(d.error)throw new Error(d.error);
@@ -1181,7 +1184,33 @@ return `<div style="display:flex;justify-content:space-between;align-items:cente
 }).join(''):'<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px">ไม่มีข้อมูล bucket</div>';
 }catch(e){grid.innerHTML='<div style="color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
 }
-// === COUNCIL PANE — list -> detail, polls /api/council every 10s only while visible ===
+// === Observatory alerts banner (P2) — pass_rate threshold warnings ===
+async function subagentsLoadAlerts(win){
+const box=$('observatory-alerts');
+if(!box)return;
+try{
+const d=await fetch('/api/subagents/alerts?since='+encodeURIComponent(win||'86400')).then(r=>r.json());
+if(d.error)throw new Error(d.error);
+const alerts=d.alerts||[];
+if(!alerts.length){box.style.display='none';box.innerHTML='';return;}
+box.style.display='block';
+box.innerHTML=alerts.map(a=>{
+const sev=a.severity==='critical'?'🚨':'⚠️';
+const color=a.severity==='critical'?'#f87171':'#fbbf24';
+const rate=Math.round((a.pass_rate||0)*100);
+const action=a.action?(' · <span style="color:var(--text-tertiary)">'+a.action+'</span>'):'';
+return `<div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:var(--r-md);
+background:${a.severity==='critical'?'rgba(248,113,113,.10)':'rgba(251,191,36,.10)'};
+border-left:3px solid ${color};margin-bottom:6px;font-size:var(--fs-2xs)">
+<span style="font-size:var(--fs-sm);line-height:1">${sev}</span>
+<div style="flex:1">
+<div style="font-family:var(--font-mono);color:${color};font-weight:700">${a.subagent} · ${rate}% pass (${a.fail}/${a.count} failed)${action}</div>
+</div>
+</div>`;
+}).join('');
+}catch(e){box.style.display='none';}
+}
+
 let _councilCache=[],_councilPoll=null;
 function councilFetchList(){
 fetch('/api/council').then(r=>r.json()).then(renderCouncilList).catch(()=>{});
@@ -1935,6 +1964,9 @@ const grid=$('skills-grid'),stats=$('skills-stats'),empty=$('skills-empty');if(!
 grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-tertiary);padding:30px">⏳ กำลังโหลด...</div>';
 try{
 const qs=skillsBuildQs();
+// CHUNK MM: record non-empty search query to history.
+const qVal=$('skills-search')&&$('skills-search').value.trim();
+if(qVal)recordSearchQuery(qVal);
 const r=await fetch('/api/skills'+(qs?('?'+qs):'')).then(r=>r.json());
 if(r.error)throw new Error(r.error);
 _skillsCache=r.skills||[];
@@ -2350,6 +2382,67 @@ _trendingDays=days;
 _lsSet(TRENDING_DAYS_KEY,days);
 renderDiscoveryBar();
 }
+// === CHUNK MM — Search history (recent query chips) ===
+const SEARCH_HISTORY_KEY='awiki-search-history';
+const SEARCH_HISTORY_MAX=20;
+const SEARCH_HISTORY_TTL_MS=30*24*60*60*1000; // 30 days
+function _loadSearchHistory(){
+let arr=_lsGet(SEARCH_HISTORY_KEY,[]);
+const cutoff=Date.now()-SEARCH_HISTORY_TTL_MS;
+arr=arr.filter(e=>e&&e.q&&(e.ts||0)>cutoff);
+return arr;
+}
+function _saveSearchHistory(arr){
+try{localStorage.setItem(SEARCH_HISTORY_KEY,JSON.stringify(arr.slice(-SEARCH_HISTORY_MAX)));}catch(_){}
+}
+function recordSearchQuery(q){
+q=(q||'').trim();if(q.length<2)return;
+let arr=_loadSearchHistory();
+// Dedupe by q (keep latest ts).
+arr=arr.filter(e=>e.q!==q);
+arr.push({q:q,ts:Date.now()});
+if(arr.length>SEARCH_HISTORY_MAX)arr=arr.slice(arr.length-SEARCH_HISTORY_MAX);
+_saveSearchHistory(arr);
+}
+function renderSearchHistoryChips(){
+const box=$('skills-search-history');if(!box)return;
+const arr=_loadSearchHistory();
+// Show only when input is empty + has history + input focused (or was focused).
+const inp=$('skills-search');
+const show=arr.length>0&&inp&&inp.value.trim()==='';
+if(!show){box.style.display='none';return;}
+box.style.display='flex';
+const recent=arr.slice(-8).reverse(); // latest first
+box.innerHTML='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:4px">ค้นล่าสุด:</span>'+
+recent.map(e=>`<button class="chat-quick-btn" onclick="useHistoryQuery('${e.q.replace(/'/g,\"\\\\'\")}')"
+  style="padding:3px 10px;font-size:var(--fs-2xs);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);border-radius:var(--r-sm);cursor:pointer;min-height:26px"
+  title="${e.q}">${e.q.length>20?e.q.slice(0,20)+'…':e.q}</button>`).join('')+
+'<span onclick="clearSearchHistory()" style="font-size:var(--fs-2xs);color:var(--text-tertiary);cursor:pointer;margin-left:4px" title="ล้างประวัติ">🗑</span>';
+}
+function useHistoryQuery(q){
+const inp=$('skills-search');if(!inp)return;
+inp.value=q;
+skillsLoad();
+inp.focus();
+}
+function clearSearchHistory(){
+_saveSearchHistory([]);
+renderSearchHistoryChips();
+toast('🗑 ล้างประวัติการค้นหา');
+}
+// Focus/blur handlers to show/hide history chips.
+document.addEventListener('focusin',function(e){
+if(e.target&&e.target.id==='skills-search'){renderSearchHistoryChips();}
+});
+document.addEventListener('focusout',function(e){
+if(e.target&&e.target.id==='skills-search'){
+// Delay so chip click registers before hide.
+setTimeout(()=>{
+const box=$('skills-search-history');
+if(box)box.style.display='none';
+},200);
+}
+});
 function sotdPick(allSkills){
   // Deterministic by date seed — same skill all day, changes at midnight.
   const today=new Date().toISOString().slice(0,10);
