@@ -121,6 +121,7 @@
 | `fal-ai-media` | media | none | ecosystem | `skills/ecosystem/fal-ai-media/SKILL.md` |
 | `fastapi-patterns` | code | none | ecosystem | `skills/ecosystem/fastapi-patterns/SKILL.md` |
 | `finance-billing-ops` | business | none | ecosystem | `skills/ecosystem/finance-billing-ops/SKILL.md` |
+| `finance-pipeline` | trader, data | meta | pipeline | `skills/awiki/finance-pipeline/SKILL.md` |
 | `flox-environments` | code | none | ecosystem | `skills/ecosystem/flox-environments/SKILL.md` |
 | `flutter-dart-code-review` | code | none | ecosystem | `skills/ecosystem/flutter-dart-code-review/SKILL.md` |
 | `foundation-models-on-device` | code | none | ecosystem | `skills/ecosystem/foundation-models-on-device/SKILL.md` |
@@ -201,6 +202,7 @@
 | `marketing-campaign` | business | none | uncategorized | `~/.claude/skills/marketing-campaign/SKILL.md` |
 | `mcp-builder` | ai-ops | none | uncategorized | `skills/anthropic-skills/mcp-builder/SKILL.md` |
 | `mcp-server-patterns` | ai-ops, code | none | ecosystem | `skills/ecosystem/mcp-server-patterns/SKILL.md` |
+| `medical-pipeline` | medical | meta | pipeline | `skills/awiki/medical-pipeline/SKILL.md` |
 | `messages-ops` | code | none | ecosystem | `skills/ecosystem/messages-ops/SKILL.md` |
 | `migrate-to-shoehorn` | engineering | none | mattpocock | `skills/mattpocock/migrate-to-shoehorn/SKILL.md` |
 | `mle-workflow` | data | none | ecosystem | `skills/ecosystem/mle-workflow/SKILL.md` |
@@ -277,6 +279,7 @@
 | `repo-scan` | code | none | ecosystem | `skills/ecosystem/repo-scan/SKILL.md` |
 | `research` | engineering | define | mattpocock | `skills/mattpocock/research/SKILL.md` |
 | `research-ops` | code | none | ecosystem | `skills/ecosystem/research-ops/SKILL.md` |
+| `research-pipeline` | productivity, data | meta | pipeline | `skills/awiki/research-pipeline/SKILL.md` |
 | `resolving-merge-conflicts` | engineering, code | none | mattpocock | `skills/mattpocock/resolving-merge-conflicts/SKILL.md` |
 | `returns-reverse-logistics` | logistics | none | ecosystem | `skills/ecosystem/returns-reverse-logistics/SKILL.md` |
 | `review` | ai-ops | review | awiki | `skills/awiki/review/SKILL.md` |
@@ -379,7 +382,7 @@
 | ai-ops | 31 |
 | business | 10 |
 | code | 187 |
-| data | 16 |
+| data | 18 |
 | debug | 7 |
 | design | 13 |
 | document | 9 |
@@ -387,13 +390,13 @@
 | env | 1 |
 | logistics | 7 |
 | media | 19 |
-| medical | 6 |
+| medical | 7 |
 | network | 10 |
 | pharmacy | 1 |
-| productivity | 14 |
+| productivity | 15 |
 | security | 9 |
 | sre | 6 |
 | thai | 12 |
-| trader | 11 |
+| trader | 12 |
 | ux-ui | 8 |
 | wiki | 9 |

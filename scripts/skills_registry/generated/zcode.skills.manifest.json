@@ -629,6 +629,11 @@
       "domain": "trader"
     },
     {
+      "name": "finance-pipeline",
+      "target": "skills/awiki/finance-pipeline/SKILL.md",
+      "domain": "trader,data"
+    },
+    {
       "name": "flox-environments",
       "target": "skills/ecosystem/flox-environments/SKILL.md",
       "domain": "code"
@@ -1009,6 +1014,11 @@
       "domain": "medical"
     },
     {
+      "name": "medical-pipeline",
+      "target": "skills/awiki/medical-pipeline/SKILL.md",
+      "domain": "medical"
+    },
+    {
       "name": "medical-safety-checker",
       "target": "agents/subagents/medical-safety-checker.md",
       "domain": "medical"
@@ -1352,6 +1362,11 @@
       "name": "research-ops",
       "target": "skills/ecosystem/research-ops/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "research-pipeline",
+      "target": "skills/awiki/research-pipeline/SKILL.md",
+      "domain": "productivity,data"
     },
     {
       "name": "resolving-merge-conflicts",

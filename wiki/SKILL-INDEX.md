@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 368 · **Aliases/deprecated**: 8
+**Total canonical skills**: 371 · **Aliases/deprecated**: 8
 
 ## 📊 Domain Summary
 
@@ -18,13 +18,13 @@
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
 | `engineering` | วิศวกร / Architect / Agent harness | 41 |
-| `trader` | เทรด / DeFi / ตลาด | 11 |
-| `medical` | การแพทย์ / ร้านยา / HIPAA | 6 |
+| `trader` | เทรด / DeFi / ตลาด | 12 |
+| `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
 | `business` | ธุรกิจ / การเงิน / CRM | 10 |
-| `data` | Data Visualization / DB / Query | 16 |
+| `data` | Data Visualization / DB / Query | 18 |
 | `security` | ความปลอดภัย / Hardening | 9 |
 | `ai-ops` | AI ops / LLM / Cost | 31 |
-| `productivity` | Productivity / Management | 14 |
+| `productivity` | Productivity / Management | 15 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
 | `pharmacy` | ร้านยา / สต็อกยา | 1 |
@@ -326,6 +326,7 @@
 |-------|-----------|----------|-------------|
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `evm-token-decimals` | none | ecosystem | ป้องกันบั๊กจาก mismatch ของทศนิยม token บน EVM chain อย่างเงียบ ๆ ครอบคลุมการค้นหาทศนิยมแบบ runti... |
+| `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
 | `ito-basket-compare` | none | uncategorized | เปรียบเทียบตะกร้า Itô prediction-market กับฐานความรู้ บันทึกพอร์ต บริบทการเงิน รายการเฝ้าดู หรือว... |
 | `ito-data-atlas-agent` | none | uncategorized | ออกแบบ Data Atlas agent สำหรับการวิจัยตะกร้า Itô, การค้นพบตลาด, การร่างพารามิเตอร์, และการแก้ไขแบ... |
 | `ito-market-intelligence` | none | uncategorized | ใช้สำหรับค้นหาข้อมูลเกี่ยวกับ prediction market เช่น อีเวนต์ เวนิว underlier สภาพคล่อง และข่าวสาร... |
@@ -344,6 +345,7 @@
 | `healthcare-emr-patterns` | none | ecosystem | รูปแบบการพัฒนา EMR/EHR สำหรับแอปพลิเคชันด้านสุขภาพ ครอบคลุมความปลอดภัยทางคลินิก เวิร์กโฟลว์การเข้... |
 | `healthcare-eval-harness` | none | ecosystem | ชุดทดสอบอัตโนมัติเพื่อประเมินความปลอดภัยของผู้ป่วยก่อน deploy แอปพลิเคชันทางการแพทย์ ครอบคลุมการต... |
 | `healthcare-phi-compliance` | none | ecosystem | รูปแบบการปฏิบัติตามข้อกำหนดด้านข้อมูลสุขภาพที่ได้รับการคุ้มครอง (PHI) และข้อมูลส่วนบุคคลที่สามารถ... |
+| `medical-pipeline` | meta | pipeline | ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบควา... |
 | `openmed` | none | uncategorized | ใช้ OpenMed สำหรับการสกัดข้อมูลทางการแพทย์ (medical entity extraction), การตรวจจับข้อมูลส่วนบุคคล... |
 | `pharmacy-order-lookup` | none | wiki | ค้นหาข้อมูลใบสั่งยาจากร้านขายยา โดยใช้หมายเลขใบสั่งยา (Order ID) หรือชื่อผู้ป่วย เพื่อดึงรายละเอี... |
 
@@ -370,6 +372,7 @@
 | `data-scraper-agent` | none | ecosystem | สร้างเอเจนต์รวบรวมข้อมูลอัตโนมัติจากแหล่งสาธารณะ เช่น เว็บประกาศงาน ราคาสินค้า ข่าวสาร GitHub หรื... |
 | `data-throughput-accelerator` | none | uncategorized | ใช้เมื่อต้องการเร่งความเร็วการนำเข้าข้อมูลขนาดใหญ่ การ backfill การส่งออก ETL การโหลดคลังข้อมูล ก... |
 | `database-migrations` | none | ecosystem | แนวทางปฏิบัติที่ดีที่สุดสำหรับการทำ database migration ทั้ง schema changes, data migrations, roll... |
+| `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
 | `gget` | none | ecosystem | ใช้ gget CLI หรือ Python เพื่อค้นหาข้อมูลจีโนมจากฐานข้อมูลสาธารณะอย่างรวดเร็ว เช่น การดึงลำดับดีเ... |
 | `literature-review` | none | ecosystem | ทักษะนี้ช่วยวางแผนการค้นหา คัดกรองแหล่งข้อมูล สังเคราะห์ และจัดการอ้างอิงสำหรับงานทบทวนวรรณกรรมอย... |
 | `mle-workflow` | none | ecosystem | ทักษะนี้ครอบคลุม workflow วิศวกรรม machine learning ระดับ production ตั้งแต่ data contracts, การฝ... |
@@ -380,6 +383,7 @@
 | `pubmed-database` | none | ecosystem | ค้นหาบทความชีวการแพทย์จาก PubMed และ NCBI E-utilities โดยตรง รองรับการค้นหาแบบ MeSH, การดึงข้อมูล... |
 | `recsys-pipeline-architect` | none | ecosystem | ออกแบบ recommendation, ranking และ feed pipeline ที่ยืดหยุ่นและประกอบกันได้ โดยใช้กรอบงานหกขั้นตอ... |
 | `redis-patterns` | none | ecosystem | รวบรวมรูปแบบการใช้ Redis สำหรับโปรดักชันแอปพลิเคชัน ทั้งการจัดการโครงสร้างข้อมูล กลยุทธ์ caching,... |
+| `research-pipeline` | meta | pipeline | ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ... |
 | `scholar-evaluation` | none | ecosystem | ประเมินผลงานวิชาการอย่างมีโครงสร้าง ไม่ว่าจะเป็นบทความ ข้อเสนอการวิจัย การทบทวนวรรณกรรม ส่วนวิธีก... |
 | `uspto-database` | none | ecosystem | สกิลนี้ช่วยค้นหาและดึงข้อมูลสิทธิบัตรและเครื่องหมายการค้าจากฐานข้อมูล USPTO อย่างเป็นทางการ รองรั... |
 
@@ -449,6 +453,7 @@
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `post-mortem` | none | uncategorized | เขียนบทเรียนหลัง incident: เกิดอะไรขึ้น, root cause, impact, แก้อย่างไร, ป้องกันยังไงคราวหน้า |
+| `research-pipeline` | meta | pipeline | ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ... |
 | `teach` | none | mattpocock | สอนทักษะหรือแนวคิดใหม่ให้กับผู้ใช้ภายใน workspace นี้ โดยสามารถดำเนินการต่อเนื่องข้ามหลาย session... |
 | `to-issues` | plan | mattpocock | แตก plan/spec/PRD เป็น issue แบบ tracer-bullet slice — แต่ละ issue ทำได้ทีละอันอิสระ |
 | `to-prd` | define | mattpocock | สังเคราะห์บทสนทนาปัจจุบันให้เป็น PRD (Product Requirements Document) และเผยแพร่ออกมา โดยไม่ต้องสั... |
@@ -583,7 +588,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `fable5-standards`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `awiki-lifecycle-router`, `handoff`, `hermes-fan-out`, `writing-great-skills`
+- **META**: `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 

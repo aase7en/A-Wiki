@@ -10,6 +10,7 @@
     "extensibility": "../agent-skills/extensibility",
     "game": "../skills/awiki",
     "mattpocock": "../skills/mattpocock",
+    "pipeline": "../skills/awiki",
     "swarm": "../skills/awiki",
     "thai": "../skills/claude-thai",
     "uncategorized": "../skills/awiki",

@@ -3279,7 +3279,7 @@
       "status": "canonical",
       "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
       "invocation": "manual",
-      "th_description": "วินัย 4 ข้อสำหรับ debug: (1) reproduce ให้ได้ก่อน (2) รู้ fail path (3) ตั้งข้อสงสัยแล้วหาที่หักล้าง (4) เก็บ breadcrumb ทุกครั้ง. บังคับ Iron Law #2",
+      "th_description": "[Iron Law #2] debug-mantra 4 ขั้น — reproduce → hypothesize → test-fix → verify — ไม่ใช่ try-and-see",
       "when_to_use": "ทุกครั้งที่เจอ bug — ห้ามแก้โดยไม่หา root cause ก่อน",
       "examples": [
         {
@@ -14286,6 +14286,92 @@
         "ส่งออกผลลัพธ์"
       ],
       "invocation_hint": "/xlsx"
+    },
+    {
+      "name": "finance-pipeline",
+      "aliases": [],
+      "domain": [
+        "trader",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/finance-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "End-to-end investment analysis: finance-data-fetcher -> finance-analyst -> finance-debater. FinRobot-style pipeline producing a self-critiqued report.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โต้แย้ง (bull/bear + verdict). รูปแบบ FinRobot.",
+      "when_to_use": "เมื่อต้องการวิเคราะห์การลงทุนแบบเต็มที่พร้อมการโต้แย้ง — ไม่ใช่แค่ขอราคาปัจจุบัน",
+      "process_steps": [
+        "Stage 1: เรียก finance-data-fetcher ดึงราคา/P/E/market cap/financials",
+        "Stage 2: ส่งข้อมูลให้ finance-analyst สร้าง thesis (เทคนิค/พื้นฐาน/ความรู้สึกตลาด)",
+        "Stage 3: ส่ง thesis ให้ finance-debater challenge (bull/bear/risks/verdict)",
+        "รวมทั้ง 3 stage เป็น investment report"
+      ],
+      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'วิเคราะห์ AAPL แบบเต็ม')"
+    },
+    {
+      "name": "medical-pipeline",
+      "aliases": [],
+      "domain": [
+        "medical"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/medical-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Evidence-based clinical question pipeline: medical-lit-reviewer -> clinical-reasoner -> medical-safety-checker. Decision-support only, not a diagnosis.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบความปลอดภัยยา. decision-support เท่านั้น.",
+      "when_to_use": "เมื่อถามคำถามทางการแพทย์ที่ต้องการหลักฐาน + ตรวจสอบความปลอดภัย — ไม่ใช่ emergency",
+      "process_steps": [
+        "Stage 1: เรียก medical-lit-reviewer สืบค้น PubMed/guidelines พร้อม citations",
+        "Stage 2: ส่งหลักฐานให้ clinical-reasoner ทำ differential diagnosis + workup",
+        "Stage 3: ส่งแนวทางรักษาให้ medical-safety-checker ตรวจ drug interaction/contraindication",
+        "รวมทั้ง 3 stage เป็น clinical summary (พร้อมคำเตือน decision-support only)"
+      ],
+      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'evidence เรื่อง metformin + safety check')"
+    },
+    {
+      "name": "research-pipeline",
+      "aliases": [],
+      "domain": [
+        "productivity",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/research-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Generic 3-stage research pipeline for any domain: gather -> analyze -> critique. Maps the 28 subagents into a reusable pattern by domain.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ตาม domain ของคำถาม.",
+      "when_to_use": "เมื่อต้องการคำตอบที่ผ่านการวิจัย + วิพากษ์วิจารณ์บนหัวข้อที่ไม่ตรงกับ finance/medical pipeline",
+      "process_steps": [
+        "Stage 1 GATHER: เลือก gather-subagent ตาม domain table (เช่น code-explorer, data-profiler)",
+        "Stage 2 ANALYZE: ส่ง findings ให้ analyze-subagent สังเคราะห์ takeaways + recommendations",
+        "Stage 3 CRITIQUE: ส่ง synthesis ให้ critique-subagent red-team (weak points/biases/verdict)",
+        "รวมทั้ง 3 stage เป็น research report พร้อม revised confidence"
+      ],
+      "invocation_hint": "อธิบายหัวข้อให้ primary agent (เช่น 'research best practice cache invalidation')"
     }
   ]
 }
