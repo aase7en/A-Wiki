@@ -92,7 +92,7 @@ MC output (synthetic paths) เข้ากับ `MockBotFeed` paper-settlement
 | Stock returns (daily) | **Normal** | CLT, simplest baseline |
 | Asset prices (positive only) | **Lognormal** | price = exp(returns), รักษา positivity |
 | Returns with fat tails (crash risk) | **Student-t** | heavier tails → realistic VaR |
-| Multi-asset with correlation | **Multivariate Normal + Copula** | preserve correlation structure |
+| Multi-asset with correlation | **Copula (Gaussian/Student-t/Clayton)** | preserve correlation + tail structure |
 | No assumed form, have data | **Bootstrap (empirical)** | resample historical — no distributional assumption |
 | Rare events / jumps | **Poisson + jump-diffusion (Merton)** | model discontinuities |
 
@@ -250,6 +250,45 @@ def importance_sampling_var(mu: float, sigma: float, alpha: float = 0.05,
 
 **เลือกเมื่อ**: tail probability ต่ำมาก (เช่น VaR 99%) และ pseudo-random MC ต้องการ N ใหญ่เกินไป.
 **ไม่เลือกเมื่อ**: tail ไม่ไกล (VaR 95%) — IS อาจเพิ่ม variance ถ้า proposal ไม่ match target ดีพอ.
+
+### Copula (multivariate dependency)
+
+แยก marginals จาก dependence structure (Sklar's theorem: F(x,y) = C(F_X(x), F_Y(y))).
+ใช้เมื่อ assets มี **asymmetric tail dependence** ที่ Multivariate Normal จับไม่ได้
+(correlation ฝั่ง downside ≠ upside ในตลาดจริง — flight-to-quality regime). ดูรายละเอียด
+ทฤษฎี + vine copulas ได้ที่ [[copula-multivariate-finance]].
+
+```python
+from scipy.stats import norm  # scipy ≥ 1.7 (มีอยู่แล้วใน QMC/IS section)
+import numpy as np
+
+def gaussian_copula(rho: float, n: int, rng: np.random.Generator) -> np.ndarray:
+    """Gaussian copula → (n, 2) uniforms ที่ preserve rank correlation rho.
+
+    คืน uniform [0,1] แล้ว transform ด้วย inverse marginal ทีหลัง (norm.ppf หรือ
+    empirical) เพื่อให้ correlated samples ที่ preserve tail structure.
+    """
+    z = rng.normal(size=(n, 2))
+    z[:, 1] = rho * z[:, 0] + np.sqrt(1.0 - rho * rho) * z[:, 1]  # Cholesky
+    return norm.cdf(z)  # → uniforms, Spearman ≈ rho
+
+# ใช้: u = gaussian_copula(0.7, 10_000, rng); x = norm.ppf(u)  # correlated normals
+```
+
+| Family | tail dependence | เลือกเมื่อ |
+|--------|-----------------|-----------|
+| **Gaussian** | ไม่มี (λ=0 ทุก rho<1) | baseline, correlation พอเพียง |
+| **Student-t** | symmetric heavy (df เล็ก→หนัก) | risk-sensitive, วิกฤต |
+| **Clayton** | lower-tail strong | downside risk, flight-to-quality |
+| **Gumbel** | upper-tail strong | stress gain scenarios |
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_copula.py`):**
+เมื่อ correlation เพิ่มขึ้น (rho: 0→0.5→0.95) VaR(5%) ต้อง monotonically แย่ลง (ค่าเป็นลบมากขึ้น).
+Clayton @ theta=5 (τ≈0.71) ต้องมี VaR(5%) ต่ำกว่า Gaussian @ rho=0.9 (τ≈0.71) — lower-tail dependence
+ทำให้ joint extreme loss รุนแรงกว่า.
+
+**เลือกเมื่อ**: ≥2 assets + tail dependence สำคัญกว่า correlation เฉลย (regime shift, crisis).
+**ไม่เลือกเมื่อ**: single asset, dependence อ่อน (rho ≈ 0), หรือ dimension สูงมาก (>5) → ใช้ vine copulas.
 
 ### อื่นๆ
 
