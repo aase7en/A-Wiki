@@ -93,6 +93,28 @@ def judge(case: dict, response: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Token estimation (S6.0 — prerequisite for cost-aware dashboard)
+# ---------------------------------------------------------------------------
+# delegate_to_model() คืน text response เท่านั้น (subprocess stdout) — ไม่มี
+# usage metadata จาก API. เรา estimate tokens ฝั่ง Python ด้วย approximation
+# มาตรฐาน (≈ len(text) // 4). ใช้สำหรับ cost estimation ใน dashboard (ไม่ใช่
+# exact billing — acceptable สำหรับ trend/comparison).
+_TOKEN_APPROX_DENOM = 4
+
+
+def estimate_tokens(text: str) -> int:
+    """ประมาณจำนวน token จากความยาวข้อความ (≈ len(text) // 4).
+
+    Approximation มาตรฐานสำหรับ English/Latin text. ภาษาไทยจะ underestimate
+    (UTF-8 multibyte) แต่เพียงพอสำหรับ cost trend visualization.
+    คืน 0 สำหรับ empty/None.
+    """
+    if not text:
+        return 0
+    return max(1, len(text) // _TOKEN_APPROX_DENOM)
+
+
+# ---------------------------------------------------------------------------
 # pass@k
 # ---------------------------------------------------------------------------
 def pass_at_k(results: list[dict], k: int) -> float:
@@ -236,25 +258,44 @@ def run_suite(
     models: list[str],
     k: int,
 ) -> dict[str, Any]:
-    """Run one suite across all models × cases × k samples. Returns results."""
+    """Run one suite across all models × cases × k samples. Returns results.
+
+    S6.0: แต่ละ sample record tokens_in/tokens_out (estimated) + aggregate
+    ใน by_model เพื่อให้ cost-aware dashboard คำนวณ USD ได้.
+    """
     suite_name = suite["suite"]
     out: dict[str, Any] = {"suite": suite_name, "by_model": {}, "by_case": {}}
     for model in models:
         model_results: list[dict] = []
         per_case: dict[str, list[dict]] = {}
+        total_tokens_in = 0
+        total_tokens_out = 0
         for case in suite["cases"]:
             cid = case["id"]
+            prompt = case.get("prompt", "")
             samples = []
             for _ in range(k):
-                resp = delegate_to_model(model, case["prompt"])
+                resp = delegate_to_model(model, prompt)
                 passed = judge(case, resp)
-                samples.append({"pass": passed, "response_preview": resp[:200]})
+                # S6.0: estimate tokens for cost tracking
+                tok_in = estimate_tokens(prompt)
+                tok_out = estimate_tokens(resp)
+                total_tokens_in += tok_in
+                total_tokens_out += tok_out
+                samples.append({
+                    "pass": passed,
+                    "response_preview": resp[:200],
+                    "tokens_in": tok_in,
+                    "tokens_out": tok_out,
+                })
                 model_results.append({"pass": passed})
             per_case[cid] = samples
         out["by_model"][model] = {
             "pass_at_k": pass_at_k(model_results, k),
             "total_samples": len(model_results),
             "passed": sum(1 for r in model_results if r["pass"]),
+            "tokens_in": total_tokens_in,
+            "tokens_out": total_tokens_out,
         }
         out["by_case"].update(per_case)
     return out

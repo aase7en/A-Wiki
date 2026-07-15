@@ -47,6 +47,7 @@ from run_subagent_eval import (
     DEFAULT_K,
     delegate_to_model,
     discover_suites,
+    estimate_tokens,
     judge,
     load_suite,
     pass_at_k,
@@ -118,17 +119,22 @@ def race_eval(
             passed = False
         completion_counter[0] += 1
         order = completion_counter[0]
-        return model, sample_idx, passed, order, resp[:200]
+        # S6.0: estimate tokens for cost tracking
+        tok_in = estimate_tokens(prompt)
+        tok_out = estimate_tokens(resp)
+        return model, sample_idx, passed, order, resp[:200], tok_in, tok_out
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
         futures = [pool.submit(_do_one, u) for u in work_units]
         for fut in concurrent.futures.as_completed(futures):
-            model, sample_idx, passed, order, preview = fut.result()
+            model, sample_idx, passed, order, preview, tok_in, tok_out = fut.result()
             results[model].append({
                 "sample_index": sample_idx,
                 "pass": passed,
                 "completion_order": order,
                 "response_preview": preview,
+                "tokens_in": tok_in,
+                "tokens_out": tok_out,
             })
 
     # Finalize per-model stats.
@@ -142,11 +148,16 @@ def race_eval(
         # first_pass_sample = completion_order of the earliest sample that passed
         passing_orders = [s["completion_order"] for s in samples if s["pass"]]
         first_pass = min(passing_orders) if passing_orders else None
+        # S6.0: aggregate tokens for cost tracking
+        total_in = sum(s.get("tokens_in", 0) for s in samples)
+        total_out = sum(s.get("tokens_out", 0) for s in samples)
         by_model[model] = {
             "pass_at_k": round(pak, 3),
             "passed": passed,
             "total_samples": len(samples),
             "first_pass_sample": first_pass,
+            "tokens_in": total_in,
+            "tokens_out": total_out,
             "samples": samples,
         }
 
