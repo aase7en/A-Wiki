@@ -14,13 +14,32 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
+DASHBOARD_DIR = HTML.parent
+SRC_DIR = DASHBOARD_DIR / "src"
+STYLES_CSS = DASHBOARD_DIR / "styles.css"
 
 DEAD_REFS = ("primary-card", "connector-svg", "model-grid")
 
 
 def _read():
+    """Read the full dashboard source — HTML markup + extracted JS (src/*.js) + CSS.
+
+    v8 refactor (chunks B8/C8) split the monolithic HTML into:
+      - live-dashboard.html  (markup only, ~49KB)
+      - styles.css           (extracted CSS, ~41KB)
+      - src/*.js             (9 modular JS files, ~180KB total)
+    Tests do string matching across all three, so we concatenate them.
+    """
     assert HTML.is_file(), "live-dashboard.html must exist"
-    return HTML.read_text(encoding="utf-8")
+    parts = [HTML.read_text(encoding="utf-8")]
+    # CSS (extracted in B8)
+    if STYLES_CSS.is_file():
+        parts.append(STYLES_CSS.read_text(encoding="utf-8"))
+    # JS source files (extracted in C8)
+    if SRC_DIR.is_dir():
+        for js in sorted(SRC_DIR.glob("*.js")):
+            parts.append(js.read_text(encoding="utf-8"))
+    return "\n".join(parts)
 
 
 def test_no_dead_dom_refs_from_old_layout():
@@ -56,7 +75,11 @@ def test_file_under_60kb():
     # usage analytics tab (Chart.js CDN). 9 features across 10 chunks. Chart.js
     # itself is CDN-loaded (not inlined); the growth is panel markup + handlers.
     # Still a local-only tool; gate guards against unbounded growth, not leanness.
-    assert size < 300 * 1024, f"HTML too large: {size} bytes (limit 300 KB)"
+    # lowered to 60 KB (2026-07-15) for the v8 Foundation Refactor: JS extracted
+    # to src/*.js (esbuild-bundled to app.min.js), CSS extracted to styles.css.
+    # HTML now contains markup only — JS and CSS are loaded via <script src> and
+    # <link>. Size budget is for markup growth; JS/CSS have their own files.
+    assert size < 60 * 1024, f"HTML too large: {size} bytes (limit 60 KB — JS/CSS extracted in v8)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
@@ -81,8 +104,11 @@ def test_no_glow_triplet():
 
 def test_root_declares_documented_tokens():
     """:root must adopt the dashboard-design-system.md tokens verbatim."""
-    text = _read()
-    root = text[: text.find("</style>")]
+    # v8: CSS extracted to styles.css — read it directly instead of finding </style>.
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found (pre-v8)")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    root = css[: css.find("}")]  # :root block ends at first }
     for token, hexv in (
         ("--elev-0", "#06060d"),
         ("--elev-1", "#0c0c18"),
@@ -97,14 +123,16 @@ def test_root_declares_documented_tokens():
 
 def test_no_hardcoded_hex_outside_root():
     """Color hex literals may only live in :root (design-system DoD)."""
-    text = _read()
-    root_end = text.find("</style>")
-    outside_root = text[root_end:]
-    # CSS hex inside the rest of <style> (after :root block close)
-    style_after = text[text.find("}") + 1 : root_end]
+    # v8: CSS extracted to styles.css — read it directly instead of finding </style>.
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found (pre-v8)")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # CSS hex after :root block close (the first `}` ends :root)
+    root_end = css.find("}")
+    style_after = css[root_end + 1:]
     # ignore SVG gradient stop-color attributes which are data, not theme
     leaks = re.findall(r"#[0-9a-fA-F]{6}\b", style_after)
-    assert not leaks, f"hardcoded hex outside :root in <style>: {leaks[:8]}"
+    assert not leaks, f"hardcoded hex outside :root in styles.css: {leaks[:8]}"
 
 
 def test_sse_and_api_contracts_wired():
