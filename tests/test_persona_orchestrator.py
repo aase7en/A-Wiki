@@ -179,3 +179,54 @@ class TestMergeReport:
 
     def test_empty_outputs_yields_empty_string(self) -> None:
         assert po.merge_report({}, severities=["critical", "important"]) == ""
+
+
+# ---------------------------------------------------------------------------
+# SO2 — domain-conditional persona dispatch (load_personas_for_domain)
+# ---------------------------------------------------------------------------
+
+class TestDomainRouting:
+    """SO2: --domain selects domain-specific personas from domain_routing."""
+
+    def test_known_domain_returns_domain_personas(self) -> None:
+        """load_personas_for_domain('medical') returns medical review personas."""
+        personas = po.load_personas_for_domain(LIFECYCLE_CONFIG, "medical")
+        assert "medical-safety-checker" in personas, (
+            f"medical domain should route to medical-safety-checker, got {personas}"
+        )
+
+    def test_unknown_domain_falls_back_to_default(self) -> None:
+        """An unrecognized domain falls back to the default parallel_fan_out."""
+        default = po.load_personas(LIFECYCLE_CONFIG)
+        fallback = po.load_personas_for_domain(LIFECYCLE_CONFIG, "totally-unknown-xyz")
+        assert fallback == default, (
+            "unknown domain should fall back to parallel_fan_out, "
+            f"got {fallback} vs default {default}"
+        )
+
+    def test_code_domain_includes_security(self) -> None:
+        """code domain should keep security-auditor in its review set."""
+        personas = po.load_personas_for_domain(LIFECYCLE_CONFIG, "code")
+        assert "security-auditor" in personas
+
+    def test_finance_domain_uses_finance_debater(self) -> None:
+        """finance domain routes to finance-debater instead of generic reviewers."""
+        personas = po.load_personas_for_domain(LIFECYCLE_CONFIG, "finance")
+        assert "finance-debater" in personas
+
+    def test_domain_routing_config_exists(self) -> None:
+        """lifecycle-config.json must now have a domain_routing section."""
+        with open(LIFECYCLE_CONFIG, encoding="utf-8") as f:
+            cfg = json.load(f)
+        assert "domain_routing" in cfg, "domain_routing section missing from lifecycle-config.json"
+        # At least the 9 SO domains should be represented.
+        assert len(cfg["domain_routing"]) >= 5
+
+    def test_domain_plan_uses_domain_personas(self) -> None:
+        """build_plan with domain personas produces calls for those personas."""
+        personas = po.load_personas_for_domain(LIFECYCLE_CONFIG, "medical")
+        plan = po.build_plan(personas, "review this guideline", sleep_s=1)
+        call_personas = [c["persona"] for c in plan["calls"]]
+        assert call_personas == personas
+        assert "medical-safety-checker" in call_personas
+

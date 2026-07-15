@@ -112,6 +112,32 @@ def load_personas(config_path: Path | str) -> list[str]:
     return list(data.get("personas", {}).get("parallel_fan_out", []) or [])
 
 
+def load_personas_for_domain(config_path: Path | str, domain: str) -> list[str]:
+    """SO2: return domain-specific review personas, falling back to default.
+
+    Reads ``domain_routing.<domain>.review_personas`` from the lifecycle
+    config. If the domain is absent OR has no review_personas, falls back to
+    the generic ``personas.parallel_fan_out`` list. Hermes is sequential-only
+    (no parallel fan-out), so "fan-out" here means "which personas run in the
+    sequential pass" — not concurrency.
+    """
+    if not domain:
+        return load_personas(config_path)
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return load_personas(config_path)
+    routing = data.get("domain_routing", {}) or {}
+    entry = routing.get(domain) or routing.get(domain.lower())
+    if isinstance(entry, dict):
+        personas = entry.get("review_personas") or []
+        if personas:
+            return list(personas)
+    # Fallback: unknown / unmapped domain → generic parallel_fan_out.
+    return load_personas(config_path)
+
+
 def run(
     plan: dict[str, Any],
     runner: Callable[[list[str]], str] | None = None,
@@ -215,6 +241,11 @@ def main() -> int:
         help="Comma-separated persona names (default: read from lifecycle-config.json).",
     )
     ap.add_argument(
+        "--domain",
+        help="SO2: domain-specific persona routing (e.g. medical → medical-safety-checker). "
+             "Overrides --personas when set; falls back to parallel_fan_out for unknown domains.",
+    )
+    ap.add_argument(
         "--config",
         default=str(Path(__file__).parent / "lifecycle-config.json"),
         help="Path to lifecycle-config.json (used when --personas is not given).",
@@ -237,11 +268,12 @@ def main() -> int:
     personas = (
         [p.strip() for p in a.personas.split(",") if p.strip()]
         if a.personas
-        else load_personas(a.config)
+        else (load_personas_for_domain(a.config, a.domain) if a.domain
+              else load_personas(a.config))
     )
     if not personas:
         print(
-            "🚨 No personas to run. Provide --personas or ensure "
+            "🚨 No personas to run. Provide --personas, --domain, or ensure "
             "lifecycle-config.json has personas.parallel_fan_out.",
             file=sys.stderr,
         )

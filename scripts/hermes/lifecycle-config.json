@@ -63,6 +63,38 @@
       "gemini_cli": ".gemini/agents/ directory for discovery"
     }
   },
+  "domain_routing": {
+    "_description": "SO2 — when --domain <d> is passed to persona-orchestrator.py, use these domain-specific review personas/subagents instead of the generic parallel_fan_out. Hermes is SEQUENTIAL-only (no parallel fan-out), so 'fan-out' here means 'which personas run in the sequential pass'. Unknown domains fall back to personas.parallel_fan_out.",
+    "medical": {
+      "review_personas": ["medical-safety-checker"],
+      "verify_skills": ["healthcare-phi-compliance"]
+    },
+    "finance": {
+      "review_personas": ["finance-debater"],
+      "build_subagents": ["finance-analyst"]
+    },
+    "code": {
+      "review_personas": ["code-reviewer", "security-auditor"]
+    },
+    "engineering": {
+      "review_personas": ["code-architect", "test-engineer-agent"]
+    },
+    "ai-ops": {
+      "review_personas": ["cost-auditor"]
+    },
+    "webapp": {
+      "review_personas": ["ui-ux-reviewer", "frontend-architect"]
+    },
+    "business": {
+      "review_personas": ["realestate-tax-advisor"]
+    },
+    "productivity": {
+      "review_personas": ["workflow-simplifier"]
+    },
+    "thai": {
+      "review_personas": ["language-tutor"]
+    }
+  },
   "shortcut_blocklist": [
     {
       "pattern": "implement_without_spec",
