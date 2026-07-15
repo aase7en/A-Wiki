@@ -893,6 +893,7 @@ def skill_history(name: str, include_changelog: bool = False) -> dict[str, Any]:
         "last_commit_date": "",
         "last_commit_hash": "",
         "commit_count": 0,
+        "first_seen": "",  # CHUNK SS: ISO date the SKILL.md was first added to git
     }
     try:
         # Last commit info: git log -1 --format=%cd|%h --date=short -- <path>
@@ -915,6 +916,18 @@ def skill_history(name: str, include_changelog: bool = False) -> dict[str, Any]:
         )
         if proc2.returncode == 0 and proc2.stdout.strip().isdigit():
             result["commit_count"] = int(proc2.stdout.strip())
+
+        # CHUNK SS: first_seen = date of the commit that first ADDED the file.
+        # --diff-filter=A selects only Add events; --follow tracks across renames;
+        # --format=%cd --date=short gives a stable ISO-ish YYYY-MM-DD.
+        proc_fs = subprocess.run(
+            ["git", "log", "--diff-filter=A", "--follow", "-1",
+             "--format=%cd", "--date=short", "--", path],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=5, cwd=str(REPO_ROOT),
+        )
+        if proc_fs.returncode == 0 and proc_fs.stdout.strip():
+            result["first_seen"] = proc_fs.stdout.strip()
 
         # Changelog: git log -5 --format=%cd|%h|%s --date=short -- <path>
         if include_changelog:

@@ -748,3 +748,35 @@ def test_agent_skill_matrix_totals_match_matrix():
         assert r["totals"][agent] == expected, (
             f"totals[{agent}]={r['totals'][agent]} != matrix count {expected}"
         )
+
+
+# =============================================================================
+# CHUNK SS — skill_history first_seen (git --diff-filter=A)
+# =============================================================================
+
+def test_skill_history_includes_first_seen():
+    """skill_history must return a first_seen field (ISO date of the commit
+    that first added the SKILL.md to the repo)."""
+    h = skills_service.skill_history("debug-mantra")
+    assert "first_seen" in h, "first_seen field missing from skill_history"
+    assert isinstance(h["first_seen"], str), "first_seen must be a string"
+
+
+def test_skill_history_first_seen_is_oldest():
+    """first_seen must be <= last_commit_date (added-before-or-same-as-last-edit)."""
+    h = skills_service.skill_history("debug-mantra")
+    fs = h.get("first_seen", "")
+    lcd = h.get("last_commit_date", "")
+    # Only assert when both are present (git available + path tracked).
+    if fs and lcd:
+        assert fs <= lcd, (
+            f"first_seen ({fs}) should be <= last_commit_date ({lcd})"
+        )
+
+
+def test_skill_history_first_seen_missing_skill_safe():
+    """Unknown skill must still return {} (no first_seen key to crash on)."""
+    h = skills_service.skill_history("does-not-exist-xyz-12345")
+    assert h == {}
+    assert "first_seen" not in h
+

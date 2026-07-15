@@ -2486,11 +2486,17 @@ ${(function(){
 const h=s.history||{};
 const hasVer=h.version&&h.version!=='';
 const hasGit=h.last_commit_date||h.commit_count;
-if(!hasVer&&!hasGit)return '';
+// CHUNK SS: first_seen (when the skill was first added to the repo).
+const fs=h.first_seen||'';
+const fsLine=fs?` · 📅 เพิ่มเมื่อ ${fs}`:'';
+// "ใหม่" badge if first_seen is within 30 days.
+const isNew=fs&&((Date.now()-new Date(fs+'T00:00:00Z').getTime())<30*24*60*60*1000);
+const newBadge=isNew?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)">🆕 ใหม่</span>':'';
+if(!hasVer&&!hasGit&&!fs)return '';
 const verBadge=hasVer?`<span class="skill-tag" style="border-color:var(--accent-violet);color:var(--accent-violet)">v${h.version}</span>`:'<span style="font-size:var(--fs-2xs);color:var(--text-disabled)">ยังไม่กำหนดเวอร์ชัน</span>';
-const gitInfo=hasGit?`<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">แก้ล่าสุด ${h.last_commit_date||'-'} · ${h.commit_count||0} commits${h.last_commit_hash?(' · '+h.last_commit_hash):''}</span>`:'';
+const gitInfo=(hasGit||fs)?`<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">แก้ล่าสุด ${h.last_commit_date||'-'}${h.commit_count?(' · '+h.commit_count+' commits'):''}${h.last_commit_hash?(' · '+h.last_commit_hash):''}${fsLine}</span>`:'';
 const changelogBtn=hasGit?`<button class="set-btn sm" onclick="loadSkillChangelog('${s.name}')" style="padding:3px 8px;font-size:var(--fs-2xs);margin-top:6px" title="ดูประวัติการแก้ไข 5 commits ล่าสุด">📜 ดู changelog</button><div id="changelog-area" style="margin-top:6px"></div>`:'';
-return `<div class="skill-detail-section"><h5>📋 เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${gitInfo}</div>${changelogBtn}</div>`;
+return `<div class="skill-detail-section"><h5>📋 เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${newBadge}${gitInfo}</div>${changelogBtn}</div>`;
 })()}
 <div class="skill-detail-section"><h5>🔍 รายละเอียดเทคนิค</h5>
 <p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
