@@ -24,15 +24,24 @@ The "Verify required secrets" step fails hard if `OPENROUTER_API_KEY` is missing
 ## First Run (Manual Trigger)
 
 1. **Ensure secrets are set** (see table above). At minimum `OPENROUTER_API_KEY`.
-2. Trigger manually:
+2. Trigger via the helper script (checks `gh` CLI + auth + workflow presence, then triggers + watches):
    ```bash
-   # Via GitHub CLI
+   # Recommended — preflight checks + post-run schedule-enable guidance
+   bash scripts/eval/trigger_ci.sh --dry-run        # preview the plan
+   bash scripts/eval/trigger_ci.sh                  # trigger + watch (default inputs)
+   bash scripts/eval/trigger_ci.sh --domains medical,finance --k 2
+   bash scripts/eval/trigger_ci.sh --no-watch       # trigger, don't block on watch
+   ```
+   Or trigger directly via GitHub CLI / web UI:
+   ```bash
    gh workflow run subagent-eval.yml -f domains="" -f k="2" -f create_issue="true"
    # Or: GitHub repo → Actions → "A-Wiki Subagent Eval" → Run workflow
    ```
 3. **Monitor**: Actions tab → watch the run. Eval takes ~10-30 min depending on suite count + rate limits.
 4. **Check results**: `evals/subagents/results/results-<timestamp>.json` is committed to main automatically.
 5. **Check regression issue**: if any pass@k dropped > 0.10, an issue titled "🚨 Subagent eval regression detected" is created/updated.
+
+The helper script prints the exact one-line edit to enable the weekly schedule when the run finishes green (see "Enabling the Weekly Schedule" below).
 
 ## Enabling the Weekly Schedule
 
@@ -100,6 +109,7 @@ Plus a "Removed" section (models that disappeared from results) and an "Improvem
 ## Related
 
 - `docs/protocols/subagent-eval.md` — local eval harness protocol
+- `scripts/eval/trigger_ci.sh` — first-run trigger helper (R1)
 - `scripts/eval/run_subagent_eval.py` — eval runner
 - `scripts/eval/regression_check.py` — regression detection
 - `scripts/eval/apply_eval_results.py` — apply best model from eval results

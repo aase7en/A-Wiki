@@ -1,0 +1,17 @@
+{
+  "title": "Monte Carlo Convergence Diagnostic",
+  "subtitle": "Doubling-N delta vs 1% threshold (Parametric Normal model)",
+  "non_advisory_banner": "PAPER-ONLY · NON-ADVISORY · synthetic data (seed 42/123)",
+  "threshold_pct": 1.0,
+  "series": [
+    {"n": 1000,   "mean": 1.0421, "se": 0.0142, "doubling_delta_pct": 4.82, "converged": false},
+    {"n": 2000,   "mean": 1.0367, "se": 0.0100, "doubling_delta_pct": 2.31, "converged": false},
+    {"n": 5000,   "mean": 1.0314, "se": 0.0063, "doubling_delta_pct": 0.94, "converged": true},
+    {"n": 10000,  "mean": 1.0316, "se": 0.0045, "doubling_delta_pct": 0.019, "converged": true},
+    {"n": 20000,  "mean": 1.0315, "se": 0.0032, "doubling_delta_pct": 0.008, "converged": true},
+    {"n": 50000,  "mean": 1.0315, "se": 0.0020, "doubling_delta_pct": 0.003, "converged": true}
+  ],
+  "schema_version": "1.0",
+  "generated_by": "skills/awiki/monte-carlo-quant-analysis §Convergence diagnostic (K6)",
+  "note": "Sample data for the K7 widget. Replace 'series' with real MC output from convergence_diagnostic() for live use."
+}
