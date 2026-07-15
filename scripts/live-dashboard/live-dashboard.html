@@ -1999,10 +1999,14 @@ function closeCompareModal(){
 $('compare-backdrop').style.display='none';
 $('compare-modal').style.display='none';
 }
-function _cmpCell(val,defaultValue){
-if(val===undefined||val===null||val==='')return `<td style="padding:6px 8px;color:var(--text-disabled);font-style:italic">${defaultValue||'—'}</td>`;
-if(Array.isArray(val))return `<td style="padding:6px 8px;color:var(--text-secondary)">${val.length?val.join(', '):(defaultValue||'—')}</td>`;
-return `<td style="padding:6px 8px;color:var(--text-secondary)">${val}</td>`;
+function _cmpCell(val,defaultValue,isUnique,isEmpty){
+// Diff highlight: empty=red bg, unique=green bg, same=normal.
+let bg='';
+if(isEmpty)bg='background:rgba(248,113,113,0.12);';
+else if(isUnique)bg='background:rgba(52,211,153,0.12);';
+if(val===undefined||val===null||val==='')return `<td style="padding:6px 8px;color:var(--text-disabled);font-style:italic;${bg}">${defaultValue||'—'}</td>`;
+if(Array.isArray(val))return `<td style="padding:6px 8px;color:var(--text-secondary);${bg}">${val.length?val.join(', '):(defaultValue||'—')}</td>`;
+return `<td style="padding:6px 8px;color:var(--text-secondary);${bg}">${val}</td>`;
 }
 function renderCompareTable(skills){
 const fields=[
@@ -2018,10 +2022,19 @@ const fields=[
 ];
 const headerCells=skills.map(s=>`<th style="padding:8px;border-bottom:2px solid var(--border2);text-align:left;font-family:var(--font-mono);color:${skillsDomainColor((s.domain||[])[0]||'')};cursor:pointer" onclick="skillsOpenDetail('${s.name}');closeCompareModal()">${s.name}</th>`).join('');
 const rows=fields.map(f=>{
-const cells=skills.map(s=>_cmpCell(f.get(s))).join('');
+const values=skills.map(s=>f.get(s));
+// Count occurrences of each value (normalized to string).
+const counts={};
+values.forEach(v=>{const k=String(v);counts[k]=(counts[k]||0)+1;});
+const cells=values.map((v,i)=>{
+const k=String(v);
+const isUnique=counts[k]===1;
+const isEmpty=(v===undefined||v===null||v==='');
+return _cmpCell(v,'—',isUnique,isEmpty);
+}).join('');
 return `<tr><td style="padding:6px 8px;font-weight:600;color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap;border-right:1px solid var(--border)">${f.label}</td>${cells}</tr>`;
 }).join('');
-$('compare-content').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:var(--fs-xs)"><thead><tr><th style="padding:8px;border-bottom:2px solid var(--border2)"></th>${headerCells}</tr></thead><tbody>${rows}</tbody></table><p style="margin:12px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 คลิกชื่อ skill เพื่อดูรายละเอียดเต็ม</p>`;
+$('compare-content').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:var(--fs-xs)"><thead><tr><th style="padding:8px;border-bottom:2px solid var(--border2)"></th>${headerCells}</tr></thead><tbody>${rows}</tbody></table><div style="display:flex;gap:12px;margin-top:8px;font-size:var(--fs-2xs);color:var(--text-tertiary)"><span><span style="display:inline-block;width:10px;height:10px;background:rgba(52,211,153,0.3);border-radius:2px;vertical-align:middle"></span> unique</span><span><span style="display:inline-block;width:10px;height:10px;background:rgba(248,113,113,0.3);border-radius:2px;vertical-align:middle"></span> ขาด</span></div><p style="margin:8px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 คลิกชื่อ skill เพื่อดูรายละเอียดเต็ม</p>`;
 }
 // Copy a deep-link URL for a skill (?skill=<name>) to clipboard.
 function copySkillLink(name){
