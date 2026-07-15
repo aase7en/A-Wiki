@@ -93,6 +93,12 @@ jobs:
           python scripts/regen-skill-surfaces.py --check
           python scripts/verify-skill-surfaces.py
 
+      - name: Wiki context freshness
+        # Mirrors the regen-skill-surfaces --check pattern: regenerate all
+        # wiki/context/*.md in memory (--no-chain skips downstream noise) and
+        # fail if any committed file is stale. Catches un-regen'd context on PR.
+        run: python scripts/gen-index.py --no-chain --check
+
       - name: Unit tests
         # Surface failing test ids as ::error annotations so they are
         # readable via the public check-runs API (logs need auth).
