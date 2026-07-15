@@ -477,6 +477,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
       <button class="view-btn" id="btn-skills" onclick="setView('skills')">🧩 Skills</button>
       <button class="view-btn" id="btn-coverage" onclick="setView('coverage')">📊 Coverage</button>
+      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')">🔬 Subagents</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
       <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="Toggle theme">🌙</button>💬 Chat</button>
@@ -662,6 +663,42 @@ to{transform:translateY(0);opacity:1}
     <div class="glass-card" style="padding:14px 16px">
       <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🔧 ยังขาด (สำหรับ quick-fill)</h4>
       <div id="coverage-missing"></div>
+    </div>
+  </div>
+
+  <!-- 🔬 SUBAGENTS VIEW — Observatory: per-subagent latency/pass/token stats -->
+  <div id="subagents-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
+    <div class="glass-card" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="margin:0;font-size:var(--fs-md);color:var(--text-primary)">🔬 Subagent Observatory</h3>
+          <p id="subagents-subtitle" style="margin:4px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">วัดผลจริง: latency, pass/fail, tokens, model ที่ใช้ — ต่อ subagent</p>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select id="subagents-window" onchange="subagentsLoad()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)">
+            <option value="0">ทั้งหมด</option>
+            <option value="3600">1 ชม.</option>
+            <option value="86400" selected>24 ชม.</option>
+            <option value="604800">7 วัน</option>
+          </select>
+          <button onclick="subagentsLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-subagent stat cards -->
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">📊 Per-Subagent</h4>
+      <div id="subagents-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px"></div>
+      <div id="subagents-empty" style="display:none;color:var(--text-tertiary);font-size:var(--fs-xs);padding:20px;text-align:center">
+        ยังไม่มีข้อมูล — ลองเรียก subagent (เช่น Explore หรือ medical-lit-reviewer) แล้วกลับมาดูที่นี่
+      </div>
+    </div>
+
+    <!-- By rate-limit bucket -->
+    <div class="glass-card" style="padding:14px 16px">
+      <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">🪣 Rate-Limit Bucket</h4>
+      <div id="subagents-buckets"></div>
     </div>
   </div>
 
@@ -1046,14 +1083,15 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
 $('graph-vis').style.display=v==='graph'?'block':'none';
 $('skills-panel').style.display=v==='skills'?'flex':'none';
 $('coverage-panel').style.display=v==='coverage'?'flex':'none';
+$('subagents-panel').style.display=v==='subagents'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
@@ -1061,6 +1099,7 @@ else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
 if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();}
 if(v==='coverage')coverageLoad();
+if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 }
 // === COUNCIL PANE — list -> detail, polls /api/council every 10s only while visible ===
@@ -1775,7 +1814,8 @@ const hasGit=h.last_commit_date||h.commit_count;
 if(!hasVer&&!hasGit)return '';
 const verBadge=hasVer?`<span class="skill-tag" style="border-color:var(--accent-violet);color:var(--accent-violet)">v${h.version}</span>`:'<span style="font-size:var(--fs-2xs);color:var(--text-disabled)">ยังไม่กำหนดเวอร์ชัน</span>';
 const gitInfo=hasGit?`<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">แก้ล่าสุด ${h.last_commit_date||'-'} · ${h.commit_count||0} commits${h.last_commit_hash?(' · '+h.last_commit_hash):''}</span>`:'';
-return `<div class="skill-detail-section"><h5>📋 เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${gitInfo}</div></div>`;
+const changelogBtn=hasGit?`<button class="set-btn sm" onclick="loadSkillChangelog('${s.name}')" style="padding:3px 8px;font-size:var(--fs-2xs);margin-top:6px" title="ดูประวัติการแก้ไข 5 commits ล่าสุด">📜 ดู changelog</button><div id="changelog-area" style="margin-top:6px"></div>`:'';
+return `<div class="skill-detail-section"><h5>📋 เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${gitInfo}</div>${changelogBtn}</div>`;
 })()}
 <div class="skill-detail-section"><h5>🔍 รายละเอียดเทคนิค</h5>
 <p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
@@ -1945,6 +1985,23 @@ async function loadSotd(){
 function skillsCloseDetail(){
 $('skills-detail').style.transform='translateX(100%)';
 $('skills-detail-backdrop').style.display='none';
+}
+// === CHUNK AA — Lazy changelog loader ===
+async function loadSkillChangelog(name){
+const area=$('changelog-area');
+if(!area)return;
+if(area.innerHTML){area.innerHTML='';return;} // toggle off
+area.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">⏳ กำลังโหลด...</div>';
+try{
+const s=await fetch('/api/skills/'+encodeURIComponent(name)+'?changelog=1').then(r=>r.json());
+const cl=(s.history&&s.history.changelog)||[];
+if(!cl.length){area.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-disabled)">ไม่มีประวัติ</div>';return;}
+area.innerHTML=cl.map(c=>`<div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:var(--fs-2xs)">
+<span style="color:var(--text-tertiary);white-space:nowrap;flex-shrink:0">${c.date}</span>
+<span style="color:var(--accent-violet);font-family:var(--font-mono);flex-shrink:0">${c.hash}</span>
+<span style="color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.message}</span>
+</div>`).join('');
+}catch(e){area.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--accent-danger)">❌ '+e.message+'</div>';}
 }
 
 // === CHUNK O — Skill Comparison Mode ===

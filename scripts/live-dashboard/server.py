@@ -50,6 +50,7 @@ import pid_check  # noqa: E402
 # Skills service lives next to this server file.
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "live-dashboard"))
 import skills_service  # noqa: E402
+import subagent_stats  # noqa: E402
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -627,6 +628,22 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response(skills_service.coverage_stats(compare=compare))
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/subagents/stats":
+            try:
+                from urllib.parse import parse_qs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                since_raw = params.get("since", ["0"])[0]
+                try:
+                    window = int(since_raw)
+                except ValueError:
+                    # accept '24h' / '30m' forms too
+                    v = since_raw.strip().lower()
+                    mult = 3600 if v.endswith("h") else 60 if v.endswith("m") else 1
+                    window = int(float(v.rstrip("hms")) * mult)
+                self._json_response(subagent_stats.aggregate(window_seconds=window))
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path == "/api/run/allowlist":
             self._json_response({
                 "enabled": os.environ.get("AWIKI_DASHBOARD_ALLOW_RUN", "0") == "1",
@@ -928,6 +945,12 @@ class Handler(BaseHTTPRequestHandler):
             if skill is None:
                 self._json_response({"error": f"skill '{name}' not found"}, 404)
                 return
+            # Lazy changelog loading via ?changelog=1
+            from urllib.parse import parse_qs
+            qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+            params = parse_qs(qs)
+            if params.get("changelog", ["0"])[0] in ("1", "true", "yes"):
+                skill["history"] = skills_service.skill_history(name, include_changelog=True)
             self._json_response(skill)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)

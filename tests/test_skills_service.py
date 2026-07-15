@@ -414,3 +414,31 @@ def test_update_skill_field_rejects_unknown_skill():
     r = skills_service.update_skill_field("does-not-exist-xyz", "th_description", "val")
     assert not r["ok"]
     assert "not found" in r.get("error", "").lower()
+
+
+# ---------------------------------------------------------------------------
+# CHUNK AA — skill_history() changelog expansion
+# ---------------------------------------------------------------------------
+
+def test_skill_history_changelog_format():
+    """include_changelog=True must return a list of {date, hash, message}."""
+    h = skills_service.skill_history("debug-mantra", include_changelog=True)
+    assert "changelog" in h, "changelog key must exist when include_changelog=True"
+    assert isinstance(h["changelog"], list)
+    if h["changelog"]:  # may be empty if git unavailable, but structure must be right
+        entry = h["changelog"][0]
+        assert "date" in entry
+        assert "hash" in entry
+        assert "message" in entry
+
+
+def test_skill_history_changelog_empty_for_missing():
+    """Unknown skill should return empty dict even with changelog requested."""
+    h = skills_service.skill_history("does-not-exist-xyz", include_changelog=True)
+    assert h == {} or h.get("commit_count", 0) == 0
+
+
+def test_skill_history_no_changelog_by_default():
+    """Default call (no include_changelog) must NOT include changelog key."""
+    h = skills_service.skill_history("debug-mantra")
+    assert "changelog" not in h, "changelog should be omitted unless requested"

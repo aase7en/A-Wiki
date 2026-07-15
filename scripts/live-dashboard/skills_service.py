@@ -742,11 +742,12 @@ def update_skill_field(name: str, field: str, value: str) -> dict[str, Any]:
 import subprocess  # noqa: E402 — late import, isolated to this function
 
 
-def skill_history(name: str) -> dict[str, Any]:
+def skill_history(name: str, include_changelog: bool = False) -> dict[str, Any]:
     """Get version + last-modified info for a skill via git log of its SKILL.md.
 
     Uses subprocess with arg list (never shell=True) for security.
     Returns: {version, last_commit_date, last_commit_hash, commit_count}.
+    If include_changelog=True, also returns {changelog: [{date, hash, message}]}.
     Fails gracefully (returns empty dict) if git fails or path missing.
     """
     reg = _load_registry()
@@ -757,11 +758,17 @@ def skill_history(name: str) -> dict[str, Any]:
     version = skill.get("version", "") or ""
     path = skill.get("path", "")
     if not path:
-        return {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+        result = {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+        if include_changelog:
+            result["changelog"] = []
+        return result
 
     skill_file = REPO_ROOT / path
     if not skill_file.is_file():
-        return {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+        result = {"version": version, "last_commit_date": "", "last_commit_hash": "", "commit_count": 0}
+        if include_changelog:
+            result["changelog"] = []
+        return result
 
     result: dict[str, Any] = {
         "version": version,
@@ -790,9 +797,29 @@ def skill_history(name: str) -> dict[str, Any]:
         )
         if proc2.returncode == 0 and proc2.stdout.strip().isdigit():
             result["commit_count"] = int(proc2.stdout.strip())
+
+        # Changelog: git log -5 --format=%cd|%h|%s --date=short -- <path>
+        if include_changelog:
+            proc3 = subprocess.run(
+                ["git", "log", "-5", "--format=%cd|%h|%s", "--date=short", "--", path],
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+                timeout=5, cwd=str(REPO_ROOT),
+            )
+            changelog: list[dict[str, str]] = []
+            if proc3.returncode == 0 and proc3.stdout.strip():
+                for line in proc3.stdout.strip().split("\n"):
+                    parts = line.split("|", 2)
+                    if len(parts) == 3:
+                        changelog.append({
+                            "date": parts[0].strip(),
+                            "hash": parts[1].strip(),
+                            "message": parts[2].strip(),
+                        })
+            result["changelog"] = changelog
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
         # Git not available or timed out — return what we have (version only).
-        pass
+        if include_changelog:
+            result["changelog"] = []
     return result
 
 
