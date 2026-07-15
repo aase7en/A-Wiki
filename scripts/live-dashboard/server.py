@@ -585,6 +585,10 @@ class Handler(BaseHTTPRequestHandler):
             self._sse()
         elif path in ("/", "/dashboard"):
             self._serve_html()
+        elif path == "/sw.js":
+            self._serve_static_file("sw.js", "application/javascript")
+        elif path == "/manifest.json":
+            self._serve_static_file("manifest.json", "application/manifest+json")
         elif path == "/clear":
             self._clear_log()
         elif path == "/status":
@@ -1216,6 +1220,20 @@ class Handler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b"Dashboard HTML not found. Check exports/html/ or scripts/live-dashboard/")
+
+    def _serve_static_file(self, filename: str, content_type: str):
+        """Serve a static file from the dashboard directory (sw.js, manifest.json)."""
+        file_path = DASHBOARD_DIR / filename
+        if file_path.is_file():
+            content = file_path.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+        else:
+            self.send_response(404)
+            self.end_headers()
 
     def _clear_log(self):
         try:

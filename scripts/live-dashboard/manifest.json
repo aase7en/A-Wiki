@@ -1,0 +1,11 @@
+{
+  "name": "A-Wiki Live Dashboard",
+  "short_name": "A-Wiki",
+  "description": "Universal AI Brain — skill catalog, coverage, cost-first routing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06060d",
+  "theme_color": "#5eead4",
+  "orientation": "any",
+  "icons": []
+}
