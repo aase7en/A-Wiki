@@ -14372,6 +14372,75 @@
         "รวมทั้ง 3 stage เป็น research report พร้อม revised confidence"
       ],
       "invocation_hint": "อธิบายหัวข้อให้ primary agent (เช่น 'research best practice cache invalidation')"
+    },
+    {
+      "name": "medical-lit-reviewer-th",
+      "aliases": [],
+      "domain": [
+        "medical",
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "subagent",
+      "source": "repo",
+      "path": "agents/subagents/medical-lit-reviewer-th.md",
+      "agents": [
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "language": "th",
+      "description": "Thai variant of medical-lit-reviewer — summarizes medical evidence in Thai with citations. GLM bucket (strong on Thai).",
+      "invocation": "manual",
+      "th_description": "เวอร์ชันไทยของ medical-lit-reviewer — สรุปหลักฐานทางการแพทย์เป็นไทยพร้อมการอ้างอิง GLM bucket",
+      "when_to_use": "เมื่อผู้ใช้ถามเป็นไทยเกี่ยวกับโรค ยา แนวทางรักษา",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
+    },
+    {
+      "name": "realestate-tax-advisor-th",
+      "aliases": [],
+      "domain": [
+        "business",
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "subagent",
+      "source": "repo",
+      "path": "agents/subagents/realestate-tax-advisor-th.md",
+      "agents": [
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "language": "th",
+      "description": "Thai variant of realestate-tax-advisor — Thai real-estate law + tax (WHT, SBTA, transfer fee). GLM bucket.",
+      "invocation": "manual",
+      "th_description": "เวอร์ชันไทยของ realestate-tax-advisor — กฎหมายอสังหาฯ + ภาษีไทย GLM bucket",
+      "when_to_use": "เมื่อผู้ใช้ถามเป็นไทยเกี่ยวกับภาษี/ค่าใช้จ่ายอสังหาฯ ในไทย",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
+    },
+    {
+      "name": "language-tutor-th",
+      "aliases": [],
+      "domain": [
+        "productivity",
+        "thai"
+      ],
+      "lifecycle_phase": "none",
+      "category": "subagent",
+      "source": "repo",
+      "path": "agents/subagents/language-tutor-th.md",
+      "agents": [
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "language": "th",
+      "description": "Thai variant of language-tutor — Socratic EN/CN teaching for Thai learners, explanations in Thai. GLM bucket.",
+      "invocation": "manual",
+      "th_description": "เวอร์ชันไทยของ language-tutor — สอน EN/CN แบบ Socratic ให้ผู้เรียนไทย GLM bucket",
+      "when_to_use": "เมื่อผู้เรียนไทยต้องการเรียนภาษา",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
     }
   ]
 }

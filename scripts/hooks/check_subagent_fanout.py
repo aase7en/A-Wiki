@@ -83,6 +83,48 @@ def provider_for_model(model_str: str) -> str:
     return "unknown"
 
 
+# ---------------------------------------------------------------------------
+# SO6 — Thai language detection (drives a bucket recommendation)
+# ---------------------------------------------------------------------------
+# Thai Unicode block: U+0E00 .. U+0E7F. A prompt with substantial Thai content
+# performs better on the GLM bucket (Z.ai's GLM models are strong on Thai),
+# so the hook recommends GLM when Thai dominates. This is advisory only — it
+# never forces a model, just steers the primary agent toward the better bucket.
+_THAI_MIN = 0x0E00
+_THAI_MAX = 0x0E7F
+# Threshold: if >=30% of the (non-space) chars are Thai, treat as Thai-heavy.
+THAI_HEAVY_THRESHOLD = 0.30
+
+
+def thai_ratio(text: str) -> float:
+    """Fraction of non-whitespace characters that are Thai (U+0E00–U+0E7F).
+
+    Returns 0.0 for empty/whitespace-only strings. Used to detect Thai-heavy
+    prompts that would benefit from a Thai-strong model (GLM bucket).
+    """
+    if not text:
+        return 0.0
+    chars = [c for c in text if not c.isspace()]
+    if not chars:
+        return 0.0
+    thai = sum(1 for c in chars if _THAI_MIN <= ord(c) <= _THAI_MAX)
+    return thai / len(chars)
+
+
+def is_thai_heavy(text: str) -> bool:
+    """True if >=THAI_HEAVY_THRESHOLD of the text is Thai script."""
+    return thai_ratio(text) >= THAI_HEAVY_THRESHOLD
+
+
+def recommended_bucket_for_prompt(prompt: str) -> str:
+    """SO6: if the prompt is Thai-heavy, recommend the GLM bucket.
+
+    Returns 'glm' for Thai-heavy prompts, '' (no recommendation) otherwise.
+    The recommendation is advisory — the primary agent still picks the model.
+    """
+    return "glm" if is_thai_heavy(prompt) else ""
+
+
 # Subagent-type -> default model. Populated lazily from frontmatter files.
 # Hardcoded fallbacks cover the built-ins so the hook works even before any
 # custom agents exist.
@@ -192,13 +234,31 @@ def main() -> int:
     state["calls"] = recent
     save_state(state)
 
+    warnings = []
+
+    # SO6 — Thai language bucket recommendation. If the prompt is Thai-heavy
+    # AND the chosen subagent isn't on the GLM bucket, advise switching (GLM
+    # is strong on Thai). Advisory only — never blocks.
+    prompt_text = (
+        tool_input.get("prompt")
+        or tool_input.get("description")
+        or ""
+    )
+    rec_bucket = recommended_bucket_for_prompt(prompt_text)
+    if rec_bucket and bucket != rec_bucket:
+        warnings.append(
+            f"[subagent-lang] Prompt is Thai-heavy; the '{bucket}' bucket may "
+            f"underperform on Thai. Consider the '{rec_bucket}' bucket (GLM) "
+            f"or a '*-th' subagent variant for better Thai quality. "
+            f"Advisory only."
+        )
+
     # Count per-bucket
     counts: dict[str, int] = {}
     for c in recent:
         if c["bucket"] != "unknown":
             counts[c["bucket"]] = counts.get(c["bucket"], 0) + 1
 
-    warnings = []
     for bucket, n in counts.items():
         if n > MAX_PER_BUCKET:
             warnings.append(

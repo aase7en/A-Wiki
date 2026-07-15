@@ -924,6 +924,11 @@
       "domain": "productivity,thai"
     },
     {
+      "name": "language-tutor-th",
+      "target": "agents/subagents/language-tutor-th.md",
+      "domain": "productivity,thai"
+    },
+    {
       "name": "laravel-patterns",
       "target": "skills/ecosystem/laravel-patterns/SKILL.md",
       "domain": "code"
@@ -1012,6 +1017,11 @@
       "name": "medical-lit-reviewer",
       "target": "agents/subagents/medical-lit-reviewer.md",
       "domain": "medical"
+    },
+    {
+      "name": "medical-lit-reviewer-th",
+      "target": "agents/subagents/medical-lit-reviewer-th.md",
+      "domain": "medical,thai"
     },
     {
       "name": "medical-pipeline",
@@ -1321,6 +1331,11 @@
     {
       "name": "realestate-tax-advisor",
       "target": "agents/subagents/realestate-tax-advisor.md",
+      "domain": "business,thai"
+    },
+    {
+      "name": "realestate-tax-advisor-th",
+      "target": "agents/subagents/realestate-tax-advisor-th.md",
       "domain": "business,thai"
     },
     {

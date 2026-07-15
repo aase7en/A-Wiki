@@ -100,6 +100,12 @@
       "model": "sonnet"
     },
     {
+      "name": "language-tutor-th",
+      "target": "agents/subagents/language-tutor-th.md",
+      "domain": "productivity,thai",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
+    },
+    {
       "name": "marketing-strategist",
       "target": "agents/subagents/marketing-strategist.md",
       "domain": "business",
@@ -110,6 +116,12 @@
       "target": "agents/subagents/medical-lit-reviewer.md",
       "domain": "medical",
       "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash"
+    },
+    {
+      "name": "medical-lit-reviewer-th",
+      "target": "agents/subagents/medical-lit-reviewer-th.md",
+      "domain": "medical,thai",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
     },
     {
       "name": "medical-safety-checker",
@@ -134,6 +146,12 @@
       "target": "agents/subagents/realestate-tax-advisor.md",
       "domain": "business,thai",
       "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
+    },
+    {
+      "name": "realestate-tax-advisor-th",
+      "target": "agents/subagents/realestate-tax-advisor-th.md",
+      "domain": "business,thai",
+      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
     },
     {
       "name": "schedule-planner",
