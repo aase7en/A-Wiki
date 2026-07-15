@@ -100,6 +100,29 @@ Portfolio evidence: Low et al. (2013) แสดง Clayton canonical vine outper
 ใน Python `copulae` package มี vine support; scipy ไม่มี native (ใช้ manual pair-copula
 construction หรือ R binding). ดู `[[model-capability-bench]]` สำหรับ routing เมื่อ d ใหญ่.
 
+### Python library comparison (K5)
+
+[verified 2026-07-15] — เปรียบเทียบ 4 ทางเลือกสำหรับ copula work ใน Python.
+
+| Library | Vine (C/D/R) | Archimedean | Gaussian/Student-t | Install | ใช้เมื่อ |
+|---------|:---:|:---:|:---:|---------|---------|
+| **`scipy.stats`** | ❌ manual pair-copula | ❌ (Cholesky trick only) | ✅ via `multivariate_normal` | มีอยู่แล้ว (requirements-optional) | baseline, bivariate Gaussian/Clayton เดียว |
+| **`copulae`** (Bokofer) | ✅ native C/D/R-vine | ✅ all (Clayton/Gumbel/Frank/Joe) | ✅ | `pip install copulae` | production vine fitting, multi-family portfolio |
+| **`pyvinecopulib`** | ✅ R-binding (`VineCopula`) | ✅ | ✅ | `pip install pyvinecopulib` (needs R deps) | R interop, fitting speed, cutting-edge vine research |
+| **`statsmodels`** | ❌ | ⚠️ Gaussian + Elliptical (limited) | ✅ | `pip install statsmodels` | regression-copula hybrid (copula + GLM) |
+
+**Decision rule:**
+- **scipy-only** (default ใน A-Wiki MC skill + tests) — เพียงพอสำหรับ 2-3 assets, bivariate Gaussian/Clayton, และ math-invariant testing. ไม่ต้อง install เพิ่ม.
+- **`copulae`** — production vine fitting (d ≥ 5), ต้องการ Archimedean families หลายตัวพร้อมกัน.
+- **`pyvinecopulib`** — R interop, ใช้ cutting-edge VineCopula features (truncated vines, non-parametric).
+- **`statsmodels`** — copula-regression hybrids (GLM + copula for residuals).
+
+**A-Wiki convention**: tests/skill ใช้ scipy-only (mirror H6 pattern — `pytest.importorskip("scipy")`,
+test-local samplers). ถ้าต้องการ production vine fitting ในอนาคต → eval `copulae` ใน `drive/`
+private workspace ก่อน promote เป็น skill dependency (Brain Improvement Gate: cost-first).
+
+ดู `[[model-capability-bench]]` สำหรับ routing เมื่อ d ใหญ่.
+
 **เชื่อมโยงกับ skill**: skill `monte-carlo-quant-analysis` §Copula subsection ครอบคลุม
 Gaussian/Student-t/Clayton/Gumbel (baseline + tail). Vine = extension เมื่อ dimension สูง
 (d ≥ 5) ที่ single copula ไม่พอ — เลือกเมื่อ portfolio มี assets หลายประเภทต่าง dependence regime.
