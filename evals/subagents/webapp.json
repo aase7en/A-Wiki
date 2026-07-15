@@ -1,0 +1,76 @@
+{
+  "suite": "webapp",
+  "description": "Webapp/mobile/UX/DB subagents (frontend-architect, ui-ux-reviewer, db-schema-designer, mobile-pattern-advisor).",
+  "cases": [
+    {
+      "id": "frontend-component-plan",
+      "subagent": "frontend-architect",
+      "prompt": "Plan the React component tree for a multi-step checkout wizard with address, payment, and review steps.",
+      "required": ["component"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "frontend-state-management",
+      "subagent": "frontend-architect",
+      "prompt": "Should a real-time collaborative editor use Redux, Zustand, or Yjs? Compare trade-offs.",
+      "required": ["trade-off"],
+      "forbidden": ["always use redux"]
+    },
+    {
+      "id": "uiux-a11y-review",
+      "subagent": "ui-ux-reviewer",
+      "prompt": "Review a color palette with a #aaa text on #eee background for WCAG contrast compliance.",
+      "required": ["contrast"],
+      "forbidden": ["looks fine"]
+    },
+    {
+      "id": "uiux-consistency",
+      "subagent": "ui-ux-reviewer",
+      "prompt": "A design system has 6 different button styles across pages. How do you consolidate?",
+      "required": ["button"],
+      "forbidden": ["leave it"]
+    },
+    {
+      "id": "db-schema-ecommerce",
+      "subagent": "db-schema-designer",
+      "prompt": "Design a normalized schema for an e-commerce order system: users, orders, order_items, products.",
+      "required": ["order"],
+      "forbidden": []
+    },
+    {
+      "id": "db-migration-safe",
+      "subagent": "db-schema-designer",
+      "prompt": "We need to split a 'full_name' column into 'first_name' and 'last_name' on a 10M-row table. Design a safe migration.",
+      "required": ["migration"],
+      "forbidden": ["just drop and recreate"]
+    },
+    {
+      "id": "mobile-swift-pattern",
+      "subagent": "mobile-pattern-advisor",
+      "prompt": "Recommend a Swift/SwiftUI architecture for a feature with a complex form, network calls, and offline cache.",
+      "required": ["SwiftUI"],
+      "forbidden": []
+    },
+    {
+      "id": "mobile-kotlin-flow",
+      "subagent": "mobile-pattern-advisor",
+      "prompt": "How should a Kotlin Android app structure a paginated feed with StateFlow + Room?",
+      "required": ["StateFlow"],
+      "forbidden": []
+    },
+    {
+      "id": "uiux-error-states",
+      "subagent": "ui-ux-reviewer",
+      "prompt": "Audit the error/empty/loading states for a search results page. What's missing?",
+      "required": ["error"],
+      "forbidden": ["nothing missing"]
+    },
+    {
+      "id": "db-index-strategy",
+      "subagent": "db-schema-designer",
+      "prompt": "A query filtering orders by user_id and created_at is slow on 50M rows. Propose an index strategy.",
+      "required": ["index"],
+      "forbidden": ["no index helps"]
+    }
+  ]
+}

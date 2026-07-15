@@ -1,0 +1,76 @@
+{
+  "suite": "tutor",
+  "description": "Personal-tutor subagents (language-tutor, skill-coach) — Socratic language teaching (EN/CN), time-mgmt/health/data-analysis coaching.",
+  "cases": [
+    {
+      "id": "lang-socratic-english",
+      "subagent": "language-tutor",
+      "prompt": "Teach the difference between 'present perfect' and 'past simple' using a Socratic question, not a lecture. The learner is Thai.",
+      "required": ["?"],
+      "forbidden": ["here is everything"]
+    },
+    {
+      "id": "lang-chinese-tone",
+      "subagent": "language-tutor",
+      "prompt": "Explain the 4 Mandarin tones with a minimal pair example. Give a practice drill.",
+      "required": ["tone"],
+      "forbidden": ["tones don't matter"]
+    },
+    {
+      "id": "lang-correct-gently",
+      "subagent": "language-tutor",
+      "prompt": "A learner wrote: 'I have go to school yesterday.' Correct it and explain the rule gently.",
+      "required": ["went"],
+      "forbidden": ["you're wrong"]
+    },
+    {
+      "id": "skill-time-mgmt-matrix",
+      "subagent": "skill-coach",
+      "prompt": "Teach the Eisenhower matrix using the learner's own example tasks. Ask them to categorize one.",
+      "required": ["Eisenhower"],
+      "forbidden": []
+    },
+    {
+      "id": "skill-health-sleep",
+      "subagent": "skill-coach",
+      "prompt": "A learner sleeps 5 hours and relies on caffeine. Coach them to 7 hours over 4 weeks — propose graduated steps.",
+      "required": ["sleep"],
+      "forbidden": ["just sleep more"]
+    },
+    {
+      "id": "skill-data-basics",
+      "subagent": "skill-coach",
+      "prompt": "Teach what 'mean vs median' means using a salary example where one CEO skews the mean. Ask a check question.",
+      "required": ["median"],
+      "forbidden": []
+    },
+    {
+      "id": "lang-vocab-context",
+      "subagent": "language-tutor",
+      "prompt": "Teach the word 'ubiquitous' by embedding it in 3 contexts the learner would recognize, then ask them to use it.",
+      "required": ["ubiquitous"],
+      "forbidden": []
+    },
+    {
+      "id": "skill-time-pomodoro",
+      "subagent": "skill-coach",
+      "prompt": "A learner procrastinates. Introduce the Pomodoro technique and have them plan their first session.",
+      "required": ["Pomodoro"],
+      "forbidden": []
+    },
+    {
+      "id": "lang-thai-english-false-friend",
+      "subagent": "language-tutor",
+      "prompt": "A Thai learner confused 'library' with 'bookstore' (ร้านหนังสือ). Clarify the difference in English.",
+      "required": ["library"],
+      "forbidden": []
+    },
+    {
+      "id": "skill-data-spreadsheet",
+      "subagent": "skill-coach",
+      "prompt": "Teach a beginner how to use a VLOOKUP in a spreadsheet, with one worked example and one practice task.",
+      "required": ["VLOOKUP"],
+      "forbidden": []
+    }
+  ]
+}

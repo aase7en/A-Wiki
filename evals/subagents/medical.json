@@ -1,0 +1,76 @@
+{
+  "suite": "medical",
+  "description": "Medical domain subagents (medical-lit-reviewer, clinical-reasoner, medical-safety-checker) — evidence retrieval, differential diagnosis, drug-safety critique.",
+  "cases": [
+    {
+      "id": "litreview-drug-interaction",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "Summarize the evidence on drug interactions between warfarin and amoxicillin. Provide citations.",
+      "required": ["warfarin", "amoxicillin"],
+      "forbidden": ["i don't know", "cannot answer"]
+    },
+    {
+      "id": "litreview-citation-format",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the evidence basis for metformin as first-line therapy in type 2 diabetes? Cite sources.",
+      "required": ["metformin"],
+      "forbidden": ["i'm not sure"]
+    },
+    {
+      "id": "clinical-ddx-fever",
+      "subagent": "clinical-reasoner",
+      "prompt": "A 35-year-old presents with fever, rash, and joint pain after travel to Southeast Asia. Give a differential diagnosis.",
+      "required": ["differential"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "clinical-ddx-reasoning",
+      "subagent": "clinical-reasoner",
+      "prompt": "A patient has elevated troponin and chest pain. What is the most likely diagnosis and next steps?",
+      "required": ["troponin"],
+      "forbidden": ["not sure"]
+    },
+    {
+      "id": "safety-drug-interaction-check",
+      "subagent": "medical-safety-checker",
+      "prompt": "Check for contraindications: a patient is on lisinopril and wants to take potassium supplements.",
+      "required": ["potassium", "lisinopril"],
+      "forbidden": ["no issues", "no problem"]
+    },
+    {
+      "id": "safety-pregnancy-category",
+      "subagent": "medical-safety-checker",
+      "prompt": "Is isotretinoin safe in pregnancy? What are the contraindications?",
+      "required": ["isotretinoin"],
+      "forbidden": ["definitely safe", "no contraindications"]
+    },
+    {
+      "id": "litreview-guideline",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "Summarize the current JNC-8 guidelines for hypertension management.",
+      "required": ["hypertension"],
+      "forbidden": []
+    },
+    {
+      "id": "clinical-red-flags",
+      "subagent": "clinical-reasoner",
+      "prompt": "A headache patient reports sudden worst-ever headache with neck stiffness. What red flags warrant immediate action?",
+      "required": ["headache"],
+      "forbidden": ["nothing to worry"]
+    },
+    {
+      "id": "safety-dose-check",
+      "subagent": "medical-safety-checker",
+      "prompt": "A prescription reads acetaminophen 1000mg every 4 hours. Is this within safe daily limits?",
+      "required": ["acetaminophen"],
+      "forbidden": ["perfectly safe", "no limit"]
+    },
+    {
+      "id": "litreview-pubmed-evidence",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What does the evidence say about statins for primary prevention in elderly patients?",
+      "required": ["statin"],
+      "forbidden": []
+    }
+  ]
+}

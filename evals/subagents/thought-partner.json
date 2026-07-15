@@ -1,0 +1,76 @@
+{
+  "suite": "thought-partner",
+  "description": "Thought-partner subagents (workflow-simplifier, copywriting-partner) — systematize repetitive work, copy/doc coauthoring.",
+  "cases": [
+    {
+      "id": "simplify-repetitive-report",
+      "subagent": "workflow-simplifier",
+      "prompt": "A team manually copies data from 3 spreadsheets into a weekly report every Friday (2 hours of work). Propose a system to reduce this to under 15 minutes.",
+      "required": ["automate"],
+      "forbidden": ["keep doing it manually"]
+    },
+    {
+      "id": "simplify-process-map",
+      "subagent": "workflow-simplifier",
+      "prompt": "Map and simplify an onboarding workflow that currently has 12 approval steps where only 4 add value.",
+      "required": ["step"],
+      "forbidden": ["all steps are necessary"]
+    },
+    {
+      "id": "simplify-template-ify",
+      "subagent": "workflow-simplifier",
+      "prompt": "A sales team writes each proposal from scratch (3 hours each). How would you turn this into a template + fill system?",
+      "required": ["template"],
+      "forbidden": []
+    },
+    {
+      "id": "copywriting-headline",
+      "subagent": "copywriting-partner",
+      "prompt": "Write 5 headline options for a landing page selling a Thai cooking course. Vary the angle (benefit, curiosity, social proof).",
+      "required": ["headline"],
+      "forbidden": []
+    },
+    {
+      "id": "copywriting-edit-verbose",
+      "subagent": "copywriting-partner",
+      "prompt": "Tighten this: 'In order to be able to commence the process of onboarding, you will need to first of all fill out the form.'",
+      "required": ["onboard"],
+      "forbidden": ["in order to"]
+    },
+    {
+      "id": "copywriting-value-prop",
+      "subagent": "copywriting-partner",
+      "prompt": "Craft a one-sentence value prop for a budgeting app that rounds up purchases and invests the spare change.",
+      "required": ["value"],
+      "forbidden": []
+    },
+    {
+      "id": "simplify-bottleneck",
+      "subagent": "workflow-simplifier",
+      "prompt": "A content review pipeline stalls because one senior reviewer must approve everything. Propose 3 fixes.",
+      "required": ["bottleneck"],
+      "forbidden": ["hire more reviewers"]
+    },
+    {
+      "id": "copywriting-thai-tone",
+      "subagent": "copywriting-partner",
+      "prompt": "Rewrite a formal Thai business email to be warm and modern without losing professionalism.",
+      "required": ["email"],
+      "forbidden": []
+    },
+    {
+      "id": "simplify-decision-checklist",
+      "subagent": "workflow-simplifier",
+      "prompt": "Turn a vague 'we decide things by feel' hiring process into a scored decision checklist.",
+      "required": ["checklist"],
+      "forbidden": ["keep it by feel"]
+    },
+    {
+      "id": "copywriting-cta",
+      "subagent": "copywriting-partner",
+      "prompt": "Write 3 call-to-action button variants for a free-trial signup. Explain why each works.",
+      "required": ["call"],
+      "forbidden": []
+    }
+  ]
+}

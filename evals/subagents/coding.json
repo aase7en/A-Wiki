@@ -1,0 +1,76 @@
+{
+  "suite": "coding",
+  "description": "Coding-engineering subagents (code-explorer, code-architect, debug-investigator, test-engineer-agent) — trace, plan, root-cause, test.",
+  "cases": [
+    {
+      "id": "explorer-trace",
+      "subagent": "code-explorer",
+      "prompt": "Trace how authentication works in a typical Flask app: where is the login route, how is the session created, how is the current user resolved?",
+      "required": ["session"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "explorer-find-callers",
+      "subagent": "code-explorer",
+      "prompt": "In a Python codebase, how would you find all callers of a function named process_order?",
+      "required": ["process_order"],
+      "forbidden": []
+    },
+    {
+      "id": "architect-plan-change",
+      "subagent": "code-architect",
+      "prompt": "Plan a change to add rate-limiting middleware to an Express.js API. Which files would you touch and why?",
+      "required": ["middleware"],
+      "forbidden": ["i can't", "not sure"]
+    },
+    {
+      "id": "architect-design",
+      "subagent": "code-architect",
+      "prompt": "Design a caching layer for a Postgres-backed read-heavy service. What components and trade-offs?",
+      "required": ["cache"],
+      "forbidden": []
+    },
+    {
+      "id": "debug-root-cause",
+      "subagent": "debug-investigator",
+      "prompt": "A test intermittently fails with a race condition: 'IndexError: list index out of range'. Walk through a 4-step root-cause investigation.",
+      "required": ["root cause"],
+      "forbidden": ["just retry", "random"]
+    },
+    {
+      "id": "debug-reproduce",
+      "subagent": "debug-investigator",
+      "prompt": "Users report a 500 error on the checkout page but it doesn't happen locally. How do you reproduce it?",
+      "required": ["reproduce"],
+      "forbidden": ["can't reproduce", "impossible"]
+    },
+    {
+      "id": "test-failing-first",
+      "subagent": "test-engineer-agent",
+      "prompt": "Write a failing pytest test for a function that should return the nth Fibonacci number but currently returns wrong values for n>10.",
+      "required": ["def test"],
+      "forbidden": []
+    },
+    {
+      "id": "test-coverage",
+      "subagent": "test-engineer-agent",
+      "prompt": "A billing module has 40% test coverage. Propose the 5 most important test cases to add first.",
+      "required": ["billing"],
+      "forbidden": ["not possible"]
+    },
+    {
+      "id": "debug-hypothesis",
+      "subagent": "debug-investigator",
+      "prompt": "Memory usage grows steadily in a Node.js service over 48h then OOMs. Form a falsifiable hypothesis and a test for it.",
+      "required": ["hypothesis"],
+      "forbidden": ["restart fixes it"]
+    },
+    {
+      "id": "architect-refactor",
+      "subagent": "code-architect",
+      "prompt": "Propose a refactor to split a 2000-line god-class UserManager into cohesive components.",
+      "required": ["UserManager"],
+      "forbidden": ["leave it"]
+    }
+  ]
+}

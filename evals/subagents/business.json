@@ -1,0 +1,76 @@
+{
+  "suite": "business",
+  "description": "Business/marketing/real-estate/tax subagents (marketing-strategist, realestate-tax-advisor, business-doc-drafter).",
+  "cases": [
+    {
+      "id": "marketing-campaign-plan",
+      "subagent": "marketing-strategist",
+      "prompt": "Plan a 4-week launch campaign for a new Thai skincare brand on Instagram and TikTok. Include budget split.",
+      "required": ["campaign"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "marketing-seo-keywords",
+      "subagent": "marketing-strategist",
+      "prompt": "Propose 10 high-intent SEO keywords for a Bangkok dental clinic targeting expats.",
+      "required": ["keyword"],
+      "forbidden": []
+    },
+    {
+      "id": "realestate-tax-transfer",
+      "subagent": "realestate-tax-advisor",
+      "prompt": "What taxes and fees apply when transferring a condo in Bangkok valued at 5 million THB?",
+      "required": ["transfer"],
+      "forbidden": ["no tax"]
+    },
+    {
+      "id": "realestate-tax-withholding",
+      "subagent": "realestate-tax-advisor",
+      "prompt": "A seller is selling a residential property held 3 years. Explain the withholding tax (WHT) calculation in Thailand.",
+      "required": ["withholding"],
+      "forbidden": ["no withholding"]
+    },
+    {
+      "id": "doc-draft-invoice",
+      "subagent": "business-doc-drafter",
+      "prompt": "Draft a Thai VAT invoice template with the legally required fields (seller/buyer tax ID, VAT line, etc.).",
+      "required": ["invoice"],
+      "forbidden": []
+    },
+    {
+      "id": "doc-draft-contract",
+      "subagent": "business-doc-drafter",
+      "prompt": "Draft a simple service agreement outline (sections) for a freelance web developer engagement.",
+      "required": ["agreement"],
+      "forbidden": []
+    },
+    {
+      "id": "marketing-funnel",
+      "subagent": "marketing-strategist",
+      "prompt": "Map a marketing funnel (awareness → conversion) for a B2B SaaS targeting Thai SMEs.",
+      "required": ["funnel"],
+      "forbidden": []
+    },
+    {
+      "id": "realestate-lease-vs-buy",
+      "subagent": "realestate-tax-advisor",
+      "prompt": "Compare the tax implications of leasing vs buying office space for a Thai company.",
+      "required": ["lease"],
+      "forbidden": ["no difference"]
+    },
+    {
+      "id": "doc-draft-proposal",
+      "subagent": "business-doc-drafter",
+      "prompt": "Outline a project proposal for a 6-month software implementation: scope, milestones, pricing.",
+      "required": ["proposal"],
+      "forbidden": []
+    },
+    {
+      "id": "marketing-brand-voice",
+      "subagent": "marketing-strategist",
+      "prompt": "Define a brand voice for a premium Thai tea brand targeting Gen Z. Give 3 do's and 3 don'ts.",
+      "required": ["brand"],
+      "forbidden": []
+    }
+  ]
+}

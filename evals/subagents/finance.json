@@ -1,0 +1,76 @@
+{
+  "suite": "finance",
+  "description": "Finance/trading subagents (finance-data-fetcher, finance-analyst, finance-debater) — market data retrieval, technical/fundamental analysis, bull/bear challenge.",
+  "cases": [
+    {
+      "id": "fetcher-price",
+      "subagent": "finance-data-fetcher",
+      "prompt": "Retrieve the current price and P/E ratio for Apple (AAPL).",
+      "required": ["AAPL"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "fetcher-statements",
+      "subagent": "finance-data-fetcher",
+      "prompt": "Get the latest quarterly revenue and net income for Microsoft (MSFT).",
+      "required": ["MSFT"],
+      "forbidden": []
+    },
+    {
+      "id": "analyst-technical",
+      "subagent": "finance-analyst",
+      "prompt": "Perform a technical analysis of Tesla (TSLA) using RSI, MACD, and moving averages.",
+      "required": ["TSLA"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "analyst-fundamental",
+      "subagent": "finance-analyst",
+      "prompt": "Do a fundamental analysis of Amazon (AMZN): valuation, growth, profitability.",
+      "required": ["AMZN"],
+      "forbidden": []
+    },
+    {
+      "id": "analyst-sentiment",
+      "subagent": "finance-analyst",
+      "prompt": "Assess market sentiment around Nvidia (NVDA) given recent earnings.",
+      "required": ["NVDA"],
+      "forbidden": []
+    },
+    {
+      "id": "debater-bull-case",
+      "subagent": "finance-debater",
+      "prompt": "Make the strongest bull case for investing in Google (GOOGL).",
+      "required": ["GOOGL"],
+      "forbidden": ["no bull case"]
+    },
+    {
+      "id": "debater-bear-case",
+      "subagent": "finance-debater",
+      "prompt": "Make the strongest bear case against Meta (META). Identify the key risks.",
+      "required": ["META"],
+      "forbidden": ["no risks"]
+    },
+    {
+      "id": "analyst-thesis",
+      "subagent": "finance-analyst",
+      "prompt": "Build an investment thesis for a 3-year hold on Berkshire Hathaway (BRK.B).",
+      "required": ["thesis"],
+      "forbidden": ["i can't"]
+    },
+    {
+      "id": "fetcher-crypto",
+      "subagent": "finance-data-fetcher",
+      "prompt": "Get the current market cap and 24h volume for Bitcoin (BTC).",
+      "required": ["BTC"],
+      "forbidden": []
+    },
+    {
+      "id": "debater-judge",
+      "subagent": "finance-debater",
+      "prompt": "Given a bull thesis (AI tailwinds) and bear thesis (valuation stretched) for Microsoft, weigh both and give a verdict.",
+      "required": ["verdict"],
+      "forbidden": ["can't decide"]
+    }
+  ]
+}

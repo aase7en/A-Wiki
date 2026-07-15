@@ -1,0 +1,76 @@
+{
+  "suite": "data",
+  "description": "Data-analysis subagent (data-profiler) — EDA, data profiling, outlier detection, infectious-disease/stock data framing.",
+  "cases": [
+    {
+      "id": "profiler-missing-values",
+      "subagent": "data-profiler",
+      "prompt": "A CSV has 12 columns; the 'age' column is 30% missing. Propose a profiling plan and 3 imputation options with trade-offs.",
+      "required": ["impute"],
+      "forbidden": ["drop the column", "just delete"]
+    },
+    {
+      "id": "profiler-outliers",
+      "subagent": "data-profiler",
+      "prompt": "A salary column has a max of 50,000,000 while the 99th percentile is 500,000. How do you detect and handle this outlier?",
+      "required": ["outlier"],
+      "forbidden": ["ignore it"]
+    },
+    {
+      "id": "profiler-dtypes",
+      "subagent": "data-profiler",
+      "prompt": "Profile a column that looks numeric but has values like '12,345' and 'N/A'. What's wrong and how do you clean it?",
+      "required": ["dtype"],
+      "forbidden": []
+    },
+    {
+      "id": "profiler-correlation",
+      "subagent": "data-profiler",
+      "prompt": "Two columns 'ad_spend' and 'sales' have Pearson r=0.85. Interpret this and state one common misinterpretation.",
+      "required": ["correlation"],
+      "forbidden": ["causation", "causes"]
+    },
+    {
+      "id": "profiler-distribution",
+      "subagent": "data-profiler",
+      "prompt": "A 'transaction_amount' column is heavily right-skewed. Propose a transformation for visualization and modeling.",
+      "required": ["skew"],
+      "forbidden": []
+    },
+    {
+      "id": "profiler-duplicates",
+      "subagent": "data-profiler",
+      "prompt": "A customer table has 10,000 rows but 9,500 unique emails. Walk through a dedup strategy.",
+      "required": ["dedup"],
+      "forbidden": ["keep all"]
+    },
+    {
+      "id": "profiler-timeseries-trend",
+      "subagent": "data-profiler",
+      "prompt": "A daily disease-case count series rises sharply on Mondays. Is this signal or artifact? How do you check?",
+      "required": ["Monday"],
+      "forbidden": ["it's a real spike"]
+    },
+    {
+      "id": "profiler-stock-volatility",
+      "subagent": "data-profiler",
+      "prompt": "Compute and interpret the annualized volatility of a stock given daily returns. Which window size and why?",
+      "required": ["volatil"],
+      "forbidden": []
+    },
+    {
+      "id": "profiler-categorical-cardinality",
+      "subagent": "data-profiler",
+      "prompt": "A 'city' column has 2,000 unique values in a 10,000-row dataset. How do you handle high-cardinality categoricals for modeling?",
+      "required": ["cardinal"],
+      "forbidden": ["one-hot everything"]
+    },
+    {
+      "id": "profiler-data-quality-report",
+      "subagent": "data-profiler",
+      "prompt": "Draft the structure of a one-page data quality report for a stakeholder who isn't technical.",
+      "required": ["quality"],
+      "forbidden": []
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "suite": "assistant",
+  "description": "Personal-assistant subagents (inbox-triage, schedule-planner, draft-responder) — email triage, calendar, replies.",
+  "cases": [
+    {
+      "id": "triage-categorize",
+      "subagent": "inbox-triage",
+      "prompt": "Triage these 5 emails into urgent/await-reply/FYI: (1) server down alert (2) newsletter (3) client question (4) meeting invite (5) invoice.",
+      "required": ["urgent"],
+      "forbidden": []
+    },
+    {
+      "id": "triage-priority",
+      "subagent": "inbox-triage",
+      "prompt": "An email from the CEO marked 'when you have a moment' arrives alongside a customer complaint marked urgent. Which first and why?",
+      "required": ["complaint"],
+      "forbidden": ["ceo first"]
+    },
+    {
+      "id": "schedule-conflict",
+      "subagent": "schedule-planner",
+      "prompt": "Two 1-hour meetings overlap: a client review and an internal standup. Propose a resolution.",
+      "required": ["conflict"],
+      "forbidden": ["can't resolve"]
+    },
+    {
+      "id": "schedule-block-focus",
+      "subagent": "schedule-planner",
+      "prompt": "Design a daily schedule for a developer with 3 hours of deep work, 2 meetings, and a lunch break.",
+      "required": ["deep work"],
+      "forbidden": []
+    },
+    {
+      "id": "draft-polite-decline",
+      "subagent": "draft-responder",
+      "prompt": "Draft a polite decline to a vendor meeting request without burning the relationship.",
+      "required": ["thank"],
+      "forbidden": ["no", "can't", "won't"]
+    },
+    {
+      "id": "draft-follow-up",
+      "subagent": "draft-responder",
+      "prompt": "Draft a follow-up email to a prospect who hasn't replied in 2 weeks. Keep it warm, not pushy.",
+      "required": ["follow"],
+      "forbidden": ["why haven't you replied"]
+    },
+    {
+      "id": "triage-spam-detection",
+      "subagent": "inbox-triage",
+      "prompt": "An email claims you won a lottery you never entered and asks for bank details. Classify and advise.",
+      "required": ["spam"],
+      "forbidden": ["reply with details"]
+    },
+    {
+      "id": "schedule-timezone",
+      "subagent": "schedule-planner",
+      "prompt": "A team spans Bangkok (UTC+7) and London (UTC+0). Find a 1-hour meeting window acceptable to both, 9am-6pm local.",
+      "required": ["time"],
+      "forbidden": ["no overlap"]
+    },
+    {
+      "id": "draft-clarify-vague",
+      "subagent": "draft-responder",
+      "prompt": "A colleague emailed 'let's talk about the thing'. Draft a reply that clarifies what 'the thing' is.",
+      "required": ["clarif"],
+      "forbidden": []
+    },
+    {
+      "id": "triage-bulk-actions",
+      "subagent": "inbox-triage",
+      "prompt": "30 newsletter emails arrived overnight. Propose a bulk triage strategy.",
+      "required": ["newsletter"],
+      "forbidden": ["read each one"]
+    }
+  ]
+}

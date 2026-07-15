@@ -1,0 +1,76 @@
+{
+  "suite": "ai-ops",
+  "description": "AI-management subagents (cost-auditor, model-router-advisor, token-optimizer) — cost audit, model tier advice, token reduction.",
+  "cases": [
+    {
+      "id": "cost-audit-identify-waste",
+      "subagent": "cost-auditor",
+      "prompt": "Given a daily log showing 60% of tokens go to a Sonnet-tier model for simple lookups, identify the top 3 cost wastes.",
+      "required": ["token"],
+      "forbidden": ["no waste"]
+    },
+    {
+      "id": "cost-audit-recommend-tier",
+      "subagent": "cost-auditor",
+      "prompt": "A task does single-key lookups on a 50-row CSV. What cost tier should it run on and why?",
+      "required": ["tier"],
+      "forbidden": ["always use the best model"]
+    },
+    {
+      "id": "router-pick-model",
+      "subagent": "model-router-advisor",
+      "prompt": "Task: summarize a 200-word Thai news article. Recommend a model tier and explain the trade-off between cost and quality.",
+      "required": ["tier"],
+      "forbidden": ["i don't know"]
+    },
+    {
+      "id": "router-batch-vs-realtime",
+      "subagent": "model-router-advisor",
+      "prompt": "We have 5000 documents to classify by topic. Realtime or batch? Which model?",
+      "required": ["batch"],
+      "forbidden": ["realtime only"]
+    },
+    {
+      "id": "optimizer-reduce-prompt",
+      "subagent": "token-optimizer",
+      "prompt": "A system prompt is 3000 tokens of verbose instructions. Propose 3 concrete ways to cut it by 50% without losing intent.",
+      "required": ["token"],
+      "forbidden": ["can't reduce"]
+    },
+    {
+      "id": "optimizer-dedup-context",
+      "subagent": "token-optimizer",
+      "prompt": "A context window has the same 200-line file repeated 4 times across tool results. How would you deduplicate?",
+      "required": ["dedup"],
+      "forbidden": ["nothing to do"]
+    },
+    {
+      "id": "cost-audit-budget",
+      "subagent": "cost-auditor",
+      "prompt": "A weekly budget is $50. Current burn is $80. Propose a tier-reassignment plan to get under budget.",
+      "required": ["budget"],
+      "forbidden": ["increase budget"]
+    },
+    {
+      "id": "router-emergency-seed",
+      "subagent": "model-router-advisor",
+      "prompt": "Primary provider is down. What free-tier fallback models should we route to for (a) reasoning and (b) cheap lookups?",
+      "required": ["fallback"],
+      "forbidden": ["no fallback"]
+    },
+    {
+      "id": "optimizer-cache-opportunity",
+      "subagent": "token-optimizer",
+      "prompt": "Identify caching opportunities for an agent that re-reads the same 50kb config file on every turn.",
+      "required": ["cache"],
+      "forbidden": []
+    },
+    {
+      "id": "router-multilingual",
+      "subagent": "model-router-advisor",
+      "prompt": "A task processes mixed Thai/English customer reviews. Which model tier handles multilingual best at low cost?",
+      "required": ["tier"],
+      "forbidden": []
+    }
+  ]
+}
