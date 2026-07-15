@@ -345,6 +345,15 @@ A real-time monitor showing **which AI is working, on what, in which workflow, h
   - **📌 Cross-device pin** — star a skill to pin it; the pin persists in the public `skills-registry.json` (`pinned: bool` field, added to the `EDITABLE_FIELDS` allowlist with strict bool parsing), so it syncs across all machines via git — not localStorage. Pinned cards get a gold ring + 📌 badge; sort "📌 Pinned ก่อน" and filter "📌 pinned เท่านั้น" surface them. 0 surface drift confirmed (validate_registry accepts the new field).
   - **📈 Usage analytics tab** — a new "📈 Analytics" view with 4 Chart.js charts: most-opened skills (30d, reuses `trendingSkills()`), top co-occurrence pairs (reuses `_mineCoOccurrence()`), daily opens timeline (14d), and a health distribution doughnut + avg-health trend line (daily snapshots in localStorage `awiki-health-snapshots`, max 90). "🗑️ ล้างข้อมูล" clears the local usage log. Chart.js loaded via CDN (like vis-network); data is local-only (no sync).
 
+- **🏗️ v8 Foundation Refactor** — no new features, but unlocked massive headroom for future growth:
+  - **📦 esbuild build pipeline** — `package.json` + `build.mjs` added to `scripts/live-dashboard/`. Run `npm install && npm run build` to bundle + minify JS. `app.min.js` (158KB minified) served via `/app.min.js` route with sourcemap for debugging.
+  - **🎨 CSS extracted** — 417 lines of CSS moved from inline `<style>` to `styles.css` (41KB), loaded via `<link>`. Theme system (3-state auto/dark/green-white) still works — CSS `[data-theme]` attribute selector is independent of inline vs external CSS.
+  - **🧩 JS split into 9 modular files** — 3,318 lines of inline JS extracted to `src/` directory: `app.js` (globals + boot), `subagents.js`, `modals.js`, `skills.js`, `graph.js`, `coverage.js`, `analytics.js`, `chat.js`, `theme.js`. esbuild concatenates them in load order (app.js first for globals) + minifies. All 282 functions verified intact (245 sync + 37 async). Inline onclick handlers (154 total) still work — globals scope is identical with `<script src>`.
+  - **📐 Size impact** — HTML shrank from 283KB (v7, single file) to 53.9KB (markup only). Total served payload: 252KB (HTML + CSS + minified JS), an 11% reduction. HTML size limit reset from 300KB → 60KB (markup-only budget). Headroom: 6KB for future markup, unlimited JS/CSS in separate files.
+  - **🔧 Tech debt cleanup** — `_downloadBlob(blob, filename)` helper deduplicated 4 export functions (graphExportPNG/SVG, exportMatrixCSV, exportKeybindings). Workspace `WORKSPACES_MAX=10` cap confirmed. Tests updated to read `src/*.js` + `styles.css` via concatenated `_read()` helper.
+
+  **Setup after pulling v8:** `cd scripts/live-dashboard && npm install && npm run build` (one-time). The server warns at startup if `app.min.js` is missing. See `scripts/live-dashboard/package.json`.
+
 Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` (written by the panel) and `wiki/context/model-capability-scores.json`. See [`scripts/live-dashboard/README.md`](scripts/live-dashboard/README.md).
 
 ---
