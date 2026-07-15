@@ -465,8 +465,47 @@ model เมื่อทั้งสอง effect มี.
 λ, μ_J, σ_J) calibration ill-conditioned. Fix λ จาก historical jump-count estimates
 ก่อนแล้วค่อย calibrate ที่เหลือกับ option prices.
 
-(Kou double-exponential + Hawkes self-exciting variants — ดู L2/L3 subsections
-ด้านล่างเมื่อ implemented.)
+**Kou (2002) — double-exponential (asymmetric Laplace) jump sizes**:
+
+```python
+def kou_jump_sizes(n, p, lam1, lam2, rng):
+    """Sample n iid Kou jumps: prob p → +Exp(λ₁), else -Exp(λ₂).
+    Closed-form moments: E[Y]=p/λ₁-(1-p)/λ₂, E[Y²]=2[p/λ₁²+(1-p)/λ₂²].
+    """
+    signs = np.where(rng.uniform(size=n) < p, 1.0, -1.0)
+    mags_pos = rng.exponential(scale=1.0 / lam1, size=n)  # numpy scale = 1/rate
+    mags_neg = rng.exponential(scale=1.0 / lam2, size=n)
+    return signs * np.where(signs > 0, mags_pos, mags_neg)
+
+def kou_log_returns(mu, sigma, lam, p, lam1, lam2, T, n_paths, rng):
+    """Kou asset returns: GBM + Poisson(λT) double-exp jumps, drift compensated."""
+    # k = E[exp(Y)-1] (closed form for Kou, requires λ₁>1)
+    k = p * lam1 / (lam1 - 1.0) + (1 - p) * lam2 / (lam2 + 1.0) - 1.0
+    drift = (mu - 0.5 * sigma * sigma - lam * k) * T
+    diffusion = sigma * np.sqrt(T) * rng.standard_normal(n_paths)
+    n_jumps = rng.poisson(lam * T, size=n_paths)
+    jump_sums = np.array([
+        kou_jump_sizes(n_jumps[i], p, lam1, lam2, rng).sum() if n_jumps[i] > 0 else 0.0
+        for i in range(n_paths)
+    ])
+    return drift + diffusion + jump_sums
+
+# ใช้: lr = kou_log_returns(0.05, 0.2, 5.0, 0.3, 10.0, 5.0, 1.0, 10_000, rng)
+#       # p=0.3, λ₁=10 (up rare+small), λ₂=5 (down more frequent+larger)
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_kou.py`):**
+1. Sampled mean ≈ p/λ₁-(1-p)/λ₂ (tolerance 3% — closed-form check)
+2. Sampled variance ≈ 2[p/λ₁²+(1-p)/λ₂²]-(mean)² (tolerance 5%)
+3. Kou-driven returns excess kurtosis > GBM (double-exp = leptokurtic)
+
+**เลือกเมื่อ**: tail decay rate ต่างกันสองฝั่ง (crash ลึกแต่ rally ตื้น หรือกลับกัน) จาก
+พารามิเตอร์เดียว — Gaussian ต้องใช้ mixture หลายตัว. Kou (2002) gives closed-form
+European option (Yiurie series).
+**ไม่เลือกเมื่อ**: λ₁ ≈ λ₂ (degenerate to symmetric Laplace, identifiability ต่ำ) —
+ใช้ high-frequency jump detection (Lee-Mykland 2008) constrain ก่อน.
+
+(Hawkes self-exciting variant — ดู L3 subsection ด้านล่างเมื่อ implemented.)
 
 ### Multi-level MC (nested expectation)
 
