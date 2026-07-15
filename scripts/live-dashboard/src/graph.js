@@ -43,6 +43,7 @@ if(ev.type==='registry_update'){
 // view so the dashboard reflects new/edited skills without a manual refresh.
 // CHUNK RR: desktop notification (deduped via tag).
 showNotif('Registry อัปเดตแล้ว','skills/coverage รีเฟรชอัตโนมัติ','registry_update');
+announce('Registry อัปเดตแล้ว — กำลังรีเฟรชข้อมูล');
 try{
 if(currentView==='skills'){skillsLoad();}
 else if(currentView==='coverage'){coverageLoad();}

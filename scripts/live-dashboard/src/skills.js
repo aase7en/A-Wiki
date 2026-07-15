@@ -131,6 +131,7 @@ const list=(c.cycles||[]).slice(0,5).map(cy=>cy.join(' → ')).join('<br>');
 banner.innerHTML=`⚠️ พบ ${c.count} circular dependency<br><small style="color:var(--text-tertiary)">${list}</small>`;
 banner.style.display='block';
 showNotif('⚠️ พบ circular dependency',c.count+' รอบใน skill graph','cycle');
+announce('พบ '+c.count+' circular dependency ใน skill graph');
 }catch(_){banner.style.display='none';}
 }
 // === CHUNK U — Graph export (SVG + PNG) ===

@@ -39,6 +39,15 @@ function _closeModalTrap(){
   if(_trapLastFocused&&typeof _trapLastFocused.focus==='function'){try{_trapLastFocused.focus();}catch(_){}}
   _trapLastFocused=null;
 }
+// CHUNK F9: screen reader announcement helper (writes to #aria-live, SR reads aloud).
+let _announceTimer=null;
+function announce(msg){
+  const live=$('aria-live');if(!live)return;
+  // Clear + re-set so SR re-announces even if same message.
+  live.textContent='';
+  clearTimeout(_announceTimer);
+  _announceTimer=setTimeout(()=>{live.textContent=msg;},100);
+}
 function animateCounter(el,target){
 if(!el)return;
 const cur=parseInt(el.textContent||'0',10)||0;
