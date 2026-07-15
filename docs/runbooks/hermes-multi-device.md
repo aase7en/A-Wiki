@@ -97,6 +97,23 @@ Google Drive / A-Wiki-Data /
 | Every 6h | Windows | `powershell -File scripts/hermes/auto-sync.ps1` |
 | On config change | MacBook | `bash scripts/hermes/sync-all.sh --push` |
 | Daily 3AM | MacBook | `bash scripts/hermes/backup-to-drive.sh` |
+| Hourly | Pi5 | `python3 scripts/hermes/subagent-alert-poller.py --once` (critical Observatory alert → Telegram) |
+
+### Subagent Alert Poller (Pi5 systemd timer)
+
+Sends a Telegram banner when the Observatory detects a critical subagent
+alert (pass_rate < 0.70 with ≥5 samples). Idempotent: each subagent alerted
+at most once per 4h cooldown.
+
+Install on Pi5:
+```bash
+sudo cp scripts/hermes/systemd/awiki-alert-poller.{service,timer} /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now awiki-alert-poller.timer
+# Verify: systemctl list-timers | grep alert-poller
+```
+
+State file: `.tmp/subagent-alert-poller-state.json` (last-alerted ts per subagent).
 
 ## Telegram Setup (Pi5)
 

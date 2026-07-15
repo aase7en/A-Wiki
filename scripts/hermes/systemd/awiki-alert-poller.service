@@ -1,0 +1,19 @@
+[Unit]
+Description=A-Wiki Subagent Alert Poller (critical → Telegram)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Single poll cycle (--once is the default for systemd timers).
+WorkingDirectory=/opt/a-wiki
+ExecStart=/usr/bin/python3 scripts/hermes/subagent_alert-poller.py --once
+# Telegram tokens are loaded from the Hermes secrets env file by notify.py.
+EnvironmentFile=/etc/hermes/secrets.env
+# Timeout: fetch + Telegram send should complete in under 60s.
+TimeoutStartSec=90
+# Don't restart — the timer handles the next poll. Avoids alert floods.
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=A-Wiki Subagent Alert Poller (hourly)
+Requires=awiki-alert-poller.service
+
+[Timer]
+# Run hourly at the top of the hour.
+OnCalendar=hourly
+# If the Pi5 was off at the scheduled time, run immediately on boot.
+Persistent=true
+# Avoid running concurrently with the 6h sync timer.
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target
