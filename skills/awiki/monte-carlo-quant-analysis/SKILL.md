@@ -217,9 +217,27 @@ def sobol_paths(mu: float, sigma: float, T: int, N: int = 4096, seed: int = 42):
     u = sampler.random(N)                    # shape (N, T) uniform [0,1)
     z = norm.ppf(u)                           # → standard normal via inverse CDF
     return mu + sigma * z                     # shape (N, T) simulated returns
+
+def halton_paths(mu: float, sigma: float, T: int, N: int = 4096, seed: int = 42):
+    """QMC paths via Halton — ดีกว่า Sobol เมื่อ N ไม่ใช่ power of 2.
+
+    Halton ใช้ different radical-inverse base ต่อ dimension (2,3,5,7,…) — ไม่
+    ต้องการ N=2^k. แต่ที่ N=2^k, Sobol มักเหนือกว่าเล็กน้อย (better balance).
+    เลือก Halton เมื่อ N = arbitrary (เช่น 5000); Sobol เมื่อ N = 2^k (เช่น 4096).
+    """
+    sampler = qmc.Halton(d=T, scramble=True, seed=seed)
+    u = sampler.random(N)
+    z = norm.ppf(u)
+    return mu + sigma * z
 ```
 
+**Math invariant (test แล้วใน `tests/test_monte_carlo_qmc.py`):**
+1. Sobol + Halton star discrepancy < pseudo-random (more uniform, scipy.stats.qmc.discrepancy)
+2. QMC estimator of E[Φ⁻¹(U)] = E[N(0,1)] = 0 has smaller |error| than pseudo avg over 20 seeds
+3. Both methods produce ≥2× smaller error than single-seed pseudo at N=4096, d=5
+
 **เลือกเมื่อ**: tail-risk metric (VaR/CVaR) ต้องการ precision สูง + N ใหญ่.
+Sobol (N=2^k) หรือ Halton (arbitrary N) ตามขนาด N.
 **ไม่เลือกเมื่อ**: path-dependent metric (max drawdown) ที่ sequential structure สำคัญ —
 QMC อาจไม่ preserve path structure ได้ดีเท่า pseudo-random.
 
