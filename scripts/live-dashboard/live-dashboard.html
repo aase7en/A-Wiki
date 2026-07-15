@@ -58,18 +58,19 @@
   <!-- Left: network / timeline / flow -->
   <div id="net-panel">
     <div id="hook-strip"></div>
-    <div class="view-toggle-bar">
-      <button class="view-btn active" id="btn-summary" onclick="setView('summary')">📊 Summary</button>
-      <button class="view-btn" id="btn-flow" onclick="setView('flow')">🌊 Flow</button>
-      <button class="view-btn" id="btn-timeline" onclick="setView('timeline')">🏊 Timeline</button>
-      <button class="view-btn" id="btn-graph" onclick="setView('graph')">🔗 Graph</button>
-      <button class="view-btn" id="btn-skills" onclick="setView('skills')">🧩 Skills</button>
-      <button class="view-btn" id="btn-coverage" onclick="setView('coverage')">📊 Coverage</button>
-      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')">📈 Analytics</button>
-      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')">🔬 Subagents</button>
-      <button class="view-btn" id="btn-eval" onclick="setView('eval')">📊 Eval</button>
-      <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
-      <button class="view-btn" id="btn-chat" onclick="setView('chat')">
+    <div class="view-toggle-bar" role="tablist" aria-label="มุมมอง Dashboard">
+      <button class="view-btn active" id="btn-summary" onclick="setView('summary')" role="tab" aria-selected="true" aria-controls="view-summary" tabindex="0">📊 Summary</button>
+      <button class="view-btn" id="btn-flow" onclick="setView('flow')" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1">🌊 Flow</button>
+      <button class="view-btn" id="btn-timeline" onclick="setView('timeline')" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1">🏊 Timeline</button>
+      <button class="view-btn" id="btn-graph" onclick="setView('graph')" role="tab" aria-selected="false" aria-controls="graph-vis" tabindex="-1">🔗 Graph</button>
+      <button class="view-btn" id="btn-skills" onclick="setView('skills')" role="tab" aria-selected="false" aria-controls="skills-panel" tabindex="-1">🧩 Skills</button>
+      <button class="view-btn" id="btn-coverage" onclick="setView('coverage')" role="tab" aria-selected="false" aria-controls="coverage-panel" tabindex="-1">📊 Coverage</button>
+      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')" role="tab" aria-selected="false" aria-controls="analytics-panel" tabindex="-1">📈 Analytics</button>
+      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1">🔬 Subagents</button>
+      <button class="view-btn" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1">📊 Eval</button>
+      <button class="view-btn" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1">💰 Cost</button>
+      <button class="view-btn" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1">🏛️ Council</button>
+      <button class="view-btn" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1">
       <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)">🌗</button>💬 Chat</button>
     </div>
 
@@ -402,6 +403,31 @@
     <div id="eval-regressions" style="display:none;padding:8px 12px;border-radius:var(--r-md);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);font-size:var(--fs-xs)"></div>
     <div style="position:relative;height:60vh;min-height:300px">
       <canvas id="eval-history-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- 💰 COST VIEW — USD estimate per run (S6) -->
+  <div id="cost-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h3 style="margin:0;font-size:var(--fs-lg)">💰 Cost History</h3>
+      <span id="cost-subtitle" style="color:var(--text-tertiary);font-size:var(--fs-xs)">USD estimate per run (token count × COST_MATRIX pricing)</span>
+      <button onclick="costHistoryLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+    </div>
+    <div id="cost-total" style="padding:8px 12px;border-radius:var(--r-md);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);font-size:var(--fs-sm);font-weight:600"></div>
+    <div id="cost-empty" style="color:var(--text-tertiary);padding:40px;text-align:center">
+      ⏳ กำลังโหลด...<br><span style="font-size:var(--fs-xs)">cost = <b>estimate</b> (token count × published pricing) ไม่ใช่ exact billing</span>
+    </div>
+    <div>
+      <h4 style="margin:0 0 6px;font-size:var(--fs-sm);color:var(--text-secondary)">USD per run per model (line)</h4>
+      <div style="position:relative;height:40vh;min-height:200px">
+        <canvas id="cost-line-chart"></canvas>
+      </div>
+    </div>
+    <div>
+      <h4 style="margin:0 0 6px;font-size:var(--fs-sm);color:var(--text-secondary)">Total USD per model — ใครแพงที่สุด? (bar)</h4>
+      <div style="position:relative;height:35vh;min-height:180px">
+        <canvas id="cost-bar-chart"></canvas>
+      </div>
     </div>
   </div>
 
