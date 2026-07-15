@@ -55,6 +55,11 @@ $RECYCLE.BIN/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
+
+# --- Dashboard build artifacts (v8 refactor) ---
+scripts/live-dashboard/node_modules/
+scripts/live-dashboard/app.min.js
+scripts/live-dashboard/app.min.js.map
 yarn-error.log*
 .pnpm-store/
 *.tsbuildinfo

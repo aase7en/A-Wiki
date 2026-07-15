@@ -1,0 +1,15 @@
+{
+  "name": "awiki-dashboard",
+  "version": "8.0.0",
+  "private": true,
+  "description": "A-Wiki Live Dashboard — esbuild build pipeline (v8 foundation refactor). Bundles src/*.js into a single minified app.min.js served by server.py.",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "precheck": "node build.mjs && node -e \"require('fs').statSync('app.min.js'); console.log('app.min.js OK')\"",
+    "size": "node -e \"const s=require('fs').statSync('app.min.js').size; console.log('app.min.js: '+(s/1024).toFixed(1)+' KB')\""
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
