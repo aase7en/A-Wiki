@@ -1,0 +1,51 @@
+{
+  "suite": "pipeline-council",
+  "description": "S3 DAG example: council pattern — question → 2 parallel critics → synthesis. Tests parallel fan-out + merge fan-in. Real-world use case: multi-perspective decision eval.",
+  "stages": [
+    {
+      "id": "question",
+      "subagent": "general-purpose",
+      "prompt": "Analyze this decision question and present the core trade-off: {topic}",
+      "type": "sequential",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "id": "skeptic",
+      "subagent": "debug-investigator",
+      "prompt": "You are a Skeptic. Challenge the assumptions and identify the biggest risk in this analysis. Be concise (2-3 sentences). Analysis: {question.output}",
+      "type": "parallel",
+      "depends_on": "question",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "id": "pragmatist",
+      "subagent": "workflow-simplifier",
+      "prompt": "You are a Pragmatist. Focus on shipping speed and real-world execution. What is the simplest path forward? Be concise (2-3 sentences). Analysis: {question.output}",
+      "type": "parallel",
+      "depends_on": "question",
+      "required": [],
+      "forbidden": []
+    },
+    {
+      "id": "synthesis",
+      "subagent": "general-purpose",
+      "prompt": "Synthesize these two perspectives into a final verdict. State your recommendation clearly.\n\nSkeptic view: {skeptic.output}\n\nPragmatist view: {pragmatist.output}\n\nProvide a clear verdict with reasoning.",
+      "type": "merge",
+      "depends_on": ["skeptic", "pragmatist"],
+      "required": ["verdict"],
+      "forbidden": ["i don't know", "cannot decide"]
+    }
+  ],
+  "model_overrides": {
+    "general-purpose": "deepseek-v4-flash",
+    "debug-investigator": "deepseek-v4-pro",
+    "workflow-simplifier": "deepseek-v4-flash"
+  },
+  "cases": [
+    {"id": "microservices", "topic": "should a small team adopt microservices or stay with a monolith?"},
+    {"id": "tech-debt", "topic": "should we pause feature work for 2 weeks to pay down technical debt?"},
+    {"id": "build-vs-buy", "topic": "should we build an in-house analytics dashboard or buy an off-the-shelf solution?"}
+  ]
+}
