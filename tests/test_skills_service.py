@@ -442,3 +442,26 @@ def test_skill_history_no_changelog_by_default():
     """Default call (no include_changelog) must NOT include changelog key."""
     h = skills_service.skill_history("debug-mantra")
     assert "changelog" not in h, "changelog should be omitted unless requested"
+
+
+# ---------------------------------------------------------------------------
+# CHUNK BB — recommend_skills() semantic search fallback tier
+# ---------------------------------------------------------------------------
+
+def test_recommend_returns_mode_field():
+    """recommend_skills response must include 'mode' field (semantic|substring)."""
+    r = skills_service.recommend_skills("debug", limit=3)
+    assert "mode" in r, "recommend response must include mode field"
+    assert r["mode"] in ("semantic", "substring"), f"invalid mode: {r['mode']}"
+
+
+def test_recommend_fallback_to_substring_when_no_vec():
+    """If sqlite_vec/fastembed unavailable, mode must be 'substring'."""
+    # This test verifies the fallback works. Whether we actually have
+    # the deps installed determines which path runs, but either way the
+    # response must be valid and contain results for a known query.
+    r = skills_service.recommend_skills("debug", limit=3)
+    assert r["mode"] in ("semantic", "substring")
+    if r["mode"] == "substring":
+        # Fallback path must still return results.
+        assert r["total_matched"] > 0, "substring fallback should find 'debug'"

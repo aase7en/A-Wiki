@@ -844,8 +844,22 @@ def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
     """
     query = (query or "").strip().lower()
     if not query:
-        return {"query": query, "results": [], "total_matched": 0, "walkthroughs": []}
+        return {"query": query, "results": [], "total_matched": 0, "walkthroughs": [], "mode": "substring"}
 
+    # Try semantic search first (embedding-based); fall back to substring.
+    sem = _semantic_recommend(query, limit=5)
+    if sem is not None:
+        # Merge semantic results with substring walkthrough matches.
+        walkthrough_matches = _substring_walkthrough_matches(query)
+        return {
+            "query": query,
+            "results": sem,
+            "total_matched": len(sem),
+            "walkthroughs": walkthrough_matches[:3],
+            "mode": "semantic",
+        }
+
+    # Fallback: substring matching (existing logic).
     reg = _load_registry()
     skills = [s for s in reg.skills if s.get("status") == "canonical"]
 
@@ -931,10 +945,122 @@ def recommend_skills(query: str, limit: int = 5) -> dict[str, Any]:
         "results": results[:limit],
         "total_matched": len(results),
         "walkthroughs": walkthrough_matches[:3],
+        "mode": "substring",
     }
 
 
-def _load_walkthroughs_for_recommend() -> dict[str, Any]:
+def _semantic_recommend(query: str, limit: int = 5) -> list[dict[str, Any]] | None:
+    """Try embedding-based semantic search against the wiki vec index.
+
+    Returns None if sqlite_vec/fastembed unavailable or vec index missing
+    (caller falls back to substring matching). Returns a list of skill
+    results (same shape as substring results) if semantic search succeeds.
+    """
+    try:
+        import sqlite3
+        import sqlite_vec
+    except ImportError:
+        return None  # sqlite_vec not installed
+
+    vec_db = REPO_ROOT / ".wiki-index.db"
+    if not vec_db.is_file():
+        return None  # no index built
+
+    try:
+        from fastembed import TextEmbedding
+    except ImportError:
+        return None  # fastembed not installed
+
+    # Embed the query (same model as build-vec-index.py).
+    try:
+        model = TextEmbedding(model_name="paraphrase-multilingual-MiniLM-L12-v2")
+        query_vec = list(model.embed([query]))[0]
+    except Exception:
+        return None
+
+    # Query the vec index for wiki pages, then map to skills via registry path.
+    reg = _load_registry()
+    path_to_skill = {}
+    for s in reg.skills:
+        if s.get("status") != "canonical":
+            continue
+        p = s.get("path", "")
+        if p:
+            path_to_skill[p] = s
+
+    try:
+        conn = sqlite3.connect(str(vec_db))
+        sqlite_vec.load(conn)
+        # Convert query vec to blob for sqlite-vec match.
+        import struct
+        vec_blob = struct.pack(f"{len(query_vec)}f", *query_vec)
+        rows = conn.execute(
+            "SELECT path, distance FROM wiki_vec "
+            "WHERE embedding MATCH ? ORDER BY distance LIMIT ?",
+            (vec_blob, limit * 3),
+        ).fetchall()
+        conn.close()
+    except Exception:
+        return None
+
+    # Map wiki paths to skills + score (lower distance = better).
+    out: list[dict[str, Any]] = []
+    max_dist = max((r[1] for r in rows), default=1.0) or 1.0
+    for path, dist in rows:
+        # Try exact path match first, then prefix match.
+        skill = path_to_skill.get(path)
+        if not skill:
+            for sp, ss in path_to_skill.items():
+                if path.endswith(sp) or sp.endswith(path):
+                    skill = ss
+                    break
+        if not skill:
+            continue
+        score = round((1.0 - dist / max_dist) * 10, 1)  # normalize 0-10
+        out.append({
+            "name": skill.get("name"),
+            "score": score,
+            "match_reason": f"ความหมายใกล้เคียง (distance={dist:.3f})",
+            "th_description": (skill.get("th_description") or "")[:100],
+            "invocation_hint": _invocation_hint(skill),
+            "domain": skill.get("domain") or [],
+            "lifecycle_phase": skill.get("lifecycle_phase", "none"),
+        })
+        if len(out) >= limit:
+            break
+    return out if out else None
+
+
+def _substring_walkthrough_matches(query: str) -> list[dict[str, Any]]:
+    """Substring-match walkthroughs (extracted for reuse by semantic path)."""
+    matches: list[dict[str, Any]] = []
+    try:
+        walk_data = _load_walkthroughs_for_recommend()
+        for wid, flow in walk_data.items():
+            if wid == "_meta":
+                continue
+            title = (flow.get("title_th") or "").lower()
+            summary = (flow.get("summary_th") or "").lower()
+            fid = wid.lower()
+            w_score = 0
+            if query in title:
+                w_score += 5
+            if query in summary:
+                w_score += 3
+            if query in fid:
+                w_score += 4
+            if w_score > 0:
+                matches.append({
+                    "id": wid,
+                    "title_th": flow.get("title_th", wid),
+                    "score": w_score,
+                    "step_count": len(flow.get("steps", [])),
+                    "match_reason": "ตรงชื่อ/สรุป flow",
+                })
+        matches.sort(key=lambda w: -w["score"])
+    except Exception:
+        pass
+    return matches
     """Load skill-walkthroughs.json for the recommender. Cached by mtime."""
     if not WALKTHROUGHS_FILE.is_file():
         return {}

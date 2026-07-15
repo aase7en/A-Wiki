@@ -1102,6 +1102,54 @@ if(v==='coverage')coverageLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 }
+// === SUBAGENTS PANE — Observatory: live per-subagent metrics ===
+async function subagentsLoad(){
+const grid=$('subagents-grid'),empty=$('subagents-empty'),buckets=$('subagents-buckets'),sub=$('subagents-subtitle');
+if(!grid)return;
+grid.innerHTML='<div style="color:var(--text-tertiary);padding:20px;text-align:center">⏳ กำลังโหลด...</div>';
+const winSel=$('subagents-window');
+const win=winSel?winSel.value:'86400';
+try{
+const d=await fetch('/api/subagents/stats?since='+encodeURIComponent(win)).then(r=>r.json());
+if(d.error)throw new Error(d.error);
+const subs=d.by_subagent||{};
+const names=Object.keys(subs);
+if(!names.length){grid.innerHTML='';empty.style.display='block';buckets.innerHTML='';sub.textContent='ยังไม่มีข้อมูล — เรียก subagent แล้วกลับมาดู';return;}
+empty.style.display='none';
+const winLbl=win!=='0'?(win>=86400?Math.round(win/86400)+' วัน':win>=3600?Math.round(win/3600)+' ชม.':win+' วิ'):'ทั้งหมด';
+sub.textContent=`${d.total_invocations} invocation(s) · ช่วง ${winLbl}`;
+grid.innerHTML=names.map(n=>{
+const s=subs[n];
+const pr=Math.round((s.pass_rate||0)*100);
+const prColor=pr>=90?'var(--accent-brand)':pr>=70?'#fbbf24':'#f87171';
+const bm=s.best_model||'-';
+const bmShort=bm.startsWith('custom:')?bm.split(':').slice(-1)[0]:bm;
+const latP50=s.latency_p50_ms||0,latP95=s.latency_p95_ms||0;
+const tok=s.tokens_out||0;
+return `<div class="glass-card" style="padding:12px;border:1px solid var(--border)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+<span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--accent-brand);font-weight:700;word-break:break-all">${n}</span>
+<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${s.count}×</span>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:var(--fs-2xs);color:var(--text-secondary)">
+<span>✅ <b style="color:${prColor}">${pr}%</b></span>
+<span>⏱️ ${latP50}<span style="color:var(--text-tertiary)">/${latP95}</span>ms</span>
+<span>📝 ${tok} tok</span>
+</div>
+<div style="margin-top:6px;font-size:var(--fs-2xs);color:var(--text-tertiary)">best: <span style="color:#a78bfa">${bmShort}</span>${s.fail?` · ⚠️ ${s.fail} fail`:''}</div>
+</div>`;
+}).join('');
+const bks=d.by_bucket||{};
+buckets.innerHTML=Object.keys(bks).length?Object.entries(bks).map(([b,s])=>{
+const pr=Math.round((s.pass_rate||0)*100);
+const prColor=pr>=90?'var(--accent-brand)':pr>=70?'#fbbf24':'#f87171';
+return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+<span style="font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--text-primary)">${b}</span>
+<span style="font-size:var(--fs-2xs);color:var(--text-secondary)">${s.count}× · ✅ <b style="color:${prColor}">${pr}%</b> · ⚠️ ${s.fail||0}</span>
+</div>`;
+}).join(''):'<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px">ไม่มีข้อมูล bucket</div>';
+}catch(e){grid.innerHTML='<div style="color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
+}
 // === COUNCIL PANE — list -> detail, polls /api/council every 10s only while visible ===
 let _councilCache=[],_councilPoll=null;
 function councilFetchList(){
@@ -1578,7 +1626,8 @@ const flows=(r.walkthroughs||[]).map(w=>`<div onclick="simWalkthrough('${w.id}')
 <span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0">${w.step_count} ขั้น · ⚡${w.score}</span>
 </div>`).join('');
 const flowHtml=flows?('<div style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-bottom:4px">🎬 แนะนำ flow:</div>'+flows):'';
-const skillHtml=r.results.length?('<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px'+(flows?';margin-top:6px':'')+'">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'":</div>'+
+const modeBadge=r.mode==='semantic'?'<span style="color:var(--accent-violet)" title="ค้นหาด้วย embedding">🧠 semantic</span>':'<span style="color:var(--text-tertiary)" title="ค้นหาด้วยการตรงคำ">📝 substring</span>';
+const skillHtml=r.results.length?('<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px'+(flows?';margin-top:6px':'')+'">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'" · '+modeBadge+'</div>'+
 r.results.map(res=>{
 const d=skillsDomainColor((res.domain||[])[0]||'');
 return '<div onclick="skillsOpenDetail(\''+res.name+'\')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--border2);cursor:pointer;margin-bottom:4px">'+
