@@ -11,6 +11,43 @@ function _downloadBlob(blob,filename){
   a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+// CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
+// Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
+let _trapLastFocused=null,_trapHandler=null;
+function _focusableEls(container){
+  return Array.from(container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(el=>el.offsetParent!==null&&!el.disabled);
+}
+function _openModalTrap(modalEl){
+  if(!modalEl)return;
+  _trapLastFocused=document.activeElement;
+  // Move focus into modal
+  const focusable=_focusableEls(modalEl);
+  if(focusable.length)focusable[0].focus();else modalEl.setAttribute('tabindex','-1'),modalEl.focus();
+  // Trap Tab/Shift+Tab
+  _trapHandler=function(e){
+    if(e.key!=='Tab')return;
+    const f=_focusableEls(modalEl);
+    if(!f.length)return;
+    const first=f[0],last=f[f.length-1];
+    if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+    else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+  };
+  modalEl.addEventListener('keydown',_trapHandler);
+}
+function _closeModalTrap(){
+  if(_trapHandler){document.removeEventListener('keydown',_trapHandler);_trapHandler=null;}
+  if(_trapLastFocused&&typeof _trapLastFocused.focus==='function'){try{_trapLastFocused.focus();}catch(_){}}
+  _trapLastFocused=null;
+}
+// CHUNK F9: screen reader announcement helper (writes to #aria-live, SR reads aloud).
+let _announceTimer=null;
+function announce(msg){
+  const live=$('aria-live');if(!live)return;
+  // Clear + re-set so SR re-announces even if same message.
+  live.textContent='';
+  clearTimeout(_announceTimer);
+  _announceTimer=setTimeout(()=>{live.textContent=msg;},100);
+}
 function animateCounter(el,target){
 if(!el)return;
 const cur=parseInt(el.textContent||'0',10)||0;
@@ -162,8 +199,15 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');
+// CHUNK B9: update ARIA tab state (roving tabindex — only active tab is focusable).
+const tabs=[sm,fl,tl,gr,sk,ch,co,cv,sb,an,ev,ct].filter(Boolean);
+const viewMap={summary:'summary',flow:'flow',timeline:'timeline',graph:'graph',skills:'skills',chat:'chat',council:'council',coverage:'coverage',subagents:'subagents',analytics:'analytics',eval:'eval',cost:'cost'};
+tabs.forEach(t=>{const tv=viewMap[t.id.replace('btn-','')];const isActive=tv===v;t.setAttribute('aria-selected',isActive?'true':'false');t.setAttribute('tabindex',isActive?'0':'-1');});
+// CHUNK B9: arrow-key navigation between tabs (WAI-ARIA tab pattern).
+const vtb=document.querySelector('.view-toggle-bar');
+if(vtb&&!vtb._arrowBound){vtb._arrowBound=true;vtb.addEventListener('keydown',function(e){if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const cur=tabs.indexOf(document.activeElement);if(cur<0)return;e.preventDefault();let nxt;if(e.key==='ArrowRight')nxt=(cur+1)%tabs.length;else nxt=(cur-1+tabs.length)%tabs.length;tabs[nxt].focus();setView(viewMap[tabs[nxt].id.replace('btn-','')]);});}
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
@@ -173,6 +217,7 @@ $('coverage-panel').style.display=v==='coverage'?'flex':'none';
 $('analytics-panel').style.display=v==='analytics'?'flex':'none';
 $('subagents-panel').style.display=v==='subagents'?'flex':'none';
 $('eval-panel').style.display=v==='eval'?'flex':'none';
+$('cost-panel').style.display=v==='cost'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
@@ -183,6 +228,7 @@ if(v==='coverage')coverageLoad();
 if(v==='analytics')analyticsLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='eval')evalHistoryLoad();
+if(v==='cost')costHistoryLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 syncUrlState();
 }

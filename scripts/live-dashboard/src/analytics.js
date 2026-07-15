@@ -146,6 +146,58 @@ async function evalHistoryLoad(){
 }
 function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h;}
 
+// === COST HISTORY PANE — USD estimate per run (S6) ===
+let _costLineChart=null,_costBarChart=null;
+async function costHistoryLoad(){
+  const empty=$('cost-empty'),lineEl=$('cost-line-chart'),barEl=$('cost-bar-chart'),sub=$('cost-subtitle'),totalEl=$('cost-total');
+  if(!lineEl)return;
+  if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
+  try{
+    const d=await fetch('/api/eval/cost').then(r=>r.json());
+    if(empty)empty.style.display='none';
+    const runCount=d.run_count||0;
+    const totalUsd=(d.total_usd||0).toFixed(4);
+    if(sub)sub.textContent=`${runCount} run(s) · ${totalUsd} USD รวม (estimate)`;
+    if(totalEl)totalEl.textContent='💰 รวมทุก run: $'+totalUsd;
+    const labels=(d.series&&d.series.labels)||[];
+    const datasets=((d.series&&d.series.datasets)||[]).map(ds=>{
+      const palette=['rgba(251,191,36,1)','rgba(248,113,113,1)','rgba(94,234,212,1)','rgba(129,140,248,1)','rgba(52,211,153,1)','rgba(244,114,182,1)'];
+      const c=palette[Math.abs(hashCode(ds.label))%palette.length];
+      return {label:ds.label,data:ds.data,borderColor:c,backgroundColor:c.replace('1)','.15)'),fill:true,tension:.3,spanGaps:true};
+    });
+    if(_costLineChart){try{_costLineChart.destroy();}catch(_){}_costLineChart=null;}
+    if(_costBarChart){try{_costBarChart.destroy();}catch(_){}_costBarChart=null;}
+    if(!labels.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี eval results พร้อม token counts — รัน CI eval (S6.0+ record tokens) เพื่อเริ่มเก็บ cost data';}
+      return;
+    }
+    // Line chart: USD per run per suite/model
+    _costLineChart=new Chart(lineEl,{
+      type:'line',
+      data:{labels:labels.map(l=>l.slice(4)),datasets},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{color:'var(--text-secondary)',font:{size:10},boxWidth:12}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+(c.parsed.y||0).toFixed(4)}}},
+        scales:{x:{ticks:{color:'#888',font:{size:9},maxRotation:45,minRotation:45}},y:{min:0,ticks:{color:'#888',callback:v=>'$'+v.toFixed(3)}}}
+      }
+    });
+    // Bar chart: total USD per model (who's most expensive?)
+    const summary=d.summary||[];
+    if(summary.length&&barEl){
+      const sorted=summary.slice(0,10);  // top 10 most expensive
+      _costBarChart=new Chart(barEl,{
+        type:'bar',
+        data:{labels:sorted.map(s=>s.model),datasets:[{label:'total USD',data:sorted.map(s=>s.total_usd),backgroundColor:'rgba(251,191,36,.7)',borderColor:'rgba(251,191,36,1)'}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'$'+(c.parsed.x||0).toFixed(4)}}},
+          scales:{x:{min:0,ticks:{color:'#888',callback:v=>'$'+v.toFixed(3)}},y:{ticks:{color:'#888',font:{size:10}}}}
+        }
+      });
+    }
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+
 function clearAnalyticsData(){
   if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
   _lsSet(OPENS_KEY,[]);

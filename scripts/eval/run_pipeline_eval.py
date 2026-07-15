@@ -157,7 +157,12 @@ def run_pipeline(
             cid = case.get("id", "default")
             samples = []
             for _ in range(k):
-                response = _chain_stages(stages, model, case, overrides)
+                # S3: DAG dispatcher — route to dag_eval if stages have type/depends_on
+                if _is_dag_suite(stages):
+                    import dag_eval  # lazy import (S3)
+                    response = dag_eval.execute_dag(stages, model, case, overrides)
+                else:
+                    response = _chain_stages(stages, model, case, overrides)
                 passed = judge(final_stage, response)
                 samples.append({"pass": passed, "response_preview": response[:200]})
                 model_results.append({"pass": passed})
@@ -169,6 +174,18 @@ def run_pipeline(
         }
         out["by_case"].update(per_case)
     return out
+
+
+def _is_dag_suite(stages: list[dict]) -> bool:
+    """S3: detect if a pipeline suite uses DAG features (type/depends_on).
+
+    Returns True ถ้ามี stage ใดมี `type` field (non-default) หรือ `depends_on`.
+    ถ้า False → ใช้ linear _chain_stages (backward compat, existing suites).
+    """
+    for s in stages:
+        if s.get("type") or s.get("depends_on"):
+            return True
+    return False
 
 
 def _chain_stages(

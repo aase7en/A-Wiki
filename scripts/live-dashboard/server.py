@@ -53,6 +53,7 @@ import skills_service  # noqa: E402
 import subagent_stats  # noqa: E402
 import alerts  # noqa: E402
 import eval_history  # noqa: E402  -- R3: /api/eval/history route
+import cost_history  # noqa: E402  -- S6: /api/eval/cost route
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -743,6 +744,13 @@ class Handler(BaseHTTPRequestHandler):
             # Read-only — scans evals/subagents/results/results-*.json.
             try:
                 self._json_response(eval_history.build_dashboard_payload())
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/cost":
+            # S6: cost history (USD estimate per run per suite/model).
+            # Read-only — scans results-*.json for token counts × COST_MATRIX.
+            try:
+                self._json_response(cost_history.build_dashboard_payload())
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):

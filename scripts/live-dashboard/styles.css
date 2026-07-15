@@ -414,3 +414,18 @@ to{transform:translateY(0);opacity:1}
 .council-bubble .cb-hdr{font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:4px}
 .council-bubble .cb-body{font-size:var(--fs-sm);white-space:pre-wrap;word-break:break-word}
 #council-empty{color:var(--text-tertiary);font-size:var(--fs-xs);text-align:center;padding:24px}
+
+/* === CHUNK A9 — Accessibility foundation (WCAG AA) === */
+/* Visually hidden but available to screen readers (used by #aria-live, skip links). */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Skip links: hidden until keyboard-focused, then visible. */
+.sr-only-focusable{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sr-only-focusable:focus{position:fixed;top:8px;left:8px;width:auto;height:auto;padding:8px 16px;margin:0;overflow:visible;clip:auto;z-index:9999;background:var(--elev-1);border:2px solid var(--accent-brand);border-radius:var(--r-md);color:var(--text-primary);font-size:var(--fs-sm)}
+/* Comprehensive focus-visible for all interactive elements (WCAG 2.4.7 Focus Visible). */
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px}
+/* Skill cards: focus ring via box-shadow (they have border-radius). */
+.skill-card:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;box-shadow:0 0 0 4px rgba(94,234,212,.15)}
+/* View tabs: focus ring matches the active-tab style. */
+.view-btn:focus-visible{outline:2px solid var(--accent-brand);outline-offset:-2px}
+/* Respect prefers-reduced-motion: disable all transitions/animations globally. */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

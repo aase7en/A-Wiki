@@ -247,3 +247,26 @@ def test_run_race_multiple_cases(monkeypatch):
     assert "doctor-1" in out["by_case"]
     assert "doctor-2" in out["by_case"]
     assert out["by_case"]["doctor-1"]["by_model"]["a"]["pass_at_k"] == pytest.approx(1.0)
+
+
+# ---------------------------------------------------------------------------
+# 12. S6.0: token recording in race results (for cost tracking)
+# ---------------------------------------------------------------------------
+def test_race_eval_records_tokens(monkeypatch):
+    """S6.0: race_eval ต้อง record tokens_in/tokens_out ใน sample + aggregate."""
+    monkeypatch.setattr(race_eval, "delegate_to_model", _mock_delegate_passing)
+    out = race_eval.race_eval(
+        models=["a", "b"], case=CASE_DOCTOR, k=2, max_workers=4,
+    )
+    # tokens ในแต่ละ sample
+    for model in ["a", "b"]:
+        samples = out["by_model"][model].get("samples", [])
+        assert len(samples) == 2
+        for s in samples:
+            assert "tokens_in" in s
+            assert "tokens_out" in s
+            assert s["tokens_in"] > 0  # prompt ไม่ว่าง
+            assert s["tokens_out"] > 0  # response ไม่ว่าง
+    # aggregate ใน by_model
+    assert out["by_model"]["a"]["tokens_in"] > 0
+    assert out["by_model"]["a"]["tokens_out"] > 0

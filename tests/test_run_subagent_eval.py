@@ -216,3 +216,50 @@ def test_resolve_model_for_eval_alias():
     # custom: prefix passes through unchanged (used by ZCode agent format)
     custom = "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
     assert ev.resolve_model_for_eval(custom) == custom
+
+
+# ---------------------------------------------------------------------------
+# S6.0: token recording in eval results (prerequisite for cost dashboard)
+# ---------------------------------------------------------------------------
+def test_estimate_tokens_basic():
+    """estimate_tokens() ประมาณ token จากความยาวข้อความ (≈ len//4)."""
+    # empty → 0
+    assert ev.estimate_tokens("") == 0
+    # short text → proportional to length
+    short = "hello world"  # 11 chars → ~2 tokens
+    assert ev.estimate_tokens(short) > 0
+    # longer text → more tokens
+    long_text = "a" * 400  # 400 chars → ~100 tokens
+    assert ev.estimate_tokens(long_text) > ev.estimate_tokens(short)
+
+
+def test_run_suite_records_tokens(monkeypatch):
+    """S6.0: run_suite() ต้อง record tokens_in/tokens_out ในแต่ละ sample + aggregate ใน by_model."""
+    # Mock delegate_to_model ให้ return response ความยาวคงที่
+    def mock_delegate(model, prompt):
+        return "lisinopril is the answer " * 10  # ~260 chars → ~65 tokens
+
+    monkeypatch.setattr(ev, "delegate_to_model", mock_delegate)
+
+    suite = {
+        "suite": "test",
+        "cases": [{"id": "c1", "subagent": "x", "prompt": "What drug?", "required": ["lisinopril"], "forbidden": []}],
+    }
+    result = ev.run_suite(suite, ["model-a"], k=2)
+
+    # tokens ต้องอยู่ในแต่ละ sample (by_case)
+    samples = result["by_case"]["c1"]
+    assert len(samples) == 2
+    for s in samples:
+        assert "tokens_in" in s, "sample ต้องมี tokens_in"
+        assert "tokens_out" in s, "sample ต้องมี tokens_out"
+        assert s["tokens_in"] > 0, "tokens_in ต้อง > 0 (prompt ไม่ว่าง)"
+        assert s["tokens_out"] > 0, "tokens_out ต้อง > 0 (response ไม่ว่าง)"
+
+    # aggregate ต้องอยู่ใน by_model
+    model_stats = result["by_model"]["model-a"]
+    assert "tokens_in" in model_stats, "by_model ต้องมี aggregate tokens_in"
+    assert "tokens_out" in model_stats, "by_model ต้องมี aggregate tokens_out"
+    # aggregate = sum ของทุก sample (k=2)
+    expected_out = samples[0]["tokens_out"] + samples[1]["tokens_out"]
+    assert model_stats["tokens_out"] == expected_out

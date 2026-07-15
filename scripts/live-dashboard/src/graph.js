@@ -43,6 +43,7 @@ if(ev.type==='registry_update'){
 // view so the dashboard reflects new/edited skills without a manual refresh.
 // CHUNK RR: desktop notification (deduped via tag).
 showNotif('Registry อัปเดตแล้ว','skills/coverage รีเฟรชอัตโนมัติ','registry_update');
+announce('Registry อัปเดตแล้ว — กำลังรีเฟรชข้อมูล');
 try{
 if(currentView==='skills'){skillsLoad();}
 else if(currentView==='coverage'){coverageLoad();}
@@ -175,6 +176,6 @@ _particles=[];particleG.innerHTML='';
 }
 let _caps={families:{},recommended_by_task:{}};
 function toast(msg,err){const t=$('set-toast');t.textContent=msg;t.className='set-toast show'+(err?' err':'');setTimeout(()=>t.className='set-toast',2200);}
-function openSettings(){$('settings-backdrop').classList.add('show');$('settings').classList.add('show');loadSettings();}
-function closeSettings(){$('settings-backdrop').classList.remove('show');$('settings').classList.remove('show');}
+function openSettings(){$('settings-backdrop').classList.add('show');$('settings').classList.add('show');loadSettings();_openModalTrap($('settings'));}
+function closeSettings(){$('settings-backdrop').classList.remove('show');$('settings').classList.remove('show');_closeModalTrap();}
 
