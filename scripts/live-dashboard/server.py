@@ -634,6 +634,9 @@ class Handler(BaseHTTPRequestHandler):
             self._serve_static_file("sw.js", "application/javascript")
         elif path == "/manifest.json":
             self._serve_static_file("manifest.json", "application/manifest+json")
+        elif path == "/styles.css":
+            # CHUNK B8: extracted CSS (v8 foundation refactor).
+            self._serve_static_file("styles.css", "text/css; charset=utf-8")
         elif path == "/clear":
             self._clear_log()
         elif path == "/status":
