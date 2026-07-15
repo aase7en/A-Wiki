@@ -19,16 +19,24 @@ import run_subagent_eval as ev  # noqa: E402
 
 
 def _all_suites():
-    """Return [(name, parsed_dict), ...] for every *.json suite (not results/)."""
+    """Return [(name, parsed_dict), ...] for every *.json suite (not results/).
+
+    Excludes pipeline suites (which use 'stages' not 'cases') — those are
+    validated by test_run_pipeline_eval.py.
+    """
     out = []
     for p in sorted(SUITES_DIR.glob("*.json")):
         if p.parent.name == "results":
             continue
         try:
             d = json.loads(p.read_text(encoding="utf-8"))
-            out.append((p.stem, d))
         except Exception:
             pass  # malformed — caught by test below
+        else:
+            # Skip pipeline suites (different schema — 'stages' not 'cases').
+            if "stages" in d:
+                continue
+            out.append((p.stem, d))
     return out
 
 
@@ -57,7 +65,8 @@ def test_all_suite_files_parse():
 
 
 def test_all_suites_have_required_keys():
-    """Every suite must have 'suite' and 'cases' keys."""
+    """Every (non-pipeline) suite must have 'suite' and 'cases' keys.
+    Pipeline suites (with 'stages') are validated separately."""
     for name, d in _all_suites():
         assert "suite" in d, f"{name}.json missing 'suite' key"
         assert "cases" in d, f"{name}.json missing 'cases' key"

@@ -190,6 +190,66 @@ jobs:
             echo "No new results file to commit."
           fi
 
+      # ── Q6: Adaptive routing (preview always, auto-apply on manual trigger) ──
+      # Guardrails are intentionally tight: min 30 samples (3× default) + min_delta
+      # 0.20 (1.33× default). schedule trigger = preview-only (no writes);
+      # workflow_dispatch = auto-apply (manual consent). Each apply is a separate
+      # atomic commit for easy revert.
+      - name: Adaptive routing preview (always)
+        run: |
+          set -euo pipefail
+          mkdir -p .tmp/subagent-eval
+          # Snapshot observatory stats from dashboard (if reachable; else skip).
+          curl -sf "http://localhost:7790/api/subagents/stats?since=604800" \
+            > .tmp/subagent-eval/latest-stats.json 2>/dev/null || \
+            echo '{"by_subagent":{}}' > .tmp/subagent-eval/latest-stats.json
+          python3 scripts/eval/apply_adaptive_routing.py \
+            --stats-json .tmp/subagent-eval/latest-stats.json \
+            --eval-results evals/subagents/results/ \
+            --min-samples 30 --min-delta 0.20 \
+            > .tmp/subagent-eval/adaptive-preview.txt 2>&1 || true
+          echo "=== Adaptive routing preview ==="
+          cat .tmp/subagent-eval/adaptive-preview.txt || true
+
+      - name: Auto-apply recommendations (manual trigger only)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          # Count how many recommendations have status == 'recommend'.
+          RECS=$(python3 -c "
+          import json, sys
+          sys.path.insert(0, 'scripts/eval')
+          import apply_adaptive_routing as aa
+          import adaptive_routing as ar
+          stats = json.load(open('.tmp/subagent-eval/latest-stats.json'))
+          from pathlib import Path
+          eval_results = aa._load_results(Path('evals/subagents/results/'))
+          if not eval_results:
+              print(0); sys.exit()
+          current = aa._load_current_models()
+          mapping = aa.build_suite_to_subagents(aa.SUITES_DIR)
+          changes = ar.recommend_model_changes(stats, eval_results, current, mapping,
+                                               config={'min_samples': 30, 'min_delta': 0.20})
+          print(sum(1 for c in changes if c.get('status') == 'recommend'))
+          " 2>/dev/null || echo 0)
+          echo "Recommendations to apply: $RECS"
+          if [ "$RECS" -gt 0 ]; then
+            python3 scripts/eval/apply_adaptive_routing.py --apply \
+              --stats-json .tmp/subagent-eval/latest-stats.json \
+              --eval-results evals/subagents/results/ \
+              --min-samples 30 --min-delta 0.20
+            git add agents/subagents/ .tmp/adaptive-routing-log.jsonl 2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -m "feat(subagent): auto-apply model swap $(date -u +%Y-%m-%d) [CI guardrails: 30s/0.20δ]"
+              git push
+              echo "✓ Applied $RECS recommendation(s) and pushed."
+            else
+              echo "No frontmatter changes after apply (recommendations were no-ops)."
+            fi
+          else
+            echo "No recommendations met the tight guardrails (30 samples / 0.20 delta). Skipping apply."
+          fi
+
       - name: Upload report + results
         uses: actions/upload-artifact@v4
         with:
