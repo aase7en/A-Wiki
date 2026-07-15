@@ -164,6 +164,13 @@ function setView(v){
 currentView=v;
 const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost');
 sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');
+// CHUNK B9: update ARIA tab state (roving tabindex — only active tab is focusable).
+const tabs=[sm,fl,tl,gr,sk,ch,co,cv,sb,an,ev,ct].filter(Boolean);
+const viewMap={summary:'summary',flow:'flow',timeline:'timeline',graph:'graph',skills:'skills',chat:'chat',council:'council',coverage:'coverage',subagents:'subagents',analytics:'analytics',eval:'eval',cost:'cost'};
+tabs.forEach(t=>{const tv=viewMap[t.id.replace('btn-','')];const isActive=tv===v;t.setAttribute('aria-selected',isActive?'true':'false');t.setAttribute('tabindex',isActive?'0':'-1');});
+// CHUNK B9: arrow-key navigation between tabs (WAI-ARIA tab pattern).
+const vtb=document.querySelector('.view-toggle-bar');
+if(vtb&&!vtb._arrowBound){vtb._arrowBound=true;vtb.addEventListener('keydown',function(e){if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const cur=tabs.indexOf(document.activeElement);if(cur<0)return;e.preventDefault();let nxt;if(e.key==='ArrowRight')nxt=(cur+1)%tabs.length;else nxt=(cur-1+tabs.length)%tabs.length;tabs[nxt].focus();setView(viewMap[tabs[nxt].id.replace('btn-','')]);});}
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
