@@ -596,7 +596,8 @@ to{transform:translateY(0);opacity:1}
       <div id="skills-graph-canvas" style="width:100%;height:100%"></div>
       <div id="skills-graph-stats" style="position:absolute;top:8px;left:8px;font-size:var(--fs-2xs);color:var(--text-tertiary);background:var(--elev-1);padding:4px 8px;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
       <div id="skills-cycles-banner" style="display:none;position:absolute;top:8px;left:50%;transform:translateX(-50%);max-width:70%;background:var(--elev-1);border:1px solid var(--accent-warn);border-radius:var(--r-md);padding:8px 14px;font-size:var(--fs-2xs);color:var(--text-primary);box-shadow:var(--shadow-md);z-index:5"></div>
-      <div id="skills-graph-export" style="position:absolute;top:8px;right:8px;display:flex;gap:4px">
+      <div id="skills-graph-export" style="position:absolute;top:8px;right:8px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:50%">
+        <button class="set-btn sm" id="graph-cooccur-toggle" onclick="toggleCoOccurGraph()" style="color:var(--accent-brand);padding:4px 8px;font-size:var(--fs-2xs)" title="สลับระหว่างกราฟ phase/domain และกราฟใช้ร่วมกันจริง">📊 ใช้ร่วมกัน</button>
         <button class="set-btn sm" onclick="graphExportPNG()" style="color:var(--accent-warm);padding:4px 8px;font-size:var(--fs-2xs)" title="ดาวน์โหลดกราฟเป็น PNG">📥 PNG</button>
         <button class="set-btn sm" onclick="graphExportSVG()" style="color:var(--accent-success);padding:4px 8px;font-size:var(--fs-2xs)" title="ดาวน์โหลดกราฟเป็น SVG">📥 SVG</button>
       </div>
@@ -2089,6 +2090,77 @@ document.body.appendChild(a);a.click();document.body.removeChild(a);
 setTimeout(()=>URL.revokeObjectURL(url),1000);
 toast('📥 ดาวน์โหลด CSV แล้ว ('+skills.length+' skills × '+agents.length+' agents)');
 }catch(e){toast('❌ '+e.message,'err');}
+}
+// === CHUNK KK — Co-occurrence mining (graph from real opens log) ===
+let _coOccurMode=false;
+function _mineCoOccurrence(){
+// Mine awiki-skill-opens: pairs opened within 60s window = co-occur.
+const opens=_lsGet(OPENS_KEY,[]);
+if(opens.length<5)return null;
+// Sort by ts ascending.
+opens.sort((a,b)=>(a.ts||0)-(b.ts||0));
+const pairCounts={}; // "A|B" -> count (A<B canonical order)
+const nodeCounts={};
+for(let i=0;i<opens.length;i++){
+const ni=opens[i].name;if(!ni)continue;
+nodeCounts[ni]=(nodeCounts[ni]||0)+1;
+for(let j=i+1;j<opens.length;j++){
+const dt=(opens[j].ts||0)-(opens[i].ts||0);
+if(dt>60000)break; // outside 60s window
+if(dt<0)continue; // skip backwards (shouldn't happen post-sort)
+const nj=opens[j].name;if(!nj||nj===ni)continue;
+const key=ni<nj?ni+'|'+nj:nj+'|'+ni;
+pairCounts[key]=(pairCounts[key]||0)+1;
+}
+}
+// Build nodes + edges (only pairs with weight>=2).
+const nodeNames=new Set();
+const edges=[];
+Object.entries(pairCounts).forEach(([k,w])=>{
+if(w<2)return;
+const [a,b]=k.split('|');
+nodeNames.add(a);nodeNames.add(b);
+edges.push({from:a,to:b,weight:w,id:a+'->'+b});
+});
+const nodes=Array.from(nodeNames).map(n=>({
+id:n,label:n,domain:[],phase:'none',color:'#a78bfa',installed:false,_cooccur:nodeCounts[n]||0
+}));
+return {nodes,edges,stats:{nodes:nodes.length,edges:edges.length,opens:opens.length}};
+}
+function toggleCoOccurGraph(){
+_coOccurMode=!_coOccurMode;
+const btn=$('graph-cooccur-toggle');
+const stats=$('skills-graph-stats');
+if(btn)btn.style.background=_coOccurMode?'var(--elev-3)':'';
+if(btn)btn.textContent=_coOccurMode?'🔗 phase/domain':'📊 ใช้ร่วมกัน';
+if(!_coOccurMode){
+// Restore default graph.
+skillGraphLoad();
+return;
+}
+// Build co-occurrence graph.
+const canvas=$('skills-graph-canvas');
+if(typeof vis==='undefined'||!vis.Network){toast('vis-network ไม่พร้อม','err');return;}
+const data=_mineCoOccurrence();
+if(!data){
+if(stats)stats.textContent='ยังไม่มีข้อมูลเพียงพอ (ต้องการอย่างน้อย 5 opens)';
+toast('ยังไม่มีข้อมูล opens เพียงพอ','err');
+return;
+}
+_skillGraphData=data;
+const visNodes=new vis.DataSet(data.nodes.map(n=>({
+id:n.id,label:n.label,title:(n._cooccur||0)+' opens',shape:'dot',size:10+Math.min((n._cooccur||0)*2,20),
+color:{background:n.color,border:n.color,highlight:{background:n.color,border:n.color}}
+})));
+const visEdges=new vis.DataSet(data.edges.map(e=>({
+from:e.from,to:e.to,width:Math.min(e.weight,8),title:'co-occur ×'+e.weight,
+color:{color:'rgba(167,139,250,.5)',highlight:'rgba(167,139,250,.9)'}
+})));
+const options={physics:{stabilization:{iterations:80}},interaction:{hover:true}};
+if(_skillGraphNet){_skillGraphNet.destroy();}
+_skillGraphNet=new vis.Network(canvas,{nodes:visNodes,edges:visEdges},options);
+_skillGraphNet.on('click',function(p){if(p.nodes.length>0)skillsOpenDetail(p.nodes[0]);});
+if(stats)stats.textContent=`📊 ใช้ร่วมกัน: ${data.stats.nodes} skills · ${data.stats.edges} คู่ · ${data.stats.opens} opens`;
 }
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
