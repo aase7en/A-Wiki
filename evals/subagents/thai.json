@@ -1,0 +1,111 @@
+{
+  "suite": "thai",
+  "description": "Thai-language eval suite for the Thai-variant subagents (medical-lit-reviewer-th, realestate-tax-advisor-th, language-tutor-th). Tests bilingual capability + Thai-context accuracy.",
+  "cases": [
+    {
+      "id": "th-med-depression-elderly",
+      "subagent": "medical-lit-reviewer-th",
+      "prompt": "สรุปหลักฐานทางการแพทย์เรื่องการรักษาภาวะซึมเศร้าในผู้สูงอายุ พร้อมอ้างอิงแหล่งข้อมูล",
+      "required": ["ผู้สูงอายุ"],
+      "forbidden": ["ไม่ทราบ"]
+    },
+    {
+      "id": "th-med-metformin-t2dm",
+      "subagent": "medical-lit-reviewer-th",
+      "prompt": "มีหลักฐานอะไรที่สนับสนุนการใช้ metformin เป็นยาบรรทัดแรกในโรคเบาหวานชนิดที่ 2",
+      "required": ["metformin"],
+      "forbidden": ["ไม่แน่ใจ"]
+    },
+    {
+      "id": "th-med-hypertension-thai-guideline",
+      "subagent": "medical-lit-reviewer-th",
+      "prompt": "ตามแนวทางการรักษาโรคความดันโลหิตสูงของประเทศไทย ค่าความดันเป้าหมายสำหรับผู้ป่วยทั่วไปคือเท่าไร",
+      "required": ["ความดัน"],
+      "forbidden": []
+    },
+    {
+      "id": "th-med-vaccine-cold-chain",
+      "subagent": "medical-lit-reviewer-th",
+      "prompt": "อธิบายหลักฐานเรื่อง cold chain สำหรับวัคซีน และอุณหภูมิที่เหมาะสมในการเก็บรักษา",
+      "required": ["อุณหภูมิ"],
+      "forbidden": ["ไม่ทราบ"]
+    },
+    {
+      "id": "th-med-dengue-fever",
+      "subagent": "medical-lit-reviewer-th",
+      "prompt": "สรุปหลักฐานเรื่องการวินิจฉัยและรักษาไข้เลือดออกในเด็ก",
+      "required": ["ไข้เลือดออก"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tax-property-transfer",
+      "subagent": "realestate-tax-advisor-th",
+      "prompt": "อธิบายภาษีที่ต้องจ่ายเมื่อโอนกรรมสิทธิ์อสังหาริมทรัพย์ในประเทศไทย ทั้งกรณีซื้อและขาย",
+      "required": ["ภาษี"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tax-withholding-rental",
+      "subagent": "realestate-tax-advisor-th",
+      "prompt": "อัตราภาษีหัก ณ ที่จ่ายสำหรับค่าเช่าอสังหาริมทรัพย์คือเท่าไร และใครเป็นผู้มีหน้าที่หักภาษี",
+      "required": ["ภาษี"],
+      "forbidden": ["ไม่ทราบ"]
+    },
+    {
+      "id": "th-tax-sbta-specific-business",
+      "subagent": "realestate-tax-advisor-th",
+      "prompt": "อธิบายพระราชบัญญัติภาษีธุรกิจเฉพาะ (SBTA) ว่าครอบคลุมกิจการประเภทใดบ้าง",
+      "required": ["ภาษี"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tax-land-building-tax",
+      "subagent": "realestate-tax-advisor-th",
+      "prompt": "อธิบายพระราชบัญญัติภาษีที่ดินและสิ่งปลูกสร้าง พ.ศ. 2562 ว่าคำนวณภาษีอย่างไร",
+      "required": ["ภาษี"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tax-capital-gains-property",
+      "subagent": "realestate-tax-advisor-th",
+      "prompt": "การขายอสังหาริมทรัพย์ในประเทศไทยมีภาษีกำไรส่วนต่างหรือไม่ อย่างไร",
+      "required": ["ภาษี"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tutor-english-grammar",
+      "subagent": "language-tutor-th",
+      "prompt": "อธิบายความแตกต่างระหว่าง present perfect และ past simple ในภาษาอังกฤษ พร้อมยกตัวอย่าง",
+      "required": ["present perfect"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tutor-false-friends",
+      "subagent": "language-tutor-th",
+      "prompt": "ยกตัวอย่างคำที่เป็น false friends ระหว่างภาษาอังกฤษและไทย พร้อมอธิบายความหมายที่แท้จริง",
+      "required": ["false friends"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tutor-chinese-tones",
+      "subagent": "language-tutor-th",
+      "prompt": "ภาษาจีนมีวรรณยุกต์กี่เสียง อธิบายแต่ละเสียงพร้อมตัวอย่างคำ",
+      "required": ["วรรณยุกต์"],
+      "forbidden": ["ไม่ทราบ"]
+    },
+    {
+      "id": "th-tutor-essay-structure",
+      "subagent": "language-tutor-th",
+      "prompt": "สอนโครงสร้างการเขียน essay ภาษาอังกฤษแบบมืออาชีพ มีกี่ย่อหน้า แต่ละย่อหน้าทำหน้าที่อะไร",
+      "required": ["ย่อหน้า"],
+      "forbidden": []
+    },
+    {
+      "id": "th-tutor-business-english-email",
+      "subagent": "language-tutor-th",
+      "prompt": "สอนการเขียนอีเมลภาษาอังกฤษในบริบทธุรกิจอย่างสุภาพและเป็นทางการ พร้อมตัวอย่างประโยค",
+      "required": ["อีเมล"],
+      "forbidden": []
+    }
+  ]
+}

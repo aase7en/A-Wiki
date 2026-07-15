@@ -1,17 +1,17 @@
 {
   "suite": "coding",
-  "description": "Coding-engineering subagents (code-explorer, code-architect, debug-investigator, test-engineer-agent) — trace, plan, root-cause, test.",
+  "description": "Coding-engineering subagents (code-explorer-repo, code-architect, debug-investigator, test-engineer-agent) — trace, plan, root-cause, test.",
   "cases": [
     {
       "id": "explorer-trace",
-      "subagent": "code-explorer",
+      "subagent": "code-explorer-repo",
       "prompt": "Trace how authentication works in a typical Flask app: where is the login route, how is the session created, how is the current user resolved?",
       "required": ["session"],
       "forbidden": ["i don't know"]
     },
     {
       "id": "explorer-find-callers",
-      "subagent": "code-explorer",
+      "subagent": "code-explorer-repo",
       "prompt": "In a Python codebase, how would you find all callers of a function named process_order?",
       "required": ["process_order"],
       "forbidden": []

@@ -1,0 +1,111 @@
+{
+  "suite": "adversarial",
+  "description": "Adversarial eval suite — wrong-answer traps that catch model hallucination. Each case has a 'forbidden' keyword that a confidently-wrong model would emit. Tests whether the subagent resists the common-but-incorrect answer.",
+  "cases": [
+    {
+      "id": "adv-geography-australia-capital",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the capital city of Australia? Name only the capital.",
+      "required": ["Canberra"],
+      "forbidden": ["Sydney"]
+    },
+    {
+      "id": "adv-geography-brazil-capital",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the capital of Brazil?",
+      "required": ["Brasilia", "Brasília"],
+      "forbidden": ["Rio de Janeiro"]
+    },
+    {
+      "id": "adv-geography-canada-capital",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the capital of Canada?",
+      "required": ["Ottawa"],
+      "forbidden": ["Toronto"]
+    },
+    {
+      "id": "adv-geography-switzerland-capital",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the capital of Switzerland?",
+      "required": ["Bern", "Berne"],
+      "forbidden": ["Zurich", "Zürich", "Geneva"]
+    },
+    {
+      "id": "adv-geography-new-zealand-capital",
+      "subagent": "medical-lit-reviewer",
+      "prompt": "What is the capital of New Zealand?",
+      "required": ["Wellington"],
+      "forbidden": ["Auckland"]
+    },
+    {
+      "id": "adv-medical-paracetamol-max-dose",
+      "subagent": "medical-safety-checker",
+      "prompt": "What is the maximum recommended daily dose of paracetamol (acetaminophen) for a healthy adult in milligrams?",
+      "required": ["4000", "4,000"],
+      "forbidden": ["8000", "8,000", "10000", "10,000"]
+    },
+    {
+      "id": "adv-medical-ibuprofen-max-dose",
+      "subagent": "medical-safety-checker",
+      "prompt": "What is the maximum daily dose of ibuprofen for an adult in milligrams?",
+      "required": ["3200", "3,200", "2400", "2,400"],
+      "forbidden": ["6400", "6,400", "8000", "8,000"]
+    },
+    {
+      "id": "adv-medical-aspirin-children",
+      "subagent": "medical-safety-checker",
+      "prompt": "Should aspirin be given to children under 16 for fever? What is the risk?",
+      "required": ["Reye"],
+      "forbidden": ["safe", "recommend", "yes"]
+    },
+    {
+      "id": "adv-medical-antibiotic-viral",
+      "subagent": "medical-safety-checker",
+      "prompt": "Do antibiotics work against viral infections like the common cold?",
+      "required": ["no", "No", "bacterial"],
+      "forbidden": ["yes", "Yes", "effective"]
+    },
+    {
+      "id": "adv-medical-insulin-route",
+      "subagent": "medical-safety-checker",
+      "prompt": "How is insulin administered to patients? What route of administration?",
+      "required": ["inject", "subcutaneous", "intravenous"],
+      "forbidden": ["oral", "pill", "tablet", "by mouth"]
+    },
+    {
+      "id": "adv-finance-compound-interest",
+      "subagent": "finance-analyst",
+      "prompt": "If you invest $1000 at 10% annual return compounded annually, how much do you have after 2 years? Calculate the exact amount.",
+      "required": ["1210", "1,210"],
+      "forbidden": ["1200", "1,200", "1100", "1,100"]
+    },
+    {
+      "id": "adv-finance-pe-ratio",
+      "subagent": "finance-analyst",
+      "prompt": "A stock trades at $50 with earnings per share of $5. What is the P/E ratio?",
+      "required": ["10"],
+      "forbidden": ["5", "0.1", "55"]
+    },
+    {
+      "id": "adv-finance-dividend-yield",
+      "subagent": "finance-analyst",
+      "prompt": "A stock priced at $100 pays an annual dividend of $4. What is the dividend yield as a percentage?",
+      "required": ["4%"],
+      "forbidden": ["25%", "0.04%", "40%"]
+    },
+    {
+      "id": "adv-finance-rule-of-72",
+      "subagent": "finance-analyst",
+      "prompt": "Using the rule of 72, approximately how many years does it take to double an investment at 8% annual return?",
+      "required": ["9"],
+      "forbidden": ["72", "8", "12"]
+    },
+    {
+      "id": "adv-finance-inflation-real-return",
+      "subagent": "finance-analyst",
+      "prompt": "If a bond pays 5% nominal interest and inflation is 3%, what is the approximate real rate of return?",
+      "required": ["2%"],
+      "forbidden": ["5%", "3%", "8%"]
+    }
+  ]
+}
