@@ -354,6 +354,17 @@ A real-time monitor showing **which AI is working, on what, in which workflow, h
 
   **Setup after pulling v8:** `cd scripts/live-dashboard && npm install && npm run build` (one-time). The server warns at startup if `app.min.js` is missing. See `scripts/live-dashboard/package.json`.
 
+- **♿ v9 Accessibility (WCAG AA)** — keyboard-first navigation + screen reader support:
+  - **🎨 CSS foundation** — `.sr-only` class (visually hidden, SR-readable), `.sr-only-focusable` (skip links visible on focus), comprehensive `:focus-visible` outline on all interactive elements (buttons/selects/inputs/cards), `@media (prefers-reduced-motion: reduce)` disables all animations globally.
+  - **📊 ARIA tabs** — the 12 view-toggle buttons now have `role="tablist"` + `role="tab"` + `aria-selected` + `aria-controls` + roving tabindex (only the active tab is focusable via Tab). Arrow Left/Right navigates between views (WAI-ARIA tab pattern). `setView()` updates ARIA state on every switch.
+  - **🏷️ aria-labels everywhere** — header buttons (⚙️💾🔔🗑), skill cards (role="button" + descriptive label), icon-only buttons (📋⭐☆ copy/pin), compare checkboxes, canvas elements. Total: 22 aria-labels (was 2).
+  - **🪤 Focus trap + restore** — all 7 modals (settings, shortcuts, keybind, notif, workspace, palette, compare) now trap Tab/Shift+Tab within the modal boundary and restore focus to the opener element on close. Shared `_openModalTrap()`/`_closeModalTrap()` helpers in app.js.
+  - **⌨️ Skill card keyboard nav** — Arrow Up/Down/Left/Right moves between skill cards, Home/End jumps to first/last, Enter/Space opens detail. Cards auto-scroll into view (`scrollIntoView({block:'nearest'})`). Roving tabindex — no `aria-activedescendant` complexity.
+  - **🔗 Skip links** — "ข้ามไปเนื้อหาหลัก" and "ข้ามไปที่ Skills" links appear on first Tab press (`.sr-only-focusable`), letting keyboard users bypass the nav bar (WCAG 2.4.1 Bypass Blocks).
+  - **📢 Screen reader announcements** — `announce(msg)` helper writes to `#aria-live` (aria-live="polite"), so SR users hear "Registry อัปเดตแล้ว" and "พบ N circular dependency" events in real time.
+
+  **Audit result:** aria-label 2→22, role= 0→16, tabindex 0→20, .sr-only 0→3. Dashboard is now fully navigable by keyboard alone.
+
 Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` (written by the panel) and `wiki/context/model-capability-scores.json`. See [`scripts/live-dashboard/README.md`](scripts/live-dashboard/README.md).
 
 ---
