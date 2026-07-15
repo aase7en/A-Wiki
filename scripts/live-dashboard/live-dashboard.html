@@ -924,7 +924,21 @@ to{transform:translateY(0);opacity:1}
     <button onclick="_closeShortcutsHelp()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;min-width:32px;min-height:32px">✕</button>
   </div>
   <div id="shortcuts-list" style="display:flex;flex-direction:column;gap:8px;font-size:var(--fs-sm)"></div>
-  <p style="margin:16px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อเปิด/ปิดหน้าต่างนี้</p>
+  <p style="margin:16px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อเปิด/ปิดหน้าต่างนี้ · <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">Ctrl/⌘+K</kbd> เพื่อเปิด Command Palette</p>
+</div>
+<!-- CHUNK EE — Command Palette Modal -->
+<div id="palette-backdrop" onclick="closePalette()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:450"></div>
+<div id="palette-modal" style="display:none;position:fixed;top:12vh;left:50%;transform:translateX(-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:0;z-index:451;max-width:560px;width:92vw;box-shadow:var(--shadow-lg);overflow:hidden">
+  <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border)">
+    <span style="color:var(--accent-brand);font-size:var(--fs-md)">🔍</span>
+    <input id="palette-input" type="text" placeholder="พิมพ์เพื่อค้นหา skill / flow / tab / shortcut..." oninput="paletteSearchDebounced()" style="flex:1;background:transparent;border:none;outline:none;color:var(--text-primary);font-size:var(--fs-md);font-family:var(--font-base)" autocomplete="off" spellcheck="false" aria-label="Command palette search">
+    <kbd style="background:var(--elev-2);padding:2px 8px;border-radius:var(--r-sm);border:1px solid var(--border2);font-size:var(--fs-2xs);color:var(--text-tertiary)">Esc</kbd>
+  </div>
+  <div id="palette-results" style="max-height:50vh;overflow-y:auto;padding:6px"></div>
+  <div id="palette-empty" style="display:none;padding:24px;text-align:center;color:var(--text-tertiary);font-size:var(--fs-sm)">ไม่พบผลลัพธ์</div>
+  <div style="padding:8px 18px;border-top:1px solid var(--border);font-size:var(--fs-2xs);color:var(--text-tertiary);display:flex;gap:14px;justify-content:center">
+    <span>↑↓ เลือก</span><span>↵ เปิด</span><span>Esc ปิด</span>
+  </div>
 </div>
 <div id="aria-live" class="sr-only" aria-live="polite"></div>
 
@@ -1465,7 +1479,8 @@ const SHORTCUTS=[
 ];
 let _gKey=null,_gKeyTimer=null;
 function _closeTopmost(){
-// Priority: compare modal > sim modal > skills drawer > shortcuts help > settings
+// Priority: palette > compare modal > sim modal > skills drawer > shortcuts help > settings
+if($('palette-backdrop')&&$('palette-backdrop').style.display!=='none'){closePalette();return;}
 if($('compare-backdrop')&&$('compare-backdrop').style.display!=='none'){closeCompareModal();return;}
 if($('sim-backdrop')&&$('sim-backdrop').classList.contains('show')){simClose();return;}
 if($('skills-detail')&&$('skills-detail').style.transform==='translateX(0)'){skillsCloseDetail();return;}
@@ -1484,9 +1499,114 @@ function _closeShortcutsHelp(){
 $('shortcuts-backdrop').style.display='none';
 $('shortcuts-help').style.display='none';
 }
+
+// === CHUNK EE — Command Palette ===
+let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
+const PALETTE_ICONS={skill:'🧩',flow:'🌊',view:'📊',shortcut:'⌨️'};
+function _paletteBuildIndex(){
+  _paletteIndex=[];
+  // Skills (from cache if loaded, else fetch)
+  if(window._skillsCache&&Array.isArray(_skillsCache)){
+    _skillsCache.forEach(s=>{
+      if(s.status!=='canonical')return;
+      _paletteIndex.push({type:'skill',label:s.name,sub:(s.th_description||'').slice(0,60),action:()=>{setView('skills');setTimeout(()=>skillsOpenDetail(s.name),250);}});
+    });
+  }
+  // Views (9 known)
+  [['summary','📊 Summary'],['flow','🌊 Flow'],['timeline','🏊 Timeline'],['graph','🔗 Graph'],['skills','🧩 Skills'],['coverage','📊 Coverage'],['subagents','🔬 Subagents'],['council','🏛️ Council'],['chat','💬 Chat']].forEach(([v,label])=>{
+    _paletteIndex.push({type:'view',label:label+' tab',sub:'สลับไปยัง '+label,action:()=>setView(v)});
+  });
+  // Shortcuts (re-use SHORTCUTS array)
+  SHORTCUTS.forEach(s=>{
+    if(s.key==='Escape')return;
+    _paletteIndex.push({type:'shortcut',label:s.desc,sub:'Shortcut: '+s.key,action:s.action});
+  });
+}
+function _paletteFuzzy(q,target){
+  q=q.toLowerCase();target=target.toLowerCase();
+  if(target.includes(q))return 1000-target.indexOf(q);
+  let ti=0,score=0;
+  for(let qi=0;qi<q.length&&ti<target.length;qi++){
+    if(target[ti]===q[qi]){score+=2;ti++;}
+    else{ti++;qi--;if(qi>0&&ti-target.indexOf(q[0])>q.length*2)break;}
+  }
+  return score>=q.length*2?score:0;
+}
+function _paletteRank(q){
+  if(!q.trim())return _paletteIndex.slice(0,10);
+  const scored=_paletteIndex.map(it=>{
+    const s=Math.max(_paletteFuzzy(q,it.label||''),_paletteFuzzy(q,it.sub||''));
+    return Object.assign({},it,{_s:s});
+  }).filter(it=>it._s>0);
+  scored.sort((a,b)=>b._s-a._s);
+  return scored.slice(0,10);
+}
+function _paletteRender(results){
+  _paletteResults=results;_paletteSel=0;
+  const box=$('palette-results'),empty=$('palette-empty');
+  if(!results.length){box.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  box.innerHTML=results.map((it,i)=>{
+    const ic=PALETTE_ICONS[it.type]||'▸';
+    return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);${i===0?'background:var(--elev-2);':''}">
+      <span style="font-size:var(--fs-md)">${ic}</span>
+      <div style="flex:1;min-width:0">
+        <div style="color:var(--text-primary);font-size:var(--fs-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
+        ${it.sub?`<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
+      </div>
+      <span style="font-size:var(--fs-2xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px">${it.type}</span>
+    </div>`;
+  }).join('');
+}
+function _paletteHover(i){_paletteSel=i;_paletteHighlight();}
+function _paletteHighlight(){
+  document.querySelectorAll('.palette-row').forEach((r,i)=>{
+    r.style.background=i===_paletteSel?'var(--elev-2)':'';
+  });
+}
+function _paletteActivate(i){
+  const it=_paletteResults[i];if(!it)return;
+  closePalette();
+  try{it.action();}catch(err){toast('palette: '+err.message,true);}
+}
+function paletteSearchDebounced(){
+  clearTimeout(_paletteDebounce);
+  _paletteDebounce=setTimeout(()=>{
+    _paletteRender(_paletteRank($('palette-input').value));
+  },150);
+}
+async function openPalette(){
+  // Ensure skills are loaded so palette can index them
+  if(!_skillsCache.length){
+    try{
+      const r=await fetch('/api/skills?limit=500').then(r=>r.json());
+      _skillsCache=r.skills||[];
+    }catch(_){}
+  }
+  _paletteBuildIndex();
+  $('palette-backdrop').style.display='block';
+  $('palette-modal').style.display='block';
+  const inp=$('palette-input');inp.value='';
+  // Pre-render with no query (shows first 10 of index)
+  _paletteRender(_paletteRank(''));
+  setTimeout(()=>inp.focus(),50);
+}
+function closePalette(){
+  $('palette-backdrop').style.display='none';
+  $('palette-modal').style.display='none';
+}
+// Palette keyboard nav (arrows + enter) — bound within palette input
+window.addEventListener('keydown',function(e){
+  if($('palette-modal').style.display==='none')return;
+  if(e.key==='ArrowDown'){e.preventDefault();_paletteSel=Math.min(_paletteSel+1,_paletteResults.length-1);_paletteHighlight();var r=document.querySelector('.palette-row.sel');if(r)r.scrollIntoView({block:'nearest'});}
+  else if(e.key==='ArrowUp'){e.preventDefault();_paletteSel=Math.max(_paletteSel-1,0);_paletteHighlight();var r=document.querySelector('.palette-row.sel');if(r)r.scrollIntoView({block:'nearest'});}
+  else if(e.key==='Enter'){e.preventDefault();_paletteActivate(_paletteSel);}
+});
 window.addEventListener('keydown',function(e){
 const tag=(e.target&&e.target.tagName)||'';
 const isInput=(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT');
+// Ctrl/Cmd+K opens Command Palette everywhere (even in inputs).
+if((e.metaKey||e.ctrlKey)&&(e.key==='k'||e.key==='K')){e.preventDefault();openPalette();return;}
 // Escape always works (even in inputs).
 if(e.key==='Escape'){_closeTopmost();return;}
 // '?' works everywhere except inputs (to avoid blocking typed question mark).
