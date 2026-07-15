@@ -228,6 +228,8 @@ const crit=_skillsCache.filter(s=>s.health&&s.health.level==='critical');
 if(crit.length>=3)showNotif('🩺 Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
 }catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
 }
+// CHUNK C9/E9: keyboard handler for skill cards (Enter/Space = open detail).
+function _skillCardKeydown(e,name){if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();skillsOpenDetail(name);}}
 function skillsRenderCard(s){
 const inv=s.invocation||'manual';
 const invIcon=inv==='auto'?'🤖':inv==='both'?'🔀':'👆';
@@ -241,13 +243,13 @@ const healthBadge=s.health?skillsHealthBadge(s.health):'';
 // CHUNK WW: pinned badge + toggle (syncs via public registry).
 const isPinned=!!s.pinned;
 const pinBadge=isPinned?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)">📌 pinned</span>':'';
-return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}${isPinned?';box-shadow:0 0 0 2px var(--accent-warm)':''}">
+return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" onkeydown="_skillCardKeydown(event,'${s.name}')" role="button" tabindex="0" aria-label="${s.name}: ${(s.th_description||s.name).replace(/"/g,'&quot;').slice(0,80)}" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}${isPinned?';box-shadow:0 0 0 2px var(--accent-warm)':''}">
 <div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
 <div class="skill-card-desc">${desc}</div>${when}
 <div class="skill-card-tags">${pinBadge}${domains}${instBadge}${healthBadge}</div>
-<div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง">📋</div>
-<div class="skill-card-copy" onclick="event.stopPropagation();togglePin('${s.name}')" title="${isPinned?'เลิกปักหมุด':'ปักหมุด (sync ผ่าน git registry)'}" style="right:36px">${isPinned?'⭐':'☆'}</div>
-<input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" style="position:absolute;top:6px;right:62px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
+<div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง" role="button" tabindex="0" aria-label="คัดลอกคำสั่งของ ${s.name}">📋</div>
+<div class="skill-card-copy" onclick="event.stopPropagation();togglePin('${s.name}')" title="${isPinned?'เลิกปักหมุด':'ปักหมุด (sync ผ่าน git registry)'}" role="button" tabindex="0" aria-label="${isPinned?'เลิกปักหมุด':'ปักหมุด'} ${s.name}" style="right:36px">${isPinned?'⭐':'☆'}</div>
+<input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" aria-label="เปรียบเทียบ ${s.name}" style="position:absolute;top:6px;right:62px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
 </div>`;
 }
 function skillsHealthBadge(h){
