@@ -49,7 +49,14 @@ def test_file_under_60kb():
     # palette (Ctrl+K), skill health score badge + sort, registry push SSE,
     # cycle detection banner, filter presets, matrix CSV export, co-occurrence
     # mining, auto theme (prefers-color-scheme), search history. All client-side.
-    assert size < 250 * 1024, f"HTML too large: {size} bytes (limit 250 KB)"
+    # raised to 300 KB (2026-07-15) for the Skills Expansion v7 wave: URL state
+    # sync + share URL, shortcut customization (remap/export/import), desktop
+    # notification system, skill lifecycle (first_seen), smart default agent,
+    # workspace save/restore, skill review queue, cross-device pin (registry),
+    # usage analytics tab (Chart.js CDN). 9 features across 10 chunks. Chart.js
+    # itself is CDN-loaded (not inlined); the growth is panel markup + handlers.
+    # Still a local-only tool; gate guards against unbounded growth, not leanness.
+    assert size < 300 * 1024, f"HTML too large: {size} bytes (limit 300 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
