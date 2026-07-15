@@ -498,3 +498,67 @@ def test_recommend_fallback_to_substring_when_no_vec():
     if r["mode"] == "substring":
         # Fallback path must still return results.
         assert r["total_matched"] > 0, "substring fallback should find 'debug'"
+
+
+# ---------------------------------------------------------------------------
+# CHUNK FF — skill_health_score()
+# ---------------------------------------------------------------------------
+
+def test_skill_health_score_returns_expected_shape():
+    """skill_health_score must return dict with score, level, missing."""
+    r = skills_service.skill_health_score({"name": "x"})
+    assert isinstance(r, dict)
+    assert set(r.keys()) >= {"score", "level", "missing"}
+    assert 0 <= r["score"] <= 100
+    assert r["level"] in ("critical", "weak", "ok", "good")
+    assert isinstance(r["missing"], list)
+
+
+def test_skill_health_score_empty_skill_is_critical():
+    """A skill with no documented fields should score 0 and be 'critical'."""
+    r = skills_service.skill_health_score({"name": "ghost-skill"})
+    assert r["score"] == 0, f"empty skill should be 0, got {r['score']}"
+    assert r["level"] == "critical"
+    assert len(r["missing"]) == 6, "all 6 coverage fields missing"
+
+
+def test_skill_health_score_full_skill_is_good():
+    """A skill with all 6 documented fields should score 100 and be 'good'."""
+    full = {
+        "name": "complete",
+        "th_description": "ทดสอบ",
+        "when_to_use": "เมื่อไหร่",
+        "examples": [{"scenario": "x", "how": "y"}],
+        "process_steps": ["a", "b"],
+        "invocation_hint": "/test",
+        "invocation": "manual",
+    }
+    r = skills_service.skill_health_score(full)
+    assert r["score"] == 100, f"full skill should be 100, got {r['score']}"
+    assert r["level"] == "good"
+    assert r["missing"] == []
+
+
+def test_skill_health_score_weighting():
+    """th_description (weight 3) should outweigh invocation_hint (weight 1).
+
+    max=11 (3+2+2+2+1+1). Only th_description set => 3/11 ≈ 27 => score 24
+    rounded down. Only invocation_hint set => 1/11 ≈ 9 => score 9.
+    The first must score higher than the second.
+    """
+    r_desc = skills_service.skill_health_score({"name": "a", "th_description": "x"})
+    r_hint = skills_service.skill_health_score({"name": "a", "invocation_hint": "/x"})
+    assert r_desc["score"] > r_hint["score"], (
+        f"th_description (w3) should score higher than invocation_hint (w1): "
+        f"{r_desc['score']} vs {r_hint['score']}"
+    )
+
+
+def test_skill_health_score_in_list_item():
+    """list_skills response items should include a 'health' field."""
+    r = skills_service.list_skills("")
+    assert r["count"] > 0
+    for s in r["skills"][:5]:
+        assert "health" in s, f"skill {s.get('name')} missing health field"
+        h = s["health"]
+        assert "score" in h and "level" in h

@@ -160,6 +160,8 @@ def _skill_list_item(skill: dict[str, Any]) -> dict[str, Any]:
         item["invocation"] = "manual"
     item["installed"] = _is_installed(skill)
     item["invocation_hint"] = _invocation_hint(skill)
+    # CHUNK FF: attach health score for badge rendering + weakest-first sort.
+    item["health"] = skill_health_score(skill)
     return item
 
 
@@ -338,6 +340,42 @@ def _skill_has(skill: dict[str, Any], field: str) -> bool:
     if isinstance(v, list):
         return len(v) > 0
     return True
+
+
+# CHUNK FF — per-skill health score.
+# Weights reflect documentation importance: a good Thai description matters
+# more than an invocation hint. Sum of weights = 11.
+_HEALTH_WEIGHTS = {
+    "th_description": 3,
+    "when_to_use": 2,
+    "examples": 2,
+    "process_steps": 2,
+    "invocation_hint": 1,
+    "invocation": 1,
+}
+_HEALTH_MAX = sum(_HEALTH_WEIGHTS.values())  # 11
+
+
+def skill_health_score(skill: dict[str, Any]) -> dict[str, Any]:
+    """Aggregate the 6 coverage fields into a single 0-100 health score.
+
+    Returns {score, level, missing}:
+      - score: 0-100 (rounded down from the weighted fraction)
+      - level: 'critical' (<30), 'weak' (<60), 'ok' (<85), 'good' (>=85)
+      - missing: list of field names the skill lacks
+    """
+    missing = [f for f in _COVERAGE_FIELDS if not _skill_has(skill, f)]
+    earned = sum(w for f, w in _HEALTH_WEIGHTS.items() if _skill_has(skill, f))
+    score = int((earned / _HEALTH_MAX) * 100) if _HEALTH_MAX else 0
+    if score >= 85:
+        level = "good"
+    elif score >= 60:
+        level = "ok"
+    elif score >= 30:
+        level = "weak"
+    else:
+        level = "critical"
+    return {"score": score, "level": level, "missing": missing}
 
 
 def coverage_stats(compare: str | None = None) -> dict[str, Any]:
@@ -653,7 +691,7 @@ def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
     "skill_graph", "walkthrough_difficulty", "recommend_skills",
-    "skill_history", "update_skill_field", "KNOWN_AGENTS",
+    "skill_history", "update_skill_field", "skill_health_score", "KNOWN_AGENTS",
 ]
 
 

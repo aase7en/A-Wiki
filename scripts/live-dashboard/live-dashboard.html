@@ -557,6 +557,12 @@ to{transform:translateY(0);opacity:1}
       <label style="display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--text-secondary);cursor:pointer;user-select:none">
         <input type="checkbox" id="skills-installed-only" onchange="skillsRefresh()" style="cursor:pointer">📦 ติดตั้งเท่านั้น
       </label>
+      <select id="skills-sort" onchange="skillsApplySort()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:30px;cursor:pointer" title="เรียงลำดับ">
+        <option value="">↕️ ค่าเริ่มต้น</option>
+        <option value="health-asc">🩺 Health ต่ำก่อน</option>
+        <option value="health-desc">💪 Health สูงก่อน</option>
+        <option value="name-asc">🔤 ชื่อ A→Z</option>
+      </select>
       <div style="display:flex;gap:2px;margin-left:auto">
         <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
         <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
@@ -1912,9 +1918,9 @@ const stats_by_domain=r.stats&&r.stats.by_domain||{};
 if($('skills-domain-filter').options.length<=1){
 Object.keys(stats_by_domain).forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=`${d} (${stats_by_domain[d]})`;$('skills-domain-filter').appendChild(o);});
 }
-// Render
+// Render (apply client-side sort if requested — CHUNK FF)
 if(!_skillsCache.length){grid.innerHTML='';empty.style.display='block';}
-else{empty.style.display='none';grid.innerHTML=_skillsCache.map(skillsRenderCard).join('');}
+else{empty.style.display='none';grid.innerHTML=skillsSortedView().map(skillsRenderCard).join('');}
 // Stats line
 const st=r.stats||{};
 const agentLbl=$('skills-agent-filter').value;
@@ -1930,13 +1936,40 @@ const desc=s.th_description||'<i style="color:var(--text-disabled)">ยังไ
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
 const when=s.when_to_use?`<div class="skill-card-when">💡 ${s.when_to_use}</div>`:'';
 const instBadge=s.installed===false?`<span class="skill-card-inst catalog" title="catalog-only (SKILL.md ไม่ได้ติดตั้งบนเครื่องนี้)">📦 catalog</span>`:`<span class="skill-card-inst installed" title="ติดตั้งแล้วบนเครื่องนี้">✅ ติดตั้ง</span>`;
+// CHUNK FF: health badge from s.health (score/level/missing).
+const healthBadge=s.health?skillsHealthBadge(s.health):'';
 return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}">
 <div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
 <div class="skill-card-desc">${desc}</div>${when}
-<div class="skill-card-tags">${domains}${instBadge}</div>
+<div class="skill-card-tags">${domains}${instBadge}${healthBadge}</div>
 <div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง">📋</div>
 <input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" style="position:absolute;top:6px;right:34px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
 </div>`;
+}
+function skillsHealthBadge(h){
+if(!h||typeof h.score!=='number')return '';
+const lvl=h.level||'ok';
+const colors={critical:'#f87171',weak:'#fbbf24',ok:'#86efac',good:'#34d399'};
+const labels={critical:'🔴 วิกฤต',weak:'🟠 อ่อน',ok:'🟢 พอใช้',good:'💚 ดี'};
+const c=colors[lvl]||colors.ok,lbl=labels[lvl]||labels.ok;
+return `<span class="skill-tag" style="border-color:${c};color:${c}" title="Health ${h.score}/100 · ขาด ${(h.missing||[]).length} field">${lbl} ${h.score}</span>`;
+}
+// CHUNK FF: client-side sort over the rendered cache.
+function skillsSortedView(){
+const sel=$('skills-sort');const mode=sel?sel.value:'';
+if(!mode)return _skillsCache;
+const arr=_skillsCache.slice();
+if(mode==='health-asc')arr.sort((a,b)=>((a.health&&a.health.score)||0)-((b.health&&b.health.score)||0));
+else if(mode==='health-desc')arr.sort((a,b)=>((b.health&&b.health.score)||0)-((a.health&&a.health.score)||0));
+else if(mode==='name-asc')arr.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+return arr;
+}
+function skillsApplySort(){
+// Re-render the grid from the cache (no refetch needed).
+const grid=$('skills-grid'),empty=$('skills-empty');
+if(!_skillsCache.length){return;}
+empty.style.display='none';
+grid.innerHTML=skillsSortedView().map(skillsRenderCard).join('');
 }
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
