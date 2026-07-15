@@ -655,6 +655,19 @@ class Handler(BaseHTTPRequestHandler):
             self._api_agents_get()
         elif path == "/api/skills":
             self._api_skills_list()
+        elif path == "/api/detect-agent":
+            # CHUNK TT: auto-detect the calling agent from env fingerprints.
+            # AWIKI_DASHBOARD_AGENT env var takes precedence (explicit override).
+            try:
+                override = os.environ.get("AWIKI_DASHBOARD_AGENT", "").strip()
+                if override:
+                    self._json_response({"agent": override, "source": "env_override"})
+                    return
+                from agent_detect import detect_agent
+                detected = detect_agent()
+                self._json_response({"agent": detected, "source": "env"})
+            except Exception as e:
+                self._json_response({"agent": None, "source": "error", "error": str(e)})
         elif path == "/api/skills/agents":
             self._json_response(skills_service.agent_overview())
         elif path == "/api/skills/graph":

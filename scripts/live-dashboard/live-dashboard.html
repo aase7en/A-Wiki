@@ -1159,7 +1159,7 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
-if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();_initPresetDropdown();}
+if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();_initPresetDropdown();if(window._autoDetectedAgent)_applyAutoDetectedAgent();}
 if(v==='coverage')coverageLoad();
 if(v==='subagents')subagentsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
@@ -3256,6 +3256,55 @@ function copyInvocation(hint,name){
   }
 }
 
+// ===== CHUNK TT — Smart Default Agent (auto-detect from env) =====
+// On boot, if the URL has no ?agent= param, ask the server which agent is
+// calling (detected from env fingerprints). If detected, auto-apply the
+// Skills-tab agent filter + show an info banner. Skipped silently if the
+// server returns null (no fingerprint found — e.g. opened from a browser).
+async function autoDetectAgent(){
+  try{
+    const url=new URL(window.location.href);
+    if(url.searchParams.get('agent'))return;  // explicit ?agent= wins
+    const r=await fetch('/api/detect-agent').then(r=>r.json());
+    if(!r||!r.agent)return;
+    // Apply to the agent filter once Skills tab is visited (lazy — dropdown
+    // populates on first skillsLoad). We stash the detected name and apply
+    // it inside applyUrlParams/skillsLoad.
+    window._autoDetectedAgent=r.agent;
+    window._autoDetectedSource=r.source||'env';
+    // If Skills tab is already active, apply now; otherwise it applies on visit.
+    if(currentView==='skills')_applyAutoDetectedAgent();
+  }catch(_){}
+}
+function _applyAutoDetectedAgent(){
+  if(!window._autoDetectedAgent)return;
+  const sel=$('skills-agent-filter');if(!sel)return;
+  const a=window._autoDetectedAgent;
+  // Only apply if the option exists (dropdown populated) or value is 'all'.
+  let found=false;
+  for(const opt of sel.options){if(opt.value.toLowerCase()===a.toLowerCase()){sel.value=opt.value;found=true;break;}}
+  if(!found){
+    // Dropdown not yet populated — retry once after skillsLoad fills it.
+    setTimeout(_applyAutoDetectedAgent,300);
+    return;
+  }
+  // Show info banner (distinct from the explicit ?agent= banner).
+  let banner=$('skills-autodetect-banner');
+  if(!banner){
+    banner=document.createElement('div');banner.id='skills-autodetect-banner';
+    banner.style.cssText='padding:6px 10px;background:rgba(94,234,212,.10);border:1px solid var(--accent-success);border-radius:var(--r-md);font-size:var(--fs-2xs);color:var(--text-secondary);margin-bottom:6px;flex-shrink:0';
+    const tb=$('skills-toolbar');if(tb)tb.parentNode.insertBefore(banner,tb.nextSibling);
+  }
+  banner.innerHTML='🤖 <b style="color:var(--accent-success)">auto-detected: '+a+'</b> (จาก env) · <a href="#" onclick="clearAutoDetect();return false" style="color:var(--text-tertiary);text-decoration:underline">ดูทั้งหมด</a>';
+  skillsLoad();
+}
+function clearAutoDetect(){
+  window._autoDetectedAgent=null;
+  const banner=$('skills-autodetect-banner');if(banner)banner.remove();
+  const sel=$('skills-agent-filter');if(sel)sel.value='all';
+  skillsLoad();syncUrlState();
+}
+
 // ===== URL PARAMS (?agent=, ?skill=, ?flow=) =====
 // Deep-link support: open the dashboard with ?agent=zcode&skill=tdd or
 // ?flow=debug-production-issue to jump straight to a skill detail or
@@ -3484,6 +3533,8 @@ simClose=function(e){
 setView('summary');
 // CHUNK PP: if URL carries state (?view=, filters), apply it after initial paint.
 try{applyFullStateFromUrl();}catch(_){}
+// CHUNK TT: auto-detect agent from env (only if no explicit ?agent= in URL).
+try{autoDetectAgent();}catch(_){}
 _stageRO.observe(flowStage);
 window.addEventListener('resize',layoutFlow);
 connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
