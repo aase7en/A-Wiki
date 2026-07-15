@@ -482,7 +482,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-subagents" onclick="setView('subagents')">🔬 Subagents</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
-      <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="Toggle theme">🌙</button>💬 Chat</button>
+      <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)">🌗</button>💬 Chat</button>
     </div>
 
     <!-- SUMMARY VIEW (default) -->
@@ -704,6 +704,8 @@ to{transform:translateY(0);opacity:1}
     <!-- Per-subagent stat cards -->
     <div class="glass-card" style="padding:14px 16px">
       <h4 style="margin:0 0 10px;font-size:var(--fs-sm);color:var(--text-secondary)">📊 Per-Subagent</h4>
+      <!-- Observatory alerts banner (P2) — shown when pass_rate drops -->
+      <div id="observatory-alerts" style="display:none;margin-bottom:10px"></div>
       <div id="subagents-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px"></div>
       <div id="subagents-empty" style="display:none;color:var(--text-tertiary);font-size:var(--fs-xs);padding:20px;text-align:center">
         ยังไม่มีข้อมูล — ลองเรียก subagent (เช่น Explore หรือ medical-lit-reviewer) แล้วกลับมาดูที่นี่
@@ -3427,8 +3429,61 @@ async function adminRemoveToken() {
   } catch(e) { res.textContent = '❌ เชื่อมต่อไม่ได้'; }
 }
 
-function toggleTheme(){const h=document.documentElement;const c=h.getAttribute('data-theme')||'';const n=c==='green-white'?'':'green-white';h.setAttribute('data-theme',n);const b=document.getElementById('btn-theme');if(b)b.textContent=n==='green-white'?'☀':'🌙';try{localStorage.setItem('awiki-theme',n);}catch(_){}}
-(function(){try{const t=localStorage.getItem('awiki-theme');if(t){document.documentElement.setAttribute('data-theme',t);const b=document.getElementById('btn-theme');if(b)b.textContent=t==='green-white'?'☀':'🌙';}}catch(_){}})();
+// === CHUNK LL — 3-state theme: auto (prefers-color-scheme) / dark / green-white ===
+const THEME_MODE_KEY='awiki-theme-mode';
+// Migrate legacy 'awiki-theme' -> 'awiki-theme-mode' once.
+try{
+  const legacy=localStorage.getItem('awiki-theme');
+  if(legacy!==null&&!localStorage.getItem(THEME_MODE_KEY)){
+    // legacy '' meant dark, 'green-white' meant green-white. No 'auto' existed.
+    localStorage.setItem(THEME_MODE_KEY,legacy==='green-white'?'green-white':'dark');
+  }
+}catch(_){}
+function _resolvedThemeAttr(mode){
+  // mode: 'auto' | 'dark' | 'green-white'. Returns the data-theme attribute value.
+  if(mode==='dark')return '';
+  if(mode==='green-white')return 'green-white';
+  // auto: follow prefers-color-scheme.
+  try{
+    if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches){
+      return 'green-white';
+    }
+  }catch(_){}
+  return ''; // dark by default
+}
+function _themeIcon(mode){
+  if(mode==='dark')return '🌑';
+  if(mode==='green-white')return '☀';
+  return '🌗'; // auto
+}
+function _applyThemeMode(mode){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',_resolvedThemeAttr(mode));
+  const b=document.getElementById('btn-theme');
+  if(b)b.textContent=_themeIcon(mode);
+  try{localStorage.setItem(THEME_MODE_KEY,mode);}catch(_){}
+}
+function toggleTheme(){
+  // Cycle: auto -> dark -> green-white -> auto.
+  let cur='auto';
+  try{cur=localStorage.getItem(THEME_MODE_KEY)||'auto';}catch(_){}
+  const next=cur==='auto'?'dark':cur==='dark'?'green-white':'auto';
+  _applyThemeMode(next);
+}
+// On load: apply stored mode + register prefers-color-scheme listener for auto mode.
+(function(){
+  let mode='auto';
+  try{mode=localStorage.getItem(THEME_MODE_KEY)||'auto';}catch(_){}
+  _applyThemeMode(mode);
+  // If in auto mode, react to OS theme changes without reload.
+  try{
+    const mq=window.matchMedia('(prefers-color-scheme: light)');
+    mq.addEventListener('change',function(){
+      let m='auto';try{m=localStorage.getItem(THEME_MODE_KEY)||'auto';}catch(_){}
+      if(m==='auto')_applyThemeMode('auto');
+    });
+  }catch(_){}
+})();
 
 
 const AGENT_TYPES=[{type:"plan",role:"วางแผน",icon:"📋",effort:80},{type:"architect",role:"ออกแบบ",icon:"🏗️",effort:90},{type:"ask",role:"ตอบคำถาม",icon:"💬",effort:30},{type:"code",role:"เขียนโค้ด",icon:"💻",effort:70},{type:"code-reviewer",role:"review",icon:"🔍",effort:60},{type:"code-simplifier",role:"simplify",icon:"✂️",effort:50},{type:"code-skeptic",role:"ตรวจสอบ",icon:"🤔",effort:40},{type:"debug",role:"debug",icon:"🐛",effort:85},{type:"docs-specialist",role:"เขียนdoc",icon:"📝",effort:50},{type:"frontend-specialist",role:"frontend",icon:"🎨",effort:75},{type:"orchestrator",role:"orchestrate",icon:"🎯",effort:95},{type:"test-engineer",role:"test",icon:"🧪",effort:70}];
