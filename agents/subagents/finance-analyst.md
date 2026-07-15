@@ -77,8 +77,41 @@ Synthesize numbers + qualitative context into a thesis with:
   limits when relevant.
 - Reuse A-Wiki skills `ito-trade-planner`, `ito-basket-compare`,
   `prediction-market-risk-review`, `defi-amm-security`,
-  `monte-carlo-quant-analysis` (ใช้สำหรับ distribution-based risk analysis:
-  VaR/CVaR/RRR/Sharpe ผ่าน Monte Carlo simulation — paper-only, non-advisory).
+  `monte-carlo-quant-analysis`.
+
+### How to call `monte-carlo-quant-analysis` (paper-only, non-advisory)
+
+เมื่อต้องการ distribution-based risk metric (VaR/CVaR/Sharpe/RRR) บน P&L
+scenarios — เปลี่ยน thesis จาก "bull/bear read" ให้มี quant backbone:
+
+1. **Generate scenarios** — ใช้ sampler จาก skill (GBM/Heston/Merton/Bates/
+   Kou/Hawkes — ดู `skills/awiki/monte-carlo-quant-analysis/SKILL.md`) หรือ
+   bootstrap historical returns → `log_returns_paths` shape `(N_paths, T)`.
+   N ≥ 10,000 สำหรับ stable estimate (LLN, §SKILL Probability Foundations).
+2. **Compute risk metrics** — import `scripts/mc_quant.py` (no package):
+   ```python
+   import numpy as np
+   from pathlib import Path
+   import importlib.util
+   spec = importlib.util.spec_from_file_location(
+       "mc_quant", Path("scripts/mc_quant.py"))
+   mc = importlib.util.module_from_spec(spec); spec.loader.exec_module(mc)
+   rng = np.random.default_rng(seed=42)
+   paths = rng.standard_normal((5000, 252)) * 0.01   # synthetic daily, demo
+   var = mc.var_estimate(paths.mean(axis=1), alpha=0.05)
+   cvar = mc.cvar_estimate(paths.mean(axis=1), alpha=0.05)
+   sharpe = mc.sharpe_distribution(paths)
+   ```
+   (`var_estimate`/`cvar_estimate` รับ 1-D P&L; `sharpe_distribution`/
+   `rr_distribution` รับ 2-D `(N_paths, T)`.) CLI demo: `python scripts/mc_quant.py --demo`.
+3. **Report as distribution** — อย่า report point estimate เดียว. Sharpe/RRR
+   มาในรูป `{median, p5, p95, mean, std}`; ใช้ p5–p95 เป็น uncertainty band
+   (CLT → CI). ระบุ N และ seed ที่ใช้.
+4. **Iron Law #8** — ผลเป็น analysis เท่านั้น ห้ามแปลงเป็น buy/sell/hold/size
+   recommendation. Label ชัด: "PAPER-ONLY · NON-ADVISORY · simulation output".
+   ต่างจาก thesis rating (Stage 2 output) ตรงที่ไม่แนะนำ action.
+5. **Convergence check** — ก่อน report ให้ verify N เพียงพอ: รัน
+   `scripts/benchmark_mc.py` ดู error-vs-N หรือดู convergence widget ของ skill.
 
 ## When NOT to use
 
