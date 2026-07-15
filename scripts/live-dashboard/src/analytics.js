@@ -1,0 +1,451 @@
+// ===== CHUNK XX — Usage Analytics Dashboard (Chart.js) =====
+const HEALTH_SNAPSHOTS_KEY='awiki-health-snapshots';
+const HEALTH_SNAPSHOTS_MAX=90;
+let _analyticsCharts={};  // canvasId → Chart instance (destroy before re-render)
+function _destroyChart(id){if(_analyticsCharts[id]){try{_analyticsCharts[id].destroy();}catch(_){}delete _analyticsCharts[id];}}
+// Persist a daily health snapshot (once per day) for the trend chart.
+function _maybeSnapshotHealth(dist){
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    const snaps=_lsGet(HEALTH_SNAPSHOTS_KEY,[]);
+    if(snaps.length&&snaps[snaps.length-1].date===today){
+      snaps[snaps.length-1]={date:today,dist:dist};
+    }else{
+      const avg=Math.round((dist.good*85+dist.ok*72+dist.weak*45+dist.critical*15)/Math.max(1,dist.good+dist.ok+dist.weak+dist.critical));
+      snaps.push({date:today,dist:dist,avg:avg});
+      while(snaps.length>HEALTH_SNAPSHOTS_MAX)snaps.shift();
+    }
+    _lsSet(HEALTH_SNAPSHOTS_KEY,snaps);
+    return snaps;
+  }catch(_){return _lsGet(HEALTH_SNAPSHOTS_KEY,[]);}
+}
+async function analyticsLoad(){
+  const unavail=$('analytics-unavailable');
+  if(typeof Chart==='undefined'){if(unavail)unavail.style.display='block';return;}
+  if(unavail)unavail.style.display='none';
+  const opens=_lsGet(OPENS_KEY,[]);
+  const sub=$('analytics-subtitle');
+  if(sub)sub.textContent=`${opens.length} opens บันทึกในเครื่องนี้ · ข้อมูลเฉพาะที่ (ไม่ sync)`;
+  // Chart 1: top opened (30d) — reuse trendingSkills.
+  const top=trendingSkills(30,10);
+  _destroyChart('chart-top-opened');
+  _analyticsCharts['chart-top-opened']=new Chart($('chart-top-opened'),{
+    type:'bar',
+    data:{labels:top.map(t=>t.name),datasets:[{label:'opens',data:top.map(t=>t.count),backgroundColor:'rgba(94,234,212,.6)',borderColor:'rgba(94,234,212,1)',borderWidth:1}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#888'}},y:{ticks:{color:'#aaa',font:{size:10}}}}}
+  });
+  // Chart 2: co-occurrence pairs.
+  const co=_mineCoOccurrence();
+  const coEdges=co?(co.edges||[]):[];
+  coEdges.sort((a,b)=>(b.weight||0)-(a.weight||0));
+  const topCo=coEdges.slice(0,10);
+  _destroyChart('chart-cooccur');
+  _analyticsCharts['chart-cooccur']=new Chart($('chart-cooccur'),{
+    type:'bar',
+    data:{labels:topCo.map(e=>e.from+' ↔ '+e.to),datasets:[{label:'weight',data:topCo.map(e=>e.weight),backgroundColor:'rgba(167,139,250,.6)',borderColor:'rgba(167,139,250,1)',borderWidth:1}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{color:'#888'}},y:{ticks:{color:'#aaa',font:{size:9}}}}}
+  });
+  // Chart 3: opens daily (14d).
+  const cutoff=Date.now()-14*24*60*60*1000;
+  const dayBuckets={};
+  for(let i=13;i>=0;i--){const d=new Date(Date.now()-i*24*60*60*1000).toISOString().slice(0,10);dayBuckets[d]=0;}
+  opens.forEach(o=>{if(o.ts>=cutoff){const d=new Date(o.ts).toISOString().slice(0,10);if(d in dayBuckets)dayBuckets[d]++;}});
+  const dayLabels=Object.keys(dayBuckets);
+  _destroyChart('chart-opens-daily');
+  _analyticsCharts['chart-opens-daily']=new Chart($('chart-opens-daily'),{
+    type:'line',
+    data:{labels:dayLabels.map(d=>d.slice(5)),datasets:[{label:'opens/day',data:dayLabels.map(d=>dayBuckets[d]),borderColor:'rgba(94,234,212,1)',backgroundColor:'rgba(94,234,212,.15)',fill:true,tension:.3}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:9}}},y:{beginAtZero:true,ticks:{color:'#888'}}}}
+  });
+  // Chart 4a: health distribution (doughnut) — needs skills data.
+  let skills=_skillsCache;
+  if(!skills.length){
+    try{const r=await fetch('/api/skills?limit=500').then(r=>r.json());skills=r.skills||[];}catch(_){}
+  }
+  const dist={critical:0,weak:0,ok:0,good:0};
+  skills.forEach(s=>{if(s.health&&s.health.level)dist[s.health.level]++;});
+  const snaps=_maybeSnapshotHealth(dist);
+  _destroyChart('chart-health-dist');
+  _analyticsCharts['chart-health-dist']=new Chart($('chart-health-dist'),{
+    type:'doughnut',
+    data:{labels:['critical','weak','ok','good'],datasets:[{data:[dist.critical,dist.weak,dist.ok,dist.good],backgroundColor:['#f87171','#fbbf24','#86efac','#34d399']}]},
+    options:{plugins:{legend:{position:'right',labels:{color:'#aaa',font:{size:10}}}}}
+  });
+  // Chart 4b: health trend (avg over time).
+  _destroyChart('chart-health-trend');
+  _analyticsCharts['chart-health-trend']=new Chart($('chart-health-trend'),{
+    type:'line',
+    data:{labels:snaps.map(s=>s.date.slice(5)),datasets:[{label:'avg health',data:snaps.map(s=>s.avg||0),borderColor:'rgba(52,211,153,1)',backgroundColor:'rgba(52,211,153,.15)',fill:true,tension:.3}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:9}}},y:{min:0,max:100,ticks:{color:'#888'}}}}
+  });
+}
+
+// === EVAL HISTORY PANE — pass@k time series (R3) ===
+let _evalChart=null;
+async function evalHistoryLoad(){
+  const empty=$('eval-empty'),chartEl=$('eval-history-chart'),reg=$('eval-regressions'),sub=$('eval-subtitle');
+  if(!chartEl)return;
+  if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
+  if(reg)reg.style.display='none';
+  try{
+    const d=await fetch('/api/eval/history').then(r=>r.json());
+    if(empty)empty.style.display='none';
+    if(sub)sub.textContent=`${d.run_count||0} run(s) · ${d.suite_model_count||0} suite/model line(s)`;
+    // Build regression date→pairs index for point styling.
+    const regByDate={};
+    (d.regressions||[]).forEach(r=>{
+      const k=r.date_tag;
+      (regByDate[k]=regByDate[k]||[]).push(r.suite+' / '+r.model);
+    });
+    // Regression banner
+    if(reg&&(d.regressions||[]).length){
+      const worst=d.regressions.slice(0,5).map(r=>`${r.suite}/${r.model} ${r.prev_pass_at_k}→${r.new_pass_at_k} (Δ${r.delta})`).join(' · ');
+      reg.innerHTML='🚨 <b>'+(d.regressions.length)+' regression point(s)</b> — worst: '+worst+((d.regressions.length>5)?' …':'');
+      reg.style.display='block';
+    }
+    const labels=(d.series&&d.series.labels)||[];
+    const datasets=((d.series&&d.series.datasets)||[]).map(ds=>{
+      // Color: cycle through a palette so lines are distinguishable.
+      const palette=['rgba(94,234,212,1)','rgba(129,140,248,1)','rgba(251,191,36,1)','rgba(248,113,113,1)','rgba(52,211,153,1)','rgba(244,114,182,1)','rgba(167,243,208,1)','rgba(253,224,71,1)'];
+      const c=palette[Math.abs(hashCode(ds.label))%palette.length];
+      return {
+        label:ds.label,
+        data:ds.data,
+        borderColor:c,
+        backgroundColor:c.replace('1)','.12)'),
+        fill:false,
+        tension:.3,
+        // Highlight regression points with red rotated-rect markers.
+        pointRadius:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?5:3;}),
+        pointBackgroundColor:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?'#f87171':c;}),
+        pointStyle:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?'rectRot':'circle';}),
+        spanGaps:true,
+      };
+    });
+    if(_evalChart){try{_evalChart.destroy();}catch(_){}_evalChart=null;}
+    if(!labels.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี eval results — รัน <code>bash scripts/eval/trigger_ci.sh</code> เพื่อเริ่ม collect baseline pass@k';}
+      return;
+    }
+    _evalChart=new Chart(chartEl,{
+      type:'line',
+      data:{labels:labels.map(l=>l.slice(4)),datasets},  // trim year for compactness
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{color:'var(--text-secondary)',font:{size:10},boxWidth:12}}},
+        scales:{
+          x:{ticks:{color:'#888',font:{size:9},maxRotation:45,minRotation:45}},
+          y:{min:0,max:1,ticks:{color:'#888',callback:v=>(v*100).toFixed(0)+'%'}}
+        },
+        interaction:{mode:'nearest',intersect:false},
+      }
+    });
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h;}
+
+function clearAnalyticsData(){
+  if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
+  _lsSet(OPENS_KEY,[]);
+  _lsSet(HEALTH_SNAPSHOTS_KEY,[]);
+  _lsSet(RECENT_KEY,[]);
+  toast('🗑️ ล้างข้อมูล usage แล้ว');
+  analyticsLoad();
+}
+
+// ===== CHUNK TT — Smart Default Agent (auto-detect from env) =====
+// On boot, if the URL has no ?agent= param, ask the server which agent is
+// calling (detected from env fingerprints). If detected, auto-apply the
+// Skills-tab agent filter + show an info banner. Skipped silently if the
+// server returns null (no fingerprint found — e.g. opened from a browser).
+async function autoDetectAgent(){
+  try{
+    const url=new URL(window.location.href);
+    if(url.searchParams.get('agent'))return;  // explicit ?agent= wins
+    const r=await fetch('/api/detect-agent').then(r=>r.json());
+    if(!r||!r.agent)return;
+    // Apply to the agent filter once Skills tab is visited (lazy — dropdown
+    // populates on first skillsLoad). We stash the detected name and apply
+    // it inside applyUrlParams/skillsLoad.
+    window._autoDetectedAgent=r.agent;
+    window._autoDetectedSource=r.source||'env';
+    // If Skills tab is already active, apply now; otherwise it applies on visit.
+    if(currentView==='skills')_applyAutoDetectedAgent();
+  }catch(_){}
+}
+function _applyAutoDetectedAgent(){
+  if(!window._autoDetectedAgent)return;
+  const sel=$('skills-agent-filter');if(!sel)return;
+  const a=window._autoDetectedAgent;
+  // Only apply if the option exists (dropdown populated) or value is 'all'.
+  let found=false;
+  for(const opt of sel.options){if(opt.value.toLowerCase()===a.toLowerCase()){sel.value=opt.value;found=true;break;}}
+  if(!found){
+    // Dropdown not yet populated — retry once after skillsLoad fills it.
+    setTimeout(_applyAutoDetectedAgent,300);
+    return;
+  }
+  // Show info banner (distinct from the explicit ?agent= banner).
+  let banner=$('skills-autodetect-banner');
+  if(!banner){
+    banner=document.createElement('div');banner.id='skills-autodetect-banner';
+    banner.style.cssText='padding:6px 10px;background:rgba(94,234,212,.10);border:1px solid var(--accent-success);border-radius:var(--r-md);font-size:var(--fs-2xs);color:var(--text-secondary);margin-bottom:6px;flex-shrink:0';
+    const tb=$('skills-toolbar');if(tb)tb.parentNode.insertBefore(banner,tb.nextSibling);
+  }
+  banner.innerHTML='🤖 <b style="color:var(--accent-success)">auto-detected: '+a+'</b> (จาก env) · <a href="#" onclick="clearAutoDetect();return false" style="color:var(--text-tertiary);text-decoration:underline">ดูทั้งหมด</a>';
+  skillsLoad();
+}
+function clearAutoDetect(){
+  window._autoDetectedAgent=null;
+  const banner=$('skills-autodetect-banner');if(banner)banner.remove();
+  const sel=$('skills-agent-filter');if(sel)sel.value='all';
+  skillsLoad();syncUrlState();
+}
+
+// ===== URL PARAMS (?agent=, ?skill=, ?flow=) =====
+// Deep-link support: open the dashboard with ?agent=zcode&skill=tdd or
+// ?flow=debug-production-issue to jump straight to a skill detail or
+// auto-play a walkthrough. Called once on page load (Skills view).
+function applyAgentParam(){return applyUrlParams();}
+function applyUrlParams(){
+  const url=new URL(window.location.href);
+  const agent=url.searchParams.get('agent');
+  const skill=url.searchParams.get('skill');
+  const flow=url.searchParams.get('flow');
+  // Agent filter first.
+  if(agent){
+    const sel=$('skills-agent-filter');
+    if(sel){
+      for(const opt of sel.options){
+        if(opt.value.toLowerCase()===agent.toLowerCase()){sel.value=opt.value;break;}
+      }
+      let banner=$('skills-agent-banner');
+      if(!banner){
+        banner=document.createElement('div');
+        banner.id='skills-agent-banner';
+        banner.style.cssText='padding:6px 10px;background:var(--accent-brand-soft,rgba(120,170,255,.12));border:1px solid var(--accent-brand,rgba(120,170,255,.4));border-radius:var(--r-md);font-size:var(--fs-2xs);color:var(--text-secondary);margin-bottom:6px;flex-shrink:0';
+        const tb=$('skills-toolbar');if(tb)tb.parentNode.insertBefore(banner,tb.nextSibling);
+      }
+      banner.innerHTML='👁 กำลังดู skills ของ <b style="color:var(--accent-brand)">'+agent+'</b> · <a href="#" onclick="clearAgentParam();return false" style="color:var(--text-tertiary);text-decoration:underline">ดูทั้งหมด</a>';
+      skillsLoad();
+    }
+  }
+  // ?skill=<name> → open detail drawer (after skills list loads).
+  if(skill){
+    // Wait for skills list to populate, then open detail.
+    setTimeout(()=>{try{skillsOpenDetail(decodeURIComponent(skill));}catch(e){console.warn('skill deep-link fail',e);}},500);
+  }
+  // ?flow=<id> → auto-play walkthrough simulation.
+  if(flow){
+    setTimeout(()=>{
+      try{
+        if(!_walkthroughsLoaded)loadWalkthroughs();
+        simWalkthrough(decodeURIComponent(flow));
+      }catch(e){console.warn('flow deep-link fail',e);}
+    },600);
+  }
+}
+// === CHUNK PP — Dashboard URL State Sync ===
+// Build a query string representing the CURRENT dashboard state: active view + all
+// Skills-tab filters + sort. Used by syncUrlState() to keep the URL shareable and by
+// the popstate handler to restore state on browser back/forward.
+let _urlSyncSuspend=false;  // guard: while applying URL-driven state, don't re-sync
+function _buildStateQs(){
+  const qs=new URLSearchParams();
+  if(currentView&&currentView!=='summary')qs.set('view',currentView);
+  // Skills-tab filters (only meaningful when skills DOM exists)
+  const sel=$('skills-agent-filter');if(sel&&sel.value&&sel.value!=='all')qs.set('agent',sel.value);
+  const dom=$('skills-domain-filter');if(dom&&dom.value)qs.set('domain',dom.value);
+  const srch=$('skills-search');if(srch){const q=srch.value.trim();if(q)qs.set('q',q);}
+  const srt=$('skills-sort');if(srt&&srt.value)qs.set('sort',srt.value);
+  if(_skillsInv&&_skillsInv!=='all')qs.set('invocation',_skillsInv);
+  if(_skillsCat)qs.set('category',_skillsCat);
+  const inst=$('skills-installed-only');if(inst&&inst.checked)qs.set('installed','1');
+  return qs.toString();
+}
+// Reflect current state into the URL (replaceState — no extra history entry per change).
+function syncUrlState(){
+  if(_urlSyncSuspend)return;
+  try{
+    const qs=_buildStateQs();
+    const newSearch=qs?('?'+qs):'';
+    const cur=window.location.search;
+    if(cur!==newSearch){
+      const nu=window.location.pathname+newSearch+window.location.hash;
+      window.history.replaceState({},'',nu);
+    }
+  }catch(_){}
+}
+// Copy the current URL (with full state) to clipboard for sharing.
+async function copyShareUrl(){
+  try{
+    syncUrlState();  // ensure URL reflects latest state first
+    const url=window.location.href;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(url);
+    }else{
+      // Fallback: transient textarea select.
+      const ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');ta.remove();
+    }
+    toast('🔗 คัดลอก URL แล้ว — วางที่เครื่องอื่นได้เลย');
+  }catch(e){toast('คัดลอก URL ไม่สำเร็จ: '+e.message,true);}
+}
+// Restore dashboard state from the URL on load / back / forward.
+// Called from setView boot AND from popstate. Guarded so applying state does not
+// recursively push history entries.
+function applyFullStateFromUrl(){
+  _urlSyncSuspend=true;
+  try{
+    const url=new URL(window.location.href);
+    const view=url.searchParams.get('view');
+    if(view){try{setView(view);}catch(_){}}
+    // Skills-tab filters
+    const dom=url.searchParams.get('domain');
+    if(dom){const el=$('skills-domain-filter');if(el){el.value=dom;}}
+    const q=url.searchParams.get('q');
+    if(q){const el=$('skills-search');if(el){el.value=q;}}
+    const sort=url.searchParams.get('sort');
+    if(sort){const el=$('skills-sort');if(el){el.value=sort;}}
+    const inv=url.searchParams.get('invocation');
+    if(inv){try{skillsSetInv(inv);}catch(_){}}
+    const cat=url.searchParams.get('category');
+    if(cat){try{skillsSetCat(cat);}catch(_){}}
+    const inst=url.searchParams.get('installed');
+    if(inst==='1'){const el=$('skills-installed-only');if(el)el.checked=true;}
+    // agent/skill/flow handled by existing applyUrlParams below (kept for compat).
+  }finally{
+    _urlSyncSuspend=false;
+  }
+}
+// Browser back/forward → re-apply URL state. Idempotent.
+window.addEventListener('popstate',function(){
+  try{applyFullStateFromUrl();}catch(_){}
+});
+function clearAgentParam(){
+  const url=new URL(window.location.href);
+  url.searchParams.delete('agent');
+  window.history.replaceState({},'',url);
+  const banner=$('skills-agent-banner');if(banner)banner.remove();
+  $('skills-agent-filter').value='all';
+  skillsLoad();
+}
+async function loadWalkthroughs(){
+  if(_walkthroughsLoaded)return;
+  try{
+    const r=await fetch('/api/walkthroughs');
+    const j=await r.json();
+    const list=$('walkthroughs-list');
+    const count=$('walkthroughs-count');
+    count.textContent=`(${j.total} กระแส)`;
+    list.innerHTML=j.flows.map(f=>{
+      const d=f.difficulty||{};
+      const diffColor=d.level==='ขั้นสูง'?'var(--accent-danger)':d.level==='ปานกลาง'?'var(--accent-warn)':'var(--accent-green)';
+      const diffBadge=d.score!==undefined?`<span style="color:${diffColor};font-weight:600;margin-left:4px" title="auto-score: ${d.score}/100">${d.level||''} ${d.score}</span>`:'';
+      const manualBadge=f.level_th&&d.level&&f.level_th!==d.level?`<span style="color:var(--text-tertiary)" title="manual level">${f.level_th}</span>`:'';
+      return `
+      <button class="chat-quick-btn" style="padding:5px 11px;font-size:var(--fs-2xs);background:var(--elev-2);border:1px solid var(--border2);color:var(--text-primary)" onclick="simWalkthrough('${f.id}')">
+        ${f.title_th} <span style="color:var(--text-tertiary)">· ${f.step_count} ขั้น</span>${manualBadge?' / '+manualBadge:''}${diffBadge}
+      </button>`;
+    }).join('');
+    _walkthroughsLoaded=true;
+  }catch(e){console.warn('walkthroughs load fail',e);}
+}
+function toggleWalkthroughsBar(){
+  const list=$('walkthroughs-list'),ar=$('walkthroughs-arrow');
+  const open=list.style.display!=='none';
+  list.style.display=open?'flex':'none';
+  ar.textContent=open?'▾':'▸';
+  if(!open && !_walkthroughsLoaded)loadWalkthroughs();
+}
+let _wfSteps=[],_wfIdx=-1,_wfTimer=null,_wfMeta={},_wfCurrentId=null;
+async function simWalkthrough(id){
+  try{
+    const r=await fetch('/api/walkthroughs/'+encodeURIComponent(id));
+    if(!r.ok){toast('ไม่พบ flow: '+id,'err');return;}
+    const j=await r.json();
+    _wfSteps=j.steps;_wfIdx=-1;_wfMeta=j;_wfCurrentId=id;
+    // Reuse the same sim modal — render stations from walkthrough steps.
+    $('sim-title').textContent='🎬 '+j.title_th;
+    $('sim-stations').innerHTML=_wfSteps.map((st,i)=>`
+<div class="sim-station" data-i="${i}">
+  <div class="sim-core">${st.icon||'🔧'}</div>
+  <div class="sim-station-label">${st.label_th}</div>
+  <div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-top:2px">${st.skill}</div>
+</div>`).join('');
+    $('sim-progress').style.width='0%';
+    $('sim-explain').className='';$('sim-explain').innerHTML=`<div style="color:var(--text-secondary);font-size:var(--fs-xs);margin-bottom:6px">${j.summary_th}</div><div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${j.level_th} · ${j.duration_th} · ${_wfSteps.length} ขั้น · กด ▶ เริ่ม</div>`;
+    $('sim-backdrop').classList.add('show');
+    // Show the copy-link button (walkthrough context only).
+    const copyBtn=$('sim-copy-link');if(copyBtn)copyBtn.style.display='inline-flex';
+    // Override play/step behavior for this walkthrough run.
+    _wfBindControls();
+  }catch(e){toast('โหลด flow ไม่ได้: '+e,'err');}
+}
+function simCopyLink(){
+  if(_wfCurrentId){copyFlowLink(_wfCurrentId);return;}
+  // Single-skill simulation — copy ?skill=<name>.
+  // _simCurrentName is set by simulateSkill() below.
+  if(typeof _simCurrentName!=='undefined'&&_simCurrentName){copySkillLink(_simCurrentName);}
+}
+function _wfBindControls(){
+  // The existing sim modal has buttons calling simPlay/simStep/simReset.
+  // We temporarily override those globals for the walkthrough run.
+  window._wfSavedPlay=window.simPlay;window._wfSavedStep=window.simStep;
+  window.simPlay=_wfPlay;window.simStep=_wfStep;
+}
+function _wfRestore(){
+  if(window._wfSavedPlay){window.simPlay=window._wfSavedPlay;window.simStep=window._wfSavedStep;}
+}
+function _wfPlay(){
+  if(_wfTimer){clearInterval(_wfTimer);_wfTimer=null;return;}
+  if(_wfIdx>=_wfSteps.length-1)_wfIdx=-1;
+  _wfTimer=setInterval(_wfStep,2400);  // slower than single-skill (more context per step)
+  _wfStep();
+}
+function _wfStep(){
+  if(!_wfSteps.length)return;
+  _wfIdx++;
+  if(_wfIdx>=_wfSteps.length){
+    if(_wfTimer){clearInterval(_wfTimer);_wfTimer=null;}
+    $('sim-explain').className='';$('sim-explain').innerHTML=`✅ <b>เสร็จสิ้น flow!</b> ครบ ${_wfSteps.length} ขั้น — ${_wfMeta.title_th}`;
+    return;
+  }
+  document.querySelectorAll('.sim-station').forEach(el=>{el.classList.remove('active','done');});
+  for(let i=0;i<_wfIdx;i++)document.querySelector(`.sim-station[data-i="${i}"]`)?.classList.add('done');
+  document.querySelector(`.sim-station[data-i="${_wfIdx}"]`)?.classList.add('active');
+  $('sim-progress').style.width=((_wfIdx+1)/_wfSteps.length*100)+'%';
+  const st=_wfSteps[_wfIdx];
+  $('sim-explain').innerHTML=`<b style="color:var(--accent-brand)">ขั้นที่ ${_wfIdx+1}/${_wfSteps.length}:</b> ${st.label_th}<div style="margin-top:5px;font-size:var(--fs-2xs);color:var(--text-secondary)">${st.skill_th_description||st.skill}</div>`;
+}
+// Hook into simClose to restore controls when modal closes.
+const _origSimClose=simClose;
+simClose=function(e){
+  if(e&&e.target&&e.target.id!=='sim-backdrop'&&e.type==='click')return;
+  if(_wfTimer){clearInterval(_wfTimer);_wfTimer=null;}
+  if(_wfSteps.length){_wfSteps=[];_wfIdx=-1;_wfRestore();}
+  $('sim-backdrop').classList.remove('show');
+};
+
+setView('summary');
+// CHUNK PP: if URL carries state (?view=, filters), apply it after initial paint.
+try{applyFullStateFromUrl();}catch(_){}
+// CHUNK TT: auto-detect agent from env (only if no explicit ?agent= in URL).
+try{autoDetectAgent();}catch(_){}
+// CHUNK UU: auto-restore last workspace if user opted in.
+try{maybeAutoRestoreWorkspace();}catch(_){}
+_stageRO.observe(flowStage);
+window.addEventListener('resize',layoutFlow);
+connect();loadRecommendations();loadModelStationsConfig();layoutFlow();renderLanes();
+
+// === CHUNK CC — PWA Offline Mode (progressive enhancement) ===
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(function(reg){
+    console.log('📱 A-Wiki SW registered (offline-ready)');
+  }).catch(function(e){
+    console.warn('SW registration failed (non-fatal):', e);
+  });
+}
+
