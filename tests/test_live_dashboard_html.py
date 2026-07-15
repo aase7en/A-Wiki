@@ -41,7 +41,11 @@ def test_file_under_60kb():
     # dependency graph, sim export (SVG/PNG), keyboard shortcuts, skill
     # comparison, walkthrough difficulty, trending analytics, AI recommender,
     # and skill versioning. All client-side JS — no external dependency added.
-    assert size < 200 * 1024, f"HTML too large: {size} bytes (limit 200 KB)"
+    # raised to 220 KB (2026-07-15) for the Skills Expansion v5 wave: graph
+    # export, walkthrough suggestions, coverage inline editor, compare diff
+    # highlights, trending toggle, CLI deep-link, skill changelog, semantic
+    # search, PWA offline. Still client-side — no external dep added.
+    assert size < 220 * 1024, f"HTML too large: {size} bytes (limit 220 KB)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────

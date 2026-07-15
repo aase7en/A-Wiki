@@ -274,7 +274,7 @@
       "status": "canonical",
       "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
       "invocation": "manual",
-      "th_description": "วินัย 4 ข้อสำหรับ debug: (1) reproduce ให้ได้ก่อน (2) รู้ fail path (3) ตั้งข้อสงสัยแล้วหาที่หักล้าง (4) เก็บ breadcrumb ทุกครั้ง. บังคับ Iron Law #2",
+      "th_description": "[Iron Law #2] debug-mantra 4 ขั้น — reproduce → hypothesize → test-fix → verify — ไม่ใช่ try-and-see",
       "when_to_use": "ทุกครั้งที่เจอ bug — ห้ามแก้โดยไม่หา root cause ก่อน",
       "examples": [
         {

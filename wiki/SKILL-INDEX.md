@@ -237,7 +237,7 @@
 |-------|-----------|----------|-------------|
 | `agent-introspection-debugging` | none | ecosystem | debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลอง... |
 | `browser-qa` | none | ecosystem | ใช้ทักษะนี้เพื่อทดสอบ UI อัตโนมัติและตรวจสอบการทำงานของหน้าเว็บหลัง deploy ฟีเจอร์ โดยจำลองการคลิ... |
-| `debug-mantra` | none | uncategorized | วินัย 4 ข้อสำหรับ debug: (1) reproduce ให้ได้ก่อน (2) รู้ fail path (3) ตั้งข้อสงสัยแล้วหาที่หักล... |
+| `debug-mantra` | none | uncategorized | [Iron Law #2] debug-mantra 4 ขั้น — reproduce → hypothesize → test-fix → verify — ไม่ใช่ try-and-see |
 | `scrutinize` | none | uncategorized | รีวิวแบบเข้ม — ตั้งคำถามทุก assumption, หา edge case, เช็ค security/perf. ใช้คู่กับ code-review |
 | `triage` | verify | mattpocock | ขับ issue/PR ผ่าน state machine ของการตัดสินใจ — categorise, verify, grill, write-up, merge |
 | `verification-loop` | none | ecosystem | ระบบตรวจสอบความถูกต้องแบบครบวงจรสำหรับเซสชัน Claude Code ช่วยให้มั่นใจว่าโค้ดที่สร้างขึ้นทำงานได้... |

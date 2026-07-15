@@ -312,6 +312,16 @@ A real-time monitor showing **which AI is working, on what, in which workflow, h
   - **💡 AI recommender** — the **"อยากทำ..."** input takes a natural-language goal ("แก้ bug", "เขียน test") and scores all 387 skills by multi-field substring match (th_description +3, when_to_use +2, name +2, examples +1; boost for process_steps/invocation_hint). Returns top 5 with a **match_reason** ("ตรงคำอธิบายไทย, ตรงชื่อ skill"). Separate from search (filter) — this is ranked suggestion.
   - **📋 Skill versioning** — each detail drawer now shows a version section with the registry `version` field (if set) plus git-derived **last commit date + commit count + hash** (via `git log`, subprocess arg list, no shell). Shows how stale/fresh each skill is.
   - **🎨 Coverage heatmap theme fix** — the `--accent-green`/`--accent-warn` CSS variables were referenced but never defined (always fell back to hardcoded hex). Now defined in `:root` and the green-white theme, so heatmaps recolor correctly when you toggle themes.
+- **🧬 Skills Expansion v5 (9 features)** — deeper skill-exploration + offline-capable:
+  - **📥 Graph export** — the skill dependency graph view (v4) now has SVG + PNG download buttons. PNG captures the vis-network canvas directly; SVG rebuilds from `.getPositions()` for a clean, re-renderable diagram.
+  - **🎬 Recommender → flow suggestions** — the "อยากทำ..." recommender now matches multi-skill flows too (by title/summary/id). Flow suggestions appear above single-skill results — "whole flows beat single skills" when the query matches a workflow.
+  - **✏️ Coverage inline editor** — click any missing-skill tag in the Coverage tab → modal with textarea → save directly to `skills-registry.json` (field allowlist: `th_description`/`when_to_use`/`invocation_hint`, length ≤2000, validate + rollback on failure). No more tab-switching to fill gaps.
+  - **⚖️ Compare diff highlights** — the compare table now highlights unique values (green bg) and empty values (red bg), with a legend. Instantly see where skills differ.
+  - **📈 Trending window toggle** — the trending bar now has a 7ว/30ว toggle (saved to localStorage). Switch between short-term and monthly trending.
+  - **🔗 CLI deep-link** — `python scripts/open-skill.py <name>` opens the dashboard at a specific skill's detail view (cross-platform via `webbrowser.open`). Port via `AWIKI_DASHBOARD_PORT` env.
+  - **📜 Skill changelog** — the version section in detail drawers now has a lazy-load "📜 ดู changelog" button that fetches the 5 most recent git commits for the skill's SKILL.md (date + hash + message).
+  - **🧠 Semantic search (fallback tier)** — the recommender tries embedding-based search (sqlite-vec + fastembed) first; falls back to substring if deps/index unavailable. UI shows a mode badge (🧠 semantic / 📝 substring).
+  - **📱 PWA offline mode** — service worker (`/sw.js`) caches static assets (cache-first) and API responses (network-first, fallback to cache). The dashboard's static shell works offline after first load. Progressive enhancement — fails silently if SW unavailable.
 
 Opt-out / config: no setup needed; the dashboard reads `.tmp/model-config.json` (written by the panel) and `wiki/context/model-capability-scores.json`. See [`scripts/live-dashboard/README.md`](scripts/live-dashboard/README.md).
 
