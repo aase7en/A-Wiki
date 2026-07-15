@@ -505,7 +505,48 @@ European option (Yiurie series).
 **ไม่เลือกเมื่อ**: λ₁ ≈ λ₂ (degenerate to symmetric Laplace, identifiability ต่ำ) —
 ใช้ high-frequency jump detection (Lee-Mykland 2008) constrain ก่อน.
 
-(Hawkes self-exciting variant — ดู L3 subsection ด้านล่างเมื่อ implemented.)
+(Hawkes self-exciting variant — ดูด้านล่าง.)
+
+**Hawkes (1971) — self-exciting intensity (clustered jumps)**:
+
+```python
+def hawkes_jump_times(lam0, alpha, beta, T, rng):
+    """Sample Hawkes jump times on [0,T] via Ogata (1981) thinning (exact).
+
+    λ(t) = λ₀ + Σ_{t_k<t} α·exp(-β(t-t_k)). Each arrival raises intensity by α,
+    decays at rate β. Requires α<β (branching ratio n=α/β<1) for stationarity.
+    Long-run intensity λ̄ = λ₀/(1-n).
+    """
+    if not alpha < beta:
+        raise ValueError(f"stationarity requires alpha<beta; n={alpha/beta:.3f}≥1")
+    lam_star = lam0 + alpha  # upper bound between events (valid when α<β)
+    t = 0.0
+    arrivals = []
+    while t < T:
+        t += -np.log(rng.uniform()) / lam_star  # Exp(λ*) candidate
+        if t >= T:
+            break
+        lam_at_t = lam0 + sum(alpha * np.exp(-beta * (t - tk)) for tk in arrivals)
+        if rng.uniform() < lam_at_t / lam_star:
+            arrivals.append(t)
+        # else reject (thinning)
+    return np.array(arrivals)
+
+# ใช้: arrivals = hawkes_jump_times(1.0, 0.5, 2.0, 10.0, rng)
+#       # λ₀=1 baseline, α=0.5 excitation, β=2.0 decay → n=0.25<1 stationary
+#       # N(T) over-dispersed: Fano=Var[E]>1 (clustered, vs Poisson Fano=1)
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_hawkes.py`):**
+1. Count N(T) Fano factor (Var/E) > 1 — over-dispersed (cluster signature)
+2. α=0 reduces to Poisson (Fano ≈ 1.0, mean rate matches within 2%)
+3. Sampler rejects α≥β (non-stationary / explosive — branching ratio ≥1)
+
+**เลือกเมื่อ**: temporal clustering ของ jumps สำคัญ — crises cascade, flash crashes,
+order-book events ที่ arrivals ไม่ iid (volatility begets volatility). Hawkes
+captured ได้, Merton (constant λ) ไม่ได้.
+**ไม่เลือกเมื่อ**: short horizon ไม่มี cascade evidence, หรือ jumps iid พอ —
+Hawkes calibration ยากกว่า Merton มาก (α/β/λ₀ from arrival times).
 
 ### Multi-level MC (nested expectation)
 
