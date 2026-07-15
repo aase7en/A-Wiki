@@ -676,3 +676,75 @@ def test_detect_cycles_respects_max_depth():
     # But with max_depth=25, the ring is within cap -> detected.
     r3 = skills_service.detect_cycles(edges, max_depth=25)
     assert r3["has_cycle"] is True
+
+
+# ---------------------------------------------------------------------------
+# CHUNK JJ — agent_skill_matrix()
+# ---------------------------------------------------------------------------
+
+def test_agent_skill_matrix_shape():
+    """agent_skill_matrix must return agents/skills/matrix/totals."""
+    r = skills_service.agent_skill_matrix()
+    assert set(r.keys()) >= {"agents", "skills", "matrix", "totals"}
+    # 11 agents (KNOWN_AGENTS excludes 'all').
+    assert len(r["agents"]) == 11, f"expected 11 agents, got {len(r['agents'])}"
+    # Skills should be canonical (status check done internally).
+    assert len(r["skills"]) > 0
+    assert isinstance(r["matrix"], dict)
+    assert isinstance(r["totals"], dict)
+
+
+def test_agent_skill_matrix_all_visible_for_all_tagged():
+    """A skill with agents:['all'] must be visible to every agent column."""
+    r = skills_service.agent_skill_matrix()
+    # Find a skill tagged 'all' in the real registry.
+    reg = skills_service._load_registry()
+    all_skill = next((s for s in reg.skills
+                      if s.get("status") == "canonical"
+                      and "all" in (s.get("agents") or [])), None)
+    if not all_skill:
+        return  # no 'all' skill in registry — skip
+    name = all_skill["name"]
+    assert name in r["matrix"], f"{name} missing from matrix"
+    row = r["matrix"][name]
+    # Every agent column must be True.
+    for agent in r["agents"]:
+        assert row.get(agent) is True, (
+            f"{name} (agents:['all']) not visible to {agent}"
+        )
+
+
+def test_agent_skill_matrix_specific_agent_visibility():
+    """A skill tagged only to a specific agent (not 'all') must show True
+    only for that agent, False for others."""
+    r = skills_service.agent_skill_matrix()
+    reg = skills_service._load_registry()
+    # Find a skill tagged to exactly one specific agent (not 'all').
+    specific = next((s for s in reg.skills
+                     if s.get("status") == "canonical"
+                     and "all" not in (s.get("agents") or [])
+                     and len(s.get("agents") or []) == 1), None)
+    if not specific:
+        return  # no specific-agent skill — skip
+    name = specific["name"]
+    tagged_agent = specific["agents"][0]
+    row = r["matrix"].get(name, {})
+    if tagged_agent in r["agents"]:
+        assert row.get(tagged_agent) is True, (
+            f"{name} should be visible to {tagged_agent}"
+        )
+        # At least one OTHER agent should be False.
+        others = [a for a in r["agents"] if a != tagged_agent]
+        assert any(not row.get(a) for a in others), (
+            f"{name} appears visible to all agents — expected only {tagged_agent}"
+        )
+
+
+def test_agent_skill_matrix_totals_match_matrix():
+    """totals[agent] must equal count of skills visible to that agent."""
+    r = skills_service.agent_skill_matrix()
+    for agent in r["agents"]:
+        expected = sum(1 for row in r["matrix"].values() if row.get(agent))
+        assert r["totals"][agent] == expected, (
+            f"totals[{agent}]={r['totals'][agent]} != matrix count {expected}"
+        )

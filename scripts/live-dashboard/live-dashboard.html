@@ -567,6 +567,7 @@ to{transform:translateY(0);opacity:1}
       <select id="skills-preset" onchange="applyPresetSelect()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:30px;cursor:pointer" title="โหลด preset">
         <option value="">📋 Presets</option>
       </select>
+      <button class="set-btn sm" onclick="exportMatrixCSV()" style="padding:5px 10px;font-size:var(--fs-2xs);min-height:30px;color:var(--accent-success)" title="ดาวน์โหลดตาราง skills × agents เป็น CSV">📥 Matrix CSV</button>
       <div style="display:flex;gap:2px;margin-left:auto">
         <button class="chat-quick-btn skills-view-btn active" data-view="list" onclick="skillsSetView('list')" style="padding:5px 10px;font-size:var(--fs-2xs)">📋 List</button>
         <button class="chat-quick-btn skills-view-btn" data-view="graph" onclick="skillsSetView('graph')" style="padding:5px 10px;font-size:var(--fs-2xs)">🧬 Graph</button>
@@ -2061,6 +2062,34 @@ skillsRefresh();
 }
 // Initialize preset dropdown on skills load.
 function _initPresetDropdown(){renderPresetDropdown();}
+// === CHUNK JJ — Multi-Agent Matrix CSV export ===
+async function exportMatrixCSV(){
+try{
+const r=await fetch('/api/skills/matrix').then(r=>r.json());
+if(r.error)throw new Error(r.error);
+const agents=r.agents||[];
+const skills=r.skills||[];
+const matrix=r.matrix||{};
+// CSV: header = skill, agent1, agent2, ... ; 1/0 per cell.
+const header=['skill'].concat(agents);
+const rows=skills.map(name=>{
+const row=matrix[name]||{};
+return [name].concat(agents.map(a=>row[a]?'1':'0'));
+});
+// Quote skill names (may contain commas in theory).
+const csv=[header, ...rows].map(r=>r.map((c,i)=>{
+const s=String(c);
+return i===0?'"'+s.replace(/"/g,'""')+'"':s;
+}).join(',')).join('\r\n');
+const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;a.download='awiki-skill-agent-matrix.csv';
+document.body.appendChild(a);a.click();document.body.removeChild(a);
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+toast('📥 ดาวน์โหลด CSV แล้ว ('+skills.length+' skills × '+agents.length+' agents)');
+}catch(e){toast('❌ '+e.message,'err');}
+}
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
 drawer.style.transform='translateX(0)';bd.style.display='block';

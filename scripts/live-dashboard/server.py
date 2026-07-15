@@ -662,6 +662,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_skills_recommend()
         elif path == "/api/skills/cycles":
             self._api_skills_cycles()
+        elif path == "/api/skills/matrix":
+            self._api_skills_matrix()
         elif path.startswith("/api/skills/"):
             self._api_skills_detail(path[len("/api/skills/"):])
         elif path == "/api/walkthroughs":
@@ -1026,6 +1028,13 @@ class Handler(BaseHTTPRequestHandler):
             g = skills_service.skill_graph(all_skills=True, limit=500)
             result = skills_service.detect_cycles(g.get("edges", []))
             self._json_response(result)
+        except Exception as e:
+            self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_matrix(self):
+        """GET /api/skills/matrix — skills × agents visibility matrix."""
+        try:
+            self._json_response(skills_service.agent_skill_matrix())
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
 

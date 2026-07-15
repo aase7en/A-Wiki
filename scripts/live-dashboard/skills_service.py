@@ -378,6 +378,33 @@ def skill_health_score(skill: dict[str, Any]) -> dict[str, Any]:
     return {"score": score, "level": level, "missing": missing}
 
 
+def agent_skill_matrix() -> dict[str, Any]:
+    """GET /api/skills/matrix — skills × agents visibility matrix for CSV export.
+
+    Returns:
+      - agents: the 11 known agents (KNOWN_AGENTS minus 'all')
+      - skills: sorted list of canonical skill names
+      - matrix: {skill_name: {agent: bool}}
+      - totals: {agent: count of visible skills}
+    """
+    reg = _load_registry()
+    agents = [a for a in KNOWN_AGENTS if a != "all"]
+    canonical = [s for s in reg.skills if s.get("status") == "canonical"]
+    skills_sorted = sorted(s.get("name", "") for s in canonical)
+    # Build per-agent name sets for O(1) lookup.
+    agent_sets: dict[str, set[str]] = {}
+    for a in agents:
+        agent_sets[a] = {s["name"] for s in reg.canonical_for_agent(a)}
+    matrix: dict[str, dict[str, bool]] = {}
+    for s in canonical:
+        name = s.get("name", "")
+        if not name:
+            continue
+        matrix[name] = {a: (name in agent_sets[a]) for a in agents}
+    totals = {a: len(agent_sets[a]) for a in agents}
+    return {"agents": agents, "skills": skills_sorted, "matrix": matrix, "totals": totals}
+
+
 def coverage_stats(compare: str | None = None) -> dict[str, Any]:
     """GET /api/coverage — coverage metrics for the Coverage tab.
 
@@ -744,7 +771,7 @@ __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
     "skill_graph", "walkthrough_difficulty", "recommend_skills",
     "skill_history", "update_skill_field", "skill_health_score",
-    "detect_cycles", "KNOWN_AGENTS",
+    "detect_cycles", "agent_skill_matrix", "KNOWN_AGENTS",
 ]
 
 
