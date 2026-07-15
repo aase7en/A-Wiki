@@ -4,6 +4,7 @@ title: "Copula (probability theory) — multivariate dependency modeling for qua
 slug: copula-multivariate-finance
 date_ingested: 2026-07-14
 original_file: raw/copula-wikipedia.md
+additional_sources: [raw/vine-copula-wikipedia.md]
 source_url: https://en.wikipedia.org/wiki/Copula_(probability_theory)
 domain: trader
 tags: [trader, copula, multivariate, dependence, quant, risk, monte-carlo, tail-risk, statistics]
@@ -64,7 +65,44 @@ density form: `h(x₁,...,xₐ) = c(F₁(x₁),...,Fₐ(xₐ)) · f₁(x₁) · 
 - **VaR forecasting**: US + international equities (Student-t copula ดีกว่า Gaussian ตอนวิกฤต)
 - **Derivatives pricing**: CDOs, basket options, spread options
 - **Statistical arbitrage**: pairs trading — copula stability > correlation stability
-- **Vine copulas** (pair copulas): flexible สำหรับ high-dimensional portfolios — Clayton canonical vine ดีกว่า Gaussian/Student-t ใน downside
+- **Vine copulas** (pair copulas): flexible สำหรับ high-dimensional portfolios — ดู subsection เฉพาะด้านล่าง
+
+### Vine copulas (pair-copula constructions)
+
+สำหรับ **d ≥ 5** assets, single multivariate copula (Gaussian/Student-t) มีข้อจำกัด:
+impose dependence structure เดียวทั้ง portfolio, จำกัดในการจับ asymmetric tail.
+**Vine copulas** แก้โดย decompose d-dimensional density เป็น d(d-1)/2 bivariate copulas
+บน conditional distributions (pair-copula construction, Joe 1996 / Bedford-Cooke 2002) —
+scale ไป high dimensions โดยไม่ต้อง assume single correlation matrix.
+
+| Type | โครงสร้าง tree | เลือกเมื่อ | ตัวอย่าง use |
+|------|----------------|-----------|--------------|
+| **C-vine** (canonical) | star: root หนึ่งตัวต่อ tree | มี asset ที่ dominate (market index, factor) | equity portfolio มี SPY เป็นหัวใจ |
+| **D-vine** (drawable) | path: sequential ordering | time-series มี temporal order | yield curve (maturities เรียงตามเวลา) |
+| **R-vine** (regular) | ทั่วไปที่สุด (nested tree) | dependence structure ซับซ้อน ไม่มี root ชัด | multi-asset class portfolio |
+
+**Pair-copula formula:**
+
+    f(x₁,...,x_d) = Πᵢ fᵢ(xᵢ) · Π_{e∈E(V)} c_{e₁,e₂|D_e}(F_{e₁|D_e}, F_{e₂|D_e})
+
+โดย E(V) = edges ของ vine tree, D_e = conditioning set ของ edge e. Simplifying assumption
+(constant conditional copulas) ใช้บ่อยใน application ลด parameter count.
+
+**Truncated vines**: independence copulas ใน tree ลำดับสูง → encode conditional independence
+→ ลด parameter count สำหรับ d ใหญ่มาก (เช่น 50+ assets). เลือกตัวแปรที่ strong dependence
+ไว้ tree ต่ำเพื่อ higher-order trees มี dependence เบาบาง (truncation เหมาะ).
+
+[verified 2026-07-15] — raw provenance: `raw/vine-copula-wikipedia.md` (Wikipedia CC BY-SA).
+Portfolio evidence: Low et al. (2013) แสดง Clayton canonical vine outperform Gaussian/Student-t
+ใน downside risk management สำหรับ international equity portfolios.
+
+**Python tooling**: `VineCopula` (R package, Schepsmeier et al. 2014 — production-grade);
+ใน Python `copulae` package มี vine support; scipy ไม่มี native (ใช้ manual pair-copula
+construction หรือ R binding). ดู `[[model-capability-bench]]` สำหรับ routing เมื่อ d ใหญ่.
+
+**เชื่อมโยงกับ skill**: skill `monte-carlo-quant-analysis` §Copula subsection ครอบคลุม
+Gaussian/Student-t/Clayton/Gumbel (baseline + tail). Vine = extension เมื่อ dimension สูง
+(d ≥ 5) ที่ single copula ไม่พอ — เลือกเมื่อ portfolio มี assets หลายประเภทต่าง dependence regime.
 
 ### ข้อควรระวัง
 
