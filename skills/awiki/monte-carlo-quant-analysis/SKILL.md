@@ -417,6 +417,57 @@ def merton_log_returns(mu, sigma, lam, mu_j, sigma_j, T, n_paths, rng):
 **เลือกเมื่อ**: discontinuities/crashes สำคัญ (earnings, macro shocks, gap risk), deep-tail VaR (99%+).
 **ไม่เลือกเมื่อ**: continuous-path พอ (short horizon, ไม่มี jump evidence), หรือ λ calibrate ไม่ได้จาก data ที่มี.
 
+### Jump-diffusion variants (Bates/Kou/Hawkes)
+
+3 extensions ของ Merton ที่ relax หนึ่งในสอง assumption (Gaussian jump size /
+constant intensity). ดูทฤษฎี + SDE + variant table ได้ที่
+[[jump-diffusion-variants]].
+
+**Bates (1996) — Heston SV + Merton jumps (most general equity model)**:
+
+```python
+# Compose J1 heston_paths() + J2 merton_jump_sum() — drift compensated by λk
+def bates_log_returns(mu, kappa, theta, xi, rho, v0, lam, mu_j, sigma_j,
+                      dt, n_steps, n_paths, rng):
+    """Bates = Heston CIR variance + per-path Merton jumps."""
+    T = n_steps * dt
+    k = np.exp(mu_j + sigma_j * sigma_j / 2.0) - 1.0
+    # Heston path with drift (μ - λk) so total E[return] = μ once jumps added
+    lr_sv = heston_paths_v2(v0, kappa, theta, xi, rho, mu - lam * k,
+                            dt, n_steps, n_paths, rng)  # returns log_s only
+    n_jumps = rng.poisson(lam * T, size=n_paths)
+    jump_sums = np.zeros(n_paths)
+    max_j = int(n_jumps.max())
+    if max_j > 0:
+        all_j = rng.normal(mu_j, sigma_j, size=(n_paths, max_j))
+        mask = np.arange(max_j)[None, :] < n_jumps[:, None]
+        jump_sums = (all_j * mask).sum(axis=1)
+    return lr_sv + jump_sums
+
+# ใช้: lr = bates_log_returns(0.05, 2.0, 0.09, 0.4, -0.8, 0.09, 5.0, -0.05, 0.2,
+#                              1/252, 252, 10_000, rng)
+#       var_5pct = np.quantile(lr, 0.05)  # worse than Heston OR Merton alone
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_bates.py`):**
+1. Bates VaR(5%) < Heston VaR(5%) ที่ same SV params (jumps worsen tail)
+2. Bates VaR(5%) < Merton VaR(5%) (SV worsens tail beyond pure jumps)
+3. Bates excess kurtosis > Merton excess kurtosis (SV adds fat tails)
+   **⚠️ direction subtlety (H6 lesson)**: Bates kurt (≈0.4) < Heston kurt (≈1.5)
+   เพราะ adding near-Gaussian Merton diffusion dilutes per-variance kurtosis
+   ของ Heston. Assert ที่ถูกคือ Bates > **Merton** ไม่ใช่ Bates > Heston.
+4. λ=0 recovers Heston (mean/var match within 5% — composition sanity)
+
+**เลือกเมื่อ**: ทั้ง vol clustering AND discontinuous crashes สำคัญ (crash-sensitive
+equity options, deep-OTM long-dated puts, early-exercise Americans). เป็น standard
+model เมื่อทั้งสอง effect มี.
+**ไม่เลือกเมื่อ**: SV หรือ jumps อย่างเดียวพอ — Bates มี 8+ params (κ, θ, ξ, ρ, v₀,
+λ, μ_J, σ_J) calibration ill-conditioned. Fix λ จาก historical jump-count estimates
+ก่อนแล้วค่อย calibrate ที่เหลือกับ option prices.
+
+(Kou double-exponential + Hawkes self-exciting variants — ดู L2/L3 subsections
+ด้านล่างเมื่อ implemented.)
+
 ### Multi-level MC (nested expectation)
 
 สำหรับ **nested expectation** `E[g(X)] = E[E[h(X,Y) | X]]` (เช่น option pricing ที่
