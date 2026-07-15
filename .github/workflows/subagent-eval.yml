@@ -67,6 +67,33 @@ jobs:
           # eval runner + regression check have no third-party deps (stdlib only)
           pip install pytest  # for a quick smoke of the regression tests
 
+      - name: Verify required secrets
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        run: |
+          missing=0
+          for v in OPENROUTER_API_KEY DEEPSEEK_API_KEY GEMINI_API_KEY ZHIPU_API_KEY; do
+            if [ -z "${!v:-}" ]; then
+              echo "⚠️ $v not set — eval will skip that provider (models fall back to OpenRouter)"
+              missing=1
+            else
+              echo "✓ $v is set"
+            fi
+          done
+          # OPENROUTER is the fallback for ALL candidate models — hard requirement.
+          # Without it, AWIKI_FORCE_MODEL in delegate.sh cannot route any model.
+          if [ -z "${OPENROUTER_API_KEY:-}" ]; then
+            echo "❌ OPENROUTER_API_KEY is required (unlocks all candidate models via AWIKI_FORCE_MODEL)."
+            echo "   Set it in: GitHub repo → Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          if [ "$missing" -eq 1 ]; then
+            echo "::warning::Some provider secrets missing — eval may produce partial results (only OpenRouter-routed models will be tested)."
+          fi
+
       - name: Smoke-test regression logic (offline)
         run: |
           python -m pytest tests/test_regression_check.py tests/test_run_subagent_eval.py -q
