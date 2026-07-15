@@ -1061,7 +1061,17 @@ def _substring_walkthrough_matches(query: str) -> list[dict[str, Any]]:
     except Exception:
         pass
     return matches
-    """Load skill-walkthroughs.json for the recommender. Cached by mtime."""
+
+
+def _load_walkthroughs_for_recommend() -> dict[str, Any]:
+    """Load skill-walkthroughs.json for the recommender. Cached by mtime.
+
+    CHUNK NN bugfix: this body was previously orphaned (missing its `def`
+    header, sitting unreachable after an earlier function's `return`).
+    The silent NameError was swallowed by the try/except at every call
+    site, so walkthrough suggestions were always empty. See
+    test_load_walkthroughs_for_recommend_is_callable.
+    """
     if not WALKTHROUGHS_FILE.is_file():
         return {}
     try:

@@ -333,6 +333,39 @@ def test_recommend_walkthroughs_empty_when_no_match():
     r = skills_service.recommend_skills("xyzzyqwerty123", limit=5)
     assert r["walkthroughs"] == []
 
+
+# ---------------------------------------------------------------------------
+# CHUNK NN — bugfix: _load_walkthroughs_for_recommend must be defined
+# Pre-fix this test FAILS because the function was orphaned (no `def` header)
+# ---------------------------------------------------------------------------
+
+def test_recommend_returns_walkthrough_when_query_matches_flow_id():
+    """deploy-flask-app flow has id 'deploy-flask-app' — query 'deploy' must match.
+
+    Pre-CHUNK-NN this fails silently: _load_walkthroughs_for_recommend
+    was missing its `def` header, so NameError was swallowed by try/except
+    and walkthroughs was always []. This test pins the fix.
+    """
+    r = skills_service.recommend_skills("deploy", limit=5)
+    assert "walkthroughs" in r
+    assert isinstance(r["walkthroughs"], list)
+    assert len(r["walkthroughs"]) >= 1, (
+        "expected 'deploy' to match deploy-flask-app walkthrough; "
+        "if this fails, _load_walkthroughs_for_recommend may be broken again"
+    )
+    ids = [w.get("id") for w in r["walkthroughs"]]
+    assert "deploy-flask-app" in ids, f"deploy-flask-app missing from {ids}"
+
+
+def test_load_walkthroughs_for_recommend_is_callable():
+    """The helper must be a real callable, not orphaned code."""
+    fn = getattr(skills_service, "_load_walkthroughs_for_recommend", None)
+    assert callable(fn), "_load_walkthroughs_for_recommend must be defined and callable"
+    data = fn()
+    assert isinstance(data, dict)
+    # Real file has 16 flows + _meta
+    assert len(data) >= 10, f"expected >=10 walkthrough entries, got {len(data)}"
+
 def test_skill_history_returns_dict_for_known_skill():
     """skill_history should return a dict with expected keys for a real skill."""
     h = skills_service.skill_history("debug-mantra")
