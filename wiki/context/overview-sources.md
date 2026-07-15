@@ -8,7 +8,7 @@
 
 ---
 
-## Stats — 175 sources
+## Stats — 176 sources
 
 | slug | abstract |
 |------|----------|
@@ -129,6 +129,7 @@
 | `lorawan-network-beginner` | 1. **LoRa vs LoRaWAN**: LoRa = radio technology (physical layer)… |
 | `mac-studio-used-thailand-2026-05-05` | 1. ราคามือสองผันผวนสูง — เช็ค Facebook Group "ซื้อขาย Mac" ก่อน… |
 | `manual-input-appsheet-env-2026-05-04` | AppSheet_Documentation: # [1] App_Summary: # [1] Short_Name: "EN… |
+| `merton-jump-diffusion` | 1. **Jump diffusion** = stochastic process ที่ผสม diffusion (Bro… |
 | `mqtt-introduction` | MQTT (Message Queuing Telemetry Transport) is a lightweight, pub… |
 | `mqtt-protocol-overview` | MQTT (Message Queuing Telemetry Transport) is a lightweight publ… |
 | `network-monitoring-iot` | Network monitoring in IoT environments differs from traditional… |

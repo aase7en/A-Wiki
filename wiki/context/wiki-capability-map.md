@@ -7,7 +7,7 @@
 
 | Area | Count |
 |---|---:|
-| Wiki pages | 525 |
+| Wiki pages | 526 |
 | Owned skills | 42 |
 | Script capabilities | 11 |
 | Protocols/runbooks | 61 |
@@ -20,7 +20,7 @@
 | Entities | 81 |
 | Concepts | 59 |
 | Synthesis | 210 |
-| Sources | 175 |
+| Sources | 176 |
 
 ## Strategic Capability Lanes
 

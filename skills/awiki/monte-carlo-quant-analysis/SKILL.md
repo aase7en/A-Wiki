@@ -367,6 +367,56 @@ def sabr_implied_vol(F, K, T, alpha, beta, rho, sigma0):
 **เลือกเมื่อ**: vol clustering / vol smile significant (deep-tail risk, option pricing, skew-sensitive metrics).
 **ไม่เลือกเมื่อ**: constant-vol GBM พอ (short horizon, low precision ต้องการ), หรือ jumps dominate (ใช้ Merton — ดู subsection ถัดไป).
 
+### Jump-diffusion (Merton)
+
+เมื่อ path มี discontinuities (crashes, gaps, earnings shocks) — GBM และ Heston
+เป็น continuous process ทั้งคู่ จับ tail ไม่ได้. **Merton (1976)** = GBM + compound
+Poisson jump component. ดูทฤษฎี + closed-form + variant table ได้ที่
+[[merton-jump-diffusion]].
+
+```python
+import numpy as np
+
+def merton_log_returns(mu, sigma, lam, mu_j, sigma_j, T, n_paths, rng):
+    """Merton jump-diffusion log-returns over [0,T] — exact (no time-step).
+
+    lam=jump intensity, mu_j/sigma_j=log-jump-size N(mu_j, sigma_j^2).
+    Drift compensated by λk (k=exp(mu_j+sigma_j^2/2)-1) so total E[return]=μ.
+
+    Exact simulation (draw N_T ~ Poisson(λT) jumps directly) ดีกว่า Euler-Maruyama
+    เพราะ discretize ด้วย dt ใหญ่จะ undercount jumps.
+    """
+    n_jumps = rng.poisson(lam * T, size=n_paths)
+    jump_sums = np.zeros(n_paths)
+    max_j = int(n_jumps.max())
+    if max_j > 0:
+        all_jumps = rng.normal(mu_j, sigma_j, size=(n_paths, max_j))
+        mask = np.arange(max_j)[None, :] < n_jumps[:, None]
+        jump_sums = (all_jumps * mask).sum(axis=1)
+    k = np.exp(mu_j + sigma_j * sigma_j / 2.0) - 1.0
+    drift = (mu - sigma * sigma / 2.0 - lam * k) * T
+    diffusion = sigma * np.sqrt(T) * rng.standard_normal(n_paths)
+    return drift + diffusion + jump_sums
+
+# ใช้: lr = merton_log_returns(0.05, 0.2, 5.0, -0.05, 0.2, 1.0, 10_000, rng)
+#       var_5pct = np.quantile(lr, 0.05)  # portfolio VaR(5%) — แย่กว่า GBM
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_jump_diffusion.py`):**
+1. Returns excess kurtosis > 0 (jump-induced fat tails)
+2. λ=0 recovers pure GBM (mean/variance within 2% — sanity)
+3. Merton VaR(5%) < GBM VaR(5%) ที่ σ เดียวกัน (downside jumps ทำให้ tail แย่ลง)
+
+| โมเดล | λ | Jump size | ใช้เมื่อ |
+|-------|---|-----------|---------|
+| **Merton (1976)** | constant | Gaussian (lognormal) | baseline, closed-form Euro option |
+| **Kou (2002)** | constant | double-exponential | leptokurtosis + skew น้อย params |
+| **Hawkes** | stochastic (self-exciting) | (any) | clustered jumps (crises cascade) |
+| **Bates (1996)** | constant | Gaussian | Heston SV + Merton jumps (most general) |
+
+**เลือกเมื่อ**: discontinuities/crashes สำคัญ (earnings, macro shocks, gap risk), deep-tail VaR (99%+).
+**ไม่เลือกเมื่อ**: continuous-path พอ (short horizon, ไม่มี jump evidence), หรือ λ calibrate ไม่ได้จาก data ที่มี.
+
 ### อื่นๆ
 
 - **Multi-level MC** — variance reduction hierarchy
