@@ -417,9 +417,51 @@ def merton_log_returns(mu, sigma, lam, mu_j, sigma_j, T, n_paths, rng):
 **เลือกเมื่อ**: discontinuities/crashes สำคัญ (earnings, macro shocks, gap risk), deep-tail VaR (99%+).
 **ไม่เลือกเมื่อ**: continuous-path พอ (short horizon, ไม่มี jump evidence), หรือ λ calibrate ไม่ได้จาก data ที่มี.
 
+### Multi-level MC (nested expectation)
+
+สำหรับ **nested expectation** `E[g(X)] = E[E[h(X,Y) | X]]` (เช่น option pricing ที่
+inner expectation เป็น payoff average) — ใช้ telescoping sum ลด variance:
+แทน sample g_fine ที่แพง ใช้ `E[g_coarse] + Σ E[g_fine − g_coarse]` บน shared
+randomness (paired X เดียวกัน) → diff variance < single-sample variance.
+
+```python
+import numpy as np
+
+def mlmc_telescoping(g_fine, g_coarse, n_levels, n_per_level, rng):
+    """MLMC estimator via telescoping sum (shared-randomness interface).
+
+    g_fine(x), g_coarse(x): callables taking scalar x, returning scalar.
+    ต้องใช้ x ตัวเดียวกัน (shared randomness) มิฉะนั้น diff variance ไม่ลด.
+
+    Level 0: E[g_coarse(X)], Level l>0: E[g_fine(X) - g_coarse(X)].
+    คืน (estimate, estimator_variance).
+    """
+    x0 = rng.standard_normal(n_per_level)
+    samples0 = np.array([g_coarse(xi) for xi in x0])
+    est = float(samples0.mean())
+    var = float(samples0.var(ddof=1) / n_per_level)
+    for _ in range(1, n_levels):
+        x = rng.standard_normal(n_per_level)
+        diffs = np.array([g_fine(xi) - g_coarse(xi) for xi in x])
+        est += float(diffs.mean())
+        var += float(diffs.var(ddof=1) / n_per_level)
+    return est, var
+
+# ใช้: def g_fine(x): return np.exp(x)          # "ละเอียด" — exact
+#      def g_coarse(x): return np.exp(0.5 * x)   # "หยาบ" — fewer inner samples
+#      est, var = mlmc_telescoping(g_fine, g_coarse, n_levels=3, n_per_level=5000, rng=rng)
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_multilevel.py`):**
+1. Identical fine/coarse → diff = 0 ทุก level > 0 (shared-randomness contract)
+2. Telescoping converge สู่ E[g_fine] ไม่ใช่ E[g_coarse] (unbiased)
+3. Var(diff) < Var(g_fine) เมื่อ paired บน x เดียวกัน (variance reduction แหล่งที่มาของ MLMC efficiency)
+
+**เลือกเมื่อ**: nested expectation (option pricing, Bermudan exercise, nested risk), ค่าใช้จ่ายของ g_fine >> g_coarse.
+**ไม่เลือกเมื่อ**: ไม่มี nested structure, หรือ variance reduction ไม่คุ้ม overhead (simple payoff, single-level MC พอ).
+
 ### อื่นๆ
 
-- **Multi-level MC** — variance reduction hierarchy
 - **ML-augmented MC** (akashdeepo's ensemble approach) — ML forecast distribution params → MC propagate
 
 ## References
