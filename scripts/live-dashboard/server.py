@@ -637,6 +637,11 @@ class Handler(BaseHTTPRequestHandler):
         elif path == "/styles.css":
             # CHUNK B8: extracted CSS (v8 foundation refactor).
             self._serve_static_file("styles.css", "text/css; charset=utf-8")
+        elif path == "/app.min.js":
+            # CHUNK D8: esbuild-bundled + minified JS (v8 foundation refactor).
+            self._serve_static_file("app.min.js", "application/javascript")
+        elif path == "/app.min.js.map":
+            self._serve_static_file("app.min.js.map", "application/json")
         elif path == "/clear":
             self._clear_log()
         elif path == "/status":
@@ -1420,6 +1425,12 @@ if __name__ == "__main__":
     # CHUNK GG: registry mtime watchdog -> SSE auto-refresh
     rw = threading.Thread(target=registry_watchdog, daemon=True)
     rw.start()
+
+    # CHUNK D8: preflight — warn if app.min.js not built (dashboard will be blank).
+    app_min_js = DASHBOARD_DIR / "app.min.js"
+    if not app_min_js.is_file():
+        print("⚠️  WARNING: app.min.js not found — run `npm install && npm run build` in scripts/live-dashboard/")
+        print("   The dashboard will load with a blank page until the JS bundle is built.")
 
     server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     server.daemon_threads = True
