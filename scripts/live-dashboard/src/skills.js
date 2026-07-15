@@ -228,8 +228,23 @@ const crit=_skillsCache.filter(s=>s.health&&s.health.level==='critical');
 if(crit.length>=3)showNotif('🩺 Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
 }catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
 }
-// CHUNK C9/E9: keyboard handler for skill cards (Enter/Space = open detail).
-function _skillCardKeydown(e,name){if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();skillsOpenDetail(name);}}
+// CHUNK C9/E9: keyboard handler for skill cards.
+// Enter/Space = open detail, ArrowDown/Up = move between cards, Home/End = first/last.
+function _skillCardKeydown(e,name){
+if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();skillsOpenDetail(name);return;}
+if(e.key!=='ArrowDown'&&e.key!=='ArrowUp'&&e.key!=='ArrowRight'&&e.key!=='ArrowLeft'&&e.key!=='Home'&&e.key!=='End')return;
+e.preventDefault();
+const grid=$('skills-grid');if(!grid)return;
+const cards=Array.from(grid.querySelectorAll('.skill-card'));
+const cur=cards.indexOf(e.currentTarget);
+if(cur<0)return;
+let nxt=cur;
+if(e.key==='ArrowDown'||e.key==='ArrowRight')nxt=Math.min(cur+1,cards.length-1);
+else if(e.key==='ArrowUp'||e.key==='ArrowLeft')nxt=Math.max(cur-1,0);
+else if(e.key==='Home')nxt=0;
+else if(e.key==='End')nxt=cards.length-1;
+if(nxt!==cur&&cards[nxt]){cards[nxt].focus();cards[nxt].scrollIntoView({block:'nearest',behavior:'smooth'});}
+}
 function skillsRenderCard(s){
 const inv=s.invocation||'manual';
 const invIcon=inv==='auto'?'🤖':inv==='both'?'🔀':'👆';
