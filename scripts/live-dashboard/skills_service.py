@@ -22,7 +22,7 @@ from urllib.parse import urlparse, parse_qs
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from skills_registry import Registry  # noqa: E402
+from skills_registry import Registry, validate_registry  # noqa: E402
 
 REGISTRY_FILE = REPO_ROOT / "skills-registry.json"
 WALKTHROUGHS_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "skill-walkthroughs.json"
@@ -155,6 +155,9 @@ def _load_registry() -> Registry:
 def _skill_list_item(skill: dict[str, Any]) -> dict[str, Any]:
     """Compact view of a skill for the list endpoint."""
     item = {k: skill.get(k) for k in LIST_FIELDS}
+    # invocation defaults to "manual" when missing (filter + UI consistency).
+    if not item.get("invocation"):
+        item["invocation"] = "manual"
     item["installed"] = _is_installed(skill)
     item["invocation_hint"] = _invocation_hint(skill)
     return item
@@ -650,8 +653,86 @@ def walkthrough_difficulty(flow: dict[str, Any]) -> dict[str, Any]:
 __all__ = [
     "list_skills", "get_skill", "agent_overview", "coverage_stats",
     "skill_graph", "walkthrough_difficulty", "recommend_skills",
-    "skill_history", "KNOWN_AGENTS",
+    "skill_history", "update_skill_field", "KNOWN_AGENTS",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Inline editor write-back — coverage tab quick-fill (security-sensitive)
+# ---------------------------------------------------------------------------
+
+# Allowlist of fields the inline editor may modify. Never include structural
+# fields (name, path, status, domain, lifecycle_phase) — those need full
+# regen-skill-surfaces + Iron Law #9 compliance.
+EDITABLE_FIELDS = frozenset({"th_description", "when_to_use", "invocation_hint"})
+_EDIT_MAX_LEN = 2000
+
+
+def update_skill_field(name: str, field: str, value: str) -> dict[str, Any]:
+    """Write a single field to skills-registry.json. Returns {ok, error}.
+
+    Security:
+      - field must be in EDITABLE_FIELDS allowlist
+      - value must be a string ≤ _EDIT_MAX_LEN chars
+      - registry is validated after write; rolls back on validation failure
+    Pattern mirrors apply_thai_guide.py.
+    """
+    if field not in EDITABLE_FIELDS:
+        return {"ok": False, "error": f"field '{field}' not in editable allowlist {sorted(EDITABLE_FIELDS)}"}
+    if not isinstance(value, str):
+        return {"ok": False, "error": "value must be a string"}
+    if len(value) > _EDIT_MAX_LEN:
+        return {"ok": False, "error": f"value too long ({len(value)} > {_EDIT_MAX_LEN})"}
+
+    try:
+        with open(REGISTRY_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        return {"ok": False, "error": f"cannot read registry: {e}"}
+
+    # Find the skill by name (canonical or alias-resolved).
+    reg = _load_registry()
+    canonical = reg.get(name)
+    if not canonical:
+        return {"ok": False, "error": f"skill '{name}' not found"}
+    canonical_name = canonical.get("name", name)
+
+    # Mutate in-memory.
+    found = False
+    for s in data.get("skills", []):
+        if s.get("name") == canonical_name:
+            s[field] = value
+            found = True
+            break
+    if not found:
+        return {"ok": False, "error": f"skill '{canonical_name}' not found in registry file"}
+
+    # Write to a temp file first, then validate, then atomic move.
+    import tempfile
+    tmp_fd, tmp_path = tempfile.mkstemp(
+        suffix=".json", dir=str(REGISTRY_FILE.parent), prefix=".registry-tmp-"
+    )
+    try:
+        with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        # Validate the temp file.
+        errors = validate_registry(Path(tmp_path))
+        if errors:
+            os.unlink(tmp_path)
+            return {"ok": False, "error": f"validation failed: {errors[0]}"}
+        # Atomic replace.
+        os.replace(tmp_path, str(REGISTRY_FILE))
+    except Exception as e:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        return {"ok": False, "error": f"write failed: {e}"}
+
+    # Force cache reload on next request.
+    _cache["registry"] = None
+
+    return {"ok": True, "field": field, "name": canonical_name, "length": len(value)}
 
 
 # ---------------------------------------------------------------------------

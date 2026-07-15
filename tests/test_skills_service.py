@@ -359,3 +359,58 @@ def test_skill_history_no_shell_true():
     h = skills_service.skill_history("debug-mantra")
     # If shell injection were possible, this would error; structured return = safe.
     assert isinstance(h, dict)
+
+
+# ---------------------------------------------------------------------------
+# CHUNK W — update_skill_field() — inline editor write-back (security-sensitive)
+# ---------------------------------------------------------------------------
+
+def test_update_skill_field_writes_and_restores():
+    """update_skill_field must write th_description and validate.
+    Saves + restores the original value to avoid polluting the registry."""
+    import json
+    reg_path = REPO_ROOT / "skills-registry.json"
+    # Save original value.
+    with open(reg_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    by_name = {s["name"]: s for s in data["skills"] if "name" in s}
+    original = by_name.get("debug-mantra", {}).get("th_description", "")
+    test_value = "[TEST] ทดสอบ inline editor — ลบทิ้งได้"
+    try:
+        r = skills_service.update_skill_field("debug-mantra", "th_description", test_value)
+        assert r["ok"], f"update failed: {r.get('error')}"
+        # Verify it was written.
+        with open(reg_path, "r", encoding="utf-8") as f:
+            data2 = json.load(f)
+        by_name2 = {s["name"]: s for s in data2["skills"] if "name" in s}
+        assert by_name2["debug-mantra"]["th_description"] == test_value
+    finally:
+        # Restore original.
+        with open(reg_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        for s in data["skills"]:
+            if s.get("name") == "debug-mantra":
+                s["th_description"] = original
+                break
+        with open(reg_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def test_update_skill_field_rejects_non_editable_field():
+    """field 'name' must be rejected — not in EDITABLE_FIELDS allowlist."""
+    r = skills_service.update_skill_field("debug-mantra", "name", "hacked")
+    assert not r["ok"]
+    assert "allowlist" in r.get("error", "").lower() or "not editable" in r.get("error", "").lower()
+
+
+def test_update_skill_field_rejects_oversized_value():
+    """Value > 2000 chars must be rejected."""
+    r = skills_service.update_skill_field("debug-mantra", "th_description", "x" * 2001)
+    assert not r["ok"]
+    assert "too long" in r.get("error", "").lower() or "length" in r.get("error", "").lower()
+
+
+def test_update_skill_field_rejects_unknown_skill():
+    r = skills_service.update_skill_field("does-not-exist-xyz", "th_description", "val")
+    assert not r["ok"]
+    assert "not found" in r.get("error", "").lower()

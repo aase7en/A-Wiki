@@ -655,6 +655,8 @@ class Handler(BaseHTTPRequestHandler):
             self._api_upload_post()
         elif path == "/api/run":
             self._api_run_post()
+        elif path.startswith("/api/skills/") and path.endswith("/edit"):
+            self._api_skills_edit(path[len("/api/skills/"):-len("/edit")])
         else:
             self.send_error(404, "Not found")
 
@@ -959,6 +961,34 @@ class Handler(BaseHTTPRequestHandler):
             self._json_response(payload)
         except Exception as e:
             self._json_response({"error": str(e)}, 500)
+
+    def _api_skills_edit(self, name: str):
+        """POST /api/skills/<name>/edit — inline editor write-back.
+
+        Body: {"field": "th_description", "value": "..."}
+        Security: field allowlist enforced in update_skill_field().
+        """
+        # Guard against path traversal.
+        if "/" in name or ".." in name or not name:
+            self._json_response({"ok": False, "error": "invalid skill name"}, 400)
+            return
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            if length > 3000:
+                self._json_response({"ok": False, "error": "request too large"}, 413)
+                return
+            raw = self.rfile.read(length).decode("utf-8") if length else "{}"
+            body = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            self._json_response({"ok": False, "error": f"invalid JSON: {e}"}, 400)
+            return
+        field = body.get("field", "")
+        value = body.get("value", "")
+        result = skills_service.update_skill_field(name, field, value)
+        if result["ok"]:
+            self._json_response(result)
+        else:
+            self._json_response(result, 400)
 
     # ── Walkthroughs (multi-skill flow templates) ──────────────
     def _api_walkthroughs_list(self):
