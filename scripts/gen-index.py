@@ -449,7 +449,7 @@ def main() -> int:
     ap.add_argument("--check", action="store_true",
                     help="Exit 1 if any generated file is out of date (CI mode)")
     ap.add_argument("--domain", type=str,
-                    help="Regenerate only a single domain overview file (iot|env|ai-tools|pharmacy)")
+                    help="Regenerate only a single domain overview file (iot|env|ai-tools|pharmacy|trader)")
     ap.add_argument("--fetch-arxiv", action="store_true",
                     help="Also refresh arXiv source suggestions (network; can be slow)")
     ap.add_argument("--no-chain", action="store_true",
