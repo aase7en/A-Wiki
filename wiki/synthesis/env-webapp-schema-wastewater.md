@@ -1,12 +1,27 @@
 ---
 type: synthesis
-tags: [web-app, postgresql, schema, wastewater, env, fastapi, migration]
+tags: [web-app, postgresql, schema, wastewater, env, fastapi, migration, deprecated-design]
 sources: [appsheet-env-datadict]
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-07-16
+status: legacy-design — schema จริงย้ายไป Supabase ENV_DB, ดูด้านล่าง
 ---
 
 # PostgreSQL Schema: ระบบบำบัดน้ำเสีย (Wastewater Domain)
+
+> ⚠️ **DEPRECATED สำหรับ schema จริง** (2026-07-16) — เอกสารนี้เป็นดีไซน์ยุคแรก
+> (Pi5 self-host era) ที่ออกแบบตาราง `treatment_ponds`/`staff`/
+> `water_quality_records` ฯลฯ สำหรับ Docker-on-Pi5 stack แผนนั้นถูกยกเลิก
+> (Pi5 ทำงานหนักอยู่แล้ว) แล้วย้ายไป Supabase free tier แทน (ADR-0003)
+>
+> **Schema จริงใน ENV_DB คือ source of truth** — ดู:
+> - `wiki/entities/env/env-webapp-project.md` §Schema source-of-truth
+> - `reports/schema-snapshot-p5.md` ใน sibling repo (verified reconciliation)
+> - `app/models/` ใน sibling repo (11 ORM models)
+>
+> **ส่วนที่ยังใช้ได้** (verified P5b.2-local): §Computed Values สูตร,
+> §Alert Logic thresholds, แนวคิด "computed ใน Pydantic ไม่เก็บ DB".
+> อ่านส่วนอื่นในฐานะ reference ประวัติศาสตร์เท่านั้น.
 
 ## คำถามที่ตอบ
 
