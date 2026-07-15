@@ -503,6 +503,58 @@ def bootstrap_returns(historical, n, rng, block_size=None):
 **เลือกเมื่อ**: ไม่ assume distribution (empirical), tails within historical range, parameter uncertainty (double bootstrap).
 **ไม่เลือกเมื่อ**: tail เกิน historical max (ใช้ EVT/parametric), หรือ regime shift ทำให้ history non-representative.
 
+### Convergence diagnostic (reusable)
+
+แทนที่จะเช็ค convergence แบบ ad-hoc ทุกครั้ง — ใช้ helper กลางที่รวม doubling-N
+check + CI + flag ว่า converged. SKILL.md เอ่ยถึง convergence ใน 3 ที่ (§4 foundations,
+workflow step 7, reporting standard #3) แต่ไม่มี code ก่อน K6.
+
+```python
+import numpy as np
+from scipy.stats import norm
+
+def convergence_diagnostic(samples, alpha=0.05, threshold_pct=1.0):
+    """MC convergence diagnostic. Doubling-N delta < threshold_pct => converged.
+
+    คืน dict: mean, std, se, ci_low, ci_high, doubling_delta_pct, converged, n.
+    สำหรับ near-zero mean (|mean_half| < 0.1*std) ใช้ fallback: converged if
+    |mean_full - mean_half| < 0.1*std (กัน divide-by-near-zero).
+    """
+    samples = np.asarray(samples, dtype=float)
+    n = len(samples)
+    mean = float(samples.mean())
+    std = float(samples.std(ddof=1))
+    se = std / np.sqrt(n)
+    z = norm.ppf(1 - alpha / 2)
+    ci_low = mean - z * se
+    ci_high = mean + z * se
+    half = n // 2
+    mean_half = float(samples[:half].mean())
+    delta_abs = abs(mean - mean_half)
+    if abs(mean_half) > 0.1 * std:
+        doubling_delta_pct = delta_abs / abs(mean_half) * 100
+        converged = doubling_delta_pct < threshold_pct
+    else:
+        doubling_delta_pct = delta_abs / std * 100 if std > 0 else 0.0
+        converged = delta_abs < 0.1 * std
+    return {"mean": mean, "std": std, "se": se, "ci_low": ci_low,
+            "ci_high": ci_high, "doubling_delta_pct": doubling_delta_pct,
+            "converged": converged, "n": n}
+
+# ใช้: d = convergence_diagnostic(mc_samples)
+#      if not d["converged"]: warnings.warn(f"MC not converged (Δ={d['doubling_delta_pct']:.2f}%) — increase N")
+#      print(f"E[X] = {d['mean']:.4f} ± {d['se']:.4f}  (95% CI: [{d['ci_low']:.4f}, {d['ci_high']:.4f}])")
+```
+
+**Math invariant (test แล้วใน `tests/test_monte_carlo_convergence.py`):**
+1. N=100k standard-normal → converged=True (doubling delta < 1%)
+2. N=50 standard-normal → converged=False (delta > 1%, under-sampled)
+3. 95% CI สำหรับ N(0,1) ต้อง bracket true mean 0
+4. Near-zero mean ใช้ fallback (กัน delta% explode เมื่อหารด้วย ≈0)
+
+**เลือกเมื่อ**: ทุก MC run — convergence check เป็น mandatory reporting standard.
+**ไม่เลือกเมื่อ**: deterministic calculation (ไม่ใช่ MC) หรือ N fix โดย constraint (ใช้ CI เฉยๆ).
+
 ### อื่นๆ
 
 - **ML-augmented MC** (akashdeepo's ensemble approach) — ML forecast distribution params → MC propagate
