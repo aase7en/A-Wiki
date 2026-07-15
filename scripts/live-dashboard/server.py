@@ -52,6 +52,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "live-dashboard"))
 import skills_service  # noqa: E402
 import subagent_stats  # noqa: E402
 import alerts  # noqa: E402
+import eval_history  # noqa: E402  -- R3: /api/eval/history route
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -729,6 +730,13 @@ class Handler(BaseHTTPRequestHandler):
                 "enabled": os.environ.get("AWIKI_DASHBOARD_ALLOW_RUN", "0") == "1",
                 "scripts": ALLOW_RUN_SCRIPTS,
             })
+        elif path == "/api/eval/history":
+            # R3: eval history time series (pass@k per suite/model over runs).
+            # Read-only — scans evals/subagents/results/results-*.json.
+            try:
+                self._json_response(eval_history.build_dashboard_payload())
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:

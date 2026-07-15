@@ -484,6 +484,7 @@ to{transform:translateY(0);opacity:1}
       <button class="view-btn" id="btn-coverage" onclick="setView('coverage')">📊 Coverage</button>
       <button class="view-btn" id="btn-analytics" onclick="setView('analytics')">📈 Analytics</button>
       <button class="view-btn" id="btn-subagents" onclick="setView('subagents')">🔬 Subagents</button>
+      <button class="view-btn" id="btn-eval" onclick="setView('eval')">📊 Eval</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')">
       <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)">🌗</button>💬 Chat</button>
@@ -802,6 +803,22 @@ to{transform:translateY(0);opacity:1}
         <button class="chat-quick-btn" onclick="quickAsk('ช่วยออกแบบระบบวัดอุณหภูมิวัคซีนด้วย IoT')">💉 Cold Chain</button>
         <button class="chat-quick-btn" onclick="quickAsk('model roster ตอนนี้มี free model อะไรบ้าง')">🤖 Free Models</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 📊 EVAL VIEW — pass@k history time series (R3) -->
+  <div id="eval-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h3 style="margin:0;font-size:var(--fs-lg)">📊 Eval History</h3>
+      <span id="eval-subtitle" style="color:var(--text-tertiary);font-size:var(--fs-xs)">pass@k per suite/model over CI runs</span>
+      <button onclick="evalHistoryLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+    </div>
+    <div id="eval-empty" style="color:var(--text-tertiary);padding:40px;text-align:center">
+      ⏳ กำลังโหลด...<br><span style="font-size:var(--fs-xs)">ถ้ายังว่างหลังโหลดเสร็จ = ยังไม่มี CI eval runs (รัน <code>bash scripts/eval/trigger_ci.sh</code> ก่อน)</span>
+    </div>
+    <div id="eval-regressions" style="display:none;padding:8px 12px;border-radius:var(--r-md);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);font-size:var(--fs-xs)"></div>
+    <div style="position:relative;height:60vh;min-height:300px">
+      <canvas id="eval-history-chart"></canvas>
     </div>
   </div>
 
@@ -1219,8 +1236,8 @@ function spawnThought(){if(!verbose)return;}
 let currentView='summary';
 function setView(v){
 currentView=v;
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');
+const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval');
+sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');
 $('view-summary').style.display=v==='summary'?'flex':'none';
 $('flow-panel').style.display=v==='flow'?'flex':'none';
 $('timeline-panel').style.display=v==='timeline'?'flex':'none';
@@ -1229,6 +1246,7 @@ $('skills-panel').style.display=v==='skills'?'flex':'none';
 $('coverage-panel').style.display=v==='coverage'?'flex':'none';
 $('analytics-panel').style.display=v==='analytics'?'flex':'none';
 $('subagents-panel').style.display=v==='subagents'?'flex':'none';
+$('eval-panel').style.display=v==='eval'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
@@ -1238,6 +1256,7 @@ if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscover
 if(v==='coverage')coverageLoad();
 if(v==='analytics')analyticsLoad();
 if(v==='subagents')subagentsLoad();
+if(v==='eval')evalHistoryLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 syncUrlState();
 }
@@ -1636,6 +1655,7 @@ const SHORTCUTS=[
 {key:'g g',desc:'ไปที่ Graph tab (log)',action:()=>setView('graph')},
 {key:'g f',desc:'ไปที่ Flow tab',action:()=>setView('flow')},
 {key:'g t',desc:'ไปที่ Timeline tab',action:()=>setView('timeline')},
+{key:'g e',desc:'ไปที่ Eval tab (pass@k history)',action:()=>setView('eval')},
 {key:'g h',desc:'กลับหน้าแรก (Summary)',action:()=>setView('summary')},
 {key:'?',desc:'แสดง/ซ่อน shortcuts help',action:()=>_toggleShortcutsHelp()},
 {key:'Escape',desc:'ปิดหน้าต่างบนสุด',action:()=>_closeTopmost()},
@@ -3585,6 +3605,73 @@ async function analyticsLoad(){
     options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:9}}},y:{min:0,max:100,ticks:{color:'#888'}}}}
   });
 }
+
+// === EVAL HISTORY PANE — pass@k time series (R3) ===
+let _evalChart=null;
+async function evalHistoryLoad(){
+  const empty=$('eval-empty'),chartEl=$('eval-history-chart'),reg=$('eval-regressions'),sub=$('eval-subtitle');
+  if(!chartEl)return;
+  if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
+  if(reg)reg.style.display='none';
+  try{
+    const d=await fetch('/api/eval/history').then(r=>r.json());
+    if(empty)empty.style.display='none';
+    if(sub)sub.textContent=`${d.run_count||0} run(s) · ${d.suite_model_count||0} suite/model line(s)`;
+    // Build regression date→pairs index for point styling.
+    const regByDate={};
+    (d.regressions||[]).forEach(r=>{
+      const k=r.date_tag;
+      (regByDate[k]=regByDate[k]||[]).push(r.suite+' / '+r.model);
+    });
+    // Regression banner
+    if(reg&&(d.regressions||[]).length){
+      const worst=d.regressions.slice(0,5).map(r=>`${r.suite}/${r.model} ${r.prev_pass_at_k}→${r.new_pass_at_k} (Δ${r.delta})`).join(' · ');
+      reg.innerHTML='🚨 <b>'+(d.regressions.length)+' regression point(s)</b> — worst: '+worst+((d.regressions.length>5)?' …':'');
+      reg.style.display='block';
+    }
+    const labels=(d.series&&d.series.labels)||[];
+    const datasets=((d.series&&d.series.datasets)||[]).map(ds=>{
+      // Color: cycle through a palette so lines are distinguishable.
+      const palette=['rgba(94,234,212,1)','rgba(129,140,248,1)','rgba(251,191,36,1)','rgba(248,113,113,1)','rgba(52,211,153,1)','rgba(244,114,182,1)','rgba(167,243,208,1)','rgba(253,224,71,1)'];
+      const c=palette[Math.abs(hashCode(ds.label))%palette.length];
+      return {
+        label:ds.label,
+        data:ds.data,
+        borderColor:c,
+        backgroundColor:c.replace('1)','.12)'),
+        fill:false,
+        tension:.3,
+        // Highlight regression points with red rotated-rect markers.
+        pointRadius:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?5:3;}),
+        pointBackgroundColor:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?'#f87171':c;}),
+        pointStyle:ds.data.map((v,i)=>{const dt=labels[i];return(dt&&regByDate[dt]&&regByDate[dt].includes(ds.label))?'rectRot':'circle';}),
+        spanGaps:true,
+      };
+    });
+    if(_evalChart){try{_evalChart.destroy();}catch(_){}_evalChart=null;}
+    if(!labels.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี eval results — รัน <code>bash scripts/eval/trigger_ci.sh</code> เพื่อเริ่ม collect baseline pass@k';}
+      return;
+    }
+    _evalChart=new Chart(chartEl,{
+      type:'line',
+      data:{labels:labels.map(l=>l.slice(4)),datasets},  // trim year for compactness
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{color:'var(--text-secondary)',font:{size:10},boxWidth:12}}},
+        scales:{
+          x:{ticks:{color:'#888',font:{size:9},maxRotation:45,minRotation:45}},
+          y:{min:0,max:1,ticks:{color:'#888',callback:v=>(v*100).toFixed(0)+'%'}}
+        },
+        interaction:{mode:'nearest',intersect:false},
+      }
+    });
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+function hashCode(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return h;}
+
 function clearAnalyticsData(){
   if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
   _lsSet(OPENS_KEY,[]);
