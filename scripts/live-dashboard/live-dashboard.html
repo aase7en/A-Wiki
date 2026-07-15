@@ -456,6 +456,7 @@ to{transform:translateY(0);opacity:1}
     <div class="stat-item" id="si-fail"><span class="stat-lbl">failures</span><span class="stat-val" data-counter id="s-fail">0</span></div>
   </div>
   <button class="hdr-btn accent" onclick="openSettings()">⚙️</button>
+  <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป">🔔</button>
   <button class="hdr-btn" onclick="doClear()">🗑</button>
 </div>
 
@@ -950,6 +951,17 @@ to{transform:translateY(0);opacity:1}
   </div>
   <p style="margin:12px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อเปิด/ปิดหน้าต่างนี้ · <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">Ctrl/⌘+K</kbd> เพื่อเปิด Command Palette</p>
 </div>
+<!-- CHUNK RR — Notification Prefs Modal -->
+<div id="notif-backdrop" onclick="closeNotifPrefs()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:420"></div>
+<div id="notif-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px 24px;z-index:421;max-width:420px;width:90vw;box-shadow:var(--shadow-lg)">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <h3 style="margin:0;font-size:var(--fs-md);color:var(--accent-brand)">🔔 การแจ้งเตือนเดสก์ท็อป</h3>
+    <button onclick="closeNotifPrefs()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;min-width:32px;min-height:32px">✕</button>
+  </div>
+  <div id="notif-perm-row" style="margin-bottom:12px"></div>
+  <div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:8px">เลือกเหตุการณ์ที่จะแจ้งเตือน (ระบบจะใช้ Web Notification API — ถ้าเบราว์เซอร์ปฏิเสธ จะเปลี่ยนเป็น toast แทน)</div>
+  <div id="notif-prefs-list" style="display:flex;flex-direction:column;gap:8px;font-size:var(--fs-sm)"></div>
+</div>
 <!-- CHUNK QQ — Keybind Customize Sub-modal -->
 <div id="keybind-backdrop" onclick="_closeKeybindCustomize()" style="display:none;position:fixed;inset:0;background:rgba(3,3,10,.7);backdrop-filter:blur(3px);z-index:420"></div>
 <div id="keybind-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px 24px;z-index:421;max-width:480px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)">
@@ -1403,6 +1415,8 @@ if(ev.type==='graph_update'){updateGraph(ev);return;}
 if(ev.type==='registry_update'){
 // CHUNK GG: registry changed on disk — silently reload the active data
 // view so the dashboard reflects new/edited skills without a manual refresh.
+// CHUNK RR: desktop notification (deduped via tag).
+showNotif('Registry อัปเดตแล้ว','skills/coverage รีเฟรชอัตโนมัติ','registry_update');
 try{
 if(currentView==='skills'){skillsLoad();}
 else if(currentView==='coverage'){coverageLoad();}
@@ -1433,7 +1447,7 @@ const short=hook.replace('check_','').replace(/_/g,'-').substring(0,18);
 b.textContent=(result==='block'?'🔴 ':'✅ ')+short+(tool?' ·'+tool:'')+(tier?' '+tier:'');
 strip.insertBefore(b,strip.firstChild);
 strip.querySelectorAll('.hook-badge').forEach((el,i)=>{if(i>8)el.remove();else if(i>4)el.classList.add('dim');});
-  if(result==='block'){spawnThought(`🔒 ${short} blocked`,{tone:'red',anchor:'origin'});pushFailure(ev);}
+  if(result==='block'){spawnThought(`🔒 ${short} blocked`,{tone:'red',anchor:'origin'});pushFailure(ev);showNotif('🔒 Hook บล็อก',short+(tool?' · '+tool:''),'hook_block');}
   else if(result==='warn')spawnThought(`⚠ ${short}`,{tone:'gold',anchor:'origin'});
 }
 function onCost(ev){const{tier='?',task=''}=ev;hotWf('cost',5000);setTier(tier);updateCostKPI(tier);
@@ -1463,6 +1477,7 @@ const{model='',reason=''}=ev;const key=modelKey(model);if(!S.active[key])return;
 S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();drawBranchLines();
 flowComplete(model,false,0);pushFailure(ev);
 spawnThought(`✗ ${modelShort(model)} ${reason||'failed'}`,{tone:'red',anchor:'station',model:key});
+showNotif('✗ Delegation ล้มเหลว',modelShort(model)+(reason?' · '+reason:''),'delegate_fail');
 }
 function updateParallel(){
 const badge=$('parallel-badge'),count=Math.max(S.activeCount||0,S.parallelCount||0);
@@ -1685,6 +1700,82 @@ window.addEventListener('keydown',function(e){
   }
   _keybindCapture=null;
 },true);  // capture phase — runs before the main shortcut handler
+
+// === CHUNK RR — Notification System ===
+// Opt-in desktop notifications for key dashboard events. Uses the Web Notification
+// API when permission is granted; falls back to toast() when denied/unavailable.
+// Preferences persist in localStorage awiki-notif-prefs. Triggers hook into the
+// existing SSE handleEvent() dispatch + onHook() + cycle check + skillsLoad().
+const NOTIF_PREFS_KEY='awiki-notif-prefs';
+const NOTIF_DEFAULTS={registry_update:true,hook_block:true,low_health:false,cycle:true,delegate_fail:true};
+const NOTIF_LABELS={registry_update:'Registry อัปเดต',hook_block:'Hook บล็อก',low_health:'Health ต่ำ (<40)',cycle:'พบ circular dependency',delegate_fail:'Delegation ล้มเหลว'};
+let _notifLastShown={};  // tag → last ts (dedupe within 10s)
+function _notifSupported(){return typeof Notification!=='undefined';}
+function _loadNotifPrefs(){return Object.assign({},NOTIF_DEFAULTS,_lsGet(NOTIF_PREFS_KEY,{}));}
+function _saveNotifPrefs(p){_lsSet(NOTIF_PREFS_KEY,p);}
+function _notifPerm(){return _notifSupported()?Notification.permission:'denied';}
+// Fire a notification (title+body). tag dedupes within 10s. Falls back to toast.
+function showNotif(title,body,tag){
+  try{
+    const prefs=_loadNotifPrefs();
+    // tag maps to a pref key — respect user opt-out.
+    if(tag&&!prefs[tag])return;
+    const now=Date.now();
+    if(tag&&_notifLastShown[tag]&&now-_notifLastShown[tag]<10000)return;  // dedupe 10s
+    if(tag)_notifLastShown[tag]=now;
+    const perm=_notifPerm();
+    if(perm==='granted'&&_notifSupported()){
+      try{new Notification(title,{body:body||'',tag:tag||undefined,silent:false});return;}
+      catch(_){}
+    }
+    // Fallback: in-page toast (always available).
+    toast(title+(body?': '+body:''));
+  }catch(_){}
+}
+async function _requestNotifPerm(){
+  if(!_notifSupported()){toast('เบราว์เซอร์นี้ไม่รองรับ Web Notification',true);return 'unsupported';}
+  try{
+    const p=await Notification.requestPermission();
+    if(p==='granted'){toast('🔔 เปิดการแจ้งเตือนแล้ว');showNotif('A-Wiki Dashboard','การแจ้งเตือนเปิดใช้งานแล้ว','registry_update');}
+    else{toast('การแจ้งเตือนถูกปฏิเสธ — จะใช้ toast แทน');}
+    return p;
+  }catch(e){toast('ขอ permission ไม่สำเร็จ',true);return 'error';}
+}
+function openNotifPrefs(){
+  $('notif-backdrop').style.display='block';
+  $('notif-modal').style.display='block';
+  _renderNotifPrefs();
+}
+function closeNotifPrefs(){
+  $('notif-backdrop').style.display='none';
+  $('notif-modal').style.display='none';
+}
+function _renderNotifPrefs(){
+  const perm=_notifPerm();
+  const permRow=$('notif-perm-row');
+  const supported=_notifSupported();
+  if(!supported){
+    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">⚠️ เบราว์เซอร์นี้ไม่รองรับ Web Notification — จะใช้ toast แทน</div>';
+  }else if(perm==='granted'){
+    permRow.innerHTML='<div style="color:var(--accent-success);font-size:var(--fs-2xs)">✅ สิทธิ์การแจ้งเตือน: เปิดอนุญาตแล้ว</div>';
+  }else if(perm==='denied'){
+    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">🚫 สิทธิ์ถูกปฏิเสธ — ปลดล็อกใน Site Settings ของเบราว์เซอร์ (จะใช้ toast แทน)</div>';
+  }else{
+    permRow.innerHTML='<button class="set-btn sm" onclick="_requestNotifPerm()" style="font-size:var(--fs-xs);color:var(--accent-brand)">🔔 เปิดการแจ้งเตือน</button>';
+  }
+  const prefs=_loadNotifPrefs();
+  const list=$('notif-prefs-list');
+  list.innerHTML=Object.keys(NOTIF_LABELS).map(k=>{
+    const on=!!prefs[k];
+    return `<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">
+      <span style="color:var(--text-secondary)">${NOTIF_LABELS[k]}</span>
+      <input type="checkbox" ${on?'checked':''} onchange="toggleNotifPref('${k}',this.checked)" style="cursor:pointer;accent-color:var(--accent-brand)">
+    </label>`;
+  }).join('');
+}
+function toggleNotifPref(key,val){
+  const prefs=_loadNotifPrefs();prefs[key]=val;_saveNotifPrefs(prefs);
+}
 
 // === CHUNK EE — Command Palette ===
 let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
@@ -2038,6 +2129,7 @@ if(c.error||!c.has_cycle){banner.style.display='none';return;}
 const list=(c.cycles||[]).slice(0,5).map(cy=>cy.join(' → ')).join('<br>');
 banner.innerHTML=`⚠️ พบ ${c.count} circular dependency<br><small style="color:var(--text-tertiary)">${list}</small>`;
 banner.style.display='block';
+showNotif('⚠️ พบ circular dependency',c.count+' รอบใน skill graph','cycle');
 }catch(_){banner.style.display='none';}
 }
 // === CHUNK U — Graph export (SVG + PNG) ===
@@ -2138,6 +2230,9 @@ const st=r.stats||{};
 const agentLbl=$('skills-agent-filter').value;
 const agentTxt=agentLbl==='all'?'ทุก agent':agentLbl;
 stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · 🤖 ${st.by_invocation?.auto||0} auto · 👆 ${st.by_invocation?.manual||0} manual · 🔬 ${st.by_category?.subagent||0} subagents · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
+// CHUNK RR: notify if many critical-health skills loaded.
+const crit=_skillsCache.filter(s=>s.health&&s.health.level==='critical');
+if(crit.length>=3)showNotif('🩺 Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
 }catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
 }
 function skillsRenderCard(s){
