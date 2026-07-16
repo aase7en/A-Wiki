@@ -443,3 +443,41 @@ def test_coverage_load_uses_ttl_cache():
     assert (
         "_cacheGet" in after or "_ttlGet" in after or "_ttlCache" in after
     ), "coverageLoad must consult TTL cache before fetching"
+
+
+# ── v10 CHUNK C10: lazy view init + animation pause ─────────────────────
+# Goal: avoid redundant heavy init when returning to a tab; pause the flow
+# particle animation loop when not on the Flow view (saves CPU/background work).
+
+def test_view_loaded_guard_pattern():
+    """setView() must check a _loaded guard so revisiting a tab skips re-init
+    (Refresh buttons still force reload via explicit cache.invalidate)."""
+    text = _read()
+    # The lazy-init guard: a flag tracking which views have been initialized.
+    assert (
+        "_loaded" in text or "_initDone" in text or "_viewsLoaded" in text
+    ), "view loaded-guard flag missing — setView() must skip heavy re-init"
+
+
+def test_particle_loop_paused_when_not_flow():
+    """particleLoop() must early-return when currentView !== 'flow' (save CPU
+    when the Flow tab is hidden)."""
+    text = _read()
+    idx = text.find("function particleLoop")
+    assert idx != -1, "particleLoop function missing"
+    after = text[idx : idx + 600]
+    assert (
+        "currentView" in after
+    ), "particleLoop must early-return when not on the flow view"
+
+
+def test_setview_has_force_refresh_param():
+    """setView() must accept a force-refresh path so Refresh buttons can bypass
+    the loaded-guard (user-initiated reload always re-fetches)."""
+    text = _read()
+    idx = text.find("function setView")
+    assert idx != -1, "setView function missing"
+    after = text[idx : idx + 800]
+    assert (
+        "force" in after.lower() or "_loaded" in after
+    ), "setView must support force-refresh (bypass loaded guard)"

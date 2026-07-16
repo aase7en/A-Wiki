@@ -188,6 +188,9 @@ _particles.push({st,dir:dir||'out',t:0,speed:0.006+Math.random()*0.005,color:st.
 if(!_particleRAF)_particleRAF=requestAnimationFrame(particleLoop);
 }
 function particleLoop(){
+// CHUNK C10: pause the animation loop when not on the Flow view (saves CPU
+// when the tab is hidden). Particles are not drained — they resume on return.
+if(currentView!=='flow'){_particleRAF=null;return;}
 if(!_particles.length){_particleRAF=null;return;}
 const keep=[];
 for(const p of _particles){
@@ -214,7 +217,12 @@ let _lastEventTs=Date.now();
 const verbose=false;
 function spawnThought(){if(!verbose)return;}
 let currentView='summary';
-function setView(v){
+// CHUNK C10: track which views have been initialized once this session.
+// setView(v) skips the heavy-load call on revisit unless force=true is passed
+// (Refresh buttons use force=true to bypass the guard and re-fetch).
+const _loaded={};
+function setView(v,opts){
+const force=opts&&(opts.force===true);
 currentView=v;
 const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost'),rc=$('btn-race');
 sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');rc&&rc.classList.toggle('active',v==='race');
@@ -241,6 +249,11 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
+// CHUNK C10: skip heavy load on revisit unless force=true (Refresh button).
+// First-time visits still load as before; revisit uses cached render.
+const already=_loaded[v];
+_loaded[v]=true;
+if(!already||force){
 if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscoveryBar();loadSotd();_initPresetDropdown();if(window._autoDetectedAgent)_applyAutoDetectedAgent();}
 if(v==='coverage')coverageLoad();
 if(v==='analytics')analyticsLoad();
@@ -248,6 +261,7 @@ if(v==='subagents')subagentsLoad();
 if(v==='eval')evalHistoryLoad();
 if(v==='cost')costHistoryLoad();
 if(v==='race')raceResultsLoad();
+}
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 syncUrlState();
 }

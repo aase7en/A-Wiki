@@ -233,7 +233,7 @@
           <h3 style="margin:0;font-size:var(--fs-md);color:var(--text-primary)">📊 Coverage ของ Skill Registry</h3>
           <p id="coverage-subtitle" style="margin:4px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)"></p>
         </div>
-        <button onclick="coverageLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+        <button onclick="_cacheInvalidate('coverage');coverageLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
       </div>
     </div>
 
@@ -307,6 +307,7 @@
         </div>
         <div style="display:flex;gap:6px">
           <button onclick="analyticsLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+          <!-- analytics has no server-side cache — charts read from opens log (localStorage) -->
           <button onclick="clearAnalyticsData()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--accent-danger);font-size:var(--fs-2xs);cursor:pointer" title="ล้าง opens log + health snapshots">🗑️ ล้างข้อมูล</button>
         </div>
       </div>
