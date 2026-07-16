@@ -89,6 +89,9 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 #wf-tabs::-webkit-scrollbar{display:none}
 .view-toggle-bar{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .view-toggle-bar::-webkit-scrollbar{display:none}
+#skills-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+#skills-toolbar{gap:4px}
+#skills-toolbar input,#skills-toolbar select{min-width:120px}
 #main{display:flex;flex-direction:column;overflow:visible;height:auto}
 #sidebar{border-left:none;border-top:1px solid var(--border)}
 #timeline-list{max-height:42vh}

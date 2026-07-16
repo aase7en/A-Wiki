@@ -813,3 +813,28 @@ def test_view_toggle_bar_overflow_x_on_mobile():
     block = css[idx : idx + 600]
     assert ".view-toggle-bar" in block, "view-toggle-bar must be in mobile media query"
     assert "overflow-x:auto" in block, "view-toggle-bar must have overflow-x:auto on mobile"
+
+
+# ── v12 CHUNK E12: skills-grid + skills-toolbar mobile ────────────────
+def test_skills_grid_responsive_minmax_on_mobile():
+    """styles.css must lower skills-grid minmax on mobile (260px -> smaller)."""
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find("@media(max-width:600px)")
+    assert idx != -1, "max-width:600px media query missing"
+    block = css[idx : idx + 800]
+    # Must have a skills-grid rule with a smaller minmax (e.g. 150-170px).
+    assert "#skills-grid" in block or ".skills-grid" in block, "skills-grid must be in mobile media query"
+    assert "minmax(1" in block, "skills-grid minmax must drop below 200px on mobile"
+
+
+def test_skills_toolbar_wraps_on_mobile():
+    """styles.css must make skills-toolbar wrap on narrow screens."""
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find("@media(max-width:600px)")
+    assert idx != -1, "max-width:600px media query missing"
+    block = css[idx : idx + 800]
+    assert "#skills-toolbar" in block, "skills-toolbar must be in mobile media query"
