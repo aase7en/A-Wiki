@@ -52,7 +52,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 AGENT_NAMES="claude codex cline hermes gemini zcode antigravity windsurf openclaw"
-ENV_AGENTS="hermes zcode"
+# P6.3 (2026-07-16): every agent now links .env to the universal global.env,
+# not per-agent files. The hybrid pattern (global + <repo>.env) is loaded by
+# scripts/load-global-env.sh for shells and config loaders; the agent-level
+# link makes the same keys visible to harnesses that read ~/.<agent>/.env.
+ENV_AGENTS="claude codex cline hermes gemini zcode antigravity windsurf openclaw"
 
 MODE="link"        # link | status | unlink | clean-backups | list
 DO_SKILLS=1
@@ -445,7 +449,11 @@ do_link() {
             link_agents_into "$dir/agents"
         fi
         if [ "$DO_ENV" = "1" ] && is_env_agent "$a"; then
-            ensure_env_link "$dir/.env" "$DRIVE_ROOT/.agents/$a/.env" "" "$a/.env"
+            # P6.3: every agent links to the universal global.env (hybrid:
+            # global.env + <repo>.env on Drive). The legacy per-agent
+            # drive/.agents/<a>/.env files are left untouched for back-compat
+            # but no longer the target.
+            ensure_env_link "$dir/.env" "$DRIVE_ROOT/secrets/global.env" "" "$a/.env"
         fi
     done
 
