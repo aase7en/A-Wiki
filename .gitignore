@@ -275,3 +275,8 @@ scripts/hermes/.hermes/.env
 scripts/hermes/.hermes/.env.local
 scripts/hermes/.hermes/.env.*.local
 scripts/hermes/.hermes/auth.json
+
+# Playwright runtime artifacts (v10 CHUNK D10/E10) — reports/results are local-only
+scripts/live-dashboard/test-results/
+scripts/live-dashboard/playwright-report/
+scripts/live-dashboard/.cache/
