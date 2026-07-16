@@ -296,6 +296,51 @@ async function pipelineGraphLoad(){
   }
 }
 
+// === RACE RESULTS — best model per suite (U3) ===
+async function raceResultsLoad(){
+  const tbl=$('race-table'),empty=$('race-empty'),sub=$('race-subtitle');
+  if(!tbl)return;
+  if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
+  tbl.style.display='none';
+  try{
+    const d=await fetch('/api/eval/race-results').then(r=>r.json());
+    const suites=d.suites||[];
+    if(!suites.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี race results — รัน CI eval (T4 race step) ก่อน<br><span style="font-size:var(--fs-xs)">ข้อมูลมาจาก <code>.tmp/subagent-eval/races/*.json</code></span>';}
+      return;
+    }
+    if(empty)empty.style.display='none';
+    if(sub)sub.textContent=`${suites.length} suite(s) · best model per suite`;
+    tbl.style.display='block';
+    // Collect all model names for column headers
+    const allModels=[...new Set(suites.flatMap(s=>Object.keys(s.models||{})))].sort();
+    let html='<table style="width:100%;border-collapse:collapse;font-size:var(--fs-2xs)">';
+    html+='<tr style="border-bottom:1px solid var(--border2);color:var(--text-tertiary)"><th style="text-align:left;padding:4px">suite</th><th>🏆 best</th>';
+    allModels.forEach(m=>{html+=`<th>${m}</th>`;});
+    html+='</tr>';
+    suites.forEach(s=>{
+      html+='<tr style="border-bottom:1px solid var(--border2)">';
+      html+=`<td style="padding:4px">${s.suite}</td>`;
+      html+=`<td style="text-align:center;color:#34d399;font-weight:600">${s.best} (${(s.best_pass_at_k*100).toFixed(0)}%)</td>`;
+      allModels.forEach(m=>{
+        const info=(s.models||{})[m];
+        if(info){
+          const isBest=m===s.best;
+          const rate=(info.mean_pass_at_k*100).toFixed(0);
+          html+=`<td style="text-align:center;${isBest?'background:rgba(52,211,153,.12);font-weight:600':''}">${rate}%${info.wins?` <span style="color:var(--text-tertiary)">(${info.wins}🏆)</span>`:''}</td>`;
+        }else{
+          html+='<td style="text-align:center;color:var(--text-disabled)">—</td>';
+        }
+      });
+      html+='</tr>';
+    });
+    html+='</table>';
+    tbl.innerHTML=html;
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+
 function clearAnalyticsData(){
   if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
   _lsSet(OPENS_KEY,[]);

@@ -289,6 +289,59 @@ jobs:
             echo "No recommendations met the tight guardrails (30 samples / 0.20 delta). Skipping apply."
           fi
 
+      # ── U1: Cost optimization auto-apply (manual trigger, tight guardrails) ──
+      # Recommend model swaps ที่ "ดีพอ (pass@k ≥ 0.7) + ประหยัด ≥ $1.00/1k calls".
+      # Guardrails แน่นกว่า CLI default (min-savings $1.00) + workflow_dispatch only.
+      # แยกจาก adaptive routing (Q6) เพื่อให้ revert อิสระ.
+      - name: Cost optimization preview (always)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          python3 scripts/eval/apply_cost_optimizer.py --analyze --min-savings 1.00 \
+            > .tmp/subagent-eval/cost-optimize-preview.txt 2>&1 || true
+          echo "=== Cost optimization preview ==="
+          cat .tmp/subagent-eval/cost-optimize-preview.txt || echo "(no recommendations)"
+
+      - name: Cost optimization auto-apply (manual trigger only)
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          # Count recommendations with status == 'recommend' (savings >= $1.00).
+          RECS=$(python3 -c "
+          import glob, json, sys
+          sys.path.insert(0, 'scripts/eval')
+          import cost_optimizer as co, cost_aware_recommend as cr
+          files = sorted(glob.glob('evals/subagents/results/results-*.json'))
+          if not files: print(0); sys.exit()
+          results = json.loads(open(files[-1], encoding='utf-8').read())
+          cm = cr._load_default_cost_matrix()
+          n = 0
+          for suite, sd in results.items():
+              if not isinstance(sd, dict): continue
+              bm = sd.get('by_model', {})
+              if not bm: continue
+              cbm = {m: cr.cost_per_1k_calls(m, cm) or 0.0 for m in bm}
+              cur = list(bm.keys())[0] if bm else ''
+              r = co.analyze_suite(suite, bm, cbm, cur, min_pass_at_k=0.7, min_savings=1.00)
+              if r and r.get('status') == 'recommend': n += 1
+          print(n)
+          " 2>/dev/null || echo 0)
+          echo "Cost optimization recommendations (>= \$1.00 savings): $RECS"
+          if [ "$RECS" -gt 0 ]; then
+            python3 scripts/eval/apply_cost_optimizer.py --apply --min-savings 1.00 || true
+            git add agents/subagents/ .tmp/cost-optimization-log.jsonl 2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -m "feat(subagent): cost-optimize model swap $(date -u +%Y-%m-%d) [CI guardrails: pass@k≥0.7 / save≥\$1.00]"
+              git push
+              echo "✓ Applied $RECS cost optimization(s) and pushed."
+            else
+              echo "No frontmatter changes after cost-optimize apply."
+            fi
+          else
+            echo "No cost optimizations met guardrails (pass@k ≥ 0.7, savings ≥ \$1.00). Skipping."
+          fi
+
       - name: Upload report + results
         uses: actions/upload-artifact@v4
         with:

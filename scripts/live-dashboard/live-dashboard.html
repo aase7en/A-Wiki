@@ -73,6 +73,7 @@
       <button class="view-btn" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1">🔬 Subagents</button>
       <button class="view-btn" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1">📊 Eval</button>
       <button class="view-btn" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1">💰 Cost</button>
+      <button class="view-btn" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1">🏁 Race</button>
       <button class="view-btn" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1">🏛️ Council</button>
       <button class="view-btn" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1">
       <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)">🌗</button>💬 Chat</button>
@@ -451,6 +452,19 @@
       </div>
       <div id="cost-optimize-table" style="display:none;overflow-x:auto"></div>
     </div>
+  </div>
+
+  <!-- 🏁 RACE VIEW — best model per suite (U3) -->
+  <div id="race-panel" style="display:none;flex-direction:column;overflow-y:auto;height:100%;padding:12px 16px;gap:14px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <h3 style="margin:0;font-size:var(--fs-lg)">🏁 Race Results</h3>
+      <span id="race-subtitle" style="color:var(--text-tertiary);font-size:var(--fs-xs)">best model per suite (จาก CI race)</span>
+      <button onclick="raceResultsLoad()" style="padding:6px 12px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);font-size:var(--fs-2xs);cursor:pointer">🔄 Refresh</button>
+    </div>
+    <div id="race-empty" style="color:var(--text-tertiary);padding:40px;text-align:center">
+      ⏳ กำลังโหลด...<br><span style="font-size:var(--fs-xs)">ข้อมูลมาจาก <code>.tmp/subagent-eval/races/*.json</code> (CI artifact)</span>
+    </div>
+    <div id="race-table" style="display:none;overflow-x:auto"></div>
   </div>
 
   <!-- 🏛️ COUNCIL VIEW — Brainstorm Council transcripts -->

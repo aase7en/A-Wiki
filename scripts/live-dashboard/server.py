@@ -799,6 +799,54 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"recommendations": recs, "count": len(recs)})
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/cost-optimize-log":
+            # U2: cost optimization audit trail (read .tmp/cost-optimization-log.jsonl).
+            try:
+                import json as _json
+                log_path = REPO_ROOT / ".tmp" / "cost-optimization-log.jsonl"
+                entries = []
+                if log_path.is_file():
+                    for line in log_path.read_text(encoding="utf-8", errors="replace").splitlines():
+                        line = line.strip()
+                        if line:
+                            try:
+                                entries.append(_json.loads(line))
+                            except Exception:
+                                continue
+                # newest first, cap at 50
+                entries.reverse()
+                self._json_response({"entries": entries[:50], "total": len(entries)})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/race-results":
+            # U3: race results summary (read .tmp/subagent-eval/races/*.json).
+            # Returns best model per suite from the latest CI race run.
+            try:
+                import json as _json
+                import glob as _glob
+                races_dir = REPO_ROOT / ".tmp" / "subagent-eval" / "races"
+                suites = []
+                if races_dir.is_dir():
+                    for f in sorted(_glob.glob(str(races_dir / "*.json"))):
+                        try:
+                            d = _json.loads(Path(f).read_text(encoding="utf-8"))
+                            suite = Path(f).stem
+                            overall = d.get("overall", {})
+                            if overall:
+                                best = max(overall, key=lambda m: overall[m].get("mean_pass_at_k", 0))
+                                suites.append({
+                                    "suite": suite,
+                                    "best": best,
+                                    "best_pass_at_k": overall[best].get("mean_pass_at_k", 0),
+                                    "models": {m: {"mean_pass_at_k": s.get("mean_pass_at_k", 0),
+                                                   "wins": s.get("wins", 0)}
+                                               for m, s in overall.items()},
+                                })
+                        except Exception:
+                            continue
+                self._json_response({"suites": suites, "total": len(suites)})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:

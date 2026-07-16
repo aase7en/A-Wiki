@@ -8,6 +8,7 @@ const SHORTCUTS=[
 {key:'g t',desc:'ไปที่ Timeline tab',action:()=>setView('timeline')},
 {key:'g e',desc:'ไปที่ Eval tab (pass@k history)',action:()=>setView('eval')},
 {key:'g $',desc:'ไปที่ Cost tab (USD/run estimate)',action:()=>setView('cost')},
+{key:'g r',desc:'ไปที่ Race tab (best model per suite)',action:()=>setView('race')},
 {key:'g h',desc:'กลับหน้าแรก (Summary)',action:()=>setView('summary')},
 {key:'?',desc:'แสดง/ซ่อน shortcuts help',action:()=>_toggleShortcutsHelp()},
 {key:'Escape',desc:'ปิดหน้าต่างบนสุด',action:()=>_closeTopmost()},

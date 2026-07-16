@@ -89,9 +89,26 @@ def main() -> int:
     if args.apply and recs:
         print("\nApplying recommendations...")
         applied = cost_optimizer.apply_recommendations(recs, AGENTS_DIR, dry_run=False)
+        # U2: append audit trail to cost-optimization-log.jsonl (เหมือน adaptive-routing-log)
+        import time as _time
+        log_path = REPO_ROOT / ".tmp" / "cost-optimization-log.jsonl"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         for a in applied:
             status = "✓" if a.get("applied") else "⚠️"
             print(f"  {status} {a.get('suite')}: {a.get('current_model')} → {a.get('recommended_model')}")
+            if a.get("applied"):
+                entry = {
+                    "ts": round(_time.time(), 3),
+                    "suite": a.get("suite"),
+                    "subagent": a.get("subagent"),
+                    "from": a.get("current_model"),
+                    "to": a.get("recommended_model"),
+                    "savings_usd": a.get("savings_usd"),
+                    "savings_pct": a.get("savings_pct"),
+                    "reason": a.get("reason"),
+                }
+                with open(log_path, "a", encoding="utf-8") as lf:
+                    lf.write(json.dumps(entry) + "\n")
     elif args.analyze:
         print(f"\n(dry-run — {len([r for r in recs if r.get('status')=='recommend'])} would apply)")
 
