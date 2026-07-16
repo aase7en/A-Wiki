@@ -190,22 +190,44 @@ jobs:
             echo "No new results file to commit."
           fi
 
-      # ── S5: Multi-model race (concurrent head-to-head comparison) ──
-      # Fires 3 candidate models at the medical suite concurrently (k=1, cheap),
-      # picks the winner (first-past-the-post) + best (highest pass@k).
-      # continue-on-error: race failure (rate limit, timeout) MUST NOT block
-      # the main eval pipeline — it's a bonus comparison, not a gate.
-      - name: Multi-model race (concurrent comparison)
+      # ── T4: Multi-model race ทุก suite (concurrent, ขยายจาก S5 medical pilot) ──
+      # Fires 3 candidate models ที่ทุก single-agent suite concurrently (k=1, cheap).
+      # ข้าม pipeline-*.json (DAG suites — race ใช้กับ single-agent เท่านั้น).
+      # continue-on-error: race failure MUST NOT block eval pipeline.
+      - name: Multi-model race (all suites, concurrent)
         continue-on-error: true
         run: |
           set -uo pipefail
-          mkdir -p .tmp/subagent-eval
-          python3 scripts/eval/race_eval.py \
-            --suite medical --models deepseek-v4-flash,deepseek-v4-pro,glm-5.2 \
-            --k 1 --max-workers 6 --json \
-            > .tmp/subagent-eval/race-result.json 2>/dev/null || true
-          echo "=== Race result (medical) ==="
-          cat .tmp/subagent-eval/race-result.json | python3 -m json.tool 2>/dev/null | head -40 || echo "(race skipped or failed)"
+          mkdir -p .tmp/subagent-eval/races
+          for suite_file in evals/subagents/*.json; do
+            suite_name=$(basename "$suite_file" .json)
+            # ข้าม pipeline suites (มี 'stages' key = DAG, race ใช้กับ single-agent)
+            if python3 -c "import json,sys; d=json.load(open('$suite_file')); sys.exit(0 if 'stages' in d else 1)" 2>/dev/null; then
+              echo "⏭️  ข้าม $suite_name (pipeline suite)"
+              continue
+            fi
+            echo "::group::Race: $suite_name"
+            python3 scripts/eval/race_eval.py \
+              --suite "$suite_name" --models deepseek-v4-flash,deepseek-v4-pro,glm-5.2 \
+              --k 1 --max-workers 6 --json \
+              > ".tmp/subagent-eval/races/$suite_name.json" 2>/dev/null || true
+            echo "::endgroup::"
+          done
+          echo "=== Race summary (all suites) ==="
+          python3 -c "
+          import json, glob
+          for f in sorted(glob.glob('.tmp/subagent-eval/races/*.json')):
+              try:
+                  d = json.load(open(f))
+                  suite = f.replace('\\\\','/').split('/')[-1].replace('.json','')
+                  overall = d.get('overall', {})
+                  if overall:
+                      best = max(overall, key=lambda m: overall[m].get('mean_pass_at_k',0))
+                      rate = overall[best].get('mean_pass_at_k',0)
+                      print(f'  {suite:<22} best={best:<20} pass@k={rate:.2f}')
+              except Exception:
+                  continue
+          " 2>/dev/null || echo "(race summary failed)"
 
       # ── Q6: Adaptive routing (preview always, auto-apply on manual trigger) ──
       # Guardrails are intentionally tight: min 30 samples (3× default) + min_delta

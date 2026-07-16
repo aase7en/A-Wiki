@@ -75,14 +75,16 @@ See `scripts/eval/regression_check.py`:
 - **severity**: `regression` (drop > threshold) | `improvement` (gain > threshold) | `flat` | `removed` (in baseline, absent from new)
 - **first run** (no baseline): all entries flat (nothing to regress from)
 
-## Multi-Model Race (S5 — concurrent head-to-head comparison)
+## Multi-Model Race (S5 + T4 — concurrent, ทุก suite)
 
 หลัง eval หลักเสร็จ + commit ผลลัพธ์ CI จะรัน **race step** เพิ่มเติม:
 
-- **ทำอะไร**: ยิง 3 candidate models (`deepseek-v4-flash`, `deepseek-v4-pro`, `glm-5.2`) ที่ `medical` suite พร้อมกันแบบ concurrent (ThreadPool, k=1, max-workers=6)
+- **ทำอะไร**: ยิง 3 candidate models (`deepseek-v4-flash`, `deepseek-v4-pro`, `glm-5.2`) ที่ **ทุก single-agent suite** พร้อมกันแบบ concurrent (ThreadPool, k=1, max-workers=6)
+- **T4 ขยายจาก S5**: เดิม (S5) ทำเฉพาะ `medical` pilot → T4 ขยายเป็น loop ทุก suite (ข้าม `pipeline-*.json` ที่เป็น DAG)
 - **continue-on-error: true** — race failure (rate limit, timeout) **ไม่บล็อค** eval pipeline หลัก เป็น bonus comparison เท่านั้น
-- **ผลลัพธ์**: `.tmp/subagent-eval/race-result.json` (JSON ใน artifact `subagent-eval-report`)
-- **วิธีอ่านผล**:
+- **ผลลัพธ์**: `.tmp/subagent-eval/races/<suite>.json` (แยกไฟล์ต่อ suite ใน artifact `subagent-eval-report`)
+- **สรุปผล**: CI แสดงตาราง `suite | best model | pass@k` หลัง race ทุก suiteเสร็จ
+- **วิธีอ่านผล** (ในแต่ละ suite JSON):
   - `winner` = model ที่ pass sample แรกเร็วที่สุด (first-past-the-post — เหมาะกับ latency-sensitive routing)
   - `best` = model ที่ pass@k สูงสุด (quality-sensitive)
   - `overall` = mean pass@k + win counts รวมทุก case
