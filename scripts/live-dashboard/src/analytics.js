@@ -19,8 +19,25 @@ function _maybeSnapshotHealth(dist){
     return snaps;
   }catch(_){return _lsGet(HEALTH_SNAPSHOTS_KEY,[]);}
 }
+// CHUNK A10: lazy-load chart.js from CDN on first analytics tab open.
+// Avoids preloading ~200KB of chart library on dashboard boot.
+let _chartJsPromise=null;
+function loadChartJs(){
+  if(typeof Chart!=='undefined')return Promise.resolve();
+  if(_chartJsPromise)return _chartJsPromise;
+  _chartJsPromise=new Promise((resolve)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+    s.onload=()=>resolve();
+    s.onerror=()=>{console.warn('chart.js CDN failed to load');resolve();};
+    document.head.appendChild(s);
+  });
+  return _chartJsPromise;
+}
 async function analyticsLoad(){
   const unavail=$('analytics-unavailable');
+  // CHUNK A10: lazy-load chart.js — wait for it before rendering charts.
+  await loadChartJs();
   if(typeof Chart==='undefined'){if(unavail)unavail.style.display='block';return;}
   if(unavail)unavail.style.display='none';
   const opens=_lsGet(OPENS_KEY,[]);
@@ -87,6 +104,8 @@ async function evalHistoryLoad(){
   if(!chartEl)return;
   if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
   if(reg)reg.style.display='none';
+  // CHUNK A10: ensure chart.js is available (lazy-loaded on demand).
+  await loadChartJs();
   try{
     const d=await fetch('/api/eval/history').then(r=>r.json());
     if(empty)empty.style.display='none';
@@ -152,6 +171,8 @@ async function costHistoryLoad(){
   const empty=$('cost-empty'),lineEl=$('cost-line-chart'),barEl=$('cost-bar-chart'),sub=$('cost-subtitle'),totalEl=$('cost-total');
   if(!lineEl)return;
   if(empty){empty.style.display='block';empty.innerHTML='⏳ กำลังโหลด...';}
+  // CHUNK A10: ensure chart.js is available (lazy-loaded on demand).
+  await loadChartJs();
   try{
     const d=await fetch('/api/eval/cost').then(r=>r.json());
     if(empty)empty.style.display='none';
