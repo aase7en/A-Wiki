@@ -657,6 +657,12 @@ class Handler(BaseHTTPRequestHandler):
             self._api_capabilities_get()
         elif path == "/api/graph":
             self._json_response(_graph_snapshot())
+        elif path == "/api/mc-snapshot":
+            # P1: paper-only MC risk snapshot (VaR/CVaR/Sharpe/RRR) on
+            # synthetic N(0,1) seed=42 data — Iron Law #8. Service module
+            # mc_snapshot.py wraps scripts/mc_quant.py::_demo().
+            import mc_snapshot  # noqa: E402  -- on sys.path (server.py L40)
+            self._json_response(mc_snapshot.build_payload())
         elif path == "/api/council":
             self._api_council_get()
         elif path.startswith("/api/council/"):
