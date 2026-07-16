@@ -1,0 +1,642 @@
+{
+  "by_case": {
+    "cost-audit-identify-waste": {
+      "case_id": "cost-audit-identify-waste",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "cost-audit-recommend-tier": {
+      "case_id": "cost-audit-recommend-tier",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "router-pick-model": {
+      "case_id": "router-pick-model",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "router-batch-vs-realtime": {
+      "case_id": "router-batch-vs-realtime",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 19,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 19,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 19,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 19,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 19,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 19,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "optimizer-reduce-prompt": {
+      "case_id": "optimizer-reduce-prompt",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "optimizer-dedup-context": {
+      "case_id": "optimizer-dedup-context",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "cost-audit-budget": {
+      "case_id": "cost-audit-budget",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "router-emergency-seed": {
+      "case_id": "router-emergency-seed",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 29,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 29,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "optimizer-cache-opportunity": {
+      "case_id": "optimizer-cache-opportunity",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 24,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 24,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "router-multilingual": {
+      "case_id": "router-multilingual",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    }
+  },
+  "overall": {
+    "deepseek-v4-flash": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    },
+    "deepseek-v4-pro": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    },
+    "glm-5.2": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    }
+  },
+  "dry_run": false
+}

@@ -1,0 +1,642 @@
+{
+  "by_case": {
+    "profiler-missing-values": {
+      "case_id": "profiler-missing-values",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-outliers": {
+      "case_id": "profiler-outliers",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 30,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 30,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-dtypes": {
+      "case_id": "profiler-dtypes",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 28,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 28,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 28,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 28,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 28,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 28,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-correlation": {
+      "case_id": "profiler-correlation",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-distribution": {
+      "case_id": "profiler-distribution",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 27,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 27,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-duplicates": {
+      "case_id": "profiler-duplicates",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 22,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 22,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-timeseries-trend": {
+      "case_id": "profiler-timeseries-trend",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-stock-volatility": {
+      "case_id": "profiler-stock-volatility",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 26,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 26,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-categorical-cardinality": {
+      "case_id": "profiler-categorical-cardinality",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 31,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 31,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 31,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 31,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 31,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 31,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    },
+    "profiler-data-quality-report": {
+      "case_id": "profiler-data-quality-report",
+      "by_model": {
+        "deepseek-v4-flash": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 23,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 3,
+              "response_preview": "",
+              "tokens_in": 23,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "deepseek-v4-pro": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 23,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 1,
+              "response_preview": "",
+              "tokens_in": 23,
+              "tokens_out": 0
+            }
+          ]
+        },
+        "glm-5.2": {
+          "pass_at_k": 0.0,
+          "passed": 0,
+          "total_samples": 1,
+          "first_pass_sample": null,
+          "tokens_in": 23,
+          "tokens_out": 0,
+          "samples": [
+            {
+              "sample_index": 0,
+              "pass": false,
+              "completion_order": 2,
+              "response_preview": "",
+              "tokens_in": 23,
+              "tokens_out": 0
+            }
+          ]
+        }
+      },
+      "winner": null,
+      "best": "deepseek-v4-flash",
+      "dry_run": false
+    }
+  },
+  "overall": {
+    "deepseek-v4-flash": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    },
+    "deepseek-v4-pro": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    },
+    "glm-5.2": {
+      "mean_pass_at_k": 0.0,
+      "wins": 0,
+      "cases": 10
+    }
+  },
+  "dry_run": false
+}
