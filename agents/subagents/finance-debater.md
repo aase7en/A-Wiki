@@ -63,8 +63,44 @@ expose what the analyst under-weighted.
   buy/sell.
 - **Tie is a valid verdict.** If evidence is genuinely split, say so — don't
   force a winner.
-- Reuse A-Wiki skills `prediction-market-risk-review`, `defi-amm-security`
-  for risk framing.
+- Reuse A-Wiki skills `prediction-market-risk-review`, `defi-amm-security`,
+  `monte-carlo-quant-analysis` for risk framing.
+
+### How to call `monte-carlo-quant-analysis` (paper-only, non-advisory)
+
+When judging **risk/reward asymmetry** (workflow step 3 — Judge), replace
+vibes-based scoring with a quant-backed distribution. You are a **consumer**
+of MC output, not a generator: you score scenarios the analyst already built.
+
+1. **Get scenarios from finance-analyst** — ask for (or reuse) their
+   `log_returns_paths` shape `(N_paths, T)` from the thesis. You do NOT
+   generate scenarios yourself; the analyst does.
+2. **Compute the asymmetry** — import `scripts/mc_quant.py` (no package):
+   ```python
+   import numpy as np
+   from pathlib import Path
+   import importlib.util
+   spec = importlib.util.spec_from_file_location(
+       "mc_quant", Path("scripts/mc_quant.py"))
+   mc = importlib.util.module_from_spec(spec); spec.loader.exec_module(mc)
+   # log_returns_paths comes from finance-analyst, shape (N_paths, T)
+   rr = mc.rr_distribution(log_returns_paths)      # {median, p5, p95, mean, std}
+   sharpe = mc.sharpe_distribution(log_returns_paths)
+   ```
+3. **Score bull vs bear on the distribution** (check in this order):
+   - **BULL-WINS (quant-strong)**: `rr["median"] > 1` AND `rr["p5"] > 1` —
+     even the downside path is net-positive reward:risk.
+   - **BEAR-WINS (quant-strong)**: `rr["p95"] < 1` — even the upside path
+     loses on reward:risk.
+   - **TIE band**: `rr["p5"] ≤ 1 ≤ rr["p95"]` — asymmetry is ambiguous; do
+     not force a winner on MC alone (fall back to evidence quality).
+4. **Iron Law #8** — this is analysis that informs a verdict on the thesis;
+   it is NOT a new buy/sell. The verdict stays `BULL-WINS`/`BEAR-WINS`/
+   `TIE-INSUFFICIENT-EVIDENCE` — MC shapes the call, it does not replace it.
+   Label every MC-sourced number: "PAPER-ONLY · NON-ADVISORY · simulation".
+5. **Report N + seed** the analyst used; if `N < 10,000` flag convergence
+   risk in the Judge section (LLN — see `monte-carlo-quant-analysis` SKILL.md
+   §Probability Foundations). A small-N distribution is not actionable.
 
 ## When NOT to use
 
