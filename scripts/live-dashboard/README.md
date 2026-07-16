@@ -199,6 +199,33 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - Inline edit (coverageEditSave, togglePin) → invalidate both caches
 - Refresh button on Coverage → `_cacheInvalidate('coverage')` before reload
 
+### 💾 v11 — Backup + Smart Suggestions (current)
+**Goal**: localStorage backup/restore (4 chunks) + client-side skill suggestions (2 chunks).
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A11** | Backup pane + `exportAllBackup()` — collect 24 awiki-* keys → JSON | `live-dashboard.html`, `src/app.js` |
+| **B11** | Import + selective restore — validate schema, per-key checkboxes | `src/app.js` |
+| **C11** | Auto-backup every 7 days — `awiki-auto-backups` (max 3 FIFO) | `src/app.js` |
+| **D11** | Usage meter + per-key Clear button (reclaim quota) | `src/app.js` |
+| **E11** | `smartSuggestions()` — frequency (40%) × recency (30%) × co-occurrence (30%) | `src/skills.js` |
+| **F11** | "💡 แนะนำ" chips in discovery bar with "why" tooltip | `src/skills.js` |
+
+**Backup** (Settings → 💾 Backup tab):
+- Export: downloads `awiki-backup-YYYYMMDD.json` (version:1 schema, all awiki-* keys)
+- Import: validate → selective restore modal (per-key checkboxes, shows จะทับ/ใหม่)
+- Auto-backup: weekly snapshot stored in localStorage itself (max 3, FIFO)
+- Usage meter: green <60% / yellow <85% / red of 5MB quota
+- Per-key 🗑 Clear button reclaims quota granularly
+
+**Smart Suggestions** (Skills tab → discovery bar):
+- Scoring: `frequency (30d) × 40 + recency × 30 + co-occurrence_with_last × 30`
+- Excludes skills opened in last 24h (user just saw them)
+- Returns empty if <5 total opens (no random suggestions without telemetry)
+- Chip tooltip: "เปิด N ครั้งใน 30ว · ใช้ร่วมกับล่าสุด N · N วันที่แล้ว"
+
+**Iron Laws**: #1 (pure-function tests for scoring + validation), #6 (backup stays in browser — never disk/repo), #10 (no registry edit)
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
