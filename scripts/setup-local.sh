@@ -329,6 +329,24 @@ setup_agent_links() {
   }
 }
 
+# ── 8c. IDE terminal hook — auto-source global env in every terminal ────────
+# Injects a single source line into .bashrc/.zshrc so every terminal —
+# including the embedded terminals in VSCode, Windsurf, Devin, Cursor —
+# picks up secrets/global.env on startup. Idempotent; safe to re-run.
+# Depends on setup_agent_links (which links the Drive .env first).
+
+setup_ide_env() {
+  echo "[8c/13] Injecting IDE terminal hook (scripts/setup-ide-env.sh)..."
+  if [[ ! -f "scripts/setup-ide-env.sh" ]]; then
+    echo "  scripts/setup-ide-env.sh not found — skipping"
+    return 0
+  fi
+  bash scripts/setup-ide-env.sh || {
+    echo "  WARN: IDE env hook failed — run 'bash scripts/setup-ide-env.sh' manually" >&2
+    return 0
+  }
+}
+
 # ── 9. Global Kilo config — render from portable Drive template ────────────
 # Keeps ~/.config/kilo/kilo.jsonc consistent across machines (home Mac + work
 # Windows/WSL) by auto-detecting each machine's Google Drive path and injecting
@@ -420,6 +438,7 @@ setup_model_intel
 setup_model_router_policy
 setup_personal_links
 setup_agent_links
+setup_ide_env
 setup_kilo_config
 setup_git_hooks_and_agents
 setup_scraper_deps
