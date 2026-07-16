@@ -389,3 +389,57 @@ def test_chartjs_lazy_loader_exists():
     assert (
         "loadChartJs" in text or "_loadChartJs" in text
     ), "lazy chart.js loader function missing"
+
+
+# ── v10 CHUNK B10: TTL cache layer ──────────────────────────────────────
+# Goal: avoid re-fetching expensive APIs (skills/coverage) on every tab
+# switch — cache with TTL + invalidate on SSE registry_update.
+
+def test_ttl_cache_helper_exists():
+    """_ttlCache helper must exist in src/app.js with get/set/invalidate."""
+    text = _read()
+    assert "_ttlCache" in text, "_ttlCache namespace missing"
+    assert "_ttlGet" in text or "_ttlCache.get" in text or "_cacheGet" in text, "cache .get() missing"
+    assert "_ttlSet" in text or "_ttlCache.set" in text or "_cacheSet" in text, "cache .set() missing"
+
+
+def test_ttl_cache_invalidate_on_registry_update():
+    """SSE registry_update handler must invalidate skills+coverage cache."""
+    text = _read()
+    # Match the actual handler branch in graph.js (not a stray comment in app.js).
+    idx = text.find("ev.type==='registry_update'")
+    if idx == -1:
+        idx = text.find('ev.type === "registry_update"')
+    assert idx != -1, "registry_update event handler missing"
+    after = text[idx : idx + 600]
+    assert (
+        "_cacheInvalidate" in after
+        or "_ttlCache" in after
+        or "_cacheClear" in after
+    ), "registry_update must invalidate skills+coverage caches"
+
+
+def test_skills_load_uses_ttl_cache():
+    """skillsLoad() must consult TTL cache before fetching /api/skills."""
+    text = _read()
+    idx = text.find("async function skillsLoad")
+    if idx == -1:
+        idx = text.find("function skillsLoad")
+    assert idx != -1, "skillsLoad function missing"
+    after = text[idx : idx + 1200]
+    assert (
+        "_cacheGet" in after or "_ttlGet" in after or "_ttlCache" in after
+    ), "skillsLoad must consult TTL cache before fetching"
+
+
+def test_coverage_load_uses_ttl_cache():
+    """coverageLoad() must consult TTL cache before fetching /api/coverage."""
+    text = _read()
+    idx = text.find("async function coverageLoad")
+    if idx == -1:
+        idx = text.find("function coverageLoad")
+    assert idx != -1, "coverageLoad function missing"
+    after = text[idx : idx + 1200]
+    assert (
+        "_cacheGet" in after or "_ttlGet" in after or "_ttlCache" in after
+    ), "coverageLoad must consult TTL cache before fetching"

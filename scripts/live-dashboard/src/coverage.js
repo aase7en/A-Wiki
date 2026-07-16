@@ -112,6 +112,9 @@ async function coverageEditSave(name,field){
     if(r.ok){
       closeCompareModal();
       toast('✅ บันทึก '+field+' สำหรับ '+name);
+      // CHUNK B10: invalidate both caches so reloads reflect the edit.
+      _cacheInvalidate('coverage');
+      for(const k in _ttlCache){if(k.startsWith('skills:'))delete _ttlCache[k];}
       coverageLoad(); // refresh coverage stats
     }else{
       status.textContent='❌ '+(r.error||'บันทึกล้มเหลว');status.style.color='var(--accent-danger)';
@@ -130,7 +133,14 @@ async function coverageLoad(){
   const overall=$('coverage-overall'),sub=$('coverage-subtitle');
   if(overall){overall.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:20px;font-size:var(--fs-2xs)">⏳ กำลังโหลด...</div>';}
   try{
-    const data=await fetch('/api/coverage').then(r=>r.json());
+    // CHUNK B10: TTL cache (30s) — coverage matrix is expensive; invalidate on
+    // SSE registry_update and inline skill edits.
+    const cacheKey='coverage';
+    let data=_cacheGet(cacheKey);
+    if(!data){
+      data=await fetch('/api/coverage').then(r=>r.json());
+      _cacheSet(cacheKey,data,30);
+    }
     if(data.error)throw new Error(data.error);
     _covCache=data;
     if(sub){sub.textContent=`${data.total} canonical skills · ติดตาม ${data.fields.length} fields`;}

@@ -4,6 +4,23 @@ active:{},activeCount:0,parallelCount:0,failCount:0,failures:[],delegateFree:0,d
 const $=id=>document.getElementById(id);
 const mk=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// CHUNK B10: TTL cache for expensive GET APIs (skills list, coverage stats).
+// Avoids re-fetching ~250 skills or full coverage matrix on every tab switch.
+// Entries: {key: {val, exp}} — exp = absolute ms timestamp.
+// Invalidate on SSE registry_update (graph.js) and after inline edits.
+const _ttlCache={};
+function _cacheSet(key,val,maxAgeSec){
+  _ttlCache[key]={val:val,exp:Date.now()+Math.max(0,maxAgeSec)*1000};
+}
+function _cacheGet(key){
+  const e=_ttlCache[key];
+  if(!e)return null;
+  if(Date.now()>e.exp){delete _ttlCache[key];return null;}
+  return e.val;
+}
+function _cacheInvalidate(key){
+  if(key)delete _ttlCache[key];else{for(const k in _ttlCache)delete _ttlCache[k];}
+}
 // CHUNK G8: shared download helper (deduplicates Blob→<a>→click→revoke pattern).
 function _downloadBlob(blob,filename){
   const url=URL.createObjectURL(blob);

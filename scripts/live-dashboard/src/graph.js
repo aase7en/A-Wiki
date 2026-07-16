@@ -41,6 +41,10 @@ if(ev.type==='graph_update'){updateGraph(ev);return;}
 if(ev.type==='registry_update'){
 // CHUNK GG: registry changed on disk — silently reload the active data
 // view so the dashboard reflects new/edited skills without a manual refresh.
+// CHUNK B10: invalidate skills+coverage cache so the reload fetches fresh data.
+_cacheInvalidate('skills:');
+for(const k in _ttlCache){if(k.startsWith('skills:'))delete _ttlCache[k];}
+_cacheInvalidate('coverage');
 // CHUNK RR: desktop notification (deduped via tag).
 showNotif('Registry อัปเดตแล้ว','skills/coverage รีเฟรชอัตโนมัติ','registry_update');
 announce('Registry อัปเดตแล้ว — กำลังรีเฟรชข้อมูล');
