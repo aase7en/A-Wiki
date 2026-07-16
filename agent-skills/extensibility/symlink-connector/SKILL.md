@@ -1,6 +1,7 @@
 ---
 name: symlink-connector
-description: Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup.
+version: 2.1.0
+description: Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo, links every agent's .env to a universal secrets/global.env on Google Drive, and injects an IDE terminal hook so a new machine needs one bootstrap command, not per-agent setup.
 domain: engineering
 lifecycle_phase: ship
 ---
@@ -8,21 +9,46 @@ lifecycle_phase: ship
 # Symlink Connector — Universal Agent-Config Linker
 
 > **Purpose:** Bridge `agent-skills/` (and the ecosystem skill dirs) into every
-> AI agent harness on this machine, and point each harness's `.env` at Google
-> Drive, so switching machines never means reinstalling skills or re-typing
-> secrets.
+> AI agent harness on this machine, point each harness's `.env` at the
+> universal `secrets/global.env` on Google Drive, and inject a shell hook so
+> every terminal (including IDE-embedded) auto-loads the global secrets.
+> Switching machines never means reinstalling skills or re-typing secrets.
 
 ## Two sources of truth
 
 | What | Source of truth | Why |
 |---|---|---|
 | Skills, `SKILL.md`, shareable config | **This git repo** (already synced across machines) | Edit once, `git pull` everywhere |
-| Secrets, `.env`, per-agent private state | **Google Drive `A-Wiki-Data`** via `drive/` (see `docs/protocols/...` cloud link) | Never committed; cloud-synced |
+| Secrets, `.env`, per-agent private state | **Google Drive `A-Wiki-Data/secrets/`** via `drive/` (see `docs/protocols/secrets-global-env.md`) | Never committed; cloud-synced |
 
 **Never** put the git repo itself inside Google Drive, and never expect a
 symlink placed *inside* the Drive folder to sync — Google Drive for Desktop
 does not reliably follow or sync symlinks. Links must point **into** the
 Drive mount; only real files live on Drive.
+
+## Universal .env — hybrid global + per-repo (v2.1.0)
+
+Every agent now links its `~/.<agent>/.env` to **one** universal file on
+Drive: `secrets/global.env`. This holds AI keys + shared tokens that apply
+across all agents and repos. Repo-specific secrets (DB URLs, project PATs)
+live beside it as `secrets/<repo>.env` and are loaded on top by the loader
+when working in that repo.
+
+```
+<Drive>/A-Wiki-Data/secrets/
+  global.env                      # AI keys — every agent reads this
+  env-wastewater-webapp.env       # repo-specific (Supabase URL, PAT)
+  <other-repo>.env                # add per-repo as needed
+  README.md                       # convention doc
+```
+
+Three surfaces read these secrets:
+
+| Surface | Mechanism | Script |
+|---|---|---|
+| Shell scripts / repos with config loaders | `source scripts/load-global-env.sh [--repo NAME]` | `load-global-env.sh` |
+| Agent harnesses (.zcode, .claude, ...) | `~/.<agent>/.env` → Drive `secrets/global.env` | `link-agent-configs.sh` |
+| IDE terminals (VSCode, Windsurf, Devin) | shell rc hook auto-sources the loader | `setup-ide-env.sh` |
 
 ## The linker: `scripts/link-agent-configs.sh`
 
@@ -51,17 +77,23 @@ new machine) and is checked by `scripts/verify-next-machine.py`.
 
 | Agent | Skills dir | `.env` linked to Drive? |
 |---|---|---|
-| Claude Code | `~/.claude/skills/` | no (uses `drive/.secrets` via `import-keys.py`) |
-| Codex | `~/.codex/skills/` | no (`load-drive-keys.sh` hook) |
-| Cline | `~/.cline/skills/` | no |
-| Hermes | `~/.hermes/skills/` (or `$HERMES_HOME`) | **yes** → `drive/.agents/hermes/.env` |
-| Gemini CLI | `~/.gemini/skills/` | no |
-| ZCode | `~/.zcode/skills/` | **yes** → `drive/.agents/zcode/.env` |
-| Antigravity | `~/.gemini/config/skills/` (IDE+CLI read global skills only from here, not `~/.antigravity` — verified 2026-07-10) | no |
-| Windsurf | `~/.windsurf/skills/` | no |
-| OpenClaw | `~/.openclaw/skills/` | no |
+| Claude Code | `~/.claude/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
+| Codex | `~/.codex/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
+| Cline | `~/.cline/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
+| Hermes | `~/.hermes/skills/` (or `$HERMES_HOME`) | **yes** → `secrets/global.env` |
+| Gemini CLI | `~/.gemini/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
+| ZCode | `~/.zcode/skills/` | **yes** → `secrets/global.env` |
+| Antigravity | `~/.gemini/config/skills/` (IDE+CLI read global skills only from here, not `~/.antigravity` — verified 2026-07-10) | **yes** → `secrets/global.env` (v2.1.0) |
+| Windsurf | `~/.windsurf/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
+| OpenClaw | `~/.openclaw/skills/` | **yes** → `secrets/global.env` (v2.1.0) |
 | Kilo | `~/.config/kilo/` | rendered separately by `scripts/setup-kilo-config.sh` (not duplicated here) |
-| *(repo root)* | – | `.env` → `drive/.env` (seeded from `.env.example`) |
+| *(repo root)* | – | `.env` → `drive/.env` (legacy stub; secrets/global.env is the SSOT now) |
+| *(IDE terminals)* | – | shell rc hook via `setup-ide-env.sh` (auto-sources `load-global-env.sh`) |
+
+**v2.1.0 change**: `ENV_AGENTS` was expanded from `hermes zcode` to **every**
+supported agent. The legacy per-agent `drive/.agents/<a>/.env` files are kept
+untouched for back-compat but no longer the link target — everything points
+at the universal `secrets/global.env`.
 
 Auto-detection links only agents whose home dir already exists on this
 machine; `--agent <name>` forces one into existence. Override any harness's
@@ -72,8 +104,9 @@ home dir without editing the script: `AWIKI_AGENT_DIR_<AGENT>=/custom/path`
 
 ```
 ~/.claude/skills/debug-mantra/ → A-Wiki/agent-skills/engineering/debug-mantra/
-~/.hermes/.env                 → drive/.agents/hermes/.env
-A-Wiki/.env                    → drive/.env
+~/.<agent>/.env                → drive/secrets/global.env        (v2.1.0 universal)
+~/.bashrc                      → sources drive/secrets/global.env via load-global-env.sh
+A-Wiki/.env                    → drive/.env (legacy stub)
 ```
 
 Skills come from `agent-skills/*/*/`, `skills/anthropic-skills/*/`, and
@@ -125,7 +158,9 @@ Rules that keep re-runs safe:
 ## Verifying
 
 ```bash
-bash scripts/link-agent-configs.sh --status
-python3 scripts/verify-next-machine.py
-pytest tests/test_link_agent_configs.py -v
+bash scripts/link-agent-configs.sh --status      # every agent linked?
+bash scripts/setup-ide-env.sh --status            # IDE hook injected?
+python3 scripts/verify-next-machine.py            # full machine check (includes
+                                                  # global.env + IDE hook + loader)
+pytest tests/test_global_env_system.py -v          # loader + IDE hook + linker tests
 ```

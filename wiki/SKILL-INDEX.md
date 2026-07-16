@@ -317,7 +317,7 @@
 | `setup-pre-commit` | none | mattpocock | ติดตั้ง Husky pre-commit hooks กับ lint-staged (prettier), type check, test — กัน commit โค้ดเสีย |
 | `shipping-and-launch` | ship | engineering-lifecycle | เช็คลิสต์ก่อน release: test, docs, migration, rollback plan, monitoring — ให้มั่นใจว่า launch ปลอ... |
 | `spec-driven-development` | define | engineering-lifecycle | เขียนสเปก/requirements ให้ชัดก่อนเริ่มเขียนโค้ด เพื่อให้ทุกคน (และ AI) เข้าใจตรงกันว่าต้องทำอะไร ... |
-| `symlink-connector` | ship | extensibility | linker สากล — symlink skills ของ harness ทุกตัวไปยัง A-Wiki repo, .env ไป Google Drive |
+| `symlink-connector` | ship | extensibility | linker สากล — symlink skills ของ harness ทุกตัวไปยัง A-Wiki repo, .env ไป secrets/global.env บน G... |
 | `tdd` | build | mattpocock | เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression |
 | `to-issues` | plan | mattpocock | แตก plan/spec/PRD เป็น issue แบบ tracer-bullet slice — แต่ละ issue ทำได้ทีละอันอิสระ |
 | `to-prd` | define | mattpocock | สังเคราะห์บทสนทนาปัจจุบันให้เป็น PRD (Product Requirements Document) และเผยแพร่ออกมา โดยไม่ต้องสั... |

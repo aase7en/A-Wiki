@@ -12617,11 +12617,11 @@
       "agents": [
         "all"
       ],
-      "version": "2.0.0",
+      "version": "2.1.0",
       "status": "canonical",
-      "description": "Universal agent-config linker — symlinks every harness's skills to the A-Wiki repo and .env to Google Drive so a new machine needs one bootstrap command, not per-agent setup.",
+      "description": "Universal agent-config linker — symlinks every harness skills to A-Wiki repo, links every agent .env to universal secrets/global.env on Google Drive, and injects an IDE terminal hook so a new machine needs one bootstrap command.",
       "invocation": "manual",
-      "th_description": "linker สากล — symlink skills ของ harness ทุกตัวไปยัง A-Wiki repo, .env ไป Google Drive",
+      "th_description": "linker สากล — symlink skills ของ harness ทุกตัวไปยัง A-Wiki repo, .env ไป secrets/global.env บน Google Drive, พร้อม IDE terminal hook สำหรับ auto-load env",
       "when_to_use": "อยากใช้ skill/config ร่วมกันข้าม Claude/Codex/Cline/Hermes/Gemini/ZCode",
       "examples": [
         {
