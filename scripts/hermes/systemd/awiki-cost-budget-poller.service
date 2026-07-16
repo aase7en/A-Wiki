@@ -1,0 +1,20 @@
+[Unit]
+Description=A-Wiki Cost Budget Poller (over-budget → Telegram)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Single poll cycle (--once is the default for systemd timers).
+WorkingDirectory=/opt/a-wiki
+ExecStart=/usr/bin/python3 scripts/hermes/cost_budget_poller.py --once
+# Telegram tokens are loaded from the Hermes secrets env file by notify.py.
+EnvironmentFile=/etc/hermes/secrets.env
+# Threshold: $10/month default (override via AWIKI_COST_THRESHOLD in secrets.env).
+# Timeout: fetch + Telegram send should complete in under 60s.
+TimeoutStartSec=90
+# Don't restart — the timer handles the next poll.
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

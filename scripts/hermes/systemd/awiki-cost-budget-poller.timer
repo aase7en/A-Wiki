@@ -1,0 +1,14 @@
+[Unit]
+Description=A-Wiki Cost Budget Poller (6-hourly)
+Requires=awiki-cost-budget-poller.service
+
+[Timer]
+# Run every 6 hours (matches Hermes sync cadence).
+OnCalendar=*-*-* 00/6:00:00
+# If the Pi5 was off at the scheduled time, run immediately on boot.
+Persistent=true
+# Avoid running concurrently with the hourly alert-poller.
+AccuracySec=5min
+
+[Install]
+WantedBy=timers.target

@@ -65,7 +65,7 @@ RESULTS_DIR = SUITES_DIR / "results"
 
 # Reuse single-subagent eval primitives (DRY).
 from run_subagent_eval import (  # noqa: E402
-    delegate_to_model, judge, pass_at_k, DEFAULT_MODELS, DEFAULT_K,
+    delegate_to_model, judge, pass_at_k, DEFAULT_MODELS, DEFAULT_K, estimate_tokens,
 )
 
 
@@ -153,6 +153,8 @@ def run_pipeline(
     for model in models:
         model_results: list[dict] = []
         per_case: dict[str, list[dict]] = {}
+        total_tokens_in = 0
+        total_tokens_out = 0
         for case in cases:
             cid = case.get("id", "default")
             samples = []
@@ -161,16 +163,22 @@ def run_pipeline(
                 if _is_dag_suite(stages):
                     import dag_eval  # lazy import (S3)
                     response = dag_eval.execute_dag(stages, model, case, overrides)
+                    tok_in, tok_out = estimate_tokens(str(case)), estimate_tokens(response)
                 else:
-                    response = _chain_stages(stages, model, case, overrides)
+                    response, tok_in, tok_out = _chain_stages_with_tokens(stages, model, case, overrides)
+                total_tokens_in += tok_in
+                total_tokens_out += tok_out
                 passed = judge(final_stage, response)
-                samples.append({"pass": passed, "response_preview": response[:200]})
+                samples.append({"pass": passed, "response_preview": response[:200],
+                                "tokens_in": tok_in, "tokens_out": tok_out})
                 model_results.append({"pass": passed})
             per_case[cid] = samples
         out["by_model"][model] = {
             "pass_at_k": pass_at_k(model_results, k),
             "total_samples": len(model_results),
             "passed": sum(1 for r in model_results if r["pass"]),
+            "tokens_in": total_tokens_in,
+            "tokens_out": total_tokens_out,
         }
         out["by_case"].update(per_case)
     return out
@@ -215,6 +223,34 @@ def _chain_stages(
         use_model = overrides.get(subagent, model)
         prev_output = delegate_to_model(use_model, prompt)
     return prev_output
+
+
+def _chain_stages_with_tokens(
+    stages: list[dict],
+    model: str,
+    case: dict,
+    overrides: dict[str, str],
+) -> tuple[str, int, int]:
+    """W5: เหมือน _chain_stages แต่ track tokens_in/tokens_out รวมทุก stage.
+
+    Returns (final_output, total_tokens_in, total_tokens_out).
+    """
+    prev_output = ""
+    total_in = 0
+    total_out = 0
+    for stage in stages:
+        prompt = stage["prompt"]
+        for key, val in case.items():
+            if key != "id":
+                prompt = prompt.replace("{" + key + "}", str(val))
+        prompt = prompt.replace("{prev_output}", prev_output)
+        subagent = stage.get("subagent", "")
+        use_model = overrides.get(subagent, model)
+        resp = delegate_to_model(use_model, prompt)
+        total_in += estimate_tokens(prompt)
+        total_out += estimate_tokens(resp)
+        prev_output = resp
+    return prev_output, total_in, total_out
 
 
 # ---------------------------------------------------------------------------

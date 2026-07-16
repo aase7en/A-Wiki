@@ -98,6 +98,7 @@ Google Drive / A-Wiki-Data /
 | On config change | MacBook | `bash scripts/hermes/sync-all.sh --push` |
 | Daily 3AM | MacBook | `bash scripts/hermes/backup-to-drive.sh` |
 | Hourly | Pi5 | `python3 scripts/hermes/subagent-alert-poller.py --once` (critical Observatory alert → Telegram) |
+| 6-hourly | Pi5 | `python3 scripts/hermes/cost_budget_poller.py --once` (cost budget alert → Telegram) |
 
 ### Subagent Alert Poller (Pi5 systemd timer)
 
@@ -114,6 +115,26 @@ sudo systemctl enable --now awiki-alert-poller.timer
 ```
 
 State file: `.tmp/subagent-alert-poller-state.json` (last-alerted ts per subagent).
+
+### Cost Budget Poller (Pi5 systemd timer — W6)
+
+Sends a Telegram alert when the eval cost estimate exceeds the monthly
+budget threshold (default $10). Idempotent: 24h cooldown prevents spam.
+
+Install on Pi5 (same pattern as alert-poller):
+```bash
+sudo cp scripts/hermes/systemd/awiki-cost-budget-poller.{service,timer} /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now awiki-cost-budget-poller.timer
+# Verify: systemctl list-timers | grep cost-budget
+```
+
+Override threshold via env (in `/etc/hermes/secrets.env`):
+```
+AWIKI_COST_THRESHOLD=25.00   # alert when monthly cost > $25
+```
+
+State file: `.tmp/cost-budget-poller-state.json` (last-alerted ts).
 
 ## Telegram Setup (Pi5)
 

@@ -212,3 +212,45 @@ def test_handoff_contract_non_json_output():
     """Non-JSON output with required fields → False (can't extract fields)."""
     contract = {"required_fields": ["thesis"]}
     assert pe.validate_handoff("just plain text", contract) is False
+
+
+# ---------------------------------------------------------------------------
+# W5: multi-stage cost attribution (token recording per pipeline run)
+# ---------------------------------------------------------------------------
+def test_chain_stages_with_tokens_returns_token_counts(monkeypatch):
+    """W5: _chain_stages_with_tokens() ต้องคืน (output, tokens_in, tokens_out)."""
+    def mock_delegate(model, prompt):
+        return "stage response " * 20
+
+    monkeypatch.setattr(pe, "delegate_to_model", mock_delegate)
+    stages = [
+        {"id": "s1", "subagent": "a", "prompt": "Step 1: {input}"},
+        {"id": "s2", "subagent": "b", "prompt": "Step 2: {prev_output}"},
+    ]
+    case = {"id": "c1", "input": "test data here"}
+    output, tok_in, tok_out = pe._chain_stages_with_tokens(stages, "model", case, {})
+    assert "stage response" in output
+    assert tok_in > 0
+    assert tok_out > 0
+
+
+def test_run_pipeline_records_tokens(monkeypatch):
+    """W5: run_pipeline() ต้อง record tokens_in/tokens_out ใน by_model."""
+    def mock_delegate(model, prompt):
+        return "pipeline output with verdict"
+    monkeypatch.setattr(pe, "delegate_to_model", mock_delegate)
+    suite = {
+        "suite": "test-pipe",
+        "stages": [
+            {"id": "s1", "subagent": "a", "prompt": "Do: {topic}", "required": [], "forbidden": []},
+            {"id": "s2", "subagent": "b", "prompt": "Judge: {prev_output}", "required": ["verdict"], "forbidden": []},
+        ],
+        "cases": [{"id": "c1", "topic": "test decision"}],
+        "model_overrides": {},
+    }
+    result = pe.run_pipeline(suite, ["model-a"], k=1)
+    model_stats = result["by_model"]["model-a"]
+    assert "tokens_in" in model_stats, "by_model ต้องมี tokens_in (W5)"
+    assert "tokens_out" in model_stats, "by_model ต้องมี tokens_out (W5)"
+    assert model_stats["tokens_in"] > 0
+    assert model_stats["tokens_out"] > 0
