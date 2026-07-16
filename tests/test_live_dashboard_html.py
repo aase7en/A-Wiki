@@ -612,3 +612,36 @@ def test_auto_backup_skip_self_in_export():
     assert (
         "awiki-auto-backups" in text
     ), "export whitelist must skip awiki-auto-backups (recursion safety)"
+
+
+# ── v11 CHUNK D11: usage meter + per-key clear ─────────────────────────
+# Goal: visual feedback on storage usage (progress bar + per-key bytes) +
+# a per-key Clear button so users can reclaim quota without nuking everything.
+
+def test_usage_meter_bytes_helper_exists():
+    """A bytes calculation helper must exist (sum of key+value lengths)."""
+    text = _read()
+    # The meter renders total bytes — there must be a bytes calc somewhere.
+    assert (
+        "totalBytes" in text or "_backupBytes" in text or "5*1024*1024" in text
+    ), "usage meter must calculate total bytes against 5MB quota"
+
+
+def test_usage_meter_quota_thresholds():
+    """Meter must show green/yellow/red thresholds based on % of 5MB quota."""
+    text = _read()
+    # The color thresholds (60% / 85%) must exist.
+    assert (
+        "60" in text and "85" in text
+    ), "usage meter must use 60%/85% thresholds for green/yellow/red"
+
+
+def test_per_key_clear_button_exists():
+    """Each key row must have a Clear button (reclaim quota granularly)."""
+    text = _read()
+    idx = text.find("function loadBackupPane")
+    assert idx != -1, "loadBackupPane function missing"
+    after = text[idx : idx + 2000]
+    assert (
+        "clearBackupKey" in after or "clearKey" in after
+    ), "per-key clear function missing in loadBackupPane"

@@ -68,7 +68,8 @@ function loadBackupPane(){
     const raw=localStorage.getItem(k)||'';
     const bytes=new Blob([raw]).size;
     totalBytes+=bytes;
-    return '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--font-mono);color:var(--text-secondary)">'+k+'</span><span style="color:var(--text-tertiary)">'+(bytes/1024).toFixed(1)+'KB</span></div>';
+    // CHUNK D11: per-key Clear button (with confirm) reclaims quota granularly.
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border);gap:6px"><span style="font-family:var(--font-mono);color:var(--text-secondary);flex:1;overflow:hidden;text-overflow:ellipsis">'+k+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap">'+(bytes/1024).toFixed(1)+'KB</span><button onclick="clearBackupKey(\''+k+'\')" style="background:transparent;border:none;color:var(--accent-danger);cursor:pointer;font-size:var(--fs-2xs);padding:0 4px" title="ล้าง key นี้">🗑</button></div>';
   }).join('');
   list.innerHTML=rows||'<div style="color:var(--text-tertiary);padding:8px">ไม่มี awiki-* keys</div>';
   const meter=$('backup-usage-meter');
@@ -77,6 +78,12 @@ function loadBackupPane(){
     const color=pct<60?'var(--accent-success)':pct<85?'var(--accent-warm)':'var(--accent-danger)';
     meter.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:3px">localStorage: '+(totalBytes/1024).toFixed(1)+'KB / 5MB ('+pct+'%) · '+names.length+' keys</div><div style="height:6px;background:var(--elev-3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+color+';transition:width .3s"></div></div>';
   }
+}
+function clearBackupKey(k){
+  if(!confirm('ล้าง key "'+k+'" ออกจาก localStorage?'))return;
+  try{localStorage.removeItem(k);}catch(_){}
+  toast('🗑 ล้าง '+k+' แล้ว');
+  loadBackupPane();
 }
 // CHUNK B11: import backup — validate schema, show selective restore modal.
 // User picks which keys to restore via checkboxes; only checked keys are
