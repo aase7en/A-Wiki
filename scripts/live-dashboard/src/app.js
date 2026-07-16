@@ -78,6 +78,67 @@ function loadBackupPane(){
     meter.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:3px">localStorage: '+(totalBytes/1024).toFixed(1)+'KB / 5MB ('+pct+'%) · '+names.length+' keys</div><div style="height:6px;background:var(--elev-3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+color+';transition:width .3s"></div></div>';
   }
 }
+// CHUNK B11: import backup — validate schema, show selective restore modal.
+// User picks which keys to restore via checkboxes; only checked keys are
+// written. Rejects payloads missing version or with unsupported version.
+let _pendingBackup=null;
+function _validateBackupPayload(j){
+  if(!j||typeof j!=='object')return 'ไม่ใช่ JSON object';
+  if(j.version!==1)return 'schema version ไม่รองรับ (ต้องเป็น 1)';
+  if(!j.keys||typeof j.keys!=='object')return 'ไม่มี keys field';
+  return null;
+}
+function importBackup(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result);
+      const err=_validateBackupPayload(j);
+      if(err){toast('❌ '+err,true);return;}
+      _pendingBackup=j;
+      _showRestoreModal(j);
+    }catch(e){toast('❌ JSON parse ไม่ได้: '+e.message,true);}
+  };
+  rd.readAsText(f);
+  ev.target.value='';
+}
+function _showRestoreModal(j){
+  const names=Object.keys(j.keys).sort();
+  if(!names.length){toast('ไฟล์ backup ว่าง',true);return;}
+  // Build modal in-place (reuses the keybind-modal pattern).
+  let m=document.getElementById('backup-restore-modal');
+  if(!m){
+    m=document.createElement('div');
+    m.id='backup-restore-modal';
+    m.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px 24px;z-index:460;max-width:480px;width:90vw;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg)';
+    document.body.appendChild(m);
+  }
+  const rows=names.map((k,i)=>{
+    const cur=localStorage.getItem(k);
+    const curNote=cur!==null?'<span style="color:var(--accent-warn);font-size:10px"> (จะทับ)</span>':'<span style="color:var(--accent-success);font-size:10px"> (ใหม่)</span>';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:var(--fs-xs)"><input type="checkbox" data-backup-key="'+k+'" checked style="cursor:pointer;accent-color:var(--accent-brand)"><span style="font-family:var(--font-mono);color:var(--text-secondary)">'+k+'</span>'+curNote+'</label>';
+  }).join('');
+  m.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h3 style="margin:0;font-size:var(--fs-md);color:var(--accent-brand)">📥 Restore Backup</h3><button onclick="document.getElementById(\'backup-restore-modal\').style.display=\'none\'" style="background:transparent;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer">✕</button></div><p style="margin:0 0 10px;font-size:var(--fs-2xs);color:var(--text-tertiary)">เลือก keys ที่จะกู้คืน — เฉพาะที่ติ๊กเท่านั้นที่จะถูกเขียนทับ</p><div style="max-height:300px;overflow-y:auto;margin-bottom:12px">'+rows+'</div><div style="display:flex;gap:6px"><button class="set-btn sm" onclick="_applySelectedBackup()" style="background:var(--accent-success);color:var(--elev-0);font-weight:600">✅ กู้คืนที่เลือก</button><button class="set-btn sm" onclick="document.getElementById(\'backup-restore-modal\').style.display=\'none\'" style="color:var(--text-tertiary)">ยกเลิก</button></div>';
+  m.style.display='block';
+}
+function _applySelectedBackup(){
+  if(!_pendingBackup){return;}
+  const m=document.getElementById('backup-restore-modal');
+  const boxes=m?m.querySelectorAll('input[data-backup-key]:checked'):[];
+  const selected=new Set(Array.from(boxes).map(b=>b.dataset.backupKey));
+  let applied=0;
+  selected.forEach(k=>{
+    const val=_pendingBackup.keys[k];
+    try{localStorage.setItem(k,JSON.stringify(val));applied++;}catch(_){}
+  });
+  if(m)m.style.display='none';
+  _pendingBackup=null;
+  toast('✅ กู้คืน '+applied+' keys เรียบร้อย — รีเฟรช dashboard เพื่อเห็นผล');
+  const st=$('backup-status');
+  if(st)st.textContent='📥 กู้คืน '+applied+' keys เมื่อสักครู่';
+  loadBackupPane();
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;

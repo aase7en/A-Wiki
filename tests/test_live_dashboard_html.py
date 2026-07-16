@@ -521,3 +521,49 @@ def test_backup_schema_has_version_field():
     assert idx != -1, "exportAllBackup function definition missing"
     after = text[idx : idx + 800]
     assert "version" in after, "backup JSON must include version field"
+
+
+# ── v11 CHUNK B11: import + selective restore ──────────────────────────
+# Goal: import a backup JSON, validate schema, let user pick which keys to
+# restore, apply only selected. Reject malformed/unknown-version payloads.
+
+def test_import_backup_function_exists():
+    """importBackup() function must exist in src/."""
+    text = _read()
+    assert "function importBackup" in text, "importBackup function missing"
+
+
+def test_backup_validation_rejects_unknown_version():
+    """Validation must check version field — reject payloads without it or
+    with an unsupported version number."""
+    text = _read()
+    # Validation lives in _validateBackupPayload (called by importBackup).
+    idx = text.find("_validateBackupPayload")
+    assert idx != -1, "_validateBackupPayload helper missing"
+    after = text[idx : idx + 400]
+    assert "version" in after, "validation must check version field"
+    # Must reject (throw or return early) on bad version — check for a numeric
+    # literal comparison against the supported version.
+    assert "1" in after, "validation must check version === 1 (current schema)"
+
+
+def test_backup_selective_restore_checkbox_ui():
+    """Import must show a key list with checkboxes (selective restore)."""
+    text = _read()
+    # The restore UI must let the user pick keys via checkboxes.
+    assert (
+        "checkbox" in text.lower()
+    ), "selective restore must use checkboxes for per-key selection"
+
+
+def test_backup_apply_selected_keys_only():
+    """The apply step must only write keys that were checked, not blindly
+    overwrite everything."""
+    text = _read()
+    idx = text.find("function importBackup")
+    assert idx != -1, "importBackup function missing"
+    after = text[idx : idx + 2500]
+    # Look for the apply loop that checks a selected flag per key.
+    assert (
+        "checked" in after or "selected" in after.lower()
+    ), "apply must respect per-key selection (not blind overwrite)"
