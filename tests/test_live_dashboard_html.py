@@ -838,3 +838,27 @@ def test_skills_toolbar_wraps_on_mobile():
     assert idx != -1, "max-width:600px media query missing"
     block = css[idx : idx + 800]
     assert "#skills-toolbar" in block, "skills-toolbar must be in mobile media query"
+
+
+# ── v12 CHUNK F12: modals + drawer mobile-fit ──────────────────────────
+def test_modals_mobile_maxwidth():
+    """Modals must expand to 95vw on mobile so they don't clip content."""
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find("@media(max-width:600px)")
+    assert idx != -1, "max-width:600px media query missing"
+    block = css[idx : idx + 1200]
+    assert "95vw" in block, "modals must use 95vw max-width on mobile"
+
+
+def test_skills_drawer_fullwidth_on_mobile():
+    """Skills detail drawer must go full-width on mobile (100vw not 480px)."""
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find("@media(max-width:600px)")
+    assert idx != -1, "max-width:600px media query missing"
+    block = css[idx : idx + 1200]
+    assert "#skills-detail" in block, "skills-detail must be in mobile media query"
+    assert "100vw" in block, "skills-detail must be full-width (100vw) on mobile"

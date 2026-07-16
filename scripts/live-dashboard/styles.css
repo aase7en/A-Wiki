@@ -96,6 +96,8 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 #sidebar{border-left:none;border-top:1px solid var(--border)}
 #timeline-list{max-height:42vh}
 .hdr-btn{min-height:40px;padding:8px 14px}
+#settings,#compare-modal,#shortcuts-help,#workspace-modal,#notif-modal,#palette-modal,#keybind-modal{max-width:95vw!important;max-height:90vh!important}
+#skills-detail{width:100vw!important}
 }
 #net-panel{display:flex;flex-direction:column;overflow:hidden;padding:10px 14px;gap:8px}
 #hook-strip{display:flex;flex-wrap:wrap;gap:5px;min-height:24px;align-items:center}
