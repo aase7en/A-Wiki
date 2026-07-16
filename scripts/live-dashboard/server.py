@@ -55,6 +55,7 @@ import alerts  # noqa: E402
 import eval_history  # noqa: E402  -- R3: /api/eval/history route
 import cost_history  # noqa: E402  -- S6: /api/eval/cost route
 import pipeline_graph  # noqa: E402  -- T5: /api/eval/pipeline-graph route
+import cost_history  # noqa: E402  -- re-export for T6 cost-optimize payload
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -767,6 +768,35 @@ class Handler(BaseHTTPRequestHandler):
                     self._json_response({"pipelines": pipeline_graph.list_pipeline_suites()})
                 else:
                     self._json_response(pipeline_graph.build_graph_payload(suite_name))
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/cost-optimize":
+            # T6: cost optimization recommendations (read-only preview).
+            # Reuses cost_history + cost_aware_recommend to suggest cheaper models.
+            try:
+                import glob as _glob
+                results_dir = REPO_ROOT / "evals" / "subagents" / "results"
+                files = sorted(_glob.glob(str(results_dir / "results-*.json")))
+                recs = []
+                if files:
+                    import json as _json
+                    results = _json.loads(Path(files[-1]).read_text(encoding="utf-8"))
+                    sys.path.insert(0, str(REPO_ROOT / "scripts" / "eval"))
+                    import cost_optimizer as _co
+                    import cost_aware_recommend as _car
+                    cost_matrix = _car._load_default_cost_matrix()
+                    for suite_name, suite_data in results.items():
+                        if not isinstance(suite_data, dict):
+                            continue
+                        by_model = suite_data.get("by_model", {})
+                        if not by_model:
+                            continue
+                        cost_by_model = {m: _car.cost_per_1k_calls(m, cost_matrix) or 0.0 for m in by_model}
+                        current = list(by_model.keys())[0] if by_model else ""
+                        rec = _co.analyze_suite(suite_name, by_model, cost_by_model, current)
+                        if rec:
+                            recs.append(rec)
+                self._json_response({"recommendations": recs, "count": len(recs)})
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):

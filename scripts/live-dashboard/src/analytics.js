@@ -193,6 +193,46 @@ async function costHistoryLoad(){
         }
       });
     }
+    // T6: load cost optimization recommendations alongside cost charts
+    costOptimizeLoad();
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+
+// === COST OPTIMIZATION — recommend cheaper good-enough models (T6) ===
+async function costOptimizeLoad(){
+  const tbl=$('cost-optimize-table'),empty=$('cost-optimize-empty');
+  if(!tbl)return;
+  try{
+    const d=await fetch('/api/eval/cost-optimize').then(r=>r.json());
+    const recs=d.recommendations||[];
+    if(!recs.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี recommendations — ต้องการ eval results (pass@k) + cost data (tokens)';}
+      tbl.style.display='none';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    tbl.style.display='block';
+    // Render table
+    let html='<table style="width:100%;border-collapse:collapse;font-size:var(--fs-2xs)">';
+    html+='<tr style="border-bottom:1px solid var(--border2);color:var(--text-tertiary)"><th style="text-align:left;padding:4px">suite</th><th>current</th><th>recommended</th><th>save $</th><th>save %</th><th>status</th></tr>';
+    recs.forEach(r=>{
+      const isRec=r.status==='recommend';
+      const rowStyle=isRec?'background:rgba(52,211,153,.08)':'';
+      const statusBadge=isRec?'<span style="color:#34d399">⚡ recommend</span>':('<span style="color:var(--text-tertiary)">'+r.status+'</span>');
+      html+=`<tr style="border-bottom:1px solid var(--border2);${rowStyle}">`;
+      html+=`<td style="padding:4px">${r.suite||'?'}</td>`;
+      html+=`<td style="text-align:center">${r.current_model||'?'}</td>`;
+      html+=`<td style="text-align:center">${r.recommended_model||'?'}</td>`;
+      html+=`<td style="text-align:center">${(r.savings_usd||0).toFixed(4)}</td>`;
+      html+=`<td style="text-align:center">${((r.savings_pct||0)*100).toFixed(1)}%</td>`;
+      html+=`<td style="text-align:center">${statusBadge}</td>`;
+      html+='</tr>';
+    });
+    html+='</table>';
+    html+='<div style="margin-top:8px;font-size:var(--fs-3xs);color:var(--text-tertiary)">apply ผ่าน CLI: <code>python scripts/eval/apply_cost_optimizer.py --apply</code></div>';
+    tbl.innerHTML=html;
   }catch(e){
     if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
   }
