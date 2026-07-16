@@ -153,6 +153,52 @@ refresh best-effort จาก 3 leaderboard (SWE-bench / Terminal-Bench 2.0 / NL
 2. แก้ `DEFAULT_MODEL_CONFIG` ใน `server.py` + เพิ่ม `try_<provider>_direct()` ใน `delegate.sh`
    (clone จาก `try_groq_model` ถ้า OpenAI-compatible) + wire ใน `run_tier()`.
 
+## 📦 Dashboard version history (v8–v10)
+
+### 🏗️ v8 — Foundation refactor (esbuild)
+HTML/CSS/JS แยกไฟล์: markup อยู่ใน `live-dashboard.html` (markup only), CSS ใน
+`styles.css`, JS ใน `src/*.js` (9 ไฟล์) bundle ด้วย esbuild → `app.min.js`. Build:
+`cd scripts/live-dashboard && npm run build`. HTML size budget 60KB → markup only.
+
+### ♿ v9 — Accessibility (WCAG AA)
+- `.sr-only` + `.sr-only-focusable` + `focus-visible` ring
+- `role=tablist/tab` + `aria-selected` + roving `tabindex` + arrow-key nav
+- `aria-label` ครบทุก interactive element (static + dynamic)
+- focus trap + restore สำหรับ 8 modals
+- keyboard nav บน skill cards (arrow/Home/End)
+- skip links + screen reader announcements (`#aria-live`) + `prefers-reduced-motion`
+
+### ⚡ v10 — Performance + browser tests (current)
+**Goal**: ลด initial paint blocking + ป้องกัน regression ด้วย browser smoke tests.
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A10** | CDN scripts `defer` + chart.js lazy-load (removed from `<head>`) | `live-dashboard.html`, `src/analytics.js` |
+| **B10** | TTL cache layer (`_ttlCache`) สำหรับ `/api/skills` (60s) + `/api/coverage` (30s) | `src/app.js`, `src/skills.js`, `src/coverage.js`, `src/graph.js` |
+| **C10** | `_loaded{}` guard — setView ข้าม heavy-load เมื่อ revisit; particle loop pause เมื่อไม่ใช่ flow view | `src/app.js`, `live-dashboard.html` |
+| **D10** | Playwright scaffolding: `@playwright/test`, 5 smoke specs (boot, tabs, skills, keyboard, theme) | `playwright.config.mjs`, `tests-browser/smoke.spec.mjs`, `tests/test_live_dashboard_playwright.py` |
+| **E10** | Performance budget specs (LCP/load/DOM/JS eval) + baseline doc | `tests-browser/perf.spec.mjs`, `PERF_BASELINE.md` |
+| **F10** | Verify + this changelog | — |
+
+**Install Playwright (optional — dashboard works without it)**:
+```bash
+cd scripts/live-dashboard
+npm install
+npx playwright install chromium
+npm test              # all specs (smoke + perf)
+npm run test:smoke    # just smoke
+```
+
+**Why Playwright is optional**: the dashboard is a localhost-served tool; Python
+contract tests (`tests/test_live_dashboard_*.py`, 68 tests) guard the API +
+markup contracts without a browser. Playwright adds runtime/DOM coverage for
+teams that want it — skip if unavailable (pytest wrapper auto-skips).
+
+**Cache invalidation triggers** (B10):
+- SSE `registry_update` → invalidate skills + coverage caches
+- Inline edit (coverageEditSave, togglePin) → invalidate both caches
+- Refresh button on Coverage → `_cacheInvalidate('coverage')` before reload
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
