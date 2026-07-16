@@ -3,6 +3,21 @@
 
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
+| `a-business` | business, trader | meta | pipeline | `skills/awiki/a-business/SKILL.md` |
+| `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
+| `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
+| `a-doc-_template` | document, thai | build | pipeline | `skills/awiki/a-doc/types/_template/SKILL.md` |
+| `a-doc-announce` | document, thai | build | pipeline | `skills/awiki/a-doc/types/announce/SKILL.md` |
+| `a-doc-form-record` | document, thai | build | pipeline | `skills/awiki/a-doc/types/form-record/SKILL.md` |
+| `a-doc-jd` | document, thai | build | pipeline | `skills/awiki/a-doc/types/jd/SKILL.md` |
+| `a-doc-memo` | document, thai | build | pipeline | `skills/awiki/a-doc/types/memo/SKILL.md` |
+| `a-doc-order` | document, thai | build | pipeline | `skills/awiki/a-doc/types/order/SKILL.md` |
+| `a-doc-procedure` | document, thai | build | pipeline | `skills/awiki/a-doc/types/procedure/SKILL.md` |
+| `a-doc-procurement` | document, thai | build | pipeline | `skills/awiki/a-doc/types/procurement/SKILL.md` |
+| `a-doc-project` | document, thai | build | pipeline | `skills/awiki/a-doc/types/project/SKILL.md` |
+| `a-doc-report` | document, thai | build | pipeline | `skills/awiki/a-doc/types/report/SKILL.md` |
+| `a-plan` | engineering, ux-ui, design | define | pipeline | `skills/awiki/a-plan/SKILL.md` |
+| `a-think` | engineering | meta | pipeline | `skills/awiki/a-think/SKILL.md` |
 | `a-wiki-commands` | code | none | uncategorized | `skills/awiki/a-wiki-commands/SKILL.md` |
 | `a-wiki-telegram` | code | none | uncategorized | `skills/awiki/a-wiki-telegram/SKILL.md` |
 | `accessibility` | ux-ui | none | ecosystem | `skills/ecosystem/accessibility/SKILL.md` |
@@ -117,7 +132,6 @@
 | `exa-search` | code | none | ecosystem | `skills/ecosystem/exa-search/SKILL.md` |
 | `excel-generator` | document | none | wiki | `skills/claude-code/excel-generator/SKILL.md` |
 | `export-notebooklm` | wiki | none | wiki | `skills/claude-code/export-notebooklm/SKILL.md` |
-| `fable5-standards` | engineering | ship | engineering | `agent-skills/engineering/fable5-standards/SKILL.md` |
 | `fal-ai-media` | media | none | ecosystem | `skills/ecosystem/fal-ai-media/SKILL.md` |
 | `fastapi-patterns` | code | none | ecosystem | `skills/ecosystem/fastapi-patterns/SKILL.md` |
 | `finance-billing-ops` | business | none | ecosystem | `skills/ecosystem/finance-billing-ops/SKILL.md` |
@@ -142,9 +156,7 @@
 | `golang-patterns` | code | none | ecosystem | `skills/ecosystem/golang-patterns/SKILL.md` |
 | `golang-testing` | code | none | ecosystem | `skills/ecosystem/golang-testing/SKILL.md` |
 | `google-workspace-ops` | code | none | ecosystem | `skills/ecosystem/google-workspace-ops/SKILL.md` |
-| `grill-me` | productivity | define | mattpocock | `skills/mattpocock/grill-me/SKILL.md` |
 | `grill-with-docs` | engineering | define | mattpocock | `skills/mattpocock/grill-with-docs/SKILL.md` |
-| `grilling` | productivity | define | mattpocock | `skills/mattpocock/grilling/SKILL.md` |
 | `handoff` | productivity, ai-ops | meta | mattpocock | `skills/mattpocock/handoff/SKILL.md` |
 | `healthcare-cdss-patterns` | code, medical | none | ecosystem | `skills/ecosystem/healthcare-cdss-patterns/SKILL.md` |
 | `healthcare-emr-patterns` | code, medical | none | ecosystem | `skills/ecosystem/healthcare-emr-patterns/SKILL.md` |
@@ -311,7 +323,6 @@
 | `slack-gif-creator` | media | none | uncategorized | `skills/anthropic-skills/slack-gif-creator/SKILL.md` |
 | `social-graph-ranker` | code | none | ecosystem | `skills/ecosystem/social-graph-ranker/SKILL.md` |
 | `social-publisher` | code | none | uncategorized | `~/.claude/skills/social-publisher/SKILL.md` |
-| `spec` | ai-ops | define | awiki | `skills/awiki/spec/SKILL.md` |
 | `spec-driven-development` | code, engineering | define | engineering-lifecycle | `skills/engineering-lifecycle/define/spec-driven-development/SKILL.md` |
 | `springboot-patterns` | code | none | ecosystem | `skills/ecosystem/springboot-patterns/SKILL.md` |
 | `springboot-security` | code | none | ecosystem | `skills/ecosystem/springboot-security/SKILL.md` |
@@ -324,7 +335,6 @@
 | `symlink-connector` | engineering | ship | extensibility | `agent-skills/extensibility/symlink-connector/SKILL.md` |
 | `taste-skill` | design, ux-ui | build | design | `skills/taste-skill/SKILL.md` |
 | `tdd` | engineering, code | build | mattpocock | `skills/mattpocock/tdd/SKILL.md` |
-| `tdd-workflow` | code | none | ecosystem | `skills/ecosystem/tdd-workflow/SKILL.md` |
 | `teach` | productivity | none | mattpocock | `skills/mattpocock/teach/SKILL.md` |
 | `team-builder` | code | none | ecosystem | `skills/ecosystem/team-builder/SKILL.md` |
 | `terminal-ops` | code | none | ecosystem | `skills/ecosystem/terminal-ops/SKILL.md` |
@@ -379,24 +389,24 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 31 |
-| business | 10 |
+| ai-ops | 30 |
+| business | 11 |
 | code | 187 |
 | data | 18 |
-| debug | 7 |
-| design | 13 |
-| document | 9 |
-| engineering | 41 |
+| debug | 8 |
+| design | 14 |
+| document | 20 |
+| engineering | 42 |
 | env | 1 |
 | logistics | 7 |
 | media | 19 |
 | medical | 7 |
 | network | 10 |
 | pharmacy | 1 |
-| productivity | 15 |
+| productivity | 13 |
 | security | 9 |
 | sre | 6 |
-| thai | 12 |
-| trader | 12 |
-| ux-ui | 8 |
+| thai | 23 |
+| trader | 13 |
+| ux-ui | 9 |
 | wiki | 9 |

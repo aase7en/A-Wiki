@@ -7,32 +7,32 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 371 · **Aliases/deprecated**: 8
+**Total canonical skills**: 381 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
 | `code` | เขียนโค้ด / ภาษาโปรแกรม | 187 |
-| `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
-| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
-| `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 41 |
-| `trader` | เทรด / DeFi / ตลาด | 12 |
+| `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
+| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
+| `ux-ui` | UX/UI / Frontend / a11y | 9 |
+| `engineering` | วิศวกร / Architect / Agent harness | 42 |
+| `trader` | เทรด / DeFi / ตลาด | 13 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
-| `business` | ธุรกิจ / การเงิน / CRM | 10 |
+| `business` | ธุรกิจ / การเงิน / CRM | 11 |
 | `data` | Data Visualization / DB / Query | 18 |
 | `security` | ความปลอดภัย / Hardening | 9 |
-| `ai-ops` | AI ops / LLM / Cost | 31 |
-| `productivity` | Productivity / Management | 15 |
+| `ai-ops` | AI ops / LLM / Cost | 30 |
+| `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
 | `pharmacy` | ร้านยา / สต็อกยา | 1 |
-| `thai` | ภาษาไทย / เอกสารไทย | 12 |
+| `thai` | ภาษาไทย / เอกสารไทย | 23 |
 | `logistics` | ลอจิสติกส์ / ซัพพลายเชน | 7 |
 | `network` | เครือข่าย / Homelab | 10 |
 | `media` | สื่อ / วิดีโอ / รูปภาพ | 19 |
-| `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
+| `document` | เอกสาร / docx/pdf/pptx/xlsx | 20 |
 | `sre` | SRE / Observability / Deploy | 6 |
 
 ## 🎯 Skills by Domain
@@ -43,6 +43,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-debug` | verify | pipeline | Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหร... |
 | `a-wiki-commands` | none | uncategorized | คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ |
 | `a-wiki-telegram` | none | uncategorized | เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ... |
 | `ag2-goal` | none | delegation | orchestrate multi-step goal ด้วย AG2 — planner แตกเป้า, free executor รัน, planner ตรวจ |
@@ -213,7 +214,6 @@
 | `swift-protocol-di-testing` | none | ecosystem | ใช้ Protocol-based dependency injection เพื่อแยกโค้ด Swift ออกจาก dependencies ภายนอก เช่น file s... |
 | `swiftui-patterns` | none | ecosystem | pattern SwiftUI — state ด้วย @Observable, view composition, navigation, performance |
 | `tdd` | build | mattpocock | เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression |
-| `tdd-workflow` | none | ecosystem | ใช้ทักษะนี้เมื่อเขียนฟีเจอร์ใหม่ แก้บั๊ก หรือ refactor โค้ด โดยบังคับใช้ test-driven development ... |
 | `team-builder` | none | ecosystem | เครื่องมือเลือก agent แบบโต้ตอบสำหรับประกอบทีมและส่งงานแบบขนาน ช่วยให้คุณเลือก agent ที่เหมาะสมจา... |
 | `terminal-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณรันคำสั่ง terminal ตรวจสอบ repo แก้ปัญหา CI ที่ล้มเหลว หรือ push การแก้ไขเล็กน้... |
 | `threejs-gltf-loading` | build | game | three.js glTF model loading reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
@@ -235,6 +235,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-debug` | verify | pipeline | Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหร... |
 | `agent-introspection-debugging` | none | ecosystem | debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลอง... |
 | `browser-qa` | none | ecosystem | ใช้ทักษะนี้เพื่อทดสอบ UI อัตโนมัติและตรวจสอบการทำงานของหน้าเว็บหลัง deploy ฟีเจอร์ โดยจำลองการคลิ... |
 | `debug-mantra` | none | uncategorized | [Iron Law #2] debug-mantra 4 ขั้น — reproduce → hypothesize → test-fix → verify — ไม่ใช่ try-and-see |
@@ -247,6 +248,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `brand-guidelines` | none | uncategorized | ใช้สีและฟอนต์ของแบรนด์ Anthropic กับ artifact ใดๆ เพื่อให้มีลุคและฟีลแบบทางการของ Anthropic |
 | `brand-voice` | none | ecosystem | สร้างโปรไฟล์สไตล์การเขียนจากเนื้อหาจริง เช่น โพสต์ บทความ เอกสาร หรือเว็บไซต์ จากนั้นนำโปรไฟล์นั้... |
 | `canvas-design` | none | uncategorized | สร้างงานศิลปะภาพและเอกสาร .png และ .pdf ที่สวยงาม โดยใช้หลักการออกแบบและปรัชญาศิลปะ เหมาะสำหรับทำ... |
@@ -265,6 +267,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `accessibility` | none | ecosystem | ออกแบบ พัฒนา และตรวจสอบความสามารถในการเข้าถึงของผลิตภัณฑ์ดิจิทัลให้สอดคล้องกับมาตรฐาน WCAG 2.2 ระ... |
 | `frontend-a11y` | none | uncategorized | ทักษะนี้ช่วยตรวจสอบและปรับปรุงการเข้าถึง (accessibility) ของส่วนติดต่อผู้ใช้ (UI) โดยวิเคราะห์โคร... |
 | `make-interfaces-feel-better` | none | ecosystem | ใช้ปรับแต่งรายละเอียดทางวิศวกรรมดีไซน์ให้อินเทอร์เฟซดูพรีเมียมและใช้งานลื่นไหล เน้นการปรับ spacin... |
@@ -278,6 +281,8 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
+| `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
 | `agent-architecture-audit` | none | ecosystem | ตรวจสอบสถาปัตยกรรมของ agent system — skill ทำงานร่วมกันไหม, มี loop ไหม, ซ้ำซ้อนไหม |
 | `android-clean-architecture` | none | ecosystem | รูปแบบ Clean Architecture สำหรับโปรเจกต์ Android และ Kotlin Multiplatform ครอบคลุมโครงสร้างโมดูล ... |
 | `architecture-decision-records` | none | uncategorized | บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้า... |
@@ -290,7 +295,6 @@
 | `deprecation-and-migration` | ship | engineering-lifecycle | เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback |
 | `documentation-and-adrs` | ship | engineering-lifecycle | เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้ |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
-| `fable5-standards` | ship | engineering | มาตรฐานการให้เหตุผลเชิงลึกสำหรับการตัดสินใจด้านสถาปัตยกรรม การดีบัก การย้ายข้อมูล และงานเทคนิคอื่... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
 | `grill-with-docs` | define | mattpocock | เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน |
@@ -324,6 +328,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `evm-token-decimals` | none | ecosystem | ป้องกันบั๊กจาก mismatch ของทศนิยม token บน EVM chain อย่างเงียบ ๆ ครอบคลุมการค้นหาทศนิยมแบบ runti... |
 | `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
@@ -353,6 +358,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
 | `customer-billing-ops` | none | ecosystem | จัดการเวิร์กโฟลว์การเรียกเก็บเงินลูกค้า เช่น การสมัครสมาชิก การคืนเงิน การวิเคราะห์การยกเลิกบริกา... |
 | `email-ops` | none | ecosystem | จัดการกล่องจดหมายด้วยหลักฐานเชิงประจักษ์: คัดแยกอีเมล, ร่างข้อความ, ตรวจสอบการส่ง, และติดตามผลอย่... |
 | `finance-billing-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณตรวจสอบข้อมูลรายได้ ราคา การคืนเงิน การเรียกเก็บเงินทีม และรูปแบบการเรียกเก็บเง... |
@@ -434,7 +440,6 @@
 | `prompt-optimizer` | none | ecosystem | ช่วยปรับปรุง prompt ของคุณให้มีประสิทธิภาพสูงสุด โดยวิเคราะห์โครงสร้างภาษาและแนะนำการปรับแต่งเพื่... |
 | `review` | review | awiki | สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-... |
 | `ship` | ship | awiki | สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router แ... |
-| `spec` | define | awiki | สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-... |
 | `strategic-compact` | none | ecosystem | แนะนำให้บีบอัดบริบทด้วยตนเองในช่วงเวลาที่เหมาะสมของงาน เพื่อรักษาบริบทที่สำคัญระหว่างขั้นตอนต่างๆ... |
 | `token-optimization` | none | wiki | ลดการใช้ token — ใช้ Markdown แทน HTML, compact JSON, ตัด verbose output |
 | `writing-great-skills` | meta | mattpocock | เอกสารอ้างอิงสำหรับการเขียนและแก้ไข skills ให้มีคุณภาพดี — ครอบคลุมหลักการและคำศัพท์ที่ทำให้ skil... |
@@ -446,8 +451,6 @@
 | `article-writing` | none | ecosystem | เขียนบทความ/บล็อก — มีโครง, hook, สาระ, ปิดท้าย |
 | `blueprint` | none | ecosystem | สกิลนี้ช่วยให้คุณสร้าง blueprint หรือพิมพ์เขียวสำหรับโปรเจกต์ใหม่ได้อย่างรวดเร็ว โดยกำหนดโครงสร้า... |
 | `doc-coauthoring` | none | uncategorized | แนะนำขั้นตอนการทำงานร่วมกันในการเขียนเอกสาร เช่น คู่มือ ข้อเสนอ สเปกเทคนิค หรือเอกสารตัดสินใจ โดย... |
-| `grill-me` | define | mattpocock | สัมภาษณ์ยืดเยื้อเพื่อลับแผนหรือดีไซน์ — ถามทีละคำถาม เสนอคำตอบให้คุณปฏิเสธ บังคับให้คิดลึกก่อนสร้าง |
-| `grilling` | define | mattpocock | สอบสวนแบบไม่ยอมแพ้ — ทีละคำถาม เสนอแนะคำตอบ ใช้ซ้ำเมื่อไอเดียยังหลวมๆ |
 | `handoff` | meta | mattpocock | สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ |
 | `management-talk` | none | uncategorized | สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ |
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
@@ -489,6 +492,17 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
+| `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
+| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย |
+| `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
+| `a-doc-jd` | build | pipeline | job description — stub รอสอน |
+| `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |
+| `a-doc-order` | build | pipeline | หนังสือคำสั่ง รพ. — stub รอสอน |
+| `a-doc-procedure` | build | pipeline | WI/SP/WP คู่มือ QA — stub รอสอน |
+| `a-doc-procurement` | build | pipeline | PR/QT/PO flow — stub รอสอน |
+| `a-doc-project` | build | pipeline | หนังสือโครงการ — stub รอสอน |
+| `a-doc-report` | build | pipeline | รายงานการทำงาน — stub รอสอน |
 | `thai-address` | none | thai | ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองร... |
 | `thai-customer-service` | none | thai | ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์ค... |
 | `thai-date-format` | none | thai | จัดรูปวันที่แบบไทย (พ.ศ., ปี ค.ศ. → พ.ศ.) — กันสับสน |
@@ -557,6 +571,17 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
+| `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
+| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย |
+| `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
+| `a-doc-jd` | build | pipeline | job description — stub รอสอน |
+| `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |
+| `a-doc-order` | build | pipeline | หนังสือคำสั่ง รพ. — stub รอสอน |
+| `a-doc-procedure` | build | pipeline | WI/SP/WP คู่มือ QA — stub รอสอน |
+| `a-doc-procurement` | build | pipeline | PR/QT/PO flow — stub รอสอน |
+| `a-doc-project` | build | pipeline | หนังสือโครงการ — stub รอสอน |
+| `a-doc-report` | build | pipeline | รายงานการทำงาน — stub รอสอน |
 | `assessment-generator` | none | uncategorized | สร้างข้อสอบหรือแบบประเมินจากเนื้อหาที่กำหนด โดยสามารถปรับระดับความยากและรูปแบบคำถามได้ เหมาะสำหรั... |
 | `docx` | none | uncategorized | ใช้สร้าง อ่าน แก้ไข หรือจัดการไฟล์ Word (.docx) โดยตรง รองรับการเพิ่มข้อความ ตาราง รูปภาพ และจัดร... |
 | `excel-generator` | none | wiki | สร้างสเปรดชีต Excel ระดับมืออาชีพที่เน้นความสวยงามและการวิเคราะห์ข้อมูล ใช้สำหรับจัดระเบียบ วิเคร... |
@@ -582,13 +607,13 @@
 
 Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VERIFY→REVIEW→SHIP):
 
-- **DEFINE**: `domain-modeling`, `grill-me`, `grill-with-docs`, `grilling`, `research`, `spec`, `spec-driven-development`, `to-prd`
+- **DEFINE**: `a-plan`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
-- **VERIFY**: `browser-testing-with-devtools`, `triage`
+- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
+- **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
-- **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `fable5-standards`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
+- **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
+- **META**: `a-business`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
@@ -599,11 +624,16 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 |--------------------|-------------|------|
 | `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop (USA-1 C9, 2026-07-14): canonical loop-routing skill; autonomous-loops kept on disk as a pattern encyclopedia but no longer invoked directly. |
 | `diagnosing-bugs` | `debug-mantra` | debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill. |
+| `fable5-standards` | `a-think` | a-think |
+| `grill-me` | `grill-with-docs` | grill-with-docs |
+| `grilling` | `grill-with-docs` | grill-with-docs |
 | `hipaa-compliance` | `healthcare-phi-compliance` |  |
 | `laravel-verification` | `django-verification` |  |
 | `quarkus-verification` | `django-verification` |  |
 | `root-cause-first` | `debug-mantra` | debug-mantra |
+| `spec` | `spec-driven-development` | spec-driven-development |
 | `springboot-verification` | `django-verification` |  |
+| `tdd-workflow` | `tdd` | tdd |
 | `token-budget-advisor` | `context-budget` |  |
 
 ## ⚡ Quick-Pick — what to use when

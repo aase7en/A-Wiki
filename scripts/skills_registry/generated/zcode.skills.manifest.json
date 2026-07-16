@@ -4,6 +4,81 @@
   "link_root": ".zcode/skills",
   "skills": [
     {
+      "name": "a-business",
+      "target": "skills/awiki/a-business/SKILL.md",
+      "domain": "business,trader"
+    },
+    {
+      "name": "a-debug",
+      "target": "skills/awiki/a-debug/SKILL.md",
+      "domain": "debug,code"
+    },
+    {
+      "name": "a-doc",
+      "target": "skills/awiki/a-doc/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-_template",
+      "target": "skills/awiki/a-doc/types/_template/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-announce",
+      "target": "skills/awiki/a-doc/types/announce/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-form-record",
+      "target": "skills/awiki/a-doc/types/form-record/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-jd",
+      "target": "skills/awiki/a-doc/types/jd/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-memo",
+      "target": "skills/awiki/a-doc/types/memo/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-order",
+      "target": "skills/awiki/a-doc/types/order/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-procedure",
+      "target": "skills/awiki/a-doc/types/procedure/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-procurement",
+      "target": "skills/awiki/a-doc/types/procurement/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-project",
+      "target": "skills/awiki/a-doc/types/project/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-doc-report",
+      "target": "skills/awiki/a-doc/types/report/SKILL.md",
+      "domain": "document,thai"
+    },
+    {
+      "name": "a-plan",
+      "target": "skills/awiki/a-plan/SKILL.md",
+      "domain": "engineering,ux-ui,design"
+    },
+    {
+      "name": "a-think",
+      "target": "skills/awiki/a-think/SKILL.md",
+      "domain": "engineering"
+    },
+    {
       "name": "a-wiki-commands",
       "target": "skills/awiki/a-wiki-commands/SKILL.md",
       "domain": "code"
@@ -594,11 +669,6 @@
       "domain": "wiki"
     },
     {
-      "name": "fable5-standards",
-      "target": "agent-skills/engineering/fable5-standards/SKILL.md",
-      "domain": "engineering"
-    },
-    {
       "name": "fal-ai-media",
       "target": "skills/ecosystem/fal-ai-media/SKILL.md",
       "domain": "media"
@@ -734,19 +804,9 @@
       "domain": "code"
     },
     {
-      "name": "grill-me",
-      "target": "skills/mattpocock/grill-me/SKILL.md",
-      "domain": "productivity"
-    },
-    {
       "name": "grill-with-docs",
       "target": "skills/mattpocock/grill-with-docs/SKILL.md",
       "domain": "engineering"
-    },
-    {
-      "name": "grilling",
-      "target": "skills/mattpocock/grilling/SKILL.md",
-      "domain": "productivity"
     },
     {
       "name": "handoff",
@@ -1534,11 +1594,6 @@
       "domain": "code"
     },
     {
-      "name": "spec",
-      "target": "skills/awiki/spec/SKILL.md",
-      "domain": "ai-ops"
-    },
-    {
       "name": "spec-driven-development",
       "target": "skills/engineering-lifecycle/define/spec-driven-development/SKILL.md",
       "domain": "code,engineering"
@@ -1597,11 +1652,6 @@
       "name": "tdd",
       "target": "skills/mattpocock/tdd/SKILL.md",
       "domain": "engineering,code"
-    },
-    {
-      "name": "tdd-workflow",
-      "target": "skills/ecosystem/tdd-workflow/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "teach",

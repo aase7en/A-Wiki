@@ -1083,7 +1083,7 @@
         "hermes"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
       "invocation": "manual",
       "th_description": "สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-router และ persona-orchestrator.py เพื่อร่าง specification ก่อนเริ่มเขียนโค้ด",
@@ -1106,7 +1106,8 @@
         "ร่าง specification",
         "ส่งกลับผลลัพธ์"
       ],
-      "invocation_hint": "/spec"
+      "invocation_hint": "/spec",
+      "migrated_to": "spec-driven-development"
     },
     {
       "name": "spec-driven-development",

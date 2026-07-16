@@ -1,7 +1,6 @@
 {
   "skills": {
     "paths": [
-      "./agent-skills/engineering",
       "./agent-skills/extensibility",
       "./agent-skills/swarm-intelligence",
       "./skills/anthropic-skills",

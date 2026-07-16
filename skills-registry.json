@@ -67,6 +67,246 @@
       "invocation_hint": "/a-wiki-telegram"
     },
     {
+      "name": "a-think",
+      "aliases": [
+        "/a-think",
+        "athink"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-think/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
+      "invocation": "auto",
+      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
+      "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
+      "examples": [
+        {
+          "scenario": "วางแผน migration DB",
+          "how": "/A-Think [task]"
+        },
+        {
+          "scenario": "Debug bug ซับซ้อน",
+          "how": "/A-Think → เรียก A-Debug"
+        }
+      ],
+      "process_steps": [
+        "Restate",
+        "Done-criteria",
+        "Decompose",
+        "≥2 Approaches",
+        "Pre-mortem",
+        "Right-size",
+        "Prove"
+      ],
+      "invocation_hint": "/A-Think"
+    },
+    {
+      "name": "a-plan",
+      "aliases": [
+        "/a-plan",
+        "aplan"
+      ],
+      "domain": [
+        "engineering",
+        "ux-ui",
+        "design"
+      ],
+      "lifecycle_phase": "define",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-plan/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "วางแผน+ออกแบบ UX/UI/DB/Architecture — chain: A-Think → grill-with-docs → spec-driven → design tool → plan-orchestrate. บังคับ grill ≥3 Qs ก่อน implement",
+      "invocation": "both",
+      "th_description": "ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement",
+      "when_to_use": "วางแผน/ออกแบบ ระบบ ใหม่, database schema, UX/UI",
+      "examples": [
+        {
+          "scenario": "ออกแบบ dashboard พลังงาน รพ.",
+          "how": "/A-Plan dashboard พลังงาน"
+        },
+        {
+          "scenario": "วาง schema ใหม่",
+          "how": "/A-Plan schema"
+        }
+      ],
+      "process_steps": [
+        "A-Think",
+        "grill-with-docs (≥3 Qs)",
+        "spec-driven-development",
+        "design tool",
+        "plan-orchestrate"
+      ],
+      "invocation_hint": "/A-Plan"
+    },
+    {
+      "name": "a-debug",
+      "aliases": [
+        "/a-debug",
+        "adebug"
+      ],
+      "domain": [
+        "debug",
+        "code"
+      ],
+      "lifecycle_phase": "verify",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-debug/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Debug loop ครบวงจร — A-Think → debug-mantra → root-cause-first → tdd (failing test) → fix → verify → scrutinize. บังคับ Iron Law #1+#2. Subagent fan-out สำหรับ bug ซับซ้อน",
+      "invocation": "both",
+      "th_description": "Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหรับ bug ซับซ้อน",
+      "when_to_use": "แก้ bug, หา root cause, test แดง, production incident",
+      "examples": [
+        {
+          "scenario": "Dashboard รพ. error 500",
+          "how": "/A-Debug dashboard error 500"
+        },
+        {
+          "scenario": "ทำไม function return null",
+          "how": "/A-Debug [description]"
+        }
+      ],
+      "process_steps": [
+        "A-Think",
+        "debug-mantra (4 mantras)",
+        "root-cause-first",
+        "tdd (failing test)",
+        "fix",
+        "verify-before-done",
+        "scrutinize"
+      ],
+      "invocation_hint": "/A-Debug"
+    },
+    {
+      "name": "a-doc",
+      "aliases": [
+        "/a-doc",
+        "adoc"
+      ],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "เอกสารราชการไทย/โรงพยาบาล — 8 ประเภท: announce/order/memo/project/procedure/procurement/jd/report/form-record. บังคับ grill format + learn-from-example docx",
+      "invocation": "both",
+      "th_description": "เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไฟล์ตัวอย่าง",
+      "when_to_use": "สร้าง/แก้/แปลงเอกสารราชการ, docx, pdf",
+      "examples": [
+        {
+          "scenario": "สร้างประกาศนโยบาย รพ.",
+          "how": "/A-Doc ประกาศนโยบาย..."
+        },
+        {
+          "scenario": "บันทึกข้อความขอซื้อ",
+          "how": "/A-Doc บันทึกข้อความขอซื้อ..."
+        }
+      ],
+      "process_steps": [
+        "detect type",
+        "grill format",
+        "dispatch types/<type>/",
+        "generate docx",
+        "validate + render"
+      ],
+      "invocation_hint": "/A-Doc"
+    },
+    {
+      "name": "a-doc-announce",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/announce/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ประกาศโรงพยาบาล — CANONICAL สมบูรณ์จาก ประกาศ รพ.อุทัย. TH SarabunIT๙, A4, margins L3cm/R2cm, ตราครุฑ, ลำดับเลข 1./1.1",
+      "invocation": "both",
+      "th_description": "ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย",
+      "when_to_use": "ประกาศนโยบาย/แนวทาง ของ รพ.",
+      "examples": [
+        {
+          "scenario": "ประกาศนโยบายประหยัดพลังงาน",
+          "how": "via /A-Doc → types/announce"
+        }
+      ],
+      "process_steps": [
+        "apply hospital-announce profile",
+        "generate docx",
+        "validate"
+      ],
+      "invocation_hint": "/A-Doc (announce type)"
+    },
+    {
+      "name": "a-business",
+      "aliases": [
+        "/a-business",
+        "abusiness"
+      ],
+      "domain": [
+        "business",
+        "trader"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-business/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "งานธุรกิจส่วนตัว — stub รอ user สอน. ปัจจุบันชี้ไป finance-pipeline, project-flow-ops, agent-sort",
+      "invocation": "manual",
+      "th_description": "งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ",
+      "when_to_use": "งานธุรกิจ/การลงทุนส่วนตัว",
+      "examples": [
+        {
+          "scenario": "วิเคราะห์การลงทุน",
+          "how": "via finance-pipeline"
+        }
+      ],
+      "process_steps": [
+        "first-use: grill บริบท",
+        "map to canonical skills"
+      ],
+      "invocation_hint": "/A-Business"
+    },
+    {
       "name": "accessibility",
       "aliases": [],
       "domain": [
@@ -4547,7 +4787,7 @@
         "all"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Deeper reasoning standards for architecture decisions, debugging, data migrations, and other non-trivial technical work — problem decomposition, trade-off comparison, root-cause debugging, and playbooks for planning vs implementing vs analyzing vs writing.",
       "invocation": "manual",
       "th_description": "มาตรฐานการให้เหตุผลเชิงลึกสำหรับการตัดสินใจด้านสถาปัตยกรรม การดีบัก การย้ายข้อมูล และงานเทคนิคอื่นๆ ที่ไม่ใช่เรื่องเล็กน้อย — การแยกย่อยปัญหา การเปรียบเทียบข้อดีข้อเสีย การดีบักหาสาเหตุที่แท้จริง และ playbook สำหรับการวางแผน vs การลงมือทำ vs การวิเคราะห์ vs การเขียน",
@@ -4569,7 +4809,8 @@
         "เลือกแนวทางและให้เหตุผล",
         "จัดทำ playbook สำหรับการดำเนินการ"
       ],
-      "invocation_hint": "/fable5-standards"
+      "invocation_hint": "/fable5-standards",
+      "migrated_to": "a-think"
     },
     {
       "name": "fal-ai-media",
@@ -5523,7 +5764,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "A relentless interview to sharpen a plan or design.",
       "invocation": "manual",
       "th_description": "สัมภาษณ์ยืดเยื้อเพื่อลับแผนหรือดีไซน์ — ถามทีละคำถาม เสนอคำตอบให้คุณปฏิเสธ บังคับให้คิดลึกก่อนสร้าง",
@@ -5540,7 +5781,8 @@
         "ขุดลึกแต่ละจุด",
         "สรุปแผนที่ผ่านการท้าทาย"
       ],
-      "invocation_hint": "/grill-me"
+      "invocation_hint": "/grill-me",
+      "migrated_to": "grill-with-docs"
     },
     {
       "name": "grill-with-docs",
@@ -5589,7 +5831,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Grill the user relentlessly about a plan or design — one question at a time, recommend an answer, resolve the decision tree.",
       "invocation": "manual",
       "th_description": "สอบสวนแบบไม่ยอมแพ้ — ทีละคำถาม เสนอแนะคำตอบ ใช้ซ้ำเมื่อไอเดียยังหลวมๆ",
@@ -5606,7 +5848,8 @@
         "แนะนำคำตอบที่เป็นไปได้",
         "ให้ผู้ใช้เลือกหรือแก้ไข",
         "ปิดประเด็นและสรุปผล"
-      ]
+      ],
+      "migrated_to": "grill-with-docs"
     },
     {
       "name": "handoff",
@@ -11978,7 +12221,7 @@
         "hermes"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
       "invocation": "manual",
       "th_description": "สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-router และ persona-orchestrator.py เพื่อร่าง specification ก่อนเริ่มเขียนโค้ด",
@@ -12001,7 +12244,8 @@
         "ร่าง specification",
         "ส่งกลับผลลัพธ์"
       ],
-      "invocation_hint": "/spec"
+      "invocation_hint": "/spec",
+      "migrated_to": "spec-driven-development"
     },
     {
       "name": "spec-driven-development",
@@ -12460,7 +12704,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and",
       "invocation": "manual",
       "th_description": "ใช้ทักษะนี้เมื่อเขียนฟีเจอร์ใหม่ แก้บั๊ก หรือ refactor โค้ด โดยบังคับใช้ test-driven development (TDD) ครอบคลุม unit test, integration test และมี coverage 80% ขึ้นไป",
@@ -12482,7 +12726,8 @@
         "รัน test ทั้งหมดอีกครั้ง",
         "ตรวจสอบ coverage ≥ 80%"
       ],
-      "invocation_hint": "/tdd-workflow"
+      "invocation_hint": "/tdd-workflow",
+      "migrated_to": "tdd"
     },
     {
       "name": "teach",
@@ -14441,6 +14686,285 @@
       "th_description": "เวอร์ชันไทยของ language-tutor — สอน EN/CN แบบ Socratic ให้ผู้เรียนไทย GLM bucket",
       "when_to_use": "เมื่อผู้เรียนไทยต้องการเรียนภาษา",
       "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
+    },
+    {
+      "name": "a-doc-order",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/order/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "หนังสือคำสั่ง รพ. — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "หนังสือคำสั่ง รพ. — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-order",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-order)"
+    },
+    {
+      "name": "a-doc-memo",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/memo/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "บันทึกข้อความ — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "บันทึกข้อความ — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-memo",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-memo)"
+    },
+    {
+      "name": "a-doc-project",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/project/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "หนังสือโครงการ — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "หนังสือโครงการ — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-project",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-project)"
+    },
+    {
+      "name": "a-doc-procedure",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/procedure/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "WI/SP/WP คู่มือ QA — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "WI/SP/WP คู่มือ QA — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-procedure",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-procedure)"
+    },
+    {
+      "name": "a-doc-procurement",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/procurement/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "PR/QT/PO flow — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "PR/QT/PO flow — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-procurement",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-procurement)"
+    },
+    {
+      "name": "a-doc-jd",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/jd/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "job description — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "job description — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-jd",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-jd)"
+    },
+    {
+      "name": "a-doc-report",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/report/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "รายงานการทำงาน — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "รายงานการทำงาน — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-report",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-report)"
+    },
+    {
+      "name": "a-doc-form-record",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/form-record/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "แบบบันทึก/ประเมิน — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "แบบบันทึก/ประเมิน — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-form-record",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-form-record)"
+    },
+    {
+      "name": "a-doc-_template",
+      "aliases": [],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/types/_template/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "TEMPLATE สำหรับสร้าง type ใหม่ — STUB รอ user สอน. Subskill ของ a-doc",
+      "invocation": "manual",
+      "th_description": "TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน",
+      "when_to_use": "ผ่าน /A-Doc → a-doc-_template",
+      "examples": [
+        {
+          "scenario": "via parent",
+          "how": "/A-Doc"
+        }
+      ],
+      "process_steps": [
+        "via parent a-doc"
+      ],
+      "invocation_hint": "via /A-Doc (a-doc-_template)"
     }
   ]
 }
