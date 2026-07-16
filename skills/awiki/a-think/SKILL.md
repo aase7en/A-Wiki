@@ -1,7 +1,7 @@
 ---
 name: a-think
-description: "Core reasoning loop ที่ run ก่อนตอบ non-trivial request — merge fable-method (eval-driven, Sahir619) + fable5-standards (A-Wiki native). 7 steps: Restate → Done-criteria → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Trigger: design/debug/migration/multi-step/competing-approaches/security-sensitive. Skip: simple lookup, typo fix, ingest ตรง. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้."
-version: 1.0.0
+description: "Core reasoning loop ที่ run ก่อนตอบ non-trivial request — merge fable-method (eval-driven, Sahir619) + fable5-standards (A-Wiki native). 7 steps: Restate → Done-criteria → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Trigger: design/debug/migration/multi-step/competing-approaches/security-sensitive. Skip: simple lookup, typo fix, ingest ตรง. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้ (manual + referenced)."
+version: 1.0.1
 author: A-Wiki (fable merge)
 tags: [reasoning, fable, fable5, planning, debug]
 ---

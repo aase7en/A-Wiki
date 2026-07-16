@@ -82,10 +82,10 @@
       "agents": [
         "all"
       ],
-      "version": "1.0.0",
+      "version": "1.0.1",
       "status": "canonical",
       "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
-      "invocation": "auto",
+      "invocation": "both",
       "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
       "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
       "examples": [
