@@ -229,6 +229,29 @@ jobs:
                   continue
           " 2>/dev/null || echo "(race summary failed)"
 
+      # ── V2: Commit race results to tracked dir for history trend ──
+      # snapshot race results ลง evals/subagents/races/<suite>-<date>.json
+      # เพื่อให้ dashboard แสดง trend ของ best model ได้
+      - name: Snapshot race results (history)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          mkdir -p evals/subagents/races
+          DATE_TAG=$(date -u +%Y%m%d-%H%M%S)
+          if [ -d .tmp/subagent-eval/races ]; then
+            for f in .tmp/subagent-eval/races/*.json; do
+              [ -f "$f" ] || continue
+              suite=$(basename "$f" .json)
+              cp "$f" "evals/subagents/races/${suite}-${DATE_TAG}.json"
+            done
+            git add evals/subagents/races/*.json 2>/dev/null || true
+            if ! git diff --cached --quiet; then
+              git commit -m "test(eval): race results snapshot ${DATE_TAG}"
+              git push
+              echo "✓ Race snapshot committed."
+            fi
+          fi
+
       # ── Q6: Adaptive routing (preview always, auto-apply on manual trigger) ──
       # Guardrails are intentionally tight: min 30 samples (3× default) + min_delta
       # 0.20 (1.33× default). schedule trigger = preview-only (no writes);

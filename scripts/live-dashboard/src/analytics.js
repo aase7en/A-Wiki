@@ -236,6 +236,41 @@ async function costOptimizeLoad(){
   }catch(e){
     if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
   }
+  // V3: load cost-optimize audit log alongside recommendations
+  costLogLoad();
+}
+
+// === COST OPTIMIZE AUDIT LOG — applied swaps history (V3) ===
+async function costLogLoad(){
+  const tbl=$('cost-log-table'),empty=$('cost-log-empty');
+  if(!tbl)return;
+  try{
+    const d=await fetch('/api/eval/cost-optimize-log').then(r=>r.json());
+    const entries=d.entries||[];
+    if(!entries.length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี cost optimization swaps (ยังไม่ได้ apply หรือไม่มี recommendations)';}
+      tbl.style.display='none';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    tbl.style.display='block';
+    let html='<table style="width:100%;border-collapse:collapse;font-size:var(--fs-3xs)">';
+    html+='<tr style="border-bottom:1px solid var(--border2);color:var(--text-tertiary);position:sticky;top:0;background:var(--elev-1)"><th style="text-align:left;padding:3px">date</th><th>suite</th><th>from → to</th><th>save $</th><th>save %</th></tr>';
+    entries.forEach(e=>{
+      const dt=e.ts?new Date(e.ts*1000).toISOString().slice(0,16):'?';
+      html+='<tr style="border-bottom:1px solid var(--border2)">';
+      html+=`<td style="padding:3px">${dt}</td>`;
+      html+=`<td style="text-align:center">${e.suite||e.subagent||'?'}</td>`;
+      html+=`<td style="text-align:center">${e.from||'?'} → <b>${e.to||'?'}</b></td>`;
+      html+=`<td style="text-align:center">${(e.savings_usd||0).toFixed(4)}</td>`;
+      html+=`<td style="text-align:center">${((e.savings_pct||0)*100).toFixed(1)}%</td>`;
+      html+='</tr>';
+    });
+    html+='</table>';
+    tbl.innerHTML=html;
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
 }
 
 // === PIPELINE DAG VISUALIZER — vis-network render (T5) ===
@@ -335,6 +370,44 @@ async function raceResultsLoad(){
       html+='</tr>';
     });
     html+='</table>';
+    tbl.innerHTML=html;
+  }catch(e){
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+  // V2: load race history trend alongside current results
+  raceHistoryLoad();
+}
+
+// === RACE HISTORY TREND — best model over time (V2) ===
+async function raceHistoryLoad(){
+  const tbl=$('race-history-table'),empty=$('race-history-empty');
+  if(!tbl)return;
+  try{
+    const d=await fetch('/api/eval/race-history').then(r=>r.json());
+    const dates=d.dates||[];
+    const series=d.series||{};
+    if(!dates.length||!Object.keys(series).length){
+      if(empty){empty.style.display='block';empty.innerHTML='ยังไม่มี race history — race results snapshot จะสะสมใน <code>evals/subagents/races/</code> ทุก CI run';}
+      tbl.style.display='none';
+      return;
+    }
+    if(empty)empty.style.display='none';
+    tbl.style.display='block';
+    let html='<table style="width:100%;border-collapse:collapse;font-size:var(--fs-3xs)">';
+    html+='<tr style="border-bottom:1px solid var(--border2);color:var(--text-tertiary)"><th style="text-align:left;padding:3px">suite</th>';
+    dates.forEach(dt=>{html+=`<th>${dt.slice(4)}</th>`;});
+    html+='</tr>';
+    Object.entries(series).forEach(([suite,s])=>{
+      html+='<tr style="border-bottom:1px solid var(--border2)">';
+      html+=`<td style="padding:3px">${suite}</td>`;
+      s.best_models.forEach((bm,i)=>{
+        const isChange=i>0&&s.best_models[i-1]!==bm;
+        html+=`<td style="text-align:center;${isChange?'background:rgba(251,191,36,.15)':''}">${bm||'—'}${isChange?' ⚡':''}</td>`;
+      });
+      html+='</tr>';
+    });
+    html+='</table>';
+    html+='<div style="margin-top:6px;font-size:var(--fs-3xs);color:var(--text-tertiary)">⚡ = best model เปลี่ยนจาก run ก่อน</div>';
     tbl.innerHTML=html;
   }catch(e){
     if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}

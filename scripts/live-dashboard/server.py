@@ -847,6 +847,47 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"suites": suites, "total": len(suites)})
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/race-history":
+            # V2: race history trend — read evals/subagents/races/*.json (timestamped).
+            # Returns time series of best model per suite.
+            try:
+                import json as _json
+                import glob as _glob
+                import re as _re
+                races_dir = REPO_ROOT / "evals" / "subagents" / "races"
+                runs = {}  # {date_tag: {suite: {best, best_pass_at_k, models}}}
+                if races_dir.is_dir():
+                    for f in sorted(_glob.glob(str(races_dir / "*.json"))):
+                        m = _re.search(r"-(\d{8}-\d{6})\.json$", Path(f).name)
+                        if not m:
+                            continue
+                        date_tag = m.group(1)
+                        try:
+                            d = _json.loads(Path(f).read_text(encoding="utf-8"))
+                            suite = _re.sub(r"-\d{8}-\d{6}$", "", Path(f).stem)
+                            overall = d.get("overall", {})
+                            if overall:
+                                best = max(overall, key=lambda x: overall[x].get("mean_pass_at_k", 0))
+                                runs.setdefault(date_tag, {})[suite] = {
+                                    "best": best,
+                                    "best_pass_at_k": overall[best].get("mean_pass_at_k", 0),
+                                    "models": {k: v.get("mean_pass_at_k", 0) for k, v in overall.items()},
+                                }
+                        except Exception:
+                            continue
+                # Sort by date, build series per suite
+                sorted_dates = sorted(runs.keys())
+                series = {}
+                for dt in sorted_dates:
+                    for suite, info in runs[dt].items():
+                        s = series.setdefault(suite, {"labels": [], "best_models": [], "pass_at_k": {}})
+                        s["labels"].append(dt)
+                        s["best_models"].append(info["best"])
+                        for model, pak in info["models"].items():
+                            s["pass_at_k"].setdefault(model, []).append(pak)
+                self._json_response({"dates": sorted_dates, "series": series, "run_count": len(sorted_dates)})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
