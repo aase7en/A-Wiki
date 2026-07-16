@@ -408,6 +408,17 @@
     <div style="position:relative;height:60vh;min-height:300px">
       <canvas id="eval-history-chart"></canvas>
     </div>
+    <div style="border-top:1px solid var(--border2);padding-top:12px">
+      <h4 style="margin:0 0 8px;font-size:var(--fs-sm);color:var(--text-secondary)">🔗 Pipeline DAG Visualizer (T5)</h4>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+        <select id="pipeline-suite-select" onchange="pipelineGraphLoad()" style="padding:5px 8px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)">
+          <option value="">เลือก pipeline suite…</option>
+        </select>
+        <span style="font-size:var(--fs-xs);color:var(--text-tertiary)">sequential=teal · parallel=amber · merge=red</span>
+      </div>
+      <div id="pipeline-graph-vis" style="position:relative;height:45vh;min-height:250px;border:1px solid var(--border2);border-radius:var(--r-md);background:var(--elev-1)"></div>
+      <div id="pipeline-graph-empty" style="display:none;color:var(--text-tertiary);padding:20px;text-align:center;font-size:var(--fs-xs)">เลือก pipeline suite เพื่อดู DAG</div>
+    </div>
   </div>
 
   <!-- 💰 COST VIEW — USD estimate per run (S6) -->

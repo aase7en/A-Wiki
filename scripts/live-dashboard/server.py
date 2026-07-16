@@ -54,6 +54,7 @@ import subagent_stats  # noqa: E402
 import alerts  # noqa: E402
 import eval_history  # noqa: E402  -- R3: /api/eval/history route
 import cost_history  # noqa: E402  -- S6: /api/eval/cost route
+import pipeline_graph  # noqa: E402  -- T5: /api/eval/pipeline-graph route
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -751,6 +752,21 @@ class Handler(BaseHTTPRequestHandler):
             # Read-only — scans results-*.json for token counts × COST_MATRIX.
             try:
                 self._json_response(cost_history.build_dashboard_payload())
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/pipeline-graph":
+            # T5: DAG visualizer — vis-network nodes + edges for a pipeline suite.
+            # Query: ?suite=<name>. Returns {suite, nodes, edges}.
+            try:
+                from urllib.parse import parse_qs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                suite_name = params.get("suite", [None])[0]
+                if not suite_name:
+                    # No suite specified → list available pipeline suites.
+                    self._json_response({"pipelines": pipeline_graph.list_pipeline_suites()})
+                else:
+                    self._json_response(pipeline_graph.build_graph_payload(suite_name))
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):

@@ -198,6 +198,64 @@ async function costHistoryLoad(){
   }
 }
 
+// === PIPELINE DAG VISUALIZER — vis-network render (T5) ===
+let _pipelineNet=null,_pipelineSuitesLoaded=false;
+async function pipelineGraphLoad(){
+  const sel=$('pipeline-suite-select'),vis=$('pipeline-graph-vis'),empty=$('pipeline-graph-empty');
+  if(!sel)return;
+  // Populate dropdown on first load
+  if(!_pipelineSuitesLoaded){
+    try{
+      const d=await fetch('/api/eval/pipeline-graph').then(r=>r.json());
+      (d.pipelines||[]).forEach(p=>{
+        const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);
+      });
+      _pipelineSuitesLoaded=true;
+    }catch(e){}
+  }
+  const suite=sel.value;
+  if(_pipelineNet){try{_pipelineNet.destroy();}catch(_){}_pipelineNet=null;}
+  if(!suite){
+    if(vis)vis.style.display='none';
+    if(empty){empty.style.display='block';empty.innerHTML='เลือก pipeline suite เพื่อดู DAG';}
+    return;
+  }
+  if(empty)empty.style.display='none';
+  if(vis)vis.style.display='block';
+  try{
+    const d=await fetch('/api/eval/pipeline-graph?suite='+encodeURIComponent(suite)).then(r=>r.json());
+    if(d.error||(d.nodes||[]).length===0){
+      if(vis)vis.style.display='none';
+      if(empty){empty.style.display='block';empty.innerHTML='⚠️ '+(d.error||'ไม่มีข้อมูล');}
+      return;
+    }
+    // Node colors by group
+    const groupColors={sequential:{bg:'rgba(94,234,212,.8)',border:'rgba(94,234,212,1)'},
+                       parallel:{bg:'rgba(251,191,36,.8)',border:'rgba(251,191,36,1)'},
+                       merge:{bg:'rgba(248,113,113,.8)',border:'rgba(248,113,113,1)'}};
+    const nodes=(d.nodes||[]).map(n=>{
+      const c=groupColors[n.group]||groupColors.sequential;
+      return {id:n.id,label:n.label,title:n.title,group:n.group,color:{background:c.bg,border:c.border},font:{color:'#fff',size:12}};
+    });
+    const edges=(d.edges||[]).map(e=>({from:e.from,to:e.to,arrows:{to:{enabled:true}},color:{color:'rgba(150,150,180,.6)'},smooth:{type:'curvedCW'}}));
+    // Check vis-network availability (CDN)
+    if(typeof vis==='undefined'||!vis.Network){
+      if(vis)vis.style.display='none';
+      if(empty){empty.style.display='block';empty.innerHTML='🔗 vis-network ไม่พร้อม (offline?)';}
+      return;
+    }
+    _pipelineNet=new vis.Network(vis,{nodes:new vis.DataSet(nodes),edges:new vis.DataSet(edges)},
+      {layout:{hierarchical:{enabled:true,direction:'LR',sortMethod:'directed',levelSeparation:120}},
+       nodes:{shape:'box',margin:10,borderWidth:2},
+       edges:{width:1.5},
+       physics:{enabled:false},
+       interaction:{hover:true,tooltipDelay:100}});
+  }catch(e){
+    if(vis)vis.style.display='none';
+    if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
+  }
+}
+
 function clearAnalyticsData(){
   if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
   _lsSet(OPENS_KEY,[]);
