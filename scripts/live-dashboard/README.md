@@ -226,6 +226,32 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 
 **Iron Laws**: #1 (pure-function tests for scoring + validation), #6 (backup stays in browser — never disk/repo), #10 (no registry edit)
 
+### 🎨 v12 — Theme Editor + Mobile Responsive (current)
+**Goal**: visual theme editor (8 color tokens, 4th "custom" mode) + mobile critical fixes (6 chunks).
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A12** | Theme pane + `custom` mode (4th in cycle: auto→dark→green-white→custom) | `live-dashboard.html`, `src/theme.js` |
+| **B12** | Color pickers + live preview (8 `<input type=color>` tokens, onchange re-injects `<style>`) | `src/theme.js` |
+| **C12** | Theme export/import + 3 preset seeds (Ocean/Sunset/Forest) | `src/theme.js` |
+| **D12** | `.view-toggle-bar` horizontal scroll on mobile (12 tabs no longer clip) | `styles.css` |
+| **E12** | `#skills-grid` minmax 260→150px + toolbar gap shrink on mobile | `styles.css` |
+| **F12** | Modals 95vw + `#skills-detail` 100vw on mobile | `styles.css` |
+
+**Theme Editor** (Settings → 🎨 Theme tab):
+- 4 modes: auto (follows OS) / dark / green-white / custom (your colors)
+- 8 editable tokens: `--accent-brand`, `--accent-warm`, `--accent-cool`, `--accent-violet`, `--accent-success`, `--accent-danger`, `--elev-0`, `--text-primary`
+- Live preview: color picker `onchange` re-injects `<style id=custom-theme-style>` immediately
+- Export/import theme JSON, save/load presets
+- 3 built-in presets: Ocean (blue), Sunset (warm), Forest (green)
+
+**Mobile Responsive** (`@media(max-width:600px)`):
+- `.view-toggle-bar`: `overflow-x:auto` + hidden scrollbar (12 tabs scroll horizontally)
+- `#skills-grid`: `minmax(150px,1fr)` (2 cards per row on 375px phones)
+- `#skills-toolbar`: tighter gap + `min-width:120px` inputs
+- Modals: `max-width:95vw; max-height:90vh`
+- `#skills-detail`: `width:100vw` (full-screen drawer on mobile)
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
