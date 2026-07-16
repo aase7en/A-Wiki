@@ -549,6 +549,7 @@
     <button class="set-tab" data-pane="pane-admin" onclick="setTab(this);loadAdminPanel()">🔑 Admin</button>
               <button class="set-tab" data-pane="pane-agents" onclick="setTab(this)">🤖 Agents</button>
     <button class="set-tab" data-pane="pane-backup" onclick="setTab(this);loadBackupPane()">💾 Backup</button>
+    <button class="set-tab" data-pane="pane-theme" onclick="setTab(this);loadThemePane()">🎨 Theme</button>
   </div>
   <div id="set-body">
     <div class="set-pane active" id="pane-models">
@@ -688,6 +689,13 @@
       <div id="backup-usage-meter"></div>
       <div id="backup-keys-list" style="font-size:var(--fs-xs);max-height:240px;overflow-y:auto"></div>
       <div id="backup-status" style="font-size:var(--fs-2xs);color:var(--text-tertiary);min-height:16px"></div>
+    </div>
+    <div class="set-pane" id="pane-theme">
+      <div class="set-note">🎨 ปรับสี — เลือกโหมดหรือกำหนดสีเอง (8 tokens). สดๆ ทันที.</div>
+      <div id="theme-mode-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
+      <div id="theme-color-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px"></div>
+      <div id="theme-preset-row" style="margin-top:12px"></div>
+      <div id="theme-status" style="font-size:var(--fs-2xs);color:var(--text-tertiary);min-height:16px;margin-top:6px"></div>
     </div>
   </div>
 </div>

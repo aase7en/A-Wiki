@@ -718,3 +718,30 @@ def test_suggestion_chip_has_reason_tooltip():
     assert (
         "reason" in after.lower() or "title=" in after
     ), "suggestion chips must expose a 'why' tooltip with scoring reason"
+
+
+# ── v12 CHUNK A12: theme pane + custom mode ────────────────────────────
+def test_theme_pane_exists():
+    html = HTML.read_text(encoding="utf-8")
+    assert 'data-pane="pane-theme"' in html, "Theme tab missing in Settings"
+    assert 'id="pane-theme"' in html, "Theme pane container missing"
+
+
+def test_custom_theme_mode_in_cycle():
+    text = _read()
+    assert "'custom'" in text or '"custom"' in text, "custom mode missing from theme cycle"
+
+
+def test_custom_theme_storage_key():
+    text = _read()
+    assert "awiki-theme-custom" in text, "awiki-theme-custom storage key missing"
+
+
+def test_theme_editable_tokens_defined():
+    text = _read()
+    assert "THEME_EDITABLE_TOKENS" in text, "editable tokens list missing"
+
+
+def test_custom_theme_style_injection():
+    text = _read()
+    assert "custom-theme-style" in text, "custom theme <style> injection point missing"

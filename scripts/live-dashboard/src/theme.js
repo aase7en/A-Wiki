@@ -23,6 +23,7 @@ function _resolvedThemeAttr(mode){
 function _themeIcon(mode){
   if(mode==='dark')return '🌑';
   if(mode==='green-white')return '☀';
+  if(mode==='custom')return '🎨';
   return '🌗'; // auto
 }
 function _applyThemeMode(mode){
@@ -31,13 +32,31 @@ function _applyThemeMode(mode){
   const b=document.getElementById('btn-theme');
   if(b)b.textContent=_themeIcon(mode);
   try{localStorage.setItem(THEME_MODE_KEY,mode);}catch(_){}
+  if(mode==='custom'){_injectCustomTheme();}else{_removeCustomTheme();}
 }
 function toggleTheme(){
-  // Cycle: auto -> dark -> green-white -> auto.
+  // Cycle: auto -> dark -> green-white -> custom -> auto.
   let cur='auto';
   try{cur=localStorage.getItem(THEME_MODE_KEY)||'auto';}catch(_){}
-  const next=cur==='auto'?'dark':cur==='dark'?'green-white':'auto';
+  const next=cur==='auto'?'dark':cur==='dark'?'green-white':cur==='green-white'?'custom':'auto';
   _applyThemeMode(next);
+}
+// CHUNK A12: custom theme — 8 editable color tokens injected via <style>.
+const THEME_CUSTOM_KEY='awiki-theme-custom';
+const THEME_EDITABLE_TOKENS=['--accent-brand','--accent-warm','--accent-cool','--accent-violet','--accent-success','--accent-danger','--elev-0','--text-primary'];
+function _loadCustomTokens(){try{return JSON.parse(localStorage.getItem(THEME_CUSTOM_KEY)||'{}');}catch(_){return {};}}
+function _injectCustomTheme(){
+  const tokens=_loadCustomTokens();
+  const ids=Object.keys(tokens).filter(k=>THEME_EDITABLE_TOKENS.includes(k));
+  if(!ids.length)return;
+  let s=document.getElementById('custom-theme-style');
+  if(!s){s=document.createElement('style');s.id='custom-theme-style';document.head.appendChild(s);}
+  s.textContent=':root{'+ids.map(k=>k+':'+tokens[k]+';').join('')+'}';
+}
+function _removeCustomTheme(){const s=document.getElementById('custom-theme-style');if(s)s.remove();}
+function loadThemePane(){
+  const grid=document.getElementById('theme-color-grid');
+  if(grid)grid.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs)">เลือกโหมด 🎨 custom ก่อนเพื่อเปิด color pickers</div>';
 }
 // On load: apply stored mode + register prefers-color-scheme listener for auto mode.
 (function(){
