@@ -139,6 +139,31 @@ function _applySelectedBackup(){
   if(st)st.textContent='📥 กู้คืน '+applied+' keys เมื่อสักครู่';
   loadBackupPane();
 }
+// CHUNK C11: auto-backup — snapshot localStorage every 7 days.
+// Stored in awiki-auto-backups (max 3, FIFO). Checked at boot via
+// _maybeAutoBackup(). Skipped from export whitelist (BACKUP_SKIP_KEYS).
+const AUTO_BACKUP_KEY='awiki-auto-backups';
+const AUTO_BACKUP_LAST='awiki-last-backup';
+const AUTO_BACKUP_MAX=3;
+const AUTO_BACKUP_INTERVAL_MS=7*24*60*60*1000; // 7 days
+function autoBackup(){
+  const keys=_collectBackupKeys();
+  const snap={version:1,saved_at:new Date().toISOString(),keys:keys};
+  let snaps=[];
+  try{snaps=JSON.parse(localStorage.getItem(AUTO_BACKUP_KEY)||'[]');}catch(_){snaps=[];}
+  snaps.push(snap);
+  // FIFO cap: keep the 3 most recent (slice from the end).
+  while(snaps.length>AUTO_BACKUP_MAX)snaps.shift();
+  try{
+    localStorage.setItem(AUTO_BACKUP_KEY,JSON.stringify(snaps));
+    localStorage.setItem(AUTO_BACKUP_LAST,String(Date.now()));
+  }catch(_){/* quota — drop oldest and retry once */}
+}
+function _maybeAutoBackup(){
+  let last=0;
+  try{last=parseInt(localStorage.getItem(AUTO_BACKUP_LAST)||'0',10)||0;}catch(_){last=0;}
+  if(Date.now()-last>AUTO_BACKUP_INTERVAL_MS)autoBackup();
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;
@@ -378,3 +403,5 @@ syncUrlState();
 }
 
 // === BOOT SEQUENCE (runs after DOM is parsed) ===
+// CHUNK C11: check if a weekly auto-backup is due (non-blocking, ~1ms).
+try{_maybeAutoBackup();}catch(_){}

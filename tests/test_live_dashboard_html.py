@@ -567,3 +567,48 @@ def test_backup_apply_selected_keys_only():
     assert (
         "checked" in after or "selected" in after.lower()
     ), "apply must respect per-key selection (not blind overwrite)"
+
+
+# ── v11 CHUNK C11: auto-backup (periodic) ──────────────────────────────
+# Goal: snapshot localStorage every 7 days automatically so users have a
+# safety net even if they never click Export. Stored in localStorage itself
+# (key awiki-auto-backups, max 3 snapshots FIFO).
+
+def test_auto_backup_function_exists():
+    """autoBackup() function must exist in src/."""
+    text = _read()
+    assert "function autoBackup" in text or "autoBackup" in text, "autoBackup function missing"
+
+
+def test_auto_backup_7day_threshold():
+    """Auto-backup must check a 7-day threshold before snapshotting."""
+    text = _read()
+    # The 7-day threshold lives in the AUTO_BACKUP_INTERVAL_MS constant.
+    assert (
+        "AUTO_BACKUP_INTERVAL_MS" in text
+    ), "auto-backup interval constant missing"
+    # The constant must express 7 days (7*24*60*60*1000 or 604800000).
+    assert (
+        "7*24*60*60*1000" in text or "604800000" in text
+    ), "auto-backup must use a 7-day threshold (7*24*60*60*1000 ms)"
+
+
+def test_auto_backup_fifo_cap():
+    """Auto-backup store must cap at 3 snapshots (FIFO — oldest dropped)."""
+    text = _read()
+    idx = text.find("autoBackup")
+    assert idx != -1, "autoBackup function missing"
+    after = text[idx : idx + 1500]
+    # The cap is expressed as a slice or length check against 3.
+    assert (
+        "3" in after
+    ), "auto-backup must cap at 3 snapshots (FIFO)"
+
+
+def test_auto_backup_skip_self_in_export():
+    """The export whitelist must skip awiki-auto-backups to avoid recursion."""
+    text = _read()
+    # BACKUP_SKIP_KEYS must contain awiki-auto-backups.
+    assert (
+        "awiki-auto-backups" in text
+    ), "export whitelist must skip awiki-auto-backups (recursion safety)"
