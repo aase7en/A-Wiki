@@ -54,9 +54,54 @@ function _injectCustomTheme(){
   s.textContent=':root{'+ids.map(k=>k+':'+tokens[k]+';').join('')+'}';
 }
 function _removeCustomTheme(){const s=document.getElementById('custom-theme-style');if(s)s.remove();}
+// CHUNK B12: default colors (dark theme baseline) for picker defaults.
+const THEME_DEFAULT_DARK={'--accent-brand':'#5eead4','--accent-warm':'#fbbf24','--accent-cool':'#60a5fa','--accent-violet':'#a78bfa','--accent-success':'#34d399','--accent-danger':'#f87171','--elev-0':'#06060d','--text-primary':'#f1f5f9'};
+const THEME_TOKEN_LABELS={'--accent-brand':'Brand','--accent-warm':'Warm','--accent-cool':'Cool','--accent-violet':'Violet','--accent-success':'Success','--accent-danger':'Danger','--elev-0':'Background','--text-primary':'Text'};
 function loadThemePane(){
+  renderThemeEditor();
+}
+function renderThemeEditor(){
   const grid=document.getElementById('theme-color-grid');
-  if(grid)grid.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs)">เลือกโหมด 🎨 custom ก่อนเพื่อเปิด color pickers</div>';
+  if(!grid)return;
+  const tokens=_loadCustomTokens();
+  const mode=localStorage.getItem(THEME_MODE_KEY)||'auto';
+  if(mode!=='custom'){
+    grid.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">เลือกโหมด 🎨 custom ก่อนเพื่อเปิด color pickers</div>';
+    return;
+  }
+  grid.innerHTML=THEME_EDITABLE_TOKENS.map(tk=>{
+    const cur=tokens[tk]||THEME_DEFAULT_DARK[tk]||'#000000';
+    const lbl=THEME_TOKEN_LABELS[tk]||tk;
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px;background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-md)"><input type="color" value="'+cur+'" onchange="onThemeColorChange(\''+tk+'\',this.value)" style="width:36px;height:36px;border:none;background:transparent;cursor:pointer;flex-shrink:0"><div style="flex:1;min-width:0"><div style="font-size:var(--fs-xs);color:var(--text-primary);font-weight:600">'+lbl+'</div><div style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">'+cur+'</div></div></div>';
+  }).join('');
+  // Reset button row.
+  const preset=document.getElementById('theme-preset-row');
+  if(preset){
+    preset.innerHTML='<button class="set-btn sm" onclick="resetCustomTheme()" style="color:var(--accent-danger);margin-right:6px">↺ Reset to dark</button><button class="set-btn sm" onclick="switchToGreenWhite()" style="color:var(--accent-success)">☀ Green-white</button>';
+  }
+}
+function onThemeColorChange(tk,val){
+  const tokens=_loadCustomTokens();
+  tokens[tk]=val;
+  try{localStorage.setItem(THEME_CUSTOM_KEY,JSON.stringify(tokens));}catch(_){}
+  _injectCustomTheme();  // live preview
+  const st=document.getElementById('theme-status');
+  if(st)st.textContent='🎨 '+tk+' = '+val;
+  renderThemeEditor();  // refresh label
+}
+function resetCustomTheme(){
+  try{localStorage.removeItem(THEME_CUSTOM_KEY);}catch(_){}
+  _removeCustomTheme();
+  _applyThemeMode('dark');
+  renderThemeEditor();
+  const st=document.getElementById('theme-status');
+  if(st)st.textContent='↺ คืนค่าเป็น dark theme';
+}
+function switchToGreenWhite(){
+  try{localStorage.removeItem(THEME_CUSTOM_KEY);}catch(_){}
+  _removeCustomTheme();
+  _applyThemeMode('green-white');
+  renderThemeEditor();
 }
 // On load: apply stored mode + register prefers-color-scheme listener for auto mode.
 (function(){

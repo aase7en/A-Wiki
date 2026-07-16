@@ -745,3 +745,33 @@ def test_theme_editable_tokens_defined():
 def test_custom_theme_style_injection():
     text = _read()
     assert "custom-theme-style" in text, "custom theme <style> injection point missing"
+
+
+# ── v12 CHUNK B12: color pickers + live preview ────────────────────────
+def test_render_theme_editor_exists():
+    text = _read()
+    assert "renderThemeEditor" in text, "renderThemeEditor function missing"
+
+
+def test_theme_color_input_type_color():
+    """Color pickers must use <input type='color'>."""
+    text = _read()
+    idx = text.find("renderThemeEditor")
+    assert idx != -1, "renderThemeEditor missing"
+    after = text[idx : idx + 1500]
+    assert "type='color'" in after or 'type="color"' in after, "color picker must use <input type=color>"
+
+
+def test_theme_live_preview_on_change():
+    """Color picker onchange must re-inject style immediately (live preview)."""
+    text = _read()
+    idx = text.find("renderThemeEditor")
+    assert idx != -1, "renderThemeEditor missing"
+    after = text[idx : idx + 2500]
+    assert "_injectCustomTheme" in after, "onchange must call _injectCustomTheme for live preview"
+
+
+def test_theme_reset_button_exists():
+    """Reset button must exist to clear custom theme back to dark/green-white."""
+    text = _read()
+    assert "resetCustomTheme" in text or "clearCustomTheme" in text, "reset custom theme function missing"
