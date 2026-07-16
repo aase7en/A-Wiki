@@ -435,6 +435,71 @@ async function raceHistoryLoad(){
   }
 }
 
+// === SUITE EDITOR — form-based suite creation (X2) ===
+let _seMeta={subagents:[],suites:[]},_seMetaLoaded=false;
+async function suiteEditorInit(){
+  if(_seMetaLoaded)return;
+  try{
+    _seMeta=await fetch('/api/eval/suite-meta').then(r=>r.json());
+    _seMetaLoaded=true;
+    // populate load dropdown
+    const sel=$('se-load-select');
+    if(sel)(_seMeta.suites||[]).forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+  }catch(e){console.warn('suite meta load failed',e);}
+}
+function suiteEditorAddCase(c){
+  const wrap=$('se-cases');if(!wrap)return;
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;grid-template-columns:100px 140px 1fr 120px 120px 30px;gap:6px;align-items:start;padding:6px;border:1px solid var(--border2);border-radius:var(--r-md)';
+  const cased=c||{id:'',subagent:'',prompt:'',required:'',forbidden:''};
+  const saopts=(_seMeta.subagents||[]).map(n=>`<option value="${n}"${n===cased.subagent?' selected':''}>${n}</option>`).join('');
+  row.innerHTML=`
+    <input class="se-id" placeholder="id" value="${cased.id||''}" style="padding:4px;font-size:var(--fs-3xs;border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-primary)">
+    <select class="se-subagent" style="padding:4px;font-size:var(--fs-3xs);border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-primary)"><option value="">subagent…</option>${saopts}</select>
+    <textarea class="se-prompt" placeholder="prompt" style="padding:4px;font-size:var(--fs-3xs);border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-primary);min-height:32px;resize:vertical">${cased.prompt||''}</textarea>
+    <input class="se-required" placeholder="required (comma)" value="${(cased.required||[]).join(', ')}" style="padding:4px;font-size:var(--fs-3xs);border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-primary)">
+    <input class="se-forbidden" placeholder="forbidden (comma)" value="${(cased.forbidden||[]).join(', ')}" style="padding:4px;font-size:var(--fs-3xs);border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-primary)">
+    <button onclick="this.parentElement.remove()" style="padding:4px;cursor:pointer;border:1px solid var(--border2);border-radius:4px;background:var(--elev-2);color:var(--text-secondary)">🗑️</button>`;
+  wrap.appendChild(row);
+}
+function suiteEditorCollect(){
+  const name=$('se-suite-name')?.value?.trim()||'';
+  const desc=$('se-description')?.value||'';
+  const rows=[...document.querySelectorAll('#se-cases > div')];
+  const cases=rows.map(r=>{
+    const parseCS=t=>(t||'').split(',').map(s=>s.trim()).filter(s=>s);
+    return{id:r.querySelector('.se-id').value.trim(),subagent:r.querySelector('.se-subagent').value,prompt:r.querySelector('.se-prompt').value,required:parseCS(r.querySelector('.se-required').value),forbidden:parseCS(r.querySelector('.se-forbidden').value)};
+  }).filter(c=>c.id&&c.prompt);
+  return{suite:name,description:desc,cases};
+}
+async function suiteEditorSave(){
+  const data=suiteEditorCollect();
+  const st=$('se-status');
+  if(st)st.textContent='💾 saving...';
+  try{
+    const r=await fetch('/api/eval/suite',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const j=await r.json();
+    if(r.ok){
+      if(st)st.innerHTML=`✅ Saved: <code>${j.path}</code> (${data.cases.length} cases)`;
+      toast('✅ Suite saved: '+data.suite);
+    }else{
+      if(st)st.innerHTML=`❌ ${j.error||'save failed'}`;
+    }
+  }catch(e){if(st)st.innerHTML='❌ '+String(e);}
+}
+async function suiteEditorLoad(){
+  const name=$('se-load-select')?.value;if(!name)return;
+  try{
+    const d=await fetch('/api/eval/suite?name='+encodeURIComponent(name)).then(r=>r.json());
+    if(d.error){if($('se-status'))$('se-status').innerHTML='❌ '+d.error;return;}
+    $('se-suite-name').value=d.suite||name;
+    $('se-description').value=d.description||'';
+    $('se-cases').innerHTML='';
+    (d.cases||[]).forEach(c=>suiteEditorAddCase(c));
+    if($('se-status'))$('se-status').textContent=`📂 Loaded "${name}" (${(d.cases||[]).length} cases)`;
+  }catch(e){if($('se-status'))$('se-status').innerHTML='❌ '+String(e);}
+}
+
 function clearAnalyticsData(){
   if(!confirm('ล้าง opens log + health snapshots ทั้งหมด? (ไม่สามารถย้อนกลับได้)'))return;
   _lsSet(OPENS_KEY,[]);

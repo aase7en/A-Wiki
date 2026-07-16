@@ -258,7 +258,7 @@ if(v==='skills'){skillsLoad();loadWalkthroughs();applyUrlParams();renderDiscover
 if(v==='coverage')coverageLoad();
 if(v==='analytics')analyticsLoad();
 if(v==='subagents')subagentsLoad();
-if(v==='eval')evalHistoryLoad();
+if(v==='eval'){evalHistoryLoad();suiteEditorInit();}
 if(v==='cost')costHistoryLoad();
 if(v==='race')raceResultsLoad();
 }

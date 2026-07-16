@@ -56,6 +56,7 @@ import eval_history  # noqa: E402  -- R3: /api/eval/history route
 import cost_history  # noqa: E402  -- S6: /api/eval/cost route
 import pipeline_graph  # noqa: E402  -- T5: /api/eval/pipeline-graph route
 import cost_history  # noqa: E402  -- re-export for T6 cost-optimize payload
+import suite_editor  # noqa: E402  -- X1: /api/eval/suite* routes
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -894,6 +895,32 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"dates": sorted_dates, "series": series, "run_count": len(sorted_dates)})
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/suite-meta":
+            # X1: list subagents + existing suites (for form dropdowns).
+            try:
+                self._json_response({
+                    "subagents": suite_editor.list_subagents(),
+                    "suites": suite_editor.list_suites(),
+                })
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/eval/suite":
+            # X1: GET ?name=X → load suite; no name → 400.
+            try:
+                from urllib.parse import parse_qs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                name = params.get("name", [None])[0]
+                if not name:
+                    self._json_response({"error": "missing ?name= parameter"}, 400)
+                else:
+                    suite = suite_editor.load_suite_by_name(name)
+                    if suite is None:
+                        self._json_response({"error": f"suite '{name}' not found"}, 404)
+                    else:
+                        self._json_response(suite)
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
         else:
@@ -917,6 +944,16 @@ class Handler(BaseHTTPRequestHandler):
             self._api_upload_post()
         elif path == "/api/run":
             self._api_run_post()
+        elif path == "/api/eval/suite":
+            # X1: POST — save suite (validate + atomic write).
+            try:
+                body = self._read_body()
+                suite_editor.write_suite(body)
+                self._json_response({"ok": True, "suite": body.get("suite", ""), "path": f"evals/subagents/{body.get('suite','')}.json"})
+            except ValueError as e:
+                self._json_response({"error": str(e)}, 400)
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/skills/") and path.endswith("/edit"):
             self._api_skills_edit(path[len("/api/skills/"):-len("/edit")])
         else:
