@@ -46,9 +46,26 @@ class TestDetectDevice:
         with patch.object(Path, "home", return_value=tmp_path):
             assert scrape_mod.detect_device() == "pi5"
 
-    def test_defaults_to_home_mac(self):
-        # Without a device file on macOS, should return home-mac
-        device = scrape_mod.detect_device()
+    def test_reads_utf16_bom_wiki_device_file(self, tmp_path):
+        """Windows PowerShell writes .wiki-device as UTF-16LE BOM.
+
+        Reproduces the live failure seen on this Windows machine:
+        detect_device() must not raise UnicodeDecodeError on a UTF-16 file
+        (PowerShell's default for `Out-File`/redirect without `-Encoding utf8`).
+        """
+        d = tmp_path / ".wiki-device"
+        # PowerShell-shaped bytes: UTF-16LE BOM + "work-pc\r\n"
+        d.write_bytes(b"\xff\xfe" + "work-pc\r\n".encode("utf-16-le"))
+        with patch.object(Path, "home", return_value=tmp_path):
+            assert scrape_mod.detect_device() == "work-pc"
+
+    def test_defaults_to_home_mac(self, tmp_path):
+        # Without a device file anywhere, fall back to platform default.
+        # Must patch Path.home() to a tmp dir without .wiki-device — otherwise
+        # this test silently couples to the host machine's real device file
+        # (and fails on any box where ~/.wiki-device exists).
+        with patch.object(Path, "home", return_value=tmp_path):
+            device = scrape_mod.detect_device()
         assert device in ("home-mac", "pi5", "unknown")
 
     def test_pi5_blocks_browser_tools(self):

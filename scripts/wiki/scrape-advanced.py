@@ -74,10 +74,28 @@ TIERS: list[dict] = [
 # ── Device detection ───────────────────────────────────────────────────────
 
 def detect_device() -> str:
-    """Read ~/.wiki-device; fall back to display-server detection."""
+    """Read ~/.wiki-device; fall back to display-server detection.
+
+    Handles the three encodings PowerShell / Windows editors commonly emit:
+    UTF-16LE BOM (PowerShell `Out-File` default), UTF-16BE BOM, UTF-8 BOM,
+    and plain UTF-8. Without this, a Windows machine whose ``.wiki-device``
+    was written by PowerShell redirects raises UnicodeDecodeError on the
+    UTF-8 read and crashes ``--list``/``--url`` invocations. Pinned by
+    ``tests/test_scrape_advanced.py::test_reads_utf16_bom_wiki_device_file``.
+    """
     device_file = Path.home() / ".wiki-device"
     if device_file.is_file():
-        return device_file.read_text(encoding="utf-8").strip()
+        raw = device_file.read_bytes()
+        if raw.startswith(b"\xff\xfe"):
+            text = raw[2:].decode("utf-16-le")
+        elif raw.startswith(b"\xfe\xff"):
+            text = raw[2:].decode("utf-16-be")
+        elif raw.startswith(b"\xef\xbb\xbf"):
+            text = raw[3:].decode("utf-8")
+        else:
+            # Plain UTF-8 (or cp874/latin-1); never raise on a device file.
+            text = raw.decode("utf-8", errors="replace")
+        return text.strip().strip("\x00")
     # Headless detection: no DISPLAY on Linux, no window server check on macOS
     if sys.platform == "linux" and not os.environ.get("DISPLAY"):
         return "pi5"
