@@ -548,6 +548,7 @@
     <button class="set-tab" data-pane="pane-chat" onclick="setTab(this);loadChatSettings()">💬 Chat</button>
     <button class="set-tab" data-pane="pane-admin" onclick="setTab(this);loadAdminPanel()">🔑 Admin</button>
               <button class="set-tab" data-pane="pane-agents" onclick="setTab(this)">🤖 Agents</button>
+    <button class="set-tab" data-pane="pane-backup" onclick="setTab(this);loadBackupPane()">💾 Backup</button>
   </div>
   <div id="set-body">
     <div class="set-pane active" id="pane-models">
@@ -676,6 +677,17 @@
         <div id="admin-history" style="font-size:var(--fs-xs);max-height:300px;overflow-y:auto"></div>
       </div>
       <button class="set-btn" onclick="loadAdminPanel()">🔄 รีเฟรช</button>
+    </div>
+    <div class="set-pane" id="pane-backup">
+      <div class="set-note">💾 สำรอง preferences (24 keys) — ย้ายระหว่างเครื่อง/กู้คืน cache</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="set-btn sm" onclick="exportAllBackup()" style="color:var(--accent-success)">📤 Export</button>
+        <button class="set-btn sm" onclick="document.getElementById('backup-import-file').click()" style="color:var(--accent-warm)">📥 Import</button>
+        <input type="file" id="backup-import-file" accept="application/json,.json" style="display:none" onchange="importBackup(event)">
+      </div>
+      <div id="backup-usage-meter"></div>
+      <div id="backup-keys-list" style="font-size:var(--fs-xs);max-height:240px;overflow-y:auto"></div>
+      <div id="backup-status" style="font-size:var(--fs-2xs);color:var(--text-tertiary);min-height:16px"></div>
     </div>
   </div>
 </div>

@@ -28,6 +28,56 @@ function _downloadBlob(blob,filename){
   a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+// CHUNK A11: localStorage backup — export all awiki-* keys.
+// Whitelist by prefix so we skip unrelated localStorage from other tools on
+// the same origin. Auto-backup key (awiki-auto-backups) is skipped to avoid
+// recursion. Schema versioned for future migrations.
+const BACKUP_SKIP_KEYS=new Set(['awiki-auto-backups','awiki-last-backup']);
+function _collectBackupKeys(){
+  const out={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(!k||!k.startsWith('awiki-'))continue;
+    if(BACKUP_SKIP_KEYS.has(k))continue;
+    try{out[k]=JSON.parse(localStorage.getItem(k));}catch(_){out[k]=localStorage.getItem(k);}
+  }
+  return out;
+}
+function exportAllBackup(){
+  const keys=_collectBackupKeys();
+  const payload={
+    version:1,
+    exported_at:new Date().toISOString(),
+    key_count:Object.keys(keys).length,
+    keys:keys,
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const d=new Date();
+  const stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  _downloadBlob(blob,'awiki-backup-'+stamp+'.json');
+  const st=$('backup-status');
+  if(st)st.textContent='📤 ส่งออก '+Object.keys(keys).length+' keys เรียบร้อย';
+}
+function loadBackupPane(){
+  const list=$('backup-keys-list');
+  if(!list)return;
+  const keys=_collectBackupKeys();
+  const names=Object.keys(keys).sort();
+  let totalBytes=0;
+  const rows=names.map(k=>{
+    const raw=localStorage.getItem(k)||'';
+    const bytes=new Blob([raw]).size;
+    totalBytes+=bytes;
+    return '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--font-mono);color:var(--text-secondary)">'+k+'</span><span style="color:var(--text-tertiary)">'+(bytes/1024).toFixed(1)+'KB</span></div>';
+  }).join('');
+  list.innerHTML=rows||'<div style="color:var(--text-tertiary);padding:8px">ไม่มี awiki-* keys</div>';
+  const meter=$('backup-usage-meter');
+  if(meter){
+    const pct=(totalBytes/(5*1024*1024)*100).toFixed(1);
+    const color=pct<60?'var(--accent-success)':pct<85?'var(--accent-warm)':'var(--accent-danger)';
+    meter.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:3px">localStorage: '+(totalBytes/1024).toFixed(1)+'KB / 5MB ('+pct+'%) · '+names.length+' keys</div><div style="height:6px;background:var(--elev-3);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+color+';transition:width .3s"></div></div>';
+  }
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;
