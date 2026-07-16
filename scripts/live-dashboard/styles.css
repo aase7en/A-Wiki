@@ -87,6 +87,8 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 #header{flex-wrap:wrap;gap:8px;padding:10px 12px}
 #wf-tabs{order:3;width:100%;overflow-x:auto;scrollbar-width:none}
 #wf-tabs::-webkit-scrollbar{display:none}
+.view-toggle-bar{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.view-toggle-bar::-webkit-scrollbar{display:none}
 #main{display:flex;flex-direction:column;overflow:visible;height:auto}
 #sidebar{border-left:none;border-top:1px solid var(--border)}
 #timeline-list{max-height:42vh}

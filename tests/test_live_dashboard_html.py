@@ -799,3 +799,17 @@ def test_theme_preset_seeds_exist():
 def test_theme_preset_storage_key():
     text = _read()
     assert "awiki-theme-presets" in text, "awiki-theme-presets storage key missing"
+
+
+# ── v12 CHUNK D12: view-toggle-bar horizontal scroll (mobile) ──────────
+def test_view_toggle_bar_overflow_x_on_mobile():
+    """styles.css must make .view-toggle-bar horizontally scrollable at <=600px."""
+    if not STYLES_CSS.is_file():
+        pytest.skip("styles.css not found")
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Find the max-width:600px media query block.
+    idx = css.find("@media(max-width:600px)")
+    assert idx != -1, "max-width:600px media query missing"
+    block = css[idx : idx + 600]
+    assert ".view-toggle-bar" in block, "view-toggle-bar must be in mobile media query"
+    assert "overflow-x:auto" in block, "view-toggle-bar must have overflow-x:auto on mobile"
