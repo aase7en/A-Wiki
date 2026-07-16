@@ -691,3 +691,30 @@ def test_smart_suggestions_min_telemetry_fallback():
     assert (
         "5" in after
     ), "smart suggestions must require minimum 5 opens before suggesting"
+
+
+# ── v11 CHUNK F11: suggestion chips in discovery bar ───────────────────
+# Goal: render smartSuggestions() as chips in the existing discovery bar so
+# users see "แนะนำสำหรับคุณ" next to Trending/Recent.
+
+def test_discovery_bar_renders_suggestions():
+    """renderDiscoveryBar() must call smartSuggestions() and render chips."""
+    text = _read()
+    idx = text.find("function renderDiscoveryBar")
+    assert idx != -1, "renderDiscoveryBar function missing"
+    after = text[idx : idx + 2000]
+    assert (
+        "smartSuggestions" in after
+    ), "renderDiscoveryBar must call smartSuggestions()"
+
+
+def test_suggestion_chip_has_reason_tooltip():
+    """Suggestion chips must show a 'why' tooltip (frequency/days/cooccur)."""
+    text = _read()
+    idx = text.find("function renderDiscoveryBar")
+    assert idx != -1, "renderDiscoveryBar function missing"
+    after = text[idx : idx + 3000]
+    # The chip title/tooltip must include scoring reason (days/frequency/cooccur).
+    assert (
+        "reason" in after.lower() or "title=" in after
+    ), "suggestion chips must expose a 'why' tooltip with scoring reason"

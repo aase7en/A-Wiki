@@ -722,6 +722,17 @@ function renderDiscoveryBar(){
   const recent=_lsGet(RECENT_KEY,[]);
   const trending=trendingSkills(_trendingDays,5);
   let html='';
+  // CHUNK F11: Smart suggestions — frequency × recency × co-occurrence.
+  const suggestions=smartSuggestions(5);
+  if(suggestions.length){
+    html+='<span style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-right:2px">💡 แนะนำ:</span>';
+    html+=suggestions.map(s=>{
+      const r=s.reason||{};
+      const why='เปิด '+(r.frequency||0)+' ครั้งใน 30ว · ใช้ร่วมกับล่าสุด '+(r.cooccur_with_last||0)+' ครั้ง · '+(r.days_since_open||0)+' วันที่แล้ว';
+      return '<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-violet);color:var(--accent-violet)" onclick="skillsOpenDetail(\''+s.name+'\')" title="'+why+'">'+s.name+' <b style="color:var(--text-tertiary)">'+s.score+'</b></span>';
+    }).join('');
+    html+='<span style="width:8px"></span>';
+  }
   // Trending section (only if there's data).
   if(trending.length){
     const daysLabel=_trendingDays===30?'30ว':'7ว';
