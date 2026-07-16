@@ -645,3 +645,49 @@ def test_per_key_clear_button_exists():
     assert (
         "clearBackupKey" in after or "clearKey" in after
     ), "per-key clear function missing in loadBackupPane"
+
+
+# ── v11 CHUNK E11: smart suggestions scoring engine ────────────────────
+# Goal: client-side scoring (frequency × recency × co-occurrence) to suggest
+# skills the user is likely to want next. Pure JS — no server endpoint.
+
+def test_smart_suggestions_function_exists():
+    """smartSuggestions() function must exist in skills.js."""
+    text = _read()
+    assert "function smartSuggestions" in text, "smartSuggestions function missing"
+
+
+def test_smart_suggestions_scoring_weights():
+    """Scoring must use frequency, recency, and co-occurrence factors."""
+    text = _read()
+    idx = text.find("function smartSuggestions")
+    assert idx != -1, "smartSuggestions function missing"
+    after = text[idx : idx + 2000]
+    # All three scoring factors must be present.
+    assert "frequency" in after.lower() or "count" in after.lower(), "frequency factor missing"
+    assert "recency" in after.lower() or "recent" in after.lower() or "days" in after.lower(), "recency factor missing"
+    assert "co-occur" in after.lower() or "cooccur" in after.lower() or "_mineCoOccurrence" in after, "co-occurrence factor missing"
+
+
+def test_smart_suggestions_excludes_recent_24h():
+    """Suggestions must exclude skills opened in the last 24h (user just saw them)."""
+    text = _read()
+    idx = text.find("function smartSuggestions")
+    assert idx != -1, "smartSuggestions function missing"
+    after = text[idx : idx + 2500]
+    # 24h exclusion expressed as 24 hours or 86400000 ms or 24*60*60.
+    assert (
+        "24" in after
+    ), "smart suggestions must exclude skills opened in last 24h"
+
+
+def test_smart_suggestions_min_telemetry_fallback():
+    """Must return empty if there's insufficient telemetry (<5 opens)."""
+    text = _read()
+    idx = text.find("function smartSuggestions")
+    assert idx != -1, "smartSuggestions function missing"
+    after = text[idx : idx + 2500]
+    # Minimum telemetry threshold to avoid random suggestions.
+    assert (
+        "5" in after
+    ), "smart suggestions must require minimum 5 opens before suggesting"

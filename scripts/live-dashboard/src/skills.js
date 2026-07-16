@@ -461,6 +461,61 @@ id:n,label:n,domain:[],phase:'none',color:'#a78bfa',installed:false,_cooccur:nod
 }));
 return {nodes,edges,stats:{nodes:nodes.length,edges:edges.length,opens:opens.length}};
 }
+// CHUNK E11: smart suggestions — client-side scoring (frequency × recency × co-occurrence).
+// Pure JS, no server call. Returns ranked skills the user is likely to want next.
+// Excludes skills opened in the last 24h (user just saw them).
+// Returns [] if insufficient telemetry (<5 opens total).
+function smartSuggestions(limit){
+  limit=limit||5;
+  const opens=_lsGet(OPENS_KEY,[]);
+  if(opens.length<5)return [];   // min telemetry fallback
+  const now=Date.now();
+  const cutoff30d=now-30*24*60*60*1000;
+  const cutoff24h=now-24*60*60*1000;
+  // frequency: count opens in last 30d per skill.
+  const freq={};
+  let maxFreq=0;
+  opens.forEach(o=>{
+    if((o.ts||0)<cutoff30d)return;
+    freq[o.name]=(freq[o.name]||0)+1;
+    if(freq[o.name]>maxFreq)maxFreq=freq[o.name];
+  });
+  // recency: days since last open per skill.
+  const lastOpen={};
+  opens.forEach(o=>{
+    const t=o.ts||0;
+    if(!lastOpen[o.name]||t>lastOpen[o.name])lastOpen[o.name]=t;
+  });
+  // co-occurrence: reuse _mineCoOccurrence edges.
+  const co=_mineCoOccurrence();
+  const coEdges=co?(co.edges||[]):[];
+  // Find the most-recently-opened skill name (last entry) for co-occurrence lookup.
+  const lastSkill=opens.length?(opens[opens.length-1].name||''):'';
+  const cooccurForLast={};
+  coEdges.forEach(e=>{
+    if(e.from===lastSkill)cooccurForLast[e.to]=(cooccurForLast[e.to]||0)+e.weight;
+    if(e.to===lastSkill)cooccurForLast[e.from]=(cooccurForLast[e.from]||0)+e.weight;
+  });
+  let maxCooccur=0;
+  Object.values(cooccurForLast).forEach(v=>{if(v>maxCooccur)maxCooccur=v;});
+  // Score every candidate skill.
+  const candidates=Object.keys(freq).map(name=>{
+    // Exclude skills opened in last 24h.
+    if((lastOpen[name]||0)>cutoff24h)return null;
+    const f=maxFreq?(freq[name]/maxFreq):0;
+    const daysSince=(now-(lastOpen[name]||0))/(24*60*60*1000);
+    const recencyFactor=Math.max(0,1-daysSince/30);
+    const c=maxCooccur?((cooccurForLast[name]||0)/maxCooccur):0;
+    const score=f*40+recencyFactor*30+c*30;
+    return {name,score:Math.round(score),reason:{
+      frequency:freq[name],
+      days_since_open:Math.round(daysSince),
+      cooccur_with_last:cooccurForLast[name]||0,
+    }};
+  }).filter(Boolean);
+  candidates.sort((a,b)=>b.score-a.score);
+  return candidates.slice(0,limit);
+}
 function toggleCoOccurGraph(){
 _coOccurMode=!_coOccurMode;
 const btn=$('graph-cooccur-toggle');
