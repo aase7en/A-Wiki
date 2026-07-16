@@ -775,3 +775,27 @@ def test_theme_reset_button_exists():
     """Reset button must exist to clear custom theme back to dark/green-white."""
     text = _read()
     assert "resetCustomTheme" in text or "clearCustomTheme" in text, "reset custom theme function missing"
+
+
+# ── v12 CHUNK C12: theme export/import + presets ───────────────────────
+def test_export_theme_function_exists():
+    text = _read()
+    assert "exportTheme" in text, "exportTheme function missing"
+
+
+def test_import_theme_function_exists():
+    text = _read()
+    assert "importTheme" in text, "importTheme function missing"
+
+
+def test_theme_preset_seeds_exist():
+    text = _read()
+    assert "THEME_PRESET_SEEDS" in text, "preset seeds constant missing"
+    assert "Ocean" in text, "Ocean preset seed missing"
+    assert "Sunset" in text, "Sunset preset seed missing"
+    assert "Forest" in text, "Forest preset seed missing"
+
+
+def test_theme_preset_storage_key():
+    text = _read()
+    assert "awiki-theme-presets" in text, "awiki-theme-presets storage key missing"

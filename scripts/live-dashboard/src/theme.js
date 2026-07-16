@@ -103,6 +103,62 @@ function switchToGreenWhite(){
   _applyThemeMode('green-white');
   renderThemeEditor();
 }
+// CHUNK C12: theme export/import + preset save.
+const THEME_PRESETS_KEY='awiki-theme-presets';
+const THEME_PRESET_SEEDS=[
+  {name:'Ocean',tokens:{'--accent-brand':'#06b6d4','--accent-warm':'#f59e0b','--accent-cool':'#3b82f6','--accent-violet':'#8b5cf6','--accent-success':'#10b981','--accent-danger':'#ef4444','--elev-0':'#0c1929','--text-primary':'#e0f2fe'}},
+  {name:'Sunset',tokens:{'--accent-brand':'#f97316','--accent-warm':'#fbbf24','--accent-cool':'#fb7185','--accent-violet':'#c084fc','--accent-success':'#84cc16','--accent-danger':'#dc2626','--elev-0':'#1a0a0a','--text-primary':'#fef3c7'}},
+  {name:'Forest',tokens:{'--accent-brand':'#16a34a','--accent-warm':'#ca8a04','--accent-cool':'#0891b2','--accent-violet':'#7c3aed','--accent-success':'#15803d','--accent-danger':'#b91c1c','--elev-0':'#0a1a0a','--text-primary':'#dcfce7'}}
+];
+function exportTheme(){
+  const tokens=_loadCustomTokens();
+  const payload={version:1,tokens:tokens,exported_at:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  _downloadBlob(blob,'awiki-theme.json');
+  const st=document.getElementById('theme-status');
+  if(st)st.textContent='📤 ส่งออก theme ('+Object.keys(tokens).length+' tokens)';
+}
+function importTheme(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result);
+      if(!j||!j.tokens||typeof j.tokens!=='object')throw new Error('schema ไม่ถูกต้อง');
+      const valid={};
+      THEME_EDITABLE_TOKENS.forEach(tk=>{if(j.tokens[tk]&&typeof j.tokens[tk]==='string')valid[tk]=j.tokens[tk];});
+      if(!Object.keys(valid).length)throw new Error('ไม่มี token ที่รองรับ');
+      try{localStorage.setItem(THEME_CUSTOM_KEY,JSON.stringify(valid));}catch(_){}
+      _applyThemeMode('custom');
+      renderThemeEditor();
+      const st=document.getElementById('theme-status');
+      if(st)st.textContent='📥 นำเข้า '+Object.keys(valid).length+' tokens';
+    }catch(e){
+      const st=document.getElementById('theme-status');
+      if(st)st.textContent='❌ '+e.message;
+    }
+  };
+  rd.readAsText(f);
+  ev.target.value='';
+}
+function saveThemePreset(){
+  const name=prompt('ตั้งชื่อ preset:');
+  if(!name)return;
+  const tokens=_loadCustomTokens();
+  if(!Object.keys(tokens).length){toast('ไม่มี custom tokens ให้บันทึก',true);return;}
+  let presets=[];try{presets=JSON.parse(localStorage.getItem(THEME_PRESETS_KEY)||'[]');}catch(_){presets=[];}
+  presets.push({name:name,tokens:tokens});
+  try{localStorage.setItem(THEME_PRESETS_KEY,JSON.stringify(presets));}catch(_){}
+  renderThemeEditor();
+}
+function applyThemePreset(tokens){
+  if(!tokens||typeof tokens!=='object')return;
+  const valid={};
+  THEME_EDITABLE_TOKENS.forEach(tk=>{if(tokens[tk])valid[tk]=tokens[tk];});
+  try{localStorage.setItem(THEME_CUSTOM_KEY,JSON.stringify(valid));}catch(_){}
+  _applyThemeMode('custom');
+  renderThemeEditor();
+}
 // On load: apply stored mode + register prefers-color-scheme listener for auto mode.
 (function(){
   let mode='auto';
