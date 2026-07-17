@@ -277,6 +277,35 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - Red dot on ⚙️ when `awiki-seen-version` ≠ `DASHBOARD_VERSION`
 - Clicking Settings clears the badge
 
+### 📊 v14 — New Visualizations (current)
+**Goal**: เพิ่ม 3 visualizations ใหม่ + KPI cards จาก data ที่มีอยู่ (5 chunks).
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A14** | Agent capability radar — Chart.js radar, 5 axes (SWE/Term/Repo/Reason/Speed), top 4 families | `src/analytics.js`, `live-dashboard.html` |
+| **B14** | Cost projection — linear regression + 7-day forecast (dashed line) + ±20% confidence band | `src/analytics.js`, `live-dashboard.html` |
+| **C14** | Skill dependency heatmap — domain × lifecycle_phase matrix, click to filter | `src/skills.js`, `live-dashboard.html` |
+| **D14** | Summary KPI cards — 4 clickable cards (skills/health/models/cost) | `src/app.js`, `live-dashboard.html` |
+
+**Agent Capability Radar** (Settings → 🤖 Agents):
+- Chart.js radar comparing top 4 model families on 5 capability dimensions
+- Fetches `/api/capabilities`, overlaid polygons with distinct colors
+
+**Cost Projection** (💰 Cost tab):
+- Linear regression over historical cost data → 7-day forecast
+- Solid line = actual, dashed line = forecast, shaded band = ±20% confidence
+- Weekly cost estimate in chart title
+
+**Skill Heatmap** (🧩 Skills tab, above walkthroughs):
+- Domain × lifecycle phase matrix table
+- Cell opacity = skill count (darker = more)
+- Click cell → filter skills by domain
+
+**KPI Cards** (📊 Summary tab):
+- 4 cards: Total Skills, Avg Health %, Active Models, Weekly Cost
+- Click → navigate to related view
+- TTL cached (60s) for skills data
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
