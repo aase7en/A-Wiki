@@ -252,12 +252,26 @@
   "skills": {
     "paths": [
       "__REPO_ROOT__/agent-skills",
+      "__REPO_ROOT__/skills/anthropic-skills",
+      "__REPO_ROOT__/skills/assessment-generator",
+      "__REPO_ROOT__/skills/awiki",
       "__REPO_ROOT__/skills/claude-code",
-      "__REPO_ROOT__/skills/engineering",
-      "__REPO_ROOT__/skills/productivity",
+      "__REPO_ROOT__/skills/claude-thai",
       "__REPO_ROOT__/skills/delegation",
-      "__REPO_ROOT__/skills/wiki",
+      "__REPO_ROOT__/skills/ecosystem",
+      "__REPO_ROOT__/skills/engineering",
+      "__REPO_ROOT__/skills/engineering-lifecycle",
+      "__REPO_ROOT__/skills/gamedev-skills",
+      "__REPO_ROOT__/skills/mattpocock",
+      "__REPO_ROOT__/skills/openmed",
+      "__REPO_ROOT__/skills/productivity",
+      "__REPO_ROOT__/skills/render-html",
       "__REPO_ROOT__/skills/research",
+      "__REPO_ROOT__/skills/taste-skill",
+      "__REPO_ROOT__/skills/transitions-dev",
+      "__REPO_ROOT__/skills/ui-ux-pro-max",
+      "__REPO_ROOT__/skills/wiki",
+      "__REPO_ROOT__/skills/word-generator",
       "__DRIVE_SKILLS__"
     ]
   }

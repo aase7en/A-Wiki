@@ -183,3 +183,88 @@ def test_has_unpushed_commits_detects_local(tmp_path):
     # no remote → all commits are "unpushed"
     n = gsb.count_unpushed_commits(repo)
     assert n >= 1  # at least the initial commit
+
+
+# ===========================================================================
+# Z3 — check_git_rebase_safety.py (PreToolUse hook integration)
+# ===========================================================================
+# Z3 คือ PreToolUse hook บน Bash. มันต้อง:
+#   (a) จับ git pull --rebase / git rebase ได้
+#   (b) auto-backup HEAD (safety net)
+#   (c) ไม่ block (exit 0 — warn only)
+#   (d) ลงทะเบียนใน .claude/settings.json (ไม่งั้นไม่อัตโนมัติ)
+#
+# Tests ด้านล่างยืนยันทั้ง 4 ข้อ — โดยเฉพาะ (d) ป้องกัน regression
+# ที่ "สร้างไฟล์ hook แต่ลืมเสียบ settings.json" (เหตุการณ์ Z3 ค้าง 2026-07-16)
+# ===========================================================================
+
+def _make_hook_input(command: str) -> str:
+    """Build PreToolUse Bash input JSON like Claude Code sends to hooks."""
+    return json.dumps({
+        "tool_name": "Bash",
+        "tool_input": {"command": command},
+    })
+
+
+def test_z3_hook_registered_in_settings():
+    """Z3 MUST be registered in .claude/settings.json PreToolUse → Bash matcher.
+
+    This is the test that caught the original gap: the hook file existed but
+    was never wired into settings.json, so it never ran. Iron Law #1 RED.
+    """
+    settings_path = REPO_ROOT / ".claude" / "settings.json"
+    settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    pretooluse = settings.get("hooks", {}).get("PreToolUse", [])
+    bash_hooks = []
+    for group in pretooluse:
+        if group.get("matcher") == "Bash":
+            for h in group.get("hooks", []):
+                bash_hooks.append(h.get("command", ""))
+    # Z3 hook must be among the registered Bash PreToolUse hooks
+    joined = " ".join(bash_hooks)
+    assert "check-git-rebase-safety" in joined or "check_git_rebase_safety" in joined, (
+        "Z3 hook (check-git-rebase-safety) is NOT registered in "
+        ".claude/settings.json PreToolUse → Bash. It exists as a file but "
+        "will never run. Wire it in."
+    )
+
+
+def test_z3_hook_does_not_block_pull_rebase(tmp_path, monkeypatch, capsys):
+    """Z3 must NEVER block — only warn + backup. Exit code must be 0."""
+    repo = _make_repo(tmp_path)
+    monkeypatch.setattr(gsb, "REPO_ROOT", repo)
+    monkeypatch.setattr(gsb, "BACKUP_FILE", tmp_path / "backup.jsonl")
+    # import the hook module fresh
+    import importlib
+    import check_git_rebase_safety as z3hook
+    importlib.reload(z3hook)
+    monkeypatch.setattr(z3hook, "REPO_ROOT", repo, raising=False)
+    # feed input via stdin
+    monkeypatch.setattr("sys.stdin", _StdinStub(_make_hook_input("git pull --rebase origin main")))
+    exit_code = z3hook.main()
+    assert exit_code == 0, "Z3 must not block (warn-only)"
+
+
+def test_z3_hook_no_backup_for_normal_git(tmp_path, monkeypatch):
+    """Z3 must NOT fire for non-rebase git commands (no backup pollution)."""
+    repo = _make_repo(tmp_path)
+    backup_file = tmp_path / "backup.jsonl"
+    monkeypatch.setattr(gsb, "REPO_ROOT", repo)
+    monkeypatch.setattr(gsb, "BACKUP_FILE", backup_file)
+    import importlib
+    import check_git_rebase_safety as z3hook
+    importlib.reload(z3hook)
+    monkeypatch.setattr(z3hook, "REPO_ROOT", repo, raising=False)
+    monkeypatch.setattr("sys.stdin", _StdinStub(_make_hook_input("git status")))
+    z3hook.main()
+    # no backup should have been written for a normal git command
+    assert not backup_file.is_file(), "Z3 should not backup for non-rebase commands"
+
+
+class _StdinStub:
+    """Minimal stdin stub that simulates sys.stdin for hooks reading JSON."""
+    def __init__(self, payload: str):
+        self._payload = payload
+
+    def read(self):
+        return self._payload
