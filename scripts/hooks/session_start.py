@@ -368,6 +368,7 @@ def run_steps(repo_root, lean: bool) -> None:
     clean_stale_cost_declarations(repo_root)
     show_todos(repo_root)
     replay_memory_ledger(repo_root)  # Neural Spine: cross-session continuity
+    reap_task_leases(repo_root)       # Neural Spine: free crashed claims
 
     if lean:
         sys.stderr.write(
@@ -401,6 +402,24 @@ def replay_memory_ledger(repo_root) -> None:
             sys.stderr.write(replay + "\n")
     except Exception:
         pass  # never break session start on ledger issues
+
+
+def reap_task_leases(repo_root) -> None:
+    """Neural Spine: release expired task claims so crashed agents don't
+    lock tasks forever.
+
+    Best-effort: never raises. Silent no-op if task-board missing.
+    """
+    try:
+        import sys as _sys
+        _hooks_dir = os.path.join(repo_root, "scripts", "hooks")
+        if _hooks_dir not in _sys.path:
+            _sys.path.insert(0, _hooks_dir)
+        import task_lease_reaper as _reaper
+        board_path = os.path.join(repo_root, ".tmp", "task-board.json")
+        _reaper.reap_expired_claims(board_path)
+    except Exception:
+        pass  # never break session start on reaper issues
 
 
 def main():
