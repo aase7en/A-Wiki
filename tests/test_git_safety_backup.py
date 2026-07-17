@@ -268,3 +268,34 @@ class _StdinStub:
 
     def read(self):
         return self._payload
+
+
+# ===========================================================================
+# Regression: git_safety_backup.py must no-op when invoked as a generic hook
+# ===========================================================================
+# hooks_runner.py:get_hooks() runs ALL *.py in scripts/hooks/ when no specific
+# hook is passed. git_safety_backup.py lives in that dir (it's both a library
+# AND a CLI tool). Before this fix, calling it with no args triggered argparse's
+# required-group error (exit 2), which broke:
+#   - test_hooks_runner_own_writes_survive_cp874 (cp874 encoding suite)
+#   - TestHooksRunnerCLI::test_all_hooks_run_successfully
+# Fix: when argv has no flag AND stdin is a hook payload (not a TTY), no-op.
+# ===========================================================================
+def test_git_safety_backup_noop_when_called_as_generic_hook(tmp_path):
+    """Invoked blind by hooks_runner (no args, hook payload on stdin) → exit 0.
+
+    This is the regression that made Z3 break the encoding suite.
+    """
+    repo = _make_repo(tmp_path)
+    backup_file = tmp_path / "backup.jsonl"
+    import subprocess
+    proc = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "hooks" / "git_safety_backup.py")],
+        input=json.dumps({"tool_name": "Bash", "tool_input": {"command": "echo hi"}}),
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        cwd=str(repo), timeout=30,
+    )
+    assert proc.returncode == 0, (
+        f"git_safety_backup.py must no-op (exit 0) when called blind by "
+        f"hooks_runner, but exited {proc.returncode}: {proc.stderr}"
+    )

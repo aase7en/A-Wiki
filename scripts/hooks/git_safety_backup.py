@@ -208,6 +208,18 @@ def status_report(repo_root: Path | str = REPO_ROOT,
 
 def main() -> int:
     import argparse
+    # Regression guard (2026-07-17): hooks_runner.py:get_hooks() runs ALL *.py
+    # in scripts/hooks/ when no specific hook is passed. This file lives in
+    # that dir (library + CLI). When invoked blind (no flag args), argparse's
+    # required-group error would exit 2 — which broke:
+    #   test_hooks_runner_own_writes_survive_cp874
+    #   TestHooksRunnerCLI::test_all_hooks_run_successfully
+    # Detect the "called as a generic hook" case (no flags + stdin is a hook
+    # payload, not a TTY) and no-op. This keeps it safe to import as a module.
+    if not any(a.startswith("--") for a in sys.argv[1:]):
+        # No flag args. If stdin is not a TTY, hooks_runner is calling us blind.
+        if not sys.stdin.isatty():
+            return 0  # no-op — this is a library, not a standalone hook
     p = argparse.ArgumentParser(description=__doc__.splitlines()[1].strip())
     g = p.add_mutually_exclusive_group(required=True)
     g.add_argument("--backup", action="store_true", help="snapshot HEAD now")
