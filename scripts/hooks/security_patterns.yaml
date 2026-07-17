@@ -54,21 +54,21 @@ secret_patterns:
 machine_path_patterns:
   - name: "Windows user home (C:\\Users\\<user>\\)"
     regex: "C:\\\\Users\\\\([A-Za-z0-9._-]+)\\\\"
-    allowlist: []
+    allowlist: ["alice", "bob", "username", "user", "example", "your_user", "<user>", "demo"]
     note: "Personal Windows user path. Resolve via drive/ or $HOME."
   - name: "Windows drive absolute path (e.g. L:\\...)"
     regex: "\\b[A-Z]:\\\\[A-Za-z0-9._-]"
-    allowlist: []
+    allowlist: ["example", "placeholder", "<drive>", "X:\\", "demo", "your_drive", "Users\\alice", "Users\\bob", "Users\\username", "Users\\user", "Users\\example", "Users\\<user>", "Users\\demo", "Users\\your_user"]
     note: "Absolute drive paths leak the machine's mount layout. Use drive/ junction or A_WIKI_DRIVE_PATH."
   - name: "macOS user home (/Users/<user>/)"
     regex: "/Users/([A-Za-z0-9._-]+)/"
-    allowlist: []
+    allowlist: ["alice", "bob", "username", "user", "example", "your_user", "<user>", "demo"]
     note: "Personal macOS user path. Resolve via drive/ or $HOME."
   - name: "Linux user home (/home/<user>/)"
     regex: "/home/([A-Za-z0-9._-]+)/"
-    allowlist: []
+    allowlist: ["alice", "bob", "username", "user", "example", "your_user", "<user>", "demo"]
     note: "Personal Linux user path. Resolve via drive/ or $HOME."
   - name: "Google Drive CloudStorage account path"
     regex: "CloudStorage/GoogleDrive-([A-Za-z0-9._-]+)"
-    allowlist: []
+    allowlist: ["example", "placeholder", "<account>", "demo"]
     note: "Leaks Google account name. Resolve via drive/ junction."

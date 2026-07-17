@@ -11,6 +11,23 @@ echo "Repo: $REPO_ROOT"
 echo "OS:   $(uname -s)"
 echo ""
 
+# ── 0. Git config — pull-rebase + autoSetupRemote (stability, P9.1) ─────────
+# Prevents the 'push rejected, remote has new commits' loop we hit when
+# multiple machines/agents push to main. With these set, `git pull` rebases
+# local commits on top of remote (auto-stashing dirty work), and new branches
+# auto-track their remote — no more --set-upstream dance.
+
+setup_git_config() {
+  echo "[0/14] Setting git config for smooth multi-machine sync..."
+  git config pull.rebase true
+  git config rebase.autoStash true
+  git config push.autoSetupRemote true 2>/dev/null || \
+    echo "  (push.autoSetupRemote needs Git ≥2.37; current: $(git --version))"
+  git config fetch.prune true
+  git config push.default simple
+  echo "  OK — pull.rebase + rebase.autoStash + push.autoSetupRemote + fetch.prune"
+}
+
 # ── 1. raw → Google Drive junction/symlink ──────────────────────────────────
 
 setup_raw() {
@@ -428,6 +445,7 @@ setup_skillopt() {
   }
 }
 
+setup_git_config
 setup_raw
 setup_mcp
 setup_secrets
