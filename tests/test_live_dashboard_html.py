@@ -984,3 +984,27 @@ def test_capability_radar_fetches_capabilities():
     assert idx != -1, "renderCapabilityRadar function definition missing"
     after = text[idx : idx + 3000]
     assert "/api/capabilities" in after, "radar must fetch /api/capabilities"
+
+
+# ── v14 CHUNK B14: cost projection (trend forecast) ────────────────────
+def test_render_cost_projection_exists():
+    text = _read()
+    assert "renderCostProjection" in text, "renderCostProjection function missing"
+
+
+def test_cost_projection_uses_regression():
+    """Projection must compute a linear regression (slope/intercept)."""
+    text = _read()
+    idx = text.find("async function renderCostProjection")
+    assert idx != -1, "renderCostProjection function definition missing"
+    after = text[idx : idx + 3500]
+    assert "slope" in after.lower() or "trend" in after.lower() or "regression" in after.lower(), "projection must use regression"
+
+
+def test_cost_projection_dashed_forecast_line():
+    """Forecast portion must be dashed (borderDash) to distinguish from actual."""
+    text = _read()
+    idx = text.find("async function renderCostProjection")
+    assert idx != -1, "renderCostProjection function definition missing"
+    after = text[idx : idx + 3500]
+    assert "borderDash" in after or "dashed" in after.lower(), "forecast line must be dashed"

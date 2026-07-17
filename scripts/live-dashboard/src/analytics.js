@@ -216,6 +216,8 @@ async function costHistoryLoad(){
     }
     // T6: load cost optimization recommendations alongside cost charts
     costOptimizeLoad();
+    // B14: render cost projection (7-day forecast) alongside cost charts
+    renderCostProjection();
   }catch(e){
     if(empty){empty.style.display='block';empty.innerHTML='⚠️ โหลดไม่สำเร็จ: '+String(e);}
   }
@@ -843,3 +845,70 @@ async function renderCapabilityRadar(){
   }
 }
 
+
+// CHUNK B14: cost projection — linear regression over cost history, 7-day forecast.
+// Solid line = actual, dashed line = projected, shaded band = ±20% confidence.
+let _costProjectionChart=null;
+async function renderCostProjection(){
+  const canvas=document.getElementById("cost-projection-canvas");
+  if(!canvas)return;
+  await loadChartJs();
+  if(typeof Chart==="undefined"){canvas.parentElement.innerHTML="<div style=\"color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px\">📈 Chart.js ไม่พร้อม</div>";return;}
+  try{
+    const d=await fetch("/api/eval/cost").then(r=>r.json());
+    const runs=d.runs||[];
+    if(runs.length<2){canvas.parentElement.innerHTML="<div style=\"color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px\">ต้องมีอย่างน้อย 2 runs เพื่อคาดการณ์</div>";return;}
+    // Sum USD per run.
+    const actual=runs.map(r=>{
+      let sum=0;
+      for(const suite in (r.suites||{})){for(const model in r.suites[suite]){sum+=r.suites[suite][model].usd||0;}}
+      return sum;
+    });
+    const labels=runs.map(r=>r.date_tag);
+    // Linear regression (least squares): slope + intercept.
+    const n=actual.length;
+    const xs=actual.map((_,i)=>i);
+    const xMean=xs.reduce((a,b)=>a+b,0)/n;
+    const yMean=actual.reduce((a,b)=>a+b,0)/n;
+    let num=0,den=0;
+    xs.forEach((x,i)=>{num+=(x-xMean)*(actual[i]-yMean);den+=(x-xMean)**2;});
+    const slope=den===0?0:num/den;
+    const intercept=yMean-slope*xMean;
+    // Project 7 days forward.
+    const forecastLabels=[];
+    const forecastUpper=[];
+    const forecastLower=[];
+    const forecastLine=[];
+    for(let i=0;i<7;i++){
+      const x=n+i;
+      const lastDate=new Date(labels[labels.length-1]);
+      lastDate.setDate(lastDate.getDate()+1+i);
+      forecastLabels.push(lastDate.toISOString().slice(5,10));
+      const proj=slope*x+intercept;
+      forecastLine.push(proj);
+      forecastUpper.push(proj*1.2);
+      forecastLower.push(Math.max(0,proj*0.8));
+    }
+    // Combined datasets: actual (solid) + forecast (dashed) + band.
+    const allLabels=[...labels,...forecastLabels];
+    const actualPadded=[...actual,...Array(7).fill(null)];
+    const forecastPadded=[...Array(n-1).fill(null),actual[actual.length-1],...forecastLine];
+    const upperBand=[...Array(n-1).fill(null),actual[actual.length-1],...forecastUpper];
+    const lowerBand=[...Array(n-1).fill(null),actual[actual.length-1],...forecastLower];
+    if(_costProjectionChart){try{_costProjectionChart.destroy();}catch(_){}}
+    const weeklyEst=forecastLine.reduce((a,b)=>a+b,0);
+    _costProjectionChart=new Chart(canvas,{
+      type:"line",
+      data:{labels:allLabels,datasets:[
+        {label:"Actual USD",data:actualPadded,borderColor:"rgba(94,234,212,1)",backgroundColor:"rgba(94,234,212,.1)",fill:false,tension:.3},
+        {label:"Forecast",data:forecastPadded,borderColor:"rgba(251,191,36,1)",borderDash:[6,4],fill:false,tension:.3},
+        {label:"+20%",data:upperBand,borderColor:"transparent",backgroundColor:"rgba(251,191,36,.08)",fill:"+1",pointRadius:0},
+        {label:"-20%",data:lowerBand,borderColor:"transparent",backgroundColor:"transparent",pointRadius:0},
+      ]},
+      options:{
+        plugins:{title:{display:true,text:"Cost Projection — est. weekly: $"+weeklyEst.toFixed(2),color:"#cbd5e1",font:{size:12}},legend:{labels:{color:"#cbd5e1",font:{size:10}}}},
+        scales:{x:{ticks:{color:"#64748b",font:{size:9}}},y:{ticks:{color:"#64748b"},beginAtZero:true}},
+      },
+    });
+  }catch(e){canvas.parentElement.innerHTML="<div style=\"color:var(--accent-danger);font-size:var(--fs-xs);padding:12px\">⚠️ "+e.message+"</div>";}
+}
