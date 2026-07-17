@@ -213,6 +213,70 @@ function renderHelpContent(){
     +'</ul></div>'
     +'</div>';
 }
+// CHUNK B13: first-run toast tour — 7 steps guiding new users through key features.
+// Uses a custom overlay (not the auto-hide toast) so Next/Skip stay clickable.
+// State: awiki-tour-completed (bool), awiki-tour-step (0-6) for resume.
+// _tourActive flag suppresses other toasts during the tour.
+const TOUR_COMPLETED_KEY='awiki-tour-completed';
+const TOUR_STEP_KEY='awiki-tour-step';
+let _tourActive=false;
+const TOUR_STEPS=[
+  {title:'ยินดีต้อนรับสู่ A-Wiki Dashboard 👋',body:'นี่คือศูนย์กลางสำหรับติดตาม swarm, skills, และ cost. ทัวร์นี้ 7 ขั้น — ใช้เวลา ~1 นาที.'},
+  {title:'🧩 Skills tab',body:'คลิก Skills เพื่อดู skill catalog ทั้งหมด — คำอธิบายไทย + simulation + filter ตาม agent ที่ใช้.'},
+  {title:'💡 Recommender',body:'ใน Skills tab มีช่อง "อยากทำ..." — พิมพ์เช่น "แก้ bug" แล้วระบบจะแนะนำ skill ที่เกี่ยวข้อง.'},
+  {title:'⚙️ Settings',body:'คลิก ⚙️ เพื่อตั้งค่า models, API keys, agent chain, และดู features ใหม่ๆ.'},
+  {title:'🎨 Theme Editor',body:'Settings → 🎨 Theme: ปรับสี dashboard 8 tokens ได้ตามใจ — live preview ทันที.'},
+  {title:'💾 Backup',body:'Settings → 💾 Backup: สำรอง preferences ทั้งหมดเป็น JSON — ย้ายระหว่างเครื่องได้.'},
+  {title:'⌨️ Shortcuts + 🩺 Health',body:'กด ? เพื่อดู keyboard shortcuts. ใน Help (📖) มีปุ่มตรวจสุขภาพ dashboard. ทัวร์จบแล้ว!'},
+];
+function _tourShowOverlay(){
+  let ov=document.getElementById('tour-overlay');
+  if(!ov){
+    ov=document.createElement('div');
+    ov.id='tour-overlay';
+    ov.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--elev-1);border:1px solid var(--accent-brand);border-radius:var(--r-lg);padding:16px 20px;z-index:500;max-width:440px;width:92vw;box-shadow:var(--shadow-lg)';
+    document.body.appendChild(ov);
+  }
+  return ov;
+}
+function startTour(){
+  let step=0;
+  try{step=parseInt(localStorage.getItem(TOUR_STEP_KEY)||'0',10)||0;}catch(_){step=0;}
+  _tourActive=true;
+  _tourShowStep(step);
+}
+function _tourShowStep(i){
+  if(i>=TOUR_STEPS.length){_tourEnd();return;}
+  try{localStorage.setItem(TOUR_STEP_KEY,String(i));}catch(_){}
+  const step=TOUR_STEPS[i];
+  const ov=_tourShowOverlay();
+  const isLast=i===TOUR_STEPS.length-1;
+  ov.innerHTML=''
+    +'<div style="font-size:var(--fs-xs);color:var(--text-tertiary);margin-bottom:4px">ทัวร์ '+(i+1)+'/'+TOUR_STEPS.length+'</div>'
+    +'<div style="font-weight:700;color:var(--accent-brand);margin-bottom:6px;font-size:var(--fs-sm)">'+step.title+'</div>'
+    +'<div style="font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.5;margin-bottom:12px">'+step.body+'</div>'
+    +'<div style="display:flex;gap:6px;justify-content:flex-end">'
+    +'<button onclick="_tourSkip()" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:var(--fs-xs);padding:4px 10px">ข้าม</button>'
+    +'<button onclick="_tourNext()" style="background:var(--accent-brand);color:var(--elev-0);border:none;border-radius:var(--r-sm);cursor:pointer;font-size:var(--fs-xs);padding:6px 14px;font-weight:600">'+(isLast?'เสร็จสิ้น ✓':'ถัดไป →')+'</button>'
+    +'</div>';
+  ov.style.display='block';
+}
+function _tourNext(){
+  let cur=0;try{cur=parseInt(localStorage.getItem(TOUR_STEP_KEY)||'0',10)||0;}catch(_){}
+  _tourShowStep(cur+1);
+}
+function _tourSkip(){_tourEnd();}
+function _tourEnd(){
+  _tourActive=false;
+  try{localStorage.setItem(TOUR_COMPLETED_KEY,'1');}catch(_){}
+  const ov=document.getElementById('tour-overlay');
+  if(ov)ov.style.display='none';
+}
+function _maybeStartTour(){
+  let done=false;
+  try{done=localStorage.getItem(TOUR_COMPLETED_KEY)==='1';}catch(_){}
+  if(!done)setTimeout(startTour,2500);
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;
@@ -454,3 +518,5 @@ syncUrlState();
 // === BOOT SEQUENCE (runs after DOM is parsed) ===
 // CHUNK C11: check if a weekly auto-backup is due (non-blocking, ~1ms).
 try{_maybeAutoBackup();}catch(_){}
+// CHUNK B13: start first-run tour for new users (2.5s delay after boot).
+try{_maybeStartTour();}catch(_){}

@@ -890,3 +890,28 @@ def test_help_version_badge():
     assert idx != -1, "renderHelpContent function definition missing"
     after = text[idx : idx + 4000]
     assert "version" in after.lower() or "v1" in after, "Help must show version badge"
+
+
+# ── v13 CHUNK B13: first-run toast tour ────────────────────────────────
+def test_start_tour_function_exists():
+    text = _read()
+    assert "function startTour" in text or "startTour" in text, "startTour function missing"
+
+
+def test_tour_steps_array_exists():
+    """TOUR_STEPS array must exist with at least 5 steps."""
+    text = _read()
+    assert "TOUR_STEPS" in text, "TOUR_STEPS array missing"
+
+
+def test_tour_state_keys_exist():
+    """Tour must persist state (completed + current step) for resume."""
+    text = _read()
+    assert "awiki-tour-completed" in text, "awiki-tour-completed key missing"
+    assert "awiki-tour-step" in text, "awiki-tour-step key missing"
+
+
+def test_tour_active_flag_exists():
+    """_tourActive flag must exist to suppress other toasts during tour."""
+    text = _read()
+    assert "_tourActive" in text, "_tourActive flag missing"
