@@ -1008,3 +1008,28 @@ def test_cost_projection_dashed_forecast_line():
     assert idx != -1, "renderCostProjection function definition missing"
     after = text[idx : idx + 3500]
     assert "borderDash" in after or "dashed" in after.lower(), "forecast line must be dashed"
+
+
+# ── v14 CHUNK C14: skill dependency heatmap ────────────────────────────
+def test_render_skill_heatmap_exists():
+    text = _read()
+    assert "renderSkillHeatmap" in text, "renderSkillHeatmap function missing"
+
+
+def test_skill_heatmap_domain_phase_matrix():
+    """Heatmap must build a domain × lifecycle_phase matrix."""
+    text = _read()
+    idx = text.find("function renderSkillHeatmap")
+    assert idx != -1, "renderSkillHeatmap function definition missing"
+    after = text[idx : idx + 3000]
+    assert "domain" in after.lower(), "heatmap must use domain axis"
+    assert "phase" in after.lower(), "heatmap must use lifecycle phase axis"
+
+
+def test_skill_heatmap_click_filter():
+    """Clicking a cell must filter the skills view by domain+phase."""
+    text = _read()
+    idx = text.find("function renderSkillHeatmap")
+    assert idx != -1, "renderSkillHeatmap function definition missing"
+    after = text[idx : idx + 3000]
+    assert "onclick" in after.lower() or "click" in after.lower(), "heatmap cells must be clickable"

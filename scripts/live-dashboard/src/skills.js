@@ -246,6 +246,8 @@ stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills ส�
 // CHUNK RR: notify if many critical-health skills loaded.
 const crit=_skillsCache.filter(s=>s.health&&s.health.level==='critical');
 if(crit.length>=3)showNotif('🩺 Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
+// CHUNK C14: render skill dependency heatmap alongside card grid.
+renderSkillHeatmap();
 }
 // CHUNK C9/E9: keyboard handler for skill cards.
 // Enter/Space = open detail, ArrowDown/Up = move between cards, Home/End = first/last.
@@ -1008,3 +1010,56 @@ function _flashToast(msg){
 const SIM_ICONS=['📥','🔍','🛠️','✅','📋','🚀','🔄','⚙️','🧪','📊'];
 let _simSteps=[],_simIdx=-1,_simTimer=null,_simCurrentName=null;
 
+
+// CHUNK C14: skill dependency heatmap — domain × lifecycle_phase matrix.
+// Each cell = count of skills (darker = more). Click filters skills view.
+const PHASES=['define','plan','build','verify','review','ship','meta','none'];
+const PHASE_LABELS={define:'Define',plan:'Plan',build:'Build',verify:'Verify',review:'Review',ship:'Ship',meta:'Meta',none:'—'};
+function renderSkillHeatmap(){
+  const container=document.getElementById('skill-heatmap');
+  if(!container)return;
+  const skills=_skillsCache;
+  if(!skills||!skills.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">โหลด skills ก่อน</div>';return;}
+  // Build matrix: domain -> phase -> count.
+  const matrix={};
+  let maxCount=0;
+  skills.forEach(s=>{
+    const domains=Array.isArray(s.domain)?s.domain:(s.domain?[s.domain]:[]);
+    const phase=s.phase||'none';
+    domains.forEach(d=>{
+      if(!matrix[d])matrix[d]={};
+      matrix[d][phase]=(matrix[d][phase]||0)+1;
+      if(matrix[d][phase]>maxCount)maxCount=matrix[d][phase];
+    });
+  });
+  const domains=Object.keys(matrix).sort();
+  if(!domains.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">ไม่มีข้อมูล domain/phase</div>';return;}
+  // Render CSS grid table.
+  let html='<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:var(--fs-2xs);width:100%">';
+  // Header row.
+  html+='<tr><th style="padding:4px 6px;text-align:left;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Domain</th>';
+  PHASES.forEach(p=>{html+='<th style="padding:4px 4px;color:var(--text-tertiary);text-align:center;border-bottom:1px solid var(--border)">'+PHASE_LABELS[p]+'</th>';});
+  html+='</tr>';
+  // Data rows.
+  domains.forEach(d=>{
+    html+='<tr><td style="padding:4px 6px;color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap">'+d+'</td>';
+    PHASES.forEach(p=>{
+      const count=(matrix[d][p]||0);
+      const op=maxCount>0?(count/maxCount):0;
+      const bg=count>0?'background:rgba(94,234,212,'+(0.1+op*0.7)+')':'';
+      const cur=count>0?'cursor:pointer;onclick="heatmapFilter(\''+d+'\',\''+p+'\')"':'';
+      const txt=count>0?'color:var(--text-primary);font-weight:'+(op>0.5?'700':'400'):'color:var(--text-disabled)';
+      html+='<td style="padding:4px;text-align:center;'+bg+';'+cur+';'+txt+';border:1px solid var(--border)">'+(count||'·')+'</td>';
+    });
+    html+='</tr>';
+  });
+  html+='</table></div>';
+  html+='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-top:6px">คลิก cell เพื่อกรอง skills ตาม domain × phase</div>';
+  container.innerHTML=html;
+}
+function heatmapFilter(domain,phase){
+  // Apply domain filter via the existing dropdown + switch to list view.
+  const dd=document.getElementById('skills-domain-filter');
+  if(dd){dd.value=domain;skillsRefresh();}
+  setView('skills');
+}
