@@ -252,6 +252,31 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - Modals: `max-width:95vw; max-height:90vh`
 - `#skills-detail`: `width:100vw` (full-screen drawer on mobile)
 
+### 🎓 v13 — Onboarding + Help Refresh (current)
+**Goal**: make dashboard self-explanatory for new users + refresh Help content for v8-v12.
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A13** | Help pane refresh — JS-rendered content (พื้นฐาน + ใหม่ใน v10-v12 + Tips) + version badge | `src/app.js` |
+| **B13** | First-run toast tour — 7 steps (welcome → Skills → Recommender → Settings → Theme → Backup → Shortcuts) | `src/app.js` |
+| **C13** | Dashboard health check — 5 async checks (SSE/API/localStorage/CDN/Playwright) with 5s timeout | `src/app.js` |
+| **D13** | "What's new" badge — red dot on Settings cog when version changes | `src/app.js`, `live-dashboard.html` |
+
+**Onboarding** (auto for new users):
+- Tour: 7-step overlay with Next/Skip, auto-starts 2.5s after boot (if not completed)
+- State: `awiki-tour-completed` + `awiki-tour-step` (resume capable)
+- `_tourActive` flag suppresses other toasts during tour
+- Re-run: clear `awiki-tour-completed` from localStorage
+
+**Help pane** (Settings → 📖 คู่มือ):
+- Refreshed content covering v8-v12 features (backup, theme, mobile, suggestions, performance, Playwright)
+- Version badge from `DASHBOARD_VERSION` constant
+- Health check button: "🩺 ตรวจสุขภาพ Dashboard" — runs 5 checks, shows ✅/❌/ℹ️ checklist
+
+**What's new badge**:
+- Red dot on ⚙️ when `awiki-seen-version` ≠ `DASHBOARD_VERSION`
+- Clicking Settings clears the badge
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
