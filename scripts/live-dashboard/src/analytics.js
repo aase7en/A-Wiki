@@ -802,4 +802,44 @@ if('serviceWorker' in navigator){
     console.warn('SW registration failed (non-fatal):', e);
   });
 }
+// CHUNK A14: agent capability radar chart — compares model families on 5 axes.
+// Fetches /api/capabilities, renders Chart.js radar in the Agents settings pane.
+let _capabilityRadarChart=null;
+async function renderCapabilityRadar(){
+  const canvas=document.getElementById('capability-radar-canvas');
+  if(!canvas)return;
+  await loadChartJs();
+  if(typeof Chart==='undefined'){canvas.parentElement.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">📈 Chart.js ไม่พร้อม</div>';return;}
+  try{
+    const caps=await fetch('/api/capabilities').then(r=>r.json());
+    const families=caps.families||{};
+    const dims=['swe','term','repo','reason','speed'];
+    const dimLabels=['SWE-bench','Terminal','Repo','Reasoning','Speed'];
+    // Pick top 4 families by average score.
+    const famEntries=Object.entries(families).map(([k,v])=>({
+      key:k,
+      avg:dims.reduce((s,d)=>s+((v[d]||50)),0)/dims.length,
+      data:dims.map(d=>v[d]||50),
+    })).sort((a,b)=>b.avg-a.avg).slice(0,4);
+    if(!famEntries.length){canvas.parentElement.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">ไม่มีข้อมูล capability</div>';return;}
+    const colors=['rgba(94,234,212,.3)','rgba(251,191,36,.3)','rgba(167,139,250,.3)','rgba(248,113,113,.3)'];
+    const borders=['rgba(94,234,212,1)','rgba(251,191,36,1)','rgba(167,139,250,1)','rgba(248,113,113,1)'];
+    const datasets=famEntries.map((f,i)=>({
+      label:f.key,data:f.data,
+      backgroundColor:colors[i],borderColor:borders[i],borderWidth:2,
+      pointBackgroundColor:borders[i],
+    }));
+    if(_capabilityRadarChart){try{_capabilityRadarChart.destroy();}catch(_){}}
+    _capabilityRadarChart=new Chart(canvas,{
+      type:'radar',
+      data:{labels:dimLabels,datasets:datasets},
+      options:{
+        plugins:{legend:{position:'bottom',labels:{color:'#cbd5e1',font:{size:10}}}},
+        scales:{r:{min:0,max:100,ticks:{color:'#64748b',backdropColor:'transparent',font:{size:9}},pointLabels:{color:'#cbd5e1',font:{size:11}},grid:{color:'rgba(148,163,184,.2)'},angleLines:{color:'rgba(148,163,184,.2)'}}},
+      },
+    });
+  }catch(e){
+    canvas.parentElement.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-xs);padding:12px">⚠️ '+e.message+'</div>';
+  }
+}
 

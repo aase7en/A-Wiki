@@ -960,3 +960,27 @@ def test_whats_new_badge_version_compare():
     """Badge must compare seen version against DASHBOARD_VERSION."""
     text = _read()
     assert "DASHBOARD_VERSION" in text, "DASHBOARD_VERSION constant must exist for badge comparison"
+
+
+# ── v14 CHUNK A14: agent capability radar chart ────────────────────────
+def test_render_capability_radar_exists():
+    text = _read()
+    assert "renderCapabilityRadar" in text, "renderCapabilityRadar function missing"
+
+
+def test_capability_radar_uses_chart_js_radar():
+    """Radar must use Chart.js type='radar'."""
+    text = _read()
+    idx = text.find("renderCapabilityRadar")
+    assert idx != -1, "renderCapabilityRadar missing"
+    after = text[idx : idx + 2000]
+    assert "radar" in after.lower(), "radar chart must use type=radar"
+
+
+def test_capability_radar_fetches_capabilities():
+    """Radar must fetch /api/capabilities."""
+    text = _read()
+    idx = text.find("async function renderCapabilityRadar")
+    assert idx != -1, "renderCapabilityRadar function definition missing"
+    after = text[idx : idx + 3000]
+    assert "/api/capabilities" in after, "radar must fetch /api/capabilities"

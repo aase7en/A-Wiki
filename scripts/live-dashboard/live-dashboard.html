@@ -547,7 +547,7 @@
     <button class="set-tab" data-pane="pane-help" onclick="setTab(this);renderHelpContent()">📖 คู่มือ</button>
     <button class="set-tab" data-pane="pane-chat" onclick="setTab(this);loadChatSettings()">💬 Chat</button>
     <button class="set-tab" data-pane="pane-admin" onclick="setTab(this);loadAdminPanel()">🔑 Admin</button>
-              <button class="set-tab" data-pane="pane-agents" onclick="setTab(this)">🤖 Agents</button>
+              <button class="set-tab" data-pane="pane-agents" onclick="setTab(this);renderCapabilityRadar()">🤖 Agents</button>
     <button class="set-tab" data-pane="pane-backup" onclick="setTab(this);loadBackupPane()">💾 Backup</button>
     <button class="set-tab" data-pane="pane-theme" onclick="setTab(this);loadThemePane()">🎨 Theme</button>
   </div>
@@ -563,6 +563,10 @@
               <div id="agent-chain-list" style="display:flex;flex-direction:column;gap:6px"></div>
               <div style="margin-top:12px;font-size:var(--fs-xs);color:var(--text-tertiary)">
                 <span id="agent-saved" style="color:var(--accent-success);display:none">✅ Saved</span>
+              </div>
+              <div style="margin-top:16px">
+                <h4 style="margin:0 0 8px;font-size:var(--fs-sm);color:var(--text-secondary)">📊 Model Capability Radar</h4>
+                <canvas id="capability-radar-canvas" height="260"></canvas>
               </div>
             </div>
 </div>
