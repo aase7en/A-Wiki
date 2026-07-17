@@ -43,7 +43,19 @@ _WIN_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" e
 
 
 def git_pull(repo_root):
-    """git pull --rebase to stay in sync."""
+    """git pull --rebase to stay in sync.
+
+    Z2 (Git Safety Net): backup HEAD ก่อน rebase + auto-recover ถ้าทิ้ง commits.
+    กัน commit หายจาก concurrent session rebase (เหตุการณ์ 2026-07-16).
+    """
+    # Z2: backup HEAD ก่อน rebase (safety net)
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import git_safety_backup as gsb
+        gsb.backup_head(repo_root)
+    except Exception:
+        pass  # backup failure ไม่ block pull
+
     try:
         result = subprocess.run(
             ["git", "pull", "--rebase", "origin", "main"],
@@ -56,6 +68,21 @@ def git_pull(repo_root):
         if result.returncode == 0:
             if "Already up to date" not in result.stdout:
                 sys.stderr.write(f"📥 Synced from origin: {result.stdout.strip()}\n")
+            # Z2: หลัง rebase สำเร็จ → ตรวจ lost commits
+            try:
+                lost = gsb.find_lost_commits(repo_root)
+                if lost:
+                    sys.stderr.write(
+                        f"⚠️ Rebase dropped {len(lost)} commit(s)! Auto-recovering...\n"
+                    )
+                    recovered = gsb.recover_lost_commits(repo_root)
+                    if recovered:
+                        sys.stderr.write(
+                            f"✓ Recovered {len(recovered)}/{len(lost)} commit(s). "
+                            f"(ถ้าไม่ครบ: python scripts/hooks/git_safety_backup.py --recover)\n"
+                        )
+            except Exception:
+                pass  # recovery check failure ไม่ block
         else:
             sys.stderr.write(f"⚠️ git pull warning: {result.stderr.strip()}\n")
     except subprocess.TimeoutExpired:
