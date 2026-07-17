@@ -1033,3 +1033,24 @@ def test_skill_heatmap_click_filter():
     assert idx != -1, "renderSkillHeatmap function definition missing"
     after = text[idx : idx + 3000]
     assert "onclick" in after.lower() or "click" in after.lower(), "heatmap cells must be clickable"
+
+
+# ── v14 CHUNK D14: summary view KPI cards ──────────────────────────────
+def test_render_kpi_cards_exists():
+    text = _read()
+    assert "renderKpiCards" in text, "renderKpiCards function missing"
+
+
+def test_kpi_cards_click_navigation():
+    """Each KPI card must navigate to its related view when clicked."""
+    text = _read()
+    idx = text.find("function renderKpiCards")
+    assert idx != -1, "renderKpiCards function definition missing"
+    after = text[idx : idx + 2500]
+    assert "setView" in after, "KPI cards must navigate via setView()"
+
+
+def test_kpi_cards_target_container():
+    """HTML must have a container for the KPI cards."""
+    html = HTML.read_text(encoding="utf-8")
+    assert 'id="kpi-cards"' in html or 'id="summary-kpi"' in html, "KPI cards container missing in HTML"

@@ -237,6 +237,32 @@ const TOUR_STEPS=[
   {title:'💾 Backup',body:'Settings → 💾 Backup: สำรอง preferences ทั้งหมดเป็น JSON — ย้ายระหว่างเครื่องได้.'},
   {title:'⌨️ Shortcuts + 🩺 Health',body:'กด ? เพื่อดู keyboard shortcuts. ใน Help (📖) มีปุ่มตรวจสุขภาพ dashboard. ทัวร์จบแล้ว!'},
 ];
+// CHUNK D14: Summary view KPI cards — quick stats with click navigation.
+// Fetches skills + cost data (TTL cached), renders 4 clickable cards.
+async function renderKpiCards(){
+  const container=document.getElementById('kpi-cards');
+  if(!container)return;
+  // Card 1: total skills (from cache or fetch).
+  let skills=_cacheGet('kpi-skills');
+  if(!skills){
+    try{const r=await fetch('/api/skills?limit=500').then(r=>r.json());skills=r.skills||[];_cacheSet('kpi-skills',skills,60);}catch(_){skills=[];}
+  }
+  const total=skills.length;
+  const avgHealth=skills.length?Math.round(skills.reduce((s,sk)=>s+((sk.health&&sk.health.score)||0),0)/skills.length):0;
+  // Card 3: active agents (from models config).
+  let agentCount=0;
+  try{const m=await fetch('/api/models').then(r=>r.json());agentCount=(m.models||[]).filter(x=>!x.disabled).length;}catch(_){}
+  // Card 4: weekly cost estimate (from cost history).
+  let weeklyCost=0;
+  try{const c=await fetch('/api/eval/cost').then(r=>r.json());const runs=c.runs||[];const recent=runs.slice(-7);recent.forEach(r=>{for(const s in (r.suites||{})){for(const md in r.suites[s]){weeklyCost+=r.suites[s][md].usd||0;}}});}catch(_){}
+  const cards=[
+    {icon:'🧩',label:'Total Skills',value:total,view:'skills',color:'var(--accent-brand)'},
+    {icon:'🩺',label:'Avg Health',value:avgHealth+'%',view:'coverage',color:avgHealth>=70?'var(--accent-success)':avgHealth>=40?'var(--accent-warm)':'var(--accent-danger)'},
+    {icon:'🤖',label:'Active Models',value:agentCount,view:'summary',color:'var(--accent-cool)'},
+    {icon:'💰',label:'Weekly Cost',value:'$'+weeklyCost.toFixed(2),view:'cost',color:'var(--accent-violet)'},
+  ];
+  container.innerHTML=cards.map(c=>'<div onclick="setView(\''+c.view+'\')" style="background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;cursor:pointer;flex:1;min-width:140px;transition:border-color .2s" onmouseover="this.style.borderColor=\''+c.color+'\'" onmouseout="this.style.borderColor=\'var(--border)\'"><div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:4px">'+c.icon+' '+c.label+'</div><div style="font-size:var(--fs-xl);font-weight:700;color:'+c.color+'">'+c.value+'</div></div>').join('');
+}
 function _tourShowOverlay(){
   let ov=document.getElementById('tour-overlay');
   if(!ov){
@@ -567,6 +593,7 @@ $('council-panel').style.display=v==='council'?'flex':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
+if(v==='summary')renderKpiCards();
 // CHUNK C10: skip heavy load on revisit unless force=true (Refresh button).
 // First-time visits still load as before; revisit uses cached render.
 const already=_loaded[v];
