@@ -122,6 +122,10 @@
           {
             "type": "command",
             "command": "bash .codex/hooks/post-push-todo-remind.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py memory-capture"
           }
         ]
       }

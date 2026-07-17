@@ -367,6 +367,7 @@ def run_steps(repo_root, lean: bool) -> None:
     git_pull(repo_root)
     clean_stale_cost_declarations(repo_root)
     show_todos(repo_root)
+    replay_memory_ledger(repo_root)  # Neural Spine: cross-session continuity
 
     if lean:
         sys.stderr.write(
@@ -381,6 +382,25 @@ def run_steps(repo_root, lean: bool) -> None:
     check_model_scout_freshness(repo_root)
     run_vendor_watch()
     run_skill_learning_watch()
+
+
+def replay_memory_ledger(repo_root) -> None:
+    """Neural Spine: surface recent ledger entries at session start.
+
+    Best-effort: never raises. Silent no-op if ledger missing (fresh install).
+    """
+    try:
+        import sys as _sys
+        _hooks_dir = os.path.join(repo_root, "scripts", "hooks")
+        if _hooks_dir not in _sys.path:
+            _sys.path.insert(0, _hooks_dir)
+        import memory_capture as _mc
+        ledger_path = os.path.join(repo_root, ".tmp", "memory-ledger.jsonl")
+        replay = _mc.replay_for_session_start(ledger_path, limit=5)
+        if replay:
+            sys.stderr.write(replay + "\n")
+    except Exception:
+        pass  # never break session start on ledger issues
 
 
 def main():
