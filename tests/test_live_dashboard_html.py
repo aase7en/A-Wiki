@@ -862,3 +862,31 @@ def test_skills_drawer_fullwidth_on_mobile():
     block = css[idx : idx + 1200]
     assert "#skills-detail" in block, "skills-detail must be in mobile media query"
     assert "100vw" in block, "skills-detail must be full-width (100vw) on mobile"
+
+
+# ── v13 CHUNK A13: Help pane refresh ───────────────────────────────────
+def test_render_help_content_exists():
+    text = _read()
+    assert "renderHelpContent" in text, "renderHelpContent function missing"
+
+
+def test_help_mentions_v10_v12_features():
+    """Help content must mention features added in v10-v12."""
+    text = _read()
+    # Find the function definition (not the onclick reference in HTML).
+    idx = text.find("function renderHelpContent")
+    assert idx != -1, "renderHelpContent function definition missing"
+    after = text[idx : idx + 4000]
+    assert "backup" in after.lower(), "Help must mention backup (v11)"
+    assert "theme" in after.lower(), "Help must mention theme editor (v12)"
+    assert "mobile" in after.lower(), "Help must mention mobile responsive (v12)"
+    assert "suggest" in after.lower(), "Help must mention smart suggestions (v11)"
+
+
+def test_help_version_badge():
+    """Help must show a version badge (dashboard version)."""
+    text = _read()
+    idx = text.find("function renderHelpContent")
+    assert idx != -1, "renderHelpContent function definition missing"
+    after = text[idx : idx + 4000]
+    assert "version" in after.lower() or "v1" in after, "Help must show version badge"

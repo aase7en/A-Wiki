@@ -171,6 +171,48 @@ function _maybeAutoBackup(){
   try{last=parseInt(localStorage.getItem(AUTO_BACKUP_LAST)||'0',10)||0;}catch(_){last=0;}
   if(Date.now()-last>AUTO_BACKUP_INTERVAL_MS)autoBackup();
 }
+// CHUNK A13: Help pane content — rendered in JS (not inline HTML) to keep
+// the HTML budget small. Covers v8-v12 features + basics + tips + shortcuts.
+const DASHBOARD_VERSION='v13.0.0';
+function renderHelpContent(){
+  const pane=document.getElementById('pane-help');
+  if(!pane)return;
+  pane.innerHTML=''
+    +'<div class="set-note">📖 คู่มือ Dashboard — version '+DASHBOARD_VERSION+'</div>'
+    +'<div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">'
+    // Basics section
+    +'<div class="glass-card" style="padding:12px">'
+    +'<div style="font-weight:600;color:var(--accent-brand);margin-bottom:6px">📖 พื้นฐาน</div>'
+    +'<ul style="margin:0;padding-left:18px;font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.6">'
+    +'<li><b>🌊 Flow</b> — จุดกำเนิด (🧠 Senior Critic) ส่งข้อมูลไหลทางท่อไปยังแต่ละ model</li>'
+    +'<li><b>🏊 Timeline</b> — lanes แตกแขนงตามเวลา; เขียว=สำเร็จ แดง=ล้มเหลว</li>'
+    +'<li><b>🔗 Graph</b> — knowledge-graph ของ session/task/agent</li>'
+    +'<li><b>🧩 Skills</b> — catalog ทั้งหมด + คำอธิบายไทย + simulation; filter ตาม agent</li>'
+    +'<li><b>Event Log</b> (ขวา) — timeline เหตุการณ์สด · <b>cost tier</b> L-1 ถูก → L4 แพง</li>'
+    +'</ul></div>'
+    // What's new in v10-v12
+    +'<div class="glass-card" style="padding:12px;border-color:var(--accent-violet)"'
+    +'><div style="font-weight:600;color:var(--accent-violet);margin-bottom:6px">✨ ใหม่ใน v10-v12</div>'
+    +'<ul style="margin:0;padding-left:18px;font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.6">'
+    +'<li><b>💾 Backup</b> (v11) — Settings → 💾 Backup: export/import preferences, auto-backup 7 วัน, usage meter</li>'
+    +'<li><b>🎨 Theme Editor</b> (v12) — Settings → 🎨 Theme: ปรับสี 8 tokens, live preview, preset save</li>'
+    +'<li><b>📱 Mobile Responsive</b> (v12) — view-toggle-bar scroll, skills-grid 2-up, modals 95vw บนมือถือ</li>'
+    +'<li><b>🔮 Smart Suggestions</b> (v11) — discovery bar แนะนำ skills จาก frequency × recency × co-occurrence</li>'
+    +'<li><b>⚡ Performance</b> (v10) — CDN defer, TTL cache (skills 60s / coverage 30s), lazy view init</li>'
+    +'<li><b>🧪 Playwright Tests</b> (v10) — browser smoke tests (optional: npm i && npx playwright install chromium)</li>'
+    +'</ul></div>'
+    // Tips
+    +'<div class="glass-card" style="padding:12px">'
+    +'<div style="font-weight:600;color:var(--accent-warm);margin-bottom:6px">💡 Tips</div>'
+    +'<ul style="margin:0;padding-left:18px;font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.6">'
+    +'<li>กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">?</kbd> เพื่อดู keyboard shortcuts</li>'
+    +'<li>กด <kbd style="background:var(--elev-2);padding:1px 6px;border-radius:3px;border:1px solid var(--border2)">Ctrl/⌘+K</kbd> เพื่อเปิด Command Palette</li>'
+    +'<li><b>?agent=zcode</b> ใน URL — filter skills ตาม agent ที่ใช้</li>'
+    +'<li>Workspace 💾 — บันทึก tab + scroll + filters เป็น workspace เพื่อเรียกคืน</li>'
+    +'<li>Compare ⚖️ — เปรียบเทียบ skills 2-3 ตัวพร้อมกัน</li>'
+    +'</ul></div>'
+    +'</div>';
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;
