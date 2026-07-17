@@ -43,6 +43,8 @@ def test_scan_does_not_crash_on_cp874_console(tmp_path):
         env=env,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=120,
     )
 

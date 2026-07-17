@@ -39,6 +39,10 @@ LINTED_FILES = sorted(HOOKS_DIR.glob("*.py")) + [
     REPO_ROOT / "scripts" / "check-privacy.py",
     REPO_ROOT / "scripts" / "lib" / "council_room.py",
     REPO_ROOT / "scripts" / "lib" / "skill_learning.py",
+    # C2a: extend ratchet into tests/ — test files that spawn child processes
+    # can hit the same cp874 UnicodeDecodeError as scripts. Pinned the single
+    # text-mode subprocess.run call in test_check_privacy.py (line ~40).
+    REPO_ROOT / "tests" / "test_check_privacy.py",
 ]
 
 
