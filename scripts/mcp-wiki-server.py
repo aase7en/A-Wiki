@@ -577,6 +577,16 @@ TOOLS = {
     },
 }
 
+# ── Neural Spine tools (merged in) ────────────────────────────────────────
+# Phase 1 primitives: memory_recall/remember, bb_post/read/reply,
+# task_add/claim/release/list/update. See scripts/lib/neural_spine_mcp.py
+try:
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+    import neural_spine_mcp as _ns
+    TOOLS.update(_ns.TOOLS)
+except Exception as _e:
+    sys.stderr.write(f"[mcp-wiki-server] Neural Spine tools load failed: {_e}\n")
+
 RESOURCES = {
     "wiki://overview": {
         "fn": resource_wiki_overview,
