@@ -941,3 +941,22 @@ def test_health_check_timeout():
     assert idx != -1, "runHealthCheck function definition missing"
     after = text[idx : idx + 3000]
     assert "5000" in after or "AbortController" in after or "timeout" in after.lower(), "health check must use timeout"
+
+
+# ── v13 CHUNK D13: "What's new" badge ──────────────────────────────────
+def test_whats_new_badge_storage_key():
+    """Badge must track seen version via awiki-seen-version key."""
+    text = _read()
+    assert "awiki-seen-version" in text, "awiki-seen-version key missing"
+
+
+def test_whats_new_badge_function_exists():
+    """Badge show/hide logic must exist."""
+    text = _read()
+    assert "updateWhatsNewBadge" in text or "whatsNewBadge" in text.lower() or "_maybeShowBadge" in text, "what's new badge function missing"
+
+
+def test_whats_new_badge_version_compare():
+    """Badge must compare seen version against DASHBOARD_VERSION."""
+    text = _read()
+    assert "DASHBOARD_VERSION" in text, "DASHBOARD_VERSION constant must exist for badge comparison"

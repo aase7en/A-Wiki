@@ -327,6 +327,25 @@ async function runHealthCheck(){
     return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="font-size:var(--fs-sm)">'+icon+'</span><span style="font-weight:600;color:'+color+';font-size:var(--fs-xs);min-width:120px">'+r.label+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-2xs);font-family:var(--font-mono)">'+r.detail+'</span></div>';
   }).join('');
 }
+// CHUNK D13: "What's new" badge — red dot on Settings cog when version changes.
+// Compares awiki-seen-version against DASHBOARD_VERSION. Clicking Settings clears it.
+const SEEN_VERSION_KEY='awiki-seen-version';
+function updateWhatsNewBadge(){
+  let seen='';
+  try{seen=localStorage.getItem(SEEN_VERSION_KEY)||'';}catch(_){}
+  const badge=document.getElementById('whats-new-badge');
+  if(!badge)return;
+  if(seen!==DASHBOARD_VERSION){
+    badge.style.display='inline-block';
+    badge.title='มี features ใหม่ใน '+DASHBOARD_VERSION+' — ดูใน Help (📖)';
+  }else{
+    badge.style.display='none';
+  }
+}
+function clearWhatsNewBadge(){
+  try{localStorage.setItem(SEEN_VERSION_KEY,DASHBOARD_VERSION);}catch(_){}
+  updateWhatsNewBadge();
+}
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
 let _trapLastFocused=null,_trapHandler=null;
@@ -570,3 +589,5 @@ syncUrlState();
 try{_maybeAutoBackup();}catch(_){}
 // CHUNK B13: start first-run tour for new users (2.5s delay after boot).
 try{_maybeStartTour();}catch(_){}
+// CHUNK D13: show "what's new" badge if version changed.
+try{updateWhatsNewBadge();}catch(_){}
