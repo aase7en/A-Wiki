@@ -93,37 +93,60 @@ def find_lost_commits(
     repo_root: Path | str = REPO_ROOT,
     backup_file: Path | str = BACKUP_FILE,
 ) -> list[str]:
-    """Find commit hashes in backup that are NOT reachable from current HEAD.
+    """Find ALL commits dropped by rebase/reset — not just the backup HEAD.
 
-    These are dangling commits dropped by rebase/reset.
-    Returns list of commit hashes (newest backup first).
+    Bug fixed 2026-07-17: previously this returned only the backup HEAD hash
+    itself. When a session made N unpushed commits and rebase dropped all N,
+    only the last one was recovered — earlier commits' files stayed lost.
+    Now for each backup HEAD that is not reachable from current HEAD, we
+    enumerate ALL commits in that backup HEAD's history that are NOT on the
+    current HEAD (``git rev-list <backup_head> --not HEAD``). This returns
+    every dropped commit, oldest-first, so recover_lost_commits() can
+    cherry-pick them in order.
+
+    Returns list of commit hashes (oldest-first within each backup; backups
+    checked newest-first so the most recent loss wins on duplicates).
     """
     backups = _load_backups(backup_file)
     if not backups:
         return []
     try:
-        # Get all commits reachable from HEAD
+        # Get all commits reachable from current HEAD
         reachable = set(
             _git(["rev-list", "HEAD"], repo_root).splitlines()
         )
     except Exception:
         return []
 
-    lost = []
-    seen = set()
+    lost: list[str] = []
+    seen_backup_heads: set[str] = set()
     # Check backups newest-first (most recent loss is most relevant)
     for entry in reversed(backups):
         head = entry.get("head", "")
-        if not head or head in seen:
+        if not head or head in seen_backup_heads:
             continue
-        seen.add(head)
-        if head not in reachable:
-            # Verify the commit still exists in git objects (dangling)
-            try:
-                _git(["cat-file", "-t", head], repo_root)
-                lost.append(head)
-            except Exception:
-                continue  # commit garbage-collected, skip
+        seen_backup_heads.add(head)
+        if head in reachable:
+            continue  # this backup is still on HEAD — no loss from it
+        # Verify the backup HEAD still exists in git objects (dangling)
+        try:
+            _git(["cat-file", "-t", head], repo_root)
+        except Exception:
+            continue  # commit garbage-collected, skip
+        # Enumerate ALL commits in this backup HEAD not reachable from
+        # current HEAD. --not HEAD = exclude commits reachable from HEAD.
+        # Order: oldest-first (so cherry-pick applies them in order).
+        try:
+            dropped = _git(
+                ["rev-list", "--reverse", head, "--not", "HEAD"],
+                repo_root,
+            ).splitlines()
+        except Exception:
+            # rev-list failed (e.g. HEAD unborn) — fall back to just the head
+            dropped = [head]
+        for c in dropped:
+            if c and c not in reachable and c not in lost:
+                lost.append(c)
     return lost
 
 

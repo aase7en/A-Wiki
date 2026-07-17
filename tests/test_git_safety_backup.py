@@ -159,6 +159,47 @@ def test_recover_lost_commits_restores_files(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# 7b. recover_lost_commits — restores ALL commits, not just HEAD
+# ---------------------------------------------------------------------------
+# Bug found 2026-07-17 via real end-to-end simulation: when session A makes
+# 2 unpushed commits and rebase drops BOTH, backup_head() only stored the
+# final HEAD hash. find_lost_commits() found only HEAD, so recover restored
+# only the HEAD commit's delta (the last file) — the earlier commit's file
+# stayed lost. Fix: find_lost_commits() must enumerate ALL commits in the
+# backup HEAD that are not on origin, not just the HEAD itself.
+# ---------------------------------------------------------------------------
+def test_recover_lost_commits_restores_all_commits_not_just_head(tmp_path):
+    """2 commits → backup → both dropped → recover → BOTH files restored."""
+    repo = _make_repo(tmp_path)
+    # commit 1: file_one.txt
+    (repo / "file_one.txt").write_text("first work")
+    _run_git(["add", "."], repo)
+    _run_git(["commit", "-m", "work 1: file_one"], repo)
+    # commit 2: file_two.txt (new HEAD)
+    (repo / "file_two.txt").write_text("second work")
+    _run_git(["add", "."], repo)
+    _run_git(["commit", "-m", "work 2: file_two"], repo)
+    # backup (stores final HEAD = commit 2)
+    backup_file = tmp_path / "backup.jsonl"
+    gsb.backup_head(repo, backup_file=backup_file)
+    # simulate rebase dropping BOTH commits
+    initial = _run_git(["rev-list", "--max-parents=0", "HEAD"], repo)
+    _run_git(["reset", "--hard", initial], repo)
+    assert not (repo / "file_one.txt").exists()
+    assert not (repo / "file_two.txt").exists()
+    # recover — must restore BOTH files, not just the HEAD commit
+    recovered = gsb.recover_lost_commits(repo, backup_file=backup_file)
+    assert len(recovered) >= 2, (
+        f"expected >=2 commits recovered, got {len(recovered)} — "
+        f"find_lost_commits() is missing earlier commits"
+    )
+    assert (repo / "file_one.txt").exists(), "file_one.txt (earlier commit) must be restored"
+    assert (repo / "file_two.txt").exists(), "file_two.txt (HEAD commit) must be restored"
+    assert (repo / "file_one.txt").read_text() == "first work"
+    assert (repo / "file_two.txt").read_text() == "second work"
+
+
+# ---------------------------------------------------------------------------
 # 8. is_rebase_command — detects git pull --rebase / git rebase
 # ---------------------------------------------------------------------------
 def test_is_rebase_command_detects_pull_rebase():
@@ -226,6 +267,30 @@ def test_z3_hook_registered_in_settings():
         "Z3 hook (check-git-rebase-safety) is NOT registered in "
         ".claude/settings.json PreToolUse → Bash. It exists as a file but "
         "will never run. Wire it in."
+    )
+
+
+def test_z3_hook_registered_in_codex_settings():
+    """Z3 MUST also be registered in .codex/hooks.json (Codex uses same format).
+
+    Codex is the second hook-aware agent. Without this, Z3 only protects
+    Claude Code users. Universal coverage requires wiring all hook-aware
+    agent configs that use explicit matcher lists.
+    """
+    settings_path = REPO_ROOT / ".codex" / "hooks.json"
+    if not settings_path.is_file():
+        pytest.skip(".codex/hooks.json not present on this machine")
+    settings = json.loads(settings_path.read_text(encoding="utf-8"))
+    pretooluse = settings.get("hooks", {}).get("PreToolUse", [])
+    bash_hooks = []
+    for group in pretooluse:
+        if group.get("matcher") == "Bash":
+            for h in group.get("hooks", []):
+                bash_hooks.append(h.get("command", ""))
+    joined = " ".join(bash_hooks)
+    assert "check-git-rebase-safety" in joined or "check_git_rebase_safety" in joined, (
+        "Z3 hook (check-git-rebase-safety) is NOT registered in "
+        ".codex/hooks.json PreToolUse → Bash. Codex users are unprotected."
     )
 
 
