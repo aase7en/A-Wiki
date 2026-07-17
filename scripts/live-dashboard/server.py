@@ -904,6 +904,26 @@ class Handler(BaseHTTPRequestHandler):
                 })
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/bb":
+            # Neural Spine C8: read Blackboard messages.
+            # Query: ?since_ts=0&to_filter=<agent>&thread_id=<id>&limit=200
+            try:
+                from urllib.parse import parse_qs
+                import sys as _sys
+                _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+                import blackboard as _bb
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = parse_qs(qs)
+                bb_path = REPO_ROOT / ".tmp" / "blackboard.jsonl"
+                msgs = _bb.Blackboard(bb_path).read(
+                    since_ts=float(params.get("since_ts", ["0"])[0]),
+                    thread_id=params.get("thread_id", [None])[0],
+                    to_filter=params.get("to_filter", [None])[0],
+                    limit=int(params.get("limit", ["200"])[0]),
+                )
+                self._json_response({"messages": msgs})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path == "/api/eval/suite":
             # X1: GET ?name=X → load suite; no name → 400.
             try:
@@ -950,6 +970,30 @@ class Handler(BaseHTTPRequestHandler):
                 body = self._read_body()
                 suite_editor.write_suite(body)
                 self._json_response({"ok": True, "suite": body.get("suite", ""), "path": f"evals/subagents/{body.get('suite','')}.json"})
+            except ValueError as e:
+                self._json_response({"error": str(e)}, 400)
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/bb":
+            # Neural Spine C8: post a Blackboard message.
+            # Body: {frm, to, body, type?, thread_id?}
+            try:
+                import sys as _sys
+                _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+                import blackboard as _bb
+                body = self._read_body()
+                if not body.get("frm") or not body.get("to") or not body.get("body"):
+                    self._json_response({"error": "frm, to, body required"}, 400)
+                    return
+                bb_path = REPO_ROOT / ".tmp" / "blackboard.jsonl"
+                msg_id = _bb.Blackboard(bb_path).post(
+                    frm=body["frm"],
+                    to=body["to"],
+                    body=body["body"],
+                    msg_type=body.get("type", "msg"),
+                    thread_id=body.get("thread_id"),
+                )
+                self._json_response({"ok": True, "id": msg_id})
             except ValueError as e:
                 self._json_response({"error": str(e)}, 400)
             except Exception as e:
