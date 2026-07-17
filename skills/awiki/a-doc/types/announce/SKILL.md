@@ -1,8 +1,8 @@
 ---
 name: a-doc-announce
-description: "ประกาศโรงพยาบาล / ประกาศนโยบาย — CANONICAL สมบูรณ์. Source: ประกาศนโยบายประหยัดพลังงาน รพ.อุทัย (Poppy Javis analysis). Font TH SarabunIT๙, A4, margins L3cm/R2cm, ตราครุฑกลาง, ลำดับเลข 1./1.1. Trigger: 'ประกาศ', 'นโยบาย', 'policy', 'ประกาศนโยบาย'"
+description: "ประกาศโรงพยาบาล / ประกาศนโยบาย — CANONICAL สมบูรณ์. Source: ประกาศนโยบายจริง (de-identified) (Poppy Javis analysis). Font TH SarabunIT๙, A4, margins L3cm/R2cm, ตราครุฑกลาง, ลำดับเลข 1./1.1. Trigger: 'ประกาศ', 'นโยบาย', 'policy', 'ประกาศนโยบาย'"
 version: 1.0.0
-author: A-Wiki (จาก ประกาศ รพ.อุทัย)
+author: A-Wiki (จากไฟล์ประกาศจริง (de-identified))
 domain: [document, thai]
 lifecycle_phase: build
 category: pipeline
@@ -24,13 +24,13 @@ invocation: both
 - คำสั่งแต่งตั้งคณะกรรมการ → `types/order/`
 - บันทึกข้อความ → `types/memo/`
 
-## ไฟล์ตัวอย่างใน `_uThaiHos`
+## ไฟล์ตัวอย่างใน `<WORK_DIR>`
 
 | ไฟล์ | pattern |
 |---|---|
 | `20240711_นโยบายสิ่งแวดล้อม.pdf` | ประกาศนโยบาย |
 | `20260306_นโยบายความปลอดภัยและสิ่งแวดล้อม.pdf` | ประกาศนโยบายรวม |
-| ประกาศนโยบายประหยัดพลังงาน รพ.อุทัย (analyzed) | canonical |
+| ประกาศนโยบายจริง (de-identified) (analyzed) | canonical |
 
 ## Style profile
 
@@ -49,7 +49,7 @@ invocation: both
 "ประกาศนโยบาย..."
 
 [บล็อกเปิด — Quote center 12pt]
-"โรงพยาบาลอุทัย ได้ตระหนักถึงความสำคัญของ..."
+"<HOSPITAL_NAME> ได้ตระหนักถึงความสำคัญของ..."
 
 [เนื้อหา — Normal left 14pt]
 [หัวข้อรอง — H2 bold+u 14pt]
@@ -70,7 +70,7 @@ invocation: both
 
            (ลายเซ็น)
            (นาย X)
-           ผู้อำนวยการโรงพยาบาลอุทัย
+           ผู้อำนวยการ <HOSPITAL_NAME>
 ```
 
 ## docx-js skeleton
@@ -119,7 +119,7 @@ const doc = new Document({
       // บล็อกเปิด
       new Paragraph({
         style: "Quote",
-        children: [new TextRun({ text: "โรงพยาบาลอุทัย ได้ตระหนักถึง..." })]
+        children: [new TextRun({ text: "<HOSPITAL_NAME> ได้ตระหนักถึง..." })]
       }),
 
       // เนื้อหา

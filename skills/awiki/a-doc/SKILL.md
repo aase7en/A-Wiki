@@ -14,7 +14,7 @@ invocation: both
 
 Aggregator สำหรับเอกสารราชการ — router + grill format + dispatch ไป type-specific subskill
 
-> **ออกแบบจากไฟล์งานจริง `A:\_uThaiHos`** — 7 หมวดงาน, 135 subdirs, 464 เอกสาร
+> **ออกแบบจากไฟล์งานจริง `A:\<WORK_DIR>`** — 7 หมวดงาน, 135 subdirs, 464 เอกสาร
 > Pattern ข้ามหมวด: ประกาศ/คำสั่ง/บันทึก/โครงการ/WI-SP/PR-QT-PO/JD/รายงาน/แบบบันทึก
 
 ## เมื่อไหร่ใช้
@@ -72,7 +72,7 @@ Q2 Margins (DXA, default ราชการไทย):
    - Right: 2cm (default) | custom
 Q3 Font:
    - TH SarabunPSK 16pt (default มาตรฐานราชการใหม่)
-   - TH SarabunIT๙ 16pt (รพ.อุทัย)
+   - TH SarabunIT๙ 16pt (<HOSPITAL>)
    - TH SarabunNew 16pt
    - Cordia New 14pt
    - Angsana New 14pt
@@ -123,7 +123,7 @@ a-doc/
 ├── SKILL.md                          ← ไฟล์นี้ (router)
 ├── style-profiles/                   ← shared font/margins profiles
 │   ├── _template.md
-│   ├── hospital-announce.md          ← จาก ประกาศ รพ.อุทัย (Poppy analysis)
+│   ├── hospital-announce.md          ← จากไฟล์ประกาศจริง (de-identified) (Poppy analysis)
 │   ├── gov-letter-standard.md        ← ราชการมาตรฐาน L3cm/R2cm
 │   └── procedure-wi-sp.md            ← WI/SP/WP QA format
 └── types/                            ← 8+ ประเภทเอกสาร
@@ -142,15 +142,15 @@ a-doc/
 **หลักการ (กันสับสน)**:
 - `types/<X>/` = ประเภทเนื้อหา (1 folder = 1 type) — เพิ่ม type = copy `_template/`
 - `style-profiles/<X>.md` = รูปแบบตัวอักษร/margins (แชร์ข้าม type) — 1 profile ใช้ได้หลาย type
-- STUB = heading + TODO (รอ user สอน + มีไฟล์ตัวอย่างใน `_uThaiHos`)
-- ANNOUNCE = canonical สมบูรณ์ (จากประกาศ รพ.อุทัย)
+- STUB = heading + TODO (รอ user สอน + มีไฟล์ตัวอย่างใน `<WORK_DIR>`)
+- ANNOUNCE = canonical สมบูรณ์ (จากไฟล์ประกาศจริง (de-identified))
 
 ## Rationalization table
 
 | ข้ออ้าง | คำตอบโต้ |
 |---|---|
 | "ใช้ default ไปเลย" | ราชการมีหลายมาตรฐาน (ม.ค. / รพ. / กทม.) — ต้อง confirm |
-| "font SarabunPSK อยู่แล้ว" | รพ.อุทัยใช้ SarabunIT๙ — ต้องถามทุกครั้ง |
+| "font SarabunPSK อยู่แล้ว" | <HOSPITAL>ใช้ SarabunIT๙ — ต้องถามทุกครั้ง |
 | "เลข 123 ก็ได้" | ราชการไทย = เลขไทย (๑๒๓); เลขอารบิก = เอกสารสากล |
 | "ข้าม validate" | docx corrupt เปิดไม่ได้ทำได้บ่อย — validate ทุกครั้ง |
 
@@ -158,7 +158,7 @@ a-doc/
 
 **ใช้งาน**:
 ```
-/A-Doc สร้างประกาศนโยบายความปลอดภัย รพ.อุทัย ปี 69
+/A-Doc สร้างประกาศนโยบายความปลอดภัย <HOSPITAL> ปี 69
 → detect: announce (keyword "ประกาศ")
 → grill: A4? SarabunIT๙? L3cm/R2cm? เลขไทย? พ.ศ.?
 → dispatch: types/announce/SKILL.md (canonical)

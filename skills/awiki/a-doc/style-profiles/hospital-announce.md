@@ -1,6 +1,6 @@
 # Style Profile: Hospital Announce (ประกาศโรงพยาบาล)
 
-> Source: ประกาศนโยบายประหยัดพลังงาน รพ.อุทัย (analyzed via python-docx by Poppy Javis)
+> Source: ประกาศนโยบายจริง (de-identified) (analyzed via python-docx by Poppy Javis)
 > Verified: 2026-07-16
 > ใช้กับ: types/announce/, types/order/, types/policy/
 
@@ -121,7 +121,7 @@ const doc = new Document({
 [ลงนาม — center]
   (ลายเซ็น)
   นาย X
-  ผู้อำนวยการโรงพยาบาลอุทัย
+  ผู้อำนวยการ <HOSPITAL_NAME>
 ```
 
 ## Numbering
@@ -134,7 +134,7 @@ const doc = new Document({
 
 - กึ่งกลางหน้า บนสุด
 - ใช้ซ้ำเมื่อขึ้นหัวข้อใหญ่ใหม่ (เช่น หน้า 2)
-- image path: ดูใน `_uThaiHos/06_Projects_Training_03_Logos_โลโก้/`
+- image path: ดูใน `<WORK_DIR>/06_Projects_Training_03_Logos_โลโก้/`
 
 ## Notes
 

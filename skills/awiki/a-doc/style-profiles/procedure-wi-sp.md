@@ -1,7 +1,7 @@
 # Style Profile: WI/SP/WP Procedure (คู่มือมาตรฐาน QA)
 
 > Quality Assurance document — Work Instruction / Standard Procedure / Work Procedure
-> Pattern จาก `WI-EOH-001-00`, `SP-EOH-002-00`, `WP-ENV-001` (ไฟล์จริงใน `_uThaiHos`)
+> Pattern จาก `WI-EOH-001-00`, `SP-EOH-002-00`, `WP-ENV-001` (ไฟล์จริงใน `<WORK_DIR>`)
 > ใช้กับ: types/procedure/
 > Verified: 2026-07-16
 
@@ -118,9 +118,9 @@ const doc = new Document({
 
 | Code | หัวข้อ | ที่มา |
 |---|---|---|
-| WI-EOH-001-00 | ระบบบำบัดน้ำเสียใน รพ.อุทัย | `_uThaiHos/05_Finance_Admin_07_Policies_/_QA/` |
+| WI-EOH-001-00 | ระบบบำบัดน้ำเสียใน <HOSPITAL> | `<WORK_DIR>/05_Finance_Admin_07_Policies_/_QA/` |
 | SP-EOH-002-00 | การดูแลจัดเก็บและขนย้ายมูลฝอย | same |
-| WP-ENV-001 | วิธีปฏิบัติงานมูลฝอย | `_uThaiHos/05_Finance_Admin_07_Policies_/_คู่มือปฏิบัติงาน/` |
+| WP-ENV-001 | วิธีปฏิบัติงานมูลฝอย | `<WORK_DIR>/05_Finance_Admin_07_Policies_/_คู่มือปฏิบัติงาน/` |
 | WP-ENV-002 | วิธีปฏิบัติงานระบบบำบัดน้ำเสีย | same |
 
 ## Notes

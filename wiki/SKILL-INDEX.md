@@ -494,7 +494,7 @@
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
 | `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
-| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย |
+| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
 | `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
 | `a-doc-jd` | build | pipeline | job description — stub รอสอน |
 | `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |
@@ -573,7 +573,7 @@
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
 | `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
-| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย |
+| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
 | `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
 | `a-doc-jd` | build | pipeline | job description — stub รอสอน |
 | `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |

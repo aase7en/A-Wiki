@@ -254,9 +254,9 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "ประกาศโรงพยาบาล — CANONICAL สมบูรณ์จาก ประกาศ รพ.อุทัย. TH SarabunIT๙, A4, margins L3cm/R2cm, ตราครุฑ, ลำดับเลข 1./1.1",
+      "description": "ประกาศโรงพยาบาล — CANONICAL สมบูรณ์จาก ประกาศ <HOSPITAL>. TH SarabunIT๙, A4, margins L3cm/R2cm, ตราครุฑ, ลำดับเลข 1./1.1",
       "invocation": "both",
-      "th_description": "ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง รพ.อุทัย",
+      "th_description": "ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL>",
       "when_to_use": "ประกาศนโยบาย/แนวทาง ของ รพ.",
       "examples": [
         {
