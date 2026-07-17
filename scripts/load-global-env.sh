@@ -31,13 +31,15 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_NAME=""
 QUIET=0
 PRINT_ONLY=0
-for arg in "$@"; do
+while [ "$#" -gt 0 ]; do
+    arg="$1"
     case "$arg" in
-        --repo) REPO_NAME="${2:-${REPO_NAME}}"; shift ;;
-        --repo=*) REPO_NAME="${arg#*=}" ;;
-        --quiet) QUIET=1 ;;
-        --print) PRINT_ONLY=1 ;;
+        --repo) REPO_NAME="${2:-}"; shift 2 ;;
+        --repo=*) REPO_NAME="${arg#*=}"; shift ;;
+        --quiet) QUIET=1; shift ;;
+        --print) PRINT_ONLY=1; shift ;;
         --help|-h) sed -n '2,30p' "${BASH_SOURCE[0]:-$0}" | sed 's/^# \{0,1\}//'; return 0 2>/dev/null || exit 0 ;;
+        *) shift ;;
     esac
 done
 
