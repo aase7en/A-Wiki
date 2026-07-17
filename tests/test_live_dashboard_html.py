@@ -915,3 +915,29 @@ def test_tour_active_flag_exists():
     """_tourActive flag must exist to suppress other toasts during tour."""
     text = _read()
     assert "_tourActive" in text, "_tourActive flag missing"
+
+
+# ── v13 CHUNK C13: dashboard health check ──────────────────────────────
+def test_run_health_check_exists():
+    text = _read()
+    assert "runHealthCheck" in text, "runHealthCheck function missing"
+
+
+def test_health_check_items():
+    """Health check must cover SSE, API, localStorage, and CDN."""
+    text = _read()
+    idx = text.find("async function runHealthCheck")
+    assert idx != -1, "runHealthCheck function definition missing"
+    after = text[idx : idx + 3000]
+    assert "SSE" in after or "live-dot" in after or "connected" in after.lower(), "SSE check missing"
+    assert "/api/" in after, "API check missing"
+    assert "localStorage" in after or "5*1024*1024" in after, "localStorage check missing"
+
+
+def test_health_check_timeout():
+    """Health check must use a timeout (5s) so it doesn't hang."""
+    text = _read()
+    idx = text.find("async function runHealthCheck")
+    assert idx != -1, "runHealthCheck function definition missing"
+    after = text[idx : idx + 3000]
+    assert "5000" in after or "AbortController" in after or "timeout" in after.lower(), "health check must use timeout"

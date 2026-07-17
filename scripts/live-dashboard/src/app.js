@@ -211,6 +211,14 @@ function renderHelpContent(){
     +'<li>Workspace 💾 — บันทึก tab + scroll + filters เป็น workspace เพื่อเรียกคืน</li>'
     +'<li>Compare ⚖️ — เปรียบเทียบ skills 2-3 ตัวพร้อมกัน</li>'
     +'</ul></div>'
+    // Health check section
+    +'<div class="glass-card" style="padding:12px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+    +'<div style="font-weight:600;color:var(--accent-success)">🩺 ตรวจสุขภาพ Dashboard</div>'
+    +'<button onclick="runHealthCheck()" style="padding:5px 12px;border-radius:var(--r-md);border:1px solid var(--accent-success);background:var(--elev-2);color:var(--accent-success);font-size:var(--fs-2xs);cursor:pointer">ตรวจเลย</button>'
+    +'</div>'
+    +'<div id="health-check-result" style="font-size:var(--fs-xs)">กดปุ่มเพื่อตรวจ SSE/API/localStorage/CDN</div>'
+    +'</div>'
     +'</div>';
 }
 // CHUNK B13: first-run toast tour — 7 steps guiding new users through key features.
@@ -276,6 +284,48 @@ function _maybeStartTour(){
   let done=false;
   try{done=localStorage.getItem(TOUR_COMPLETED_KEY)==='1';}catch(_){}
   if(!done)setTimeout(startTour,2500);
+}
+// CHUNK C13: dashboard health check — async checks with 5s timeout each.
+// Renders a checklist (✅/❌/ℹ️) into the Help pane.
+const HEALTH_CHECK_TIMEOUT=5000;
+async function runHealthCheck(){
+  const target=document.getElementById('health-check-result');
+  if(!target)return;
+  target.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs)">⏳ กำลังตรวจ...</div>';
+  const results=[];
+  // 1. SSE connection
+  const dot=document.getElementById('live-dot');
+  const sseOk=dot&&dot.classList.contains('on');
+  results.push({ok:sseOk,label:'SSE Connection',detail:sseOk?'เชื่อมต่อแล้ว':'ยังไม่ได้เชื่อมต่อ',info:false});
+  // 2. API responsiveness (with timeout)
+  try{
+    const ctrl=new AbortController();
+    const to=setTimeout(()=>ctrl.abort(),HEALTH_CHECK_TIMEOUT);
+    const t0=Date.now();
+    const r=await fetch('/api/skills?limit=1',{signal:ctrl.signal});
+    clearTimeout(to);
+    const ms=Date.now()-t0;
+    results.push({ok:r.ok&&ms<5000,label:'API Response',detail:'/api/skills '+ms+'ms',info:false});
+  }catch(e){
+    results.push({ok:false,label:'API Response',detail:'timeout/error: '+(e.message||e),info:false});
+  }
+  // 3. localStorage usage
+  let lsBytes=0;
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);lsBytes+=(k||'').length+(localStorage.getItem(k)||'').length;}}catch(_){}
+  const lsPct=(lsBytes/(5*1024*1024)*100);
+  results.push({ok:lsPct<80,label:'localStorage',detail:lsBytes+'B ('+lsPct.toFixed(1)+'% of 5MB)',info:false});
+  // 4. CDN loaded (vis-network + sortablejs)
+  const visOk=typeof window.vis!=='undefined';
+  const sortOk=typeof window.Sortable!=='undefined';
+  results.push({ok:visOk&&sortOk,label:'CDN Libraries',detail:'vis:'+visOk+' sortable:'+sortOk,info:false});
+  // 5. Playwright (info only — optional dep, not a failure)
+  results.push({ok:true,label:'Playwright',detail:'optional dep — run npm i to enable browser tests',info:true});
+  // Render
+  target.innerHTML=results.map(r=>{
+    const icon=r.info?'ℹ️':(r.ok?'✅':'❌');
+    const color=r.info?'var(--text-tertiary)':(r.ok?'var(--accent-success)':'var(--accent-danger)');
+    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)"><span style="font-size:var(--fs-sm)">'+icon+'</span><span style="font-weight:600;color:'+color+';font-size:var(--fs-xs);min-width:120px">'+r.label+'</span><span style="color:var(--text-tertiary);font-size:var(--fs-2xs);font-family:var(--font-mono)">'+r.detail+'</span></div>';
+  }).join('');
 }
 // CHUNK D9: focus trap + restore for modals (WCAG 2.4.3 Focus Order).
 // Usage: _openModalTrap(modalEl) on open, _closeModalTrap() on close.
