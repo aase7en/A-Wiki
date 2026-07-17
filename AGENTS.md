@@ -158,7 +158,7 @@ Before writing **any** new file, decide where it lives. The wrong choice either 
 3. **If parallel model violates #1 or #2 → DISCARD and REWRITE**
 4. **raw/ is immutable** — never edit or delete (hook-protected)
 5. **Config files (AGENTS.md, CLAUDE.md) must not be edited without explicit permission**
-6. **Private/heavy data stays in `drive/`** — never hardcode user/account cloud paths; use `drive/` or `A_WIKI_DRIVE_PATH`. See the full "🧭 Storage Decision Rule" section above.
+6. **Private/heavy data stays in `drive/`** — never hardcode user/account cloud paths; use `drive/` or `A_WIKI_DRIVE_PATH`. See the full "🧭 Storage Decision Rule" section above. **รวมถึงชื่อสถานที่ทำงานจริง** (เช่น "รพ.X", "โรงพยาบาล X") — ห้าม publish ใน public repo; ใช้ placeholder `<HOSPITAL>` / `<HOSPITAL_NAME>` / `<WORK_DIR>` แทน. Pre-commit: `python scripts/check-privacy.py`. Lesson: 2026-07-16 scrub 'รพ.X' → placeholder หลัง privacy scan พบ 25 P0.
 7. **External-editor source-of-truth protection** — files iterated in tools outside git (Tampermonkey userscripts, browser snippets) require `USERSCRIPT_SYNC_OK=<version>` env var matching the file's `// @version` header before any Edit/Write. Enforced by `scripts/hooks/check_external_editor_drift.py`. Rationale: 2026-05-27 incident — git baseline was v0.1.0 but Tampermonkey copy was v0.8.0; editing git directly would have downgraded the live tool and destroyed 7 iterations of work.
 8. **Source provenance — `raw/` first, always** — when ingesting any URL/article/pasted text, the raw content MUST be saved to `raw/<slug>.<ext>` (auto-syncs to Google Drive via the `raw → drive/raw` symlink) BEFORE creating `wiki/sources/<slug>.md`. The source's `original_file:` frontmatter field is mandatory and must point at a real file under `raw/`. Enforced by `scripts/hooks/check_source_original_file.py` (PreToolUse Write/Edit/MultiEdit blocker). Grandfather clause: edits to legacy sources that were already non-compliant pass — only regressions and new Writes are blocked. Override (emergencies only): `HOOK_SKIP=check_source_original_file`. Rationale: 2026-05-30 Velxio ingest skipped raw-save, lost provenance, had to be corrected in-session. See [[ingest-flow-raw-first]] memory.
 9. **Bot trading client is MOCK/visualization-only** — no secrets stored, no signed requests, no order execution in client code; see `docs/protocols/bot-trading-iron-law.md`.
@@ -292,8 +292,40 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 | garrytan/gbrain | external MCP (Bun + PGLite/Postgres) | opt-in — `bash scripts/setup-optional-mcp.sh --gbrain` | Memory/synthesis layer with self-wiring knowledge graph — not auto-installed (own runtime+DB) → [[gbrain]] |
 | **bytedance/deer-flow** | `wiki/entities/ai-tools/deer-flow.md` (entity page only) | **REJECTED** — redundant with Hermes | Long-horizon harness — considered then declined (overlaps Hermes swarm + too app-shaped for brain-improvement-gate). See entity page for rationale. **Replaced by:** [[hermes-agent]]. Zero integration: no script, no MCP, no dependency. |
 | **env-wastewater-webapp** (sibling repo, not upstream) | `~/Desktop/env-wastewater-webapp` (private GitHub repo, separate from A-Wiki) | companion pointer — its `AGENTS.md` links back here via `$A_WIKI_ROOT`; SessionStart hook reminds on every session | Wastewater migration + monitoring webapp code lives there; ENV domain knowledge + schema stay here → [[env-webapp-project]] |
+| **Sahir619/fable-method** (methodology only) | `skills/awiki/a-think/SKILL.md` (merged) | merge — fable-method (Think/Act/Prove) + `agent-skills/engineering/fable5-standards/` → `a-think` | 7-step reasoning loop. fable5-standards deprecated → migrated_to: a-think |
 
 **Symlink setup**: `bash scripts/link-agent-configs.sh` — links skills into every detected harness (Claude/Codex/Cline/Hermes/Gemini/ZCode/Antigravity/Windsurf/OpenClaw) and `.env` into Google Drive; runs automatically inside `setup-local.sh`. (`scripts/link-my-skills.sh` still works as a deprecated shim.) See [[symlink-connector]].
+
+### 🧩 Cross-Agent Coverage (verified 2026-07-16)
+
+| Agent | Discovery | Skill-aware? | Notes |
+|---|---|---|---|
+| Codex, Cline, Gemini, ZCode, Antigravity | `~/.{agent}/skills/` symlink farm | ✅ Yes (70 skills) | link-agent-configs.sh |
+| Claude Code | `~/.claude/skills/` symlink | ✅ Yes (355 total) | + plugins |
+| Hermes | `AppData/Local/hermes/skills/` | ✅ Yes (90 total) | |
+| **Kilo** | `.kilo/kilo.jsonc` paths | ⚠️ **Drift** | `scripts/lib/kilo.jsonc.template` มี 7 paths hardcode ไม่รวม `skills/awiki` (A- suite) — ต้อง re-render |
+| Windsurf | `.windsurfrules` (text) | ❌ Text-only | อ่าน AGENTS.md |
+| Cursor, Aider, GitHub Copilot | `.cursorrules` / `.aider.conf.yml` / `.github/copilot-instructions.md` | ❌ Text-only | อ่าน AGENTS.md ตรงๆ ไม่ skill-aware by design |
+| OpenClaw | generator มี | ⚠️ ไม่ได้ลงบน Windows | generator output พร้อม แต่ `~/.openclaw` ไม่มี |
+
+**Known gaps** (TODO):
+- Kilo template drift — แก้ที่ `scripts/lib/kilo.jsonc.template` (เพิ่ม `skills/awiki`, `skills/ecosystem`, `skills/anthropic-skills`, `skills/claude-thai`)
+- OpenClaw บน Windows ไม่ได้ลง (ถ้าใช้ รัน `bash scripts/link-agent-configs.sh` ใหม่)
+
+
+### 🎯 A- Suite (slash commands, all agents)
+
+A-Wiki-native aggregator skills — `/A-Think`, `/A-Plan`, `/A-Debug`, `/A-Doc`, `/A-Business` — ที่รวม canonical skills ที่มีอยู่เป็น chain เดียว ใช้ได้กับทุก agent ผ่าน `agents: ["all"]` + symlink farm.
+
+| Skill | Slash | Chain (canonical skills) |
+|---|---|---|
+| `a-think` | `/A-Think` | fable-method + fable5-standards merge — 7-step loop: Restate → Done → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove |
+| `a-plan` | `/A-Plan` | a-think → grill-with-docs (≥3 Qs mandatory) → spec-driven-development → design tool → plan-orchestrate |
+| `a-debug` | `/A-Debug` | a-think → debug-mantra (Iron Law #2) → root-cause-first → tdd (Iron Law #1) → fix → verify-before-done → scrutinize |
+| `a-doc` | `/A-Doc` | router → grill format (paper/margins/font) → dispatch `types/<X>/` → docx/word-generator → render-html. 8 types: announce/order/memo/project/procedure(WI-SP)/procurement(PR-QT-PO)/jd/report/form-record |
+| `a-business` | `/A-Business` | stub → finance-pipeline / project-flow-ops / agent-sort |
+
+**Audit**: `python scripts/audit_a_suite.py` (frontmatter + registry + cross-ref + Iron Laws). **Scrub pattern**: `<HOSPITAL>` / `<HOSPITAL_NAME>` / `<WORK_DIR>` placeholders สำหรับเอกสารราชการ (ห้าม publish ชื่อจริง — Iron Law #6).
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
 **Opt-in MCP setup**: `bash scripts/setup-optional-mcp.sh --graphify|--gbrain` (not installed by default — see [[graphify]] / [[gbrain]])
 
@@ -373,6 +405,9 @@ Before any agent edits, adds, removes, installs, or adopts anything that affects
 | `scripts/build_pharmacy_db.py` | Build ignored pharmacy SQLite runtime DB from Drive/raw JSON |
 | `scripts/pharmacy_lookup.py` | Pharmacy order lookup against local SQLite FTS5 DB |
 | `scripts/compare_delivery.py` | Compare pharmacy order list with delivery JSON |
+| `scripts/audit_a_suite.py` | Audit A- suite (frontmatter + registry + cross-ref + Iron Laws + version) |
+| `scripts/load-global-env.sh` | Source universal `secrets/global.env` (+ optional `<repo>.env`) into shell |
+| `scripts/setup-ide-env.sh` | Inject shell-rc hook so IDE terminals auto-load global env |
 
 ---
 
