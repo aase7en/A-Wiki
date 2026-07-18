@@ -7,13 +7,13 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 381 · **Aliases/deprecated**: 13
+**Total canonical skills**: 382 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 187 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 188 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
 | `ux-ui` | UX/UI / Frontend / a11y | 9 |
@@ -84,6 +84,7 @@
 | `cpp-coding-standards` | none | ecosystem | ทักษะนี้ให้แนวทางการเขียน C++ ตาม C++ Core Guidelines เพื่อให้โค้ดมีความทันสมัย ปลอดภัย และเป็นไป... |
 | `cpp-testing` | none | ecosystem | ใช้เมื่อเขียนหรือแก้ไข C++ tests, ตั้งค่า GoogleTest/CTest, วินิจฉัย test ที่ล้มเหลวหรือ flaky, ห... |
 | `crew-dispatch` | none | wiki | แยกคำถาม A-Wiki ที่ซับซ้อนหลายมิติออกเป็น subtasks ย่อยแบบขนาน โดยให้ primary agent ตรวจสอบและควบ... |
+| `cross-agent-work-orders` | plan | wiki | มาตรฐานบังคับให้ทุก agent ทำงานร่วมกันใน repo เดียว: work orders + ตาราง claim + เลนไฟล์ + pause/... |
 | `crosspost` | none | ecosystem | แจกจ่ายเนื้อหาไปยังหลายแพลตฟอร์มพร้อมกัน เช่น X, LinkedIn, Threads และ Bluesky โดยปรับรูปแบบเนื้อ... |
 | `csharp-testing` | none | ecosystem | ทักษะนี้ครอบคลุมการเขียนเทสต์ในภาษา C# และ .NET โดยใช้ xUnit, FluentAssertions, การจำลอง (mocking... |
 | `dart-flutter-patterns` | none | ecosystem | รวบรวม pattern การเขียน Dart และ Flutter สำหรับ production ครอบคลุม null safety, immutable state,... |
@@ -608,7 +609,7 @@
 Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VERIFY→REVIEW→SHIP):
 
 - **DEFINE**: `a-plan`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
-- **PLAN**: `plan`, `planning-and-task-breakdown`, `to-issues`
+- **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`

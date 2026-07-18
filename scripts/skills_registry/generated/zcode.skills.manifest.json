@@ -449,6 +449,11 @@
       "domain": "code"
     },
     {
+      "name": "cross-agent-work-orders",
+      "target": "skills/awiki/cross-agent-work-orders/SKILL.md",
+      "domain": "code"
+    },
+    {
       "name": "crosspost",
       "target": "skills/ecosystem/crosspost/SKILL.md",
       "domain": "code"

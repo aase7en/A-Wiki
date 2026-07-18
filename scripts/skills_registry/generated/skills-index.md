@@ -90,6 +90,7 @@
 | `cpp-coding-standards` | code | none | ecosystem | `skills/ecosystem/cpp-coding-standards/SKILL.md` |
 | `cpp-testing` | code | none | ecosystem | `skills/ecosystem/cpp-testing/SKILL.md` |
 | `crew-dispatch` | code | none | wiki | `skills/claude-code/crew-dispatch/SKILL.md` |
+| `cross-agent-work-orders` | code | plan | wiki | `skills/awiki/cross-agent-work-orders/SKILL.md` |
 | `crosspost` | code | none | ecosystem | `skills/ecosystem/crosspost/SKILL.md` |
 | `csharp-testing` | code | none | ecosystem | `skills/ecosystem/csharp-testing/SKILL.md` |
 | `customer-billing-ops` | business | none | ecosystem | `skills/ecosystem/customer-billing-ops/SKILL.md` |
@@ -391,7 +392,7 @@
 |--------|------------|
 | ai-ops | 30 |
 | business | 11 |
-| code | 187 |
+| code | 188 |
 | data | 18 |
 | debug | 8 |
 | design | 14 |

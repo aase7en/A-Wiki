@@ -3074,6 +3074,48 @@
       "invocation_hint": "/crew-dispatch"
     },
     {
+      "name": "cross-agent-work-orders",
+      "aliases": [
+        "work-orders",
+        "collab"
+      ],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "plan",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/awiki/cross-agent-work-orders/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Binding multi-agent coordination standard: work-order files + claim table + lanes + pause/resume so any agent (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/...) can work a repo in parallel and hand off mid-chunk across 5-hr limits.",
+      "invocation": "manual",
+      "th_description": "มาตรฐานบังคับให้ทุก agent ทำงานร่วมกันใน repo เดียว: work orders + ตาราง claim + เลนไฟล์ + pause/resume ส่งงานข้าม 5-hr limit ได้ทุกตัว; bootstrap repo ใหม่ด้วย scripts/init-work-orders.sh",
+      "when_to_use": "เริ่มงาน multi-agent ใน repo ใด ๆ, ตั้ง repo ใหม่, ติด limit ต้องส่งงานต่อ, หรือ agent ชนกันใน working tree",
+      "examples": [
+        {
+          "scenario": "repo ใหม่ต้องให้ Claude กับ ZCode ทำพร้อมกัน",
+          "how": "bash scripts/init-work-orders.sh /path/to/repo แล้วเติมเลน/hotspots ใน COLLAB.md"
+        },
+        {
+          "scenario": "Codex ติด 5-hr limit กลาง chunk",
+          "how": "Codex commit + checkpoint ลง WO แล้ว user วาง resume prompt ให้ agent อื่นทำต่อ"
+        }
+      ],
+      "process_steps": [
+        "bootstrap ด้วย init-work-orders.sh (ครั้งเดียวต่อ repo)",
+        "เติมเลน/hotspots ใน COLLAB.md",
+        "สร้าง WO จาก WO-TEMPLATE ต่อ chunk",
+        "claim ในตาราง COLLAB.md ก่อนเริ่ม",
+        "ทำงานตามกติกา 8 ข้อ (pull-first, no reset --hard, worktree ถ้าจำเป็น)",
+        "หยุด/ส่งต่อ: commit + checkpoint + paused; รับช่วงด้วย resume prompt"
+      ],
+      "invocation_hint": "/cross-agent-work-orders"
+    },
+    {
       "name": "crosspost",
       "aliases": [],
       "domain": [
