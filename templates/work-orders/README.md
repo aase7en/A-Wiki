@@ -16,5 +16,11 @@ Checkpoint (commit hash + เหลืออะไร + กับดัก) → 
 เริ่มจาก branch ที่ work order ระบุ; เสร็จแล้ว merge เข้า main + set done
 ```
 
+**Model tier ต่อ WO (ประหยัด credit):** `cheap-ok` (GLM/Sonnet-tier — mechanical
+มี Reference pattern ครบ) · `mid` (Opus-tier — spec ปิดช่องแล้ว) ·
+`primary-only` (frontier — design/security/protocol + ตรวจงาน tier ล่าง)
+— WO ระดับถูกต้องมี Reference pattern + Forbidden + Verify commands ครบ
+(เกณฑ์ "junior test": อ่านแล้วทำได้โดยไม่ถามเพิ่ม)
+
 Protocol เต็ม + กติกา 8 ข้อ: `COLLAB.md` ใน repo นี้ และ A-Wiki
 `docs/protocols/cross-agent-work-orders.md`

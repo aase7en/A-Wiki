@@ -39,6 +39,22 @@
 เริ่มจาก branch ที่ work order ระบุ; เสร็จแล้ว merge เข้า main + set done
 ```
 
+## Model routing (ประหยัด credit — ผูกกับ Cost-First Pyramid)
+
+ทุก WO ประกาศ `Model tier` บนหัวไฟล์ แล้ว user dispatch ตาม tier:
+
+- **cheap-ok** (GLM/Sonnet-tier): งาน mechanical ที่ WO ให้ `Reference pattern`
+  (ไฟล์+สิ่งที่ copy) ครบ — conformance, icon swap, CRUD UI ตาม golden reference
+- **mid** (Opus-tier): reasoning ปานกลาง spec ปิดช่องแล้ว (mapping/สูตรอยู่ใน WO)
+- **primary-only** (frontier model): design ใหม่, security, cross-system, แก้ protocol
+  — และทำหน้าที่ **เขียน WO + ตรวจ diff งาน tier ล่าง** (Senior Critic ตาม Swarm Protocol)
+
+WO ระดับ cheap-ok/mid ต้องมี `Reference pattern` + `Forbidden` (หยุด+checkpoint
+เมื่อเจอนอก spec — ห้ามเดา) + `Verify commands` แบบ copy-paste — เกณฑ์ผ่าน
+"junior test": อ่านแล้วทำได้โดยไม่ต้องถามเพิ่ม. ดูตัวจริง:
+`env-wastewater-webapp/docs/work-orders/F4-page-conformance.md`.
+เลือกรุ่นตามสด: `model-cost-switching` skill + `docs/protocols/model-switching.md`
+
 ## Bootstrap repo ใหม่ (หรือ repo เก่าที่ยังไม่มี)
 
 ```bash
