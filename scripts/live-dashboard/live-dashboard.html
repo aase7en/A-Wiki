@@ -383,6 +383,7 @@
       <button class="hdr-btn" onclick="document.getElementById('chat-file-input').click()" title="แนบไฟล์">📎<span id="chat-file-count" style="font-size:10px;margin-left:3px;display:none">0</span></button>
       <textarea id="chat-textarea" rows="1" placeholder="ถาม Hermes... (ใช้สมอง A-Wiki ตอบ)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
       <button class="hdr-btn accent" onclick="sendChat()" id="chat-send-btn">▶</button>
+      <button class="hdr-btn" onclick="clearChat()" title="ล้างประวัติแชท" aria-label="ล้างประวัติแชท">🗑</button>
     </div>
     <div id="chat-status"></div>
     <div id="chat-empty" class="chat-empty-state">

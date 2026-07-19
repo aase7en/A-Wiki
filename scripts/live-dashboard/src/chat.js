@@ -1,4 +1,43 @@
 // ===== CHAT CONFIG =====
+// CHUNK D15: chat history persistence — refresh ไม่หาย (max 50 messages).
+const CHAT_HISTORY_KEY='awiki-chat-history';
+const CHAT_HISTORY_MAX=50;
+function _loadChatHistory(){try{return JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY)||'[]');}catch(_){return [];}}
+function _saveChatHistory(arr){try{localStorage.setItem(CHAT_HISTORY_KEY,JSON.stringify(arr.slice(-CHAT_HISTORY_MAX)));}catch(_){}}
+function pushChatHistory(role,text){
+  if(!text||typeof text!=='string')return;
+  const arr=_loadChatHistory();
+  arr.push({role:role,text:text,ts:Date.now()});
+  _saveChatHistory(arr);
+}
+function loadChatHistory(){
+  const wrap=document.getElementById('chat-messages');
+  if(!wrap)return;
+  const arr=_loadChatHistory();
+  if(!arr.length)return;
+  // Clear "empty state" if present.
+  const empty=document.getElementById('chat-empty');
+  if(empty)empty.style.display='none';
+  arr.forEach(m=>{
+    if(!m.text)return;
+    // Re-render without re-pushing to history (flag via 4th arg).
+    _addChatMessageNoPersist(m.role,m.text);
+  });
+}
+function _addChatMessageNoPersist(role,text){
+  // Reuse addChatMessage but skip persist — call with secret 4th arg.
+  return addChatMessage(role,text,null,true);
+}
+function clearChat(){
+  if(!confirm('ล้างประวัติแชททั้งหมด?'))return;
+  try{localStorage.removeItem(CHAT_HISTORY_KEY);}catch(_){}
+  const wrap=document.getElementById('chat-messages');
+  if(wrap)wrap.innerHTML='';
+  const empty=document.getElementById('chat-empty');
+  if(empty)empty.style.display='';
+  if(typeof toast==='function')toast('🗑 ล้างประวัติแชทแล้ว');
+}
+
 const CHAT_PROFILES = {
   lan:      { name: 'LAN',        url: 'http://pi5-local:8501',         hint: 'ต้องอยู่ใน WiFi เดียวกัน' },
   tailscale:{ name: 'Tailscale',  url: 'http://SET-YOUR-TAILSCALE-IP:8501', hint: 'ต้องเปิด Tailscale บน Pi 5 — แก้ IP ใน Custom หรือ Hermes URL ด้านบน' },
@@ -224,8 +263,10 @@ async function sendChat(){
   ta.focus();
 }
 
-function addChatMessage(role, text, files){
+function addChatMessage(role, text, files, _skipPersist){
   const wrap = document.getElementById('chat-messages');
+  // D15: persist to localStorage unless explicitly skipped (e.g. loading history).
+  if(!_skipPersist && role && text)pushChatHistory(role,text);
   const div = document.createElement('div');
   div.className = 'chat-msg ' + role;
 
@@ -354,3 +395,6 @@ async function adminRemoveToken() {
   } catch(e) { res.textContent = '❌ เชื่อมต่อไม่ได้'; }
 }
 
+
+// CHUNK D15: boot hook — restore chat history on dashboard load.
+try{loadChatHistory();}catch(_){}

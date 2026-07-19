@@ -1106,3 +1106,24 @@ def test_export_event_log_uses_download_blob():
 def test_export_event_button_in_html():
     html = HTML.read_text(encoding="utf-8")
     assert "exportEventLog" in html, "export event button missing in HTML"
+
+
+# ── v15 CHUNK D15: chat history persistence ────────────────────────────
+def test_chat_history_key_exists():
+    text = _read()
+    assert "awiki-chat-history" in text, "awiki-chat-history storage key missing"
+
+
+def test_push_chat_history_exists():
+    text = _read()
+    assert "pushChatHistory" in text, "pushChatHistory function missing"
+
+
+def test_load_chat_history_exists():
+    text = _read()
+    assert "loadChatHistory" in text, "loadChatHistory function missing"
+
+
+def test_clear_chat_button_in_html():
+    html = HTML.read_text(encoding="utf-8")
+    assert "clearChat" in html, "clear chat button missing in HTML"
