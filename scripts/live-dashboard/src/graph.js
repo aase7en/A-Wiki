@@ -190,6 +190,21 @@ const star=row.querySelector('.ev-star');
 if(star)star.textContent=isMarked?'⭐':'☆';
 }
 }
+// CHUNK C15: export event log as JSON (ring buffer contents + bookmarks).
+function exportEventLog(){
+if(!_eventLog.length){if(typeof toast==='function')toast('ไม่มี event ให้ส่งออก',true);return;}
+const payload={
+version:1,
+exported_at:new Date().toISOString(),
+event_count:_eventLog.length,
+events:_eventLog.map(e=>({type:e.type,ts:e.ts,time:e.time,text:e.text,bookmarked:!!e.bookmarked})),
+};
+const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+const d=new Date();
+const stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');
+_downloadBlob(blob,'awiki-events-'+stamp+'.json');
+if(typeof toast==='function')toast('📤 ส่งออก '+_eventLog.length+' events');
+}
 function evIcon(t,r){return{session_start:'🔌',hook_check:r==='block'?'🔴':'✅',cost_declare:'💰',
 delegate_start:'🤖',delegate_done:'✅',delegate_fail:'✗'}[t]||'·';}
 function evText(e){const{type,hook='',tool='',result='pass',tier='',model='',task='',reason='',duration_ms=''}=e;

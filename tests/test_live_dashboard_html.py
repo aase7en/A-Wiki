@@ -1087,3 +1087,22 @@ def test_event_bookmark_filter_option():
     """Filter dropdown must have a 'bookmarked' option."""
     html = HTML.read_text(encoding="utf-8")
     assert 'value="bookmarked"' in html or "bookmarked" in html, "bookmarked filter option missing"
+
+
+# ── v15 CHUNK C15: event log export JSON ───────────────────────────────
+def test_export_event_log_exists():
+    text = _read()
+    assert "exportEventLog" in text, "exportEventLog function missing"
+
+
+def test_export_event_log_uses_download_blob():
+    text = _read()
+    idx = text.find("function exportEventLog")
+    assert idx != -1, "exportEventLog function definition missing"
+    after = text[idx : idx + 1500]
+    assert "_downloadBlob" in after, "exportEventLog must use _downloadBlob helper"
+
+
+def test_export_event_button_in_html():
+    html = HTML.read_text(encoding="utf-8")
+    assert "exportEventLog" in html, "export event button missing in HTML"
