@@ -1054,3 +1054,19 @@ def test_kpi_cards_target_container():
     """HTML must have a container for the KPI cards."""
     html = HTML.read_text(encoding="utf-8")
     assert 'id="kpi-cards"' in html or 'id="summary-kpi"' in html, "KPI cards container missing in HTML"
+
+
+# ── v15 CHUNK A15: event log ring buffer + text search ─────────────────
+def test_event_log_array_exists():
+    text = _read()
+    assert "_eventLog" in text, "_eventLog ring buffer missing"
+
+
+def test_event_search_function_exists():
+    text = _read()
+    assert "eventSearch" in text, "eventSearch function missing"
+
+
+def test_event_search_input_in_html():
+    html = HTML.read_text(encoding="utf-8")
+    assert 'id="event-search"' in html, "event search input missing in HTML"

@@ -514,6 +514,7 @@
   <!-- Right: event log -->
   <div id="sidebar">
     <div id="sidebar-hdr">Event Log <span id="event-count">0</span>
+      <input id="event-search" type="text" placeholder="🔍 ค้นหา..." oninput="eventSearchDebounced()" style="width:90px;padding:2px 6px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)">
       <select id="ev-filter" class="ev-filter" onchange="filterEvents()"><option value="all">All</option><option value="block">Blocks/Fails</option><option value="cost">Cost</option><option value="delegate">Delegate</option></select></div>
     <div id="timeline-list"></div>
   </div>

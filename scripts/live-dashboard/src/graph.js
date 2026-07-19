@@ -123,12 +123,19 @@ ri.style.display='flex';
 $('route-text').textContent=`#${rank} → ${modelShort(model)} (${cost_class} class, ${dimension} ${score}pts)`;
 }
 function setOriginStatus(txt,color){setFlowOriginStatus(txt,color);}
+// CHUNK A15: event log ring buffer — keeps last 500 events for search/export
+// (DOM caps at 120 rows; ring buffer goes deeper without localStorage cost).
+const EVENT_LOG_MAX=500;
+let _eventLog=[];
 function pushTimeline(ev){
 S.eventCount++;bumpCounter('s-events',S.eventCount);
 $('event-count').textContent=S.eventCount;
 const{type,ts}=ev;const row=mk('div',`ev-row t-${type}${ev.result==='block'?' block':''} new`);
 const t=ts?new Date(ts*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
 row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span>`;
+// A15: also push to ring buffer for search/export.
+_eventLog.push({type:type,ts:ts||0,text:row.textContent,time:t});
+while(_eventLog.length>EVENT_LOG_MAX)_eventLog.shift();
 const tl=$('timeline-list');tl.insertBefore(row,tl.firstChild);
 setTimeout(()=>row.classList.remove('new'),800);
   while(tl.children.length>120)tl.removeChild(tl.lastChild);
@@ -142,6 +149,21 @@ const show=(v==='block'&&(c.contains('block')||c.contains('t-delegate_fail')))||
 (v==='cost'&&c.contains('t-cost_declare'))||
 (v==='delegate'&&(c.contains('t-delegate_start')||c.contains('t-delegate_done')));
 r.style.display=show?'':'none';
+});
+}
+// CHUNK A15: text search over event rows (case-insensitive substring match).
+let _eventSearchTimer=null;
+function eventSearchDebounced(){
+if(_eventSearchTimer)clearTimeout(_eventSearchTimer);
+_eventSearchTimer=setTimeout(eventSearch,250);
+}
+function eventSearch(){
+const q=($('event-search')&&$('event-search').value||'').trim().toLowerCase();
+document.querySelectorAll('.ev-row').forEach(r=>{
+if(!q){if(r.style.display==='none'&&!r.classList.contains('search-hidden'))return;r.classList.remove('search-hidden');r.style.display='';return;}
+const txt=r.textContent.toLowerCase();
+if(txt.indexOf(q)>=0){r.classList.remove('search-hidden');r.style.display='';}
+else{r.classList.add('search-hidden');r.style.display='none';}
 });
 }
 function evIcon(t,r){return{session_start:'🔌',hook_check:r==='block'?'🔴':'✅',cost_declare:'💰',
