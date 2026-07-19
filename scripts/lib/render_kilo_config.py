@@ -309,6 +309,44 @@ def find_template(drive_data: Path | None) -> Path:
     )
 
 
+def sync_template_repo_to_drive(drive_data: Path) -> bool:
+    """Sync repo template → Drive template (one-directional).
+
+    Why this exists: ``find_template`` prefers Drive over repo, so editing the
+    repo template alone causes silent drift (Drive stays stale, render keeps
+    reading old version). This sync runs *before* find_template to close the
+    gap permanently.
+
+    Direction: **repo → Drive only**. The repo template is the source of truth
+    (git-tracked, reviewable); Drive is the machine-agnostic distribution copy.
+
+    Returns True if Drive was updated, False if already in sync (or skipped).
+
+    Override: ``AWIKI_DISABLE_KILO_TEMPLATE_SYNC=1`` skips this sync (for CI /
+    fresh-clone smoke tests where Drive is read-only or absent).
+
+    Lesson: 2026-07-17 cross-agent audit found Kilo didn't see ``skills/awiki``
+    because repo template had 22 paths but Drive had 8 (stale).
+    """
+    if os.environ.get("AWIKI_DISABLE_KILO_TEMPLATE_SYNC") == "1":
+        return False
+    if not BUNDLED_TEMPLATE.is_file():
+        return False  # nothing to sync from
+    drive_tpl = drive_data / DRIVE_CONFIG_SUBDIR / "kilo.jsonc.template"
+    if not drive_tpl.parent.is_dir():
+        return False  # Drive .config/kilo not initialized yet
+    repo_text = BUNDLED_TEMPLATE.read_text(encoding="utf-8")
+    drive_text = ""
+    if drive_tpl.is_file():
+        drive_text = drive_tpl.read_text(encoding="utf-8")
+    if repo_text == drive_text:
+        return False  # already in sync
+    # Atomic write — never leave Drive template half-written.
+    _atomic_write(drive_tpl, repo_text)
+    print(f"ℹ️  synced repo template → Drive ({len(repo_text)} bytes)")
+    return True
+
+
 def _atomic_write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".kilo-render-", suffix=".tmp")
@@ -365,6 +403,11 @@ def main(argv: list[str] | None = None) -> int:
         print("Set A_WIKI_DRIVE_PATH=/path/to/A-Wiki-Data or run "
               "bash scripts/setup-cloud-link.sh --auto first.", file=sys.stderr)
         return 2
+
+    # Sync repo template → Drive BEFORE find_template (closes drift gap).
+    # find_template prefers Drive, so without this sync, edits to the repo
+    # template are invisible until someone manually copies them to Drive.
+    sync_template_repo_to_drive(drive_data)
 
     template_path = find_template(drive_data)
     secrets = load_secrets(drive_data)
