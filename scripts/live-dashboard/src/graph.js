@@ -132,18 +132,24 @@ S.eventCount++;bumpCounter('s-events',S.eventCount);
 $('event-count').textContent=S.eventCount;
 const{type,ts}=ev;const row=mk('div',`ev-row t-${type}${ev.result==='block'?' block':''} new`);
 const t=ts?new Date(ts*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
-row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span>`;
+// B15: data-ts + bookmark star (persisted via awiki-event-bookmarks).
+const tsKey=String(ts||'');
+const isMarked=_loadEventBookmarks().includes(tsKey);
+if(isMarked)row.classList.add('bookmarked');
+row.dataset.ts=tsKey;
+row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span><span class="ev-star" onclick="event.stopPropagation();toggleEventBookmark('${tsKey}')" style="cursor:pointer;opacity:.6;font-size:var(--fs-2xs)">${isMarked?'⭐':'☆'}</span>`;
 // A15: also push to ring buffer for search/export.
-_eventLog.push({type:type,ts:ts||0,text:row.textContent,time:t});
+_eventLog.push({type:type,ts:ts||0,text:row.textContent,time:t,bookmarked:isMarked});
 while(_eventLog.length>EVENT_LOG_MAX)_eventLog.shift();
 const tl=$('timeline-list');tl.insertBefore(row,tl.firstChild);
 setTimeout(()=>row.classList.remove('new'),800);
-  while(tl.children.length>120)tl.removeChild(tl.lastChild);
+  while(tl.children.length>120){const last=tl.lastChild;if(last&&!last.classList.contains('bookmarked'))tl.removeChild(last);else if(last)break;}
 }
 function filterEvents(){
 const v=$('ev-filter').value;
 document.querySelectorAll('.ev-row').forEach(r=>{
 if(v==='all'){r.style.display='';return;}
+if(v==='bookmarked'){r.style.display=r.classList.contains('bookmarked')?'':'none';return;}
 const c=r.classList;
 const show=(v==='block'&&(c.contains('block')||c.contains('t-delegate_fail')))||
 (v==='cost'&&c.contains('t-cost_declare'))||
@@ -165,6 +171,24 @@ const txt=r.textContent.toLowerCase();
 if(txt.indexOf(q)>=0){r.classList.remove('search-hidden');r.style.display='';}
 else{r.classList.add('search-hidden');r.style.display='none';}
 });
+}
+// CHUNK B15: event bookmark/pin — persist via awiki-event-bookmarks (array of ts).
+const EVENT_BOOKMARKS_KEY='awiki-event-bookmarks';
+function _loadEventBookmarks(){try{return JSON.parse(localStorage.getItem(EVENT_BOOKMARKS_KEY)||'[]');}catch(_){return [];}}
+function _saveEventBookmarks(arr){try{localStorage.setItem(EVENT_BOOKMARKS_KEY,JSON.stringify(arr));}catch(_){}}
+function toggleEventBookmark(ts){
+if(!ts)return;
+const arr=_loadEventBookmarks();
+const idx=arr.indexOf(ts);
+if(idx>=0){arr.splice(idx,1);}else{arr.push(ts);}
+_saveEventBookmarks(arr);
+const row=document.querySelector('.ev-row[data-ts="'+ts+'"]');
+if(row){
+const isMarked=idx<0;
+row.classList.toggle('bookmarked',isMarked);
+const star=row.querySelector('.ev-star');
+if(star)star.textContent=isMarked?'⭐':'☆';
+}
 }
 function evIcon(t,r){return{session_start:'🔌',hook_check:r==='block'?'🔴':'✅',cost_declare:'💰',
 delegate_start:'🤖',delegate_done:'✅',delegate_fail:'✗'}[t]||'·';}

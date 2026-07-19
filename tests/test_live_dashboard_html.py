@@ -1070,3 +1070,20 @@ def test_event_search_function_exists():
 def test_event_search_input_in_html():
     html = HTML.read_text(encoding="utf-8")
     assert 'id="event-search"' in html, "event search input missing in HTML"
+
+
+# ── v15 CHUNK B15: event bookmark/pin ──────────────────────────────────
+def test_toggle_event_bookmark_exists():
+    text = _read()
+    assert "toggleEventBookmark" in text, "toggleEventBookmark function missing"
+
+
+def test_event_bookmarks_storage_key():
+    text = _read()
+    assert "awiki-event-bookmarks" in text, "awiki-event-bookmarks key missing"
+
+
+def test_event_bookmark_filter_option():
+    """Filter dropdown must have a 'bookmarked' option."""
+    html = HTML.read_text(encoding="utf-8")
+    assert 'value="bookmarked"' in html or "bookmarked" in html, "bookmarked filter option missing"
