@@ -306,6 +306,27 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - Click → navigate to related view
 - TTL cached (60s) for skills data
 
+### 🔍 v15 — Event Log Power + Chat Persistence (current)
+**Goal**: event log search/bookmark/export + chat history ไม่หายเมื่อ refresh (5 chunks).
+
+| Chunk | Feature | Files |
+|-------|---------|-------|
+| **A15** | Event ring buffer (500 max) + text search (debounced 250ms) | `src/graph.js`, `live-dashboard.html` |
+| **B15** | Event bookmark/pin (⭐ persist via `awiki-event-bookmarks`) + filter option | `src/graph.js`, `live-dashboard.html` |
+| **C15** | Event log export JSON (`awiki-events-YYYYMMDD-HHmm.json`) | `src/graph.js`, `live-dashboard.html` |
+| **D15** | Chat history persistence (`awiki-chat-history`, max 50 msgs) + clear button | `src/chat.js`, `live-dashboard.html` |
+
+**Event Log** (sidebar, right):
+- 🔍 Search box: case-insensitive substring filter on event text
+- ⭐ Bookmark: click star next to any event — bookmarked rows survive the 120-row DOM cap
+- 📥 Export: download all 500 buffered events as JSON (includes bookmark flag)
+- Filter dropdown: All / ⭐ Bookmarked / Blocks / Cost / Delegate
+
+**Chat** (💬 Chat tab):
+- Messages persist across refresh (max 50, FIFO)
+- 🗑 Clear button in input bar (with confirm)
+- Boot auto-restores history
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.

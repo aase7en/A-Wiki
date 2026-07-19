@@ -173,7 +173,7 @@ function _maybeAutoBackup(){
 }
 // CHUNK A13: Help pane content — rendered in JS (not inline HTML) to keep
 // the HTML budget small. Covers v8-v12 features + basics + tips + shortcuts.
-const DASHBOARD_VERSION='v14.0.0';
+const DASHBOARD_VERSION='v15.0.0';
 function renderHelpContent(){
   const pane=document.getElementById('pane-help');
   if(!pane)return;

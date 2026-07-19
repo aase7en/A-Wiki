@@ -1,6 +1,6 @@
 {
   "name": "awiki-dashboard",
-  "version": "14.0.0",
+  "version": "15.0.0",
   "private": true,
   "description": "A-Wiki Live Dashboard — esbuild build pipeline (v8) + Playwright tests (v10) + Backup (v11) + Theme/Mobile (v12) + Onboarding (v13) + Visualizations (v14). Bundles src/*.js into a single minified app.min.js served by server.py.",
   "scripts": {
