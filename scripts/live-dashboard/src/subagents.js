@@ -204,4 +204,9 @@ html+=`<path class="branch-line${act?' active':''}" d="M0 ${h/2} C 30 ${h/2}, 30
 });
 svg.innerHTML=html;
 }
-let _gNet=null,_gData={nodes:new vis.DataSet(),edges:new vis.DataSet()};
+// T5 DAG shared state. _gData is lazily created in initGraph() AFTER the
+// window.vis guard — vis-network comes from a deferred CDN script, so it is
+// never defined while this bundle (classic script) executes. A top-level
+// `new vis.DataSet()` here killed the whole bundle at boot when the CDN was
+// unreachable (and would throw even with network — classic runs before defer).
+let _gNet=null,_gData=null;

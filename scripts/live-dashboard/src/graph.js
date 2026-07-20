@@ -3,6 +3,7 @@ const c=$('graph-vis');if(!c||_gNet)return;
 const fb=$('graph-unavailable');
 if(!window.vis){if(fb)fb.style.display='flex';return;}
 if(fb)fb.style.display='none';
+if(!_gData)_gData={nodes:new vis.DataSet(),edges:new vis.DataSet()};
 _gNet=new vis.Network(c,_gData,{physics:{solver:'barnesHut',barnesHut:{gravitationalConstant:-2000,centralGravity:.3,springLength:150}},
 edges:{smooth:{type:'continuous'},width:2,arrows:{to:{enabled:true,scaleFactor:.5}}},
 nodes:{shape:'dot',size:16,font:{size:11,color:'#cbd5e1'},borderWidth:2},
