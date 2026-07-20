@@ -21,7 +21,20 @@ def _run_bash(script: Path, args: list[str], env: dict | None = None,
         full_env.update(env)
     return subprocess.run(
         ["bash", str(script)] + args,
-        cwd=str(REPO_ROOT), text=True, capture_output=True, timeout=timeout, env=full_env,
+        cwd=str(REPO_ROOT), text=True, encoding="utf-8", errors="replace",
+        capture_output=True, timeout=timeout, env=full_env,
+    )
+
+
+def _run_powershell(script: Path, args: list[str], env: dict | None = None,
+                     timeout: int = 30) -> subprocess.CompletedProcess:
+    full_env = dict(os.environ)
+    if env:
+        full_env.update(env)
+    return subprocess.run(
+        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)] + args,
+        cwd=str(REPO_ROOT), text=True, encoding="utf-8", errors="replace",
+        capture_output=True, timeout=timeout, env=full_env,
     )
 
 
@@ -75,6 +88,55 @@ class TestIdeHook:
         assert n2 == 1
 
 
+class TestLoaderPowerShell:
+    def test_loader_has_help_flag(self):
+        proc = _run_powershell(SCRIPTS / "load-global-env.ps1", ["-Help"])
+        assert proc.returncode == 0
+
+    def test_loader_print_mode_outputs_kv(self, tmp_path):
+        secrets = tmp_path / "secrets"
+        secrets.mkdir()
+        (secrets / "global.env").write_text("FAKE_KEY_1=abc123\nFAKE_KEY_2=xyz\n", encoding="utf-8")
+        proc = _run_powershell(SCRIPTS / "load-global-env.ps1", ["-Print"],
+                                env={"A_WIKI_DRIVE_PATH": str(tmp_path)})
+        assert proc.returncode == 0
+        assert "FAKE_KEY_1=abc123" in proc.stdout
+        assert "FAKE_KEY_2=xyz" in proc.stdout
+
+    def test_loader_repo_override(self, tmp_path):
+        secrets = tmp_path / "secrets"
+        secrets.mkdir()
+        (secrets / "global.env").write_text("SHARED_KEY=global\nOVERRIDE_ME=from_global\n", encoding="utf-8")
+        (secrets / "myrepo.env").write_text("OVERRIDE_ME=from_repo\nREPO_ONLY=repo_value\n", encoding="utf-8")
+        proc = _run_powershell(SCRIPTS / "load-global-env.ps1", ["-Print", "-Repo", "myrepo"],
+                                env={"A_WIKI_DRIVE_PATH": str(tmp_path)})
+        assert proc.returncode == 0
+        out = proc.stdout
+        assert "SHARED_KEY=global" in out
+        assert "OVERRIDE_ME=from_repo" in out, f"repo override not applied; got: {out!r}"
+        assert "REPO_ONLY=repo_value" in out
+
+
+class TestIdeHookPowerShell:
+    def test_status_flag_works(self):
+        proc = _run_powershell(SCRIPTS / "setup-ide-env.ps1", ["-Status"])
+        assert proc.returncode == 0
+        assert "IDE env hook status" in proc.stdout
+
+    def test_inject_is_idempotent(self, tmp_path):
+        fake_profile = tmp_path / "profile.ps1"
+        fake_profile.write_text("# existing\n", encoding="utf-8")
+        env = dict(os.environ); env["A_WIKI_PROFILE_OVERRIDE"] = str(fake_profile)
+        _run_powershell(SCRIPTS / "setup-ide-env.ps1", [], env=env)
+        c1 = fake_profile.read_text(encoding="utf-8")
+        n1 = c1.count("A-Wiki global env (setup-ide-env.ps1)")
+        _run_powershell(SCRIPTS / "setup-ide-env.ps1", [], env=env)
+        c2 = fake_profile.read_text(encoding="utf-8")
+        n2 = c2.count("A-Wiki global env (setup-ide-env.ps1)")
+        assert n1 == 1
+        assert n2 == 1
+
+
 class TestLinkerEnvAgents:
     def test_env_agents_covers_all_supported_agents(self):
         import re
@@ -91,6 +153,7 @@ class TestLinkerEnvAgents:
 class TestScriptsExist:
     @pytest.mark.parametrize("name", [
         "load-global-env.sh", "setup-ide-env.sh", "link-agent-configs.sh",
+        "load-global-env.ps1", "setup-ide-env.ps1",
     ])
     def test_script_present(self, name):
         assert (SCRIPTS / name).exists()

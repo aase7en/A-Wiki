@@ -43,6 +43,10 @@ LINTED_FILES = sorted(HOOKS_DIR.glob("*.py")) + [
     # can hit the same cp874 UnicodeDecodeError as scripts. Pinned the single
     # text-mode subprocess.run call in test_check_privacy.py (line ~40).
     REPO_ROOT / "tests" / "test_check_privacy.py",
+    # Stitch MCP key chunk: pinned _run_bash + _run_powershell subprocess
+    # helpers in test_global_env_system.py (same class — bash/PowerShell
+    # scripts under test emit non-ASCII status output).
+    REPO_ROOT / "tests" / "test_global_env_system.py",
 ]
 
 

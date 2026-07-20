@@ -39,13 +39,21 @@ Never hardcode. Resolution order (matches `scripts/drive_path.py`):
 | Shell scripts / repos | `source scripts/load-global-env.sh [--repo NAME]` | `load-global-env.sh` |
 | Repo Python config | `_resolve_env_file()` pattern | per-repo |
 | Agent harnesses | `~/.<agent>/.env` → Drive `global.env` via linker | `link-agent-configs.sh` |
-| IDE terminals | shell rc hook auto-sources loader | `setup-ide-env.sh` |
+| IDE terminals (bash/zsh) | shell rc hook auto-sources loader | `setup-ide-env.sh` |
+| Windows PowerShell terminals | `$PROFILE.CurrentUserAllHosts` hook auto-sources loader | `setup-ide-env.ps1` |
 
 ## Adding a new machine
 
 1. Mount Google Drive so `A-Wiki-Data/secrets/` is reachable.
 2. Set the Drive path via `A-Wiki/.drive-path` or the `drive/` link.
 3. Run `bash A-Wiki/scripts/setup-local.sh` — links agents + injects IDE hook.
+
+**Windows PowerShell users**: `setup-local.sh` injects the bash-family hook
+(`.bashrc`/`.bash_profile`, for Git Bash/WSL terminals) but does not touch
+PowerShell's own profile. Also run `powershell -File scripts/setup-ide-env.ps1`
+once so `global.env` auto-loads into native `powershell.exe`/`pwsh.exe`
+sessions too (console host, VS Code integrated terminal). Use
+`-Status`/`-Remove` to check or undo, mirroring the bash version's flags.
 
 ## Editing secrets
 
