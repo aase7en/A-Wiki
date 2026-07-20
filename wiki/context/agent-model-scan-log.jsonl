@@ -6,3 +6,5 @@
 {"agent": "frontend-specialist", "from": "fireworks-ai/accounts/fireworks/models/qwen3p7-plus", "to": "agent-model-scan/auto/kimi", "timestamp": "2026-07-06T06:55:10+00:00", "file": ".kilo/agents/frontend-specialist.md"}
 {"agent": "code-reviewer", "from": "google/gemini-3.5-flash", "to": "agent-model-scan/auto/kimi", "timestamp": "2026-07-13T05:54:20+00:00", "file": ".kilo/agents/code-reviewer.md"}
 {"agent": "frontend-specialist", "from": "fireworks-ai/accounts/fireworks/models/qwen3p7-plus", "to": "agent-model-scan/auto/kimi", "timestamp": "2026-07-13T05:54:20+00:00", "file": ".kilo/agents/frontend-specialist.md"}
+{"agent": "code-reviewer", "from": "google/gemini-3.5-flash", "to": "agent-model-scan/auto/kimi", "timestamp": "2026-07-20T05:55:28+00:00", "file": ".kilo/agents/code-reviewer.md"}
+{"agent": "frontend-specialist", "from": "fireworks-ai/accounts/fireworks/models/qwen3p7-plus", "to": "agent-model-scan/auto/kimi", "timestamp": "2026-07-20T05:55:28+00:00", "file": ".kilo/agents/frontend-specialist.md"}
