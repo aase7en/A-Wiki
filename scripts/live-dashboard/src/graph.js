@@ -63,6 +63,10 @@ case'delegate_start':onDelStart(ev);updateLane(ev);break;
 case'delegate_done':onDelDone(ev);updateLane(ev);break;
   case'delegate_fail':onDelFail(ev);updateLane(ev);break;
   case'route_plan':onRoute(ev);break;
+  // A16: subagent_invoke arrives from scripts/hooks/log_subagent_result.py
+  // on every real subagent call. Previously it fell through to pushTimeline
+  // only — no model KPI bump, no flow animation, no thought bubble.
+  case'subagent_invoke':onSubagentInvoke(ev);updateLane(ev);break;
 }
 pushTimeline(ev);
 }
@@ -110,6 +114,25 @@ S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();
 flowComplete(model,false,0);pushFailure(ev);
 spawnThought(`✗ ${modelShort(model)} ${reason||'failed'}`,{tone:'red',anchor:'station',model:key});
 showNotif('✗ Delegation ล้มเหลว',modelShort(model)+(reason?' · '+reason:''),'delegate_fail');
+}
+// A16: real subagent invocation (hook log_subagent_result.py).
+// Payload sample: {type, ts, subagent_type:'Explore', model:'deepseek-v4-flash',
+// bucket:'deepseek', result:'pass'|'fail', latency_ms, tokens_in, tokens_out}.
+function onSubagentInvoke(ev){
+const{subagent_type='?',model='',result='pass',latency_ms=0,tokens_out=0}=ev;
+hotWf('swarm',8000);
+const key=modelKey(model||subagent_type);
+S.modelsUsed.add(key);bumpCounter('s-models',S.modelsUsed.size);
+flowComplete(model||subagent_type,result==='pass',latency_ms/1000||0);
+trackDelegation(model||subagent_type);
+const tone=result==='fail'?'red':'violet';
+const short=modelShort(model||subagent_type);
+spawnThought(`🤖 ${subagent_type} → ${short}${latency_ms?' · '+(latency_ms/1000).toFixed(1)+'s':''}`,{tone,anchor:'station',model:key});
+setOriginStatus(`🤖 ${short} · ${subagent_type}`,'var(--role-subagent)');
+if(result==='fail'){
+pushFailure(ev);
+showNotif('✗ Subagent ล้มเหลว',`${subagent_type} · ${short}`,'subagent_fail');
+}
 }
 function updateParallel(){
 const badge=$('parallel-badge'),count=Math.max(S.activeCount||0,S.parallelCount||0);

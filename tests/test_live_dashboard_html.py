@@ -1127,3 +1127,89 @@ def test_load_chat_history_exists():
 def test_clear_chat_button_in_html():
     html = HTML.read_text(encoding="utf-8")
     assert "clearChat" in html, "clear chat button missing in HTML"
+
+
+# ── v16 integration audit: SSE + localStorage + lazy-load gaps ────────────────
+# Found via debug-mantra 4-step audit on 2026-07-21. Each test guards a real
+# bug the static/runtime scans surfaced — see audit-report.json.
+
+
+def test_subagent_invoke_sse_handler_exists():
+    """subagent_invoke events come from scripts/hooks/log_subagent_result.py
+    (every real subagent call). Without a dedicated handler they fall through
+    to the default pushTimeline branch and the dashboard never bumps the
+    subagent KPI, never animates the lane, never spawns a thought bubble."""
+    text = _read()
+    # The handler must be referenced in handleEvent's switch.
+    assert "subagent_invoke" in text, (
+        "subagent_invoke event type is emitted by log_subagent_result.py "
+        "but has no handler reference in the dashboard source"
+    )
+    assert "onSubagentInvoke" in text, "dedicated handler onSubagentInvoke() missing"
+
+
+def test_vis_network_fallback_auto_retries():
+    """If the user clicks the Graph tab before the vis-network defer script
+    finishes loading, initGraph() shows the #graph-unavailable fallback and
+    bails. Without an auto-retry, the user is stuck on 'Graph unavailable'
+    even after the CDN script loads. We require a retry hook that re-runs
+    initGraph when window.vis becomes available."""
+    text = _read()
+    # A retry hook looks like: setTimeout(initGraph, N) inside the !window.vis
+    # branch, OR an onload listener that calls initGraph(), OR a polling
+    # pattern. We accept any of: 'setTimeout(initGraph', 'vis.onload',
+    # '_visRetry', or a script-tag onload that calls initGraph.
+    assert (
+        "setTimeout(initGraph" in text
+        or "_visRetry" in text
+        or "visReady" in text
+        or ("addEventListener('load'" in text and "initGraph" in text)
+    ), "vis-network fallback has no auto-retry when defer script loads late"
+
+
+def test_compare_last_has_reader():
+    """src/skills.js:924 writes awiki-compare-last but nothing reads it.
+    Either provide a reader (a 'Restore last comparison' affordance) or
+    remove the write. This test currently asserts the write is paired
+    with a reader in the same file."""
+    text = _read()
+    write_pos = text.find("_lsSet('awiki-compare-last'")
+    assert write_pos >= 0, "compare-last write site moved or removed"
+    # Search for a reader (getItem / _lsGet) of the same key AFTER the write.
+    after = text[write_pos:]
+    assert (
+        "_lsGet('awiki-compare-last'" in after
+        or "getItem('awiki-compare-last'" in after
+        or "restoreLastCompare" in text
+    ), "awiki-compare-last is write-only — add a reader or remove the write"
+
+
+def test_workspace_last_has_reader():
+    """src/modals.js:296 writes WORKSPACE_LAST_KEY but nothing reads it."""
+    text = _read()
+    assert "WORKSPACE_LAST_KEY=" in text, "WORKSPACE_LAST_KEY alias missing"
+    # Either a getItem/_lsGet call on WORKSPACE_LAST_KEY, or a
+    # restoreLastWorkspace() function that reads it.
+    assert (
+        "_lsGet(WORKSPACE_LAST_KEY" in text
+        or "getItem(WORKSPACE_LAST_KEY" in text
+        or "restoreLastWorkspace" in text
+    ), "WORKSPACE_LAST_KEY is write-only — add a reader or remove the write"
+
+
+def test_view_switch_clears_sim_timers():
+    """setView() must clearInterval on _simTimer and _wfTimer when the user
+    navigates away, so the background sim doesn't keep updating a hidden DOM
+    forever. Cheap guard, big hygiene win."""
+    text = _read()
+    assert "function setView" in text
+    # The setView body (delimited by the closing brace before the next top-level
+    # function/const) must reference at least one timer clear.
+    sv_start = text.find("function setView")
+    # Find the matching end — search for the next top-level "function " after.
+    next_fn = text.find("\nfunction ", sv_start + 10)
+    sv_body = text[sv_start:next_fn if next_fn > 0 else sv_start + 4000]
+    assert (
+        "_simTimer" in sv_body or "_wfTimer" in sv_body
+    ), "setView() does not clear simulation timers on view switch"
+
