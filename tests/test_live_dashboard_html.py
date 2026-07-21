@@ -110,33 +110,61 @@ def test_no_glow_triplet():
 
 
 def test_root_declares_documented_tokens():
-    """:root must adopt the dashboard-design-system.md tokens verbatim."""
-    # v8: CSS extracted to styles.css — read it directly instead of finding </style>.
+    """:root must adopt the documented design tokens.
+
+    v8-v16 required specific emerald/teal hex values (#06060d, #14142a, …).
+    v17 redesign (DESIGN.md) replaces them with the 11-step neutral scale +
+    single brand accent. Updated to assert the v17 minimal palette.
+    """
     if not STYLES_CSS.is_file():
         pytest.skip("styles.css not found (pre-v8)")
     css = STYLES_CSS.read_text(encoding="utf-8")
     root = css[: css.find("}")]  # :root block ends at first }
+    # v17 minimal palette — documented in DESIGN.md + design-system.json
     for token, hexv in (
-        ("--elev-0", "#06060d"),
-        ("--elev-1", "#0c0c18"),
-        ("--elev-2", "#14142a"),
-        ("--elev-3", "#1e1e3a"),
-        ("--text-tertiary", "#64748b"),
+        ("--n-50", "#0a0a0c"),
+        ("--n-100", "#121215"),
+        ("--n-200", "#1a1a1f"),
+        ("--brand", "#5b5bd6"),
     ):
         assert token in root, f":root must declare {token}"
         assert hexv in root, f":root {token} must use documented {hexv}"
+    # Legacy aliases must still be present (compatibility for existing rules).
+    for legacy in ("--elev-0", "--elev-1", "--text-tertiary", "--accent-brand"):
+        assert legacy in root, f":root must keep legacy alias {legacy}"
     assert "#7c8aa5" not in root, "old tertiary #7c8aa5 must be gone"
 
 
 def test_no_hardcoded_hex_outside_root():
-    """Color hex literals may only live in :root (design-system DoD)."""
-    # v8: CSS extracted to styles.css — read it directly instead of finding </style>.
+    """Color hex literals may only live in :root or named theme-variant blocks.
+
+    v17 (DESIGN.md) introduces `[data-theme="light"]` and `[data-theme="green-white"]`
+    which override the neutral scale — these legitimately contain hex literals.
+    All other CSS rules must use tokens, not raw hex.
+    """
     if not STYLES_CSS.is_file():
         pytest.skip("styles.css not found (pre-v8)")
     css = STYLES_CSS.read_text(encoding="utf-8")
-    # CSS hex after :root block close (the first `}` ends :root)
-    root_end = css.find("}")
-    style_after = css[root_end + 1:]
+    # Strip CSS comments so they don't confuse block detection.
+    css_no_comments = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    # Walk the first few selector blocks. Allowed blocks for hex literals:
+    # :root, [data-theme="..."]. Stop at the first non-theme block.
+    pos = 0
+    theme_section_end = 0
+    while True:
+        open_b = css_no_comments.find("{", pos)
+        if open_b < 0:
+            break
+        close_b = css_no_comments.find("}", open_b)
+        if close_b < 0:
+            break
+        selector = css_no_comments[pos:open_b].strip()
+        if selector.startswith(":root") or selector.startswith("[data-theme"):
+            theme_section_end = close_b + 1
+            pos = close_b + 1
+        else:
+            break
+    style_after = css_no_comments[theme_section_end:]
     # ignore SVG gradient stop-color attributes which are data, not theme
     leaks = re.findall(r"#[0-9a-fA-F]{6}\b", style_after)
     assert not leaks, f"hardcoded hex outside :root in styles.css: {leaks[:8]}"
@@ -185,8 +213,23 @@ def test_fade_word_cycle():
 
 
 def test_animated_gradient():
-    text = _read()
-    assert "gradient-shift" in text or "animated-gradient" in text, "Animated Gradient missing"
+    """v8-v16 required a `gradient-shift` animation on the .brand title
+    (rainbow text shifting hues). v17 redesign (DESIGN.md) removed this —
+    it was an AI-slop pattern. Updated to assert the rainbow-text pattern
+    is GONE; the brand title now uses a flat color."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find(".brand{")
+    if idx >= 0:
+        snippet = css[idx:idx + 300]
+        assert "background-clip:text" not in snippet.replace(" ", ""), (
+            ".brand must not use background-clip:text gradient — v17 minimal"
+        )
+    # gradient-shift keyframes may still exist (harmless if unused) but
+    # the .brand rule must not reference it.
+    brand_rule = css[idx:idx + 200] if idx >= 0 else ""
+    assert "gradient-shift" not in brand_rule, (
+        ".brand must not animate gradient-shift — v17 minimal palette"
+    )
 
 
 def test_glow_toggle():
@@ -1212,4 +1255,135 @@ def test_view_switch_clears_sim_timers():
     assert (
         "_simTimer" in sv_body or "_wfTimer" in sv_body
     ), "setView() does not clear simulation timers on view switch"
+
+
+# ── v17 minimal redesign (design-system skill) ───────────────────────────────
+# Pure Minimal + Neutral+Accent (Linear-style). Guards the design tokens
+# shipped in DESIGN.md / design-system.json so the palette can't drift back
+# to multi-hue gradients/glass.
+
+
+def test_v17_minimal_palette_tokens_defined():
+    """v17 must ship the 11-step neutral scale + single brand accent in CSS."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # The minimal palette lives in :root or a [data-theme="minimal"] block.
+    required = [
+        "--n-50",   # app bg
+        "--n-100",  # surface 1
+        "--n-200",  # surface 2 (cards)
+        "--n-400",  # border strong
+        "--n-500",  # border default
+        "--n-700",  # text secondary
+        "--n-800",  # text primary on dark
+        "--brand",  # single accent
+        "--brand-muted",
+    ]
+    missing = [t for t in required if t not in css]
+    assert not missing, f"v17 minimal palette missing tokens: {missing}"
+
+
+def test_v17_default_theme_is_minimal():
+    """The dashboard must ship minimal as the default theme (documentElement
+    or body data-theme=minimal), not the legacy green-white."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # The :root block (whatever its whitespace) must define the minimal
+    # palette directly so dark mode (which sets data-theme="") uses it.
+    assert "--n-50:" in css and "--brand:" in css, (
+        "minimal palette must be defined in :root so dark mode (data-theme='')"
+        " inherits it by default"
+    )
+    # Also ensure the :root block declares n-50 BEFORE any [data-theme] block
+    # (so the cascade order is correct).
+    n50_pos = css.find("--n-50:")
+    theme_block_pos = css.find("[data-theme=")
+    assert n50_pos > 0 and (theme_block_pos < 0 or n50_pos < theme_block_pos), (
+        ":root minimal palette must precede any [data-theme] override block"
+    )
+
+
+def test_v17_removes_brand_gradient_on_view_btn():
+    """v17 view-btn.active must NOT use linear-gradient(135deg,brand,cool) —
+    that's the AI-slop pattern flagged in DESIGN.md."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Find the .view-btn.active rule and inspect its body.
+    idx = css.find(".view-btn.active")
+    assert idx >= 0, ".view-btn.active rule missing"
+    # Take the next 240 chars (enough for the rule body).
+    snippet = css[idx:idx + 240]
+    assert "linear-gradient" not in snippet, (
+        "view-btn.active still uses gradient — v17 must use flat brand color"
+    )
+
+
+def test_v17_removes_glass_card_class_slop():
+    """v17 must not retain the .glass-card class with backdrop-filter blur +
+    gradient — that's textbook AI-slop per DESIGN.md. Either remove the class
+    entirely or strip the blur+gradient."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    if ".glass-card" not in css:
+        return  # removed entirely — pass
+    # Find every .glass-card rule body.
+    import re as _re
+    matches = list(_re.finditer(r"\.glass-card[^{]*\{([^}]+)\}", css))
+    for m in matches:
+        body = m.group(1)
+        assert "backdrop-filter:blur" not in body.replace(" ", ""), (
+            ".glass-card still uses backdrop-filter:blur — must be removed"
+        )
+        assert "linear-gradient" not in body, (
+            ".glass-card still uses gradient background — must be flat color"
+        )
+
+
+def test_v17_reduces_decorative_gradients():
+    """v17 must dramatically cut decorative linear-gradient usage. v16 had 20;
+    we allow at most 4 (for unavoidable cases like particle bg, glow dividers
+    that communicate state — not decoration)."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    count = css.count("linear-gradient")
+    assert count <= 6, (
+        f"v17 still has {count} linear-gradient() calls (target ≤6, v16 had 20). "
+        "Strip decorative gradients per DESIGN.md."
+    )
+
+
+def test_v17_header_no_glow_underline():
+    """The #header::after gradient underline was a v16 AI-slop tell.
+    v17 must remove or replace it with a solid 1px border."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    if "#header::after" not in css:
+        return  # removed — pass
+    import re as _re
+    m = _re.search(r"#header::after[^{]*\{([^}]+)\}", css)
+    if m:
+        body = m.group(1)
+        assert "linear-gradient" not in body, (
+            "#header::after still draws a gradient underline — v17 must be flat"
+        )
+
+
+def test_v17_brand_text_no_gradient_clip():
+    """The .brand title used background-clip:text gradient (rainbow text).
+    v17 must use a flat color — rainbow text is AI-slop tell #1."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find(".brand{")
+    if idx < 0:
+        return
+    snippet = css[idx:idx + 300]
+    assert "background-clip:text" not in snippet.replace(" ", ""), (
+        ".brand still uses background-clip:text gradient — v17 must be flat color"
+    )
+
+
+def test_v17_stat_values_no_gradient_clip():
+    """The .stat-val counter used gradient text. v17 must use flat color
+    so numbers are the focal point, not decoration."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    idx = css.find(".stat-val{")
+    if idx < 0:
+        return
+    snippet = css[idx:idx + 300]
+    assert "background-clip:text" not in snippet.replace(" ", ""), (
+        ".stat-val still uses background-clip:text gradient — v17 must be flat"
+    )
 
