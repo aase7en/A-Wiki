@@ -909,6 +909,23 @@ _compareSet.clear();
 updateCompareBar();
 document.querySelectorAll('.skill-card-compare').forEach(cb=>cb.checked=false);
 }
+// C16: revive the previously dead write to awiki-compare-last.
+// The write at openCompareModal() has been there since v8 but nothing
+// read it back. This restores the saved selection so the user can
+// re-open the same comparison without re-picking skills one by one.
+function restoreLastCompare(){
+const last=_lsGet('awiki-compare-last',null);
+if(!last||!Array.isArray(last)||last.length<2){
+toast('ไม่มีการเปรียบเทียบล่าสุด','err');return;
+}
+_compareSet.clear();
+last.forEach(n=>_compareSet.add(n));
+updateCompareBar();
+document.querySelectorAll('.skill-card-compare').forEach(cb=>{
+cb.checked=_compareSet.has(cb.dataset.skill||cb.value||'');
+});
+openCompareModal();
+}
 async function openCompareModal(){
 if(_compareSet.size<2){toast('เลือกอย่างน้อย 2 skills เพื่อเปรียบเทียบ','err');return;}
 const names=Array.from(_compareSet);

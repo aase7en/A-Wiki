@@ -318,14 +318,30 @@ function closeWorkspaceMenu(){
 function _renderWorkspaceList(){
   const list=$('workspace-list');if(!list)return;
   const ws=_loadWorkspaces();
+  // C16: surface the last-restored workspace at the top so the dead write
+  // to WORKSPACE_LAST_KEY now has a reader. Highlights the row that matches.
+  const last=_lsGet(WORKSPACE_LAST_KEY,null);
+  const lastName=last&&last.name;
   if(!ws.length){list.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px 0">ยังไม่มี workspace บันทึก</div>';return;}
-  list.innerHTML=ws.map(w=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border:1px solid var(--border2);border-radius:var(--r-md);background:var(--elev-2)">
+  list.innerHTML=ws.map(w=>{
+  const isLast=lastName===w.name;
+  return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border:1px solid ${isLast?'var(--accent-brand)':'var(--border2)'};border-radius:var(--r-md);background:${isLast?'var(--elev-3)':'var(--elev-2)'}">
     <div style="flex:1;cursor:pointer" onclick="restoreWorkspace(${_wsEscape(w)})">
-      <div style="color:var(--text-primary);font-weight:600">${w.name}</div>
+      <div style="color:var(--text-primary);font-weight:600">${w.name}${isLast?' <span style="font-size:var(--fs-2xs);color:var(--accent-brand)">● ล่าสุด</span>':''}</div>
       <div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${w.view} · ${(w.savedAt||'').slice(0,10)}</div>
     </div>
     <button onclick="deleteWorkspace('${w.name.replace(/'/g,"")}') " style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px" title="ลบ">✕</button>
-  </div>`).join('');
+  </div>`;
+  }).join('');
+}
+// C16: explicit reader for WORKSPACE_LAST_KEY — restore the most recently
+// restored workspace in one click from the workspace menu.
+function restoreLastWorkspace(){
+const last=_lsGet(WORKSPACE_LAST_KEY,null);
+if(!last||!last.name){toast('ไม่มี workspace ล่าสุด','err');return;}
+const ws=_loadWorkspaces().find(w=>w.name===last.name);
+if(!ws){toast('workspace "'+last.name+'" ถูกลบแล้ว','err');return;}
+restoreWorkspace(ws);
 }
 // Escape a workspace object into a JSON literal safe for onclick="restoreWorkspace(...)".
 function _wsEscape(w){return "'"+JSON.stringify(w).replace(/'/g,"\\'")+"'";}
