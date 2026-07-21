@@ -111,12 +111,21 @@ class TestSchemaValidation:
         errors = validate_registry(sample_registry_file)
         assert errors == [], f"expected no errors, got: {errors}"
 
-    def test_missing_schema_version_rejected(self, tmp_path: Path) -> None:
-        bad = {"generated_at": "x", "skills": []}
+    def test_missing_schema_version_is_migrated_not_rejected(self, tmp_path: Path) -> None:
+        """Per migrate_registry design (skills_registry/__init__.py:151-173):
+        a registry missing schema_version is treated as v0 and auto-upgraded
+        to current SCHEMA_VERSION transparently — no rejection. This is the
+        documented migration story that validate_registry relies on
+        ('grill-me finding: schema_version 2 would otherwise reject all
+        existing registries with no upgrade path'). C3-1: the old
+        test_missing_schema_version_rejected asserted the pre-migration
+        behavior and became stale when migrate_registry was added.
+        """
+        migrated_input = {"generated_at": "x", "skills": []}
         p = tmp_path / "r.json"
-        p.write_text(json.dumps(bad), encoding="utf-8")
+        p.write_text(json.dumps(migrated_input), encoding="utf-8")
         errors = validate_registry(p)
-        assert any("schema_version" in e for e in errors)
+        assert errors == [], f"migration should make this valid, got: {errors}"
 
     def test_wrong_schema_version_rejected(self, tmp_path: Path) -> None:
         bad = {"schema_version": 99, "generated_at": "x", "skills": []}
