@@ -1,8 +1,21 @@
 function initGraph(){
 const c=$('graph-vis');if(!c||_gNet)return;
 const fb=$('graph-unavailable');
-if(!window.vis){if(fb)fb.style.display='flex';return;}
+// B16: if the vis-network defer script hasn't finished loading yet, show
+// the fallback AND schedule a retry. Without the retry, a user who clicked
+// the Graph tab during the brief CDN-load window would be stuck on
+// 'Graph unavailable offline' forever even after window.vis became ready.
+if(!window.vis){
+if(fb)fb.style.display='flex';
+if(!window._visRetry){window._visRetry=0;}
+if(window._visRetry<10){
+window._visRetry++;
+setTimeout(initGraph,250);
+}
+return;
+}
 if(fb)fb.style.display='none';
+window._visRetry=0;
 if(!_gData)_gData={nodes:new vis.DataSet(),edges:new vis.DataSet()};
 _gNet=new vis.Network(c,_gData,{physics:{solver:'barnesHut',barnesHut:{gravitationalConstant:-2000,centralGravity:.3,springLength:150}},
 edges:{smooth:{type:'continuous'},width:2,arrows:{to:{enabled:true,scaleFactor:.5}}},
