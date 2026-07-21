@@ -32,8 +32,13 @@ UNCOMMITTED=$(git status --short 2>/dev/null || echo "(git unavailable)")
 LAST_LOG=$(grep "^## \[" "$LOG_FILE" 2>/dev/null | head -1 | sed 's/^## //' || echo "(none)")
 
 # Extract open TODOs from "## 🔥 Active TODOs" block (mirror show-active-todos.sh)
+# Emoji-agnostic prefix match: Windows Git Bash awk cannot match multi-byte
+# UTF-8 emoji in regex literals (🔥, 🗓️) — it silently matches nothing,
+# making handoff.md show "(ไม่มี TODO ค้าง)" even when real TODOs exist.
+# The sibling script scripts/show-active-todos.sh L18 uses /^## .*Active TODOs/
+# and works cross-platform. Verified by H6 prototype + test_agent_switch.
 PENDING=$(awk '
-  /^## 🔥 Active TODOs/ { flag=1; next }
+  /^## .*Active TODOs/ { flag=1; next }
   /^## / { if (flag) exit }
   { if (flag) print }
 ' "$SESSION_FILE" 2>/dev/null \
@@ -42,8 +47,9 @@ PENDING=$(awk '
 [ -z "$PENDING" ] && PENDING="  • (ไม่มี TODO ค้าง)"
 
 # Extract latest session narrative from "## 🗓️ Recent" (first ### [date] block)
+# Same emoji-agnostic fix as the Active TODOs block above.
 LAST_BRIEF=$(awk '
-  /^## 🗓️ Recent/ { recent=1; next }
+  /^## .*Recent/ { recent=1; next }
   recent && /^### \[/ { if (in_block) exit; in_block=1; print; next }
   in_block && /^### \[/ { exit }
   in_block && /^## / { exit }
