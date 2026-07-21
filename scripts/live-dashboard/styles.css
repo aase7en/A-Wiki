@@ -63,7 +63,7 @@ html,body{height:100%}
 body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'Inter var','Segoe UI',system-ui,sans-serif;font-size:var(--fs-sm);height:100vh;display:flex;flex-direction:column;overflow:hidden;line-height:1.5;font-weight:500;position:relative}
 #header{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--n-100);border-bottom:1px solid var(--border);flex-shrink:0;min-height:50px;position:relative}
 .live-pulse{width:9px;height:9px;border-radius:50%;background:var(--text-tertiary);flex-shrink:0;position:relative}
-.live-pulse.on{background:var(--accent-success);box-shadow:0 0 10px var(--accent-success)}
+.live-pulse.on{background:var(--accent-success);box-shadow:var(--shadow-sm)}
 .live-pulse.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--accent-success);animation:ripple 1.5s ease-out infinite}
 @keyframes ripple{0%{transform:scale(.5);opacity:1}
 100%{transform:scale(2.6);opacity:0}
@@ -77,7 +77,7 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 .chat-quick-btn:hover{border-color:var(--accent-brand);color:var(--accent-brand);background:rgba(94,234,212,.08)}
 #chat-input-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--elev-1);align-items:flex-end}
 #chat-textarea{flex:1;resize:none;padding:10px 14px;border-radius:var(--r-lg);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-base);font-family:inherit;line-height:1.5;max-height:150px;min-height:44px;outline:none;transition:border-color .2s}
-#chat-textarea:focus{border-color:var(--accent-brand);box-shadow:0 0 12px rgba(94,234,212,.15)}
+#chat-textarea:focus{border-color:var(--accent-brand);box-shadow:var(--shadow-sm)}
 #chat-send-btn{padding:10px 16px;font-size:var(--fs-lg);min-height:44px}
 #chat-status{padding:4px 16px;font-size:var(--fs-2xs);color:var(--text-tertiary);min-height:20px;display:flex;align-items:center;gap:8px}
 .chat-msg{display:flex;gap:10px;animation:msgIn .25s ease-out;max-width:85%}
@@ -105,14 +105,14 @@ body{background:var(--elev-0);color:var(--text-primary);font-family:-apple-syste
 .wf-tab.hot{border-color:var(--accent-brand);color:var(--text-primary);background:rgba(94,234,212,.10);animation:tab-glow 2s ease-in-out}
 .wf-tab.hot.cost{border-color:var(--accent-warm);background:rgba(251,191,36,.10)}
 .wf-tab.hot.swarm{border-color:var(--accent-cool);background:rgba(56,189,248,.10)}
-@keyframes tab-glow{0%{box-shadow:0 0 0 rgba(94,234,212,0)}
-30%{box-shadow:0 0 16px rgba(94,234,212,.6)}
-100%{box-shadow:0 0 8px rgba(94,234,212,.2)}
+@keyframes tab-glow{0%{box-shadow:none}
+30%{box-shadow:var(--shadow-sm)}
+100%{box-shadow:var(--shadow-sm)}
 }
 #stats{display:flex;gap:14px;flex-shrink:0}
 .stat-item{display:flex;flex-direction:column;align-items:center;min-width:48px;padding:2px 4px;border-radius:var(--r-md)}
 .stat-item.tick{animation:tick-glow .5s ease-out}
-@keyframes tick-glow{0%{box-shadow:0 0 14px rgba(94,234,212,.5);background:rgba(94,234,212,.08)}
+@keyframes tick-glow{0%{box-shadow:var(--shadow-sm);background:rgba(94,234,212,.08)}
 100%{box-shadow:none;background:transparent}
 }
 .stat-lbl{font-size:var(--fs-2xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px}
@@ -171,7 +171,7 @@ to{transform:scale(1);opacity:1}
 #flow-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text-disabled);font-size:var(--fs-sm);text-align:center;padding:24px}
 .origin-wrap{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px}
 .origin-core{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;background:radial-gradient(circle at 35% 30%,rgba(251,191,36,.35),rgba(94,234,212,.18) 55%,var(--elev-2));border:1.5px solid var(--accent-warm)}
-.origin-core.busy{box-shadow:var(--shadow-glow),inset 0 0 18px rgba(94,234,212,.25)}
+.origin-core.busy{box-shadow:var(--shadow-sm)}
 .origin-core.busy::before{content:'';position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--accent-brand);animation:origin-ring 1.4s ease-in-out infinite}
 @keyframes origin-ring{0%,100%{transform:scale(1);opacity:.5}
 50%{transform:scale(1.18);opacity:.15}
@@ -184,9 +184,9 @@ to{transform:scale(1);opacity:1}
 .station-ic{font-size:22px;line-height:1;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-bottom:3px;text-shadow:0 0 8px rgba(251,191,36,0.5);filter:drop-shadow(0 0 2px rgba(0,0,0,0.5))}
 .station-nm{font-size:var(--fs-2xs);font-weight:700;color:var(--text-secondary);max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .station-cnt{font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--text-tertiary);font-variant-numeric:tabular-nums}
-.station.active .station-core{border-color:var(--st-color);box-shadow:var(--shadow-glow);animation:station-pulse 1.5s ease-in-out infinite}
-.station.done .station-core{box-shadow:0 0 14px rgba(52,211,153,.6);animation:station-flash .8s ease-out}
-.station.fail .station-core{box-shadow:0 0 14px rgba(248,113,113,.6);animation:station-flash .8s ease-out}
+.station.active .station-core{border-color:var(--st-color);box-shadow:var(--shadow-sm);animation:station-pulse 1.5s ease-in-out infinite}
+.station.done .station-core{box-shadow:var(--shadow-sm);animation:station-flash .8s ease-out}
+.station.fail .station-core{box-shadow:var(--shadow-sm);animation:station-flash .8s ease-out}
 .station.disabled{opacity:.4}
 @keyframes station-pulse{0%,100%{filter:brightness(1)}
 50%{filter:brightness(1.25)}
@@ -298,7 +298,7 @@ to{transform:translateY(0);opacity:1}
 .glow-toggle input{opacity:0;width:0;height:0}
 .glow-slider{position:absolute;inset:0;border-radius:var(--r-full);background:var(--border2);transition:.25s}
 .glow-slider::before{content:'';position:absolute;height:18px;width:18px;left:2px;top:2px;border-radius:50%;background:var(--text-tertiary);transition:.25s}
-.glow-toggle input:checked+.glow-slider{background:rgba(52,211,153,.4);box-shadow:0 0 12px rgba(52,211,153,.6)}
+.glow-toggle input:checked+.glow-slider{background:rgba(52,211,153,.4);box-shadow:var(--shadow-sm)}
 .glow-toggle input:checked+.glow-slider::before{transform:translateX(18px);background:var(--accent-success)}
 .cfg-field{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
 .cfg-field label{font-size:var(--fs-2xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.4px}
@@ -387,7 +387,7 @@ to{transform:translateY(0);opacity:1}
 /* === SKILLS PANEL === */
 #skills-panel{padding:10px 14px}
 .skill-card{background:var(--n-200);border:1px solid var(--n-400);border-radius:var(--r-md);padding:11px 13px;cursor:pointer;transition:var(--t-fast);position:relative;overflow:hidden;min-height:96px;display:flex;flex-direction:column;gap:5px}
-.skill-card:hover{border-color:var(--accent-brand);box-shadow:var(--shadow-glow);transform:translateY(-1px)}
+.skill-card:hover{border-color:var(--accent-brand);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
 .skill-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sk-color,var(--accent-brand));border-radius:3px 0 0 3px}
 .skill-card.has-thai::before{background:var(--accent-success)}
 .skill-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
@@ -418,25 +418,25 @@ to{transform:translateY(0);opacity:1}
 .skill-example-how{font-size:var(--fs-xs);color:var(--text-secondary);line-height:1.5}
 .skill-process-step{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:var(--fs-xs);color:var(--text-secondary)}
 .skill-process-step-num{width:22px;height:22px;border-radius:50%;background:var(--accent-brand);color:var(--elev-0);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
-.skill-sim-btn{width:100%;padding:11px;border-radius:var(--r-md);cursor:pointer;background:linear-gradient(135deg,var(--accent-brand),var(--accent-cool));border:none;color:var(--elev-0);font-size:var(--fs-base);font-weight:700;margin-top:6px;min-height:44px;transition:opacity .2s}
-.skill-sim-btn:hover{opacity:.85}
+.skill-sim-btn{width:100%;padding:11px;border-radius:var(--r-md);cursor:pointer;background:var(--brand);border:none;color:var(--brand-fg);font-size:var(--fs-base);font-weight:600;margin-top:6px;min-height:44px;transition:var(--t-fast)}
+.skill-sim-btn:hover{background:var(--brand-hover)}
 .skill-sim-btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* === SKILL SIMULATION MODAL === */
-#sim-backdrop{display:none;position:fixed;inset:0;background:rgba(3,3,10,.92);backdrop-filter:blur(6px);z-index:400;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px}
+#sim-backdrop{display:none;position:fixed;inset:0;background:rgba(3,3,10,.92);z-index:400;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px}
 #sim-backdrop.show{display:flex}
-#sim-stage{width:min(720px,94vw);background:var(--elev-1);border:1px solid var(--border2);border-radius:var(--r-xl);padding:24px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
-#sim-stage::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-brand),var(--accent-violet))}
-#sim-title{font-size:var(--fs-lg);font-weight:800;color:var(--accent-brand);font-family:var(--font-mono);margin-bottom:4px}
+#sim-stage{width:min(720px,94vw);background:var(--n-100);border:1px solid var(--n-400);border-radius:var(--r-md);padding:24px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+#sim-stage::before{content:'';position:absolute;left:0;top:0;right:0;height:2px;background:var(--brand)}
+#sim-title{font-size:var(--fs-lg);font-weight:600;color:var(--n-900);font-family:var(--font-mono);margin-bottom:4px}
 #sim-subtitle{font-size:var(--fs-xs);color:var(--text-tertiary);margin-bottom:20px}
-#sim-track{position:relative;height:8px;background:var(--elev-3);border-radius:var(--r-full);margin:0 30px 24px;overflow:hidden}
-#sim-progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-brand),var(--accent-cool));border-radius:var(--r-full);transition:width .5s cubic-bezier(.4,0,.2,1)}
+#sim-track{position:relative;height:8px;background:var(--n-300);border-radius:var(--r-full);margin:0 30px 24px;overflow:hidden}
+#sim-progress{height:100%;width:0%;background:var(--brand);border-radius:var(--r-full);transition:width var(--t-normal)}
 #sim-stations{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin:0 10px 20px;position:relative}
 .sim-station{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:all .4s;opacity:.4}
 .sim-station.active{opacity:1;transform:translateY(-4px) scale(1.05)}
 .sim-station.done{opacity:.7}
 .sim-core{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--elev-2);border:2px solid var(--border2);transition:all .4s;position:relative}
-.sim-station.active .sim-core{border-color:var(--accent-brand);box-shadow:0 0 20px rgba(94,234,212,.6);background:rgba(94,234,212,.15)}
+.sim-station.active .sim-core{border-color:var(--accent-brand);box-shadow:var(--shadow-sm);background:rgba(94,234,212,.15)}
 .sim-station.active .sim-core::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--accent-brand);animation:sim-ring 1.2s ease-out infinite}
 @keyframes sim-ring{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.4);opacity:0}}
 .sim-station.done .sim-core{border-color:var(--accent-success);background:rgba(52,211,153,.12)}
@@ -447,7 +447,7 @@ to{transform:translateY(0);opacity:1}
 #sim-explain{background:var(--elev-2);border:1px solid var(--border);border-left:3px solid var(--accent-brand);border-radius:var(--r-md);padding:14px 16px;min-height:70px;font-size:var(--fs-sm);color:var(--text-primary);line-height:1.6;transition:all .3s}
 #sim-explain.empty{color:var(--text-disabled);font-style:italic}
 #sim-controls{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
-#sim-particle{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent-brand);box-shadow:0 0 12px var(--accent-brand);pointer-events:none;transition:left .5s linear,top .5s linear;z-index:5}
+#sim-particle{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent-brand);box-shadow:var(--shadow-sm);pointer-events:none;transition:left .5s linear,top .5s linear;z-index:5}
 
 /* === COUNCIL PANEL === */
 #council-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;gap:8px;padding:4px 0}
@@ -473,7 +473,7 @@ to{transform:translateY(0);opacity:1}
 /* Comprehensive focus-visible for all interactive elements (WCAG 2.4.7 Focus Visible). */
 button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px}
 /* Skill cards: focus ring via box-shadow (they have border-radius). */
-.skill-card:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;box-shadow:0 0 0 4px rgba(94,234,212,.15)}
+.skill-card:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;box-shadow:0 0 0 4px var(--brand-muted)}
 /* View tabs: focus ring matches the active-tab style. */
 .view-btn:focus-visible{outline:2px solid var(--accent-brand);outline-offset:-2px}
 /* Respect prefers-reduced-motion: disable all transitions/animations globally. */
