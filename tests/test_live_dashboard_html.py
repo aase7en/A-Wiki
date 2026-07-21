@@ -1387,3 +1387,41 @@ def test_v17_stat_values_no_gradient_clip():
         ".stat-val still uses background-clip:text gradient — v17 must be flat"
     )
 
+
+# ── v17 chunk C17 — emoji declutter + density ──────────────────────────────
+def test_v17_offline_heading_no_emoji_prefix():
+    """The offline overlay h2 was '📡 รอ Dashboard Server…'. v17 removes
+    emoji prefixes from headings per DESIGN.md. The heading text should
+    start with a non-emoji character."""
+    html = HTML.read_text(encoding="utf-8")
+    # Find the offline h2
+    import re as _re
+    m = _re.search(r"<h2[^>]*>([^<]+)</h2>", html)
+    if not m:
+        return
+    txt = m.group(1).strip()
+    # Allow leading whitespace; first non-space char should not be an emoji.
+    # Emojis are in the U+1F300-U+1FAFF range or U+2600-U+27BF.
+    first = txt[0] if txt else ""
+    code = ord(first)
+    is_emoji = (
+        0x1F300 <= code <= 0x1FAFF
+        or 0x2600 <= code <= 0x27BF
+        or 0x2190 <= code <= 0x21FF  # arrow range often used as icon
+    )
+    assert not is_emoji, (
+        f"offline <h2> still starts with emoji ({first!r}); v17 removes emoji prefixes"
+    )
+
+
+def test_v17_section_headings_use_semantic_weight():
+    """v17 DESIGN.md: headings use font-weight 600 (semibold), not 800.
+    Linear's hallmark: strong-but-restrained titles."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Find any rule like 'h2{...font-weight:800...}' or similar
+    import re as _re
+    bad = _re.findall(r"(?:^|[},])\s*(?:h[1-6]|\.brand|\.stat-val)\{[^}]*font-weight:800", css)
+    assert not bad, (
+        f"headings/brand/stat-val still use font-weight:800 — v17 caps at 600: {bad}"
+    )
+
