@@ -1,8 +1,8 @@
 {
   "name": "awiki-dashboard",
-  "version": "16.0.0",
+  "version": "17.0.0",
   "private": true,
-  "description": "A-Wiki Live Dashboard — esbuild build pipeline (v8) + Playwright tests (v10) + Backup (v11) + Theme/Mobile (v12) + Onboarding (v13) + Visualizations (v14) + Event Log/Chat (v15) + Integration Audit fixes (v16). Bundles src/*.js into a single minified app.min.js served by server.py.",
+  "description": "A-Wiki Live Dashboard — esbuild build pipeline (v8) + Playwright tests (v10) + Backup (v11) + Theme/Mobile (v12) + Onboarding (v13) + Visualizations (v14) + Event Log/Chat (v15) + Integration Audit (v16) + Pure Minimal redesign (v17). Bundles src/*.js into a single minified app.min.js served by server.py.",
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --watch",
