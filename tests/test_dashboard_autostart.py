@@ -9,6 +9,7 @@ spawn a duplicate server (dashboard-ensure.sh is itself PID-guarded).
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -67,8 +68,16 @@ def test_autostart_spawns_dashboard_ensure_when_enabled(monkeypatch):
     assert len(calls) == 1
     argv = calls[0][0][0]
     assert any("dashboard-ensure.sh" in str(x) for x in argv), argv
-    # Must detach so it survives the session hook process
-    assert calls[0][1].get("start_new_session") is True
+    # Must detach so it survives the session hook process. session_start.py
+    # picks the platform-correct detachment strategy: start_new_session=True
+    # on POSIX, creationflags=CREATE_NO_WINDOW on Windows (start_new_session
+    # raises on Windows and would flash a console window). Both are valid
+    # "detach from session" strategies — accept either.
+    kwargs = calls[0][1]
+    if sys.platform == "win32":
+        assert kwargs.get("creationflags") is not None, kwargs
+    else:
+        assert kwargs.get("start_new_session") is True, kwargs
 
 
 def test_dashboard_ensure_script_is_pid_guarded():
