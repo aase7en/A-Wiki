@@ -1,0 +1,28 @@
+{
+  "errors": [],
+  "pageerrors": [],
+  "request_failures": [],
+  "warning_count": 1,
+  "warning_samples": [
+    "Could not find Sortable for flow-overlay yet, will retry. ReferenceError: Sortable is not defined\n    at http://localhost:7790/app.min.js:184:15777\n    at http://localhost:7790/app.min.js:184:16364"
+  ],
+  "dom": {
+    "nodes": 8537,
+    "activeBtn": "btn-chat",
+    "panelsVisible": [
+      "net-panel",
+      "chat-panel"
+    ],
+    "openModal": false,
+    "lsKeys": [
+      "awiki-last-backup",
+      "awiki-seen-version",
+      "awiki-health-snapshots",
+      "awiki-theme-mode",
+      "awiki-tour-step",
+      "awiki-auto-backups"
+    ],
+    "eventLogLen": 0,
+    "timelineRows": 120
+  }
+}

@@ -327,6 +327,28 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - 🗑 Clear button in input bar (with confirm)
 - Boot auto-restores history
 
+### 🔬 v16 — Integration Audit Fixes (current)
+**Goal**: dashboard ผ่าน debug-mantra 4-step audit + Playwright runtime check. เน้น "ใช้ได้จริงทั้งระบบ" ไม่ใช่แค่ syntax (5 chunks).
+
+| Chunk | Fix | Files |
+|-------|-----|-------|
+| **A16** | `subagent_invoke` SSE handler — hook `log_subagent_result.py` ส่ง event ทุกครั้งที่เรียก subagent จริง แต่ client ไม่มี handler (default pushTimeline เท่านั้น). เพิ่ม `onSubagentInvoke()`: bump model KPI + flowComplete + spawn 🤖 thought + failure notification | `src/graph.js` |
+| **B16** | vis-network fallback auto-retry — ถ้า user คลิก Graph tab ตอน defer script ยังโหลดไม่เสร็จ เดิมจะติด "Graph unavailable offline" ตลอดไป. เพิ่ม poll 250ms × 10 ครั้ง | `src/graph.js` |
+| **C16** | Revive dead writes — `awiki-compare-last` + `WORKSPACE_LAST_KEY` เขียนมาตั้งแต่ v8 แต่ไม่มี reader. เพิ่ม `restoreLastCompare()` + `restoreLastWorkspace()` + badge "● ล่าสุด" ใน workspace list | `src/skills.js`, `src/modals.js` |
+| **D16** | Auto-clear sim timers on view switch — `_simTimer` (coverage) + `_wfTimer` (analytics) เดิม clear เฉพาะตอน user กด stop. ถ้าเริ่ม sim แล้ว switch view จะ churn DOM ที่ซ่อนอยู่ตลอด. เพิ่ม guard ใน `setView()` | `src/app.js` |
+
+**Audit methodology** (debug-mantra 4-step + Iron Law #2):
+1. Static dead-ref scan — 92 inline handler fns ทั้งหมด resolve ✓
+2. Runtime Playwright — 0 console errors / 0 pageerrors / 0 request failures (13 views × 8 settings)
+3. localStorage read/write cross-check — 2 dead writes (C16)
+4. SSE event-type diff (client handlers vs server emitters) — 1 missing handler (A16)
+
+**Audit artifacts** (gitignored runtime reports):
+- `tests-browser/runtime_audit.py` — full Playwright audit driver
+- `tests-browser/runtime_audit_live.py` — `_eventLog` ring buffer live check (via `exportEventLog()` API)
+- `tests-browser/runtime_audit_subagent.py` — A16 handler verification
+- `tests-browser/audit-report.json` — last run output
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
