@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-Wiki Dashboard v17 — Design Preview (Pure Minimal · Linear-style)</title>
+<style>
+/* === v17 TOKENS === */
+:root{
+  --n-0:#000;--n-50:#0a0a0c;--n-100:#121215;--n-200:#1a1a1f;--n-300:#27272e;
+  --n-400:#3f3f47;--n-500:#52525b;--n-600:#71717a;--n-700:#a1a1aa;--n-800:#d4d4d8;
+  --n-900:#fafafa;--n-1000:#fff;
+  --brand:#5b5bd6;--brand-hover:#6d6dff;--brand-muted:rgba(91,91,214,.12);--brand-fg:#fff;
+  --success:#10b981;--warn:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+  --fs-caption:clamp(11px,1.1vw,12px);--fs-body:clamp(13px,1.4vw,14px);
+  --fs-h4:clamp(15px,1.8vw,16px);--fs-h3:clamp(17px,2vw,18px);
+  --fs-h2:clamp(20px,2.5vw,22px);--fs-h1:clamp(24px,3vw,28px);
+  --r-sm:6px;--r-md:10px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg:0 16px 40px rgba(0,0,0,.12);
+  --ease:cubic-bezier(0.2,0,0,1);
+  --t-fast:120ms var(--ease);--t-normal:200ms var(--ease);--t-slow:320ms var(--ease);
+  --s-2:4px;--s-4:8px;--s-5:12px;--s-6:16px;--s-7:20px;--s-8:24px;--s-10:32px;
+  font-family:-apple-system,BlinkMacSystemFont,'Inter var','Segoe UI',system-ui,sans-serif;
+}
+body{margin:0;background:var(--n-50);color:var(--n-800);font-size:var(--fs-body);font-weight:500;line-height:1.5}
+.container{max-width:1100px;margin:0 auto;padding:var(--s-10)}
+.row{display:flex;gap:var(--s-8);align-items:flex-start;margin-bottom:var(--s-10)}
+.col{flex:1;min-width:0}
+h1{font-size:var(--fs-h1);font-weight:600;margin:0 0 var(--s-2);color:var(--n-900)}
+h2{font-size:var(--fs-h2);font-weight:600;margin:0 0 var(--s-5);color:var(--n-900);padding-top:var(--s-12);border-top:1px solid var(--n-300);padding-bottom:var(--s-4)}
+h3{font-size:var(--fs-h3);font-weight:600;margin:0 0 var(--s-4);color:var(--n-900)}
+h4{font-size:var(--fs-h4);font-weight:600;margin:0 0 var(--s-4);color:var(--n-900);text-transform:none;letter-spacing:0}
+.lead{color:var(--n-700);margin:0 0 var(--s-8);max-width:60ch}
+.muted{color:var(--n-600)}
+.caption{font-size:var(--fs-caption);color:var(--n-700)}
+.tag{font-size:var(--fs-caption);padding:2px var(--s-3);background:var(--n-300);color:var(--n-700);border-radius:var(--r-sm);font-weight:500}
+.tag-success{background:rgba(16,185,129,.12);color:var(--success)}
+.tag-warn{background:rgba(245,158,11,.12);color:var(--warn)}
+.tag-danger{background:rgba(239,68,68,.12);color:var(--danger)}
+.tag-brand{background:var(--brand-muted);color:var(--brand)}
+
+/* === components === */
+.card{background:var(--n-100);border:1px solid var(--n-400);border-radius:var(--r-md);padding:var(--s-6);transition:var(--t-fast)}
+.card:hover{border-color:var(--n-500);box-shadow:var(--shadow-sm)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s-5)}
+.stat{display:flex;flex-direction:column;gap:var(--s-2)}
+.stat-num{font-size:var(--fs-h1);font-weight:600;color:var(--n-900);font-variant-numeric:tabular-nums;line-height:1}
+.stat-label{font-size:var(--fs-caption);color:var(--n-700)}
+
+.btn{background:var(--n-200);color:var(--n-800);border:1px solid var(--n-500);padding:8px 14px;border-radius:var(--r-sm);font-weight:500;font-size:var(--fs-body);font-family:inherit;cursor:pointer;transition:var(--t-fast)}
+.btn:hover{background:var(--n-300);border-color:var(--n-400)}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.btn-primary{background:var(--brand);color:var(--brand-fg);border-color:transparent}
+.btn-primary:hover{background:var(--brand-hover)}
+.btn-danger{background:transparent;color:var(--danger);border-color:var(--n-500)}
+.btn-danger:hover{background:rgba(239,68,68,.08)}
+.btn-row{display:flex;gap:var(--s-4);align-items:center;flex-wrap:wrap}
+
+.tabbar{display:flex;gap:0;border-bottom:1px solid var(--n-400);margin-bottom:var(--s-6)}
+.tab{padding:10px 14px;color:var(--n-700);cursor:pointer;font-weight:500;border-bottom:2px solid transparent;transition:var(--t-fast);font-size:var(--fs-body)}
+.tab:hover{color:var(--n-800);background:var(--n-300)}
+.tab.active{color:var(--n-900);background:var(--brand-muted);border-bottom-color:var(--brand)}
+
+.row-item{display:flex;align-items:center;justify-content:space-between;padding:10px var(--s-6);border-bottom:1px solid var(--n-300);transition:var(--t-fast)}
+.row-item:hover{background:var(--brand-muted)}
+.row-item:last-child{border-bottom:none}
+.row-title{font-weight:500;color:var(--n-900)}
+.row-meta{font-size:var(--fs-caption);color:var(--n-700);font-variant-numeric:tabular-nums}
+.list{background:var(--n-100);border:1px solid var(--n-400);border-radius:var(--r-md);overflow:hidden}
+
+/* === comparison (slop vs minimal) === */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);margin-top:var(--s-6)}
+.compare-card{padding:var(--s-6);border-radius:var(--r-md)}
+.compare-old{
+  background:linear-gradient(145deg,rgba(20,20,42,.85),rgba(30,30,58,.7));
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(167,139,250,.4);
+  color:#cbd5e1;
+  box-shadow:0 0 30px rgba(91,91,214,.15),0 8px 20px rgba(0,0,0,.4);
+}
+.compare-new{background:var(--n-100);border:1px solid var(--n-400);color:var(--n-800)}
+.compare-label{font-size:var(--fs-caption);text-transform:uppercase;letter-spacing:0.08em;color:var(--n-700);margin-bottom:var(--s-4);font-weight:600}
+.compare-old .compare-label{color:#a78bfa}
+.badge-old{display:inline-block;padding:2px 8px;border-radius:999px;background:linear-gradient(135deg,#5b5bd6,#a78bfa);color:#fff;font-size:11px;font-weight:600;margin-bottom:8px}
+.badge-new{display:inline-block;padding:2px 8px;border-radius:var(--r-sm);background:var(--brand-muted);color:var(--brand);font-size:11px;font-weight:600;margin-bottom:8px}
+
+/* mock header */
+.mock-header{display:flex;align-items:center;justify-content:space-between;padding:12px var(--s-6);background:var(--n-100);border-bottom:1px solid var(--n-400);border-radius:var(--r-md) var(--r-md) 0 0}
+.mock-header h3{margin:0}
+.mock-stat{display:flex;gap:var(--s-6)}
+.swatch-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:var(--s-3);margin-top:var(--s-4)}
+.swatch{aspect-ratio:1;border-radius:var(--r-sm);border:1px solid var(--n-400);display:flex;align-items:flex-end;padding:4px;font-size:10px;color:var(--n-900);background:#fff}
+.type-scale>div{padding:var(--s-3) 0;border-bottom:1px solid var(--n-300)}
+.type-scale>div:last-child{border-bottom:none}
+.type-scale .label{color:var(--n-600);font-size:var(--fs-caption);font-family:monospace}
+
+/* spacing bar */
+.space-row{display:flex;align-items:center;gap:var(--s-4);padding:6px 0}
+.space-bar{background:var(--brand);height:12px;border-radius:2px}
+.space-label{font-family:monospace;font-size:var(--fs-caption);color:var(--n-700);width:60px}
+
+/* motion demo */
+@keyframes pulse-fast{0%,100%{opacity:1}50%{opacity:.5}}
+.motion-demo{display:flex;gap:var(--s-4);margin-top:var(--s-4)}
+.motion-demo>div{flex:1;padding:var(--s-5);background:var(--n-200);border:1px solid var(--n-400);border-radius:var(--r-sm);text-align:center;cursor:pointer;transition:var(--t-fast)}
+.motion-demo>div:hover{background:var(--brand-muted);border-color:var(--brand)}
+.motion-demo .label{font-size:var(--fs-caption);color:var(--n-700);font-family:monospace}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>A-Wiki Dashboard v17</h1>
+<p class="lead">Pure Minimal · Linear-style · Neutral + Accent. ผ่าน visual audit 10-dimension 5/10 → เป้า 9/10. เอาออก: 20 gradients · 7 glass · 32 shadows · emoji headings.</p>
+
+<h2>① Palette</h2>
+<div class="row">
+  <div class="col">
+    <h4>Neutral (11 steps)</h4>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#000"></div>
+      <div class="swatch" style="background:#0a0a0c"></div>
+      <div class="swatch" style="background:#121215"></div>
+      <div class="swatch" style="background:#1a1a1f"></div>
+      <div class="swatch" style="background:#27272e"></div>
+      <div class="swatch" style="background:#3f3f47"></div>
+      <div class="swatch" style="background:#52525b"></div>
+      <div class="swatch" style="background:#71717a"></div>
+      <div class="swatch" style="background:#a1a1aa"></div>
+      <div class="swatch" style="background:#d4d4d8"></div>
+      <div class="swatch" style="background:#fafafa"></div>
+      <div class="swatch" style="background:#fff"></div>
+    </div>
+    <p class="caption" style="margin-top:8px">0 → 1000 · all neutrals · no decorative color</p>
+  </div>
+  <div class="col">
+    <h4>Accent (single hue)</h4>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#5b5bd6"></div>
+      <div class="swatch" style="background:#6d6dff"></div>
+      <div class="swatch" style="background:rgba(91,91,214,.12);border-color:#5b5bd6"></div>
+    </div>
+    <p class="caption" style="margin-top:8px">brand · brand-hover · brand-muted</p>
+    <h4 style="margin-top:16px">Status (no gradients)</h4>
+    <div class="btn-row" style="margin-top:8px">
+      <span class="tag tag-success">success</span>
+      <span class="tag tag-warn">warn</span>
+      <span class="tag tag-danger">danger</span>
+      <span class="tag tag-brand">brand</span>
+    </div>
+  </div>
+</div>
+
+<h2>② Typography (6 sizes · system stack)</h2>
+<div class="card type-scale">
+  <div><span class="label">--fs-h1 clamp(24-28)</span> <span style="font-size:var(--fs-h1);font-weight:600">ภาพรวม Dashboard</span></div>
+  <div><span class="label">--fs-h2 clamp(20-22)</span> <span style="font-size:var(--fs-h2);font-weight:600">Usage Analytics</span></div>
+  <div><span class="label">--fs-h3 clamp(17-18)</span> <span style="font-size:var(--fs-h3);font-weight:600">เปิดบ่อยสุด 30 วัน</span></div>
+  <div><span class="label">--fs-h4 clamp(15-16)</span> <span style="font-size:var(--fs-h4);font-weight:600">Skill Card Title</span></div>
+  <div><span class="label">--fs-body clamp(13-14)</span> <span style="font-size:var(--fs-body)">body — default text. รายละเอียดของ skill หรือ event.</span></div>
+  <div><span class="label">--fs-caption clamp(11-12)</span> <span style="font-size:var(--fs-caption)" class="muted">12:34:56 · metadata · timestamps</span></div>
+</div>
+
+<h2>③ Spacing (4px base · 11 steps)</h2>
+<div class="card">
+  <div class="space-row"><div class="space-label">--s-2 4</div><div class="space-bar" style="width:4px"></div></div>
+  <div class="space-row"><div class="space-label">--s-3 6</div><div class="space-bar" style="width:6px"></div></div>
+  <div class="space-row"><div class="space-label">--s-4 8</div><div class="space-bar" style="width:8px"></div></div>
+  <div class="space-row"><div class="space-label">--s-5 12</div><div class="space-bar" style="width:12px"></div></div>
+  <div class="space-row"><div class="space-label">--s-6 16</div><div class="space-bar" style="width:16px"></div></div>
+  <div class="space-row"><div class="space-label">--s-7 20</div><div class="space-bar" style="width:20px"></div></div>
+  <div class="space-row"><div class="space-label">--s-8 24</div><div class="space-bar" style="width:24px"></div></div>
+  <div class="space-row"><div class="space-label">--s-10 32</div><div class="space-bar" style="width:32px"></div></div>
+  <div class="space-row"><div class="space-label">--s-12 48</div><div class="space-bar" style="width:48px"></div></div>
+</div>
+
+<h2>④ Components</h2>
+<div class="row">
+  <div class="col">
+    <h4>Buttons</h4>
+    <div class="btn-row">
+      <button class="btn">Default</button>
+      <button class="btn-primary btn">Primary</button>
+      <button class="btn btn-danger">Delete</button>
+      <button class="btn" disabled style="opacity:.4;cursor:not-allowed">Disabled</button>
+    </div>
+    <h4 style="margin-top:20px">Tags / Badges</h4>
+    <div class="btn-row">
+      <span class="tag">default</span>
+      <span class="tag tag-brand">brand</span>
+      <span class="tag tag-success">pass</span>
+      <span class="tag tag-warn">warn</span>
+      <span class="tag tag-danger">fail</span>
+    </div>
+  </div>
+  <div class="col">
+    <h4>Tabs</h4>
+    <div class="tabbar">
+      <div class="tab">Summary</div>
+      <div class="tab active">Skills</div>
+      <div class="tab">Coverage</div>
+      <div class="tab">Analytics</div>
+    </div>
+    <p class="caption" style="margin-top:8px">active = brand-muted bg + 2px bottom border. ไม่มี gradient.</p>
+  </div>
+</div>
+
+<h2>⑤ Cards & List</h2>
+<div class="row">
+  <div class="col">
+    <h4>Stat cards</h4>
+    <div class="card-grid">
+      <div class="card stat">
+        <div class="stat-num">143</div>
+        <div class="stat-label">events</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">models</div>
+      </div>
+      <div class="card stat">
+        <div class="stat-num">12</div>
+        <div class="stat-label">hooks passed</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>List</h4>
+    <div class="list">
+      <div class="row-item">
+        <div>
+          <div class="row-title">debug-mantra</div>
+          <div class="row-meta">engineering · opened 24×</div>
+        </div>
+        <span class="tag tag-brand">canonical</span>
+      </div>
+      <div class="row-item">
+        <div>
+          <div class="row-title">scrutinize</div>
+          <div class="row-meta">engineering · opened 18×</div>
+        </div>
+        <span class="tag">draft</span>
+      </div>
+      <div class="row-item">
+        <div>
+          <div class="row-title">post-mortem</div>
+          <div class="row-meta">engineering · opened 9×</div>
+        </div>
+        <span class="tag tag-warn">review</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>⑥ Before vs After (slop removed)</h2>
+<div class="compare">
+  <div class="compare-card compare-old">
+    <div class="badge-old">v16 — SLOP</div>
+    <div class="compare-label">before</div>
+    <div style="font-size:22px;font-weight:800;background:linear-gradient(135deg,#5b5bd6,#60a5fa);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px">📡 Events</div>
+    <div style="font-size:32px;font-weight:800;background:linear-gradient(90deg,#10b981,#5b5bd6);-webkit-background-clip:text;background-clip:text;color:transparent">143</div>
+    <div style="font-size:11px;color:#a1a1aa;letter-spacing:.08em;text-transform:uppercase;margin-top:4px">total processed</div>
+    <div style="margin-top:16px;padding:12px;background:linear-gradient(145deg,rgba(20,20,42,.85),rgba(30,30,58,.7));backdrop-filter:blur(8px);border:1px solid rgba(91,91,214,.3);border-radius:8px;font-size:13px">
+      ▓▓ glass card พื้น gradient + blur ▓▓<br>
+      <span style="color:#a1a1aa">box-shadow: 0 0 30px brand glow</span>
+    </div>
+  </div>
+  <div class="compare-card compare-new">
+    <div class="badge-new">v17 — MINIMAL</div>
+    <div class="compare-label">after</div>
+    <div style="font-size:var(--fs-h2);font-weight:600;color:var(--n-900);margin-bottom:12px">Events</div>
+    <div class="stat-num">143</div>
+    <div class="stat-label" style="text-transform:uppercase;letter-spacing:.06em;margin-top:4px">total processed</div>
+    <div class="card" style="margin-top:16px;font-size:var(--fs-body)">
+      flat card · 1px border · no shadow<br>
+      <span class="muted">hover: border-color + shadow-sm</span>
+    </div>
+  </div>
+</div>
+
+<h2>⑦ Motion (3 transitions)</h2>
+<div class="card">
+  <p class="lead" style="margin-bottom:0">single easing curve: <code>cubic-bezier(0.2, 0, 0, 1)</code></p>
+  <div class="motion-demo">
+    <div><div class="label">--t-fast · 120ms</div><div style="margin-top:6px">hover, focus</div></div>
+    <div><div class="label">--t-normal · 200ms</div><div style="margin-top:6px">toggle, expand</div></div>
+    <div><div class="label">--t-slow · 320ms</div><div style="margin-top:6px">modal, view switch</div></div>
+  </div>
+  <p class="caption" style="margin-top:12px">ลดจาก 30 transitions → 3. ไม่มี bouncy/elastic easings.</p>
+</div>
+
+<h2>⑧ Mock dashboard surface</h2>
+<div class="card" style="padding:0;overflow:hidden">
+  <div class="mock-header">
+    <h3>A-Wiki Live</h3>
+    <div class="mock-stat">
+      <div class="stat"><div class="stat-num" style="font-size:18px">143</div><div class="stat-label">events</div></div>
+      <div class="stat"><div class="stat-num" style="font-size:18px">8</div><div class="stat-label">models</div></div>
+      <div class="stat"><div class="stat-num" style="font-size:18px">3</div><div class="stat-label">parallel</div></div>
+    </div>
+  </div>
+  <div class="tabbar" style="margin:0;border-radius:0;border-left:0;border-right:0;border-top:0">
+    <div class="tab">Summary</div>
+    <div class="tab">Flow</div>
+    <div class="tab">Timeline</div>
+    <div class="tab active">Skills</div>
+    <div class="tab">Coverage</div>
+    <div class="tab">Analytics</div>
+  </div>
+  <div style="padding:var(--s-8)">
+    <div class="card-grid">
+      <div class="card">
+        <div class="row-title">debug-mantra</div>
+        <div class="row-meta" style="margin:4px 0">engineering · 4-step root cause</div>
+        <div class="btn-row" style="margin-top:12px">
+          <span class="tag tag-brand">canonical</span>
+          <span class="tag">debug</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row-title">scrutinize</div>
+        <div class="row-meta" style="margin:4px 0">engineering · senior staff review</div>
+        <div class="btn-row" style="margin-top:12px">
+          <span class="tag">draft</span>
+          <span class="tag">review</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row-title">post-mortem</div>
+        <div class="row-meta" style="margin:4px 0">engineering · incident review</div>
+        <div class="btn-row" style="margin-top:12px">
+          <span class="tag tag-warn">review</span>
+          <span class="tag">ops</span>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-primary">+ Add skill</button>
+      <button class="btn">Filter</button>
+      <button class="btn">Export</button>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

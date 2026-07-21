@@ -1,0 +1,104 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "A-Wiki Dashboard v17 — Pure Minimal (Linear-style) + Neutral+Accent palette. Generated 2026-07-21 by design-system skill after visual audit (5/10 → target 9/10). Slope patterns removed: 20 gradients → 0, 7 glass → 1 (modal-only), 32 shadows → 4.",
+  "color": {
+    "neutral": {
+      "$comment": "Neutral scale — Linear-style. 11 steps from true black to true white.",
+      "0":  { "value": "#000000", "$comment": "Pure black for text on light" },
+      "50": { "value": "#0a0a0c", "$comment": "App background (dark mode default)" },
+      "100":{ "value": "#121215", "$comment": "Surface 1 — sidebar/panels" },
+      "200":{ "value": "#1a1a1f", "$comment": "Surface 2 — cards" },
+      "300":{ "value": "#27272e", "$comment": "Surface 3 — hover/elevated" },
+      "400":{ "value": "#3f3f47", "$comment": "Border strong" },
+      "500":{ "value": "#52525b", "$comment": "Border default" },
+      "600":{ "value": "#71717a", "$comment": "Text muted / placeholder" },
+      "700":{ "value": "#a1a1aa", "$comment": "Text secondary" },
+      "800":{ "value": "#d4d4d8", "$comment": "Text primary on dark" },
+      "900":{ "value": "#fafafa", "$comment": "Text primary inverted / surface on dark" },
+      "1000":{"value": "#ffffff", "$comment": "Pure white" }
+    },
+    "accent": {
+      "$comment": "Single accent color — Linear blue-violet (5 distinct hues). All interactive primary states use brand.",
+      "brand":   { "value": "#5b5bd6", "$comment": "Linear-violet — primary buttons, active state, focus ring" },
+      "brand-hover": { "value": "#6d6dff" },
+      "brand-muted": { "value": "rgba(91, 91, 214, 0.12)", "$comment": "Hover bg, selected row tint" },
+      "brand-fg":   { "value": "#ffffff", "$comment": "Text on brand" }
+    },
+    "status": {
+      "$comment": "Status colors — used sparingly. No gradients on these.",
+      "success": { "value": "#10b981" },
+      "warn":    { "value": "#f59e0b" },
+      "danger":  { "value": "#ef4444" },
+      "info":    { "value": "#3b82f6" }
+    }
+  },
+  "typography": {
+    "$comment": "Fluid type scale — keep clamp() but simplify to 5 steps (not 8).",
+    "fontFamily": {
+      "sans": { "value": "-apple-system, BlinkMacSystemFont, 'Inter var', 'Segoe UI', system-ui, sans-serif" },
+      "mono": { "value": "'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace" }
+    },
+    "fontSize": {
+      "caption": { "value": "clamp(11px, 1.1vw, 12px)", "$comment": "metadata, timestamps" },
+      "body":    { "value": "clamp(13px, 1.4vw, 14px)" },
+      "h4":      { "value": "clamp(15px, 1.8vw, 16px)", "$comment": "card titles, section labels" },
+      "h3":      { "value": "clamp(17px, 2vw, 18px)" },
+      "h2":      { "value": "clamp(20px, 2.5vw, 22px)", "$comment": "panel titles" },
+      "h1":      { "value": "clamp(24px, 3vw, 28px)", "$comment": "page titles — used rarely" }
+    },
+    "fontWeight": {
+      "regular": { "value": "400" },
+      "medium":  { "value": "500", "$comment": "default body — Linear uses 500 for crispness" },
+      "semibold":{ "value": "600", "$comment": "headings, button labels" },
+      "bold":    { "value": "700" }
+    },
+    "lineHeight": {
+      "tight":   { "value": "1.2" },
+      "regular": { "value": "1.5" }
+    }
+  },
+  "spacing": {
+    "$comment": "4px base — Linear uses similar. No 7px/13px oddities.",
+    "0":  { "value": "0" },
+    "1":  { "value": "2px" },
+    "2":  { "value": "4px" },
+    "3":  { "value": "6px" },
+    "4":  { "value": "8px" },
+    "5":  { "value": "12px" },
+    "6":  { "value": "16px" },
+    "7":  { "value": "20px" },
+    "8":  { "value": "24px" },
+    "10": { "value": "32px" },
+    "12": { "value": "48px" }
+  },
+  "radius": {
+    "$comment": "2 radii only — minimal. Linear uses 6px + 10px.",
+    "sm": { "value": "6px",  "$comment": "buttons, inputs, badges" },
+    "md": { "value": "10px", "$comment": "cards, panels, modals" }
+  },
+  "shadow": {
+    "$comment": "4 shadows only — was 32. Linear: sm for hover, md for popover, lg for modal, none for cards (border-only).",
+    "none": { "value": "none" },
+    "sm":   { "value": "0 1px 2px rgba(0,0,0,0.06)" },
+    "md":   { "value": "0 4px 12px rgba(0,0,0,0.08)" },
+    "lg":   { "value": "0 16px 40px rgba(0,0,0,0.12)" }
+  },
+  "border": {
+    "$comment": "1px borders — Linear hallmark. No 2px, no varying widths.",
+    "default": { "value": "1px solid var(--n-500)" },
+    "strong":  { "value": "1px solid var(--n-400)" },
+    "subtle":  { "value": "1px solid var(--n-300)" }
+  },
+  "transition": {
+    "$comment": "3 transitions only — was 30. Linear uses 1 timing.",
+    "fast":    { "value": "120ms cubic-bezier(0.2, 0, 0, 1)" },
+    "normal":  { "value": "200ms cubic-bezier(0.2, 0, 0, 1)" },
+    "slow":    { "value": "320ms cubic-bezier(0.2, 0, 0, 1)" }
+  },
+  "density": {
+    "$comment": "Whitespace rules — Linear: padding-y on body rows = 14px minimum.",
+    "rowPadY": { "value": "10px" },
+    "cardPad": { "value": "16px" },
+    "sectionGap": { "value": "24px" }
+  }
+}
