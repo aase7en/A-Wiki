@@ -449,6 +449,12 @@ to{transform:translateY(0);opacity:1}
 /* Comprehensive focus-visible for all interactive elements (WCAG 2.4.7 Focus Visible). */
 button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px}
 /* Skill cards: focus ring via box-shadow (they have border-radius). */
+/* === CHUNK D18 — ⌘K hint badge in header === */
+.kbd-hint{display:inline-flex;align-items:center;gap:2px;padding:4px 8px;background:var(--n-200);border:1px solid var(--n-500);border-radius:var(--r-sm);color:var(--n-700);font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-2xs);font-weight:500;cursor:pointer;user-select:none;transition:var(--t-fast)}
+.kbd-hint:hover{background:var(--n-300);color:var(--n-900);border-color:var(--n-400)}
+.kbd-hint:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.kbd-hint .kbd-mod{font-weight:600;color:var(--n-900)}
+
 /* === CHUNK C18 — Cmd+K palette minimal styles === */
 .palette-row .ic-skill{color:var(--brand)}
 .palette-row .ic-view{color:var(--n-700)}

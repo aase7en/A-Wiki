@@ -42,6 +42,7 @@
     <div class="stat-item" id="si-par"><span class="stat-lbl">parallel</span><span class="stat-val warm" data-counter id="s-par">0</span></div>
     <div class="stat-item" id="si-fail"><span class="stat-lbl">failures</span><span class="stat-val" data-counter id="s-fail">0</span></div>
   </div>
+  <span class="kbd-hint" id="cmdk-hint" onclick="openPalette()" role="button" tabindex="0" aria-label="เปิด command palette (Cmd+K)" title="เปิด command palette (Cmd+K หรือ Ctrl+K)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPalette();}"><span class="kbd-mod">⌘</span><span>K</span></span>
   <button class="hdr-btn accent" onclick="openSettings();clearWhatsNewBadge()" aria-label="ตั้งค่า" style="position:relative">⚙️<span id="whats-new-badge" style="display:none;position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--accent-danger);border-radius:50%;border:1px solid var(--elev-0)"></span></button>
   <button class="hdr-btn" onclick="openWorkspaceMenu()" id="btn-workspace" title="บันทึก/เรียกคืน workspace (tab + scroll + filters)" aria-label="Workspace บันทึก/เรียกคืน">💾</button>
   <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป" aria-label="การแจ้งเตือน">🔔</button>

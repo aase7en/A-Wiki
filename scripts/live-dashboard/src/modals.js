@@ -358,7 +358,16 @@ function maybeAutoRestoreWorkspace(){
 // C18: geometric shapes replace emojis (Linear/Vercel style). Color-coded
 // via CSS classes .ic-skill/.ic-view/.ic-shortcut — see _paletteRender.
 let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
-const PALETTE_ICONS={skill:'◆',view:'●',shortcut:'◇',flow:'●'};
+const PALETTE_ICONS={skill:'◆',view:'●',shortcut:'◇',flow:'●',recent:'●'};
+// D18: detect Mac for ⌘ symbol vs 'Ctrl' on Win/Linux.
+try{
+  const isMac=(navigator.platform||'').toLowerCase().includes('mac')||(navigator.userAgent||'').toLowerCase().includes('mac');
+  const hint=document.getElementById('cmdk-hint');
+  if(hint){
+    const mod=hint.querySelector('.kbd-mod');
+    if(mod)mod.textContent=isMac?'⌘':'Ctrl';
+  }
+}catch(_){}
 function _paletteBuildIndex(){
   _paletteIndex=[];
   // Skills (from cache if loaded, else fetch)
@@ -424,14 +433,100 @@ function _paletteHighlight(){
 }
 function _paletteActivate(i){
   const it=_paletteResults[i];if(!it)return;
+  // D18: record recent command (max 5, FIFO) before closing.
+  try{_palettePushRecent(it);}catch(_){}
   closePalette();
   try{it.action();}catch(err){toast('palette: '+err.message,true);}
 }
+// D18: recent-commands tracking.
+const PALETTE_RECENT_KEY='awiki-palette-recent';
+const PALETTE_RECENT_MAX=5;
+function _paletteRecentLoad(){
+  try{return JSON.parse(localStorage.getItem(PALETTE_RECENT_KEY)||'[]');}catch(_){return [];}
+}
+function _palettePushRecent(it){
+  // Store a serializable signature: {type,label,sub,ts}.
+  const sig={type:it.type||'?',label:it.label||'',sub:(it.sub||'').slice(0,60),ts:Date.now()};
+  let recents=_paletteRecentLoad();
+  // Dedup by type+label.
+  recents=recents.filter(r=>!(r.type===sig.type&&r.label===sig.label));
+  recents.unshift(sig);
+  recents=recents.slice(0,PALETTE_RECENT_MAX);
+  try{localStorage.setItem(PALETTE_RECENT_KEY,JSON.stringify(recents));}catch(_){}
+}
+function _paletteBuildRecentItems(){
+  // Map stored signatures back to actionable items (action = same as original).
+  // We rebuild action by looking up _paletteIndex for matching type+label.
+  const recents=_paletteRecentLoad();
+  if(!recents.length)return [];
+  const out=[];
+  recents.forEach(r=>{
+    // Find matching source item for the action closure.
+    const src=_paletteIndex.find(it=>(it.type===r.type)&&(it.label===r.label));
+    if(!src)return;
+    out.push({
+      type:'recent',
+      label:r.label,
+      sub:(r.sub?'· '+r.sub:'')+' · ' + _paletteRelativeTime(r.ts),
+      action:src.action,
+    });
+  });
+  return out;
+}
+function _paletteRelativeTime(ts){
+  const diff=Date.now()-ts;
+  const m=Math.floor(diff/60000);
+  if(m<1)return 'เมื่อสักครู่';
+  if(m<60)return m+' นาทีที่แล้ว';
+  const h=Math.floor(m/60);
+  if(h<24)return h+' ชม.ที่แล้ว';
+  return Math.floor(h/24)+' วันที่แล้ว';
+}
+// D18: update _paletteRank to show Recent group at top when query is empty.
+// (Override of original _paletteRank handled via _paletteBuildRecentItems
+//  being prepended in openPalette's empty-query render.)
 function paletteSearchDebounced(){
   clearTimeout(_paletteDebounce);
   _paletteDebounce=setTimeout(()=>{
     _paletteRender(_paletteRank($('palette-input').value));
   },150);
+}
+// D18: render groups (Recent + All) when query is empty; flat list otherwise.
+function _paletteRenderGrouped(items){
+  _paletteResults=items;_paletteSel=0;
+  const box=$('palette-results'),empty=$('palette-empty');
+  if(!items.length){box.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  // Split recents (type==='recent') from the rest.
+  const recents=items.filter(it=>it.type==='recent');
+  const rest=items.filter(it=>it.type!=='recent');
+  let html='';
+  if(recents.length){
+    html+='<div class="palette-group-label" style="padding:8px 14px 4px;font-size:10px;color:var(--n-600);text-transform:uppercase;letter-spacing:.08em;font-weight:600">Recent</div>';
+    html+=recents.map((it,i)=>_paletteRowHtml(it,i)).join('');
+  }
+  if(rest.length){
+    if(recents.length){
+      html+='<div class="palette-group-label" style="padding:8px 14px 4px;font-size:10px;color:var(--n-600);text-transform:uppercase;letter-spacing:.08em;font-weight:600">All commands</div>';
+    }
+    html+=rest.map((it,i)=>_paletteRowHtml(it,recents.length+i)).join('');
+  }
+  box.innerHTML=html;
+  // _paletteResults flattened for arrow nav indexing.
+  _paletteResults=[...recents,...rest];
+  _paletteSel=0;_paletteHighlight();
+}
+function _paletteRowHtml(it,i){
+  const ic=PALETTE_ICONS[it.type==='recent'?'shortcut':it.type]||'▸';
+  const icCls=it.type==='recent'?'ic-recent':it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':'ic-shortcut';
+  return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
+    <span class="${icCls}" style="font-size:var(--fs-md);width:18px;text-align:center;line-height:1">${ic}</span>
+    <div style="flex:1;min-width:0">
+      <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
+      ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
+    </div>
+    <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type==='recent'?'recent':it.type}</span>
+  </div>`;
 }
 async function openPalette(){
   // Ensure skills are loaded so palette can index them
@@ -445,8 +540,10 @@ async function openPalette(){
   $('palette-backdrop').style.display='block';
   $('palette-modal').style.display='block';
   const inp=$('palette-input');inp.value='';
-  // Pre-render with no query (shows first 10 of index)
-  _paletteRender(_paletteRank(''));
+  // D18: empty query shows Recent group at top + first few All commands.
+  const recents=_paletteBuildRecentItems();
+  const allTop=_paletteIndex.slice(0,Math.max(2,10-recents.length));
+  _paletteRenderGrouped([...recents,...allTop]);
   setTimeout(()=>inp.focus(),50);
   _openModalTrap($('palette-modal'));
 }
