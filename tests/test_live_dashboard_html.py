@@ -1746,3 +1746,25 @@ def test_v19_view_tabs_use_lucide():
     )
     assert has_icons, "view-toggle-bar must use Lucide icons after v19 C19"
 
+
+# ── v19 chunk D19 — Workflow tabs icons ─────────────────────────────────────
+def test_v19_wf_tabs_no_emoji():
+    """#wf-tabs buttons must not start with emoji. v19 replaces with
+    Lucide SVG icons (rocket, clipboard-list, brain, dollar-sign)."""
+    html = HTML.read_text(encoding="utf-8")
+    import re as _re
+    wstart = html.find('id="wf-tabs"')
+    assert wstart > 0, "#wf-tabs not found"
+    block = html[wstart:wstart + 1500]
+    buttons = _re.findall(r"<div[^>]*class=\"[^\"]*wf-tab[^\"]*\"[^>]*>([^<]+)</div>", block)
+    bad = []
+    for txt in buttons:
+        txt = txt.strip()
+        if not txt:
+            continue
+        first = txt[0]
+        code = ord(first)
+        if 0x1F300 <= code <= 0x1FAFF or 0x2600 <= code <= 0x27BF:
+            bad.append(txt[:30])
+    assert not bad, f"#wf-tabs still has emoji in tabs: {bad}"
+
