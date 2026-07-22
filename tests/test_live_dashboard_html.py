@@ -86,7 +86,11 @@ def test_file_under_60kb():
     # raised to 68 KB (2026-07-16): v11 Backup pane markup (Settings tab +
     # container) added ~1 KB beyond 64 KB ceiling. Render logic lives in JS;
     # this is panel shell only. Localhost tool — gate guards unbounded growth.
-    assert size < 68 * 1024, f"HTML too large: {size} bytes (limit 68 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup pane)"
+    # raised to 72 KB (2026-07-22): v19 Lucide icons add inline <use href>
+    # refs to view-toggle-bar + header (~13 buttons × ~70 bytes SVG wrapper).
+    # Sprite itself lives in JS bundle (app.min.js 260 KB budget) — HTML
+    # gain is only the <use> references, not the sprite paths.
+    assert size < 72 * 1024, f"HTML too large: {size} bytes (limit 72 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup + v19 Lucide <use> refs)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
@@ -1701,4 +1705,44 @@ def test_v19_header_uses_lucide_icons():
         "#header must reference at least one Lucide icon (icon-settings/"
         "icon-save/icon-bell/icon-trash) after v19 B19"
     )
+
+
+# ── v19 chunk C19 — View-tabs icons replacement ─────────────────────────────
+def test_v19_view_tabs_no_emoji():
+    """view-toggle-bar buttons must not start with emoji. v19 replaces with
+    inline Lucide SVG icons (layout-dashboard, workflow, etc)."""
+    html = HTML.read_text(encoding="utf-8")
+    import re as _re
+    # Find the view-toggle-bar block
+    vstart = html.find('class="view-toggle-bar"')
+    assert vstart > 0, "view-toggle-bar not found"
+    # Take next 2500 chars (whole bar content)
+    block = html[vstart:vstart + 2500]
+    # Find button text contents
+    buttons = _re.findall(r"<button[^>]*>([^<]+)</button>", block)
+    bad = []
+    for txt in buttons:
+        txt = txt.strip()
+        if not txt:
+            continue
+        first = txt[0]
+        code = ord(first)
+        if 0x1F300 <= code <= 0x1FAFF or 0x2600 <= code <= 0x27BF or 0x2190 <= code <= 0x21FF:
+            bad.append(txt[:30])
+    assert not bad, f"view-toggle-bar still has emoji in buttons: {bad}"
+
+
+def test_v19_view_tabs_use_lucide():
+    """view-toggle-bar must reference Lucide icons (icon-layout-dashboard,
+    icon-workflow, etc) via inline <use href='#icon-X'>."""
+    html = HTML.read_text(encoding="utf-8")
+    vstart = html.find('class="view-toggle-bar"')
+    block = html[vstart:vstart + 2500]
+    has_icons = (
+        "icon-layout-dashboard" in block
+        or "icon-workflow" in block
+        or "icon-puzzle" in block
+        or "icon-bar-chart" in block
+    )
+    assert has_icons, "view-toggle-bar must use Lucide icons after v19 C19"
 

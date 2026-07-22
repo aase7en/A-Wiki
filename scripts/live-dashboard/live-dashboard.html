@@ -48,6 +48,7 @@
   <button class="hdr-btn" onclick="openWorkspaceMenu()" id="btn-workspace" title="บันทึก/เรียกคืน workspace (tab + scroll + filters)" aria-label="Workspace บันทึก/เรียกคืน"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-save"/></use></svg></button>
   <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป" aria-label="การแจ้งเตือน"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-bell"/></use></svg></button>
   <button class="hdr-btn" onclick="doClear()" aria-label="ล้าง log" title="ล้าง log"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-trash-2"/></use></svg></button>
+  <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)" aria-label="สลับธีม"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-palette"/></svg></button>
 </div>
 
 <hr class="glow-divider">
@@ -64,20 +65,19 @@
   <div id="net-panel">
     <div id="hook-strip"></div>
     <div class="view-toggle-bar" role="tablist" aria-label="มุมมอง Dashboard">
-      <button class="view-btn active" id="btn-summary" onclick="setView('summary')" role="tab" aria-selected="true" aria-controls="view-summary" tabindex="0">📊 Summary</button>
-      <button class="view-btn" id="btn-flow" onclick="setView('flow')" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1">🌊 Flow</button>
-      <button class="view-btn" id="btn-timeline" onclick="setView('timeline')" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1">🏊 Timeline</button>
-      <button class="view-btn" id="btn-graph" onclick="setView('graph')" role="tab" aria-selected="false" aria-controls="graph-vis" tabindex="-1">🔗 Graph</button>
-      <button class="view-btn" id="btn-skills" onclick="setView('skills')" role="tab" aria-selected="false" aria-controls="skills-panel" tabindex="-1">🧩 Skills</button>
-      <button class="view-btn" id="btn-coverage" onclick="setView('coverage')" role="tab" aria-selected="false" aria-controls="coverage-panel" tabindex="-1">📊 Coverage</button>
-      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')" role="tab" aria-selected="false" aria-controls="analytics-panel" tabindex="-1">📈 Analytics</button>
-      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1">🔬 Subagents</button>
-      <button class="view-btn" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1">📊 Eval</button>
-      <button class="view-btn" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1">💰 Cost</button>
-      <button class="view-btn" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1">🏁 Race</button>
-      <button class="view-btn" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1">🏛️ Council</button>
-      <button class="view-btn" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1">
-      <button class="hdr-btn" onclick="toggleTheme()" id="btn-theme" title="สลับธีม (อัตโนมัติ/มืด/สว่าง)">🌗</button>💬 Chat</button>
+      <button class="view-btn active" id="btn-summary" onclick="setView('summary')" role="tab" aria-selected="true" aria-controls="view-summary" tabindex="0"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-layout-dashboard"/></svg> Summary</button>
+      <button class="view-btn" id="btn-flow" onclick="setView('flow')" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-workflow"/></svg> Flow</button>
+      <button class="view-btn" id="btn-timeline" onclick="setView('timeline')" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-git-commit-horizontal"/></svg> Timeline</button>
+      <button class="view-btn" id="btn-graph" onclick="setView('graph')" role="tab" aria-selected="false" aria-controls="graph-vis" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-share-2"/></svg> Graph</button>
+      <button class="view-btn" id="btn-skills" onclick="setView('skills')" role="tab" aria-selected="false" aria-controls="skills-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-puzzle"/></svg> Skills</button>
+      <button class="view-btn" id="btn-coverage" onclick="setView('coverage')" role="tab" aria-selected="false" aria-controls="coverage-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-bar-chart-3"/></svg> Coverage</button>
+      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')" role="tab" aria-selected="false" aria-controls="analytics-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-trending-up"/></svg> Analytics</button>
+      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flask-conical"/></svg> Subagents</button>
+      <button class="view-btn" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-graduation-cap"/></svg> Eval</button>
+      <button class="view-btn" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-dollar-sign"/></svg> Cost</button>
+      <button class="view-btn" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flag"/></svg> Race</button>
+      <button class="view-btn" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-users"/></svg> Council</button>
+      <button class="view-btn" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"/></svg> Chat</button>
     </div>
 
     <!-- SUMMARY VIEW (default) -->
