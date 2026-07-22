@@ -1483,3 +1483,64 @@ def test_v18_transitions_use_tokens():
         f"{hardcoded[:8]}"
     )
 
+
+# ── v18 chunk C18 — Cmd+K palette visual minimal ────────────────────────────
+# Runtime audit (Stage 4 of A-Plan) confirmed Cmd+K already works since
+# CHUNK EE. This chunk upgrades visuals: drop emojis, drop backdrop-blur,
+# use brand-muted for hover per DESIGN.md.
+
+def test_v18_palette_uses_geometric_icons():
+    """PALETTE_ICONS in src/modals.js must use geometric shapes (◆ ● ◇)
+    instead of emojis (🧩🌊📊⌨️). Color-coded by type via CSS."""
+    modals = (DASHBOARD_DIR / "src" / "modals.js").read_text(encoding="utf-8")
+    # Locate PALETTE_ICONS assignment.
+    import re as _re
+    m = _re.search(r"PALETTE_ICONS\s*=\s*\{([^}]+)\}", modals)
+    assert m, "PALETTE_ICONS const not found in src/modals.js"
+    body = m.group(1)
+    # Must NOT contain any emoji.
+    for ch in body:
+        code = ord(ch)
+        is_emoji = (
+            0x1F300 <= code <= 0x1FAFF
+            or 0x2600 <= code <= 0x27BF
+        )
+        assert not is_emoji, (
+            f"PALETTE_ICONS still contains emoji {ch!r} — v18 uses geometric shapes"
+        )
+    # Should reference the 3 chosen shapes.
+    for shape in ("◆", "●", "◇"):
+        assert shape in body, f"PALETTE_ICONS must include shape {shape!r}"
+
+
+def test_v18_palette_backdrop_no_blur():
+    """palette-backdrop in live-dashboard.html must NOT use
+    backdrop-filter:blur — v18 DESIGN.md removed this slop pattern."""
+    html = HTML.read_text(encoding="utf-8")
+    # Find palette-backdrop div
+    import re as _re
+    m = _re.search(r'id="palette-backdrop"[^>]*style="([^"]+)"', html)
+    assert m, "palette-backdrop div not found in HTML"
+    style = m.group(1)
+    assert "backdrop-filter" not in style.replace(" ", ""), (
+        f"palette-backdrop still has backdrop-filter — v18 must be flat: {style[:120]}"
+    )
+
+
+def test_v18_palette_row_uses_brand_muted_hover():
+    """palette-row .sel/hover must use var(--brand-muted), not var(--elev-2).
+    Required for Component Consistency audit dimension."""
+    # The palette row styles are inline in src/modals.js (_paletteRender).
+    modals = (DASHBOARD_DIR / "src" / "modals.js").read_text(encoding="utf-8")
+    # Find the palette-row template.
+    import re as _re
+    m = _re.search(r'palette-row[^"]*"[^>]*>', modals)
+    assert m, "palette-row template not found in src/modals.js"
+    # Look in the surrounding context for the active/sel background.
+    start = m.start()
+    snippet = modals[start:start + 600]
+    # After v18: brand-muted should appear in the sel/hover context.
+    assert "brand-muted" in snippet or "--brand" in snippet, (
+        "palette-row sel/hover still uses elev-2 — v18 must use --brand-muted"
+    )
+

@@ -449,6 +449,14 @@ to{transform:translateY(0);opacity:1}
 /* Comprehensive focus-visible for all interactive elements (WCAG 2.4.7 Focus Visible). */
 button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px}
 /* Skill cards: focus ring via box-shadow (they have border-radius). */
+/* === CHUNK C18 — Cmd+K palette minimal styles === */
+.palette-row .ic-skill{color:var(--brand)}
+.palette-row .ic-view{color:var(--n-700)}
+.palette-row .ic-shortcut{color:var(--n-600)}
+.palette-row:hover,.palette-row.sel{background:var(--brand-muted)!important}
+.palette-footer{display:flex;align-items:center;gap:14px;padding:8px 14px;border-top:1px solid var(--n-300);font-size:var(--fs-2xs);color:var(--n-700);background:var(--n-50)}
+.palette-footer .kb{display:inline-flex;align-items:center;padding:1px 6px;background:var(--n-200);border:1px solid var(--n-500);border-radius:3px;font-family:ui-monospace,Menlo,monospace;font-size:10px;color:var(--n-900);margin-right:3px}
+
 .skill-card:focus-visible{outline:2px solid var(--accent-brand);outline-offset:2px;box-shadow:0 0 0 4px var(--brand-muted)}
 /* View tabs: focus ring matches the active-tab style. */
 .view-btn:focus-visible{outline:2px solid var(--accent-brand);outline-offset:-2px}

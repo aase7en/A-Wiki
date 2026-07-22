@@ -355,8 +355,10 @@ function maybeAutoRestoreWorkspace(){
 }
 
 // === CHUNK EE — Command Palette ===
+// C18: geometric shapes replace emojis (Linear/Vercel style). Color-coded
+// via CSS classes .ic-skill/.ic-view/.ic-shortcut — see _paletteRender.
 let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
-const PALETTE_ICONS={skill:'🧩',flow:'🌊',view:'📊',shortcut:'⌨️'};
+const PALETTE_ICONS={skill:'◆',view:'●',shortcut:'◇',flow:'●'};
 function _paletteBuildIndex(){
   _paletteIndex=[];
   // Skills (from cache if loaded, else fetch)
@@ -366,8 +368,8 @@ function _paletteBuildIndex(){
       _paletteIndex.push({type:'skill',label:s.name,sub:(s.th_description||'').slice(0,60),action:()=>{setView('skills');setTimeout(()=>skillsOpenDetail(s.name),250);}});
     });
   }
-  // Views (9 known)
-  [['summary','📊 Summary'],['flow','🌊 Flow'],['timeline','🏊 Timeline'],['graph','🔗 Graph'],['skills','🧩 Skills'],['coverage','📊 Coverage'],['subagents','🔬 Subagents'],['council','🏛️ Council'],['chat','💬 Chat']].forEach(([v,label])=>{
+  // Views (9 known) — C18: stripped emojis; type+weight leads
+  [['summary','Summary'],['flow','Flow'],['timeline','Timeline'],['graph','Graph'],['skills','Skills'],['coverage','Coverage'],['subagents','Subagents'],['council','Council'],['chat','Chat']].forEach(([v,label])=>{
     _paletteIndex.push({type:'view',label:label+' tab',sub:'สลับไปยัง '+label,action:()=>setView(v)});
   });
   // Shortcuts (re-use SHORTCUTS array)
@@ -402,13 +404,15 @@ function _paletteRender(results){
   empty.style.display='none';
   box.innerHTML=results.map((it,i)=>{
     const ic=PALETTE_ICONS[it.type]||'▸';
-    return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);${i===0?'background:var(--elev-2);':''}">
-      <span style="font-size:var(--fs-md)">${ic}</span>
+    // C18: color-coded icon via class — brand for skill, neutral for view, muted for shortcut.
+    const icCls=it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':'ic-shortcut';
+    return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
+      <span class="${icCls}" style="font-size:var(--fs-md);width:18px;text-align:center;line-height:1">${ic}</span>
       <div style="flex:1;min-width:0">
-        <div style="color:var(--text-primary);font-size:var(--fs-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
-        ${it.sub?`<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
+        <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
+        ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
       </div>
-      <span style="font-size:var(--fs-2xs);color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.5px">${it.type}</span>
+      <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type}</span>
     </div>`;
   }).join('');
 }
