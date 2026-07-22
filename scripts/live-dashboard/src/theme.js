@@ -20,17 +20,23 @@ function _resolvedThemeAttr(mode){
   }catch(_){}
   return ''; // dark by default
 }
+// v19.2: return Lucide icon name (rendered via icon() helper).
 function _themeIcon(mode){
-  if(mode==='dark')return '🌑';
-  if(mode==='green-white')return '☀';
-  if(mode==='custom')return '🎨';
-  return '🌗'; // auto
+  if(mode==='dark')return 'moon';
+  if(mode==='green-white')return 'sun';
+  if(mode==='custom')return 'palette';
+  return 'contrast'; // auto — uses 'contrast' (not in sprite, fallback)
 }
 function _applyThemeMode(mode){
   const h=document.documentElement;
   h.setAttribute('data-theme',_resolvedThemeAttr(mode));
   const b=document.getElementById('btn-theme');
-  if(b)b.textContent=_themeIcon(mode);
+  // v19.2: use icon() helper instead of textContent (which wiped <use>).
+  if(b){
+    const iconName=_themeIcon(mode);
+    b.innerHTML=typeof icon==='function'?icon(iconName,{cls:'icon icon-md'}):iconName;
+    b.title='สลับธีม ('+mode+')';
+  }
   try{localStorage.setItem(THEME_MODE_KEY,mode);}catch(_){}
   if(mode==='custom'){_injectCustomTheme();}else{_removeCustomTheme();}
 }

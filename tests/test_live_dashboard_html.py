@@ -1665,6 +1665,69 @@ def test_v19_icon_css_class_present():
     )
 
 
+# ── v19.1 — sprite injection fix (debug audit 2026-07-23) ────────────────────
+def test_v19_sprite_const_assigns_to_lucide_sprite():
+    """src/icons.js must assign the joined sprite string to a variable named
+    _LUCIDE_SPRITE (or whatever the IIFE consumes). v19 ship had a typo:
+    _LUCIDE_SPRITE_PARTS array was joined but not assigned, so the IIFE
+    threw '_LUCIDE_SPRITE is not defined' and NO icons rendered."""
+    icons = (DASHBOARD_DIR / "src" / "icons.js").read_text(encoding="utf-8")
+    # Must contain an assignment of the joined string to _LUCIDE_SPRITE.
+    import re as _re
+    # Look for: const _LUCIDE_SPRITE = ... .join('')
+    has_assignment = bool(_re.search(
+        r"(?:const|let|var)\s+_LUCIDE_SPRITE\s*=\s*[\s\S]*?\.join\(",
+        icons
+    ))
+    # Alternative: _LUCIDE_SPRITE_PARTS.join('') stored back into _LUCIDE_SPRITE
+    alt = bool(_re.search(r"_LUCIDE_SPRITE\s*=\s*_LUCIDE_SPRITE_PARTS", icons))
+    assert has_assignment or alt, (
+        "_LUCIDE_SPRITE const not assigned — sprite injection IIFE throws "
+        "ReferenceError at boot, breaking all v19 icons"
+    )
+
+
+def test_v19_sprite_iife_uses_consistent_var():
+    """The IIFE that injects the sprite must reference the SAME variable
+    name that holds the joined string. Audit caught: assignment to
+    _LUCIDE_SPRITE_PARTS but IIFE references _LUCIDE_SPRITE."""
+    icons = (DASHBOARD_DIR / "src" / "icons.js").read_text(encoding="utf-8")
+    import re as _re
+    # Find the IIFE's innerHTML assignment.
+    m = _re.search(r"innerHTML\s*=\s*([A-Za-z_][A-Z_0-9]*)", icons)
+    assert m, "no innerHTML assignment found in icons.js IIFE"
+    referenced_var = m.group(1)
+    # The referenced var must also be declared somewhere in the file.
+    decl_pattern = r"(?:const|let|var)\s+" + _re.escape(referenced_var) + r"\s*="
+    assert _re.search(decl_pattern, icons), (
+        f"IIFE references {referenced_var} but no `const {referenced_var} = ...` "
+        f"declaration exists in icons.js — sprite injection will throw"
+    )
+
+
+# ── v19.2 — theme button emoji overwrite bug (debug audit 2026-07-23) ────────
+def test_v19_theme_button_not_overwritten_by_emoji():
+    """theme.js _applyThemeMode must NOT do `b.textContent = _themeIcon(mode)`
+    because it wipes the Lucide <use> icon (H19). Audit caught: theme btn
+    had has_use=False at runtime even though HTML shipped correct <use> ref.
+
+    Either: (a) _themeIcon returns '' or a Lucide icon name, or (b) theme.js
+    skips the textContent assignment entirely (let HTML <use> stay).
+    """
+    theme = (DASHBOARD_DIR / "src" / "theme.js").read_text(encoding="utf-8")
+    # The offending line pattern: b.textContent=_themeIcon(mode)
+    # Must NOT appear in its destructive form (overwriting icon container).
+    import re as _re
+    # Look for any `b.textContent=` or `.textContent=` on btn-theme context.
+    m = _re.search(r"b\.textContent\s*=\s*_themeIcon", theme)
+    assert not m, (
+        "theme.js still does `b.textContent = _themeIcon(mode)` — this wipes "
+        "the Lucide <use> icon in the theme button. Update _themeIcon to "
+        "return a Lucide icon name and use icon() helper, or remove the "
+        "textContent assignment entirely."
+    )
+
+
 # ── v19 chunk B19 — Header icons replacement ────────────────────────────────
 def test_v19_header_no_emoji_in_buttons():
     """#header buttons must not contain emoji text. v19 replaces with
