@@ -38,13 +38,13 @@
     "shadowCount": 30,
     "transitionCount": 30,
     "animationCount": 24,
-    "borderRadiusCount": 87
+    "borderRadiusCount": 88
   },
   "dom": {
-    "totalNodes": 1760,
+    "totalNodes": 1767,
     "buttons": 96,
     "inputs": 41,
-    "visibleTextChars": 5883,
+    "visibleTextChars": 5902,
     "headings": [
       {
         "tag": "H2",
