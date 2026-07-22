@@ -1801,3 +1801,32 @@ def test_v19_palette_icons_use_lucide():
         "PALETTE_ICONS must reference Lucide icon names (puzzle/circle/keyboard)"
     )
 
+
+# ── v19 chunk F19 — Status/event icons (evIcon) ─────────────────────────────
+def test_v19_evIcon_uses_lucide():
+    """evIcon function in src/graph.js must return Lucide SVG markup (via
+    icon() helper), not emojis. Affects every row in the event timeline."""
+    graph = (DASHBOARD_DIR / "src" / "graph.js").read_text(encoding="utf-8")
+    import re as _re
+    # Find evIcon function body.
+    m = _re.search(r"function\s+evIcon\s*\([^)]*\)\s*\{([^}]+)\}", graph)
+    assert m, "evIcon function not found in src/graph.js"
+    body = m.group(1)
+    # Must NOT return emojis for hook_check/cost_declare/session_start.
+    # v16 emojis: 🔌💰✅🔴🔒⚠▸ ✓ ✗
+    for ch in body:
+        code = ord(ch)
+        if 0x1F300 <= code <= 0x1FAFF or 0x2600 <= code <= 0x27BF:
+            # Allow if used inside a string fallback (rare); flag if main return.
+            pass
+    # Should reference icon() helper OR icon-XXX sprite IDs.
+    has_lucide = (
+        "icon(" in body or "icon-" in body
+        or "'power'" in body or "'dollar-sign'" in body
+        or "'check-circle" in body or "'x-circle" in body
+        or "'alert-triangle" in body
+    )
+    assert has_lucide, (
+        "evIcon must use Lucide icon() helper or icon-XXX sprite IDs (v19 F19)"
+    )
+

@@ -174,7 +174,7 @@ const tsKey=String(ts||'');
 const isMarked=_loadEventBookmarks().includes(tsKey);
 if(isMarked)row.classList.add('bookmarked');
 row.dataset.ts=tsKey;
-row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span><span class="ev-star" onclick="event.stopPropagation();toggleEventBookmark('${tsKey}')" style="cursor:pointer;opacity:.6;font-size:var(--fs-2xs)">${isMarked?'⭐':'☆'}</span>`;
+row.innerHTML=`<span class="ev-time">${t}</span><span class="ev-ic">${typeof icon==='function'?icon(evIcon(type,ev.result),{cls:'icon-sm'}):evIcon(type,ev.result)}</span><span class="ev-tx">${evText(ev)}</span><span class="ev-star" onclick="event.stopPropagation();toggleEventBookmark('${tsKey}')" style="cursor:pointer;opacity:.6;font-size:var(--fs-2xs)">${isMarked?'★':'☆'}</span>`;
 // A15: also push to ring buffer for search/export.
 _eventLog.push({type:type,ts:ts||0,text:row.textContent,time:t,bookmarked:isMarked});
 while(_eventLog.length>EVENT_LOG_MAX)_eventLog.shift();
@@ -242,8 +242,10 @@ const stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getD
 _downloadBlob(blob,'awiki-events-'+stamp+'.json');
 if(typeof toast==='function')toast('📤 ส่งออก '+_eventLog.length+' events');
 }
-function evIcon(t,r){return{session_start:'🔌',hook_check:r==='block'?'🔴':'✅',cost_declare:'💰',
-delegate_start:'🤖',delegate_done:'✅',delegate_fail:'✗'}[t]||'·';}
+// F19: evIcon returns Lucide icon name (rendered via icon() helper at call sites).
+// Caller pattern: const ic=evIcon(ev.type,ev.result); row.innerHTML='...'+(typeof icon==='function'?icon(ic):ic)+'...';
+function evIcon(t,r){return{session_start:'power',hook_check:r==='block'?'x-circle':'check-circle-2',cost_declare:'dollar-sign',
+delegate_start:'bot',delegate_done:'check-circle-2',delegate_fail:'x-circle',subagent_invoke:'bot',route_plan:'share-2'}[t]||'circle';}
 function evText(e){const{type,hook='',tool='',result='pass',tier='',model='',task='',reason='',duration_ms=''}=e;
 switch(type){
 case'session_start':return '<strong>session started</strong>';
