@@ -382,7 +382,63 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - vis-network particle bg in Flow view (content, not decoration)
 - Fluid `clamp()` type scale
 
-### ⌨️ v18 — Cmd+K palette upgrade + Polish (current)
+### 🎨 v19 — Lucide SVG icons + brand mark (current)
+**Goal**: ทับทุก emoji ด้วย Lucide SVG icons (Linear/Vercel standard) + brand mark ใหม่. ตาม user feedback "emoji ดูไม่มืออาชีพ เหมือน AI ล้าหลังออกแบบ" (8 chunks + 1 ship).
+
+**Direction**: brainstorm-before-build → A4 Lucide เต็มระบบ + SVG sprite `<symbol>` + imagegen brand mark + three.js Flow particles (แยก v20).
+
+| Chunk | Change | Files |
+|-------|--------|-------|
+| **A19** | SVG sprite setup — 58 Lucide `<symbol>` icons + `icon()` helper + boot inject. `.icon` CSS class (stroke=currentColor). Sprite lives in JS bundle (260 KB budget), not HTML markup (72 KB budget) | `src/icons.js` (NEW), `build.mjs`, `styles.css` |
+| **B19** | Header buttons: ⚙️💾🔔🗑 → icon-settings/save/bell/trash-2 | `live-dashboard.html` |
+| **C19** | View-tabs (13): 📊🌊🏊🔗🧩📈🔬🏁🏛️💬 → icon-layout-dashboard/workflow/git-commit-horizontal/share-2/puzzle/bar-chart-3/trending-up/flask-conical/graduation-cap/dollar-sign/flag/users/message-circle. Bug fix: theme button 🌗 ซ่อนอยู่ใน chat button tag (corrupted HTML) — restored as #header button | `live-dashboard.html` |
+| **D19** | Workflow tabs: 🚀📋🧠💰 → icon-rocket/clipboard-list/brain/dollar-sign | `live-dashboard.html` |
+| **E19** | Palette icons: ◆●◇ → icon('puzzle'/'circle'/'keyboard') via `icon()` helper | `src/modals.js` |
+| **F19** | evIcon: 🔌🔴✅💰🤖✗ → icon('power'/'x-circle'/'check-circle-2'/'dollar-sign'/'bot'). Added subagent_invoke + route_plan mappings | `src/graph.js` |
+| **G19** | Chat avatars 👤🧠 → icon('user'/'bot'). Skill-detail 🔗✕ → icon-link/icon-x | `src/chat.js`, `src/skills.js` |
+| **H19** | Brand mark (NEW): geometric diamond + wordmark + LIVE pill. Custom SVG (no AI gen — crispness 24px) | `brand-mark.svg` (NEW), `live-dashboard.html` |
+
+**Architecture decision** (ADR-0011):
+- Inline SVG sprite (ไม่ใช่ CDN/font) — Iron Law #5 (offline-capable)
+- Sprite lives in JS bundle, not HTML markup (sprite 18KB vs HTML budget 72KB)
+- `icon()` helper + `<use href='#icon-X'>` pattern (Linear/shadcn standard)
+- single source of truth — update sprite 1 ที่ = กระจายทั้งระบบ
+- `currentColor` inheritance — theme switch ปรับอัตโนมัติ
+
+**Tool comparison ในการเลือก**:
+
+| Tool | Verdict | เหตุผล |
+|------|---------|--------|
+| Lucide SVG | ✅ เลือก | MIT, Linear/Vercel standard, 1500+ icons, vector |
+| Emoji | ❌ ดูไม่มืออาชีพ + cross-OS inconsistent | user feedback |
+| three.js / Hyperframe | ❌ overkill 200KB+ สำหรับ icon 24px | เก็บไว้ v20 (Flow particles) |
+| Canva MCP | ❌ ไม่มี production-ready MCP | Canva API = design export ไม่ใช่ icon workflow |
+| AI imagegen | ⚠️ ไม่เก่ง icon (raster) | ใช้สำหรับ hero/illustration เท่านั้น |
+| Tabler / Phosphor | ⚠️ เยอะเกินไป/ซับซ้อน | Lucide พอ |
+
+**Bundle impact**:
+- HTML: 67.2 → 70.6 KB (inline `<use>` refs; sprite paths อยู่ใน JS)
+- app.min.js: 223.2 → 242.3 KB (+19 KB sprite)
+- ทั้งคู่ภายใต้ budget (HTML 72 KB / JS 260 KB)
+
+**Plan artifacts**:
+- `decisions/0011-dashboard-v19-lucide-icons.md` — ADR + 7 alternatives + glossary
+- `docs/specs/dashboard-v19-spec.md` — FR/NFR/AC
+
+**Before/After**:
+
+| จุด | v18 | v19 |
+|-----|-----|-----|
+| Unique emojis | ~100 | ลดลงเหลือ <30 (status toasts, JS dynamic) |
+| Header buttons | ⚙️💾🔔🗑🗑 | 4 Lucide icons |
+| View-tabs | 📊🌊🏊🔗🧩📈🔬🏁🏛️💬 (13 emojis) | 13 Lucide icons |
+| Workflow tabs | 🚀📋🧠💰 | 4 Lucide icons |
+| Palette icons | ◆●◇ shapes | Lucide (puzzle/circle/keyboard) |
+| Event icons | 🔌🔴✅💰🤖 | Lucide (power/x-circle/check/dollar/bot) |
+| Chat avatars | 👤🧠 | icon('user')/icon('bot') |
+| Brand | plain text "A-Wiki Live" | geometric diamond + wordmark + LIVE pill |
+
+### ⌨️ v18 — Cmd+K palette upgrade + Polish
 **Goal**: design score 8.4 → 9.3+. เคลียร์ backlog 2 จุด (emoji-headings + transition tokens) และอัปเกรด Cmd+K palette (4 chunks).
 
 | Chunk | Change | Files |
