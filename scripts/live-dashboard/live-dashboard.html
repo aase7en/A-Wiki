@@ -44,10 +44,10 @@
     <div class="stat-item" id="si-fail"><span class="stat-lbl">failures</span><span class="stat-val" data-counter id="s-fail">0</span></div>
   </div>
   <span class="kbd-hint" id="cmdk-hint" onclick="openPalette()" role="button" tabindex="0" aria-label="เปิด command palette (Cmd+K)" title="เปิด command palette (Cmd+K หรือ Ctrl+K)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPalette();}"><span class="kbd-mod">⌘</span><span>K</span></span>
-  <button class="hdr-btn accent" onclick="openSettings();clearWhatsNewBadge()" aria-label="ตั้งค่า" style="position:relative">⚙️<span id="whats-new-badge" style="display:none;position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--accent-danger);border-radius:50%;border:1px solid var(--elev-0)"></span></button>
-  <button class="hdr-btn" onclick="openWorkspaceMenu()" id="btn-workspace" title="บันทึก/เรียกคืน workspace (tab + scroll + filters)" aria-label="Workspace บันทึก/เรียกคืน">💾</button>
-  <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป" aria-label="การแจ้งเตือน">🔔</button>
-  <button class="hdr-btn" onclick="doClear()" aria-label="ล้าง log">🗑</button>
+  <button class="hdr-btn accent" onclick="openSettings();clearWhatsNewBadge()" aria-label="ตั้งค่า" title="ตั้งค่า" style="position:relative"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-settings"/></use></svg><span id="whats-new-badge" style="display:none;position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--accent-danger);border-radius:50%;border:1px solid var(--elev-0)"></span></button>
+  <button class="hdr-btn" onclick="openWorkspaceMenu()" id="btn-workspace" title="บันทึก/เรียกคืน workspace (tab + scroll + filters)" aria-label="Workspace บันทึก/เรียกคืน"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-save"/></use></svg></button>
+  <button class="hdr-btn" onclick="openNotifPrefs()" id="btn-notif" title="การแจ้งเตือนเดสก์ท็อป" aria-label="การแจ้งเตือน"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-bell"/></use></svg></button>
+  <button class="hdr-btn" onclick="doClear()" aria-label="ล้าง log" title="ล้าง log"><svg class="icon icon-md" aria-hidden="true"><use href="#icon-trash-2"/></use></svg></button>
 </div>
 
 <hr class="glow-divider">

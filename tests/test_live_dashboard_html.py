@@ -1653,3 +1653,52 @@ def test_v19_icon_css_class_present():
         ".icon must use stroke:currentColor to inherit theme color"
     )
 
+
+# ── v19 chunk B19 — Header icons replacement ────────────────────────────────
+def test_v19_header_no_emoji_in_buttons():
+    """#header buttons must not contain emoji text. v19 replaces with
+    Lucide SVG icons (settings, save, bell, trash-2, etc)."""
+    html = HTML.read_text(encoding="utf-8")
+    import re as _re
+    # Find the #header block
+    hstart = html.find('id="header"')
+    assert hstart > 0, "#header not found"
+    # Take next 2500 chars (whole header content)
+    header_block = html[hstart:hstart + 2500]
+    # Find all <button ...>TEXT</button> and inspect TEXT for emoji.
+    buttons = _re.findall(r"<button[^>]*>([^<]*)</button>", header_block)
+    emoji_buttons = []
+    for txt in buttons:
+        txt = txt.strip()
+        if not txt:
+            continue
+        for ch in txt:
+            code = ord(ch)
+            if 0x1F300 <= code <= 0x1FAFF or 0x2600 <= code <= 0x27BF:
+                emoji_buttons.append(txt[:30])
+                break
+    assert not emoji_buttons, (
+        f"#header still has emoji in buttons: {emoji_buttons}"
+    )
+
+
+def test_v19_header_uses_lucide_icons():
+    """#header must reference Lucide icons via <use href='#icon-X'> or
+    inline <svg class='icon'> patterns."""
+    html = HTML.read_text(encoding="utf-8")
+    hstart = html.find('id="header"')
+    header_block = html[hstart:hstart + 2500]
+    # Look for any icon reference — sprite use or inline svg.icon
+    has_icon = (
+        "icon-settings" in header_block
+        or "icon-save" in header_block
+        or "icon-bell" in header_block
+        or "icon-trash" in header_block
+        or 'class="icon' in header_block
+        or "icon('settings'" in header_block
+    )
+    assert has_icon, (
+        "#header must reference at least one Lucide icon (icon-settings/"
+        "icon-save/icon-bell/icon-trash) after v19 B19"
+    )
+
