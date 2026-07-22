@@ -1,0 +1,101 @@
+{
+  "palette": {
+    "accent": "#16a34a",
+    "warm": "#f59e0b",
+    "cool": "#16a34a",
+    "violet": "#16a34a",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "bg0": "#f0faf5",
+    "bg1": "#ffffff",
+    "bg2": "#ecfdf5",
+    "bg3": "#d1fae5",
+    "textPri": "#052e16",
+    "textSec": "#166534",
+    "textTer": "#6b7280",
+    "border1": "#a7f3d0",
+    "border2": "#86efac"
+  },
+  "typo": {
+    "font": "-apple-system, BlinkMacSystemFont, \"Inter var\", \"Segoe UI\", system-ui, sans-serif",
+    "baseFs": "14px",
+    "fsXs": "clamp(11px,1.1vw,12px)",
+    "fsSm": "clamp(13px,1.4vw,14px)",
+    "fsMd": "clamp(15px,1.8vw,16px)",
+    "fsLg": "clamp(17px,2vw,18px)",
+    "fsXl": "clamp(20px,2.5vw,22px)",
+    "fs2xl": "clamp(24px,3vw,28px)"
+  },
+  "spacing": {
+    "rSm": "6px",
+    "rMd": "10px",
+    "rLg": "10px",
+    "rXl": "10px"
+  },
+  "css_features": {
+    "gradientCount": 7,
+    "glassCount": 0,
+    "shadowCount": 30,
+    "transitionCount": 30,
+    "animationCount": 24,
+    "borderRadiusCount": 87
+  },
+  "dom": {
+    "totalNodes": 1760,
+    "buttons": 96,
+    "inputs": 41,
+    "visibleTextChars": 5883,
+    "headings": [
+      {
+        "tag": "H2",
+        "text": "รอ Dashboard Server…"
+      },
+      {
+        "tag": "H3",
+        "text": "⚖️ เปรียบเทียบ Skills"
+      },
+      {
+        "tag": "H3",
+        "text": "📊 Coverage ของ Skill Registry"
+      },
+      {
+        "tag": "H4",
+        "text": "🎯 ภาพรวม"
+      },
+      {
+        "tag": "H4",
+        "text": "📂 แยกตาม Domain"
+      },
+      {
+        "tag": "H4",
+        "text": "🤖 แยกตาม Agent"
+      },
+      {
+        "tag": "H4",
+        "text": "🔄 แยกตาม Lifecycle Phase"
+      },
+      {
+        "tag": "H4",
+        "text": "⚔️ เปรียบเทียบ Agent"
+      },
+      {
+        "tag": "H4",
+        "text": "🔧 ยังขาด (สำหรับ quick-fill)"
+      },
+      {
+        "tag": "H4",
+        "text": "📋 Review Queue"
+      },
+      {
+        "tag": "H3",
+        "text": "📈 Usage Analytics"
+      },
+      {
+        "tag": "H4",
+        "text": "🔥 เปิดบ่อยสุด (30 วัน)"
+      }
+    ]
+  },
+  "bodyBg": "rgb(240, 250, 245)",
+  "bodyColor": "rgb(5, 46, 22)"
+}

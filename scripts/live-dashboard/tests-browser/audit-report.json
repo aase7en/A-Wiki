@@ -7,7 +7,7 @@
     "Could not find Sortable for flow-overlay yet, will retry. ReferenceError: Sortable is not defined\n    at http://localhost:7790/app.min.js:184:15777\n    at http://localhost:7790/app.min.js:184:16364"
   ],
   "dom": {
-    "nodes": 8537,
+    "nodes": 8527,
     "activeBtn": "btn-chat",
     "panelsVisible": [
       "net-panel",
