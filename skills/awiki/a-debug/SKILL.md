@@ -7,7 +7,8 @@ domain: [debug, code]
 lifecycle_phase: verify
 category: pipeline
 agents: [all]
-invocation: both
+invocation: manual
+# 2026-07-23: both → manual — parent aggregator ไม่ควรโหลดเข้าทุก session (ประหยัด ~1.4k tokens; เรียกเอาเมื่อ /A-Debug)
 ---
 
 # A-Debug — Debug Loop + Subagent Fan-out

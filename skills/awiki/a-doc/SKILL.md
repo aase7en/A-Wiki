@@ -7,7 +7,8 @@ domain: [document, thai]
 lifecycle_phase: build
 category: pipeline
 agents: [all]
-invocation: both
+invocation: manual
+# 2026-07-23: both → manual — router ไม่ควรโหลดเข้าทุก session (ประหยัด ~1.6k tokens; เรียกเอาเมื่อ /A-Doc)
 ---
 
 # A-Doc — เอกสารราชการไทย/โรงพยาบาล (Router)

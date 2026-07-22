@@ -7,7 +7,8 @@ domain: [document, thai]
 lifecycle_phase: build
 category: pipeline
 agents: [all]
-invocation: both
+invocation: manual
+# 2026-07-23: both → manual — subskill เรียกจาก parent a-doc เท่านั้น ไม่ควร auto-load (ประหยัด ~1.3k tokens)
 ---
 
 # A-Doc Type: Announce (ประกาศ)
