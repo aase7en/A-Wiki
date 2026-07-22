@@ -382,6 +382,41 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 - vis-network particle bg in Flow view (content, not decoration)
 - Fluid `clamp()` type scale
 
+### ⌨️ v18 — Cmd+K palette upgrade + Polish (current)
+**Goal**: design score 8.4 → 9.3+. เคลียร์ backlog 2 จุด (emoji-headings + transition tokens) และอัปเกรด Cmd+K palette (4 chunks).
+
+| Chunk | Change | Files |
+|-------|--------|-------|
+| **A18** | ลบ emoji prefix 8 `<h5>` headings ใน skill detail panel (📝 📋 💡 📌 🎬 🔗 📋 🔍) — plain text headings ตาม DESIGN.md Typography | `src/skills.js` |
+| **B18** | Migrate 26 hardcoded `transition: X .Ys` → `var(--t-fast/normal/slow)` + `--ease`. Hardcoded count 23 → 0 | `styles.css` |
+| **C18** | Palette visual minimal: PALETTE_ICONS 🧩🌊📊⌨️ → ◆ ● ◇ geometric shapes (color-coded). Drop `backdrop-filter:blur(3px)` ใน palette-backdrop. palette-row hover → `--brand-muted` + `--t-fast` | `src/modals.js`, `live-dashboard.html`, `styles.css` |
+| **D18** | ⌘K hint badge ใน header (Mac=`⌘K`, Win/Linux=`Ctrl K`) + recent commands tracking (`awiki-palette-recent`, max 5 FIFO) | `live-dashboard.html`, `src/modals.js`, `styles.css` |
+
+**Runtime discovery (A-Plan Stage 4)**: ตอนเริ่ม plan ผมรัน Playwright จริง → พบว่า Cmd+K ทำงานอยู่แล้วตั้งแต่ CHUNK EE (แต่ user ไม่รู้). v18 ≠ "เพิ่ม Cmd+K" แต่ = "อัปเกรด Cmd+K ให้ minimal + discoverable + smart".
+
+**Design direction**: A4 Mixed (polish 2 จุด + Cmd+K upgrade). ผ่าน `a-plan` skill 5-stage chain (A-Think → grill-with-docs → spec → mockup → plan-orchestrate).
+
+**Plan artifacts**:
+- `decisions/0010-dashboard-v18-cmdk-palette-polish.md` — ADR + glossary
+- `docs/specs/dashboard-v18-spec.md` — FR/NFR/AC
+- `scripts/live-dashboard/v18-mockup.html` — visual mockup (open in browser)
+
+**Before/After**:
+
+| Metric | v17 | v18 |
+|--------|-----|-----|
+| Emoji-prefix `<h5>` (skills.js) | 8 | 0 |
+| Hardcoded transitions | 23 | 0 |
+| Palette icons | emojis | geometric shapes |
+| backdrop-filter:blur (palette) | yes | removed |
+| ⌘K hint badge | none | header right |
+| Recent commands tracking | none | last 5 (localStorage) |
+
+**Known followups (v19+)**:
+- 9 emoji-headings ยังอยู่ใน coverage/analytics JS-rendered panels
+- inline-style padding (87 border-radius count)
+- 5 sibling backdrop-filter:blur ใน compare/workspace/notif/keybind/shortcuts backdrops
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
