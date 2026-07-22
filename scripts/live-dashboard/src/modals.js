@@ -358,7 +358,8 @@ function maybeAutoRestoreWorkspace(){
 // C18: geometric shapes replace emojis (Linear/Vercel style). Color-coded
 // via CSS classes .ic-skill/.ic-view/.ic-shortcut — see _paletteRender.
 let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
-const PALETTE_ICONS={skill:'◆',view:'●',shortcut:'◇',flow:'●',recent:'●'};
+// E19: Lucide icon names per palette type — rendered via icon() helper.
+const PALETTE_ICONS={skill:'puzzle',view:'circle',shortcut:'keyboard',flow:'circle',recent:'circle-dot'};
 // D18: detect Mac for ⌘ symbol vs 'Ctrl' on Win/Linux.
 try{
   const isMac=(navigator.platform||'').toLowerCase().includes('mac')||(navigator.userAgent||'').toLowerCase().includes('mac');
@@ -412,11 +413,12 @@ function _paletteRender(results){
   if(!results.length){box.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   box.innerHTML=results.map((it,i)=>{
-    const ic=PALETTE_ICONS[it.type]||'▸';
-    // C18: color-coded icon via class — brand for skill, neutral for view, muted for shortcut.
-    const icCls=it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':'ic-shortcut';
+    // E19: use Lucide icon() helper. Names from PALETTE_ICONS map.
+    const iconName=PALETTE_ICONS[it.type]||'circle';
+    const icCls=it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':it.type==='recent'?'ic-recent':'ic-shortcut';
+    const icHtml=typeof icon==='function'?icon(iconName,{cls:icCls}):('<span class="'+icCls+'">'+iconName+'</span>');
     return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
-      <span class="${icCls}" style="font-size:var(--fs-md);width:18px;text-align:center;line-height:1">${ic}</span>
+      ${icHtml}
       <div style="flex:1;min-width:0">
         <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
         ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
@@ -517,10 +519,12 @@ function _paletteRenderGrouped(items){
   _paletteSel=0;_paletteHighlight();
 }
 function _paletteRowHtml(it,i){
-  const ic=PALETTE_ICONS[it.type==='recent'?'shortcut':it.type]||'▸';
+  // E19: Lucide icon via icon() helper
+  const iconName=PALETTE_ICONS[it.type==='recent'?'recent':it.type]||PALETTE_ICONS.shortcut;
   const icCls=it.type==='recent'?'ic-recent':it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':'ic-shortcut';
+  const icHtml=typeof icon==='function'?icon(iconName,{cls:icCls}):('<span class="'+icCls+'">'+iconName+'</span>');
   return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
-    <span class="${icCls}" style="font-size:var(--fs-md);width:18px;text-align:center;line-height:1">${ic}</span>
+    ${icHtml}
     <div style="flex:1;min-width:0">
       <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
       ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}

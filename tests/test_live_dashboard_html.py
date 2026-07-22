@@ -1494,10 +1494,11 @@ def test_v18_transitions_use_tokens():
 # use brand-muted for hover per DESIGN.md.
 
 def test_v18_palette_uses_geometric_icons():
-    """PALETTE_ICONS in src/modals.js must use geometric shapes (◆ ● ◇)
-    instead of emojis (🧩🌊📊⌨️). Color-coded by type via CSS."""
+    """PALETTE_ICONS in src/modals.js must not use emojis.
+    v18 used geometric shapes (◆ ● ◇); v19 E19 supersedes with Lucide icon
+    names (puzzle/circle/keyboard). This test now guards BOTH v18 and v19:
+    no emojis, must use one of the approved minimal forms."""
     modals = (DASHBOARD_DIR / "src" / "modals.js").read_text(encoding="utf-8")
-    # Locate PALETTE_ICONS assignment.
     import re as _re
     m = _re.search(r"PALETTE_ICONS\s*=\s*\{([^}]+)\}", modals)
     assert m, "PALETTE_ICONS const not found in src/modals.js"
@@ -1510,11 +1511,17 @@ def test_v18_palette_uses_geometric_icons():
             or 0x2600 <= code <= 0x27BF
         )
         assert not is_emoji, (
-            f"PALETTE_ICONS still contains emoji {ch!r} — v18 uses geometric shapes"
+            f"PALETTE_ICONS still contains emoji {ch!r}"
         )
-    # Should reference the 3 chosen shapes.
-    for shape in ("◆", "●", "◇"):
-        assert shape in body, f"PALETTE_ICONS must include shape {shape!r}"
+    # Must use either geometric shapes (v18) OR Lucide icon names (v19).
+    has_v18_shapes = ("◆" in body or "●" in body or "◇" in body)
+    has_v19_lucide = (
+        "puzzle" in body or "circle" in body or "keyboard" in body
+        or "diamond" in body or "square" in body or "circle-dot" in body
+    )
+    assert has_v18_shapes or has_v19_lucide, (
+        "PALETTE_ICONS must use geometric shapes (v18) or Lucide names (v19)"
+    )
 
 
 def test_v18_palette_backdrop_no_blur():
@@ -1767,4 +1774,30 @@ def test_v19_wf_tabs_no_emoji():
         if 0x1F300 <= code <= 0x1FAFF or 0x2600 <= code <= 0x27BF:
             bad.append(txt[:30])
     assert not bad, f"#wf-tabs still has emoji in tabs: {bad}"
+
+
+# ── v19 chunk E19 — Palette icons (◆●◇ -> Lucide) ───────────────────────────
+def test_v19_palette_icons_use_lucide():
+    """PALETTE_ICONS in src/modals.js must call icon() helper to render
+    Lucide SVG icons, not use emoji or geometric shapes (◆●◇)."""
+    modals = (DASHBOARD_DIR / "src" / "modals.js").read_text(encoding="utf-8")
+    # PALETTE_ICONS should now map type -> icon name passed to icon() helper.
+    # Find the constant or its usage in _paletteRowHtml.
+    import re as _re
+    m = _re.search(r"PALETTE_ICONS\s*=\s*\{([^}]+)\}", modals)
+    assert m, "PALETTE_ICONS const not found"
+    body = m.group(1)
+    # Old v18 shapes (◆●◇) must be gone.
+    for shape in ("◆", "●", "◇"):
+        assert shape not in body, (
+            f"PALETTE_ICONS still uses geometric shape {shape!r} — v19 uses Lucide"
+        )
+    # Should reference Lucide icon names like 'puzzle', 'circle', 'keyboard'.
+    has_lucide = (
+        "puzzle" in body or "circle" in body or "keyboard" in body
+        or "diamond" in body or "square" in body
+    )
+    assert has_lucide, (
+        "PALETTE_ICONS must reference Lucide icon names (puzzle/circle/keyboard)"
+    )
 
