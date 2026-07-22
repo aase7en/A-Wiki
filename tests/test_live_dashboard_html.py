@@ -1569,8 +1569,8 @@ def test_v18_header_has_cmdk_hint():
     # Find any element inside #header that calls openPalette via onclick.
     hstart = html.find('id="header"')
     assert hstart > 0, "#header div not found in HTML"
-    # Take next 2000 chars (whole header content).
-    header_block = html[hstart:hstart + 2000]
+    # Take next 4000 chars (whole header content; expanded for v19 brand mark).
+    header_block = html[hstart:hstart + 4000]
     has_hint = (
         "openPalette()" in header_block
         and ("kbd-hint" in header_block or "⌘K" in header_block or "Ctrl" in header_block)
@@ -1860,5 +1860,34 @@ def test_v19_skill_detail_share_button_lucide():
     )
     assert has_lucide_share, (
         "skills.js copy/share button must use Lucide icon (v19 G19)"
+    )
+
+
+# ── v19 chunk H19 — imagegen brand mark ─────────────────────────────────────
+def test_v19_brand_mark_exists():
+    """Brand mark SVG asset must exist for the header. Replaces plain text
+    'A-Wiki Live' wordmark with a geometric diamond + wordmark combo."""
+    brand_svg = DASHBOARD_DIR / "brand-mark.svg"
+    assert brand_svg.is_file(), "brand-mark.svg not found in dashboard dir"
+    content = brand_svg.read_text(encoding="utf-8")
+    # Must be a valid SVG with the wordmark text.
+    assert "<svg" in content, "brand-mark.svg must be valid SVG"
+    assert "A-Wiki" in content, "brand-mark.svg must contain the wordmark"
+
+
+def test_v19_header_uses_brand_mark():
+    """#header .brand must reference brand-mark.svg (or inline equivalent)
+    instead of plain 'A-Wiki Live' text only."""
+    html = HTML.read_text(encoding="utf-8")
+    hstart = html.find('id="header"')
+    header_block = html[hstart:hstart + 4000]
+    # Accept any of: <img src='brand-mark.svg'>, inline SVG, or class hook.
+    has_brand = (
+        "brand-mark.svg" in header_block
+        or 'class="brand brand-mark"' in header_block
+        or 'class="brand-mark"' in header_block
+    )
+    assert has_brand, (
+        "#header must reference brand-mark.svg or inline brand SVG (v19 H19)"
     )
 
