@@ -1544,3 +1544,41 @@ def test_v18_palette_row_uses_brand_muted_hover():
         "palette-row sel/hover still uses elev-2 — v18 must use --brand-muted"
     )
 
+
+# ── v18 chunk D18 — ⌘K hint badge + recent commands ─────────────────────────
+# Discoverability gap: user didn't know Cmd+K existed. v18 adds a visible
+# hint badge in the header + tracks last-5 used commands for smart ranking.
+
+def test_v18_header_has_cmdk_hint():
+    """#header must contain a ⌘K / Ctrl K hint badge that opens the palette
+    on click. Required for Discoverability audit dimension."""
+    html = HTML.read_text(encoding="utf-8")
+    # Look for a clickable badge that calls openPalette().
+    import re as _re
+    # Find any element inside #header that calls openPalette via onclick.
+    hstart = html.find('id="header"')
+    assert hstart > 0, "#header div not found in HTML"
+    # Take next 2000 chars (whole header content).
+    header_block = html[hstart:hstart + 2000]
+    has_hint = (
+        "openPalette()" in header_block
+        and ("kbd-hint" in header_block or "⌘K" in header_block or "Ctrl" in header_block)
+    )
+    assert has_hint, (
+        "header must have a clickable ⌘K hint badge that calls openPalette()"
+    )
+
+
+def test_v18_palette_recent_commands_tracking():
+    """_paletteActivate must push to awiki-palette-recent localStorage key
+    so the empty-query view can show recent commands at top."""
+    modals = (DASHBOARD_DIR / "src" / "modals.js").read_text(encoding="utf-8")
+    # Must reference the localStorage key + a function that tracks recents.
+    assert "awiki-palette-recent" in modals, (
+        "awiki-palette-recent localStorage key not defined for recent tracking"
+    )
+    # And there must be a helper function for reading/rendering recents.
+    assert (
+        "_paletteRecent" in modals or "paletteRecent" in modals
+    ), "no recent-tracking helper function found"
+
