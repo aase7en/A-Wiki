@@ -587,12 +587,12 @@ const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color
 </div>
 </div></div>
 <div class="skill-detail-body">
-<div class="skill-detail-section"><h5>📝 คำอธิบาย</h5><p>${s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>'}</p></div>
-<div class="skill-detail-section"><h5>📋 เรียกใช้</h5>${copyBtn}<div id="skill-run-area" style="margin-top:8px"></div></div>
-${s.when_to_use?`<div class="skill-detail-section"><h5>💡 ใช้เมื่อไหร่</h5><p style="color:var(--accent-warn)">${s.when_to_use}</p></div>`:''}
-<div class="skill-detail-section"><h5>📌 ตัวอย่างการใช้งาน</h5>${examples}</div>
-${steps?`<div class="skill-detail-section"><h5>🎬 ขั้นตอน (สำหรับ simulation)</h5>${steps}${simBtn}</div>`:''}
-<div class="skill-detail-section"><h5>🔗 Skills ที่เกี่ยวข้อง</h5><div style="display:flex;flex-direction:column;gap:4px">${related}</div></div>
+<div class="skill-detail-section"><h5>คำอธิบาย</h5><p>${s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>'}</p></div>
+<div class="skill-detail-section"><h5>เรียกใช้</h5>${copyBtn}<div id="skill-run-area" style="margin-top:8px"></div></div>
+${s.when_to_use?`<div class="skill-detail-section"><h5>ใช้เมื่อไหร่</h5><p style="color:var(--accent-warn)">${s.when_to_use}</p></div>`:''}
+<div class="skill-detail-section"><h5>ตัวอย่างการใช้งาน</h5>${examples}</div>
+${steps?`<div class="skill-detail-section"><h5>ขั้นตอน (สำหรับ simulation)</h5>${steps}${simBtn}</div>`:''}
+<div class="skill-detail-section"><h5>Skills ที่เกี่ยวข้อง</h5><div style="display:flex;flex-direction:column;gap:4px">${related}</div></div>
 ${(function(){
 const h=s.history||{};
 const hasVer=h.version&&h.version!=='';
@@ -607,9 +607,9 @@ if(!hasVer&&!hasGit&&!fs)return '';
 const verBadge=hasVer?`<span class="skill-tag" style="border-color:var(--accent-violet);color:var(--accent-violet)">v${h.version}</span>`:'<span style="font-size:var(--fs-2xs);color:var(--text-disabled)">ยังไม่กำหนดเวอร์ชัน</span>';
 const gitInfo=(hasGit||fs)?`<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">แก้ล่าสุด ${h.last_commit_date||'-'}${h.commit_count?(' · '+h.commit_count+' commits'):''}${h.last_commit_hash?(' · '+h.last_commit_hash):''}${fsLine}</span>`:'';
 const changelogBtn=hasGit?`<button class="set-btn sm" onclick="loadSkillChangelog('${s.name}')" style="padding:3px 8px;font-size:var(--fs-2xs);margin-top:6px" title="ดูประวัติการแก้ไข 5 commits ล่าสุด">📜 ดู changelog</button><div id="changelog-area" style="margin-top:6px"></div>`:'';
-return `<div class="skill-detail-section"><h5>📋 เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${newBadge}${gitInfo}</div>${changelogBtn}</div>`;
+return `<div class="skill-detail-section"><h5>เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${newBadge}${gitInfo}</div>${changelogBtn}</div>`;
 })()}
-<div class="skill-detail-section"><h5>🔍 รายละเอียดเทคนิค</h5>
+<div class="skill-detail-section"><h5>รายละเอียดเทคนิค</h5>
 <p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
 </div>`;
 }catch(e){drawer.innerHTML='<div style="padding:30px;color:var(--accent-danger)">⚠️ '+e.message+'</div>';}

@@ -1425,3 +1425,37 @@ def test_v17_section_headings_use_semantic_weight():
         f"headings/brand/stat-val still use font-weight:800 — v17 caps at 600: {bad}"
     )
 
+
+# ── v18 chunk A18 — emoji-headings removal ──────────────────────────────────
+# 8 emoji-prefix <h5> headings in src/skills.js detail panel were flagged
+# in D17 backlog. v18 strips them per DESIGN.md (type leads, emoji = noise).
+
+def test_v18_skill_panel_no_emoji_headings():
+    """src/skills.js must not render emoji-prefixed <h5> headings in the
+    skill detail panel. v18 DESIGN.md: emoji removal for Typography score.
+
+    Affected (v17): 📝 📋 💡 📌 🎬 🔗 📋 🔍 (8 occurrences).
+    """
+    skills = (DASHBOARD_DIR / "src" / "skills.js").read_text(encoding="utf-8")
+    # Find <h5>...</h5> patterns and inspect first char.
+    import re as _re
+    matches = _re.findall(r"<h5[^>]*>([^<]+)</h5>", skills)
+    assert matches, "expected at least one <h5> in skills.js detail panel"
+    bad = []
+    for txt in matches:
+        txt = txt.strip()
+        if not txt:
+            continue
+        first = txt[0]
+        code = ord(first)
+        is_emoji = (
+            0x1F300 <= code <= 0x1FAFF
+            or 0x2600 <= code <= 0x27BF
+            or 0x2190 <= code <= 0x21FF
+        )
+        if is_emoji:
+            bad.append(txt[:40])
+    assert not bad, (
+        f"emoji-prefix <h5> headings still in skills.js detail panel: {bad}"
+    )
+
