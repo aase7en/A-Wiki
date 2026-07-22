@@ -1459,3 +1459,27 @@ def test_v18_skill_panel_no_emoji_headings():
         f"emoji-prefix <h5> headings still in skills.js detail panel: {bad}"
     )
 
+
+# ── v18 chunk B18 — transition token migration ─────────────────────────────
+# styles.css had 23 hardcoded 'transition: X .Ys ...' rules. v18 maps them
+# to --t-fast (120ms) / --t-normal (200ms) / --t-slow (320ms) + --ease
+# so the whole motion system lives in 3 tokens (Linear hallmark).
+
+def test_v18_transitions_use_tokens():
+    """Hardcoded transition rules (not using --t-* tokens) must drop to ≤ 3.
+    v17 had 23; v18 target ≤ 3 (allow for unavoidable cubic-bezier outliers)."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    import re as _re
+    # Match 'transition: <value>;' on a single line.
+    all_trans = _re.findall(r"transition\s*:\s*([^;]+);", css)
+    hardcoded = []
+    for t in all_trans:
+        # Skip if it references a token.
+        if "--t-" in t or "var(--ease)" in t:
+            continue
+        hardcoded.append(t.strip()[:60])
+    assert len(hardcoded) <= 3, (
+        f"v18 must reduce hardcoded transitions to ≤3, found {len(hardcoded)}: "
+        f"{hardcoded[:8]}"
+    )
+
