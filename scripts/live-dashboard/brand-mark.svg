@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A-Wiki brand mark — minimal geometric. Stack: stylized 'A' diamond + wordmark.
+     Inspired by Linear/Vercel logomarks. Single-color (inherits currentColor).
+     License: MIT (A-Wiki project, 2026-07-22). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" fill="none" aria-labelledby="brand-title">
+  <title id="brand-title">A-Wiki Live</title>
+  <!-- Diamond mark (left): two triangles forming an 'A' silhouette -->
+  <g fill="currentColor">
+    <!-- Outer diamond -->
+    <path d="M16 2 L30 16 L16 30 L2 16 Z" opacity="0.15"/>
+    <!-- Inner 'A' shape (chevron + crossbar) -->
+    <path d="M16 7 L24 16 L21 16 L16 11 L11 16 L8 16 Z"/>
+    <rect x="11" y="17" width="10" height="2" rx="1"/>
+  </g>
+  <!-- Wordmark 'A-Wiki' — system font, semibold tracking -->
+  <text x="40" y="22" font-family="-apple-system, BlinkMacSystemFont, 'Inter var', 'Segoe UI', system-ui, sans-serif"
+        font-size="18" font-weight="600" letter-spacing="-0.02em" fill="currentColor">A-Wiki</text>
+  <!-- Tiny 'Live' pill (right) — minimal accent -->
+  <rect x="116" y="11" width="36" height="14" rx="7" fill="var(--brand, #5b5bd6)" opacity="0.15"/>
+  <text x="134" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Inter var', 'Segoe UI', system-ui, sans-serif"
+        font-size="10" font-weight="600" fill="var(--brand, #5b5bd6)" text-anchor="middle" letter-spacing="0.05em">LIVE</text>
+</svg>
