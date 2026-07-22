@@ -1582,3 +1582,74 @@ def test_v18_palette_recent_commands_tracking():
         "_paletteRecent" in modals or "paletteRecent" in modals
     ), "no recent-tracking helper function found"
 
+
+# ── v19 chunk A19 — Lucide SVG sprite + icon() helper ───────────────────────
+# Replaces emojis (cross-OS inconsistent, not professional per user feedback)
+# with inline Lucide SVG sprite — Linear/Vercel/shadcn standard. See ADR-0011.
+
+def test_v19_icon_sprite_defined():
+    """v19 must ship an SVG sprite with ≥20 <symbol> icons for use via
+    <use href='#icon-X'>. The sprite lives in src/icons.js (injected into
+    <body> on boot) to keep live-dashboard.html under the markup budget.
+    ADR-0011 documents the rationale (sprite too big for inline HTML markup,
+    fine inside the JS bundle which has its own 260 KB budget)."""
+    # Look in src/icons.js (sprite source of truth)
+    icons_js = DASHBOARD_DIR / "src" / "icons.js"
+    if not icons_js.is_file():
+        # Fallback: sprite might be inline in HTML (older v19 alpha)
+        html = HTML.read_text(encoding="utf-8")
+        import re as _re
+        symbols = _re.findall(r'<symbol\s+id="icon-([a-z0-9-]+)"', html)
+    else:
+        text = icons_js.read_text(encoding="utf-8")
+        import re as _re
+        # In src/icons.js the sprite is stored as escaped JS strings,
+        # so the symbol id appears as id=\"icon-X\" (with backslash-quotes).
+        # Accept either form for robustness.
+        symbols = _re.findall(r'<symbol\s+id=\\?"icon-([a-z0-9-]+)\\?"', text)
+    assert len(symbols) >= 20, (
+        f"v19 SVG sprite must contain ≥20 icons, found {len(symbols)}: {symbols[:10]}"
+    )
+
+
+def test_v19_icon_helper_exists():
+    """A JS helper function `icon(name)` (or similar) must exist to render
+    <svg class='icon'><use href='#icon-X'/></svg> markup consistently."""
+    src_dir = DASHBOARD_DIR / "src"
+    found = False
+    for js in src_dir.glob("*.js"):
+        text = js.read_text(encoding="utf-8")
+        # Match: function icon(name or icon(name or function _icon(
+        if _matches_icon_helper(text):
+            found = True
+            break
+    assert found, (
+        "no icon() helper function found in src/*.js — v19 must provide one"
+    )
+
+
+def _matches_icon_helper(text):
+    import re as _re
+    patterns = [
+        r"function\s+icon\s*\(",
+        r"function\s+_icon\s*\(",
+        r"\bicon\s*=\s*function\s*\(",
+        r"\bicon\s*=\s*\(?[a-zA-Z_]+\)?\s*=>",
+        r"function\s+renderIcon\s*\(",
+    ]
+    return any(_re.search(p, text) for p in patterns)
+
+
+def test_v19_icon_css_class_present():
+    """styles.css must define `.icon` class with stroke=currentColor for
+    the SVG sprite usage to inherit theme color automatically."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Look for .icon { ... stroke: currentColor ... }
+    import re as _re
+    m = _re.search(r"\.icon\s*\{[^}]+\}", css)
+    assert m, ".icon CSS class not defined in styles.css"
+    body = m.group(0)
+    assert "currentColor" in body, (
+        ".icon must use stroke:currentColor to inherit theme color"
+    )
+

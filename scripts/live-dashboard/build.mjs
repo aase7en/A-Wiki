@@ -19,6 +19,7 @@ const OUT_FILE = "app.min.js";
 // Rest are independent (they reference globals from app.js and each other).
 const LOAD_ORDER = [
   "app.js",
+  "icons.js",      // A19: Lucide icon() helper (used by all other modules)
   "sse.js",        // if exists (SSE handlers)
   "subagents.js",
   "modals.js",     // keyboard shortcuts, keybind, notif, workspace, palette, compare, sim
