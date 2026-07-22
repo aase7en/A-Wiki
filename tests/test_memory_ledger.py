@@ -79,6 +79,73 @@ def test_append_strips_secrets_from_summary(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# 1b. redaction — must cover ALL common cloud/SaaS secret formats
+# ---------------------------------------------------------------------------
+# Found via deep-debug 2026-07-22: _redact only covered sk-/AIza/Bearer.
+# AWS keys (AKIA...), GitHub tokens (ghp_...), Slack (xoxb-), JWT all LEAKED.
+# A commit message containing any of these would be persisted raw → Iron Law #6.
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("name,secret", [
+    ("AWS access key", "AKIAIOSFODNN7EXAMPLE"),
+    ("GitHub PAT", "ghp_1234567890abcdefghijklmnop"),
+    ("Slack bot token", "xoxb-1234567890-abcdef"),
+    ("JWT", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.signaturepart"),
+    ("Anthropic key", "sk-ant-api03-1234567890abcdefghijklmnop"),
+])
+def test_redact_covers_cloud_saas_secrets(name, secret):
+    """Each common secret format must be redacted, not just sk-/AIza."""
+    redacted = ml._redact(f"leaked token: {secret} in log")
+    assert secret not in redacted, (
+        f"{name} pattern not redacted — {secret!r} leaked through _redact(). "
+        f"Iron Law #6 violation."
+    )
+
+
+def test_redact_preserves_normal_text():
+    """Redaction must not destroy normal commit messages (false positives)."""
+    normal = "fix: handle ask- prefix in tokenizer (refs #123)"
+    redacted = ml._redact(normal)
+    assert redacted == normal, f"normal text wrongly redacted: {redacted!r}"
+
+
+# ---------------------------------------------------------------------------
+# 1c. summary size cap — prevent unbounded ledger entries (DoS / disk bomb)
+# ---------------------------------------------------------------------------
+def test_append_caps_oversized_summary(tmp_path):
+    """A 1MB summary should be truncated, not stored raw.
+
+    Found via deep-debug: no size cap means a malicious/large commit message
+    or hook payload could bloat the ledger. Cap at a sane limit.
+    """
+    ledger = ml.MemoryLedger(tmp_path / "ledger.jsonl")
+    huge = "x" * (500 * 1024)  # 500KB
+    ledger.append(session_id="s", type="decision", summary=huge)
+    entry = ledger.recent(limit=1)[0]
+    assert len(entry["summary"]) < len(huge), (
+        f"summary not capped: stored {len(entry['summary'])} chars "
+        f"(should be < {len(huge)})"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 1d. ledger rotation — _load_all must not read unbounded history
+# ---------------------------------------------------------------------------
+def test_ledger_caps_loaded_entries(tmp_path):
+    """Found via deep-debug: _load_all reads entire file. After 1 year of
+    commits (~1825 entries, 247KB) it loads all into memory every call.
+    A hard cap prevents memory growth + keeps recent() fast.
+    """
+    ledger = ml.MemoryLedger(tmp_path / "ledger.jsonl")
+    for i in range(500):
+        ledger.append(session_id="s", type="decision", summary=f"entry-{i}")
+    # _load_all should respect a max-entries cap (e.g. 200)
+    loaded = ledger._load_all()
+    assert len(loaded) <= 300, (
+        f"_load_all returned {len(loaded)} entries — no cap; unbounded memory growth"
+    )
+
+
+# ---------------------------------------------------------------------------
 # 2. append — rejects invalid type
 # ---------------------------------------------------------------------------
 def test_append_rejects_invalid_type(tmp_path):

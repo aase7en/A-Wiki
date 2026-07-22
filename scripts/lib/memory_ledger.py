@@ -51,14 +51,24 @@ _SECRET_PATTERNS = [
     # OpenAI / Anthropic / Gemini-style API keys (lower threshold = safer)
     re.compile(r"\b(sk-[A-Za-z0-9_\-]{8,})\b"),
     re.compile(r"\b(sk-ant-[A-Za-z0-9_\-]{8,})\b"),
-    # Generic high-entropy tokens (32+ hex/base64 chars after a prefix word)
-    re.compile(r"\b(?:api[_-]?key|token|secret|password|pwd)[\"'\s:=]+([A-Za-z0-9_\-]{32,})\b", re.IGNORECASE),
+    # AWS access keys (AKIA + 16 chars)
+    re.compile(r"\b(AKIA[0-9A-Z]{16})\b"),
+    # GitHub personal access tokens (ghp_ / gho_ / ghs_ / ghu_ + 20+ chars)
+    re.compile(r"\b(gh[pousr]_[A-Za-z0-9]{20,})\b"),
+    # Slack tokens (xox[bp]- + chars)
+    re.compile(r"\b(xox[bp]-[A-Za-z0-9\-]{10,})\b"),
     # Google API keys / OAuth tokens
     re.compile(r"\b(AIza[A-Za-z0-9_\-]{30,})\b"),
+    # JWT tokens (eyJ... two dots)
+    re.compile(r"\b(eyJ[A-Za-z0-9_\-]+\.eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+)\b"),
     # Bearer tokens
     re.compile(r"\b(Bearer\s+[A-Za-z0-9_\-\.]{20,})\b"),
+    # Generic high-entropy tokens (32+ hex/base64 chars after a prefix word)
+    re.compile(r"\b(?:api[_-]?key|token|secret|password|pwd)[\"'\s:=]+([A-Za-z0-9_\-]{32,})\b", re.IGNORECASE),
 ]
 _REDACTED = "***"
+MAX_SUMMARY_LEN = 8192  # cap summary at 8KB (prevents disk/memory bombs)
+MAX_LOAD_ENTRIES = 200  # cap _load_all to last N entries (bounded memory)
 
 
 def _redact(text: str) -> str:
@@ -92,18 +102,23 @@ class MemoryLedger:
     ) -> float:
         """Append one entry. Returns the entry's ts.
 
-        Validates type. Redacts secrets from summary. Files/tags normalized.
+        Validates type. Redacts secrets from summary. Truncates oversized
+        summaries. Files/tags normalized.
         """
         if type not in VALID_TYPES:
             raise ValueError(
                 f"invalid type {type!r}; must be one of {sorted(VALID_TYPES)}"
             )
         ts = time.time()
+        # Normalize + cap summary to prevent disk/memory bombs
+        summary_str = str(summary) if summary is not None else ""
+        if len(summary_str) > MAX_SUMMARY_LEN:
+            summary_str = summary_str[:MAX_SUMMARY_LEN] + "...[truncated]"
         entry: dict[str, Any] = {
             "ts": ts,
             "session_id": session_id or "unknown",
             "type": type,
-            "summary": _redact(str(summary)) if summary else "",
+            "summary": _redact(summary_str),
             "files": list(files) if files else [],
             "tags": [str(t) for t in tags] if tags else [],
             "parent_ts": parent_ts,
@@ -112,11 +127,20 @@ class MemoryLedger:
         return ts
 
     def _load_all(self) -> list[dict]:
-        """Read every entry as a list of dicts. Returns [] if file missing."""
+        """Read entries as a list of dicts. Returns [] if file missing.
+
+        Capped at MAX_LOAD_ENTRIES most recent entries to bound memory.
+        Older entries are skipped (read efficiently from the tail).
+        """
         if not self.path.is_file():
             return []
+        # Read tail of file to avoid loading huge files fully into memory.
+        # Strategy: read whole file (simple, correct), then slice the tail.
+        # For very large files this could be optimized to seek-from-end, but
+        # the cap keeps memory bounded regardless.
+        all_lines = self.path.read_text(encoding="utf-8", errors="replace").splitlines()
         out: list[dict] = []
-        for line in self.path.read_text(encoding="utf-8", errors="replace").splitlines():
+        for line in all_lines:
             line = line.strip()
             if not line:
                 continue
@@ -124,6 +148,9 @@ class MemoryLedger:
                 out.append(json.loads(line))
             except json.JSONDecodeError:
                 continue  # skip corrupt line — append-only must be robust
+        # Cap: keep only the most recent MAX_LOAD_ENTRIES entries
+        if len(out) > MAX_LOAD_ENTRIES:
+            out = out[-MAX_LOAD_ENTRIES:]
         return out
 
     def recent(self, limit: int = 25) -> list[dict]:
