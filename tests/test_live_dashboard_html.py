@@ -1830,3 +1830,35 @@ def test_v19_evIcon_uses_lucide():
         "evIcon must use Lucide icon() helper or icon-XXX sprite IDs (v19 F19)"
     )
 
+
+# ── v19 chunk G19 — Skill-detail + chat avatars ─────────────────────────────
+def test_v19_chat_avatars_use_lucide():
+    """Chat message avatars must use Lucide icons (bot, user) instead of
+    emoji. addChatMessage in src/chat.js renders the avatar."""
+    chat = (DASHBOARD_DIR / "src" / "chat.js").read_text(encoding="utf-8")
+    # Look for icon() calls with 'bot' or 'user' OR sprite references.
+    has_lucide = (
+        "icon('bot'" in chat or 'icon("bot")' in chat
+        or "icon-bot" in chat
+        or "icon('user'" in chat or 'icon("user")' in chat
+        or "icon-user" in chat
+    )
+    assert has_lucide, (
+        "chat.js must use Lucide bot/user icons via icon() helper (v19 G19)"
+    )
+
+
+def test_v19_skill_detail_share_button_lucide():
+    """Skill-detail share button must use icon-share / icon-link via icon()
+    helper instead of 🔗 emoji."""
+    skills = (DASHBOARD_DIR / "src" / "skills.js").read_text(encoding="utf-8")
+    # Look for share button — was previously 🔗 emoji in copySkillLink button.
+    has_lucide_share = (
+        "icon('link'" in skills or 'icon("link")' in skills
+        or "icon('share" in skills or 'icon("share' in skills
+        or "icon-link" in skills or "icon-share" in skills
+    )
+    assert has_lucide_share, (
+        "skills.js copy/share button must use Lucide icon (v19 G19)"
+    )
+

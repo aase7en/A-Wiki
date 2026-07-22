@@ -272,7 +272,10 @@ function addChatMessage(role, text, files, _skipPersist){
 
   const avatar = document.createElement('div');
   avatar.className = 'msg-avatar';
-  avatar.textContent = role === 'user' ? '👤' : '🧠';
+  // G19: Lucide icon instead of emoji (consistent across OS).
+  avatar.innerHTML = typeof icon === 'function'
+    ? icon(role === 'user' ? 'user' : 'bot', {cls: 'icon-md'})
+    : (role === 'user' ? '👤' : '🧠');
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
@@ -309,7 +312,7 @@ function addChatLoading(){
   const div = document.createElement('div');
   div.className = 'chat-msg hermes';
   div.id = 'msg-loading';
-  div.innerHTML = '<div class=\"msg-avatar\" style=\"background:linear-gradient(135deg,var(--accent-brand),var(--accent-violet))\">🧠</div><div class=\"msg-loading busy\"><div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div>';
+  div.innerHTML = '<div class=\"msg-avatar\" style=\"background:var(--brand)\">' + (typeof icon === 'function' ? icon('bot', {cls: 'icon-md'}) : '🧠') + '</div><div class=\"msg-loading busy\"><div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div></div>';
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
   return 'msg-loading';

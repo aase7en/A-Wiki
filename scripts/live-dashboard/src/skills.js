@@ -582,8 +582,8 @@ const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color
 <div><div class="skill-detail-name">${s.name}</div>
 <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag">🔄 ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span>${instBadge}</div></div>
 <div style="display:flex;gap:2px">
-<button onclick="copySkillLink('${s.name}')" title="คัดลอกลิงก์ skill" style="background:transparent;border:none;color:var(--text-tertiary);font-size:var(--fs-md);cursor:pointer;min-width:32px;min-height:32px">🔗</button>
-<button onclick="skillsCloseDetail()" style="background:transparent;border:none;color:var(--text-tertiary);font-size:var(--fs-lg);cursor:pointer;min-width:32px;min-height:32px">✕</button>
+<button onclick="copySkillLink('${s.name}')" title="คัดลอกลิงก์ skill" aria-label="คัดลอกลิงก์ skill" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-link"/></svg>':'🔗'}</button>
+<button onclick="skillsCloseDetail()" aria-label="ปิด" title="ปิด" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-md" aria-hidden="true"><use href="#icon-x"/></svg>':'✕'}</button>
 </div>
 </div></div>
 <div class="skill-detail-body">
