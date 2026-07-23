@@ -74,17 +74,17 @@ case'hook_check':onHook(ev);break;
 case'cost_declare':onCost(ev);break;
 case'delegate_start':onDelStart(ev);updateLane(ev);break;
 case'delegate_done':onDelDone(ev);updateLane(ev);break;
-  case'delegate_fail':onDelFail(ev);updateLane(ev);break;
-  case'route_plan':onRoute(ev);break;
-  // A16: subagent_invoke arrives from scripts/hooks/log_subagent_result.py
-  // on every real subagent call. Previously it fell through to pushTimeline
-  // only — no model KPI bump, no flow animation, no thought bubble.
-  case'subagent_invoke':onSubagentInvoke(ev);updateLane(ev);break;
+ case'delegate_fail':onDelFail(ev);updateLane(ev);break;
+ case'route_plan':onRoute(ev);break;
+ // A16: subagent_invoke arrives from scripts/hooks/log_subagent_result.py
+ // on every real subagent call. Previously it fell through to pushTimeline
+ // only — no model KPI bump, no flow animation, no thought bubble.
+ case'subagent_invoke':onSubagentInvoke(ev);updateLane(ev);break;
 }
 pushTimeline(ev);
 }
 function onSession(ev){hotWf('session',8000);setOriginStatus('session started','var(--accent-success)');
-spawnThought('🚀 session started',{tone:'green',anchor:'origin'});}
+spawnThought(' session started',{tone:'green',anchor:'origin'});}
 function onHook(ev){
 const{hook='',tool='',result='pass',tier=''}=ev;S.hookCount++;bumpCounter('s-hooks',S.hookCount);
 if(hook.includes('delegation_gate'))hotWf('plan',5000);
@@ -93,15 +93,15 @@ else if(hook.includes('session'))hotWf('session',6000);
 if(tier)setTier(tier);
 const strip=$('hook-strip'),b=mk('div',`hook-badge ${result==='block'?'block':result==='warn'?'warn':'pass'}`);
 const short=hook.replace('check_','').replace(/_/g,'-').substring(0,18);
-b.textContent=(result==='block'?'🔴 ':'✅ ')+short+(tool?' ·'+tool:'')+(tier?' '+tier:'');
+b.textContent=(result==='block'?' ':' ')+short+(tool?' ·'+tool:'')+(tier?' '+tier:'');
 strip.insertBefore(b,strip.firstChild);
 strip.querySelectorAll('.hook-badge').forEach((el,i)=>{if(i>8)el.remove();else if(i>4)el.classList.add('dim');});
-  if(result==='block'){spawnThought(`🔒 ${short} blocked`,{tone:'red',anchor:'origin'});pushFailure(ev);showNotif('🔒 Hook บล็อก',short+(tool?' · '+tool:''),'hook_block');}
-  else if(result==='warn')spawnThought(`⚠ ${short}`,{tone:'gold',anchor:'origin'});
+ if(result==='block'){spawnThought(` ${short} blocked`,{tone:'red',anchor:'origin'});pushFailure(ev);showNotif('Hook บล็อก',short+(tool?' · '+tool:''),'hook_block');}
+ else if(result==='warn')spawnThought(` ${short}`,{tone:'gold',anchor:'origin'});
 }
 function onCost(ev){const{tier='?',task=''}=ev;hotWf('cost',5000);setTier(tier);updateCostKPI(tier);
 setOriginStatus(`tier ${tier}${task?' · '+task:''}`,'var(--accent-warm)');
-spawnThought(`💰 tier ${tier}${task?' · '+task:''}`,{tone:'gold',anchor:'origin'});}
+spawnThought(` tier ${tier}${task?' · '+task:''}`,{tone:'gold',anchor:'origin'});}
 function setTier(tier){
 S.tier=tier;$('tier-label').textContent=tier;
 const pct=S._tiers[tier]??50;$('tier-fill').style.width=pct+'%';
@@ -118,15 +118,15 @@ function onDelDone(ev){
 const{model='',duration_ms=0}=ev;const key=modelKey(model);const e=S.active[key];if(!e)return;
 S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();drawBranchLines();
 flowComplete(model,true,duration_ms);trackDelegation(model);
-spawnThought(`✓ ${modelShort(model)} done${duration_ms?' · '+(duration_ms/1000).toFixed(1)+'s':''}`,{tone:'green',anchor:'station',model:key});
+spawnThought(` ${modelShort(model)} done${duration_ms?' · '+(duration_ms/1000).toFixed(1)+'s':''}`,{tone:'green',anchor:'station',model:key});
 if(!S.activeCount)setOriginStatus('validating…','var(--accent-success)');
 }
 function onDelFail(ev){
 const{model='',reason=''}=ev;const key=modelKey(model);if(!S.active[key])return;
 S.activeCount=Math.max(0,S.activeCount-1);delete S.active[key];updateParallel();drawBranchLines();
 flowComplete(model,false,0);pushFailure(ev);
-spawnThought(`✗ ${modelShort(model)} ${reason||'failed'}`,{tone:'red',anchor:'station',model:key});
-showNotif('✗ Delegation ล้มเหลว',modelShort(model)+(reason?' · '+reason:''),'delegate_fail');
+spawnThought(` ${modelShort(model)} ${reason||'failed'}`,{tone:'red',anchor:'station',model:key});
+showNotif('Delegation ล้มเหลว',modelShort(model)+(reason?' · '+reason:''),'delegate_fail');
 }
 // A16: real subagent invocation (hook log_subagent_result.py).
 // Payload sample: {type, ts, subagent_type:'Explore', model:'deepseek-v4-flash',
@@ -140,11 +140,11 @@ flowComplete(model||subagent_type,result==='pass',latency_ms/1000||0);
 trackDelegation(model||subagent_type);
 const tone=result==='fail'?'red':'violet';
 const short=modelShort(model||subagent_type);
-spawnThought(`🤖 ${subagent_type} → ${short}${latency_ms?' · '+(latency_ms/1000).toFixed(1)+'s':''}`,{tone,anchor:'station',model:key});
-setOriginStatus(`🤖 ${short} · ${subagent_type}`,'var(--role-subagent)');
+spawnThought(` ${subagent_type} → ${short}${latency_ms?' · '+(latency_ms/1000).toFixed(1)+'s':''}`,{tone,anchor:'station',model:key});
+setOriginStatus(` ${short} · ${subagent_type}`,'var(--role-subagent)');
 if(result==='fail'){
 pushFailure(ev);
-showNotif('✗ Subagent ล้มเหลว',`${subagent_type} · ${short}`,'subagent_fail');
+showNotif('Subagent ล้มเหลว',`${subagent_type} · ${short}`,'subagent_fail');
 }
 }
 function updateParallel(){
@@ -180,7 +180,7 @@ _eventLog.push({type:type,ts:ts||0,text:row.textContent,time:t,bookmarked:isMark
 while(_eventLog.length>EVENT_LOG_MAX)_eventLog.shift();
 const tl=$('timeline-list');tl.insertBefore(row,tl.firstChild);
 setTimeout(()=>row.classList.remove('new'),800);
-  while(tl.children.length>120){const last=tl.lastChild;if(last&&!last.classList.contains('bookmarked'))tl.removeChild(last);else if(last)break;}
+ while(tl.children.length>120){const last=tl.lastChild;if(last&&!last.classList.contains('bookmarked'))tl.removeChild(last);else if(last)break;}
 }
 function filterEvents(){
 const v=$('ev-filter').value;
@@ -224,7 +224,7 @@ if(row){
 const isMarked=idx<0;
 row.classList.toggle('bookmarked',isMarked);
 const star=row.querySelector('.ev-star');
-if(star)star.textContent=isMarked?'⭐':'☆';
+if(star)star.innerHTML=isMarked?'<svg class="icon icon-sm" aria-hidden="true" style="color:var(--status-warn)"><use href="#icon-star"/></svg>':'<svg class="icon icon-sm" aria-hidden="true" style="color:var(--n-600)"><use href="#icon-star"/></svg>';
 }
 }
 // CHUNK C15: export event log as JSON (ring buffer contents + bookmarks).
@@ -240,7 +240,7 @@ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
 const d=new Date();
 const stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(d.getHours()).padStart(2,'0')+String(d.getMinutes()).padStart(2,'0');
 _downloadBlob(blob,'awiki-events-'+stamp+'.json');
-if(typeof toast==='function')toast('📤 ส่งออก '+_eventLog.length+' events');
+if(typeof toast==='function')toast('ส่งออก '+_eventLog.length+' events');
 }
 // F19: evIcon returns Lucide icon name (rendered via icon() helper at call sites).
 // Caller pattern: const ic=evIcon(ev.type,ev.result); row.innerHTML='...'+(typeof icon==='function'?icon(ic):ic)+'...';
@@ -253,7 +253,7 @@ case'hook_check':return `<span class="tag">${(hook||'').replace('check_','').rep
 case'cost_declare':return `cost <strong>${tier||'?'}</strong>${task?' · '+task:''}`;
 case'delegate_start':return `→ <strong>${modelShort(model)}</strong> <em>[${task||'?'}]</em>`;
 case'delegate_done':return `← <strong>${modelShort(model)}</strong> <span class="ok">done</span>${duration_ms?' · '+(duration_ms/1000).toFixed(1)+'s':''}`;
-case'delegate_fail':return `✗ <strong>${modelShort(model)}</strong> <span class="bad">${reason||'failed'}</span>`;
+case'delegate_fail':return ` <strong>${modelShort(model)}</strong> <span class="bad">${reason||'failed'}</span>`;
 default:return type;}}
 function modelKey(m){return(m||'unknown').split('(')[0].trim();}
 function modelShort(m){const id=(m||'').toLowerCase();const map=[
@@ -270,13 +270,13 @@ $('lanes-body').innerHTML='';$('branch-svg').innerHTML='';
 for(const k in _stations){const st=_stations[k];st.active=false;st._emit=false;
 st.el.classList.remove('active','done','fail');st.pipeEl.classList.remove('active','return','fail');st.count=0;st.cntEl.textContent='0';}
 _particles=[];particleG.innerHTML='';
-  bumpCounter('s-hooks',0);bumpCounter('s-models',0);bumpCounter('s-events',0);bumpCounter('s-par',0);bumpCounter('s-fail',0);
-  $('parallel-badge').style.display='none';$('event-count').textContent='0';
-  S.failCount=0;S.failures=[];S.delegateFree=0;S.delegatePaid=0;
-  const el=$('errors-list');if(el)el.innerHTML='';
-  const ee=$('errors-empty');if(ee)ee.style.display='flex';
-  $('cost-tier-big').textContent='L-1';$('cost-delegations').textContent='0 delegates';$('cost-ratio').textContent='0 free / 0 paid';
-  setOriginStatus('watching…','var(--accent-success)');setOriginBusy(false);
+ bumpCounter('s-hooks',0);bumpCounter('s-models',0);bumpCounter('s-events',0);bumpCounter('s-par',0);bumpCounter('s-fail',0);
+ $('parallel-badge').style.display='none';$('event-count').textContent='0';
+ S.failCount=0;S.failures=[];S.delegateFree=0;S.delegatePaid=0;
+ const el=$('errors-list');if(el)el.innerHTML='';
+ const ee=$('errors-empty');if(ee)ee.style.display='flex';
+ $('cost-tier-big').textContent='L-1';$('cost-delegations').textContent='0 delegates';$('cost-ratio').textContent='0 free / 0 paid';
+ setOriginStatus('watching…','var(--accent-success)');setOriginBusy(false);
 }
 let _caps={families:{},recommended_by_task:{}};
 function toast(msg,err){const t=$('set-toast');t.textContent=msg;t.className='set-toast show'+(err?' err':'');setTimeout(()=>t.className='set-toast',2200);}

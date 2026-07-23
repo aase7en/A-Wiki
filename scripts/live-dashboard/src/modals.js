@@ -29,7 +29,7 @@ const isOpen=bd.style.display!=='none';
 if(isOpen){_closeShortcutsHelp();return;}
 const list=$('shortcuts-list');
 const kbQQ=_loadKeybindings();
-list.innerHTML=SHORTCUTS.map(s=>{const eff=kbQQ[s.key]||s.key;const isCustom=!!kbQQ[s.key];return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="color:var(--text-secondary)">${s.desc}</span><kbd style="background:var(--elev-2);padding:3px 10px;border-radius:var(--r-sm);border:1px solid ${isCustom?'var(--accent-warm)':'var(--border2)'};font-family:var(--font-mono);font-size:var(--fs-2xs);color:${isCustom?'var(--accent-warm)':'var(--accent-brand)'};white-space:nowrap">${eff===' '?'Space':eff}${isCustom?' ⚙️':''}</kbd></div>`;}).join('');
+list.innerHTML=SHORTCUTS.map(s=>{const eff=kbQQ[s.key]||s.key;const isCustom=!!kbQQ[s.key];return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="color:var(--text-secondary)">${s.desc}</span><kbd style="background:var(--elev-2);padding:3px 10px;border-radius:var(--r-sm);border:1px solid ${isCustom?'var(--accent-warm)':'var(--border2)'};font-family:var(--font-mono);font-size:var(--fs-2xs);color:${isCustom?'var(--accent-warm)':'var(--accent-brand)'};white-space:nowrap">${eff===' '?'Space':eff}${isCustom?' ️':''}</kbd></div>`;}).join('');
 bd.style.display='block';help.style.display='block';
 _openModalTrap($('shortcuts-help'));
 }
@@ -65,7 +65,7 @@ function _loadKeybindings(){
 function _saveKeybindings(kb){_lsSet(KEYBINDINGS_KEY,kb);}
 function resetKeybindings(){
   _saveKeybindings({});
-  toast('↺ คืนค่า shortcuts เริ่มต้นแล้ว');
+  toast('คืนค่า shortcuts เริ่มต้นแล้ว');
   if($('keybind-backdrop').style.display!=='none')_renderKeybindList();
   if($('shortcuts-backdrop').style.display!=='none')_toggleShortcutsHelp(),_toggleShortcutsHelp();
 }
@@ -73,7 +73,7 @@ function exportKeybindings(){
   const kb=_loadKeybindings();
   const blob=new Blob([JSON.stringify({version:1,keybindings:kb},null,2)],{type:'application/json'});
   _downloadBlob(blob,'awiki-keybindings.json');
-  toast('📤 ส่งออก keybindings แล้ว');
+  toast('ส่งออก keybindings แล้ว');
 }
 function importKeybindings(ev){
   const f=ev.target.files[0];if(!f)return;
@@ -87,7 +87,7 @@ function importKeybindings(ev){
       const known=new Set(SHORTCUTS.map(s=>s.key));
       Object.keys(kb||{}).forEach(k=>{if(known.has(k)&&typeof kb[k]==='string'&&kb[k].trim())valid[k]=kb[k].trim();});
       _saveKeybindings(valid);
-      toast('📥 นำเข้า keybindings แล้ว ('+Object.keys(valid).length+' รายการ)');
+      toast('นำเข้า keybindings แล้ว ('+Object.keys(valid).length+' รายการ)');
       if($('keybind-backdrop').style.display!=='none')_renderKeybindList();
     }catch(e){toast('นำเข้าไม่สำเร็จ: '+e.message,true);}
   };
@@ -113,9 +113,9 @@ function _renderKeybindList(){
     const eff=kb[s.key]||s.key;
     const isCustom=!!kb[s.key];
     return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
-      <span style="color:var(--text-secondary);flex:1">${s.desc}</span>
-      <button id="kb-cap-${s.key.replace(/\s|\//g,'_')}" class="set-btn sm" onclick="_startKeyCapture('${s.key}')" style="font-family:var(--font-mono);font-size:var(--fs-2xs);min-width:70px;${isCustom?'border-color:var(--accent-brand);color:var(--accent-brand)':''}">${eff===' '?'Space':eff}</button>
-    </div>`;
+ <span style="color:var(--text-secondary);flex:1">${s.desc}</span>
+ <button id="kb-cap-${s.key.replace(/\s|\//g,'_')}" class="set-btn sm" onclick="_startKeyCapture('${s.key}')" style="font-family:var(--font-mono);font-size:var(--fs-2xs);min-width:70px;${isCustom?'border-color:var(--accent-brand);color:var(--accent-brand)':''}">${eff===' '?'Space':eff}</button>
+ </div>`;
   }).join('');
 }
 function _startKeyCapture(actionId){
@@ -187,7 +187,7 @@ async function _requestNotifPerm(){
   if(!_notifSupported()){toast('เบราว์เซอร์นี้ไม่รองรับ Web Notification',true);return 'unsupported';}
   try{
     const p=await Notification.requestPermission();
-    if(p==='granted'){toast('🔔 เปิดการแจ้งเตือนแล้ว');showNotif('A-Wiki Dashboard','การแจ้งเตือนเปิดใช้งานแล้ว','registry_update');}
+    if(p==='granted'){toast('เปิดการแจ้งเตือนแล้ว');showNotif('A-Wiki Dashboard','การแจ้งเตือนเปิดใช้งานแล้ว','registry_update');}
     else{toast('การแจ้งเตือนถูกปฏิเสธ — จะใช้ toast แทน');}
     return p;
   }catch(e){toast('ขอ permission ไม่สำเร็จ',true);return 'error';}
@@ -208,22 +208,22 @@ function _renderNotifPrefs(){
   const permRow=$('notif-perm-row');
   const supported=_notifSupported();
   if(!supported){
-    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">⚠️ เบราว์เซอร์นี้ไม่รองรับ Web Notification — จะใช้ toast แทน</div>';
+    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">️ เบราว์เซอร์นี้ไม่รองรับ Web Notification — จะใช้ toast แทน</div>';
   }else if(perm==='granted'){
-    permRow.innerHTML='<div style="color:var(--accent-success);font-size:var(--fs-2xs)">✅ สิทธิ์การแจ้งเตือน: เปิดอนุญาตแล้ว</div>';
+    permRow.innerHTML='<div style="color:var(--accent-success);font-size:var(--fs-2xs)"> สิทธิ์การแจ้งเตือน: เปิดอนุญาตแล้ว</div>';
   }else if(perm==='denied'){
-    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)">🚫 สิทธิ์ถูกปฏิเสธ — ปลดล็อกใน Site Settings ของเบราว์เซอร์ (จะใช้ toast แทน)</div>';
+    permRow.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs)"> สิทธิ์ถูกปฏิเสธ — ปลดล็อกใน Site Settings ของเบราว์เซอร์ (จะใช้ toast แทน)</div>';
   }else{
-    permRow.innerHTML='<button class="set-btn sm" onclick="_requestNotifPerm()" style="font-size:var(--fs-xs);color:var(--accent-brand)">🔔 เปิดการแจ้งเตือน</button>';
+    permRow.innerHTML='<button class="set-btn sm" onclick="_requestNotifPerm()" style="font-size:var(--fs-xs);color:var(--accent-brand)"> เปิดการแจ้งเตือน</button>';
   }
   const prefs=_loadNotifPrefs();
   const list=$('notif-prefs-list');
   list.innerHTML=Object.keys(NOTIF_LABELS).map(k=>{
     const on=!!prefs[k];
     return `<label style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">
-      <span style="color:var(--text-secondary)">${NOTIF_LABELS[k]}</span>
-      <input type="checkbox" ${on?'checked':''} onchange="toggleNotifPref('${k}',this.checked)" style="cursor:pointer;accent-color:var(--accent-brand)">
-    </label>`;
+ <span style="color:var(--text-secondary)">${NOTIF_LABELS[k]}</span>
+ <input type="checkbox" ${on?'checked':''} onchange="toggleNotifPref('${k}',this.checked)" style="cursor:pointer;accent-color:var(--accent-brand)">
+ </label>`;
   }).join('');
 }
 function toggleNotifPref(key,val){
@@ -270,7 +270,7 @@ function saveWorkspacePrompt(){
   filtered.unshift({name:name.trim(),...captureWorkspace()});
   _saveWorkspaces(filtered.slice(0,WORKSPACES_MAX));
   _renderWorkspaceList();
-  toast('💾 บันทึก workspace "'+name.trim()+'" แล้ว');
+  toast('บันทึก workspace "'+name.trim()+'" แล้ว');
 }
 function restoreWorkspace(ws){
   if(!ws)return;
@@ -294,7 +294,7 @@ function restoreWorkspace(ws){
   // Restore scroll.
   if(ws.scrollY){setTimeout(()=>window.scrollTo(0,ws.scrollY),500);}
   _lsSet(WORKSPACE_LAST_KEY,{name:ws.name,savedAt:ws.savedAt});
-  toast('💾 เรียกคืน workspace "'+ws.name+'" แล้ว');
+  toast('เรียกคืน workspace "'+ws.name+'" แล้ว');
 }
 function deleteWorkspace(name){
   const ws=_loadWorkspaces().filter(w=>w.name!==name);
@@ -326,12 +326,12 @@ function _renderWorkspaceList(){
   list.innerHTML=ws.map(w=>{
   const isLast=lastName===w.name;
   return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px;border:1px solid ${isLast?'var(--accent-brand)':'var(--border2)'};border-radius:var(--r-md);background:${isLast?'var(--elev-3)':'var(--elev-2)'}">
-    <div style="flex:1;cursor:pointer" onclick="restoreWorkspace(${_wsEscape(w)})">
-      <div style="color:var(--text-primary);font-weight:600">${w.name}${isLast?' <span style="font-size:var(--fs-2xs);color:var(--accent-brand)">● ล่าสุด</span>':''}</div>
-      <div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${w.view} · ${(w.savedAt||'').slice(0,10)}</div>
-    </div>
-    <button onclick="deleteWorkspace('${w.name.replace(/'/g,"")}') " style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px" title="ลบ">✕</button>
-  </div>`;
+ <div style="flex:1;cursor:pointer" onclick="restoreWorkspace(${_wsEscape(w)})">
+ <div style="color:var(--text-primary);font-weight:600">${w.name}${isLast?' <span style="font-size:var(--fs-2xs);color:var(--accent-brand)">● ล่าสุด</span>':''}</div>
+ <div style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${w.view} · ${(w.savedAt||'').slice(0,10)}</div>
+ </div>
+ <button onclick="deleteWorkspace('${w.name.replace(/'/g,"")}') " style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px" title="ลบ"></button>
+ </div>`;
   }).join('');
 }
 // C16: explicit reader for WORKSPACE_LAST_KEY — restore the most recently
@@ -348,10 +348,10 @@ function _wsEscape(w){return "'"+JSON.stringify(w).replace(/'/g,"\\'")+"'";}
 function toggleWorkspaceAutorestore(on){_lsSet(WORKSPACE_AUTORESTORE_KEY,!!on);}
 // Boot-time auto-restore (called from boot sequence).
 function maybeAutoRestoreWorkspace(){
-  if(!_lsGet(WORKSPACE_AUTORESTORE_KEY,false))return;
-  const ws=_loadWorkspaces();if(!ws.length)return;
-  // Restore the most recent workspace.
-  setTimeout(()=>restoreWorkspace(ws[0]),400);
+ if(!_lsGet(WORKSPACE_AUTORESTORE_KEY,false))return;
+ const ws=_loadWorkspaces();if(!ws.length)return;
+ // Restore the most recent workspace.
+ setTimeout(()=>restoreWorkspace(ws[0]),400);
 }
 
 // === CHUNK EE — Command Palette ===
@@ -362,131 +362,131 @@ let _paletteIndex=[],_paletteSel=0,_paletteResults=[],_paletteDebounce=null;
 const PALETTE_ICONS={skill:'puzzle',view:'circle',shortcut:'keyboard',flow:'circle',recent:'circle-dot'};
 // D18: detect Mac for ⌘ symbol vs 'Ctrl' on Win/Linux.
 try{
-  const isMac=(navigator.platform||'').toLowerCase().includes('mac')||(navigator.userAgent||'').toLowerCase().includes('mac');
-  const hint=document.getElementById('cmdk-hint');
-  if(hint){
-    const mod=hint.querySelector('.kbd-mod');
-    if(mod)mod.textContent=isMac?'⌘':'Ctrl';
-  }
+ const isMac=(navigator.platform||'').toLowerCase().includes('mac')||(navigator.userAgent||'').toLowerCase().includes('mac');
+ const hint=document.getElementById('cmdk-hint');
+ if(hint){
+ const mod=hint.querySelector('.kbd-mod');
+ if(mod)mod.textContent=isMac?'⌘':'Ctrl';
+ }
 }catch(_){}
 function _paletteBuildIndex(){
-  _paletteIndex=[];
-  // Skills (from cache if loaded, else fetch)
-  if(window._skillsCache&&Array.isArray(_skillsCache)){
-    _skillsCache.forEach(s=>{
-      if(s.status!=='canonical')return;
-      _paletteIndex.push({type:'skill',label:s.name,sub:(s.th_description||'').slice(0,60),action:()=>{setView('skills');setTimeout(()=>skillsOpenDetail(s.name),250);}});
-    });
-  }
-  // Views (9 known) — C18: stripped emojis; type+weight leads
-  [['summary','Summary'],['flow','Flow'],['timeline','Timeline'],['graph','Graph'],['skills','Skills'],['coverage','Coverage'],['subagents','Subagents'],['council','Council'],['chat','Chat']].forEach(([v,label])=>{
-    _paletteIndex.push({type:'view',label:label+' tab',sub:'สลับไปยัง '+label,action:()=>setView(v)});
-  });
-  // Shortcuts (re-use SHORTCUTS array)
-  SHORTCUTS.forEach(s=>{
-    if(s.key==='Escape')return;
-    _paletteIndex.push({type:'shortcut',label:s.desc,sub:'Shortcut: '+s.key,action:s.action});
-  });
+ _paletteIndex=[];
+ // Skills (from cache if loaded, else fetch)
+ if(window._skillsCache&&Array.isArray(_skillsCache)){
+ _skillsCache.forEach(s=>{
+ if(s.status!=='canonical')return;
+ _paletteIndex.push({type:'skill',label:s.name,sub:(s.th_description||'').slice(0,60),action:()=>{setView('skills');setTimeout(()=>skillsOpenDetail(s.name),250);}});
+ });
+ }
+ // Views (9 known) — C18: stripped emojis; type+weight leads
+ [['summary','Summary'],['flow','Flow'],['timeline','Timeline'],['graph','Graph'],['skills','Skills'],['coverage','Coverage'],['subagents','Subagents'],['council','Council'],['chat','Chat']].forEach(([v,label])=>{
+ _paletteIndex.push({type:'view',label:label+' tab',sub:'สลับไปยัง '+label,action:()=>setView(v)});
+ });
+ // Shortcuts (re-use SHORTCUTS array)
+ SHORTCUTS.forEach(s=>{
+ if(s.key==='Escape')return;
+ _paletteIndex.push({type:'shortcut',label:s.desc,sub:'Shortcut: '+s.key,action:s.action});
+ });
 }
 function _paletteFuzzy(q,target){
-  q=q.toLowerCase();target=target.toLowerCase();
-  if(target.includes(q))return 1000-target.indexOf(q);
-  let ti=0,score=0;
-  for(let qi=0;qi<q.length&&ti<target.length;qi++){
-    if(target[ti]===q[qi]){score+=2;ti++;}
-    else{ti++;qi--;if(qi>0&&ti-target.indexOf(q[0])>q.length*2)break;}
-  }
-  return score>=q.length*2?score:0;
+ q=q.toLowerCase();target=target.toLowerCase();
+ if(target.includes(q))return 1000-target.indexOf(q);
+ let ti=0,score=0;
+ for(let qi=0;qi<q.length&&ti<target.length;qi++){
+ if(target[ti]===q[qi]){score+=2;ti++;}
+ else{ti++;qi--;if(qi>0&&ti-target.indexOf(q[0])>q.length*2)break;}
+ }
+ return score>=q.length*2?score:0;
 }
 function _paletteRank(q){
-  if(!q.trim())return _paletteIndex.slice(0,10);
-  const scored=_paletteIndex.map(it=>{
-    const s=Math.max(_paletteFuzzy(q,it.label||''),_paletteFuzzy(q,it.sub||''));
-    return Object.assign({},it,{_s:s});
-  }).filter(it=>it._s>0);
-  scored.sort((a,b)=>b._s-a._s);
-  return scored.slice(0,10);
+ if(!q.trim())return _paletteIndex.slice(0,10);
+ const scored=_paletteIndex.map(it=>{
+ const s=Math.max(_paletteFuzzy(q,it.label||''),_paletteFuzzy(q,it.sub||''));
+ return Object.assign({},it,{_s:s});
+ }).filter(it=>it._s>0);
+ scored.sort((a,b)=>b._s-a._s);
+ return scored.slice(0,10);
 }
 function _paletteRender(results){
-  _paletteResults=results;_paletteSel=0;
-  const box=$('palette-results'),empty=$('palette-empty');
-  if(!results.length){box.innerHTML='';empty.style.display='block';return;}
-  empty.style.display='none';
-  box.innerHTML=results.map((it,i)=>{
-    // E19: use Lucide icon() helper. Names from PALETTE_ICONS map.
-    const iconName=PALETTE_ICONS[it.type]||'circle';
-    const icCls=it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':it.type==='recent'?'ic-recent':'ic-shortcut';
-    const icHtml=typeof icon==='function'?icon(iconName,{cls:icCls}):('<span class="'+icCls+'">'+iconName+'</span>');
-    return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
-      ${icHtml}
-      <div style="flex:1;min-width:0">
-        <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
-        ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
-      </div>
-      <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type}</span>
-    </div>`;
-  }).join('');
+ _paletteResults=results;_paletteSel=0;
+ const box=$('palette-results'),empty=$('palette-empty');
+ if(!results.length){box.innerHTML='';empty.style.display='block';return;}
+ empty.style.display='none';
+ box.innerHTML=results.map((it,i)=>{
+ // E19: use Lucide icon() helper. Names from PALETTE_ICONS map.
+ const iconName=PALETTE_ICONS[it.type]||'circle';
+ const icCls=it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':it.type==='recent'?'ic-recent':'ic-shortcut';
+ const icHtml=typeof icon==='function'?icon(iconName,{cls:icCls}):('<span class="'+icCls+'">'+iconName+'</span>');
+ return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
+ ${icHtml}
+ <div style="flex:1;min-width:0">
+ <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
+ ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
+ </div>
+ <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type}</span>
+ </div>`;
+ }).join('');
 }
 function _paletteHover(i){_paletteSel=i;_paletteHighlight();}
 function _paletteHighlight(){
-  document.querySelectorAll('.palette-row').forEach((r,i)=>{
-    r.style.background=i===_paletteSel?'var(--elev-2)':'';
-  });
+ document.querySelectorAll('.palette-row').forEach((r,i)=>{
+ r.style.background=i===_paletteSel?'var(--elev-2)':'';
+ });
 }
 function _paletteActivate(i){
-  const it=_paletteResults[i];if(!it)return;
-  // D18: record recent command (max 5, FIFO) before closing.
-  try{_palettePushRecent(it);}catch(_){}
-  closePalette();
-  try{it.action();}catch(err){toast('palette: '+err.message,true);}
+ const it=_paletteResults[i];if(!it)return;
+ // D18: record recent command (max 5, FIFO) before closing.
+ try{_palettePushRecent(it);}catch(_){}
+ closePalette();
+ try{it.action();}catch(err){toast('palette: '+err.message,true);}
 }
 // D18: recent-commands tracking.
 const PALETTE_RECENT_KEY='awiki-palette-recent';
 const PALETTE_RECENT_MAX=5;
 function _paletteRecentLoad(){
-  try{return JSON.parse(localStorage.getItem(PALETTE_RECENT_KEY)||'[]');}catch(_){return [];}
+ try{return JSON.parse(localStorage.getItem(PALETTE_RECENT_KEY)||'[]');}catch(_){return [];}
 }
 function _palettePushRecent(it){
-  // Store a serializable signature: {type,label,sub,ts}.
-  const sig={type:it.type||'?',label:it.label||'',sub:(it.sub||'').slice(0,60),ts:Date.now()};
-  let recents=_paletteRecentLoad();
-  // Dedup by type+label.
-  recents=recents.filter(r=>!(r.type===sig.type&&r.label===sig.label));
-  recents.unshift(sig);
-  recents=recents.slice(0,PALETTE_RECENT_MAX);
-  try{localStorage.setItem(PALETTE_RECENT_KEY,JSON.stringify(recents));}catch(_){}
+ // Store a serializable signature: {type,label,sub,ts}.
+ const sig={type:it.type||'?',label:it.label||'',sub:(it.sub||'').slice(0,60),ts:Date.now()};
+ let recents=_paletteRecentLoad();
+ // Dedup by type+label.
+ recents=recents.filter(r=>!(r.type===sig.type&&r.label===sig.label));
+ recents.unshift(sig);
+ recents=recents.slice(0,PALETTE_RECENT_MAX);
+ try{localStorage.setItem(PALETTE_RECENT_KEY,JSON.stringify(recents));}catch(_){}
 }
 function _paletteBuildRecentItems(){
-  // Map stored signatures back to actionable items (action = same as original).
-  // We rebuild action by looking up _paletteIndex for matching type+label.
-  const recents=_paletteRecentLoad();
-  if(!recents.length)return [];
-  const out=[];
-  recents.forEach(r=>{
-    // Find matching source item for the action closure.
-    const src=_paletteIndex.find(it=>(it.type===r.type)&&(it.label===r.label));
-    if(!src)return;
-    out.push({
-      type:'recent',
-      label:r.label,
-      sub:(r.sub?'· '+r.sub:'')+' · ' + _paletteRelativeTime(r.ts),
-      action:src.action,
-    });
-  });
-  return out;
+ // Map stored signatures back to actionable items (action = same as original).
+ // We rebuild action by looking up _paletteIndex for matching type+label.
+ const recents=_paletteRecentLoad();
+ if(!recents.length)return [];
+ const out=[];
+ recents.forEach(r=>{
+ // Find matching source item for the action closure.
+ const src=_paletteIndex.find(it=>(it.type===r.type)&&(it.label===r.label));
+ if(!src)return;
+ out.push({
+ type:'recent',
+ label:r.label,
+ sub:(r.sub?'· '+r.sub:'')+' · ' + _paletteRelativeTime(r.ts),
+ action:src.action,
+ });
+ });
+ return out;
 }
 function _paletteRelativeTime(ts){
-  const diff=Date.now()-ts;
-  const m=Math.floor(diff/60000);
-  if(m<1)return 'เมื่อสักครู่';
-  if(m<60)return m+' นาทีที่แล้ว';
-  const h=Math.floor(m/60);
-  if(h<24)return h+' ชม.ที่แล้ว';
-  return Math.floor(h/24)+' วันที่แล้ว';
+ const diff=Date.now()-ts;
+ const m=Math.floor(diff/60000);
+ if(m<1)return 'เมื่อสักครู่';
+ if(m<60)return m+' นาทีที่แล้ว';
+ const h=Math.floor(m/60);
+ if(h<24)return h+' ชม.ที่แล้ว';
+ return Math.floor(h/24)+' วันที่แล้ว';
 }
 // D18: update _paletteRank to show Recent group at top when query is empty.
 // (Override of original _paletteRank handled via _paletteBuildRecentItems
-//  being prepended in openPalette's empty-query render.)
+// being prepended in openPalette's empty-query render.)
 function paletteSearchDebounced(){
   clearTimeout(_paletteDebounce);
   _paletteDebounce=setTimeout(()=>{
@@ -524,13 +524,13 @@ function _paletteRowHtml(it,i){
   const icCls=it.type==='recent'?'ic-recent':it.type==='skill'?'ic-skill':it.type==='view'?'ic-view':'ic-shortcut';
   const icHtml=typeof icon==='function'?icon(iconName,{cls:icCls}):('<span class="'+icCls+'">'+iconName+'</span>');
   return `<div class="palette-row${i===0?' sel':''}" data-idx="${i}" onmouseenter="_paletteHover(${i})" onclick="_paletteActivate(${i})" style="display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:var(--r-sm);background:${i===0?'var(--brand-muted)':'transparent'};transition:var(--t-fast)">
-    ${icHtml}
-    <div style="flex:1;min-width:0">
-      <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
-      ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
-    </div>
-    <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type==='recent'?'recent':it.type}</span>
-  </div>`;
+ ${icHtml}
+ <div style="flex:1;min-width:0">
+ <div style="color:var(--n-900);font-size:var(--fs-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.label||'').replace(/</g,'&lt;')}</div>
+ ${it.sub?`<div style="color:var(--n-700);font-size:var(--fs-2xs);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${(it.sub||'').replace(/</g,'&lt;')}</div>`:''}
+ </div>
+ <span style="font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.06em;font-weight:600">${it.type==='recent'?'recent':it.type}</span>
+ </div>`;
 }
 async function openPalette(){
   // Ensure skills are loaded so palette can index them
@@ -650,7 +650,7 @@ const badge=(l,v)=>v==null?'':`<span class="cap-badge ${v>=60?'hi':''}">${l} ${v
 const caps=f?`<div class="cap-badges">${badge('SWE',f.swe_bench)}${badge('Term',f.terminal_bench)}${badge('Repo',f.nl2repobench)}${badge('reason',f.reasoning)}${badge('speed',f.speed)}</div>`:'';
 const kn=m.key_env||'',hk=ks[kn];
 card.innerHTML=`<div class="cfg-row"><span class="cfg-name">${m.name}</span>
-<span class="key-status ${hk?'set':'unset'}">${hk?'🔑 set':'🔑 no key'}</span>
+<span class="key-status ${hk?'set':'unset'}">${hk?' set':' no key'}</span>
 <label class="glow-toggle"><input type="checkbox" data-i="${i}" ${m.enabled===false?'':'checked'} aria-label="Enable ${m.name}"><span class="glow-slider"></span></label></div>
 <div class="cfg-field"><label>model id</label><input class="cfg-input" data-mid="${i}" value="${m.model_id||''}" placeholder="(default)"></div>${caps}`;
 w.appendChild(card);});w._models=models;}
@@ -658,7 +658,7 @@ function saveModels(){const w=$('models-list'),models=w._models||[];
 w.querySelectorAll('input[type=checkbox]').forEach(cb=>models[+cb.dataset.i].enabled=cb.checked);
 w.querySelectorAll('input[data-mid]').forEach(inp=>{const v=inp.value.trim();if(v)models[+inp.dataset.mid].model_id=v;});
 fetch('/api/models',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({models})})
-.then(r=>r.json()).then(res=>{if(res.ok){toast('✅ บันทึกแล้ว');loadRecommendations();}else toast(res.error||'บันทึกไม่สร็จ',true);})
+.then(r=>r.json()).then(res=>{if(res.ok){toast('บันทึกแล้ว');loadRecommendations();}else toast(res.error||'บันทึกไม่สร็จ',true);})
 .catch(()=>toast('บันทึกไม่สำเร็จ',true));}
 function renderKeys(keys){const w=$('keys-list');w.innerHTML='';
 (keys||[]).forEach(k=>{const card=mk('div','glass-card');
@@ -669,13 +669,13 @@ w.querySelectorAll('button[data-save]').forEach(b=>b.onclick=()=>saveKey(b.datas
 function saveKey(name){const inp=$('keys-list').querySelector(`input[data-key="${name}"]`);const v=inp.value.trim();
 if(!v){toast('ใส่ key ก่อน',true);return;}
 fetch('/api/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key_name:name,key_value:v})})
-.then(r=>r.json()).then(res=>{if(res.ok){inp.value='';toast(`✅ ${name} บันทึก`);loadSettings();}else toast(res.error||'ไม่สำเร็จ',true);})
+.then(r=>r.json()).then(res=>{if(res.ok){inp.value='';toast(`${name} บันทึก`);loadSettings();}else toast(res.error||'ไม่สำเร็จ',true);})
 .catch(()=>toast('ไม่สำเร็จ',true));}
 async function loadRecommendations(){
 try{const caps=await fetch('/api/capabilities').then(r=>r.json());_caps=caps||_caps;
 const rec=caps.recommended_by_task||{};const order=['reason','scan','search'];
 const lbl={reason:'reason/compare',scan:'scan',search:'search/lookup'};
-const parts=order.filter(t=>rec[t]).map(t=>`<span class="rec-item">🧬 ${lbl[t]} → <b>${rec[t].name}</b> <span style="opacity:.6">(${rec[t].dimension} ${rec[t].score})</span></span>`);
+const parts=order.filter(t=>rec[t]).map(t=>`<span class="rec-item"> ${lbl[t]} → <b>${rec[t].name}</b> <span style="opacity:.6">(${rec[t].dimension} ${rec[t].score})</span></span>`);
 const strip=$('rec-strip');
 strip.innerHTML=`<span id="typed-intro" data-typed></span>`+parts.join('');
 if(_typedRAF)clearTimeout(_typedRAF);typedStep();

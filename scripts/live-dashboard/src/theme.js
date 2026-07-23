@@ -72,7 +72,7 @@ function renderThemeEditor(){
   const tokens=_loadCustomTokens();
   const mode=localStorage.getItem(THEME_MODE_KEY)||'auto';
   if(mode!=='custom'){
-    grid.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">เลือกโหมด 🎨 custom ก่อนเพื่อเปิด color pickers</div>';
+    grid.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">เลือกโหมด custom ก่อนเพื่อเปิด color pickers</div>';
     return;
   }
   grid.innerHTML=THEME_EDITABLE_TOKENS.map(tk=>{
@@ -83,7 +83,7 @@ function renderThemeEditor(){
   // Reset button row.
   const preset=document.getElementById('theme-preset-row');
   if(preset){
-    preset.innerHTML='<button class="set-btn sm" onclick="resetCustomTheme()" style="color:var(--accent-danger);margin-right:6px">↺ Reset to dark</button><button class="set-btn sm" onclick="switchToGreenWhite()" style="color:var(--accent-success)">☀ Green-white</button>';
+    preset.innerHTML='<button class="set-btn sm" onclick="resetCustomTheme()" style="color:var(--accent-danger);margin-right:6px">↺ Reset to dark</button><button class="set-btn sm" onclick="switchToGreenWhite()" style="color:var(--accent-success)"> Green-white</button>';
   }
 }
 function onThemeColorChange(tk,val){
@@ -92,7 +92,7 @@ function onThemeColorChange(tk,val){
   try{localStorage.setItem(THEME_CUSTOM_KEY,JSON.stringify(tokens));}catch(_){}
   _injectCustomTheme();  // live preview
   const st=document.getElementById('theme-status');
-  if(st)st.textContent='🎨 '+tk+' = '+val;
+  if(st)st.textContent=' '+tk+' = '+val;
   renderThemeEditor();  // refresh label
 }
 function resetCustomTheme(){
@@ -122,7 +122,7 @@ function exportTheme(){
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   _downloadBlob(blob,'awiki-theme.json');
   const st=document.getElementById('theme-status');
-  if(st)st.textContent='📤 ส่งออก theme ('+Object.keys(tokens).length+' tokens)';
+  if(st)st.textContent=' ส่งออก theme ('+Object.keys(tokens).length+' tokens)';
 }
 function importTheme(ev){
   const f=ev.target.files[0];if(!f)return;
@@ -138,10 +138,10 @@ function importTheme(ev){
       _applyThemeMode('custom');
       renderThemeEditor();
       const st=document.getElementById('theme-status');
-      if(st)st.textContent='📥 นำเข้า '+Object.keys(valid).length+' tokens';
+      if(st)st.textContent=' นำเข้า '+Object.keys(valid).length+' tokens';
     }catch(e){
       const st=document.getElementById('theme-status');
-      if(st)st.textContent='❌ '+e.message;
+      if(st)st.textContent=' '+e.message;
     }
   };
   rd.readAsText(f);
@@ -181,7 +181,7 @@ function applyThemePreset(tokens){
 })();
 
 
-const AGENT_TYPES=[{type:"plan",role:"วางแผน",icon:"📋",effort:80},{type:"architect",role:"ออกแบบ",icon:"🏗️",effort:90},{type:"ask",role:"ตอบคำถาม",icon:"💬",effort:30},{type:"code",role:"เขียนโค้ด",icon:"💻",effort:70},{type:"code-reviewer",role:"review",icon:"🔍",effort:60},{type:"code-simplifier",role:"simplify",icon:"✂️",effort:50},{type:"code-skeptic",role:"ตรวจสอบ",icon:"🤔",effort:40},{type:"debug",role:"debug",icon:"🐛",effort:85},{type:"docs-specialist",role:"เขียนdoc",icon:"📝",effort:50},{type:"frontend-specialist",role:"frontend",icon:"🎨",effort:75},{type:"orchestrator",role:"orchestrate",icon:"🎯",effort:95},{type:"test-engineer",role:"test",icon:"🧪",effort:70}];
+const AGENT_TYPES=[{type:"plan",role:"วางแผน",icon:"",effort:80},{type:"architect",role:"ออกแบบ",icon:"️",effort:90},{type:"ask",role:"ตอบคำถาม",icon:"",effort:30},{type:"code",role:"เขียนโค้ด",icon:"",effort:70},{type:"code-reviewer",role:"review",icon:"",effort:60},{type:"code-simplifier",role:"simplify",icon:"️",effort:50},{type:"code-skeptic",role:"ตรวจสอบ",icon:"",effort:40},{type:"debug",role:"debug",icon:"",effort:85},{type:"docs-specialist",role:"เขียนdoc",icon:"",effort:50},{type:"frontend-specialist",role:"frontend",icon:"",effort:75},{type:"orchestrator",role:"orchestrate",icon:"",effort:95},{type:"test-engineer",role:"test",icon:"",effort:70}];
 let _agentOrder=AGENT_TYPES.map(a=>a.type);
 function renderAgentChain(){
   const list=document.getElementById('agent-chain-list');if(!list)return;
@@ -189,7 +189,7 @@ function renderAgentChain(){
   try{const saved=JSON.parse(localStorage.getItem('awiki-agent-effort')||'[]');saved.forEach(s=>{const a=AGENT_TYPES.find(x=>x.type===s.type);if(a)a.effort=s.effort;});}catch(_){}
   list.innerHTML='';
   _agentOrder.forEach(type=>{
-    const a=AGENT_TYPES.find(x=>x.type===type)||{type,role:type,icon:'🤖',effort:50};
+    const a=AGENT_TYPES.find(x=>x.type===type)||{type,role:type,icon:'',effort:50};
     const el=document.createElement('div');
     el.className='agent-item';el.dataset.type=a.type;
     el.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--elev-1);border:1px solid var(--border);border-radius:var(--r-md);cursor:default;font-size:var(--fs-sm)';
@@ -255,7 +255,7 @@ renderAgentChain();
         } catch(_) {}
       }
     });
-    console.log("✅ Flow Drag-and-Drop Sortable initialized successfully.");
+    console.log(" Flow Drag-and-Drop Sortable initialized successfully.");
   } catch(e) {
     console.warn("Could not find Sortable for flow-overlay yet, will retry.", e);
   }

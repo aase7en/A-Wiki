@@ -30,11 +30,11 @@ return `<div class="glass-card" style="padding:12px;border:1px solid var(--borde
 <span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">${s.count}×</span>
 </div>
 <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:var(--fs-2xs);color:var(--text-secondary)">
-<span>✅ <b style="color:${prColor}">${pr}%</b></span>
+<span> <b style="color:${prColor}">${pr}%</b></span>
 <span>⏱️ ${latP50}<span style="color:var(--text-tertiary)">/${latP95}</span>ms</span>
-<span>📝 ${tok} tok</span>
+<span> ${tok} tok</span>
 </div>
-<div style="margin-top:6px;font-size:var(--fs-2xs);color:var(--text-tertiary)">best: <span style="color:#a78bfa">${bmShort}</span>${s.fail?` · ⚠️ ${s.fail} fail`:''}</div>
+<div style="margin-top:6px;font-size:var(--fs-2xs);color:var(--text-tertiary)">best: <span style="color:#a78bfa">${bmShort}</span>${s.fail?` · ️ ${s.fail} fail`:''}</div>
 </div>`;
 }).join('');
 const bks=d.by_bucket||{};
@@ -43,10 +43,10 @@ const pr=Math.round((s.pass_rate||0)*100);
 const prColor=pr>=90?'var(--accent-brand)':pr>=70?'#fbbf24':'#f87171';
 return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
 <span style="font-family:var(--font-mono);font-size:var(--fs-2xs);color:var(--text-primary)">${b}</span>
-<span style="font-size:var(--fs-2xs);color:var(--text-secondary)">${s.count}× · ✅ <b style="color:${prColor}">${pr}%</b> · ⚠️ ${s.fail||0}</span>
+<span style="font-size:var(--fs-2xs);color:var(--text-secondary)">${s.count}× · <b style="color:${prColor}">${pr}%</b> · ️ ${s.fail||0}</span>
 </div>`;
 }).join(''):'<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:8px">ไม่มีข้อมูล bucket</div>';
-}catch(e){grid.innerHTML='<div style="color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
+}catch(e){grid.innerHTML='<div style="color:var(--accent-danger);padding:20px">️ '+e.message+'</div>';}
 }
 // === Observatory alerts banner (P2) — pass_rate threshold warnings ===
 async function subagentsLoadAlerts(win){
@@ -59,7 +59,7 @@ const alerts=d.alerts||[];
 if(!alerts.length){box.style.display='none';box.innerHTML='';return;}
 box.style.display='block';
 box.innerHTML=alerts.map(a=>{
-const sev=a.severity==='critical'?'🚨':'⚠️';
+const sev=a.severity==='critical'?'':'️';
 const color=a.severity==='critical'?'#f87171':'#fbbf24';
 const rate=Math.round((a.pass_rate||0)*100);
 const action=a.action?(' · <span style="color:var(--text-tertiary)">'+a.action+'</span>'):'';
@@ -94,7 +94,7 @@ const badge=mk('span','council-badge'+(ok<tot?' warn':''));
 badge.textContent=ok+'/'+tot+' ok';
 const time=mk('span');time.textContent=c.created_at||'';
 meta.append(badge,time);
-if(c.has_synthesis){const sy=mk('span','council-badge');sy.textContent='🧠 synthesis';meta.appendChild(sy);}
+if(c.has_synthesis){const sy=mk('span','council-badge');sy.textContent=' synthesis';meta.appendChild(sy);}
 el.append(q,meta);
 el.onclick=()=>councilOpen(c.id);
 list.appendChild(el);
@@ -118,7 +118,7 @@ b.append(hdr,txt);body.appendChild(b);
 });
 if(c.synthesis){
 const b=mk('div','council-bubble council-synth');
-const hdr=mk('div','cb-hdr');hdr.textContent='🧠 synthesis · '+(c.synthesis.author||'');
+const hdr=mk('div','cb-hdr');hdr.textContent=' synthesis · '+(c.synthesis.author||'');
 const txt=mk('div','cb-body');txt.textContent=c.synthesis.text||'';
 b.append(hdr,txt);body.appendChild(b);
 }
@@ -134,7 +134,7 @@ S.failCount++;S.failures.push(ev);bumpCounter('s-fail',S.failCount);
 const rail=$('errors-list'),empty=$('errors-empty');if(!rail)return;
 if(empty)empty.style.display='none';
 const ts=ev.ts?new Date(ev.ts*1000).toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'--:--:--';
-const tag=ev.type==='delegate_fail'?`✗ ${modelShort(ev.model||'')}`:`🔒 ${(ev.hook||'').replace('check_','').slice(0,18)}`;
+const tag=ev.type==='delegate_fail'?` ${modelShort(ev.model||'')}`:` ${(ev.hook||'').replace('check_','').slice(0,18)}`;
 const row=mk('div','err-row');
 row.innerHTML=`<span class="err-ts">${ts}</span><span class="err-txt">${tag} ${ev.reason||ev.result||''}</span>`;
 rail.insertBefore(row,rail.firstChild);

@@ -33,29 +33,29 @@ try{
 const r=await fetch('/api/skills/recommend?q='+encodeURIComponent(q)+'&limit=5').then(r=>r.json());
 if(r.error)throw new Error(r.error);
 if(!r.results.length && !(r.walkthroughs||[]).length){
-results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px">😕 ไม่พบ skill หรือ flow ที่ตรง — ลองคำอื่น</div>';
+results.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-2xs);padding:4px"> ไม่พบ skill หรือ flow ที่ตรง — ลองคำอื่น</div>';
 return;
 }
 // Walkthrough suggestions (shown first — whole flows beat single skills).
 const flows=(r.walkthroughs||[]).map(w=>`<div onclick="simWalkthrough('${w.id}')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--accent-violet);cursor:pointer;margin-bottom:4px">
-<span style="font-size:14px;flex-shrink:0">🎬</span>
+<span style="font-size:14px;flex-shrink:0"></span>
 <span style="flex:1;font-size:var(--fs-xs);color:var(--accent-violet);font-weight:600">${w.title_th}</span>
-<span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0">${w.step_count} ขั้น · ⚡${w.score}</span>
+<span style="font-size:10px;color:var(--text-tertiary);flex-shrink:0">${w.step_count} ขั้น · ${w.score}</span>
 </div>`).join('');
-const flowHtml=flows?('<div style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-bottom:4px">🎬 แนะนำ flow:</div>'+flows):'';
-const modeBadge=r.mode==='semantic'?'<span style="color:var(--accent-violet)" title="ค้นหาด้วย embedding">🧠 semantic</span>':'<span style="color:var(--text-tertiary)" title="ค้นหาด้วยการตรงคำ">📝 substring</span>';
-const skillHtml=r.results.length?('<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px'+(flows?';margin-top:6px':'')+'">💡 แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'" · '+modeBadge+'</div>'+
+const flowHtml=flows?('<div style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-bottom:4px"> แนะนำ flow:</div>'+flows):'';
+const modeBadge=r.mode==='semantic'?'<span style="color:var(--accent-violet)" title="ค้นหาด้วย embedding"> semantic</span>':'<span style="color:var(--text-tertiary)" title="ค้นหาด้วยการตรงคำ"> substring</span>';
+const skillHtml=r.results.length?('<div style="font-size:var(--fs-2xs);color:var(--accent-brand);margin-bottom:4px'+(flows?';margin-top:6px':'')+'"> แนะนำ '+r.total_matched+' skills สำหรับ "'+r.query+'" · '+modeBadge+'</div>'+
 r.results.map(res=>{
 const d=skillsDomainColor((res.domain||[])[0]||'');
 return '<div onclick="skillsOpenDetail(\''+res.name+'\')" style="display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:var(--r-md);background:var(--elev-2);border:1px solid var(--border2);cursor:pointer;margin-bottom:4px">'+
 '<span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:'+d+';font-weight:600;min-width:0;flex-shrink:0">'+res.name+'</span>'+
 '<span style="flex:1;font-size:var(--fs-2xs);color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(res.th_description||'')+'</span>'+
-'<span style="font-size:10px;color:var(--accent-warn);flex-shrink:0" title="'+res.match_reason+'">⚡'+res.score+'</span>'+
+'<span style="font-size:10px;color:var(--accent-warn);flex-shrink:0" title="'+res.match_reason+'">'+res.score+'</span>'+
 '</div>';
 }).join()):'';
-results.innerHTML=flowHtml+skillHtml+'<div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">⚡ = คะแนนความตรง · คลิกเพื่อดูรายละเอียด</div>';
+results.innerHTML=flowHtml+skillHtml+'<div style="font-size:10px;color:var(--text-tertiary);margin-top:2px"> = คะแนนความตรง · คลิกเพื่อดูรายละเอียด</div>';
 }catch(e){
-results.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-2xs);padding:4px">❌ '+e.message+'</div>';
+results.innerHTML='<div style="color:var(--accent-danger);font-size:var(--fs-2xs);padding:4px"> '+e.message+'</div>';
 }
 }
 // === CHUNK K — Skill dependency graph (vis-network, separate instance from log graph) ===
@@ -93,7 +93,7 @@ if(r.error)throw new Error(r.error);
 _skillGraphData=r;
 const nodes=new vis.DataSet(r.nodes.map(n=>({
 id:n.id,label:n.label,
-title:(n.title||n.id)+'\n📊 '+(Array.isArray(n.domain)?n.domain.join(','):n.domain)+' · 🔄 '+n.phase,
+title:(n.title||n.id)+'\n '+(Array.isArray(n.domain)?n.domain.join(','):n.domain)+' · '+n.phase,
 color:{background:n.color,border:n.color,highlight:{background:n.color,border:'#fff'}},
 font:{color:'#f1f5f9',size:13},
 })));
@@ -115,11 +115,11 @@ _skillGraphNet=new vis.Network(canvas,data,options);
 _skillGraphNet.on('click',function(params){
 if(params.nodes.length>0){skillsOpenDetail(params.nodes[0]);}
 });
-if(stats)stats.textContent=`🧬 ${r.stats.nodes} skills · ${r.stats.edges} ความสัมพันธ์`;
+if(stats)stats.textContent=` ${r.stats.nodes} skills · ${r.stats.edges} ความสัมพันธ์`;
 // CHUNK HH: surface circular dependencies as a warning banner.
 _loadCyclesCheck();
 }catch(e){
-if(stats)stats.textContent='❌ '+e.message;
+if(stats)stats.textContent=' '+e.message;
 }
 }
 async function _loadCyclesCheck(){
@@ -128,9 +128,9 @@ try{
 const c=await fetch('/api/skills/cycles').then(r=>r.json());
 if(c.error||!c.has_cycle){banner.style.display='none';return;}
 const list=(c.cycles||[]).slice(0,5).map(cy=>cy.join(' → ')).join('<br>');
-banner.innerHTML=`⚠️ พบ ${c.count} circular dependency<br><small style="color:var(--text-tertiary)">${list}</small>`;
+banner.innerHTML=`️ พบ ${c.count} circular dependency<br><small style="color:var(--text-tertiary)">${list}</small>`;
 banner.style.display='block';
-showNotif('⚠️ พบ circular dependency',c.count+' รอบใน skill graph','cycle');
+showNotif('️ พบ circular dependency',c.count+' รอบใน skill graph','cycle');
 announce('พบ '+c.count+' circular dependency ใน skill graph');
 }catch(_){banner.style.display='none';}
 }
@@ -142,11 +142,11 @@ const canvas=$('skills-graph-canvas').querySelector('canvas');
 if(!canvas){toast('ไม่พบ canvas','err');return;}
 try{
 canvas.toBlob(function(blob){
-if(!blob){toast('❌ export ล้มเหลว','err');return;}
+if(!blob){toast('export ล้มเหลว','err');return;}
 _downloadBlob(blob,'awiki-skill-graph.png');
-toast('📥 ดาวน์โหลด PNG แล้ว');
+toast('ดาวน์โหลด PNG แล้ว');
 },'image/png');
-}catch(e){toast('❌ '+e.message,'err');}
+}catch(e){toast(''+e.message,'err');}
 }
 function graphExportSVG(){
 if(!_skillGraphNet||!_skillGraphData){toast('graph ยังไม่โหลด','err');return;}
@@ -180,10 +180,10 @@ const lbl=(n.label||n.id).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 nodeSvg+=`<circle cx="${cx}" cy="${cy}" r="8" fill="${n.color}" stroke="${n.color}" stroke-width="2"/>`;
 nodeSvg+=`<text x="${cx}" y="${parseInt(cy)+22}" text-anchor="middle" font-family="monospace" font-size="9" fill="#cbd5e1">${lbl}</text>`;
 }
-const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="100%" height="100%" fill="#06060d"/>${edgeSvg}${nodeSvg}<text x="${pad}" y="24" font-family="monospace" font-size="14" fill="#5eead4">🧬 Skill Dependency Graph — ${nodes.length} nodes, ${edges.length} edges</text></svg>`;
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="100%" height="100%" fill="#06060d"/>${edgeSvg}${nodeSvg}<text x="${pad}" y="24" font-family="monospace" font-size="14" fill="#5eead4"> Skill Dependency Graph — ${nodes.length} nodes, ${edges.length} edges</text></svg>`;
 const blob=new Blob([svg],{type:'image/svg+xml'});
 _downloadBlob(blob,'awiki-skill-graph.svg');
-toast('📥 ดาวน์โหลด SVG แล้ว');
+toast('ดาวน์โหลด SVG แล้ว');
 }
 function skillsBuildQs(){
 const qs=new URLSearchParams();
@@ -206,9 +206,9 @@ const qs=skillsBuildQs();
 const cacheKey='skills:'+qs;
 const cached=_cacheGet(cacheKey);
 if(cached){
-  _skillsCache=cached.skills||[];
-  _applySkillsResponse(cached);
-  return;
+ _skillsCache=cached.skills||[];
+ _applySkillsResponse(cached);
+ return;
 }
 // CHUNK MM: record non-empty search query to history.
 const qVal=$('skills-search')&&$('skills-search').value.trim();
@@ -218,7 +218,7 @@ if(r.error)throw new Error(r.error);
 // CHUNK B10: cache the response for 60s — keyed by query string.
 _cacheSet(cacheKey,r,60);
 _applySkillsResponse(r);
-}catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">⚠️ '+e.message+'</div>';}
+}catch(e){grid.innerHTML='<div style="grid-column:1/-1;color:var(--accent-danger);padding:20px">️ '+e.message+'</div>';}
 }
 // CHUNK B10: apply a skills list response to the DOM (shared between cache hit and fresh fetch).
 function _applySkillsResponse(r){
@@ -227,7 +227,7 @@ if(!grid)return;
 _skillsCache=r.skills||[];
 // Populate agent dropdown on first load
 if($('skills-agent-filter').options.length<=1&&(r.agents||[]).length){
-(r.agents||[]).forEach(a=>{if(a==='all')return;const o=document.createElement('option');o.value=a;o.textContent='🤖 '+a.charAt(0).toUpperCase()+a.slice(1);$('skills-agent-filter').appendChild(o);});
+(r.agents||[]).forEach(a=>{if(a==='all')return;const o=document.createElement('option');o.value=a;o.textContent=' '+a.charAt(0).toUpperCase()+a.slice(1);$('skills-agent-filter').appendChild(o);});
 }
 // Populate domain dropdown
 const curDom=$('skills-domain-filter').value;
@@ -242,10 +242,10 @@ else{empty.style.display='none';grid.innerHTML=skillsSortedView().map(skillsRend
 const st=r.stats||{};
 const agentLbl=$('skills-agent-filter').value;
 const agentTxt=agentLbl==='all'?'ทุก agent':agentLbl;
-stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · 🤖 ${st.by_invocation?.auto||0} auto · 👆 ${st.by_invocation?.manual||0} manual · 🔬 ${st.by_category?.subagent||0} subagents · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
+stats.innerHTML=`<b style="color:var(--accent-brand)">${r.count}</b> skills สำหรับ <b>${agentTxt}</b> · ${st.by_invocation?.auto||0} auto · ${st.by_invocation?.manual||0} manual · ${st.by_category?.subagent||0} subagents · 🇹🇭 ${st.has_thai||0} มีคำอธิบายไทย`;
 // CHUNK RR: notify if many critical-health skills loaded.
 const crit=_skillsCache.filter(s=>s.health&&s.health.level==='critical');
-if(crit.length>=3)showNotif('🩺 Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
+if(crit.length>=3)showNotif('Skills สุขภาพวิกฤต',crit.length+' skills มี health < 30 — ไปดูได้ที่ Coverage tab','low_health');
 // CHUNK C14: render skill dependency heatmap alongside card grid.
 renderSkillHeatmap();
 }
@@ -268,23 +268,23 @@ if(nxt!==cur&&cards[nxt]){cards[nxt].focus();cards[nxt].scrollIntoView({block:'n
 }
 function skillsRenderCard(s){
 const inv=s.invocation||'manual';
-const invIcon=inv==='auto'?'🤖':inv==='both'?'🔀':'👆';
+const invIcon=inv==='auto'?'':inv==='both'?'':'';
 const hasThai=s.th_description?'has-thai':'';
 const desc=s.th_description||'<i style="color:var(--text-disabled)">ยังไม่มีคำอธิบายไทย</i>';
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
-const when=s.when_to_use?`<div class="skill-card-when">💡 ${s.when_to_use}</div>`:'';
-const instBadge=s.installed===false?`<span class="skill-card-inst catalog" title="catalog-only (SKILL.md ไม่ได้ติดตั้งบนเครื่องนี้)">📦 catalog</span>`:`<span class="skill-card-inst installed" title="ติดตั้งแล้วบนเครื่องนี้">✅ ติดตั้ง</span>`;
+const when=s.when_to_use?`<div class="skill-card-when"> ${s.when_to_use}</div>`:'';
+const instBadge=s.installed===false?`<span class="skill-card-inst catalog" title="catalog-only (SKILL.md ไม่ได้ติดตั้งบนเครื่องนี้)"> catalog</span>`:`<span class="skill-card-inst installed" title="ติดตั้งแล้วบนเครื่องนี้"> ติดตั้ง</span>`;
 // CHUNK FF: health badge from s.health (score/level/missing).
 const healthBadge=s.health?skillsHealthBadge(s.health):'';
 // CHUNK WW: pinned badge + toggle (syncs via public registry).
 const isPinned=!!s.pinned;
-const pinBadge=isPinned?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)">📌 pinned</span>':'';
+const pinBadge=isPinned?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)"> pinned</span>':'';
 return `<div class="skill-card ${hasThai}" onclick="skillsOpenDetail('${s.name}')" onkeydown="_skillCardKeydown(event,'${s.name}')" role="button" tabindex="0" aria-label="${s.name}: ${(s.th_description||s.name).replace(/"/g,'&quot;').slice(0,80)}" style="--sk-color:${skillsDomainColor((s.domain||[])[0]||'')}${isPinned?';box-shadow:0 0 0 2px var(--accent-warm)':''}">
 <div class="skill-card-head"><span class="skill-card-name">${s.name}</span><span class="skill-card-inv ${inv}">${invIcon} ${inv}</span></div>
 <div class="skill-card-desc">${desc}</div>${when}
 <div class="skill-card-tags">${pinBadge}${domains}${instBadge}${healthBadge}</div>
-<div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง" role="button" tabindex="0" aria-label="คัดลอกคำสั่งของ ${s.name}">📋</div>
-<div class="skill-card-copy" onclick="event.stopPropagation();togglePin('${s.name}')" title="${isPinned?'เลิกปักหมุด':'ปักหมุด (sync ผ่าน git registry)'}" role="button" tabindex="0" aria-label="${isPinned?'เลิกปักหมุด':'ปักหมุด'} ${s.name}" style="right:36px">${isPinned?'⭐':'☆'}</div>
+<div class="skill-card-copy" onclick="event.stopPropagation();copyInvocation('${s.invocation_hint||s.name}','${s.name}')" title="คัดลอกคำสั่ง" role="button" tabindex="0" aria-label="คัดลอกคำสั่งของ ${s.name}"></div>
+<div class="skill-card-copy" onclick="event.stopPropagation();togglePin('${s.name}')" title="${isPinned?'เลิกปักหมุด':'ปักหมุด (sync ผ่าน git registry)'}" role="button" tabindex="0" aria-label="${isPinned?'เลิกปักหมุด':'ปักหมุด'} ${s.name}" style="right:36px;display:flex;align-items:center;justify-content:center">${isPinned?'<svg class="icon icon-sm" aria-hidden="true" style="color:var(--status-warn)"><use href="#icon-star"/></svg>':'<svg class="icon icon-sm" aria-hidden="true" style="color:var(--n-600)"><use href="#icon-star"/></svg>'}</div>
 <input type="checkbox" class="skill-card-compare" onclick="event.stopPropagation();toggleCompare('${s.name}')" title="เพิ่ม/ลบ จากการเปรียบเทียบ" aria-label="เปรียบเทียบ ${s.name}" style="position:absolute;top:6px;right:62px;width:16px;height:16px;cursor:pointer;accent-color:var(--accent-brand)">
 </div>`;
 }
@@ -292,7 +292,7 @@ function skillsHealthBadge(h){
 if(!h||typeof h.score!=='number')return '';
 const lvl=h.level||'ok';
 const colors={critical:'#f87171',weak:'#fbbf24',ok:'#86efac',good:'#34d399'};
-const labels={critical:'🔴 วิกฤต',weak:'🟠 อ่อน',ok:'🟢 พอใช้',good:'💚 ดี'};
+const labels={critical:' วิกฤต',weak:' อ่อน',ok:' พอใช้',good:' ดี'};
 const c=colors[lvl]||colors.ok,lbl=labels[lvl]||labels.ok;
 return `<span class="skill-tag" style="border-color:${c};color:${c}" title="Health ${h.score}/100 · ขาด ${(h.missing||[]).length} field">${lbl} ${h.score}</span>`;
 }
@@ -357,9 +357,9 @@ function renderPresetDropdown(){
 const sel=$('skills-preset');if(!sel)return;
 const presets=_loadPresets();
 const cur=sel.value;
-sel.innerHTML='<option value="">📋 Presets</option>'+
+sel.innerHTML='<option value=""> Presets</option>'+
 presets.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('')+
-(presets.length?'<option value="__clear">🗑 ล้างทั้งหมด</option>':'');
+(presets.length?'<option value="__clear"> ล้างทั้งหมด</option>':'');
 if(cur)sel.value=cur;
 }
 function savePreset(){
@@ -379,7 +379,7 @@ toast('⭐ บันทึก preset "'+name+'"');
 function applyPresetSelect(){
 const sel=$('skills-preset');const v=sel.value;if(!v)return;
 if(v==='__clear'){
-if(confirm('ล้าง preset ทั้งหมด?')){_savePresets([]);renderPresetDropdown();toast('🗑 ล้าง preset แล้ว');}
+if(confirm('ล้าง preset ทั้งหมด?')){_savePresets([]);renderPresetDropdown();toast('ล้าง preset แล้ว');}
 else{sel.value='';}
 return;
 }
@@ -387,7 +387,7 @@ const presets=_loadPresets();const p=presets[parseInt(v,10)];
 if(!p){return;}
 applyPresetState(p.state);
 sel.value='';
-toast('📋 โหลด preset "'+p.name+'"');
+toast('โหลด preset "'+p.name+'"');
 }
 function applyPresetState(st){
 if(!st)return;
@@ -424,8 +424,8 @@ return i===0?'"'+s.replace(/"/g,'""')+'"':s;
 }).join(',')).join('\r\n');
 const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
 _downloadBlob(blob,'awiki-skill-agent-matrix.csv');
-toast('📥 ดาวน์โหลด CSV แล้ว ('+skills.length+' skills × '+agents.length+' agents)');
-}catch(e){toast('❌ '+e.message,'err');}
+toast('ดาวน์โหลด CSV แล้ว ('+skills.length+' skills × '+agents.length+' agents)');
+}catch(e){toast(''+e.message,'err');}
 }
 // === CHUNK KK — Co-occurrence mining (graph from real opens log) ===
 let _coOccurMode=false;
@@ -468,62 +468,62 @@ return {nodes,edges,stats:{nodes:nodes.length,edges:edges.length,opens:opens.len
 // Excludes skills opened in the last 24h (user just saw them).
 // Returns [] if insufficient telemetry (<5 opens total).
 function smartSuggestions(limit){
-  limit=limit||5;
-  const opens=_lsGet(OPENS_KEY,[]);
-  if(opens.length<5)return [];   // min telemetry fallback
-  const now=Date.now();
-  const cutoff30d=now-30*24*60*60*1000;
-  const cutoff24h=now-24*60*60*1000;
-  // frequency: count opens in last 30d per skill.
-  const freq={};
-  let maxFreq=0;
-  opens.forEach(o=>{
-    if((o.ts||0)<cutoff30d)return;
-    freq[o.name]=(freq[o.name]||0)+1;
-    if(freq[o.name]>maxFreq)maxFreq=freq[o.name];
-  });
-  // recency: days since last open per skill.
-  const lastOpen={};
-  opens.forEach(o=>{
-    const t=o.ts||0;
-    if(!lastOpen[o.name]||t>lastOpen[o.name])lastOpen[o.name]=t;
-  });
-  // co-occurrence: reuse _mineCoOccurrence edges.
-  const co=_mineCoOccurrence();
-  const coEdges=co?(co.edges||[]):[];
-  // Find the most-recently-opened skill name (last entry) for co-occurrence lookup.
-  const lastSkill=opens.length?(opens[opens.length-1].name||''):'';
-  const cooccurForLast={};
-  coEdges.forEach(e=>{
-    if(e.from===lastSkill)cooccurForLast[e.to]=(cooccurForLast[e.to]||0)+e.weight;
-    if(e.to===lastSkill)cooccurForLast[e.from]=(cooccurForLast[e.from]||0)+e.weight;
-  });
-  let maxCooccur=0;
-  Object.values(cooccurForLast).forEach(v=>{if(v>maxCooccur)maxCooccur=v;});
-  // Score every candidate skill.
-  const candidates=Object.keys(freq).map(name=>{
-    // Exclude skills opened in last 24h.
-    if((lastOpen[name]||0)>cutoff24h)return null;
-    const f=maxFreq?(freq[name]/maxFreq):0;
-    const daysSince=(now-(lastOpen[name]||0))/(24*60*60*1000);
-    const recencyFactor=Math.max(0,1-daysSince/30);
-    const c=maxCooccur?((cooccurForLast[name]||0)/maxCooccur):0;
-    const score=f*40+recencyFactor*30+c*30;
-    return {name,score:Math.round(score),reason:{
-      frequency:freq[name],
-      days_since_open:Math.round(daysSince),
-      cooccur_with_last:cooccurForLast[name]||0,
-    }};
-  }).filter(Boolean);
-  candidates.sort((a,b)=>b.score-a.score);
-  return candidates.slice(0,limit);
+ limit=limit||5;
+ const opens=_lsGet(OPENS_KEY,[]);
+ if(opens.length<5)return []; // min telemetry fallback
+ const now=Date.now();
+ const cutoff30d=now-30*24*60*60*1000;
+ const cutoff24h=now-24*60*60*1000;
+ // frequency: count opens in last 30d per skill.
+ const freq={};
+ let maxFreq=0;
+ opens.forEach(o=>{
+ if((o.ts||0)<cutoff30d)return;
+ freq[o.name]=(freq[o.name]||0)+1;
+ if(freq[o.name]>maxFreq)maxFreq=freq[o.name];
+ });
+ // recency: days since last open per skill.
+ const lastOpen={};
+ opens.forEach(o=>{
+ const t=o.ts||0;
+ if(!lastOpen[o.name]||t>lastOpen[o.name])lastOpen[o.name]=t;
+ });
+ // co-occurrence: reuse _mineCoOccurrence edges.
+ const co=_mineCoOccurrence();
+ const coEdges=co?(co.edges||[]):[];
+ // Find the most-recently-opened skill name (last entry) for co-occurrence lookup.
+ const lastSkill=opens.length?(opens[opens.length-1].name||''):'';
+ const cooccurForLast={};
+ coEdges.forEach(e=>{
+ if(e.from===lastSkill)cooccurForLast[e.to]=(cooccurForLast[e.to]||0)+e.weight;
+ if(e.to===lastSkill)cooccurForLast[e.from]=(cooccurForLast[e.from]||0)+e.weight;
+ });
+ let maxCooccur=0;
+ Object.values(cooccurForLast).forEach(v=>{if(v>maxCooccur)maxCooccur=v;});
+ // Score every candidate skill.
+ const candidates=Object.keys(freq).map(name=>{
+ // Exclude skills opened in last 24h.
+ if((lastOpen[name]||0)>cutoff24h)return null;
+ const f=maxFreq?(freq[name]/maxFreq):0;
+ const daysSince=(now-(lastOpen[name]||0))/(24*60*60*1000);
+ const recencyFactor=Math.max(0,1-daysSince/30);
+ const c=maxCooccur?((cooccurForLast[name]||0)/maxCooccur):0;
+ const score=f*40+recencyFactor*30+c*30;
+ return {name,score:Math.round(score),reason:{
+ frequency:freq[name],
+ days_since_open:Math.round(daysSince),
+ cooccur_with_last:cooccurForLast[name]||0,
+ }};
+ }).filter(Boolean);
+ candidates.sort((a,b)=>b.score-a.score);
+ return candidates.slice(0,limit);
 }
 function toggleCoOccurGraph(){
 _coOccurMode=!_coOccurMode;
 const btn=$('graph-cooccur-toggle');
 const stats=$('skills-graph-stats');
 if(btn)btn.style.background=_coOccurMode?'var(--elev-3)':'';
-if(btn)btn.textContent=_coOccurMode?'🔗 phase/domain':'📊 ใช้ร่วมกัน';
+if(btn)btn.textContent=_coOccurMode?' phase/domain':' ใช้ร่วมกัน';
 if(!_coOccurMode){
 // Restore default graph.
 skillGraphLoad();
@@ -551,7 +551,7 @@ const options={physics:{stabilization:{iterations:80}},interaction:{hover:true}}
 if(_skillGraphNet){_skillGraphNet.destroy();}
 _skillGraphNet=new vis.Network(canvas,{nodes:visNodes,edges:visEdges},options);
 _skillGraphNet.on('click',function(p){if(p.nodes.length>0)skillsOpenDetail(p.nodes[0]);});
-if(stats)stats.textContent=`📊 ใช้ร่วมกัน: ${data.stats.nodes} skills · ${data.stats.edges} คู่ · ${data.stats.opens} opens`;
+if(stats)stats.textContent=` ใช้ร่วมกัน: ${data.stats.nodes} skills · ${data.stats.edges} คู่ · ${data.stats.opens} opens`;
 }
 async function skillsOpenDetail(name){
 const drawer=$('skills-detail'),bd=$('skills-detail-backdrop');
@@ -563,15 +563,15 @@ if(s.error)throw new Error(s.error);
 // Track recently opened skill for discovery bar.
 recordRecentSkill(s.name);
 const inv=s.invocation||'manual';
-const invIcon=inv==='auto'?'🤖 โหลดอัตโนมัติ':inv==='both'?'🔀 อัตโนมัติ/แมนนวล':'👆 เรียกเอง';
+const invIcon=inv==='auto'?' โหลดอัตโนมัติ':inv==='both'?' อัตโนมัติ/แมนนวล':' เรียกเอง';
 const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color:${skillsDomainColor(d)};color:${skillsDomainColor(d)}">${d}</span>`).join('');
-	const examples=(s.examples||[]).map(ex=>`<div class="skill-example"><div class="skill-example-scenario">📌 ${ex.scenario}</div><div class="skill-example-how">→ ${ex.how}</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ยังไม่มีตัวอย่าง</p>';
+	const examples=(s.examples||[]).map(ex=>`<div class="skill-example"><div class="skill-example-scenario"> ${ex.scenario}</div><div class="skill-example-how">→ ${ex.how}</div></div>`).join('')||'<p style="color:var(--text-disabled);font-size:var(--fs-xs)">ยังไม่มีตัวอย่าง</p>';
 	const steps=(s.process_steps||[]).map((st,i)=>`<div class="skill-process-step"><span class="skill-process-step-num">${i+1}</span>${st}</div>`).join('');
-	const simBtn=steps?`<button class="skill-sim-btn" onclick="simulateSkill('${s.name}')">🎬 จำลองขั้นตอน (${s.process_steps.length} ขั้น)</button>`:'';
-	const instBadge=s.installed?`<span class="skill-tag" style="border-color:var(--accent-success);color:var(--accent-success)">✅ ติดตั้ง</span>`:`<span class="skill-tag" style="border-color:var(--border2);color:var(--text-tertiary)">📦 catalog</span>`;
-	const copyBtn=`<button onclick="copyInvocation('${(s.invocation_hint||s.name).replace(/'/g,"\\'")}','${s.name}')" style="background:var(--elev-2);border:1px solid var(--border2);color:var(--text-secondary);border-radius:var(--r-md);padding:6px 10px;cursor:pointer;font-size:var(--fs-2xs);min-height:32px" title="คัดลอกคำสั่งเรียก">📋 ${s.invocation_hint||s.name}</button>`;
+	const simBtn=steps?`<button class="skill-sim-btn" onclick="simulateSkill('${s.name}')"> จำลองขั้นตอน (${s.process_steps.length} ขั้น)</button>`:'';
+	const instBadge=s.installed?`<span class="skill-tag" style="border-color:var(--accent-success);color:var(--accent-success)"> ติดตั้ง</span>`:`<span class="skill-tag" style="border-color:var(--border2);color:var(--text-tertiary)"> catalog</span>`;
+	const copyBtn=`<button onclick="copyInvocation('${(s.invocation_hint||s.name).replace(/'/g,"\\'")}','${s.name}')" style="background:var(--elev-2);border:1px solid var(--border2);color:var(--text-secondary);border-radius:var(--r-md);padding:6px 10px;cursor:pointer;font-size:var(--fs-2xs);min-height:32px" title="คัดลอกคำสั่งเรียก"> ${s.invocation_hint||s.name}</button>`;
 	const related=(s.related||[]).map(r=>`<div class="skill-related-item" onclick="skillsOpenDetail('${r.name}')" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--border2);background:var(--elev-2)">
-<span style="font-size:14px">${r.installed?'✅':'📦'}</span>
+<span style="font-size:14px">${r.installed?'':''}</span>
 <div style="flex:1;min-width:0">
 <div style="font-size:var(--fs-2xs);font-weight:600;color:var(--text-primary);font-family:var(--font-mono)">${r.name}</div>
 <div style="font-size:10px;color:var(--text-tertiary);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${r.th_description||'(ยังไม่มีคำอธิบาย)'}</div>
@@ -580,10 +580,10 @@ const domains=(s.domain||[]).map(d=>`<span class="skill-tag" style="border-color
 <div class="skill-detail-hdr">
 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
 <div><div class="skill-detail-name">${s.name}</div>
-<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag">🔄 ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span>${instBadge}</div></div>
+<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${domains}<span class="skill-tag"> ${s.lifecycle_phase||'none'}</span><span class="skill-tag">${invIcon}</span>${instBadge}</div></div>
 <div style="display:flex;gap:2px">
-<button onclick="copySkillLink('${s.name}')" title="คัดลอกลิงก์ skill" aria-label="คัดลอกลิงก์ skill" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-link"/></svg>':'🔗'}</button>
-<button onclick="skillsCloseDetail()" aria-label="ปิด" title="ปิด" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-md" aria-hidden="true"><use href="#icon-x"/></svg>':'✕'}</button>
+<button onclick="copySkillLink('${s.name}')" title="คัดลอกลิงก์ skill" aria-label="คัดลอกลิงก์ skill" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-link"/></svg>':''}</button>
+<button onclick="skillsCloseDetail()" aria-label="ปิด" title="ปิด" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center">${typeof icon!=='undefined'?'<svg class="icon icon-md" aria-hidden="true"><use href="#icon-x"/></svg>':''}</button>
 </div>
 </div></div>
 <div class="skill-detail-body">
@@ -599,91 +599,91 @@ const hasVer=h.version&&h.version!=='';
 const hasGit=h.last_commit_date||h.commit_count;
 // CHUNK SS: first_seen (when the skill was first added to the repo).
 const fs=h.first_seen||'';
-const fsLine=fs?` · 📅 เพิ่มเมื่อ ${fs}`:'';
+const fsLine=fs?` · เพิ่มเมื่อ ${fs}`:'';
 // "ใหม่" badge if first_seen is within 30 days.
 const isNew=fs&&((Date.now()-new Date(fs+'T00:00:00Z').getTime())<30*24*60*60*1000);
 const newBadge=isNew?'<span class="skill-tag" style="border-color:var(--accent-warm);color:var(--accent-warm)">🆕 ใหม่</span>':'';
 if(!hasVer&&!hasGit&&!fs)return '';
 const verBadge=hasVer?`<span class="skill-tag" style="border-color:var(--accent-violet);color:var(--accent-violet)">v${h.version}</span>`:'<span style="font-size:var(--fs-2xs);color:var(--text-disabled)">ยังไม่กำหนดเวอร์ชัน</span>';
 const gitInfo=(hasGit||fs)?`<span style="font-size:var(--fs-2xs);color:var(--text-tertiary)">แก้ล่าสุด ${h.last_commit_date||'-'}${h.commit_count?(' · '+h.commit_count+' commits'):''}${h.last_commit_hash?(' · '+h.last_commit_hash):''}${fsLine}</span>`:'';
-const changelogBtn=hasGit?`<button class="set-btn sm" onclick="loadSkillChangelog('${s.name}')" style="padding:3px 8px;font-size:var(--fs-2xs);margin-top:6px" title="ดูประวัติการแก้ไข 5 commits ล่าสุด">📜 ดู changelog</button><div id="changelog-area" style="margin-top:6px"></div>`:'';
+const changelogBtn=hasGit?`<button class="set-btn sm" onclick="loadSkillChangelog('${s.name}')" style="padding:3px 8px;font-size:var(--fs-2xs);margin-top:6px" title="ดูประวัติการแก้ไข 5 commits ล่าสุด"> ดู changelog</button><div id="changelog-area" style="margin-top:6px"></div>`:'';
 return `<div class="skill-detail-section"><h5>เวอร์ชัน</h5><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${verBadge}${newBadge}${gitInfo}</div>${changelogBtn}</div>`;
 })()}
 <div class="skill-detail-section"><h5>รายละเอียดเทคนิค</h5>
 <p style="font-size:var(--fs-2xs);color:var(--text-tertiary);font-family:var(--font-mono)">path: ${s.path||'-'}<br>status: ${s.status||'-'} · source: ${s.source||'-'}<br>agents: ${(s.agents||[]).join(', ')||'-'}</p></div>
 </div>`;
-}catch(e){drawer.innerHTML='<div style="padding:30px;color:var(--accent-danger)">⚠️ '+e.message+'</div>';}
+}catch(e){drawer.innerHTML='<div style="padding:30px;color:var(--accent-danger)">️ '+e.message+'</div>';}
 // After render: check if this skill's script is in the run allowlist.
 skillRunCheck(s);
 }
 // === RUN-THIS-SKILL ===
 let _runAllowlist=null;
 async function _loadRunAllowlist(){
-  if(_runAllowlist!==null)return _runAllowlist;
-  try{
-    const r=await fetch('/api/run/allowlist').then(r=>r.json());
-    _runAllowlist=r;
-  }catch(e){_runAllowlist={enabled:false,scripts:{}};}
-  return _runAllowlist;
+ if(_runAllowlist!==null)return _runAllowlist;
+ try{
+ const r=await fetch('/api/run/allowlist').then(r=>r.json());
+ _runAllowlist=r;
+ }catch(e){_runAllowlist={enabled:false,scripts:{}};}
+ return _runAllowlist;
 }
 async function skillRunCheck(skill){
-  const area=$('skill-run-area');if(!area)return;
-  const al=await _loadRunAllowlist();
-  if(!al.enabled){
-    area.innerHTML='<p style="font-size:var(--fs-2xs);color:var(--text-disabled);margin:4px 0">▶ รันจาก dashboard ปิดอยู่ (เปิดด้วย <code style="color:var(--text-tertiary)">AWIKI_DASHBOARD_ALLOW_RUN=1</code>)</p>';
-    return;
-  }
-  // Match skill's invocation_hint or path against allowlist keys.
-  const hint=(skill.invocation_hint||'').toLowerCase();
-  const path=(skill.path||'').toLowerCase();
-  let matchedScript=null;
-  for(const scriptPath of Object.keys(al.scripts)){
-    const sp=scriptPath.toLowerCase();
-    if(hint.includes(sp)||path.includes(sp.replace('scripts/',''))){
-      matchedScript=scriptPath;break;
-    }
-  }
-  if(!matchedScript){
-    area.innerHTML='<p style="font-size:var(--fs-2xs);color:var(--text-disabled);margin:4px 0">script นี้ไม่อยู่ใน allowlist (รันไม่ได้จาก dashboard)</p>';
-    return;
-  }
-  const meta=al.scripts[matchedScript];
-  const needsArgs=meta.needs_args;
-  area.innerHTML=`
-    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px">
-      ${needsArgs?'<input id="skill-run-args" type="text" placeholder="args (เช่น MQTT)" style="flex:1;min-width:120px;padding:6px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:32px">':''}
-      <button onclick="skillRunExecute('${matchedScript.replace(/'/g,"\\'")}',${needsArgs})" style="background:var(--accent-success,#34d399);border:none;color:#06060d;border-radius:var(--r-md);padding:6px 14px;cursor:pointer;font-size:var(--fs-2xs);font-weight:600;min-height:32px">▶ รัน</button>
-    </div>
-    <div id="skill-run-output" style="margin-top:8px"></div>
-  `;
+ const area=$('skill-run-area');if(!area)return;
+ const al=await _loadRunAllowlist();
+ if(!al.enabled){
+ area.innerHTML='<p style="font-size:var(--fs-2xs);color:var(--text-disabled);margin:4px 0">▶ รันจาก dashboard ปิดอยู่ (เปิดด้วย <code style="color:var(--text-tertiary)">AWIKI_DASHBOARD_ALLOW_RUN=1</code>)</p>';
+ return;
+ }
+ // Match skill's invocation_hint or path against allowlist keys.
+ const hint=(skill.invocation_hint||'').toLowerCase();
+ const path=(skill.path||'').toLowerCase();
+ let matchedScript=null;
+ for(const scriptPath of Object.keys(al.scripts)){
+ const sp=scriptPath.toLowerCase();
+ if(hint.includes(sp)||path.includes(sp.replace('scripts/',''))){
+ matchedScript=scriptPath;break;
+ }
+ }
+ if(!matchedScript){
+ area.innerHTML='<p style="font-size:var(--fs-2xs);color:var(--text-disabled);margin:4px 0">script นี้ไม่อยู่ใน allowlist (รันไม่ได้จาก dashboard)</p>';
+ return;
+ }
+ const meta=al.scripts[matchedScript];
+ const needsArgs=meta.needs_args;
+ area.innerHTML=`
+ <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px">
+ ${needsArgs?'<input id="skill-run-args" type="text" placeholder="args (เช่น MQTT)" style="flex:1;min-width:120px;padding:6px 10px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs);min-height:32px">':''}
+ <button onclick="skillRunExecute('${matchedScript.replace(/'/g,"\\'")}',${needsArgs})" style="background:var(--accent-success,#34d399);border:none;color:#06060d;border-radius:var(--r-md);padding:6px 14px;cursor:pointer;font-size:var(--fs-2xs);font-weight:600;min-height:32px">▶ รัน</button>
+ </div>
+ <div id="skill-run-output" style="margin-top:8px"></div>
+ `;
 }
 async function skillRunExecute(script,needsArgs){
-  const out=$('skill-run-output');if(!out)return;
-  let args=[];
-  if(needsArgs){
-    const inp=$('skill-run-args');
-    const raw=(inp&&inp.value||'').trim();
-    if(raw)args=raw.split(/\s+/);
-  }
-  out.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);padding:8px">⏳ กำลังรัน...</div>';
-  try{
-    const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({script,args})}).then(r=>r.json());
-    if(r.error){out.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--accent-danger);padding:8px;border:1px solid var(--accent-danger);border-radius:var(--r-md)">❌ ${r.error}</div>`;return;}
-    const okColor=r.ok?'var(--accent-success,#34d399)':'var(--accent-warn,#fbbf24)';
-    const stdoutEsc=(r.stdout||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,4000);
-    const stderrEsc=(r.stderr||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,2000);
-    out.innerHTML=`
-      <div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:4px">
-        <span style="color:${okColor};font-weight:600">${r.ok?'✅':'⚠️'}</span>
-        exit=${r.exit_code} · ${r.duration_ms}ms
-        <button onclick="_copyToClipboard(${JSON.stringify(r.stdout||'')},'คัดลอกผลลัพธ์แล้ว')" style="background:transparent;border:1px solid var(--border2);color:var(--text-tertiary);border-radius:var(--r-sm);padding:2px 6px;cursor:pointer;font-size:10px;margin-left:6px">📋 copy</button>
-      </div>
-      ${stdoutEsc?`<pre style="background:var(--elev-0,#06060d);color:var(--accent-success,#34d399);padding:8px;border-radius:var(--r-md);font-size:var(--fs-2xs);overflow-x:auto;max-height:300px;white-space:pre-wrap">${stdoutEsc}</pre>`:''}
-      ${stderrEsc?`<pre style="background:var(--elev-0,#06060d);color:var(--accent-warn,#fbbf24);padding:8px;border-radius:var(--r-md);font-size:var(--fs-2xs);overflow-x:auto;max-height:150px;white-space:pre-wrap;margin-top:4px">${stderrEsc}</pre>`:''}
-    `;
-  }catch(e){
-    out.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--accent-danger);padding:8px">❌ ${e.message}</div>`;
-  }
+ const out=$('skill-run-output');if(!out)return;
+ let args=[];
+ if(needsArgs){
+ const inp=$('skill-run-args');
+ const raw=(inp&&inp.value||'').trim();
+ if(raw)args=raw.split(/\s+/);
+ }
+ out.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);padding:8px">⏳ กำลังรัน...</div>';
+ try{
+ const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({script,args})}).then(r=>r.json());
+ if(r.error){out.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--accent-danger);padding:8px;border:1px solid var(--accent-danger);border-radius:var(--r-md)"> ${r.error}</div>`;return;}
+ const okColor=r.ok?'var(--accent-success,#34d399)':'var(--accent-warn,#fbbf24)';
+ const stdoutEsc=(r.stdout||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,4000);
+ const stderrEsc=(r.stderr||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').slice(0,2000);
+ out.innerHTML=`
+ <div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-bottom:4px">
+ <span style="color:${okColor};font-weight:600">${r.ok?'':'️'}</span>
+ exit=${r.exit_code} · ${r.duration_ms}ms
+ <button onclick="_copyToClipboard(${JSON.stringify(r.stdout||'')},'คัดลอกผลลัพธ์แล้ว')" style="background:transparent;border:1px solid var(--border2);color:var(--text-tertiary);border-radius:var(--r-sm);padding:2px 6px;cursor:pointer;font-size:10px;margin-left:6px"> copy</button>
+ </div>
+ ${stdoutEsc?`<pre style="background:var(--elev-0,#06060d);color:var(--accent-success,#34d399);padding:8px;border-radius:var(--r-md);font-size:var(--fs-2xs);overflow-x:auto;max-height:300px;white-space:pre-wrap">${stdoutEsc}</pre>`:''}
+ ${stderrEsc?`<pre style="background:var(--elev-0,#06060d);color:var(--accent-warn,#fbbf24);padding:8px;border-radius:var(--r-md);font-size:var(--fs-2xs);overflow-x:auto;max-height:150px;white-space:pre-wrap;margin-top:4px">${stderrEsc}</pre>`:''}
+ `;
+ }catch(e){
+ out.innerHTML=`<div style="font-size:var(--fs-2xs);color:var(--accent-danger);padding:8px"> ${e.message}</div>`;
+ }
 }
 // === DISCOVERY: recently used + skill-of-the-day ===
 const RECENT_KEY='awiki-recent-skills';
@@ -695,61 +695,61 @@ let _trendingDays=_lsGet(TRENDING_DAYS_KEY,7);
 function _lsGet(key,def){try{return JSON.parse(localStorage.getItem(key)||'null')||def;}catch(e){return def;}}
 function _lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
 function recordRecentSkill(name){
-  let recent=_lsGet(RECENT_KEY,[]);
-  recent=[name,...recent.filter(n=>n!==name)].slice(0,8);
-  _lsSet(RECENT_KEY,recent);
-  // CHUNK Q — also append to full open log (FIFO, max 200).
-  let opens=_lsGet(OPENS_KEY,[]);
-  opens.push({name:name,ts:Date.now()});
-  if(opens.length>OPENS_MAX)opens=opens.slice(opens.length-OPENS_MAX);
-  _lsSet(OPENS_KEY,opens);
-  renderDiscoveryBar();
+ let recent=_lsGet(RECENT_KEY,[]);
+ recent=[name,...recent.filter(n=>n!==name)].slice(0,8);
+ _lsSet(RECENT_KEY,recent);
+ // CHUNK Q — also append to full open log (FIFO, max 200).
+ let opens=_lsGet(OPENS_KEY,[]);
+ opens.push({name:name,ts:Date.now()});
+ if(opens.length>OPENS_MAX)opens=opens.slice(opens.length-OPENS_MAX);
+ _lsSet(OPENS_KEY,opens);
+ renderDiscoveryBar();
 }
 function trendingSkills(days=7,limit=5){
-  const opens=_lsGet(OPENS_KEY,[]);
-  if(!opens.length)return [];
-  const cutoff=Date.now()-days*24*60*60*1000;
-  const recent=opens.filter(o=>o.ts>=cutoff);
-  if(!recent.length)return [];
-  // Count by name.
-  const counts={};
-  recent.forEach(o=>{counts[o.name]=(counts[o.name]||0)+1;});
-  return Object.entries(counts)
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,limit)
-    .map(([name,count])=>({name:name,count:count}));
+ const opens=_lsGet(OPENS_KEY,[]);
+ if(!opens.length)return [];
+ const cutoff=Date.now()-days*24*60*60*1000;
+ const recent=opens.filter(o=>o.ts>=cutoff);
+ if(!recent.length)return [];
+ // Count by name.
+ const counts={};
+ recent.forEach(o=>{counts[o.name]=(counts[o.name]||0)+1;});
+ return Object.entries(counts)
+ .sort((a,b)=>b[1]-a[1])
+ .slice(0,limit)
+ .map(([name,count])=>({name:name,count:count}));
 }
 function renderDiscoveryBar(){
-  const rc=$('recent-chips');if(!rc)return;
-  const recent=_lsGet(RECENT_KEY,[]);
-  const trending=trendingSkills(_trendingDays,5);
-  let html='';
-  // CHUNK F11: Smart suggestions — frequency × recency × co-occurrence.
-  const suggestions=smartSuggestions(5);
-  if(suggestions.length){
-    html+='<span style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-right:2px">💡 แนะนำ:</span>';
-    html+=suggestions.map(s=>{
-      const r=s.reason||{};
-      const why='เปิด '+(r.frequency||0)+' ครั้งใน 30ว · ใช้ร่วมกับล่าสุด '+(r.cooccur_with_last||0)+' ครั้ง · '+(r.days_since_open||0)+' วันที่แล้ว';
-      return '<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-violet);color:var(--accent-violet)" onclick="skillsOpenDetail(\''+s.name+'\')" title="'+why+'">'+s.name+' <b style="color:var(--text-tertiary)">'+s.score+'</b></span>';
-    }).join('');
-    html+='<span style="width:8px"></span>';
-  }
-  // Trending section (only if there's data).
-  if(trending.length){
-    const daysLabel=_trendingDays===30?'30ว':'7ว';
-    html+='<span style="font-size:var(--fs-2xs);color:var(--accent-warm);margin-right:2px">📈 Trending ('+daysLabel+'):</span>';
-    html+=trending.map(t=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-warn);color:var(--accent-warn)" onclick="skillsOpenDetail('${t.name}')" title="เปิด ${t.count} ครั้งใน ${_trendingDays} วัน">${t.name} <b>${t.count}</b></span>`).join('');
-    // Toggle button 7ว|30ว
-    html+=`<span class="skill-tag" style="cursor:pointer;font-size:9px;border-color:var(--border2);color:var(--text-tertiary);padding:1px 5px" onclick="setTrendingDays(${_trendingDays===7?30:7})" title="สลับหน้าต่างเวลา">${_trendingDays===7?'→30ว':'→7ว'}</span>`;
-  }
-  // Recent section.
-  if(recent.length){
-    if(html)html+='<span style="width:8px"></span>';
-    html+='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:2px">🕘 ล่าสุด:</span>';
-    html+=recent.slice(0,5).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--border2)" onclick="skillsOpenDetail('${n}')">${n}</span>`).join('');
-  }
-  rc.innerHTML=html;
+ const rc=$('recent-chips');if(!rc)return;
+ const recent=_lsGet(RECENT_KEY,[]);
+ const trending=trendingSkills(_trendingDays,5);
+ let html='';
+ // CHUNK F11: Smart suggestions — frequency × recency × co-occurrence.
+ const suggestions=smartSuggestions(5);
+ if(suggestions.length){
+ html+='<span style="font-size:var(--fs-2xs);color:var(--accent-violet);margin-right:2px"> แนะนำ:</span>';
+ html+=suggestions.map(s=>{
+ const r=s.reason||{};
+ const why='เปิด '+(r.frequency||0)+' ครั้งใน 30ว · ใช้ร่วมกับล่าสุด '+(r.cooccur_with_last||0)+' ครั้ง · '+(r.days_since_open||0)+' วันที่แล้ว';
+ return '<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-violet);color:var(--accent-violet)" onclick="skillsOpenDetail(\''+s.name+'\')" title="'+why+'">'+s.name+' <b style="color:var(--text-tertiary)">'+s.score+'</b></span>';
+ }).join('');
+ html+='<span style="width:8px"></span>';
+ }
+ // Trending section (only if there's data).
+ if(trending.length){
+ const daysLabel=_trendingDays===30?'30ว':'7ว';
+ html+='<span style="font-size:var(--fs-2xs);color:var(--accent-warm);margin-right:2px"> Trending ('+daysLabel+'):</span>';
+ html+=trending.map(t=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--accent-warn);color:var(--accent-warn)" onclick="skillsOpenDetail('${t.name}')" title="เปิด ${t.count} ครั้งใน ${_trendingDays} วัน">${t.name} <b>${t.count}</b></span>`).join('');
+ // Toggle button 7ว|30ว
+ html+=`<span class="skill-tag" style="cursor:pointer;font-size:9px;border-color:var(--border2);color:var(--text-tertiary);padding:1px 5px" onclick="setTrendingDays(${_trendingDays===7?30:7})" title="สลับหน้าต่างเวลา">${_trendingDays===7?'→30ว':'→7ว'}</span>`;
+ }
+ // Recent section.
+ if(recent.length){
+ if(html)html+='<span style="width:8px"></span>';
+ html+='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:2px"> ล่าสุด:</span>';
+ html+=recent.slice(0,5).map(n=>`<span class="skill-tag" style="cursor:pointer;font-size:10px;border-color:var(--border2)" onclick="skillsOpenDetail('${n}')">${n}</span>`).join('');
+ }
+ rc.innerHTML=html;
 }
 function setTrendingDays(days){
 _trendingDays=days;
@@ -789,9 +789,9 @@ box.style.display='flex';
 const recent=arr.slice(-8).reverse(); // latest first
 box.innerHTML='<span style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-right:4px">ค้นล่าสุด:</span>'+
 recent.map(e=>`<button class="chat-quick-btn" onclick="useHistoryQuery('${e.q.replace(/'/g,"\\'")}')"
-  style="padding:3px 10px;font-size:var(--fs-2xs);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);border-radius:var(--r-sm);cursor:pointer;min-height:26px"
-  title="${e.q}">${e.q.length>20?e.q.slice(0,20)+'…':e.q}</button>`).join('')+
-'<span onclick="clearSearchHistory()" style="font-size:var(--fs-2xs);color:var(--text-tertiary);cursor:pointer;margin-left:4px" title="ล้างประวัติ">🗑</span>';
+ style="padding:3px 10px;font-size:var(--fs-2xs);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-secondary);border-radius:var(--r-sm);cursor:pointer;min-height:26px"
+ title="${e.q}">${e.q.length>20?e.q.slice(0,20)+'…':e.q}</button>`).join('')+
+'<span onclick="clearSearchHistory()" style="font-size:var(--fs-2xs);color:var(--text-tertiary);cursor:pointer;margin-left:4px" title="ล้างประวัติ"></span>';
 }
 function useHistoryQuery(q){
 const inp=$('skills-search');if(!inp)return;
@@ -802,7 +802,7 @@ inp.focus();
 function clearSearchHistory(){
 _saveSearchHistory([]);
 renderSearchHistoryChips();
-toast('🗑 ล้างประวัติการค้นหา');
+toast('ล้างประวัติการค้นหา');
 }
 // Focus/blur handlers to show/hide history chips.
 document.addEventListener('focusin',function(e){
@@ -818,33 +818,33 @@ if(box)box.style.display='none';
 }
 });
 function sotdPick(allSkills){
-  // Deterministic by date seed — same skill all day, changes at midnight.
-  const today=new Date().toISOString().slice(0,10);
-  const stored=_lsGet(SOTD_KEY,{});
-  if(stored.date===today&&stored.name){return stored.name;}
-  // Pick from skills that have th_description + process_steps (richest view).
-  const pool=allSkills.filter(s=>s.th_description&&s.process_steps);
-  if(!pool.length)return null;
-  // Simple date-seed hash → index.
-  let h=0;for(const c of today)h=(h*31+c.charCodeAt(0))>>>0;
-  const pick=pool[h%pool.length].name;
-  _lsSet(SOTD_KEY,{date:today,name:pick});
-  return pick;
+ // Deterministic by date seed — same skill all day, changes at midnight.
+ const today=new Date().toISOString().slice(0,10);
+ const stored=_lsGet(SOTD_KEY,{});
+ if(stored.date===today&&stored.name){return stored.name;}
+ // Pick from skills that have th_description + process_steps (richest view).
+ const pool=allSkills.filter(s=>s.th_description&&s.process_steps);
+ if(!pool.length)return null;
+ // Simple date-seed hash → index.
+ let h=0;for(const c of today)h=(h*31+c.charCodeAt(0))>>>0;
+ const pick=pool[h%pool.length].name;
+ _lsSet(SOTD_KEY,{date:today,name:pick});
+ return pick;
 }
 function sotdOpen(){
-  const sotd=_lsGet(SOTD_KEY,{});
-  if(sotd.name)skillsOpenDetail(sotd.name);
+ const sotd=_lsGet(SOTD_KEY,{});
+ if(sotd.name)skillsOpenDetail(sotd.name);
 }
 async function loadSotd(){
-  // Fetch all skills once (no filter) to pick from.
-  try{
-    const r=await fetch('/api/skills?limit=500').then(r=>r.json());
-    const name=sotdPick(r.skills||[]);
-    const chip=$('sotd-chip');
-    if(!chip||!name)return;
-    chip.style.display='inline-flex';
-    chip.innerHTML=`<span style="font-size:var(--fs-2xs);background:var(--elev-2);border:1px solid var(--accent-brand,rgba(120,170,255,.4));color:var(--accent-brand);border-radius:var(--r-md);padding:4px 10px">🎲 Skill แห่งวัน: <b>${name}</b></span>`;
-  }catch(e){}
+ // Fetch all skills once (no filter) to pick from.
+ try{
+ const r=await fetch('/api/skills?limit=500').then(r=>r.json());
+ const name=sotdPick(r.skills||[]);
+ const chip=$('sotd-chip');
+ if(!chip||!name)return;
+ chip.style.display='inline-flex';
+ chip.innerHTML=`<span style="font-size:var(--fs-2xs);background:var(--elev-2);border:1px solid var(--accent-brand,rgba(120,170,255,.4));color:var(--accent-brand);border-radius:var(--r-md);padding:4px 10px"> Skill แห่งวัน: <b>${name}</b></span>`;
+ }catch(e){}
 }
 function skillsCloseDetail(){
 $('skills-detail').style.transform='translateX(100%)';
@@ -865,7 +865,7 @@ area.innerHTML=cl.map(c=>`<div style="display:flex;gap:6px;padding:4px 0;border-
 <span style="color:var(--accent-violet);font-family:var(--font-mono);flex-shrink:0">${c.hash}</span>
 <span style="color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.message}</span>
 </div>`).join('');
-}catch(e){area.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--accent-danger)">❌ '+e.message+'</div>';}
+}catch(e){area.innerHTML='<div style="font-size:var(--fs-2xs);color:var(--accent-danger)"> '+e.message+'</div>';}
 }
 
 // === CHUNK O — Skill Comparison Mode ===
@@ -901,7 +901,7 @@ if(_compareSet.size===0){bar.style.display='none';return;}
 bar.style.display='flex';
 $('compare-count').textContent=_compareSet.size;
 $('compare-names').innerHTML=Array.from(_compareSet).map(n=>
-`<span class="skill-tag" style="cursor:pointer;border-color:var(--accent-brand);color:var(--accent-brand)" onclick="toggleCompare('${n}');updateCompareBar();skillsLoad()">${n} ✕</span>`
+`<span class="skill-tag" style="cursor:pointer;border-color:var(--accent-brand);color:var(--accent-brand)" onclick="toggleCompare('${n}');updateCompareBar();skillsLoad()">${n} </span>`
 ).join('');
 }
 function clearCompare(){
@@ -940,7 +940,7 @@ renderCompareTable(skills);
 // Save last comparison.
 _lsSet('awiki-compare-last',names);
 }catch(e){
-content.innerHTML=`<div style="color:var(--accent-danger);padding:20px">❌ ${e.message}</div>`;
+content.innerHTML=`<div style="color:var(--accent-danger);padding:20px"> ${e.message}</div>`;
 }
 _openModalTrap($('compare-modal'));
 }
@@ -960,14 +960,14 @@ return `<td style="padding:6px 8px;color:var(--text-secondary);${bg}">${val}</td
 }
 function renderCompareTable(skills){
 const fields=[
-{label:'📝 คำอธิบายไทย',get:s=>s.th_description||''},
-{label:'💡 ใช้เมื่อไหร่',get:s=>s.when_to_use||''},
-{label:'📋 invocation_hint',get:s=>s.invocation_hint||''},
-{label:'🔄 lifecycle_phase',get:s=>s.lifecycle_phase||'none'},
-{label:'📂 domain',get:s=>Array.isArray(s.domain)?s.domain.join(', '):(s.domain||'')},
-{label:'🤖 invocation',get:s=>s.invocation||'manual'},
+{label:' คำอธิบายไทย',get:s=>s.th_description||''},
+{label:' ใช้เมื่อไหร่',get:s=>s.when_to_use||''},
+{label:' invocation_hint',get:s=>s.invocation_hint||''},
+{label:' lifecycle_phase',get:s=>s.lifecycle_phase||'none'},
+{label:' domain',get:s=>Array.isArray(s.domain)?s.domain.join(', '):(s.domain||'')},
+{label:' invocation',get:s=>s.invocation||'manual'},
 {label:'#️⃣ process_steps',get:s=>(s.process_steps||[]).length+' ขั้น'},
-{label:'📦 ติดตั้ง',get:s=>s.installed?'✅':'📦 catalog'},
+{label:' ติดตั้ง',get:s=>s.installed?'':' catalog'},
 {label:'#️⃣ version',get:s=>s.version||''},
 ];
 const headerCells=skills.map(s=>`<th style="padding:8px;border-bottom:2px solid var(--border2);text-align:left;font-family:var(--font-mono);color:${skillsDomainColor((s.domain||[])[0]||'')};cursor:pointer" onclick="skillsOpenDetail('${s.name}');closeCompareModal()">${s.name}</th>`).join('');
@@ -984,47 +984,47 @@ return _cmpCell(v,'—',isUnique,isEmpty);
 }).join('');
 return `<tr><td style="padding:6px 8px;font-weight:600;color:var(--text-tertiary);font-size:var(--fs-2xs);white-space:nowrap;border-right:1px solid var(--border)">${f.label}</td>${cells}</tr>`;
 }).join('');
-$('compare-content').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:var(--fs-xs)"><thead><tr><th style="padding:8px;border-bottom:2px solid var(--border2)"></th>${headerCells}</tr></thead><tbody>${rows}</tbody></table><div style="display:flex;gap:12px;margin-top:8px;font-size:var(--fs-2xs);color:var(--text-tertiary)"><span><span style="display:inline-block;width:10px;height:10px;background:rgba(52,211,153,0.3);border-radius:2px;vertical-align:middle"></span> unique</span><span><span style="display:inline-block;width:10px;height:10px;background:rgba(248,113,113,0.3);border-radius:2px;vertical-align:middle"></span> ขาด</span></div><p style="margin:8px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)">💡 คลิกชื่อ skill เพื่อดูรายละเอียดเต็ม</p>`;
+$('compare-content').innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:var(--fs-xs)"><thead><tr><th style="padding:8px;border-bottom:2px solid var(--border2)"></th>${headerCells}</tr></thead><tbody>${rows}</tbody></table><div style="display:flex;gap:12px;margin-top:8px;font-size:var(--fs-2xs);color:var(--text-tertiary)"><span><span style="display:inline-block;width:10px;height:10px;background:rgba(52,211,153,0.3);border-radius:2px;vertical-align:middle"></span> unique</span><span><span style="display:inline-block;width:10px;height:10px;background:rgba(248,113,113,0.3);border-radius:2px;vertical-align:middle"></span> ขาด</span></div><p style="margin:8px 0 0;font-size:var(--fs-2xs);color:var(--text-tertiary)"> คลิกชื่อ skill เพื่อดูรายละเอียดเต็ม</p>`;
 }
 // Copy a deep-link URL for a skill (?skill=<name>) to clipboard.
 function copySkillLink(name){
-  const url=new URL(window.location.href);
-  url.searchParams.set('skill',name);
-  // Drop flow= to avoid conflicting deep-links.
-  url.searchParams.delete('flow');
-  const link=url.toString();
-  _copyToClipboard(link,'คัดลอกลิงก์ skill แล้ว');
+ const url=new URL(window.location.href);
+ url.searchParams.set('skill',name);
+ // Drop flow= to avoid conflicting deep-links.
+ url.searchParams.delete('flow');
+ const link=url.toString();
+ _copyToClipboard(link,'คัดลอกลิงก์ skill แล้ว');
 }
 // Copy a deep-link URL for a walkthrough flow (?flow=<id>).
 function copyFlowLink(flowId){
-  const url=new URL(window.location.href);
-  url.searchParams.set('flow',flowId);
-  url.searchParams.delete('skill');
-  const link=url.toString();
-  _copyToClipboard(link,'คัดลอกลิงก์ flow แล้ว');
+ const url=new URL(window.location.href);
+ url.searchParams.set('flow',flowId);
+ url.searchParams.delete('skill');
+ const link=url.toString();
+ _copyToClipboard(link,'คัดลอกลิงก์ flow แล้ว');
 }
 // Shared clipboard helper with execCommand fallback.
 function _copyToClipboard(text,successMsg){
-  try{
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>_flashToast(successMsg)).catch(()=>_copyFallback(text,successMsg));
-    }else{_copyFallback(text,successMsg);}
-  }catch(e){_copyFallback(text,successMsg);}
+ try{
+ if(navigator.clipboard&&navigator.clipboard.writeText){
+ navigator.clipboard.writeText(text).then(()=>_flashToast(successMsg)).catch(()=>_copyFallback(text,successMsg));
+ }else{_copyFallback(text,successMsg);}
+ }catch(e){_copyFallback(text,successMsg);}
 }
 function _copyFallback(text,msg){
-  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-  document.body.appendChild(ta);ta.select();
-  try{document.execCommand('copy');_flashToast(msg);}catch(e){console.warn('copy fail',e);}
-  document.body.removeChild(ta);
+ const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+ document.body.appendChild(ta);ta.select();
+ try{document.execCommand('copy');_flashToast(msg);}catch(e){console.warn('copy fail',e);}
+ document.body.removeChild(ta);
 }
 function _flashToast(msg){
-  let t=$('awiki-toast');
-  if(!t){t=document.createElement('div');t.id='awiki-toast';t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--elev-2,#14142a);color:var(--text-primary);padding:8px 16px;border-radius:var(--r-md);border:1px solid var(--border2,#26265a);font-size:var(--fs-xs);z-index:9999;opacity:0;transition:opacity .2s';document.body.appendChild(t);}
-  t.textContent=msg;t.style.opacity='1';
-  clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2000);
+ let t=$('awiki-toast');
+ if(!t){t=document.createElement('div');t.id='awiki-toast';t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--elev-2,#14142a);color:var(--text-primary);padding:8px 16px;border-radius:var(--r-md);border:1px solid var(--border2,#26265a);font-size:var(--fs-xs);z-index:9999;opacity:0;transition:opacity .2s';document.body.appendChild(t);}
+ t.textContent=msg;t.style.opacity='1';
+ clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2000);
 }
 // === SKILL SIMULATION — particle walkthrough of process_steps ===
-const SIM_ICONS=['📥','🔍','🛠️','✅','📋','🚀','🔄','⚙️','🧪','📊'];
+const SIM_ICONS=['','','️','','','','','️','',''];
 let _simSteps=[],_simIdx=-1,_simTimer=null,_simCurrentName=null;
 
 
@@ -1033,50 +1033,50 @@ let _simSteps=[],_simIdx=-1,_simTimer=null,_simCurrentName=null;
 const PHASES=['define','plan','build','verify','review','ship','meta','none'];
 const PHASE_LABELS={define:'Define',plan:'Plan',build:'Build',verify:'Verify',review:'Review',ship:'Ship',meta:'Meta',none:'—'};
 function renderSkillHeatmap(){
-  const container=document.getElementById('skill-heatmap');
-  if(!container)return;
-  const skills=_skillsCache;
-  if(!skills||!skills.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">โหลด skills ก่อน</div>';return;}
-  // Build matrix: domain -> phase -> count.
-  const matrix={};
-  let maxCount=0;
-  skills.forEach(s=>{
-    const domains=Array.isArray(s.domain)?s.domain:(s.domain?[s.domain]:[]);
-    const phase=s.phase||'none';
-    domains.forEach(d=>{
-      if(!matrix[d])matrix[d]={};
-      matrix[d][phase]=(matrix[d][phase]||0)+1;
-      if(matrix[d][phase]>maxCount)maxCount=matrix[d][phase];
-    });
-  });
-  const domains=Object.keys(matrix).sort();
-  if(!domains.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">ไม่มีข้อมูล domain/phase</div>';return;}
-  // Render CSS grid table.
-  let html='<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:var(--fs-2xs);width:100%">';
-  // Header row.
-  html+='<tr><th style="padding:4px 6px;text-align:left;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Domain</th>';
-  PHASES.forEach(p=>{html+='<th style="padding:4px 4px;color:var(--text-tertiary);text-align:center;border-bottom:1px solid var(--border)">'+PHASE_LABELS[p]+'</th>';});
-  html+='</tr>';
-  // Data rows.
-  domains.forEach(d=>{
-    html+='<tr><td style="padding:4px 6px;color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap">'+d+'</td>';
-    PHASES.forEach(p=>{
-      const count=(matrix[d][p]||0);
-      const op=maxCount>0?(count/maxCount):0;
-      const bg=count>0?'background:rgba(94,234,212,'+(0.1+op*0.7)+')':'';
-      const cur=count>0?'cursor:pointer;onclick="heatmapFilter(\''+d+'\',\''+p+'\')"':'';
-      const txt=count>0?'color:var(--text-primary);font-weight:'+(op>0.5?'700':'400'):'color:var(--text-disabled)';
-      html+='<td style="padding:4px;text-align:center;'+bg+';'+cur+';'+txt+';border:1px solid var(--border)">'+(count||'·')+'</td>';
-    });
-    html+='</tr>';
-  });
-  html+='</table></div>';
-  html+='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-top:6px">คลิก cell เพื่อกรอง skills ตาม domain × phase</div>';
-  container.innerHTML=html;
+ const container=document.getElementById('skill-heatmap');
+ if(!container)return;
+ const skills=_skillsCache;
+ if(!skills||!skills.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">โหลด skills ก่อน</div>';return;}
+ // Build matrix: domain -> phase -> count.
+ const matrix={};
+ let maxCount=0;
+ skills.forEach(s=>{
+ const domains=Array.isArray(s.domain)?s.domain:(s.domain?[s.domain]:[]);
+ const phase=s.phase||'none';
+ domains.forEach(d=>{
+ if(!matrix[d])matrix[d]={};
+ matrix[d][phase]=(matrix[d][phase]||0)+1;
+ if(matrix[d][phase]>maxCount)maxCount=matrix[d][phase];
+ });
+ });
+ const domains=Object.keys(matrix).sort();
+ if(!domains.length){container.innerHTML='<div style="color:var(--text-tertiary);font-size:var(--fs-xs);padding:12px">ไม่มีข้อมูล domain/phase</div>';return;}
+ // Render CSS grid table.
+ let html='<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:var(--fs-2xs);width:100%">';
+ // Header row.
+ html+='<tr><th style="padding:4px 6px;text-align:left;color:var(--text-tertiary);border-bottom:1px solid var(--border)">Domain</th>';
+ PHASES.forEach(p=>{html+='<th style="padding:4px 4px;color:var(--text-tertiary);text-align:center;border-bottom:1px solid var(--border)">'+PHASE_LABELS[p]+'</th>';});
+ html+='</tr>';
+ // Data rows.
+ domains.forEach(d=>{
+ html+='<tr><td style="padding:4px 6px;color:var(--text-secondary);font-family:var(--font-mono);white-space:nowrap">'+d+'</td>';
+ PHASES.forEach(p=>{
+ const count=(matrix[d][p]||0);
+ const op=maxCount>0?(count/maxCount):0;
+ const bg=count>0?'background:rgba(94,234,212,'+(0.1+op*0.7)+')':'';
+ const cur=count>0?'cursor:pointer;onclick="heatmapFilter(\''+d+'\',\''+p+'\')"':'';
+ const txt=count>0?'color:var(--text-primary);font-weight:'+(op>0.5?'700':'400'):'color:var(--text-disabled)';
+ html+='<td style="padding:4px;text-align:center;'+bg+';'+cur+';'+txt+';border:1px solid var(--border)">'+(count||'·')+'</td>';
+ });
+ html+='</tr>';
+ });
+ html+='</table></div>';
+ html+='<div style="font-size:var(--fs-2xs);color:var(--text-tertiary);margin-top:6px">คลิก cell เพื่อกรอง skills ตาม domain × phase</div>';
+ container.innerHTML=html;
 }
 function heatmapFilter(domain,phase){
-  // Apply domain filter via the existing dropdown + switch to list view.
-  const dd=document.getElementById('skills-domain-filter');
-  if(dd){dd.value=domain;skillsRefresh();}
-  setView('skills');
+ // Apply domain filter via the existing dropdown + switch to list view.
+ const dd=document.getElementById('skills-domain-filter');
+ if(dd){dd.value=domain;skillsRefresh();}
+ setView('skills');
 }
