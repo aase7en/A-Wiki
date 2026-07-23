@@ -1,0 +1,226 @@
+{
+  "icons": {
+    "sprite_injected": {
+      "ok": true,
+      "symbol_count": 61
+    },
+    "helper_global": {
+      "icon": "function",
+      "defined": true
+    },
+    "header_icon_visible": [
+      {
+        "label": "ตั้งค่า",
+        "has_use": true,
+        "href": "#icon-settings"
+      },
+      {
+        "label": "Workspace บันทึก/เรียกคืน",
+        "has_use": true,
+        "href": "#icon-save"
+      },
+      {
+        "label": "การแจ้งเตือน",
+        "has_use": true,
+        "href": "#icon-bell"
+      },
+      {
+        "label": "ล้าง log",
+        "has_use": true,
+        "href": "#icon-trash-2"
+      },
+      {
+        "label": "สลับธีม",
+        "has_use": true,
+        "href": "#icon-contrast"
+      }
+    ],
+    "view_tab_use_refs": [
+      {
+        "id": "btn-summary",
+        "text": "Summary",
+        "has_use": true,
+        "href": "#icon-layout-dashboard"
+      },
+      {
+        "id": "btn-flow",
+        "text": "Flow",
+        "has_use": true,
+        "href": "#icon-workflow"
+      },
+      {
+        "id": "btn-timeline",
+        "text": "Timeline",
+        "has_use": true,
+        "href": "#icon-git-commit-horizontal"
+      },
+      {
+        "id": "btn-graph",
+        "text": "Graph",
+        "has_use": true,
+        "href": "#icon-share-2"
+      },
+      {
+        "id": "btn-skills",
+        "text": "Skills",
+        "has_use": true,
+        "href": "#icon-puzzle"
+      },
+      {
+        "id": "btn-coverage",
+        "text": "Coverage",
+        "has_use": true,
+        "href": "#icon-bar-chart-3"
+      },
+      {
+        "id": "btn-analytics",
+        "text": "Analytics",
+        "has_use": true,
+        "href": "#icon-trending-up"
+      },
+      {
+        "id": "btn-subagents",
+        "text": "Subagents",
+        "has_use": true,
+        "href": "#icon-flask-conical"
+      },
+      {
+        "id": "btn-eval",
+        "text": "Eval",
+        "has_use": true,
+        "href": "#icon-graduation-cap"
+      },
+      {
+        "id": "btn-cost",
+        "text": "Cost",
+        "has_use": true,
+        "href": "#icon-dollar-sign"
+      },
+      {
+        "id": "btn-race",
+        "text": "Race",
+        "has_use": true,
+        "href": "#icon-flag"
+      },
+      {
+        "id": "btn-council",
+        "text": "Council",
+        "has_use": true,
+        "href": "#icon-users"
+      },
+      {
+        "id": "btn-chat",
+        "text": "Chat",
+        "has_use": true,
+        "href": "#icon-message-circle"
+      }
+    ],
+    "wf_tab_use_refs": [
+      {
+        "id": "wf-session",
+        "text": "Session",
+        "has_use": true,
+        "href": "#icon-rocket"
+      },
+      {
+        "id": "wf-plan",
+        "text": "Plan",
+        "has_use": true,
+        "href": "#icon-clipboard-list"
+      },
+      {
+        "id": "wf-swarm",
+        "text": "Swarm",
+        "has_use": true,
+        "href": "#icon-brain"
+      },
+      {
+        "id": "wf-cost",
+        "text": "Cost",
+        "has_use": true,
+        "href": "#icon-dollar-sign"
+      }
+    ],
+    "brand_mark": {
+      "ok": true,
+      "has_svg": true,
+      "svg_viewBox": "0 0 160 32",
+      "text": "A-Wiki Live\n  \n  \n    \n    \n    \n    \n    \n  \n  \n  A-Wiki\n  "
+    },
+    "palette_rows": [
+      {
+        "text": "Summary tab\n สลับไปยัง Summary\n \n view",
+        "has_use": true,
+        "href": "#icon-circle"
+      },
+      {
+        "text": "Flow tab\n สลับไปยัง Flow\n \n view",
+        "has_use": true,
+        "href": "#icon-circle"
+      },
+      {
+        "text": "Timeline tab\n สลับไปยัง Timeline\n \n view",
+        "has_use": true,
+        "href": "#icon-circle"
+      },
+      {
+        "text": "Graph tab\n สลับไปยัง Graph\n \n view",
+        "has_use": true,
+        "href": "#icon-circle"
+      },
+      {
+        "text": "Skills tab\n สลับไปยัง Skills\n \n view",
+        "has_use": true,
+        "href": "#icon-circle"
+      }
+    ],
+    "timeline_icons": [
+      {
+        "has_use": true,
+        "href": "#icon-check-circle-2",
+        "text": "memory-capture → Bash pass"
+      },
+      {
+        "has_use": true,
+        "href": "#icon-check-circle-2",
+        "text": "git-rebase-safety → Bash pass"
+      },
+      {
+        "has_use": true,
+        "href": "#icon-check-circle-2",
+        "text": "secret-leak → Bash pass"
+      },
+      {
+        "has_use": true,
+        "href": "#icon-check-circle-2",
+        "text": "bash-no-branch → Bash pass"
+      },
+      {
+        "has_use": true,
+        "href": "#icon-check-circle-2",
+        "text": "apikey → Bash pass"
+      }
+    ]
+  },
+  "emoji_residuals": {
+    "summary": 0,
+    "flow": 120,
+    "timeline": 120,
+    "graph": 120,
+    "skills": 120,
+    "coverage": 120,
+    "analytics": 120,
+    "subagents": 120,
+    "eval": 120,
+    "cost": 120,
+    "race": 120,
+    "chat": 120,
+    "council": 120
+  },
+  "dom": {
+    "nodes": 9857,
+    "use_refs": 565,
+    "sprite_symbols": 61
+  },
+  "console": []
+}
