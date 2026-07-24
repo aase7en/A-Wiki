@@ -16,6 +16,7 @@
 | `a-doc-procurement` | document, thai | build | pipeline | `skills/awiki/a-doc/types/procurement/SKILL.md` |
 | `a-doc-project` | document, thai | build | pipeline | `skills/awiki/a-doc/types/project/SKILL.md` |
 | `a-doc-report` | document, thai | build | pipeline | `skills/awiki/a-doc/types/report/SKILL.md` |
+| `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
 | `a-plan` | engineering, ux-ui, design | define | pipeline | `skills/awiki/a-plan/SKILL.md` |
 | `a-think` | engineering | meta | pipeline | `skills/awiki/a-think/SKILL.md` |
 | `a-wiki-commands` | code | none | uncategorized | `skills/awiki/a-wiki-commands/SKILL.md` |
@@ -397,7 +398,7 @@
 | debug | 8 |
 | design | 14 |
 | document | 20 |
-| engineering | 42 |
+| engineering | 43 |
 | env | 1 |
 | logistics | 7 |
 | media | 19 |

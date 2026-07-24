@@ -15007,6 +15007,25 @@
         "via parent a-doc"
       ],
       "invocation_hint": "via /A-Doc (a-doc-_template)"
+    },
+    {
+      "name": "a-loop",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-loop/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Loop \"<objective>\""
     }
   ]
 }
