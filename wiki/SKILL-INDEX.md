@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 382 · **Aliases/deprecated**: 13
+**Total canonical skills**: 383 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
@@ -17,7 +17,7 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
 | `ux-ui` | UX/UI / Frontend / a11y | 9 |
-| `engineering` | วิศวกร / Architect / Agent harness | 42 |
+| `engineering` | วิศวกร / Architect / Agent harness | 43 |
 | `trader` | เทรด / DeFi / ตลาด | 13 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
 | `business` | ธุรกิจ / การเงิน / CRM | 11 |
@@ -282,6 +282,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
 | `agent-architecture-audit` | none | ecosystem | ตรวจสอบสถาปัตยกรรมของ agent system — skill ทำงานร่วมกันไหม, มี loop ไหม, ซ้ำซ้อนไหม |
@@ -614,7 +615,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-business`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-business`, `a-loop`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
