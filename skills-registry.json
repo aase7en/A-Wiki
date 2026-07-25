@@ -1211,11 +1211,11 @@
       "agents": [
         "all"
       ],
-      "version": "",
+      "version": "1.9.0",
       "status": "deprecated",
       "canonical": "continuous-agent-loop",
-      "migrated_to": "continuous-agent-loop (USA-1 C9, 2026-07-14): canonical loop-routing skill; autonomous-loops kept on disk as a pattern encyclopedia but no longer invoked directly.",
-      "description": "Patterns and architectures for autonomous Claude Code loops — from simple sequential pipelines to RFC-driven multi-agent DAG systems.",
+      "migrated_to": "continuous-agent-loop (2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here.",
+      "description": "DEPRECATED — use continuous-agent-loop instead. Retained as redirect pointer only; all content ported to continuous-agent-loop v2.0.0 (cross-agent).",
       "invocation": "manual",
       "th_description": "รูปแบบและสถาปัตยกรรมสำหรับสร้าง autonomous loop ของ Claude Code ตั้งแต่ pipeline แบบ sequential ธรรมดาไปจนถึงระบบ multi-agent DAG ที่ขับเคลื่อนด้วย RFC ช่วยให้ Agent ทำงานต่อเนื่องโดยไม่ต้องรอคำสั่งจากมนุษย์",
       "when_to_use": "เมื่อต้องการให้ Agent ทำงานแบบอัตโนมัติเป็นรอบหรือเป็นลำดับขั้นตอน",
@@ -2705,11 +2705,11 @@
       "agents": [
         "all"
       ],
-      "version": "",
+      "version": "2.0.0",
       "status": "canonical",
-      "description": "Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls.",
+      "description": "Canonical patterns & architectures for autonomous agent loops — cross-agent (Claude Code / Gemini CLI / Codex / Aider / Hermes). 6 patterns: sequential pipeline, NanoClaw REPL, infinite agentic loop, continuous-PR loop, de-sloppify, RFC-driven DAG. Headless CLI cheat-sheet + cross-agent gotchas.",
       "invocation": "manual",
-      "th_description": "รูปแบบสำหรับสร้างลูปการทำงานอัตโนมัติของ AI Agent ที่ทำงานต่อเนื่อง โดยมี quality gates, evals และ recovery controls เพื่อให้มั่นใจว่าการทำงานมีคุณภาพและสามารถกู้คืนจากข้อผิดพลาดได้",
+      "th_description": "รูปแบบและสถาปัตยกรรม canonical สำหรับ autonomous agent loop — รองรับหลาย agent (Claude Code / Gemini CLI / Codex / Aider / Hermes) ไม่ใช่ Claude เท่านั้น 6 patterns ตั้งแต่ sequential pipeline จนถึง RFC-driven DAG พร้อม headless CLI cheat-sheet และ cross-agent gotchas",
       "when_to_use": "เมื่อต้องการให้ AI Agent ทำงานวนซ้ำอัตโนมัติพร้อมตรวจสอบคุณภาพและกู้คืนข้อผิดพลาด",
       "examples": [
         {
@@ -2729,7 +2729,8 @@
         "กู้คืนถ้าเกิดข้อผิดพลาด",
         "วนซ้ำจนกว่าจะผ่านเกณฑ์"
       ],
-      "invocation_hint": "/continuous-agent-loop"
+      "invocation_hint": "/continuous-agent-loop",
+      "notes": "2026-07-25 v2.0.0: ported 611-line content from autonomous-loops (deprecated) + generalized claude -p → cross-agent CLI table. Verified claude -p + gemini -p locally; codex exec + aider --message from public docs (verify on your version)."
     },
     {
       "name": "continuous-learning",

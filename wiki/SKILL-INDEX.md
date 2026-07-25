@@ -427,7 +427,7 @@
 | `benchmark-optimization-loop` | none | uncategorized | ใช้เมื่อต้องการปรับปรุงประสิทธิภาพของโค้ดหรือระบบ โดยลองหลายรูปแบบ วัด latency/throughput/cost แล... |
 | `build` | build | awiki | สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-... |
 | `context-budget` | none | ecosystem | จัดการ context window — โหลดเฉพาะข้อมูลที่จำเป็น, compact เมื่อใกล้เต็ม |
-| `continuous-agent-loop` | none | ecosystem | รูปแบบสำหรับสร้างลูปการทำงานอัตโนมัติของ AI Agent ที่ทำงานต่อเนื่อง โดยมี quality gates, evals แล... |
+| `continuous-agent-loop` | none | ecosystem | รูปแบบและสถาปัตยกรรม canonical สำหรับ autonomous agent loop — รองรับหลาย agent (Claude Code / Gem... |
 | `continuous-learning` | none | uncategorized | สกิลนี้เป็นเวอร์ชันเก่าที่ถูกแทนที่ด้วย continuous-learning-v2 แล้ว ใช้สำหรับดึงข้อมูลจาก stop-ho... |
 | `continuous-learning-v2` | none | ecosystem | เรียนรู้จาก pattern ที่เกิดซ้ำ — ถ้าทำงานแบบเดิมบ่อย แนะนำให้สร้าง skill/hook |
 | `cost-aware-llm-pipeline` | none | ecosystem | รูปแบบการปรับแต่งค่าใช้จ่ายสำหรับการใช้งาน LLM API — การเลือกโมเดลตามความซับซ้อนของงาน, การติดตาม... |
@@ -625,7 +625,7 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 
 | Alias / Deprecated | → Canonical | Note |
 |--------------------|-------------|------|
-| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop (USA-1 C9, 2026-07-14): canonical loop-routing skill; autonomous-loops kept on disk as a pattern encyclopedia but no longer invoked directly. |
+| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop (2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here. |
 | `diagnosing-bugs` | `debug-mantra` | debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill. |
 | `fable5-standards` | `a-think` | a-think |
 | `grill-me` | `grill-with-docs` | grill-with-docs |
