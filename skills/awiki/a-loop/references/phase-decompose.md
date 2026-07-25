@@ -2,6 +2,13 @@
 
 > โหลดเฉพาะตอนเริ่ม `/A-Loop "<objective>"`. ไม่ auto-load ทุก session.
 
+## 🧠 Model tier: Opus 5 (tier 4c)
+
+Phase 1 คือจุดที่ใช้ **Opus 5 คุ้มที่สุด** — decompose กำหนด task ทั้งหมด
+ถ้าผิดที่นี่ = เสียเวลาทั้ง loop. ทำ 1 ครั้ง → ลงทุน deep reasoning ที่นี่.
+
+Override เป็น free: `A_LOOP_TIER_PHASE1=1` (ใช้เฉพาะตอนโครงการเล็ก/trivial)
+
 ## ขั้นตอน
 
 ### 1. รับ objective จาก user

@@ -2,6 +2,13 @@
 
 > Trigger เมื่อ Phase 3 distill แล้ว user เห็น idea + อนุมัติ. ไม่ auto-register.
 
+## 🧠 Model tier: Opus 5 (tier 4c)
+
+Phase 4 คือจุดที่ใช้ **Opus 5 คุ้มที่สุด** — ออกแบบ skill ใหม่ = เพิ่ม
+durable capability ให้สมอง. ทำน้อยครั้ง + อยู่กับเรานาน → deep reasoning.
+
+Override เป็น free: `A_LOOP_TIER_PHASE4=1` (ใช้เฉพาะตอน skill เล็ก/simple)
+
 ## ขั้นตอน
 
 ### 1. อ่าน pattern จาก ledger (Phase 3 เขียนไว้)

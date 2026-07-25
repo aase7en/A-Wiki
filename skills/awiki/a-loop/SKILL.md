@@ -99,6 +99,20 @@ next: "<phase + task_id + why>"
 - **Checkpoint ใน task_board** — compact แล้ว resume จาก status ได้ ไม่ต้องจำ
 - **invocation: manual** — ไม่ auto-load ทุก session (ประหยัด token)
 
+## Model tier policy (cost-first — ใช้ Opus 5 คุ้มที่สุด)
+
+อ้างอิง: `wiki/context/a-loop-model-policy.conf`
+
+| Phase | Tier | เหตุผล |
+|-------|------|--------|
+| **1. Decompose** | **Opus 5** (4c) | decisions สำคัญมาก ทำ 1 ครั้ง → คุ้มที่สุด |
+| 2. Execute | free (1) | routine + มี tdd ตรวจ → ไม่ต้องเก่ง |
+| 3. Distill | free (1) | deterministic counting → ไม่ต้องคิด |
+| **4. Improve** | **Opus 5** (4c) | ออกแบบ skill = durable capability → คุ้ม |
+
+Override: `A_LOOP_TIER_PHASE1=1` (force free), `A_LOOP_TIER_PHASE4=1`
+Cost guard: ถ้า Opus5 calls > 4 ต่อ run → เตือน + suggest tier-down
+
 ## สิ่งที่ reuse (ไม่ duplicate)
 
 | สิ่งที่มี | ใช้ตรงไหน |
