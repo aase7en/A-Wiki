@@ -15026,6 +15026,25 @@
       "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
       "invocation": "manual",
       "invocation_hint": "/A-Loop \"<objective>\""
+    },
+    {
+      "name": "a-council",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-council/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Council \"<topic>\""
     }
   ]
 }

@@ -4,6 +4,7 @@
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
 | `a-business` | business, trader | meta | pipeline | `skills/awiki/a-business/SKILL.md` |
+| `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
 | `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
 | `a-doc-_template` | document, thai | build | pipeline | `skills/awiki/a-doc/types/_template/SKILL.md` |
@@ -398,7 +399,7 @@
 | debug | 8 |
 | design | 14 |
 | document | 20 |
-| engineering | 43 |
+| engineering | 44 |
 | env | 1 |
 | logistics | 7 |
 | media | 19 |

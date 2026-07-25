@@ -9,6 +9,11 @@
       "domain": "business,trader"
     },
     {
+      "name": "a-council",
+      "target": "skills/awiki/a-council/SKILL.md",
+      "domain": "engineering"
+    },
+    {
       "name": "a-debug",
       "target": "skills/awiki/a-debug/SKILL.md",
       "domain": "debug,code"
