@@ -7,8 +7,8 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 570 |
-| Edges | 1833 |
+| Nodes | 578 |
+| Edges | 1854 |
 | Broken links | 15 |
 | Orphans | 27 |
 

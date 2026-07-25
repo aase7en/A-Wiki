@@ -1,12 +1,12 @@
-# Review Report — 2026-07-21
+# Review Report — 2026-07-24
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 899
-- ⚠ Warnings: 297
-- ❌ Failures: 15
+- ✓ Passed: 930
+- ⚠ Warnings: 300
+- ❌ Failures: 74
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\env\hospital-wastewater-treatment.md: missing frontmatter key: title
-- … 292 more issue(s) below
+- … 354 more issue(s) below
 
 ---
 
@@ -49,6 +49,65 @@
 - wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki\sources\akashdeepo-monte-carlo-rrr.md: broken link: [[monte-carlo-quant-analysis]]
 - wiki\sources\firmai-financial-machine-learning.md: broken link: [[monte-carlo-quant-analysis]]
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-fundamentals](skills/context-fundamentals/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-degradation](skills/context-degradation/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-compression](skills/context-compression/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [multi-agent-patterns](skills/multi-agent-patterns/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [long-horizon-prompting](skills/long-horizon-prompting/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [memory-systems](skills/memory-systems/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [tool-design](skills/tool-design/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [filesystem-context](skills/filesystem-context/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [hosted-agents](skills/hosted-agents/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-optimization](skills/context-optimization/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [latent-briefing](skills/latent-briefing/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [evaluation](skills/evaluation/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [advanced-evaluation](skills/advanced-evaluation/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [harness-engineering](skills/harness-engineering/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [self-improvement-loops](skills/self-improvement-loops/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [project-development](skills/project-development/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [bdi-mental-states](skills/bdi-mental-states/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [examples](examples/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [digital-brain-skill](examples/digital-brain-skill/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [x-to-book-system](examples/x-to-book-system/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [llm-as-judge-skills](examples/llm-as-judge-skills/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [book-sft-pipeline](examples/book-sft-pipeline/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [interleaved-thinking](examples/interleaved-thinking/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [digital-brain-skill](examples/digital-brain-skill/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [HOW-SKILLS-BUILT-THIS.md](examples/digital-brain-skill/HOW-SKILLS-BUILT-THIS.md)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [llm-as-judge-skills](examples/llm-as-judge-skills/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [book-sft-pipeline](examples/book-sft-pipeline/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [researcher](researcher/)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-15.md`](researcher/benchmarks/router/results-published/2026-05-15.md)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-15-v2.md`](researcher/benchmarks/router/results-published/2026-05-15-v2.md)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [`researcher/benchmarks/router/results-published/2026-05-19.md`](researcher/benchmarks/router/results-published/2026-05-19.md)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [researcher/runbooks/continuous-operation.md](researcher/runbooks/continuous-operation.md)
+- wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [template](template/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Knowledge Capture](./notion-knowledge-capture/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Meeting Intelligence](./notion-meeting-intelligence/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Research Documentation](./notion-research-documentation/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Notion Spec To Implementation](./notion-spec-to-implementation/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Changelog Generator](./changelog-generator/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [MCP Builder](./mcp-builder/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Skill Creator](./skill-creator/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Webapp Testing](./webapp-testing/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Brand Guidelines](./brand-guidelines/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Competitive Ads Extractor](./competitive-ads-extractor/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Domain Name Brainstormer](./domain-name-brainstormer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Internal Comms](./internal-comms/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Lead Research Assistant](./lead-research-assistant/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Content Research Writer](./content-research-writer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Meeting Insights Analyzer](./meeting-insights-analyzer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Canvas Design](./canvas-design/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Image Enhancer](./image-enhancer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Slack GIF Creator](./slack-gif-creator/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Theme Factory](./theme-factory/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Video Downloader](./video-downloader/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [File Organizer](./file-organizer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Invoice Organizer](./invoice-organizer/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Raffle Winner Picker](./raffle-winner-picker/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [resemble-detect](./resemble-detect/)
+- wiki\sources\prat011-llm-skills-ref.md: broken link: [Contributing Guidelines](CONTRIBUTING.md)
+- wiki\sources\unpingco-pystats-readme.md: broken link: [Draft cover](./python_for_probability_statistics_and_machine_learning.jpg)
 - wiki\sources\unpingco-python-stats-ml.md: broken link: [[monte-carlo-quant-analysis]]
 - wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
@@ -169,6 +228,7 @@
 - wiki\entities\iot\pzem-004t.md: missing frontmatter key: title
 - wiki\entities\iot\raspberry-pi.md: missing frontmatter key: title
 - wiki\entities\iot\rfm95-sx1276.md: missing frontmatter key: title
+- wiki\entities\iot\sct-013.md: missing frontmatter key: title
 - wiki\entities\iot\telegram-bot.md: missing frontmatter key: title
 - wiki\entities\iot\the-things-network.md: missing frontmatter key: title
 - wiki\entities\iot\vapcell-m35-18650.md: missing frontmatter key: title
@@ -187,6 +247,7 @@
 - wiki\synthesis\digital-legacy-ai-architecture.md: missing frontmatter key: title
 - wiki\synthesis\dream-projects.md: missing frontmatter key: title
 - wiki\synthesis\dual-ai-workflow.md: missing frontmatter key: title
+- wiki\synthesis\electricity-monitor-hospital.md: missing frontmatter key: title
 - wiki\synthesis\energy-power-monitoring.md: missing frontmatter key: title
 - wiki\synthesis\env-webapp-schema-v2-multi-domain.md: missing frontmatter key: title
 - wiki\synthesis\env-webapp-schema-wastewater.md: missing frontmatter key: title
@@ -350,6 +411,7 @@
 - wiki\entities\iot\pzem-004t.md: missing TL;DR line
 - wiki\entities\iot\raspberry-pi.md: missing TL;DR line
 - wiki\entities\iot\rfm95-sx1276.md: missing TL;DR line
+- wiki\entities\iot\sct-013.md: missing TL;DR line
 - wiki\entities\iot\telegram-bot.md: missing TL;DR line
 - wiki\entities\iot\the-things-network.md: missing TL;DR line
 - wiki\entities\iot\vapcell-m35-18650.md: missing TL;DR line
@@ -361,10 +423,10 @@
 
 ---
 
-## ✓ Passed Checks (899 total)
+## ✓ Passed Checks (930 total)
 
-- **L2**: 374 passed
-- **L3**: 522 passed
+- **L2**: 390 passed
+- **L3**: 537 passed
 - **L6**: 3 passed
 
 ---

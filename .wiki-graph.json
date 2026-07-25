@@ -1,22 +1,23 @@
 {
-  "generated_at": "2026-07-19",
+  "generated_at": "2026-07-24",
   "stats": {
-    "nodes": 570,
-    "edges": 1833,
+    "nodes": 594,
+    "edges": 1867,
     "edges_by_type": {
-      "wikilink": 1299,
-      "depends": 396,
-      "implements": 50,
-      "mdlink": 49,
+      "wikilink": 1312,
+      "depends": 411,
+      "implements": 53,
+      "mdlink": 52,
       "extends": 39
     },
-    "broken_links": 15,
-    "orphans": 27,
+    "broken_links": 18,
+    "orphans": 28,
     "orphan_by_domain": {
       "context": 17,
       "env": 8,
       "ai-tools": 1,
-      "other": 1
+      "other": 1,
+      "sources": 1
     },
     "hubs": [
       {
@@ -29,7 +30,7 @@
       },
       {
         "path": "wiki/entities/iot/esp32.md",
-        "score": 58
+        "score": 60
       },
       {
         "path": "index-pharmacy.md",
@@ -52,11 +53,11 @@
         "score": 32
       },
       {
-        "path": "index-env.md",
-        "score": 30
+        "path": "wiki/synthesis/iot-lora-architecture.md",
+        "score": 31
       },
       {
-        "path": "wiki/concepts/iot/lora.md",
+        "path": "index-env.md",
         "score": 30
       }
     ],
@@ -501,7 +502,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-14",
+      "title": "Review Report — 2026-07-24",
       "domain": "context"
     },
     {
@@ -940,6 +941,11 @@
       "domain": "iot"
     },
     {
+      "path": "wiki/entities/iot/sct-013.md",
+      "title": "SCT-013-000 (Non-Invasive AC Current Sensor)",
+      "domain": "iot"
+    },
+    {
       "path": "wiki/entities/iot/telegram-bot.md",
       "title": "Telegram Bot",
       "domain": "iot"
@@ -1160,6 +1166,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/copula-wikipedia.md",
+      "title": "Copula (probability theory) — Wikipedia",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "title": "create-an-esp32-project-with-platformio-an-guide-for-beginne",
       "domain": "sources"
@@ -1360,6 +1371,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/firmai-financial-ml-readme.md",
+      "title": "Financial Machine Learning and Data Science",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/freqtrade-pi5.md",
       "title": "Freqtrade — Crypto Trading Bot บน Raspberry Pi",
       "domain": "sources"
@@ -1422,6 +1438,11 @@
     {
       "path": "wiki/sources/hermes-agent.md",
       "title": "hermes-agent",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/heston-model-wikipedia.md",
+      "title": "Heston model",
       "domain": "sources"
     },
     {
@@ -1530,6 +1551,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/jump-diffusion-variants-wikipedia.md",
+      "title": "Jump-diffusion variants (Kou / Hawkes / Bates)",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/jump-diffusion-variants.md",
       "title": "Jump-diffusion variants (Kou / Hawkes / Bates)",
       "domain": "sources"
@@ -1600,6 +1626,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/merton-jump-diffusion-wikipedia.md",
+      "title": "Jump diffusion",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/merton-jump-diffusion.md",
       "title": "Merton jump-diffusion model — discontinuous price paths for quant finance",
       "domain": "sources"
@@ -1607,6 +1638,11 @@
     {
       "path": "wiki/sources/mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "title": "Agent Skills for Context Engineering",
       "domain": "sources"
     },
     {
@@ -1657,6 +1693,11 @@
     {
       "path": "wiki/sources/platformio-esp32-guide.md",
       "title": "Create an ESP32 Project With PlatformIO: A Guide for Beginners",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/prat011-llm-skills-ref.md",
+      "title": "prat011-llm-skills-ref",
       "domain": "sources"
     },
     {
@@ -1720,6 +1761,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/sabr-model-wikipedia.md",
+      "title": "SABR volatility model",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/saovabha-rabies-pep-2565.md",
       "title": "แนวทางการดูแลรักษาผู้สัมผัสโรคพิษสุนัขบ้า — สถานเสาวภา 2565",
       "domain": "sources"
@@ -1780,6 +1826,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/unpingco-pystats-readme.md",
+      "title": "unpingco-pystats-readme",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/unpingco-python-stats-ml.md",
       "title": "unpingco/Python-for-Probability-Statistics-and-Machine-Learning",
       "domain": "sources"
@@ -1812,6 +1863,11 @@
     {
       "path": "wiki/sources/vibe-pocketbase-gemini-plan.md",
       "title": "แผน Vibe Coding: Pocketbase + Frontend — คำแนะนำจาก Gemini Pro",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/vine-copula-wikipedia.md",
+      "title": "Vine copula",
       "domain": "sources"
     },
     {
@@ -1932,6 +1988,11 @@
     {
       "path": "wiki/synthesis/dual-ai-workflow.md",
       "title": "Dual AI Workflow — Gemini CLI + Claude",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/electricity-monitor-hospital.md",
+      "title": "ระบบมอนิเตอร์ไฟฟ้าแอร์ใน <HOSPITAL> → env-wastewater-webapp",
       "domain": "synthesis"
     },
     {
@@ -2220,6 +2281,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-copula-wikipedia.md",
+      "title": "Copula (probability theory) — Wikipedia — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "title": "![Create an ESP32 Project With PlatformIO: A Guide for Beginners](https://cdn.xi — Synthesis",
       "domain": "synthesis"
@@ -2405,6 +2471,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-firmai-financial-ml-readme.md",
+      "title": "Financial Machine Learning and Data Science — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-freqtrade-pi5.md",
       "title": "Freqtrade — Crypto Trading Bot on Raspberry Pi — Synthesis",
       "domain": "synthesis"
@@ -2467,6 +2538,11 @@
     {
       "path": "wiki/synthesis/synth-hermes-agent.md",
       "title": "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-heston-model-wikipedia.md",
+      "title": "Heston model — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2555,6 +2631,16 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-jump-diffusion-variants-wikipedia.md",
+      "title": "Jump-diffusion variants (Kou / Hawkes / Bates) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-jump-diffusion-variants.md",
+      "title": "Jump-diffusion variants (Kou/Hawkes/Bates) — tail-structure extensions beyond Merton — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "title": "Local LLM on Mac Mini — In-depth Guide (2025-2026) — Synthesis",
       "domain": "synthesis"
@@ -2620,8 +2706,23 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-merton-jump-diffusion-wikipedia.md",
+      "title": "Jump diffusion — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-merton-jump-diffusion.md",
+      "title": "Merton jump-diffusion model — discontinuous price paths for quant finance — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-mqtt-introduction.md",
       "title": "MQTT: The Standard Messaging Protocol for IoT — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-muratcankoyyan-context-eng-ref.md",
+      "title": "Agent Skills for Context Engineering — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2667,6 +2768,11 @@
     {
       "path": "wiki/synthesis/synth-platformio-esp32-guide.md",
       "title": "Create an ESP32 Project With PlatformIO: A Guide for Beginners — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-prat011-llm-skills-ref.md",
+      "title": "My Skill Name — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2730,6 +2836,11 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-sabr-model-wikipedia.md",
+      "title": "SABR volatility model — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
       "title": "แนวทางการดูแลรักษาผู้สัมผัสโรคพิษสุนัขบ้า — สถานเสาวภา พ.ศ. 2565 — Synthesis",
       "domain": "synthesis"
@@ -2742,6 +2853,11 @@
     {
       "path": "wiki/synthesis/synth-sp-drugstore-2020-catalog.md",
       "title": "เอสพีดรักสโตร์ 2020 — Drug Catalog 3,760 รายการ — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-stochastic-vol-heston-sabr.md",
+      "title": "Stochastic volatility (Heston/SABR) — vol-clustering modeling for quant finance — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2817,6 +2933,11 @@
     {
       "path": "wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md",
       "title": "แผน Vibe Coding: Pocketbase + Frontend — คำแนะนำจาก Gemini Pro — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-vine-copula-wikipedia.md",
+      "title": "Vine copula — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -10413,6 +10534,48 @@
       "external": false
     },
     {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/synthesis/energy-power-monitoring.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/entities/iot/pzem-004t.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/synthesis/electricity-monitor-hospital.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/entities/iot/esp32.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/concepts/iot/data-logger.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/iot/sct-013.md",
+      "to": "wiki/synthesis/energy-power-monitoring.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/entities/iot/telegram-bot.md",
       "to": "wiki/sources/iot-lora-gateway-architecture.md",
       "type": "depends",
@@ -11582,6 +11745,13 @@
       "external": false
     },
     {
+      "from": "wiki/sources/firmai-financial-ml-readme.md",
+      "to": "https://github.com/borisbanushev/stockpredictionai/blob/master/readme2.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
       "from": "wiki/sources/freqtrade-pi5.md",
       "to": "wiki/entities/iot/raspberry-pi.md",
       "type": "wikilink",
@@ -11967,6 +12137,20 @@
       "external": false
     },
     {
+      "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "to": "examples/digital-brain-skill/HOW-SKILLS-BUILT-THIS.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "to": "researcher/runbooks/continuous-operation.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
       "from": "wiki/sources/nodered-dashboard-ui.md",
       "to": "wiki/entities/iot/node-red.md",
       "type": "wikilink",
@@ -12118,6 +12302,13 @@
       "to": "wiki/entities/iot/arduino-ide.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/prat011-llm-skills-ref.md",
+      "to": "CONTRIBUTING.md",
+      "type": "implements",
+      "broken": true,
       "external": false
     },
     {
@@ -13153,6 +13344,83 @@
       "from": "wiki/synthesis/dual-ai-workflow.md",
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/synthesis/energy-power-monitoring.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/sources/pzem-004t-guide-2025.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/entities/iot/sct-013.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/entities/iot/esp32.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/synthesis/energy-power-monitoring.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/entities/iot/arduino-uno-r3.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/synthesis/iot-lora-architecture.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/concepts/iot/data-logger.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/concepts/iot/dashboard-design.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/sources/espem-energy-monitor.md",
+      "type": "implements",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/electricity-monitor-hospital.md",
+      "to": "wiki/sources/pzem-004t-guide-2025.md",
+      "type": "implements",
       "broken": false,
       "external": false
     },
@@ -14403,6 +14671,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-copula-wikipedia.md",
+      "to": "wiki/sources/copula-wikipedia.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "to": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "type": "depends",
@@ -14669,6 +14944,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-firmai-financial-ml-readme.md",
+      "to": "wiki/sources/firmai-financial-ml-readme.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-freqtrade-pi5.md",
       "to": "wiki/sources/freqtrade-pi5.md",
       "type": "depends",
@@ -14755,6 +15037,13 @@
     {
       "from": "wiki/synthesis/synth-hermes-agent.md",
       "to": "wiki/sources/hermes-agent.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-heston-model-wikipedia.md",
+      "to": "wiki/sources/heston-model-wikipedia.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -14879,6 +15168,27 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-jump-diffusion-variants-wikipedia.md",
+      "to": "wiki/sources/jump-diffusion-variants-wikipedia.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-jump-diffusion-variants.md",
+      "to": "wiki/sources/jump-diffusion-variants.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-jump-diffusion-variants.md",
+      "to": "wiki/sources/merton-jump-diffusion.md",
+      "type": "wikilink",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-local-llm-mac-mini-guide.md",
       "to": "wiki/sources/local-llm-mac-mini-guide.md",
       "type": "depends",
@@ -14970,8 +15280,29 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-merton-jump-diffusion-wikipedia.md",
+      "to": "wiki/sources/merton-jump-diffusion-wikipedia.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-merton-jump-diffusion.md",
+      "to": "wiki/sources/merton-jump-diffusion.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-mqtt-introduction.md",
       "to": "wiki/sources/mqtt-introduction.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-muratcankoyyan-context-eng-ref.md",
+      "to": "wiki/sources/muratcankoyyan-context-eng-ref.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15061,6 +15392,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-prat011-llm-skills-ref.md",
+      "to": "wiki/sources/prat011-llm-skills-ref.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-pzem-004t-guide-2025.md",
       "to": "wiki/sources/pzem-004t-guide-2025.md",
       "type": "depends",
@@ -15145,6 +15483,13 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-sabr-model-wikipedia.md",
+      "to": "wiki/sources/sabr-model-wikipedia.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
       "to": "wiki/sources/saovabha-rabies-pep-2565.md",
       "type": "depends",
@@ -15161,6 +15506,13 @@
     {
       "from": "wiki/synthesis/synth-sp-drugstore-2020-catalog.md",
       "to": "wiki/sources/sp-drugstore-2020-catalog.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-stochastic-vol-heston-sabr.md",
+      "to": "wiki/sources/stochastic-vol-heston-sabr.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15280,6 +15632,13 @@
     {
       "from": "wiki/synthesis/synth-vibe-pocketbase-gemini-plan.md",
       "to": "wiki/sources/vibe-pocketbase-gemini-plan.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-vine-copula-wikipedia.md",
+      "to": "wiki/sources/vine-copula-wikipedia.md",
       "type": "depends",
       "broken": false,
       "external": false

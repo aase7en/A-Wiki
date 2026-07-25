@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 383 · **Aliases/deprecated**: 13
+**Total canonical skills**: 384 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
@@ -17,7 +17,7 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
 | `ux-ui` | UX/UI / Frontend / a11y | 9 |
-| `engineering` | วิศวกร / Architect / Agent harness | 43 |
+| `engineering` | วิศวกร / Architect / Agent harness | 44 |
 | `trader` | เทรด / DeFi / ตลาด | 13 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
 | `business` | ธุรกิจ / การเงิน / CRM | 11 |
@@ -282,6 +282,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
 | `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
@@ -613,7 +614,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
-- **REVIEW**: `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
+- **REVIEW**: `a-council`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-business`, `a-loop`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 

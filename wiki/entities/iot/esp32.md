@@ -12,6 +12,7 @@ updated: 2026-04-18
 **ผู้ผลิต**: Espressif Systems  
 **รุ่นที่มีในแล็บ**: ESP32 DevKit V1 + Terminal Breakout Board  
 **สถานะใน Lab**: ✅ มีอยู่ × 1
+**ราคา**: ~350–450 บาท (clone ไทย ⚠️ VERIFY) · USD $15 (Adafruit official — out of stock ณ 2026-07-24, ≈540 บาท @36)
 
 ## ภาพรวม
 
