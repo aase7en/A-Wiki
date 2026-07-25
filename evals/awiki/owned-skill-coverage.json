@@ -102,7 +102,7 @@
     },
     {
       "id": "skill-scout",
-      "skill": "skills/claude-code/skill-scout/SKILL.md",
+      "skill": "skills/ecosystem/skill-scout/SKILL.md",
       "required": [
         "Skill Scout"
       ]
