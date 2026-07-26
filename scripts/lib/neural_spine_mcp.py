@@ -65,6 +65,22 @@ def tool_memory_recall(args: dict) -> list[dict]:
     return memory_ledger.MemoryLedger(_LEDGER_PATH).search(query, limit=limit)
 
 
+def tool_memory_semantic_recall(args: dict) -> list[dict]:
+    """Semantic search (BM25) over the Memory Ledger — better than substring.
+
+    Use for multi-word queries or when you want ranked relevance.
+    Falls back to substring if semantic_recall unavailable.
+    """
+    query = args.get("query", "")
+    limit = int(args.get("limit", 10))
+    try:
+        import semantic_recall
+        return semantic_recall.search(_LEDGER_PATH, query, limit=limit)
+    except Exception:
+        # Graceful fallback to substring search
+        return memory_ledger.MemoryLedger(_LEDGER_PATH).search(query, limit=limit)
+
+
 def tool_memory_remember(args: dict) -> float:
     """Append a manual entry to the Memory Ledger. Returns its ts."""
     return memory_ledger.MemoryLedger(_LEDGER_PATH).append(
@@ -153,6 +169,18 @@ TOOLS: dict[str, dict[str, Any]] = {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "Substring query (matched against summary + tags)"},
+                "limit": {"type": "integer", "default": 10},
+            },
+            "required": ["query"],
+        },
+    },
+    "memory_semantic_recall": {
+        "fn": tool_memory_semantic_recall,
+        "description": "Semantic search (BM25 ranked) over the Memory Ledger. Better than memory_recall for multi-word queries or when you want ranked relevance. Falls back to substring if unavailable.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Natural-language query (multi-word OK, ranked by relevance)"},
                 "limit": {"type": "integer", "default": 10},
             },
             "required": ["query"],
