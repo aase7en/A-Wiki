@@ -316,15 +316,36 @@ bash scripts/swarm/agent-switch.sh                    # switch agent mid-session
 
 ### 🎯 A- Suite (slash commands, all agents)
 
-A-Wiki-native aggregator skills — `/A-Think`, `/A-Plan`, `/A-Debug`, `/A-Doc`, `/A-Business` — ที่รวม canonical skills ที่มีอยู่เป็น chain เดียว ใช้ได้กับทุก agent ผ่าน `agents: ["all"]` + symlink farm.
+A-Wiki-native aggregator skills ที่รวม canonical skills ที่มีอยู่เป็น chain เดียว ใช้ได้กับทุก agent ผ่าน `agents: ["all"]` + symlink farm.
 
-| Skill | Slash | Chain (canonical skills) |
+**7-phase spine** — งานที่ไม่ trivial เดินตาม chain นี้ ห้ามข้ามไป IMPLEMENT ก่อนจบ ASK/DESIGN:
+
+```
+ASK → DESIGN → PLAN → IMPLEMENT → REVIEW → DEBUG → TEST
+```
+
+📍 **ตารางเต็ม (skill · trigger ไทย/อังกฤษ · phase · matching rules) → [`wiki/A-ROUTER.md`](wiki/A-ROUTER.md)**
+generated จาก `skills-registry.json` — ห้ามแก้มือ, refresh ด้วย `python scripts/regen-skill-surfaces.py`
+
+Auto-pick มี **3 substrate** กิน `triggers` field เดียวกันทั้งหมด — parity ของ *data* ไม่ใช่ของ *mechanism* (harness แต่ละตัวมี hook event ไม่เท่ากัน: Claude 6, Codex 5 ไม่มี UserPromptSubmit, Gemini 2, Cline/Windsurf/Cursor/Aider ไม่มีเลย):
+
+| Substrate | Agents | กลไก |
 |---|---|---|
-| `a-think` | `/A-Think` | fable-method + fable5-standards merge — 7-step loop: Restate → Done → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove |
-| `a-plan` | `/A-Plan` | a-think → grill-with-docs (≥3 Qs mandatory) → spec-driven-development → design tool → plan-orchestrate |
-| `a-debug` | `/A-Debug` | a-think → debug-mantra (Iron Law #2) → root-cause-first → tdd (Iron Law #1) → fix → verify-before-done → scrutinize |
-| `a-doc` | `/A-Doc` | router → grill format (paper/margins/font) → dispatch `types/<X>/` → docx/word-generator → render-html. 8 types: announce/order/memo/project/procedure(WI-SP)/procurement(PR-QT-PO)/jd/report/form-record |
-| `a-business` | `/A-Business` | stub → finance-pipeline / project-flow-ops / agent-sort |
+| Hook | Claude Code | `scripts/hooks/check_a_route.py` @ UserPromptSubmit |
+| Tool | Codex · ZCode · Gemini · Claude · MCP client ใดก็ได้ | MCP `skill_route` |
+| Model-read | Cline · Windsurf · Cursor · Aider · Kilo · Hermes | อ่าน `wiki/A-ROUTER.md` แล้ว match เอง |
+
+| Skill | Slash | Phase | Chain (canonical skills) |
+|---|---|---|---|
+| `a-think` | `/A-Think` | ask | fable-method + fable5-standards merge — 7-step loop: Restate → Done → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove |
+| `a-plan` | `/A-Plan` | design | a-think → grill-with-docs (≥3 Qs mandatory) → spec-driven-development → design tool → plan-orchestrate |
+| `a-doc` | `/A-Doc` | implement | router → grill format (paper/margins/font) → dispatch `types/<X>/` → docx/word-generator → render-html. 8 types: announce/order/memo/project/procedure(WI-SP)/procurement(PR-QT-PO)/jd/report/form-record |
+| `a-council` | `/A-Council` | review | 4 personas (code-reviewer / test-engineer / security-auditor / web-perf) → blackboard thread → block ship ถ้ามี critical |
+| `a-debug` | `/A-Debug` | debug | a-think → debug-mantra (Iron Law #2 + root-cause gate) → tdd (Iron Law #1) → fix → verify-before-done → scrutinize |
+| `a-business` | `/A-Business` | any | stub → finance-pipeline / project-flow-ops / agent-sort |
+| `a-loop` | `/A-Loop "<objective>"` | any | decompose → execute → verify → distill → improve (ข้าม session) |
+
+> `a-think` และ `a-loop` **ไม่มี trigger โดยตั้งใจ** — a-think เป็น fallback (ถ้ามี trigger จะไปแย่งงาน a-plan/a-debug), a-loop เป็น autonomous loop ข้าม session ที่ต้องเรียกเอง ไม่ใช่ให้ keyword จุดติด
 
 **Audit**: `python scripts/audit_a_suite.py` (frontmatter + registry + cross-ref + Iron Laws). **Scrub pattern**: `<HOSPITAL>` / `<HOSPITAL_NAME>` / `<WORK_DIR>` placeholders สำหรับเอกสารราชการ (ห้าม publish ชื่อจริง — Iron Law #6).
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`

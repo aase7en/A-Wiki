@@ -59,6 +59,7 @@ from skills_registry import (  # noqa: E402
 )
 from skills_registry import drift as drift_mod  # noqa: E402
 from skills_registry.generators import (  # noqa: E402
+    gen_a_router,
     gen_agents_md,
     gen_antigravity,
     gen_cline,
@@ -96,7 +97,14 @@ GENERATORS = {
     # USA-1 chunk C8 — central skill brain (USA-1 §6). Written to wiki/, not
     # generated/, because it is the agent-readable brain consumed at session start.
     gen_skill_index.filename: gen_skill_index,
+    # A-Suite v2 C3 — intent→skill routing table. Also wiki/: it is the auto-pick
+    # substrate for agents with no hook system, so it must be readable, not a blob.
+    gen_a_router.filename: gen_a_router,
 }
+
+# Surfaces that belong in wiki/ rather than SURFACES_DIR: agent-readable brains,
+# not machine blobs. Everything else lands in the gitignored generated/ dir.
+WIKI_SURFACES = {gen_skill_index.filename, gen_a_router.filename}
 
 
 def _now_iso() -> str:
@@ -117,10 +125,11 @@ def _output_path(filename: str) -> Path:
     """Resolve where a generated surface should be written.
 
     Most surfaces live under SURFACES_DIR (generated/, gitignored machine files).
-    The central skill brain (SKILL-INDEX.md, USA-1 §6) lives under wiki/ because
-    it is the agent-readable brain consumed at session start, not a machine blob.
+    The agent-readable brains in WIKI_SURFACES live under wiki/ instead: the skill
+    index (SKILL-INDEX.md, USA-1 §6) and the routing table (A-ROUTER.md), both of
+    which agents read directly rather than consuming as a blob.
     """
-    if filename == "SKILL-INDEX.md":
+    if filename in WIKI_SURFACES:
         return REPO_ROOT / "wiki" / filename
     return SURFACES_DIR / filename
 

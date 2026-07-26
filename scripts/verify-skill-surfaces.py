@@ -42,6 +42,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from skills_registry import Registry, validate_registry  # noqa: E402
 from skills_registry import drift as drift_mod  # noqa: E402
 from skills_registry.generators import (  # noqa: E402
+    gen_a_router,
     gen_agents_md,
     gen_antigravity,
     gen_cline,
@@ -160,6 +161,24 @@ def main() -> int:
         )
     report["stats"]["agent_scoped_skills"] = len(scoped)
     report["stats"]["visible_in_agent_surface"] = len(scoped) - len(orphan_scoped)
+
+    # 3c. Routing reachability: a skill with triggers must appear in A-ROUTER.md.
+    #
+    # A-ROUTER.md is the ONLY auto-pick substrate for agents with no hook system
+    # (Cline, Windsurf, Cursor, Aider). A skill that has triggers but is missing
+    # from the table is auto-pickable on Claude and invisible everywhere else —
+    # exactly the silent cross-agent divergence this suite exists to prevent.
+    router = gen_a_router.render(reg)
+    triggered = [s["name"] for s in reg.skills
+                 if s.get("status") == "canonical" and s.get("triggers")]
+    missing_from_router = [n for n in triggered if f"`{n}`" not in router]
+    if missing_from_router:
+        report["ok"] = False
+        report["errors"].append(
+            f"{len(missing_from_router)} skill(s) have triggers but are absent from "
+            f"A-ROUTER.md (unreachable by hookless agents): {missing_from_router[:5]}"
+        )
+    report["stats"]["triggered_skills"] = len(triggered)
 
     # 4. Alias integrity
     orphan_aliases = []
