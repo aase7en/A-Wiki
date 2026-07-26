@@ -924,6 +924,57 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"messages": msgs})
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)
+        elif path == "/api/ledger":
+            # Neural Spine: read Memory Ledger entries.
+            # Query: ?limit=25&type=decision&tag=auth
+            try:
+                from urllib.parse import parse_qs as _pqs
+                import sys as _sys
+                _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+                import memory_ledger as _ml
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = _pqs(qs)
+                limit = int(params.get("limit", ["25"])[0])
+                ledger_path = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
+                ledger = _ml.MemoryLedger(ledger_path)
+                entries = ledger.recent(limit=limit)
+                # Optional filters
+                type_filter = params.get("type", [None])[0]
+                if type_filter:
+                    entries = [e for e in entries if e.get("type") == type_filter]
+                tag_filter = params.get("tag", [None])[0]
+                if tag_filter:
+                    entries = [e for e in entries if tag_filter in e.get("tags", [])]
+                self._json_response({"entries": entries, "count": len(entries)})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/tasks":
+            # Neural Spine: read Task Board (goals + subtasks).
+            # Query: ?status=todo|claimed|doing|done|blocked
+            try:
+                from urllib.parse import parse_qs as _pqs
+                import sys as _sys
+                _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+                import task_board as _tb
+                import goal_store as _gs
+                qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+                params = _pqs(qs)
+                status = params.get("status", [None])[0]
+                tb_path = REPO_ROOT / ".tmp" / "task-board.json"
+                store = _gs.GoalStore(tb_path)
+                goals = store.list_goals()
+                goal_views = []
+                for g in goals:
+                    view = store.get_goal(g["id"])
+                    prog = store.goal_progress(g["id"])
+                    goal_views.append({
+                        "goal": view["goal"],
+                        "subtasks": view["subtasks"],
+                        "progress": prog,
+                    })
+                self._json_response({"goals": goal_views, "count": len(goal_views)})
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
         elif path == "/api/eval/suite":
             # X1: GET ?name=X → load suite; no name → 400.
             try:
