@@ -239,6 +239,37 @@ def clean_stale_cost_declarations(repo_root: str) -> None:
         sys.stderr.write(f"🧹 Cost gate reset: removed {len(removed)} stale declaration(s)\n")
 
 
+def clean_stale_focus_files(repo_root: str, max_age_days: int = 3) -> None:
+    """Remove A-Suite focus state left behind by long-dead sessions.
+
+    Focus files are per-session (.tmp/a-focus-<session>.json) and are normally
+    removed by focus_clear. A crashed or abandoned session leaves one behind,
+    and a stale file makes the Stop hook nag about a goal nobody is pursuing.
+    Age-based rather than date-stamped, because the session id carries no date.
+    """
+    tmp_dir = os.path.join(repo_root, ".tmp")
+    if not os.path.isdir(tmp_dir):
+        return
+    # datetime is already imported here; `time` is not — keep it that way.
+    cutoff = (datetime.now() - timedelta(days=max_age_days)).timestamp()
+    removed = []
+    try:
+        for fname in os.listdir(tmp_dir):
+            if not (fname.startswith("a-focus-") and fname.endswith(".json")):
+                continue
+            fpath = os.path.join(tmp_dir, fname)
+            try:
+                if os.path.getmtime(fpath) < cutoff:
+                    os.remove(fpath)
+                    removed.append(fname)
+            except Exception:
+                pass
+    except Exception:
+        pass
+    if removed:
+        sys.stderr.write(f"🧹 A-Focus reset: removed {len(removed)} stale focus file(s)\n")
+
+
 def check_model_scout_freshness(repo_root: str) -> None:
     """Warn if model-scout-current.json is older than 24h."""
     scout_path = os.path.join(repo_root, ".tmp", "model-scout-current.json")
@@ -366,6 +397,7 @@ def run_steps(repo_root, lean: bool) -> None:
     context every session — see docs/protocols/context-compaction.md)."""
     git_pull(repo_root)
     clean_stale_cost_declarations(repo_root)
+    clean_stale_focus_files(repo_root)
     show_todos(repo_root)
     replay_memory_ledger(repo_root)  # Neural Spine: cross-session continuity
     reap_task_leases(repo_root)       # Neural Spine: free crashed claims

@@ -47,6 +47,10 @@
           {
             "type": "command",
             "command": "python3 scripts/hooks_runner.py check-secret-leak"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-a-focus"
           }
         ]
       },
@@ -196,6 +200,10 @@
           {
             "type": "command",
             "command": "python3 scripts/hooks_runner.py self-audit"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks/a_focus_stop.py"
           }
         ]
       }
