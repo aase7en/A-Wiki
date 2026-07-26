@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-Wiki Neural Spine</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --critical: #f85149; --important: #d29922; --minor: #3fb950;
+    --decision: #58a6ff; --failure: #f85149; --outcome: #3fb950;
+    --lesson: #d29922; --idea: #bc8cff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px; font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5;
+  }
+  h1 { font-size: 18px; margin: 0 0 12px; }
+  h2 { font-size: 14px; margin: 0 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; max-width: 1400px; }
+  @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 12px; max-height: 70vh; overflow-y: auto;
+  }
+  .entry {
+    padding: 8px; margin-bottom: 6px; border-left: 3px solid var(--border);
+    background: rgba(255,255,255,0.02); border-radius: 0 4px 4px 0;
+  }
+  .entry[data-type="decision"] { border-left-color: var(--decision); }
+  .entry[data-type="failure"]  { border-left-color: var(--failure); }
+  .entry[data-type="outcome"]  { border-left-color: var(--outcome); }
+  .entry[data-type="lesson"]   { border-left-color: var(--lesson); }
+  .entry[data-type="idea"]     { border-left-color: var(--idea); }
+  .entry-meta { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .entry-type { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; text-transform: uppercase; font-weight: 600; }
+  .entry-summary { word-wrap: break-word; }
+  .entry-tags { font-size: 11px; color: var(--accent); margin-top: 2px; }
+  .goal {
+    padding: 10px; margin-bottom: 8px; background: rgba(88,166,255,0.05);
+    border: 1px solid var(--border); border-radius: 4px;
+  }
+  .goal-id { font-family: monospace; color: var(--accent); font-size: 12px; }
+  .goal-progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px; margin: 6px 0; overflow: hidden;
+  }
+  .goal-progress-fill { height: 100%; background: var(--outcome); transition: width 0.3s; }
+  .subtask { font-size: 12px; padding: 2px 0 2px 12px; color: var(--muted); }
+  .subtask[data-status="done"] { color: var(--outcome); text-decoration: line-through; }
+  .subtask[data-status="doing"] { color: var(--important); }
+  .subtask[data-status="claimed"] { color: var(--accent); }
+  .msg {
+    padding: 6px 8px; margin-bottom: 4px; background: rgba(255,255,255,0.02);
+    border-radius: 4px; font-size: 13px;
+  }
+  .msg-from { color: var(--accent); font-weight: 600; }
+  .msg-to { color: var(--muted); }
+  .msg-type { font-size: 10px; padding: 1px 4px; border-radius: 2px; background: var(--border); margin-left: 4px; }
+  .empty { color: var(--muted); font-style: italic; padding: 12px; text-align: center; }
+  .refresh { float: right; background: var(--border); color: var(--text); border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+  .refresh:hover { background: var(--accent); }
+  .critical-badge { display: inline-block; background: var(--critical); color: white; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+  .needs-review { background: rgba(248,81,73,0.1); border: 1px solid var(--critical); }
+</style>
+</head>
+<body>
+<h1>🧠 A-Wiki Neural Spine <button class="refresh" onclick="loadAll()">↻ Refresh</button></h1>
+<div class="grid">
+  <div class="panel" id="ledger-panel">
+    <h2>📋 Memory Ledger</h2>
+    <div id="ledger"><div class="empty">loading…</div></div>
+  </div>
+  <div class="panel" id="goals-panel">
+    <h2>🎯 Goals & Tasks</h2>
+    <div id="goals"><div class="empty">loading…</div></div>
+  </div>
+  <div class="panel" id="chat-panel">
+    <h2>💬 Agent Chat (Blackboard)</h2>
+    <div id="chat"><div class="empty">loading…</div></div>
+  </div>
+</div>
+
+<script>
+const API = "";
+function esc(s) { const d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+function fmtTs(ts) {
+  if (!ts) return "";
+  const d = new Date(ts*1000);
+  return d.toLocaleString("en-GB",{month:"short",day:"2digit",hour:"2digit",minute:"2digit"});
+}
+
+async function loadLedger() {
+  try {
+    const r = await fetch(`${API}/api/ledger?limit=30`);
+    const data = await r.json();
+    const el = document.getElementById("ledger");
+    if (!data.entries || data.entries.length === 0) {
+      el.innerHTML = '<div class="empty">(no entries yet)</div>'; return;
+    }
+    el.innerHTML = data.entries.map(e => {
+      const tags = (e.tags||[]).map(t=>`#${esc(t)}`).join(" ");
+      const needsReview = (e.tags||[]).includes("needs-review");
+      return `<div class="entry ${needsReview?'needs-review':''}" data-type="${esc(e.type)}">
+        <div class="entry-meta">${fmtTs(e.ts)} · <span class="entry-type">${esc(e.type)}</span> ${esc(e.session_id).slice(0,8)}</div>
+        <div class="entry-summary">${esc(e.summary)}</div>
+        ${tags?`<div class="entry-tags">${tags}</div>`:""}
+      </div>`;
+    }).join("");
+  } catch(e) { document.getElementById("ledger").innerHTML = `<div class="empty">error: ${esc(e.message)}</div>`; }
+}
+
+async function loadGoals() {
+  try {
+    const r = await fetch(`${API}/api/tasks`);
+    const data = await r.json();
+    const el = document.getElementById("goals");
+    if (!data.goals || data.goals.length === 0) {
+      el.innerHTML = '<div class="empty">(no goals)</div>'; return;
+    }
+    el.innerHTML = data.goals.map(g => {
+      const prog = g.progress || {percent_done:0, total:0, done:0};
+      const subtasksHtml = (g.subtasks||[]).map(s =>
+        `<div class="subtask" data-status="${esc(s.status)}">${esc(s.status==='done'?'✓':s.status==='doing'?'▶':s.status==='claimed'?'◉':'○')} ${esc(s.goal)}</div>`
+      ).join("");
+      return `<div class="goal">
+        <div><span class="goal-id">${esc(g.goal.id)}</span> ${esc(g.goal.goal||g.goal.objective||"")}</div>
+        <div class="goal-progress-bar"><div class="goal-progress-fill" style="width:${prog.percent_done}%"></div></div>
+        <div style="font-size:11px;color:var(--muted)">${prog.done}/${prog.total} done (${prog.percent_done}%) · status: ${esc(g.goal.status)}</div>
+        ${subtasksHtml}
+      </div>`;
+    }).join("");
+  } catch(e) { document.getElementById("goals").innerHTML = `<div class="empty">error: ${esc(e.message)}</div>`; }
+}
+
+async function loadChat() {
+  try {
+    const r = await fetch(`${API}/api/bb?limit=50`);
+    const data = await r.json();
+    const el = document.getElementById("chat");
+    const msgs = data.messages || [];
+    if (msgs.length === 0) {
+      el.innerHTML = '<div class="empty">(no messages)</div>'; return;
+    }
+    el.innerHTML = msgs.map(m => {
+      const needsReview = (m.tags||[]).includes("needs-review");
+      const critical = (m.tags||[]).includes("critical");
+      return `<div class="msg ${needsReview?'needs-review':''}">
+        <span class="msg-from">${esc(m.from)}</span> → <span class="msg-to">${esc(m.to)}</span>
+        <span class="msg-type">${esc(m.type)}</span>
+        ${critical?'<span class="critical-badge">CRITICAL</span>':''}
+        ${needsReview?'<span class="critical-badge">NEEDS REVIEW</span>':''}
+        <div>${esc(m.body)}</div>
+        <div style="font-size:11px;color:var(--muted)">${fmtTs(m.ts)}</div>
+      </div>`;
+    }).join("");
+  } catch(e) { document.getElementById("chat").innerHTML = `<div class="empty">error: ${esc(e.message)}</div>`; }
+}
+
+function loadAll() { loadLedger(); loadGoals(); loadChat(); }
+loadAll();
+setInterval(loadAll, 10000); // auto-refresh every 10s
+</script>
+</body>
+</html>

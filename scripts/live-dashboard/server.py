@@ -634,6 +634,8 @@ class Handler(BaseHTTPRequestHandler):
             self._sse()
         elif path in ("/", "/dashboard"):
             self._serve_html()
+        elif path == "/neural-spine":
+            self._serve_static_file("neural-spine.html", "text/html; charset=utf-8")
         elif path == "/sw.js":
             self._serve_static_file("sw.js", "application/javascript")
         elif path == "/manifest.json":
