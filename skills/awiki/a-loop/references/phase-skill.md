@@ -1,15 +1,25 @@
 # Phase 4: Improve (failure ≥3 → propose skill)
 
-> Trigger เมื่อ Phase 3 distill แล้ว user เห็น idea + อนุมัติ. ไม่ auto-register.
+> Phase 3 distill auto-detect patterns → **Phase 4 auto-draft proposal** → user confirms → register.
+> Zero slash commands until user confirms.
 
-## 🧠 Model tier: Opus 5 (tier 4c)
+## Auto-draft (เกิดอัตโนมัติใน a_loop_distill.py)
 
-Phase 4 คือจุดที่ใช้ **Opus 5 คุ้มที่สุด** — ออกแบบ skill ใหม่ = เพิ่ม
+เมื่อ `count_failure_patterns()` พบ pattern ซ้ำ ≥3:
+1. `auto_propose_skill()` เรียก `a_loop_skill.propose_skill_for_pattern()`
+2. เขียนเป็น ledger `type=idea` tagged `skill-proposal` + `proposal:guard-<tag>`
+3. SessionStart surface entry → user เห็น → ยืนยัน
+4. (Idempotent — ถ้ามี proposal สำหรับ tag นี้แล้ว → skip)
+
+## 🧠 Model tier: Opus 5 (tier 4c) — เฉพาะตอน finalize
+
+อัตโนมัติ (draft proposal): free tier (deterministic, no reasoning)
+Finalize (design SKILL.md จริง): **Opus 5** — ออกแบบ skill ใหม่ = เพิ่ม
 durable capability ให้สมอง. ทำน้อยครั้ง + อยู่กับเรานาน → deep reasoning.
 
 Override เป็น free: `A_LOOP_TIER_PHASE4=1` (ใช้เฉพาะตอน skill เล็ก/simple)
 
-## ขั้นตอน
+## ขั้นตอน finalize (เมื่อ user ยืนยันจาก proposal)
 
 ### 1. อ่าน pattern จาก ledger (Phase 3 เขียนไว้)
 ```python

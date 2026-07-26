@@ -127,3 +127,76 @@ def test_main_respects_hook_skip(monkeypatch, tmp_path):
     monkeypatch.setenv("HOOK_SKIP", "a_loop_distill")
     monkeypatch.setattr(ald, "DEFAULT_LEDGER_PATH", tmp_path / "ledger.jsonl")
     assert ald.main() == 0
+
+
+# ---------------------------------------------------------------------------
+# 5. auto_propose_skill — when pattern ≥3, draft skill proposal (no register)
+# ---------------------------------------------------------------------------
+def test_auto_propose_skill_creates_proposal_entry(tmp_path):
+    """When 3+ failures share a tag → distill should auto-draft a skill proposal.
+
+    The draft is written as a ledger type=idea entry tagged
+    'skill-proposal' so SessionStart surfaces it for user review.
+    """
+    ledger_path = tmp_path / "ledger.jsonl"
+    ledger = ml.MemoryLedger(ledger_path)
+    for i in range(3):
+        ledger.append(session_id="s", type="failure",
+                      summary=f"import error module {i}", tags=["import-error"])
+    n = ald.auto_propose_skill(ledger_path, min_count=3)
+    assert n >= 1, "should draft at least 1 skill proposal"
+    # Verify the proposal is in ledger as type=idea with skill-proposal tag
+    entries = ledger._load_all()
+    proposals = [e for e in entries
+                 if e.get("type") == "idea"
+                 and "skill-proposal" in e.get("tags", [])]
+    assert len(proposals) >= 1
+    assert any("guard-import-error" in e["summary"].lower()
+               or "guard-import" in e["summary"].lower()
+               for e in proposals), (
+        f"proposal should reference guard-import pattern, got: {[p['summary'] for p in proposals]}"
+    )
+
+
+def test_auto_propose_skill_idempotent(tmp_path):
+    """Running auto_propose twice should not double-propose."""
+    ledger_path = tmp_path / "ledger.jsonl"
+    ledger = ml.MemoryLedger(ledger_path)
+    for i in range(3):
+        ledger.append(session_id="s", type="failure",
+                      summary=f"timeout api {i}", tags=["timeout"])
+    first = ald.auto_propose_skill(ledger_path, min_count=3)
+    second = ald.auto_propose_skill(ledger_path, min_count=3)
+    assert first >= 1
+    assert second == 0, f"second run should not re-propose, got {second}"
+
+
+def test_auto_propose_skill_no_action_when_below_threshold(tmp_path):
+    """2 failures (below min_count=3) → no proposal."""
+    ledger_path = tmp_path / "ledger.jsonl"
+    ledger = ml.MemoryLedger(ledger_path)
+    for i in range(2):
+        ledger.append(session_id="s", type="failure",
+                      summary=f"rare bug {i}", tags=["rare"])
+    n = ald.auto_propose_skill(ledger_path, min_count=3)
+    assert n == 0
+
+
+# ---------------------------------------------------------------------------
+# 6. main now auto-calls auto_propose_skill (in addition to propose_ideas)
+# ---------------------------------------------------------------------------
+def test_main_runs_both_distill_and_propose(monkeypatch, tmp_path):
+    """main() should call both propose_ideas + auto_propose_skill."""
+    ledger_path = tmp_path / "ledger.jsonl"
+    ledger = ml.MemoryLedger(ledger_path)
+    for i in range(3):
+        ledger.append(session_id="s", type="failure",
+                      summary=f"regex bug {i}", tags=["regex"])
+    monkeypatch.setattr(ald, "DEFAULT_LEDGER_PATH", ledger_path)
+    ald.main()
+    entries = ledger._load_all()
+    ideas = [e for e in entries if e.get("type") == "idea"]
+    proposals = [e for e in ideas if "skill-proposal" in e.get("tags", [])]
+    distill_ideas = [e for e in ideas if "distill:" in str(e.get("tags", []))]
+    assert len(distill_ideas) >= 1, "propose_ideas should still run"
+    assert len(proposals) >= 1, "auto_propose_skill should also run"

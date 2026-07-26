@@ -117,15 +117,87 @@ def propose_ideas(
     return proposed
 
 
+def auto_propose_skill(
+    ledger_path: Path | str = DEFAULT_LEDGER_PATH,
+    *,
+    min_count: int = DEFAULT_MIN_COUNT,
+) -> int:
+    """When a failure pattern repeats ≥ min_count, auto-draft a skill proposal.
+
+    The draft is written as a ledger type=idea entry tagged 'skill-proposal'
+    so SessionStart surfaces it. This does NOT register the skill — user must
+    explicitly confirm via apply_proposal() (see scripts/lib/a_loop_skill.py).
+
+    Idempotent: if a skill-proposal for this pattern already exists, skip.
+
+    Returns count of new proposals drafted.
+    """
+    patterns = count_failure_patterns(ledger_path, min_count=min_count)
+    if not patterns:
+        return 0
+    ledger = memory_ledger.MemoryLedger(ledger_path)
+    # Check existing skill-proposal ideas for idempotency
+    existing_entries = ledger._load_all()
+    existing_proposal_tags = set()
+    for e in existing_entries:
+        if e.get("type") == "idea" and "skill-proposal" in e.get("tags", []):
+            for t in e.get("tags", []):
+                if t.startswith("proposal:"):
+                    existing_proposal_tags.add(t.lower())
+
+    drafted = 0
+    for p in patterns:
+        tag = p["tag"]
+        proposal_marker = f"proposal:guard-{tag.lower().replace(' ', '-')}"
+        if proposal_marker in existing_proposal_tags:
+            continue
+        # Use a_loop_skill.propose_skill_for_pattern to build the draft
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "lib"))
+            import a_loop_skill
+            proposal = a_loop_skill.propose_skill_for_pattern(
+                tag=tag,
+                failure_count=p["count"],
+                sample_summaries=p["sample_summaries"],
+            )
+        except Exception:
+            # Fallback if a_loop_skill not importable
+            proposal = {
+                "name": f"guard-{tag.lower().replace(' ', '-')}",
+                "description": f"Guard for {tag} failures ({p['count']}x)",
+            }
+        # Write as idea entry tagged skill-proposal
+        summary = (
+            f"SKILL PROPOSAL: {proposal['name']} — {proposal.get('description', '')[:80]} "
+            f"(failure pattern '{tag}' seen {p['count']}x). "
+            f"Confirm via /A-Loop Phase 4 or apply_proposal()."
+        )
+        ledger.append(
+            session_id="a-loop-distill",
+            type="idea",
+            summary=summary,
+            tags=[proposal_marker, "skill-proposal", "a-loop", tag.lower()],
+        )
+        drafted += 1
+    return drafted
+
+
 def main() -> int:
-    """Hook entry point. Exits 0 always (never blocks)."""
+    """Hook entry point. Exits 0 always (never blocks).
+
+    Runs both:
+      1. propose_ideas — distill ideas from failure patterns
+      2. auto_propose_skill — draft skill proposals for repeated patterns
+    """
     if os.environ.get("HOOK_SKIP") == "a_loop_distill":
         return 0
     try:
-        n = propose_ideas(DEFAULT_LEDGER_PATH)
-        if n > 0:
+        n_ideas = propose_ideas(DEFAULT_LEDGER_PATH)
+        n_proposals = auto_propose_skill(DEFAULT_LEDGER_PATH)
+        if n_ideas > 0 or n_proposals > 0:
             sys.stderr.write(
-                f"[a-loop-distill] proposed {n} idea(s) from repeated failure patterns\n"
+                f"[a-loop-distill] {n_ideas} idea(s) + {n_proposals} skill proposal(s) "
+                f"from repeated failure patterns\n"
             )
     except Exception as e:
         sys.stderr.write(f"[a-loop-distill] error: {e}\n")
