@@ -106,6 +106,68 @@ class TestEntryPoint:
             assert phase in routing.VALID_A_PHASES
 
 
+ROUTER_DOC = REPO_ROOT / "skills" / "engineering-lifecycle" / "awiki-lifecycle-router" / "SKILL.md"
+COMMAND_DOCS = sorted((REPO_ROOT / "commands").glob("A-*.md"))
+
+
+def _refs_resolve(path: Path) -> tuple[list[str], list[str]]:
+    by_name = {s["name"]: s for s in REGISTRY.skills}
+    body = path.read_text(encoding="utf-8").split("---", 2)[-1]
+    refs = skill_refs(body)
+    missing = [
+        r for r in refs
+        if REGISTRY.get(r) is None and not (REPO_ROOT / "agents" / f"{r}.md").exists()
+    ]
+    deprecated = [r for r in refs if by_name.get(r, {}).get("status") == "deprecated"]
+    return missing, deprecated
+
+
+class TestLifecycleRouter:
+    """The router rotted once already — seven routes into a build/ directory
+    that does not exist. Nothing noticed for months. Now it is checked."""
+
+    def test_router_references_resolve(self):
+        missing, deprecated = _refs_resolve(ROUTER_DOC)
+        assert not missing, f"awiki-lifecycle-router references missing skill(s): {missing}"
+        assert not deprecated, f"awiki-lifecycle-router routes to deprecated: {deprecated}"
+
+    def test_router_points_at_the_generated_table(self):
+        text = ROUTER_DOC.read_text(encoding="utf-8")
+        assert "A-ROUTER.md" in text, "router must defer to the generated table"
+
+    def test_router_does_not_route_into_a_nonexistent_directory(self):
+        text = ROUTER_DOC.read_text(encoding="utf-8")
+        for dead in ("build/incremental-implementation", "build/frontend-ui-engineering",
+                     "build/test-driven-development", "build/context-engineering"):
+            assert dead not in text, f"router still routes to nonexistent {dead}"
+
+
+@pytest.mark.parametrize("doc", COMMAND_DOCS, ids=lambda p: p.name)
+class TestCommandDocs:
+    def test_references_resolve(self, doc):
+        missing, deprecated = _refs_resolve(doc)
+        assert not missing, f"{doc.name} references missing skill(s): {missing}"
+        assert not deprecated, f"{doc.name} references deprecated skill(s): {deprecated}"
+
+    def test_maps_to_an_existing_skill_file(self, doc):
+        text = doc.read_text(encoding="utf-8")
+        m = re.search(r"Maps to: `([^`]+)`", text)
+        assert m, f"{doc.name} has no 'Maps to:' line"
+        assert (REPO_ROOT / m.group(1)).exists(), f"{doc.name} maps to a missing file"
+
+    def test_title_is_not_truncated_mid_word(self, doc):
+        first = doc.read_text(encoding="utf-8").splitlines()[0]
+        assert not re.search(r"[A-Za-z]\.\.\.$", first), f"{doc.name} title cut mid-word"
+
+
+class TestCommandCoverage:
+    def test_every_entry_point_has_a_command_doc(self):
+        names = {d.name.lower().replace(".md", "") for d in COMMAND_DOCS}
+        for s in ENTRY_POINTS:
+            hint = (s.get("invocation_hint") or f"/{s['name']}").split()[0].lstrip("/")
+            assert hint.lower() in names, f"{s['name']} has no commands/{hint}.md"
+
+
 class TestTriggerHygiene:
     def test_no_two_skills_claim_the_same_trigger(self):
         """A shared trigger makes routing order-dependent and unpredictable."""
