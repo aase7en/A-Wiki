@@ -471,6 +471,11 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .breadcrumb .bc-sep{color:var(--n-600);opacity:.6}
 .breadcrumb #bc-current{color:var(--n-900);font-weight:600}
 
+/* === T5 (v20) — Linear DNA: tab activity indicator === */
+.view-btn{position:relative}
+.view-btn .tab-activity{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--brand);box-shadow:0 0 6px var(--brand);opacity:0;transition:opacity var(--t-normal)}
+.view-btn.has-activity .tab-activity{opacity:1;animation:fade-in var(--t-fast)}
+
 /* === CHUNK C18 — Cmd+K palette minimal styles === */
 .palette-row .ic-skill{color:var(--brand)}
 .palette-row .ic-view{color:var(--n-700)}

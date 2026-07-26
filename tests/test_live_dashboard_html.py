@@ -1812,6 +1812,36 @@ def test_v20_sidebar_has_section_labels():
     assert has_sections, "sidebar must have section labels (Recent/Bookmarked/...)"
 
 
+# ── v20 T5 — tab activity indicator ─────────────────────────────────────────
+def test_v20_tab_activity_dot_css():
+    """styles.css must define an activity-dot class — small blue dot
+    indicating a view has fresh activity (Linear/Vercel pattern)."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Look for a 'dot' or 'activity' class with brand color background.
+    import re as _re
+    has_dot = bool(_re.search(r"\.(tab-dot|activity-dot|view-dot|tab-activity)\b", css))
+    assert has_dot, (
+        "styles.css must define a tab activity dot class (Linear/Vercel hallmark)"
+    )
+
+
+def test_v20_view_btn_supports_activity_state():
+    """view-btn or setView must support an 'activity' state that shows the
+    dot. JS in app.js must expose a function or class toggle for it."""
+    app = (DASHBOARD_DIR / "src" / "app.js").read_text(encoding="utf-8")
+    # Either a function like setTabActivity(name, on) OR a class manipulation
+    # 'tab-activity' / 'has-activity' on view-btn.
+    has_activity_api = (
+        "setTabActivity" in app
+        or "tab-activity" in app
+        or "has-activity" in app
+        or "markTabActive" in app
+    )
+    assert has_activity_api, (
+        "app.js must expose tab activity indicator (e.g. setTabActivity(name))"
+    )
+
+
 # ── v19 chunk B19 — Header icons replacement ────────────────────────────────
 def test_v19_header_no_emoji_in_buttons():
     """#header buttons must not contain emoji text. v19 replaces with

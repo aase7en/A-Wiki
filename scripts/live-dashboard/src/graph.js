@@ -84,9 +84,11 @@ case'delegate_done':onDelDone(ev);updateLane(ev);break;
 pushTimeline(ev);
 }
 function onSession(ev){hotWf('session',8000);setOriginStatus('session started','var(--accent-success)');
+if(typeof setTabActivity==='function')setTabActivity('timeline',true);
 spawnThought(' session started',{tone:'green',anchor:'origin'});}
 function onHook(ev){
 const{hook='',tool='',result='pass',tier=''}=ev;S.hookCount++;bumpCounter('s-hooks',S.hookCount);
+if(typeof setTabActivity==='function')setTabActivity('timeline',true);
 if(hook.includes('delegation_gate'))hotWf('plan',5000);
 else if(hook.includes('cost_tier'))hotWf('cost',4000);
 else if(hook.includes('session'))hotWf('session',6000);
@@ -100,6 +102,7 @@ strip.querySelectorAll('.hook-badge').forEach((el,i)=>{if(i>8)el.remove();else i
  else if(result==='warn')spawnThought(` ${short}`,{tone:'gold',anchor:'origin'});
 }
 function onCost(ev){const{tier='?',task=''}=ev;hotWf('cost',5000);setTier(tier);updateCostKPI(tier);
+if(typeof setTabActivity==='function')setTabActivity('cost',true);
 setOriginStatus(`tier ${tier}${task?' · '+task:''}`,'var(--accent-warm)');
 spawnThought(` tier ${tier}${task?' · '+task:''}`,{tone:'gold',anchor:'origin'});}
 function setTier(tier){
@@ -109,6 +112,7 @@ const pct=S._tiers[tier]??50;$('tier-fill').style.width=pct+'%';
 function onDelStart(ev){
 const{model='unknown',task='?'}=ev;hotWf('swarm',12000);
 const key=modelKey(model);S.modelsUsed.add(key);bumpCounter('s-models',S.modelsUsed.size);
+if(typeof setTabActivity==='function'){setTabActivity('subagents',true);setTabActivity('analytics',true);}
 S.active[key]={ts:Date.now(),task,model};S.activeCount++;updateParallel();drawBranchLines();
 flowActivate(model,task);
 spawnThought(`▸ ${modelShort(model)} · ${task}`,{tone:'violet',anchor:'station',model:key});
@@ -133,6 +137,7 @@ showNotif('Delegation ล้มเหลว',modelShort(model)+(reason?' · '+re
 // bucket:'deepseek', result:'pass'|'fail', latency_ms, tokens_in, tokens_out}.
 function onSubagentInvoke(ev){
 const{subagent_type='?',model='',result='pass',latency_ms=0,tokens_out=0}=ev;
+if(typeof setTabActivity==='function'){setTabActivity('subagents',true);setTabActivity('analytics',true);}
 hotWf('swarm',8000);
 const key=modelKey(model||subagent_type);
 S.modelsUsed.add(key);bumpCounter('s-models',S.modelsUsed.size);

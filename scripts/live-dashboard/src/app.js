@@ -565,6 +565,24 @@ let currentView='summary';
 // setView(v) skips the heavy-load call on revisit unless force=true is passed
 // (Refresh buttons use force=true to bypass the guard and re-fetch).
 const _loaded={};
+// T5 (v20): tab activity indicator — small blue dot when a non-active view
+// receives fresh SSE data. Linear/Vercel pattern for surfacing background
+// activity without forcing the user to switch tabs.
+function setTabActivity(viewName,on){
+  const btn=document.getElementById('btn-'+viewName);
+  if(!btn)return;
+  // Lazily inject the dot element on first call.
+  let dot=btn.querySelector('.tab-activity');
+  if(!dot){
+    dot=document.createElement('span');
+    dot.className='tab-activity';
+    dot.setAttribute('aria-hidden','true');
+    btn.appendChild(dot);
+  }
+  // Don't show activity dot on the currently active view.
+  if(on&&currentView===viewName)return;
+  btn.classList.toggle('has-activity',!!on);
+}
 function setView(v,opts){
 const force=opts&&(opts.force===true);
 // D16: stop background simulators when leaving their host view. Without
@@ -580,6 +598,8 @@ currentView=v;
 const bc=$('bc-current'),bcWrap=$('breadcrumb');
 if(bc)bc.textContent=v.charAt(0).toUpperCase()+v.slice(1);
 if(bcWrap)bcWrap.setAttribute('data-section',v);
+// T5 (v20): clear activity dot on the view the user is now viewing.
+setTabActivity(v,false);
 const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost'),rc=$('btn-race');
 sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');rc&&rc.classList.toggle('active',v==='race');
 // CHUNK B9: update ARIA tab state (roving tabindex — only active tab is focusable).
