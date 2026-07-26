@@ -15046,6 +15046,218 @@
       "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
       "invocation": "manual",
       "invocation_hint": "/A-Council \"<topic>\""
+    },
+    {
+      "name": "gsap",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "GSAP (timelines, ScrollTrigger, stagger, transforms) for HTML/CSS/JS/React. Patterns for smooth motion, performance, common pitfalls. Fills A-Wiki gap (no GSAP skill previously).",
+      "invocation": "manual",
+      "th_description": "GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่องว่าง A-Wiki (ไม่มี GSAP มาก่อน)",
+      "when_to_use": "ต้องการ animation บนเว็บแบบมืออาชีพด้วย GSAP",
+      "invocation_hint": "/gsap"
+    },
+    {
+      "name": "cinematic-gsap-lenis-motion-system",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/cinematic-gsap-lenis-motion-system/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Premium cinematic web motion with GSAP + ScrollTrigger + Lenis. Luxury editorial, Awwwards-style, smooth scroll reveals, parallax, pinned sections, magnetic hover, custom cursors.",
+      "invocation": "manual",
+      "th_description": "Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll reveals, parallax, pinned sections, magnetic hover, custom cursors",
+      "when_to_use": "อยากได้เว็บระดับ Awwwards พร้อม scroll-driven cinematic motion",
+      "invocation_hint": "/cinematic-gsap-lenis-motion-system"
+    },
+    {
+      "name": "gsap-scrolltrigger-storytelling",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap-scrolltrigger-storytelling/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Cinematic sticky product storytelling with GSAP ScrollTrigger. Progressive UI reveals, scroll-synced animation, smooth interpolation, immersive section transitions.",
+      "invocation": "manual",
+      "th_description": "Storytelling แบบ sticky scroll ด้วย GSAP ScrollTrigger — progressive reveals, scroll-synced animation, section transitions",
+      "when_to_use": "product storytelling แบบ sticky scroll",
+      "invocation_hint": "/gsap-scrolltrigger-storytelling"
+    },
+    {
+      "name": "webgl-3d-object",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/webgl-3d-object/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Real 3D WebGL object with mesh depth, PBR material, directional + ambient lighting, perspective camera, subtle rotation, floating motion. For hero 3D objects with real lighting (not CSS tricks).",
+      "invocation": "manual",
+      "th_description": "วัตถุ 3D บนเว็บด้วย WebGL — mesh depth, PBR material, แสงจริง, perspective camera, subtle rotation, floating motion",
+      "when_to_use": "ต้องการ 3D hero object บนเว็บที่มีแสงจริง ไม่ใช่ CSS transform trick",
+      "invocation_hint": "/webgl-3d-object"
+    },
+    {
+      "name": "add-shader-cursor-trail",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/add-shader-cursor-trail/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "WebGPU mouse effect — white twinkling halftone cursor trail via ChromaFlow, masked through DotGrid, chromatic ripples, film grain. Touch/a11y/SSR/perf fallbacks included.",
+      "invocation": "manual",
+      "th_description": "เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks",
+      "when_to_use": "ต้องการ interactive cursor-following shader บน hero/contact section",
+      "invocation_hint": "/add-shader-cursor-trail"
+    },
+    {
+      "name": "shaders-cursor-ripples",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/shaders-cursor-ripples/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Cursor-following fluid WebGPU distortion over an image via Shaders library (ImageTexture + CursorRipples). For hero/gallery water-ripple mouse effect.",
+      "invocation": "manual",
+      "th_description": "เอฟเฟกต์น้ำเกร่อน (water ripple) ตามเมาส์บนรูปด้วย WebGPU + Shaders library",
+      "when_to_use": "hero/gallery ต้องการ water-ripple mouse effect",
+      "invocation_hint": "/shaders-cursor-ripples"
+    },
+    {
+      "name": "threejs",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/threejs/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Three.js for web — scene/camera/renderer, lights/materials, GLTF loading, controls, performance. Designer-focused (3D UI moments), complements gamedev-skills/threejs-*.",
+      "invocation": "manual",
+      "th_description": "Three.js สำหรับเว็บ — scene/camera/renderer, lights, GLTF, controls, performance (เน้น designer perspective)",
+      "when_to_use": "สร้าง 3D scene บนเว็บ (ไม่ใช่ game engine)",
+      "invocation_hint": "/threejs-web"
+    },
+    {
+      "name": "design-first-ui-prompting",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "define",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/ui/design-first-ui-prompting/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Design-first prompting template: goal -> format -> layout -> type -> color -> constraints + 'variants > rerolls' workflow. Spec-driven UI prompting for consistent outputs. Augments a-think step 4.",
+      "invocation": "manual",
+      "th_description": "เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + variants > rerolls workflow",
+      "when_to_use": "ต้องการ spec-driven UI prompting ที่ consistent",
+      "invocation_hint": "/design-first-ui-prompting"
+    },
+    {
+      "name": "audit-reference-originality",
+      "aliases": [],
+      "domain": [
+        "design",
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/codex/audit-reference-originality/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Audit website vs supplied reference corpus for originality/plagiarism risk. Evidence-backed red flags; distinguishes common visual grammar from distinctive copying; proposes fixes.",
+      "invocation": "manual",
+      "th_description": "ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้",
+      "when_to_use": "ต้องการตรวจสอบว่าเว็บเรา copy reference มากเกินไปหรือไม่",
+      "invocation_hint": "/audit-reference-originality"
+    },
+    {
+      "name": "optimize-web-animations",
+      "aliases": [],
+      "domain": [
+        "design",
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/codex/optimize-web-animations/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Profile + optimize frontend animation performance — CSS animations, canvas/WebGL rAF loops, GSAP/Three/Matter effects, memory leaks, jank. 'Only play in view' optimization.",
+      "invocation": "manual",
+      "th_description": "Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks, jank, 'only play in view'",
+      "when_to_use": "เว็บช้า/กิน CPU/GPU จาก animation ต้องการ optimize",
+      "invocation_hint": "/optimize-web-animations"
     }
   ]
 }

@@ -7,15 +7,15 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 384 · **Aliases/deprecated**: 13
+**Total canonical skills**: 394 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 188 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 190 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
-| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
+| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 24 |
 | `ux-ui` | UX/UI / Frontend / a11y | 9 |
 | `engineering` | วิศวกร / Architect / Agent harness | 44 |
 | `trader` | เทรด / DeFi / ตลาด | 13 |
@@ -54,6 +54,7 @@
 | `angular-developer` | none | ecosystem | สร้าง Angular code และให้คำแนะนำด้านสถาปัตยกรรม ใช้เมื่อเริ่มโปรเจกต์ใหม่ สร้าง component หรือ se... |
 | `api-connector-builder` | none | ecosystem | สร้าง API connector หรือ provider ใหม่ โดยจับคู่รูปแบบการ integrate ที่มีอยู่แล้วใน repo เป้าหมาย... |
 | `api-design` | none | ecosystem | ออกแบบ REST/GraphQL API — endpoint, schema, versioning, error format |
+| `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `autoglm-browser-agent` | none | uncategorized | ทักษะนี้ช่วยให้ AI Agent สามารถควบคุมเบราว์เซอร์เพื่อทำงานอัตโนมัติ เช่น การนำทาง การกรอกฟอร์ม แล... |
 | `automation-audit-ops` | none | ecosystem | ตรวจสอบและทำรายการ automation ทั้งหมดในระบบ ECC อย่างเป็นระบบ โดยเน้นหลักฐานเชิงประจักษ์ เพื่อระบ... |
 | `awiki-brain-improvement-gate` | none | wiki | ใช้ก่อนแก้ไขความสามารถของ A-Wiki brain, agent instructions, skills, hooks, plugins, scripts, sync... |
@@ -156,6 +157,7 @@
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
 | `openai-docs` | none | uncategorized | ใช้ค้นหาหรืออ้างอิงเอกสารทางการของ OpenAI สำหรับการสร้างแอปพลิเคชันด้วย API, Codex, หรือผลิตภัณฑ์... |
 | `openclaw-persona-forge` | none | ecosystem | สร้างและปรับแต่งบุคลิกภาพ (Persona) ให้กับ OpenClaw AI Agent อย่างสมบูรณ์ ตั้งแต่การกำหนดตัวตน, ค... |
+| `optimize-web-animations` | review | vendor-mengto | Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks... |
 | `parallel-execution-optimizer` | none | uncategorized | ใช้เมื่อต้องการให้งานเสร็จเร็วขึ้นด้วยการทำงานแบบ parallel, concurrent agents, batched tool calls... |
 | `pdf` | none | uncategorized | ใช้เมื่อต้องการทำงานกับไฟล์ PDF เช่น อ่านหรือดึงข้อความ/ตารางจาก PDF รวมหรือรวมหลายไฟล์ PDF เข้าด... |
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
@@ -250,19 +252,29 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
+| `add-shader-cursor-trail` | build | vendor-mengto | เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks |
+| `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `brand-guidelines` | none | uncategorized | ใช้สีและฟอนต์ของแบรนด์ Anthropic กับ artifact ใดๆ เพื่อให้มีลุคและฟีลแบบทางการของ Anthropic |
 | `brand-voice` | none | ecosystem | สร้างโปรไฟล์สไตล์การเขียนจากเนื้อหาจริง เช่น โพสต์ บทความ เอกสาร หรือเว็บไซต์ จากนั้นนำโปรไฟล์นั้... |
 | `canvas-design` | none | uncategorized | สร้างงานศิลปะภาพและเอกสาร .png และ .pdf ที่สวยงาม โดยใช้หลักการออกแบบและปรัชญาศิลปะ เหมาะสำหรับทำ... |
+| `cinematic-gsap-lenis-motion-system` | build | vendor-mengto | Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll... |
 | `codebase-design` | build | mattpocock | ชุดคำศัพท์และแนวคิดสำหรับออกแบบโมดูลที่ลึก (deep modules) โดยเน้นการหาโอกาสในการขยาย (deepening o... |
+| `design-first-ui-prompting` | define | vendor-mengto | เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + varia... |
 | `design-system` | none | ecosystem | ใช้สร้างหรือตรวจสอบ design system ตรวจสอบความสม่ำเสมอทางภาพ และรีวิว PR ที่เกี่ยวข้องกับสไตล์ |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
 | `frontend-design` | none | uncategorized | ออกแบบ UI/UX หน้าเว็บ — layout, color, typography, component |
 | `frontend-design-direction` | none | ecosystem | ตั้ง design direction เฉพาะของ ECC สำหรับ production UI — เลือก style, color, motion ให้เข้ากับงาน |
+| `gsap` | build | vendor-mengto | GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่อง... |
+| `gsap-scrolltrigger-storytelling` | build | vendor-mengto | Storytelling แบบ sticky scroll ด้วย GSAP ScrollTrigger — progressive reveals, scroll-synced anima... |
 | `liquid-glass-design` | none | ecosystem | ระบบ design แบบ Liquid Glass ของ iOS 26 — glass material ที่มี blur, reflection, motion โต้ตอบ |
+| `optimize-web-animations` | review | vendor-mengto | Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks... |
+| `shaders-cursor-ripples` | build | vendor-mengto | เอฟเฟกต์น้ำเกร่อน (water ripple) ตามเมาส์บนรูปด้วย WebGPU + Shaders library |
 | `taste-skill` | build | design | Anti-slop frontend taste layer (Leonxlnx/taste-skill, MIT, 59.4k star) — infers design intent for... |
 | `theme-factory` | none | uncategorized | ชุดเครื่องมือสำหรับปรับแต่งสไตล์ของ artifacts เช่น สไลด์ เอกสาร รายงาน หรือหน้า HTML Landing Page... |
+| `threejs` | build | vendor-mengto | Three.js สำหรับเว็บ — scene/camera/renderer, lights, GLTF, controls, performance (เน้น designer p... |
 | `transitions-dev` | build | design | 18 production-ready CSS transitions + reveal/review/apply audit workflow (Jakubantalik/transition... |
 | `ui-ux-pro-max` | build | design | Searchable local design-intelligence database (nextlevelbuilder/ui-ux-pro-max-skill, MIT) — 161 p... |
+| `webgl-3d-object` | build | vendor-mengto | วัตถุ 3D บนเว็บด้วย WebGL — mesh depth, PBR material, แสงจริง, perspective camera, subtle rotatio... |
 
 ### `ux-ui` — UX/UI / Frontend / a11y
 
@@ -610,11 +622,11 @@
 
 Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VERIFY→REVIEW→SHIP):
 
-- **DEFINE**: `a-plan`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
+- **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
+- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
-- **REVIEW**: `a-council`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
+- **REVIEW**: `a-council`, `audit-reference-originality`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-business`, `a-loop`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 

@@ -1,9 +1,10 @@
 ---
 name: a-think
 description: "Core reasoning loop ที่ run ก่อนตอบ non-trivial request — merge fable-method (eval-driven, Sahir619) + fable5-standards (A-Wiki native). 7 steps: Restate → Done-criteria → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Trigger: design/debug/migration/multi-step/competing-approaches/security-sensitive. Skip: simple lookup, typo fix, ingest ตรง. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้ (manual + referenced)."
-version: 1.0.1
+version: 1.1.0
 author: A-Wiki (fable merge)
 tags: [reasoning, fable, fable5, planning, debug]
+# 2026-07-26 v1.1.0: augment step 4 with design-first prompting template (MengTo pattern)
 ---
 
 # A-Think — Core Reasoning Loop
@@ -63,6 +64,17 @@ tags: [reasoning, fable, fable5, planning, debug]
 |---|---|---|---|---|
 | A | ... | ... | ... | two-way |
 | B | ... | ... | ... | one-way ⚠️ |
+
+**สำหรับ UI/design task** — ใช้ **design-first prompting template** ( MengTo/Skills pattern):
+```
+goal      →  อะไรคือ outcome? (เช่น "hero 3D ที่ดู premium")
+format    →  เอาท์พุตแบบไหน? (HTML / React / Vue / แค่ code snippet)
+layout    →  structure: hero / grid / sticky / pinned / parallax
+type      →  font + scale: serif/sans, display/body, weight
+color     →  palette: base/accent/neutral + mood (dark/light/glass)
+constraints → hard limits: a11y AA, perf budget, no external deps, mobile-first
+```
+แล้ว generate **variants ≥ 2** (ไม่ใช่ reroll ตัวเดิม) — แต่ละ variant เปลี่ยน ≥ 2 มิติ (เช่น layout + color) เพื่อให้เปรียบเทียบได้จริง ดู `design-first-ui-prompting` skill เต็มรูปแบบ
 
 ### 5. Pre-mortem
 - "ถ้าคำตอบนี้ผิด เพราะอะไร?"

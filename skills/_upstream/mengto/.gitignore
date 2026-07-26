@@ -1,0 +1,8 @@
+# Refreshed by scripts/refresh-mengto.sh — DO NOT hand-edit.
+#
+# Sync strategy: extract-only (no full clone). scripts/refresh-mengto.sh wipes
+# this dir and re-extracts ONLY the 10 cherry-picks listed in CHERRY_PICKS.
+# So this dir contains nothing else on disk → no .gitignore block-list needed.
+#
+# If you accidentally `cp` more upstream files here, they WILL be tracked by git.
+# To prevent that, run `bash scripts/refresh-mengto.sh` to reset to cherry-picks only.
