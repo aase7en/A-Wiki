@@ -45,6 +45,7 @@
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
 | `a-business` | `/A-Business` | any | `ธุรกิจ` · `ลงทุน` · `โครงการส่วนตัว` · `business` |
+| `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
 | `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 
@@ -97,4 +98,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_8 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_9 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_

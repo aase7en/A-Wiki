@@ -3,6 +3,54 @@
   "generated_at": "2026-07-27",
   "skills": [
     {
+      "name": "a-escalate",
+      "aliases": [
+        "/a-escalate",
+        "aescalate"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-escalate/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "สร้าง prompt แบบ self-contained ส่งให้ model ที่เก่งกว่าช่วยคิด — goal, constraints, สิ่งที่ลองแล้ว, ไฟล์, done-criteria, คำถามเดียว. เขียนลง exports/escalate/ ไม่ส่งออกเอง",
+      "invocation": "manual",
+      "th_description": "แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส่งข้อมูลออกอัตโนมัติ",
+      "when_to_use": "งานเกินความสามารถ model ปัจจุบัน, ติดวนหลายรอบ, ต้องการ second opinion จากโมเดลใหญ่กว่า",
+      "examples": [
+        {
+          "scenario": "debug วน 3 รอบไม่จบ",
+          "how": "/A-Escalate --goal ... --question ..."
+        },
+        {
+          "scenario": "ตัดสินใจ architecture ใหญ่",
+          "how": "/A-Escalate + --file ไฟล์ที่เกี่ยว"
+        }
+      ],
+      "process_steps": [
+        "รวบรวม goal + constraints",
+        "ดึงสิ่งที่ลองแล้วจาก memory-ledger",
+        "แนบ excerpt ไฟล์",
+        "render เป็น exports/escalate/<slug>.md",
+        "user ก๊อปไปวาง"
+      ],
+      "invocation_hint": "/A-Escalate",
+      "a_phase": "any",
+      "triggers": [
+        "ส่งให้โมเดลอื่น",
+        "escalate",
+        "ถามโมเดลที่เก่งกว่า",
+        "second opinion"
+      ]
+    },
+    {
       "name": "a-router",
       "aliases": [
         "/a-router",
