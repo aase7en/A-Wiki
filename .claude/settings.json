@@ -135,6 +135,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks/check_compaction_suggest.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/check_a_route.py"
                     }
                 ]
             }

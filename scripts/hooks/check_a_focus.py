@@ -48,7 +48,15 @@ ALWAYS_OK_PREFIXES = ("docs/", "wiki/", ".tmp/", "decisions/", "journal/", "expo
 
 
 def _utf8_streams() -> None:
-    """Windows consoles default to cp874/cp1252 — mandatory before Thai output."""
+    """Force UTF-8 on all three streams. Windows here defaults to cp874/cp1252.
+
+    stdin included: the payload carries file paths and (via the focus file) Thai
+    goal text. Decoding stdin with the ambient codepage silently mangles both.
+    """
+    try:
+        sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):
+        pass
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.reconfigure(encoding="utf-8", errors="replace")
