@@ -3,6 +3,52 @@
   "generated_at": "2026-07-27",
   "skills": [
     {
+      "name": "a-content",
+      "aliases": [
+        "/a-content",
+        "acontent"
+      ],
+      "domain": [
+        "media",
+        "business"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-content/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "คอนเทนต์+การตลาด — bind article-writing, brand-voice, seo, content-engine, marketing-campaign, social-publisher, thai-social-caption",
+      "invocation": "manual",
+      "th_description": "งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล",
+      "when_to_use": "เขียนบทความ, วางแผน campaign, โพสต์โซเชียล, SEO",
+      "examples": [
+        {
+          "scenario": "เขียนบทความ",
+          "how": "/A-Content"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Content",
+      "a_phase": "any",
+      "triggers": [
+        "คอนเทนต์",
+        "บทความ",
+        "การตลาด",
+        "content",
+        "marketing",
+        "seo"
+      ]
+    },
+    {
       "name": "a-escalate",
       "aliases": [
         "/a-escalate",
@@ -51,6 +97,95 @@
       ]
     },
     {
+      "name": "a-invest",
+      "aliases": [
+        "/a-invest",
+        "ainvest"
+      ],
+      "domain": [
+        "trader",
+        "business"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-invest/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "การลงทุน — bind finance-pipeline, monte-carlo-quant-analysis, ito-*, prediction-market-risk-review",
+      "invocation": "manual",
+      "th_description": "งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence",
+      "when_to_use": "วิเคราะห์การลงทุน, ประเมินความเสี่ยง, เปรียบเทียบพอร์ต",
+      "examples": [
+        {
+          "scenario": "วิเคราะห์การลงทุน",
+          "how": "/A-Invest"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Invest",
+      "a_phase": "any",
+      "triggers": [
+        "ลงทุน",
+        "หุ้น",
+        "พอร์ต",
+        "investment",
+        "portfolio"
+      ]
+    },
+    {
+      "name": "a-research",
+      "aliases": [
+        "/a-research",
+        "aresearch"
+      ],
+      "domain": [
+        "engineering",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-research/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "วิจัย/วิเคราะห์/ตรวจสอบข้อมูล — bind deep-research, web-research, iterative-retrieval, ask-notebooklm, literature-review",
+      "invocation": "manual",
+      "th_description": "งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว",
+      "when_to_use": "หาข้อมูล, literature review, market research, ตรวจสอบแหล่งอ้างอิง",
+      "examples": [
+        {
+          "scenario": "หาข้อมูล",
+          "how": "/A-Research"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Research",
+      "a_phase": "any",
+      "triggers": [
+        "วิจัย",
+        "ค้นคว้า",
+        "research",
+        "สืบค้น"
+      ]
+    },
+    {
       "name": "a-router",
       "aliases": [
         "/a-router",
@@ -90,6 +225,52 @@
       ],
       "invocation_hint": "/A-Router",
       "a_phase": "any"
+    },
+    {
+      "name": "a-web",
+      "aliases": [
+        "/a-web",
+        "aweb"
+      ],
+      "domain": [
+        "engineering",
+        "ux-ui",
+        "code"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-web/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "สร้างเว็บ/frontend — bind react-patterns, nextjs-turbopack, frontend-design, api-design, e2e-testing, frontend-a11y",
+      "invocation": "manual",
+      "th_description": "งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance",
+      "when_to_use": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
+      "examples": [
+        {
+          "scenario": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
+          "how": "/A-Web"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Web",
+      "a_phase": "any",
+      "triggers": [
+        "สร้างเว็บ",
+        "เว็บไซต์",
+        "frontend",
+        "react",
+        "nextjs"
+      ]
     },
     {
       "name": "a-wiki-commands",
@@ -425,7 +606,6 @@
       "invocation_hint": "/A-Business",
       "triggers": [
         "ธุรกิจ",
-        "ลงทุน",
         "โครงการส่วนตัว",
         "business"
       ],

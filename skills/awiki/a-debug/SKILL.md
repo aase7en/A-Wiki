@@ -7,6 +7,7 @@ domain: [debug, code]
 lifecycle_phase: verify
 category: pipeline
 agents: [all]
+status: canonical
 invocation: manual
 # 2026-07-23: both → manual — parent aggregator ไม่ควรโหลดเข้าทุก session (ประหยัด ~1.4k tokens; เรียกเอาเมื่อ /A-Debug)
 ---
@@ -63,7 +64,7 @@ Aggregator สำหรับ debug — บังคับ Iron Law #1 (failing 
 
 ถ้า repro ไม่ได้ → **ห้าม hypothesize** — ขอ env access / log / artifact จาก user
 
-**Root-cause gate (เดิมเป็น stage แยก `root-cause-first` — deprecated, `migrated_to: debug-mantra`):**
+**Root-cause gate** (เดิมเป็น stage แยกชื่อ root-cause-first ซึ่ง deprecated แล้ว → migrated_to debug-mantra):
 - ห้าม fix ปมผิด (symptom)
 - ใช้ 5-Whys หรือ fishbone ถ้าซับซ้อน
 - ยืนยัน root cause ผ่าน disproof experiment

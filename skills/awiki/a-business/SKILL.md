@@ -1,12 +1,13 @@
 ---
 name: a-business
-description: "งานธุรกิจส่วนตัว — stub รอ user สอนบริบทเพิ่ม. ปัจจุบันชี้ไปยัง: finance-pipeline (investment analysis), project-flow-ops, agent-sort. เมื่อ user ใช้ครั้งแรก → ถามบริบทธุรกิจเพื่ออัพเดท SKILL.md ให้ specific. Trigger: 'ธุรกิจ', 'business', 'ลงทุน', 'โครงการส่วนตัว'."
+description: "งานธุรกิจส่วนตัว — stub รอ user สอนบริบทเพิ่ม. ปัจจุบันชี้ไปยัง: finance-pipeline (investment analysis), project-flow-ops, agent-sort. เมื่อ user ใช้ครั้งแรก → ถามบริบทธุรกิจเพื่ออัพเดท SKILL.md ให้ specific. Trigger: 'ธุรกิจ', 'business', 'โครงการส่วนตัว' (งานลงทุนย้ายไป /A-Invest แล้ว)."
 version: 0.1.0
 author: A-Wiki
 domain: [business, trader]
 lifecycle_phase: meta
 category: pipeline
 agents: [all]
+status: canonical
 invocation: manual
 ---
 

@@ -7,6 +7,7 @@ domain: [engineering, ux-ui, design]
 lifecycle_phase: define
 category: pipeline
 agents: [all]
+status: canonical
 invocation: manual
 # 2026-07-23: both → manual — parent aggregator ไม่ควรโหลดเข้าทุก session (ประหยัด ~1.2k tokens; เรียกเอาเมื่อ /A-Plan)
 ---
