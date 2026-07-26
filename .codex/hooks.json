@@ -100,6 +100,10 @@
           {
             "type": "command",
             "command": "bash .codex/hooks/post-wiki-edit-gen-index.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py auto-council-trigger"
           }
         ]
       },
@@ -188,6 +192,10 @@
           {
             "type": "command",
             "command": "bash .codex/hooks/stop-auto-commit.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py self-audit"
           }
         ]
       }

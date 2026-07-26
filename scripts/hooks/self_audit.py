@@ -32,6 +32,44 @@ DEFAULT_BB_PATH = REPO_ROOT / ".tmp" / "blackboard.jsonl"
 DEFAULT_LEDGER_PATH = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
 
 
+def check_unreviewed_councils(bb_path: Path | str = DEFAULT_BB_PATH) -> list[dict]:
+    """Find auto-council threads tagged 'needs-review' that have NO perspectives yet.
+
+    These are councils auto-opened by auto_council_trigger.py for sensitive
+    edits that the user/agent forgot to actually run personas against.
+    Returns list of {thread_id, topic, trigger_file} for un-reviewed councils.
+    """
+    import blackboard as _bb
+    bb_path = Path(bb_path)
+    if not bb_path.is_file():
+        return []
+    bb = _bb.Blackboard(bb_path)
+    msgs = bb.read(limit=10000)
+    # Find openers tagged needs-review
+    openers = {}
+    for m in msgs:
+        tags = m.get("tags", [])
+        if (m.get("type") == "proposal"
+                and "needs-review" in tags
+                and m.get("thread_id")):
+            openers[m["thread_id"]] = {
+                "thread_id": m["thread_id"],
+                "topic": m.get("topic", m.get("body", "")[:60]),
+                "trigger_file": m.get("trigger_file", "?"),
+            }
+    # Filter to those with zero perspectives
+    unreviewed = []
+    for tid, info in openers.items():
+        thread_msgs = bb.read(thread_id=tid)
+        has_perspective = any(
+            m.get("type") == "answer" and "severity" in m
+            for m in thread_msgs
+        )
+        if not has_perspective:
+            unreviewed.append(info)
+    return unreviewed
+
+
 def check_open_councils(bb_path: Path | str = DEFAULT_BB_PATH) -> list[dict]:
     """Find council threads that have at least one perspective.
 
@@ -125,10 +163,11 @@ def record_findings_to_ledger(
 
 
 def main() -> int:
-    """Stop hook entry. Exits 0 always. Warns on critical."""
+    """Stop hook entry. Exits 0 always. Warns on critical + un-reviewed."""
     if os.environ.get("HOOK_SKIP") == "self_audit":
         return 0
     try:
+        # Gate 1: critical findings → block
         gate = evaluate_ship_gate(DEFAULT_BB_PATH)
         if gate["block"]:
             n = record_findings_to_ledger(DEFAULT_LEDGER_PATH, DEFAULT_BB_PATH, gate)
@@ -143,14 +182,28 @@ def main() -> int:
                     f"{c['critical']} critical, {c['important']} important, "
                     f"{c['minor']} minor\n"
                 )
-        else:
-            # Quiet pass — only emit if there were councils at all
-            councils = check_open_councils(DEFAULT_BB_PATH)
-            if councils:
+            return 0
+
+        # Gate 2: un-reviewed auto-councils → warn (not block)
+        unreviewed = check_unreviewed_councils(DEFAULT_BB_PATH)
+        if unreviewed:
+            sys.stderr.write(
+                f"⚠️ [self-audit] {len(unreviewed)} council(s) need review "
+                f"(auto-opened for sensitive edit but no perspectives posted):\n"
+            )
+            for u in unreviewed[:5]:  # cap output
                 sys.stderr.write(
-                    f"✅ [self-audit] {len(councils)} council(s) reviewed, "
-                    f"no critical findings. Safe to ship.\n"
+                    f"   {u['thread_id']}: {u['trigger_file']} — "
+                    f"run /A-Council or personas before ship\n"
                 )
+
+        # Quiet pass if there were councils that DID get reviewed
+        councils = check_open_councils(DEFAULT_BB_PATH)
+        if councils and not unreviewed:
+            sys.stderr.write(
+                f"✅ [self-audit] {len(councils)} council(s) reviewed, "
+                f"no critical findings. Safe to ship.\n"
+            )
     except Exception as e:
         sys.stderr.write(f"[self-audit] error: {e}\n")
     return 0

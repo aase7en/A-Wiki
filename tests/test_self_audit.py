@@ -143,3 +143,64 @@ def test_main_warns_on_critical(monkeypatch, tmp_path, capsys):
     assert "critical" in captured.err.lower() or "block" in captured.err.lower(), (
         f"should warn about critical, got stderr: {captured.err!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# 6. check_unreviewed_councils — finds needs-review councils without perspectives
+# ---------------------------------------------------------------------------
+def test_check_unreviewed_finds_council_without_perspectives(tmp_path):
+    """An auto-council opened but no personas posted → flagged unreviewed."""
+    bb_path = tmp_path / "bb.jsonl"
+    council = cp.Council(bb_path)
+    tid = council.open(topic="auto-review auth.py", participants=["security-auditor"])
+    # Augment opener with needs-review + auto-council tags (simulate trigger hook)
+    import json
+    lines = bb_path.read_text(encoding="utf-8").splitlines()
+    last = json.loads(lines[-1])
+    last.setdefault("tags", []).extend(["auto-council", "needs-review"])
+    last["trigger_file"] = "scripts/auth/login.py"
+    lines[-1] = json.dumps(last, ensure_ascii=False)
+    bb_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    # No perspectives posted → should be flagged
+    unreviewed = sa.check_unreviewed_councils(bb_path)
+    assert len(unreviewed) == 1
+    assert unreviewed[0]["trigger_file"] == "scripts/auth/login.py"
+
+
+def test_check_unreviewed_excludes_councils_with_perspectives(tmp_path):
+    """Auto-council that DID get a perspective → not flagged."""
+    bb_path = tmp_path / "bb.jsonl"
+    council = cp.Council(bb_path)
+    tid = council.open(topic="reviewed", participants=["security-auditor"])
+    council.post_perspective(thread_id=tid, persona="security-auditor",
+                              finding="ok", severity="minor")
+    # Mark as needs-review (simulating trigger hook)
+    import json
+    lines = bb_path.read_text(encoding="utf-8").splitlines()
+    opener = json.loads(lines[0])
+    opener.setdefault("tags", []).extend(["auto-council", "needs-review"])
+    lines[0] = json.dumps(opener, ensure_ascii=False)
+    bb_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    unreviewed = sa.check_unreviewed_councils(bb_path)
+    assert unreviewed == [], "reviewed council should not be flagged"
+
+
+def test_main_warns_on_unreviewed(monkeypatch, tmp_path, capsys):
+    """Stop hook should warn if there are un-reviewed auto-councils."""
+    bb_path = tmp_path / "bb.jsonl"
+    council = cp.Council(bb_path)
+    tid = council.open(topic="needs review", participants=["x"])
+    import json
+    lines = bb_path.read_text(encoding="utf-8").splitlines()
+    opener = json.loads(lines[0])
+    opener.setdefault("tags", []).extend(["auto-council", "needs-review"])
+    opener["trigger_file"] = "scripts/auth/x.py"
+    lines[0] = json.dumps(opener, ensure_ascii=False)
+    bb_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    monkeypatch.setattr(sa, "DEFAULT_BB_PATH", bb_path)
+    monkeypatch.setattr(sa, "DEFAULT_LEDGER_PATH", tmp_path / "ledger.jsonl")
+    sa.main()
+    captured = capsys.readouterr()
+    assert "need review" in captured.err.lower() or "needs-review" in captured.err.lower(), (
+        f"should warn about un-reviewed, got stderr: {captured.err!r}"
+    )
