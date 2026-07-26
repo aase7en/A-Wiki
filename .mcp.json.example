@@ -42,7 +42,9 @@
         "wiki_search",
         "wiki_semantic_search",
         "wiki_get_page",
-        "wiki_graph_neighbors"
+        "wiki_graph_neighbors",
+        "skill_route",
+        "focus_get"
       ]
     },
     "gitnexus": {

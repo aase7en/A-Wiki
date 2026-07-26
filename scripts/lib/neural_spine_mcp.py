@@ -36,19 +36,23 @@ _DEFAULT_TASKS = REPO_ROOT / ".tmp" / "task-board.json"
 _LEDGER_PATH: Path = _DEFAULT_LEDGER
 _BB_PATH: Path = _DEFAULT_BB
 _TASKS_PATH: Path = _DEFAULT_TASKS
+_FOCUS_DIR: Path = REPO_ROOT / ".tmp"
 
 
 def set_paths(*, ledger: Path | str | None = None,
               blackboard: Path | str | None = None,
-              task_board: Path | str | None = None) -> None:
+              task_board: Path | str | None = None,
+              focus_dir: Path | str | None = None) -> None:
     """Override the file paths the tools read/write. Mainly for tests."""
-    global _LEDGER_PATH, _BB_PATH, _TASKS_PATH
+    global _LEDGER_PATH, _BB_PATH, _TASKS_PATH, _FOCUS_DIR
     if ledger is not None:
         _LEDGER_PATH = Path(ledger)
     if blackboard is not None:
         _BB_PATH = Path(blackboard)
     if task_board is not None:
         _TASKS_PATH = Path(task_board)
+    if focus_dir is not None:
+        _FOCUS_DIR = Path(focus_dir)
 
 
 def _session_id() -> str:
@@ -158,6 +162,131 @@ def tool_task_update(args: dict) -> bool:
 
 def tool_task_list(args: dict) -> list[dict]:
     return task_board.TaskBoard(_TASKS_PATH).list(status=args.get("status"))
+
+
+# ── A-Suite: routing + focus ──────────────────────────────────────────────
+#
+# These two are the cross-agent parity substrate. A UserPromptSubmit hook can
+# only ever serve Claude Code (Codex has no such event; Gemini has two events
+# total; Cline/Windsurf/Cursor/Aider have no hooks at all), but every one of
+# those harnesses can call an MCP tool. Same registry, same matcher, same
+# answer — so routing does not diverge by agent.
+
+def _registry():
+    """Load the skills registry. Imported lazily: most MCP calls never need it."""
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    from skills_registry import Registry
+    return Registry.load(REPO_ROOT / "skills-registry.json")
+
+
+def _routing():
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    from skills_registry import routing
+    return routing
+
+
+def _focus_path() -> Path:
+    """Per-session state file. Session id is sanitised — it reaches a filename."""
+    import re
+    sid = re.sub(r"[^A-Za-z0-9_-]", "_", _session_id())
+    return _FOCUS_DIR / f"a-focus-{sid}.json"
+
+
+def tool_skill_route(args: dict) -> list[dict]:
+    """Rank A-Suite skills against a free-text request."""
+    text = args.get("text") or args.get("prompt") or ""
+    if not text.strip():
+        return []
+    routing = _routing()
+    reg = _registry()
+    limit = int(args.get("limit", routing.DEFAULT_LIMIT))
+    out: list[dict] = []
+    for name, score in routing.route(reg, text, limit=limit):
+        skill = reg.get(name) or {}
+        out.append({
+            "skill": name,
+            "score": score,
+            "phase": skill.get("a_phase"),
+            "invocation_hint": skill.get("invocation_hint") or f"/{name}",
+            "description": skill.get("th_description") or skill.get("description", ""),
+        })
+    return out
+
+
+def _read_focus() -> dict | None:
+    import json
+    p = _focus_path()
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        # A corrupt focus file must not wedge the session — treat as no focus.
+        return None
+
+
+def _write_focus(state: dict) -> dict:
+    import json
+    p = _focus_path()
+    p.parent.mkdir(parents=True, exist_ok=True)
+    state["updated_at"] = time.time()
+    p.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+    return state
+
+
+def tool_focus_set(args: dict) -> dict:
+    """Declare what is being worked on and which phase it is in."""
+    routing = _routing()
+    skill = (args.get("skill") or "").strip()
+    if not skill:
+        raise ValueError("focus_set requires 'skill'")
+    phase = args.get("phase") or routing.A_PHASE_CHAIN[0]
+    if phase not in routing.A_PHASE_CHAIN:
+        raise ValueError(
+            f"unknown phase {phase!r}; valid: {', '.join(routing.A_PHASE_CHAIN)}"
+        )
+    return _write_focus({
+        "skill": skill,
+        "goal": args.get("goal", ""),
+        "phase": phase,
+        "phases_done": [],
+        "session_id": _session_id(),
+        "started_at": time.time(),
+    })
+
+
+def tool_focus_get(args: dict) -> dict | None:
+    """Current focus, or None. Cheap — callers may poll it."""
+    return _read_focus()
+
+
+def tool_focus_advance(args: dict) -> dict:
+    """Move to the next phase, recording the one just finished."""
+    routing = _routing()
+    state = _read_focus()
+    if not state:
+        raise ValueError("no active focus — call focus_set first")
+    current = state.get("phase")
+    if current:
+        done = state.setdefault("phases_done", [])
+        if current not in done:
+            done.append(current)
+    nxt = routing.next_phase(current) if current in routing.A_PHASE_CHAIN else None
+    state["phase"] = nxt
+    state["complete"] = nxt is None
+    return _write_focus(state)
+
+
+def tool_focus_clear(args: dict) -> dict:
+    """End the focus session. Idempotent."""
+    p = _focus_path()
+    existed = p.exists()
+    if existed:
+        try:
+            p.unlink()
+        except OSError:
+            pass
+    return {"cleared": existed}
 
 
 # ── TOOLS registry (merged into awiki MCP server TOOLS) ───────────────────
@@ -277,6 +406,64 @@ TOOLS: dict[str, dict[str, Any]] = {
             "properties": {"task_id": {"type": "string"}},
             "required": ["task_id"],
         },
+    },
+    # ── A-Suite (C4) ──────────────────────────────────────────────────────
+    "skill_route": {
+        "fn": tool_skill_route,
+        "description": (
+            "Pick the right A-Wiki skill for a request. Matches the text against the "
+            "machine-readable `triggers` in skills-registry.json (Thai substring + "
+            "ASCII prefix-boundary) and returns ranked candidates with their "
+            "invocation hint. Empty list means nothing matched — fall back to "
+            "/A-Think rather than guessing. Read-only."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "the user's request, verbatim"},
+                "limit": {"type": "integer", "default": 3},
+            },
+            "required": ["text"],
+        },
+    },
+    "focus_set": {
+        "fn": tool_focus_set,
+        "description": (
+            "Declare the skill, goal and phase being worked on, so the session stops "
+            "drifting between phases. Phases: ask → design → plan → implement → "
+            "review → debug → test. Call at the start of any non-trivial task."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "skill": {"type": "string", "description": "e.g. a-plan, a-debug"},
+                "goal": {"type": "string", "description": "one line: what done looks like"},
+                "phase": {
+                    "type": "string",
+                    "enum": ["ask", "design", "plan", "implement", "review", "debug", "test"],
+                    "description": "starting phase (default: ask)",
+                },
+            },
+            "required": ["skill"],
+        },
+    },
+    "focus_get": {
+        "fn": tool_focus_get,
+        "description": "Current focus (skill, goal, phase, phases completed), or null. Read-only.",
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "focus_advance": {
+        "fn": tool_focus_advance,
+        "description": (
+            "Finish the current phase and move to the next one in the chain. "
+            "Returns phase=null and complete=true at the end of the chain."
+        ),
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "focus_clear": {
+        "fn": tool_focus_clear,
+        "description": "End the focus session and delete its state. Idempotent.",
+        "inputSchema": {"type": "object", "properties": {}},
     },
     "task_list": {
         "fn": tool_task_list,
