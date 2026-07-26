@@ -576,6 +576,10 @@ if(currentView==='coverage'&&typeof _simTimer!=='undefined'&&_simTimer){clearInt
 if(currentView==='analytics'&&typeof _wfTimer!=='undefined'&&_wfTimer){clearInterval(_wfTimer);_wfTimer=null;}
 }
 currentView=v;
+// T3 (v20): update breadcrumb to reflect current view (Linear hallmark).
+const bc=$('bc-current'),bcWrap=$('breadcrumb');
+if(bc)bc.textContent=v.charAt(0).toUpperCase()+v.slice(1);
+if(bcWrap)bcWrap.setAttribute('data-section',v);
 const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost'),rc=$('btn-race');
 sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');rc&&rc.classList.toggle('active',v==='race');
 // CHUNK B9: update ARIA tab state (roving tabindex — only active tab is focusable).

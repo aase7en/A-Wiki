@@ -47,6 +47,7 @@
   <text x="134" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Inter var', 'Segoe UI', system-ui, sans-serif"
         font-size="10" font-weight="600" fill="var(--brand, #5b5bd6)" text-anchor="middle" letter-spacing="0.05em">LIVE</text>
 </svg></span>
+  <span class="breadcrumb" id="breadcrumb" data-section="summary" aria-label="ตำแหน่งปัจจุบัน"><span class="bc-sep">/</span><span id="bc-current">Summary</span></span>
   <div id="wf-tabs">
     <div class="wf-tab" id="wf-session"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-rocket"/></svg> Session</div>
     <div class="wf-tab" id="wf-plan"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-clipboard-list"/></svg> Plan</div>
@@ -535,7 +536,8 @@
   <div id="sidebar">
     <div id="sidebar-hdr">Event Log <span id="event-count">0</span>
       <input id="event-search" type="text" placeholder=" ค้นหา..." oninput="eventSearchDebounced()" style="width:90px;padding:2px 6px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--elev-2);color:var(--text-primary);font-size:var(--fs-2xs)">
-      <select id="ev-filter" class="ev-filter" onchange="filterEvents()"><option value="all">All</option><option value="bookmarked">⭐ Bookmarked</option><option value="block">Blocks/Fails</option><option value="cost">Cost</option><option value="delegate">Delegate</option></select> <button onclick="exportEventLog()" title="ส่งออก event log เป็น JSON" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:var(--fs-2xs);padding:0 2px"></button></div>
+      <select id="ev-filter" class="ev-filter" onchange="filterEvents()"><option value="all">All</option><option value="bookmarked">Bookmarked</option><option value="block">Blocks/Fails</option><option value="cost">Cost</option><option value="delegate">Delegate</option></select> <button onclick="exportEventLog()" title="ส่งออก event log เป็น JSON" style="background:transparent;border:none;color:var(--text-tertiary);cursor:pointer;font-size:var(--fs-2xs);padding:0 2px"></button></div>
+    <div class="sb-label" id="sb-recent-label" style="padding:6px 12px 2px;font-size:var(--fs-2xs);color:var(--n-600);text-transform:uppercase;letter-spacing:.08em;font-weight:600;background:var(--n-50)">Recent</div>
     <div id="timeline-list"></div>
   </div>
 </div>

@@ -1728,6 +1728,90 @@ def test_v19_theme_button_not_overwritten_by_emoji():
     )
 
 
+# ── v20 — Linear DNA polish (a-loop Phase 2) ────────────────────────────────
+
+def test_v20_view_fade_in_animation():
+    """styles.css must define a fade-in keyframe + apply it on view-panel
+    transitions. Linear hallmark: smooth opacity transition (120ms)."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Must define @keyframes fade-in (or fadeIn / fade_in).
+    import re as _re
+    has_keyframe = bool(_re.search(r"@keyframes\s+fade[-_]?in", css, _re.I))
+    assert has_keyframe, (
+        "styles.css must define @keyframes fade-in for view transitions "
+        "(Linear/Vercel hallmark)"
+    )
+    # Must apply it somewhere — view-panel, .view-panel, .panel, etc.
+    has_apply = bool(_re.search(r"animation:[^;]*fade[-_]?in", css, _re.I))
+    assert has_apply, (
+        "fade-in keyframe defined but not applied — wire it to view-panel"
+    )
+
+
+def test_v20_radius_tokens_collapse():
+    """Hardcoded border-radius values must drop. v19 had 15 unique values;
+    v20 target ≤ 4 (allowing r-sm/r-md/r-full + 1-2 unavoidable exceptions
+    like the 3px on tightly-grouped elements)."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    import re as _re
+    # Find raw px/Npx values in border-radius (not var() refs).
+    raw = _re.findall(r"border-radius:\s*(\d+px|\d+)", css)
+    # Filter out values inside :root token declarations (those are the tokens).
+    # Strategy: count occurrences outside of `--r-*: ...` lines.
+    outside_root = []
+    in_root = False
+    for line in css.split("\n"):
+        if ":root" in line:
+            in_root = True
+        if in_root and "--r-" in line:
+            continue
+        if in_root and "}" in line:
+            in_root = False
+            continue
+        for m in _re.finditer(r"border-radius:\s*([^;]+);", line):
+            val = m.group(1).strip()
+            if val.startswith("var("):
+                continue
+            outside_root.append(val)
+    assert len(outside_root) <= 5, (
+        f"Hardcoded border-radius values outside :root tokens: {len(outside_root)} "
+        f"(target ≤5). Values: {outside_root[:8]}"
+    )
+
+
+def test_v20_header_has_breadcrumb_or_section_label():
+    """#header must include a section/breadcrumb indicator showing current
+    view context. Linear hallmark: 'Workspace / Project / View'."""
+    html = HTML.read_text(encoding="utf-8")
+    # Accept either: breadcrumb element, section-label class, or aria-label
+    # that changes per view (via JS).
+    has_indicator = (
+        'id="breadcrumb"' in html
+        or 'class="breadcrumb"' in html
+        or 'id="header-section"' in html
+        or 'id="section-label"' in html
+        or 'data-section' in html
+    )
+    assert has_indicator, (
+        "#header lacks breadcrumb/section-label — Linear hallmark missing"
+    )
+
+
+def test_v20_sidebar_has_section_labels():
+    """Sidebar must group its content under labeled sections (Linear hallmark).
+    v19 sidebar was flat list; v20 should have section headers like 'Recent'
+    / 'Bookmarked' / 'All Events'."""
+    html = HTML.read_text(encoding="utf-8")
+    # Look for sidebar section header pattern.
+    has_sections = (
+        'class="sb-section' in html
+        or 'id="sb-recent' in html
+        or 'id="sb-bookmark' in html
+        or 'class="sb-label"' in html
+    )
+    assert has_sections, "sidebar must have section labels (Recent/Bookmarked/...)"
+
+
 # ── v19 chunk B19 — Header icons replacement ────────────────────────────────
 def test_v19_header_no_emoji_in_buttons():
     """#header buttons must not contain emoji text. v19 replaces with
