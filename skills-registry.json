@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "DRAFT-NEEDS-HUMAN-REVIEW",
+  "generated_at": "2026-07-27",
   "skills": [
     {
       "name": "a-wiki-commands",
@@ -82,7 +82,7 @@
       "agents": [
         "all"
       ],
-      "version": "1.0.1",
+      "version": "1.1.0",
       "status": "canonical",
       "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
       "invocation": "both",
@@ -171,7 +171,7 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Debug loop ครบวงจร — A-Think → debug-mantra → root-cause-first → tdd (failing test) → fix → verify → scrutinize. บังคับ Iron Law #1+#2. Subagent fan-out สำหรับ bug ซับซ้อน",
+      "description": "Debug loop ครบวงจร — A-Think → debug-mantra (+ root-cause gate) → tdd (failing test) → fix → verify → scrutinize. บังคับ Iron Law #1+#2. Subagent fan-out สำหรับ bug ซับซ้อน",
       "invocation": "both",
       "th_description": "Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหรับ bug ซับซ้อน",
       "when_to_use": "แก้ bug, หา root cause, test แดง, production incident",
@@ -187,8 +187,7 @@
       ],
       "process_steps": [
         "A-Think",
-        "debug-mantra (4 mantras)",
-        "root-cause-first",
+        "debug-mantra (4 mantras + root-cause gate)",
         "tdd (failing test)",
         "fix",
         "verify-before-done",
@@ -1214,7 +1213,7 @@
       "version": "1.9.0",
       "status": "deprecated",
       "canonical": "continuous-agent-loop",
-      "migrated_to": "continuous-agent-loop (2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here.",
+      "migrated_to": "continuous-agent-loop",
       "description": "DEPRECATED — use continuous-agent-loop instead. Retained as redirect pointer only; all content ported to continuous-agent-loop v2.0.0 (cross-agent).",
       "invocation": "manual",
       "th_description": "รูปแบบและสถาปัตยกรรมสำหรับสร้าง autonomous loop ของ Claude Code ตั้งแต่ pipeline แบบ sequential ธรรมดาไปจนถึงระบบ multi-agent DAG ที่ขับเคลื่อนด้วย RFC ช่วยให้ Agent ทำงานต่อเนื่องโดยไม่ต้องรอคำสั่งจากมนุษย์",
@@ -1235,7 +1234,8 @@
         "สร้าง RFC หรือ pipeline config",
         "รัน loop และตรวจสอบผลลัพธ์",
         "ปรับปรุง loop ตาม feedback"
-      ]
+      ],
+      "notes": "2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here."
     },
     {
       "name": "awiki-brain-improvement-gate",
@@ -3822,7 +3822,7 @@
       ],
       "status": "deprecated",
       "canonical": "debug-mantra",
-      "migrated_to": "debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill.",
+      "migrated_to": "debug-mantra",
       "description": "Diagnosis loop for hard bugs and performance regressions.",
       "invocation": "manual",
       "th_description": "วนซ้ำการวินิจฉัยสำหรับบั๊กที่ยากและ regression ด้านประสิทธิภาพ โดยใช้แนวทางที่เป็นระบบเพื่อระบุสาเหตุที่แท้จริงและแก้ไขอย่างตรงจุด",
@@ -3843,7 +3843,8 @@
         "ทดสอบสมมติฐานทีละข้อ",
         "ยืนยันสาเหตุที่แท้จริง",
         "แก้ไขและตรวจสอบผล"
-      ]
+      ],
+      "notes": "USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill."
     },
     {
       "name": "django-celery",

@@ -637,8 +637,8 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 
 | Alias / Deprecated | → Canonical | Note |
 |--------------------|-------------|------|
-| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop (2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here. |
-| `diagnosing-bugs` | `debug-mantra` | debug-mantra (USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill. |
+| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop |
+| `diagnosing-bugs` | `debug-mantra` | debug-mantra |
 | `fable5-standards` | `a-think` | a-think |
 | `grill-me` | `grill-with-docs` | grill-with-docs |
 | `grilling` | `grill-with-docs` | grill-with-docs |

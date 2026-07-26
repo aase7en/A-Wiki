@@ -83,15 +83,51 @@ class TestAgentSurfacesGenerated:
 class TestCrossAgentVisibility:
     """The core assertion: canonical skills are discoverable across surfaces."""
 
-    def test_skills_index_lists_all_canonical(self, registry: Registry) -> None:
-        """The AGENTS.md index must list every canonical skill by name."""
+    def test_skills_index_lists_all_shared(self, registry: Registry) -> None:
+        """The AGENTS.md index must list every skill scoped to agents=all.
+
+        Compares like with like: gen_agents_md renders canonical_for_agent("all"),
+        so asserting against canonical_names() (which also contains agent-scoped
+        skills such as the zcode-only subagents) reports skills that are absent by
+        design. Agent-scoped visibility is covered by the test below.
+        """
         out = gen_agents_md.render(registry)
-        canonical = registry.canonical_names()
-        missing = [name for name in canonical if f"`{name}`" not in out]
-        # Allow a small tolerance for skills with unusual formatting.
+        shared = [s["name"] for s in registry.canonical_for_agent("all")]
+        missing = [name for name in shared if f"`{name}`" not in out]
         assert len(missing) == 0, (
-            f"{len(missing)} canonical skill(s) missing from skills-index: {missing[:10]}"
+            f"{len(missing)} shared skill(s) missing from skills-index: {missing[:10]}"
         )
+
+    def test_agent_scoped_skills_reach_their_own_surface(self, registry: Registry) -> None:
+        """A skill excluded from the shared index must be visible to an agent it targets.
+
+        Otherwise it is registered but unreachable by every agent — a silent orphan.
+        """
+        from skills_registry.generators import gen_hermes, gen_zcode, gen_zcode_agents
+
+        agent_surfaces = {
+            "zcode": (gen_zcode, gen_zcode_agents),
+            "hermes": (gen_hermes,),
+        }
+        shared = {s["name"] for s in registry.canonical_for_agent("all")}
+        rendered: dict[str, str] = {}
+        orphans = []
+        for skill in registry.skills:
+            if skill.get("status") != "canonical" or skill["name"] in shared:
+                continue
+            agents = skill.get("agents") or []
+            found = False
+            for agent in agents:
+                for gen in agent_surfaces.get(agent, ()):
+                    rendered.setdefault(gen.filename, gen.render(registry))
+                    if skill["name"] in rendered[gen.filename]:
+                        found = True
+                        break
+                if found:
+                    break
+            if not found:
+                orphans.append(f"{skill['name']} (agents={agents})")
+        assert not orphans, f"agent-scoped skill(s) visible to no agent: {orphans[:10]}"
 
     def test_kilo_paths_cover_canonical_dirs(self, registry: Registry) -> None:
         """Kilo paths must include the top-level dir of every canonical repo skill."""

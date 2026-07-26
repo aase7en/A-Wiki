@@ -1,6 +1,6 @@
 ---
 name: a-debug
-description: "Debug loop ครบวงจร — reproduce → root-cause → failing-test → fix → verify → scrutinize. Chain: A-Think → debug-mantra (Iron Law #2) → root-cause-first → tdd (Iron Law #1) → fix → verify-before-done → scrutinize. รองรับ subagent fan-out สำหรับ bug ซับซ้อน (delegate-subagent → council). Trigger: 'แก้บั๊ก', 'ไม่ทำงาน', 'error', 'crash', 'fail', 'หาสาเหตุ', 'broken'."
+description: "Debug loop ครบวงจร — reproduce → root-cause → failing-test → fix → verify → scrutinize. Chain: A-Think → debug-mantra (Iron Law #2 + root-cause gate) → tdd (Iron Law #1) → fix → verify-before-done → scrutinize. รองรับ subagent fan-out สำหรับ bug ซับซ้อน (delegate-subagent → council). Trigger: 'แก้บั๊ก', 'ไม่ทำงาน', 'error', 'crash', 'fail', 'หาสาเหตุ', 'broken'."
 version: 1.0.0
 author: A-Wiki
 domain: [debug, code]
@@ -35,19 +35,20 @@ Aggregator สำหรับ debug — บังคับ Iron Law #1 (failing 
 
 ถ้า parallel model พยายาม patch โดยไม่ทำ chain ข้างล่าง → **DISCARD + REWRITE**
 
-## Chain (7 stages)
+## Chain (6 stages)
 
 ```
-┌─────────┐   ┌─────────────┐   ┌──────────────────┐   ┌─────┐   ┌─────┐   ┌──────────────────┐   ┌────────────┐
-│ A-Think │──▶│ debug-mantra│──▶│ root-cause-first │──▶│ tdd │──▶│ fix │──▶│ verify-before-   │──▶│ scrutinize │
-│ (1,5)   │   │ (4 mantras) │   │ (no symptom fix) │   │(red)│   │     │   │ done             │   │ (end2end)  │
-└─────────┘   └─────────────┘   └──────────────────┘   └─────┘   └─────┘   └──────────────────┘   └────────────┘
-                                                                                                          │
-                                                                                   (bug ใหญ่)            ▼
-                                                                            ┌──────────────────┐   ┌────────────┐
-                                                                            │ post-mortem     │◀──│ delegate + │
-                                                                            │ (optional)      │   │ council    │
-                                                                            └──────────────────┘   └────────────┘
+┌─────────┐   ┌──────────────────┐   ┌─────┐   ┌─────┐   ┌──────────────────┐   ┌────────────┐
+│ A-Think │──▶│ debug-mantra     │──▶│ tdd │──▶│ fix │──▶│ verify-before-   │──▶│ scrutinize │
+│ (1,5)   │   │ 4 mantras +      │   │(red)│   │     │   │ done             │   │ (end2end)  │
+│         │   │ root-cause first │   │     │   │     │   │                  │   │            │
+└─────────┘   └──────────────────┘   └─────┘   └─────┘   └──────────────────┘   └────────────┘
+                                                                                       │
+                                                                    (bug ใหญ่)         ▼
+                                                             ┌──────────────────┐   ┌────────────┐
+                                                             │ post-mortem     │◀──│ delegate + │
+                                                             │ (optional)      │   │ council    │
+                                                             └──────────────────┘   └────────────┘
 ```
 
 ### Stage 1: `a-think` (steps 1 + 5)
@@ -62,32 +63,34 @@ Aggregator สำหรับ debug — บังคับ Iron Law #1 (failing 
 
 ถ้า repro ไม่ได้ → **ห้าม hypothesize** — ขอ env access / log / artifact จาก user
 
-### Stage 3: `root-cause-first`
+**Root-cause gate (เดิมเป็น stage แยก `root-cause-first` — deprecated, `migrated_to: debug-mantra`):**
 - ห้าม fix ปมผิด (symptom)
 - ใช้ 5-Whys หรือ fishbone ถ้าซับซ้อน
 - ยืนยัน root cause ผ่าน disproof experiment
 
-### Stage 4: `tdd` (Iron Law #1)
+ห้ามออกจาก stage นี้จนกว่าจะตอบได้ว่า **"ทำไมมันพัง"** ไม่ใช่แค่ "ตรงไหนพัง"
+
+### Stage 3: `tdd` (Iron Law #1)
 - เขียน **failing test** ที่ reproduce bug ก่อน fix
 - Test ต้อง fail ก่อน → pass หลัง fix (เท่านั้นจึงยืนยันว่า fix ถูก)
 
-### Stage 5: Fix
+### Stage 4: Fix
 - Minimal change ที่จบ root cause
 - ห้าม "while I'm at it" refactor (แยก commit)
 
-### Stage 6: `verify-before-done`
+### Stage 5: `verify-before-done`
 - run full test suite (ไม่ใช่แค่ test ใหม่)
 - manual smoke test ถ้าเกี่ยวกับ UI/integration
 - confirm ไม่ break regression
 
-### Stage 7: `scrutinize`
+### Stage 6: `scrutinize`
 - end-to-end review ( outsider perspective, ไม่ใช่ diff-local)
 - ถาม: "ควรมีไหม?" "มีวิธีง่ายกว่าไหม?" "ตามจริงไหม?"
 - ถ้า fail → กลับไป stage 2
 
 ## Subagent Fan-out (bug ซับซ้อนเท่านั้น)
 
-เมื่อไหร่ใช้: bug ที่ root cause ไม่ชัด หลัง stage 2-3 หรือกระทบหลายระบบ
+เมื่อไหร่ใช้: bug ที่ root cause ไม่ชัด หลัง stage 2 (debug-mantra + root-cause gate) หรือกระทบหลายระบบ
 
 ### Pattern: `delegate-subagent` → `council`
 1. `delegate-subagent` — กระจาย hypothesis 3-5 ตัวขนานกัน (แต่ละตัวสำรวจ root cause ทางเดียว)
@@ -139,7 +142,7 @@ debug-mantra:
   2. Fail path: stack trace → null pointer in patient_repo.get_active()
   3. Hypothesis: cache miss + DB timeout race
   4. Ledger: hypothesis 1 (cache) ✓, hypothesis 2 (timeout) ✗
-root-cause-first: cache TTL หมด + DB slow query ไม่มี fallback → null
+root-cause: cache TTL หมด + DB slow query ไม่มี fallback → null
 tdd: test_dashboard_handles_cache_miss (RED)
 fix: add null-check + retry logic (minimal change)
 verify: full suite + curl 1000x → 0/1000 error

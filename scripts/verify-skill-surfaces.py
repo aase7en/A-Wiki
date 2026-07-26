@@ -45,15 +45,23 @@ from skills_registry.generators import (  # noqa: E402
     gen_agents_md,
     gen_antigravity,
     gen_cline,
+    gen_codex,
     gen_gemini,
     gen_hermes,
     gen_kilo,
+    gen_openclaw,
+    gen_windsurf,
+    gen_zcode,
+    gen_zcode_agents,
 )
 
 REGISTRY_PATH = REPO_ROOT / "skills-registry.json"
 SURFACES_DIR = REPO_ROOT / "scripts" / "skills_registry" / "generated"
 
-# Surfaces the verifier owns: {filename: generator}
+# Surfaces the verifier owns: {filename: generator}.
+# Every generator whose output lands in SURFACES_DIR belongs here. gen_skill_index
+# is deliberately absent — it writes to wiki/SKILL-INDEX.md, not SURFACES_DIR, and
+# the drift check below assumes a single directory. regen --check covers that one.
 SURFACES = {
     gen_kilo.filename: gen_kilo,
     gen_gemini.filename: gen_gemini,
@@ -61,6 +69,19 @@ SURFACES = {
     gen_antigravity.filename: gen_antigravity,
     gen_hermes.filename: gen_hermes,
     gen_agents_md.filename: gen_agents_md,
+    gen_codex.filename: gen_codex,
+    gen_windsurf.filename: gen_windsurf,
+    gen_openclaw.filename: gen_openclaw,
+    gen_zcode.filename: gen_zcode,
+    gen_zcode_agents.filename: gen_zcode_agents,
+}
+
+# Agent-scoped skills (agents list WITHOUT "all") are invisible to the shared
+# index by design — they must instead be visible in their own agent's surface.
+# {agent tag: generators that agent actually consumes}
+AGENT_SURFACES = {
+    "zcode": (gen_zcode, gen_zcode_agents),
+    "hermes": (gen_hermes,),
 }
 
 
@@ -92,16 +113,53 @@ def main() -> int:
         report["ok"] = False
         report["errors"].extend(f"drift: {e}" for e in drift_errors)
 
-    # 3. Cross-agent visibility: every canonical skill in the index
+    # 3. Shared visibility: every skill scoped to "all" must reach the shared index.
+    #
+    # This compares like with like. gen_agents_md renders canonical_for_agent("all"),
+    # so testing it against canonical_names() (which includes agent-scoped skills)
+    # reports skills that are absent BY DESIGN — e.g. the 31 zcode-only subagents.
+    # Those are covered by check 3b instead.
     index = gen_agents_md.render(reg)
-    missing_from_index = [n for n in canonical if f"`{n}`" not in index]
+    shared = [s["name"] for s in reg.canonical_for_agent("all")]
+    missing_from_index = [n for n in shared if f"`{n}`" not in index]
     if missing_from_index:
         report["ok"] = False
         report["errors"].append(
-            f"{len(missing_from_index)} canonical skill(s) missing from skills-index: "
+            f"{len(missing_from_index)} shared skill(s) missing from skills-index: "
             f"{missing_from_index[:5]}"
         )
-    report["stats"]["visible_in_index"] = len(canonical) - len(missing_from_index)
+    report["stats"]["shared_skills"] = len(shared)
+    report["stats"]["visible_in_index"] = len(shared) - len(missing_from_index)
+
+    # 3b. Agent-scoped visibility: a skill excluded from the shared index must be
+    # visible in the surface of at least one agent it IS scoped to. Otherwise it is
+    # registered but unreachable by every agent — a silent orphan.
+    scoped = [s for s in reg.skills if s.get("status") == "canonical" and s["name"] not in set(shared)]
+    rendered: dict[str, str] = {}
+    orphan_scoped: list[str] = []
+    for s in scoped:
+        agents = s.get("agents") or []
+        found = False
+        for agent in agents:
+            for gen in AGENT_SURFACES.get(agent, ()):
+                key = gen.filename
+                if key not in rendered:
+                    rendered[key] = gen.render(reg)
+                if s["name"] in rendered[key]:
+                    found = True
+                    break
+            if found:
+                break
+        if not found:
+            orphan_scoped.append(f"{s['name']} (agents={agents})")
+    if orphan_scoped:
+        report["ok"] = False
+        report["errors"].append(
+            f"{len(orphan_scoped)} agent-scoped skill(s) not visible in any agent surface: "
+            f"{orphan_scoped[:5]}"
+        )
+    report["stats"]["agent_scoped_skills"] = len(scoped)
+    report["stats"]["visible_in_agent_surface"] = len(scoped) - len(orphan_scoped)
 
     # 4. Alias integrity
     orphan_aliases = []
@@ -125,7 +183,9 @@ def _emit(report: dict, as_json: bool) -> int:
         stats = report["stats"]
         if report["ok"]:
             print(f"✅ Cross-agent skill visibility OK")
-            print(f"   {stats.get('canonical_skills', 0)} canonical skills visible across {len(SURFACES)} surface(s)")
+            print(f"   {stats.get('canonical_skills', 0)} canonical skills across {len(SURFACES)} surface(s)")
+            print(f"     ├─ {stats.get('visible_in_index', 0)}/{stats.get('shared_skills', 0)} shared (agents=all) visible in skills-index")
+            print(f"     └─ {stats.get('visible_in_agent_surface', 0)}/{stats.get('agent_scoped_skills', 0)} agent-scoped visible in their own agent surface")
             print(f"   {stats.get('aliases', 0)} aliases, {stats.get('deprecated', 0)} deprecated")
             print(f"   no drift, no orphan aliases")
         else:

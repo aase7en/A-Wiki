@@ -140,7 +140,15 @@ class StepRecorder:
 # ---------------------------------------------------------------------------
 
 def build_entry(cfg: ScaffoldConfig) -> dict:
-    """Build the skills-registry.json entry. Pure function of cfg — no I/O."""
+    """Build the skills-registry.json entry. Pure function of cfg — no I/O.
+
+    Emits the full v2 key set so a scaffolded entry is shape-identical to a
+    hand-written sibling. The five v2 fields below (invocation, th_description,
+    when_to_use, examples, invocation_hint) were missing, so every scaffolded
+    skill landed with a narrower shape than the registry it joined — invisible
+    in the dashboard Skills view and in gen_hermes, which dump whole records.
+    Defaults are valid-but-obviously-provisional; the author refines them.
+    """
     return {
         "name": cfg.name,
         "aliases": [],
@@ -153,6 +161,11 @@ def build_entry(cfg: ScaffoldConfig) -> dict:
         "version": "1.0.0",
         "status": "canonical",
         "description": cfg.description,
+        "invocation": "manual",
+        "th_description": cfg.description,
+        "when_to_use": cfg.description,
+        "examples": [],
+        "invocation_hint": f"/{cfg.name}",
     }
 
 
