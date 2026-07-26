@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "generated_at": "2026-07-27",
   "skills": [
     {
@@ -107,7 +107,8 @@
         "Right-size",
         "Prove"
       ],
-      "invocation_hint": "/A-Think"
+      "invocation_hint": "/A-Think",
+      "a_phase": "ask"
     },
     {
       "name": "a-plan",
@@ -150,7 +151,16 @@
         "design tool",
         "plan-orchestrate"
       ],
-      "invocation_hint": "/A-Plan"
+      "invocation_hint": "/A-Plan",
+      "triggers": [
+        "ออกแบบ",
+        "วางแผน",
+        "design",
+        "architecture",
+        "database schema",
+        "ux/ui"
+      ],
+      "a_phase": "design"
     },
     {
       "name": "a-debug",
@@ -193,7 +203,17 @@
         "verify-before-done",
         "scrutinize"
       ],
-      "invocation_hint": "/A-Debug"
+      "invocation_hint": "/A-Debug",
+      "triggers": [
+        "แก้บั๊ก",
+        "ไม่ทำงาน",
+        "หาสาเหตุ",
+        "error",
+        "crash",
+        "fail",
+        "broken"
+      ],
+      "a_phase": "debug"
     },
     {
       "name": "a-doc",
@@ -235,7 +255,17 @@
         "generate docx",
         "validate + render"
       ],
-      "invocation_hint": "/A-Doc"
+      "invocation_hint": "/A-Doc",
+      "triggers": [
+        "หนังสือ",
+        "ราชการ",
+        "คำสั่ง",
+        "บันทึก",
+        "ประกาศ",
+        "โครงการ",
+        "docx"
+      ],
+      "a_phase": "implement"
     },
     {
       "name": "a-doc-announce",
@@ -303,7 +333,14 @@
         "first-use: grill บริบท",
         "map to canonical skills"
       ],
-      "invocation_hint": "/A-Business"
+      "invocation_hint": "/A-Business",
+      "triggers": [
+        "ธุรกิจ",
+        "ลงทุน",
+        "โครงการส่วนตัว",
+        "business"
+      ],
+      "a_phase": "any"
     },
     {
       "name": "accessibility",
@@ -15027,7 +15064,8 @@
       "status": "canonical",
       "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
       "invocation": "manual",
-      "invocation_hint": "/A-Loop \"<objective>\""
+      "invocation_hint": "/A-Loop \"<objective>\"",
+      "a_phase": "any"
     },
     {
       "name": "a-council",
@@ -15046,7 +15084,14 @@
       "status": "canonical",
       "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
       "invocation": "manual",
-      "invocation_hint": "/A-Council \"<topic>\""
+      "invocation_hint": "/A-Council \"<topic>\"",
+      "triggers": [
+        "ตรวจสอบ",
+        "review",
+        "audit",
+        "security review"
+      ],
+      "a_phase": "review"
     },
     {
       "name": "gsap",

@@ -22,12 +22,15 @@ import json
 from pathlib import Path
 from typing import Any
 
+# Safe at module scope: routing imports only the stdlib, never this package.
+from . import routing  # noqa: E402  (taxonomy constants below depend on nothing)
+
 # ---------------------------------------------------------------------------
 # Taxonomy — single vocabulary for the whole registry.
 # Adding a domain/phase here automatically makes it usable everywhere.
 # ---------------------------------------------------------------------------
 
-SCHEMA_VERSION: int = 2
+SCHEMA_VERSION: int = 3
 
 # Goal #5 domains (Code, debug, Design, UX/UI, Trader, Medical, Business,
 # Data, Engineering Architect) + A-Wiki-native extensions.
@@ -68,6 +71,11 @@ VALID_STATUSES: frozenset[str] = frozenset({
 #   manual = user types /skill-name
 #   both   = auto in some contexts, manual otherwise
 VALID_INVOCATIONS: frozenset[str] = frozenset({"auto", "manual", "both"})
+
+# v3 — A-Suite 7-phase spine. Defined in routing.py (where the chain order and
+# the lifecycle_phase mapping live) and re-exported here so callers have one
+# import site for the whole taxonomy.
+VALID_A_PHASES: frozenset[str] = routing.VALID_A_PHASES
 
 REQUIRED_SKILL_FIELDS: tuple[str, ...] = (
     "name", "domain", "lifecycle_phase", "category", "source", "path", "status",
@@ -170,6 +178,13 @@ def migrate_registry(data: dict[str, Any]) -> dict[str, Any]:
             skill.setdefault("invocation", "manual")
         data["schema_version"] = 2
         version = 2
+    # v2 → v3: A-Suite routing fields — `triggers` (auto-pick keywords) and
+    # `a_phase` (position on the 7-phase spine). Both are optional and
+    # absent-is-legal, so this is a pure version bump: no field is written to
+    # any of the existing entries and no re-triage is required.
+    if version < 3:
+        data["schema_version"] = 3
+        version = 3
     return data
 
 
@@ -270,6 +285,22 @@ def validate_registry(path: Path | str) -> list[str]:
         ):
             errors.append(f"{ctx} ({name}): process_steps must be a list of strings")
 
+        # v3 — triggers: machine-readable auto-pick keywords (Thai + English).
+        # Validated hard, because a bad trigger is worse than a missing one: it
+        # misroutes every prompt that happens to contain it.
+        triggers = skill.get("triggers")
+        if triggers is not None:
+            errors.extend(routing.validate_triggers(triggers, f"{ctx} ({name})"))
+
+        # v3 — a_phase: optional tag placing a skill on the A-Suite 7-phase spine.
+        # Absent is legal; the router falls back to the lifecycle_phase map.
+        a_phase = skill.get("a_phase")
+        if a_phase is not None and a_phase not in routing.VALID_A_PHASES:
+            errors.append(
+                f"{ctx} ({name}): invalid a_phase {a_phase!r}; "
+                f"valid: {sorted(routing.VALID_A_PHASES)}"
+            )
+
         # Status-specific requirements
         if status == "alias":
             canonical = skill.get("canonical")
@@ -318,6 +349,7 @@ def _detect_alias_cycles(by_name: dict[str, dict[str, Any]]) -> list[str]:
 
 __all__ = [
     "SCHEMA_VERSION",
+    "VALID_A_PHASES",
     "VALID_DOMAINS",
     "VALID_LIFECYCLE_PHASES",
     "VALID_SOURCES",
