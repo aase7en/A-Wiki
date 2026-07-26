@@ -3,6 +3,47 @@
   "generated_at": "2026-07-27",
   "skills": [
     {
+      "name": "a-router",
+      "aliases": [
+        "/a-router",
+        "arouter"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-router/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Suite dispatcher — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง",
+      "invocation": "manual",
+      "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
+      "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
+      "examples": [
+        {
+          "scenario": "ไม่รู้จะเริ่มยังไง",
+          "how": "/A-Router \"<งานที่จะทำ>\""
+        },
+        {
+          "scenario": "อยากดู trigger ทั้งหมด",
+          "how": "อ่าน wiki/A-ROUTER.md"
+        }
+      ],
+      "process_steps": [
+        "match triggers",
+        "เลือก skill + phase",
+        "focus_set",
+        "ส่งต่อ skill ปลายทาง"
+      ],
+      "invocation_hint": "/A-Router",
+      "a_phase": "any"
+    },
+    {
       "name": "a-wiki-commands",
       "aliases": [],
       "domain": [

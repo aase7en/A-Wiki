@@ -46,6 +46,7 @@
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
 | `a-business` | `/A-Business` | any | `ธุรกิจ` · `ลงทุน` · `โครงการส่วนตัว` · `business` |
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
+| `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 
 > อีก 12 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
 
@@ -96,4 +97,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_7 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_8 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_
