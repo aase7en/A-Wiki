@@ -69,6 +69,16 @@ HOOK_SKIP = set(
     if h.strip()
 )
 
+# Bug #2 fix (2026-07-26, reported by Opus5): advisory hooks exit 0 but write
+# warnings (e.g. self_audit's "BLOCK SHIP" or a_loop_distill's idea proposals)
+# to stderr. Without explicit forwarding, these were silently swallowed because
+# the runner only forwarded stderr on returncode==2 (block) or !=0 (error).
+# Only declare a hook here if it is non-blocking AND user-facing output is desired.
+ADVISORY_HOOKS = {
+    "self_audit.py",        # ship-gate warnings: "BLOCK SHIP — N critical findings"
+    "a_loop_distill.py",    # idea/skill proposals distilled from failure patterns
+}
+
 
 def get_hooks():
     """Return sorted list of hook scripts."""
@@ -104,6 +114,11 @@ def run_hook(hook_name, input_data):
             sys.stderr.write(
                 f"⚠️ Hook {hook_name} exited with code {proc.returncode}: {proc.stderr.strip()}\n"
             )
+        elif proc.returncode == 0 and proc.stderr.strip() and hook_name in ADVISORY_HOOKS:
+            # Bug #2 fix (2026-07-26): advisory hooks (self_audit, a_loop_distill)
+            # exit 0 but write warnings to stderr. Forward to user so they see them.
+            # Without this, self_audit's "BLOCK SHIP" warning was silently swallowed.
+            sys.stderr.write(proc.stderr.strip() + "\n")
         _emit_hook_event(hook_name, input_data, "pass")
         return True, ""
     except subprocess.TimeoutExpired:
