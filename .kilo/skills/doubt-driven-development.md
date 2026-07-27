@@ -1,1 +1,0 @@
-../../skills/engineering-lifecycle/build/doubt-driven-development/SKILL.md

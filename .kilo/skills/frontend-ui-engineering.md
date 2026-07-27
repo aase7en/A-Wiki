@@ -1,1 +1,0 @@
-../../skills/engineering-lifecycle/build/frontend-ui-engineering/SKILL.md

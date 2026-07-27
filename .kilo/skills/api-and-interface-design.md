@@ -1,1 +1,0 @@
-../../skills/engineering-lifecycle/build/api-and-interface-design/SKILL.md

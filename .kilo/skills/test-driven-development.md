@@ -1,1 +1,0 @@
-../../skills/engineering-lifecycle/build/test-driven-development/SKILL.md

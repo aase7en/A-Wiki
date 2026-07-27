@@ -1,1 +1,0 @@
-../../skills/engineering-lifecycle/build/context-engineering/SKILL.md
