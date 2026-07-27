@@ -48,7 +48,26 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-STATE_FILE = REPO_ROOT / ".tmp" / "a-flow.json"
+# Use Opus5's per-session path convention (a-focus-<session>.json) so both
+# check_a_focus.py (advisory) AND check_a_flow_discipline.py (hard) read same state.
+# Falls back to a-flow.json when no session id available (CLI testing).
+def _state_path() -> Path:
+    import re as _re
+    session = (
+        os.environ.get("ZCODE_SESSION_ID")
+        or os.environ.get("CLAUDE_SESSION_ID")
+        or os.environ.get("CODEX_SESSION_ID")
+        or ""
+    )
+    if session:
+        safe = _re.sub(r"[^A-Za-z0-9_-]", "_", session)
+        return REPO_ROOT / ".tmp" / f"a-focus-{safe}.json"
+    return REPO_ROOT / ".tmp" / "a-flow.json"
+
+
+# Compat alias (module-level STATE_FILE used by some tests + older callers).
+# Resolved lazily via _state_path() in each function.
+STATE_FILE = REPO_ROOT / ".tmp" / "a-flow.json"  # legacy default; overwritten by _state_path()
 
 # 7-stage spine (lowercase — phase field uses lowercase)
 PHASES = ["ask", "design", "plan", "implement", "review", "debug", "test"]
@@ -103,9 +122,9 @@ def _validate_phase(phase: str) -> str:
 def get_state() -> dict[str, Any]:
     """Read current state. Fail-safe: returns empty state on any error."""
     try:
-        if not STATE_FILE.is_file():
+        if not _state_path().is_file():
             return _empty_state()
-        data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        data = json.loads(_state_path().read_text(encoding="utf-8"))
         # Migrate missing fields (forward-compat)
         empty = _empty_state()
         for k, v in empty.items():
@@ -155,7 +174,7 @@ def focus_set(
             "completed_phases": [],
             "notes": [],
         }
-        _atomic_write(STATE_FILE, json.dumps(state, ensure_ascii=False, indent=2))
+        _atomic_write(_state_path(), json.dumps(state, ensure_ascii=False, indent=2))
     except Exception as e:
         # Best-effort: write error to stderr but never raise (called from hooks)
         import sys
@@ -186,7 +205,7 @@ def focus_advance(to_phase: str | None = None) -> None:
         if current and current not in state.get("completed_phases", []):
             state.setdefault("completed_phases", []).append(current)
         state["phase"] = to_phase
-        _atomic_write(STATE_FILE, json.dumps(state, ensure_ascii=False, indent=2))
+        _atomic_write(_state_path(), json.dumps(state, ensure_ascii=False, indent=2))
     except Exception as e:
         import sys
         sys.stderr.write(f"[a_flow_state.focus_advance] error: {e}\n")
@@ -200,7 +219,7 @@ def focus_clear() -> None:
             state.setdefault("completed_phases", []).append(state["phase"])
         state["active"] = False
         state["phase"] = None
-        _atomic_write(STATE_FILE, json.dumps(state, ensure_ascii=False, indent=2))
+        _atomic_write(_state_path(), json.dumps(state, ensure_ascii=False, indent=2))
     except Exception as e:
         import sys
         sys.stderr.write(f"[a_flow_state.focus_clear] error: {e}\n")
@@ -258,7 +277,7 @@ def add_note(text: str) -> None:
     try:
         state = get_state()
         state.setdefault("notes", []).append(text)
-        _atomic_write(STATE_FILE, json.dumps(state, ensure_ascii=False, indent=2))
+        _atomic_write(_state_path(), json.dumps(state, ensure_ascii=False, indent=2))
     except Exception as e:
         import sys
         sys.stderr.write(f"[a_flow_state.add_note] error: {e}\n")
@@ -271,7 +290,7 @@ def allow_file(file_path: str) -> None:
         allowed = state.setdefault("allowed_files", [])
         if file_path not in allowed:
             allowed.append(file_path)
-        _atomic_write(STATE_FILE, json.dumps(state, ensure_ascii=False, indent=2))
+        _atomic_write(_state_path(), json.dumps(state, ensure_ascii=False, indent=2))
     except Exception as e:
         import sys
         sys.stderr.write(f"[a_flow_state.allow_file] error: {e}\n")
