@@ -44,6 +44,9 @@ from typing import Callable, List, Tuple
 DEFAULT_CONTAINER = "hermes-agent_web_1"
 DEFAULT_CLONE_DIR = "/opt/data/A-Wiki"
 GATEWAY_PID_FILE = "/opt/data/gateway.pid"
+# Where the gateway scans for skills. Every directory here is auto-exposed as
+# a /<dirname> command on Telegram (Skills-as-Commands, chunk hermes-e).
+DEFAULT_SKILLS_DIR = "/opt/data/skills"
 
 # Machine-regenerated files that are safe to restore from HEAD when they
 # conflict on stash pop — exactly the set C3' and Phase 3 hit in practice.
@@ -150,23 +153,50 @@ def build_rescan_argv(container: str) -> List[str]:
     return build_docker_exec_argv(container, script)
 
 
+def build_link_argv(
+    container: str, clone_dir: str, skills_dir: str = DEFAULT_SKILLS_DIR
+) -> List[str]:
+    """Link skills/awiki/* into the gateway's skill dir, inside the container.
+
+    Fast-forwarding the clone delivers the FILES; it does not make them
+    reachable. A skill answers ``/<name>`` on Telegram only once its directory
+    is linked under ``/opt/data/skills``. Before 2026-07-27 the only thing that
+    ever linked anything was the one-shot ``awiki-init-pi5.sh``, so every skill
+    added after the initial provision — the entire A-Suite — sat in the clone
+    unreachable. Running it here puts linking on the 6-hourly cron path.
+    """
+    # Resolve the interpreter rather than hard-coding python3: the container
+    # image is not ours to guarantee, and a bare `python3: not found` would
+    # fail the whole cron run over a name.
+    script = (
+        'PY="$(command -v python3 || command -v python)"; '
+        'if [ -z "$PY" ]; then echo "no python in container — skills not linked"; exit 0; fi; '
+        f'"$PY" {clone_dir}/scripts/hermes/link_awiki_skills.py --apply '
+        f"--repo-root {clone_dir} --skills-root {skills_dir}"
+    )
+    return build_docker_exec_argv(container, script)
+
+
 def build_plan(container: str, clone_dir: str) -> Plan:
     return [
         ("container-sync", build_docker_exec_argv(
             container, build_container_sync_script(clone_dir))),
+        ("link-awiki-skills", build_link_argv(container, clone_dir)),
         ("gateway-rescan", build_rescan_argv(container)),
     ]
 
 
 def execute(plan: Plan, runner: Runner) -> int:
-    """Run the plan. Sync exit codes: 0 = synced (rescan), 1 = FF failed
-    (skip rescan, error), 2 = manual conflict parked in stash (tree DID
-    update — still rescan, keep rc 2 for cron logs), 3 = already up-to-date
-    (skip rescan, SUCCESS — a no-op is not an error)."""
+    """Run the plan. Sync exit codes: 0 = synced, 1 = FF failed (skip link +
+    rescan, error), 2 = manual conflict parked in stash (tree DID update — so
+    still link + rescan, keep rc 2 for cron logs), 3 = already up-to-date
+    (SUCCESS — a no-op is not an error, but STILL link + rescan: a current
+    clone says nothing about whether its skills are linked).
+    """
     overall = 0
     for name, argv in plan:
-        if name == "gateway-rescan" and overall in (1, 3):
-            print("[skip] gateway-rescan — clone unchanged")
+        if name in ("link-awiki-skills", "gateway-rescan") and overall == 1:
+            print(f"[skip] {name} — clone did not update")
             continue
         rc = runner(name, argv)
         print(f"[{name}] exit {rc}")

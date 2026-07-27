@@ -103,6 +103,25 @@ if [ -d "$MATTPOCOCK_SKILLS_DIR" ]; then
   info "Linked $(ls -d "$HERMES_SKILLS/awiki/mattpocock"/*/ 2>/dev/null | wc -l) mattpocock skills"
 fi
 
+# ---- Step 4c: Link skills/awiki/ from the Hermes manifest (A-Suite) ----
+# The three steps above hard-code directories and between them they never
+# touched skills/awiki/ — so the whole A-Suite (/a-router /a-plan /a-debug ...)
+# was invisible to Hermes. This step is manifest-driven instead: it links every
+# skill that skills-registry.json tagged `agents: [... "hermes"]` and that lives
+# under skills/awiki/. Each linked directory is auto-exposed as /<name> on
+# Telegram (Skills-as-Commands, proven by chunk hermes-e).
+PY_BIN="$(command -v python3 || command -v python || true)"
+if [ -z "$PY_BIN" ]; then
+  warn "no python3 — skipping skills/awiki link step (A-Suite will stay invisible)"
+else
+  info "Linking skills/awiki/ from hermes.skills.json"
+  "$PY_BIN" "$A_WIKI_DIR/scripts/hermes/link_awiki_skills.py" \
+    --apply \
+    --repo-root "$A_WIKI_DIR" \
+    --skills-root "$HERMES_SKILLS" \
+    || warn "link_awiki_skills.py failed — A-Suite commands will be missing"
+fi
+
 # ---- Step 5: Link agent personas ----
 AGENTS_DIR="$A_WIKI_DIR/agents"
 if [ -d "$AGENTS_DIR" ]; then
@@ -171,6 +190,7 @@ echo ""
 echo "  A-Wiki:    $A_WIKI_DIR $(git -C "$A_WIKI_DIR" rev-parse --short HEAD 2>/dev/null)"
 echo "  Hermes:    $(hermes version 2>/dev/null | head -1 || echo 'N/A')"
 echo "  Skills:    $(ls -d "$HERMES_SKILLS"/lifecycle/*/ 2>/dev/null | wc -l) lifecycle"
+echo "  A-Suite:   $(ls -d "$HERMES_SKILLS"/awiki/a-*/ 2>/dev/null | wc -l) commands (/a-router /a-plan /a-debug ...)"
 echo "  Personas:  $(ls "$HERMES_HOME"/agents/*.md 2>/dev/null | wc -l)"
 echo "  Config:    $(ls "$HERMES_HOME"/config.d/awiki-lifecycle.json 2>/dev/null && echo '✅' || echo '❌')"
 echo "  Hook:      $(ls "$HERMES_HOOKS"/awiki-session-start.sh 2>/dev/null && echo '✅' || echo '❌')"

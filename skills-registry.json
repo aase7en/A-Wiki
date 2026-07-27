@@ -17,7 +17,8 @@
       "source": "repo",
       "path": "skills/awiki/a-claim/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -112,7 +113,8 @@
       "source": "repo",
       "path": "skills/awiki/a-escalate/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -249,7 +251,8 @@
       "source": "repo",
       "path": "skills/awiki/a-router/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -400,7 +403,8 @@
       "source": "repo",
       "path": "skills/awiki/a-think/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.1.0",
       "status": "canonical",
@@ -446,7 +450,8 @@
       "source": "repo",
       "path": "skills/awiki/a-plan/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -497,7 +502,8 @@
       "source": "repo",
       "path": "skills/awiki/a-debug/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -550,7 +556,8 @@
       "source": "repo",
       "path": "skills/awiki/a-doc/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -1907,7 +1914,8 @@
       "source": "repo",
       "path": "skills/claude-code/brainstorm-before-build/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -6195,7 +6203,8 @@
       "source": "repo",
       "path": "skills/mattpocock/grill-with-docs/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -6886,7 +6895,8 @@
       "source": "repo",
       "path": "skills/mattpocock/implement/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -13069,7 +13079,8 @@
       "source": "repo",
       "path": "skills/mattpocock/tdd/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -14338,7 +14349,8 @@
       "source": "repo",
       "path": "skills/claude-code/verify-before-done/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "",
       "status": "canonical",
@@ -15377,7 +15389,8 @@
       "source": "repo",
       "path": "skills/awiki/a-loop/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
@@ -15397,7 +15410,8 @@
       "source": "repo",
       "path": "skills/awiki/a-council/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",

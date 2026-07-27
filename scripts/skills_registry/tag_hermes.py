@@ -74,7 +74,38 @@ META_ALLOWLIST: frozenset[str] = frozenset({
     "debug-mantra",
     "scrutinize",
     "post-mortem",
+    # A-Suite spine entry points.  Each linked dir is auto-exposed as a
+    # Telegram command by Skills-as-Commands, so these ARE the Pi5 UI.  Listed
+    # explicitly (not left to the lifecycle heuristic) so the intent survives
+    # a future re-triage of lifecycle_phase, and so re-running this tagger is a
+    # no-op for them.  The ten a-doc/types/<x>/ subskills are deliberately
+    # absent: they are reached through a-doc and would eat a fifth of the
+    # manifest.  See tests/test_hermes_a_suite.py.
+    "a-router",
+    "a-think",
+    "a-plan",
+    "a-debug",
+    "a-doc",
+    "a-council",
+    "a-loop",
+    "a-escalate",
+    "a-claim",
 })
+
+
+def _utf8_streams() -> None:
+    """Force UTF-8 on stdout/stderr before printing the plan.
+
+    The plan renders ``before → after`` with a U+2192 arrow, which raised
+    UnicodeEncodeError and killed the run on a Windows cp874 (Thai) console —
+    i.e. on the maintainer's own machine.  Same preamble every hook in this
+    repo carries; see scripts/hooks/check_compaction_suggest.py.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):  # pragma: no cover - exotic stream
+            pass
 
 
 def _should_tag(skill: dict) -> tuple[bool, str | None]:
@@ -132,6 +163,7 @@ def plan_changes(data: dict) -> list[dict]:
 
 
 def main() -> int:
+    _utf8_streams()
     ap = argparse.ArgumentParser(
         description=__doc__.splitlines()[1] if __doc__ else "Tag skills for Hermes.",
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -258,11 +258,9 @@ def show_agent_claims(repo_root: str) -> None:
     others = [c for c in claims if not me or c.get("agent") != me]
     if not others:
         return
-    sys.stderr.write(f"🤝 Agent อื่นกำลังทำงาน {len(others)} claim — MCP `claim_list`:
-")
+    sys.stderr.write(f"🤝 Agent อื่นกำลังทำงาน {len(others)} claim — MCP `claim_list`:\n")
     for line in ac.describe(others).splitlines()[:5]:
-        sys.stderr.write(f"   {line}
-")
+        sys.stderr.write(f"   {line}\n")
 
 
 def clean_stale_focus_files(repo_root: str, max_age_days: int = 3) -> None:

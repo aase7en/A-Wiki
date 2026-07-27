@@ -1,6 +1,401 @@
 {
   "skills": [
     {
+      "name": "a-claim",
+      "aliases": [
+        "/a-claim",
+        "aclaim"
+      ],
+      "domain": [
+        "engineering",
+        "ai-ops"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-claim/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "บังคับ: ประกาศงานก่อนแตะ shared surface เพื่อไม่ให้ agent หลายตัวทำซ้ำกัน. claim_acquire/list/release/advance ผ่าน MCP; PreToolUse hook block เมื่อชน claim ของ agent อื่น; lease หมดอายุเอง",
+      "invocation": "both",
+      "th_description": "ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook block เมื่อชนกัน",
+      "when_to_use": "ก่อนแก้ skills/, scripts/, commands/, registry — หรืออยากรู้ว่า agent อื่นทำอะไรอยู่",
+      "examples": [
+        {
+          "scenario": "เริ่มงานบน shared surface",
+          "how": "claim_acquire scope=[\"skills/awiki/**\"] goal=\"...\""
+        },
+        {
+          "scenario": "อยากรู้ว่าใครทำอะไร",
+          "how": "claim_list"
+        }
+      ],
+      "process_steps": [
+        "claim_list ดูก่อน",
+        "claim_acquire ประกาศ scope+goal",
+        "ทำงาน",
+        "claim_advance ตาม phase",
+        "claim_release"
+      ],
+      "invocation_hint": "/A-Claim",
+      "a_phase": "any",
+      "triggers": [
+        "claim",
+        "จอง",
+        "agent อื่น",
+        "ชนกัน",
+        "coordination"
+      ]
+    },
+    {
+      "name": "a-council",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-council/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Council \"<topic>\"",
+      "triggers": [
+        "ตรวจสอบ",
+        "review",
+        "audit",
+        "security review"
+      ],
+      "a_phase": "review"
+    },
+    {
+      "name": "a-debug",
+      "aliases": [
+        "/a-debug",
+        "adebug"
+      ],
+      "domain": [
+        "debug",
+        "code"
+      ],
+      "lifecycle_phase": "verify",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-debug/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Debug loop ครบวงจร — A-Think → debug-mantra (+ root-cause gate) → tdd (failing test) → fix → verify → scrutinize. บังคับ Iron Law #1+#2. Subagent fan-out สำหรับ bug ซับซ้อน",
+      "invocation": "both",
+      "th_description": "Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหรับ bug ซับซ้อน",
+      "when_to_use": "แก้ bug, หา root cause, test แดง, production incident",
+      "examples": [
+        {
+          "scenario": "Dashboard รพ. error 500",
+          "how": "/A-Debug dashboard error 500"
+        },
+        {
+          "scenario": "ทำไม function return null",
+          "how": "/A-Debug [description]"
+        }
+      ],
+      "process_steps": [
+        "A-Think",
+        "debug-mantra (4 mantras + root-cause gate)",
+        "tdd (failing test)",
+        "fix",
+        "verify-before-done",
+        "scrutinize"
+      ],
+      "invocation_hint": "/A-Debug",
+      "triggers": [
+        "แก้บั๊ก",
+        "ไม่ทำงาน",
+        "หาสาเหตุ",
+        "error",
+        "crash",
+        "fail",
+        "broken"
+      ],
+      "a_phase": "debug"
+    },
+    {
+      "name": "a-doc",
+      "aliases": [
+        "/a-doc",
+        "adoc"
+      ],
+      "domain": [
+        "document",
+        "thai"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-doc/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "เอกสารราชการไทย/โรงพยาบาล — 8 ประเภท: announce/order/memo/project/procedure/procurement/jd/report/form-record. บังคับ grill format + learn-from-example docx",
+      "invocation": "both",
+      "th_description": "เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไฟล์ตัวอย่าง",
+      "when_to_use": "สร้าง/แก้/แปลงเอกสารราชการ, docx, pdf",
+      "examples": [
+        {
+          "scenario": "สร้างประกาศนโยบาย รพ.",
+          "how": "/A-Doc ประกาศนโยบาย..."
+        },
+        {
+          "scenario": "บันทึกข้อความขอซื้อ",
+          "how": "/A-Doc บันทึกข้อความขอซื้อ..."
+        }
+      ],
+      "process_steps": [
+        "detect type",
+        "grill format",
+        "dispatch types/<type>/",
+        "generate docx",
+        "validate + render"
+      ],
+      "invocation_hint": "/A-Doc",
+      "triggers": [
+        "หนังสือ",
+        "ราชการ",
+        "คำสั่ง",
+        "บันทึก",
+        "ประกาศ",
+        "โครงการ",
+        "docx"
+      ],
+      "a_phase": "implement"
+    },
+    {
+      "name": "a-escalate",
+      "aliases": [
+        "/a-escalate",
+        "aescalate"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-escalate/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "สร้าง prompt แบบ self-contained ส่งให้ model ที่เก่งกว่าช่วยคิด — goal, constraints, สิ่งที่ลองแล้ว, ไฟล์, done-criteria, คำถามเดียว. เขียนลง exports/escalate/ ไม่ส่งออกเอง",
+      "invocation": "manual",
+      "th_description": "แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส่งข้อมูลออกอัตโนมัติ",
+      "when_to_use": "งานเกินความสามารถ model ปัจจุบัน, ติดวนหลายรอบ, ต้องการ second opinion จากโมเดลใหญ่กว่า",
+      "examples": [
+        {
+          "scenario": "debug วน 3 รอบไม่จบ",
+          "how": "/A-Escalate --goal ... --question ..."
+        },
+        {
+          "scenario": "ตัดสินใจ architecture ใหญ่",
+          "how": "/A-Escalate + --file ไฟล์ที่เกี่ยว"
+        }
+      ],
+      "process_steps": [
+        "รวบรวม goal + constraints",
+        "ดึงสิ่งที่ลองแล้วจาก memory-ledger",
+        "แนบ excerpt ไฟล์",
+        "render เป็น exports/escalate/<slug>.md",
+        "user ก๊อปไปวาง"
+      ],
+      "invocation_hint": "/A-Escalate",
+      "a_phase": "any",
+      "triggers": [
+        "ส่งให้โมเดลอื่น",
+        "escalate",
+        "ถามโมเดลที่เก่งกว่า",
+        "second opinion"
+      ]
+    },
+    {
+      "name": "a-loop",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-loop/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Loop \"<objective>\"",
+      "a_phase": "any"
+    },
+    {
+      "name": "a-plan",
+      "aliases": [
+        "/a-plan",
+        "aplan"
+      ],
+      "domain": [
+        "engineering",
+        "ux-ui",
+        "design"
+      ],
+      "lifecycle_phase": "define",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-plan/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "วางแผน+ออกแบบ UX/UI/DB/Architecture — chain: A-Think → grill-with-docs → spec-driven → design tool → plan-orchestrate. บังคับ grill ≥3 Qs ก่อน implement",
+      "invocation": "both",
+      "th_description": "ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement",
+      "when_to_use": "วางแผน/ออกแบบ ระบบ ใหม่, database schema, UX/UI",
+      "examples": [
+        {
+          "scenario": "ออกแบบ dashboard พลังงาน รพ.",
+          "how": "/A-Plan dashboard พลังงาน"
+        },
+        {
+          "scenario": "วาง schema ใหม่",
+          "how": "/A-Plan schema"
+        }
+      ],
+      "process_steps": [
+        "A-Think",
+        "grill-with-docs (≥3 Qs)",
+        "spec-driven-development",
+        "design tool",
+        "plan-orchestrate"
+      ],
+      "invocation_hint": "/A-Plan",
+      "triggers": [
+        "ออกแบบ",
+        "วางแผน",
+        "design",
+        "architecture",
+        "database schema",
+        "ux/ui"
+      ],
+      "a_phase": "design"
+    },
+    {
+      "name": "a-router",
+      "aliases": [
+        "/a-router",
+        "arouter"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-router/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Suite dispatcher — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง",
+      "invocation": "manual",
+      "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
+      "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
+      "examples": [
+        {
+          "scenario": "ไม่รู้จะเริ่มยังไง",
+          "how": "/A-Router \"<งานที่จะทำ>\""
+        },
+        {
+          "scenario": "อยากดู trigger ทั้งหมด",
+          "how": "อ่าน wiki/A-ROUTER.md"
+        }
+      ],
+      "process_steps": [
+        "match triggers",
+        "เลือก skill + phase",
+        "focus_set",
+        "ส่งต่อ skill ปลายทาง"
+      ],
+      "invocation_hint": "/A-Router",
+      "a_phase": "any"
+    },
+    {
+      "name": "a-think",
+      "aliases": [
+        "/a-think",
+        "athink"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-think/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.1.0",
+      "status": "canonical",
+      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
+      "invocation": "both",
+      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
+      "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
+      "examples": [
+        {
+          "scenario": "วางแผน migration DB",
+          "how": "/A-Think [task]"
+        },
+        {
+          "scenario": "Debug bug ซับซ้อน",
+          "how": "/A-Think → เรียก A-Debug"
+        }
+      ],
+      "process_steps": [
+        "Restate",
+        "Done-criteria",
+        "Decompose",
+        "≥2 Approaches",
+        "Pre-mortem",
+        "Right-size",
+        "Prove"
+      ],
+      "invocation_hint": "/A-Think",
+      "a_phase": "ask"
+    },
+    {
       "name": "a-wiki-telegram",
       "aliases": [],
       "domain": [
@@ -105,6 +500,40 @@
         "ship"
       ],
       "invocation_hint": "/awiki-lifecycle-router"
+    },
+    {
+      "name": "brainstorm-before-build",
+      "aliases": [],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/brainstorm-before-build/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use BEFORE designing/building anything new — features, systems, wiki domains, scripts, hooks, skills. Triggers: \"ออกแบบ\", \"วางระบบ\", \"สร้างฟีเจอร์\", \"สร้าง skil",
+      "invocation": "manual",
+      "th_description": "บังคับให้ถาม user 3 คำถาม (scope/constraint/success) ก่อนเริ่มสร้างสิ่งใหม่ ป้องกันการเขียนผิดทิศทาง",
+      "when_to_use": "ก่อนสร้าง skill/hook/script/feature ใหม่ หรือ refactor ที่กระทบ >3 ไฟล์",
+      "examples": [
+        {
+          "scenario": "user ขอ 'ทำสกิล superpowers'",
+          "how": "ถามก่อน: ติดเต็มหรือ cherry-pick? เน้น coding หรือ wiki?"
+        }
+      ],
+      "process_steps": [
+        "ถาม clarify (≤3 คำถาม)",
+        "เสนอ 2-3 approach",
+        "รอ user เลือก",
+        "เขียน plan"
+      ],
+      "invocation_hint": "/brainstorm-before-build"
     },
     {
       "name": "browser-testing-with-devtools",
@@ -495,6 +924,40 @@
       ]
     },
     {
+      "name": "grill-with-docs",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "define",
+      "category": "mattpocock",
+      "source": "repo",
+      "path": "skills/mattpocock/grill-with-docs/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADRs and glossary) as it goes.",
+      "invocation": "manual",
+      "th_description": "เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน",
+      "when_to_use": "ต้องการทั้งลับแผนและได้เอกสาร ADR/glossary ในรอบเดียว",
+      "examples": [
+        {
+          "scenario": "วาง schema ใหม่",
+          "how": "/grill-with-docs ได้ทั้ง decision + ADR บันทึก"
+        }
+      ],
+      "process_steps": [
+        "สัมภาษณ์แผน",
+        "บันทึก glossary",
+        "สร้าง ADR",
+        "สรุป decision"
+      ],
+      "invocation_hint": "/grill-with-docs"
+    },
+    {
       "name": "hermes-fan-out",
       "aliases": [],
       "domain": [
@@ -531,6 +994,46 @@
         "รวมผลลัพธ์เป็นรายงาน triaged"
       ],
       "invocation_hint": "/hermes-fan-out"
+    },
+    {
+      "name": "implement",
+      "aliases": [],
+      "domain": [
+        "code",
+        "engineering"
+      ],
+      "lifecycle_phase": "build",
+      "category": "mattpocock",
+      "source": "repo",
+      "path": "skills/mattpocock/implement/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Implement a piece of work based on a PRD or set of issues, using TDD where possible.",
+      "invocation": "manual",
+      "th_description": "ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โค้ดมีคุณภาพและผ่านการทดสอบก่อน deploy",
+      "when_to_use": "เมื่อต้อง implement งานจาก PRD หรือ issues",
+      "examples": [
+        {
+          "scenario": "มี PRD สำหรับเพิ่มฟีเจอร์ login ด้วย OAuth",
+          "how": "ใช้คำสั่ง /implement โดยแนบ PRD และ issue ที่เกี่ยวข้อง"
+        },
+        {
+          "scenario": "ต้องการแก้บั๊กตาม issue ที่ระบุไว้",
+          "how": "ใช้คำสั่ง /implement พร้อมระบุ issue number"
+        }
+      ],
+      "process_steps": [
+        "วิเคราะห์ PRD หรือ issues",
+        "เขียน test ก่อน (TDD)",
+        "implement โค้ด",
+        "รัน test และแก้ไข",
+        "review และ deploy"
+      ],
+      "invocation_hint": "/implement"
     },
     {
       "name": "ingest-source",
@@ -1199,6 +1702,40 @@
       "invocation_hint": "/spec-driven-development"
     },
     {
+      "name": "tdd",
+      "aliases": [],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "build",
+      "category": "mattpocock",
+      "source": "repo",
+      "path": "skills/mattpocock/tdd/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Test-driven development — the red-green-refactor loop, what makes a test worth keeping, anti-patterns.",
+      "invocation": "manual",
+      "th_description": "เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression",
+      "when_to_use": "เขียนฟังก์ชันใหม่, แก้ bug (เขียน test สำหรับ bug ก่อน), หรือ refactor",
+      "examples": [
+        {
+          "scenario": "เขียนฟังก์ชันคำนวณส่วนลด",
+          "how": "เขียน test ว่า input X ต้องได้ Y ก่อน, รันให้ fail, แล้วเขียนโค้ด"
+        }
+      ],
+      "process_steps": [
+        "เขียน test (Red)",
+        "เขียนโค้ดให้ผ่าน (Green)",
+        "ปรับให้สะอาด (Refactor)"
+      ],
+      "invocation_hint": "/tdd"
+    },
+    {
       "name": "test-engineer",
       "aliases": [
         "/test-engineer",
@@ -1632,6 +2169,41 @@
         }
       ],
       "invocation_hint": "/thai-translate"
+    },
+    {
+      "name": "verify-before-done",
+      "aliases": [],
+      "domain": [
+        "debug"
+      ],
+      "lifecycle_phase": "none",
+      "category": "wiki",
+      "source": "repo",
+      "path": "skills/claude-code/verify-before-done/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Use BEFORE declaring task complete OR before any destructive git op (reset --hard, clean -f, checkout --, restore, branch -D). Triggers: \"เสร็จแล้ว\", \"done\", \"/",
+      "invocation": "manual",
+      "th_description": "บังคับตรวจสอบก่อนบอกว่า 'เสร็จแล้ว' — รัน test, ตรวจ output, ยืนยันจริงไม่ใช่แค่คิดว่าเสร็จ",
+      "when_to_use": "ก่อนบอก user ว่าทำเสร็จ, ก่อน commit, หรือหลัง refactor",
+      "examples": [
+        {
+          "scenario": "แก้ bug เสร็จ",
+          "how": "รัน test, reproduce bug อีกครั้งให้แน่ใจหาย, แล้วค่อยบอกเสร็จ"
+        }
+      ],
+      "invocation_hint": "/verify-before-done",
+      "process_steps": [
+        "ตรวจสอบ git status",
+        "ตรวจสอบ uncommitted changes",
+        "ตรวจสอบ untracked files",
+        "ตรวจสอบ branch ที่ใช้งาน",
+        "สรุปผลให้ผู้ใช้ตัดสินใจ"
+      ]
     },
     {
       "name": "web-performance-auditor",

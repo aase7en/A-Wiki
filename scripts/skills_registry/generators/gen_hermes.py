@@ -9,18 +9,26 @@ Rationale
 ---------
 Hermes runs 24/7 on Raspberry Pi 5 against free-tier models (DeepSeek
 V4-Flash, Gemini-Flash-Lite — see ``scripts/hermes/model-pool/model-pool.json``)
-with 8k-32k context windows and a read-only A-Wiki mount.  Preloading all 331
-canonical skills would blow the context budget, so Hermes surfaces a small
-(~40-50) hand-picked set: lifecycle skills, Telegram-relevant domains (wiki,
-pharmacy, thai), and key meta-skills.  Tagging is done in ``skills-registry.json``;
-this generator only reads it.
+with 8k-32k context windows and a read-only A-Wiki mount.  Preloading every
+canonical skill would blow the context budget, so Hermes surfaces a small
+hand-picked set (~65, ceiling asserted in ``tests/test_hermes_a_suite.py``):
+lifecycle skills, Telegram-relevant domains (wiki, pharmacy, thai), the A-Suite
+spine, and key meta-skills.  Tagging is done in ``skills-registry.json``; this
+generator only reads it.
 
 Consumers
 ---------
-- ``scripts/hermes/awiki-init-pi5.sh`` (Chunk C) reads this manifest to decide
-  which skill dirs to symlink into ``~/.hermes/skills/``.
-- ``scripts/hermes/persona-orchestrator.sh`` (Chunk B) reads it to enumerate the
-  skill set for fan-out reports.
+- ``scripts/hermes/link_awiki_skills.py`` reads this manifest and symlinks each
+  ``skills/awiki/*`` entry into the Hermes skill root, where Skills-as-Commands
+  turns every directory into a ``/<name>`` Telegram command.
+  ``scripts/hermes/awiki-init-pi5.sh`` invokes it (Step 4c).
+
+.. note::
+   Until 2026-07-27 this docstring also claimed ``awiki-init-pi5.sh`` and
+   ``persona-orchestrator.sh`` read the manifest directly.  Neither did — a
+   repo-wide grep found **no** consumer at all, so the file shipped to the Pi5
+   and sat there while the entire A-Suite stayed invisible.  ``link_awiki_skills.py``
+   is the first thing that actually reads it.
 
 See: docs/architecture/hermes-cross-agent-handoff.md (Chunk A)
 """
@@ -37,10 +45,12 @@ filename = "hermes.skills.json"
 def _hermes_skills(registry: Registry) -> list[dict[str, Any]]:
     """Skills explicitly tagged for Hermes.
 
-    Mirrors ``Registry.canonical_for_agent("hermes")`` for canonical skills
-    (which already covers the ``"all" OR agent`` rule), then additionally
-    surfaces aliases whose own ``agents`` list opts into Hermes — so a thin
-    alias can route a hermes-only entrypoint to a canonical skill.
+    Deliberately NOT ``Registry.canonical_for_agent("hermes")``: that helper
+    applies the ``"all" OR agent`` rule, which would sweep in every
+    ``agents: ["all"]`` skill and defeat the whole point of an opt-in manifest.
+    Here the literal string ``"hermes"`` is required.  Aliases and deprecated
+    entries are included when they carry the tag, so a thin alias can route a
+    hermes-only entrypoint to a canonical skill.
     """
     out: list[dict[str, Any]] = []
     for skill in registry.skills:

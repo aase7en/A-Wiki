@@ -194,10 +194,25 @@ class TestBuildRescanArgv:
 # ---------------------------------------------------------------------------
 
 class TestPlanAndExecute:
-    def test_plan_orders_sync_before_rescan(self) -> None:
+    def test_plan_links_awiki_skills_between_sync_and_rescan(self) -> None:
+        # Pulling new commits is not enough: a skill dir only becomes a
+        # Telegram command once it is linked into /opt/data/skills. Until
+        # 2026-07-27 only the one-shot awiki-init-pi5.sh linked anything, so
+        # every skill added after the initial provision stayed invisible.
+        # Order matters — link AFTER the FF (the dirs must exist) and BEFORE
+        # the rescan (the gateway must see the new links).
         plan = pbs.build_plan(CONTAINER, CLONE_DIR)
         names = [step[0] for step in plan]
-        assert names == ["container-sync", "gateway-rescan"]
+        assert names == ["container-sync", "link-awiki-skills", "gateway-rescan"]
+
+    def test_link_step_runs_link_helper_inside_the_container(self) -> None:
+        plan = dict(pbs.build_plan(CONTAINER, CLONE_DIR))
+        argv = plan["link-awiki-skills"]
+        assert argv[:2] == ["sudo", "-n"], "must reuse the sudo -n docker path"
+        script = argv[-1]
+        assert "link_awiki_skills.py" in script
+        assert "--apply" in script, "dry-run would link nothing"
+        assert pbs.DEFAULT_SKILLS_DIR in script, "must target the dir Hermes scans"
 
     def test_execute_runs_rescan_after_clean_sync(self) -> None:
         calls: list[str] = []
@@ -207,7 +222,7 @@ class TestPlanAndExecute:
             return 0
 
         rc = pbs.execute(pbs.build_plan(CONTAINER, CLONE_DIR), runner)
-        assert calls == ["container-sync", "gateway-rescan"]
+        assert calls == ["container-sync", "link-awiki-skills", "gateway-rescan"]
         assert rc == 0
 
     def test_execute_still_rescans_after_manual_conflict_exit_2(self) -> None:
@@ -224,8 +239,10 @@ class TestPlanAndExecute:
         assert "gateway-rescan" in calls
         assert rc == 2
 
-    def test_execute_skips_rescan_when_ff_failed(self) -> None:
-        # exit 1 = nothing changed in the clone; rescan is pointless noise.
+    def test_execute_skips_link_and_rescan_when_ff_failed(self) -> None:
+        # exit 1 = the clone is mid-conflict and did NOT update. Linking into
+        # a tree in that state could point commands at half-applied content,
+        # and a rescan is pointless noise.
         calls: list[str] = []
 
         def runner(name: str, argv: list[str]) -> int:
@@ -236,9 +253,13 @@ class TestPlanAndExecute:
         assert calls == ["container-sync"]
         assert rc == 1
 
-    def test_execute_skips_rescan_when_up_to_date_and_reports_success(self) -> None:
-        # exit 3 = UP-TO-DATE: nothing changed → no HUP, and the overall run
-        # is a SUCCESS (0) — cron must not log a no-op as an error.
+    def test_execute_still_links_when_clone_is_up_to_date(self) -> None:
+        # exit 3 = UP-TO-DATE. The clone being current says NOTHING about the
+        # links: this is exactly the state the Pi5 was in on 2026-07-27 —
+        # every A-Suite file present in /opt/data/A-Wiki, not one of them
+        # linked into /opt/data/skills. So link (and rescan, since links may
+        # have just appeared) even on a no-op FF. Overall rc stays 0 — cron
+        # must not log a no-op as an error.
         calls: list[str] = []
 
         def runner(name: str, argv: list[str]) -> int:
@@ -246,7 +267,7 @@ class TestPlanAndExecute:
             return 3 if name == "container-sync" else 0
 
         rc = pbs.execute(pbs.build_plan(CONTAINER, CLONE_DIR), runner)
-        assert calls == ["container-sync"]
+        assert calls == ["container-sync", "link-awiki-skills", "gateway-rescan"]
         assert rc == 0
 
 
@@ -269,7 +290,7 @@ class TestCLI:
             ["--apply"], runner=lambda name, argv: executed.append(name) or 0
         )
         assert rc == 0
-        assert executed == ["container-sync", "gateway-rescan"]
+        assert executed == ["container-sync", "link-awiki-skills", "gateway-rescan"]
 
     def test_container_and_clone_dir_are_overridable(self, capsys) -> None:
         rc = pbs.main(["--container", "my-c", "--clone-dir", "/opt/data/X"])

@@ -5,33 +5,26 @@
     "define": {
       "required_before": "plan",
       "skills": ["spec-driven-development"],
-      "a_wiki_skills": ["grill-me", "brainstorm-before-build"]
+      "a_wiki_skills": ["grill-with-docs", "brainstorm-before-build", "a-plan"]
     },
     "plan": {
       "required_before": "build",
-      "skills": ["planning-and-task-breakdown"]
+      "skills": ["planning-and-task-breakdown"],
+      "a_wiki_skills": ["a-plan"]
     },
     "build": {
       "required_before": "verify",
-      "skills": [
-        "incremental-implementation",
-        "test-driven-development",
-        "doubt-driven-development",
-        "source-driven-development",
-        "frontend-ui-engineering",
-        "api-and-interface-design",
-        "context-engineering"
-      ]
+      "skills": ["implement", "tdd"]
     },
     "verify": {
       "required_before": "review",
       "skills": ["browser-testing-with-devtools"],
-      "a_wiki_skills": ["debug-mantra"]
+      "a_wiki_skills": ["debug-mantra", "a-debug"]
     },
     "review": {
       "required_before": "ship",
       "skills": ["code-simplification", "security-and-hardening", "performance-optimization"],
-      "a_wiki_skills": ["scrutinize"]
+      "a_wiki_skills": ["scrutinize", "a-council"]
     },
     "ship": {
       "required_before": null,
@@ -117,6 +110,8 @@
     "skill_directory": "skills/engineering-lifecycle",
     "meta_skill": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
     "reference_directory": "references",
-    "agent_directory": "agents"
+    "agent_directory": "agents",
+    "a_suite_router": "wiki/A-ROUTER.md",
+    "_a_suite_note": "The DEFINE..SHIP phases above are the Hermes orchestration contract and stay as-is. A-Suite is the 7-phase user-facing spine (ask -> design -> plan -> implement -> review -> debug -> test); its entry points are linked into the Hermes skill root by scripts/hermes/link_awiki_skills.py and are answerable as /a-router /a-plan /a-debug /a-doc /a-council /a-loop /a-escalate /a-claim /a-think. Full trigger table: wiki/A-ROUTER.md."
   }
 }
