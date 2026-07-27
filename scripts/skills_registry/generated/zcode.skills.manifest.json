@@ -84,6 +84,11 @@
       "domain": "engineering"
     },
     {
+      "name": "a-flow",
+      "target": "skills/awiki/a-flow/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
       "name": "a-invest",
       "target": "skills/awiki/a-invest/SKILL.md",
       "domain": "trader,business"
@@ -102,6 +107,11 @@
       "name": "a-research",
       "target": "skills/awiki/a-research/SKILL.md",
       "domain": "engineering,data"
+    },
+    {
+      "name": "a-route",
+      "target": "skills/awiki/a-route/SKILL.md",
+      "domain": "engineering,code"
     },
     {
       "name": "a-router",
