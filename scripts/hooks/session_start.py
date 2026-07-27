@@ -239,6 +239,32 @@ def clean_stale_cost_declarations(repo_root: str) -> None:
         sys.stderr.write(f"🧹 Cost gate reset: removed {len(removed)} stale declaration(s)\n")
 
 
+def show_agent_claims(repo_root: str) -> None:
+    """Show what OTHER agents are working on right now.
+
+    The proactive half of cross-agent coordination: the gate blocks a collision
+    after you try to edit; this tells you before you start. On 2026-07-27 two
+    agents built the same router for hours — either seeing this would have stopped it.
+    """
+    try:
+        sys.path.insert(0, os.path.join(repo_root, "scripts", "lib"))
+        import agent_claims as ac
+        claims = ac.live()
+    except Exception:
+        return
+    if not claims:
+        return
+    me = (os.environ.get("AWIKI_AGENT") or "").strip()
+    others = [c for c in claims if not me or c.get("agent") != me]
+    if not others:
+        return
+    sys.stderr.write(f"🤝 Agent อื่นกำลังทำงาน {len(others)} claim — MCP `claim_list`:
+")
+    for line in ac.describe(others).splitlines()[:5]:
+        sys.stderr.write(f"   {line}
+")
+
+
 def clean_stale_focus_files(repo_root: str, max_age_days: int = 3) -> None:
     """Remove A-Suite focus state left behind by long-dead sessions.
 
@@ -398,6 +424,7 @@ def run_steps(repo_root, lean: bool) -> None:
     git_pull(repo_root)
     clean_stale_cost_declarations(repo_root)
     clean_stale_focus_files(repo_root)
+    show_agent_claims(repo_root)
     show_todos(repo_root)
     replay_memory_ledger(repo_root)  # Neural Spine: cross-session continuity
     reap_task_leases(repo_root)       # Neural Spine: free crashed claims

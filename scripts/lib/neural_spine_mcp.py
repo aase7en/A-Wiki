@@ -323,6 +323,56 @@ def tool_focus_clear(args: dict) -> dict:
     return {"cleared": existed}
 
 
+# ── Cross-agent work claims ───────────────────────────────────────────────
+# The coordination layer. Exposed over MCP so ZCode, Codex, Gemini and Claude
+# all use the SAME store — a Claude-only hook could never have prevented the
+# 2026-07-27 duplicate-router incident, because the other agent was ZCode.
+
+def _claims():
+    import agent_claims
+    return agent_claims
+
+
+def _agent_name(args: dict) -> str:
+    explicit = (args.get("agent") or "").strip()
+    if explicit:
+        return explicit
+    for env, name in (("ZCODE_SESSION_ID", "zcode"), ("CLAUDE_SESSION_ID", "claude"),
+                      ("CODEX_SESSION_ID", "codex"), ("GEMINI_SESSION_ID", "gemini")):
+        if os.environ.get(env):
+            return name
+    return os.environ.get("AWIKI_AGENT", "unknown")
+
+
+def tool_claim_acquire(args: dict) -> dict:
+    ac = _claims()
+    return ac.acquire(
+        agent=_agent_name(args),
+        scope=args.get("scope") or [],
+        goal=args.get("goal", ""),
+        phase=args.get("phase", "ask"),
+        session_id=_session_id(),
+    )
+
+
+def tool_claim_list(args: dict) -> dict:
+    ac = _claims()
+    claims = ac.live()
+    return {"claims": claims, "summary": ac.describe(claims)}
+
+
+def tool_claim_release(args: dict) -> dict:
+    ac = _claims()
+    cid = args.get("claim_id")
+    if cid:
+        return {"released": ac.release(cid)}
+    return {"released": ac.release_session(_session_id())}
+
+
+def tool_claim_advance(args: dict) -> dict:
+    return _claims().advance(args["claim_id"], args["phase"])
+
+
 # ── TOOLS registry (merged into awiki MCP server TOOLS) ───────────────────
 TOOLS: dict[str, dict[str, Any]] = {
     "memory_recall": {
@@ -498,6 +548,56 @@ TOOLS: dict[str, dict[str, Any]] = {
         "fn": tool_focus_clear,
         "description": "End the focus session and delete its state. Idempotent.",
         "inputSchema": {"type": "object", "properties": {}},
+    },
+    # ── Cross-agent coordination (MANDATORY before shared-surface work) ──
+    "claim_acquire": {
+        "fn": tool_claim_acquire,
+        "description": (
+            "REQUIRED before editing shared surfaces (skills/, scripts/, commands/, "
+            "skills-registry.json, AGENTS.md). Registers what you are about to build "
+            "so other agents (ZCode, Codex, Gemini, Claude) can see it and not "
+            "duplicate it. A PreToolUse hook BLOCKS edits that land inside another "
+            "agent's live claim. Claims carry a TTL lease and self-reap."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "scope": {"type": "array", "items": {"type": "string"},
+                          "description": "glob(s) you will touch, e.g. [\"skills/awiki/**\"]"},
+                "goal": {"type": "string", "description": "one line: what done looks like"},
+                "phase": {"type": "string",
+                          "enum": ["ask", "design", "plan", "implement", "review", "debug", "test"]},
+                "agent": {"type": "string", "description": "override detected identity"},
+            },
+            "required": ["scope", "goal"],
+        },
+    },
+    "claim_list": {
+        "fn": tool_claim_list,
+        "description": (
+            "Who else is working right now, on what, in which phase. Call this BEFORE "
+            "starting anything non-trivial — it is the cheapest way to avoid building "
+            "something another agent already has in flight. Read-only."
+        ),
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    "claim_release": {
+        "fn": tool_claim_release,
+        "description": "Release a claim by id, or all claims held by this session if omitted.",
+        "inputSchema": {"type": "object", "properties": {"claim_id": {"type": "string"}}},
+    },
+    "claim_advance": {
+        "fn": tool_claim_advance,
+        "description": "Move a claim to a new phase and renew its lease.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "claim_id": {"type": "string"},
+                "phase": {"type": "string",
+                          "enum": ["ask", "design", "plan", "implement", "review", "debug", "test"]},
+            },
+            "required": ["claim_id", "phase"],
+        },
     },
     "task_list": {
         "fn": tool_task_list,

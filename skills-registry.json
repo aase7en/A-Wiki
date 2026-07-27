@@ -3,6 +3,56 @@
   "generated_at": "2026-07-27",
   "skills": [
     {
+      "name": "a-claim",
+      "aliases": [
+        "/a-claim",
+        "aclaim"
+      ],
+      "domain": [
+        "engineering",
+        "ai-ops"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-claim/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "บังคับ: ประกาศงานก่อนแตะ shared surface เพื่อไม่ให้ agent หลายตัวทำซ้ำกัน. claim_acquire/list/release/advance ผ่าน MCP; PreToolUse hook block เมื่อชน claim ของ agent อื่น; lease หมดอายุเอง",
+      "invocation": "both",
+      "th_description": "ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook block เมื่อชนกัน",
+      "when_to_use": "ก่อนแก้ skills/, scripts/, commands/, registry — หรืออยากรู้ว่า agent อื่นทำอะไรอยู่",
+      "examples": [
+        {
+          "scenario": "เริ่มงานบน shared surface",
+          "how": "claim_acquire scope=[\"skills/awiki/**\"] goal=\"...\""
+        },
+        {
+          "scenario": "อยากรู้ว่าใครทำอะไร",
+          "how": "claim_list"
+        }
+      ],
+      "process_steps": [
+        "claim_list ดูก่อน",
+        "claim_acquire ประกาศ scope+goal",
+        "ทำงาน",
+        "claim_advance ตาม phase",
+        "claim_release"
+      ],
+      "invocation_hint": "/A-Claim",
+      "a_phase": "any",
+      "triggers": [
+        "claim",
+        "จอง",
+        "agent อื่น",
+        "ชนกัน",
+        "coordination"
+      ]
+    },
+    {
       "name": "a-content",
       "aliases": [
         "/a-content",
@@ -15694,13 +15744,16 @@
         "hermes"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Master 7-stage dev pipeline (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST). Thin router composing canonical skills. Hook-enforced (check_a_flow_discipline). State in .tmp/a-flow.json (per-session).",
       "invocation": "manual",
       "th_description": "Master 7-stage dev pipeline — ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST. บังคับโดย hook (check_a_flow_discipline).",
       "when_to_use": "งาน non-trivial ที่ต้องการ dev cycle มืออาชีพ + กันหลุด focus",
       "invocation_hint": "/A-Flow",
-      "a_phase": "any"
+      "a_phase": "any",
+      "migrated_to": "a-router",
+      "canonical": "a-router",
+      "notes": "duplicate 7-phase state machine — owner kept A-Suite; allowed_files scoping from a_flow_state.py worth porting into focus_* before removal"
     },
     {
       "name": "a-route",
@@ -15723,13 +15776,16 @@
         "hermes"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Intent classifier → category bundle → chain. Auto-router that classifies user request, suggests category + chain (waits for user confirm). Cross-agent via invocation_hint.",
       "invocation": "manual",
       "th_description": "Auto-router ที่ classify intent → suggest category bundle → chain (SUGGEST + CONFIRM)",
       "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน หรืออยาก auto-pick chain ตาม intent",
       "invocation_hint": "/A-Route",
-      "a_phase": "any"
+      "a_phase": "any",
+      "migrated_to": "a-router",
+      "canonical": "a-router",
+      "notes": "duplicate intent dispatcher — owner kept A-Suite (2026-07-27)"
     }
   ]
 }

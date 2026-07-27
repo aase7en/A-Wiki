@@ -149,6 +149,10 @@
                 "hooks": [
                     {
                         "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-agent-claim"
+                    },
+                    {
+                        "type": "command",
                         "command": "python3 scripts/hooks_runner.py check-cost-tier"
                     },
                     {
@@ -326,6 +330,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks/a_focus_stop.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/release_agent_claims.py"
                     }
                 ]
             }

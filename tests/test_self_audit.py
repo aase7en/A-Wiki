@@ -140,8 +140,12 @@ def test_main_warns_on_critical(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(sa, "DEFAULT_LEDGER_PATH", ledger_path)
     sa.main()
     captured = capsys.readouterr()
-    assert "critical" in captured.err.lower() or "block" in captured.err.lower(), (
-        f"should warn about critical, got stderr: {captured.err!r}"
+    # stdout, not stderr: this hook is wired DIRECTLY on Stop, and a direct-wired
+    # hook reaches the user on stdout. It used to write to stderr while routed
+    # through hooks_runner, which re-emits stderr only on exit 2 — and this hook
+    # always exits 0, so every warning it produced was silently discarded.
+    assert "critical" in captured.out.lower() or "block" in captured.out.lower(), (
+        f"should warn about critical, got stdout: {captured.out!r}"
     )
 
 
@@ -201,6 +205,7 @@ def test_main_warns_on_unreviewed(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(sa, "DEFAULT_LEDGER_PATH", tmp_path / "ledger.jsonl")
     sa.main()
     captured = capsys.readouterr()
-    assert "need review" in captured.err.lower() or "needs-review" in captured.err.lower(), (
-        f"should warn about un-reviewed, got stderr: {captured.err!r}"
+    # stdout — see the note in test_main_warns_on_critical above.
+    assert "need review" in captured.out.lower() or "needs-review" in captured.out.lower(), (
+        f"should warn about un-reviewed, got stdout: {captured.out!r}"
     )
