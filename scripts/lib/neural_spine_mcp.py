@@ -214,22 +214,56 @@ def tool_skill_route(args: dict) -> list[dict]:
 
 
 def _read_focus() -> dict | None:
+    """Read focus state, tolerating scripts/lib/a_flow_state.py's key names.
+
+    Two writers share .tmp/a-focus-<session>.json: these MCP tools and
+    a_flow_state.py (the A-Flow stage gate), which deliberately adopted this
+    path for interop but uses different keys for the same concepts:
+
+        a_flow_state        here
+        ------------        ----
+        completed_phases    phases_done
+        started_ts          started_at
+        active: false       complete: true
+
+    Without normalisation, a flow started by one side and advanced by the other
+    grows duplicate keys, and this side's Stop hook nags about a run the other
+    side already finished. Normalising on read costs nothing and makes the file
+    safe no matter which system wrote it.
+    """
     import json
     p = _focus_path()
     if not p.exists():
         return None
     try:
-        return json.loads(p.read_text(encoding="utf-8"))
+        state = json.loads(p.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         # A corrupt focus file must not wedge the session — treat as no focus.
         return None
+    if not isinstance(state, dict):
+        return None
+    if "phases_done" not in state and "completed_phases" in state:
+        state["phases_done"] = list(state.get("completed_phases") or [])
+    if "started_at" not in state and "started_ts" in state:
+        state["started_at"] = state.get("started_ts")
+    if "complete" not in state and state.get("active") is False:
+        state["complete"] = True
+    return state
 
 
 def _write_focus(state: dict) -> dict:
+    """Write focus state in BOTH key spellings so a_flow_state.py can read it."""
     import json
     p = _focus_path()
     p.parent.mkdir(parents=True, exist_ok=True)
     state["updated_at"] = time.time()
+    # Mirror onto a_flow_state.py's schema — same file, two readers.
+    done = list(state.get("phases_done") or [])
+    state["completed_phases"] = done
+    state.setdefault("started_ts", int(state.get("started_at") or time.time()))
+    state["active"] = not state.get("complete", False) and state.get("phase") is not None
+    state.setdefault("allowed_files", [])
+    state.setdefault("notes", [])
     p.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
     return state
 
