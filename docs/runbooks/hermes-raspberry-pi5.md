@@ -91,7 +91,21 @@ ln -s ~/A-Wiki/skills/engineering-lifecycle/awiki-lifecycle-router/ ~/.hermes/sk
 
 # A-Wiki native skills (debug-mantra, scrutinize, grill-me, post-mortem)
 ln -s ~/A-Wiki/skills/engineering/*/ ~/.hermes/skills/awiki/native/
+
+# A-Suite + every other skills/awiki/ entry tagged for Hermes.
+# Do NOT hand-link these — the set is driven by skills-registry.json
+# (agents: [... "hermes"]) via scripts/skills_registry/generated/hermes.skills.json.
+# Dry-run first; it prints the plan and touches nothing.
+python3 ~/A-Wiki/scripts/hermes/link_awiki_skills.py \
+  --repo-root ~/A-Wiki --skills-root ~/.hermes/skills
+python3 ~/A-Wiki/scripts/hermes/link_awiki_skills.py --apply \
+  --repo-root ~/A-Wiki --skills-root ~/.hermes/skills
 ```
+
+> On the containerized (Umbrel) install the skill root is `/opt/data/skills`
+> and the clone is `/opt/data/A-Wiki` — the 6-hourly sync runs this step for
+> you (`pi5-brain-sync.py` → `link-awiki-skills`), so hand-linking is only for
+> a fresh bare-metal deploy.
 
 ### 3. Register Personas
 ```bash
@@ -159,6 +173,30 @@ User: "สร้าง API task management"
 | `/review` | `skills/awiki/review/` → `persona-orchestrator.py` | REVIEW — 3-persona fan-out | ✅ deployed; phone smoke optional |
 | `/ship` | `skills/awiki/ship/` → `persona-orchestrator.py` | SHIP — fan-out + pre-launch gate | ✅ deployed; phone smoke optional |
 | `/test`, `/code-simplify` | (not in hermes-e scope) | — | ❌ not wired (future chunk) |
+
+**A-Suite commands (added 2026-07-27).** These need no `telegram-commands.json`
+entry: unlike the seven above they are prompt dispatchers, not script-backed, so
+the SKILL.md body *is* the payload. Linking the directory is the whole
+integration — Skills-as-Commands does the rest.
+
+| Command | Skill | Use |
+|---------|-------|-----|
+| `/a-router` | `skills/awiki/a-router/` | Not sure which skill — describe the task, get routed |
+| `/a-think` | `skills/awiki/a-think/` | Structured reasoning fallback |
+| `/a-plan` | `skills/awiki/a-plan/` | ASK → DESIGN → PLAN |
+| `/a-debug` | `skills/awiki/a-debug/` | Root-cause first, failing test first |
+| `/a-doc` | `skills/awiki/a-doc/` | Thai office documents |
+| `/a-council` | `skills/awiki/a-council/` | Multi-persona review |
+| `/a-loop` | `skills/awiki/a-loop/` | Long autonomous runs |
+| `/a-escalate` | `skills/awiki/a-escalate/` | Package a stuck problem for a stronger model |
+| `/a-claim` | `skills/awiki/a-claim/` | Iron Law #11 work claims (same-machine only) |
+
+⚠️ `claim_*` is an MCP tool and the Pi5 has **no MCP client**, so `/a-claim` on
+Telegram documents the protocol but cannot register a claim. Claims are also
+`.tmp`-local, i.e. per-machine — Hermes is outside Iron Law #11 enforcement.
+
+**Deploy after adding a skill:** `bash scripts/hermes/awiki-pi5-sync.sh` on the
+Pi5 (or wait ≤6h for cron). It pulls, links, and SIGHUPs the gateway.
 
 **If a deployed command returns Unknown** (gateway didn't pick it up after rescan): restart the Hermes container via the Umbrel UI (Apps → Hermes Agent → Restart), or re-run `python drive/private-tools/hermes-e/deploy-pi5.py --apply --no-ff --rescan`.
 
