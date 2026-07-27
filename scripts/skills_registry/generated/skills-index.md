@@ -4,6 +4,7 @@
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
 | `a-business` | business, trader | meta | pipeline | `skills/awiki/a-business/SKILL.md` |
+| `a-claim` | engineering, ai-ops | meta | pipeline | `skills/awiki/a-claim/SKILL.md` |
 | `a-content` | media, business | meta | pipeline | `skills/awiki/a-content/SKILL.md` |
 | `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
 | `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
@@ -19,12 +20,10 @@
 | `a-doc-project` | document, thai | build | pipeline | `skills/awiki/a-doc/types/project/SKILL.md` |
 | `a-doc-report` | document, thai | build | pipeline | `skills/awiki/a-doc/types/report/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
-| `a-flow` | engineering, code | meta | pipeline | `skills/awiki/a-flow/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
 | `a-plan` | engineering, ux-ui, design | define | pipeline | `skills/awiki/a-plan/SKILL.md` |
 | `a-research` | engineering, data | meta | pipeline | `skills/awiki/a-research/SKILL.md` |
-| `a-route` | engineering, code | meta | pipeline | `skills/awiki/a-route/SKILL.md` |
 | `a-router` | engineering | meta | pipeline | `skills/awiki/a-router/SKILL.md` |
 | `a-think` | engineering | meta | pipeline | `skills/awiki/a-think/SKILL.md` |
 | `a-web` | engineering, ux-ui, code | meta | pipeline | `skills/awiki/a-web/SKILL.md` |
@@ -414,14 +413,14 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 30 |
+| ai-ops | 31 |
 | business | 13 |
-| code | 195 |
+| code | 193 |
 | data | 19 |
 | debug | 8 |
 | design | 24 |
 | document | 20 |
-| engineering | 51 |
+| engineering | 50 |
 | env | 1 |
 | logistics | 7 |
 | media | 20 |

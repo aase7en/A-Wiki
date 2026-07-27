@@ -1,63 +1,6 @@
 {
   "skills": [
     {
-      "name": "a-flow",
-      "aliases": [
-        "/a-flow",
-        "aflow",
-        "/A-Flow"
-      ],
-      "domain": [
-        "engineering",
-        "code"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-flow/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Master 7-stage dev pipeline (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST). Thin router composing canonical skills. Hook-enforced (check_a_flow_discipline). State in .tmp/a-flow.json (per-session).",
-      "invocation": "manual",
-      "th_description": "Master 7-stage dev pipeline — ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST. บังคับโดย hook (check_a_flow_discipline).",
-      "when_to_use": "งาน non-trivial ที่ต้องการ dev cycle มืออาชีพ + กันหลุด focus",
-      "invocation_hint": "/A-Flow",
-      "a_phase": "any"
-    },
-    {
-      "name": "a-route",
-      "aliases": [
-        "/a-route",
-        "aroute",
-        "/A-Route",
-        "/a"
-      ],
-      "domain": [
-        "engineering",
-        "code"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-route/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Intent classifier → category bundle → chain. Auto-router that classifies user request, suggests category + chain (waits for user confirm). Cross-agent via invocation_hint.",
-      "invocation": "manual",
-      "th_description": "Auto-router ที่ classify intent → suggest category bundle → chain (SUGGEST + CONFIRM)",
-      "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน หรืออยาก auto-pick chain ตาม intent",
-      "invocation_hint": "/A-Route",
-      "a_phase": "any"
-    },
-    {
       "name": "a-wiki-telegram",
       "aliases": [],
       "domain": [
