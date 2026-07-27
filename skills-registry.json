@@ -1625,46 +1625,6 @@
       "invocation_hint": "/autonomous-agent-harness"
     },
     {
-      "name": "autonomous-loops",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/autonomous-loops/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.9.0",
-      "status": "deprecated",
-      "canonical": "continuous-agent-loop",
-      "migrated_to": "continuous-agent-loop",
-      "description": "DEPRECATED — use continuous-agent-loop instead. Retained as redirect pointer only; all content ported to continuous-agent-loop v2.0.0 (cross-agent).",
-      "invocation": "manual",
-      "th_description": "รูปแบบและสถาปัตยกรรมสำหรับสร้าง autonomous loop ของ Claude Code ตั้งแต่ pipeline แบบ sequential ธรรมดาไปจนถึงระบบ multi-agent DAG ที่ขับเคลื่อนด้วย RFC ช่วยให้ Agent ทำงานต่อเนื่องโดยไม่ต้องรอคำสั่งจากมนุษย์",
-      "when_to_use": "เมื่อต้องการให้ Agent ทำงานแบบอัตโนมัติเป็นรอบหรือเป็นลำดับขั้นตอน",
-      "examples": [
-        {
-          "scenario": "ต้องการให้ Claude Code รัน pipeline ทดสอบและ deploy ทุกครั้งที่ commit",
-          "how": "ใช้คำสั่ง /autonomous-loop start --pipeline 'test -> build -> deploy'"
-        },
-        {
-          "scenario": "สร้างระบบ multi-agent ที่ Agent หนึ่งส่ง RFC ให้อีก Agent หนึ่งดำเนินการต่อ",
-          "how": "ใช้คำสั่ง /autonomous-loop dag --rfc-file ./rfc-agent.yaml"
-        }
-      ],
-      "process_steps": [
-        "ออกแบบลำดับขั้นตอน",
-        "กำหนด trigger และเงื่อนไข",
-        "สร้าง RFC หรือ pipeline config",
-        "รัน loop และตรวจสอบผลลัพธ์",
-        "ปรับปรุง loop ตาม feedback"
-      ],
-      "notes": "2026-07-25 v2.0.0): all 611 lines of pattern content ported + generalized to cross-agent (Claude/Gemini/Codex/Aider/Hermes). This skill slimmed to redirect pointer — see skills/ecosystem/autonomous-loops/SKILL.md. No new content should be authored here."
-    },
-    {
       "name": "awiki-brain-improvement-gate",
       "aliases": [],
       "domain": [
@@ -2229,36 +2189,6 @@
       "invocation_hint": "/bun-runtime"
     },
     {
-      "name": "business-doc-drafter",
-      "aliases": [],
-      "domain": [
-        "business",
-        "document",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/business-doc-drafter.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Drafts business documents — invoices, contracts, proposals, quotes, receipts — in Thai/English following A-Wiki document skills. Use when the user needs a business document generated.",
-      "invocation": "manual",
-      "th_description": "ร่าง invoice/contract/proposal",
-      "when_to_use": "สร้างเอกสารธุรกิจ",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ระบุประเภทเอกสาร",
-        "กรอกรายละเอียดที่จำเป็น",
-        "เลือกรูปแบบภาษา",
-        "ตรวจสอบและแก้ไข",
-        "ส่งออกเป็นไฟล์"
-      ]
-    },
-    {
       "name": "canary-watch",
       "aliases": [],
       "domain": [
@@ -2631,90 +2561,6 @@
         "ปรับแต่ง indexing"
       ],
       "invocation_hint": "/clickhouse-io"
-    },
-    {
-      "name": "clinical-reasoner",
-      "aliases": [],
-      "domain": [
-        "medical"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/clinical-reasoner.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Applies diagnostic and treatment reasoning to a de-identified case summary to produce differentials and reasoning chains. Use when the user presents a case (symptoms, labs, history) and asks for differential diagnosis or treatment reasoning.",
-      "invocation": "manual",
-      "th_description": "วิเคราะห์ differential diagnosis จากเคส",
-      "when_to_use": "นำเสนอเคส ต้องการ differential หรือ treatment reasoning",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
-      "process_steps": [
-        "รับสรุปเคสจากผู้ใช้",
-        "วิเคราะห์อาการและข้อมูล",
-        "สร้างรายการวินิจฉัยแยกโรค",
-        "ให้เหตุผลสนับสนุนแต่ละข้อ",
-        "เสนอแนวทางการตรวจเพิ่มเติม"
-      ]
-    },
-    {
-      "name": "code-architect",
-      "aliases": [],
-      "domain": [
-        "code",
-        "engineering"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/code-architect.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Plans a code change — which files to touch, what design, what tests — without editing. Returns an implementation plan with file map + design decisions + test plan. Use at the start of a non-trivial coding task (Aider architect role).",
-      "invocation": "manual",
-      "th_description": "วางแผน code change ไม่แก้ (Aider architect)",
-      "when_to_use": "เริ่ม task coding ที่ไม่ trivial",
-      "model": "sonnet",
-      "process_steps": [
-        "วิเคราะห์ requirement",
-        "ออกแบบแผนผังไฟล์",
-        "ตัดสินใจออกแบบ",
-        "วางแผนทดสอบ",
-        "ส่งแผนปฏิบัติการ"
-      ]
-    },
-    {
-      "name": "code-explorer-repo",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/code-explorer-repo.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Read-only code analyst that traces execution paths, maps architecture layers, and documents dependencies across the repo to inform a change. Use when exploring unfamiliar code before planning a change. (Distinct from the built-in Explore agent.)",
-      "invocation": "manual",
-      "th_description": "trace execution path ใน repo (read-only)",
-      "when_to_use": "สำรวจ code ก่อนวางแผนแก้",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ระบุเป้าหมายการสำรวจ",
-        "เรียกใช้คำสั่ง trace หรือ map",
-        "วิเคราะห์ผลลัพธ์ที่ได้",
-        "บันทึกข้อค้นพบสำคัญ"
-      ]
     },
     {
       "name": "code-simplification",
@@ -3222,63 +3068,6 @@
       ]
     },
     {
-      "name": "copywriting-partner",
-      "aliases": [],
-      "domain": [
-        "business",
-        "productivity"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/copywriting-partner.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Co-writes copy and documents — headlines, ad copy, product descriptions, articles, docs — iterating with the user on voice and structure. Use for any writing task that isn't a code change.",
-      "invocation": "manual",
-      "th_description": "co-write copy/doc หลาย variant",
-      "when_to_use": "เขียน copy/article/doc",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "รับ brief จากผู้ใช้",
-        "เสนอ draft ฉบับแรก",
-        "รับ feedback ปรับโทน/โครงสร้าง",
-        "ปรับแก้ตามรอบ",
-        "ส่งฉบับสุดท้าย"
-      ]
-    },
-    {
-      "name": "cost-auditor",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/cost-auditor.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Audits token cost and model usage across recent sessions — checks bills, usage logs, cost-routing config, and identifies waste. Use when the user asks about LLM spending, cost optimization, or to audit recent token usage.",
-      "invocation": "manual",
-      "th_description": "ตรวจ token cost/usage หา waste",
-      "when_to_use": "ถามเรื่องค่าใช้จ่าย LLM/ตัด cost",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ดึงข้อมูล usage logs ล่าสุด",
-        "คำนวณค่าใช้จ่ายต่อโมเดล",
-        "เปรียบเทียบกับงบประมาณ",
-        "ระบุ waste และแนะนำการปรับ",
-        "สร้างรายงานสรุป"
-      ]
-    },
-    {
       "name": "cost-aware-llm-pipeline",
       "aliases": [],
       "domain": [
@@ -3772,35 +3561,6 @@
       ]
     },
     {
-      "name": "data-profiler",
-      "aliases": [],
-      "domain": [
-        "data"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/data-profiler.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Performs exploratory data analysis, data profiling, and outlier detection on a dataset (CSV/JSON/SQLite). Returns schema, stats, quality issues, and outliers. Use before building models or when the user asks to understand a dataset.",
-      "invocation": "manual",
-      "th_description": "EDA/profiling/outlier ของ dataset",
-      "when_to_use": "เริ่มดู dataset ก่อสร้าง model",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "โหลดข้อมูลจากแหล่งที่มา",
-        "ตรวจจับ schema และชนิดข้อมูล",
-        "คำนวณสถิติพื้นฐาน (ค่าเฉลี่ย, มัธยฐาน, ส่วนเบี่ยงเบน)",
-        "ตรวจหาค่าที่หายไปและค่าซ้ำ",
-        "ตรวจจับค่าผิดปกติด้วย IQR หรือ Z-score",
-        "สรุปผลและรายงานคุณภาพข้อมูล"
-      ]
-    },
-    {
       "name": "data-scraper-agent",
       "aliases": [],
       "domain": [
@@ -3913,64 +3673,6 @@
         "ตรวจสอบและ rollback ถ้าจำเป็น"
       ],
       "invocation_hint": "/database-migrations"
-    },
-    {
-      "name": "db-schema-designer",
-      "aliases": [],
-      "domain": [
-        "code",
-        "data"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/db-schema-designer.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Designs or refactors a database schema — tables, indexes, constraints, relationships, and migrations. Returns schema DDL + migration plan + trade-offs. Use when starting a new data model or before a schema change.",
-      "invocation": "manual",
-      "th_description": "ออกแบบ/refactor schema + migration",
-      "when_to_use": "ออกแบบ data model ใหม่/เปลี่ยน schema",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
-      "process_steps": [
-        "วิเคราะห์ entities และความสัมพันธ์",
-        "ออกแบบตารางและ constraint",
-        "สร้าง index และ foreign key",
-        "สร้าง migration DDL",
-        "ประเมิน trade-offs",
-        "ส่งออกแผนการเปลี่ยนแปลง"
-      ]
-    },
-    {
-      "name": "debug-investigator",
-      "aliases": [],
-      "domain": [
-        "debug",
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/debug-investigator.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Runs the debug-mantra 4-step root-cause investigation on a bug — reproduce, isolate, hypothesize, verify — before any fix. Use when something is broken; NEVER skip to a fix.",
-      "invocation": "manual",
-      "th_description": "debug-mantra 4-step root cause",
-      "when_to_use": "มี bug — ห้ามแก้ก่อนหาสาเหตุ",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
-      "process_steps": [
-        "ทำซ้ำบั๊กให้ได้",
-        "แยกส่วนที่ผิดปกติ",
-        "ตั้งสมมติฐานสาเหตุ",
-        "ยืนยันสมมติฐาน"
-      ]
     },
     {
       "name": "debug-mantra",
@@ -4233,46 +3935,6 @@
         "รายงานผล"
       ],
       "invocation_hint": "/design-system"
-    },
-    {
-      "name": "diagnosing-bugs",
-      "aliases": [],
-      "domain": [
-        "debug",
-        "engineering"
-      ],
-      "lifecycle_phase": "verify",
-      "category": "mattpocock",
-      "source": "repo",
-      "path": "skills/mattpocock/diagnosing-bugs/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "status": "deprecated",
-      "canonical": "debug-mantra",
-      "migrated_to": "debug-mantra",
-      "description": "Diagnosis loop for hard bugs and performance regressions.",
-      "invocation": "manual",
-      "th_description": "วนซ้ำการวินิจฉัยสำหรับบั๊กที่ยากและ regression ด้านประสิทธิภาพ โดยใช้แนวทางที่เป็นระบบเพื่อระบุสาเหตุที่แท้จริงและแก้ไขอย่างตรงจุด",
-      "when_to_use": "เมื่อเจอบั๊กที่หาสาเหตุยากหรือประสิทธิภาพลดลง",
-      "examples": [
-        {
-          "scenario": "ฟีเจอร์ใหม่ทำให้หน้าเว็บโหลดช้าลงอย่างเห็นได้ชัด",
-          "how": "ใช้ /diagnose-bugs พร้อมอธิบายอาการและขั้นตอนที่ลองแล้ว"
-        },
-        {
-          "scenario": "มีบั๊กที่เกิดขึ้นเป็นครั้งคราวใน production",
-          "how": "รันคำสั่ง /diagnose-bugs --mode=intermittent และระบุ log ที่เกี่ยวข้อง"
-        }
-      ],
-      "process_steps": [
-        "ระบุอาการให้ชัดเจน",
-        "ตั้งสมมติฐานสาเหตุ",
-        "ทดสอบสมมติฐานทีละข้อ",
-        "ยืนยันสาเหตุที่แท้จริง",
-        "แก้ไขและตรวจสอบผล"
-      ],
-      "notes": "USA-1 C9, 2026-07-14): both encode a 4-step root-cause-first debugging discipline; debug-mantra is the A-Wiki-named instrument of Iron Law #2 and is the canonical debug skill."
     },
     {
       "name": "django-celery",
@@ -4736,35 +4398,6 @@
         "ทดสอบและปรับปรุง"
       ],
       "invocation_hint": "/dotnet-patterns"
-    },
-    {
-      "name": "draft-responder",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/draft-responder.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Drafts replies to emails/messages with a QA pass for tone, format, and accuracy. Use after inbox-triage identifies action-needed messages, or when the user asks to draft a reply.",
-      "invocation": "manual",
-      "th_description": "ร่าง reply + QA tone/accuracy",
-      "when_to_use": "ตอบ email/message",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "วิเคราะห์ข้อความต้นฉบับ",
-        "ร่างตอบกลับเบื้องต้น",
-        "ตรวจสอบโทนและรูปแบบ",
-        "ตรวจสอบความถูกต้องของข้อมูล",
-        "ปรับแก้ตามคำแนะนำ",
-        "แสดงร่างตอบกลับสุดท้าย"
-      ]
     },
     {
       "name": "e2e-testing",
@@ -5246,45 +4879,6 @@
       "invocation_hint": "/export-notebooklm"
     },
     {
-      "name": "fable5-standards",
-      "aliases": [],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "ship",
-      "category": "engineering",
-      "source": "repo",
-      "path": "agent-skills/engineering/fable5-standards/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "deprecated",
-      "description": "Deeper reasoning standards for architecture decisions, debugging, data migrations, and other non-trivial technical work — problem decomposition, trade-off comparison, root-cause debugging, and playbooks for planning vs implementing vs analyzing vs writing.",
-      "invocation": "manual",
-      "th_description": "มาตรฐานการให้เหตุผลเชิงลึกสำหรับการตัดสินใจด้านสถาปัตยกรรม การดีบัก การย้ายข้อมูล และงานเทคนิคอื่นๆ ที่ไม่ใช่เรื่องเล็กน้อย — การแยกย่อยปัญหา การเปรียบเทียบข้อดีข้อเสีย การดีบักหาสาเหตุที่แท้จริง และ playbook สำหรับการวางแผน vs การลงมือทำ vs การวิเคราะห์ vs การเขียน",
-      "when_to_use": "เมื่อต้องตัดสินใจทางเทคนิคที่ซับซ้อนหรือต้องการเหตุผลเชิงลึก",
-      "examples": [
-        {
-          "scenario": "ทีมกำลังเลือก database ระหว่าง PostgreSQL กับ MongoDB สำหรับระบบใหม่",
-          "how": "ใช้ /fable5-standards trade-off กับหัวข้อ 'PostgreSQL vs MongoDB สำหรับระบบจัดการคำสั่งซื้อ'"
-        },
-        {
-          "scenario": "เจอ bug ที่เกิดขึ้นเป็นระยะใน production ยังหาสาเหตุไม่เจอ",
-          "how": "ใช้ /fable5-standards root-cause กับรายละเอียด bug ที่พบ"
-        }
-      ],
-      "process_steps": [
-        "แยกย่อยปัญหาให้ชัดเจน",
-        "รวบรวมข้อมูลและข้อจำกัด",
-        "เปรียบเทียบทางเลือกแบบมีหลักการ",
-        "เลือกแนวทางและให้เหตุผล",
-        "จัดทำ playbook สำหรับการดำเนินการ"
-      ],
-      "invocation_hint": "/fable5-standards",
-      "migrated_to": "a-think"
-    },
-    {
       "name": "fal-ai-media",
       "aliases": [],
       "domain": [
@@ -5362,35 +4956,6 @@
       "invocation_hint": "/fastapi-patterns"
     },
     {
-      "name": "finance-analyst",
-      "aliases": [],
-      "domain": [
-        "trader",
-        "data"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/finance-analyst.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Performs technical, fundamental, and market-sentiment analysis on fetched market data to build an investment thesis. Use after finance-data-fetcher has returned raw numbers, or when the user asks to analyze a stock/crypto/market.",
-      "invocation": "manual",
-      "th_description": "วิเคราะห์ technical/fundamental/sentiment",
-      "when_to_use": "วิเคราะห์หุ้น/crypto/ตลาด",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro",
-      "process_steps": [
-        "รับข้อมูลดิบจาก data-fetcher",
-        "วิเคราะห์ทางเทคนิค (แนวโน้ม, RSI, MACD)",
-        "วิเคราะห์พื้นฐาน (P/E, งบการเงิน)",
-        "ประเมินความรู้สึกตลาด (ข่าว, sentiment)",
-        "สังเคราะห์เป็นข้อเสนอการลงทุน"
-      ]
-    },
-    {
       "name": "finance-billing-ops",
       "aliases": [],
       "domain": [
@@ -5420,62 +4985,6 @@
         }
       ],
       "invocation_hint": "/finance-billing-ops"
-    },
-    {
-      "name": "finance-data-fetcher",
-      "aliases": [],
-      "domain": [
-        "trader",
-        "data"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/finance-data-fetcher.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Fetches deterministic market data — prices, statements, filings, economic indicators — via scripts and APIs. Returns numbers only, no narrative. Use as the first step of a finance analysis pipeline before finance-analyst.",
-      "invocation": "manual",
-      "th_description": "ดึงข้อมูลตลาด/งบการเงินแบบ deterministic",
-      "when_to_use": "ต้องการ raw numbers ราคา/งบ/filings",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ระบุ ticker และประเภทข้อมูล",
-        "เรียก API หรือสคริปต์ที่เกี่ยวข้อง",
-        "ตรวจสอบความถูกต้องของข้อมูล",
-        "คืนค่าเป็นตัวเลขในรูปแบบ JSON"
-      ]
-    },
-    {
-      "name": "finance-debater",
-      "aliases": [],
-      "domain": [
-        "trader"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/finance-debater.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Adversarial critic that challenges a finance-analyst thesis from both bull and bear sides, then judges. Use after finance-analyst produces a thesis, to stress-test it before any decision.",
-      "invocation": "manual",
-      "th_description": "critic โต้แย้ง thesis แบบ bull/bear/judge",
-      "when_to_use": "ทดสอบ thesis ก่อนตัดสินใจ",
-      "model": "sonnet",
-      "process_steps": [
-        "รับ thesis จาก finance-analyst",
-        "สร้างข้อโต้แย้งฝั่งขาขึ้น",
-        "สร้างข้อโต้แย้งฝั่งขาลง",
-        "ประเมินความแข็งแกร่งของ thesis",
-        "ส่งผลการตัดสินกลับ"
-      ]
     },
     {
       "name": "flox-environments",
@@ -5627,35 +5136,6 @@
         "แนะนำแนวทางแก้ไขตาม WCAG"
       ],
       "invocation_hint": "/frontend-a11y"
-    },
-    {
-      "name": "frontend-architect",
-      "aliases": [],
-      "domain": [
-        "code",
-        "design"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/frontend-architect.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Plans frontend component structure, layout architecture, and state flow for a webapp before coding. Returns a file/component map + design decisions, no code edits. Use at the start of a frontend build or refactor.",
-      "invocation": "manual",
-      "th_description": "วางแผน component/layout ก่อน code",
-      "when_to_use": "เริ่ม build/refactor frontend",
-      "model": "sonnet",
-      "process_steps": [
-        "วิเคราะห์ requirement และ user flow",
-        "ออกแบบ component tree และ hierarchy",
-        "กำหนด data flow และ state management",
-        "สร้างแผนผังไฟล์และโฟลเดอร์",
-        "บันทึก design decisions"
-      ]
     },
     {
       "name": "frontend-design",
@@ -6223,40 +5703,6 @@
       "invocation_hint": "/google-workspace-ops"
     },
     {
-      "name": "grill-me",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "define",
-      "category": "mattpocock",
-      "source": "repo",
-      "path": "skills/mattpocock/grill-me/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "deprecated",
-      "description": "A relentless interview to sharpen a plan or design.",
-      "invocation": "manual",
-      "th_description": "สัมภาษณ์ยืดเยื้อเพื่อลับแผนหรือดีไซน์ — ถามทีละคำถาม เสนอคำตอบให้คุณปฏิเสธ บังคับให้คิดลึกก่อนสร้าง",
-      "when_to_use": "มีแผนหรือไอเดียแต่ยังไม่ชัด อยากถูกท้าทายก่อน commit ลงไป",
-      "examples": [
-        {
-          "scenario": "จะทำฟีเจอร์ใหม่",
-          "how": "/grill-me ถามจนกว่าจะเจาะจงได้ว่าทำเพราะอะไร"
-        }
-      ],
-      "process_steps": [
-        "ตั้งคำถามใหญ่",
-        "เสนอคำตอบให้ปฏิเสธ",
-        "ขุดลึกแต่ละจุด",
-        "สรุปแผนที่ผ่านการท้าทาย"
-      ],
-      "invocation_hint": "/grill-me",
-      "migrated_to": "grill-with-docs"
-    },
-    {
       "name": "grill-with-docs",
       "aliases": [],
       "domain": [
@@ -6289,40 +5735,6 @@
         "สรุป decision"
       ],
       "invocation_hint": "/grill-with-docs"
-    },
-    {
-      "name": "grilling",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "define",
-      "category": "mattpocock",
-      "source": "repo",
-      "path": "skills/mattpocock/grilling/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "deprecated",
-      "description": "Grill the user relentlessly about a plan or design — one question at a time, recommend an answer, resolve the decision tree.",
-      "invocation": "manual",
-      "th_description": "สอบสวนแบบไม่ยอมแพ้ — ทีละคำถาม เสนอแนะคำตอบ ใช้ซ้ำเมื่อไอเดียยังหลวมๆ",
-      "when_to_use": "อยากฝืนเยอะกว่า grill-me, มีเวลา, หรือเดิมพันสูง",
-      "examples": [
-        {
-          "scenario": "เลือก architecture",
-          "how": "/grilling ไล่แต่ละ option จนเหลือตัวเดียว"
-        }
-      ],
-      "invocation_hint": "/grilling",
-      "process_steps": [
-        "ถามคำถามทีละข้อ",
-        "แนะนำคำตอบที่เป็นไปได้",
-        "ให้ผู้ใช้เลือกหรือแก้ไข",
-        "ปิดประเด็นและสรุปผล"
-      ],
-      "migrated_to": "grill-with-docs"
     },
     {
       "name": "handoff",
@@ -7024,33 +6436,6 @@
         "สรุปแนวทางปรับปรุง"
       ],
       "invocation_hint": "/improve-codebase-architecture"
-    },
-    {
-      "name": "inbox-triage",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/inbox-triage.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Categorizes incoming emails/messages into action buckets (action-needed/info/decision/defer/follow-up) and extracts action items with deadlines. Use to triage an inbox or message backlog before drafting replies.",
-      "invocation": "manual",
-      "th_description": "จัดหมวด inbox สกัด action items",
-      "when_to_use": "triage email/messages backlog",
-      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2",
-      "process_steps": [
-        "สแกนอีเมลขาเข้า",
-        "จัดหมวดหมู่ตามประเภท",
-        "ดึง action items และ deadline",
-        "สรุปรายการที่ต้องทำ"
-      ]
     },
     {
       "name": "ingest-source",
@@ -7817,35 +7202,6 @@
       "invocation_hint": "kotlin-testing"
     },
     {
-      "name": "language-tutor",
-      "aliases": [],
-      "domain": [
-        "productivity",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/language-tutor.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Teaches English and Chinese via Socratic dialogue — asks questions, gives targeted explanations, and assesses gaps rather than lecturing. Use when the user wants to learn or practice EN/CN.",
-      "invocation": "manual",
-      "th_description": "สอน EN/CN แบบ Socratic",
-      "when_to_use": "ฝึกภาษาอังกฤษ/จีน",
-      "model": "sonnet",
-      "process_steps": [
-        "ถามคำถามเปิดประเด็น",
-        "ฟังคำตอบผู้ใช้",
-        "ให้คำอธิบายเฉพาะจุด",
-        "ถามต่อเพื่อตรวจสอบความเข้าใจ",
-        "สรุปและแนะนำจุดที่ต้องฝึก"
-      ]
-    },
-    {
       "name": "laravel-patterns",
       "aliases": [],
       "domain": [
@@ -8465,34 +7821,6 @@
       "invocation_hint": "/marketing-campaign"
     },
     {
-      "name": "marketing-strategist",
-      "aliases": [],
-      "domain": [
-        "business"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/marketing-strategist.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Designs marketing campaigns, SEO strategy, and brand positioning. Returns a campaign plan with channels, funnel, KPIs, and content briefs. Use when the user asks to plan marketing, SEO, or brand work.",
-      "invocation": "manual",
-      "th_description": "วางแผน campaign/SEO/brand",
-      "when_to_use": "วางแผนการตลาด/SEO",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "วิเคราะห์เป้าหมายและกลุ่มลูกค้า",
-        "เลือกช่องทางและ Funnel",
-        "กำหนด KPI และงบประมาณ",
-        "สร้าง Content Brief",
-        "สรุปแผนแคมเปญ"
-      ]
-    },
-    {
       "name": "mcp-builder",
       "aliases": [],
       "domain": [
@@ -8560,61 +7888,6 @@
         "test stdio"
       ],
       "invocation_hint": "mcp-server-patterns"
-    },
-    {
-      "name": "medical-lit-reviewer",
-      "aliases": [],
-      "domain": [
-        "medical"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/medical-lit-reviewer.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Searches PubMed, clinical guidelines, and drug databases to summarize medical evidence with citations. Use when the user asks about a disease, drug, treatment guideline, or needs a literature review on a medical topic.",
-      "invocation": "manual",
-      "th_description": "ค้นและสรุปวรรณกรรมการแพทย์พร้อม citation",
-      "when_to_use": "ถามเรื่องโรค/ยา/แนวทางการรักษา ต้องการ evidence",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "รับคำค้นหาจากผู้ใช้",
-        "สืบค้นจาก PubMed และฐานข้อมูล",
-        "สรุปหลักฐานพร้อมการอ้างอิง",
-        "แสดงผลลัพธ์เป็นภาษาไทย"
-      ]
-    },
-    {
-      "name": "medical-safety-checker",
-      "aliases": [],
-      "domain": [
-        "medical"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/medical-safety-checker.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Critic agent that checks drug-drug interactions, contraindications, allergies, dosing limits, and missing red flags in a proposed medication or treatment plan. Use before finalizing any medication recommendation or when reviewing a prescription.",
-      "invocation": "manual",
-      "th_description": "ตรวจ drug interaction/contraindication ก่อนสรุปยา",
-      "when_to_use": "ตรวจความปลอดภัยของแผนยา/การรักษา",
-      "model": "sonnet",
-      "process_steps": [
-        "รับข้อมูลยาและผู้ป่วย",
-        "ตรวจสอบปฏิกิริยาระหว่างยา",
-        "ตรวจสอบข้อห้ามใช้และอาการแพ้",
-        "ตรวจสอบขนาดยาเกิน",
-        "รายงานธงแดงที่พบ"
-      ]
     },
     {
       "name": "messages-ops",
@@ -8730,34 +8003,6 @@
       "invocation_hint": "/mle-workflow"
     },
     {
-      "name": "mobile-pattern-advisor",
-      "aliases": [],
-      "domain": [
-        "code",
-        "design"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/mobile-pattern-advisor.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Advises on mobile platform patterns — Swift/SwiftUI, Kotlin/Compose, Flutter/Dart, React Native. Returns pattern recommendations + architecture fit for a mobile feature. Use when building or refactoring a mobile app.",
-      "invocation": "manual",
-      "th_description": "แนะ pattern iOS/Android/Flutter/RN",
-      "when_to_use": "build/refactor mobile app",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "รับข้อมูลฟีเจอร์และแพลตฟอร์ม",
-        "วิเคราะห์ความต้องการ",
-        "แนะนำแพทเทิร์นที่เหมาะสม",
-        "ประเมินความเข้ากันได้กับสถาปัตยกรรมเดิม"
-      ]
-    },
-    {
       "name": "model-cost-switching",
       "aliases": [],
       "domain": [
@@ -8789,33 +8034,6 @@
         "กำหนด effort level (low/medium/high)",
         "ดำเนินงานด้วยโมเดลที่เลือก",
         "ตรวจสอบผลลัพธ์และปรับโมเดลถ้าจำเป็น"
-      ]
-    },
-    {
-      "name": "model-router-advisor",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/model-router-advisor.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Recommends the best model and cost-tier for a given task type, based on current provider pricing and free-model availability. Use when starting a multi-step task, when picking a model for a subagent, or when the user asks which model to use.",
-      "invocation": "manual",
-      "th_description": "แนะนำ model/tier ตาม task",
-      "when_to_use": "เลือก model ก่อนเริ่มงาน multi-step",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ระบุประเภทงาน",
-        "ตรวจสอบราคาโมเดลปัจจุบัน",
-        "เปรียบเทียบโมเดลฟรีและเสียเงิน",
-        "แนะนำโมเดลและระดับราคา"
       ]
     },
     {
@@ -11161,28 +10379,6 @@
       ]
     },
     {
-      "name": "realestate-tax-advisor",
-      "aliases": [],
-      "domain": [
-        "business",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/realestate-tax-advisor.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Advises on Thai real-estate law and tax — transfer fees, specific business tax (SBT), stamp duty, withholding, personal/corporate income tax implications of property transactions. Use for property buy/sell/rent tax questions in Thailand.",
-      "invocation": "manual",
-      "th_description": "ที่ปรึกษากฎหมายอสังหาฯ+ภาษีไทย",
-      "when_to_use": "ซื้อขายเช่าอสังหาฯ คำนวณภาษี",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-pro"
-    },
-    {
       "name": "recsys-pipeline-architect",
       "aliases": [],
       "domain": [
@@ -11630,34 +10826,6 @@
       "invocation_hint": "/review"
     },
     {
-      "name": "root-cause-first",
-      "aliases": [],
-      "domain": [
-        "debug"
-      ],
-      "lifecycle_phase": "none",
-      "category": "wiki",
-      "source": "repo",
-      "path": "skills/claude-code/root-cause-first/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "status": "deprecated",
-      "canonical": "debug-mantra",
-      "migrated_to": "debug-mantra",
-      "version": "",
-      "description": "Use when user reports a bug, error, or wrong behavior. Triggers: \"แก้บั๊ก\", \"ทำไมพัง\", \"ไม่ทำงาน\", \"error\", \"bug\", \"fix\", \"เพี้ยน\", \"ผิด\". Forces reproduce → ro",
-      "invocation": "manual",
-      "th_description": "หา root cause ก่อนแก้ — ไม่ใช่แก้ symptom. ใช้ 5-Whys หรือ fishbone",
-      "when_to_use": "bug ซ้ำ, ปัญหาเรื้อรัง, หรือก่อนแก้ production issue",
-      "examples": [
-        {
-          "scenario": "แอปช้าเป็นบางครั้ง",
-          "how": "ถาม why 5 ครั้งจนถึง root: query N+1? cache miss? DB lock?"
-        }
-      ]
-    },
-    {
       "name": "rules-distill",
       "aliases": [],
       "domain": [
@@ -11868,34 +11036,6 @@
         "รัน lint เพื่อตรวจสอบ"
       ],
       "invocation_hint": "/scaffold-exercises"
-    },
-    {
-      "name": "schedule-planner",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/schedule-planner.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Manages calendar — proposes meeting times, resolves conflicts, finds focus blocks, and sends reminders. Use when scheduling meetings, finding time for deep work, or resolving calendar conflicts.",
-      "invocation": "manual",
-      "th_description": "จัดตาราง/หาช่วงเวลา/แก้ conflict",
-      "when_to_use": "นัดหมาย/หา focus block",
-      "model": "custom:c8222819-ee91-4f45-8dd5-5f3d2ea4f5f3:glm-5.2",
-      "process_steps": [
-        "รับคำขอและข้อมูลตาราง",
-        "ตรวจสอบตารางและหาช่องว่าง",
-        "เสนอเวลาที่เหมาะสม",
-        "ยืนยันและเพิ่มลงตาราง",
-        "ตั้งค่าการแจ้งเตือน"
-      ]
     },
     {
       "name": "scholar-evaluation",
@@ -12401,33 +11541,6 @@
       ]
     },
     {
-      "name": "skill-coach",
-      "aliases": [],
-      "domain": [
-        "productivity"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/skill-coach.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Teaches non-language skills — time management, health habits, data analysis, productivity — via structured coaching (assess, plan, practice, review). Use when the user wants to learn or improve a practical skill.",
-      "invocation": "manual",
-      "th_description": "coach ทักษะ time-mgmt/health/data",
-      "when_to_use": "อยากพัฒนาทักษะที่ไม่ใช่ภาษา",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "ประเมินทักษะปัจจุบัน",
-        "วางแผนเป้าหมายและขั้นตอน",
-        "ฝึกฝนตามแผน",
-        "ทบทวนและปรับปรุง"
-      ]
-    },
-    {
       "name": "skill-comply",
       "aliases": [],
       "domain": [
@@ -12726,47 +11839,6 @@
         "ตรวจสอบสถานะการโพสต์"
       ],
       "invocation_hint": "/social-publisher"
-    },
-    {
-      "name": "spec",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "define",
-      "category": "awiki",
-      "source": "repo",
-      "path": "skills/awiki/spec/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "deprecated",
-      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
-      "invocation": "manual",
-      "th_description": "สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-router และ persona-orchestrator.py เพื่อร่าง specification ก่อนเริ่มเขียนโค้ด",
-      "when_to_use": "เมื่อต้องการร่าง specification ก่อนเริ่มพัฒนาโค้ด",
-      "examples": [
-        {
-          "scenario": "ต้องการร่าง spec สำหรับฟีเจอร์ login ด้วย OAuth",
-          "how": "พิมพ์ /spec login ด้วย OAuth"
-        },
-        {
-          "scenario": "ต้องการร่าง spec สำหรับ API ใหม่ในระบบ",
-          "how": "พิมพ์ /spec สร้าง API สำหรับดึงข้อมูลผู้ใช้"
-        }
-      ],
-      "process_steps": [
-        "รับคำสั่ง /spec",
-        "ดึงข้อมูลงานจาก Telegram",
-        "เรียก telegram-command-router",
-        "เรียก persona-orchestrator.py",
-        "ร่าง specification",
-        "ส่งกลับผลลัพธ์"
-      ],
-      "invocation_hint": "/spec",
-      "migrated_to": "spec-driven-development"
     },
     {
       "name": "spec-driven-development",
@@ -13213,45 +12285,6 @@
       "invocation_hint": "/tdd"
     },
     {
-      "name": "tdd-workflow",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/tdd-workflow/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "deprecated",
-      "description": "Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and",
-      "invocation": "manual",
-      "th_description": "ใช้ทักษะนี้เมื่อเขียนฟีเจอร์ใหม่ แก้บั๊ก หรือ refactor โค้ด โดยบังคับใช้ test-driven development (TDD) ครอบคลุม unit test, integration test และมี coverage 80% ขึ้นไป",
-      "when_to_use": "เมื่อต้องการเขียนโค้ดแบบ TDD หรือเพิ่ม test coverage",
-      "examples": [
-        {
-          "scenario": "กำลังจะเขียนฟีเจอร์ใหม่สำหรับระบบ login",
-          "how": "รัน /tdd-workflow start feature-login"
-        },
-        {
-          "scenario": "ต้องการ refactor โมดูล payment โดยมี test คุ้มครอง",
-          "how": "รัน /tdd-workflow refactor payment-module"
-        }
-      ],
-      "process_steps": [
-        "เขียน test ก่อน (Red)",
-        "เขียนโค้ดให้ test ผ่าน (Green)",
-        "Refactor โค้ดให้สะอาด",
-        "รัน test ทั้งหมดอีกครั้ง",
-        "ตรวจสอบ coverage ≥ 80%"
-      ],
-      "invocation_hint": "/tdd-workflow",
-      "migrated_to": "tdd"
-    },
-    {
       "name": "teach",
       "aliases": [],
       "domain": [
@@ -13359,34 +12392,6 @@
         "ยืนยันผ่าน ECC"
       ],
       "invocation_hint": "/terminal-ops"
-    },
-    {
-      "name": "test-engineer-agent",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/test-engineer-agent.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Writes and reviews tests — unit/integration/e2e — following TDD (failing test first). Returns test code + coverage notes. Use when implementing a feature (write tests first) or when reviewing test coverage.",
-      "invocation": "manual",
-      "th_description": "เขียน/ตรวจ tests แบบ TDD",
-      "when_to_use": "implement feature — เขียน test ก่อน",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "เขียนเทสต์ที่ล้มเหลวก่อน",
-        "เขียนโค้ดให้ผ่านเทสต์",
-        "รันเทสต์ทั้งหมด",
-        "ตรวจสอบ coverage",
-        "ปรับปรุงเทสต์เพิ่มเติม"
-      ]
     },
     {
       "name": "thai-address",
@@ -14061,34 +13066,6 @@
       ]
     },
     {
-      "name": "token-optimizer",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/token-optimizer.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Analyzes prompts, context, and outputs to find and fix token waste — verbose prompts, redundant context, wrong output format (HTML vs Markdown). Use when a task is burning tokens or when asked to compact/optimize prompts.",
-      "invocation": "manual",
-      "th_description": "ลด token waste ใน prompt/context/output",
-      "when_to_use": "prompt กิน token เยอะ/ต้องการ compact",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "วิเคราะห์ prompt และ context",
-        "หา token waste",
-        "เสนอวิธีแก้ไข",
-        "ปรับ prompt หรือ format",
-        "ตรวจสอบผลลัพธ์"
-      ]
-    },
-    {
       "name": "transitions-dev",
       "aliases": [],
       "domain": [
@@ -14269,35 +13246,6 @@
       "version": "2.0.0",
       "status": "canonical",
       "description": "Searchable local design-intelligence database (nextlevelbuilder/ui-ux-pro-max-skill, MIT) — 161 palettes, 57 font pairs, 99 UX guidelines, 25 chart types, 10 stacks."
-    },
-    {
-      "name": "ui-ux-reviewer",
-      "aliases": [],
-      "domain": [
-        "ux-ui",
-        "design"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/ui-ux-reviewer.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Critic that reviews a UI for accessibility (WCAG), design consistency, responsive behavior, and interaction quality. Use after frontend-architect plans or after a UI is built, to catch issues before ship.",
-      "invocation": "manual",
-      "th_description": "critic ตรวจ a11y/consistency/responsive",
-      "when_to_use": "review UI ก่อน ship",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:deepseek-v4-flash",
-      "process_steps": [
-        "วิเคราะห์ WCAG contrast และ label",
-        "ตรวจสอบความสม่ำเสมอของดีไซน์",
-        "ทดสอบ responsive breakpoints",
-        "ประเมิน interaction feedback",
-        "สรุปปัญหาพร้อมคำแนะนำ"
-      ]
     },
     {
       "name": "uncloud",
@@ -14878,35 +13826,6 @@
       "invocation_hint": "/word-generator"
     },
     {
-      "name": "workflow-simplifier",
-      "aliases": [],
-      "domain": [
-        "productivity",
-        "business"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/workflow-simplifier.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Analyzes a repetitive work process (documents, data entry, copy flow) and proposes a simpler, faster, more systematic version. Use when the user says a task feels repetitive or slow and wants it systematized.",
-      "invocation": "manual",
-      "th_description": "วิเคราะห์งานซ้ำ เสนอระบบเร็วขึ้น",
-      "when_to_use": "งานซ้ำๆ ช้า อยาก systematize",
-      "model": "sonnet",
-      "process_steps": [
-        "รวบรวมขั้นตอนปัจจุบัน",
-        "ระบุจุดที่ซ้ำซาก",
-        "ออกแบบ workflow ใหม่",
-        "เสนอเครื่องมือหรือ automation",
-        "ทดสอบและปรับปรุง"
-      ]
-    },
-    {
       "name": "workspace-surface-audit",
       "aliases": [],
       "domain": [
@@ -15140,75 +14059,6 @@
         "รวมทั้ง 3 stage เป็น research report พร้อม revised confidence"
       ],
       "invocation_hint": "อธิบายหัวข้อให้ primary agent (เช่น 'research best practice cache invalidation')"
-    },
-    {
-      "name": "medical-lit-reviewer-th",
-      "aliases": [],
-      "domain": [
-        "medical",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/medical-lit-reviewer-th.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "language": "th",
-      "description": "Thai variant of medical-lit-reviewer — summarizes medical evidence in Thai with citations. GLM bucket (strong on Thai).",
-      "invocation": "manual",
-      "th_description": "เวอร์ชันไทยของ medical-lit-reviewer — สรุปหลักฐานทางการแพทย์เป็นไทยพร้อมการอ้างอิง GLM bucket",
-      "when_to_use": "เมื่อผู้ใช้ถามเป็นไทยเกี่ยวกับโรค ยา แนวทางรักษา",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
-    },
-    {
-      "name": "realestate-tax-advisor-th",
-      "aliases": [],
-      "domain": [
-        "business",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/realestate-tax-advisor-th.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "language": "th",
-      "description": "Thai variant of realestate-tax-advisor — Thai real-estate law + tax (WHT, SBTA, transfer fee). GLM bucket.",
-      "invocation": "manual",
-      "th_description": "เวอร์ชันไทยของ realestate-tax-advisor — กฎหมายอสังหาฯ + ภาษีไทย GLM bucket",
-      "when_to_use": "เมื่อผู้ใช้ถามเป็นไทยเกี่ยวกับภาษี/ค่าใช้จ่ายอสังหาฯ ในไทย",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
-    },
-    {
-      "name": "language-tutor-th",
-      "aliases": [],
-      "domain": [
-        "productivity",
-        "thai"
-      ],
-      "lifecycle_phase": "none",
-      "category": "subagent",
-      "source": "repo",
-      "path": "agents/subagents/language-tutor-th.md",
-      "agents": [
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "language": "th",
-      "description": "Thai variant of language-tutor — Socratic EN/CN teaching for Thai learners, explanations in Thai. GLM bucket.",
-      "invocation": "manual",
-      "th_description": "เวอร์ชันไทยของ language-tutor — สอน EN/CN แบบ Socratic ให้ผู้เรียนไทย GLM bucket",
-      "when_to_use": "เมื่อผู้เรียนไทยต้องการเรียนภาษา",
-      "model": "custom:5056d2a7-73ab-4d53-9266-9e4845946d32:glm-5.2"
     },
     {
       "name": "a-doc-order",

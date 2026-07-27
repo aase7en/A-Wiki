@@ -1686,47 +1686,6 @@
       ]
     },
     {
-      "name": "spec",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "define",
-      "category": "awiki",
-      "source": "repo",
-      "path": "skills/awiki/spec/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "deprecated",
-      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to draft a specification before code.",
-      "invocation": "manual",
-      "th_description": "สกิลนี้ใช้รับคำสั่ง /spec จาก Telegram เพื่อดึงข้อมูลงานที่ต้องการ จากนั้นเรียก telegram-command-router และ persona-orchestrator.py เพื่อร่าง specification ก่อนเริ่มเขียนโค้ด",
-      "when_to_use": "เมื่อต้องการร่าง specification ก่อนเริ่มพัฒนาโค้ด",
-      "examples": [
-        {
-          "scenario": "ต้องการร่าง spec สำหรับฟีเจอร์ login ด้วย OAuth",
-          "how": "พิมพ์ /spec login ด้วย OAuth"
-        },
-        {
-          "scenario": "ต้องการร่าง spec สำหรับ API ใหม่ในระบบ",
-          "how": "พิมพ์ /spec สร้าง API สำหรับดึงข้อมูลผู้ใช้"
-        }
-      ],
-      "process_steps": [
-        "รับคำสั่ง /spec",
-        "ดึงข้อมูลงานจาก Telegram",
-        "เรียก telegram-command-router",
-        "เรียก persona-orchestrator.py",
-        "ร่าง specification",
-        "ส่งกลับผลลัพธ์"
-      ],
-      "invocation_hint": "/spec",
-      "migrated_to": "spec-driven-development"
-    },
-    {
       "name": "spec-driven-development",
       "aliases": [],
       "domain": [

@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 407 · **Aliases/deprecated**: 13
+**Total canonical skills**: 407 · **Aliases/deprecated**: 5
 
 ## 📊 Domain Summary
 
@@ -658,18 +658,10 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 
 | Alias / Deprecated | → Canonical | Note |
 |--------------------|-------------|------|
-| `autonomous-loops` | `continuous-agent-loop` | continuous-agent-loop |
-| `diagnosing-bugs` | `debug-mantra` | debug-mantra |
-| `fable5-standards` | `a-think` | a-think |
-| `grill-me` | `grill-with-docs` | grill-with-docs |
-| `grilling` | `grill-with-docs` | grill-with-docs |
 | `hipaa-compliance` | `healthcare-phi-compliance` |  |
 | `laravel-verification` | `django-verification` |  |
 | `quarkus-verification` | `django-verification` |  |
-| `root-cause-first` | `debug-mantra` | debug-mantra |
-| `spec` | `spec-driven-development` | spec-driven-development |
 | `springboot-verification` | `django-verification` |  |
-| `tdd-workflow` | `tdd` | tdd |
 | `token-budget-advisor` | `context-budget` |  |
 
 ## ⚡ Quick-Pick — what to use when
