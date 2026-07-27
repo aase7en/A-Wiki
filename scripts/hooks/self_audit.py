@@ -162,22 +162,47 @@ def record_findings_to_ledger(
     return written
 
 
+def _utf8_streams() -> None:
+    """Force UTF-8. This hook prints ⛔ / ⚠️ / ✅ and had no preamble, so on a
+    cp874 console every message raised UnicodeEncodeError inside the try below
+    and was swallowed into a bare '[self-audit] error: ...' line."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
+def _emit(text: str) -> None:
+    """Write where the user can actually see it.
+
+    This hook is wired DIRECTLY on Stop, not through hooks_runner.py, which
+    captures child stdout and re-emits stderr only on exit 2. self_audit always
+    returns 0, so every warning it produced through the runner was discarded —
+    the ship gate had never spoken to anyone since it landed.
+    """
+    sys.stdout.write(text)
+
+
 def main() -> int:
     """Stop hook entry. Exits 0 always. Warns on critical + un-reviewed."""
-    if os.environ.get("HOOK_SKIP") == "self_audit":
+    _utf8_streams()
+    # Substring match, like every other hook. Exact equality meant
+    # HOOK_SKIP="self_audit,check_apikey" silently failed to skip this one.
+    if "self_audit" in os.environ.get("HOOK_SKIP", ""):
         return 0
     try:
         # Gate 1: critical findings → block
         gate = evaluate_ship_gate(DEFAULT_BB_PATH)
         if gate["block"]:
             n = record_findings_to_ledger(DEFAULT_LEDGER_PATH, DEFAULT_BB_PATH, gate)
-            sys.stderr.write(
+            _emit(
                 f"⛔ [self-audit] BLOCK SHIP — {gate['critical_count']} critical "
                 f"finding(s) across {len(gate['councils'])} council(s). "
                 f"Recorded {n} failure(s) to ledger.\n"
             )
             for c in gate["councils"]:
-                sys.stderr.write(
+                _emit(
                     f"   council '{c['topic'][:50]}': "
                     f"{c['critical']} critical, {c['important']} important, "
                     f"{c['minor']} minor\n"
@@ -187,12 +212,12 @@ def main() -> int:
         # Gate 2: un-reviewed auto-councils → warn (not block)
         unreviewed = check_unreviewed_councils(DEFAULT_BB_PATH)
         if unreviewed:
-            sys.stderr.write(
+            _emit(
                 f"⚠️ [self-audit] {len(unreviewed)} council(s) need review "
                 f"(auto-opened for sensitive edit but no perspectives posted):\n"
             )
             for u in unreviewed[:5]:  # cap output
-                sys.stderr.write(
+                _emit(
                     f"   {u['thread_id']}: {u['trigger_file']} — "
                     f"run /A-Council or personas before ship\n"
                 )
@@ -200,12 +225,12 @@ def main() -> int:
         # Quiet pass if there were councils that DID get reviewed
         councils = check_open_councils(DEFAULT_BB_PATH)
         if councils and not unreviewed:
-            sys.stderr.write(
+            _emit(
                 f"✅ [self-audit] {len(councils)} council(s) reviewed, "
                 f"no critical findings. Safe to ship.\n"
             )
     except Exception as e:
-        sys.stderr.write(f"[self-audit] error: {e}\n")
+        _emit(f"[self-audit] error: {e}\n")
     return 0
 
 

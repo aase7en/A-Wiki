@@ -321,7 +321,7 @@
                     },
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py self-audit"
+                        "command": "python3 scripts/hooks/self_audit.py"
                     },
                     {
                         "type": "command",
