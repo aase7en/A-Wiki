@@ -9,6 +9,11 @@
       "domain": "business,trader"
     },
     {
+      "name": "a-content",
+      "target": "skills/awiki/a-content/SKILL.md",
+      "domain": "media,business"
+    },
+    {
       "name": "a-council",
       "target": "skills/awiki/a-council/SKILL.md",
       "domain": "engineering"
@@ -74,6 +79,16 @@
       "domain": "document,thai"
     },
     {
+      "name": "a-escalate",
+      "target": "skills/awiki/a-escalate/SKILL.md",
+      "domain": "engineering"
+    },
+    {
+      "name": "a-invest",
+      "target": "skills/awiki/a-invest/SKILL.md",
+      "domain": "trader,business"
+    },
+    {
       "name": "a-loop",
       "target": "skills/awiki/a-loop/SKILL.md",
       "domain": "engineering"
@@ -84,9 +99,24 @@
       "domain": "engineering,ux-ui,design"
     },
     {
+      "name": "a-research",
+      "target": "skills/awiki/a-research/SKILL.md",
+      "domain": "engineering,data"
+    },
+    {
+      "name": "a-router",
+      "target": "skills/awiki/a-router/SKILL.md",
+      "domain": "engineering"
+    },
+    {
       "name": "a-think",
       "target": "skills/awiki/a-think/SKILL.md",
       "domain": "engineering"
+    },
+    {
+      "name": "a-web",
+      "target": "skills/awiki/a-web/SKILL.md",
+      "domain": "engineering,ux-ui,code"
     },
     {
       "name": "a-wiki-commands",

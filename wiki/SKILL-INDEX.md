@@ -7,21 +7,21 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 394 · **Aliases/deprecated**: 13
+**Total canonical skills**: 400 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 190 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 191 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 24 |
-| `ux-ui` | UX/UI / Frontend / a11y | 9 |
-| `engineering` | วิศวกร / Architect / Agent harness | 44 |
-| `trader` | เทรด / DeFi / ตลาด | 13 |
+| `ux-ui` | UX/UI / Frontend / a11y | 10 |
+| `engineering` | วิศวกร / Architect / Agent harness | 48 |
+| `trader` | เทรด / DeFi / ตลาด | 14 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
-| `business` | ธุรกิจ / การเงิน / CRM | 11 |
-| `data` | Data Visualization / DB / Query | 18 |
+| `business` | ธุรกิจ / การเงิน / CRM | 13 |
+| `data` | Data Visualization / DB / Query | 19 |
 | `security` | ความปลอดภัย / Hardening | 9 |
 | `ai-ops` | AI ops / LLM / Cost | 30 |
 | `productivity` | Productivity / Management | 13 |
@@ -31,7 +31,7 @@
 | `thai` | ภาษาไทย / เอกสารไทย | 23 |
 | `logistics` | ลอจิสติกส์ / ซัพพลายเชน | 7 |
 | `network` | เครือข่าย / Homelab | 10 |
-| `media` | สื่อ / วิดีโอ / รูปภาพ | 19 |
+| `media` | สื่อ / วิดีโอ / รูปภาพ | 20 |
 | `document` | เอกสาร / docx/pdf/pptx/xlsx | 20 |
 | `sre` | SRE / Observability / Deploy | 6 |
 
@@ -44,6 +44,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-debug` | verify | pipeline | Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหร... |
+| `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `a-wiki-commands` | none | uncategorized | คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ |
 | `a-wiki-telegram` | none | uncategorized | เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ... |
 | `ag2-goal` | none | delegation | orchestrate multi-step goal ด้วย AG2 — planner แตกเป้า, free executor รัน, planner ตรวจ |
@@ -281,6 +282,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
+| `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `accessibility` | none | ecosystem | ออกแบบ พัฒนา และตรวจสอบความสามารถในการเข้าถึงของผลิตภัณฑ์ดิจิทัลให้สอดคล้องกับมาตรฐาน WCAG 2.2 ระ... |
 | `frontend-a11y` | none | uncategorized | ทักษะนี้ช่วยตรวจสอบและปรับปรุงการเข้าถึง (accessibility) ของส่วนติดต่อผู้ใช้ (UI) โดยวิเคราะห์โคร... |
 | `make-interfaces-feel-better` | none | ecosystem | ใช้ปรับแต่งรายละเอียดทางวิศวกรรมดีไซน์ให้อินเทอร์เฟซดูพรีเมียมและใช้งานลื่นไหล เน้นการปรับ spacin... |
@@ -295,9 +297,13 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
+| `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
 | `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
+| `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
+| `a-router` | meta | pipeline | ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ g... |
 | `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
+| `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `agent-architecture-audit` | none | ecosystem | ตรวจสอบสถาปัตยกรรมของ agent system — skill ทำงานร่วมกันไหม, มี loop ไหม, ซ้ำซ้อนไหม |
 | `android-clean-architecture` | none | ecosystem | รูปแบบ Clean Architecture สำหรับโปรเจกต์ Android และ Kotlin Multiplatform ครอบคลุมโครงสร้างโมดูล ... |
 | `architecture-decision-records` | none | uncategorized | บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้า... |
@@ -344,6 +350,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
+| `a-invest` | meta | pipeline | งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence |
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `evm-token-decimals` | none | ecosystem | ป้องกันบั๊กจาก mismatch ของทศนิยม token บน EVM chain อย่างเงียบ ๆ ครอบคลุมการค้นหาทศนิยมแบบ runti... |
 | `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
@@ -374,6 +381,8 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
+| `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
+| `a-invest` | meta | pipeline | งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence |
 | `customer-billing-ops` | none | ecosystem | จัดการเวิร์กโฟลว์การเรียกเก็บเงินลูกค้า เช่น การสมัครสมาชิก การคืนเงิน การวิเคราะห์การยกเลิกบริกา... |
 | `email-ops` | none | ecosystem | จัดการกล่องจดหมายด้วยหลักฐานเชิงประจักษ์: คัดแยกอีเมล, ร่างข้อความ, ตรวจสอบการส่ง, และติดตามผลอย่... |
 | `finance-billing-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณตรวจสอบข้อมูลรายได้ ราคา การคืนเงิน การเรียกเก็บเงินทีม และรูปแบบการเรียกเก็บเง... |
@@ -389,6 +398,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
 | `clickhouse-io` | none | ecosystem | แนวทางปฏิบัติที่ดีที่สุดสำหรับ ClickHouse ฐานข้อมูลเชิงวิเคราะห์ประสิทธิภาพสูง ครอบคลุมการปรับแต่... |
 | `data-scraper-agent` | none | ecosystem | สร้างเอเจนต์รวบรวมข้อมูลอัตโนมัติจากแหล่งสาธารณะ เช่น เว็บประกาศงาน ราคาสินค้า ข่าวสาร GitHub หรื... |
 | `data-throughput-accelerator` | none | uncategorized | ใช้เมื่อต้องการเร่งความเร็วการนำเข้าข้อมูลขนาดใหญ่ การ backfill การส่งออก ETL การโหลดคลังข้อมูล ก... |
@@ -562,6 +572,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
 | `algorithmic-art` | none | uncategorized | สร้างงานศิลปะเชิงอัลกอริทึมด้วย p5.js โดยใช้ seeded randomness เพื่อให้ผลลัพธ์ reproducible และให... |
 | `fal-ai-media` | none | ecosystem | สร้างภาพ วิดีโอ และเสียงผ่าน fal.ai MCP รองรับโมเดลหลากหลาย เช่น Nano Banana สำหรับ text-to-image... |
 | `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
@@ -628,7 +639,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-business`, `a-loop`, `a-think`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-business`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
