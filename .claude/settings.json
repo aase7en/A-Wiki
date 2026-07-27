@@ -194,6 +194,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks_runner.py check-a-focus"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-a-flow-discipline"
                     }
                 ]
             },
