@@ -221,6 +221,31 @@
       ]
     },
     {
+      "name": "code-reviewer",
+      "aliases": [
+        "/code-reviewer",
+        "senior-staff-engineer"
+      ],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/code-reviewer.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Senior Staff Engineer persona for code review — architecture, idioms, debt, hidden coupling, missing tests. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing tests",
+      "when_to_use": "เรียกใน REVIEW stage ของ A-Flow หรือผ่าน /A-Council เพื่อตรวจ code review หลายมุม",
+      "invocation_hint": "/code-reviewer"
+    },
+    {
       "name": "code-simplification",
       "aliases": [],
       "domain": [
@@ -998,6 +1023,31 @@
       ]
     },
     {
+      "name": "security-auditor",
+      "aliases": [
+        "/security-auditor",
+        "security-engineer"
+      ],
+      "domain": [
+        "security"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/security-auditor.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Security Engineer persona — auth, secrets, injection, OWASP, threat model, sandbox escapes. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model",
+      "when_to_use": "เรียกเมื่อ review security-sensitive code หรือ /A-Council",
+      "invocation_hint": "/security-auditor"
+    },
+    {
       "name": "ship",
       "aliases": [],
       "domain": [
@@ -1147,6 +1197,31 @@
         "เอาสเปกมาทำ TDD"
       ],
       "invocation_hint": "/spec-driven-development"
+    },
+    {
+      "name": "test-engineer",
+      "aliases": [
+        "/test-engineer",
+        "qa-specialist"
+      ],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "verify",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/test-engineer.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "QA Specialist persona — missing edge cases, integration gaps, failure modes, test pyramid coverage. Used by /A-Council and a-flow TEST stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก QA Specialist — edge cases, integration gaps, failure modes, test coverage",
+      "when_to_use": "เรียกใน TEST stage ของ A-Flow หรือ /A-Council",
+      "invocation_hint": "/test-engineer"
     },
     {
       "name": "thai-address",
@@ -1557,6 +1632,31 @@
         }
       ],
       "invocation_hint": "/thai-translate"
+    },
+    {
+      "name": "web-performance-auditor",
+      "aliases": [
+        "/web-performance-auditor",
+        "web-perf-engineer"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/web-performance-auditor.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Web Performance Engineer persona — Core Web Vitals, bundle size, runtime jank, animation cost, render path. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Web Performance Engineer — Core Web Vitals, bundle size, jank, animation cost",
+      "when_to_use": "เรียกเมื่อ review web perf หรือ /A-Council",
+      "invocation_hint": "/web-performance-auditor"
     },
     {
       "name": "wiki",

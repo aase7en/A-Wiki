@@ -7,22 +7,22 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 400 · **Aliases/deprecated**: 13
+**Total canonical skills**: 404 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 191 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 193 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 24 |
 | `ux-ui` | UX/UI / Frontend / a11y | 10 |
-| `engineering` | วิศวกร / Architect / Agent harness | 48 |
+| `engineering` | วิศวกร / Architect / Agent harness | 49 |
 | `trader` | เทรด / DeFi / ตลาด | 14 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
 | `business` | ธุรกิจ / การเงิน / CRM | 13 |
 | `data` | Data Visualization / DB / Query | 19 |
-| `security` | ความปลอดภัย / Hardening | 9 |
+| `security` | ความปลอดภัย / Hardening | 10 |
 | `ai-ops` | AI ops / LLM / Cost | 30 |
 | `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
@@ -73,6 +73,7 @@
 | `claude-api` | none | uncategorized | ทักษะนี้ช่วยให้คุณเรียกใช้ Claude API โดยตรงจากเทอร์มินัล รองรับการส่งข้อความและรับคำตอบจากโมเดล ... |
 | `claude-devfleet` | none | ecosystem | จัดการงานโค้ดแบบ multi-agent ผ่าน Claude DevFleet — วางแผนโปรเจกต์ ส่ง agent หลายตัวทำงานพร้อมกัน... |
 | `click-path-audit` | none | ecosystem | ตรวจสอบเส้นทางคลิกของผู้ใช้ทุกจุด ตั้งแต่ปุ่มเริ่มต้นจนถึงการเปลี่ยนแปลงสถานะสุดท้าย เพื่อค้นหาบั... |
+| `code-reviewer` | review | persona | บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing t... |
 | `code-simplification` | review | engineering-lifecycle | ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น |
 | `code-tour` | none | ecosystem | สร้างไฟล์ CodeTour `.tour` สำหรับพาเพื่อนร่วมทีมเดินผ่านโค้ดทีละขั้นตอน ระบุไฟล์และบรรทัดจริง เหม... |
 | `codebase-onboarding` | none | ecosystem | วิเคราะห์โค้ดเบสที่ไม่คุ้นเคยและสร้างคู่มือ onboarding แบบมีโครงสร้าง พร้อมแผนผังสถาปัตยกรรม จุดเ... |
@@ -220,6 +221,7 @@
 | `tdd` | build | mattpocock | เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression |
 | `team-builder` | none | ecosystem | เครื่องมือเลือก agent แบบโต้ตอบสำหรับประกอบทีมและส่งงานแบบขนาน ช่วยให้คุณเลือก agent ที่เหมาะสมจา... |
 | `terminal-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณรันคำสั่ง terminal ตรวจสอบ repo แก้ปัญหา CI ที่ล้มเหลว หรือ push การแก้ไขเล็กน้... |
+| `test-engineer` | verify | persona | บุคลิก QA Specialist — edge cases, integration gaps, failure modes, test coverage |
 | `threejs-gltf-loading` | build | game | three.js glTF model loading reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
 | `threejs-materials-lighting` | build | game | three.js materials + lighting reference — vendored from gamedev-skills/awesome-gamedev-agent-skills. |
 | `threejs-scene-setup` | build | game | three.js scene/camera/renderer setup reference — vendored from gamedev-skills/awesome-gamedev-age... |
@@ -344,6 +346,7 @@
 | `to-prd` | define | mattpocock | สังเคราะห์บทสนทนาปัจจุบันให้เป็น PRD (Product Requirements Document) และเผยแพร่ออกมา โดยไม่ต้องสั... |
 | `triage` | verify | mattpocock | ขับ issue/PR ผ่าน state machine ของการตัดสินใจ — categorise, verify, grill, write-up, merge |
 | `two-axis-code-review` | review | mattpocock | รีวิวโค้ดแบบ 2 แกน: (1) correctness/logic (2) style/maintainability |
+| `web-performance-auditor` | review | persona | บุคลิก Web Performance Engineer — Core Web Vitals, bundle size, jank, animation cost |
 
 ### `trader` — เทรด / DeFi / ตลาด
 
@@ -430,6 +433,7 @@
 | `llm-trading-agent-security` | none | ecosystem | รูปแบบความปลอดภัยสำหรับเอเจนต์เทรดดิ้งอัตโนมัติที่มีสิทธิ์เข้าถึงกระเป๋าเงินหรือทำธุรกรรม ครอบคลุ... |
 | `safety-guard` | none | ecosystem | ตรวจสอบความปลอดภัยก่อนทำการที่เสียหายได้ยาก — delete, force push, ส่งข้อมูลออก, เปลี่ยน production |
 | `security-and-hardening` | review | engineering-lifecycle | ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation |
+| `security-auditor` | review | persona | บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model |
 | `security-bounty-hunter` | none | ecosystem | ค้นหาช่องโหว่ด้านความปลอดภัยที่สามารถถูกโจมตีจากระยะไกลและมีมูลค่าควรแก่การรายงานเป็น bounty ใน r... |
 | `security-review` | none | uncategorized | ใช้เมื่อเพิ่มระบบ authentication, จัดการ user input, ทำงานกับ secrets, สร้าง API endpoints หรือ i... |
 | `security-scan` | none | ecosystem | สแกนการตั้งค่า Claude Code ในโฟลเดอร์ .claude/ เพื่อหาช่องโหว่ด้านความปลอดภัย การตั้งค่าที่ผิดพลา... |
@@ -636,8 +640,8 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
-- **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `triage`
-- **REVIEW**: `a-council`, `audit-reference-originality`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `two-axis-code-review`
+- **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
+- **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-business`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
 

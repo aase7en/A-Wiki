@@ -81,6 +81,7 @@
 | `claude-devfleet` | code | none | ecosystem | `skills/ecosystem/claude-devfleet/SKILL.md` |
 | `click-path-audit` | code | none | ecosystem | `skills/ecosystem/click-path-audit/SKILL.md` |
 | `clickhouse-io` | data | none | ecosystem | `skills/ecosystem/clickhouse-io/SKILL.md` |
+| `code-reviewer` | code | review | persona | `agents/code-reviewer.md` |
 | `code-simplification` | code, engineering | review | engineering-lifecycle | `skills/engineering-lifecycle/review/code-simplification/SKILL.md` |
 | `code-tour` | code | none | ecosystem | `skills/ecosystem/code-tour/SKILL.md` |
 | `codebase-design` | engineering, design | build | mattpocock | `skills/mattpocock/codebase-design/SKILL.md` |
@@ -323,6 +324,7 @@
 | `search` | wiki | none | awiki | `skills/awiki/search/SKILL.md` |
 | `search-first` | code | none | ecosystem | `skills/ecosystem/search-first/SKILL.md` |
 | `security-and-hardening` | code, engineering, security | review | engineering-lifecycle | `skills/engineering-lifecycle/review/security-and-hardening/SKILL.md` |
+| `security-auditor` | security | review | persona | `agents/security-auditor.md` |
 | `security-bounty-hunter` | security | none | ecosystem | `skills/ecosystem/security-bounty-hunter/SKILL.md` |
 | `security-review` | security | none | uncategorized | `~/.claude/skills/security-review/SKILL.md` |
 | `security-scan` | security | none | ecosystem | `skills/ecosystem/security-scan/SKILL.md` |
@@ -355,6 +357,7 @@
 | `teach` | productivity | none | mattpocock | `skills/mattpocock/teach/SKILL.md` |
 | `team-builder` | code | none | ecosystem | `skills/ecosystem/team-builder/SKILL.md` |
 | `terminal-ops` | code | none | ecosystem | `skills/ecosystem/terminal-ops/SKILL.md` |
+| `test-engineer` | code | verify | persona | `agents/test-engineer.md` |
 | `thai-address` | thai | none | thai | `skills/claude-thai/thai-address/SKILL.md` |
 | `thai-customer-service` | thai | none | thai | `skills/claude-thai/thai-customer-service/SKILL.md` |
 | `thai-date-format` | thai | none | thai | `skills/claude-thai/thai-date-format/SKILL.md` |
@@ -392,6 +395,7 @@
 | `visa-doc-translate` | document | none | ecosystem | `skills/ecosystem/visa-doc-translate/SKILL.md` |
 | `vite-patterns` | code | none | ecosystem | `skills/ecosystem/vite-patterns/SKILL.md` |
 | `web-artifacts-builder` | code | none | uncategorized | `skills/anthropic-skills/web-artifacts-builder/SKILL.md` |
+| `web-performance-auditor` | engineering | review | persona | `agents/web-performance-auditor.md` |
 | `web-research` | code | none | wiki | `skills/claude-code/web-research/SKILL.md` |
 | `webapp-testing` | code | none | uncategorized | `skills/anthropic-skills/webapp-testing/SKILL.md` |
 | `webgl-3d-object` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/webgl-3d-object/SKILL.md` |
@@ -410,12 +414,12 @@
 |--------|------------|
 | ai-ops | 30 |
 | business | 13 |
-| code | 191 |
+| code | 193 |
 | data | 19 |
 | debug | 8 |
 | design | 24 |
 | document | 20 |
-| engineering | 48 |
+| engineering | 49 |
 | env | 1 |
 | logistics | 7 |
 | media | 20 |
@@ -423,7 +427,7 @@
 | network | 10 |
 | pharmacy | 1 |
 | productivity | 13 |
-| security | 9 |
+| security | 10 |
 | sre | 6 |
 | thai | 23 |
 | trader | 14 |

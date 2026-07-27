@@ -384,6 +384,11 @@
       "domain": "code"
     },
     {
+      "name": "code-reviewer",
+      "target": "agents/code-reviewer.md",
+      "domain": "code"
+    },
+    {
       "name": "code-simplification",
       "target": "skills/engineering-lifecycle/review/code-simplification/SKILL.md",
       "domain": "code,engineering"
@@ -1569,6 +1574,11 @@
       "domain": "code,engineering,security"
     },
     {
+      "name": "security-auditor",
+      "target": "agents/security-auditor.md",
+      "domain": "security"
+    },
+    {
       "name": "security-bounty-hunter",
       "target": "skills/ecosystem/security-bounty-hunter/SKILL.md",
       "domain": "security"
@@ -1711,6 +1721,11 @@
     {
       "name": "terminal-ops",
       "target": "skills/ecosystem/terminal-ops/SKILL.md",
+      "domain": "code"
+    },
+    {
+      "name": "test-engineer",
+      "target": "agents/test-engineer.md",
       "domain": "code"
     },
     {
@@ -1907,6 +1922,11 @@
       "name": "web-artifacts-builder",
       "target": "skills/anthropic-skills/web-artifacts-builder/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "web-performance-auditor",
+      "target": "agents/web-performance-auditor.md",
+      "domain": "engineering"
     },
     {
       "name": "web-research",

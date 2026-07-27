@@ -3,6 +3,10 @@
     "paths": [
       "./agent-skills/extensibility",
       "./agent-skills/swarm-intelligence",
+      "./agents/code-reviewer.md",
+      "./agents/security-auditor.md",
+      "./agents/test-engineer.md",
+      "./agents/web-performance-auditor.md",
       "./skills/anthropic-skills",
       "./skills/assessment-generator",
       "./skills/awiki",
