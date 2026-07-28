@@ -29,9 +29,9 @@ on:
         options:
           - "true"
           - "false"
-  # schedule:
-  #   # Mon 3:23 UTC (after agent-model-scan 2:41 + cross-platform 3:17)
-  #   - cron: "23 3 * * 1"
+  schedule:
+    # Mon 3:23 UTC (after agent-model-scan 2:41 + cross-platform 3:17)
+    - cron: "23 3 * * 1"
 
 permissions:
   contents: write
