@@ -202,6 +202,12 @@ goals.md
 inw-wiki-critique.md
 exports/notebooklm/*
 !exports/notebooklm/README.md
+# Same artifact class as exports/notebooklm/ above, just at another path.
+# core-knowledge/ has never been tracked and no script references it — it is a
+# stray NotebookLM export dir. Vendor snapshots under */_upstream/ are the
+# opposite case: tracked by design (see the .agents/ note above), so they are
+# committed, not ignored.
+core-knowledge/
 *.local.md
 .A-Wiki-config
 
