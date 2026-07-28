@@ -32,11 +32,25 @@ fi
 
 BLOCKED=false
 
+# python3 first: macOS ships no bare `python`. Invoking it here silently
+# disabled the secret scan below (see the SCAN_RESULT block).
+if [ -x ".venv/bin/python3" ]; then
+    PY=".venv/bin/python3"
+elif command -v python3 >/dev/null 2>&1; then
+    PY="python3"
+elif command -v python >/dev/null 2>&1; then
+    PY="python"
+else
+    printf "%s🚫 [pre-commit] no python3 on PATH — security scan cannot run.%s\n" "$RED" "$RESET" >&2
+    printf "   Install python3, or override with PRE_COMMIT_SKIP_AWIKI=1 if you accept the risk.\n" >&2
+    exit 1
+fi
+
 # ── 1. Skill-registry drift (existing check, delegated) ─────────────────────
 # This script exits 1 on drift; under set -e we'd abort, so capture instead.
 if ! bash scripts/hooks/pre_commit_skill_surfaces.sh >/dev/null 2>&1; then
     printf "%s🚫 [pre-commit] Skill surface drift detected.%s\n" "$RED" "$RESET" >&2
-    printf "   Fix: python scripts/regen-skill-surfaces.py\n" >&2
+    printf "   Fix: python3 scripts/regen-skill-surfaces.py\n" >&2
     BLOCKED=true
 fi
 
@@ -45,7 +59,23 @@ fi
 # security_patterns.yaml and flags any secret or machine-path pattern.
 STAGED_DIFF="$(git diff --cached --unified=0 -- ':!*.lock' ':!*.sum' 2>/dev/null || true)"
 if [ -n "$STAGED_DIFF" ]; then
-    SCAN_RESULT=$(printf '%s' "$STAGED_DIFF" | python scripts/hooks/_scan_staged_diff.py 2>/dev/null || true)
+    # Fail CLOSED. The previous form was
+    #   ... | python scripts/hooks/_scan_staged_diff.py 2>/dev/null || true
+    # which turned "python not found" into an empty SCAN_RESULT — read by the
+    # test below as "no findings". The scan silently never ran on macOS.
+    # Capture status and output separately so a broken scanner blocks loudly.
+    SCAN_ERR="$(mktemp)"
+    set +e
+    SCAN_RESULT=$(printf '%s' "$STAGED_DIFF" | "$PY" scripts/hooks/_scan_staged_diff.py 2>"$SCAN_ERR")
+    SCAN_STATUS=$?
+    set -e
+    if [ "$SCAN_STATUS" -ne 0 ]; then
+        printf "%s🚫 [pre-commit] Security scan FAILED TO RUN (exit %s) — not treating that as clean.%s\n" "$RED" "$SCAN_STATUS" "$RESET" >&2
+        sed 's/^/   /' "$SCAN_ERR" >&2
+        printf "   Override: PRE_COMMIT_SKIP_AWIKI=1\n" >&2
+        BLOCKED=true
+    fi
+    rm -f "$SCAN_ERR"
     if [ -n "$SCAN_RESULT" ]; then
         printf "%s🚫 [pre-commit] Security finding in staged diff:%s\n" "$RED" "$RESET" >&2
         printf '%s\n' "$SCAN_RESULT" >&2
