@@ -1,15 +1,16 @@
-# Review Report — 2026-07-25
+# Review Report — 2026-07-29
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 933
-- ⚠ Warnings: 300
-- ❌ Failures: 75
+- ✓ Passed: 931
+- ⚠ Warnings: 301
+- ❌ Failures: 74
 
 ## Top Actionable Issues
 
+- ⚠ **L2** wiki/A-ROUTER.md: no frontmatter (missing --- delimiter)
 - ⚠ **L2** wiki/SKILL-INDEX.md: no frontmatter (missing --- delimiter)
 - ⚠ **L2** wiki/concepts/ai-tools/a2a-protocol.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
@@ -29,7 +30,6 @@
 - ⚠ **L2** wiki/concepts/ai-tools/session-setup.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki/concepts/ai-tools/symlinks-ssot.md: missing frontmatter key: title
-- ⚠ **L2** wiki/concepts/ai-tools/vibe-coding.md: missing frontmatter key: title
 - … 355 more issue(s) below
 
 ---
@@ -109,13 +109,13 @@
 - wiki/sources/prat011-llm-skills-ref.md: broken link: [Contributing Guidelines](CONTRIBUTING.md)
 - wiki/sources/unpingco-pystats-readme.md: broken link: [Draft cover](./python_for_probability_statistics_and_machine_learning.jpg)
 - wiki/sources/unpingco-python-stats-ml.md: broken link: [[monte-carlo-quant-analysis]]
-- wiki/sources/ตอน-3-สร้าง-dashboard-node-red-มอนิเตอร์และควบคุมทุกอย่าง.md: broken link: [[Y.Chanadej]]
 - wiki/synthesis/appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
 ---
 
 ## ⚠ L2: Frontmatter Completeness (title, type, tags) — Warnings
 
+- wiki/A-ROUTER.md: no frontmatter (missing --- delimiter)
 - wiki/SKILL-INDEX.md: no frontmatter (missing --- delimiter)
 - wiki/concepts/ai-tools/a2a-protocol.md: missing frontmatter key: title
 - wiki/concepts/ai-tools/agent-framework-tradeoffs.md: missing frontmatter key: title
@@ -424,9 +424,9 @@
 
 ---
 
-## ✓ Passed Checks (933 total)
+## ✓ Passed Checks (931 total)
 
-- **L2**: 392 passed
+- **L2**: 390 passed
 - **L3**: 538 passed
 - **L6**: 3 passed
 
