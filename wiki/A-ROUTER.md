@@ -50,6 +50,7 @@
 | `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
 | `a-invest` | `/A-Invest` | any | `ลงทุน` · `หุ้น` · `พอร์ต` · `investment` · `portfolio` |
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
+| `a-med-order` | `/A-Med-Order` | any | `รายการยาหมด` · `รายการสั่งยา` · `สั่งยา` · `ใบสั่งยา` · `ยาหมด` · `ใบสั่งซื้อยา` · `order ยา` · `pharmacy order` |
 | `a-research` | `/A-Research` | any | `วิจัย` · `ค้นคว้า` · `research` · `สืบค้น` |
 | `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 | `a-web` | `/A-Web` | any | `สร้างเว็บ` · `เว็บไซต์` · `frontend` · `react` · `nextjs` |
@@ -103,4 +104,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_14 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_15 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_

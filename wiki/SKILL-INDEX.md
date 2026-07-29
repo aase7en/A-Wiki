@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 405 · **Aliases/deprecated**: 13
+**Total canonical skills**: 406 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
@@ -20,14 +20,14 @@
 | `engineering` | วิศวกร / Architect / Agent harness | 50 |
 | `trader` | เทรด / DeFi / ตลาด | 14 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
-| `business` | ธุรกิจ / การเงิน / CRM | 13 |
+| `business` | ธุรกิจ / การเงิน / CRM | 14 |
 | `data` | Data Visualization / DB / Query | 19 |
 | `security` | ความปลอดภัย / Hardening | 10 |
 | `ai-ops` | AI ops / LLM / Cost | 31 |
 | `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
-| `pharmacy` | ร้านยา / สต็อกยา | 1 |
+| `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 23 |
 | `logistics` | ลอจิสติกส์ / ซัพพลายเชน | 7 |
 | `network` | เครือข่าย / Homelab | 10 |
@@ -387,6 +387,7 @@
 | `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
 | `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
 | `a-invest` | meta | pipeline | งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence |
+| `a-med-order` | build | pipeline | สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา → ใบสั่งซื้อ Excel/Sheet → กรอกจำนวน → ข้อความ LINE |
 | `customer-billing-ops` | none | ecosystem | จัดการเวิร์กโฟลว์การเรียกเก็บเงินลูกค้า เช่น การสมัครสมาชิก การคืนเงิน การวิเคราะห์การยกเลิกบริกา... |
 | `email-ops` | none | ecosystem | จัดการกล่องจดหมายด้วยหลักฐานเชิงประจักษ์: คัดแยกอีเมล, ร่างข้อความ, ตรวจสอบการส่ง, และติดตามผลอย่... |
 | `finance-billing-ops` | none | ecosystem | ทักษะนี้ช่วยให้คุณตรวจสอบข้อมูลรายได้ ราคา การคืนเงิน การเรียกเก็บเงินทีม และรูปแบบการเรียกเก็บเง... |
@@ -517,6 +518,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-med-order` | build | pipeline | สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา → ใบสั่งซื้อ Excel/Sheet → กรอกจำนวน → ข้อความ LINE |
 | `pharmacy-order-lookup` | none | wiki | ค้นหาข้อมูลใบสั่งยาจากร้านขายยา โดยใช้หมายเลขใบสั่งยา (Order ID) หรือชื่อผู้ป่วย เพื่อดึงรายละเอี... |
 
 ### `thai` — ภาษาไทย / เอกสารไทย
@@ -641,7 +643,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
+- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `a-med-order`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`

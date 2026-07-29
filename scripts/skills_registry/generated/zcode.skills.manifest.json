@@ -99,6 +99,11 @@
       "domain": "engineering"
     },
     {
+      "name": "a-med-order",
+      "target": "skills/awiki/a-med-order/SKILL.md",
+      "domain": "pharmacy,business"
+    },
+    {
       "name": "a-plan",
       "target": "skills/awiki/a-plan/SKILL.md",
       "domain": "engineering,ux-ui,design"

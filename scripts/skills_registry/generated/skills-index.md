@@ -22,6 +22,7 @@
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
+| `a-med-order` | pharmacy, business | build | pipeline | `skills/awiki/a-med-order/SKILL.md` |
 | `a-plan` | engineering, ux-ui, design | define | pipeline | `skills/awiki/a-plan/SKILL.md` |
 | `a-research` | engineering, data | meta | pipeline | `skills/awiki/a-research/SKILL.md` |
 | `a-router` | engineering | meta | pipeline | `skills/awiki/a-router/SKILL.md` |
@@ -414,7 +415,7 @@
 | Domain | Skill count |
 |--------|------------|
 | ai-ops | 31 |
-| business | 13 |
+| business | 14 |
 | code | 193 |
 | data | 19 |
 | debug | 8 |
@@ -426,7 +427,7 @@
 | media | 20 |
 | medical | 7 |
 | network | 10 |
-| pharmacy | 1 |
+| pharmacy | 2 |
 | productivity | 13 |
 | security | 10 |
 | sre | 6 |
