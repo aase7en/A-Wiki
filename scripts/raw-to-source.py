@@ -169,6 +169,51 @@ def source_exists(slug: str) -> bool:
     return any(True for _ in SOURCES_DIR.rglob(f"{slug}.md"))
 
 
+def read_original_file(page: Path) -> str | None:
+    """Return the `original_file:` pointer of a source page, normalised.
+
+    Strips surrounding whitespace and quotes — pages have been written by
+    several generators over time and quoting is inconsistent.
+    """
+    try:
+        text = page.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    for line in text.splitlines():
+        if line.startswith("---") and line.strip() == "---":
+            continue
+        if not line.startswith("original_file:"):
+            # Only scan the frontmatter block; body lines can't set it.
+            if line.strip().startswith("#"):
+                break
+            continue
+        value = line.split(":", 1)[1].strip().strip("\"'").strip()
+        return value or None
+    return None
+
+
+def existing_original_files() -> set[str]:
+    """Every raw document already claimed by a source page."""
+    claimed: set[str] = set()
+    for page in SOURCES_DIR.rglob("*.md"):
+        if page.name == "CLAUDE.md":
+            continue
+        pointer = read_original_file(page)
+        if pointer:
+            claimed.add(pointer)
+    return claimed
+
+
+def source_exists_for_raw(raw_rel: str) -> bool:
+    """True if some source page already points at this raw file.
+
+    Identity of a source page is its `original_file:` pointer, NOT its slug —
+    a human-chosen slug (`3-dashboard-node-red`) never collides with the
+    filename-derived one, which is how duplicates were being created.
+    """
+    return str(raw_rel).strip().strip("\"'").strip() in existing_original_files()
+
+
 def generate_frontmatter(
     filepath: Path, slug: str, domain: str, tags: list[str]
 ) -> str:
@@ -213,6 +258,11 @@ def main() -> int:
     created_count = 0
     skipped_count = 0
 
+    # Scanned once: which raw documents already have a source page. Checked by
+    # `original_file:` pointer, because a page whose slug was chosen by a human
+    # is invisible to the filename-derived slug check below.
+    claimed = existing_original_files()
+
     for filepath in raw_files:
         slug = raw_to_slug(filepath.name)
         rel = filepath.relative_to(REPO_ROOT)
@@ -220,7 +270,11 @@ def main() -> int:
         tags = detect_tags(filepath, domain)
 
         # Check if source exists (skip unless --all)
-        existing = source_exists(slug) or source_exists(f"{slug}-0")
+        existing = (
+            rel.as_posix() in claimed
+            or source_exists(slug)
+            or source_exists(f"{slug}-0")
+        )
         if existing and not args.all:
             skipped_count += 1
             continue
