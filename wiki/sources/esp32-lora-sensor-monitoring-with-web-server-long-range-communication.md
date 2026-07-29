@@ -11,15 +11,18 @@ original_file: raw/ESP32 LoRa Sensor Monitoring with Web Server (Long Range Comm
 ---
 title: "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication)"
 source: "https://randomnerdtutorials.com/esp32-lora-sensor-web-server/"
-author: ""
-published: "2019-11-20"
-created: "2026-04-18"
+author:
+  - "Rui Santos"
+published: 2019-11-20
+created: 2026-04-18
 description: "Build a sensor monitoring system with ESP32 TTGO LoRa32 SX1276 board that sends temperature, humidity and pressure readings via LoRa to a LoRa receiver web server."
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 In this project, you’ll build a sensor monitoring system using a TTGO LoRa32 SX1276 OLED board that sends temperature, humidity and pressure readings via LoRa radio to an ESP32 LoRa receiver. The receiver displays the latest sensor readings on a web server.
+
+![ESP32 LoRa Sensor Monitoring with Web Server Long Range Communication](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/ESP32-LoRa32-TTGO-OLED-WEB-SERVER.jpg?w=1280&quality=100&strip=all&ssl=1)
 
 ESP32 LoRa Sensor Monitoring with Web Server Long Range Communication
 
@@ -35,9 +38,13 @@ With this project you’ll learn how to:
 
 Watch the video demonstration to see what you’re going to build throughout this tutorial.
 
+![](https://www.youtube.com/watch?v=-6RWwo1iAKM)
+
 ## Project Overview
 
 The following image shows a high-level overview of the project we’ll build throughout this tutorial.
+
+![Project Overview ESP32 LoRa Sender and ESP32 LoRa32 Receiver board](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/esp32-lora-oled-web-server-overview.png?w=730&quality=100&strip=all&ssl=1)
 
 Project Overview ESP32 LoRa Sender and ESP32 LoRa32 Receiver board
 
@@ -52,6 +59,8 @@ Project Overview ESP32 LoRa Sender and ESP32 LoRa32 Receiver board
 
 ## Parts Required
 
+![TTGO LoRa32 SX1276 OLED board with antenna](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/10/TTGO-LoRa-ESP32-Dev-Board.jpg?w=750&quality=100&strip=all&ssl=1)
+
 TTGO LoRa32 SX1276 OLED board with antenna
 
 For this project, we’ll use the following components:
@@ -63,7 +72,7 @@ You’ll also need some [jumper wires](https://makeradvisor.com/tools/jumper-wir
 
 You can use the preceding links or go directly to [MakerAdvisor.com/tools](https://makeradvisor.com/tools/?utm_source=rnt&utm_medium=post&utm_campaign=post) to find all the parts for your projects at the best price!
 
-[](https://makeradvisor.com/tools/?utm_source=rnt&utm_medium=post&utm_campaign=post)
+[![](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2017/10/header-200.png?w=828&quality=100&strip=all&ssl=1)](https://makeradvisor.com/tools/?utm_source=rnt&utm_medium=post&utm_campaign=post)
 
 ## Preparing the Arduino IDE
 
@@ -107,6 +116,8 @@ The LoRa Sender is connected to a [BME280 sensor](https://randomnerdtutorials.co
 
 The BME280 we’re using communicates with the ESP32 using I2C communication protocol. Wire the sensor as shown in the next schematic diagram:
 
+![TTGO LoRa32 SX1276 OLED board ESP32 Sender](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-Sender-schematic-diagram-wiring-BME280.png?w=591&quality=100&strip=all&ssl=1)
+
 TTGO LoRa32 SX1276 OLED board ESP32 Sender
 
 | **BME280** | **ESP32** |
@@ -131,17 +142,17 @@ Copy the following code to your Arduino IDE.
 *********/
 
 //Libraries for LoRa
-#include 
-#include 
+#include <SPI.h>
+#include <LoRa.h>
 
 //Libraries for OLED Display
-#include 
-#include 
-#include 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 //Libraries for BME280
-#include 
-#include 
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
@@ -210,17 +221,105 @@ void startLoRA(){
   //setup LoRa transceiver module
   LoRa.setPins(SS, RST, DIO0);
 
-  while (!LoRa.begin(BAND) && counter 
-#include 
+  while (!LoRa.begin(BAND) && counter < 10) {
+    Serial.print(".");
+    counter++;
+    delay(500);
+  }
+  if (counter == 10) {
+    // Increment readingID on every new reading
+    readingID++;
+    Serial.println("Starting LoRa failed!"); 
+  }
+  Serial.println("LoRa Initialization OK!");
+  display.setCursor(0,10);
+  display.clearDisplay();
+  display.print("LoRa Initializing OK!");
+  display.display();
+  delay(2000);
+}
+
+void startBME(){
+  I2Cone.begin(SDA, SCL, 100000); 
+  bool status1 = bme.begin(0x76, &I2Cone);  
+  if (!status1) {
+    Serial.println("Could not find a valid BME280_1 sensor, check wiring!");
+    while (1);
+  }
+}
+
+void getReadings(){
+  temperature = bme.readTemperature();
+  humidity = bme.readHumidity();
+  pressure = bme.readPressure() / 100.0F;
+}
+
+void sendReadings() {
+  LoRaMessage = String(readingID) + "/" + String(temperature) + "&" + String(humidity) + "#" + String(pressure);
+  //Send LoRa packet to receiver
+  LoRa.beginPacket();
+  LoRa.print(LoRaMessage);
+  LoRa.endPacket();
+  
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextSize(1);
+  display.print("LoRa packet sent!");
+  display.setCursor(0,20);
+  display.print("Temperature:");
+  display.setCursor(72,20);
+  display.print(temperature);
+  display.setCursor(0,30);
+  display.print("Humidity:");
+  display.setCursor(54,30);
+  display.print(humidity);
+  display.setCursor(0,40);
+  display.print("Pressure:");
+  display.setCursor(54,40);
+  display.print(pressure);
+  display.setCursor(0,50);
+  display.print("Reading ID:");
+  display.setCursor(66,50);
+  display.print(readingID);
+  display.display();
+  Serial.print("Sending packet: ");
+  Serial.println(readingID);
+  readingID++;
+}
+
+void setup() {
+  //initialize Serial Monitor
+  Serial.begin(115200);
+  startOLED();
+  startBME();
+  startLoRA();
+}
+void loop() {
+  getReadings();
+  sendReadings();
+  delay(10000);
+}
+```
+
+[View raw code](https://github.com/RuiSantosdotme/Random-Nerd-Tutorials/raw/master/Projects/ESP32/ESP3_LoRa/LoRa_Sender_BME280/LoRa_Sender_BME280.ino)
+
+### How the Code Works
+
+Start by including the necessary libraries for LoRa, OLED display and BME280 sensor.
+
+```c
+//Libraries for LoRa
+#include <SPI.h>
+#include <LoRa.h>
 
 //Libraries for OLED Display
-#include 
-#include 
-#include 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 //Libraries for BME280
-#include 
-#include 
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 ```
 
 Define the pins used by the LoRa transceiver module. We’re using the [TTGO LoRa32 SX1276 OLED board V1.0](https://makeradvisor.com/esp32-sx1276-lora-ssd1306-oled/) and these are the pins used by the LoRa chip:
@@ -366,15 +465,21 @@ Upload the code to your ESP32 LoRa Sender Board.
 
 Go to **Tools** > **Port** and select the COM port it is connected to. Then, go to **Tools** > **Board** and select the board you’re using. In our case, it’s the TTGO LoRa32-OLED V1.
 
+![Arduino IDE selecting TTGO LoRa32-OLED-V1 board](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/selecting-lora-ttgo-oled-board.png?w=811&quality=100&strip=all&ssl=1)
+
 Arduino IDE selecting TTGO LoRa32-OLED-V1 board
 
 Finally, press the upload button.
 
 Open the Serial Monitor at a baud rate of 115200. You should get something as shown below.
 
+![Arduino IDE: ESP32 LoRa Sender Circuit Demonstration](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-Send-Sensor-Readings-Arduino-IDE-Serial-Monitor.png?w=670&quality=100&strip=all&ssl=1)
+
 Arduino IDE: ESP32 LoRa Sender Circuit Demonstration
 
 The OLED of your board should be displaying the latest sensor readings.
+
+![TTGO LoRa32 SX1276 OLED board ESP32 Sender Circuit Schematic](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/ESP32-LoRa32-TTGO-OLED-Send-BME280-Readings-board.jpg?w=750&quality=100&strip=all&ssl=1)
 
 TTGO LoRa32 SX1276 OLED board ESP32 Sender Circuit Schematic
 
@@ -386,6 +491,8 @@ The LoRa Receiver gets incoming LoRa packets and displays the received readings 
 
 The following figure shows the web server we’ll build.
 
+![TTGO LoRa32 board ESP32 Receiver Web Server Example](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-Web-Server-Sensor-Readings-ESP32-BME280.png?w=450&quality=100&strip=all&ssl=1)
+
 TTGO LoRa32 board ESP32 Receiver Web Server Example
 
 As you can see, it contains a background image and styles to make the web page more appealing. There are several ways to [display images on an ESP32 web server](https://randomnerdtutorials.com/display-images-esp32-esp8266-web-server/). We’ll store the image on the ESP32 filesystem (LittleFS). We’ll also store the HTML file on LittleFS.
@@ -394,6 +501,8 @@ As you can see, it contains a background image and styles to make the web page m
 
 To build the web server you need three different files: the Arduino sketch, the HTML file and the image. The HTML file and the image should be saved inside a folder called ***data*** inside the Arduino sketch folder, as shown below.
 
+![ESP32 Filesystem plugin files structure organized data folder HTML jpg](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-receiver-file-structure.png?w=715&quality=100&strip=all&ssl=1)
+
 ESP32 Filesystem plugin files structure organized data folder HTML jpg
 
 ### Creating the HTML File
@@ -401,12 +510,13 @@ ESP32 Filesystem plugin files structure organized data folder HTML jpg
 Create an *index.html* file with the following content or **[download all the project files here](https://github.com/RuiSantosdotme/Random-Nerd-Tutorials/raw/master/Projects/ESP32/ESP3_LoRa/ESP3_LoRa.zip)**:
 
 ```html
-
-  
-  
-  ESP32 (LoRa + Server)
-  
-  
+<!DOCTYPE HTML><html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>ESP32 (LoRa + Server)</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <style>
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -427,27 +537,29 @@ Create an *index.html* file with the following content or **[download all the pr
     p { font-size: 1.2rem; }
     .units { font-size: 1.2rem; }
     .readings { font-size: 2.0rem; }
-  
-
-  
-    ESP32 (LoRa + Server)
-    Last received packet:%TIMESTAMP%
-    LoRa RSSI: %RSSI%
-  
-
-  
-     Temperature: %TEMPERATURE%
-    &deg;C
-  
-  
-     Humidity: %HUMIDITY%
-    &#37;
-  
-  
-     Pressure: %PRESSURE%
-    hpa
-  
-
+  </style>
+</head>
+<body>
+  <header>
+    <h2>ESP32 (LoRa + Server)</h2>
+    <p><strong>Last received packet:<br/><span id="timestamp">%TIMESTAMP%</span></strong></p>
+    <p>LoRa RSSI: <span id="rssi">%RSSI%</span></p>
+  </header>
+<main>
+  <p>
+    <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> Temperature: <span id="temperature" class="readings">%TEMPERATURE%</span>
+    <sup>&deg;C</sup>
+  </p>
+  <p>
+    <i class="fas fa-tint" style="color:#00add6;"></i> Humidity: <span id="humidity" class="readings">%HUMIDITY%</span>
+    <sup>&#37;</sup>
+  </p>
+  <p>
+    <i class="fas fa-angle-double-down" style="color:#e8c14d;"></i> Pressure: <span id="pressure" class="readings">%PRESSURE%</span>
+    <sup>hpa</sup>
+  </p>
+</main>
+<script>
 setInterval(updateValues, 10000, "temperature");
 setInterval(updateValues, 10000, "humidity");
 setInterval(updateValues, 10000, "pressure");
@@ -464,7 +576,9 @@ function updateValues(value) {
   xhttp.open("GET", "/" + value, true);
   xhttp.send();
 }
-
+</script>
+</body>
+</html>
 ```
 
 [View raw code](https://github.com/RuiSantosdotme/Random-Nerd-Tutorials/raw/master/Projects/ESP32/ESP3_LoRa/LoRa_Receiver_Web_Server/data/index.html)
@@ -475,10 +589,10 @@ Something important to notice are the placeholders. The placeholders go between 
 
 These placeholders will then be replaced with the actual values by the Arduino code.
 
-The styles are added between the  and  tags.
+The styles are added between the <style> and </style> tags.
 
 ```html
-
+<style>
   body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -500,7 +614,7 @@ The styles are added between the  and  tags.
   p { font-size: 1.2rem; }
   .units { font-size: 1.2rem; }
   .readings { font-size: 2.0rem; }
-
+</style>
 ```
 
 If you want a different image for your background, you just need to modify the following line to include your image’s name. In our case, it is called *winter.jpg*.
@@ -509,10 +623,10 @@ If you want a different image for your background, you just need to modify the f
 background-image: url(winter.jpg);
 ```
 
-The JavaScript goes between the  and  tags.
+The JavaScript goes between the <scritpt> and </script> tags.
 
 ```javascript
-
+<script>
 setInterval(updateValues("temperature"), 5000);
 setInterval(updateValues("humidity"), 5000);
 setInterval(updateValues("pressure"), 5000);
@@ -530,7 +644,7 @@ function updateValues(value) {
   xhttp.open("GET", "/" + value, true);
   xhttp.send();
 }
-
+</script>
 ```
 
 We won’t explain in detail how the HTML and CSS works, but a good place to learn is the [W3Schools website](https://www.w3schools.com/css/default.asp).
@@ -547,23 +661,23 @@ Copy the following code to your Arduino IDE or [**download all the project files
   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 *********/
 // Import Wi-Fi library
-#include 
+#include <WiFi.h>
 #include "ESPAsyncWebServer.h"
 
-#include 
+#include <LittleFS.h>
 
 //Libraries for LoRa
-#include 
-#include 
+#include <SPI.h>
+#include <LoRa.h>
 
 //Libraries for OLED Display
-#include 
-#include 
-#include 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 // Libraries to get time from NTP Server
-#include 
-#include 
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
@@ -662,7 +776,104 @@ void startLoRA(){
   //setup LoRa transceiver module
   LoRa.setPins(SS, RST, DIO0);
 
-  while (!LoRa.begin(BAND) && counter send(LittleFS, "/index.html", String(), false, processor);
+  while (!LoRa.begin(BAND) && counter < 10) {
+    Serial.print(".");
+    counter++;
+    delay(500);
+  }
+  if (counter == 10) {
+    // Increment readingID on every new reading
+    Serial.println("Starting LoRa failed!"); 
+  }
+  Serial.println("LoRa Initialization OK!");
+  display.setCursor(0,10);
+  display.clearDisplay();
+  display.print("LoRa Initializing OK!");
+  display.display();
+  delay(2000);
+}
+
+void connectWiFi(){
+  // Connect to Wi-Fi network with SSID and password
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  // Print local IP address and start web server
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+  display.setCursor(0,20);
+  display.print("Access web server at: ");
+  display.setCursor(0,30);
+  display.print(WiFi.localIP());
+  display.display();
+}
+
+// Read LoRa packet and get the sensor readings
+void getLoRaData() {
+  Serial.print("Lora packet received: ");
+  // Read packet
+  while (LoRa.available()) {
+    String LoRaData = LoRa.readString();
+    // LoRaData format: readingID/temperature&soilMoisture#batterylevel
+    // String example: 1/27.43&654#95.34
+    Serial.print(LoRaData); 
+    
+    // Get readingID, temperature and soil moisture
+    int pos1 = LoRaData.indexOf('/');
+    int pos2 = LoRaData.indexOf('&');
+    int pos3 = LoRaData.indexOf('#');
+    readingID = LoRaData.substring(0, pos1);
+    temperature = LoRaData.substring(pos1 +1, pos2);
+    humidity = LoRaData.substring(pos2+1, pos3);
+    pressure = LoRaData.substring(pos3+1, LoRaData.length());    
+  }
+  // Get RSSI
+  rssi = LoRa.packetRssi();
+  Serial.print(" with RSSI ");    
+  Serial.println(rssi);
+}
+
+// Function to get date and time from NTPClient
+void getTimeStamp() {
+  while(!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+  // The formattedDate comes with the following format:
+  // 2018-05-28T16:00:13Z
+  // We need to extract date and time
+  formattedDate = timeClient.getFormattedDate();
+  Serial.println(formattedDate);
+
+  // Extract date
+  int splitT = formattedDate.indexOf("T");
+  day = formattedDate.substring(0, splitT);
+  Serial.println(day);
+  // Extract time
+  hour = formattedDate.substring(splitT+1, formattedDate.length()-1);
+  Serial.println(hour);
+  timestamp = day + " " + hour;
+}
+
+void setup() { 
+  // Initialize Serial Monitor
+  Serial.begin(115200);
+  startOLED();
+  startLoRA();
+  connectWiFi();
+  
+  if(!LittleFS.begin()){
+    Serial.println("An Error has occurred while mounting LittleFS");
+    return;
+  }
+  // Route for root / web page
+  server.on("/", HTTP_GET, {
+    request->send(LittleFS, "/index.html", String(), false, processor);
   });
   server.on("/temperature", HTTP_GET, {
     request->send(200, "text/plain", temperature.c_str());
@@ -718,23 +929,23 @@ You start by including the necessary libraries. You need libraries to:
 - get date and time from an NTP server.
 ```c
 // Import Wi-Fi library
-#include 
+#include <WiFi.h>
 #include "ESPAsyncWebServer.h"
 
-#include 
+#include <LittleFS.h>
 
 //Libraries for LoRa
-#include 
-#include 
+#include <SPI.h>
+#include <LoRa.h>
 
 //Libraries for OLED Display
-#include 
-#include 
-#include 
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 // Libraries to get time from NTP Server
-#include 
-#include 
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 ```
 
 Define the pins used by the LoRa transceiver module.
@@ -960,6 +1171,8 @@ The getTimeStamp() function gets the time and date from the internet at the mome
 
 After inserting your network credentials, save your sketch. Then, in your Arduino IDE go to **Sketch** > **Show Sketch Folder**, and create a folder called ***data***.
 
+![Arduino IDE Open Sketch Folder to create data folder](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2024/06/arduino-ide-show-sketch-folder.png?w=351&quality=100&strip=all&ssl=1)
+
 Arduino IDE Open Sketch Folder to create data folder
 
 **Inside that folder, you should have the HTML file and the image file.**
@@ -970,6 +1183,8 @@ Press \[**Ctrl**\] + \[**Shift**\] + \[**P**\] on Windows or \[**⌘**\] + \[**S
 
 If you don’t have this option it’s because you didn’t install the filesystem uploader plugin. [Check this tutorial](https://randomnerdtutorials.com/arduino-ide-2-install-esp32-littlefs/).
 
+![ESP32 Sketch Data Upload LittleFS Arduino IDE](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2024/06/upload-files-little-fs-esp32-arduino-ide.png?w=744&quality=100&strip=all&ssl=1)
+
 ESP32 Sketch Data Upload LittleFS Arduino IDE
 
 **Important:** make sure the Serial Monitor is closed before uploading to the filesystem. Otherwise, the upload will fail.
@@ -978,15 +1193,21 @@ After a few seconds, the files should be successfully uploaded to LittleFS.
 
 Now, upload the sketch to your board.
 
+![Arduino IDE 2 Upload Button](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2021/05/arduino-ide-2-upload-button.png?resize=36%2C39&quality=100&strip=all&ssl=1)
+
 Arduino IDE 2 Upload Button
 
 Open the Serial Monitor at a baud rate of 115200.
 
 You should get the ESP32 IP address, and you should start receiving LoRa packets from the sender.
 
+![ESP32 Arduino IDE Serial Monitor window](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-receiver-web-server-serial-monitor.png?w=670&quality=100&strip=all&ssl=1)
+
 ESP32 Arduino IDE Serial Monitor window
 
 You should also get the IP address displayed on the OLED.
+
+![TTGO LoRa32 SX1276 OLED board ESP32 Receiver Circuit Schematic web server](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/ESP32-LoRa32-TTGO-OLED-Web-Server-board-receiver.jpg?w=750&quality=100&strip=all&ssl=1)
 
 TTGO LoRa32 SX1276 OLED board ESP32 Receiver Circuit Schematic web server
 
@@ -994,15 +1215,21 @@ TTGO LoRa32 SX1276 OLED board ESP32 Receiver Circuit Schematic web server
 
 Open a browser and type your ESP32 IP address. You should see the web server with the latest sensor readings.
 
+![ESP32 LoRa + Web Server + Sensor readings](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/ESP32-LoRa-Web-Server-Demonstration.jpg?w=750&quality=100&strip=all&ssl=1)
+
 ESP32 LoRa + Web Server + Sensor readings
 
 With these boards we were able to get a stable LoRa communication up to 180 meters (590 ft) in open field. These means that we can have the sender and receiver 180 meters apart and we’re still able to get and check the readings on the web server.
+
+![LoRa32 SX1276 OLED Board Communication Range Experiment](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/11/LoRa-range-experiment.jpg?w=750&quality=100&strip=all&ssl=1)
 
 LoRa32 SX1276 OLED Board Communication Range Experiment
 
 Getting a stable communication at a distance of 180 meters with such low cost boards and without any further customization is really impressive.
 
 However, in a previous project using an [RFM95 SX1276 LoRa transceiver chip](https://makeradvisor.com/tools/rfm95-lora-transceiver-module/) with an home made antenna, we got better results: more than 250 meters with many obstacles in between.
+
+![RFM95 LoRa SX1276 transceiver chip connected to an ESP32](https://i0.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/06/lora-sender-circuit.jpg?w=750&quality=100&strip=all&ssl=1)
 
 RFM95 LoRa SX1276 transceiver chip connected to an ESP32
 

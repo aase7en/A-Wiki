@@ -110,13 +110,21 @@ def test_pointer_is_read_regardless_of_quoting(tmp_path, monkeypatch, written):
     assert raw_to_source.source_exists_for_raw("raw/quoted.md") is True
 
 
-# Duplicates accumulated in wiki/sources/ before the fix above landed. The fix
-# stops NEW ones; merging the existing pages needs editorial judgement (which
-# slug is canonical, does the auto-generated page hold unique content) and is
-# tracked separately. This is a ratchet: the backlog may shrink, never grow.
-# Measured 2026-07-29 on main.
-KNOWN_DUPLICATE_RAW_DOCS = 34
-KNOWN_REDUNDANT_PAGES = 51
+# Duplicates accumulated in wiki/sources/ before the fix above landed.
+#
+# 2026-07-29, first pass: 24 pairs were exact twins produced by the 60-char
+# `raw_to_slug` truncation — the same ingest under two slugs, one a cut-off
+# prefix of the other. Those were merged (longest body kept, under the
+# policy-compliant kebab-case English filename): 34/51 -> 27/27.
+#
+# What remains is NOT the same bug: each is a short hand-written summary
+# alongside the full ingest of the same raw document (token coverage 0.3-0.6,
+# i.e. genuinely different text). Collapsing those is an editorial call about
+# whether a summary deserves its own page, not a mechanical dedupe.
+#
+# This is a ratchet: the backlog may shrink, never grow.
+KNOWN_DUPLICATE_RAW_DOCS = 27
+KNOWN_REDUNDANT_PAGES = 27
 
 
 def _duplicate_pointers() -> dict[str, list[str]]:

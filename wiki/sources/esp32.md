@@ -11,14 +11,15 @@ original_file: raw/ESP32 คู่มือฉบับสมบูรณ์ พ
 ---
 title: "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน"
 source: "https://globalbyteshop.com/blogs/projects/what-is-esp32"
-author: ""
-published: "2025-12-08"
-created: "2026-04-18"
+author:
+  - "Global Byte Shope"
+published: 2025-12-08
+created: 2026-04-18
 description: "ESP32 คือบอร์ด Microcontroller SOC ที่รวม CPU Dual-core, Wi-Fi และ Bluetooth ในตัว เหมาะสำหรับนักศึกษา Maker และงาน Smart Home/Smart Farm"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ESP32 เป็นหัวใจสำคัญของโครงการ IoT (Internet of Things) ในปัจจุบัน ด้วยคุณสมบัติเด่นที่ผสานรวมประสิทธิภาพสูง ราคาที่เข้าถึงได้ และฟีเจอร์การเชื่อมต่อแบบครบวงจร ทำให้ ESP32 เป็นตัวเลือกที่ยอดเยี่ยมสำหรับผู้ใช้งานหลากหลายกลุ่ม ไม่ว่าจะเป็น Maker นักศึกษา หรือผู้ที่ต้องการพัฒนาโซลูชันสำหรับ Smart Home และ Smart Farm ซึ่งต้องการอุปกรณ์ที่มีขนาดกะทัดรัดแต่เปี่ยมด้วยสมรรถนะ  
   
 ในบทความนี้ Global Byte จะสรุปสเปก วิธีติดตั้ง และตัวอย่างโปรเจกต์จริง เพื่อให้คุณสามารถเริ่มต้นใช้งาน ESP32 และต่อยอดไอเดีย IoT ได้ทันที
@@ -35,6 +36,8 @@ ESP32 เป็นหัวใจสำคัญของโครงการ I
 **สารบัญบทความ**
 
 ## ESP32 คืออะไร? คู่มือฉบับสมบูรณ์สำหรับปี 2026
+
+![ESP32](https://cdn.shopify.com/s/files/1/0918/2927/2876/files/ESP32-chip.png?v=1765178387)
 
 ESP32 คือ ระบบที่อยู่บนชิป Microcontroller SOC ที่มีฟังก์ชันการสื่อสารไร้สายทั้ง Wi-Fi และ Bluetooth ในตัว จึงเป็นที่นิยมอย่างมากในการพัฒนาโครงการที่เกี่ยวข้องกับอินเทอร์เน็ต (IoT) ทั้งนี้ ESP32 มีความสามารถในการประมวลผลสูง รองรับการใช้งานแบบมัลติคอร์ (Dual-core) และสามารถเขียนโปรแกรมได้ง่ายโดยใช้สภาพแวดล้อมการพัฒนาที่หลากหลาย เช่น Arduino IDE เป็นต้น
 
@@ -83,6 +86,8 @@ ESP32 มีสเปกทางเทคนิคที่น่าประ�
 | ความเหมาะสม | โครงการ IoT ประสิทธิภาพสูง, การประมวลผล Edge AI, ต้องการ Bluetooth/Wi-Fi พร้อมกัน | โครงการ IoT ที่เน้นการเชื่อมต่อ Wi-Fi และประหยัด ESP32 ราคา | โครงการเริ่มต้น, การเรียนรู้วงจรไฟฟ้าพื้นฐาน |
 
 ## วิธีเชื่อมต่อ Global Byte และใช้งานในระบบ IoT
+
+![ESP32 จาก Global Byte](https://cdn.shopify.com/s/files/1/0918/2927/2876/files/esp32-globalbyte.png?v=1765184322)
 
 ESP32 จาก Global Byte
 
@@ -170,24 +175,24 @@ Global Byte ตัวแทนจำหน่ายที่ได้รับ�
 - แชร์บน:
 - [ดีล](https://www.facebook.com/sharer/sharer.php?u=https://globalbyteshop.com/blogs/projects/what-is-esp32)
 - [X](https://twitter.com/intent/tweet?url=https://globalbyteshop.com/blogs/projects/what-is-esp32)
-- [ปักหมุดไว้]()
+- [ปักหมุดไว้](http://pinterest.com/pin/create/button/?url=https://globalbyteshop.com/blogs/projects/what-is-esp32&media=//globalbyteshop.com/cdn/shop/articles/esp32-iot-8328197_3ca4d224-7f6c-41c7-bc6c-5dd21d3330bd.jpg?v=1768212314&description=ESP32+%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%89%E0%B8%9A%E0%B8%B1%E0%B8%9A%E0%B8%AA%E0%B8%A1%E0%B8%9A%E0%B8%B9%E0%B8%A3%E0%B8%93%E0%B9%8C+%E0%B8%9E%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A1%E0%B8%AA%E0%B8%AD%E0%B8%99%E0%B8%95%E0%B8%B4%E0%B8%94%E0%B8%95%E0%B8%B1%E0%B9%89%E0%B8%87%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99)
 - [ผู้ส่งสาร](fb-messenger://share/?link=https://globalbyteshop.com/blogs/projects/what-is-esp32)
 
 ---
 
-- 
+- ![ล้ำจัด! ระบบตรวจจับคนด้วย Raspberry Pi AI Camera + OpenPLC แจ้งเตือนผ่านไฟ Tower แบบเรียลไทม์ 🚨](https://globalbyteshop.com/cdn/shop/articles/raspberry-pi-ai-camera-openplc-person-detection-stack-light-Blog.jpg?pad_color=fff&v=1776396441&width=720)
 	ล้ำจัด! ระบบตรวจจับคนด้วย Raspberry Pi AI Camera + OpenPLC แจ้งเตือนผ่านไฟ Tower แบบเรียลไทม์ 🚨
 	#### 18 เมษายน 2026, โดย Global Byte Shope ล้ำจัด! ระบบตรวจจับคนด้วย Raspberry Pi AI Camera + OpenPLC แจ้งเตือนผ่านไฟ Tower แบบเรียลไทม์ 🚨
 	[ล้ำจัด! ระบบตรวจจับคนด้วย Raspberry Pi AI Camera + OpenPLC แจ้งเตือนผ่านไฟ Tower แบบเรียลไทม์ 🚨](https://globalbyteshop.com/blogs/projects/raspberry-pi-ai-camera-openplc-person-detection-stack-light)
-- 
+- ![แฟชั่นสาย Tech! DIY กำไลข้อมืออัจฉริยะ (Smart Bracelet) แจ้งเตือนความจำด้วย ESP32 💎✨](https://globalbyteshop.com/cdn/shop/articles/esp32-c3-epaper-smart-bracelet-memory-reminder-Blog.jpg?pad_color=fff&v=1776391840&width=720)
 	แฟชั่นสาย Tech! DIY กำไลข้อมืออัจฉริยะ (Smart Bracelet) แจ้งเตือนความจำด้วย ESP32 💎✨
 	#### 18 เมษายน 2026, โดย Global Byte Shope แฟชั่นสาย Tech! DIY กำไลข้อมืออัจฉริยะ (Smart Bracelet) แจ้งเตือนความจำด้วย ESP32 💎✨
 	[แฟชั่นสาย Tech! DIY กำไลข้อมืออัจฉริยะ (Smart Bracelet) แจ้งเตือนความจำด้วย ESP32 💎✨](https://globalbyteshop.com/blogs/projects/esp32-c3-epaper-smart-bracelet-memory-reminder)
-- 
+- ![รีวิว &amp; คู่มือใช้งาน Dwyer Series 477B เครื่องวัดความดันลม (Manometer) ตัวจบ ฟีเจอร์แน่น!](https://globalbyteshop.com/cdn/shop/articles/series-477b-handheld-digital-manometer-Blog.jpg?pad_color=fff&v=1776321788&width=720)
 	รีวิว & คู่มือใช้งาน Dwyer Series 477B เครื่องวัดความดันลม (Manometer) ตัวจบ ฟีเจอร์แน่น!
 	#### 17 เมษายน 2026, โดย Global Byte Shope รีวิว & คู่มือใช้งาน Dwyer Series 477B เครื่องวัดความดันลม (Manometer) ตัวจบ ฟีเจอร์แน่น!
 	[รีวิว & คู่มือใช้งาน Dwyer Series 477B เครื่องวัดความดันลม (Manometer) ตัวจบ ฟีเจอร์แน่น!](https://globalbyteshop.com/blogs/projects/series-477b-handheld-digital-manometer)
-- 
+- ![ข่าวใหญ่สาย Dev! Linux ออกกฎเหล็กคุมการใช้ AI เขียนโค้ด (Human ต้องรับจบ) 🐧🤖](https://globalbyteshop.com/cdn/shop/articles/linux-kernel-ai-rules-human-responsibility-Blog.jpg?pad_color=fff&v=1776326719&width=720)
 	ข่าวใหญ่สาย Dev! Linux ออกกฎเหล็กคุมการใช้ AI เขียนโค้ด (Human ต้องรับจบ) 🐧🤖
 	#### 17 เมษายน 2026, โดย Global Byte Shope ข่าวใหญ่สาย Dev! Linux ออกกฎเหล็กคุมการใช้ AI เขียนโค้ด (Human ต้องรับจบ) 🐧🤖
 	[ข่าวใหญ่สาย Dev! Linux ออกกฎเหล็กคุมการใช้ AI เขียนโค้ด (Human ต้องรับจบ) 🐧🤖](https://globalbyteshop.com/blogs/projects/linux-kernel-ai-rules-human-responsibility)

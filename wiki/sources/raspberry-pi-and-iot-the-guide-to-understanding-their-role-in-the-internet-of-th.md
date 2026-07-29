@@ -11,14 +11,15 @@ original_file: raw/Raspberry Pi and IoT the guide to understanding their role in
 ---
 title: "Raspberry Pi and IoT: the guide to understanding their role in the Internet of Things"
 source: "https://monraspberry.com/en/raspberry-pi-iot-guide/"
-author: ""
-published: ""
-created: "2026-04-18"
+author:
+  - "monraspberry.com"
+published:
+created: 2026-04-18
 description: "Raspberry Pi and IoT: uses, models, protocols, security and prospects. The complete guide to your connected projects."
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## Introduction
 
 L' **Internet of Things (IoT)** is no longer a trend: it's a reality that's transforming the home, agriculture, industry and even healthcare. Billions of objects are already connected worldwide, and the number continues to grow.

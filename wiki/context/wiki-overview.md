@@ -15,9 +15,9 @@
 |------|-------|
 | ENTITIES | 90 |
 | CONCEPTS | 59 |
-| SYNTHESIS | 224 |
-| SOURCES | 187 |
-| **Total** | **560 pages** |
+| SYNTHESIS | 200 |
+| SOURCES | 163 |
+| **Total** | **512 pages** |
 
 ---
 
@@ -31,7 +31,7 @@
 | Pharmacy | 5 | 8 | `wiki/context/overview-pharmacy.md` | `index-pharmacy.md` |
 | Trading & Finance | 0 | 0 | `wiki/context/overview-trader.md` | `index-trader.md` |
 
-- **Sources** (187): `wiki/context/overview-sources.md`
+- **Sources** (163): `wiki/context/overview-sources.md`
 - **Regen rich indexes**: `python3 scripts/gen-domain-indexes.py`
 
 ---
@@ -79,8 +79,6 @@
 | `pixellab-phaser-asset-convention` | "ถ้า PixelLab สร้าง asset ได้แล้ว จะตั้งชื่อไฟล์ จัดโฟลเดอร์ เก็… |
 | `premium-auto-trading-capability-hub` | (no abstract) |
 | `revenue-engine-capability-hub` | (no abstract) |
-| `synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย` | (awaiting human summary) |
-| `synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand` | (awaiting human summary) |
 | `synth-3-dashboard-node-red` | (awaiting human summary) |
 | `synth-agent-frameworks-local-debug-2026` | _To be filled in by human review._ |
 | `synth-ai-agents-integration-guide` | _To be filled in by human review._ |
@@ -100,8 +98,6 @@
 | `synth-appsheet-env-datadict` | _To be filled in by human review._ |
 | `synth-arduino-ide-esp32-arduino-2025` | (awaiting human summary) |
 | `synth-arduino-ide-esp32-setup` | _To be filled in by human review._ |
-| `synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป` | (awaiting human summary) |
-| `synth-arduino-librariesarduino-powermanagement` | (awaiting human summary) |
 | `synth-arduino-librariesarduinopowermanagement` | (awaiting human summary) |
 | `synth-build-software-better-together` | (awaiting human summary) |
 | `synth-building-an-iot-application-with-raspberry-pi-and-python` | GPIO.setmode(GPIO.BCM) # Define pin number sensor_pin = 4 |
@@ -111,7 +107,6 @@
 | `synth-context-claude-code-dev-vibe-coding-thailand` | (awaiting human summary) |
 | `synth-copula-multivariate-finance` | _To be filled in by human review._ |
 | `synth-copula-wikipedia` | Source: https://en.wikipedia.org/wiki/Copula_(probability_theory… |
-| `synth-create-an-esp32-project-with-platformio-an-guide-for-beginne` | (awaiting human summary) |
 | `synth-create-an-esp32-project-with-platformio-an-guide-for-beginners` | (awaiting human summary) |
 | `synth-dashboard-design-best-practices` | _To be filled in by human review._ |
 | `synth-dashboard-design-best-practices-and-examples` | (awaiting human summary) |
@@ -134,7 +129,6 @@
 | `synth-esp32-lora-1-ch-gateway-lorawan-and-the-things-network` | (awaiting human summary) |
 | `synth-esp32-lora-arduino-ide` | _To be filled in by human review._ |
 | `synth-esp32-lora-gateway-sparkfun` | _To be filled in by human review._ |
-| `synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm` | (awaiting human summary) |
 | `synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication` | (awaiting human summary) |
 | `synth-esp32-lora-sensor-webserver` | _To be filled in by human review._ |
 | `synth-esp32-s3-intro-thai` | _To be filled in by human review._ |
@@ -142,22 +136,18 @@
 | `synth-esp32-weather-dashboard-16day` | _To be filled in by human review._ |
 | `synth-esp32-weather-epd` | _To be filled in by human review._ |
 | `synth-esp32-with-lora-using-arduino-ide` | (awaiting human summary) |
-| `synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน` | (awaiting human summary) |
 | `synth-espem-energy-monitor` | _To be filled in by human review._ |
 | `synth-espressif-esp32-s3-iot-engineering-education` | print("System info:") print("- Flash size:", esp.flash_size(), "… |
-| `synth-espressifesp-idf-espressif-iot-development-framework-officia` | (awaiting human summary) |
 | `synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew` | (awaiting human summary) |
 | `synth-firmai-financial-machine-learning` | _To be filled in by human review._ |
 | `synth-firmai-financial-ml-readme` | _To be filled in by human review._ |
 | `synth-freqtrade-pi5` | _To be filled in by human review._ |
-| `synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati` | (awaiting human summary) |
 | `synth-get-started-esp32-esp-idf-programming-guide-v44-documentation` | (awaiting human summary) |
 | `synth-github-0x0funky-agent-sprite-forge` | [verified 2026-06-13] `agent-sprite-forge` เป็นชุด Codex skills… |
 | `synth-github-blendi-remade-sprite-sheet-creator` | [verified 2026-06-13] `sprite-sheet-creator` เป็นเว็บ Next.js/Re… |
 | `synth-good-uiux-practices` | (awaiting human summary) |
 | `synth-hardware-inventory-2026-04-18` | _To be filled in by human review._ |
 | `synth-heltec-libraries` | _To be filled in by human review._ |
-| `synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3` | (awaiting human summary) |
 | `synth-heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based` | (awaiting human summary) |
 | `synth-hermes-agent` | (awaiting human summary) |
 | `synth-hermes-agent-guide-th` | _To be filled in by human review._ |
@@ -167,18 +157,14 @@
 | `synth-how-lorawan-network-works-a-beginner` | (awaiting human summary) |
 | `synth-hyperframes-official-docs` | _To be filled in by human review._ |
 | `synth-infectious-waste-th-law` | _To be filled in by human review._ |
-| `synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb` | (awaiting human summary) |
 | `synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5` | (awaiting human summary) |
 | `synth-iot-edge-ai-esp32-c6-2026` | _To be filled in by human review._ |
 | `synth-iot-engineering-education` | (awaiting human summary) |
 | `synth-iot-lora-gateway-architecture` | _To be filled in by human review._ |
 | `synth-iot-node-red-mqtt-sql-data-logger-dashboard` | (awaiting human summary) |
-| `synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม` | (awaiting human summary) |
 | `synth-iot-nodered-mqtt-sql-course` | _To be filled in by human review._ |
 | `synth-iot-visualization-guide` | _To be filled in by human review._ |
-| `synth-iot-visualization-guide-designing-effective-dashboards-monit` | (awaiting human summary) |
 | `synth-iot-visualization-guide-designing-effective-dashboards-monitoring-uis` | (awaiting human summary) |
-| `synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt` | (awaiting human summary) |
 | `synth-iotthinkseasyloranodetracker-a-wearable-lora-node-with-battery-for-long-range-we` | (awaiting human summary) |
 | `synth-jump-diffusion-variants` | แหล่งรวบรวม 3 extensions ของ Merton (1976) ที่ผ่อนปรน assumption… |
 | `synth-jump-diffusion-variants-wikipedia` | Source: https://en.wikipedia.org/wiki/Jump_diffusion + https://e… |
@@ -189,7 +175,6 @@
 | `synth-lora-nb-iot` | (awaiting human summary) |
 | `synth-lora-thai-intro` | _To be filled in by human review._ |
 | `synth-lora-vs-nbiot` | _To be filled in by human review._ |
-| `synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step` | (awaiting human summary) |
 | `synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo` | (awaiting human summary) |
 | `synth-lorawan-fuota-rak3172` | _To be filled in by human review._ |
 | `synth-lorawan-network-beginner` | _To be filled in by human review._ |
@@ -212,18 +197,15 @@
 | `synth-pzem-004t-guide-2025` | _To be filled in by human review._ |
 | `synth-rabies-vaccine-guidelines-th-2026-05-02` | _To be filled in by human review._ |
 | `synth-raspberry-pi-5-16gb-made-in-uk` | (awaiting human summary) |
-| `synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i` | (awaiting human summary) |
 | `synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th` | (awaiting human summary) |
 | `synth-raspberry-pi-documentation` | (awaiting human summary) |
 | `synth-raspberry-pi-iot-guide` | _To be filled in by human review._ |
 | `synth-readme` | _(Extract from source sections)_ |
 | `synth-ropgheltec-esp32-lora-v3-proper-working-arduino-library-for` | (awaiting human summary) |
-| `synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v` | (awaiting human summary) |
 | `synth-rpi-ai-hat-plus-2-official` | _To be filled in by human review._ |
 | `synth-rpi5-16gb-thailand-price` | _To be filled in by human review._ |
 | `synth-sabr-model-wikipedia` | Source: https://en.wikipedia.org/wiki/SABR_volatility_model Fetc… |
 | `synth-saovabha-rabies-pep-2565` | _To be filled in by human review._ |
-| `synth-source-5e4074bd` | _To be filled in by human review._ |
 | `synth-sp-drugstore-2020-catalog` | _To be filled in by human review._ |
 | `synth-stochastic-vol-heston-sabr` | _To be filled in by human review._ |
 | `synth-strix-halo-research-2026-05-05` | _To be filled in by human review._ |
@@ -242,18 +224,12 @@
 | `synth-velxio-arduino-esp32-pi-simulator` | _To be filled in by human review._ |
 | `synth-vibe-pocketbase-gemini-plan` | _To be filled in by human review._ |
 | `synth-vine-copula-wikipedia` | Source: https://en.wikipedia.org/wiki/Vine_copula Fetched: 2026-… |
-| `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto` | (awaiting human summary) |
 | `synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con` | (awaiting human summary) |
 | `synth-web-appsheet-export-yaml-2026-05-04` | _To be filled in by human review._ |
 | `synth-web-comparison-mac-mini-vs-pi5-ai-2026-04-19` | _To be filled in by human review._ |
 | `synth-web-local-llm-mac-mini-2026-04-19` | _To be filled in by human review._ |
 | `synth-web-raspberry-pi-ai-bot-recommendation-2026` | _To be filled in by human review._ |
 | `synth-who-rabies-position-2018` | _To be filled in by human review._ |
-| `synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ` | led_pin = 21 num_pixels = 1 # Create a NeoPixel object |
-| `synth-ข้อมูล-datasheet-ของ-dx-lr02` | (awaiting human summary) |
-| `synth-คู่มือ-hermes-agent` | (awaiting human summary) |
-| `synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk` | (awaiting human summary) |
-| `synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย` | (awaiting human summary) |
 | `synthesis-ai-tools` | This synthesis aggregates 2 curated source entries in the **AI T… |
 | `synthesis-env` | This synthesis aggregates 3 curated source entries in the **Envi… |
 | `synthesis-iot` | This synthesis aggregates 2 curated source entries in the **IoT*… |
@@ -267,4 +243,4 @@
 
 ---
 
-*Slim baseline. Detailed entries split across 5 domain files. Total 560 pages across 4 sections.*
+*Slim baseline. Detailed entries split across 5 domain files. Total 512 pages across 4 sections.*

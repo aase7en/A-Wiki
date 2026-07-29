@@ -11,14 +11,15 @@ original_file: raw/vortigontespem Energy monitor with dashboardmetrics collector
 ---
 title: "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter"
 source: "https://github.com/vortigont/espem"
-author: ""
-published: ""
-created: "2026-04-18"
+author:
+  - "vortigont"
+published:
+created: 2026-04-18
 description: "Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter - vortigont/espem"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 **[BUILD](https://github.com/vortigont/espem/blob/master/docs/BUILD.md) | [USAGE](https://github.com/vortigont/espem/blob/master/docs/USAGE.md) | [CHANGELOG](https://github.com/vortigont/espem/blob/master/CHANGELOG.md)** |
 
 ## Energy monitor based on ESP32 controller and Peacefair PZEM-004Tv30 Power Meter
@@ -37,7 +38,7 @@ A code for ESP32 controller and a set of web-tools to gather, analyse, monitor a
 
 ## ESPEM WebUI Dashboard
 
-[]()
+[![espem ui](https://github.com/vortigont/espem/raw/master/examples/espemembui.png)](https://github.com/vortigont/espem/blob/master/examples/espemembui.png)
 
 ## ESPEM on Mobile phone
 
@@ -61,7 +62,7 @@ I.e.
 `stale` - denotes if data is stale, i.e. has not been updated recently  
 `age` - data age in ms
 
-[]()
+[![espem mqtt](https://github.com/vortigont/espem/raw/master/examples/mqtt.png)](https://github.com/vortigont/espem/blob/master/examples/mqtt.png)
 
 ## Tiered TimeSeries data Sampling
 
@@ -77,7 +78,7 @@ Number of samples and interval could be adjusted per each level via "Espem setup
 
 #### ESPEM TS Options
 
-[]()
+[![espem ts opts](https://github.com/vortigont/espem/raw/master/examples/ts_setup.png)](https://github.com/vortigont/espem/blob/master/examples/ts_setup.png)
 
 #### Averaging
 
@@ -130,7 +131,7 @@ Under /www there is a set of php/sql scripts that could be hosted undel LAMP to 
 
 ### Power chart with sampled data
 
-[]()
+[![espem sampled data](https://github.com/vortigont/espem/raw/master/examples/webstat/sampleschart01.th.png)](https://github.com/vortigont/espem/blob/master/examples/webstat/sampleschart01.th.png)
 
 #### License
 

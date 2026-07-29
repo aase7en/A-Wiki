@@ -7,19 +7,19 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 593 |
-| Edges | 1867 |
-| Broken links | 17 |
+| Nodes | 545 |
+| Edges | 1832 |
+| Broken links | 37 |
 | Orphans | 27 |
 
 ## Broken links by source domain
 
 | Domain | Count |
 |---|---:|
+| repo-root | 21 |
 | ai-tools | 7 |
 | sources | 6 |
 | env | 2 |
-| repo-root | 1 |
 | wiki-other | 1 |
 
 ## Orphans by domain

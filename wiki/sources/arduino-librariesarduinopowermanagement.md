@@ -11,17 +11,18 @@ original_file: raw/arduino-librariesArduino_PowerManagement.md
 ---
 title: "arduino-libraries/Arduino_PowerManagement"
 source: "https://github.com/arduino-libraries/Arduino_PowerManagement"
-author: ""
-published: ""
-created: "2026-04-18"
+author:
+  - "arduino-libraries"
+published:
+created: 2026-04-18
 description: "Contribute to arduino-libraries/Arduino_PowerManagement development by creating an account on GitHub."
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## ⚡ Arduino PowerManagement
 
-[](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/compile-examples.yml) [](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/spell-check.yml)
+[![Compile Examples](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/spell-check.yml/badge.svg)](https://github.com/arduino-libraries/Arduino_PowerManagement/actions/workflows/spell-check.yml)
 
 The Arduino Pro Power Management Library serves as a comprehensive and sophisticated power management toolkit tailored for Arduino Pro boards, encompassing the Portenta H7, Portenta C33, and Nicla Vision.
 
@@ -58,11 +59,11 @@ Here's a table with the current consumption you can expect from each board in Sl
 
 |  | Arduino Portenta C33 | Arduino Portenta H7 Lite | Arduino Portenta H7 |
 | --- | --- | --- | --- |
-| Without power optimisations | [41.37 mA]() | [123.86 mA]() | [123.86 mA]() |
-| Standby consumption with peripherals off | [58.99 μA]() | [75.51 μA]() | [379 μA]() |
-| Standby consumption with peripherals on | [11.53 mA]() | [4.89 mA]() | [7.98 mA]() |
-| Sleep consumption with peripherals off | [7.02 mA]() | N/A | N/A |
-| Sleep consumption with peripherals on | [18.26 mA]() | N/A | N/A |
+| Without power optimisations | [41.37 mA](https://github.com/arduino-libraries/Arduino_LowPowerPortentaC33/blob/main/docs/assets/normal_usage_blink.png) | [123.86 mA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/normal_usage.png) | [123.86 mA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/normal_usage.png) |
+| Standby consumption with peripherals off | [58.99 μA](https://github.com/arduino-libraries/Arduino_LowPowerPortentaC33/blob/main/docs/assets/deep_sleep_no_peripherals.png) | [75.51 μA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/H7_lite_deep_sleep_peripherals_off.png) | [379 μA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/H7_deep_sleep_peripherals_off.png) |
+| Standby consumption with peripherals on | [11.53 mA](https://github.com/arduino-libraries/Arduino_LowPowerPortentaC33/blob/main/docs/assets/deep_sleep_peripherals_on.png) | [4.89 mA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/H7_lite_deep_sleep_peripherals_on.png) | [7.98 mA](https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/assets/H7_deep_sleep_peripherals_on.png) |
+| Sleep consumption with peripherals off | [7.02 mA](https://github.com/arduino-libraries/Arduino_LowPowerPortentaC33/blob/main/docs/assets/sleep_no_peripherals.png) | N/A | N/A |
+| Sleep consumption with peripherals on | [18.26 mA](https://github.com/arduino-libraries/Arduino_LowPowerPortentaC33/blob/main/docs/assets/sleep_peripherals_on.png) | N/A | N/A |
 
 > [!note] Note
 > Sleep measurements are not available on the H7 boards because the board goes to sleep automatically when idling.

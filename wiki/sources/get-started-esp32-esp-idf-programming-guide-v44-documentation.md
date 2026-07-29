@@ -11,14 +11,14 @@ original_file: raw/Get Started - ESP32 -  — ESP-IDF Programming Guide v4.4 doc
 ---
 title: "Get Started - ESP32 -  — ESP-IDF Programming Guide v4.4 documentation"
 source: "https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/index.html"
-author: ""
-published: ""
-created: "2026-04-18"
-description: ""
-tags: ""
+author:
+published:
+created: 2026-04-18
+description:
+tags:
+  - "clippings"
 ---
 ```
-
 > [!warning] Note
 > You are reading the documentation for an ESP-IDF release version that is end of life. The latest stable version is [v6.0](https://docs.espressif.com/projects/esp-idf/en/v6.0/esp32/get-started/index.html)
 
@@ -63,6 +63,8 @@ You have a choice to either download and install the following software manually
 
 **or** get through the onboarding process using the following official plugins for integrated development environments (IDE) described in separate documents
 
+![Development of applications for ESP32](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/what-you-need.png)
+
 Development of applications for ESP32 [¶](#id12 "Permalink to this image")
 
 ## Development Board Overviews
@@ -79,7 +81,7 @@ This is a detailed roadmap to walk you through the installation process.
 
 Some tools need to be installed on the computer before proceeding to the next steps. Follow the links below for the instructions for your OS:
 
-| [](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/windows-setup.html) | [](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/linux-setup.html) | [](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/macos-setup.html) |
+| [![windows-logo](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/windows-logo1.png)](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/windows-setup.html) | [![linux-logo](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/linux-logo1.png)](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/linux-setup.html) | [![macos-logo](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/macos-logo1.png)](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/macos-setup.html) |
 | --- | --- | --- |
 | [Windows](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/windows-setup.html) | [Linux](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/linux-setup.html) | [Mac OS](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/get-started/macos-setup.html) |
 
@@ -292,6 +294,8 @@ Setting the target with `idf.py set-target esp32` should be done once, after ope
 
 If the previous steps have been done correctly, the following menu appears:
 
+![Project configuration - Home window](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/project-configuration1.png)
+
 Project configuration - Home window [¶](#id13 "Permalink to this image")
 
 You are using this menu to set up project specific variables, e.g. Wi-Fi network name and password, the processor speed, etc. Setting up the project with menuconfig may be skipped for “hello\_word”. This example will run with default configuration.
@@ -449,6 +453,8 @@ Restarting in 7 seconds...
 To exit IDF monitor use the shortcut `Ctrl+]`.
 
 If IDF monitor fails shortly after the upload, or, if instead of the messages above, you see random garbage similar to what is given below, your board is likely using a 26 MHz crystal. Most development board designs use 40 MHz, so ESP-IDF uses this frequency as a default value.
+
+![Garbled output](https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/get-started-garbled-output1.png)
 
 If you have such a problem, do the following:
 

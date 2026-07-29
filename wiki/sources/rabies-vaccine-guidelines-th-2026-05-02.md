@@ -7,13 +7,14 @@ original_file: raw/rabies-vaccine-guidelines-th-2026-05-02.md
 tags: [pharmacy, vaccine, guide]
 ---
 
+```yaml
 ---
 title: "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด"
 date_collected: 2026-05-02
 collected_by: gemini-3-flash-preview (web search) + claude (verification)
 status: raw — URLs verified except where flagged
 ---
-
+```
 # แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies PEP/PrEP)
 
 > **หมายเหตุ**: ข้อมูลนี้ค้นหาด้วย Gemini CLI (web search) แล้วให้ Claude verify URL ก่อนบันทึก

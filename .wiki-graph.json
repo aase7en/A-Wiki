@@ -1,16 +1,16 @@
 {
   "generated_at": "2026-07-29",
   "stats": {
-    "nodes": 593,
-    "edges": 1867,
+    "nodes": 545,
+    "edges": 1832,
     "edges_by_type": {
       "wikilink": 1312,
-      "mdlink": 52,
-      "depends": 411,
+      "mdlink": 41,
+      "depends": 387,
       "implements": 53,
       "extends": 39
     },
-    "broken_links": 17,
+    "broken_links": 37,
     "orphans": 27,
     "orphan_by_domain": {
       "context": 15,
@@ -22,7 +22,7 @@
     "hubs": [
       {
         "path": "index-iot.md",
-        "score": 134
+        "score": 115
       },
       {
         "path": "index.md",
@@ -57,7 +57,7 @@
         "score": 31
       },
       {
-        "path": "index-env.md",
+        "path": "wiki/concepts/iot/lora.md",
         "score": 30
       }
     ],
@@ -991,16 +991,6 @@
       "domain": "pharmacy"
     },
     {
-      "path": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "title": "1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "title": "10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/3-dashboard-node-red.md",
       "title": "3-dashboard-node-red",
       "domain": "sources"
@@ -1111,16 +1101,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "title": "arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "title": "arduino-librariesarduino-powermanagement",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/arduino-librariesarduinopowermanagement.md",
       "title": "arduino-librariesarduinopowermanagement",
       "domain": "sources"
@@ -1163,11 +1143,6 @@
     {
       "path": "wiki/sources/copula-wikipedia.md",
       "title": "Copula (probability theory) — Wikipedia",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "title": "create-an-esp32-project-with-platformio-an-guide-for-beginne",
       "domain": "sources"
     },
     {
@@ -1291,11 +1266,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "title": "esp32-lora-sensor-monitoring-with-web-server-long-range-comm",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
       "title": "esp32-lora-sensor-monitoring-with-web-server-long-range-communication",
       "domain": "sources"
@@ -1331,11 +1301,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "title": "esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/esp32.md",
       "title": "esp32",
       "domain": "sources"
@@ -1347,12 +1312,7 @@
     },
     {
       "path": "wiki/sources/espressif-esp32-s3-iot-engineering-education.md",
-      "title": "Print system information",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "title": "espressifesp-idf-espressif-iot-development-framework-officia",
+      "title": "Define the GPIO pin and the number of pixels",
       "domain": "sources"
     },
     {
@@ -1373,11 +1333,6 @@
     {
       "path": "wiki/sources/freqtrade-pi5.md",
       "title": "Freqtrade — Crypto Trading Bot บน Raspberry Pi",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
-      "title": "get-started-esp32-esp-idf-programming-guide-v4-4-documentati",
       "domain": "sources"
     },
     {
@@ -1408,11 +1363,6 @@
     {
       "path": "wiki/sources/heltec-libraries.md",
       "title": "Heltec ESP32 LoRa Libraries",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "title": "heltecautomationheltec-esp32-arduino-library-for-heltec-esp3",
       "domain": "sources"
     },
     {
@@ -1461,11 +1411,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "title": "introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
       "title": "introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5",
       "domain": "sources"
@@ -1501,18 +1446,8 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "title": "iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/iot-nodered-mqtt-sql-course.md",
       "title": "IoT Node-RED + MQTT + SQL – ทำ Data Logger & Dashboard แบบอุตสาหกรรม",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md",
-      "title": "iot-visualization-guide-designing-effective-dashboards-monit",
       "domain": "sources"
     },
     {
@@ -1523,11 +1458,6 @@
     {
       "path": "wiki/sources/iot-visualization-guide.md",
       "title": "IoT Visualization Guide: Dashboards & Monitoring UIs",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
-      "title": "iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt",
       "domain": "sources"
     },
     {
@@ -1593,11 +1523,6 @@
     {
       "path": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
-      "title": "lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step",
       "domain": "sources"
     },
     {
@@ -1711,11 +1636,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "title": "raspberry-pi-and-iot-the-guide-to-understanding-their-role-i",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
       "title": "raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th",
       "domain": "sources"
@@ -1741,11 +1661,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
-      "title": "ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/rpi-ai-hat-plus-2-official.md",
       "title": "Raspberry Pi AI HAT+ 2 — Official Announcement",
       "domain": "sources"
@@ -1763,11 +1678,6 @@
     {
       "path": "wiki/sources/saovabha-rabies-pep-2565.md",
       "title": "แนวทางการดูแลรักษาผู้สัมผัสโรคพิษสุนัขบ้า — สถานเสาวภา 2565",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/source-5e4074bd.md",
-      "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies PEP/PrEP)",
       "domain": "sources"
     },
     {
@@ -1866,11 +1776,6 @@
       "domain": "sources"
     },
     {
-      "path": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "title": "vortigontespem-energy-monitor-with-dashboardmetrics-collecto",
-      "domain": "sources"
-    },
-    {
       "path": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con",
       "domain": "sources"
@@ -1898,31 +1803,6 @@
     {
       "path": "wiki/sources/who-rabies-position-2018.md",
       "title": "WHO Rabies Position Paper — April 2018 (Summary)",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "title": "Define the GPIO pin and the number of pixels",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "title": "ข้อมูล-datasheet-ของ-dx-lr02",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/คู่มือ-hermes-agent.md",
-      "title": "คู่มือ-hermes-agent",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "title": "จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk",
-      "domain": "sources"
-    },
-    {
-      "path": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "title": "เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย",
       "domain": "sources"
     },
     {
@@ -2121,16 +2001,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "title": "[![ArduinoAll ขาย Arduino ซื้อ Arduino ทุกอย่าง เปลี่ยนชื่อเป็น AllNewStep](http — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "title": "context ใน Claude Code ใกล้เต็ม dev ส่วนใหญ่กด /compact หรือ /clear แบบเดาๆ ว่าต — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-3-dashboard-node-red.md",
       "title": "ตอน 3 : สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง 📊 — Synthesis",
       "domain": "synthesis"
@@ -2226,16 +2096,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "title": "**Arduino IDE** (Integrated Development Environment) คือโปรแกรมสำหรับเขียนโค้ดแล — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md",
-      "title": "[![Compile Examples](https://github.com/arduino-libraries/Arduino_PowerManagemen — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md",
       "title": "arduino-libraries/Arduino_PowerManagement — Synthesis",
       "domain": "synthesis"
@@ -2278,11 +2138,6 @@
     {
       "path": "wiki/synthesis/synth-copula-wikipedia.md",
       "title": "Copula (probability theory) — Wikipedia — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "title": "![Create an ESP32 Project With PlatformIO: A Guide for Beginners](https://cdn.xi — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2391,11 +2246,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "title": "In this project, you’ll build a sensor monitoring system using a TTGO LoRa32 SX1 — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
       "title": "ESP32 LoRa Sensor Monitoring with Web Server (Long Range Communication) — Synthesis",
       "domain": "synthesis"
@@ -2431,11 +2281,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "title": "ESP32 เป็นหัวใจสำคัญของโครงการ IoT (Internet of Things) ในปัจจุบัน ด้วยคุณสมบัติ — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-esp32.md",
       "title": "ESP32 คู่มือฉบับสมบูรณ์ พร้อมสอนติดตั้งและใช้งาน — Synthesis",
       "domain": "synthesis"
@@ -2448,11 +2293,6 @@
     {
       "path": "wiki/synthesis/synth-espressif-esp32-s3-iot-engineering-education.md",
       "title": "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "title": "- [中文版](https://github.com/espressif/esp-idf/blob/master/README_CN.md) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2473,11 +2313,6 @@
     {
       "path": "wiki/synthesis/synth-freqtrade-pi5.md",
       "title": "Freqtrade — Crypto Trading Bot on Raspberry Pi — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
-      "title": "> [!warning] Note — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2508,11 +2343,6 @@
     {
       "path": "wiki/synthesis/synth-heltec-libraries.md",
       "title": "Heltec ESP32 LoRa Libraries (Official + Unofficial) — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "title": "English | [简体中文](#%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2561,11 +2391,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "title": "A little over a year ago, we introduced the [Raspberry Pi AI HAT+](https://www.r — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
       "title": "Introducing the Raspberry Pi AI HAT+ 2: Generative AI on Raspberry Pi 5 — Synthesis",
       "domain": "synthesis"
@@ -2591,18 +2416,8 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "title": "คอร์สนี้ออกแบบเพื่อให้ผู้เรียนสามารถสร้างระบบ IoT แบบใช้งานได้จริงในโรงงาน — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md",
       "title": "IoT Node-RED + MQTT + SQL – ทำ Data Logger & Dashboard แบบอุตสาหกรรม — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md",
-      "title": "![](https://www.youtube.com/watch?v=nNp802oxy7o) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2613,11 +2428,6 @@
     {
       "path": "wiki/synthesis/synth-iot-visualization-guide.md",
       "title": "IoT Visualization Guide: Designing Effective Dashboards & Monitoring UIs — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
-      "title": "A wearable LoRa node with battery and less than 15uA deepsleep — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2673,11 +2483,6 @@
     {
       "path": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "title": "LoRaWAN® FUOTA on RAK3172 (RUI3 v5) with ChirpStackOS – Full Step-by-Step Demo — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
-      "title": "![](https://www.youtube.com/watch?v=uqUSpXV8yVM) — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2786,11 +2591,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "title": "L' **Internet of Things (IoT)** is no longer a trend: it's a reality that's tran — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
       "title": "Raspberry Pi and IoT: the guide to understanding their role in the Internet of Things — Synthesis",
       "domain": "synthesis"
@@ -2816,11 +2616,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
-      "title": "ropg/heltec_esp32_lora_v3: Proper working Arduino library for the Heltec ESP32 LoRa v3 board, as well as for Wireless Stick v3 and Wireless Stick Lite v3. Uses RadioLib — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md",
       "title": "Raspberry Pi AI HAT+ 2 — Official Announcement — Synthesis",
       "domain": "synthesis"
@@ -2838,11 +2633,6 @@
     {
       "path": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
       "title": "แนวทางการดูแลรักษาผู้สัมผัสโรคพิษสุนัขบ้า — สถานเสาวภา พ.ศ. 2565 — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-source-5e4074bd.md",
-      "title": "แนวทางเวชปฏิบัติการให้วัคซีนป้องกันโรคพิษสุนัขบ้า — รวมแหล่งข้อมูลล่าสุด — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2936,11 +2726,6 @@
       "domain": "synthesis"
     },
     {
-      "path": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "title": "**[BUILD](https://github.com/vortigont/espem/blob/master/docs/BUILD.md) | [USAGE — Synthesis",
-      "domain": "synthesis"
-    },
-    {
       "path": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "title": "vortigont/espem: Energy monitor with dashboard/metrics collector based on ESP32 controller and PeaceFair PZEM-004T/PZEM-004Tv30 Power Meter — Synthesis",
       "domain": "synthesis"
@@ -2968,31 +2753,6 @@
     {
       "path": "wiki/synthesis/synth-who-rabies-position-2018.md",
       "title": "Rabies vaccines: WHO position paper, April 2018 (Summary) — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "title": "บริษัท **Espressif Systems** ได้เปิดตัวชิป **ESP32-S3 SoC** ในช่วงปลายปีค.ศ. 202 — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "title": "นี่คือข้อมูล datasheet ของ DX-LR02 — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-คู่มือ-hermes-agent.md",
-      "title": "คู่มือภาษาไทย น้อง เฮอมีส ai — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "title": "[![Arduitronics](https://o.lnwfile.com/_/o/_raw/oj/ob/fq.png)](https://www.ardui — Synthesis",
-      "domain": "synthesis"
-    },
-    {
-      "path": "wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "title": "**การวิเคราะห์เปรียบเทียบของ LoRa และ NB-IoT ว่าใครดีกว่ากัน** — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -3551,9 +3311,9 @@
     },
     {
       "from": "index-env.md",
-      "to": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "to": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4097,9 +3857,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
+      "to": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4125,16 +3885,16 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
+      "to": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md",
+      "to": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4146,9 +3906,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
+      "to": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne",
       "type": "implements",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4195,9 +3955,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
+      "to": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4216,9 +3976,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
+      "to": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4237,9 +3997,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
+      "to": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4251,9 +4011,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
+      "to": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati",
       "type": "implements",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4265,9 +4025,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
+      "to": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4279,9 +4039,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
+      "to": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4314,9 +4074,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
+      "to": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4328,9 +4088,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md",
+      "to": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit",
       "type": "implements",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4349,9 +4109,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
+      "to": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt",
       "type": "implements",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4398,9 +4158,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
+      "to": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4412,9 +4172,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
+      "to": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i",
       "type": "implements",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4475,9 +4235,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
+      "to": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4496,16 +4256,16 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
+      "to": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
+      "to": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -4517,9 +4277,9 @@
     },
     {
       "from": "index-iot.md",
-      "to": "wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
+      "to": "wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย",
       "type": "wikilink",
-      "broken": false,
+      "broken": true,
       "external": false
     },
     {
@@ -11271,13 +11031,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "to": "https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/api.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
       "from": "wiki/sources/arduino-librariesarduinopowermanagement.md",
       "to": "https://github.com/arduino-libraries/Arduino_PowerManagement/blob/main/docs/api.md",
       "type": "mdlink",
@@ -11677,27 +11430,6 @@
       "external": false
     },
     {
-      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "to": "https://github.com/espressif/esp-idf/blob/master/SUPPORT_POLICY.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "to": "https://github.com/espressif/esp-idf/blob/master/COMPATIBILITY.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
       "from": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
       "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
       "type": "mdlink",
@@ -11766,20 +11498,6 @@
       "type": "extends",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "to": "https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/src/oled/API.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "to": "https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/src/lora/API.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/sources/heltecautomationheltecesp32-arduino-library-for-heltec-esp32-or-esp32lora-based.md",
@@ -12564,27 +12282,6 @@
       "type": "wikilink",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "to": "https://github.com/vortigont/espem/blob/master/docs/BUILD.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "to": "https://github.com/vortigont/espem/blob/master/docs/USAGE.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "to": "https://github.com/vortigont/espem/blob/master/CHANGELOG.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
@@ -14449,20 +14146,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "to": "wiki/sources/1-lora-arduino-esp8266-esp32-iot-อะไรคือ-lora-ใช้งาน-lora-อย.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "to": "wiki/sources/10-context-ใน-claude-code-ใกล้เต็ม-dev-vibe-coding-thailand.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-3-dashboard-node-red.md",
       "to": "wiki/sources/3-dashboard-node-red.md",
       "type": "depends",
@@ -14596,20 +14279,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "to": "wiki/sources/arduino-ide-คืออะไร-วิธีติดตั้งและใช้งาน-esp32-และ-arduino-ป.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-arduino-librariesarduino-powermanagement.md",
-      "to": "wiki/sources/arduino-librariesarduino-powermanagement.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-arduino-librariesarduinopowermanagement.md",
       "to": "wiki/sources/arduino-librariesarduinopowermanagement.md",
       "type": "depends",
@@ -14668,13 +14337,6 @@
     {
       "from": "wiki/synthesis/synth-copula-wikipedia.md",
       "to": "wiki/sources/copula-wikipedia.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
-      "to": "wiki/sources/create-an-esp32-project-with-platformio-an-guide-for-beginne.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -14827,13 +14489,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "to": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-comm.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
       "to": "wiki/sources/esp32-lora-sensor-monitoring-with-web-server-long-range-communication.md",
       "type": "depends",
@@ -14883,13 +14538,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "to": "wiki/sources/esp32-คู่มือฉบับสมบูรณ์-พร้อมสอนติดตั้งและใช้งาน.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-esp32.md",
       "to": "wiki/sources/esp32.md",
       "type": "depends",
@@ -14909,20 +14557,6 @@
       "type": "depends",
       "broken": false,
       "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "to": "wiki/sources/espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-officia.md",
-      "to": "https://github.com/espressif/esp-idf/blob/master/README_CN.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/synthesis/synth-espressifesp-idf-espressif-iot-development-framework-official-development-framew.md",
@@ -14948,13 +14582,6 @@
     {
       "from": "wiki/synthesis/synth-freqtrade-pi5.md",
       "to": "wiki/sources/freqtrade-pi5.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
-      "to": "wiki/sources/get-started-esp32-esp-idf-programming-guide-v4-4-documentati.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -14997,13 +14624,6 @@
     {
       "from": "wiki/synthesis/synth-heltec-libraries.md",
       "to": "wiki/sources/heltec-libraries.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
-      "to": "wiki/sources/heltecautomationheltec-esp32-arduino-library-for-heltec-esp3.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15072,13 +14692,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "to": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspb.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
       "to": "wiki/sources/introducing-the-raspberry-pi-ai-hat-2-generative-ai-on-raspberry-pi-5.md",
       "type": "depends",
@@ -15114,22 +14727,8 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "to": "wiki/sources/iot-node-red-mqtt-sql-ทำ-data-logger-dashboard-แบบอุตสาหกรรม.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-iot-nodered-mqtt-sql-course.md",
       "to": "wiki/sources/iot-nodered-mqtt-sql-course.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-iot-visualization-guide-designing-effective-dashboards-monit.md",
-      "to": "wiki/sources/iot-visualization-guide-designing-effective-dashboards-monit.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15144,13 +14743,6 @@
     {
       "from": "wiki/synthesis/synth-iot-visualization-guide.md",
       "to": "wiki/sources/iot-visualization-guide.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
-      "to": "wiki/sources/iotthinkseasyloranode-tracker-a-wearable-lora-node-with-batt.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15235,13 +14827,6 @@
     {
       "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
       "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step-by-step-demo.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
-      "to": "wiki/sources/lorawan-fuota-on-rak3172-rui3-v5-with-chirpstackos-full-step.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15415,13 +15000,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "to": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-i.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
       "to": "wiki/sources/raspberry-pi-and-iot-the-guide-to-understanding-their-role-in-the-internet-of-th.md",
       "type": "depends",
@@ -15457,13 +15035,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
-      "to": "wiki/sources/ropgheltecesp32lorav3-proper-working-arduino-library-for-the-heltec-esp32-lora-v.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
       "from": "wiki/synthesis/synth-rpi-ai-hat-plus-2-official.md",
       "to": "wiki/sources/rpi-ai-hat-plus-2-official.md",
       "type": "depends",
@@ -15487,13 +15058,6 @@
     {
       "from": "wiki/synthesis/synth-saovabha-rabies-pep-2565.md",
       "to": "wiki/sources/saovabha-rabies-pep-2565.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-source-5e4074bd.md",
-      "to": "wiki/sources/source-5e4074bd.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15639,20 +15203,6 @@
       "external": false
     },
     {
-      "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collecto.md",
-      "to": "https://github.com/vortigont/espem/blob/master/docs/BUILD.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
       "from": "wiki/synthesis/synth-vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "to": "wiki/sources/vortigontespem-energy-monitor-with-dashboardmetrics-collector-based-on-esp32-con.md",
       "type": "depends",
@@ -15690,41 +15240,6 @@
     {
       "from": "wiki/synthesis/synth-who-rabies-position-2018.md",
       "to": "wiki/sources/who-rabies-position-2018.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "to": "wiki/sources/การเริ่มต้นใช้งานชิป-espressif-esp32-s3-iot-engineering-educ.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "to": "wiki/sources/ข้อมูล-datasheet-ของ-dx-lr02.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-คู่มือ-hermes-agent.md",
-      "to": "wiki/sources/คู่มือ-hermes-agent.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "to": "wiki/sources/จัดส่งฟรี-raspberry-pi-5-แรม-16gb-ของแท้-made-in-uk.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
-      "to": "wiki/sources/เครื่องวัดน้ำ-lora-nb-iot-เครื่องวัดน้ำ-เครื่องวัดน้ำอัจฉริย.md",
       "type": "depends",
       "broken": false,
       "external": false

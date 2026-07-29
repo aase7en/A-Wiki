@@ -11,14 +11,15 @@ original_file: raw/การเริ่มต้นใช้งานชิป 
 ---
 title: "การเริ่มต้นใช้งานชิป Espressif ESP32-S3 - IoT Engineering Education"
 source: "https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/"
-author: ""
-published: ""
-created: "2026-04-18"
-description: ""
-tags: ""
+author:
+  - "RSP"
+published:
+created: 2026-04-18
+description:
+tags:
+  - "clippings"
 ---
 ```
-
 ## การเริ่มต้นใช้งานชิป Espressif ESP32-S3
 
 ## ▷ แนะนำ ESP32-S3 Series
@@ -65,6 +66,8 @@ tags: ""
 | Ethernet MAC | ✖️ | ✖️ |
 
 ดูรายละเอียดเพิ่มเติมได้จากเว็บ [**Espressif Product Comparison**](https://products.espressif.com/#/product-comparison)
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/esp32s2_vs_s3.png)
 
 รูป:การเปรียบเทียบระหว่าง **ESP32-S2** และ **ESP32-S3** บนหน้าเว็บไซต์ของบริษัท **Espressif Systems**
 
@@ -114,27 +117,51 @@ tags: ""
 - [**M5Stack AtomS3 Lite**](https://docs.m5stack.com/en/core/AtomS3%20Lite)
 - [**Arduino Nano ESP32 (u-blox NORA-W106 Module with ESP32-S3)**](https://store.arduino.cc/products/nano-esp32)
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/esp32-s3-devkits.png)
+
 รูป: **Espressif ESP32-S3-DevKitC-1** และ **ESP32-S3-DevKitM-1**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/espressif_esp32s3_devkitc-1_pinout.png)
 
 รูป: **Espressif ESP32-S3-DevKitC-1 Pinout**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/waveshare_esp32-s3_devkit_vs_pico.png)
+
 รูป: บอร์ดของบริษัท **WaveShare**: **ESP32-S3 DevKit vs. ESP32-S3 Pico**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/waveshare_esp32-s3_devkit_pinout.png)
 
 รูป: **Waveshare ESP32-S3 DevKit WROOM-1 Pinout**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/waveshare_esp32-s3_zero_pinout.png)
+
 รูป: **Waveshare ESP32-S3 Zero Pinout**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/wemos_lolin_s3_pinout.png)
 
 รูป: **Wemos Lolin S3 Pro Pinout**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/wemos_lolin_s3_mini_pinout.png)
+
 รูป: **Wemos Lolin S3 Mini Pinout**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/freenove_esp32s3_camera.png)
 
 รูป: **Freenove ESP32-S3 WROOM-1 Pinout**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/yd_esp32-s3_core.png)
+
 รูป: **VCC-GND Studio YD-ESP32-S3 Core**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/weact_studio_esp32s3_a_or_b.png)
 
 รูป: **WeAct Studio ESP32-S3 Core A and B**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/weact_studio_esp32s3_b_pinout.png)
+
 รูป: **WeAct Studio ESP32-S3 Core B Pinout**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/yd_esp32-s3_core_pinout.png)
 
 รูป: **VCC-GND Studio YD-ESP32-S3 Core Pinout**
 
@@ -180,7 +207,11 @@ tags: ""
 - **Stable release:** `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
 - **Development release:** `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json`
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/arduino_esp32s3-1.png)
+
 รูป: การติดตั้ง **Arduino ESP32 Core v3.0.0**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/arduino_esp32s3-2.png)
 
 รูป: ตัวอย่างการตั้งค่าอุปกรณ์ก่อนการคอมไพล์และอัปโหลดเฟิร์มแวร์
 
@@ -189,7 +220,152 @@ tags: ""
 ```c
 void setup() {
   Serial.begin(115200);
-  while(!Serial && millis() 10s}: '{}'".format(n,v) )
+  while(!Serial && millis() < 3000 );
+  Serial.println("\nESP32-S3 Demo...\n");
+}
+
+void loop() {
+  Serial.println("=========================================");
+  Serial.printf( "Arduino ESP32 Core v%u.%u.%u\n",
+     ESP_ARDUINO_VERSION_MAJOR, 
+     ESP_ARDUINO_VERSION_MINOR, 
+     ESP_ARDUINO_VERSION_PATCH );
+
+  Serial.printf("Espressif IDF: %s\n", ESP.getSdkVersion() );
+  Serial.printf("Chip Revision %d\n",  ESP.getChipRevision() );
+  Serial.printf("Cpu Freq. %lu MHz\n", ESP.getCpuFreqMHz() );
+  Serial.printf("Heap (total/free): %lu / %lu bytes\n", 
+         ESP.getHeapSize(), ESP.getFreeHeap());
+  Serial.printf("PSRAM (toal/free): %lu / %lu bytes\n", 
+         ESP.getPsramSize(), ESP.getFreePsram());
+  Serial.printf("Flash Size: %lu MB, Flash Speed: %lu MHz\n",
+         ESP.getFlashChipSize()/(1024*1024UL), 
+         ESP.getFlashChipSpeed()/(uint32_t) 1e6 );
+
+  // more info...
+  Serial.printf("Espressif chip model: %s\n",
+         ESP.getChipModel() );
+  Serial.printf("Number of CPU Cores: %d\n", 
+         ESP.getChipCores() );
+  String str;
+  switch(ESP.getFlashChipMode()) {
+     case FM_QIO:  str = "QIO";  break;
+     case FM_QOUT: str = "QOUT"; break;
+     case FM_DIO:  str = "DIO";  break;
+     case FM_DOUT: str = "DOUT"; break;
+     default:      str = "Unknown"; break;
+  }
+  Serial.printf("Flash model: %s\n", str.c_str() );
+  Serial.println("=========================================\n");
+
+  const uint32_t N = 10000;
+  uint32_t *buf = (uint32_t*)ps_malloc(N*sizeof(uint32_t) ); 
+  if (buf != NULL) {
+    Serial.printf("PSRAM (toal/free): %lu / %lu bytes\n", 
+         ESP.getPsramSize(), ESP.getFreePsram());
+    free( buf );
+    Serial.printf("PSRAM (toal/free): %lu / %lu bytes\n", 
+         ESP.getPsramSize(), ESP.getFreePsram());
+  }
+
+  struct PsramAllocator {
+    void* allocate(size_t size) {
+      return ps_malloc(size);
+    }
+    void deallocate(void* pointer) {
+      free(pointer);
+    }
+  };
+
+  PsramAllocator psramAllocator;
+  uint32_t n_bytes = N*sizeof(uint32_t);
+  // Try to allocate memory in PSRAM.
+  uint32_t *psram = (uint32_t *)psramAllocator.allocate( n_bytes );
+  Serial.printf("PSRAM (toal/free): %lu / %lu bytes\n", 
+         ESP.getPsramSize(), ESP.getFreePsram());
+  // Release the allocated PSRAM memory.
+  psramAllocator.deallocate(psram); // Deallocate the PSRAM memory
+  Serial.printf("PSRAM (toal/free): %lu / %lu bytes\n", 
+         ESP.getPsramSize(), ESP.getFreePsram());
+  delay(4000);
+}
+```
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/arduino_esp32s3-3.png)
+
+รูป: ตัวอย่างข้อความเอาต์พุต
+
+---
+
+## ▷ การเขียนโปรแกรมด้วย MicroPython
+
+**ESP32-S3** มีเฟิร์มแวร์ที่เรียกว่า **ROM Bootloader** อยู่ภายในหน่วยความที่อ่านได้เท่านั้น และสามารถทำให้เข้าสู่โหมด **Bootloader** ได้โดยการกดปุ่ม **BOOT** ค้างไว้ และกดปุ่ม **RESET** แล้วปล่อย จะทำให้มองเห็น **USB JTAG / Serial Port** สำหรับคอมพิวเตอร์ของผู้ใช้
+
+เมื่อชิปอยู่ในโหมด **Bootloader** แล้ว ก็สามารถใช้โปรแกรม เช่น [**esptool.py (Python-based)**](https://github.com/espressif/esptool) หรือ [**Espressif Flash Download Tools**](https://www.espressif.com/en/support/download/other-tools) หรือ [**Espressif Web-based Esptool.js**](https://espressif.github.io/esptool-js/) อัปโหลดไฟล์เฟิร์มแวร์ไปยังบอร์ดได้
+
+การติดตั้ง **esptool.py** สำหรับ **Ubuntu** (สำหรับ **Windows** ก็ทำคำสั่งในลักษณะเดียวกัน)
+
+```bash
+$ pip install esptool
+```
+
+**คำแนะนำ:** แต่ถ้าใช้ซอฟต์แวร์ [**Thonny IDE**](https://thonny.org/) สำหรับการเขียนโค้ด การติดตั้งไฟล์เฟิร์มแวร์สำหรับ **MicroPython** จะทำได้ง่ายกว่าการใช้คำสั่ง `esptool.py`
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_micropython_install-1.png)
+
+รูป: การติดตั้ง **MicroPython Firmware** โดยใช้ **Thonny IDE**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_micropython_install-2.png)
+
+รูป: การเลือกไฟล์ **MicroPython Firmware** สำหรับบอร์ด **ESP32S3** ที่จะใช้งาน
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_esp32s3_ws2812b_demo.png)
+
+รูป: ตัวอย่างการเขียนและรันโค้ด **MicroPython** เพื่อเปลี่ยนสีของ **WS2812B RGB LED (GPIO-21)** บนบอร์ด **ESP32-S3**
+
+คำสั่งของ **MicroPython API** สำหรับ **ESP32** สามารถดูตัวอย่างการใช้งานได้จาก [**Quick reference for the ESP32**](https://docs.micropython.org/en/latest/esp32/quickref.html)
+
+```python
+import neopixel
+import machine
+import time
+
+# Define the GPIO pin and the number of pixels
+led_pin    = 21
+num_pixels = 1
+
+# Create a NeoPixel object
+np = neopixel.NeoPixel(machine.Pin(led_pin), num_pixels)
+
+def set_color(rgb):
+    np[0] = rgb
+    np.write()
+
+colors = [(255,0,0), (0,255,0), (0,0,255)]
+while True:
+    for color in colors:
+        set_color( color )
+        time.sleep( 1 )
+```
+
+ตัวอย่างโค้ดสาธิตการแสดงข้อมูลเกี่ยวกับ **MicroPython** และฮาร์ดแวร์ที่ใช้งาน
+
+```python
+import esp
+import sys
+import machine
+import uos 
+import network
+
+# Print MicroPython version
+print("\n\nMicroPython version:", sys.version)
+
+names = ['sysname','nodename',
+         'release','version','machine']
+
+sys_info = dict(zip(names,uos.uname()))
+for n,v in sys_info.items():
+    print( "{:>10s}: '{}'".format(n,v) )
 
 # Print system information
 print("System info:")
@@ -206,6 +382,8 @@ wlan_mac = wlan_sta.config('mac')
 mac_address = ':'.join([hex(b)[2:].upper() for b in wlan_mac])
 print("- MAC address:", mac_address)
 ```
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_esp32s3_demo-3.png)
 
 รูป: ตัวอย่างการรันโค้ด **MicroPython**
 
@@ -252,7 +430,11 @@ $ esptool.py --chip esp32s3 \
   adafruit-circuitpython-adafruit_feather_esp32s3_nopsram-en_US-8.2.9.bin
 ```
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/esptool_circuitpython_flashing.png)
+
 รูป: ตัวอย่างการทำคำสั่ง `esptool.py`
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_circuitpython_esp32s3.png)
 
 รูป: การเชื่อมต่อจาก **Thonny IDE** ไปยังบอร์ด **ESP32-S3** ได้สำเร็จ
 
@@ -278,7 +460,11 @@ $ esptool.py --chip esp32s3 \
 
 เมื่อได้ติดตั้ง **TinyUF2 Bootloader** สำหรับบอร์ด **ESP32-S3** ได้สำเร็จแล้ว จะมองเห็น **TinyUF2 CDC** ของบอร์ด ได้จากการใช้งาน **Thonny IDE** แต่ถึงขั้นตอนนี้ ยังไม่ได้มีการติดตั้ง **CircuitPython** ดังนั้นขั้นตอนถัดไป ก็เป็นการติดตั้งหรืออัปเดตเฟิร์มแวร์สำหรับ **CircuitPython**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_circuitpython_uf2_install.png)
+
 รูป: การติดตั้งหรืออัปเดตเฟิร์มแวร์สำหรับ **CircuitPython**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/thonny_circuitpython_ready.png)
 
 รูป: การเชื่อมต่อจาก **Thonny IDE** ไปยังบอร์ด **ESP32-S3** ได้สำเร็จ
 
@@ -288,7 +474,11 @@ $ esptool.py --chip esp32s3 \
 
 [**Wokwi Simulator**](https://wokwi.com/dashboard/projects) รองรับการใช้งาน **ESP32-S3** สำหรับการเขียนโปรแกรมด้วยภาษา **C/C++** โดย **Arduino-ESP32 Core** และภาษา **Rust**
 
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/wokwi_esp32-s3-1.png)
+
 รูป: การเลือกบอร์ด **Espressif ESP32-S3-DevKitC-1** ใน **Wokwi Simulator** สำหรับการเขียนโปรแกรมด้วย **Arduino ESP32**
+
+![](https://iot-kmutnb.github.io/blogs/esp32/esp32-s3_intro/wokwi_esp32-s3-2.png)
 
 รูป: การเขียนโค้ด **Arduino Sketch** และจำลองการทำงานโดยใช้บอร์ด **Espressif ESP32-S3-DevKitC-1**
 

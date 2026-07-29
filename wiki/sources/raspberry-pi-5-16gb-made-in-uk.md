@@ -11,15 +11,15 @@ original_file: raw/จัดส่งฟรี Raspberry Pi 5 (แรม 16GB) �
 ---
 title: "[จัดส่งฟรี] Raspberry Pi 5 (แรม 16GB) ของแท้ made in UK"
 source: "https://www.arduitronics.com/product/5874/%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B9%88%E0%B8%87%E0%B8%9F%E0%B8%A3%E0%B8%B5-raspberry-pi-5-%E0%B9%81%E0%B8%A3%E0%B8%A1-16gb-%E0%B8%82%E0%B8%AD%E0%B8%87%E0%B9%81%E0%B8%97%E0%B9%89-made-in-uk"
-author: ""
-published: ""
-created: "2026-04-20"
+author:
+published:
+created: 2026-04-20
 description: "ดูวิธีเริ่มต้นการใช้งาน ด้านล่าง !!หมายเหตุ: บอร์ด Raspberry Pi 5 ใช้ OS Bookworm เท่านั้น ซึ่งสามารถดาวน์โหลดและ flash micsoSDcard ได้จาก Latest RPi ..."
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
-[](https://www.arduitronics.com/)
+[![Arduitronics](https://o.lnwfile.com/_/o/_raw/oj/ob/fq.png)](https://www.arduitronics.com/)
 
 | รหัสสินค้า | BR10304 |
 | --- | --- |
@@ -53,17 +53,19 @@ Tags: [Raspberry Pi](https://www.arduitronics.com/product/tag/raspberry-pi), [RP
 
 Featuring a 64-bit quad-core Arm Cortex-A76 processor running at 2.4GHz, Raspberry Pi 5 delivers a 2–3× increase in CPU performance relative to Raspberry Pi 4. Alongside a substantial uplift in graphics performance from an 800MHz VideoCore VII GPU; dual 4Kp60 display output over HDMI; and state-of-the-art camera support from a rearchitected Raspberry Pi Image Signal Processor, it provides a smooth desktop experience for consumers, and opens the door to new applications for industrial customers.  
 
+![Dimension Diagram of Raspberry Pi 5 Single Board Computer](https://image.dfrobot.com/image/cache3/data/DFR1118/2.png)
+
 Dimension Diagram of Raspberry Pi 5 Single Board Computer
 
 **Dimension Diagram of Raspberry Pi 5 Single Board Computer**
 
-  
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-01.jpg)  
 Interface Diagram of Raspberry Pi 5 single-board computer
 
   
 **Comparison between 5B and 4B**
 
-**  
+![](https://o.lnwfile.com/_/o/_raw/e5/fn/jb.jpg)**  
 FEATURES**  
 - **Raspberry Pi Fifth Flagship Development Computer**: Feature a 64-bit quad-core Arm Cortex-A76 processor running at 2.4GHz, using silicon built in-house at Raspberry Pi, offering a step change in peripheral performance and functionality
 - **Significant Graphics Capability**: Equip an 800MHz VideoCore VII GPU and deliver better graphics performance, suitable for multimedia applications, gaming, and graphics-intensive tasks
@@ -113,17 +115,25 @@ FEATURES**
 
 **Faster CPU, GPU, and RAM**
 
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-cpua.jpg)
+
 Equipped with **ARM Cortex-A76 CPU** clocked up to **2.4GHz**, and **VideoCore VII** GPU. These increase the performance up to 2 to 3 times faster than Raspberry Pi 4 Model B! Raspberry Pi 5 could be your better option for your project that requires high-speed processing power like AI (Artificial Intelligence) programs, or intensive graphical rendering. Raspberry Pi 5 is designed to accommodate **16GB**, 8GB, 4GB, 2GB, or 1GB of **LPDDR4X-4267** RAM options (However, only 8GB and 4GB RAM options are available during launch). It even has the RAM option indicator on the board, so you don’t have to think anymore about how much RAM your Raspberry Pi has!
 
 ### Better USB 3.0
+
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-usb3.jpg)
 
 Similar to Raspberry Pi 4 Model B, the Raspberry Pi 5 comes with two USB 3.0, which is much faster than USB 2.0. Perfect for any fast device connection like external SSD or flash drives. Two USB 2.0 are also included for you to use with simple peripherals like keyboards and mice. Raspberry Pi 5 USB 3.0 ports have better speed as they support up to **5Gbps data transfer simultaneously**! You can now use TWO fast USB drives or SSDs, and have them operate at a high speed, on both USB 3.0 ports, at the same time!
 
 **2 x 4-lane MIPI ports (CSI/DSI)**
 
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-csidsi.jpg)
+
 The new 2 x 4 lane MIPI port, supports both DSI (Display) and CSI (Camera) at the time, at either port. On Raspberry Pi 5, you could have 2 cameras, or 2 DSI displays at the same time, with better performance!
 
 **Supports Higher Power Input**
+
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-usbc.jpg)
 
 Raspberry Pi 5 can support up to 5V at 5A power supply through the USB Type C connection, with a special PD (Power Delivery) PSU. If you are planning to use the Raspberry Pi 5 for a high-power project, you may consider getting the official PD PSU from Raspberry Pi for this new computer:) The new PD PSU can deliver 5V@5A and also support standard PD modes of 5V@3A, 9V@3A, 12V@2.25A, and 15V@1.8A. On the other hand, Raspberry Pi 5 can still be powered up with PSU for Raspberry Pi 4 Model B, or the normal USB-C PSU. Normal USB-C PSUs can only provide up to 600mA to each USB 3.0 port on the new Raspberry Pi 5 computer because the Raspberry Pi 5 auto-detects the PSU as standard and limits the current supply accordingly.
 
@@ -137,17 +147,23 @@ The Raspberry Pi 5 comes with a custom-designed Power Management IC (PMIC). Besi
 
 **Dedicated UART Communication Port**
 
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-uart.jpg)
+
 You are also provided with a built-in dedicated UART port. You could use this for any UART communication device that you need. This UART port also supports debug mode. The UART debug mode is always enabled by default so you don't need to worry about needing to enable it in the terminal under the configuration file. This UART port has its dedicated pin and is independent of the UART pins on the 40-pin GPIO. The port is compatible with the Raspberry Pi Debug Probe.
 
 **Dedicated Fan Port**
 
 Is simple Physics, higher power will generate more heat. The same applied to the Raspberry Pi 5, good thermal management is needed. To ease the installation of a cooling fan, Raspberry Pi 5 comes with a dedicated Fan connector. The fan port will provide power, PWM control and Tachometer feedback to the cooling fan. It is plug-and-play with the Official Raspberry Pi 5 Case and Active Cooler. Just use the latest Raspberry Pi OS (Bookworm) and the fan is automatically triggered with speed control to cool the board down. The fan control and feedback pins are dedicated and independent from the 40-pin GPIO. This allows users to still utilize the 40-pin GPIO even when there is a cooling fan installed.
 
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-02.jpg)
+
 **Can I use Raspberry Pi 4 Model B Accessories?**
 
 But wait, what if you already have Raspberry Pi 4 Model B and all of the PSU, casing, and accessories? Can you use that for Raspberry Pi 5?
 
 Some can, some cannot. Let's find out below.
+
+![](https://static.cytron.io/image/catalog/products/V-RASPBERRY-PI-5/raspberry-pi-5-03.jpg)
 
 You can still use your previous accessories
 
@@ -174,15 +190,15 @@ You can still use your previous accessories
 
 2\. Download the system ([Click here to download](https://www.raspberrypi.com/software/operating-systems/)), Raspberry Pi 4 requires the latest system before using (as shown below):
 
-[]()
+[![PI4-02.jpg](https://www.waveshare.com/w/upload/9/92/PI4-02.jpg)](https://www.waveshare.com/wiki/File:PI4-02.jpg)
 
 3\. Format the SD card: Insert the SD card into the PC with a card reader, and format the SD card through SDFormatter.exe. [Click here to download SDFormatter.exe](https://files.waveshare.com/upload/6/60/SDCardFormatterv5_WinEN.zip), and click to format the SD card.
 
-[]()
+[![SDFormatter.png](https://www.waveshare.com/w/upload/2/20/SDFormatter.png)](https://www.waveshare.com/wiki/File:SDFormatter.png)
 
 4\. Program the image: use Win32DiskImager.exe to burn the image. Select the image to be burned, and click "Write" to program, [(click here to download Win32DiskImager.exe)](https://files.waveshare.com/upload/7/76/Win32DiskImager.zip). After the programming is completed, you will be prompted whether you want to format, here you need to click Cancel.
 
-[]()
+[![Win32DiskImager.png](https://www.waveshare.com/w/upload/3/38/Win32DiskImager.png)](https://www.waveshare.com/wiki/File:Win32DiskImager.png)
 
 5\. Start RPI5: Insert the SD card after programming into the Raspberry Pi, and connect the adapter with the Type-C interface of 5V 5A to boot the Raspberry Pi. Normally, you can see that the Power light is always on red, and the ACT green light is flashing.
 
@@ -282,13 +298,13 @@ dtparam=rtc_bbat_vchg=3000000
 
 1\. Input "xrandr" on the Raspberry Pi to view the HDMI-ID of the main display (most are HDMI-1):
 
-[]()
+[![Pi4-conf-touch-1.png](https://www.waveshare.com/w/A6Y79bcq/Kdy80nYY.php?f=Pi4-conf-touch-1.png&width=600)](https://www.waveshare.com/wiki/File:Pi4-conf-touch-1.png)
 
 2\. Input command: "xinput" to view the touch ID of the main display (there are two touch IDs. If you do not know which one is for the main display, you can try them both.)
 
-[]()
+[![Pi4-conf-touch-2.png](https://www.waveshare.com/w/A6Y79bcq/Kdy80nYY.php?f=Pi4-conf-touch-2.png&width=600)](https://www.waveshare.com/wiki/File:Pi4-conf-touch-2.png)
 
-3.Run the command: xinput map-to-output  
+3.Run the command: xinput map-to-output <touch ID> <HDMI-ID>
 
 (The ID value should be changed according to the actual ID checked. for example xinput map-to-output 7 HDMI-1 )
 
@@ -298,7 +314,7 @@ Add the line: xinput map-to-output 7 HDMI-1
 
 Note that You need to change the ID corresponding to yours and reboot Raspberry Pi.
 
-[]()
+[![Pi4-auto-start-4.png](https://www.waveshare.com/w/upload/f/f2/Pi4-auto-start-4.png)](https://www.waveshare.com/wiki/File:Pi4-auto-start-4.png)
 
 ## วิธีการชำระเงิน
 
@@ -321,7 +337,7 @@ Note that You need to change the ID corresponding to yours and reboot Raspberry 
 ธนาคารทหารไทยธนชาต จำกัด (มหาชน) สาขาเซนทรัล พระราม 3 กระแสรายวัน บจก. จีเจ เทค 2121057935- [ไปหน้าแจ้งชำระเงิน](https://www.arduitronics.com/informpayment "ไปหน้าแจ้งชำระเงิน")
 
   
-[](https://lin.ee/bQktS0A)
+[![เพิ่มเพื่อน](https://qr-official.line.me/sid/M/rfm0967y.png)](https://lin.ee/bQktS0A)
 
 ## @rfm0967y
 

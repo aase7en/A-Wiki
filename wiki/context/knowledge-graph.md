@@ -4,14 +4,14 @@ _Generated: 2026-07-29_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 ## Stats
 
-- **Nodes**: 593
-- **Edges**: 1867
-- **Broken links**: 17 (run `python3 scripts/query-graph.py --broken`)
+- **Nodes**: 545
+- **Edges**: 1832
+- **Broken links**: 37 (run `python3 scripts/query-graph.py --broken`)
 - **Orphans**: 27 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
-- `index-iot.md` (134 edges)
+- `index-iot.md` (115 edges)
 - `index.md` (102 edges)
 - `wiki/entities/iot/esp32.md` (60 edges)
 - `index-pharmacy.md` (37 edges)
@@ -20,7 +20,7 @@ _Generated: 2026-07-29_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 - `wiki/entities/iot/dx-lr02-lora.md` (36 edges)
 - `wiki/sources/charliejhills-claude-skills-org-chart-2026.md` (32 edges)
 - `wiki/synthesis/iot-lora-architecture.md` (31 edges)
-- `index-env.md` (30 edges)
+- `wiki/concepts/iot/lora.md` (30 edges)
 
 ## Query CLI
 

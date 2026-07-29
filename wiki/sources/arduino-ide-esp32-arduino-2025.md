@@ -11,14 +11,15 @@ original_file: raw/Arduino IDE คืออะไร วิธีติดตั
 ---
 title: "Arduino IDE คืออะไร วิธีติดตั้งและใช้งาน ESP32 และ Arduino ปี2025"
 source: "https://devadiy.com/arduino-ide-guide/"
-author: ""
-published: "2025-08-12"
-created: "2026-04-18"
+author:
+  - "deva_diy"
+published: 2025-08-12
+created: 2026-04-18
 description: "สอนใช้งาน Arduino IDE สำหรับมือใหม่ ตั้งแต่การติดตั้ง การตั้งค่า และการอัปโหลดโค้ดไปยังบอร์ด ESP32 และ Arduino พร้อมเทคนิคพื้นฐานที่ควรรู้"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## Arduino IDE คืออะไร
 
 **Arduino IDE** (Integrated Development Environment) คือโปรแกรมสำหรับเขียนโค้ดและอัปโหลดไปยังบอร์ดไมโครคอนโทรลเลอร์ เช่น Arduino UNO, ESP32, ESP8266 และบอร์ดอื่น ๆ ที่รองรับ โดยตัวโปรแกรมจะรวมฟังก์ชันสำคัญที่ Maker และนักพัฒนาต้องใช้ไว้ในที่เดียว ได้แก่
@@ -30,6 +31,8 @@ tags: ""
 - ระบบจัดการบอร์ดและไลบรารี (Board Manager / Library Manager) – เพิ่มความสามารถใหม่ให้กับโปรเจกต์ เช่น รองรับบอร์ดใหม่หรือใช้งานเซ็นเซอร์เสริม
 
 **Arduino IDE** ได้รับความนิยมเพราะใช้งานง่าย รองรับหลายแพลตฟอร์ม (Windows, macOS, Linux) และมีคอมมูนิตี้ใหญ่ที่แบ่งปันโค้ดและตัวอย่างมากมาย ทำให้เหมาะทั้งกับมือใหม่และผู้พัฒนา IoT ระดับมืออาชีพ
+
+![arduino-ide-guide-board](https://devadiy.com/wp-content/uploads/elementor/thumbs/arduino-ide-guide-board-ra3kx4d83gutc4sd2takzltpvw6keg2q927f5poxo0.webp "arduino-ide-guide-board")
 
 ### 1\. บอร์ดตระกูล Arduino
 
@@ -66,6 +69,9 @@ https://espressif.github.io/arduino-esp32/package\_esp32\_index.json
 
 เช่น STM32, Teensy, Raspberry Pi Pico (RP2040) และบอร์ดตระกูลอื่นที่มีแพ็กเกจสำหรับ Arduino IDE.
 
+![](https://devadiy.com/wp-content/uploads/2025/08/arduino-ide-guide-download.webp)
+![](https://www.youtube.com/watch?v=wcEJk1ui0UA)
+
 ### 1\. ดาวน์โหลด Arduino IDE
 
 1. เปิดเว็บทางการ: [https://www.arduino.cc/en/software](https://www.arduino.cc/en/software)
@@ -98,6 +104,8 @@ https://espressif.github.io/arduino-esp32/package\_esp32\_index.json
 - เปิด Arduino IDE → ไปที่ File → Examples → 01.Basics → Blink
 - เลือกบอร์ดและพอร์ต → กด Upload → ถ้าไฟกระพริบบนบอร์ด แสดงว่าพร้อมใช้งาน
 
+![ขั้นตอนเพิ่ม URL และติดตั้ง ESP32 Board Manager ใน Arduino IDE พร้อมภาพหน้าจอ Preferences และ Board Manager](https://devadiy.com/wp-content/uploads/2025/08/arduino-ide-guide-install-board-manager.webp)
+
 ### 1\. เปิด Arduino IDE
 
 ใช้ได้ทั้ง Arduino IDE 1.x และ 2.x แต่แนะนำ 2.x เพราะใช้งานง่ายกว่า
@@ -122,6 +130,8 @@ https://espressif.github.io/arduino-esp32/package\_esp32\_index.json
 	- ESP32 Dev Module
 		- ESP32-WROOM-DA Module
 		- ESP32-S3 Dev Module
+
+![](https://devadiy.com/wp-content/uploads/2025/08/arduino-ide-guide-structure.webp)
 
 ### 1\. setup()
 
@@ -249,6 +259,8 @@ delay(1000); // รอ 1 วินาที
 
 - ถ้าเปิด Serial Monitor ไม่เจอข้อมูล ให้ตรวจสอบว่า Baud Rate ในโปรแกรมและในโค้ดตรงกัน
 - ใช้ Serial.print() และ Serial.println() อย่างพอดี ไม่ควรส่งข้อมูลถี่เกินไปเพราะจะทำให้บอร์ดหน่วง
+
+![หน้าต่าง Library Manager ของ Arduino IDE แสดงขั้นตอนค้นหาและติดตั้งไลบรารี DHT sensor พร้อมปุ่ม Install](https://devadiy.com/wp-content/uploads/2025/08/arduino-ide-guide-install-library.webp)
 
 ### 1\. การติดตั้งจาก Library Manager (แนะนำ)
 

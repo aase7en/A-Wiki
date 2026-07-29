@@ -11,15 +11,18 @@ original_file: raw/Create an ESP32 Project With PlatformIO An Guide for Beginner
 ---
 title: "Create an ESP32 Project With PlatformIO: An Guide for Beginners"
 source: "https://www.elektormagazine.com/news/create-an-esp32-project-with-platformio"
-author: ""
-published: "2024-10-07"
-created: "2026-04-18"
+author:
+  - "Riccardo Medda"
+published: 2024-10-07
+created: 2026-04-18
 description: "Using PlatformIO with Visual Studio Code offers a powerful environment for MCU firmware development. This article describes an example of integration."
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## Create an ESP32 Project With PlatformIO: A Guide for Beginners
+
+![Create an ESP32 Project With PlatformIO: A Guide for Beginners](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_800,h_460,c_fit/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007164514_article-platformIO.png)
 
 Create an ESP32 Project With PlatformIO: A Guide for Beginners
 
@@ -66,7 +69,7 @@ ESP32 is a low-power microcontroller developed by Espressif Systems, known for i
 - High clock frequency: with clock frequencies of up to 240 MHz, ESP32 offers high processing power to handle complex applications.
 - Wireless connection: integrated with Wi-Fi and Bluetooth connectivity, enabling wireless communication with other devices and networks effortlessly.
 - Built-in flash memory: ESP32 has memory, providing enough space for firmware and data loading.
-- Numerous and varied I/O peripherals, such as GPIO, UART, I 2 C, SPI and PWM ports, allowing easy interaction with other devices.
+- Numerous and varied I/O peripherals, such as GPIO, UART, I <sup>2</sup> C, SPI and PWM ports, allowing easy interaction with other devices.
 - Signal processing unit (DSP): ESP32 is equipped with a DSP that enhances processing capabilities for audio and signal processing applications.
 - Low-Power Mode: supports low-power modes to extend battery life in battery-powered devices (the so-called “deepsleep”).
 - Open-Source Development Environment: Espressif supports an open-source development environment through the use of frameworks such as Arduino and PlatformIO, simplifying the programming and development process.
@@ -74,7 +77,11 @@ ESP32 is a low-power microcontroller developed by Espressif Systems, known for i
   
 Because of these features, ESP32 is widely used to develop IoT projects, smart sensors, home automation devices and more. ESP32 is a processor that requires, at least for our purposes, an additional electronic part whose function is to provide it with the proper power supply and to interface it to a USB port on a computer so that it can be programmed (i.e., transfer to its internal memory the firmware that will be written and compiled on PlatformIO) and to communicate with it via the serial port (on PlatformIO’s Serial Monitor console).  
 
+![esp32 A](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007170003_esp32-A.png)
+
 Source: Elettronica In
+
+![esp32 B](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007170003_esp32-B.png)
 
 Source: Elettronica In
 
@@ -96,13 +103,21 @@ Interfacing with the DHT22 is generally simple, requiring only a microcontroller
 
 As previously mentioned, PlatformIO is a plugin to the Visual Studio Code IDE, so the first step is to install that IDE. The direct link to the download page can be found [here](https://code.visualstudio.com/download "Visual Studio Code download page: https://code.visualstudio.com/download"). As can be seen from **Figure 1**, such software is available for major operating systems (Windows, various distributions of Linux, macOS). Once we have downloaded the appropriate file for our own OS, we install it.
 
+![platformio article visual studio code](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig1.png)
+
 Figure 1: Visual Studio Code download page. (Visual Studio Code, https://code.visualstudio.com/)
+
+![platformio fig2.png](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig2.png)
 
 Figure 2: The VSC button for searching plugins (Apri cartella = Open folder).
 
 Whichever version is chosen, a welcome page will appear when the program starts. Closing it will bring up the main page of the IDE on the left column of which buttons appear (including the one marked in red in **Figure 2**). That is used to search for and install the plugins (aka extensions) desired on VSC. By clicking on it, the search window on the left column opens.
 
+![platformio fig3 - the button for installing PlatformIO on.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig3.png)
+
 Figure 3: The button for installing PlatformIO on.
+
+![Figure 4: The icon of newly installed PlatformIO](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig4.png)
 
 Figure 4: The icon of newly installed PlatformIO
 
@@ -112,15 +127,25 @@ To find any plugin, simply type its name on the rectangular box at the top left.
 
 First, once the VSC is started, we need to click on the *PlatformIO* icon. The main page will open, on which we need to click the *Create New Project* button (**Figure 5**). A new welcome page will open (**Figure 6**), where one must click the *\+ New Project* button. This action will open a simple project wizard that will ask us to enter the name of the project, the platform and the framework used, as visible in **Figure 7**.
 
+![Figure 5: PlatformIO button for creating a new project.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig5.png)
+
 Figure 5: PlatformIO button for creating a new project.
 
+![Figure 6: PlatformIO welcome page](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig6.png)
+
 Figure 6: PlatformIO welcome page.
+
+![Figure 7: PlatformIO Project wizard.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig7.png)
 
 Figure 7: PlatformIO Project wizard.
 
 The project name can be any (e.g., *testESP32*) while the choice of board model depends on the one we have. Typing *ESP32* in the box labeled *Board* will show a list of all available ESP32-based boards. In the present case, we have chosen the *AZ-Delivery ESP-32 Dev Kit C V4* board. As Framework, we have left the *Arduino* entry unchanged. The *Location* checkbox is used to tell PlatformIO whether to use the default one as the working folder or if you want to specify a different folder. Let’s leave the default one.
 
+![Figure 8: Project Wizard compiled.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig8.png)
+
 Figure 8: Project Wizard compiled.
+
+![Figure 9: Project created.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig9.png)
 
 Figure 9: Project created.
 
@@ -128,9 +153,13 @@ The result of these choices can be seen in **Figure 8**. Clicking the *Finish* b
   
 In the project structure (the tree on the left) there are a few folders. One of these is called *includes* and is currently empty. Its function is to collect any files to be included in the project (typically *.h* files). Another folder is called *src* and contains the file *main.cpp* which will be the main file of the sketch, that is, the one where the program is to be written.  
 
+![Figure 10: The default main.cpp file.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig10.png)
+
 Figure 10: The default main.cpp file.
 
 **Figure 10** shows the contents of that file. Notice that the two main functions used in sketches for Arduino appear: setup and loop. In the file system, the project will appear organized as in **Figure 11**.  
+
+![project on file system](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig11.png)
 
 Figure 11: The project on file system.
 
@@ -140,11 +169,17 @@ Note: The operating system used to make this guide is Linux. It is possible that
 
 Adding libraries to the project is a fairly simple operation. Suppose we want to add the *DHT sensor library for ESP* (which is used to read the data transmitted by the DHT22 temperature and humidity sensor). First, we need to go to the left column of the IDE and click on the *PlatformIO* icon. This will open the main page of PlatformIO, where the *QUICK ACCESS* section becomes available. One of its entries is *Libraries*. Clicking it will open the libraries search window, visible in **Figure 12**.  
 
+![Figure 12: PlatformIO library search page.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig12.png)
+
 Figure 12: PlatformIO library search page.
+
+![Figure 13: The library chosen for sensor management.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig13.png)
 
 Figure 13: The library chosen for sensor management.
 
 By typing *DHT22* in the search box, several results will appear. The choice falls on the *DHT sensor library for ESPx* by Bernd Giesecke, as visible in **Figure 13**. Clicking on it will open the library page (**Figure 14**). To install the library, simply click the *Add to Project* button, select in the next wizard the project of interest (in our case *testESP32*) as shown in **Figure 15** and click the *Add* button. PlatformIO will automatically download the library within the project folder. It will also add it to the *platformio.ini* configuration file, as shown in **Figure 16**.
+
+![Figure 14: Page of the DHT sensor library for ESPx by Bernd Giesecke.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig14.png)
 
 Figure 14: Page of the DHT sensor library for ESPx by Bernd Giesecke.
 
@@ -162,11 +197,15 @@ upload\_speed = 921600
 
 so that it appears as in **Figure 17**. These two commands are used, respectively, to set the speed of the serial port for communication with the computer and the speed at which the sketch is uploaded to the memory of the microcontroller.
 
+![Figure 15: Library add-on. Figure 16: Platformio.ini file with the added library. Figure 17: New version of platformio.ini file.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig-15-16-17.png)
+
 Figure 15: Library add-on. Figure 16: Platformio.ini file with the added library. Figure 17: New version of platformio.ini file.
 
 ## Testing the Project
 
 To get a working example of the newly created (thus empty) project, we decided to connect the microcontroller to a DHT22 sensor, read the measured values of ambient temperature and humidity in real time, and display them through PlatformIO’s Serial Monitor. In addition to the microcontroller and sensor, we needed a 4.7 k resistor, some wires and a breadboard to make the simple circuit visible in **Figure 18**. As can be seen from the picture, unfortunately, the size of the ESP32 NodeMCU did not allow it to be placed on the breadboard, so it was left out.
+
+![Figure 18: Test circuit. (Source: Fritzing, https://fritzing.org/)](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig18.png)
 
 Figure 18: Test circuit. (Source: Fritzing, https://fritzing.org/)
 
@@ -176,15 +215,21 @@ Figure 18: Test circuit. (Source: Fritzing, https://fritzing.org/)
   
 Variables are defined that will contain the measured values and those that manage the timing of the measurements (in this case the readings will occur every 3 s). It would be good not to go below this value because the DHT22 takes about 2 s to make a measurement.  
 
+![Listing 1: Loop for Sensor Data Read and Printout.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-listing1.png)
+
 Listing 1: Loop for Sensor Data Read and Printout.
 
 Next comes the printData() function, which reads the temperature and humidity variables and prints them to PlatformIO’s Serial Monitor, giving them minimal formatting. The setup function initializes the serial port (through which prints to the Serial Monitor will pass) and connects GPIO 14 to the sensor.  
   
 Finally, the loop function detects, every measureDelay ms, the measurements made by the sensor and stores them in the two variables temperature and humidity. It then calls the printData() function to print the results. All of this is done cyclically. To load the sketch onto the board, simply click on the button indicated with the number *1* in **Figure 19**.
 
+![Figure 19: Compile and load sketch button and Serial Monitor activation button](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig19.png)
+
 Figure 19: Compile and load sketch button and Serial Monitor activation button.
 
 The sketch will first be compiled and then, if no compilation errors occur, loaded into the internal memory of the ESP32 microcontroller. To visualize the results, the Serial Monitor must be activated by clicking the button indicated with the number *2*, still in Figure 19. **Figure 20** shows the results printed on the Serial Monitor.
+
+![Figure 20: Printout of the results on the Serial Monitor.](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F42%2F20241007171834_platformio-fig20.png)
 
 Figure 20: Printout of the results on the Serial Monitor.
 
@@ -204,6 +249,7 @@ Using PlatformIO for ESP32 represents a significant step toward a more efficient
 
 *Editor* ’ *s notes: Interested in ESP32 projects,PlatformIO, and more?* *This project originally appeared in [**Elettronica IN**](https://ei.futuranet.it/ "https://ei.futuranet.it/").*  
   
+![elektor](https://cdn.xingosoftware.com/elektor/images/fetch/dpr_1.25,w_1000/https%3A%2F%2Fwww.elektormagazine.com%2Fassets%2Fupload%2Fimages%2F1%2F20231218152732_230586-013-94-ORIGINAL-EI-s-New-Logo.jpg)
 
 **Add a rating to this article**
 

@@ -11,14 +11,15 @@ original_file: raw/espressifesp-idf Espressif IoT Development Framework. Officia
 ---
 title: "espressif/esp-idf: Espressif IoT Development Framework. Official development framework for Espressif SoCs."
 source: "https://github.com/espressif/esp-idf"
-author: ""
-published: ""
-created: "2026-04-18"
+author:
+  - "espressif"
+published:
+created: 2026-04-18
 description: "Espressif IoT Development Framework. Official development framework for Espressif SoCs. - espressif/esp-idf"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## Espressif IoT Development Framework
 
 - [中文版](https://github.com/espressif/esp-idf/blob/master/README_CN.md)
@@ -27,14 +28,14 @@ ESP-IDF is the development framework for Espressif SoCs supported on Windows, Li
 
 ## ESP-IDF Release Support Schedule
 
-[](https://camo.githubusercontent.com/708cdaf881a9f8038b349323792cdd5329d93bd6cd44749f39a64186073aad41/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f737570706f72742d706572696f64732e7376673f763d31)
+[![Support Schedule](https://camo.githubusercontent.com/708cdaf881a9f8038b349323792cdd5329d93bd6cd44749f39a64186073aad41/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f737570706f72742d706572696f64732e7376673f763d31)](https://camo.githubusercontent.com/708cdaf881a9f8038b349323792cdd5329d93bd6cd44749f39a64186073aad41/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f737570706f72742d706572696f64732e7376673f763d31)
 
 - Please read [the support policy](https://github.com/espressif/esp-idf/blob/master/SUPPORT_POLICY.md) and [the documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/versions.html) for more information about ESP-IDF versions.
 - Please see the [End-of-Life Advisories](https://www.espressif.com/en/support/documents/advisories?keys=&field_type_of_advisory_tid%5B%5D=817) for information about ESP-IDF releases with discontinued support.
 
 ## ESP-IDF Release and SoC Compatibility
 
-[](https://camo.githubusercontent.com/8243c54d3b7a4fbcdcaec0ee0e5435354a8949d87616aabdc719f13fc199ab8d/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f636869702d737570706f72742e7376673f763d31)
+[![Chip support](https://camo.githubusercontent.com/8243c54d3b7a4fbcdcaec0ee0e5435354a8949d87616aabdc719f13fc199ab8d/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f636869702d737570706f72742e7376673f763d31)](https://camo.githubusercontent.com/8243c54d3b7a4fbcdcaec0ee0e5435354a8949d87616aabdc719f13fc199ab8d/68747470733a2f2f646c2e6573707265737369662e636f6d2f646c2f6573702d6964662f636869702d737570706f72742e7376673f763d31)
 
 See [Compatibility Between ESP-IDF Releases and Revisions of Espressif SoCs](https://github.com/espressif/esp-idf/blob/master/COMPATIBILITY.md) for the details of the compatibility between ESP-IDF and chip revisions.
 
@@ -76,7 +77,7 @@ See the Getting Started guide links above for a detailed setup guide. This is a 
 
 ## Configuring the Project
 
-- `idf.py set-target ` sets the target of the project to ``. Run `idf.py set-target` without any arguments to see a list of supported targets.
+- `idf.py set-target <chip_name>` sets the target of the project to `<chip_name>`. Run `idf.py set-target` without any arguments to see a list of supported targets.
 - `idf.py menuconfig` opens a text-based configuration menu where you can configure the project.
 
 ## Compiling the Project

@@ -11,14 +11,14 @@ original_file: raw/คู่มือ Hermes Agent.md
 ---
 title: "คู่มือ คำสั่งที่ใช้บ่อย น้องเฮอมีส Hermes Agent"
 source: "https://www.sanookai.com/articles/hermes-agent-doc?fbclid=IwY2xjawRRBEtleHRuA2FlbQIxMABicmlkETFxd1ZtMTRQblBJenlPczFac3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHo4Hg0Pk-Kde64ImrT8h22RV9JsHEUavVuGsG7fLelsIgBs2bVNwkNUJEHdQ_aem_dLwP5lhz1kaVlvki3TY11A"
-author: ""
-published: ""
-created: "2026-04-19"
+author:
+published:
+created: 2026-04-19
 description: "คู่มือภาษาไทย น้อง เฮอมีส ai"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 คู่มือภาษาไทย น้อง เฮอมีส ai
 
 ## ติดตั้งแบบง่ายที่สุด บน mac
@@ -97,7 +97,7 @@ hermes status
 ### 1) เริ่มคุย / ยิงคำสั่งแบบ one-shot / กลับเข้า session
 
 - hermes หรือ hermes chat ใช้เปิดแชตแบบ interactive กับ agent; ถ้าจะยิง prompt ครั้งเดียวใช้ hermes chat -q "..." ได้เลย ส่วน options ที่ใช้บ่อยคือ --model, --provider, --toolsets, --skills, --image, --worktree, --checkpoints, --continue, --resume และ --verbose
-- hermes -c หรือ hermes --continue ใช้กลับเข้า session ล่าสุด, hermes -r  หรือ --resume ใช้ระบุ session/ชื่อ session ที่ต้องการ, hermes -p  ใช้สลับ profile สำหรับคำสั่งนั้น ๆ, และ hermes -w หรือ --worktree ใช้เปิด isolated git worktree สำหรับงานคู่ขนาน
+- hermes -c หรือ hermes --continue ใช้กลับเข้า session ล่าสุด, hermes -r <session> หรือ --resume ใช้ระบุ session/ชื่อ session ที่ต้องการ, hermes -p <profile> ใช้สลับ profile สำหรับคำสั่งนั้น ๆ, และ hermes -w หรือ --worktree ใช้เปิด isolated git worktree สำหรับงานคู่ขนาน
 
 ตัวอย่างที่ใช้บ่อย:
 
@@ -166,7 +166,7 @@ hermes pairing list
 
 - hermes sessions list|browse|export|delete|prune|stats|rename ใช้ดู session ล่าสุด, ค้นหาแล้ว resume, export เป็น JSONL, ลบ session เก่า หรือเปลี่ยนชื่อ session
 - hermes logs ใช้ดู log; รองรับ agent, errors, gateway, list และ options ที่ใช้บ่อยคือ -n, -f, --level, --session, --since, --component
-- hermes backup สำรอง Hermes home เป็น zip; --quick ทำ snapshot เฉพาะไฟล์สำคัญ; hermes import  ใช้กู้คืน backup กลับมา
+- hermes backup สำรอง Hermes home เป็น zip; --quick ทำ snapshot เฉพาะไฟล์สำคัญ; hermes import <zipfile> ใช้กู้คืน backup กลับมา
 - hermes doctor \[--fix\] ใช้วินิจฉัยปัญหาและพยายามซ่อมอัตโนมัติบางอย่างได้, hermes dump \[--show-keys\] ใช้สรุป environment แบบพร้อมส่งให้คนช่วยดู, hermes debug share ใช้อัปโหลด debug report พร้อม log และ system info
 - hermes version, hermes update, hermes uninstall \[--full\] \[--yes\] คือกลุ่ม maintenance พื้นฐาน
 - hermes insights \[--days N\] \[--source platform\] ใช้ดูสถิติการใช้งาน, token/cost/activity ตามช่วงเวลาและ platform
@@ -239,7 +239,7 @@ hermes claw migrate --dry-run
 
 ## ชีตสรุป slash commands ในแชต (/...)
 
-Hermes มี 2 พื้นที่สำหรับ slash commands คือใน CLI interactive และใน messaging gateway; นอกจากนี้ skill ที่ติดตั้งไว้ก็สามารถถูกเรียกเป็น / ได้ด้วยทั้งสองฝั่ง
+Hermes มี 2 พื้นที่สำหรับ slash commands คือใน CLI interactive และใน messaging gateway; นอกจากนี้ skill ที่ติดตั้งไว้ก็สามารถถูกเรียกเป็น /<skill-name> ได้ด้วยทั้งสองฝั่ง
 
 ### คำสั่งหลักใน CLI chat
 
@@ -248,11 +248,11 @@ Hermes มี 2 พื้นที่สำหรับ slash commands คือ
 - tools และ skills: /tools, /toolsets, /browser, /skills, /cron, /reload-mcp, /reload, /plugins
 - ข้อมูลและ utility: /help, /usage, /insights, /platforms, /paste, /image, /debug, /profile
 - ออกจาก CLI: /quit หรือ /exit
-- เรียก skill โดยตรง: / เช่น /plan หรือ skill ที่ติดตั้งเอง
+- เรียก skill โดยตรง: /<skill-name> เช่น /plan หรือ skill ที่ติดตั้งเอง
 
 ### คำสั่งหลักใน messaging chat
 
-- ใช้ร่วมกับ CLI ได้หลายตัว เช่น /new, /reset, /status, /stop, /model, /provider, /personality, /fast, /retry, /undo, /compress, /title, /resume, /usage, /insights, /reasoning, /voice, /rollback, /snapshot, /background, /plan, /reload-mcp, /reload, /yolo, /debug, /help, และ /
+- ใช้ร่วมกับ CLI ได้หลายตัว เช่น /new, /reset, /status, /stop, /model, /provider, /personality, /fast, /retry, /undo, /compress, /title, /resume, /usage, /insights, /reasoning, /voice, /rollback, /snapshot, /background, /plan, /reload-mcp, /reload, /yolo, /debug, /help, และ /<skill-name>
 - ที่เป็น messaging-only ตาม docs คือ /sethome, /commands, /approve, /deny, /update, /restart โดย /sethome ใช้ตั้ง chat นี้เป็น home channel ของ platform สำหรับรับผลลัพธ์จาก cron/jobs, และ /approve//deny ใช้ตอบรับหรือปฏิเสธ dangerous command ที่รออนุมัติอยู่
 
 ### คำสั่งที่ควรจำเป็นพิเศษ

@@ -11,14 +11,15 @@ original_file: raw/HelTecAutomationHeltec_ESP32 Arduino library for Heltec ESP32
 ---
 title: "HelTecAutomation/Heltec_ESP32: Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards"
 source: "https://github.com/HelTecAutomation/Heltec_ESP32"
-author: ""
-published: ""
-created: "2026-04-18"
+author:
+  - "HelTecAutomation"
+published:
+created: 2026-04-18
 description: "Arduino library for Heltec ESP32 (or ESP32+LoRa) based boards - HelTecAutomation/Heltec_ESP32"
-tags: ""
+tags:
+  - "clippings"
 ---
 ```
-
 ## Heltec\_ESP32 Library
 
 English | [简体中文](#%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
@@ -40,7 +41,7 @@ The framework the library depends on, you can choose any of them:
 
 Open Arduino IDE, then Select `LIBRARY MANAGER`.
 
-[]()
+[![image](https://github.com/HelTecAutomation/Heltec_ESP32/raw/master/img/01.png)](https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/img/01.png)
 
 Search `Heltec ESP32` and install it.### Use Git
 
@@ -114,7 +115,7 @@ Please make sure use a high-quality Micro USB cable, it will reduce many problem
 
 ### 通过Arduino库管理器安装
 
-打开Arduino IDE, 选择 `项目` -> `加载库` -> `管理库...`，打开“库管理器” 搜索 `Heltec ESP32` 并安装. []()### 通过Git进行安装
+打开Arduino IDE, 选择 `项目` -> `加载库` -> `管理库...`，打开“库管理器” 搜索 `Heltec ESP32` 并安装. [![image](https://github.com/HelTecAutomation/Heltec_ESP32/raw/master/img/01.png)](https://github.com/HelTecAutomation/Heltec_ESP32/blob/master/img/01.png)### 通过Git进行安装
 
 \*首先,请确保 `Git` 和 `Arduino IDE` 都已经正确安装。如果没有，请参考这里的安装方法 [怎样安装Git和Arduino IDE](https://docs.heltec.org/general/how_to_install_git_and_arduino.html) 。 \*
 
