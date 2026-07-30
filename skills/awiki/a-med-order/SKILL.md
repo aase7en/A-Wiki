@@ -1,12 +1,12 @@
 ---
 name: a-med-order
-description: "ใบสั่งซื้อยาร้านภูฟาร์มาซี end-to-end — รับลิสต์ยาหมดที่พิมพ์มั่ว (ไทยปนอังกฤษ / คาราโอเกะ / สะกดผิด / หน่วยเพี้ยน) → normalize + verify ชื่อยาจากสต๊อกจริงและเว็บ → ออกไฟล์ Excel/Google Sheet ตาม template (12 หมวด, ช่องกรอกจำนวน, ทุนต่อหน่วย) → ผู้ใช้กรอกจำนวน → สรุปเป็นข้อความ copy วาง LINE ครั้งเดียวจบ. Trigger: 'รายการยาหมด', 'รายการสั่งยา', 'สั่งยา', 'ใบสั่งยา', 'ยาหมด', ลิสต์ชื่อยาหลายบรรทัด"
-version: 1.0.0
+description: "ใบสั่งซื้อยาร้านภูฟาร์มาซี end-to-end — รับลิสต์ยาหมดที่พิมพ์มั่ว (ไทยปนอังกฤษ / คาราโอเกะ / สะกดผิด / หน่วยเพี้ยน) → normalize + verify ชื่อยาจากคลังคำพ้องและสต๊อกจริง → ออกไฟล์ Excel/Google Sheet ตาม template (12 หมวด, ช่องกรอกจำนวน, ทุนต่อหน่วย) → ผู้ใช้กรอกจำนวน → สรุปเป็นข้อความ copy วาง LINE. มีเลน Telegram ไม่ใช้ browser สำหรับ Pi5. Trigger: 'รายการยาหมด', 'รายการสั่งยา', 'สั่งยา', 'ใบสั่งยา', 'ยาหมด', ลิสต์ชื่อยาหลายบรรทัด"
+version: 1.2.0
 author: A-Wiki
 domain: [pharmacy, business]
 lifecycle_phase: build
 category: pipeline
-agents: [all]
+agents: [all, hermes]
 status: canonical
 invocation: both
 ---
@@ -14,268 +14,105 @@ invocation: both
 # A-Med-Order — ใบสั่งซื้อยา ร้านภูฟาร์มาซี
 
 > **เจ้าของงาน**: ศุภศิษฎิ์ คงสุวรรณ · ร้านยาภูฟาร์มาซี (สมุทรปราการ)
-> **ต่อยอดจาก**: `pharmacy-order-lookup` (fuzzy match + drugs.db) — สกิลนี้คือ **front door** ที่ครอบ workflow ทั้งวง
-> **Iron Law**: ห้าม "มโน" ชื่อยา/ตัวยา/ความแรง — ไม่แน่ใจให้ปล่อยว่าง + ใส่หมายเหตุสีแดง ดีกว่าเดาผิด
+> Progressive disclosure — ไฟล์นี้คือขั้นตอนที่ต้องทำ; รายละเอียดอยู่ใน `references/` โหลดเฉพาะที่ใช้
 
----
+## 🚨 กฎที่ห้ามพลาด (อ่านก่อนเสมอ)
 
-## 🔁 Flow ทั้งวง (5 ขั้น)
+1. **ห้าม "มโน" ชื่อยา / ตัวยา / ความแรง / ขนาดบรรจุ** — ไม่ชัวร์ให้ปล่อยว่าง + หมายเหตุ
+   "ยืนยันกับผู้แทน" **ดีกว่าเดาผิด** สั่งยาผิดตัวหรือผิดขนาด = อันตรายกับคนไข้
+2. **ขนาดบรรจุต่างกัน = คนละ SKU** — `Minny 21` ≠ `Minny 28`, `MYDA-B 15g` ≠ `MYDA-B 25g` ห้ามยุบรวม
+3. **ยาที่ต้องระวังเป็นพิเศษ**
+   - ยาควบคุมพิเศษ/ยาอันตราย (VENTOLIN, ยาปฏิชีวนะ) → ใส่หมายเหตุเตือนตรวจใบสั่งซื้อ
+   - ยาคุมฉุกเฉิน → แยกชนิด 1 เม็ด (Levonorgestrel 1.5 mg) กับ 2 เม็ด (0.75 mg) ให้ชัด
+   - สเตียรอยด์ทาภายนอก (Tacinol / Kela / ที.วี.โลน / TRAM = Triamcinolone acetonide 0.1% ทั้งหมด)
+     → ชื่อต่างแต่ตัวยาเดียวกัน **คนละ SKU คนละราคา อย่ายุบ**
+4. **ข้อมูลธุรกิจอยู่ใน `<drive>/pharmacy/` เท่านั้น** — resolve path ผ่าน
+   `scripts/drive_path.py::get_pharmacy_dir()` ห้าม hardcode (Iron Law #6)
 
-```
-[1] รับลิสต์ยาหมด (chat / รูป / ไฟล์)
-      ↓  normalize + verify
-[2] ตรวจคำผิด → ชื่อการค้า + ตัวยา + ความแรง + ขนาดบรรจุ ที่ถูกต้อง
-      ↓  build
-[3] ไฟล์ Excel / Google Sheet ตาม template (จำนวนเว้นว่าง + ทุน/หน่วย)
-      ↓  ผู้ใช้กรอกจำนวน แล้วส่ง path หรือ URL กลับมา
-[4] อ่านจำนวนที่กรอก → เก็บเป็นประวัติการสั่งใน Drive
-      ↓  summarize
-[5] ข้อความกระชับ copy วาง LINE ครั้งเดียว
-```
+## เริ่มงานทุกครั้ง
 
----
-
-## 📂 แหล่งข้อมูล (Data layer)
-
-| ชั้น | ที่อยู่ | ใช้ทำอะไร |
-|---|---|---|
-| **คลังคำพ้อง (auto-learn)** | `<drive>/pharmacy/order-aliases.json` | "ชื่อที่พิมพ์มั่ว → รายการที่เจ้าของร้านยืนยันแล้ว" — **ถามก่อนเสมอ** |
-| **สต๊อกจริง + ทุน** | `<drive>/pharmacy/medi.list/รายการยาทั้งหมด.xls` | ชื่อสินค้าที่ร้านใช้จริง, หน่วย, คงเหลือ, **ราคาทุน/หน่วย** — แหล่งหลัก |
-| ↳ compiled | `wiki/entities/pharmacy/medi_list.db` (SQLite+FTS5, gitignored) | สร้างด้วย `scripts/import_medi_list.py` |
-| **แคตตาล็อก SP 2020 + verified** | `wiki/entities/pharmacy/drugs.db` | fallback fuzzy match — `scripts/pharmacy_lookup.py` |
-| **ยอดขายย้อนหลัง 2020→ปัจจุบัน** | `<drive>/pharmacy/Sales report/*.xls` | ดูอัตราการขาย/ฤดูกาล ก่อนแนะนำจำนวนสั่ง |
-| **ประวัติการสั่ง** | `<drive>/pharmacy/order-history/` | ไฟล์ `PO-YYYY-MM-NN_*.xlsx` ทุกใบ + `order-history.json` |
-| **ไฟล์ export** | `<drive>/pharmacy/exports/` | csv/xlsx ระหว่างทาง |
-
-> `<drive>` = resolve ผ่าน `scripts/drive_path.py::get_pharmacy_dir()` เท่านั้น — **ห้าม hardcode path เครื่องใดเครื่องหนึ่ง** (Iron Law #6) เพราะ Mac บ้าน / PC ที่ทำงาน / WSL คนละ path
-> ข้อมูลธุรกิจจริงอยู่ใน Drive ทั้งหมด — repo เก็บได้แค่ script + template (public-safe)
-
-**รีเฟรชฐานข้อมูลก่อนเริ่มงานเสมอ:**
 ```bash
-python3 scripts/import_medi_list.py          # อ่าน .xls (cp874) → medi_list.db
-python3 scripts/import_medi_list.py --stats  # เช็คว่าอัปเดตวันไหน กี่รายการ
+python3 scripts/import_medi_list.py          # รีเฟรชสต๊อก + ราคาทุน (ควรรันวันละครั้ง)
+python3 scripts/import_medi_list.py --stats  # เช็คว่าอัปเดตวันไหน
 ```
 
 ---
 
-## [2] ตรวจคำผิด — Normalize & Verify
-
-ลิสต์ที่ paste มามักพิมพ์เร็ว/พิมพ์จากเสียง จึงต้องผ่าน 4 ด่านตามลำดับ:
-
-### ด่าน 0 — คลังคำพ้องที่เคยยืนยันแล้ว (0 token, แม่นที่สุด — ทำก่อนเสมอ)
-```bash
-python3 scripts/build_order_sheet.py resolve list.txt   # alias → สต๊อก → unknown (JSON)
-python3 scripts/pharmacy_aliases.py resolve "<ชื่อ>"     # เช็คทีละคำ
-```
-คีย์ของ alias คือ token set ที่ normalize แล้ว → ทนต่อสลับคำ ตัวพิมพ์ วรรคตอน และหน่วยเขียนต่าง
-(`15ml` / `15 ML` / `15 cc` = คีย์เดียวกัน) รายการที่ hit ที่ด่านนี้ **ไม่ต้องให้โมเดลตัดสินเลย**
-
-### ด่าน 1 — ฐานข้อมูลร้าน (ฟรี, เร็วสุด)
-```bash
-python3 scripts/build_order_sheet.py cost "<ชื่อที่สั่ง>" ...   # medi_list.db
-python3 scripts/pharmacy_lookup.py --json < items.txt           # drugs.db (fuzzy + FTS)
-```
-
-### ด่าน 2 — กฎการสะกด (ทำในหัว ไม่ต้องยิงเน็ต)
-
-| อาการ | ตัวอย่างจริง | วิธีแก้ |
-|---|---|---|
-| ไทยคาราโอเกะ → อังกฤษ | `ยาคุมแอนนา` → **Anna** · `มินนี่` → **Minny** · `ดิออร์รา` → **Diora** · `พรีม` → **Preme** | ถอดเสียงกลับเป็นชื่อการค้าอังกฤษ แล้วค้นซ้ำ |
-| ไทยปนอังกฤษ | `เซทรอซิน CETRIZIN` | ตัดคำซ้ำ เหลือชื่อการค้าเดียว |
-| อังกฤษสะกดผิด | `Hydrochlorothizide` → **Hydrochlorothiazide** · `Norxacin` → Norfloxacin · `TACTNOL` → **Tacinol** | เทียบ INN/ชื่อสามัญ |
-| หน่วยเพี้ยน | `120mi` → **120 ml** · `5 ซีซี` → **5 cc (= 5 ml)** · `กรัม` → **g** · `micorogrsm` → **mcg** | normalize: mi→ml, cc→ml, gm/gram→g, s/tabs→เม็ด |
-| ตกสระ/พิมพ์ติด | `ยาทาพกช้ำ` → **ยาทาแก้ฟกช้ำ** · `ซีพาตอบ` → **Cepacol** · `เนสเทียม` → **Natear** | เดาจากบริบทหมวด แล้ว verify |
-| ขนาดปนกัน | `50x10s` = 50 แผง×10 เม็ด (ยกกล่อง) ≠ `2x10s` | แยก "ขนาดบรรจุ" ออกจาก "ความแรง" เสมอ |
-
-### ด่าน 3 — ค้นเน็ต (เฉพาะที่ยังไม่พบ)
-ค้นชื่อการค้าไทย + ตัวยา + ขนาดที่มีขายในไทย → ยอมรับเมื่อชื่อใกล้เคียง >80%
-ตัวอย่างที่เคยแก้ได้จากด่านนี้: `Allernix` = Loratadine 10 mg · `Zensil` = Cetirizine 10 mg · `Tacinol` = Triamcinolone acetonide 0.1%
-
-### ด่าน 4 — ถามเจ้าของร้าน
-เหลือรายการที่ยังไม่ชัด → **ถามรวบเดียวท้ายงาน** อย่าถามทีละรายการ
-รูปแบบ: "รายการนี้ยืนยันหน่อยครับ: (1) X ตัวยาอะไร (2) Y ขนาดบรรจุเท่าไหร่"
-
-> **กฎเหล็ก**: match ที่ไม่ชัวร์ → ปล่อยช่องว่าง + หมายเหตุสีแดง "ยืนยันกับผู้แทน"
-> `lookup_cost()` มี guard 4 ชั้น: ตัวเลขขนาดต้องตรง · ชื่อการค้า (token ยาวสุด) ต้องเจอ · score ≥ 0.5 ·
-> **ถ้าคะแนนสูงสุดเสมอกันหลายตัว = แยกไม่ออก → คืนว่าง** (กัน `Nizoral` เฉยๆ ไปหยิบราคา shampoo แทน cream)
-> เคสจริงที่ guard จับได้: `MYDA-B 15g`→`Myda-B 25g` · `betadine 15ml`→`NASOL 15ml` · `Nizoral cream`→`ZEMA Cream`
-
-### ⭐ ด่าน 5 — auto-learn (ขั้นที่ทำให้รอบหน้าง่ายขึ้น — ห้ามข้าม)
-
-ทุกครั้งที่เจ้าของร้าน **ยืนยัน** ชื่อยา ให้จำลง alias ทันที:
-```bash
-# items ต้องมี raw (สิ่งที่ผู้ใช้พิมพ์) + name (ชื่อที่ยืนยันแล้ว)
-python3 scripts/build_order_sheet.py learn confirmed.json
-python3 scripts/pharmacy_aliases.py stats
-python3 scripts/pharmacy_aliases.py forget "<ชื่อที่จำผิด>"   # แก้เมื่อเรียนผิด
-```
-`med_order_telegram.py finish` เรียก learn ให้อัตโนมัติแล้ว (ปิดด้วย `--no-learn`)
-
-**นี่คือกลไกที่ทำให้โมเดล free-tier ใช้แทน flagship ได้** — ทุกรอบที่สั่ง คลังคำพ้องโตขึ้น
-ขั้นที่ต้องใช้วิจารณญาณจึงเหลือน้อยลงเรื่อยๆ จนสุดท้ายลิสต์ส่วนใหญ่ resolve ได้โดยไม่แตะ LLM เลย
-(seed เริ่มต้น 71 รายการ จากลิสต์จริงที่ยืนยันกันเมื่อ 2026-07-30)
-
----
-
-## [2.5] จัดหมวด — 12 หมวดมาตรฐาน (คงลำดับนี้เสมอ)
-
-```
-1. ยาแก้ปวด / ลดไข้            7. ยาคุมกำเนิด
-2. ยาแก้แพ้ / เวียนศีรษะ         8. ยาใช้ภายนอก / ผิวหนัง
-3. ยาปฏิชีวนะ / ต้านเชื้อรา      9. เวชภัณฑ์ / ทำแผล
-4. ยาโรคเรื้อรัง / ทางเดินปัสสาวะ 10. ยาหยอดตา
-5. ยาระบบทางเดินอาหาร          11. วิตามิน / อาหารเสริม
-6. ยาระบบทางเดินหายใจ          12. ยาดม / พิมเสน
-```
-รายการที่ไม่เข้าหมวดไหน → ต่อท้ายเป็นหมวดใหม่ แล้วแจ้งเจ้าของร้านให้ยืนยัน
-
----
-
-## [3] สร้างไฟล์ใบสั่งซื้อ
+## เลน A — เต็ม (มี Google Sheet) · ใช้บน Claude Code / Cowork
 
 ```bash
+# 1) ลิสต์ดิบ → JSON draft: คลังคำพ้อง → สต๊อกจริง → unknown
+python3 scripts/build_order_sheet.py resolve list.txt
+
+# 2) เฉพาะรายการ status=unknown เท่านั้นที่ต้องตัดสินใจ  → references/normalization.md
+# 3) จัด 12 หมวด แล้วสร้างไฟล์
 python3 scripts/build_order_sheet.py build items.json \
-        --out "<drive>/pharmacy/order-history/PO-2026-08-01_ใบสั่งยา_2026-08-01.xlsx" \
-        --po PO-2026-08-01 --date 01/08/2026
+        --out "<drive>/pharmacy/order-history/PO-YYYY-MM-NN_ใบสั่งยา.xlsx" --po PO-YYYY-MM-NN
+
+# 4) ผู้ใช้กรอกจำนวน → 5) ข้อความ LINE
+python3 scripts/build_order_sheet.py line "<path ที่กรอกแล้ว>"
+
+# 6) จำคำที่ยืนยันรอบนี้ ห้ามข้าม
+python3 scripts/build_order_sheet.py learn confirmed.json
 ```
 
-`items.json` — 1 object ต่อ 1 รายการ:
-```json
-[{"category":"1. ยาแก้ปวด / ลดไข้","name":"PARA CEMOL (ชนิดเม็ดขาว กลม)",
-  "strength":"Paracetamol 500 mg","pack":"100 เม็ด/ขวด","qty":null,"unit":"ขวด","note":""}]
-```
-
-Template ที่ได้ (ห้ามเปลี่ยนโครง — เจ้าของร้านคุ้นแล้ว):
-
-| คอลัมน์ | เนื้อหา |
-|---|---|
-| A ลำดับ | 1..N ต่อเนื่องข้ามหมวด |
-| B หมวด | ซ่อนไว้ — เป็นคีย์ให้ชีตสรุป `COUNTIF/SUMIF` |
-| C ชื่อยา / สินค้า | ชื่อการค้าล้วน (ความแรงไปคอลัมน์ D) |
-| D ตัวยา / ความแรง | INN + mg/ml |
-| E รูปแบบ / ขนาดบรรจุ | 100 เม็ด/ขวด, 60 ml, 50x10 เม็ด |
-| **F จำนวนสั่ง** | 🟡 ช่องกรอก (พื้นเหลือง ตัวอักษรน้ำเงิน) |
-| G หน่วย | ขวด/กล่อง/แผง/หลอด/ซอง/ม้วน/โหล/อัน |
-| **H ราคา/หน่วย** | 🟡 ช่องกรอก — เติม "ทุนล่าสุด" จาก `medi_list.db` ให้อัตโนมัติ |
-| I รวมเงิน | สูตร `=IF(OR(F="",H=""),0,F*H)` |
-| **J ผู้จำหน่าย** | 🟡 ช่องกรอก |
-| K หมายเหตุ | สีแดงเมื่อยังต้องยืนยัน |
-
-+ แถบหมวดสีฟ้า · แถวรวมท้ายตาราง · ชีต 2 **"สรุปตามหมวด"** (จำนวนรายการ / หน่วย / เงิน) · freeze pane · autofilter
-
-**ส่งเป็น Google Sheet**: วางไฟล์ลง `<drive>/pharmacy/order-history/` (sync ขึ้น Drive เอง) →
-เปิดชีตปลายทาง → `ไฟล์ ▸ นำเข้า ▸ ไดรฟ์ของฉัน` → เลือกไฟล์ → **แทนที่สเปรดชีต** → นำเข้าข้อมูล
-(URL ชีตไม่เปลี่ยน · Google เก็บ version history ให้ย้อนกลับได้)
-
----
-
-## [4] อ่านจำนวนที่เจ้าของร้านกรอกกลับมา
-
-รับได้ 3 ทาง — เลือกอันที่ผู้ใช้ให้มา:
-1. **URL Google Sheet** → อ่านด้วย Google Drive MCP (`read_file_content` ด้วย fileId จาก URL)
-2. **path ไฟล์ใน Drive** → `python3 scripts/build_order_sheet.py line <path>`
-3. **แนบไฟล์มาในแชท** → เช่นเดียวกับข้อ 2
-
-แล้ว **เก็บเป็นประวัติ**: คัดลอกไฟล์ที่กรอกแล้วไป `<drive>/pharmacy/order-history/PO-YYYY-MM-NN_*.xlsx`
-ประวัตินี้คือ training data ของรอบถัดไป — ดูได้ว่ารายการไหนสั่งบ่อย จำนวนเท่าไหร่ ราคาขยับหรือยัง
-
----
-
-## [5] สรุปเป็นข้อความ LINE
+## เลน B — Telegram ไม่ใช้ browser · Pi5 / Hermes / ZCode / โมเดล free-tier
 
 ```bash
-python3 scripts/build_order_sheet.py line "<path .xlsx ที่กรอกแล้ว>"
-# --all  = รวมรายการที่ยังไม่กรอกจำนวน (แสดงเป็น ___)
+python3 scripts/med_order_telegram.py draft list.txt --session YYYYMMDD-NN
+python3 scripts/med_order_telegram.py set  <id> <ข้อ> --name "..." --strength "..." \
+        --pack "..." --unit "..." --category "..."      # เฉพาะรายการ ❓ unknown
+python3 scripts/med_order_telegram.py qty  <id> "1=12 2=10 3=40"
+python3 scripts/med_order_telegram.py finish <id> --po PO-YYYY-MM-NN
 ```
 
-รูปแบบผลลัพธ์ (ยึดตามนี้ ห้ามเปลี่ยน):
-```
-📋 ใบสั่งยา ร้านภูฟาร์มาซี | 29/07/2026 | PO-2026-07-01
-รวม 78 รายการ
-
-■ ยาแก้ปวด / ลดไข้
-1. PARA CEMOL (ชนิดเม็ดขาว กลม) Paracetamol 500 mg 100 เม็ด/ขวด = 12 ขวด
-...
-รบกวนแจ้งราคาและกำหนดส่งด้วยครับ ขอบคุณครับ
-```
-กติกา: `ชื่อ` + เว้นวรรค + `ตัวยา/ความแรง` + เว้นวรรค + `ขนาดบรรจุ` + ` = ` + `จำนวน หน่วย`
-ช่องไหนว่างให้ข้ามไปเลย (ไม่ต้องใส่ `-`) · เลขลำดับนับต่อเนื่องข้ามหมวด
-
-**ส่งกลับผู้ใช้ใน code block** เพื่อให้ copy ได้ครั้งเดียวจบ + แนบไฟล์ `.txt` สำรอง
+`finish` = เขียน xlsx ลง `order-history/` + พิมพ์ข้อความ LINE + เรียน alias อัตโนมัติ
+รายละเอียด (รูปแบบคำตอบจำนวน, session, ข้อจำกัด) → `references/telegram-lane.md`
 
 ---
 
----
+## 12 หมวดมาตรฐาน (คงลำดับนี้เสมอ)
 
-## 📱 เลนที่ 2 — Telegram (ไม่ใช้ browser) สำหรับ Pi5 / Hermes / ZCode / โมเดล free-tier
-
-ใช้เมื่อ Claude ติด limit, ไม่มีเบราว์เซอร์, หรือรีบสั่งจากมือถือ — **ตัด Google Sheet ออกทั้งหมด จบใน 3 ข้อความ**
-
-```bash
-# 1) ลิสต์ยาหมด → session + ข้อความถามจำนวน (ส่งกลับผู้ใช้ทาง Telegram)
-python3 scripts/med_order_telegram.py draft list.txt --session 20260801-01
-
-# 2) เฉพาะรายการ ❓ unknown — จุดเดียวที่ต้องใช้ LLM/คนตัดสิน
-python3 scripts/med_order_telegram.py set 20260801-01 5 \
-        --name "Nizoral ครีม" --strength "Ketoconazole 2%" --pack "10 g" \
-        --unit หลอด --category "3. ยาปฏิชีวนะ / ต้านเชื้อรา"
-
-# 3) ผู้ใช้ตอบจำนวนมา → อัปเดต แล้วปิดงาน
-python3 scripts/med_order_telegram.py qty    20260801-01 "1=12 2=10 3=40"
-python3 scripts/med_order_telegram.py finish 20260801-01 --po PO-2026-08-01
+```
+1. ยาแก้ปวด / ลดไข้              7. ยาคุมกำเนิด
+2. ยาแก้แพ้ / เวียนศีรษะ          8. ยาใช้ภายนอก / ผิวหนัง
+3. ยาปฏิชีวนะ / ต้านเชื้อรา       9. เวชภัณฑ์ / ทำแผล
+4. ยาโรคเรื้อรัง / ทางเดินปัสสาวะ 10. ยาหยอดตา
+5. ยาระบบทางเดินอาหาร           11. วิตามิน / อาหารเสริม
+6. ยาระบบทางเดินหายใจ           12. ยาดม / พิมเสน
 ```
 
-`finish` ทำ 3 อย่างพร้อมกัน: เขียน `.xlsx` ลง `order-history/` · พิมพ์ข้อความ LINE ออก stdout · เรียน alias
+## ✅ Checklist ก่อนส่งงาน
 
-**รูปแบบคำตอบจำนวนที่รองรับ**: `1=12 2=5` · `1:12, 2:5` · บรรทัดละ `1 12` · `all 12` / `ทั้งหมด 12`
-ข้อที่ไม่ตอบ = ไม่สั่ง · `finish` จะบล็อกถ้ายังมีรายการ ❓ ที่ใส่จำนวนไว้ (ข้ามด้วย `--force`)
-
-| ทำไมเลนนี้ปลอดภัยกับโมเดลเล็ก | เพราะ |
-|---|---|
-| สคริปต์ไม่มี secret ไม่ต่อเน็ต ไม่เรียก LLM | เป็น state machine ล้วน — บอทแค่ pipe ข้อความ |
-| LLM แตะจุดเดียว = คำสั่ง `set` | ที่เหลือ deterministic ทั้งหมด |
-| รายการที่ hit alias ไม่ผ่าน LLM เลย | ยิ่งใช้ ยิ่งเหลืองานให้โมเดลน้อยลง |
-
-Session เก็บที่ `<drive>/pharmacy/order-sessions/<id>.json` — ดูค้างด้วย `list` / `status`
-บอท Telegram จริงอยู่ใน `scripts/telegram-bot/` (private, gitignored) — เรียกสคริปต์นี้ผ่าน subprocess
-
----
-
-## 🎯 Checklist ก่อนส่งงาน
-
-- [ ] `import_medi_list.py` รันแล้ววันนี้ (ข้อมูลทุนไม่เก่า)
-- [ ] **เรียน alias จากชื่อที่เจ้าของร้านยืนยันรอบนี้แล้ว** (`stats` ควรเพิ่มขึ้น)
-- [ ] ทุกรายการมีหมวด (ไม่งั้นชีตสรุปนับไม่ครบ — เช็คว่า `รวมทั้งสิ้น` ในชีต 2 = จำนวนรายการจริง)
-- [ ] ยอดรวมจำนวนในชีต 1 = ชีต 2
-- [ ] รายการซ้ำถูกยุบแล้ว (ยกเว้นต่างขนาดบรรจุ — อันนั้นคนละ SKU)
-- [ ] รายการที่ยังไม่ชัด มีหมายเหตุสีแดง + รวบถามในข้อความสรุป
-- [ ] ไฟล์ถูกเก็บใน `<drive>/pharmacy/order-history/` แล้ว
+- [ ] `import_medi_list.py` รันแล้ววันนี้
+- [ ] ทุกรายการมีหมวด (ชีต "สรุปตามหมวด" ต้องนับได้ = จำนวนรายการจริง)
+- [ ] ยอดรวมจำนวนชีต 1 = ชีต 2
+- [ ] รายการซ้ำยุบแล้ว (ยกเว้นต่างขนาดบรรจุ)
+- [ ] รายการที่ยังไม่ชัด มีหมายเหตุ + **รวบถามครั้งเดียวท้ายงาน** อย่าถามทีละรายการ
+- [ ] ไฟล์อยู่ใน `<drive>/pharmacy/order-history/`
+- [ ] **เรียน alias จากชื่อที่ยืนยันรอบนี้แล้ว** (`pharmacy_aliases.py stats` ต้องเพิ่มขึ้น)
 - [ ] ข้อความ LINE ผ่าน `line` mode (ไม่พิมพ์มือ — กันตกหล่น)
 
-## ⚠️ ยาที่ต้องระวังเป็นพิเศษ
+---
 
-- **ยาควบคุมพิเศษ / ยาอันตราย** (เช่น VENTOLIN, ยาปฏิชีวนะ) → ใส่หมายเหตุเตือนตรวจใบสั่งซื้อ
-- **ยาคุมฉุกเฉิน** → แยกชนิด 1 เม็ด (Levonorgestrel 1.5 mg) กับ 2 เม็ด (0.75 mg) ให้ชัด ห้ามรวม
-- **สเตียรอยด์ทาภายนอก** (Tacinol / Kela / ที.วี.โลน / TRAM ล้วน Triamcinolone acetonide 0.1%) → ชื่อต่างแต่ตัวยาเดียวกัน อย่ายุบรวม เพราะเป็นคนละ SKU คนละราคา
+## 📚 references/ (โหลดเฉพาะเมื่อต้องใช้)
 
-## 🔗 Related
-
-`pharmacy-order-lookup` (fuzzy match layer) · `a-wiki-telegram` (transport ของเลนที่ 2) ·
-`a-doc-procurement` (เอกสารจัดซื้อทั่วไป) · `a-business` · `excel-generator`
-
-| สคริปต์ | หน้าที่ |
+| ไฟล์ | เปิดเมื่อ |
 |---|---|
-| `scripts/import_medi_list.py` | stock .xls (cp874) → `medi_list.db` + ราคาทุน |
-| `scripts/build_order_sheet.py` | `build` / `line` / `cost` / `resolve` / `learn` |
-| `scripts/pharmacy_aliases.py` | คลังคำพ้อง — `resolve` / `learn` / `stats` / `list` / `forget` |
-| `scripts/med_order_telegram.py` | เลน Telegram — `draft` / `set` / `qty` / `status` / `list` / `finish` |
-| `scripts/pharmacy_lookup.py` · `build_pharmacy_db.py` | fuzzy match ชั้นเดิม (drugs.db) |
-| `scripts/compare_delivery.py` | เทียบใบส่งของกับที่สั่ง |
+| `references/normalization.md` | ต้องแก้คำผิด/เดาชื่อยา — กฎคาราโอเกะ, หน่วยเพี้ยน, 5 ด่าน, auto-learn |
+| `references/order-sheet.md` | ต้องสร้าง/แก้ไฟล์ Excel หรือ import ขึ้น Google Sheet — โครงคอลัมน์ + ขั้นตอน |
+| `references/telegram-lane.md` | ทำงานผ่าน Telegram / Pi5 — รูปแบบคำตอบ, session, ข้อจำกัด |
+| `references/data-sources.md` | ต้องรู้ว่าข้อมูลอยู่ไหน — drive layout, DB, สคริปต์ทั้งหมด |
 
 ## Invocation
 
 ```
-/A-Med-Order รายการยาหมด <วางลิสต์ที่นี่>        # เลนเต็ม (มี Google Sheet)
+/A-Med-Order รายการยาหมด <วางลิสต์ที่นี่>     # เลน A
+/A-Med-Order telegram <วางลิสต์ที่นี่>         # เลน B
 /A-Med-Order line <path ไฟล์ที่กรอกจำนวนแล้ว>
-/A-Med-Order telegram <วางลิสต์ที่นี่>            # เลนเร็ว ไม่ใช้ browser
 ```
+
+## Related
+
+`pharmacy-order-lookup` (fuzzy match ชั้นเดิม) · `a-wiki-telegram` (transport ของเลน B) ·
+`a-doc-procurement` (เอกสารจัดซื้อทั่วไป) · `a-business` · `excel-generator`
