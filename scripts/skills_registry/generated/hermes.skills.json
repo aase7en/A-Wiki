@@ -274,11 +274,11 @@
         "all",
         "hermes"
       ],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "canonical",
-      "description": "ใบสั่งซื้อยาร้านภูฟาร์มาซี end-to-end — normalize ลิสต์ยาหมดที่พิมพ์ผิด (ไทยปนอังกฤษ/คาราโอเกะ/หน่วยเพี้ยน) → verify จาก medi_list.db + drugs.db + web → ออก xlsx/Google Sheet 12 หมวดพร้อมทุนต่อหน่วย → อ่านจำนวนที่กรอกกลับ → สรุปเป็นข้อความ copy วาง LINE",
+      "description": "ใบสั่งซื้อยาร้านภูฟาร์มาซี end-to-end — normalize ลิสต์ยาหมดที่พิมพ์ผิด (ไทยปนอังกฤษ/คาราโอเกะ/หน่วยเพี้ยน) → คลังคำพ้อง auto-learn + medi_list.db + web → ออก xlsx/Google Sheet 12 หมวดพร้อมทุนต่อหน่วย → อ่านจำนวนที่กรอกกลับ → สรุปเป็นข้อความ copy วาง LINE. มีเลน Telegram ไม่ใช้ browser สำหรับ Pi5/Hermes/ZCode/โมเดล free-tier",
       "invocation": "both",
-      "th_description": "สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา → ใบสั่งซื้อ Excel/Sheet → กรอกจำนวน → ข้อความ LINE",
+      "th_description": "สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา (จำคำพ้องที่ยืนยันแล้วอัตโนมัติ) → ใบสั่งซื้อ Excel/Sheet → กรอกจำนวน → ข้อความ LINE; มีเลน Telegram สำรองตอน Claude ติด limit",
       "when_to_use": "เมื่อได้ลิสต์ยาหมด/ยาที่ต้องสั่งเข้าร้าน หรือจะแปลงใบสั่งซื้อเป็นข้อความส่งผู้แทน",
       "examples": [
         {
@@ -286,21 +286,25 @@
           "how": "/A-Med-Order รายการยาหมด <วางลิสต์>"
         },
         {
-          "scenario": "กรอกจำนวนในชีตแล้ว อยากได้ข้อความส่ง LINE",
-          "how": "python3 scripts/build_order_sheet.py line <file.xlsx>"
+          "scenario": "เลนเร็วไม่ใช้ browser (Pi5/Hermes)",
+          "how": "med_order_telegram.py draft list.txt → qty <id> \"1=12 2=5\" → finish <id>"
         },
         {
-          "scenario": "เช็คราคาทุนก่อนสั่ง",
-          "how": "python3 scripts/build_order_sheet.py cost \"betadine 15ml\""
+          "scenario": "กรอกจำนวนในชีตแล้ว อยากได้ข้อความส่ง LINE",
+          "how": "build_order_sheet.py line <file.xlsx>"
+        },
+        {
+          "scenario": "จำชื่อที่ยืนยันแล้วไว้ใช้รอบหน้า",
+          "how": "build_order_sheet.py learn confirmed.json"
         }
       ],
       "process_steps": [
         "import_medi_list.py รีเฟรชสต๊อก+ทุน",
-        "normalize + verify ชื่อยา (DB → กฎสะกด → web → ถามเจ้าของร้าน)",
-        "จัด 12 หมวด แล้ว build_order_sheet.py build → xlsx",
-        "import ทับ Google Sheet เดิม / ส่งไฟล์ให้กรอกจำนวน",
+        "resolve: คลังคำพ้อง → medi_list.db → unknown",
+        "unknown เท่านั้นที่ให้ LLM/คนตัดสิน (กฎสะกด → web → ถามเจ้าของร้าน)",
+        "จัด 12 หมวด แล้ว build → xlsx (เลนเต็ม) หรือ draft/qty (เลน Telegram)",
         "อ่านจำนวนกลับ + เก็บลง drive/pharmacy/order-history/",
-        "build_order_sheet.py line → ข้อความ LINE"
+        "line → ข้อความ LINE + learn คำพ้องที่ยืนยันรอบนี้"
       ],
       "invocation_hint": "/A-Med-Order",
       "a_phase": "any",
@@ -311,8 +315,8 @@
         "ใบสั่งยา",
         "ยาหมด",
         "ใบสั่งซื้อยา",
-        "order ยา",
-        "pharmacy order"
+        "pharmacy order",
+        "สั่งยาผ่าน telegram"
       ]
     },
     {

@@ -36,7 +36,13 @@ import sys
 from datetime import date
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 MEDI_DB = ROOT / "wiki/entities/pharmacy/medi_list.db"
+
+try:                                            # คลังคำพ้อง (auto-learn) — ไม่มีก็ยังทำงานได้
+    import pharmacy_aliases as _aliases          # type: ignore
+except Exception:                                # pragma: no cover
+    _aliases = None
 
 FONT = "Tahoma"
 NAVY = "1F3864"
@@ -79,7 +85,9 @@ def lookup_cost(name: str, db: pathlib.Path = MEDI_DB) -> dict | None:
         rows = conn.execute(
             "SELECT m.name, m.unit, m.cost, m.on_hand, bm25(medi_fts) AS rank "
             "FROM medi_fts JOIN medi m ON m.id = medi_fts.rowid "
-            "WHERE medi_fts MATCH ? ORDER BY rank LIMIT 5", (q,)).fetchall()
+            # LIMIT ต้องกว้างพอ: คำ generic อย่าง "ครีม"/"cream" มีเป็นร้อยรายการ
+            # ถ้าเอาแค่ 5 อันดับแรก ชื่อการค้าจริงอาจหลุดออกไปทั้งที่มีอยู่ในสต๊อก
+            "WHERE medi_fts MATCH ? ORDER BY rank LIMIT 40", (q,)).fetchall()
     except sqlite3.OperationalError:
         return None
     finally:
@@ -94,20 +102,73 @@ def lookup_cost(name: str, db: pathlib.Path = MEDI_DB) -> dict | None:
     # token ที่ยาวที่สุด = ชื่อการค้าที่จำเพาะที่สุด — ต้องเจอในผลลัพธ์เสมอ
     key_word = max(want_word, key=len) if want_word else ""
 
-    best, best_s = None, 0.0
+    scored: list[tuple[float, tuple]] = []
     for nm, unit, cost, on_hand, _rank in rows:
         got = _tokens(nm)
         if want_size and not (want_size & got):
             continue                       # กัน "MYDA-B 15g" → "Myda-B 25g"
         if key_word and key_word not in got:
             continue                       # กัน "betadine 15ml"→"NASOL 15ml", "Nizoral cream"→"ZEMA Cream"
-        s = len(want & got) / max(len(want), 1)
-        if s > best_s:
-            best, best_s = (nm, unit, cost, on_hand), s
-    if not best or best_s < 0.5:          # ต่ำกว่านี้ = เดา — ปล่อยว่างดีกว่าใส่ผิด
+        scored.append((len(want & got) / max(len(want), 1), (nm, unit, cost, on_hand)))
+
+    if not scored:
         return None
+    best_s = max(s for s, _ in scored)
+    if best_s < 0.5:                       # ต่ำกว่านี้ = เดา — ปล่อยว่างดีกว่าใส่ผิด
+        return None
+    top = {r[0]: r for s, r in scored if s == best_s}
+    if len(top) > 1:
+        # คะแนนเท่ากันหลายตัว = แยกไม่ออกว่าอันไหน (เช่น "Nizoral" → shampoo หรือ cream)
+        # คืน None ให้คนตัดสิน ปลอดภัยกว่าเดา
+        return None
+    best = next(iter(top.values()))
     return {"name": best[0], "unit": best[1], "cost": best[2],
             "on_hand": best[3], "score": round(best_s, 2)}
+
+
+# ---------------------------------------------------------------- resolve (alias → DB → unknown)
+
+
+def resolve_item(raw: str, alias_data: dict | None = None) -> dict:
+    """
+    ลำดับความเชื่อถือ: (1) alias ที่เจ้าของร้านเคยยืนยัน (2) สต๊อกจริง medi_list.db (3) ไม่รู้จัก
+    (3) = ให้ LLM หรือคนตัดสิน — คืน status ไว้ให้ผู้เรียกจัดการ ไม่เดาเอง
+    """
+    out: dict = {"raw": raw, "status": "unknown", "name": "", "strength": "",
+                 "pack": "", "unit": "", "category": "", "note": "", "cost": None}
+
+    if _aliases is not None:
+        hit = _aliases.resolve(raw, alias_data)
+        if hit:
+            out.update({k: hit.get(k, "") for k in
+                        ("category", "name", "strength", "pack", "unit", "note")})
+            out["status"] = "alias"
+            out["confidence"] = 1.0
+            c = lookup_cost(out["name"] or raw)
+            if c and c.get("cost"):
+                out["cost"] = round(float(c["cost"]), 2)
+                out["unit"] = out["unit"] or (c.get("unit") or "")
+            return out
+
+    c = lookup_cost(raw)
+    if c:
+        out.update({"status": "stock", "name": c["name"], "unit": c.get("unit") or "",
+                    "cost": round(float(c["cost"]), 2) if c.get("cost") else None,
+                    "confidence": c.get("score")})
+        out["note"] = "ชื่อจากสต๊อกร้าน — ตรวจความแรง/ขนาดบรรจุอีกครั้ง"
+        return out
+
+    out["note"] = "ไม่พบในคลังคำพ้องและสต๊อก — ต้องยืนยันชื่อ"
+    return out
+
+
+def resolve_lines(lines: list[str]) -> dict:
+    alias_data = _aliases.load() if _aliases is not None else None
+    items = [resolve_item(l.strip(), alias_data) for l in lines if l.strip()]
+    counts: dict[str, int] = {}
+    for it in items:
+        counts[it["status"]] = counts.get(it["status"], 0) + 1
+    return {"items": items, "summary": counts, "total": len(items)}
 
 
 # ---------------------------------------------------------------- build xlsx
@@ -159,8 +220,21 @@ def build(items: list[dict], out: pathlib.Path, po: str, order_date: str, buyer:
 
     row, seq, cur, drows = HEADER_ROW + 1, 0, None, []
     filled_cost = 0
+    filled_alias = 0
+    alias_data = _aliases.load() if _aliases is not None else None
 
     for it in items:
+        # เติมช่องที่ว่างจากคลังคำพ้อง (ค่าที่ส่งมาชนะเสมอ — ไม่ทับของที่ระบุมาแล้ว)
+        if alias_data is not None:
+            hit = _aliases.resolve(it.get("raw") or it.get("name", ""), alias_data)
+            if hit:
+                before = sum(1 for f in ("category", "strength", "pack", "unit") if it.get(f))
+                for f in ("category", "name", "strength", "pack", "unit"):
+                    if not (it.get(f) or "").strip() and hit.get(f):
+                        it[f] = hit[f]
+                if sum(1 for f in ("category", "strength", "pack", "unit") if it.get(f)) > before:
+                    filled_alias += 1
+
         cat = it.get("category", "อื่น ๆ")
         if cat != cur:
             cur = cat
@@ -281,7 +355,7 @@ def build(items: list[dict], out: pathlib.Path, po: str, order_date: str, buyer:
     out.parent.mkdir(parents=True, exist_ok=True)
     wb.save(out)
     return {"items": seq, "rows": [first_d, last_d], "cost_filled": filled_cost,
-            "categories": len(cats), "out": str(out)}
+            "alias_filled": filled_alias, "categories": len(cats), "out": str(out)}
 
 
 # ---------------------------------------------------------------- xlsx → LINE
@@ -358,7 +432,29 @@ def main() -> int:
     c = sub.add_parser("cost", help="ค้นราคาทุนจาก medi_list.db")
     c.add_argument("names", nargs="+")
 
+    rs = sub.add_parser("resolve", help="ลิสต์ดิบ (1 บรรทัด/รายการ) → JSON draft (alias → stock → unknown)")
+    rs.add_argument("file", nargs="?", default="-", help="ไฟล์ลิสต์ หรือ '-' = stdin")
+
+    ln = sub.add_parser("learn", help="เรียนคำพ้องจากรายการที่ยืนยันแล้ว (JSON ต้องมี raw + name)")
+    ln.add_argument("file", nargs="?", default="-")
+
     a = ap.parse_args()
+
+    if a.cmd == "resolve":
+        text = sys.stdin.read() if a.file == "-" else pathlib.Path(a.file).read_text(encoding="utf-8")
+        print(json.dumps(resolve_lines(text.splitlines()), ensure_ascii=False, indent=2))
+        return 0
+
+    if a.cmd == "learn":
+        if _aliases is None:
+            print("❌ pharmacy_aliases.py ไม่พร้อมใช้งาน", file=sys.stderr)
+            return 1
+        text = sys.stdin.read() if a.file == "-" else pathlib.Path(a.file).read_text(encoding="utf-8")
+        items = json.loads(text)
+        if isinstance(items, dict):
+            items = items.get("items", [])
+        print(json.dumps(_aliases.learn_many(items), ensure_ascii=False, indent=2))
+        return 0
 
     if a.cmd == "build":
         items = json.loads(pathlib.Path(a.items).read_text(encoding="utf-8"))

@@ -39,6 +39,7 @@ invocation: both
 
 | ชั้น | ที่อยู่ | ใช้ทำอะไร |
 |---|---|---|
+| **คลังคำพ้อง (auto-learn)** | `<drive>/pharmacy/order-aliases.json` | "ชื่อที่พิมพ์มั่ว → รายการที่เจ้าของร้านยืนยันแล้ว" — **ถามก่อนเสมอ** |
 | **สต๊อกจริง + ทุน** | `<drive>/pharmacy/medi.list/รายการยาทั้งหมด.xls` | ชื่อสินค้าที่ร้านใช้จริง, หน่วย, คงเหลือ, **ราคาทุน/หน่วย** — แหล่งหลัก |
 | ↳ compiled | `wiki/entities/pharmacy/medi_list.db` (SQLite+FTS5, gitignored) | สร้างด้วย `scripts/import_medi_list.py` |
 | **แคตตาล็อก SP 2020 + verified** | `wiki/entities/pharmacy/drugs.db` | fallback fuzzy match — `scripts/pharmacy_lookup.py` |
@@ -61,7 +62,15 @@ python3 scripts/import_medi_list.py --stats  # เช็คว่าอัปเ
 
 ลิสต์ที่ paste มามักพิมพ์เร็ว/พิมพ์จากเสียง จึงต้องผ่าน 4 ด่านตามลำดับ:
 
-### ด่าน 1 — ฐานข้อมูลร้าน (ฟรี, เร็วสุด — ทำก่อนเสมอ)
+### ด่าน 0 — คลังคำพ้องที่เคยยืนยันแล้ว (0 token, แม่นที่สุด — ทำก่อนเสมอ)
+```bash
+python3 scripts/build_order_sheet.py resolve list.txt   # alias → สต๊อก → unknown (JSON)
+python3 scripts/pharmacy_aliases.py resolve "<ชื่อ>"     # เช็คทีละคำ
+```
+คีย์ของ alias คือ token set ที่ normalize แล้ว → ทนต่อสลับคำ ตัวพิมพ์ วรรคตอน และหน่วยเขียนต่าง
+(`15ml` / `15 ML` / `15 cc` = คีย์เดียวกัน) รายการที่ hit ที่ด่านนี้ **ไม่ต้องให้โมเดลตัดสินเลย**
+
+### ด่าน 1 — ฐานข้อมูลร้าน (ฟรี, เร็วสุด)
 ```bash
 python3 scripts/build_order_sheet.py cost "<ชื่อที่สั่ง>" ...   # medi_list.db
 python3 scripts/pharmacy_lookup.py --json < items.txt           # drugs.db (fuzzy + FTS)
@@ -87,8 +96,24 @@ python3 scripts/pharmacy_lookup.py --json < items.txt           # drugs.db (fuzz
 รูปแบบ: "รายการนี้ยืนยันหน่อยครับ: (1) X ตัวยาอะไร (2) Y ขนาดบรรจุเท่าไหร่"
 
 > **กฎเหล็ก**: match ที่ไม่ชัวร์ → ปล่อยช่องว่าง + หมายเหตุสีแดง "ยืนยันกับผู้แทน"
-> `lookup_cost()` มี guard 3 ชั้น: ต้องตรงตัวเลขขนาด + ต้องตรงชื่อการค้า (token ยาวสุด) + score ≥ 0.5
-> จึงยอม "ไม่พบ" มากกว่าจับคู่ผิดขนาด (กัน `MYDA-B 15g` → `Myda-B 25g`)
+> `lookup_cost()` มี guard 4 ชั้น: ตัวเลขขนาดต้องตรง · ชื่อการค้า (token ยาวสุด) ต้องเจอ · score ≥ 0.5 ·
+> **ถ้าคะแนนสูงสุดเสมอกันหลายตัว = แยกไม่ออก → คืนว่าง** (กัน `Nizoral` เฉยๆ ไปหยิบราคา shampoo แทน cream)
+> เคสจริงที่ guard จับได้: `MYDA-B 15g`→`Myda-B 25g` · `betadine 15ml`→`NASOL 15ml` · `Nizoral cream`→`ZEMA Cream`
+
+### ⭐ ด่าน 5 — auto-learn (ขั้นที่ทำให้รอบหน้าง่ายขึ้น — ห้ามข้าม)
+
+ทุกครั้งที่เจ้าของร้าน **ยืนยัน** ชื่อยา ให้จำลง alias ทันที:
+```bash
+# items ต้องมี raw (สิ่งที่ผู้ใช้พิมพ์) + name (ชื่อที่ยืนยันแล้ว)
+python3 scripts/build_order_sheet.py learn confirmed.json
+python3 scripts/pharmacy_aliases.py stats
+python3 scripts/pharmacy_aliases.py forget "<ชื่อที่จำผิด>"   # แก้เมื่อเรียนผิด
+```
+`med_order_telegram.py finish` เรียก learn ให้อัตโนมัติแล้ว (ปิดด้วย `--no-learn`)
+
+**นี่คือกลไกที่ทำให้โมเดล free-tier ใช้แทน flagship ได้** — ทุกรอบที่สั่ง คลังคำพ้องโตขึ้น
+ขั้นที่ต้องใช้วิจารณญาณจึงเหลือน้อยลงเรื่อยๆ จนสุดท้ายลิสต์ส่วนใหญ่ resolve ได้โดยไม่แตะ LLM เลย
+(seed เริ่มต้น 71 รายการ จากลิสต์จริงที่ยืนยันกันเมื่อ 2026-07-30)
 
 ---
 
@@ -180,9 +205,46 @@ python3 scripts/build_order_sheet.py line "<path .xlsx ที่กรอกแ�
 
 ---
 
+---
+
+## 📱 เลนที่ 2 — Telegram (ไม่ใช้ browser) สำหรับ Pi5 / Hermes / ZCode / โมเดล free-tier
+
+ใช้เมื่อ Claude ติด limit, ไม่มีเบราว์เซอร์, หรือรีบสั่งจากมือถือ — **ตัด Google Sheet ออกทั้งหมด จบใน 3 ข้อความ**
+
+```bash
+# 1) ลิสต์ยาหมด → session + ข้อความถามจำนวน (ส่งกลับผู้ใช้ทาง Telegram)
+python3 scripts/med_order_telegram.py draft list.txt --session 20260801-01
+
+# 2) เฉพาะรายการ ❓ unknown — จุดเดียวที่ต้องใช้ LLM/คนตัดสิน
+python3 scripts/med_order_telegram.py set 20260801-01 5 \
+        --name "Nizoral ครีม" --strength "Ketoconazole 2%" --pack "10 g" \
+        --unit หลอด --category "3. ยาปฏิชีวนะ / ต้านเชื้อรา"
+
+# 3) ผู้ใช้ตอบจำนวนมา → อัปเดต แล้วปิดงาน
+python3 scripts/med_order_telegram.py qty    20260801-01 "1=12 2=10 3=40"
+python3 scripts/med_order_telegram.py finish 20260801-01 --po PO-2026-08-01
+```
+
+`finish` ทำ 3 อย่างพร้อมกัน: เขียน `.xlsx` ลง `order-history/` · พิมพ์ข้อความ LINE ออก stdout · เรียน alias
+
+**รูปแบบคำตอบจำนวนที่รองรับ**: `1=12 2=5` · `1:12, 2:5` · บรรทัดละ `1 12` · `all 12` / `ทั้งหมด 12`
+ข้อที่ไม่ตอบ = ไม่สั่ง · `finish` จะบล็อกถ้ายังมีรายการ ❓ ที่ใส่จำนวนไว้ (ข้ามด้วย `--force`)
+
+| ทำไมเลนนี้ปลอดภัยกับโมเดลเล็ก | เพราะ |
+|---|---|
+| สคริปต์ไม่มี secret ไม่ต่อเน็ต ไม่เรียก LLM | เป็น state machine ล้วน — บอทแค่ pipe ข้อความ |
+| LLM แตะจุดเดียว = คำสั่ง `set` | ที่เหลือ deterministic ทั้งหมด |
+| รายการที่ hit alias ไม่ผ่าน LLM เลย | ยิ่งใช้ ยิ่งเหลืองานให้โมเดลน้อยลง |
+
+Session เก็บที่ `<drive>/pharmacy/order-sessions/<id>.json` — ดูค้างด้วย `list` / `status`
+บอท Telegram จริงอยู่ใน `scripts/telegram-bot/` (private, gitignored) — เรียกสคริปต์นี้ผ่าน subprocess
+
+---
+
 ## 🎯 Checklist ก่อนส่งงาน
 
 - [ ] `import_medi_list.py` รันแล้ววันนี้ (ข้อมูลทุนไม่เก่า)
+- [ ] **เรียน alias จากชื่อที่เจ้าของร้านยืนยันรอบนี้แล้ว** (`stats` ควรเพิ่มขึ้น)
 - [ ] ทุกรายการมีหมวด (ไม่งั้นชีตสรุปนับไม่ครบ — เช็คว่า `รวมทั้งสิ้น` ในชีต 2 = จำนวนรายการจริง)
 - [ ] ยอดรวมจำนวนในชีต 1 = ชีต 2
 - [ ] รายการซ้ำถูกยุบแล้ว (ยกเว้นต่างขนาดบรรจุ — อันนั้นคนละ SKU)
@@ -198,12 +260,22 @@ python3 scripts/build_order_sheet.py line "<path .xlsx ที่กรอกแ�
 
 ## 🔗 Related
 
-`pharmacy-order-lookup` (fuzzy match layer) · `a-doc-procurement` (เอกสารจัดซื้อทั่วไป) · `a-business` · `excel-generator`
-`scripts/pharmacy_lookup.py` · `scripts/build_pharmacy_db.py` · `scripts/compare_delivery.py` (เทียบใบส่งของกับที่สั่ง)
+`pharmacy-order-lookup` (fuzzy match layer) · `a-wiki-telegram` (transport ของเลนที่ 2) ·
+`a-doc-procurement` (เอกสารจัดซื้อทั่วไป) · `a-business` · `excel-generator`
+
+| สคริปต์ | หน้าที่ |
+|---|---|
+| `scripts/import_medi_list.py` | stock .xls (cp874) → `medi_list.db` + ราคาทุน |
+| `scripts/build_order_sheet.py` | `build` / `line` / `cost` / `resolve` / `learn` |
+| `scripts/pharmacy_aliases.py` | คลังคำพ้อง — `resolve` / `learn` / `stats` / `list` / `forget` |
+| `scripts/med_order_telegram.py` | เลน Telegram — `draft` / `set` / `qty` / `status` / `list` / `finish` |
+| `scripts/pharmacy_lookup.py` · `build_pharmacy_db.py` | fuzzy match ชั้นเดิม (drugs.db) |
+| `scripts/compare_delivery.py` | เทียบใบส่งของกับที่สั่ง |
 
 ## Invocation
 
 ```
-/A-Med-Order รายการยาหมด <วางลิสต์ที่นี่>
+/A-Med-Order รายการยาหมด <วางลิสต์ที่นี่>        # เลนเต็ม (มี Google Sheet)
 /A-Med-Order line <path ไฟล์ที่กรอกจำนวนแล้ว>
+/A-Med-Order telegram <วางลิสต์ที่นี่>            # เลนเร็ว ไม่ใช้ browser
 ```
