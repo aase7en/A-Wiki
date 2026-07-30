@@ -93,3 +93,11 @@ Session เก็บที่ `<drive>/pharmacy/order-sessions/<id>.json`
 
 `a-med-order` แท็ก `agents: [all, hermes]` แล้ว จึงติดไปด้วยอัตโนมัติ
 เร่งได้ด้วย `bash scripts/hermes/auto-sync-from-git.sh` บน Pi5
+
+## ✅ ยืนยันก่อนใช้สั่งยาจริง
+
+ยังไม่เคยรันบน Pi5 เลย — เดิน checklist นี้ก่อนใช้ครั้งแรก:
+**`docs/runbooks/pi5-smoke-test-a-med-order.md`** (5 รอบ ~25 นาที)
+
+ข้อที่ห้ามผ่านถ้าไม่ตรง: รายการที่ไม่รู้จักต้องขึ้น ❓ (ห้ามถูกเดาเป็นยาจริง) และ
+`finish` ต้องบล็อกเมื่อยังมี ❓ ค้าง — 2 ข้อนี้คือ guard ที่กันสั่งยาผิดตัว
