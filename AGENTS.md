@@ -375,6 +375,17 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility smo
 | Deduplicate skills | Edit `consolidate.py` CONSOLIDATION_ACTIONS → run → `regen` |
 | Domain taxonomy | `VALID_DOMAINS` in `scripts/skills_registry/__init__.py` (22 domains) |
 
+> ⚠️ **Editing outside Claude Code = the enforcement hook does not fire — run the checks yourself.**
+> `check_skill_registry` (hook #15) is a PreToolUse hook bound to `.claude/settings.json`, so it only fires inside Claude Code.
+> Every other surface — Cowork, Codex, ZCode, Hermes, Antigravity, Cursor, Kilo, Cline, web chat — uses a different tool layer and silently bypasses it.
+> **If you touch `skills-registry.json` or any `SKILL.md` outside Claude Code, run both of these before you commit:**
+> ```bash
+> python scripts/regen-skill-surfaces.py --check   # must print "No drift"
+> python scripts/verify-skill-surfaces.py          # must print "visibility OK"
+> ```
+> If `--check` reports drift, run `python scripts/regen-skill-surfaces.py` (no flag) and commit the regenerated surfaces too.
+> Agents that already route their own hooks through `hooks_runner.py` (e.g. `.codex/hooks.json`) get this enforced automatically; the rest must follow this rule manually.
+
 **Enforcement:** `check_skill_registry.py` (Iron Law #9) blocks unregistered SKILL.md writes; warns on missing frontmatter. See `docs/architecture/skill-architecture-plan.md`.
 
 ---

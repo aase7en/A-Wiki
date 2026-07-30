@@ -262,6 +262,17 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility
 
 เพิ่ม skill: สร้าง SKILL.md → add registry entry → `regen` → commit. เพิ่ม agent surface: `gen_<agent>.py` + 1 line. ดู `docs/architecture/skill-architecture-plan.md`.
 
+> ⚠️ **แก้นอก Claude Code = hook ไม่ยิง ต้องรันเองก่อน commit**
+> `check_skill_registry` (hook #15) เป็น PreToolUse hook ผูกกับ `.claude/settings.json` — ทำงานเฉพาะใน Claude Code.
+> Surface อื่น (Cowork, Codex, ZCode, Hermes, Antigravity, Cursor, Kilo, Cline, web chat) ใช้ tool คนละชุด hook จึงไม่ยิง.
+> **ถ้าแก้ `skills-registry.json` หรือ `SKILL.md` ใดๆ นอก Claude Code ต้องรัน 2 คำสั่งนี้ก่อน commit เสมอ:**
+> ```bash
+> python scripts/regen-skill-surfaces.py --check   # ต้องได้ "No drift"
+> python scripts/verify-skill-surfaces.py          # ต้องได้ "visibility OK"
+> ```
+> ถ้า `--check` ฟ้อง drift → รัน `python scripts/regen-skill-surfaces.py` (ไม่มี flag) แล้ว commit surface ที่ regen ไปด้วย.
+> Agent ที่มี hook config ของตัวเองแล้ว (`.codex/hooks.json` → `hooks_runner.py`) ได้ guardrail อัตโนมัติ — ตัวที่ยังไม่มี ให้ยึดกฎข้อนี้แทน.
+
 ---
 
 ## ✅ Core Rules

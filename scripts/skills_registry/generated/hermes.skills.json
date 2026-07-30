@@ -256,6 +256,66 @@
       "a_phase": "any"
     },
     {
+      "name": "a-med-order",
+      "aliases": [
+        "/a-med-order",
+        "amedorder",
+        "/a-order-med"
+      ],
+      "domain": [
+        "pharmacy",
+        "business"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-med-order/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ใบสั่งซื้อยาร้านภูฟาร์มาซี end-to-end — normalize ลิสต์ยาหมดที่พิมพ์ผิด (ไทยปนอังกฤษ/คาราโอเกะ/หน่วยเพี้ยน) → verify จาก medi_list.db + drugs.db + web → ออก xlsx/Google Sheet 12 หมวดพร้อมทุนต่อหน่วย → อ่านจำนวนที่กรอกกลับ → สรุปเป็นข้อความ copy วาง LINE",
+      "invocation": "both",
+      "th_description": "สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา → ใบสั่งซื้อ Excel/Sheet → กรอกจำนวน → ข้อความ LINE",
+      "when_to_use": "เมื่อได้ลิสต์ยาหมด/ยาที่ต้องสั่งเข้าร้าน หรือจะแปลงใบสั่งซื้อเป็นข้อความส่งผู้แทน",
+      "examples": [
+        {
+          "scenario": "ได้ลิสต์ยาหมดมาแบบพิมพ์มั่ว",
+          "how": "/A-Med-Order รายการยาหมด <วางลิสต์>"
+        },
+        {
+          "scenario": "กรอกจำนวนในชีตแล้ว อยากได้ข้อความส่ง LINE",
+          "how": "python3 scripts/build_order_sheet.py line <file.xlsx>"
+        },
+        {
+          "scenario": "เช็คราคาทุนก่อนสั่ง",
+          "how": "python3 scripts/build_order_sheet.py cost \"betadine 15ml\""
+        }
+      ],
+      "process_steps": [
+        "import_medi_list.py รีเฟรชสต๊อก+ทุน",
+        "normalize + verify ชื่อยา (DB → กฎสะกด → web → ถามเจ้าของร้าน)",
+        "จัด 12 หมวด แล้ว build_order_sheet.py build → xlsx",
+        "import ทับ Google Sheet เดิม / ส่งไฟล์ให้กรอกจำนวน",
+        "อ่านจำนวนกลับ + เก็บลง drive/pharmacy/order-history/",
+        "build_order_sheet.py line → ข้อความ LINE"
+      ],
+      "invocation_hint": "/A-Med-Order",
+      "a_phase": "any",
+      "triggers": [
+        "รายการยาหมด",
+        "รายการสั่งยา",
+        "สั่งยา",
+        "ใบสั่งยา",
+        "ยาหมด",
+        "ใบสั่งซื้อยา",
+        "order ยา",
+        "pharmacy order"
+      ]
+    },
+    {
       "name": "a-plan",
       "aliases": [
         "/a-plan",

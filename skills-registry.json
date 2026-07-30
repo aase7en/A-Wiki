@@ -684,7 +684,8 @@
       "source": "repo",
       "path": "skills/awiki/a-med-order/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
