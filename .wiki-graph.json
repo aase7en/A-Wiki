@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-07-31",
+  "generated_at": "2026-08-01",
   "stats": {
-    "nodes": 548,
-    "edges": 1832,
+    "nodes": 549,
+    "edges": 1836,
     "edges_by_type": {
-      "wikilink": 1312,
+      "wikilink": 1313,
       "depends": 387,
       "implements": 53,
       "mdlink": 41,
-      "extends": 39
+      "extends": 42
     },
-    "broken_links": 38,
-    "orphans": 30,
+    "broken_links": 41,
+    "orphans": 31,
     "orphan_by_domain": {
       "context": 17,
       "env": 8,
-      "ai-tools": 2,
+      "ai-tools": 3,
       "other": 2,
       "sources": 1
     },
@@ -512,7 +512,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-07-29",
+      "title": "Review Report — 2026-08-01",
       "domain": "context"
     },
     {
@@ -668,6 +668,11 @@
     {
       "path": "wiki/entities/ai-tools/omniroute.md",
       "title": "OmniRoute",
+      "domain": "ai-tools"
+    },
+    {
+      "path": "wiki/entities/ai-tools/open-design.md",
+      "title": "Open Design",
       "domain": "ai-tools"
     },
     {
@@ -7143,8 +7148,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": true,
-      "external": false
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
@@ -8131,6 +8136,34 @@
       "to": "wiki/entities/ai-tools/model-capability-bench.md",
       "type": "wikilink",
       "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/open-design.md",
+      "to": "claude-code",
+      "type": "extends",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/open-design.md",
+      "to": "cointh-glm",
+      "type": "extends",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/open-design.md",
+      "to": "frontend-design",
+      "type": "extends",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/entities/ai-tools/open-design.md",
+      "to": "theme-factory",
+      "type": "wikilink",
+      "broken": true,
       "external": false
     },
     {

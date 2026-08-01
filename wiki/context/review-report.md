@@ -1,12 +1,12 @@
-# Review Report — 2026-07-31
+# Review Report — 2026-08-01
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 836
-- ⚠ Warnings: 303
-- ❌ Failures: 74
+- ✓ Passed: 837
+- ⚠ Warnings: 304
+- ❌ Failures: 78
 
 ## Top Actionable Issues
 
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- … 357 more issue(s) below
+- … 362 more issue(s) below
 
 ---
 
@@ -44,6 +44,10 @@
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[awiki-lifecycle-router]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
 - wiki\entities\ai-tools\gamedev-skills.md: broken link: [[entities/ai-tools/game-lightweight-highend-capability-hub]]
+- wiki\entities\ai-tools\open-design.md: broken link: [[claude-code]]
+- wiki\entities\ai-tools\open-design.md: broken link: [[cointh-glm]]
+- wiki\entities\ai-tools\open-design.md: broken link: [[frontend-design]]
+- wiki\entities\ai-tools\open-design.md: broken link: [[theme-factory]]
 - wiki\entities\ai-tools\pake.md: broken link: [[entities/ai-tools/a-wiki]]
 - wiki\SKILL-INDEX.md: broken link: [[wikilinks]]
 - wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
@@ -361,6 +365,7 @@
 - wiki\entities\ai-tools\news-intelligence-pipeline.md: missing TL;DR line
 - wiki\entities\ai-tools\ollama.md: missing TL;DR line
 - wiki\entities\ai-tools\omniroute.md: missing TL;DR line
+- wiki\entities\ai-tools\open-design.md: missing TL;DR line
 - wiki\entities\ai-tools\openmed.md: missing TL;DR line
 - wiki\entities\ai-tools\pake.md: missing TL;DR line
 - wiki\entities\ai-tools\pocketbase.md: missing TL;DR line
@@ -426,9 +431,9 @@
 
 ---
 
-## ✓ Passed Checks (836 total)
+## ✓ Passed Checks (837 total)
 
-- **L2**: 342 passed
+- **L2**: 343 passed
 - **L3**: 491 passed
 - **L6**: 3 passed
 
