@@ -12,7 +12,7 @@ supersedes: [env-webapp-schema-wastewater.md]
 > **Supersedes** `env-webapp-schema-wastewater.md` (Pi5 era, wastewater-only).
 > v2 expands from 2 operational schemas (wastewater + carbon) to **10 schemas**
 > covering every environmental / occupational-health / safety module
-> รพ.อุทัย runs.
+> <HOSPITAL> runs.
 
 ## Project
 

@@ -423,7 +423,7 @@ def main() -> int:
     b.add_argument("--out", default="order.xlsx")
     b.add_argument("--po", default=f"PO-{date.today():%Y-%m}-01")
     b.add_argument("--date", default=f"{date.today():%d/%m/%Y}")
-    b.add_argument("--buyer", default="ศุภศิษฎิ์ คงสุวรรณ")
+    b.add_argument("--buyer", default="<BUYER_NAME>")
 
     l = sub.add_parser("line", help=".xlsx ที่กรอกจำนวนแล้ว → ข้อความ LINE")
     l.add_argument("xlsx")

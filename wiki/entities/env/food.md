@@ -12,7 +12,7 @@ created: 2026-07-17
 บันทึกผลตรวจทางห้องปฏิบัติการความสะอาดน้ำและอาหาร — total coliform, E. coli, fecal coliform — เพื่อยืนยันความปลอดภัยและรายงานต่อหน่วยงานควบคุม
 
 ## ⚠️ PHI boundary
-การตรวจ coliform ของ รพ.อุทัย = **ตรวจน้ำ/อาหาร/สิ่งแวดล้อม** — ไม่ใช่ patient sample
+การตรวจ coliform ของ <HOSPITAL> = **ตรวจน้ำ/อาหาร/สิ่งแวดล้อม** — ไม่ใช่ patient sample
 ถ้าอนาคตมี patient-adjacent sample → **ห้าม route ผ่าน AI** (ZCode/GLM อยู่ใต้กฎหมายจีน)
 
 ## พารามิเตอร์ที่ตรวจ
