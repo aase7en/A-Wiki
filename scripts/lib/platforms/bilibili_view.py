@@ -103,3 +103,24 @@ def fetch_metadata(url: str) -> dict:
         return {"error": f"Bilibili code={raw.get('code')}: {msg}"}
 
     return reshape_view(raw, bvid)
+
+
+# ── Channel wrapper (for doctor registry) ────────────────────────────────
+
+from .base import Channel  # noqa: E402 — circular-safe
+
+
+class BilibiliChannel(Channel):
+    """Doctor-facing wrapper. check() runs a real view-API probe."""
+
+    name = "bilibili"
+    backends = ["view"]
+
+    # BV1xx411c7mD = aid 2 (碧诗's first upload). Stable for years.
+    _PROBE_URL = "https://www.bilibili.com/video/BV1xx411c7mD"
+
+    def check(self, config=None):
+        result = fetch_metadata(self._PROBE_URL)
+        if "error" not in result:
+            return ("ok", "view API responds (metadata)", "view")
+        return ("warn", f"view API: {result['error'][:60]}", None)

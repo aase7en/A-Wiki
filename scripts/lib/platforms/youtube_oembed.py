@@ -107,3 +107,24 @@ def fetch_metadata(url: str) -> dict:
         return {"error": f"invalid JSON: {e}"}
 
     return reshape_oembed(raw, canonical_url)
+
+
+# ── Channel wrapper (for doctor registry) ────────────────────────────────
+
+from .base import Channel  # noqa: E402 — circular-safe
+
+
+class YoutubeChannel(Channel):
+    """Doctor-facing wrapper. check() runs a real oEmbed probe."""
+
+    name = "youtube"
+    backends = ["oembed"]
+
+    # dQw4w9WgXcQ is the canonical stable test video (Rick Astley).
+    _PROBE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+    def check(self, config=None):
+        result = fetch_metadata(self._PROBE_URL)
+        if "error" not in result:
+            return ("ok", "oEmbed responds (metadata only)", "oembed")
+        return ("warn", f"oEmbed: {result['error'][:60]}", None)

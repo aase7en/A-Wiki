@@ -134,3 +134,24 @@ def fetch_posts(subreddit: str, limit: int = 25) -> list[dict]:
 
     items = parse_feed(xml_text)
     return items[:limit] if limit > 0 else items
+
+
+# ── Channel wrapper (for doctor registry) ────────────────────────────────
+
+from .base import Channel  # noqa: E402 — circular-safe, base has no deps on this
+
+
+class RedditChannel(Channel):
+    """Doctor-facing wrapper. check() runs a real probe against /r/news/.rss."""
+
+    name = "reddit"
+    backends = ["rss"]
+
+    def check(self, config=None):
+        # One cheap real probe — better than shutil.which() (Agent-ReachTrap #1).
+        items = fetch_posts("news", limit=1)
+        if items and "error" not in items[0]:
+            return ("ok", "RSS feeds fetch OK", "rss")
+        if items and "error" in items[0]:
+            return ("warn", items[0]["error"][:80], None)
+        return ("warn", "no items returned", None)

@@ -55,3 +55,23 @@ def read(url: str) -> str | dict:
         return {"error": f"network error: {e}"}
     except Exception as e:
         return {"error": f"{type(e).__name__}: {e}"}
+
+
+# ── Channel wrapper (for doctor registry) ────────────────────────────────
+
+from .base import Channel  # noqa: E402 — circular-safe
+
+
+class JinaChannel(Channel):
+    """Doctor-facing wrapper. check() runs a real Jina Reader probe."""
+
+    name = "jina"
+    backends = ["reader"]
+
+    def check(self, config=None):
+        result = read("https://example.com/")
+        if isinstance(result, str) and result:
+            return ("ok", "r.jina.ai reachable", "reader")
+        if isinstance(result, dict) and "error" in result:
+            return ("warn", f"Jina: {result['error'][:60]}", None)
+        return ("warn", "empty response from Jina", None)
