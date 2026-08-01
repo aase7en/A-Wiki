@@ -31,6 +31,10 @@
 # Registered skills whose names contain "token" (caught by *token*):
 !skills/ecosystem/evm-token-decimals/
 !skills/ecosystem/token-budget-advisor/
+# Tracked docs/test files whose names contain "secrets" (no secrets inside —
+# documentation about secret handling + a test for the drive-secrets loader):
+!docs/protocols/secrets-global-env.md
+!tests/test_drive_secrets.py
 
 # --- OS ---
 .DS_Store
@@ -113,7 +117,11 @@ logs/
 *.sqlite3
 
 # --- Wiki local data ---
-data/
+# Root-anchored: an unanchored "data/" also swallowed skill data dirs
+# (skills/ui-ux-pro-max/data/*.csv — 29 tracked runtime assets). The comment
+# always meant the top-level pharmacy raw-data dir, which is what /data/ scopes
+# to. See scripts/check-privacy.py tracked_but_ignored().
+/data/
 .tmp/
 temp/
 .playwright-mcp/

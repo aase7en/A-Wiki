@@ -119,6 +119,7 @@ EMAIL_WHITELIST_DOMAINS = {
     "etda.or.th",
     "pdpc.or.th",
     "deepseek.com",   # public org contact in source summaries, not personal
+    "sov.ai",  # FIRMAI public org contact in ingested README (research@sov.ai)
 }
 
 # Substrings that mark a line as a template/example, not a real value.
@@ -145,6 +146,13 @@ SECRET_PATTERNS = [
 SKIP_PATHS = {
     "scripts/check-privacy.py",      # this file documents the patterns
     "tests/test_check_privacy.py",   # fixtures are deliberate fake leaks
+    # Test files exercising the redactor / validator / ledger under test —
+    # their fixture bodies deliberately contain fake sk-/AIza/paths/emails
+    # and assert the redaction logic scrubs them.
+    "tests/test_prompt_redactor.py",
+    "tests/test_quality_gate_thai.py",
+    "tests/test_memory_ledger.py",   # Iron Law #6 secret-redaction fixtures
+    "tests/test_git_safety_backup.py",  # temp-repo git config uses test@test.com
     "docs/architecture/skill-architecture-handoff.md",  # verification grep cites patterns
     "CHANGELOG.md",                  # historical record may cite redacted artifacts
     "CLAUDE.md",                     # protected doc; scrub only with explicit user permission

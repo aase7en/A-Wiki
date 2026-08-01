@@ -383,6 +383,20 @@ def test_own_test_fixture_file_is_skipped():
     assert check_privacy.should_skip(path)
 
 
+def test_redactor_validator_fixture_files_are_skipped():
+    """Test files exercising the redactor / validator / ledger under test
+    contain deliberate fake sk-/AIza/paths/emails in their fixture bodies and
+    assert the redaction logic scrubs them. They must be exempted from the
+    privacy scan, like test_check_privacy.py itself."""
+    for name in (
+        "tests/test_prompt_redactor.py",
+        "tests/test_quality_gate_thai.py",
+        "tests/test_memory_ledger.py",
+        "tests/test_git_safety_backup.py",
+    ):
+        assert check_privacy.should_skip(check_privacy.REPO_ROOT / name)
+
+
 def test_handoff_doc_with_verification_grep_is_skipped():
     path = (check_privacy.REPO_ROOT / "docs" / "architecture"
             / "skill-architecture-handoff.md")
@@ -402,6 +416,12 @@ def test_kilo_vendored_skills_are_skipped():
 
 def test_deepseek_org_contact_email_is_not_personal():
     assert not check_privacy.email_is_personal("research@deepseek.com")
+
+
+def test_sov_ai_org_contact_email_is_not_personal():
+    # FIRMAI public org contact in an ingested README (research@sov.ai) — same
+    # class as the deepseek.com entry.
+    assert not check_privacy.email_is_personal("research@sov.ai")
 
 
 # ---------------------------------------------------------------------------
