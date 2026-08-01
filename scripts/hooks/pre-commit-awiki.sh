@@ -6,6 +6,7 @@
 #   1. Skill-registry drift check (delegates to pre_commit_skill_surfaces.sh)
 #   2. Secret leak scan on the staged diff (uses security_patterns.yaml)
 #   3. Machine-specific path scan on the staged diff (USA-1 §5.1 / §4.3)
+#   4. Python syntax check on staged *.py (delegates to check-staged-syntax.py)
 #
 # This is Layer 2 of the three-layer defense (Layer 1 = PreToolUse hooks,
 # Layer 2 = this pre-commit gate, Layer 3 = CI workflow). No single layer is
@@ -13,6 +14,7 @@
 #
 # Install: bash scripts/install-git-hooks.sh   (or symlink manually)
 # Override (emergency): PRE_COMMIT_SKIP_AWIKI=1
+# Per-step override: HOOK_SKIP=check_staged_syntax (step 4)
 # =============================================================================
 set -euo pipefail
 
@@ -32,16 +34,26 @@ fi
 
 BLOCKED=false
 
-# python3 first: macOS ships no bare `python`. Invoking it here silently
-# disabled the secret scan below (see the SCAN_RESULT block).
+# Interpreter resolution (merged from both conflict sides):
+# - macOS ships no bare `python`; Pi5 Raspbian ships python3 only; Git-Bash
+#   `python3` is often the Microsoft Store stub that exits 9009.
+# - Pick per platform, prefer a local .venv if present.
+# - Fail CLOSED: a missing interpreter must NOT silently disable the secret
+#   scan below (regression: "python not found" used to read as "no findings").
+case "$(uname -s 2>/dev/null || echo unknown)" in
+    MINGW*|MSYS*|CYGWIN*) PY_CANDIDATES="python python3" ;;
+    *)                    PY_CANDIDATES="python3 python" ;;
+esac
+PY=""
 if [ -x ".venv/bin/python3" ]; then
     PY=".venv/bin/python3"
-elif command -v python3 >/dev/null 2>&1; then
-    PY="python3"
-elif command -v python >/dev/null 2>&1; then
-    PY="python"
 else
-    printf "%s🚫 [pre-commit] no python3 on PATH — security scan cannot run.%s\n" "$RED" "$RESET" >&2
+    for c in $PY_CANDIDATES; do
+        if command -v "$c" >/dev/null 2>&1; then PY="$c"; break; fi
+    done
+fi
+if [ -z "$PY" ]; then
+    printf "%s🚫 [pre-commit] no python on PATH — security scan cannot run.%s\n" "$RED" "$RESET" >&2
     printf "   Install python3, or override with PRE_COMMIT_SKIP_AWIKI=1 if you accept the risk.\n" >&2
     exit 1
 fi
@@ -81,6 +93,35 @@ if [ -n "$STAGED_DIFF" ]; then
         printf '%s\n' "$SCAN_RESULT" >&2
         printf "   Override: PRE_COMMIT_SKIP_AWIKI=1\n" >&2
         BLOCKED=true
+    fi
+fi
+
+# ── 4. Python syntax on staged *.py ─────────────────────────────────────────
+# Regression 307b3215: a literal newline inside an f-string reached main. The
+# SessionStart hook then crashed silently, and `pytest tests/` aborted at
+# COLLECTION (two modules import that hook) — so the suite that would have
+# caught it ran zero tests. Hence the same check at commit time, where it does
+# not depend on the suite being runnable.
+# Compiles the STAGED blob, not the worktree. Fail-closed: any non-zero exit
+# (findings, missing interpreter, internal error) blocks, because "checker
+# could not run" must never render as a pass.
+if [ -z "$PY" ]; then
+    printf "%s🚫 [pre-commit] No python interpreter found — cannot syntax-check staged *.py.%s\n" "$RED" "$RESET" >&2
+    printf "   Install python3, or override: HOOK_SKIP=check_staged_syntax\n" >&2
+    BLOCKED=true
+else
+    SYNTAX_RC=0
+    SYNTAX_OUT="$("$PY" scripts/check-staged-syntax.py --staged 2>&1)" || SYNTAX_RC=$?
+    if [ "$SYNTAX_RC" -ne 0 ]; then
+        printf "%s🚫 [pre-commit] Python syntax error in staged file(s):%s\n" "$RED" "$RESET" >&2
+        printf '%s\n' "$SYNTAX_OUT" >&2
+        printf "   Fix the file, re-stage (git add), and commit again.\n" >&2
+        printf "   Override: HOOK_SKIP=check_staged_syntax\n" >&2
+        BLOCKED=true
+    elif [ -n "$SYNTAX_OUT" ]; then
+        # rc=0 with output = the HOOK_SKIP bypass notice. Keep bypasses VISIBLE
+        # (same reasoning as check_cost_tier.py) so they show up in logs.
+        printf '%s\n' "$SYNTAX_OUT" >&2
     fi
 fi
 

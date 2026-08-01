@@ -57,6 +57,37 @@ adapter pattern below.
 
 ---
 
+## Layer 2: what `pre-commit-awiki.sh` checks
+
+| # | Step | Blocks on | Per-step override |
+|---|---|---|---|
+| 1 | Skill-surface drift (`pre_commit_skill_surfaces.sh`) | generated surfaces stale vs `skills-registry.json` | `PRE_COMMIT_SKIP_SKILL_REGISTRY=1` |
+| 2+3 | Secret + machine-path scan (`_scan_staged_diff.py`) | pattern hit in ADDED diff lines | — |
+| 4 | Python syntax (`scripts/check-staged-syntax.py`) | staged `*.py` that does not compile | `HOOK_SKIP=check_staged_syntax` |
+
+Whole-gate emergency override: `PRE_COMMIT_SKIP_AWIKI=1`.
+
+**Why step 4 exists** — commit `307b3215` put a literal newline inside an
+f-string in `scripts/hooks/session_start.py`. The gate printed
+"✅ safety gate passed" and let it through. The SessionStart hook then crashed
+every session *silently* (its output just never appeared), and `pytest tests/`
+aborted at **collection** — two test modules `exec_module` that file at import
+— so the entire suite ran **zero** tests while looking like a tooling error
+rather than a failure list.
+
+`tests/test_hooks_subprocess_encoding.py` already `ast.parse`s every
+`scripts/hooks/*.py` and would have caught it. That is the point: a suite that
+cannot collect cannot catch anything, so the check also has to run somewhere
+that does not depend on the suite being runnable.
+
+Step 4 compiles the **staged blob** (`git cat-file blob <index sha>`), never
+the working tree — git commits the index, so the index is what has to compile.
+It is fail-closed: findings, a missing interpreter, or an internal error all
+block, because "the checker could not run" must never render as a pass.
+Regression tests: `tests/test_pre_commit_syntax_gate.py`.
+
+---
+
 ## Adding a new agent that supports hooks
 
 If the new agent exposes a PreToolUse event:
@@ -96,6 +127,7 @@ Layer 1 — PreToolUse (realtime, supporting agents)
 
 Layer 2 — pre-commit (local gate, ALL agents via git)
    scripts/hooks/pre-commit-awiki.sh
+     1. skill-surface drift · 2+3. secret + machine-path · 4. python syntax
 
 Layer 3 — CI (remote gate, ALL agents via GitHub)
    .github/workflows/ci.yml → Security pattern scan step

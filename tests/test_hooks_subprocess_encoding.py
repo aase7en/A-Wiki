@@ -37,6 +37,10 @@ LINTED_FILES = sorted(HOOKS_DIR.glob("*.py")) + [
     REPO_ROOT / "scripts" / "hooks_runner.py",
     # Ratchet: add more scripts here as their text-mode calls get pinned.
     REPO_ROOT / "scripts" / "check-privacy.py",
+    # Layer-2 pre-commit syntax gate: spawns git and reads blobs in BYTES mode
+    # on purpose (paths/source carry arbitrary encodings). Listed so a future
+    # switch to text=True cannot land unpinned.
+    REPO_ROOT / "scripts" / "check-staged-syntax.py",
     REPO_ROOT / "scripts" / "lib" / "council_room.py",
     REPO_ROOT / "scripts" / "lib" / "skill_learning.py",
     # C2a: extend ratchet into tests/ — test files that spawn child processes
