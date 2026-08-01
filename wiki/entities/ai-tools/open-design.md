@@ -125,3 +125,51 @@ Script: `scripts/opendesign-port-skills.py` (idempotent, re-runnable).
 ## Open questions
 
 - KKU/OKMD API (https://gen.ai.kku.ac.th/okmd/api/v1): has 23 models from 9 providers, but `POST /chat/completions` returns 401 on all models while `GET /models` returns 200 → key is list-only, needs TK Park account activation. See session-memory `[2026-07-31→08-01] opendesign-glm-and-kku-council`.
+
+## Multi-model switching (GLM-5.2 code ↔ GLM-4.6V vision) — DONE 2026-08-01
+
+**Problem**: GLM-5.2 (default, 1M context, best for coding) is **text-only** — cannot read UI screenshots, breaking the "iterate on look" loop. GLM-4.6V is the **only vision-capable model** in the Cointh roster (`V` suffix = vision, per Z.ai docs). No single GLM model is both great at coding AND sees images.
+
+**Solution**: quick-switch script — `%APPDATA%\Open Design\glm-switch.py` (backup: `drive/scripts/opendesign-glm-switch.py`, gitignored).
+
+| Preset | Model | Use for |
+|--------|-------|---------|
+| `code` | glm-5.2 | Default — coding, refactoring, reasoning (1M context) |
+| `vision` | glm-4.6V | UI screenshot critique, icon design, image input (128K context) |
+| `fast` | glm-5-turbo | Quick queries, cheap |
+| `status` | — | Print current model (no change) |
+| `restore` | (previous) | Revert to last model |
+
+```bash
+python "%APPDATA%\Open Design\glm-switch.py" code     # coding session
+python "%APPDATA%\Open Design\glm-switch.py" vision   # UI screenshot work
+python "%APPDATA%\Open Design\glm-switch.py" restore  # back to coding
+```
+
+### Why not auto-routing?
+
+Researched 3 approaches (a-think 2026-08-01):
+- **Claude alias mapping** (`ANTHROPIC_DEFAULT_OPUS_MODEL=glm-4.6V`) — aliases bind to plan/execute mode, not content-type detection. Not a real vision router.
+- **MMD_MODEL_ROUTES_FILE** — appears in Open Design's `AGENT_CLI_ENV_KEYS` allowlist but is **not in any official Claude Code docs**; likely a removed CCR feature. Don't rely on it.
+- **CCR (claude-code-router)** — would do rule-based routing, but reinstalling CCR **regresses the ConnectionRefused fix** (it was the original cause). Avoid.
+
+The manual switch is 1 command and matches how design work actually flows (long coding stretches, short vision bursts).
+
+### How images reach the model in Open Design
+
+Verified against `apps/daemon/src/` source (2026-08-01):
+1. Drag/paste/attach image in OD chat composer → uploaded to project's `UPLOAD_DIR` (`ChatComposer.tsx:2890`).
+2. Daemon appends `@<abspath>` text token to the prompt (`server.ts:5236-5255`).
+3. Claude CLI resolves `@path` → reads file → sends as Anthropic image block to Cointh.
+4. Cointh translates Anthropic image block → Zhipu native `image_url` format.
+5. GLM-4.6V processes it (confirmed: `input_tokens=173` on a 1x1 PNG test → image was ingested).
+
+**Limit**: image must be **≤ 1 MB** (`chat-prompt-inputs.ts:16`, `MAX_CHAT_IMAGE_BYTES`). Compress screenshots before attaching.
+
+### Vision verification (2026-08-01)
+
+Tested GLM-4.6V via Cointh `/v1/messages` with a base64 PNG:
+- ✅ HTTP 200, `model: "glm-4.6v"`, `input_tokens: 173` (image processed)
+- ⚠️ Color description was imprecise on tiny test images (1x1, 40x40) — expected; real UI screenshots (≥500px) should be fine.
+
+GLM-5.2 (text-only) is **confirmed** text-only per `docs.z.ai/guides/llm/glm-5.2` — no image input.
