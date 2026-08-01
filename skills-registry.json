@@ -10086,6 +10086,60 @@
       ]
     },
     {
+      "name": "platform-ingest",
+      "aliases": [
+        "/platform-ingest",
+        "platformingest"
+      ],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/platform-ingest/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ดึง content จาก platform (Reddit RSS, YouTube oEmbed, Bilibili view, Jina fallback) แบบ no-auth/no-cookie — เติม gap ที่ curl/scrape-advanced ตาย (anti-bot, 403)",
+      "invocation": "manual",
+      "th_description": "Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ verified ปลอดภัย 2026 (no cookie, no paid API)",
+      "when_to_use": "ดึง content จาก Reddit/YouTube/Bilibili หรือ URL ที่ curl ดิบโดน anti-bot บล็อก",
+      "examples": [
+        {
+          "scenario": "อ่าน latest posts จาก subreddit",
+          "how": "/platform-ingest reddit r/python"
+        },
+        {
+          "scenario": "ดึง metadata วิดีโอ YouTube",
+          "how": "/platform-ingest youtube <url>"
+        },
+        {
+          "scenario": "URL ทั่วไปที่ curl โดน 403",
+          "how": "/platform-ingest jina <url>"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "detect platform from URL (reddit/youtube/bilibili/other)",
+        "call appropriate backend (reddit_rss/youtube_oembed/bilibili_view/jina_reader)",
+        "save raw to raw/ if ingesting as source (Iron Law #7)",
+        "focus_clear"
+      ],
+      "invocation_hint": "/platform-ingest",
+      "a_phase": "any",
+      "triggers": [
+        "reddit",
+        "youtube",
+        "bilibili",
+        "ดึงโพสต์",
+        "platform-ingest"
+      ]
+    },
+    {
       "name": "plugin-creator",
       "aliases": [],
       "domain": [
