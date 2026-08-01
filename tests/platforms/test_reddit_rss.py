@@ -26,8 +26,12 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 # ── fixture loading ──────────────────────────────────────────────────────
 
-def _load_fixture(name: str) -> str:
+def _load_fixture_text(name: str) -> str:
     return (FIXTURES / name).read_text(encoding="utf-8")
+
+
+# Back-compat alias used by older tests in this file.
+_load_fixture = _load_fixture_text
 
 
 # ── parse_shape: reddit_rss.parse_feed(xml_text) -> list[dict] ───────────
@@ -161,10 +165,34 @@ class TestFetchPosts:
 # ── feedparser-not-installed path ─────────────────────────────────────────
 
 class TestFeedparserOptional:
-    """feedparser is optional. Module must degrade gracefully if missing."""
+    """feedparser is OPTIONAL. fetch_posts must still work without it,
+    because the stdlib xml.etree parser handles Reddit Atom feeds fine.
+    Design decision: feedparser is not a hard dep (Iron Law #6 + no-third-
+    party-dep convention in scripts/lib/)."""
 
-    def test_returns_error_when_feedparser_none(self, monkeypatch):
+    def test_fetch_works_without_feedparser(self, monkeypatch):
+        """Critical: missing feedparser must NOT break fetch — stdlib parser is enough."""
+        from platforms import reddit_rss
+
+        class FakeResp:
+            def read(self): return _load_fixture_text("reddit_worldnews.rss").encode("utf-8")
+            def __enter__(self): return self
+            def __exit__(self, *a): pass
+
+        monkeypatch.setattr(reddit_rss, "feedparser", None)
+        monkeypatch.setattr(reddit_rss.urllib.request, "urlopen",
+                            lambda req, timeout: FakeResp())
+        result = reddit_rss.fetch_posts("worldnews", limit=3)
+        assert isinstance(result, list)
+        # Should return 3 real items, not an error dict
+        assert len(result) == 3
+        assert "error" not in result[0]
+        assert result[0]["source"] == "reddit"
+
+    def test_module_loads_without_feedparser(self, monkeypatch):
+        """Module import + parse_feed must work even when feedparser is None."""
         from platforms import reddit_rss
         monkeypatch.setattr(reddit_rss, "feedparser", None)
-        result = reddit_rss.fetch_posts("worldnews")
-        assert len(result) == 1 and "error" in result[0]
+        xml = _load_fixture_text("reddit_worldnews.rss")
+        result = reddit_rss.parse_feed(xml)
+        assert len(result) > 0 and result[0]["source"] == "reddit"
