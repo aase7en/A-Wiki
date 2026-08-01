@@ -11,7 +11,7 @@
 ## Stats
 
 - Entities: **37**
-- Concepts: **33**
+- Concepts: **32**
 
 ---
 
@@ -76,7 +76,6 @@
 | `embedding-models` | A-Wiki uses multilingual embeddings so Thai and English knowledg… |
 | `frontend-design-direction` | Use with [[synthesis/design-web-capability-hub]] to lock audienc… |
 | `git-subtree-workflow` | (no abstract) |
-| `hexagonal-architecture` | รูปแบบการออกแบบระบบที่แยก **business logic** ออกจาก **เทคโนโลยีภ… |
 | `hooks-skills-plugins` | สามกลไกหลักที่ขยายพฤติกรรมของ Claude Code โดยไม่ต้องแก้ตัว AI เอ… |
 | `liquid-glass-design` | Use only when the product context benefits from glass-like depth… |
 | `llm-eval-frameworks` | LLM-as-judge, automated metrics, statistical rigor, regression t… |
