@@ -67,7 +67,7 @@ class TestRead:
         from platforms import jina_reader
 
         class FakeResp:
-            def read(self): return b"# Title\n\nBody text".encode("utf-8")
+            def read(self): return b"# Title\n\nBody text"
             def __enter__(self): return self
             def __exit__(self, *a): pass
 
