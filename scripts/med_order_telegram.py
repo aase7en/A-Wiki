@@ -313,7 +313,7 @@ def main() -> int:
     f.add_argument("session")
     f.add_argument("--po")
     f.add_argument("--out")
-    f.add_argument("--buyer", default="ศุภศิษฎิ์ คงสุวรรณ")
+    f.add_argument("--buyer", default="<BUYER_NAME>")
     f.add_argument("--force", action="store_true", help="สั่งทั้งที่ยังมีรายการ unknown")
     f.add_argument("--no-learn", action="store_true")
     f.set_defaults(fn=cmd_finish)
