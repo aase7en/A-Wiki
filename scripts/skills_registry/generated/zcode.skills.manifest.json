@@ -1349,6 +1349,11 @@
       "domain": "code,engineering,productivity"
     },
     {
+      "name": "platform-ingest",
+      "target": "skills/awiki/platform-ingest/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
       "name": "post-mortem",
       "target": "skills/engineering/post-mortem/SKILL.md",
       "domain": "productivity"

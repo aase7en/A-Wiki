@@ -274,6 +274,7 @@
 | `plan-orchestrate` | productivity | none | ecosystem | `skills/ecosystem/plan-orchestrate/SKILL.md` |
 | `plankton-code-quality` | code | none | ecosystem | `skills/ecosystem/plankton-code-quality/SKILL.md` |
 | `planning-and-task-breakdown` | code, engineering, productivity | plan | engineering-lifecycle | `skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md` |
+| `platform-ingest` | engineering, code | meta | pipeline | `skills/awiki/platform-ingest/SKILL.md` |
 | `plugin-creator` | code | none | uncategorized | `~/.codex/skills/.system/plugin-creator/SKILL.md` |
 | `post-mortem` | productivity | none | uncategorized | `skills/engineering/post-mortem/SKILL.md` |
 | `postgres-patterns` | code, data | none | ecosystem | `skills/ecosystem/postgres-patterns/SKILL.md` |
@@ -416,12 +417,12 @@
 |--------|------------|
 | ai-ops | 31 |
 | business | 14 |
-| code | 193 |
+| code | 194 |
 | data | 19 |
 | debug | 8 |
 | design | 24 |
 | document | 20 |
-| engineering | 50 |
+| engineering | 51 |
 | env | 1 |
 | logistics | 7 |
 | media | 20 |

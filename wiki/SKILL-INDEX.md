@@ -7,17 +7,17 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 406 · **Aliases/deprecated**: 13
+**Total canonical skills**: 407 · **Aliases/deprecated**: 13
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 193 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 194 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 8 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 24 |
 | `ux-ui` | UX/UI / Frontend / a11y | 10 |
-| `engineering` | วิศวกร / Architect / Agent harness | 50 |
+| `engineering` | วิศวกร / Architect / Agent harness | 51 |
 | `trader` | เทรด / DeFi / ตลาด | 14 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
 | `business` | ธุรกิจ / การเงิน / CRM | 14 |
@@ -171,6 +171,7 @@
 | `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
 | `plankton-code-quality` | none | ecosystem | บังคับใช้คุณภาพโค้ดอัตโนมัติขณะเขียนด้วย Plankton — จัดรูปแบบ, lint, และแก้ไขโค้ดโดย Claude ทุกคร... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
+| `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
 | `plugin-creator` | none | uncategorized | สร้างและจัดโครงสร้าง plugin สำหรับ Codex โดยสร้างโฟลเดอร์ .codex-plugin/ พร้อมไฟล์ plugin.json ที... |
 | `postgres-patterns` | none | ecosystem | รวบรวมแนวทางการออกแบบฐานข้อมูล PostgreSQL ที่เน้นการปรับแต่ง query, การออกแบบ schema, การสร้าง in... |
 | `prisma-patterns` | none | ecosystem | รวบรวมแพทเทิร์นการใช้งาน Prisma ORM สำหรับ TypeScript backend ครอบคลุมการออกแบบ schema, การ optim... |
@@ -330,6 +331,7 @@
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
+| `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
 | `production-audit` | none | ecosystem | ตรวจสุขภาพระบบ production: logs, monitoring, alerting, runbook, SLO |
 | `production-scheduling` | none | ecosystem | ช่วยวางแผนและจัดตารางการผลิตในระบบคลังสินค้าหรือโรงงาน โดยคำนึงถึงทรัพยากร เวลา และลำดับงาน เพื่อ... |
 | `prototype` | build | mattpocock | สร้าง prototype แบบเร็วเพื่อตอบคำถามด้านการออกแบบหรือทดสอบแนวคิด โดยไม่ต้องกังวลเรื่องคุณภาพโค้ดห... |
@@ -647,7 +649,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-business`, `a-claim`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-business`, `a-claim`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
