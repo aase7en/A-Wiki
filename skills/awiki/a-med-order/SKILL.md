@@ -115,4 +115,4 @@ python3 scripts/med_order_telegram.py finish <id> --po PO-YYYY-MM-NN
 ## Related
 
 `pharmacy-order-lookup` (fuzzy match ชั้นเดิม) · `a-wiki-telegram` (transport ของเลน B) ·
-`a-doc-procurement` (เอกสารจัดซื้อทั่วไป) · `a-business` · `excel-generator`
+`a-doc` (parent dispatcher — เอกสารจัดซื้อ revive ประเภท procurement ได้เมื่อสอน) · `excel-generator`
