@@ -384,7 +384,8 @@ class TestCollectOutputs:
         _patch_wiki(monkeypatch, gen_index, "CONTEXT_DIR", sample_wiki.parent / "context")
         pages = collect_pages()
         outputs = collect_outputs(pages)
-        assert len(outputs) == 6
+        # 1 main + len(DOMAIN_ORDER) domain overviews + 1 sources
+        assert len(outputs) == 1 + len(gen_index.DOMAIN_ORDER) + 1
 
     def test_output_keys_are_paths(self, sample_wiki, monkeypatch):
         _patch_full_wiki_env(monkeypatch, sample_wiki.parent)
