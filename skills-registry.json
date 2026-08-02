@@ -628,47 +628,6 @@
       "invocation_hint": "/A-Doc (announce type)"
     },
     {
-      "name": "a-business",
-      "aliases": [
-        "/a-business",
-        "abusiness"
-      ],
-      "domain": [
-        "business",
-        "trader"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-business/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "0.1.0",
-      "status": "canonical",
-      "description": "งานธุรกิจส่วนตัว — stub รอ user สอน. ปัจจุบันชี้ไป finance-pipeline, project-flow-ops, agent-sort",
-      "invocation": "manual",
-      "th_description": "งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ",
-      "when_to_use": "งานธุรกิจ/การลงทุนส่วนตัว",
-      "examples": [
-        {
-          "scenario": "วิเคราะห์การลงทุน",
-          "how": "via finance-pipeline"
-        }
-      ],
-      "process_steps": [
-        "first-use: grill บริบท",
-        "map to canonical skills"
-      ],
-      "invocation_hint": "/A-Business",
-      "triggers": [
-        "ธุรกิจ",
-        "โครงการส่วนตัว",
-        "business"
-      ],
-      "a_phase": "any"
-    },
-    {
       "name": "a-med-order",
       "aliases": [
         "/a-med-order",

@@ -4,11 +4,6 @@
   "link_root": ".zcode/skills",
   "skills": [
     {
-      "name": "a-business",
-      "target": "skills/awiki/a-business/SKILL.md",
-      "domain": "business,trader"
-    },
-    {
       "name": "a-claim",
       "target": "skills/awiki/a-claim/SKILL.md",
       "domain": "engineering,ai-ops"

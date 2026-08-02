@@ -44,7 +44,6 @@
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
-| `a-business` | `/A-Business` | any | `ธุรกิจ` · `โครงการส่วนตัว` · `business` |
 | `a-claim` | `/A-Claim` | any | `claim` · `จอง` · `agent อื่น` · `ชนกัน` · `coordination` |
 | `a-content` | `/A-Content` | any | `คอนเทนต์` · `บทความ` · `การตลาด` · `content` · `marketing` · `seo` |
 | `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
@@ -104,4 +103,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_15 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_14 A-Suite entry points (+12 subskills) · spine = ask → design → plan → implement → review → debug → test_

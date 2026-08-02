@@ -3,7 +3,6 @@
 
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
-| `a-business` | business, trader | meta | pipeline | `skills/awiki/a-business/SKILL.md` |
 | `a-claim` | engineering, ai-ops | meta | pipeline | `skills/awiki/a-claim/SKILL.md` |
 | `a-content` | media, business | meta | pipeline | `skills/awiki/a-content/SKILL.md` |
 | `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
@@ -416,7 +415,7 @@
 | Domain | Skill count |
 |--------|------------|
 | ai-ops | 31 |
-| business | 14 |
+| business | 13 |
 | code | 194 |
 | data | 19 |
 | debug | 8 |
@@ -433,6 +432,6 @@
 | security | 10 |
 | sre | 6 |
 | thai | 23 |
-| trader | 14 |
+| trader | 13 |
 | ux-ui | 10 |
 | wiki | 9 |

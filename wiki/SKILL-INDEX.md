@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 407 · **Aliases/deprecated**: 5
+**Total canonical skills**: 406 · **Aliases/deprecated**: 5
 
 ## 📊 Domain Summary
 
@@ -18,9 +18,9 @@
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 24 |
 | `ux-ui` | UX/UI / Frontend / a11y | 10 |
 | `engineering` | วิศวกร / Architect / Agent harness | 51 |
-| `trader` | เทรด / DeFi / ตลาด | 14 |
+| `trader` | เทรด / DeFi / ตลาด | 13 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 7 |
-| `business` | ธุรกิจ / การเงิน / CRM | 14 |
+| `business` | ธุรกิจ / การเงิน / CRM | 13 |
 | `data` | Data Visualization / DB / Query | 19 |
 | `security` | ความปลอดภัย / Hardening | 10 |
 | `ai-ops` | AI ops / LLM / Cost | 31 |
@@ -355,7 +355,6 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
-| `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
 | `a-invest` | meta | pipeline | งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence |
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `evm-token-decimals` | none | ecosystem | ป้องกันบั๊กจาก mismatch ของทศนิยม token บน EVM chain อย่างเงียบ ๆ ครอบคลุมการค้นหาทศนิยมแบบ runti... |
@@ -386,7 +385,6 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
-| `a-business` | meta | pipeline | งานธุรกิจส่วนตัว — stub รอผู้ใช้สอนบริบทเฉพาะ |
 | `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
 | `a-invest` | meta | pipeline | งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence |
 | `a-med-order` | build | pipeline | สั่งซื้อยาครบวง: ตรวจคำผิดชื่อยา (จำคำพ้องที่ยืนยันแล้วอัตโนมัติ) → ใบสั่งซื้อ Excel/Sheet → กรอก... |
@@ -649,7 +647,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-business`, `a-claim`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-claim`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
