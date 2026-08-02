@@ -56,6 +56,9 @@ def test_checks_include_work_pc_relevant_steps(monkeypatch):
     assert [step.name for step in steps] == [
         "cloud link",
         "agent config links",
+        "global.env",
+        "IDE hook",
+        "env loader",
         "drive secrets",
         "import keys",
         "kilo config",

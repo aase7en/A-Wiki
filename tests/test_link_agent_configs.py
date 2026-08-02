@@ -251,7 +251,7 @@ def test_env_linked_for_hermes(tmp_path):
     assert result.returncode == 0, result.stderr + result.stdout
 
     env_link = home / ".hermes" / ".env"
-    env_target = drive / ".agents" / "hermes" / ".env"
+    env_target = drive / "secrets" / "global.env"
     # On systems with symlink support this is a real symlink; on Windows
     # without symlink support the script copies the Drive file as a fallback.
     # Either way the local file must exist and the Drive copy must be real.
@@ -298,8 +298,8 @@ def test_force_migrates_real_env_to_drive(tmp_path):
     result = run_script("--force", home=home, drive=drive)
     assert result.returncode == 0, result.stderr + result.stdout
     # After --force, local .env is either a symlink to Drive or a copy of it.
-    # Either way, the migrated content must land on Drive.
-    target = drive / ".agents" / "hermes" / ".env"
+    # Either way, the migrated content must land on Drive (universal global.env).
+    target = drive / "secrets" / "global.env"
     assert target.read_text(encoding="utf-8") == "SECRET=migrate-me\n"
 
 
@@ -391,7 +391,7 @@ def test_status_counts_real_link_target_not_just_symlink_bit(tmp_path):
 def test_status_fails_on_dangling_env(tmp_path):
     home, drive = make_env(tmp_path)
     run_script(home=home, drive=drive)
-    (drive / ".agents" / "hermes" / ".env").unlink()
+    (drive / "secrets" / "global.env").unlink()
     result = run_script("--status", home=home, drive=drive)
     # On systems with symlink support, the local .env is a symlink to Drive,
     # so removing the Drive copy dangles it → status fails (exit 1).
@@ -423,7 +423,7 @@ def test_unlink_removes_managed_links_only(tmp_path):
         assert not env_link.exists()
     # unmanaged real dir survives; drive-side data survives
     assert real.is_dir()
-    assert (drive / ".agents" / "hermes" / ".env").is_file()
+    assert (drive / "secrets" / "global.env").is_file()
 
 
 # ── clean-backups (destructive: verify-then-delete) ──────────────────────
