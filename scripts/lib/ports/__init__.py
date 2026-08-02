@@ -155,7 +155,64 @@ class RoutingPort(Protocol):
         ...
 
 
+# ── 7. SkillRegistryPort — read access to the skills-registry.json store ─
+# ADR-0012 slice A3 (2026-08-03). skills_service._load_registry() does
+# `Registry.load(REGISTRY_FILE)` on a cache miss; that file read is the
+# seam. The port models the CAPABILITY (load + validate + get-by-name),
+# not the technology (JSON file on disk).
+@runtime_checkable
+class SkillRegistryPort(Protocol):
+    """Read-side access to the skill registry.
+
+    Implementations MUST return validated registry data. A miss on the
+    underlying source must raise (FileNotFoundError / KeyError), not return
+    a silently-empty registry — the caller relies on the error to trigger
+    a rebuild."""
+
+    def load(self) -> "object":
+        """Return the loaded registry object. Cached implementations must
+        invalidate on mtime change so a registry rebuild is picked up."""
+        ...
+
+    def get(self, name: str) -> dict | None:
+        """Return one skill by name, or None if not present."""
+        ...
+
+
+# ── 8. SkillRegistryWriterPort — atomic validated write to the registry ──
+# ADR-0012 slice A3. skills_service.update_skill_field() does the
+# write-validate-replace dance (tempfile → validate_registry → os.replace).
+# That dance + its invariants (EDITABLE_FIELDS allowlist, _EDIT_MAX_LEN,
+# _BOOL_FIELDS, mtime cache bust) belong in the adapter, not the caller.
+# Security note: the EDITABLE_FIELDS allowlist is a SECURITY control —
+# adapters must preserve it EXACTLY (no field additions; structural fields
+# must stay non-editable). See a-council security-auditor 2026-08-03.
+@runtime_checkable
+class SkillRegistryWriterPort(Protocol):
+    """Write-side access to the skill registry.
+
+    Implementations MUST:
+      - reject fields outside an EDITABLE_FIELDS allowlist (security control)
+      - cap value length at _EDIT_MAX_LEN
+      - parse bool fields strictly (only _BOOL_FIELDS, only true/false)
+      - validate the whole registry after edit, rollback on failure
+      - use an atomic temp-file → os.replace sequence
+      - bust the read cache (mtime-based) so the next load sees the change
+    """
+
+    def update_field(self, name: str, field: str, value: str) -> dict:
+        """Update one editable field on one skill.
+
+        Caller-contract (frozen — ADR-0012 R8): returns a result DICT shaped
+        `{ok: bool, ...}` — never raises on validation failure. On success:
+        `{ok: True, field, name, length}`. On failure: `{ok: False, error}`.
+        Raising would break every caller of skills_service.update_skill_field.
+        Implementations MUST preserve this dict-return shape exactly."""
+        ...
+
+
 __all__ = [
     "MemoryPort", "BlackboardPort", "TaskBoardPort",
     "ClaimStorePort", "FocusStorePort", "RoutingPort",
+    "SkillRegistryPort", "SkillRegistryWriterPort",
 ]
