@@ -110,10 +110,39 @@ class TestHookWarnings:
 
 
 class TestHookDeprecated:
-    """The hook should warn when a deprecated skill is being written."""
+    """Tests for the deprecated-skill warning path of the hook.
 
-    def test_deprecated_skill_warns(self) -> None:
-        # root-cause-first is status: deprecated in the registry
-        code, out = _run_hook(_make_payload("Write", "skills/deprecated/root-cause-first/SKILL.md", COMPLIANT_SKILL))
-        # Deprecated skills are not blocked (they exist) but should warn
-        assert code == 0  # warn only, not block
+    Policy change (2026-08, commit 5cb3cf23 — Tier A registry cleanup):
+    A-Wiki now DROPS status:deprecated entries from the registry entirely
+    rather than keeping them with a flag. Rationale: deprecated skills
+    should not appear in "list my skills" surfaces, and the hook cannot
+    read a status flag that isn't there. The hook's deprecated-warning
+    code path (Gate 3 in check_skill_registry.py) is therefore dormant
+    under the current policy — it remains for forward compatibility if
+    the policy reverses, but no live test can exercise it without
+    faking registry contents.
+
+    The original test_deprecated_skill_warns used `root-cause-first` as a
+    fixture, but that entry was dropped from the registry in Tier A. We
+    instead assert the CURRENT policy directly: the registry should have
+    zero status:deprecated entries. If this assertion fails, either the
+    policy reversed (re-add the hook test) or someone reintroduced a
+    deprecated entry by mistake.
+    """
+
+    def test_registry_has_no_deprecated_entries(self) -> None:
+        """Tier A policy: deprecated skills are dropped, not flagged.
+
+        This is the positive assertion of the policy that made the old
+        test_deprecated_skill_warns fixture invalid. If you intentionally
+        revert the policy (keep deprecated in registry), update this test
+        and re-add a hook-behavior test using a registry monkeypatch.
+        """
+        registry_path = REPO_ROOT / "skills-registry.json"
+        data = json.loads(registry_path.read_text(encoding="utf-8"))
+        deprecated = [s["name"] for s in data.get("skills", []) if s.get("status") == "deprecated"]
+        assert deprecated == [], (
+            f"Tier A policy violation: {len(deprecated)} deprecated entries still "
+            f"in registry: {deprecated}. Either drop them (Tier A policy) or "
+            f"re-add the hook deprecated-warning test."
+        )
