@@ -5,6 +5,7 @@ Hermetic — uses temp dirs + fixture env files, no real Drive mount needed.
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -12,6 +13,16 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = REPO_ROOT / "scripts"
+
+# PowerShell tests require the `powershell` binary (Windows PowerShell 5.1) or
+# `pwsh` (PowerShell 7+). Neither ships on GitHub's ubuntu/macos runners, so
+# these 5 tests fail with FileNotFoundError there. Skip when the binary is
+# absent rather than restricting by platform — pwsh IS installable on Linux.
+_HAS_POWERSHELL = shutil.which("powershell") is not None or shutil.which("pwsh") is not None
+skip_no_powershell = pytest.mark.skipif(
+    not _HAS_POWERSHELL,
+    reason="powershell/pwsh binary not available (Windows-only test)",
+)
 
 
 def _run_bash(script: Path, args: list[str], env: dict | None = None,
@@ -31,8 +42,11 @@ def _run_powershell(script: Path, args: list[str], env: dict | None = None,
     full_env = dict(os.environ)
     if env:
         full_env.update(env)
+    # Prefer Windows PowerShell (`powershell`); fall back to PowerShell 7+
+    # (`pwsh`) so the tests also work where only pwsh is installed.
+    binary = shutil.which("powershell") or shutil.which("pwsh")
     return subprocess.run(
-        ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)] + args,
+        [binary, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(script)] + args,
         cwd=str(REPO_ROOT), text=True, encoding="utf-8", errors="replace",
         capture_output=True, timeout=timeout, env=full_env,
     )
@@ -88,6 +102,7 @@ class TestIdeHook:
         assert n2 == 1
 
 
+@skip_no_powershell
 class TestLoaderPowerShell:
     def test_loader_has_help_flag(self):
         proc = _run_powershell(SCRIPTS / "load-global-env.ps1", ["-Help"])
@@ -117,6 +132,7 @@ class TestLoaderPowerShell:
         assert "REPO_ONLY=repo_value" in out
 
 
+@skip_no_powershell
 class TestIdeHookPowerShell:
     def test_status_flag_works(self):
         proc = _run_powershell(SCRIPTS / "setup-ide-env.ps1", ["-Status"])
