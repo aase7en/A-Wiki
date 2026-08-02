@@ -12,6 +12,15 @@ Path configuration:
 The wrappers are intentionally thin — they validate args minimally and
 delegate to the underlying primitives, which already have their own
 concurrency-safety via atomic_json (chunk 1).
+
+ADR-0012 slice A4 (2026-08-01): Hexagonal refactor — the module now depends
+on outbound PORTS (ports.MemoryPort / TaskBoardPort / ...) rather than on
+concrete primitives directly. Adapters (prod JSONL + in-memory mock) live in
+adapters/. The TOOLS dict signature and set_paths() are UNCHANGED — this is
+the caller-contract freeze (R8 mitigation): every agent, hook, and skill
+that subprocesses or imports this module keeps working. The only visible
+change is internal: tool_memory_* now goes through self._memory (a port)
+instead of calling memory_ledger.MemoryLedger(...) inline.
 """
 from __future__ import annotations
 
@@ -23,9 +32,19 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import memory_ledger  # noqa: E402 -- chunk 2
+# Ports (interfaces) — the application core depends ONLY on these.
+from ports import (  # noqa: E402 -- ADR-0012 slice A4
+    MemoryPort, TaskBoardPort, ClaimStorePort, FocusStorePort, RoutingPort,
+)
+# Prod adapters — the ONLY place that knows about concrete storage.
+from adapters.memory import JsonlMemoryAdapter  # noqa: E402
+from adapters.taskboard import JsonlTaskBoardAdapter  # noqa: E402
+
+# Primitives still imported for the 3 ports not yet extracted (blackboard,
+# agent_claims) — they will become adapters in a follow-up slice. Keeping
+# them here makes the boundary visible: this import line is the seam.
 import blackboard     # noqa: E402 -- chunk 4
-import task_board     # noqa: E402 -- chunk 5
+import task_board     # noqa: E402 -- chunk 5 (still used by JsonlTaskBoardAdapter)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_LEDGER = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
@@ -38,21 +57,141 @@ _BB_PATH: Path = _DEFAULT_BB
 _TASKS_PATH: Path = _DEFAULT_TASKS
 _FOCUS_DIR: Path = REPO_ROOT / ".tmp"
 
+# Port instances — bound to prod adapters by default. Tests / composition
+# roots may call configure() with custom adapters (e.g. the in-memory mocks).
+_memory: MemoryPort = JsonlMemoryAdapter(_DEFAULT_LEDGER)
+_taskboard: TaskBoardPort = JsonlTaskBoardAdapter(_DEFAULT_TASKS)
+
+# A-Council 2026-08-01 critical fix: track which ports were wired explicitly
+# so a later set_paths() call cannot silently clobber them (finding #2).
+_memory_explicitly_wired: bool = False
+_taskboard_explicitly_wired: bool = False
+
+
+def _sandbox_root() -> Path:
+    """The root all writable paths must stay under.
+
+    Defaults to REPO_ROOT/.tmp. Trusted callers (ops scripts, tests) may
+    broaden it via AWIKI_DATA_DIR — this is the path-traversal mitigation
+    (A-Council critical #1): no caller can redirect the ledger/task store
+    to an arbitrary location outside this root."""
+    override = os.environ.get("AWIKI_DATA_DIR", "").strip()
+    if override:
+        return Path(override).resolve()
+    return (REPO_ROOT / ".tmp").resolve()
+
+
+def _assert_within_sandbox(path: Path | str, label: str) -> Path:
+    """Resolve `path` and raise ValueError if it escapes the sandbox root.
+
+    Defends against path traversal (critical #1): .git/config, /etc/passwd,
+    exfiltration folders, symlink escapes. Symlinks are resolved so a link
+    that points outside is caught even if the link itself lives inside.
+
+    Resolution rule: relative paths are resolved against the CURRENT working
+    directory (as a normal caller expects), NOT against the sandbox root —
+    otherwise `.git/config` would silently become `<sandbox>/.git/config`
+    and the check would be meaningless. The resolved real path must then
+    still fall under the sandbox."""
+    root = _sandbox_root()
+    p = Path(path)
+    # Resolve from cwd (NOT from root) so relative paths behave normally,
+    # then follow symlinks via .resolve() to catch escape links.
+    resolved = (Path.cwd() / p if not p.is_absolute() else p).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        raise ValueError(
+            f"{label}={path!r} resolves to {resolved}, outside the allowed "
+            f"sandbox {root}. Set AWIKI_DATA_DIR to broaden the root. "
+            f"Refused to prevent path traversal "
+            f"(A-Council critical #1, ADR-0012 slice A4)."
+        )
+    return resolved
+
+
+def configure(*,
+              memory: MemoryPort | None = None,
+              taskboard: TaskBoardPort | None = None,
+              ledger: Path | str | None = None,
+              blackboard: Path | str | None = None,
+              task_board: Path | str | None = None,
+              focus_dir: Path | str | None = None) -> None:
+    """Single composition entry point (A-Council critical #2 fix).
+
+    ADR-0012 acceptance rule: exactly ONE place binds adapters to ports.
+    Accepts EITHER an adapter instance OR a path for each port, never both
+    for the same port (raises on conflict — no silent precedence).
+
+    The previously-competing _wire() and set_paths() now BOTH route here.
+    """
+    global _memory, _taskboard, _LEDGER_PATH, _BB_PATH, _TASKS_PATH, _FOCUS_DIR
+    global _memory_explicitly_wired, _taskboard_explicitly_wired
+
+    # Conflict detection: adapter AND path for the same port = error.
+    if memory is not None and ledger is not None:
+        raise ValueError(
+            "configure() got both `memory` adapter and `ledger` path — "
+            "pass one or the other, not both (A-Council critical #2)."
+        )
+    if taskboard is not None and task_board is not None:
+        raise ValueError(
+            "configure() got both `taskboard` adapter and `task_board` path — "
+            "pass one or the other, not both (A-Council critical #2)."
+        )
+
+    # Wire adapters explicitly — marked so a later path-only call can't clobber.
+    if memory is not None:
+        _memory = memory
+        _memory_explicitly_wired = True
+    if taskboard is not None:
+        _taskboard = taskboard
+        _taskboard_explicitly_wired = True
+
+    # Wire paths — only rebuild the adapter if the port was NOT explicitly
+    # wired with an instance. This is the critical #2 regression fix: a
+    # wired mock survives a later set_paths() that touches a different port.
+    if ledger is not None:
+        if _memory_explicitly_wired:
+            raise ValueError(
+                "ledger= conflicts with an already-wired memory adapter "
+                "(A-Council critical #2). Call configure(memory=None) first."
+            )
+        _LEDGER_PATH = _assert_within_sandbox(ledger, "ledger")
+        _memory = JsonlMemoryAdapter(_LEDGER_PATH)
+    if blackboard is not None:
+        _BB_PATH = _assert_within_sandbox(blackboard, "blackboard")
+    if task_board is not None:
+        if _taskboard_explicitly_wired:
+            raise ValueError(
+                "task_board= conflicts with an already-wired taskboard adapter "
+                "(A-Council critical #2). Call configure(taskboard=None) first."
+            )
+        _TASKS_PATH = _assert_within_sandbox(task_board, "task_board")
+        _taskboard = JsonlTaskBoardAdapter(_TASKS_PATH)
+    if focus_dir is not None:
+        _FOCUS_DIR = _assert_within_sandbox(focus_dir, "focus_dir")
+
+
+def _wire(*, memory: MemoryPort | None = None,
+          taskboard: TaskBoardPort | None = None) -> None:
+    """DEPRECATED alias for configure(memory=..., taskboard=...).
+
+    Kept only so any external caller that used the prototype name keeps
+    working; new code must call configure()."""
+    configure(memory=memory, taskboard=taskboard)
+
 
 def set_paths(*, ledger: Path | str | None = None,
               blackboard: Path | str | None = None,
               task_board: Path | str | None = None,
               focus_dir: Path | str | None = None) -> None:
-    """Override the file paths the tools read/write. Mainly for tests."""
-    global _LEDGER_PATH, _BB_PATH, _TASKS_PATH, _FOCUS_DIR
-    if ledger is not None:
-        _LEDGER_PATH = Path(ledger)
-    if blackboard is not None:
-        _BB_PATH = Path(blackboard)
-    if task_board is not None:
-        _TASKS_PATH = Path(task_board)
-    if focus_dir is not None:
-        _FOCUS_DIR = Path(focus_dir)
+    """Override file paths. Caller-contract preserved (ADR-0012 R8).
+
+    Routes through configure() so the same sandbox check + no-clobber rule
+    applies (A-Council critical #1 + #2)."""
+    configure(ledger=ledger, blackboard=blackboard,
+              task_board=task_board, focus_dir=focus_dir)
 
 
 def _session_id() -> str:
@@ -66,7 +205,7 @@ def tool_memory_recall(args: dict) -> list[dict]:
     """Search the Memory Ledger."""
     query = args.get("query", "")
     limit = int(args.get("limit", 10))
-    return memory_ledger.MemoryLedger(_LEDGER_PATH).search(query, limit=limit)
+    return _memory.recall(query, limit=limit)
 
 
 def tool_memory_semantic_recall(args: dict) -> list[dict]:
@@ -77,17 +216,12 @@ def tool_memory_semantic_recall(args: dict) -> list[dict]:
     """
     query = args.get("query", "")
     limit = int(args.get("limit", 10))
-    try:
-        import semantic_recall
-        return semantic_recall.search(_LEDGER_PATH, query, limit=limit)
-    except Exception:
-        # Graceful fallback to substring search
-        return memory_ledger.MemoryLedger(_LEDGER_PATH).search(query, limit=limit)
+    return _memory.semantic_recall(query, limit=limit)
 
 
 def tool_memory_remember(args: dict) -> float:
     """Append a manual entry to the Memory Ledger. Returns its ts."""
-    return memory_ledger.MemoryLedger(_LEDGER_PATH).append(
+    return _memory.remember(
         session_id=_session_id(),
         type=args["type"],
         summary=args["summary"],
@@ -130,8 +264,7 @@ def tool_bb_reply(args: dict) -> str:
 
 # ── Task Board tools ──────────────────────────────────────────────────────
 def tool_task_add(args: dict) -> str:
-    board = task_board.TaskBoard(_TASKS_PATH)
-    return board.add(
+    return _taskboard.add(
         goal=args["goal"],
         files=args.get("files", []),
         parent_goal_id=args.get("parent_goal_id"),
@@ -140,8 +273,7 @@ def tool_task_add(args: dict) -> str:
 
 
 def tool_task_claim(args: dict) -> bool:
-    board = task_board.TaskBoard(_TASKS_PATH)
-    return board.claim(
+    return _taskboard.claim(
         args["task_id"],
         claimant=args["claimant"],
         lease_minutes=int(args.get("lease_minutes", 30)),
@@ -149,11 +281,11 @@ def tool_task_claim(args: dict) -> bool:
 
 
 def tool_task_release(args: dict) -> bool:
-    return task_board.TaskBoard(_TASKS_PATH).release(args["task_id"])
+    return _taskboard.release(args["task_id"])
 
 
 def tool_task_update(args: dict) -> bool:
-    return task_board.TaskBoard(_TASKS_PATH).update(
+    return _taskboard.update(
         args["task_id"],
         status=args["status"],
         note=args.get("note"),
@@ -161,7 +293,7 @@ def tool_task_update(args: dict) -> bool:
 
 
 def tool_task_list(args: dict) -> list[dict]:
-    return task_board.TaskBoard(_TASKS_PATH).list(status=args.get("status"))
+    return _taskboard.list(status=args.get("status"))
 
 
 # ── A-Suite: routing + focus ──────────────────────────────────────────────
