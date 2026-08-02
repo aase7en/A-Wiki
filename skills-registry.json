@@ -10130,14 +10130,7 @@
         "focus_clear"
       ],
       "invocation_hint": "/platform-ingest",
-      "a_phase": "any",
-      "triggers": [
-        "reddit",
-        "youtube",
-        "bilibili",
-        "ดึงโพสต์",
-        "platform-ingest"
-      ]
+      "a_phase": "any"
     },
     {
       "name": "plugin-creator",

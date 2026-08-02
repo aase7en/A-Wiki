@@ -1,11 +1,11 @@
-# Review Report — 2026-08-01
+# Review Report — 2026-08-02
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 837
-- ⚠ Warnings: 304
+- ✓ Passed: 836
+- ⚠ Warnings: 302
 - ❌ Failures: 78
 
 ## Top Actionable Issues
@@ -18,7 +18,6 @@
 - ⚠ **L2** wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
-- ⚠ **L2** wiki\concepts\ai-tools\hexagonal-architecture.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
@@ -30,7 +29,8 @@
 - ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- … 362 more issue(s) below
+- ⚠ **L2** wiki\concepts\ai-tools\vibe-coding.md: missing frontmatter key: title
+- … 360 more issue(s) below
 
 ---
 
@@ -127,7 +127,6 @@
 - wiki\concepts\ai-tools\ai-glossary.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\ai-myths.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\context-management.md: missing frontmatter key: title
-- wiki\concepts\ai-tools\hexagonal-architecture.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\hooks-skills-plugins.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\llm-eval-frameworks.md: missing frontmatter key: title
 - wiki\concepts\ai-tools\llm-rag-architecture.md: missing frontmatter key: title
@@ -301,7 +300,6 @@
 - wiki\concepts\ai-tools\embedding-models.md: missing TL;DR line
 - wiki\concepts\ai-tools\frontend-design-direction.md: missing TL;DR line
 - wiki\concepts\ai-tools\git-subtree-workflow.md: missing TL;DR line
-- wiki\concepts\ai-tools\hexagonal-architecture.md: missing TL;DR line
 - wiki\concepts\ai-tools\hooks-skills-plugins.md: missing TL;DR line
 - wiki\concepts\ai-tools\liquid-glass-design.md: missing TL;DR line
 - wiki\concepts\ai-tools\llm-eval-frameworks.md: missing TL;DR line
@@ -431,10 +429,10 @@
 
 ---
 
-## ✓ Passed Checks (837 total)
+## ✓ Passed Checks (836 total)
 
 - **L2**: 343 passed
-- **L3**: 491 passed
+- **L3**: 490 passed
 - **L6**: 3 passed
 
 ---
