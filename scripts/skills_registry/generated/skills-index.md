@@ -8,16 +8,7 @@
 | `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
 | `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
-| `a-doc-_template` | document, thai | build | pipeline | `skills/awiki/a-doc/types/_template/SKILL.md` |
 | `a-doc-announce` | document, thai | build | pipeline | `skills/awiki/a-doc/types/announce/SKILL.md` |
-| `a-doc-form-record` | document, thai | build | pipeline | `skills/awiki/a-doc/types/form-record/SKILL.md` |
-| `a-doc-jd` | document, thai | build | pipeline | `skills/awiki/a-doc/types/jd/SKILL.md` |
-| `a-doc-memo` | document, thai | build | pipeline | `skills/awiki/a-doc/types/memo/SKILL.md` |
-| `a-doc-order` | document, thai | build | pipeline | `skills/awiki/a-doc/types/order/SKILL.md` |
-| `a-doc-procedure` | document, thai | build | pipeline | `skills/awiki/a-doc/types/procedure/SKILL.md` |
-| `a-doc-procurement` | document, thai | build | pipeline | `skills/awiki/a-doc/types/procurement/SKILL.md` |
-| `a-doc-project` | document, thai | build | pipeline | `skills/awiki/a-doc/types/project/SKILL.md` |
-| `a-doc-report` | document, thai | build | pipeline | `skills/awiki/a-doc/types/report/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
@@ -420,7 +411,7 @@
 | data | 19 |
 | debug | 8 |
 | design | 24 |
-| document | 20 |
+| document | 11 |
 | engineering | 51 |
 | env | 1 |
 | logistics | 7 |
@@ -431,7 +422,7 @@
 | productivity | 13 |
 | security | 10 |
 | sre | 6 |
-| thai | 23 |
+| thai | 14 |
 | trader | 13 |
 | ux-ui | 10 |
 | wiki | 9 |

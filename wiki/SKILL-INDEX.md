@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 406 · **Aliases/deprecated**: 5
+**Total canonical skills**: 397 · **Aliases/deprecated**: 5
 
 ## 📊 Domain Summary
 
@@ -28,11 +28,11 @@
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
-| `thai` | ภาษาไทย / เอกสารไทย | 23 |
+| `thai` | ภาษาไทย / เอกสารไทย | 14 |
 | `logistics` | ลอจิสติกส์ / ซัพพลายเชน | 7 |
 | `network` | เครือข่าย / Homelab | 10 |
 | `media` | สื่อ / วิดีโอ / รูปภาพ | 20 |
-| `document` | เอกสาร / docx/pdf/pptx/xlsx | 20 |
+| `document` | เอกสาร / docx/pdf/pptx/xlsx | 11 |
 | `sre` | SRE / Observability / Deploy | 6 |
 
 ## 🎯 Skills by Domain
@@ -526,16 +526,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
-| `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
 | `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
-| `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
-| `a-doc-jd` | build | pipeline | job description — stub รอสอน |
-| `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |
-| `a-doc-order` | build | pipeline | หนังสือคำสั่ง รพ. — stub รอสอน |
-| `a-doc-procedure` | build | pipeline | WI/SP/WP คู่มือ QA — stub รอสอน |
-| `a-doc-procurement` | build | pipeline | PR/QT/PO flow — stub รอสอน |
-| `a-doc-project` | build | pipeline | หนังสือโครงการ — stub รอสอน |
-| `a-doc-report` | build | pipeline | รายงานการทำงาน — stub รอสอน |
 | `thai-address` | none | thai | ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองร... |
 | `thai-customer-service` | none | thai | ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์ค... |
 | `thai-date-format` | none | thai | จัดรูปวันที่แบบไทย (พ.ศ., ปี ค.ศ. → พ.ศ.) — กันสับสน |
@@ -606,16 +597,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
-| `a-doc-_template` | build | pipeline | TEMPLATE สำหรับสร้าง type ใหม่ — stub รอสอน |
 | `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
-| `a-doc-form-record` | build | pipeline | แบบบันทึก/ประเมิน — stub รอสอน |
-| `a-doc-jd` | build | pipeline | job description — stub รอสอน |
-| `a-doc-memo` | build | pipeline | บันทึกข้อความ — stub รอสอน |
-| `a-doc-order` | build | pipeline | หนังสือคำสั่ง รพ. — stub รอสอน |
-| `a-doc-procedure` | build | pipeline | WI/SP/WP คู่มือ QA — stub รอสอน |
-| `a-doc-procurement` | build | pipeline | PR/QT/PO flow — stub รอสอน |
-| `a-doc-project` | build | pipeline | หนังสือโครงการ — stub รอสอน |
-| `a-doc-report` | build | pipeline | รายงานการทำงาน — stub รอสอน |
 | `assessment-generator` | none | uncategorized | สร้างข้อสอบหรือแบบประเมินจากเนื้อหาที่กำหนด โดยสามารถปรับระดับความยากและรูปแบบคำถามได้ เหมาะสำหรั... |
 | `docx` | none | uncategorized | ใช้สร้าง อ่าน แก้ไข หรือจัดการไฟล์ Word (.docx) โดยตรง รองรับการเพิ่มข้อความ ตาราง รูปภาพ และจัดร... |
 | `excel-generator` | none | wiki | สร้างสเปรดชีต Excel ระดับมืออาชีพที่เน้นความสวยงามและการวิเคราะห์ข้อมูล ใช้สำหรับจัดระเบียบ วิเคร... |
@@ -643,7 +625,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-doc-_template`, `a-doc-announce`, `a-doc-form-record`, `a-doc-jd`, `a-doc-memo`, `a-doc-order`, `a-doc-procedure`, `a-doc-procurement`, `a-doc-project`, `a-doc-report`, `a-med-order`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
+- **BUILD**: `a-doc`, `a-doc-announce`, `a-med-order`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`

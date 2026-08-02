@@ -29,53 +29,8 @@
       "domain": "document,thai"
     },
     {
-      "name": "a-doc-_template",
-      "target": "skills/awiki/a-doc/types/_template/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
       "name": "a-doc-announce",
       "target": "skills/awiki/a-doc/types/announce/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-form-record",
-      "target": "skills/awiki/a-doc/types/form-record/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-jd",
-      "target": "skills/awiki/a-doc/types/jd/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-memo",
-      "target": "skills/awiki/a-doc/types/memo/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-order",
-      "target": "skills/awiki/a-doc/types/order/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-procedure",
-      "target": "skills/awiki/a-doc/types/procedure/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-procurement",
-      "target": "skills/awiki/a-doc/types/procurement/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-project",
-      "target": "skills/awiki/a-doc/types/project/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
-      "name": "a-doc-report",
-      "target": "skills/awiki/a-doc/types/report/SKILL.md",
       "domain": "document,thai"
     },
     {
