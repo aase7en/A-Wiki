@@ -31,6 +31,8 @@
 # Registered skills whose names contain "token" (caught by *token*):
 !skills/ecosystem/evm-token-decimals/
 !skills/ecosystem/token-budget-advisor/
+# Subagent whose name contains "token" (referenced by ai-ops.json eval suite):
+!agents/subagents/token-optimizer.md
 # Tracked docs/test files whose names contain "secrets" (no secrets inside —
 # documentation about secret handling + a test for the drive-secrets loader):
 !docs/protocols/secrets-global-env.md
