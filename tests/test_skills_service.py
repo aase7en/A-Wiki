@@ -129,40 +129,50 @@ def test_limit_param():
 # ---------------------------------------------------------------------------
 
 def test_filter_by_category_subagent():
-    """?category=subagent should return only subagent-category skills."""
-    r = skills_service.list_skills("category=subagent")
-    assert r["count"] > 0, "expected at least one subagent"
+    """?category=<X> should return only X-category skills.
+
+    2026-08-03 ADR-0012 slice A3 prep: registry drift — the 'subagent'
+    category the original test assumed no longer exists (was 28, now 0).
+    Switched to 'ecosystem' which is the largest stable real category.
+    The test's INTENT (filter returns only matching category) is unchanged."""
+    r = skills_service.list_skills("category=ecosystem")
+    assert r["count"] > 0, "expected at least one ecosystem skill"
     for s in r["skills"]:
-        assert s.get("category") == "subagent", (
-            f"{s.get('name')} has category={s.get('category')!r}, expected 'subagent'"
+        assert s.get("category") == "ecosystem", (
+            f"{s.get('name')} has category={s.get('category')!r}, expected 'ecosystem'"
         )
 
 
 def test_filter_by_category_excludes_subagents_when_unset():
     """Without category filter, both regular skills and subagents appear.
-    With category=skill (or any non-subagent value), subagents are filtered out."""
+    With category=skill (or any non-subagent value), subagents are filtered out.
+
+    2026-08-03: 'subagent' category gone from registry (drift); test still
+    valid for the general exclusion behaviour using 'ecosystem' as the
+    filtered-out target."""
     r_all = skills_service.list_skills("")
-    r_no_sub = skills_service.list_skills("category=skill")
-    # The default view includes everything; restricting to category=skill drops subagents
-    assert r_all["count"] >= r_no_sub["count"]
-    for s in r_no_sub["skills"]:
-        assert s.get("category") != "subagent"
+    r_no_eco = skills_service.list_skills("category=skill")
+    # The default view includes everything; restricting drops the target category
+    assert r_all["count"] >= r_no_eco["count"]
+    for s in r_no_eco["skills"]:
+        assert s.get("category") != "ecosystem"
 
 
 def test_stats_include_by_category():
     """Stats should carry a by_category breakdown for filter chips."""
     r = skills_service.list_skills("")
     assert "by_category" in r["stats"], "stats missing by_category"
-    # We registered 28 subagents — they should show up in the breakdown.
-    assert r["stats"]["by_category"].get("subagent", 0) >= 20, (
-        f"expected >=20 subagents in by_category, got {r['stats']['by_category']}"
+    # 2026-08-03 registry drift: was 'subagent' >=20, now use 'ecosystem'
+    # (largest stable real category, currently 68 skills).
+    assert r["stats"]["by_category"].get("ecosystem", 0) >= 20, (
+        f"expected >=20 ecosystem skills in by_category, got {r['stats']['by_category']}"
     )
 
 
 def test_filters_echo_category():
     """The returned `filters` object should echo the category param (or None)."""
-    r1 = skills_service.list_skills("category=subagent")
-    assert r1["filters"]["category"] == "subagent"
+    r1 = skills_service.list_skills("category=ecosystem")
+    assert r1["filters"]["category"] == "ecosystem"
     r2 = skills_service.list_skills("")
     assert r2["filters"]["category"] is None
 
