@@ -29,7 +29,7 @@ status: active
 |---|---|---|---|---|
 | **A1** ✅ **gates ผ่านหมด — พร้อมเริ่ม** | `scripts/mcp-wiki-server.py` | 736 | MCP server หลัก (7 tools + 3 resources), `sqlite3` FTS5 + subprocess + `raw/` I/O inline. **Iron-Law-protected Layer 3**. G1+G2+G3+G4 ผ่านหมด (2026-08-02) | `WikiSearchPort`, `RawStorePort`, `VectorIndexPort`, `RagQueryPort`, `SourceReadPort` |
 | **A2** | `scripts/live-dashboard/server.py` | 1757 | HTTP daemon + 1100 LOC handler, capability mapping + model recommendation + file/SQLite state | `ModelPoolPort`, `CapabilityMapPort`, `DashboardStatePort`, `KeyStorePort` |
-| **A3** | `scripts/live-dashboard/skills_service.py` | 1262 | skill registry serving + filesystem I/O | `SkillRegistryPort`, `FileSystemPort` |
+| **A3** ✅ **75 behavior tests — NEXT slice (council 2026-08-03)** | `scripts/live-dashboard/skills_service.py` | 1262 | skill registry serving + filesystem I/O. **มี `test_skills_service.py` 75 tests/875 LOC** (read-mostly, no key/secret, write path hardened — safest to refactor ตาม council verdict) | `SkillRegistryPort`, `SkillSearchPort`, `FileSystemPort` |
 | **A4** ✅ **DONE 2026-08-01** | `scripts/lib/neural_spine_mcp.py` | 625 | 18+ tool_* (memory/blackboard/task/focus/claims) + SQLite/JSON inline. **มี `test_neural_spine_mcp.py`** | `MemoryPort`, `TaskBoardPort` extracted (Blackboard/Claims/Focus/Routing pending sub-slice) |
 | **A5** | `scripts/hermes/dual-mode-router.py` | 438 | mode-decision + provider JSON + subprocess | `ModeStatePort`, `ModelScoutPort` |
 | **A6** | `scripts/hermes/persona-orchestrator.py` | 304 | orchestration + config I/O | `PersonaConfigPort` |

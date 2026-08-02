@@ -1,9 +1,9 @@
 ---
 adr: 0012
 title: Adopt Hexagonal Architecture (Ports & Adapters) as binding pattern for A-Wiki services
-status: Proposed
+status: Accepted
 date: 2026-07-29
-updated: 2026-08-01
+updated: 2026-08-03
 tags: [architecture, hexagonal, ports-and-adapters, refactor, binding-policy, adr]
 related_journal: []
 supersedes: []
@@ -14,13 +14,14 @@ superseded_by: []
 
 ## Status
 
-**Proposed 2026-07-29 → พร้อม promote Accepted 2026-08-02** — ทุก prerequisite gate ผ่าน (G1+G2+G3+G4), C6 ผ่าน, a-council UNBLOCK SHIP
+**Accepted 2026-08-03** — promoted จาก Proposed หลัง prerequisites ครบ + a-council UNBLOCK SHIP + A4 slice committed (ปิด evidence gap ที่ code-reviewer ตั้งข้อสังเกต)
 
 **ความคืบหน้า**:
+- 2026-07-29 Proposed: ADR + backlog + wiki concept
 - 2026-08-01 review: เพิ่ม risks R6-R14, Validation section, caller-contract freeze, measurable revisit conditions
 - 2026-08-02 a-council: ⛔ → ✅ UNBLOCK SHIP (3 critical + 5 important resolved, 89 tests)
 - 2026-08-02 G2+G3: sqlite-vec+fastembed installed (540 embeddings built), MCP compat port spec frozen
-- **พร้อม promote** — รอ user decision
+- 2026-08-03 commit A4 slice (15 files, +2646/-27) → evidence ลง git → **Accepted**
 
 ## Context
 
@@ -96,7 +97,7 @@ superseded_by: []
 |---|---|---|---|
 | `scripts/mcp-wiki-server.py` | 736 | ❌ **ไม่มี `test_mcp_wiki_server.py`** | characterization test เขียนไม่ได้ในสภาพนี้ |
 | `scripts/live-dashboard/server.py` | 1757 | ⚠️ มี dashboard tests แต่ test HTML/events ไม่ใช่ domain logic | partial |
-| `scripts/live-dashboard/skills_service.py` | 1262 | ❌ **ไม่มี dedicated test** | characterization test เขียนไม่ได้ |
+| `scripts/live-dashboard/skills_service.py` | 1262 | ✅ **`test_skills_service.py` มี 75 tests / 875 LOC** (12+ domain functions: list_skills, get_skill, skill_health_score, review_queue, agent_skill_matrix, skill_graph, detect_cycles, walkthrough_difficulty, update_skill_field, skill_history, recommend_skills, registry_push) — behavior coverage จริง (แก้ 2026-08-03: ADR เดิมผิด fact บอก "0 dedicated tests") |
 | `scripts/lib/neural_spine_mcp.py` | 625 | ✅ `test_neural_spine_mcp.py` มี | เริ่ม slice นี้ก่อนได้ |
 | `scripts/hermes/dual-mode-router.py` | 438 | ❌ ไม่มี dedicated | characterization ต้องเขียนใหม่ |
 | `scripts/pharmacy_lookup.py` (Tier B) | 831 | ❌ **ไม่มี** | characterization เขียนไม่ได้ |
@@ -160,7 +161,7 @@ superseded_by: []
 
 1. **R1 — Refactor fatigue**: scope ใหญ่อาจทำให้ท้อ → แก้ด้วยการทำ Tier A ทีละ slice + commit chunk ย่อย (`chunk(0012-A1):`)
 2. **R6 — `awiki` MCP server เป็น Iron-Law-protected Layer 3 foundation** (`AGENTS.md:181` — "the only wiki/memory MCP with `disabled: false` + auto-approved"): ทุก agent ใน swarm พึ่ง runtime. R4 เดิมปฏิบัติต่อมันเหมือน "regression ทั่วไป" — ไม่พอ. **ไม่มี `test_mcp_wiki_server.py`** → snapshot test ที่อ้าง เขียนไม่ได้ในสภาพปัจจุบัน. Mitigation: carve `mcp-wiki-server.py` เป็น slower track + บังคับ G1 characterization test เป็น prerequisite gate + compat port (G3) ก่อนแตะ internals
-3. **R7 — Characterization-test prerequisite อาจ execute ไม่ได้**: audit `tests/` พบว่าไฟล์ Tier A ส่วนใหญ่ **ไม่มีเทสเลย** (mcp-wiki-server, skills_service, pharmacy_lookup, dual-mode-router). Migration safety mechanism หลัก = กลไกที่ปัจจุบัน execute ไม่ได้. Mitigation: G1+G4 prerequisite gates; เริ่ม slice ที่ `neural_spine_mcp.py` (มี test) ก่อน ไม่ใช่ MCP server
+3. **R7 — Characterization-test prerequisite อาจ execute ไม่ได้**: audit `tests/` พบว่าไฟล์ Tier A หลายไฟล์ **ไม่มี behavior tests** (mcp-wiki-server, pharmacy_lookup, dual-mode-router). ~~skills_service ไม่มีเทส~~ — แก้ไข 2026-08-03: `skills_service.py` มี 75 behavior tests (a-council test-engineer พบ factual error). Migration safety mechanism หลัก = กลไกที่ปัจจุบัน execute ได้บางไฟล์. Mitigation: G1+G4 prerequisite gates; **slice order ใหม่ (post-council 2026-08-03)**: A4 ✅ → **A3** (skills_service มี 75 tests จริง) → A1 (gates ผ่าน) → A5-A7 → A2 (last, key handling)
 4. **R13 — Hook enforce ที่ทั้ง decision ยึด ~~อาจสร้างไม่ได้~~ ✅ FEASIBLE 2026-08-01**: ~~static-detect "domain import adapter" ใน Python dynamic codebase มี false-positive สูง~~ → prototype `scripts/hooks/check_hexagonal_boundary.py` พิสูจน์แล้ว: narrow convention-based design (เช็คเฉพาะ `ports/` files) ให้ **FP rate 0%** บน codebase จริง (well under C6 threshold <20%). Hard whole-codebase check ไม่ทำโดยเจตนา (จะ over-fire บน legacy Tier B). **C6 resolved** — hook promote-able เมื่อ ADR Accepted. Mitigation: คงไว้เป็น prototype จนกว่า ADR Accepted, แล้วเสียบเข้า `hooks_runner.py`
 
 #### 🟠 High
