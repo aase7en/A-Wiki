@@ -188,14 +188,36 @@ if $PUSH_MODE; then
     warn "Hermes binary not found — skip export"
   fi
 
-  step "Step 4/4: Git commit + push..."
+  # --- Neural Spine shard export (Approach B — per-device shards) ---
+  # Publish this device's .tmp/ ledger/blackboard/tasks to a tracked
+  # .tmp-sync/<device>.jsonl so it travels via the git push below.
+  # Refuses to write if a secret is detected (defense layer 2 in lib).
+  step "Neural Spine: export shard..."
+  SPINE_DEVICE="${AWIKI_SYNC_DEVICE:-$(hostname 2>/dev/null | tr '[:upper:]' '[:lower:]' | tr -c 'A-Za-z0-9._-' '_' | sed 's/^_*//')}"
+  SPINE_BIN="$A_WIKI_DIR/scripts/lib/cross_device_sync.py"
+  if [ -f "$SPINE_BIN" ]; then
+    if $DRY_RUN; then
+      info "DRY: export shard device=$SPINE_DEVICE"
+    else
+      if python "$SPINE_BIN" --export --device "$SPINE_DEVICE" \
+          --tmp-dir "$A_WIKI_DIR/.tmp" --sync-dir "$A_WIKI_DIR/.tmp-sync"; then
+        info "Neural Spine shard exported ($SPINE_DEVICE)"
+      else
+        warn "Neural Spine export BLOCKED (secret detected?) — shard NOT published"
+      fi
+    fi
+  else
+    warn "cross_device_sync.py not found — skip Neural Spine export"
+  fi
+
+  step "Git commit + push..."
   if $DRY_RUN; then
     info "DRY: git add + commit + push"
   else
     cd "$A_WIKI_DIR"
-    git add scripts/hermes/ docs/runbooks/hermes-multi-device.md AGENTS.md 2>/dev/null || true
+    git add scripts/hermes/ docs/runbooks/hermes-multi-device.md AGENTS.md .tmp-sync/ 2>/dev/null || true
     if ! git diff --cached --quiet 2>/dev/null; then
-      git commit -m "chore(hermes): sync config + secure sync scripts" 2>&1
+      git commit -m "chore(hermes): sync config + secure sync scripts + neural-spine shard" 2>&1
       git push 2>&1
       info "Pushed to GitHub"
     else
@@ -223,6 +245,24 @@ else
     info "Git updated: ${BEFORE:0:7} -> ${AFTER:0:7}"
   else
     info "Git: up to date"
+  fi
+
+  # --- Neural Spine shard import (Approach B) ---
+  # Merge every tracked .tmp-sync/*.jsonl into local .tmp/. Additive + idempotent
+  # — re-running is a no-op. Skips any shard that contains a secret pattern.
+  step "Neural Spine: import shards..."
+  SPINE_BIN="$A_WIKI_DIR/scripts/lib/cross_device_sync.py"
+  if [ -f "$SPINE_BIN" ]; then
+    if $DRY_RUN; then
+      info "DRY: import_all_shards"
+    else
+      python "$SPINE_BIN" --import \
+        --tmp-dir "$A_WIKI_DIR/.tmp" --sync-dir "$A_WIKI_DIR/.tmp-sync" \
+        && info "Neural Spine shards imported" \
+        || warn "Neural Spine import failed (non-fatal)"
+    fi
+  else
+    warn "cross_device_sync.py not found — skip Neural Spine import"
   fi
 
   step "Step 2/3: Pull secrets..."

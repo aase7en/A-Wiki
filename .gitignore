@@ -125,6 +125,13 @@ logs/
 # to. See scripts/check-privacy.py tracked_but_ignored().
 /data/
 .tmp/
+# Neural Spine cross-device sync (Approach B — per-device shards).
+# .tmp/ stays local, but .tmp-sync/*.jsonl are tracked so ledger/blackboard/
+# task-board state travels via git between Win/Mac/Pi5. The legacy single
+# payload.json is intentionally ignored (Approach A — conflict-prone).
+!.tmp-sync/
+.tmp-sync/payload.json
+.tmp-sync/*.bak
 temp/
 .playwright-mcp/
 wiki/context/model-roster.conf.bak
