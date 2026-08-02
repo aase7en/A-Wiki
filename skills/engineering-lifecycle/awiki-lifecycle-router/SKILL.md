@@ -43,6 +43,7 @@ Task arrives
 
 ```
     ├── Wiki ingest (URL / pasted text / file)? → ingest-source
+    ├── Platform fetch (Reddit/YouTube/Bilibili, no-auth, anti-bot-protected)? → platform-ingest
     ├── Wiki health check / lint? ──────────────→ lint-wiki
     ├── Wiki search? ───────────────────────────→ wiki-search-local
     ├── Pharmacy order lookup? ─────────────────→ pharmacy-order-lookup

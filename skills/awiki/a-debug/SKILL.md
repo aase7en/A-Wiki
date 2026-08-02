@@ -93,9 +93,9 @@ Aggregator สำหรับ debug — บังคับ Iron Law #1 (failing 
 
 เมื่อไหร่ใช้: bug ที่ root cause ไม่ชัด หลัง stage 2 (debug-mantra + root-cause gate) หรือกระทบหลายระบบ
 
-### Pattern: `delegate-subagent` → `council`
+### Pattern: `delegate-subagent` → `a-council`
 1. `delegate-subagent` — กระจาย hypothesis 3-5 ตัวขนานกัน (แต่ละตัวสำรวจ root cause ทางเดียว)
-2. `council` — multi-perspective review:
+2. `a-council` — multi-perspective review:
    - senior engineer: logic/architecture
    - QA: edge cases / regression
    - security: exploit surface
