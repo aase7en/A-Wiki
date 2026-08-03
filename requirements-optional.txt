@@ -34,6 +34,8 @@ curl_cffi>=0.7.0
 # See: skills/awiki/monte-carlo-quant-analysis/SKILL.md
 numpy>=1.21
 matplotlib>=3.4
-scipy>=1.7              # scipy.stats.qmc (Sobol/Halton Quasi-MC), scipy.stats.norm (Importance Sampling)
+# scipy 1.18 changed numerical outputs (MC notebook baseline drift on CI
+# 2026-08-03). Pin <1.18 until the notebook is re-baselined against 1.18+.
+scipy>=1.7,<1.18         # scipy.stats.qmc (Sobol/Halton Quasi-MC), scipy.stats.norm (Importance Sampling)
 nbconvert>=7.0          # jupyter nbconvert --execute (re-run notebook with outputs)
 ipykernel>=6.0          # kernel for nbconvert execution
