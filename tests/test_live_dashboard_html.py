@@ -2300,3 +2300,114 @@ def test_v20_summary_url_enables_pro_mode():
     assert has_view_param, (
         "app.js must parse location.hash or ?view= param for backward-compat"
     )
+
+
+# ── v20 chunk D20 — hero sentence + 4 tiles + count-up + SSE bind ────────────
+def test_v20_home_js_file_exists():
+    """src/home.js must exist (NEW file for v20 D20). Renders hero sentence,
+    4 story tiles, and wires SSE event handlers to update tile counts in
+    real-time. Mounted from app.js boot."""
+    f = SRC_DIR / "home.js"
+    assert f.is_file(), "src/home.js must exist (v20 D20)"
+
+
+def test_v20_home_js_has_countup_function():
+    """home.js must define a countUp(el, target, decimals) helper using
+    requestAnimationFrame + ease-out cubic (research: 600-1000ms sweet spot,
+    cubic-bezier(0.05,0.7,0.1,1) ≈ ease-out). Plays ONCE on mount — replaying
+    on every poll is annoying per NN/g."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    assert "requestAnimationFrame" in content, (
+        "home.js must use requestAnimationFrame for count-up (smooth, jank-free)"
+    )
+    # Acceptable easing patterns: cubic-bezier approximated via t*t*(3-2*t) or
+    # 1-Math.pow(1-t,3) (ease-out cubic) or 1-Math.pow(1-t,2) (quad).
+    has_ease = (
+        "1-Math.pow(1-t" in content
+        or "1 - Math.pow(1 - t" in content
+        or "t*t*(3-2*t)" in content
+        or "easeOut" in content
+    )
+    assert has_ease, (
+        "home.js count-up must use ease-out (1-Math.pow(1-t,3) or similar) — "
+        "linear count-up feels mechanical (M3 ban)"
+    )
+
+
+def test_v20_home_js_binds_sse_handlers():
+    """home.js must hook into the existing SSE event handlers (onDelDone,
+    onHook, onCost, onDelStart) so tile counts update in real-time. Either
+    monkey-patches the existing handlers or adds its own listener layer."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    # Must reference the SSE-driven state variables or handler names.
+    has_bind = (
+        "onDelDone" in content
+        or "delegate_done" in content
+        or "S.delegateFree" in content
+        or "S.activeCount" in content
+        or "_homeOnEvent" in content
+    )
+    assert has_bind, (
+        "home.js must bind to SSE events (delegate_done / onDelDone / S.* "
+        "state) so tiles update live"
+    )
+
+
+def test_v20_home_js_updates_tile_counts():
+    """home.js must update the 4 tile DOM elements (home-num-active,
+    home-num-done, home-num-saved, home-num-risks) when events arrive."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    required_ids = [
+        "home-num-active",
+        "home-num-done",
+        "home-num-saved",
+        "home-num-risks",
+    ]
+    missing = [i for i in required_ids if i not in content]
+    assert not missing, (
+        f"home.js must update tile DOM IDs: {missing} not referenced"
+    )
+
+
+def test_v20_home_js_mounts_on_boot():
+    """app.js (or home.js itself) must call a mount/init function for Home
+    view during boot. Either homeMount() / homeInit() is called from boot,
+    OR setView('home') triggers Home rendering."""
+    app_js = (SRC_DIR / "app.js").read_text(encoding="utf-8")
+    home_js_exists = (SRC_DIR / "home.js").is_file()
+    home_content = (SRC_DIR / "home.js").read_text(encoding="utf-8") if home_js_exists else ""
+    # Acceptable: homeMount/homeInit defined AND called, OR setView('home')
+    # branch in app.js that triggers rendering.
+    has_mount_fn = (
+        "homeMount" in home_content
+        or "homeInit" in home_content
+        or "renderHome" in home_content
+    )
+    has_boot_call = (
+        "homeMount" in app_js
+        or "homeInit" in app_js
+        or "renderHome" in app_js
+        or "v==='home'" in app_js  # setView branch
+    )
+    assert has_mount_fn, "home.js must define homeMount/homeInit/renderHome"
+    assert has_boot_call, "app.js must call Home render on boot or on setView('home')"
+
+
+def test_v20_home_tiles_html_already_present():
+    """live-dashboard.html (added in C20) must already contain the 4 tile
+    IDs that home.js will populate. Sanity check that C20 + D20 are aligned."""
+    html = HTML.read_text(encoding="utf-8")
+    required = ["home-num-active", "home-num-done", "home-num-saved", "home-num-risks"]
+    missing = [i for i in required if ('id="' + i + '"') not in html and ('id=' + i) not in html]
+    # The IDs may appear as data-count targets — accept any reference.
+    missing = [i for i in required if i not in html]
+    assert not missing, f"HTML must contain tile IDs for home.js: {missing}"

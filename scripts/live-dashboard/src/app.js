@@ -639,6 +639,8 @@ if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
 if(v==='summary')renderKpiCards();
+// v20 D20: render Activity Story when entering Home view.
+if(v==='home'&&typeof homeMount==='function'){try{homeMount();}catch(_){}}
 // CHUNK C10: skip heavy load on revisit unless force=true (Refresh button).
 // First-time visits still load as before; revisit uses cached render.
 const already=_loaded[v];

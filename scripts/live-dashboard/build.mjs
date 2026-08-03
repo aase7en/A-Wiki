@@ -21,6 +21,7 @@ const LOAD_ORDER = [
   "app.js",
   "icons.js",      // A19: Lucide icon() helper (used by all other modules)
   "plainlang.js",  // A20: plain-Thai translation layer (window._plain)
+  "home.js",       // D20: Activity Story rendering for #view-home
   "sse.js",        // if exists (SSE handlers)
   "subagents.js",
   "modals.js",     // keyboard shortcuts, keybind, notif, workspace, palette, compare, sim
