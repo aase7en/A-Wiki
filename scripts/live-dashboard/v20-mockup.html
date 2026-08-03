@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Wiki Live v20 — Activity Story Mockup</title>
+<!--
+  MOCKUP v20.0.0 — "Activity Story" (Stripe/PostHog-inspired)
+  Redesign direction for non-technical users.
+  This is a STATIC preview — does NOT touch production dashboard.
+  Open this file directly in a browser to see the proposed look.
+
+  Research basis (top 10 patterns):
+    1. One plain-language hero metric (Stripe Home)
+    2. Translate jargon → outcomes (Hooks→Risks, Cost→Saved)
+    3. Progressive disclosure, max 5-7 items (Miller's Law)
+    4. Funnel/step-cards for flow, not node-graph (PostHog)
+    5. Skeleton screens > spinners (Luke Wroblewski)
+    6. Spring physics, 80% damping, cubic-bezier(0.2,0,0,1) (Apple WWDC803, M3)
+    7. Okabe-Ito colorblind-safe + always pair with icon
+    8. Click-drag-to-zoom + ranked list below chart (Vercel)
+    9. Data → insight → action inline on every tile
+   10. Stack: CSS transitions + SVG (no Motion One in mockup, prod adds ~22KB)
+-->
+<style>
+  /* === Design tokens (Linear-style v17 + Okabe-Ito semantic) === */
+  :root {
+    /* Neutral 11-step */
+    --n-0:#000; --n-50:#0a0a0c; --n-100:#121215; --n-200:#1a1a1f; --n-300:#27272e;
+    --n-400:#3f3f47; --n-500:#52525b; --n-600:#71717a; --n-700:#a1a1aa; --n-800:#d4d4d8;
+    --n-900:#fafafa; --n-1000:#fff;
+    /* Brand */
+    --brand:#5b5bd6; --brand-hover:#6d6dff; --brand-muted:rgba(91,91,214,.12); --brand-fg:#fff;
+    /* Okabe-Ito semantic (colorblind-safe) */
+    --ok-success:#009E73; --ok-warn:#E69F00; --ok-error:#D55E00; --ok-active:#56B4E9;
+    /* Motion tokens (M3 spec) */
+    --t-fast:120ms; --t-normal:200ms; --t-slow:320ms;
+    --ease-standard:cubic-bezier(0.2,0,0,1);
+    --ease-enter:cubic-bezier(0.05,0.7,0.1,1);
+    /* Radius */
+    --r-sm:6px; --r-md:10px; --r-full:9999px;
+    /* Type */
+    --fs-hero:clamp(40px,6vw,64px);
+    --fs-h1:clamp(28px,4vw,40px);
+    --fs-h2:clamp(20px,2.5vw,24px);
+    --fs-body:14px; --fs-sm:13px; --fs-xs:12px; --fs-caption:11px;
+    --font:-apple-system,BlinkMacSystemFont,'Inter var','Segoe UI',system-ui,sans-serif;
+    --font-mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+    --shadow-md:0 4px 12px rgba(0,0,0,.4);
+  }
+  [data-theme="light"] {
+    --n-50:#fafafa; --n-100:#f4f4f5; --n-200:#e4e4e7; --n-300:#d4d4d8;
+    --n-400:#a1a1aa; --n-500:#71717a; --n-600:#52525b; --n-700:#3f3f47;
+    --n-800:#27272e; --n-900:#18181b; --n-1000:#000;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.06); --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body {
+    background:var(--n-50); color:var(--n-800); font-family:var(--font);
+    font-size:var(--fs-body); line-height:1.5; -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* === Header (minimal, dimmed chrome — Linear pattern) === */
+  .header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; border-bottom:1px solid var(--n-300);
+    background:var(--n-50); position:sticky; top:0; z-index:10;
+  }
+  .brand { display:flex; align-items:center; gap:10px; font-weight:600; font-size:var(--fs-h2); letter-spacing:-0.01em; }
+  .brand-dot {
+    width:10px; height:10px; border-radius:50%; background:var(--ok-success);
+    box-shadow:0 0 0 3px rgba(0,158,115,.2);
+    animation:heartbeat 2s var(--ease-standard) infinite;
+  }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+  .header-actions { display:flex; gap:8px; align-items:center; }
+  .btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 14px; border:1px solid var(--n-400); background:var(--n-100);
+    color:var(--n-800); border-radius:var(--r-sm); font-size:var(--fs-sm);
+    font-family:var(--font); cursor:pointer; font-weight:500;
+    transition:all var(--t-fast) var(--ease-standard);
+  }
+  .btn:hover { background:var(--n-200); border-color:var(--n-500); }
+  .btn-primary { background:var(--brand); color:var(--brand-fg); border-color:var(--brand); }
+  .btn-primary:hover { background:var(--brand-hover); border-color:var(--brand-hover); }
+  .kbd-hint {
+    display:inline-flex; align-items:center; gap:4px; padding:5px 10px;
+    background:var(--n-100); border:1px solid var(--n-400); border-radius:var(--r-sm);
+    font-size:var(--fs-xs); color:var(--n-600); cursor:pointer;
+    transition:all var(--t-fast) var(--ease-standard);
+  }
+  .kbd-hint:hover { background:var(--brand-muted); border-color:var(--brand); color:var(--brand); }
+  .kbd { font-family:var(--font-mono); font-size:10px; padding:1px 5px; background:var(--n-200); border-radius:3px; border:1px solid var(--n-400); }
+
+  /* === Main === */
+  main { max-width:1200px; margin:0 auto; padding:32px 24px 64px; }
+
+  /* === Hero (plain-language sentence — Stripe pattern #1) === */
+  .hero {
+    text-align:center; margin:24px 0 40px;
+    animation:fade-up var(--t-slow) var(--ease-enter);
+  }
+  .hero-sentence {
+    font-size:var(--fs-h1); font-weight:600; line-height:1.25; letter-spacing:-0.02em;
+    color:var(--n-1000); margin-bottom:8px;
+  }
+  .hero-number { color:var(--brand); font-variant-numeric:tabular-nums; }
+  .hero-meta { font-size:var(--fs-sm); color:var(--n-600); }
+  .hero-meta strong { color:var(--ok-success); font-weight:600; }
+  .hero-meta .risk { color:var(--ok-warn); }
+
+  /* === Story tiles (4 max — Miller's Law) === */
+  .tiles {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px;
+  }
+  @media (max-width:768px) { .tiles { grid-template-columns:repeat(2,1fr); } }
+  .tile {
+    background:var(--n-100); border:1px solid var(--n-300); border-radius:var(--r-md);
+    padding:20px; cursor:pointer; position:relative; overflow:hidden;
+    transition:all var(--t-normal) var(--ease-standard);
+    animation:stagger-in var(--t-slow) var(--ease-enter) backwards;
+  }
+  .tile:nth-child(1){animation-delay:0ms}
+  .tile:nth-child(2){animation-delay:60ms}
+  .tile:nth-child(3){animation-delay:120ms}
+  .tile:nth-child(4){animation-delay:180ms}
+  .tile:hover {
+    border-color:var(--brand); background:var(--n-200);
+    transform:translateY(-2px); box-shadow:var(--shadow-md);
+  }
+  .tile-icon {
+    width:32px; height:32px; border-radius:var(--r-sm); display:inline-flex;
+    align-items:center; justify-content:center; margin-bottom:12px;
+  }
+  .tile-icon.active { background:rgba(86,180,233,.15); color:var(--ok-active); }
+  .tile-icon.done { background:rgba(0,158,115,.15); color:var(--ok-success); }
+  .tile-icon.saved { background:var(--brand-muted); color:var(--brand); }
+  .tile-icon.risk { background:rgba(230,159,0,.15); color:var(--ok-warn); }
+  .tile-number {
+    font-size:var(--fs-h1); font-weight:600; line-height:1; letter-spacing:-0.02em;
+    color:var(--n-1000); font-variant-numeric:tabular-nums; margin-bottom:6px;
+  }
+  .tile-label { font-size:var(--fs-xs); font-weight:600; color:var(--n-700); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:4px; }
+  .tile-explain { font-size:var(--fs-sm); color:var(--n-600); line-height:1.4; margin-bottom:10px; }
+  .tile-drill {
+    font-size:var(--fs-xs); color:var(--brand); font-weight:500;
+    display:inline-flex; align-items:center; gap:3px;
+  }
+  .tile-pulse {
+    position:absolute; top:0; right:0; width:60px; height:60px;
+    background:radial-gradient(circle at top right,rgba(91,91,214,.08),transparent);
+    pointer-events:none;
+  }
+
+  /* === Funnel (agent flow — PostHog pattern) === */
+  .section-title {
+    font-size:var(--fs-h2); font-weight:600; color:var(--n-1000); margin-bottom:4px;
+    letter-spacing:-0.01em;
+  }
+  .section-sub { font-size:var(--fs-sm); color:var(--n-600); margin-bottom:20px; }
+  .funnel {
+    display:flex; align-items:center; gap:0; margin-bottom:24px; padding:20px;
+    background:var(--n-100); border:1px solid var(--n-300); border-radius:var(--r-md);
+    overflow-x:auto;
+  }
+  .funnel-step {
+    flex:1; min-width:120px; text-align:center; padding:12px 8px;
+    border-radius:var(--r-sm); position:relative;
+    transition:all var(--t-normal) var(--ease-standard);
+  }
+  .funnel-step.active { background:var(--brand-muted); }
+  .funnel-step.done { opacity:.7; }
+  .funnel-icon {
+    width:36px; height:36px; margin:0 auto 8px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--n-200); border:2px solid var(--n-400); color:var(--n-600);
+    transition:all var(--t-normal) var(--ease-standard);
+  }
+  .funnel-step.active .funnel-icon {
+    background:var(--brand); border-color:var(--brand); color:var(--brand-fg);
+    animation:pulse-ring 1.6s var(--ease-standard) infinite;
+  }
+  .funnel-step.done .funnel-icon {
+    background:var(--ok-success); border-color:var(--ok-success); color:#fff;
+  }
+  @keyframes pulse-ring {
+    0%{box-shadow:0 0 0 0 rgba(91,91,214,.4)}
+    100%{box-shadow:0 0 0 12px rgba(91,91,214,0)}
+  }
+  .funnel-label { font-size:var(--fs-sm); font-weight:500; color:var(--n-800); margin-bottom:2px; }
+  .funnel-count { font-size:var(--fs-caption); color:var(--n-600); }
+  .funnel-arrow { color:var(--n-500); font-size:18px; padding:0 4px; }
+
+  /* === Live activity stream (data → insight → action inline) === */
+  .stream { background:var(--n-100); border:1px solid var(--n-300); border-radius:var(--r-md); overflow:hidden; }
+  .stream-header { padding:14px 20px; border-bottom:1px solid var(--n-300); font-size:var(--fs-sm); font-weight:600; color:var(--n-700); display:flex; justify-content:space-between; align-items:center; }
+  .stream-live { display:inline-flex; align-items:center; gap:5px; font-size:var(--fs-xs); color:var(--ok-success); }
+  .stream-live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--ok-success); animation:heartbeat 1.5s infinite; }
+  .stream-list { max-height:340px; overflow-y:auto; }
+  .stream-row {
+    display:flex; gap:12px; padding:12px 20px; border-bottom:1px solid var(--n-200);
+    animation:slide-in var(--t-normal) var(--ease-enter);
+    transition:background var(--t-fast);
+  }
+  .stream-row:hover { background:var(--n-200); }
+  .stream-row:last-child { border-bottom:none; }
+  .stream-avatar {
+    width:28px; height:28px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:var(--fs-xs); font-weight:600;
+  }
+  .av-gemini { background:rgba(86,180,233,.2); color:var(--ok-active); }
+  .av-deepseek { background:rgba(91,91,214,.2); color:var(--brand); }
+  .av-claude { background:rgba(230,159,0,.2); color:var(--ok-warn); }
+  .av-system { background:var(--n-300); color:var(--n-700); }
+  .av-success { background:rgba(0,158,115,.2); color:var(--ok-success); }
+  .av-warn { background:rgba(230,159,0,.2); color:var(--ok-warn); }
+  .stream-body { flex:1; min-width:0; }
+  .stream-line { font-size:var(--fs-sm); color:var(--n-900); line-height:1.4; }
+  .stream-line strong { color:var(--n-1000); font-weight:600; }
+  .stream-line .tag {
+    display:inline-block; padding:1px 6px; border-radius:3px; font-size:var(--fs-caption);
+    font-family:var(--font-mono); background:var(--n-300); color:var(--n-700); margin-right:4px;
+  }
+  .stream-line .tag-block { background:rgba(213,94,0,.15); color:var(--ok-error); }
+  .stream-line .tag-pass { background:rgba(0,158,115,.15); color:var(--ok-success); }
+  .stream-meta { font-size:var(--fs-caption); color:var(--n-600); margin-top:2px; }
+  .stream-action {
+    font-size:var(--fs-xs); color:var(--brand); margin-top:4px;
+    display:inline-flex; align-items:center; gap:3px; cursor:pointer;
+  }
+
+  /* === Plain-language explainer tooltip (callout) === */
+  .callout {
+    margin-top:24px; padding:14px 18px; background:var(--brand-muted);
+    border:1px solid var(--brand); border-left:3px solid var(--brand);
+    border-radius:var(--r-sm); font-size:var(--fs-sm); color:var(--n-900);
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .callout-icon { color:var(--brand); flex-shrink:0; }
+
+  /* === Pro mode toggle hint === */
+  .pro-hint {
+    margin-top:32px; padding:16px; text-align:center;
+    border:1px dashed var(--n-400); border-radius:var(--r-md);
+    color:var(--n-600); font-size:var(--fs-sm);
+  }
+  .pro-hint a { color:var(--brand); cursor:pointer; text-decoration:none; font-weight:500; }
+  .pro-hint a:hover { text-decoration:underline; }
+
+  /* === Animations === */
+  @keyframes fade-up { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes stagger-in { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes slide-in { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+  @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+  /* === Count-up demo (JS) === */
+  .counting { color:var(--brand); }
+
+  /* === Help/onboarding strip === */
+  .help-strip {
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;
+    padding:10px 14px; background:var(--n-100); border:1px solid var(--n-300);
+    border-radius:var(--r-sm); font-size:var(--fs-xs); color:var(--n-600);
+  }
+  .help-strip strong { color:var(--n-800); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">
+    <span class="brand-dot" title="ระบบกำลังทำงาน"></span>
+    A-Wiki Live
+  </div>
+  <div class="header-actions">
+    <span class="kbd-hint" title="เปิดคำสั่งเร็ว">
+      <span class="kbd">⌘</span><span class="kbd">K</span> ค้นหา
+    </span>
+    <button class="btn" onclick="toggleTheme()">🌙 สลับธีม</button>
+    <button class="btn btn-primary" onclick="alert('Pro mode: เปิดดู 13 views แบบละเอียด (Summary/Flow/Timeline/Graph/Skills/Coverage/Analytics/Subagents/Eval/Cost/Race/Council/Chat)')">⚙ Pro mode</button>
+  </div>
+</header>
+
+<main>
+  <!-- HERO: plain-language sentence (Stripe pattern) -->
+  <section class="hero">
+    <div class="hero-sentence">
+      วันนี้ AI ช่วยคุณทำงานได้ <span class="hero-number counting" data-count="47">0</span> งาน
+    </div>
+    <div class="hero-meta">
+      ประหยัด <strong>$<span data-count="2.34" data-decimals="2">0.00</span></strong>
+      เทียบกับใช้โมเดลเสียเงิน ·
+      ป้องกันความเสี่ยง <span class="risk" data-count="3">0</span> ครั้ง
+    </div>
+  </section>
+
+  <!-- 4 STORY TILES (Miller's Law: max 5-7) -->
+  <section class="tiles">
+    <div class="tile" onclick="alert('Drill-down: Active agents (DeepSeek, Gemini, Claude)')">
+      <div class="tile-pulse"></div>
+      <div class="tile-icon active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
+      </div>
+      <div class="tile-number counting" data-count="3">0</div>
+      <div class="tile-label">กำลังทำงาน</div>
+      <div class="tile-explain">AI 3 ตัวกำลังทำงานพร้อมกัน (parallel)</div>
+      <div class="tile-drill">ดูว่าใครทำอะไร →</div>
+    </div>
+
+    <div class="tile" onclick="alert('Drill-down: Tasks completed today (47)')">
+      <div class="tile-icon done">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="tile-number counting" data-count="47">0</div>
+      <div class="tile-label">ทำเสร็จวันนี้</div>
+      <div class="tile-explain">งานที่ AI ทำเสร็จในวันนี้ทั้งหมด</div>
+      <div class="tile-drill">ดูประวัติทั้งหมด →</div>
+    </div>
+
+    <div class="tile" onclick="alert('Drill-down: Cost saved vs paid model')">
+      <div class="tile-icon saved">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="tile-number">$<span class="counting" data-count="2.34" data-decimals="2">0.00</span></div>
+      <div class="tile-label">ประหยัดไป</div>
+      <div class="tile-explain">เทียบกับใช้โมเดลเสียเงิน (Claude/GPT-4)</div>
+      <div class="tile-drill">ดูรายละเอียดค่าใช้จ่าย →</div>
+    </div>
+
+    <div class="tile" onclick="alert('Drill-down: 3 risks prevented by safety hooks')">
+      <div class="tile-icon risk">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="tile-number counting" data-count="3">0</div>
+      <div class="tile-label">ป้องกันความเสี่ยง</div>
+      <div class="tile-explain">ระบบตรวจสอบบล็อกการกระทำที่ผิดกฎ 3 ครั้ง</div>
+      <div class="tile-drill">ตรวจสอบรายการ →</div>
+    </div>
+  </section>
+
+  <!-- FUNNEL: data flow as story, not node-graph (PostHog pattern) -->
+  <h2 class="section-title">ตอนนี้ AI กำลังทำอะไร</h2>
+  <p class="section-sub">ขั้นตอนการทำงานของ AI แต่ละตัว — คลิกที่ขั้นเพื่อดูรายละเอียด</p>
+  <div class="funnel">
+    <div class="funnel-step done" onclick="alert('Think: DeepSeek วิเคราะห์ปัญหา (เสร็จแล้ว 12s)')">
+      <div class="funnel-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/></svg>
+      </div>
+      <div class="funnel-label">คิด</div>
+      <div class="funnel-count">เสร็จแล้ว</div>
+    </div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step done" onclick="alert('Plan: Claude วางแผน (เสร็จแล้ว 8s)')">
+      <div class="funnel-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="funnel-label">วางแผน</div>
+      <div class="funnel-count">เสร็จแล้ว</div>
+    </div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step active" onclick="alert('Build: Gemini กำลังเขียนโค้ด (ทำอยู่ 8s)')">
+      <div class="funnel-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <div class="funnel-label">สร้าง</div>
+      <div class="funnel-count">กำลังทำ · 8s</div>
+    </div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step" onclick="alert('Verify: รอคิว')">
+      <div class="funnel-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <div class="funnel-label">ตรวจสอบ</div>
+      <div class="funnel-count">รอคิว</div>
+    </div>
+    <span class="funnel-arrow">→</span>
+    <div class="funnel-step" onclick="alert('Ship: รอคิว')">
+      <div class="funnel-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+      <div class="funnel-label">ส่งมอบ</div>
+      <div class="funnel-count">รอคิว</div>
+    </div>
+  </div>
+
+  <!-- LIVE STREAM: data → insight → action inline (Stripe/PostHog pattern) -->
+  <h2 class="section-title">สดจาก AI ตอนนี้</h2>
+  <p class="section-sub">อัปเดตเรียลไทม์ — แต่ละบรรทัดบอกว่า AI ทำอะไร และคุณสามารถทำอะไรต่อได้</p>
+  <div class="stream">
+    <div class="stream-header">
+      <span>📋 กิจกรรมล่าสุด</span>
+      <span class="stream-live">LIVE</span>
+    </div>
+    <div class="stream-list" id="stream-list">
+      <div class="stream-row">
+        <div class="stream-avatar av-gemini">G</div>
+        <div class="stream-body">
+          <div class="stream-line"><strong>Gemini</strong> กำลังเขียนเทสสำหรับฟังก์ชันใหม่</div>
+          <div class="stream-meta">เริ่ม 8 วินาทีที่แล้ว · ใช้โมเดลฟรี</div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-avatar av-deepseek">D</div>
+        <div class="stream-body">
+          <div class="stream-line"><strong>DeepSeek</strong> วิเคราะห์โค้ดเสร็จแล้ว (12 วินาที)</div>
+          <div class="stream-meta">พบข้อสังเกต 3 จุด · ส่งต่อให้ Gemini</div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-avatar av-warn">⚠</div>
+        <div class="stream-body">
+          <div class="stream-line"><span class="tag tag-block">บล็อก</span>ระบบตรวจสอบหยุดการกระทำที่ผิดกฎ <strong>cost-tier</strong></div>
+          <div class="stream-meta">เหตุ: ใช้โมเดลเกินงบประมาณที่กำหนด</div>
+          <div class="stream-action">ตรวจสอบและอนุมัติ →</div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-avatar av-success">✓</div>
+        <div class="stream-body">
+          <div class="stream-line"><strong>Claude</strong> ตรวจสอบโค้ดเสร็จแล้ว · <span class="tag tag-pass">ผ่าน</span></div>
+          <div class="stream-meta">ความคุ้มค่า 9.2/10 · ใช้เวลา 4 วินาที</div>
+        </div>
+      </div>
+      <div class="stream-row">
+        <div class="stream-avatar av-system">⚡</div>
+        <div class="stream-body">
+          <div class="stream-line">เซสชันใหม่เริ่มต้นโดย <strong>Claude Code</strong></div>
+          <div class="stream-meta">2 นาทีที่แล้ว · agent: claude</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING HELP (non-existent in v19, new in v20) -->
+  <div class="help-strip">
+    <strong>💡 คำแนะนำ:</strong>
+    <span>• คลิกตัวเลขใหญ่ด้านบนเพื่อดูรายละเอียด</span>
+    <span>• กด <span class="kbd">⌘</span><span class="kbd">K</span> เพื่อค้นหาคำสั่ง</span>
+    <span>• คลิก "Pro mode" เพื่อดูมุมมองวิศวกร (13 views)</span>
+    <span>• สีเขียว=สำเร็จ · สีส้ม=ระวัง · สีแดง=บล็อก</span>
+  </div>
+
+  <!-- PLAIN-LANGUAGE EXPLAINER (trust building) -->
+  <div class="callout">
+    <span class="callout-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    </span>
+    <div>
+      <strong>ภาษาง่าย ๆ:</strong> "AI 3 ตัว" หมายถึงโมเดลภาษา 3 ตัว (DeepSeek, Gemini, Claude) ทำงานพร้อมกันเพื่อให้เร็วขึ้น.
+      "ป้องกันความเสี่ยง" หมายถึงระบบตรวจสอบอัตโนมัติจับการกระทำที่อาจทำให้เสียเงินหรือทำลายข้อมูล แล้วหยุดไว้ก่อน.
+      ทุกตัวเลขมาจากการทำงานจริงของ AI — ไม่ใช่ข้อมูลจำลอง.
+    </div>
+  </div>
+
+  <!-- PRO MODE HINT -->
+  <div class="pro-hint">
+    อยากเห็นมุมมองวิศวกร (graphs, tokens, traces, hook rules)? <a onclick="alert('จะเปิด Pro mode: Summary/Flow/Timeline/Graph/Skills/Coverage/Analytics/Subagents/Eval/Cost/Race/Council/Chat')">เปิด Pro mode →</a>
+  </div>
+</main>
+
+<script>
+  // === Count-up animation (once on mount — research: replaying = annoying) ===
+  function countUp(el) {
+    const target = parseFloat(el.dataset.count);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    const duration = 900; // research: 600-1000ms sweet spot
+    const start = performance.now();
+    const ease = t => 1 - Math.pow(1 - t, 3); // ease-out cubic ≈ cubic-bezier(0.05,0.7,0.1,1) enter
+    function step(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const val = target * ease(t);
+      el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  // Trigger after slight delay so user sees the "0 → N" effect
+  setTimeout(() => {
+    document.querySelectorAll('.counting, [data-count]').forEach(el => {
+      if (!el.classList.contains('counting') && el.dataset.count) el.classList.add('counting');
+      if (el.dataset.count) countUp(el);
+    });
+  }, 200);
+
+  // === Theme toggle (demo) ===
+  function toggleTheme() {
+    const html = document.documentElement;
+    html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  }
+
+  // === Simulated live stream (demo only — production uses SSE) ===
+  const demoEvents = [
+    { av: 'av-gemini', letter: 'G', line: '<strong>Gemini</strong> ทดสอบฟังก์ชันเสร็จ · <span class="tag tag-pass">ผ่าน</span>', meta: 'ใช้เวลา 3 วินาที' },
+    { av: 'av-deepseek', letter: 'D', line: '<strong>DeepSeek</strong> เริ่มงานใหม่: วิเคราะห์ dependencies', meta: 'เริ่มตอนนี้ · ใช้โมเดลฟรี' },
+    { av: 'av-success', letter: '✓', line: '<strong>Claude</strong> ทบทวนโค้ดเสร็จ · คะแนน 9.4/10', meta: 'พบ 0 ปัญหา' },
+  ];
+  let evIdx = 0;
+  setInterval(() => {
+    const ev = demoEvents[evIdx % demoEvents.length];
+    evIdx++;
+    const list = document.getElementById('stream-list');
+    const row = document.createElement('div');
+    row.className = 'stream-row';
+    row.innerHTML = `
+      <div class="stream-avatar ${ev.av}">${ev.letter}</div>
+      <div class="stream-body">
+        <div class="stream-line">${ev.line}</div>
+        <div class="stream-meta">${ev.meta}</div>
+      </div>`;
+    list.insertBefore(row, list.firstChild);
+    while (list.children.length > 8) list.removeChild(list.lastChild);
+  }, 4500);
+</script>
+
+</body>
+</html>
