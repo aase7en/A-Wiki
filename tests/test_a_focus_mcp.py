@@ -18,10 +18,21 @@ import neural_spine_mcp as ns  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
-def isolated_focus(tmp_path):
-    """Point focus state at a temp dir so tests never touch the real .tmp/."""
+def isolated_focus(tmp_path, monkeypatch):
+    """Point focus state at a temp dir so tests never touch the real .tmp/.
+
+    ADR-0012 slice A4 added a path-traversal sandbox guard that rejects paths
+    outside AWIKI_DATA_DIR (default ``.tmp/``). pytest's ``tmp_path`` lives
+    under the OS temp dir, so broaden the sandbox to include it. Restore the
+    default sandbox BEFORE resetting focus_dir, because set_paths() itself
+    validates against AWIKI_DATA_DIR and monkeypatch hasn't undone the env
+    change yet at teardown time.
+    """
+    monkeypatch.setenv("AWIKI_DATA_DIR", str(tmp_path))
     ns.set_paths(focus_dir=tmp_path)
     yield tmp_path
+    # Undo the env broadening first so the repo-root .tmp is back in-sandbox.
+    monkeypatch.delenv("AWIKI_DATA_DIR", raising=False)
     ns.set_paths(focus_dir=REPO_ROOT / ".tmp")
 
 
