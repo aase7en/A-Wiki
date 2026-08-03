@@ -2503,3 +2503,44 @@ def test_v20_funnel_active_stage_pulses():
     assert has_active_toggle, (
         "home.js must toggle 'active' class on the current funnel stage"
     )
+
+
+
+# ── v20 chunk F20 — onboarding help strip + plain-language callout ──────────
+def test_v20_home_help_strip_js():
+    """home.js must populate #home-help with onboarding tips (keybindings,
+    color legend, Pro mode hint) on first mount. Helps non-technical users
+    understand the dashboard without external docs."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    assert "home-help" in content, (
+        "home.js must populate #home-help onboarding strip"
+    )
+
+
+def test_v20_home_callout_js():
+    """home.js must populate #home-callout with a plain-language explanation
+    of what 'AI N ตัว' and 'ป้องกันความเสี่ยง' mean. Builds trust in AI-driven
+    data (Stripe/PostHog pattern #2 reframing)."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    assert "home-callout" in content, (
+        "home.js must populate #home-callout plain-language explainer"
+    )
+
+
+def test_v20_home_help_dismissible():
+    """Onboarding help must be dismissible (localStorage awiki-onboarded-v20).
+    Once dismissed, it stays hidden on subsequent visits. NN/g: progressive
+    disclosure — don't force users to see help every time."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    assert "awiki-onboarded" in content, (
+        "home.js must check awiki-onboarded-v20 localStorage to allow dismissal"
+    )

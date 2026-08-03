@@ -203,8 +203,60 @@
   // ── mount ──────────────────────────────────────────────────────────────
   // Called from setView('home') in app.js and on boot. Idempotent.
   var _homeMounted = false;
+
+  // ── onboarding: help strip + plain-language callout (CHUNK F20) ──────────
+  function _renderOnboarding() {
+    var help = $('home-help');
+    var callout = $('home-callout');
+    if (!help || !callout) return;
+    var onboarded = false;
+    try { onboarded = localStorage.getItem('awiki-onboarded-v20') === '1'; } catch (_) {}
+    if (onboarded) {
+      help.hidden = true;
+      callout.hidden = true;
+      return;
+    }
+    help.hidden = false;
+    help.innerHTML = '';
+    var tips = [
+      'คลิกตัวเลขใหญ่ด้านบนเพื่อดูรายละเอียด',
+      'กด Ctrl+K (Mac: Cmd+K) เพื่อค้นหาคำสั่ง',
+      'คลิก Pro mode เพื่อดูมุมมองวิศวกร',
+      'สีเขียว=สำเร็จ สีส้ม=ระวัง สีแดง=บล็อก'
+    ];
+    var title = document.createElement('strong');
+    title.textContent = 'คำแนะนำ:';
+    help.appendChild(title);
+    tips.forEach(function (tip) {
+      var span = document.createElement('span');
+      span.textContent = ' - ' + tip;
+      help.appendChild(span);
+    });
+    var dismiss = document.createElement('a');
+    dismiss.textContent = ' ปิดคำแนะนำ';
+    dismiss.style.cssText = 'color:var(--brand);cursor:pointer;margin-left:8px';
+    dismiss.onclick = function () {
+      try { localStorage.setItem('awiki-onboarded-v20', '1'); } catch (_) {}
+      help.hidden = true;
+      callout.hidden = true;
+    };
+    help.appendChild(dismiss);
+
+    callout.hidden = false;
+    callout.innerHTML = '';
+    var ct = document.createElement('div');
+    var ch = document.createElement('strong');
+    ch.textContent = 'ภาษาง่าย ๆ: ';
+    ct.appendChild(ch);
+    var explainer = document.createElement('span');
+    explainer.textContent = '"AI N ตัว" หมายถึงโมเดลภาษา N ตัว (เช่น DeepSeek, Gemini, Claude) ทำงานพร้อมกันเพื่อให้เร็วขึ้น. "ป้องกันความเสี่ยง" หมายถึงระบบตรวจสอบอัตโนมัติจับการกระทำที่อาจทำให้เสียเงินหรือทำลายข้อมูล แล้วหยุดไว้ก่อน. ทุกตัวเลขมาจากการทำงานจริงของ AI.';
+    ct.appendChild(explainer);
+    callout.appendChild(ct);
+  }
+
   function homeMount() {
     renderHome();
+    try { _renderOnboarding(); } catch (_) {}
     if (!_homeMounted) {
       _homeMounted = true;
       // Hook into SSE dispatch: graph.js's _dispatchSSE (or equivalent) is
