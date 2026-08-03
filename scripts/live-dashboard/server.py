@@ -28,6 +28,7 @@ import os
 import argparse
 import os
 import queue
+from datetime import datetime, timezone
 import re
 import signal
 import socket
@@ -57,6 +58,7 @@ import cost_history  # noqa: E402  -- S6: /api/eval/cost route
 import pipeline_graph  # noqa: E402  -- T5: /api/eval/pipeline-graph route
 import cost_history  # noqa: E402  -- re-export for T6 cost-optimize payload
 import suite_editor  # noqa: E402  -- X1: /api/eval/suite* routes
+import device_health  # noqa: E402  -- #8: /api/devices (cross-device sync health)
 
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 DASHBOARD_HTML = REPO_ROOT / "scripts" / "live-dashboard" / "live-dashboard.html"
@@ -742,6 +744,18 @@ class Handler(BaseHTTPRequestHandler):
                     "summary": summary,
                     "window_seconds": window,
                     "generated_at": stats.get("generated_at"),
+                })
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+        elif path == "/api/devices":
+            # #8: Cross-device sync health — stale device alarm.
+            # Reads .tmp-sync/*.jsonl shards and reports device freshness.
+            try:
+                shards_dir = REPO_ROOT / ".tmp-sync"
+                self._json_response({
+                    "devices": device_health.device_summary(shards_dir),
+                    "alerts": device_health.evaluate_device_alerts(shards_dir),
+                    "generated_at": datetime.now(timezone.utc).isoformat(),
                 })
             except Exception as e:
                 self._json_response({"error": str(e)}, 500)

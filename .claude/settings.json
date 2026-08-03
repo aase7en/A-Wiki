@@ -139,6 +139,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks/check_a_route.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/recall_on_prompt.py"
                     }
                 ]
             }
