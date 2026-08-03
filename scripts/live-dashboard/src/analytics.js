@@ -785,7 +785,29 @@ simClose=function(e){
  $('sim-backdrop').classList.remove('show');
 };
 
-setView('summary');
+// v20 C20: default landing is 'home' (Activity Story) for non-technical users.
+// Was 'summary' in v19. If a URL hash (?view=summary / #summary) requests a
+// Pro-only view, auto-enable Pro mode so old bookmarks still work.
+(function _v20BootDefault(){
+  try {
+    // Check URL for explicit Pro-view request (backward-compat).
+    var hashView = (location.hash || '').replace('#','');
+    var queryView = new URLSearchParams(location.search).get('view');
+    var requested = queryView || hashView;
+    var proViews = ['summary','flow','timeline','graph','skills','coverage','analytics','subagents','eval','cost','race','council','chat'];
+    if (requested && proViews.indexOf(requested) !== -1) {
+      // Old bookmark to a Pro view → enable Pro mode + load that view.
+      enableProMode();
+      setView(requested);
+    } else if (requested === 'home') {
+      setView('home');
+    } else {
+      setView('home');  // v20 default
+    }
+  } catch(_) {
+    setView('home');
+  }
+})();
 // CHUNK PP: if URL carries state (?view=, filters), apply it after initial paint.
 try{applyFullStateFromUrl();}catch(_){}
 // CHUNK TT: auto-detect agent from env (only if no explicit ?agent= in URL).

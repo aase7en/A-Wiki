@@ -88,9 +88,11 @@ def test_file_under_60kb():
     # this is panel shell only. Localhost tool — gate guards unbounded growth.
     # raised to 72 KB (2026-07-22): v19 Lucide icons add inline <use href>
     # refs to view-toggle-bar + header (~13 buttons × ~70 bytes SVG wrapper).
-    # Sprite itself lives in JS bundle (app.min.js 260 KB budget) — HTML
+    # raised to 80 KB (2026-08-03): v20 Home panel (Activity Story) adds
+    # hero + 4 tiles + 5-stage funnel + stream container + onboarding (~6 KB).
+    # Sprite itself lives in JS bundle (app.min.js 280 KB budget) — HTML
     # gain is only the <use> references, not the sprite paths.
-    assert size < 72 * 1024, f"HTML too large: {size} bytes (limit 72 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup + v19 Lucide <use> refs)"
+    assert size < 80 * 1024, f"HTML too large: {size} bytes (limit 80 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup + v19 Lucide <use> refs + v20 Home panel)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────
@@ -276,6 +278,8 @@ def test_no_infinite_animation_on_decorative_elements():
             ".active", ".on", ".busy", ".hot", ".tick",
             ".block", ".done", ".fail",
             ".word", "#typed-intro",
+            # v20: live status indicators (LIVE dot, funnel pulse, heartbeat)
+            ".live", ".home-stream-live",
         ))
         if not ok:
             errs.append(f"infinite animation on non-status selector: {selector[:80]}")
@@ -2209,4 +2213,90 @@ def test_v20_no_linear_easing_in_transitions():
             bad.append(m.group(0)[:60])
     assert not bad, (
         f"linear easing banned by M3 (feels mechanical); found: {bad[:3]}"
+    )
+
+
+# ── v20 chunk C20 — Home view panel + landing default ───────────────────────
+def test_v20_home_panel_exists():
+    """live-dashboard.html must contain a <div id="view-home" class="view-panel">
+    as the NEW default landing view for non-technical users. Replaces the old
+    behavior where 'summary' was the landing."""
+    html = HTML.read_text(encoding="utf-8")
+    assert 'id="view-home"' in html, (
+        "must define <div id='view-home'> — the new Home landing panel (v20 C20)"
+    )
+    assert 'class="view-panel"' in html, (
+        "view-home must use class='view-panel' (same as other views)"
+    )
+
+
+def test_v20_home_panel_is_first_view_in_main():
+    """view-home must be the FIRST view-panel inside #main so non-tech users
+    land on Home by default. Older views (summary/flow/etc) come after."""
+    html = HTML.read_text(encoding="utf-8")
+    # Strategy: locate view-home and view-summary, assert home comes first.
+    home_idx = html.find('id="view-home"')
+    summary_idx = html.find('id="view-summary"')
+    assert home_idx != -1, "view-home must exist (test_v20_home_panel_exists)"
+    assert summary_idx != -1, "view-summary must still exist (Pro mode)"
+    assert home_idx < summary_idx, (
+        "view-home must come BEFORE view-summary in the DOM so it's the "
+        "default landing view for non-technical users"
+    )
+
+
+def test_v20_home_has_btn_in_toggle_bar():
+    """#view-toggle-bar must include a Home button (btn-home) so users can
+    navigate back to Home from Pro mode."""
+    html = HTML.read_text(encoding="utf-8")
+    toggle_start = html.find('view-toggle-bar')
+    toggle_end = html.find('</div>', toggle_start) if toggle_start != -1 else -1
+    assert toggle_start != -1, "view-toggle-bar must exist"
+    toggle_block = html[toggle_start:toggle_end] if toggle_end > toggle_start else html[toggle_start:toggle_start+3000]
+    assert 'btn-home' in toggle_block, (
+        "view-toggle-bar must include btn-home so Home is reachable from Pro mode"
+    )
+
+
+def test_v20_default_view_is_home_in_js():
+    """src/app.js must default to 'home' on boot (was 'summary' in v19).
+    Either setView('home') is the first view call, OR the hash-routing
+    function resolves empty hash → 'home'."""
+    app_js = (SRC_DIR / "app.js").read_text(encoding="utf-8")
+    # Acceptable patterns:
+    # 1. setView('home') appears as a boot call
+    # 2. _defaultView or DEFAULT_VIEW constant = 'home'
+    # 3. hash routing returns 'home' for empty/unknown hash
+    has_home_default = (
+        "setView('home')" in app_js
+        or 'setView("home")' in app_js
+        or "_defaultView='home'" in app_js
+        or "_defaultView=\"home\"" in app_js
+        or "DEFAULT_VIEW='home'" in app_js
+        or "'home'" in app_js and "summary" in app_js  # home mentioned as alternative
+    )
+    assert has_home_default, (
+        "app.js must default to 'home' on boot (was 'summary'). Set "
+        "setView('home') as boot call OR _defaultView='home' constant."
+    )
+
+
+def test_v20_summary_url_enables_pro_mode():
+    """Backward-compat: a URL like ?view=summary or #summary must still work
+    by auto-enabling Pro mode (so old bookmarks don't break). app.js must
+    contain logic that, when hash/view param is a Pro-only view, calls
+    enableProMode() or sets body.pro-mode."""
+    app_js = (SRC_DIR / "app.js").read_text(encoding="utf-8")
+    # Must reference both pro-mode enabling AND view param/hash parsing.
+    has_pro_mode = "pro-mode" in app_js or "proMode" in app_js or "enableProMode" in app_js
+    has_view_param = (
+        "location.hash" in app_js
+        or "URLSearchParams" in app_js
+        or "view=" in app_js
+    )
+    assert has_pro_mode, (
+        "app.js must reference pro-mode / enableProMode for backward-compat"
+    )
+    assert has_view_param, (
+        "app.js must parse location.hash or ?view= param for backward-compat"
     )

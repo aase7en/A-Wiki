@@ -83,22 +83,127 @@
   <div id="net-panel">
     <div id="hook-strip"></div>
     <div class="view-toggle-bar" role="tablist" aria-label="มุมมอง Dashboard">
-      <button class="view-btn active" id="btn-summary" onclick="setView('summary')" role="tab" aria-selected="true" aria-controls="view-summary" tabindex="0"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-layout-dashboard"/></svg> Summary</button>
-      <button class="view-btn" id="btn-flow" onclick="setView('flow')" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-workflow"/></svg> Flow</button>
-      <button class="view-btn" id="btn-timeline" onclick="setView('timeline')" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-git-commit-horizontal"/></svg> Timeline</button>
-      <button class="view-btn" id="btn-graph" onclick="setView('graph')" role="tab" aria-selected="false" aria-controls="graph-vis" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-share-2"/></svg> Graph</button>
-      <button class="view-btn" id="btn-skills" onclick="setView('skills')" role="tab" aria-selected="false" aria-controls="skills-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-puzzle"/></svg> Skills</button>
-      <button class="view-btn" id="btn-coverage" onclick="setView('coverage')" role="tab" aria-selected="false" aria-controls="coverage-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-bar-chart-3"/></svg> Coverage</button>
-      <button class="view-btn" id="btn-analytics" onclick="setView('analytics')" role="tab" aria-selected="false" aria-controls="analytics-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-trending-up"/></svg> Analytics</button>
-      <button class="view-btn" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flask-conical"/></svg> Subagents</button>
-      <button class="view-btn" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-graduation-cap"/></svg> Eval</button>
-      <button class="view-btn" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-dollar-sign"/></svg> Cost</button>
-      <button class="view-btn" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flag"/></svg> Race</button>
-      <button class="view-btn" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-users"/></svg> Council</button>
-      <button class="view-btn" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"/></svg> Chat</button>
+      <button class="view-btn active" id="btn-home" onclick="setView('home')" role="tab" aria-selected="true" aria-controls="view-home" tabindex="0"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-home"/></svg> Home</button>
+      <button class="view-btn pro-only" id="btn-summary" onclick="setView('summary')" role="tab" aria-selected="false" aria-controls="view-summary" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-layout-dashboard"/></svg> Summary</button>
+      <button class="view-btn pro-only" id="btn-flow" onclick="setView('flow')" role="tab" aria-selected="false" aria-controls="flow-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-workflow"/></svg> Flow</button>
+      <button class="view-btn pro-only" id="btn-timeline" onclick="setView('timeline')" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-git-commit-horizontal"/></svg> Timeline</button>
+      <button class="view-btn pro-only" id="btn-graph" onclick="setView('graph')" role="tab" aria-selected="false" aria-controls="graph-vis" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-share-2"/></svg> Graph</button>
+      <button class="view-btn pro-only" id="btn-skills" onclick="setView('skills')" role="tab" aria-selected="false" aria-controls="skills-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-puzzle"/></svg> Skills</button>
+      <button class="view-btn pro-only" id="btn-coverage" onclick="setView('coverage')" role="tab" aria-selected="false" aria-controls="coverage-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-bar-chart-3"/></svg> Coverage</button>
+      <button class="view-btn pro-only" id="btn-analytics" onclick="setView('analytics')" role="tab" aria-selected="false" aria-controls="analytics-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-trending-up"/></svg> Analytics</button>
+      <button class="view-btn pro-only" id="btn-subagents" onclick="setView('subagents')" role="tab" aria-selected="false" aria-controls="subagents-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flask-conical"/></svg> Subagents</button>
+      <button class="view-btn pro-only" id="btn-eval" onclick="setView('eval')" role="tab" aria-selected="false" aria-controls="eval-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-graduation-cap"/></svg> Eval</button>
+      <button class="view-btn pro-only" id="btn-cost" onclick="setView('cost')" role="tab" aria-selected="false" aria-controls="cost-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-dollar-sign"/></svg> Cost</button>
+      <button class="view-btn pro-only" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flag"/></svg> Race</button>
+      <button class="view-btn pro-only" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-users"/></svg> Council</button>
+      <button class="view-btn pro-only" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"/></svg> Chat</button>
     </div>
 
-    <!-- SUMMARY VIEW (default) -->
+    <!-- HOME VIEW (v20 default landing for non-technical users) -->
+    <div id="view-home" class="view-panel">
+      <!-- Hero sentence + 4 tiles get filled by src/home.js (CHUNK D20) -->
+      <section class="home-hero" id="home-hero">
+        <div class="home-hero-sentence">
+          วันนี้ AI ช่วยคุณทำงานได้ <span class="home-hero-num" id="home-hero-done" data-count="0">0</span> งาน
+        </div>
+        <div class="home-hero-meta" id="home-hero-meta">
+          ประหยัด $<span id="home-hero-saved" data-count="0.00" data-decimals="2">0.00</span>
+          · ป้องกันความเสี่ยง <span id="home-hero-risks" data-count="0">0</span> ครั้ง
+        </div>
+      </section>
+
+      <!-- 4 story tiles (Miller's Law cap) -->
+      <section class="home-tiles" id="home-tiles">
+        <div class="home-tile" id="home-tile-active" onclick="setView('flow',{pro:true})">
+          <div class="home-tile-icon active"></div>
+          <div class="home-tile-num" id="home-num-active" data-count="0">0</div>
+          <div class="home-tile-label">กำลังทำงาน</div>
+          <div class="home-tile-explain" id="home-explain-active">AI กำลังทำงานพร้อมกัน</div>
+          <div class="home-tile-drill">ดูว่าใครทำอะไร →</div>
+        </div>
+        <div class="home-tile" id="home-tile-done" onclick="setView('timeline',{pro:true})">
+          <div class="home-tile-icon done"></div>
+          <div class="home-tile-num" id="home-num-done" data-count="0">0</div>
+          <div class="home-tile-label">ทำเสร็จวันนี้</div>
+          <div class="home-tile-explain">งานที่ AI ทำเสร็จในวันนี้</div>
+          <div class="home-tile-drill">ดูประวัติทั้งหมด →</div>
+        </div>
+        <div class="home-tile" id="home-tile-saved" onclick="setView('cost',{pro:true})">
+          <div class="home-tile-icon saved"></div>
+          <div class="home-tile-num">$<span id="home-num-saved" data-count="0.00" data-decimals="2">0.00</span></div>
+          <div class="home-tile-label">ประหยัดไป</div>
+          <div class="home-tile-explain">เทียบกับใช้โมเดลเสียเงิน</div>
+          <div class="home-tile-drill">ดูรายละเอียดค่าใช้จ่าย →</div>
+        </div>
+        <div class="home-tile" id="home-tile-risks" onclick="setView('timeline',{pro:true,filter:'block'})">
+          <div class="home-tile-icon risk"></div>
+          <div class="home-tile-num" id="home-num-risks" data-count="0">0</div>
+          <div class="home-tile-label">ป้องกันความเสี่ยง</div>
+          <div class="home-tile-explain">ระบบตรวจสอบบล็อกการกระทำที่ผิดกฎ</div>
+          <div class="home-tile-drill">ตรวจสอบรายการ →</div>
+        </div>
+      </section>
+
+      <!-- Funnel: 5-stage lifecycle (filled by CHUNK E20) -->
+      <h2 class="home-section-title">ตอนนี้ AI กำลังทำอะไร</h2>
+      <p class="home-section-sub">ขั้นตอนการทำงานของ AI — คลิกที่ขั้นเพื่อดูรายละเอียด</p>
+      <div class="home-funnel" id="home-funnel">
+        <div class="home-funnel-step" data-stage="think" onclick="setView('flow',{pro:true})">
+          <div class="home-funnel-icon"></div>
+          <div class="home-funnel-label">คิด</div>
+          <div class="home-funnel-count" id="home-funnel-think">รอ</div>
+        </div>
+        <span class="home-funnel-arrow">→</span>
+        <div class="home-funnel-step" data-stage="plan" onclick="setView('flow',{pro:true})">
+          <div class="home-funnel-icon"></div>
+          <div class="home-funnel-label">วางแผน</div>
+          <div class="home-funnel-count" id="home-funnel-plan">รอ</div>
+        </div>
+        <span class="home-funnel-arrow">→</span>
+        <div class="home-funnel-step" data-stage="build" onclick="setView('flow',{pro:true})">
+          <div class="home-funnel-icon"></div>
+          <div class="home-funnel-label">สร้าง</div>
+          <div class="home-funnel-count" id="home-funnel-build">รอ</div>
+        </div>
+        <span class="home-funnel-arrow">→</span>
+        <div class="home-funnel-step" data-stage="verify" onclick="setView('flow',{pro:true})">
+          <div class="home-funnel-icon"></div>
+          <div class="home-funnel-label">ตรวจสอบ</div>
+          <div class="home-funnel-count" id="home-funnel-verify">รอ</div>
+        </div>
+        <span class="home-funnel-arrow">→</span>
+        <div class="home-funnel-step" data-stage="ship" onclick="setView('flow',{pro:true})">
+          <div class="home-funnel-icon"></div>
+          <div class="home-funnel-label">ส่งมอบ</div>
+          <div class="home-funnel-count" id="home-funnel-ship">รอ</div>
+        </div>
+      </div>
+
+      <!-- Live stream (filled by CHUNK E20, reuses pushTimeline) -->
+      <h2 class="home-section-title">สดจาก AI ตอนนี้</h2>
+      <p class="home-section-sub">อัปเดตเรียลไทม์ — ภาษาง่าย ๆ ไม่ต้องรู้เทคนิค</p>
+      <div class="home-stream" id="home-stream">
+        <div class="home-stream-header">
+          <span>กิจกรรมล่าสุด</span>
+          <span class="home-stream-live">LIVE</span>
+        </div>
+        <div class="home-stream-list" id="home-stream-list"></div>
+      </div>
+
+      <!-- Onboarding help strip (filled by CHUNK F20) -->
+      <div class="home-help" id="home-help" hidden></div>
+
+      <!-- Plain-language callout (filled by CHUNK F20) -->
+      <div class="home-callout" id="home-callout" hidden></div>
+
+      <!-- Pro mode hint -->
+      <div class="home-pro-hint">
+        อยากเห็นมุมมองวิศวกร (graphs, tokens, traces)?
+        <a onclick="enableProMode()">เปิด Pro mode →</a>
+      </div>
+    </div>
+
+    <!-- SUMMARY VIEW (Pro mode) -->
     <div id="view-summary" class="view-panel">
       <div id="errors-rail">
         <div class="errors-hdr"> Failures &amp; Blocks <span id="errors-count">0</span></div>

@@ -585,7 +585,18 @@ function setTabActivity(viewName,on){
 }
 function setView(v,opts){
 const force=opts&&(opts.force===true);
-// D16: stop background simulators when leaving their host view. Without
+// v20: opts.pro=true means "auto-enable Pro mode for this navigation"
+// (e.g. user clicked a Home tile → enable Pro + jump to drill-down view).
+if(opts&&opts.pro===true&&!document.body.classList.contains('pro-mode')){
+  enableProMode();
+}
+// v20: if user navigates to a Pro-only view without Pro mode, enable it
+// (defensive — keeps old callers working).
+const _proViews=['summary','flow','timeline','graph','skills','coverage','analytics','subagents','eval','cost','race','council','chat'];
+if(_proViews.indexOf(v)!==-1&&!document.body.classList.contains('pro-mode')){
+  enableProMode();
+}
+// v20: stop background simulators when leaving their host view. Without
 // this, _simTimer (coverage) and _wfTimer (analytics walkthrough) keep
 // updating hidden DOM nodes forever after the user navigates away.
 // Cheap guard — both timers are null when no sim is running.
@@ -600,8 +611,8 @@ if(bc)bc.textContent=v.charAt(0).toUpperCase()+v.slice(1);
 if(bcWrap)bcWrap.setAttribute('data-section',v);
 // T5 (v20): clear activity dot on the view the user is now viewing.
 setTabActivity(v,false);
-const sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost'),rc=$('btn-race');
-sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');rc&&rc.classList.toggle('active',v==='race');
+const hm=$('btn-home'),sm=$('btn-summary'),fl=$('btn-flow'),tl=$('btn-timeline'),gr=$('btn-graph'),sk=$('btn-skills'),ch=$('btn-chat'),co=$('btn-council'),cv=$('btn-coverage'),sb=$('btn-subagents'),an=$('btn-analytics'),ev=$('btn-eval'),ct=$('btn-cost'),rc=$('btn-race');
+hm&&hm.classList.toggle('active',v==='home');sm.classList.toggle('active',v==='summary');fl.classList.toggle('active',v==='flow');tl.classList.toggle('active',v==='timeline');gr.classList.toggle('active',v==='graph');sk.classList.toggle('active',v==='skills');ch.classList.toggle('active',v==='chat');co.classList.toggle('active',v==='council');cv&&cv.classList.toggle('active',v==='coverage');sb&&sb.classList.toggle('active',v==='subagents');an&&an.classList.toggle('active',v==='analytics');ev&&ev.classList.toggle('active',v==='eval');ct&&ct.classList.toggle('active',v==='cost');rc&&rc.classList.toggle('active',v==='race');
 // CHUNK B9: update ARIA tab state (roving tabindex — only active tab is focusable).
 const tabs=[sm,fl,tl,gr,sk,ch,co,cv,sb,an,ev,ct].filter(Boolean);
 const viewMap={summary:'summary',flow:'flow',timeline:'timeline',graph:'graph',skills:'skills',chat:'chat',council:'council',coverage:'coverage',subagents:'subagents',analytics:'analytics',eval:'eval',cost:'cost'};
@@ -622,6 +633,8 @@ $('cost-panel').style.display=v==='cost'?'flex':'none';
 $('race-panel').style.display=v==='race'?'flex':'none';
 $('chat-panel').style.display=v==='chat'?'flex':'none';
 $('council-panel').style.display=v==='council'?'flex':'none';
+// v20: Home panel toggle (default landing view).
+const vh=$('view-home'); if(vh) vh.style.display=v==='home'?'block':'none';
 if(v==='flow')layoutFlow();
 else if(v==='timeline')renderLanes();
 else if(v==='graph')initGraph();
@@ -642,6 +655,42 @@ if(v==='race')raceResultsLoad();
 if(v==='council'){councilShowList();councilStartPoll();}else councilStopPoll();
 syncUrlState();
 }
+
+// === v20 C20 — Pro mode toggle ===
+// Non-technical users see only Home by default. Pro mode reveals the 13
+// engineering views (Summary/Flow/Timeline/Graph/Skills/Coverage/...).
+// Persists in localStorage so the choice survives reloads.
+function enableProMode(){
+  document.body.classList.add('pro-mode');
+  try{localStorage.setItem('awiki-pro-mode','1');}catch(_){}
+  // Update header toggle button label if present (CHUNK G20 wires the button).
+  const tgl=document.getElementById('btn-pro-toggle');
+  if(tgl) tgl.setAttribute('aria-pressed','true');
+}
+function disableProMode(){
+  document.body.classList.remove('pro-mode');
+  try{localStorage.removeItem('awiki-pro-mode');}catch(_){}
+  const tgl=document.getElementById('btn-pro-toggle');
+  if(tgl) tgl.setAttribute('aria-pressed','false');
+  // If currently viewing a Pro-only view, fall back to Home.
+  const _proViews=['summary','flow','timeline','graph','skills','coverage','analytics','subagents','eval','cost','race','council','chat'];
+  if(typeof currentView!=='undefined'&&_proViews.indexOf(currentView)!==-1){
+    setView('home');
+  }
+}
+function toggleProMode(){
+  if(document.body.classList.contains('pro-mode')) disableProMode();
+  else enableProMode();
+}
+// Restore Pro mode preference on boot (called from analytics.js boot after
+// the URL-hash check, so explicit ?view=summary takes precedence).
+(function _v20RestoreProMode(){
+  try{
+    if(localStorage.getItem('awiki-pro-mode')==='1'){
+      enableProMode();
+    }
+  }catch(_){}
+})();
 
 // === BOOT SEQUENCE (runs after DOM is parsed) ===
 // CHUNK C11: check if a weekly auto-backup is due (non-blocking, ~1ms).
