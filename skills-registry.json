@@ -3,6 +3,68 @@
   "generated_at": "2026-07-27",
   "skills": [
     {
+      "name": "a-agent",
+      "aliases": [
+        "/a-agent",
+        "aagent"
+      ],
+      "domain": [
+        "ai-ops",
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-agent/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-harness, continuous-agent-loop, prompt-optimizer, token-optimization, delegate-subagent",
+      "invocation": "manual",
+      "invocation_hint": "/A-Agent",
+      "a_phase": "any",
+      "triggers": [
+        "agent harness",
+        "mcp server",
+        "eval agent",
+        "prompt eng",
+        "agent loop"
+      ]
+    },
+    {
+      "name": "a-backend",
+      "aliases": [
+        "/a-backend",
+        "abackend"
+      ],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-backend/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/prisma-patterns, error-handling, api-connector-builder",
+      "invocation": "manual",
+      "invocation_hint": "/A-Backend",
+      "a_phase": "any",
+      "triggers": [
+        "backend",
+        "api endpoint",
+        "rest api",
+        "service layer",
+        "orm pattern"
+      ]
+    },
+    {
       "name": "a-claim",
       "aliases": [
         "/a-claim",
@@ -100,392 +162,31 @@
       ]
     },
     {
-      "name": "a-escalate",
-      "aliases": [
-        "/a-escalate",
-        "aescalate"
-      ],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-escalate/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "สร้าง prompt แบบ self-contained ส่งให้ model ที่เก่งกว่าช่วยคิด — goal, constraints, สิ่งที่ลองแล้ว, ไฟล์, done-criteria, คำถามเดียว. เขียนลง exports/escalate/ ไม่ส่งออกเอง",
-      "invocation": "manual",
-      "th_description": "แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส่งข้อมูลออกอัตโนมัติ",
-      "when_to_use": "งานเกินความสามารถ model ปัจจุบัน, ติดวนหลายรอบ, ต้องการ second opinion จากโมเดลใหญ่กว่า",
-      "examples": [
-        {
-          "scenario": "debug วน 3 รอบไม่จบ",
-          "how": "/A-Escalate --goal ... --question ..."
-        },
-        {
-          "scenario": "ตัดสินใจ architecture ใหญ่",
-          "how": "/A-Escalate + --file ไฟล์ที่เกี่ยว"
-        }
-      ],
-      "process_steps": [
-        "รวบรวม goal + constraints",
-        "ดึงสิ่งที่ลองแล้วจาก memory-ledger",
-        "แนบ excerpt ไฟล์",
-        "render เป็น exports/escalate/<slug>.md",
-        "user ก๊อปไปวาง"
-      ],
-      "invocation_hint": "/A-Escalate",
-      "a_phase": "any",
-      "triggers": [
-        "ส่งให้โมเดลอื่น",
-        "escalate",
-        "ถามโมเดลที่เก่งกว่า",
-        "second opinion"
-      ]
-    },
-    {
-      "name": "a-invest",
-      "aliases": [
-        "/a-invest",
-        "ainvest"
-      ],
-      "domain": [
-        "trader",
-        "business"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-invest/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "การลงทุน — bind finance-pipeline, monte-carlo-quant-analysis, ito-*, prediction-market-risk-review",
-      "invocation": "manual",
-      "th_description": "งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence",
-      "when_to_use": "วิเคราะห์การลงทุน, ประเมินความเสี่ยง, เปรียบเทียบพอร์ต",
-      "examples": [
-        {
-          "scenario": "วิเคราะห์การลงทุน",
-          "how": "/A-Invest"
-        }
-      ],
-      "process_steps": [
-        "focus_set",
-        "เดิน 7-phase spine",
-        "dispatch canonical skill ตาม phase",
-        "focus_clear"
-      ],
-      "invocation_hint": "/A-Invest",
-      "a_phase": "any",
-      "triggers": [
-        "ลงทุน",
-        "หุ้น",
-        "พอร์ต",
-        "investment",
-        "portfolio"
-      ]
-    },
-    {
-      "name": "a-research",
-      "aliases": [
-        "/a-research",
-        "aresearch"
-      ],
-      "domain": [
-        "engineering",
-        "data"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-research/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "วิจัย/วิเคราะห์/ตรวจสอบข้อมูล — bind deep-research, web-research, iterative-retrieval, ask-notebooklm, literature-review",
-      "invocation": "manual",
-      "th_description": "งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว",
-      "when_to_use": "หาข้อมูล, literature review, market research, ตรวจสอบแหล่งอ้างอิง",
-      "examples": [
-        {
-          "scenario": "หาข้อมูล",
-          "how": "/A-Research"
-        }
-      ],
-      "process_steps": [
-        "focus_set",
-        "เดิน 7-phase spine",
-        "dispatch canonical skill ตาม phase",
-        "focus_clear"
-      ],
-      "invocation_hint": "/A-Research",
-      "a_phase": "any",
-      "triggers": [
-        "วิจัย",
-        "ค้นคว้า",
-        "research",
-        "สืบค้น"
-      ]
-    },
-    {
-      "name": "a-router",
-      "aliases": [
-        "/a-router",
-        "arouter"
-      ],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-router/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "A-Suite dispatcher — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง",
-      "invocation": "manual",
-      "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
-      "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
-      "examples": [
-        {
-          "scenario": "ไม่รู้จะเริ่มยังไง",
-          "how": "/A-Router \"<งานที่จะทำ>\""
-        },
-        {
-          "scenario": "อยากดู trigger ทั้งหมด",
-          "how": "อ่าน wiki/A-ROUTER.md"
-        }
-      ],
-      "process_steps": [
-        "match triggers",
-        "เลือก skill + phase",
-        "focus_set",
-        "ส่งต่อ skill ปลายทาง"
-      ],
-      "invocation_hint": "/A-Router",
-      "a_phase": "any"
-    },
-    {
-      "name": "a-web",
-      "aliases": [
-        "/a-web",
-        "aweb"
-      ],
-      "domain": [
-        "engineering",
-        "ux-ui",
-        "code"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-web/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "สร้างเว็บ/frontend — bind react-patterns, nextjs-turbopack, frontend-design, api-design, e2e-testing, frontend-a11y",
-      "invocation": "manual",
-      "th_description": "งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance",
-      "when_to_use": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
-      "examples": [
-        {
-          "scenario": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
-          "how": "/A-Web"
-        }
-      ],
-      "process_steps": [
-        "focus_set",
-        "เดิน 7-phase spine",
-        "dispatch canonical skill ตาม phase",
-        "focus_clear"
-      ],
-      "invocation_hint": "/A-Web",
-      "a_phase": "any",
-      "triggers": [
-        "สร้างเว็บ",
-        "เว็บไซต์",
-        "frontend",
-        "react",
-        "nextjs"
-      ]
-    },
-    {
-      "name": "a-wiki-commands",
+      "name": "a-council",
       "aliases": [],
       "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "uncategorized",
-      "source": "repo",
-      "path": "skills/awiki/a-wiki-commands/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "A-Wiki slash commands — /wiki, /search, /backup, /status, /spec, /plan, /build, /test, /review, /code-simplify, /ship",
-      "invocation": "manual",
-      "th_description": "คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ",
-      "when_to_use": "อยากรู้คำสั่ง A-Wiki ที่มี, หรือหาคำสั่งที่เหมาะกับงาน",
-      "examples": [
-        {
-          "scenario": "อยาก ingest URL",
-          "how": "/ingest <URL>"
-        }
-      ],
-      "invocation_hint": "/a-wiki-commands"
-    },
-    {
-      "name": "a-wiki-telegram",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "uncategorized",
-      "source": "repo",
-      "path": "skills/awiki/a-wiki-telegram/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
-      "invocation": "manual",
-      "th_description": "เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ผ่าน Telegram ได้โดยตรง สะดวกสำหรับการทำงานระยะไกล",
-      "when_to_use": "เมื่อต้องการค้นหาหรือจัดการ wiki ผ่าน Telegram",
-      "examples": [
-        {
-          "scenario": "ต้องการค้นหาข้อมูลใน wiki ขณะอยู่ระหว่างประชุม",
-          "how": "พิมพ์ /wiki search <คำค้น> ใน Telegram"
-        },
-        {
-          "scenario": "ต้องการ backup wiki ผ่านมือถือ",
-          "how": "พิมพ์ /wiki backup ใน Telegram"
-        }
-      ],
-      "process_steps": [
-        "เชื่อมต่อ bot กับ Telegram",
-        "ส่งคำสั่ง /wiki",
-        "รอผลลัพธ์จาก bot"
-      ],
-      "invocation_hint": "/a-wiki-telegram"
-    },
-    {
-      "name": "a-think",
-      "aliases": [
-        "/a-think",
-        "athink"
-      ],
-      "domain": [
         "engineering"
       ],
-      "lifecycle_phase": "meta",
+      "lifecycle_phase": "review",
       "category": "pipeline",
       "source": "repo",
-      "path": "skills/awiki/a-think/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.1.0",
-      "status": "canonical",
-      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
-      "invocation": "both",
-      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
-      "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
-      "examples": [
-        {
-          "scenario": "วางแผน migration DB",
-          "how": "/A-Think [task]"
-        },
-        {
-          "scenario": "Debug bug ซับซ้อน",
-          "how": "/A-Think → เรียก A-Debug"
-        }
-      ],
-      "process_steps": [
-        "Restate",
-        "Done-criteria",
-        "Decompose",
-        "≥2 Approaches",
-        "Pre-mortem",
-        "Right-size",
-        "Prove"
-      ],
-      "invocation_hint": "/A-Think",
-      "a_phase": "ask"
-    },
-    {
-      "name": "a-plan",
-      "aliases": [
-        "/a-plan",
-        "aplan"
-      ],
-      "domain": [
-        "engineering",
-        "ux-ui",
-        "design"
-      ],
-      "lifecycle_phase": "define",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-plan/SKILL.md",
+      "path": "skills/awiki/a-council/SKILL.md",
       "agents": [
         "all",
         "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "วางแผน+ออกแบบ UX/UI/DB/Architecture — chain: A-Think → grill-with-docs → spec-driven → design tool → plan-orchestrate. บังคับ grill ≥3 Qs ก่อน implement",
-      "invocation": "both",
-      "th_description": "ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement",
-      "when_to_use": "วางแผน/ออกแบบ ระบบ ใหม่, database schema, UX/UI",
-      "examples": [
-        {
-          "scenario": "ออกแบบ dashboard พลังงาน รพ.",
-          "how": "/A-Plan dashboard พลังงาน"
-        },
-        {
-          "scenario": "วาง schema ใหม่",
-          "how": "/A-Plan schema"
-        }
-      ],
-      "process_steps": [
-        "A-Think",
-        "grill-with-docs (≥3 Qs)",
-        "spec-driven-development",
-        "design tool",
-        "plan-orchestrate"
-      ],
-      "invocation_hint": "/A-Plan",
+      "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Council \"<topic>\"",
       "triggers": [
-        "ออกแบบ",
-        "วางแผน",
-        "design",
-        "architecture",
-        "database schema",
-        "ux/ui"
+        "ตรวจสอบ",
+        "review",
+        "audit",
+        "security review"
       ],
-      "a_phase": "design"
+      "a_phase": "review"
     },
     {
       "name": "a-debug",
@@ -628,6 +329,152 @@
       "invocation_hint": "/A-Doc (announce type)"
     },
     {
+      "name": "a-escalate",
+      "aliases": [
+        "/a-escalate",
+        "aescalate"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-escalate/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "สร้าง prompt แบบ self-contained ส่งให้ model ที่เก่งกว่าช่วยคิด — goal, constraints, สิ่งที่ลองแล้ว, ไฟล์, done-criteria, คำถามเดียว. เขียนลง exports/escalate/ ไม่ส่งออกเอง",
+      "invocation": "manual",
+      "th_description": "แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส่งข้อมูลออกอัตโนมัติ",
+      "when_to_use": "งานเกินความสามารถ model ปัจจุบัน, ติดวนหลายรอบ, ต้องการ second opinion จากโมเดลใหญ่กว่า",
+      "examples": [
+        {
+          "scenario": "debug วน 3 รอบไม่จบ",
+          "how": "/A-Escalate --goal ... --question ..."
+        },
+        {
+          "scenario": "ตัดสินใจ architecture ใหญ่",
+          "how": "/A-Escalate + --file ไฟล์ที่เกี่ยว"
+        }
+      ],
+      "process_steps": [
+        "รวบรวม goal + constraints",
+        "ดึงสิ่งที่ลองแล้วจาก memory-ledger",
+        "แนบ excerpt ไฟล์",
+        "render เป็น exports/escalate/<slug>.md",
+        "user ก๊อปไปวาง"
+      ],
+      "invocation_hint": "/A-Escalate",
+      "a_phase": "any",
+      "triggers": [
+        "ส่งให้โมเดลอื่น",
+        "escalate",
+        "ถามโมเดลที่เก่งกว่า",
+        "second opinion"
+      ]
+    },
+    {
+      "name": "a-game",
+      "aliases": [
+        "/a-game",
+        "agame"
+      ],
+      "domain": [
+        "code",
+        "media"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-game/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "game dev (Phaser/PixiJS/Three.js) — bind game-phaser-pipeline, phaser-core, phaser-arcade-physics, pixijs-rendering, threejs-scene-setup, threejs-gltf-loading, threejs-materials-lighting",
+      "invocation": "manual",
+      "invocation_hint": "/A-Game",
+      "a_phase": "any",
+      "triggers": [
+        "game dev",
+        "phaser game",
+        "pixijs",
+        "threejs scene",
+        "webgl game"
+      ]
+    },
+    {
+      "name": "a-invest",
+      "aliases": [
+        "/a-invest",
+        "ainvest"
+      ],
+      "domain": [
+        "trader",
+        "business"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-invest/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "การลงทุน — bind finance-pipeline, monte-carlo-quant-analysis, ito-*, prediction-market-risk-review",
+      "invocation": "manual",
+      "th_description": "งานวิเคราะห์การลงทุน — พอร์ต, ความเสี่ยง, quant simulation, market intelligence",
+      "when_to_use": "วิเคราะห์การลงทุน, ประเมินความเสี่ยง, เปรียบเทียบพอร์ต",
+      "examples": [
+        {
+          "scenario": "วิเคราะห์การลงทุน",
+          "how": "/A-Invest"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Invest",
+      "a_phase": "any",
+      "triggers": [
+        "ลงทุน",
+        "หุ้น",
+        "พอร์ต",
+        "investment",
+        "portfolio"
+      ]
+    },
+    {
+      "name": "a-loop",
+      "aliases": [],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-loop/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
+      "invocation": "manual",
+      "invocation_hint": "/A-Loop \"<objective>\"",
+      "a_phase": "any"
+    },
+    {
       "name": "a-med-order",
       "aliases": [
         "/a-med-order",
@@ -692,6 +539,300 @@
       ]
     },
     {
+      "name": "a-plan",
+      "aliases": [
+        "/a-plan",
+        "aplan"
+      ],
+      "domain": [
+        "engineering",
+        "ux-ui",
+        "design"
+      ],
+      "lifecycle_phase": "define",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-plan/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "วางแผน+ออกแบบ UX/UI/DB/Architecture — chain: A-Think → grill-with-docs → spec-driven → design tool → plan-orchestrate. บังคับ grill ≥3 Qs ก่อน implement",
+      "invocation": "both",
+      "th_description": "ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement",
+      "when_to_use": "วางแผน/ออกแบบ ระบบ ใหม่, database schema, UX/UI",
+      "examples": [
+        {
+          "scenario": "ออกแบบ dashboard พลังงาน รพ.",
+          "how": "/A-Plan dashboard พลังงาน"
+        },
+        {
+          "scenario": "วาง schema ใหม่",
+          "how": "/A-Plan schema"
+        }
+      ],
+      "process_steps": [
+        "A-Think",
+        "grill-with-docs (≥3 Qs)",
+        "spec-driven-development",
+        "design tool",
+        "plan-orchestrate"
+      ],
+      "invocation_hint": "/A-Plan",
+      "triggers": [
+        "ออกแบบ",
+        "วางแผน",
+        "design",
+        "architecture",
+        "database schema",
+        "ux/ui"
+      ],
+      "a_phase": "design"
+    },
+    {
+      "name": "a-research",
+      "aliases": [
+        "/a-research",
+        "aresearch"
+      ],
+      "domain": [
+        "engineering",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-research/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "วิจัย/วิเคราะห์/ตรวจสอบข้อมูล — bind deep-research, web-research, iterative-retrieval, ask-notebooklm, literature-review",
+      "invocation": "manual",
+      "th_description": "งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว",
+      "when_to_use": "หาข้อมูล, literature review, market research, ตรวจสอบแหล่งอ้างอิง",
+      "examples": [
+        {
+          "scenario": "หาข้อมูล",
+          "how": "/A-Research"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Research",
+      "a_phase": "any",
+      "triggers": [
+        "วิจัย",
+        "ค้นคว้า",
+        "research",
+        "สืบค้น"
+      ]
+    },
+    {
+      "name": "a-router",
+      "aliases": [
+        "/a-router",
+        "arouter"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-router/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Suite dispatcher — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง",
+      "invocation": "manual",
+      "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
+      "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
+      "examples": [
+        {
+          "scenario": "ไม่รู้จะเริ่มยังไง",
+          "how": "/A-Router \"<งานที่จะทำ>\""
+        },
+        {
+          "scenario": "อยากดู trigger ทั้งหมด",
+          "how": "อ่าน wiki/A-ROUTER.md"
+        }
+      ],
+      "process_steps": [
+        "match triggers",
+        "เลือก skill + phase",
+        "focus_set",
+        "ส่งต่อ skill ปลายทาง"
+      ],
+      "invocation_hint": "/A-Router",
+      "a_phase": "any"
+    },
+    {
+      "name": "a-think",
+      "aliases": [
+        "/a-think",
+        "athink"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-think/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.1.0",
+      "status": "canonical",
+      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
+      "invocation": "both",
+      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
+      "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
+      "examples": [
+        {
+          "scenario": "วางแผน migration DB",
+          "how": "/A-Think [task]"
+        },
+        {
+          "scenario": "Debug bug ซับซ้อน",
+          "how": "/A-Think → เรียก A-Debug"
+        }
+      ],
+      "process_steps": [
+        "Restate",
+        "Done-criteria",
+        "Decompose",
+        "≥2 Approaches",
+        "Pre-mortem",
+        "Right-size",
+        "Prove"
+      ],
+      "invocation_hint": "/A-Think",
+      "a_phase": "ask"
+    },
+    {
+      "name": "a-web",
+      "aliases": [
+        "/a-web",
+        "aweb"
+      ],
+      "domain": [
+        "engineering",
+        "ux-ui",
+        "code"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-web/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "สร้างเว็บ/frontend — bind react-patterns, nextjs-turbopack, frontend-design, api-design, e2e-testing, frontend-a11y",
+      "invocation": "manual",
+      "th_description": "งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance",
+      "when_to_use": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
+      "examples": [
+        {
+          "scenario": "สร้างเว็บ/หน้าเว็บ/frontend/react component/UI",
+          "how": "/A-Web"
+        }
+      ],
+      "process_steps": [
+        "focus_set",
+        "เดิน 7-phase spine",
+        "dispatch canonical skill ตาม phase",
+        "focus_clear"
+      ],
+      "invocation_hint": "/A-Web",
+      "a_phase": "any",
+      "triggers": [
+        "สร้างเว็บ",
+        "เว็บไซต์",
+        "frontend",
+        "react",
+        "nextjs"
+      ]
+    },
+    {
+      "name": "a-wiki-commands",
+      "aliases": [],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/awiki/a-wiki-commands/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Wiki slash commands — /wiki, /search, /backup, /status, /spec, /plan, /build, /test, /review, /code-simplify, /ship",
+      "invocation": "manual",
+      "th_description": "คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ",
+      "when_to_use": "อยากรู้คำสั่ง A-Wiki ที่มี, หรือหาคำสั่งที่เหมาะกับงาน",
+      "examples": [
+        {
+          "scenario": "อยาก ingest URL",
+          "how": "/ingest <URL>"
+        }
+      ],
+      "invocation_hint": "/a-wiki-commands"
+    },
+    {
+      "name": "a-wiki-telegram",
+      "aliases": [],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "uncategorized",
+      "source": "repo",
+      "path": "skills/awiki/a-wiki-telegram/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
+      "invocation": "manual",
+      "th_description": "เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ผ่าน Telegram ได้โดยตรง สะดวกสำหรับการทำงานระยะไกล",
+      "when_to_use": "เมื่อต้องการค้นหาหรือจัดการ wiki ผ่าน Telegram",
+      "examples": [
+        {
+          "scenario": "ต้องการค้นหาข้อมูลใน wiki ขณะอยู่ระหว่างประชุม",
+          "how": "พิมพ์ /wiki search <คำค้น> ใน Telegram"
+        },
+        {
+          "scenario": "ต้องการ backup wiki ผ่านมือถือ",
+          "how": "พิมพ์ /wiki backup ใน Telegram"
+        }
+      ],
+      "process_steps": [
+        "เชื่อมต่อ bot กับ Telegram",
+        "ส่งคำสั่ง /wiki",
+        "รอผลลัพธ์จาก bot"
+      ],
+      "invocation_hint": "/a-wiki-telegram"
+    },
+    {
       "name": "accessibility",
       "aliases": [],
       "domain": [
@@ -731,6 +872,27 @@
       "invocation_hint": "/accessibility"
     },
     {
+      "name": "add-shader-cursor-trail",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/add-shader-cursor-trail/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "WebGPU mouse effect — white twinkling halftone cursor trail via ChromaFlow, masked through DotGrid, chromatic ripples, film grain. Touch/a11y/SSR/perf fallbacks included.",
+      "invocation": "manual",
+      "th_description": "เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks",
+      "when_to_use": "ต้องการ interactive cursor-following shader บน hero/contact section",
+      "invocation_hint": "/add-shader-cursor-trail"
+    },
+    {
       "name": "ag2-goal",
       "aliases": [],
       "domain": [
@@ -763,6 +925,25 @@
         "Planner ตรวจสอบผลลัพธ์",
         "วนซ้ำจนงานสำเร็จ"
       ]
+    },
+    {
+      "name": "agent-architecture-audit",
+      "aliases": [],
+      "domain": [
+        "ai-ops",
+        "engineering"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/agent-architecture-audit/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden repair loops, and rendering corruption.",
+      "invocation": "manual"
     },
     {
       "name": "agent-eval",
@@ -798,6 +979,25 @@
         "วิเคราะห์ pass rate, cost, time",
         "สรุปผลและแนะนำ agent ที่ดีที่สุด"
       ]
+    },
+    {
+      "name": "agent-harness-construction",
+      "aliases": [],
+      "domain": [
+        "ai-ops",
+        "engineering"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/agent-harness-construction/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates.",
+      "invocation": "manual"
     },
     {
       "name": "agent-introspection-debugging",
@@ -867,6 +1067,25 @@
       ]
     },
     {
+      "name": "ai-regression-testing",
+      "aliases": [],
+      "domain": [
+        "ai-ops",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/ai-regression-testing/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns to catch AI blind spots where the same mo",
+      "invocation": "manual"
+    },
+    {
       "name": "algorithmic-art",
       "aliases": [],
       "domain": [
@@ -903,6 +1122,25 @@
         "ปรับพารามิเตอร์ตาม feedback"
       ],
       "invocation_hint": "/algorithmic-art"
+    },
+    {
+      "name": "api-connector-builder",
+      "aliases": [],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/api-connector-builder/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "\"1.0.0\"",
+      "status": "canonical",
+      "description": "Build a new API connector or provider by matching the target repo's existing integration pattern exactly. Use when adding one more integration without inventing a second architecture.",
+      "invocation": "manual"
     },
     {
       "name": "api-design",
@@ -1108,6 +1346,28 @@
       ]
     },
     {
+      "name": "audit-reference-originality",
+      "aliases": [],
+      "domain": [
+        "design",
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/codex/audit-reference-originality/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Audit website vs supplied reference corpus for originality/plagiarism risk. Evidence-backed red flags; distinguishes common visual grammar from distinctive copying; proposes fixes.",
+      "invocation": "manual",
+      "th_description": "ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้",
+      "when_to_use": "ต้องการตรวจสอบว่าเว็บเรา copy reference มากเกินไปหรือไม่",
+      "invocation_hint": "/audit-reference-originality"
+    },
+    {
       "name": "autoglm-browser-agent",
       "aliases": [],
       "domain": [
@@ -1254,6 +1514,25 @@
       "invocation_hint": "/awiki-lifecycle-router"
     },
     {
+      "name": "backend-patterns",
+      "aliases": [],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/backend-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.",
+      "invocation": "manual"
+    },
+    {
       "name": "benchmark-optimization-loop",
       "aliases": [],
       "domain": [
@@ -1291,6 +1570,25 @@
         "วนซ้ำถ้ายังไม่พอใจ"
       ],
       "invocation_hint": "/benchmark-optimization-loop"
+    },
+    {
+      "name": "blender-motion-state-inspection",
+      "aliases": [],
+      "domain": [
+        "media",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/blender-motion-state-inspection/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground contact, facing direction, or model-vs-motion alignment where screenshots alone are not enough.",
+      "invocation": "manual"
     },
     {
       "name": "blueprint",
@@ -1629,6 +1927,27 @@
       ]
     },
     {
+      "name": "cinematic-gsap-lenis-motion-system",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/cinematic-gsap-lenis-motion-system/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Premium cinematic web motion with GSAP + ScrollTrigger + Lenis. Luxury editorial, Awwwards-style, smooth scroll reveals, parallax, pinned sections, magnetic hover, custom cursors.",
+      "invocation": "manual",
+      "th_description": "Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll reveals, parallax, pinned sections, magnetic hover, custom cursors",
+      "when_to_use": "อยากได้เว็บระดับ Awwwards พร้อม scroll-driven cinematic motion",
+      "invocation_hint": "/cinematic-gsap-lenis-motion-system"
+    },
+    {
       "name": "claude-api",
       "aliases": [],
       "domain": [
@@ -1658,6 +1977,50 @@
         }
       ],
       "invocation_hint": "/claude-api"
+    },
+    {
+      "name": "clickhouse-io",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/clickhouse-io/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ClickHouse database patterns, query optimization, analytics, and data engineering best practices for high-performance analytical workloads.",
+      "invocation": "manual"
+    },
+    {
+      "name": "code-reviewer",
+      "aliases": [
+        "/code-reviewer",
+        "senior-staff-engineer"
+      ],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/code-reviewer.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Senior Staff Engineer persona for code review — architecture, idioms, debt, hidden coupling, missing tests. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing tests",
+      "when_to_use": "เรียกใน REVIEW stage ของ A-Flow หรือผ่าน /A-Council เพื่อตรวจ code review หลายมุม",
+      "invocation_hint": "/code-reviewer"
     },
     {
       "name": "code-simplification",
@@ -2146,6 +2509,25 @@
       "invocation_hint": "/data-throughput-accelerator"
     },
     {
+      "name": "database-migrations",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/database-migrations/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments across PostgreSQL, MySQL, and common ORMs (Prisma, Drizzle, Kysely, Django, TypeORM, gol",
+      "invocation": "manual"
+    },
+    {
       "name": "debug-mantra",
       "aliases": [],
       "domain": [
@@ -2330,6 +2712,27 @@
         "ย้ายผู้ใช้เป็นกลุ่ม",
         "ปิดระบบเก่า"
       ]
+    },
+    {
+      "name": "design-first-ui-prompting",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "define",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/ui/design-first-ui-prompting/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Design-first prompting template: goal -> format -> layout -> type -> color -> constraints + 'variants > rerolls' workflow. Spec-driven UI prompting for consistent outputs. Augments a-think step 4.",
+      "invocation": "manual",
+      "th_description": "เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + variants > rerolls workflow",
+      "when_to_use": "ต้องการ spec-driven UI prompting ที่ consistent",
+      "invocation_hint": "/design-first-ui-prompting"
     },
     {
       "name": "design-system",
@@ -2622,6 +3025,25 @@
       "invocation_hint": "/e2e-testing"
     },
     {
+      "name": "error-handling",
+      "aliases": [],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/error-handling/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error messages.",
+      "invocation": "manual"
+    },
+    {
       "name": "eval-harness",
       "aliases": [],
       "domain": [
@@ -2765,6 +3187,35 @@
         }
       ],
       "invocation_hint": "/export-notebooklm"
+    },
+    {
+      "name": "finance-pipeline",
+      "aliases": [],
+      "domain": [
+        "trader",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/finance-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "End-to-end investment analysis: finance-data-fetcher -> finance-analyst -> finance-debater. FinRobot-style pipeline producing a self-critiqued report.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โต้แย้ง (bull/bear + verdict). รูปแบบ FinRobot.",
+      "when_to_use": "เมื่อต้องการวิเคราะห์การลงทุนแบบเต็มที่พร้อมการโต้แย้ง — ไม่ใช่แค่ขอราคาปัจจุบัน",
+      "process_steps": [
+        "Stage 1: เรียก finance-data-fetcher ดึงราคา/P/E/market cap/financials",
+        "Stage 2: ส่งข้อมูลให้ finance-analyst สร้าง thesis (เทคนิค/พื้นฐาน/ความรู้สึกตลาด)",
+        "Stage 3: ส่ง thesis ให้ finance-debater challenge (bull/bear/risks/verdict)",
+        "รวมทั้ง 3 stage เป็น investment report"
+      ],
+      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'วิเคราะห์ AAPL แบบเต็ม')"
     },
     {
       "name": "frontend-a11y",
@@ -3167,6 +3618,48 @@
         "สรุป decision"
       ],
       "invocation_hint": "/grill-with-docs"
+    },
+    {
+      "name": "gsap",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "GSAP (timelines, ScrollTrigger, stagger, transforms) for HTML/CSS/JS/React. Patterns for smooth motion, performance, common pitfalls. Fills A-Wiki gap (no GSAP skill previously).",
+      "invocation": "manual",
+      "th_description": "GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่องว่าง A-Wiki (ไม่มี GSAP มาก่อน)",
+      "when_to_use": "ต้องการ animation บนเว็บแบบมืออาชีพด้วย GSAP",
+      "invocation_hint": "/gsap"
+    },
+    {
+      "name": "gsap-scrolltrigger-storytelling",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap-scrolltrigger-storytelling/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Cinematic sticky product storytelling with GSAP ScrollTrigger. Progressive UI reveals, scroll-synced animation, smooth interpolation, immersive section transitions.",
+      "invocation": "manual",
+      "th_description": "Storytelling แบบ sticky scroll ด้วย GSAP ScrollTrigger — progressive reveals, scroll-synced animation, section transitions",
+      "when_to_use": "product storytelling แบบ sticky scroll",
+      "invocation_hint": "/gsap-scrolltrigger-storytelling"
     },
     {
       "name": "handoff",
@@ -4139,6 +4632,53 @@
       ]
     },
     {
+      "name": "mcp-server-patterns",
+      "aliases": [],
+      "domain": [
+        "ai-ops",
+        "engineering"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/mcp-server-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs Streamable HTTP. Use Context7 or official MCP docs for latest API.",
+      "invocation": "manual"
+    },
+    {
+      "name": "medical-pipeline",
+      "aliases": [],
+      "domain": [
+        "medical"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/medical-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Evidence-based clinical question pipeline: medical-lit-reviewer -> clinical-reasoner -> medical-safety-checker. Decision-support only, not a diagnosis.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบความปลอดภัยยา. decision-support เท่านั้น.",
+      "when_to_use": "เมื่อถามคำถามทางการแพทย์ที่ต้องการหลักฐาน + ตรวจสอบความปลอดภัย — ไม่ใช่ emergency",
+      "process_steps": [
+        "Stage 1: เรียก medical-lit-reviewer สืบค้น PubMed/guidelines พร้อม citations",
+        "Stage 2: ส่งหลักฐานให้ clinical-reasoner ทำ differential diagnosis + workup",
+        "Stage 3: ส่งแนวทางรักษาให้ medical-safety-checker ตรวจ drug interaction/contraindication",
+        "รวมทั้ง 3 stage เป็น clinical summary (พร้อมคำเตือน decision-support only)"
+      ],
+      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'evidence เรื่อง metformin + safety check')"
+    },
+    {
       "name": "migrate-to-shoehorn",
       "aliases": [],
       "domain": [
@@ -4397,6 +4937,25 @@
       "invocation_hint": "/motion-ui"
     },
     {
+      "name": "mysql-patterns",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/mysql-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns for production backends.",
+      "invocation": "manual"
+    },
+    {
       "name": "nextjs-turbopack",
       "aliases": [],
       "domain": [
@@ -4570,6 +5129,28 @@
         "ตรวจสอบและนำไปใช้ต่อ"
       ],
       "invocation_hint": "/openmed"
+    },
+    {
+      "name": "optimize-web-animations",
+      "aliases": [],
+      "domain": [
+        "design",
+        "code"
+      ],
+      "lifecycle_phase": "review",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/codex/optimize-web-animations/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Profile + optimize frontend animation performance — CSS animations, canvas/WebGL rAF loops, GSAP/Three/Matter effects, memory leaks, jank. 'Only play in view' optimization.",
+      "invocation": "manual",
+      "th_description": "Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks, jank, 'only play in view'",
+      "when_to_use": "เว็บช้า/กิน CPU/GPU จาก animation ต้องการ optimize",
+      "invocation_hint": "/optimize-web-animations"
     },
     {
       "name": "parallel-execution-optimizer",
@@ -5031,6 +5612,25 @@
       "invocation_hint": "/post-mortem"
     },
     {
+      "name": "postgres-patterns",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/postgres-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based on Supabase best practices.",
+      "invocation": "manual"
+    },
+    {
       "name": "pptx",
       "aliases": [],
       "domain": [
@@ -5145,6 +5745,25 @@
       "invocation_hint": "/prediction-market-risk-review"
     },
     {
+      "name": "prisma-patterns",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/prisma-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pagination, and critical traps like updateMany returning count not records, $transaction timeouts, migrat",
+      "invocation": "manual"
+    },
+    {
       "name": "project-flow-ops",
       "aliases": [],
       "domain": [
@@ -5211,6 +5830,24 @@
         }
       ],
       "invocation_hint": "/project-guidelines-example"
+    },
+    {
+      "name": "prompt-optimizer",
+      "aliases": [],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/prompt-optimizer/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": ">-",
+      "invocation": "manual"
     },
     {
       "name": "prototype",
@@ -5461,6 +6098,25 @@
       "invocation_hint": "/recursive-decision-ledger"
     },
     {
+      "name": "redis-patterns",
+      "aliases": [],
+      "domain": [
+        "data",
+        "code"
+      ],
+      "lifecycle_phase": "none",
+      "category": "ecosystem",
+      "source": "repo",
+      "path": "skills/ecosystem/redis-patterns/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and connection management for production applications.",
+      "invocation": "manual"
+    },
+    {
       "name": "render-html",
       "aliases": [],
       "domain": [
@@ -5526,6 +6182,35 @@
         "synthesize + cite"
       ],
       "invocation_hint": "/research"
+    },
+    {
+      "name": "research-pipeline",
+      "aliases": [],
+      "domain": [
+        "productivity",
+        "data"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/research-pipeline/SKILL.md",
+      "agents": [
+        "all",
+        "zcode"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Generic 3-stage research pipeline for any domain: gather -> analyze -> critique. Maps the 28 subagents into a reusable pattern by domain.",
+      "invocation": "manual",
+      "th_description": "ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ตาม domain ของคำถาม.",
+      "when_to_use": "เมื่อต้องการคำตอบที่ผ่านการวิจัย + วิพากษ์วิจารณ์บนหัวข้อที่ไม่ตรงกับ finance/medical pipeline",
+      "process_steps": [
+        "Stage 1 GATHER: เลือก gather-subagent ตาม domain table (เช่น code-explorer, data-profiler)",
+        "Stage 2 ANALYZE: ส่ง findings ให้ analyze-subagent สังเคราะห์ takeaways + recommendations",
+        "Stage 3 CRITIQUE: ส่ง synthesis ให้ critique-subagent red-team (weak points/biases/verdict)",
+        "รวมทั้ง 3 stage เป็น research report พร้อม revised confidence"
+      ],
+      "invocation_hint": "อธิบายหัวข้อให้ primary agent (เช่น 'research best practice cache invalidation')"
     },
     {
       "name": "resolving-merge-conflicts",
@@ -5918,6 +6603,31 @@
       ]
     },
     {
+      "name": "security-auditor",
+      "aliases": [
+        "/security-auditor",
+        "security-engineer"
+      ],
+      "domain": [
+        "security"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/security-auditor.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Security Engineer persona — auth, secrets, injection, OWASP, threat model, sandbox escapes. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model",
+      "when_to_use": "เรียกเมื่อ review security-sensitive code หรือ /A-Council",
+      "invocation_hint": "/security-auditor"
+    },
+    {
       "name": "security-review",
       "aliases": [],
       "domain": [
@@ -6094,6 +6804,27 @@
         "เพิ่ม type checking และ test",
         "ทดสอบ hook ด้วยการ commit"
       ]
+    },
+    {
+      "name": "shaders-cursor-ripples",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/shaders-cursor-ripples/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Cursor-following fluid WebGPU distortion over an image via Shaders library (ImageTexture + CursorRipples). For hero/gallery water-ripple mouse effect.",
+      "invocation": "manual",
+      "th_description": "เอฟเฟกต์น้ำเกร่อน (water ripple) ตามเมาส์บนรูปด้วย WebGPU + Shaders library",
+      "when_to_use": "hero/gallery ต้องการ water-ripple mouse effect",
+      "invocation_hint": "/shaders-cursor-ripples"
     },
     {
       "name": "ship",
@@ -6586,6 +7317,31 @@
       ]
     },
     {
+      "name": "test-engineer",
+      "aliases": [
+        "/test-engineer",
+        "qa-specialist"
+      ],
+      "domain": [
+        "code"
+      ],
+      "lifecycle_phase": "verify",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/test-engineer.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "QA Specialist persona — missing edge cases, integration gaps, failure modes, test pyramid coverage. Used by /A-Council and a-flow TEST stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก QA Specialist — edge cases, integration gaps, failure modes, test coverage",
+      "when_to_use": "เรียกใน TEST stage ของ A-Flow หรือ /A-Council",
+      "invocation_hint": "/test-engineer"
+    },
+    {
       "name": "thai-address",
       "aliases": [],
       "domain": [
@@ -7033,6 +7789,27 @@
       "invocation_hint": "/theme-factory"
     },
     {
+      "name": "threejs",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/threejs/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Three.js for web — scene/camera/renderer, lights/materials, GLTF loading, controls, performance. Designer-focused (3D UI moments), complements gamedev-skills/threejs-*.",
+      "invocation": "manual",
+      "th_description": "Three.js สำหรับเว็บ — scene/camera/renderer, lights, GLTF, controls, performance (เน้น designer perspective)",
+      "when_to_use": "สร้าง 3D scene บนเว็บ (ไม่ใช่ game engine)",
+      "invocation_hint": "/threejs-web"
+    },
+    {
       "name": "threejs-gltf-loading",
       "aliases": [],
       "domain": [
@@ -7435,6 +8212,31 @@
       ]
     },
     {
+      "name": "web-performance-auditor",
+      "aliases": [
+        "/web-performance-auditor",
+        "web-perf-engineer"
+      ],
+      "domain": [
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "persona",
+      "source": "repo",
+      "path": "agents/web-performance-auditor.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Web Performance Engineer persona — Core Web Vitals, bundle size, runtime jank, animation cost, render path. Used by /A-Council and a-flow REVIEW stage.",
+      "invocation": "manual",
+      "th_description": "บุคลิก Web Performance Engineer — Core Web Vitals, bundle size, jank, animation cost",
+      "when_to_use": "เรียกเมื่อ review web perf หรือ /A-Council",
+      "invocation_hint": "/web-performance-auditor"
+    },
+    {
       "name": "web-research",
       "aliases": [],
       "domain": [
@@ -7510,6 +8312,27 @@
         "ปิดเบราว์เซอร์"
       ],
       "invocation_hint": "/webapp-testing"
+    },
+    {
+      "name": "webgl-3d-object",
+      "aliases": [],
+      "domain": [
+        "design"
+      ],
+      "lifecycle_phase": "build",
+      "category": "vendor-mengto",
+      "source": "external-installed",
+      "path": "skills/_upstream/mengto/agent-skills/web-design/webgl-3d-object/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "",
+      "status": "canonical",
+      "description": "Real 3D WebGL object with mesh depth, PBR material, directional + ambient lighting, perspective camera, subtle rotation, floating motion. For hero 3D objects with real lighting (not CSS tricks).",
+      "invocation": "manual",
+      "th_description": "วัตถุ 3D บนเว็บด้วย WebGL — mesh depth, PBR material, แสงจริง, perspective camera, subtle rotation, floating motion",
+      "when_to_use": "ต้องการ 3D hero object บนเว็บที่มีแสงจริง ไม่ใช่ CSS transform trick",
+      "invocation_hint": "/webgl-3d-object"
     },
     {
       "name": "wiki",
@@ -7720,452 +8543,6 @@
         "ส่งออกผลลัพธ์"
       ],
       "invocation_hint": "/xlsx"
-    },
-    {
-      "name": "finance-pipeline",
-      "aliases": [],
-      "domain": [
-        "trader",
-        "data"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/finance-pipeline/SKILL.md",
-      "agents": [
-        "all",
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "End-to-end investment analysis: finance-data-fetcher -> finance-analyst -> finance-debater. FinRobot-style pipeline producing a self-critiqued report.",
-      "invocation": "manual",
-      "th_description": "ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โต้แย้ง (bull/bear + verdict). รูปแบบ FinRobot.",
-      "when_to_use": "เมื่อต้องการวิเคราะห์การลงทุนแบบเต็มที่พร้อมการโต้แย้ง — ไม่ใช่แค่ขอราคาปัจจุบัน",
-      "process_steps": [
-        "Stage 1: เรียก finance-data-fetcher ดึงราคา/P/E/market cap/financials",
-        "Stage 2: ส่งข้อมูลให้ finance-analyst สร้าง thesis (เทคนิค/พื้นฐาน/ความรู้สึกตลาด)",
-        "Stage 3: ส่ง thesis ให้ finance-debater challenge (bull/bear/risks/verdict)",
-        "รวมทั้ง 3 stage เป็น investment report"
-      ],
-      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'วิเคราะห์ AAPL แบบเต็ม')"
-    },
-    {
-      "name": "medical-pipeline",
-      "aliases": [],
-      "domain": [
-        "medical"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/medical-pipeline/SKILL.md",
-      "agents": [
-        "all",
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Evidence-based clinical question pipeline: medical-lit-reviewer -> clinical-reasoner -> medical-safety-checker. Decision-support only, not a diagnosis.",
-      "invocation": "manual",
-      "th_description": "ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบความปลอดภัยยา. decision-support เท่านั้น.",
-      "when_to_use": "เมื่อถามคำถามทางการแพทย์ที่ต้องการหลักฐาน + ตรวจสอบความปลอดภัย — ไม่ใช่ emergency",
-      "process_steps": [
-        "Stage 1: เรียก medical-lit-reviewer สืบค้น PubMed/guidelines พร้อม citations",
-        "Stage 2: ส่งหลักฐานให้ clinical-reasoner ทำ differential diagnosis + workup",
-        "Stage 3: ส่งแนวทางรักษาให้ medical-safety-checker ตรวจ drug interaction/contraindication",
-        "รวมทั้ง 3 stage เป็น clinical summary (พร้อมคำเตือน decision-support only)"
-      ],
-      "invocation_hint": "อธิบายโจทย์ให้ primary agent (เช่น 'evidence เรื่อง metformin + safety check')"
-    },
-    {
-      "name": "research-pipeline",
-      "aliases": [],
-      "domain": [
-        "productivity",
-        "data"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/research-pipeline/SKILL.md",
-      "agents": [
-        "all",
-        "zcode"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Generic 3-stage research pipeline for any domain: gather -> analyze -> critique. Maps the 28 subagents into a reusable pattern by domain.",
-      "invocation": "manual",
-      "th_description": "ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ตาม domain ของคำถาม.",
-      "when_to_use": "เมื่อต้องการคำตอบที่ผ่านการวิจัย + วิพากษ์วิจารณ์บนหัวข้อที่ไม่ตรงกับ finance/medical pipeline",
-      "process_steps": [
-        "Stage 1 GATHER: เลือก gather-subagent ตาม domain table (เช่น code-explorer, data-profiler)",
-        "Stage 2 ANALYZE: ส่ง findings ให้ analyze-subagent สังเคราะห์ takeaways + recommendations",
-        "Stage 3 CRITIQUE: ส่ง synthesis ให้ critique-subagent red-team (weak points/biases/verdict)",
-        "รวมทั้ง 3 stage เป็น research report พร้อม revised confidence"
-      ],
-      "invocation_hint": "อธิบายหัวข้อให้ primary agent (เช่น 'research best practice cache invalidation')"
-    },
-    {
-      "name": "a-loop",
-      "aliases": [],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-loop/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
-      "invocation": "manual",
-      "invocation_hint": "/A-Loop \"<objective>\"",
-      "a_phase": "any"
-    },
-    {
-      "name": "a-council",
-      "aliases": [],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "review",
-      "category": "pipeline",
-      "source": "repo",
-      "path": "skills/awiki/a-council/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
-      "invocation": "manual",
-      "invocation_hint": "/A-Council \"<topic>\"",
-      "triggers": [
-        "ตรวจสอบ",
-        "review",
-        "audit",
-        "security review"
-      ],
-      "a_phase": "review"
-    },
-    {
-      "name": "gsap",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "GSAP (timelines, ScrollTrigger, stagger, transforms) for HTML/CSS/JS/React. Patterns for smooth motion, performance, common pitfalls. Fills A-Wiki gap (no GSAP skill previously).",
-      "invocation": "manual",
-      "th_description": "GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่องว่าง A-Wiki (ไม่มี GSAP มาก่อน)",
-      "when_to_use": "ต้องการ animation บนเว็บแบบมืออาชีพด้วย GSAP",
-      "invocation_hint": "/gsap"
-    },
-    {
-      "name": "cinematic-gsap-lenis-motion-system",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/cinematic-gsap-lenis-motion-system/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Premium cinematic web motion with GSAP + ScrollTrigger + Lenis. Luxury editorial, Awwwards-style, smooth scroll reveals, parallax, pinned sections, magnetic hover, custom cursors.",
-      "invocation": "manual",
-      "th_description": "Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll reveals, parallax, pinned sections, magnetic hover, custom cursors",
-      "when_to_use": "อยากได้เว็บระดับ Awwwards พร้อม scroll-driven cinematic motion",
-      "invocation_hint": "/cinematic-gsap-lenis-motion-system"
-    },
-    {
-      "name": "gsap-scrolltrigger-storytelling",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/gsap-scrolltrigger-storytelling/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Cinematic sticky product storytelling with GSAP ScrollTrigger. Progressive UI reveals, scroll-synced animation, smooth interpolation, immersive section transitions.",
-      "invocation": "manual",
-      "th_description": "Storytelling แบบ sticky scroll ด้วย GSAP ScrollTrigger — progressive reveals, scroll-synced animation, section transitions",
-      "when_to_use": "product storytelling แบบ sticky scroll",
-      "invocation_hint": "/gsap-scrolltrigger-storytelling"
-    },
-    {
-      "name": "webgl-3d-object",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/webgl-3d-object/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Real 3D WebGL object with mesh depth, PBR material, directional + ambient lighting, perspective camera, subtle rotation, floating motion. For hero 3D objects with real lighting (not CSS tricks).",
-      "invocation": "manual",
-      "th_description": "วัตถุ 3D บนเว็บด้วย WebGL — mesh depth, PBR material, แสงจริง, perspective camera, subtle rotation, floating motion",
-      "when_to_use": "ต้องการ 3D hero object บนเว็บที่มีแสงจริง ไม่ใช่ CSS transform trick",
-      "invocation_hint": "/webgl-3d-object"
-    },
-    {
-      "name": "add-shader-cursor-trail",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/add-shader-cursor-trail/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "WebGPU mouse effect — white twinkling halftone cursor trail via ChromaFlow, masked through DotGrid, chromatic ripples, film grain. Touch/a11y/SSR/perf fallbacks included.",
-      "invocation": "manual",
-      "th_description": "เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks",
-      "when_to_use": "ต้องการ interactive cursor-following shader บน hero/contact section",
-      "invocation_hint": "/add-shader-cursor-trail"
-    },
-    {
-      "name": "shaders-cursor-ripples",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/shaders-cursor-ripples/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Cursor-following fluid WebGPU distortion over an image via Shaders library (ImageTexture + CursorRipples). For hero/gallery water-ripple mouse effect.",
-      "invocation": "manual",
-      "th_description": "เอฟเฟกต์น้ำเกร่อน (water ripple) ตามเมาส์บนรูปด้วย WebGPU + Shaders library",
-      "when_to_use": "hero/gallery ต้องการ water-ripple mouse effect",
-      "invocation_hint": "/shaders-cursor-ripples"
-    },
-    {
-      "name": "threejs",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "build",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/web-design/threejs/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Three.js for web — scene/camera/renderer, lights/materials, GLTF loading, controls, performance. Designer-focused (3D UI moments), complements gamedev-skills/threejs-*.",
-      "invocation": "manual",
-      "th_description": "Three.js สำหรับเว็บ — scene/camera/renderer, lights, GLTF, controls, performance (เน้น designer perspective)",
-      "when_to_use": "สร้าง 3D scene บนเว็บ (ไม่ใช่ game engine)",
-      "invocation_hint": "/threejs-web"
-    },
-    {
-      "name": "design-first-ui-prompting",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "define",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/ui/design-first-ui-prompting/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Design-first prompting template: goal -> format -> layout -> type -> color -> constraints + 'variants > rerolls' workflow. Spec-driven UI prompting for consistent outputs. Augments a-think step 4.",
-      "invocation": "manual",
-      "th_description": "เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + variants > rerolls workflow",
-      "when_to_use": "ต้องการ spec-driven UI prompting ที่ consistent",
-      "invocation_hint": "/design-first-ui-prompting"
-    },
-    {
-      "name": "audit-reference-originality",
-      "aliases": [],
-      "domain": [
-        "design",
-        "code"
-      ],
-      "lifecycle_phase": "review",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/codex/audit-reference-originality/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Audit website vs supplied reference corpus for originality/plagiarism risk. Evidence-backed red flags; distinguishes common visual grammar from distinctive copying; proposes fixes.",
-      "invocation": "manual",
-      "th_description": "ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้",
-      "when_to_use": "ต้องการตรวจสอบว่าเว็บเรา copy reference มากเกินไปหรือไม่",
-      "invocation_hint": "/audit-reference-originality"
-    },
-    {
-      "name": "optimize-web-animations",
-      "aliases": [],
-      "domain": [
-        "design",
-        "code"
-      ],
-      "lifecycle_phase": "review",
-      "category": "vendor-mengto",
-      "source": "external-installed",
-      "path": "skills/_upstream/mengto/agent-skills/codex/optimize-web-animations/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Profile + optimize frontend animation performance — CSS animations, canvas/WebGL rAF loops, GSAP/Three/Matter effects, memory leaks, jank. 'Only play in view' optimization.",
-      "invocation": "manual",
-      "th_description": "Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks, jank, 'only play in view'",
-      "when_to_use": "เว็บช้า/กิน CPU/GPU จาก animation ต้องการ optimize",
-      "invocation_hint": "/optimize-web-animations"
-    },
-    {
-      "name": "code-reviewer",
-      "aliases": [
-        "/code-reviewer",
-        "senior-staff-engineer"
-      ],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "review",
-      "category": "persona",
-      "source": "repo",
-      "path": "agents/code-reviewer.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Senior Staff Engineer persona for code review — architecture, idioms, debt, hidden coupling, missing tests. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
-      "th_description": "บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing tests",
-      "when_to_use": "เรียกใน REVIEW stage ของ A-Flow หรือผ่าน /A-Council เพื่อตรวจ code review หลายมุม",
-      "invocation_hint": "/code-reviewer"
-    },
-    {
-      "name": "test-engineer",
-      "aliases": [
-        "/test-engineer",
-        "qa-specialist"
-      ],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "verify",
-      "category": "persona",
-      "source": "repo",
-      "path": "agents/test-engineer.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "QA Specialist persona — missing edge cases, integration gaps, failure modes, test pyramid coverage. Used by /A-Council and a-flow TEST stage.",
-      "invocation": "manual",
-      "th_description": "บุคลิก QA Specialist — edge cases, integration gaps, failure modes, test coverage",
-      "when_to_use": "เรียกใน TEST stage ของ A-Flow หรือ /A-Council",
-      "invocation_hint": "/test-engineer"
-    },
-    {
-      "name": "security-auditor",
-      "aliases": [
-        "/security-auditor",
-        "security-engineer"
-      ],
-      "domain": [
-        "security"
-      ],
-      "lifecycle_phase": "review",
-      "category": "persona",
-      "source": "repo",
-      "path": "agents/security-auditor.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Security Engineer persona — auth, secrets, injection, OWASP, threat model, sandbox escapes. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
-      "th_description": "บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model",
-      "when_to_use": "เรียกเมื่อ review security-sensitive code หรือ /A-Council",
-      "invocation_hint": "/security-auditor"
-    },
-    {
-      "name": "web-performance-auditor",
-      "aliases": [
-        "/web-performance-auditor",
-        "web-perf-engineer"
-      ],
-      "domain": [
-        "engineering"
-      ],
-      "lifecycle_phase": "review",
-      "category": "persona",
-      "source": "repo",
-      "path": "agents/web-performance-auditor.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "Web Performance Engineer persona — Core Web Vitals, bundle size, runtime jank, animation cost, render path. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
-      "th_description": "บุคลิก Web Performance Engineer — Core Web Vitals, bundle size, jank, animation cost",
-      "when_to_use": "เรียกเมื่อ review web perf หรือ /A-Council",
-      "invocation_hint": "/web-performance-auditor"
     }
   ]
 }

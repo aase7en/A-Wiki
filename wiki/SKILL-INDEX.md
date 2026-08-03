@@ -7,28 +7,28 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 229 · **Aliases/deprecated**: 5
+**Total canonical skills**: 247 · **Aliases/deprecated**: 5
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 88 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 101 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 22 |
 | `ux-ui` | UX/UI / Frontend / a11y | 7 |
-| `engineering` | วิศวกร / Architect / Agent harness | 46 |
+| `engineering` | วิศวกร / Architect / Agent harness | 54 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
-| `data` | Data Visualization / DB / Query | 7 |
+| `data` | Data Visualization / DB / Query | 13 |
 | `security` | ความปลอดภัย / Hardening | 9 |
-| `ai-ops` | AI ops / LLM / Cost | 21 |
+| `ai-ops` | AI ops / LLM / Cost | 27 |
 | `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 14 |
-| `media` | สื่อ / วิดีโอ / รูปภาพ | 15 |
+| `media` | สื่อ / วิดีโอ / รูปภาพ | 17 |
 | `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
 | `sre` | SRE / Observability / Deploy | 2 |
 
@@ -40,22 +40,29 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-backend` | meta | pipeline | backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/pris... |
 | `a-debug` | verify | pipeline | Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหร... |
+| `a-game` | meta | pipeline | game dev (Phaser/PixiJS/Three.js) — bind game-phaser-pipeline, phaser-core, phaser-arcade-physics... |
 | `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `a-wiki-commands` | none | uncategorized | คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ |
 | `a-wiki-telegram` | none | uncategorized | เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ... |
 | `ag2-goal` | none | delegation | orchestrate multi-step goal ด้วย AG2 — planner แตกเป้า, free executor รัน, planner ตรวจ |
+| `ai-regression-testing` | none | ecosystem | Regression testing strategies for AI-assisted development. Sandbox-mode API testing without datab... |
+| `api-connector-builder` | none | ecosystem | Build a new API connector or provider by matching the target repo's existing integration pattern ... |
 | `api-design` | none | ecosystem | ออกแบบ REST/GraphQL API — endpoint, schema, versioning, error format |
 | `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `autoglm-browser-agent` | none | uncategorized | ทักษะนี้ช่วยให้ AI Agent สามารถควบคุมเบราว์เซอร์เพื่อทำงานอัตโนมัติ เช่น การนำทาง การกรอกฟอร์ม แล... |
 | `awiki-brain-improvement-gate` | none | wiki | ใช้ก่อนแก้ไขความสามารถของ A-Wiki brain, agent instructions, skills, hooks, plugins, scripts, sync... |
 | `awiki-creator-layer` | none | wiki | เปลี่ยนบันทึก A-Wiki, หน้า wiki, สรุป source code และไฟล์เสียงส่วนตัว ให้เป็นโพสต์สาธารณะที่ปลอดภ... |
 | `awiki-lifecycle-router` | meta | engineering-lifecycle | ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติต... |
+| `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
+| `blender-motion-state-inspection` | none | ecosystem | Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground con... |
 | `brainstorm-before-build` | none | wiki | บังคับให้ถาม user 3 คำถาม (scope/constraint/success) ก่อนเริ่มสร้างสิ่งใหม่ ป้องกันการเขียนผิดทิศทาง |
 | `browser-qa` | none | ecosystem | ใช้ทักษะนี้เพื่อทดสอบ UI อัตโนมัติและตรวจสอบการทำงานของหน้าเว็บหลัง deploy ฟีเจอร์ โดยจำลองการคลิ... |
 | `browser-testing-with-devtools` | verify | engineering-lifecycle | ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, pe... |
 | `ci-cd-and-automation` | ship | engineering-lifecycle | ตั้ง CI/CD pipeline — auto test, lint, build, deploy เพื่อลดมนุษย์ผิดพลาด |
 | `claude-api` | none | uncategorized | ทักษะนี้ช่วยให้คุณเรียกใช้ Claude API โดยตรงจากเทอร์มินัล รองรับการส่งข้อความและรับคำตอบจากโมเดล ... |
+| `clickhouse-io` | none | ecosystem | ClickHouse database patterns, query optimization, analytics, and data engineering best practices ... |
 | `code-reviewer` | review | persona | บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing t... |
 | `code-simplification` | review | engineering-lifecycle | ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น |
 | `content-engine` | none | ecosystem | สร้างระบบเนื้อหาที่ปรับให้เข้ากับแต่ละแพลตฟอร์ม เช่น X, LinkedIn, TikTok, YouTube และจดหมายข่าว พ... |
@@ -65,12 +72,14 @@
 | `cross-agent-work-orders` | plan | wiki | มาตรฐานบังคับให้ทุก agent ทำงานร่วมกันใน repo เดียว: work orders + ตาราง claim + เลนไฟล์ + pause/... |
 | `crosspost` | none | ecosystem | แจกจ่ายเนื้อหาไปยังหลายแพลตฟอร์มพร้อมกัน เช่น X, LinkedIn, Threads และ Bluesky โดยปรับรูปแบบเนื้อ... |
 | `csharp-testing` | none | ecosystem | ทักษะนี้ครอบคลุมการเขียนเทสต์ในภาษา C# และ .NET โดยใช้ xUnit, FluentAssertions, การจำลอง (mocking... |
+| `database-migrations` | none | ecosystem | Database migration best practices for schema changes, data migrations, rollbacks, and zero-downti... |
 | `deep-research` | none | ecosystem | ค้นหาข้อมูลเชิงลึกจากหลายแหล่งผ่าน firecrawl และ exa MCPs สังเคราะห์ผลลัพธ์และสร้างรายงานพร้อมการ... |
 | `deprecation-and-migration` | ship | engineering-lifecycle | เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback |
 | `django-patterns` | none | ecosystem | design pattern Django — architecture, DRF REST API, ORM best practice, caching, signals, middleware |
 | `django-verification` | none | ecosystem | ตรวจสอบความพร้อมของโปรเจกต์ Django ก่อน release หรือ PR ครอบคลุม migrations, linting, tests พร้อม... |
 | `documentation-and-adrs` | ship | engineering-lifecycle | เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้ |
 | `e2e-testing` | none | ecosystem | ทักษะสำหรับการเขียนและจัดการ E2E test ด้วย Playwright ครอบคลุม Page Object Model, การตั้งค่า conf... |
+| `error-handling` | none | ecosystem | Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error ... |
 | `everything-claude-code` | none | uncategorized | ทักษะนี้กำหนดรูปแบบและแนวปฏิบัติสำหรับการพัฒนาโปรเจกต์ JavaScript โดยใช้ conventional commits เพื... |
 | `frontend-patterns` | none | ecosystem | รวบรวมแนวทางการพัฒนา frontend สำหรับ React, Next.js, การจัดการ state, การเพิ่มประสิทธิภาพ และ UI ... |
 | `fsharp-testing` | none | ecosystem | ทักษะสำหรับการเขียนเทสต์ใน F# โดยใช้ xUnit, FsUnit, Unquote และ FsCheck สำหรับ property-based tes... |
@@ -84,6 +93,7 @@
 | `kotlin-testing` | none | ecosystem | ทักษะการทดสอบ Kotlin ด้วย Kotest, MockK, การทดสอบ coroutine, property-based testing และ Kover cov... |
 | `laravel-patterns` | none | ecosystem | อธิบายรูปแบบสถาปัตยกรรม Laravel สำหรับแอปพลิเคชันระดับ production ครอบคลุมการจัดโครงสร้าง routing... |
 | `motion-patterns` | none | ecosystem | รวมแพทเทิร์น animation สำหรับ React / Next.js ที่พร้อมใช้งานจริง ครอบคลุมปุ่มกด, modal, toast, st... |
+| `mysql-patterns` | none | ecosystem | MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns... |
 | `nextjs-turbopack` | none | ecosystem | อธิบายการใช้งาน Next.js 16+ ร่วมกับ Turbopack ซึ่งเป็น incremental bundler ที่ช่วยเพิ่มความเร็วใน... |
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
 | `openai-docs` | none | uncategorized | ใช้ค้นหาหรืออ้างอิงเอกสารทางการของ OpenAI สำหรับการสร้างแอปพลิเคชันด้วย API, Codex, หรือผลิตภัณฑ์... |
@@ -98,6 +108,8 @@
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
 | `plugin-creator` | none | uncategorized | สร้างและจัดโครงสร้าง plugin สำหรับ Codex โดยสร้างโฟลเดอร์ .codex-plugin/ พร้อมไฟล์ plugin.json ที... |
+| `postgres-patterns` | none | ecosystem | PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based... |
+| `prisma-patterns` | none | ecosystem | Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pa... |
 | `project-flow-ops` | none | ecosystem | จัดการการทำงานระหว่าง GitHub และ Linear โดยการจัดลำดับความสำคัญของ issues และ pull requests, เชื่... |
 | `project-guidelines-example` | none | uncategorized | ทักษะนี้ให้ตัวอย่างแนวทางปฏิบัติสำหรับโปรเจกต์ เช่น การตั้งชื่อไฟล์ โครงสร้างโฟลเดอร์ และรูปแบบกา... |
 | `prototype` | build | mattpocock | สร้าง prototype แบบเร็วเพื่อตอบคำถามด้านการออกแบบหรือทดสอบแนวคิด โดยไม่ต้องกังวลเรื่องคุณภาพโค้ดห... |
@@ -106,6 +118,7 @@
 | `react-performance` | none | uncategorized | optimize React/Next.js — memo, code-splitting, lazy loading, render budget ตามแนวทาง Vercel engin... |
 | `react-testing` | none | uncategorized | test React component ด้วย React Testing Library + Vitest/Jest + MSW mock network + accessibility ... |
 | `recursive-decision-ledger` | none | uncategorized | ใช้เมื่อต้องการติดตามการตัดสินใจแบบวนซ้ำในกระบวนการค้นหาหรือปรับแต่งหลายขั้นตอน เช่น การสุ่มสำรวจ... |
+| `redis-patterns` | none | ecosystem | Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and... |
 | `resolving-merge-conflicts` | none | mattpocock | ช่วยแก้ไข conflict ที่เกิดขึ้นระหว่างการ merge หรือ rebase โดยวิเคราะห์ความตั้งใจของแต่ละ hunk แท... |
 | `rust-testing` | none | ecosystem | กลยุทธ์ test Rust — unit, integration, async test, property-based test, doctest |
 | `scrape-web` | none | uncategorized | ส่ง URL ไปยัง scraper ที่เหมาะสมที่สุด โดยไล่ระดับจาก curl → Scrapling → Crawl4AI → Firecrawl → B... |
@@ -184,6 +197,8 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-agent` | meta | pipeline | AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-ha... |
+| `a-backend` | meta | pipeline | backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/pris... |
 | `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
 | `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
@@ -193,9 +208,13 @@
 | `a-router` | meta | pipeline | ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ g... |
 | `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
 | `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
+| `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
+| `agent-harness-construction` | none | ecosystem | Design and optimize AI agent action spaces, tool definitions, and observation formatting for high... |
+| `api-connector-builder` | none | ecosystem | Build a new API connector or provider by matching the target repo's existing integration pattern ... |
 | `architecture-decision-records` | none | uncategorized | บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้า... |
 | `ask-matt` | none | mattpocock | ใช้ถามว่าควรใช้ skill หรือ flow ไหนสำหรับสถานการณ์ของคุณ โดยทำหน้าที่เป็น router วนดู skills ทั้ง... |
 | `awiki-lifecycle-router` | meta | engineering-lifecycle | ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติต... |
+| `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
 | `browser-testing-with-devtools` | verify | engineering-lifecycle | ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, pe... |
 | `ci-cd-and-automation` | ship | engineering-lifecycle | ตั้ง CI/CD pipeline — auto test, lint, build, deploy เพื่อลดมนุษย์ผิดพลาด |
 | `code-simplification` | review | engineering-lifecycle | ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น |
@@ -203,12 +222,14 @@
 | `deprecation-and-migration` | ship | engineering-lifecycle | เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback |
 | `documentation-and-adrs` | ship | engineering-lifecycle | เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้ |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
+| `error-handling` | none | ecosystem | Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error ... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
 | `grill-with-docs` | define | mattpocock | เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน |
 | `implement` | build | mattpocock | ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โ... |
 | `improve-codebase-architecture` | review | mattpocock | สแกนโค้ดเบสเพื่อหาโอกาสในการปรับปรุงสถาปัตยกรรม สร้างรายงาน HTML แบบภาพ จากนั้นเจาะลึกประเด็นที่เ... |
 | `latency-critical-systems` | none | uncategorized | ใช้สำหรับระบบที่ไวต่อ latency เช่น realtime dashboard, market data, streaming agent, execution ga... |
+| `mcp-server-patterns` | none | ecosystem | Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs ... |
 | `migrate-to-shoehorn` | none | mattpocock | แปลงไฟล์ทดสอบ TypeScript ที่ใช้ type assertion แบบ `as` ให้ใช้ `@total-typescript/shoehorn` แทน เ... |
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
@@ -273,10 +294,16 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
+| `clickhouse-io` | none | ecosystem | ClickHouse database patterns, query optimization, analytics, and data engineering best practices ... |
 | `data-throughput-accelerator` | none | uncategorized | ใช้เมื่อต้องการเร่งความเร็วการนำเข้าข้อมูลขนาดใหญ่ การ backfill การส่งออก ETL การโหลดคลังข้อมูล ก... |
+| `database-migrations` | none | ecosystem | Database migration best practices for schema changes, data migrations, rollbacks, and zero-downti... |
 | `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
 | `literature-review` | none | ecosystem | ทักษะนี้ช่วยวางแผนการค้นหา คัดกรองแหล่งข้อมูล สังเคราะห์ และจัดการอ้างอิงสำหรับงานทบทวนวรรณกรรมอย... |
 | `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfo... |
+| `mysql-patterns` | none | ecosystem | MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns... |
+| `postgres-patterns` | none | ecosystem | PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based... |
+| `prisma-patterns` | none | ecosystem | Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pa... |
+| `redis-patterns` | none | ecosystem | Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and... |
 | `research-pipeline` | meta | pipeline | ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ... |
 | `scholar-evaluation` | none | ecosystem | ประเมินผลงานวิชาการอย่างมีโครงสร้าง ไม่ว่าจะเป็นบทความ ข้อเสนอการวิจัย การทบทวนวรรณกรรม ส่วนวิธีก... |
 
@@ -300,10 +327,14 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-agent` | meta | pipeline | AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-ha... |
 | `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
+| `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
 | `agent-eval` | none | ecosystem | ประเมินคุณภาพของ agent/prompt — วัด accuracy, cost, latency และหาจุดปรับปรุง |
+| `agent-harness-construction` | none | ecosystem | Design and optimize AI agent action spaces, tool definitions, and observation formatting for high... |
 | `agent-introspection-debugging` | none | ecosystem | debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลอง... |
 | `agent-sort` | none | ecosystem | เรียง skills/commands/rules/hooks สำหรับ repo หนึ่งๆ เป็น install plan โดยอ้างหลักฐาน — ไม่เดา |
+| `ai-regression-testing` | none | ecosystem | Regression testing strategies for AI-assisted development. Sandbox-mode API testing without datab... |
 | `benchmark-optimization-loop` | none | uncategorized | ใช้เมื่อต้องการปรับปรุงประสิทธิภาพของโค้ดหรือระบบ โดยลองหลายรูปแบบ วัด latency/throughput/cost แล... |
 | `build` | build | awiki | สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-... |
 | `context-budget` | none | ecosystem | จัดการ context window — โหลดเฉพาะข้อมูลที่จำเป็น, compact เมื่อใกล้เต็ม |
@@ -314,8 +345,10 @@
 | `handoff` | meta | mattpocock | สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ |
 | `hermes-fan-out` | meta | swarm | รัน persona หลายตัวตามลำดับสำหรับ Hermes (ไม่มี concurrency ดั้งเดิม) — code-reviewer, test-engin... |
 | `mcp-builder` | none | uncategorized | สร้าง MCP server — expose tool/resource ให้ agent เรียกใช้ผ่าน Model Context Protocol |
+| `mcp-server-patterns` | none | ecosystem | Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs ... |
 | `model-cost-switching` | none | ai-ops | จัดลำดับ model ตามต้นทุน — ใช้ model ถูกก่อน แพงทีหลัง. บังคับ cost-first decision pyramid |
 | `plan` | plan | awiki | สกิลนี้ใช้รับคำสั่ง /plan จาก Telegram เพื่อแยกงานที่ซับซ้อนออกเป็นงานย่อยที่ตรวจสอบได้ โดยเรียกใ... |
+| `prompt-optimizer` | none | ecosystem | >- |
 | `review` | review | awiki | สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-... |
 | `ship` | ship | awiki | สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router แ... |
 | `strategic-compact` | none | ecosystem | แนะนำให้บีบอัดบริบทด้วยตนเองในช่วงเวลาที่เหมาะสมของงาน เพื่อรักษาบริบทที่สำคัญระหว่างขั้นตอนต่างๆ... |
@@ -385,7 +418,9 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
+| `a-game` | meta | pipeline | game dev (Phaser/PixiJS/Three.js) — bind game-phaser-pipeline, phaser-core, phaser-arcade-physics... |
 | `algorithmic-art` | none | uncategorized | สร้างงานศิลปะเชิงอัลกอริทึมด้วย p5.js โดยใช้ seeded randomness เพื่อให้ผลลัพธ์ reproducible และให... |
+| `blender-motion-state-inspection` | none | ecosystem | Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground con... |
 | `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
 | `imagegen` | none | uncategorized | สร้างหรือแก้ไขภาพบิตแมปเมื่อต้องการภาพถ่าย ภาพประกอบ พื้นผิว สไปรต์ หรือภาพโปร่งใสที่ AI สร้างขึ้... |
 | `motion-advanced` | none | ecosystem | ทักษะนี้รวบรวมเทคนิค motion ขั้นสูงสำหรับ React และ Next.js ครอบคลุม drag & drop, gesture, text a... |
@@ -431,7 +466,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-claim`, `a-content`, `a-escalate`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-escalate`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 

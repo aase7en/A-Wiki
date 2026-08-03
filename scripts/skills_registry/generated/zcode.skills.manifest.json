@@ -4,6 +4,16 @@
   "link_root": ".zcode/skills",
   "skills": [
     {
+      "name": "a-agent",
+      "target": "skills/awiki/a-agent/SKILL.md",
+      "domain": "ai-ops,engineering"
+    },
+    {
+      "name": "a-backend",
+      "target": "skills/awiki/a-backend/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
       "name": "a-claim",
       "target": "skills/awiki/a-claim/SKILL.md",
       "domain": "engineering,ai-ops"
@@ -37,6 +47,11 @@
       "name": "a-escalate",
       "target": "skills/awiki/a-escalate/SKILL.md",
       "domain": "engineering"
+    },
+    {
+      "name": "a-game",
+      "target": "skills/awiki/a-game/SKILL.md",
+      "domain": "code,media"
     },
     {
       "name": "a-invest",
@@ -99,9 +114,19 @@
       "domain": "code"
     },
     {
+      "name": "agent-architecture-audit",
+      "target": "skills/ecosystem/agent-architecture-audit/SKILL.md",
+      "domain": "ai-ops,engineering"
+    },
+    {
       "name": "agent-eval",
       "target": "skills/ecosystem/agent-eval/SKILL.md",
       "domain": "ai-ops"
+    },
+    {
+      "name": "agent-harness-construction",
+      "target": "skills/ecosystem/agent-harness-construction/SKILL.md",
+      "domain": "ai-ops,engineering"
     },
     {
       "name": "agent-introspection-debugging",
@@ -114,9 +139,19 @@
       "domain": "ai-ops"
     },
     {
+      "name": "ai-regression-testing",
+      "target": "skills/ecosystem/ai-regression-testing/SKILL.md",
+      "domain": "ai-ops,code"
+    },
+    {
       "name": "algorithmic-art",
       "target": "skills/anthropic-skills/algorithmic-art/SKILL.md",
       "domain": "media"
+    },
+    {
+      "name": "api-connector-builder",
+      "target": "skills/ecosystem/api-connector-builder/SKILL.md",
+      "domain": "engineering,code"
     },
     {
       "name": "api-design",
@@ -157,6 +192,16 @@
       "name": "awiki-lifecycle-router",
       "target": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
       "domain": "code,engineering"
+    },
+    {
+      "name": "backend-patterns",
+      "target": "skills/ecosystem/backend-patterns/SKILL.md",
+      "domain": "engineering,code"
+    },
+    {
+      "name": "blender-motion-state-inspection",
+      "target": "skills/ecosystem/blender-motion-state-inspection/SKILL.md",
+      "domain": "media,code"
     },
     {
       "name": "blueprint",
@@ -207,6 +252,11 @@
       "name": "claude-api",
       "target": "skills/anthropic-skills/claude-api/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "clickhouse-io",
+      "target": "skills/ecosystem/clickhouse-io/SKILL.md",
+      "domain": "data,code"
     },
     {
       "name": "code-reviewer",
@@ -267,6 +317,11 @@
       "name": "csharp-testing",
       "target": "skills/ecosystem/csharp-testing/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "database-migrations",
+      "target": "skills/ecosystem/database-migrations/SKILL.md",
+      "domain": "data,code"
     },
     {
       "name": "debug-mantra",
@@ -332,6 +387,11 @@
       "name": "e2e-testing",
       "target": "skills/ecosystem/e2e-testing/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "error-handling",
+      "target": "skills/ecosystem/error-handling/SKILL.md",
+      "domain": "engineering,code"
     },
     {
       "name": "eval-harness",
@@ -489,6 +549,11 @@
       "domain": "ai-ops"
     },
     {
+      "name": "mcp-server-patterns",
+      "target": "skills/ecosystem/mcp-server-patterns/SKILL.md",
+      "domain": "ai-ops,engineering"
+    },
+    {
       "name": "medical-pipeline",
       "target": "skills/awiki/medical-pipeline/SKILL.md",
       "domain": "medical"
@@ -522,6 +587,11 @@
       "name": "motion-patterns",
       "target": "skills/ecosystem/motion-patterns/SKILL.md",
       "domain": "code,media"
+    },
+    {
+      "name": "mysql-patterns",
+      "target": "skills/ecosystem/mysql-patterns/SKILL.md",
+      "domain": "data,code"
     },
     {
       "name": "nextjs-turbopack",
@@ -604,14 +674,29 @@
       "domain": "productivity"
     },
     {
+      "name": "postgres-patterns",
+      "target": "skills/ecosystem/postgres-patterns/SKILL.md",
+      "domain": "data,code"
+    },
+    {
       "name": "pptx",
       "target": "skills/anthropic-skills/pptx/SKILL.md",
       "domain": "document"
     },
     {
+      "name": "prisma-patterns",
+      "target": "skills/ecosystem/prisma-patterns/SKILL.md",
+      "domain": "data,code"
+    },
+    {
       "name": "project-flow-ops",
       "target": "skills/ecosystem/project-flow-ops/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "prompt-optimizer",
+      "target": "skills/ecosystem/prompt-optimizer/SKILL.md",
+      "domain": "ai-ops"
     },
     {
       "name": "prototype",
@@ -622,6 +707,11 @@
       "name": "python-testing",
       "target": "skills/ecosystem/python-testing/SKILL.md",
       "domain": "code"
+    },
+    {
+      "name": "redis-patterns",
+      "target": "skills/ecosystem/redis-patterns/SKILL.md",
+      "domain": "data,code"
     },
     {
       "name": "render-html",

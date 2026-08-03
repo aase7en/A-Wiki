@@ -3,6 +3,8 @@
 
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
+| `a-agent` | ai-ops, engineering | meta | pipeline | `skills/awiki/a-agent/SKILL.md` |
+| `a-backend` | engineering, code | meta | pipeline | `skills/awiki/a-backend/SKILL.md` |
 | `a-claim` | engineering, ai-ops | meta | pipeline | `skills/awiki/a-claim/SKILL.md` |
 | `a-content` | media, business | meta | pipeline | `skills/awiki/a-content/SKILL.md` |
 | `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
@@ -10,6 +12,7 @@
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
 | `a-doc-announce` | document, thai | build | pipeline | `skills/awiki/a-doc/types/announce/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
+| `a-game` | code, media | meta | pipeline | `skills/awiki/a-game/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
 | `a-med-order` | pharmacy, business | build | pipeline | `skills/awiki/a-med-order/SKILL.md` |
@@ -23,10 +26,14 @@
 | `accessibility` | ux-ui | none | ecosystem | `skills/ecosystem/accessibility/SKILL.md` |
 | `add-shader-cursor-trail` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/add-shader-cursor-trail/SKILL.md` |
 | `ag2-goal` | code | none | delegation | `skills/delegation/ag2-goal/SKILL.md` |
+| `agent-architecture-audit` | ai-ops, engineering | none | ecosystem | `skills/ecosystem/agent-architecture-audit/SKILL.md` |
 | `agent-eval` | ai-ops | none | ecosystem | `skills/ecosystem/agent-eval/SKILL.md` |
+| `agent-harness-construction` | ai-ops, engineering | none | ecosystem | `skills/ecosystem/agent-harness-construction/SKILL.md` |
 | `agent-introspection-debugging` | ai-ops, debug | none | ecosystem | `skills/ecosystem/agent-introspection-debugging/SKILL.md` |
 | `agent-sort` | ai-ops | none | ecosystem | `skills/ecosystem/agent-sort/SKILL.md` |
+| `ai-regression-testing` | ai-ops, code | none | ecosystem | `skills/ecosystem/ai-regression-testing/SKILL.md` |
 | `algorithmic-art` | media | none | uncategorized | `skills/anthropic-skills/algorithmic-art/SKILL.md` |
+| `api-connector-builder` | engineering, code | none | ecosystem | `skills/ecosystem/api-connector-builder/SKILL.md` |
 | `api-design` | code | none | ecosystem | `skills/ecosystem/api-design/SKILL.md` |
 | `architecture-decision-records` | engineering | none | uncategorized | `~/.claude/skills/architecture-decision-records/SKILL.md` |
 | `article-writing` | productivity | none | ecosystem | `skills/ecosystem/article-writing/SKILL.md` |
@@ -38,7 +45,9 @@
 | `awiki-brain-improvement-gate` | code | none | wiki | `skills/claude-code/awiki-brain-improvement-gate/SKILL.md` |
 | `awiki-creator-layer` | code | none | wiki | `skills/claude-code/awiki-creator-layer/SKILL.md` |
 | `awiki-lifecycle-router` | code, engineering | meta | engineering-lifecycle | `skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` |
+| `backend-patterns` | engineering, code | none | ecosystem | `skills/ecosystem/backend-patterns/SKILL.md` |
 | `benchmark-optimization-loop` | ai-ops | none | uncategorized | `~/.claude/skills/benchmark-optimization-loop/SKILL.md` |
+| `blender-motion-state-inspection` | media, code | none | ecosystem | `skills/ecosystem/blender-motion-state-inspection/SKILL.md` |
 | `blueprint` | productivity | none | ecosystem | `skills/ecosystem/blueprint/SKILL.md` |
 | `brainstorm-before-build` | code | none | wiki | `skills/claude-code/brainstorm-before-build/SKILL.md` |
 | `brand-guidelines` | design | none | uncategorized | `skills/anthropic-skills/brand-guidelines/SKILL.md` |
@@ -50,6 +59,7 @@
 | `ci-cd-and-automation` | code, engineering, sre | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md` |
 | `cinematic-gsap-lenis-motion-system` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/cinematic-gsap-lenis-motion-system/SKILL.md` |
 | `claude-api` | code | none | uncategorized | `skills/anthropic-skills/claude-api/SKILL.md` |
+| `clickhouse-io` | data, code | none | ecosystem | `skills/ecosystem/clickhouse-io/SKILL.md` |
 | `code-reviewer` | code | review | persona | `agents/code-reviewer.md` |
 | `code-simplification` | code, engineering | review | engineering-lifecycle | `skills/engineering-lifecycle/review/code-simplification/SKILL.md` |
 | `codebase-design` | engineering, design | build | mattpocock | `skills/mattpocock/codebase-design/SKILL.md` |
@@ -64,6 +74,7 @@
 | `crosspost` | code | none | ecosystem | `skills/ecosystem/crosspost/SKILL.md` |
 | `csharp-testing` | code | none | ecosystem | `skills/ecosystem/csharp-testing/SKILL.md` |
 | `data-throughput-accelerator` | data | none | uncategorized | `~/.claude/skills/data-throughput-accelerator/SKILL.md` |
+| `database-migrations` | data, code | none | ecosystem | `skills/ecosystem/database-migrations/SKILL.md` |
 | `debug-mantra` | debug | none | uncategorized | `skills/engineering/debug-mantra/SKILL.md` |
 | `deep-research` | code | none | ecosystem | `skills/ecosystem/deep-research/SKILL.md` |
 | `defi-amm-security` | security, trader | none | ecosystem | `skills/ecosystem/defi-amm-security/SKILL.md` |
@@ -78,6 +89,7 @@
 | `docx` | document | none | uncategorized | `skills/anthropic-skills/docx/SKILL.md` |
 | `domain-modeling` | engineering, design | define | mattpocock | `skills/mattpocock/domain-modeling/SKILL.md` |
 | `e2e-testing` | code | none | ecosystem | `skills/ecosystem/e2e-testing/SKILL.md` |
+| `error-handling` | engineering, code | none | ecosystem | `skills/ecosystem/error-handling/SKILL.md` |
 | `eval-harness` | ai-ops | none | ecosystem | `skills/ecosystem/eval-harness/SKILL.md` |
 | `everything-claude-code` | code | none | uncategorized | `~/.claude/skills/everything-claude-code/SKILL.md` |
 | `excel-generator` | document | none | wiki | `skills/claude-code/excel-generator/SKILL.md` |
@@ -121,6 +133,7 @@
 | `market-research` | business | none | ecosystem | `skills/ecosystem/market-research/SKILL.md` |
 | `marketing-campaign` | business | none | uncategorized | `~/.claude/skills/marketing-campaign/SKILL.md` |
 | `mcp-builder` | ai-ops | none | uncategorized | `skills/anthropic-skills/mcp-builder/SKILL.md` |
+| `mcp-server-patterns` | ai-ops, engineering | none | ecosystem | `skills/ecosystem/mcp-server-patterns/SKILL.md` |
 | `medical-pipeline` | medical | meta | pipeline | `skills/awiki/medical-pipeline/SKILL.md` |
 | `migrate-to-shoehorn` | engineering | none | mattpocock | `skills/mattpocock/migrate-to-shoehorn/SKILL.md` |
 | `model-cost-switching` | ai-ops | none | ai-ops | `agent-skills/swarm-intelligence/model-cost-switching/SKILL.md` |
@@ -129,6 +142,7 @@
 | `motion-foundations` | media | none | ecosystem | `skills/ecosystem/motion-foundations/SKILL.md` |
 | `motion-patterns` | code, media | none | ecosystem | `skills/ecosystem/motion-patterns/SKILL.md` |
 | `motion-ui` | media | none | uncategorized | `~/.claude/skills/motion-ui/SKILL.md` |
+| `mysql-patterns` | data, code | none | ecosystem | `skills/ecosystem/mysql-patterns/SKILL.md` |
 | `nextjs-turbopack` | code | none | ecosystem | `skills/ecosystem/nextjs-turbopack/SKILL.md` |
 | `observability-and-instrumentation` | code, engineering, sre | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md` |
 | `obsidian` | wiki | none | wiki | `skills/claude-code/obsidian/SKILL.md` |
@@ -149,17 +163,21 @@
 | `platform-ingest` | engineering, code | meta | pipeline | `skills/awiki/platform-ingest/SKILL.md` |
 | `plugin-creator` | code | none | uncategorized | `~/.codex/skills/.system/plugin-creator/SKILL.md` |
 | `post-mortem` | productivity | none | uncategorized | `skills/engineering/post-mortem/SKILL.md` |
+| `postgres-patterns` | data, code | none | ecosystem | `skills/ecosystem/postgres-patterns/SKILL.md` |
 | `pptx` | document | none | uncategorized | `skills/anthropic-skills/pptx/SKILL.md` |
 | `prediction-market-oracle-research` | trader | none | uncategorized | `~/.claude/skills/prediction-market-oracle-research/SKILL.md` |
 | `prediction-market-risk-review` | trader | none | uncategorized | `~/.claude/skills/prediction-market-risk-review/SKILL.md` |
+| `prisma-patterns` | data, code | none | ecosystem | `skills/ecosystem/prisma-patterns/SKILL.md` |
 | `project-flow-ops` | code | none | ecosystem | `skills/ecosystem/project-flow-ops/SKILL.md` |
 | `project-guidelines-example` | code | none | uncategorized | `~/.claude/skills/project-guidelines-example/SKILL.md` |
+| `prompt-optimizer` | ai-ops | none | ecosystem | `skills/ecosystem/prompt-optimizer/SKILL.md` |
 | `prototype` | engineering, code | build | mattpocock | `skills/mattpocock/prototype/SKILL.md` |
 | `python-testing` | code | none | ecosystem | `skills/ecosystem/python-testing/SKILL.md` |
 | `react-patterns` | code | none | uncategorized | `~/.claude/skills/react-patterns/SKILL.md` |
 | `react-performance` | code | none | uncategorized | `~/.claude/skills/react-performance/SKILL.md` |
 | `react-testing` | code | none | uncategorized | `~/.claude/skills/react-testing/SKILL.md` |
 | `recursive-decision-ledger` | code | none | uncategorized | `~/.claude/skills/recursive-decision-ledger/SKILL.md` |
+| `redis-patterns` | data, code | none | ecosystem | `skills/ecosystem/redis-patterns/SKILL.md` |
 | `render-html` | wiki | none | uncategorized | `skills/render-html/SKILL.md` |
 | `research` | engineering | define | mattpocock | `skills/mattpocock/research/SKILL.md` |
 | `research-pipeline` | productivity, data | meta | pipeline | `skills/awiki/research-pipeline/SKILL.md` |
@@ -237,15 +255,15 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 21 |
+| ai-ops | 27 |
 | business | 7 |
-| code | 88 |
-| data | 7 |
+| code | 101 |
+| data | 13 |
 | debug | 7 |
 | design | 22 |
 | document | 9 |
-| engineering | 46 |
-| media | 15 |
+| engineering | 54 |
+| media | 17 |
 | medical | 4 |
 | pharmacy | 2 |
 | productivity | 13 |

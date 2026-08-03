@@ -44,9 +44,12 @@
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
+| `a-agent` | `/A-Agent` | any | `agent harness` · `mcp server` · `eval agent` · `prompt eng` · `agent loop` |
+| `a-backend` | `/A-Backend` | any | `backend` · `api endpoint` · `rest api` · `service layer` · `orm pattern` |
 | `a-claim` | `/A-Claim` | any | `claim` · `จอง` · `agent อื่น` · `ชนกัน` · `coordination` |
 | `a-content` | `/A-Content` | any | `คอนเทนต์` · `บทความ` · `การตลาด` · `content` · `marketing` · `seo` |
 | `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
+| `a-game` | `/A-Game` | any | `game dev` · `phaser game` · `pixijs` · `threejs scene` · `webgl game` |
 | `a-invest` | `/A-Invest` | any | `ลงทุน` · `หุ้น` · `พอร์ต` · `investment` · `portfolio` |
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
 | `a-med-order` | `/A-Med-Order` | any | `รายการยาหมด` · `รายการสั่งยา` · `สั่งยา` · `ใบสั่งยา` · `ยาหมด` · `ใบสั่งซื้อยา` · `pharmacy order` · `สั่งยาผ่าน telegram` |
@@ -103,4 +106,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_14 A-Suite entry points (+3 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_17 A-Suite entry points (+3 subskills) · spine = ask → design → plan → implement → review → debug → test_
