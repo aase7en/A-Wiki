@@ -473,6 +473,36 @@ teams that want it — skip if unavailable (pytest wrapper auto-skips).
 | Chat avatars | 👤🧠 | icon('user')/icon('bot') |
 | Brand | plain text "A-Wiki Live" | geometric diamond + wordmark + LIVE pill |
 
+
+## v20 — Activity Story (redesign สำหรับผู้ใช้ทั่วไป) — 2026-08-03
+
+เป้าหมาย: เปลี่ยน default audience จาก swarm operator (engineer) เป็น **ผู้ใช้ทั่วไปที่ไม่ต้องมีความรู้ด้านเทคนิค** โดยไม่ทำลายความสามารถเดิม (เก็บไว้ใน "Pro mode").
+
+**Research basis** (web): Stripe Home, PostHog, Linear, Vercel Observability, Langfuse, Apple WWDC803, Material 3, Okabe-Ito colorblind palette, Nielsen Norman Group.
+
+**สิ่งที่เปลี่ยน**:
+- Default landing = **Home view** (Activity Story) แทน Summary
+- Hero: ประโยคภาษาพูดเดียว "วันนี้ AI ช่วยคุณทำงานได้ N งาน · ประหยัด $X · ป้องกันความเสี่ยง R ครั้ง"
+- 4 story tiles (Miller's Law cap): กำลังทำงาน / ทำเสร็จวันนี้ / ประหยัดไป / ป้องกันความเสี่ยง
+- Funnel 5 ขั้น (Think→Plan→Build→Verify→Ship) แทน node-graph ในหน้าแรก
+- Live stream ใช้ plain-Thai (window._plain) — แปลงทุก event type + tier + hook
+- Onboarding help strip + plain-language callout (dismissible)
+- Animation system 17 → 8 keyframes (Material 3 easing tokens, no linear)
+- 13 views เดิมย้ายไป **Pro mode** (toggle ใน header, หรือ URL ?view=summary)
+- Backward-compat: `?view=summary` / `#summary` auto-enable Pro mode
+
+**Files ใหม่**:
+- `src/plainlang.js` — ชั้นแปลภาษา event → ประโยคไทยง่าย ๆ
+- `src/home.js` — Activity Story rendering (hero/tiles/funnel/stream/onboarding)
+- `decisions/0013-dashboard-v20-activity-story-redesign.md` — ADR
+- `docs/specs/dashboard-v20-spec.md` — spec (10 FR + 10 NFR + 8 chunks)
+- `v20-mockup.html` — static preview (เปิดใน browser ดู)
+
+**Pro mode**:
+- Default off (non-tech users เห็นแค่ Home)
+- กดปุ่ม flask-conical ใน header หรือ URL `?view=summary`
+- ครั้งต่อไปจำใน localStorage `awiki-pro-mode`
+
 ## Troubleshooting
 
 - **Dashboard ว่าง/offline overlay** → server ยังไม่รัน. รัน `python3 scripts/live-dashboard/server.py`.
