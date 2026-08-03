@@ -44,11 +44,20 @@ def _make_shard(path: Path, device: str, exported_at: str,
         "source_device": device,
     }
     path.write_text(json.dumps(payload), encoding="utf-8")
-    # Optionally force mtime to simulate clock skew detection
+    # Set mtime to match the exported_at by default (simulates a real scp'd
+    # file whose filesystem mtime matches when it was exported). Override
+    # with mtime_now to test clock-skew defense specifically.
+    import os
+    from datetime import datetime as _dt
     if mtime_now is not None:
-        import os
         ts = mtime_now.timestamp()
-        os.utime(path, (ts, ts))
+    else:
+        # Parse exported_at to match — realistic for non-clock-skew scenario
+        try:
+            ts = _dt.fromisoformat(exported_at.replace("Z", "+00:00")).timestamp()
+        except (ValueError, TypeError):
+            return  # can't parse → leave mtime as-is (file creation time)
+    os.utime(path, (ts, ts))
 
 
 NOW = datetime(2026, 8, 3, 12, 0, 0, tzinfo=timezone.utc)

@@ -160,36 +160,71 @@ def test_import_all_shards_skips_payload_json(tmp_path):
 
 
 # ---------------------------------------------------------------------------
-# 4. Defense layer 2 — export refuses to write secret-bearing shard (R1)
+# 4. Defense layer 2 — export skips secret-bearing ENTRIES (graceful, not block)
 # ---------------------------------------------------------------------------
-def test_export_shard_refuses_secret_in_summary(tmp_path):
-    """If a ledger entry somehow contains a real-looking key, export must
-    refuse to write the shard (return error dict, write nothing)."""
+def test_export_shard_skips_secret_entry_keeps_clean_entries(tmp_path):
+    """Audit finding 2026-08-04: catch-all block made sync unusable on real
+    ledgers (project names like 'sunday-estate' trigger block → nothing syncs).
+
+    Correct behavior: skip the offending ENTRY, export the rest, return
+    count of skipped entries for visibility. Offending entries stay local-only
+    (they're never in any shard → never leak to other devices).
+    """
     p = _setup(tmp_path)
-    # Bypass ledger.append (which redacts) — write raw line with a fake key
+    # 3 entries: 1 clean, 1 with secret-like pattern, 1 clean
+    p["ledger"].write_text(
+        json.dumps({"ts": 1.0, "session_id": "x", "type": "decision",
+                    "summary": "clean entry one", "files": [], "tags": [],
+                    "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 2.0, "session_id": "x", "type": "decision",
+                    "summary": "leaked key sk-1234567890abcdefWXYZ here",
+                    "files": [], "tags": [], "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 3.0, "session_id": "x", "type": "decision",
+                    "summary": "clean entry two", "files": [], "tags": [],
+                    "parent_ts": None}) + "\n",
+        encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="mixed")
+    assert not result.get("blocked"), "must not block whole shard"
+    assert result["ledger_entries"] == 2, "should export 2 clean entries"
+    assert result.get("ledger_skipped") == 1, "should report 1 skipped"
+    # Shard exists and contains only clean entries
+    shard = (p["sync_dir"] / "mixed.jsonl").read_text(encoding="utf-8")
+    assert "clean entry one" in shard
+    assert "clean entry two" in shard
+    assert "sk-1234567890" not in shard, "secret must NOT be in shard"
+
+
+def test_export_shard_all_entries_blocked_still_blocks(tmp_path):
+    """If ALL entries have secrets → block (nothing to export safely)."""
+    p = _setup(tmp_path)
     p["ledger"].write_text(json.dumps({
         "ts": 1.0, "session_id": "x", "type": "decision",
-        "summary": "leaked key sk-1234567890abcdefWXYZ in summary",
+        "summary": "only secret entry sk-1234567890abcdefWXYZ",
         "files": [], "tags": [], "parent_ts": None,
     }), encoding="utf-8")
-    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
-    assert result.get("blocked"), "export must block on detected secret"
-    assert "secret" in result.get("reason", "").lower()
-    # Nothing written
-    assert not (p["sync_dir"] / "leaky.jsonl").exists()
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="allbad")
+    # Nothing clean to export → block (don't write empty shard either)
+    assert result.get("blocked") or result["ledger_entries"] == 0
 
 
-def test_export_shard_redacts_generic_secret_in_files(tmp_path):
-    """A 'password=...' substring in files[] must block too (defense layer 2)."""
+def test_export_shard_secret_in_files_skips_entry(tmp_path):
+    """A 'password=...' substring in files[] must skip that entry too."""
     p = _setup(tmp_path)
-    p["ledger"].write_text(json.dumps({
-        "ts": 1.0, "session_id": "x", "type": "decision",
-        "summary": "ok",
-        "files": ["/etc/conf", "password=abcdefghijklmnopabcdefghijklmnop0123456789"],
-        "tags": [], "parent_ts": None,
-    }), encoding="utf-8")
-    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
-    assert result.get("blocked")
+    # Add 1 clean entry + 1 with secret in files[]
+    p["ledger"].write_text(
+        json.dumps({"ts": 0.0, "session_id": "x", "type": "decision",
+                    "summary": "clean", "files": [], "tags": [],
+                    "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 1.0, "session_id": "x", "type": "decision",
+                    "summary": "ok",
+                    "files": ["/etc/conf",
+                              "password=abcdefghijklmnopabcdefghijklmnop0123456789"],
+                    "tags": [], "parent_ts": None}) + "\n",
+        encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="mixed")
+    assert not result.get("blocked")
+    assert result["ledger_entries"] == 1, "should export only clean entry"
+    assert result.get("ledger_skipped") == 1
 
 
 # ---------------------------------------------------------------------------
@@ -219,55 +254,77 @@ def _privacy_patterns_file(tmp_path):
 
 
 def test_export_shard_blocks_private_project_name_in_summary(tmp_path, monkeypatch):
-    """Regression for cb839d5d: a private project name in summary MUST block
-    export once Layer 2 reads the privacy-patterns file."""
+    """Regression for cb839d5d: a private project name in summary MUST be
+    skipped from the shard (privacy-pattern-aware defense layer 2).
+
+    Updated 2026-08-04 audit: behavior changed from block-whole-shard to
+    skip-ENTRY (graceful). The offending entry stays local-only and is
+    never in any shard → never leaks. The goal of cb839d5d (don't ship
+    'sunday-estate' to other devices) is still met.
+    """
     p = _setup(tmp_path)
     monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
                        str(_privacy_patterns_file(tmp_path)))
-    p["ledger"].write_text(json.dumps({
-        "ts": 1.0, "session_id": "x", "type": "outcome",
-        "summary": "sunday-estate-webapp PR #2 merged: 3-chunk refactor",
-        "files": [], "tags": [], "parent_ts": None,
-    }), encoding="utf-8")
-    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
-    assert result.get("blocked"), \
-        f"export must block on private project name; got: {result}"
-    assert not (p["sync_dir"] / "leaky.jsonl").exists(), \
-        "blocked shard must not be written"
+    # 1 clean + 1 with private project name
+    p["ledger"].write_text(
+        json.dumps({"ts": 0.0, "session_id": "x", "type": "decision",
+                    "summary": "clean unrelated work",
+                    "files": [], "tags": [], "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 1.0, "session_id": "x", "type": "outcome",
+                    "summary": "sunday-estate-webapp PR #2 merged: 3-chunk refactor",
+                    "files": [], "tags": [], "parent_ts": None}) + "\n",
+        encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="mixed")
+    assert not result.get("blocked"), "skip the bad entry, don't block whole shard"
+    assert result["ledger_entries"] == 1, "should export the 1 clean entry"
+    assert result.get("ledger_skipped") == 1
+    shard = (p["sync_dir"] / "mixed.jsonl").read_text(encoding="utf-8")
+    assert "sunday-estate" not in shard, "private name must NOT be in shard"
 
 
 def test_export_shard_blocks_private_project_name_in_files(tmp_path, monkeypatch):
-    """The other shape of the cb839d5d leak: foreign-repo absolute paths in
-    files[]. Must also block."""
+    """Foreign-repo absolute paths in files[] must skip that entry."""
     p = _setup(tmp_path)
     monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
                        str(_privacy_patterns_file(tmp_path)))
-    p["ledger"].write_text(json.dumps({
-        "ts": 1.0, "session_id": "x", "type": "decision",
-        "summary": "innocuous",
-        "files": ["A:/GitHub/sunday-estate-webapp/webapp/src/types.ts"],
-        "tags": [], "parent_ts": None,
-    }), encoding="utf-8")
-    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
-    assert result.get("blocked"), \
-        f"export must block on foreign-repo path in files[]; got: {result}"
+    p["ledger"].write_text(
+        json.dumps({"ts": 0.0, "session_id": "x", "type": "decision",
+                    "summary": "clean", "files": [], "tags": [],
+                    "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 1.0, "session_id": "x", "type": "decision",
+                    "summary": "innocuous",
+                    "files": ["A:/GitHub/sunday-estate-webapp/webapp/src/types.ts"],
+                    "tags": [], "parent_ts": None}) + "\n",
+        encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="mixed")
+    assert not result.get("blocked")
+    assert result["ledger_entries"] == 1
+    assert result.get("ledger_skipped") == 1
+    shard = (p["sync_dir"] / "mixed.jsonl").read_text(encoding="utf-8")
+    assert "sunday-estate" not in shard
 
 
 def test_export_shard_blocks_private_project_name_in_tags(tmp_path, monkeypatch):
-    """Tags can also leak codenames. Must block."""
+    """Private codename in tags[] must skip that entry."""
     p = _setup(tmp_path)
     monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
                        str(_privacy_patterns_file(tmp_path)))
-    p["ledger"].write_text(json.dumps({
-        "ts": 1.0, "session_id": "x", "type": "lesson",
-        "summary": "ok",
-        "files": [],
-        "tags": ["acme-client", "architecture"],
-        "parent_ts": None,
-    }), encoding="utf-8")
-    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
-    assert result.get("blocked"), \
-        f"export must block on private codename in tags[]; got: {result}"
+    p["ledger"].write_text(
+        json.dumps({"ts": 0.0, "session_id": "x", "type": "decision",
+                    "summary": "clean", "files": [], "tags": [],
+                    "parent_ts": None}) + "\n" +
+        json.dumps({"ts": 1.0, "session_id": "x", "type": "lesson",
+                    "summary": "ok",
+                    "files": [],
+                    "tags": ["acme-client", "architecture"],
+                    "parent_ts": None}) + "\n",
+        encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="mixed")
+    assert not result.get("blocked")
+    assert result["ledger_entries"] == 1
+    assert result.get("ledger_skipped") == 1
+    shard = (p["sync_dir"] / "mixed.jsonl").read_text(encoding="utf-8")
+    assert "acme-client" not in shard
 
 
 def test_scan_for_secret_returns_none_when_no_patterns_file(tmp_path, monkeypatch):

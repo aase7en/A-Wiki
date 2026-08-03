@@ -264,6 +264,46 @@ def _collect_local_state(tmp_dir: Path) -> dict:
             "task_board": task_state}
 
 
+def _entry_has_secret(entry: Any) -> bool:
+    """Check if a single ledger/blackboard entry contains secret-like content.
+
+    Returns True if any field (summary/body, files, tags, from, to) matches
+    the credential OR privacy denylist. Used by export_shard to skip
+    individual entries rather than blocking the whole shard.
+
+    Audit finding 2026-08-04: the previous catch-all block made sync unusable
+    on real ledgers (project names like 'sunday-estate' blocked the entire
+    shard → nothing synced). Per-entry skip achieves the same goal (offending
+    entries never appear in any shard → never leak) while letting clean
+    entries through.
+    """
+    if not isinstance(entry, dict):
+        return _find_secret(str(entry)) is not None
+    summary = entry.get("summary", "") or entry.get("body", "")
+    files_text = " ".join(str(f) for f in entry.get("files", []) or [])
+    if _find_secret(summary) or _find_secret(files_text):
+        return True
+    for tag in entry.get("tags", []) or []:
+        if _find_secret(str(tag)):
+            return True
+    for field in ("from", "to"):
+        val = entry.get(field, "")
+        if val and _find_secret(str(val)):
+            return True
+    return False
+
+
+def _task_has_secret(task: Any) -> bool:
+    """Check if a task entry contains secret-like content."""
+    if not isinstance(task, dict):
+        return _find_secret(str(task)) is not None
+    for field in ("goal", "claimant", "notes"):
+        val = task.get(field, "")
+        if val and _find_secret(str(val)):
+            return True
+    return False
+
+
 def _scan_for_secret(state: Any) -> str | None:
     """Defense layer 2 — scan every string field of state for secret patterns.
 
@@ -275,28 +315,20 @@ def _scan_for_secret(state: Any) -> str | None:
     never raise — a malformed shard should be skipped, not crash import.
     """
     if not isinstance(state, dict):
-        # Last-resort: scan whatever it is as a string
         return _find_secret(str(state))
     for entry in state.get("ledger", []):
-        hit = (_find_secret(entry.get("summary", ""))
-               or _find_secret(" ".join(str(f) for f in entry.get("files", []))))
-        if hit:
-            return hit
-        for tag in entry.get("tags", []) or []:
-            hit = _find_secret(str(tag))
-            if hit:
-                return hit
+        if _entry_has_secret(entry):
+            return (_find_secret(entry.get("summary", ""))
+                    or _find_secret(" ".join(str(f) for f in entry.get("files", [])))
+                    or "entry-secret")
     for msg in state.get("blackboard", []):
-        hit = (_find_secret(msg.get("body", ""))
-               or _find_secret(msg.get("from", ""))
-               or _find_secret(msg.get("to", "")))
-        if hit:
-            return hit
+        if _entry_has_secret(msg):
+            return (_find_secret(msg.get("body", ""))
+                    or "msg-secret")
     for task in state.get("task_board", {}).get("tasks", []):
-        hit = (_find_secret(task.get("goal", ""))
-               or _find_secret(task.get("claimant", "")))
-        if hit:
-            return hit
+        if _task_has_secret(task):
+            return (_find_secret(task.get("goal", ""))
+                    or "task-secret")
     return None
 
 
@@ -323,18 +355,48 @@ def export_shard(
     device_name = _sanitize_device_name(device or _device_id())
     state = _collect_local_state(tmp_dir)
 
-    # Defense layer 2 — refuse to ship secrets (Iron Law #6)
-    leaked = _scan_for_secret(state)
-    if leaked:
-        return {"blocked": True,
-                "reason": f"secret-like pattern detected in local state: "
-                          f"{leaked[:8]}*** — refusing to write shard "
-                          f"(Iron Law #6). Scrub the source entry first."}
+    # Defense layer 2 — skip ENTRIES containing secrets (Iron Law #6).
+    # Audit 2026-08-04: previous catch-all block made sync unusable on real
+    # ledgers (any project name blocked the entire shard). Per-entry skip
+    # achieves the same goal (offending entries never in any shard → never
+    # leak to other devices) while letting clean entries sync normally.
+    # Offending entries stay local-only — they are NEVER lost, just not shared.
+    ledger_skipped = 0
+    bb_skipped = 0
+    tasks_skipped = 0
+    clean_ledger = []
+    clean_bb = []
+    clean_tasks = []
+    for e in state["ledger"]:
+        if _entry_has_secret(e):
+            ledger_skipped += 1
+        else:
+            clean_ledger.append(e)
+    for m in state["blackboard"]:
+        if _entry_has_secret(m):
+            bb_skipped += 1
+        else:
+            clean_bb.append(m)
+    for t in state["task_board"].get("tasks", []):
+        if _task_has_secret(t):
+            tasks_skipped += 1
+        else:
+            clean_tasks.append(t)
 
-    # Dedup within this device's snapshot
+    # If EVERYTHING was skipped → block (nothing safe to export)
+    total_clean = len(clean_ledger) + len(clean_bb) + len(clean_tasks)
+    if total_clean == 0 and (ledger_skipped + bb_skipped + tasks_skipped) > 0:
+        leaked = _scan_for_secret(state)
+        return {"blocked": True,
+                "reason": f"ALL entries contain secret-like pattern: "
+                          f"{leaked[:8] if leaked else '?'}*** — nothing safe to export "
+                          f"(Iron Law #6). ledger_skipped={ledger_skipped}, "
+                          f"bb_skipped={bb_skipped}, tasks_skipped={tasks_skipped}."}
+
+    # Dedup within this device's snapshot (only clean entries)
     seen_keys: set = set()
     deduped_ledger = []
-    for e in state["ledger"]:
+    for e in clean_ledger:
         k = _entry_key(e)
         if k not in seen_keys:
             seen_keys.add(k)
@@ -342,7 +404,7 @@ def export_shard(
 
     seen_bb_keys: set = set()
     deduped_bb = []
-    for m in state["blackboard"]:
+    for m in clean_bb:
         k = _entry_key(m)
         if k not in seen_bb_keys:
             seen_bb_keys.add(k)
@@ -350,7 +412,7 @@ def export_shard(
 
     seen_task_keys: set = set()
     deduped_tasks = []
-    for t in state["task_board"].get("tasks", []):
+    for t in clean_tasks:
         k = _task_key(t)
         if k and k not in seen_task_keys:
             seen_task_keys.add(k)
@@ -376,6 +438,9 @@ def export_shard(
         "ledger_entries": len(deduped_ledger),
         "bb_messages": len(deduped_bb),
         "tasks": len(deduped_tasks),
+        "ledger_skipped": ledger_skipped,
+        "bb_skipped": bb_skipped,
+        "tasks_skipped": tasks_skipped,
     }
 
 
