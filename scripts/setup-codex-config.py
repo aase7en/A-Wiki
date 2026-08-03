@@ -153,6 +153,9 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": "bash scripts/agent-switch.sh stop"},
                     {"type": "command", "command": "bash .codex/hooks/stop-auto-commit.sh"},
+                    {"type": "command", "command": "python3 scripts/hooks/self_audit.py"},
+                    {"type": "command", "command": "python3 scripts/hooks/a_focus_stop.py"},
+                    {"type": "command", "command": "python3 scripts/hooks/release_agent_claims.py"},
                 ]
             }
         ],
