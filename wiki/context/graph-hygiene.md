@@ -7,10 +7,10 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 548 |
+| Nodes | 549 |
 | Edges | 1836 |
 | Broken links | 41 |
-| Orphans | 30 |
+| Orphans | 31 |
 
 ## Broken links by source domain
 
@@ -28,10 +28,10 @@
 |---|---:|
 | context | 17 |
 | env | 8 |
-| ai-tools | 2 |
+| ai-tools | 3 |
 | other | 2 |
 | sources | 1 |
 
 ## Orphan samples
 
-`wiki/A-ROUTER.md`, `wiki/SKILL-INDEX.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`, `wiki/context/overview-iot.md`
+`wiki/A-ROUTER.md`, `wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`
