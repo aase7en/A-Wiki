@@ -126,12 +126,15 @@ logs/
 /data/
 .tmp/
 # Neural Spine cross-device sync (Approach B — per-device shards).
-# .tmp/ stays local, but .tmp-sync/*.jsonl are tracked so ledger/blackboard/
-# task-board state travels via git between Win/Mac/Pi5. The legacy single
-# payload.json is intentionally ignored (Approach A — conflict-prone).
-!.tmp-sync/
-.tmp-sync/payload.json
-.tmp-sync/*.bak
+# A-Council 2026-08-03 (cb839d5d leak remediation): shards are NO LONGER
+# tracked via git — they carry ledger/blackboard/task state that risks
+# privacy leaks (project names, codenames, foreign-repo paths). Cross-
+# device sync happens via `import_all_shards` against an out-of-band
+# transport (scp / HTTP / drive), NOT via the public git history. The
+# `!.tmp-sync/` force-include that caused cb839d5d is removed permanently.
+# Layer 2 (_find_secret) is the LAST defense; the FIRST defense is not
+# tracking the directory at all.
+.tmp-sync/
 temp/
 .playwright-mcp/
 wiki/context/model-roster.conf.bak
