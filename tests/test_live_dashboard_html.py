@@ -2544,3 +2544,32 @@ def test_v20_home_help_dismissible():
     assert "awiki-onboarded" in content, (
         "home.js must check awiki-onboarded-v20 localStorage to allow dismissal"
     )
+
+
+
+# ── v20 chunk G20 — Pro mode toggle button in header ────────────────────────
+def test_v20_pro_toggle_button_in_header():
+    """#header must contain a Pro mode toggle button (id=btn-pro-toggle)
+    so non-technical users can discover + switch to engineering views.
+    Calls toggleProMode() which is defined in app.js (CHUNK C20)."""
+    html = HTML.read_text(encoding="utf-8")
+    hstart = html.find('id="header"')
+    # Search within first 4000 chars of header block (tolerate both <header> and id).
+    header_block = html[hstart:hstart + 6000] if hstart != -1 else html[:6000]
+    assert 'btn-pro-toggle' in header_block, (
+        "#header must contain btn-pro-toggle (calls toggleProMode)"
+    )
+
+
+def test_v20_pro_toggle_calls_toggleProMode():
+    """btn-pro-toggle must call toggleProMode() on click."""
+    html = HTML.read_text(encoding="utf-8")
+    # Find btn-pro-toggle button and check its onclick.
+    import re as _re
+    # Accept either attribute order (id before onclick OR onclick before id).
+    m = (_re.search(r'id="btn-pro-toggle"[^>]*onclick="([^"]+)"', html)
+         or _re.search(r'onclick="([^"]+)"[^>]*id="btn-pro-toggle"', html))
+    assert m, "btn-pro-toggle must have onclick attribute"
+    assert 'toggleProMode' in m.group(1), (
+        f"btn-pro-toggle onclick must call toggleProMode; got: {m.group(1)}"
+    )
