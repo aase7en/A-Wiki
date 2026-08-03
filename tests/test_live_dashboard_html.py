@@ -1731,20 +1731,27 @@ def test_v19_theme_button_not_overwritten_by_emoji():
 # ── v20 — Linear DNA polish (a-loop Phase 2) ────────────────────────────────
 
 def test_v20_view_fade_in_animation():
-    """styles.css must define a fade-in keyframe + apply it on view-panel
-    transitions. Linear hallmark: smooth opacity transition (120ms)."""
+    """styles.css must define a fade-up (v20: renamed from fade-in for
+    consistency with the unified animation system) keyframe + apply it on
+    view-panel transitions. Linear hallmark: smooth opacity transition."""
     css = STYLES_CSS.read_text(encoding="utf-8")
-    # Must define @keyframes fade-in (or fadeIn / fade_in).
+    # v20 B20: accept fade-up (canonical) OR legacy fade-in / fadeIn / fade_in.
     import re as _re
-    has_keyframe = bool(_re.search(r"@keyframes\s+fade[-_]?in", css, _re.I))
+    has_keyframe = bool(
+        _re.search(r"@keyframes\s+fade[-_]?up", css, _re.I)
+        or _re.search(r"@keyframes\s+fade[-_]?in\b", css, _re.I)
+    )
     assert has_keyframe, (
-        "styles.css must define @keyframes fade-in for view transitions "
+        "styles.css must define @keyframes fade-up (v20) for view transitions "
         "(Linear/Vercel hallmark)"
     )
     # Must apply it somewhere — view-panel, .view-panel, .panel, etc.
-    has_apply = bool(_re.search(r"animation:[^;]*fade[-_]?in", css, _re.I))
+    has_apply = bool(
+        _re.search(r"animation:[^;]*fade[-_]?up", css, _re.I)
+        or _re.search(r"animation:[^;]*fade[-_]?in\b", css, _re.I)
+    )
     assert has_apply, (
-        "fade-in keyframe defined but not applied — wire it to view-panel"
+        "fade-up keyframe defined but not applied — wire it to view-panel"
     )
 
 
@@ -2148,4 +2155,58 @@ def test_v20_plainlang_returns_action_for_blocks():
     )
     assert "action" in content, (
         "plainlang.js must return an action field (PostHog pattern)"
+    )
+
+
+# ── v20 chunk B20 — animation system collapse + easing tokens ───────────────
+def test_v20_easing_tokens_defined():
+    """styles.css must define --ease-standard and --ease-enter tokens
+    (Material 3 spec: cubic-bezier(0.2,0,0,1) standard + (0.05,0.7,0.1,1) enter).
+    Linear easing feels 'artificial and mechanical' per M3 — banned."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    assert "--ease-standard" in css, "missing --ease-standard token (M3 spec)"
+    assert "--ease-enter" in css, "missing --ease-enter token (M3 spec)"
+    # Must be cubic-bezier (not linear/ease keywords)
+    assert "cubic-bezier(0.2,0,0,1)" in css or "cubic-bezier(0.2, 0, 0, 1)" in css, (
+        "--ease-standard must be cubic-bezier(0.2,0,0,1) per M3"
+    )
+
+
+def test_v20_animation_system_collapses_to_8_or_fewer_keyframes():
+    """v19 had 17 @keyframes (ripple, bounce, msgIn, tab-glow, tick-glow,
+    badge-in, badge-shake, origin-ring, station-pulse, station-flash, flow-r,
+    bar-pulse, shimmer, caret, fade-cycle, sim-ring, fade-in) — mostly
+    decorative. v20 collapses to ≤8 INTENTIONAL keyframes:
+      fade-up, stagger-in, slide-in, pulse-ring, heartbeat,
+      skeleton-shimmer, badge-in, badge-shake
+    Decorative ones (ripple, particle, glow rings) are removed or replaced
+    by generic equivalents. Count must drop from 17 → ≤8."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    count = len(re.findall(r"@keyframes\s+", css))
+    assert count <= 8, (
+        f"v20 must collapse to ≤8 @keyframes (was 17 in v19); found {count}. "
+        "Remove decorative ones (ripple/bounce/particle/glow rings/etc) and "
+        "consolidate into fade-up/stagger-in/slide-in/pulse-ring/heartbeat/"
+        "skeleton-shimmer/badge-in/badge-shake."
+    )
+
+
+def test_v20_no_linear_easing_in_transitions():
+    """Linear easing in transitions is banned by Material 3 (feels mechanical).
+    Only allowed inside reduced-motion override (animation:none). Verify no
+    'transition:...linear' or 'animation:...linear' outside reduced-motion."""
+    css = STYLES_CSS.read_text(encoding="utf-8")
+    # Strip the reduced-motion block before checking (it's allowed to use none).
+    reduced = re.search(r"@media\(prefers-reduced-motion[^}]+\}", css)
+    checkable = css[:reduced.start()] + css[reduced.end():] if reduced else css
+    # Find any transition/animation using 'linear' as timing function.
+    # Allow 'linear' as a gradient direction (to right/left) but not as easing.
+    bad = []
+    for m in re.finditer(r"(transition|animation)\s*:\s*([^;}]+)", checkable):
+        val = m.group(2)
+        # 'linear' as a standalone easing word (not 'linear-gradient').
+        if re.search(r"(?<!-)\blinear\b", val) and "gradient" not in val:
+            bad.append(m.group(0)[:60])
+    assert not bad, (
+        f"linear easing banned by M3 (feels mechanical); found: {bad[:3]}"
     )
