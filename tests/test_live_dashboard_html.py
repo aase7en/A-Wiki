@@ -2068,3 +2068,84 @@ def test_v19_header_uses_brand_mark():
         "#header must reference brand-mark.svg or inline brand SVG (v19 H19)"
     )
 
+
+
+# ── v20 chunk A20 — plain-language translation layer ────────────────────────
+def test_v20_plainlang_file_exists():
+    """src/plainlang.js must exist (NEW file for v20). Translates every SSE
+    event type + tier + hook name into a plain-Thai sentence for non-technical
+    users. Exposed as window._plain(ev) -> {sentence, meta, action, tone}."""
+    f = SRC_DIR / "plainlang.js"
+    assert f.is_file(), "src/plainlang.js must exist (v20 A20)"
+
+
+def test_v20_plainlang_exports_window_function():
+    """plainlang.js must expose window._plain = function(ev){...} (or attach
+    to globalThis). Used by home.js + rewritten pushTimeline in graph.js."""
+    f = SRC_DIR / "plainlang.js"
+    if not f.is_file():
+        pytest.fail("src/plainlang.js missing — write it first (Iron Law #1)")
+    content = f.read_text(encoding="utf-8")
+    assert (
+        "window._plain" in content or "globalThis._plain" in content
+    ), "plainlang.js must expose window._plain (or globalThis._plain)"
+
+
+def test_v20_plainlang_maps_all_sse_event_types():
+    """Every SSE event type the client handles (session_start, hook_check,
+    cost_declare, delegate_start, delegate_done, delegate_fail, route_plan,
+    subagent_invoke) must produce a non-empty plain-Thai sentence."""
+    f = SRC_DIR / "plainlang.js"
+    if not f.is_file():
+        pytest.fail("src/plainlang.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    required = [
+        "session_start",
+        "hook_check",
+        "cost_declare",
+        "delegate_start",
+        "delegate_done",
+        "delegate_fail",
+        "route_plan",
+        "subagent_invoke",
+    ]
+    missing = [t for t in required if t not in content]
+    assert not missing, (
+        f"plainlang.js must handle all SSE event types; missing: {missing}"
+    )
+
+
+def test_v20_plainlang_translates_tier_codes():
+    """Technical tier codes (L-1, L0, L1, L2, L3, L4) must map to plain-Thai
+    labels (โมเดลฟรี, โมเดลราคาประหยัด, โมเดลหลัก, ...). Non-technical users
+    do not understand 'tier L-1'."""
+    f = SRC_DIR / "plainlang.js"
+    if not f.is_file():
+        pytest.fail("src/plainlang.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    # Must mention at least one tier-to-plain mapping. We accept either an
+    # explicit map or inline conditionals; either way the string 'L-1' or
+    # 'L4' must appear next to a Thai word like 'ฟรี' or 'หลัก'.
+    assert ("L-1" in content or "L4" in content), (
+        "plainlang.js must map tier codes (L-1, L4, ...) to plain Thai"
+    )
+    assert ("ฟรี" in content or "หลัก" in content), (
+        "plainlang.js must use plain Thai for tier labels (ฟรี/หลัก)"
+    )
+
+
+def test_v20_plainlang_returns_action_for_blocks():
+    """When a hook_check event has result=block, _plain() must return an
+    action string (data → insight → ACTION pattern from PostHog/Stripe).
+    Non-technical users need a 'what can I do' affordance, not just info."""
+    f = SRC_DIR / "plainlang.js"
+    if not f.is_file():
+        pytest.fail("src/plainlang.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    # The function must branch on result === 'block' and set an action.
+    assert "block" in content, (
+        "plainlang.js must branch on result === 'block' for hook_check"
+    )
+    assert "action" in content, (
+        "plainlang.js must return an action field (PostHog pattern)"
+    )

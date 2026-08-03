@@ -20,6 +20,7 @@ const OUT_FILE = "app.min.js";
 const LOAD_ORDER = [
   "app.js",
   "icons.js",      // A19: Lucide icon() helper (used by all other modules)
+  "plainlang.js",  // A20: plain-Thai translation layer (window._plain)
   "sse.js",        // if exists (SSE handlers)
   "subagents.js",
   "modals.js",     // keyboard shortcuts, keybind, notif, workspace, palette, compare, sim
