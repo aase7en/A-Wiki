@@ -393,6 +393,8 @@ def test_redactor_validator_fixture_files_are_skipped():
         "tests/test_quality_gate_thai.py",
         "tests/test_memory_ledger.py",
         "tests/test_git_safety_backup.py",
+        "tests/test_recall_on_prompt.py",
+        "tests/test_cross_device_shards.py",
     ):
         assert check_privacy.should_skip(check_privacy.REPO_ROOT / name)
 
