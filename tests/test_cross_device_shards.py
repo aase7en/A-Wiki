@@ -89,13 +89,15 @@ def test_two_devices_no_conflict_separate_files(tmp_path):
     # Device A writes
     ml.MemoryLedger(p["ledger"]).append(
         session_id="A", type="decision", summary="A entry")
-    cds.export_shard(p["tmp_dir"], p["sync_dir"], device="deviceA")
+    result_a = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="deviceA")
+    assert not result_a.get("blocked"), f"deviceA export blocked: {result_a}"
 
     # Device B writes (fresh .tmp simulated by clearing then re-seeding)
     (p["ledger"]).unlink()
     ml.MemoryLedger(p["ledger"]).append(
         session_id="B", type="decision", summary="B entry")
-    cds.export_shard(p["tmp_dir"], p["sync_dir"], device="deviceB")
+    result_b = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="deviceB")
+    assert not result_b.get("blocked"), f"deviceB export blocked: {result_b}"
 
     assert (p["sync_dir"] / "deviceA.jsonl").is_file()
     assert (p["sync_dir"] / "deviceB.jsonl").is_file()
@@ -371,7 +373,8 @@ def test_round_trip_shard_approach(tmp_path):
         tags=["cross-device"])
     bb.Blackboard(pa["bb"]).post(
         frm="claude", to="codex", body="msg from A", msg_type="question")
-    cds.export_shard(pa["tmp_dir"], pa["sync_dir"], device="deviceA")
+    result_a = cds.export_shard(pa["tmp_dir"], pa["sync_dir"], device="deviceA")
+    assert not result_a.get("blocked"), f"deviceA export blocked: {result_a}"
 
     device_b = tmp_path / "B"
     pb = _setup(device_b)
