@@ -99,10 +99,15 @@ def test_two_devices_no_conflict_separate_files(tmp_path):
     result_b = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="deviceB")
     assert not result_b.get("blocked"), f"deviceB export blocked: {result_b}"
 
-    assert (p["sync_dir"] / "deviceA.jsonl").is_file()
-    assert (p["sync_dir"] / "deviceB.jsonl").is_file()
+    # _sanitize_device_name lowercases the device id → shard filename is
+    # devicea.jsonl, not deviceA.jsonl. Use the path returned by export_shard
+    # so the test stays correct on case-sensitive filesystems (Linux CI).
+    shard_a = Path(result_a["shard"])
+    shard_b = Path(result_b["shard"])
+    assert shard_a.is_file()
+    assert shard_b.is_file()
     # A's file untouched by B
-    a_text = (p["sync_dir"] / "deviceA.jsonl").read_text(encoding="utf-8")
+    a_text = shard_a.read_text(encoding="utf-8")
     assert "A entry" in a_text
     assert "B entry" not in a_text
 
@@ -378,9 +383,12 @@ def test_round_trip_shard_approach(tmp_path):
 
     device_b = tmp_path / "B"
     pb = _setup(device_b)
-    # Simulate git pull: copy A's shard to B's sync_dir
-    shard_text = (pa["sync_dir"] / "deviceA.jsonl").read_text(encoding="utf-8")
-    (pb["sync_dir"] / "deviceA.jsonl").write_text(shard_text, encoding="utf-8")
+    # Simulate git pull: copy A's shard to B's sync_dir.
+    # _sanitize_device_name lowercases → use the actual shard path.
+    shard_a_path = Path(result_a["shard"])
+    shard_text = shard_a_path.read_text(encoding="utf-8")
+    b_shard = pb["sync_dir"] / shard_a_path.name
+    b_shard.write_text(shard_text, encoding="utf-8")
 
     result = cds.import_all_shards(pb["tmp_dir"], pb["sync_dir"])
     assert result["ledger_added"] >= 1
