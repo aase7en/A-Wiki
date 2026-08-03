@@ -23,7 +23,7 @@ except ImportError:
 
 
 URL = "http://localhost:7790/"
-VIEWS = ["summary", "flow", "skills", "subagents", "analytics", "graph", "coverage", "chat"]
+VIEWS = ["home", "summary", "flow", "skills", "subagents", "analytics", "graph", "coverage", "chat"]
 SETTINGS = ["general", "keybinds", "about", "help", "theme", "backup", "tour", "health"]
 
 
@@ -52,9 +52,9 @@ def main():
         try:
             page.goto(URL, wait_until="domcontentloaded", timeout=args.timeout)
             # Wait for app.min.js to execute boot() — dashboard-app-ready is
-            # set when boot() completes (we don't have a signal today, so we
-            # wait for the skills panel to render).
-            page.wait_for_selector("#skills-panel, #view-summary", timeout=20000)
+            # set when boot() completes. v20 default landing is #view-home;
+            # accept any of home/skills/summary as the "boot done" signal.
+            page.wait_for_selector("#view-home, #skills-panel, #view-summary", timeout=20000)
         except Exception as e:
             print(f"FATAL: goto failed: {e}", file=sys.stderr)
             browser.close()
@@ -63,8 +63,20 @@ def main():
         # SSE connect window
         time.sleep(2.0)
 
+        # v20: enable Pro mode so the 13 .pro-only view buttons are visible.
+        # Without this, setView('summary'/...) clicks timeout because the
+        # buttons are display:none by default (non-tech users see Home only).
+        try:
+            page.evaluate("if (typeof enableProMode === 'function') enableProMode();")
+            time.sleep(0.3)
+        except Exception:
+            pass
+
         # Switch through every view
         for v in VIEWS:
+            # Skip 'home' — already the landing view, no click needed.
+            if v == "home":
+                continue
             try:
                 btn = page.locator(f"[onclick*=\"setView('{v}'\"]").first
                 if btn.count():
