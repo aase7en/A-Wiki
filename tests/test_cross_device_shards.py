@@ -193,6 +193,95 @@ def test_export_shard_redacts_generic_secret_in_files(tmp_path):
 
 
 # ---------------------------------------------------------------------------
+# 5. Defense layer 2 — privacy-pattern leak (regression for cb839d5d)
+#    A-Council test-engineer 2026-08-03: _scan_for_secret only matched
+#    credential SHAPES (sk-/AKIA/...). It had no concept of private project
+#    names / codenames / repo paths. cb839d5d shipped `sunday-estate-webapp`
+#    to a tracked file because Layer 2 and Layer 3 used different denylists
+#    than check-privacy.py. These tests pin the fix: export_shard MUST
+#    consult the same privacy-patterns.txt that check-privacy.py uses, and
+#    block on any match. Without them the leak is reproducible by the next
+#    `export_shard` call.
+# ---------------------------------------------------------------------------
+def _privacy_patterns_file(tmp_path):
+    """Synthesise a privacy-patterns file so the test is hermetic (does not
+    depend on the real drive/personal/privacy-patterns.txt contents)."""
+    pp = tmp_path / "privacy-patterns.txt"
+    pp.write_text(
+        "# hermetic test patterns\n"
+        "(?i)sunday[-_ ]?estate\n"
+        "(?i)acme[-_ ]?client\n"
+        r"[A-Z]:\\GitHub\\(?!(A-Wiki|zcode))"  # foreign-repo path heuristic
+        "\n",
+        encoding="utf-8",
+    )
+    return pp
+
+
+def test_export_shard_blocks_private_project_name_in_summary(tmp_path, monkeypatch):
+    """Regression for cb839d5d: a private project name in summary MUST block
+    export once Layer 2 reads the privacy-patterns file."""
+    p = _setup(tmp_path)
+    monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
+                       str(_privacy_patterns_file(tmp_path)))
+    p["ledger"].write_text(json.dumps({
+        "ts": 1.0, "session_id": "x", "type": "outcome",
+        "summary": "sunday-estate-webapp PR #2 merged: 3-chunk refactor",
+        "files": [], "tags": [], "parent_ts": None,
+    }), encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
+    assert result.get("blocked"), \
+        f"export must block on private project name; got: {result}"
+    assert not (p["sync_dir"] / "leaky.jsonl").exists(), \
+        "blocked shard must not be written"
+
+
+def test_export_shard_blocks_private_project_name_in_files(tmp_path, monkeypatch):
+    """The other shape of the cb839d5d leak: foreign-repo absolute paths in
+    files[]. Must also block."""
+    p = _setup(tmp_path)
+    monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
+                       str(_privacy_patterns_file(tmp_path)))
+    p["ledger"].write_text(json.dumps({
+        "ts": 1.0, "session_id": "x", "type": "decision",
+        "summary": "innocuous",
+        "files": ["A:/GitHub/sunday-estate-webapp/webapp/src/types.ts"],
+        "tags": [], "parent_ts": None,
+    }), encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
+    assert result.get("blocked"), \
+        f"export must block on foreign-repo path in files[]; got: {result}"
+
+
+def test_export_shard_blocks_private_project_name_in_tags(tmp_path, monkeypatch):
+    """Tags can also leak codenames. Must block."""
+    p = _setup(tmp_path)
+    monkeypatch.setenv("AWIKI_PRIVACY_PATTERNS_FILE",
+                       str(_privacy_patterns_file(tmp_path)))
+    p["ledger"].write_text(json.dumps({
+        "ts": 1.0, "session_id": "x", "type": "lesson",
+        "summary": "ok",
+        "files": [],
+        "tags": ["acme-client", "architecture"],
+        "parent_ts": None,
+    }), encoding="utf-8")
+    result = cds.export_shard(p["tmp_dir"], p["sync_dir"], device="leaky")
+    assert result.get("blocked"), \
+        f"export must block on private codename in tags[]; got: {result}"
+
+
+def test_scan_for_secret_returns_none_when_no_patterns_file(tmp_path, monkeypatch):
+    """If no privacy-patterns file is configured (env unset, default missing),
+    _find_secret must still run the credential regexes (defense in depth) and
+    return None for clean text. We must not regress the credential path while
+    extending it."""
+    monkeypatch.delenv("AWIKI_PRIVACY_PATTERNS_FILE", raising=False)
+    assert cds._find_secret("clean text, nothing secret here") is None
+    # Credential regex still works without the patterns file
+    assert cds._find_secret("sk-1234567890abcdefWXYZ") is not None
+
+
+# ---------------------------------------------------------------------------
 # 5. No infinite loop — export does not call import (R3)
 # ---------------------------------------------------------------------------
 def test_export_shard_does_not_import(tmp_path, monkeypatch):

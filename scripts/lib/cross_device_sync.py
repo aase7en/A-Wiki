@@ -39,6 +39,7 @@ Flow (Approach B):
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -69,15 +70,64 @@ _SECRET_RESCAN = [
 ]
 
 
+def _load_privacy_patterns() -> list[re.Pattern]:
+    """Load the project-name / codename / foreign-path denylist that Layer 2
+    historically ignored.
+
+    A-Council test-engineer 2026-08-03 (cb839d5d regression): _scan_for_secret
+    only matched credential SHAPES (sk-/AKIA/...). It had no concept of
+    private project names, so `sunday-estate-webapp` sailed through Layer 2
+    AND Layer 3 (staged-diff), even though check-privacy.py (Layer 3.5 / CI)
+    caught it. This closes the gap by reading the SAME source of truth
+    check-privacy.py uses (drive/personal/privacy-patterns.txt, overridable
+    via AWIKI_PRIVACY_PATTERNS_FILE for hermetic tests). If the file is
+    missing/unreadable, returns [] (fail-open for the privacy axis — the
+    credential regexes in _SECRET_RESCAN still run independently).
+    """
+    env = os.environ.get("AWIKI_PRIVACY_PATTERNS_FILE", "").strip()
+    # cross_device_sync.py is at scripts/lib/cross_device_sync.py → parents[2] = repo root
+    default_path = Path(__file__).resolve().parents[2] / "drive" / "personal" / "privacy-patterns.txt"
+    path = Path(env) if env else default_path
+    if not path.exists():
+        return []
+    patterns: list[re.Pattern] = []
+    try:
+        for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            try:
+                patterns.append(re.compile(line))
+            except re.error:
+                # Skip unparseable lines rather than crashing the export gate.
+                continue
+    except OSError:
+        return []
+    return patterns
+
+
 def _find_secret(text: str) -> str | None:
     """Return the first matching secret-looking substring, or None.
 
     Defense layer 2 — independent of memory_ledger._redact. If this returns
     non-None, export_shard refuses to write.
+
+    A-Council 2026-08-03: extended beyond credential SHAPES to also match
+    the project-name / foreign-path denylist in privacy-patterns.txt. The
+    two axes (credential shape + privacy name) are now both consulted —
+    either one firing blocks the export. The patterns file is re-read on
+    every call so a freshly-added denylist entry takes effect immediately
+    (no server restart).
     """
     if not text:
         return None
     for pat in _SECRET_RESCAN:
+        m = pat.search(text)
+        if m:
+            return m.group(0)
+    # Privacy axis — project names, codenames, foreign-repo paths.
+    # Cheap: only runs if the credential axis missed, and the file is small.
+    for pat in _load_privacy_patterns():
         m = pat.search(text)
         if m:
             return m.group(0)
