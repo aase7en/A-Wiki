@@ -62,6 +62,7 @@ REQUIRED_BASH_GUARDRAILS = [
     "check-secret-leak",
     "check-apikey",
     "check-delegation-gate",
+    "check-git-rebase-safety",
 ]
 
 HOOKS_CONFIG: dict = {
@@ -72,6 +73,7 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": f"python3 scripts/hooks_runner.py {g}"}
                     for g in [
+                        "check-agent-claim",
                         "check-cost-tier",
                         "check-claudemd-lock",
                         "check-raw-immutable",
