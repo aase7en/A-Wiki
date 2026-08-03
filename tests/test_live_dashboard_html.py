@@ -2411,3 +2411,95 @@ def test_v20_home_tiles_html_already_present():
     # The IDs may appear as data-count targets — accept any reference.
     missing = [i for i in required if i not in html]
     assert not missing, f"HTML must contain tile IDs for home.js: {missing}"
+
+
+
+# ── v20 chunk E20 — funnel 5 stages + stream rewrite ────────────────────────
+def test_v20_funnel_has_5_stages_in_js():
+    """home.js must drive the 5-stage funnel (think/plan/build/verify/ship)
+    in #home-funnel. Each stage step must be programmatically updateable.
+    HTML shells exist from C20; JS must reference all 5 stage IDs."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    required = ["home-funnel-think", "home-funnel-plan", "home-funnel-build",
+                "home-funnel-verify", "home-funnel-ship"]
+    missing = [i for i in required if i not in content]
+    assert not missing, (
+        f"home.js must reference all 5 funnel stage IDs: {missing}"
+    )
+
+
+def test_v20_stream_uses_plainlang():
+    """home.js must render the Home live stream (#home-stream-list) using
+    window._plain(ev) from CHUNK A20. Each row = avatar + plain sentence
+    + meta + optional action. Data → insight → action pattern (PostHog)."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    assert "_plain" in content or "window._plain" in content, (
+        "home.js stream renderer must call window._plain(ev) for plain-Thai text"
+    )
+    assert "home-stream-list" in content, (
+        "home.js must render to #home-stream-list"
+    )
+
+
+def test_v20_stream_limits_rows():
+    """Home stream must cap at 8 rows max (cognitive load — research: Miller
+    7±2). Older rows drop off the bottom as new events arrive."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    has_cap = (
+        "> 8" in content
+        or ">= 8" in content
+        or "length > 8" in content
+        or "children.length" in content
+        or "maxRows" in content
+        or "MAX_ROWS" in content
+        or "HOME_STREAM_MAX" in content
+    )
+    assert has_cap, (
+        "home.js must cap Home stream at 8 rows max (Miller's Law)"
+    )
+
+
+def test_v20_block_event_has_action_in_stream():
+    """When a hook_check block event renders in the Home stream, the row must
+    include an action affordance (data → insight → ACTION per PostHog/Stripe).
+    _plain(ev).action is non-null for blocks; home.js must render it."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    has_action_render = (
+        ".action" in content
+        or "action &&" in content
+        or "action?" in content
+        or "if(p.action)" in content
+        or "ev.action" in content
+        or "p.action" in content
+    )
+    assert has_action_render, (
+        "home.js stream renderer must check + render .action for block events"
+    )
+
+
+def test_v20_funnel_active_stage_pulses():
+    """The active funnel stage must get .active class (CSS pulse-ring animation
+    from B20). home.js must toggle .active based on current lifecycle phase."""
+    f = SRC_DIR / "home.js"
+    if not f.is_file():
+        pytest.fail("src/home.js missing — Iron Law #1")
+    content = f.read_text(encoding="utf-8")
+    has_active_toggle = (
+        "'active'" in content
+        or '"active"' in content
+    )
+    assert has_active_toggle, (
+        "home.js must toggle 'active' class on the current funnel stage"
+    )

@@ -86,15 +86,113 @@
     }
   }
 
+
+  // ── funnel: 5-stage lifecycle (think→plan→build→verify→ship) ────────────
+  var FUNNEL_STAGES = ['think', 'plan', 'build', 'verify', 'ship'];
+  var _FUNNEL_LABEL_IDS = {
+    think:  'home-funnel-think',
+    plan:   'home-funnel-plan',
+    build:  'home-funnel-build',
+    verify: 'home-funnel-verify',
+    ship:   'home-funnel-ship'
+  };
+  function _phaseForEvent(ev) {
+    var t = ev && ev.type;
+    var task = (ev && ev.task) || '';
+    if (t === 'session_start' || t === 'route_plan') return 'think';
+    if (t === 'hook_check' && (ev.hook || '').indexOf('delegation_gate') !== -1) return 'plan';
+    if (t === 'delegate_start') {
+      if (task.indexOf('plan') !== -1) return 'plan';
+      return 'build';
+    }
+    if (t === 'subagent_invoke') return 'build';
+    if (t === 'delegate_done') return 'verify';
+    return null;
+  }
+  var _currentPhase = null;
+  function _renderFunnel(phase) {
+    if (!phase) return;
+    var idx = FUNNEL_STAGES.indexOf(phase);
+    if (idx === -1) return;
+    _currentPhase = phase;
+    FUNNEL_STAGES.forEach(function (s, i) {
+      var step = document.querySelector('.home-funnel-step[data-stage="' + s + '"]');
+      if (!step) return;
+      step.classList.remove('active', 'done');
+      if (i < idx) step.classList.add('done');
+      else if (i === idx) step.classList.add('active');
+    });
+    var lbl = $(_FUNNEL_LABEL_IDS[phase]);
+    if (lbl) lbl.textContent = 'กำลังทำ';
+  }
+
+  // ── stream: live event rows using plainlang ──────────────────────────────
+  var HOME_STREAM_MAX = 8;
+  function _avatarClass(ev) {
+    var t = ev && ev.type;
+    if (t === 'hook_check') return ev.result === 'block' ? 'av-error' : (ev.result === 'warn' ? 'av-warn' : 'av-success');
+    if (t === 'delegate_fail') return 'av-error';
+    if (t === 'delegate_done') return 'av-success';
+    var m = (ev && ev.model || '').toLowerCase();
+    if (m.indexOf('gemini') !== -1) return 'av-gemini';
+    if (m.indexOf('deepseek') !== -1) return 'av-deepseek';
+    if (m.indexOf('claude') !== -1) return 'av-claude';
+    return 'av-system';
+  }
+  function _avatarLetter(ev) {
+    var t = ev && ev.type;
+    if (t === 'hook_check') return ev.result === 'block' ? '!' : (ev.result === 'warn' ? '?' : '\u2713');
+    if (t === 'delegate_fail') return '!';
+    if (t === 'delegate_done') return '\u2713';
+    var m = (ev && ev.model || '').toLowerCase();
+    if (m.indexOf('gemini') !== -1) return 'G';
+    if (m.indexOf('deepseek') !== -1) return 'D';
+    if (m.indexOf('claude') !== -1) return 'C';
+    return '*';
+  }
+  function _pushHomeStream(ev) {
+    var list = $('home-stream-list');
+    if (!list) return;
+    var p = (typeof _plain === 'function') ? _plain(ev) : { sentence: ev.type, meta: '', action: null, tone: 'info' };
+    var row = document.createElement('div');
+    row.className = 'home-stream-row';
+    var av = document.createElement('div');
+    av.className = 'home-stream-avatar ' + _avatarClass(ev);
+    av.textContent = _avatarLetter(ev);
+    var body = document.createElement('div');
+    body.className = 'home-stream-body';
+    var line = document.createElement('div');
+    line.className = 'home-stream-line';
+    line.textContent = p.sentence;
+    var meta = document.createElement('div');
+    meta.className = 'home-stream-meta';
+    meta.textContent = p.meta || '';
+    body.appendChild(line);
+    body.appendChild(meta);
+    if (p.action) {
+      var act = document.createElement('span');
+      act.className = 'home-stream-action';
+      act.textContent = p.action;
+      body.appendChild(act);
+    }
+    row.appendChild(av);
+    row.appendChild(body);
+    list.insertBefore(row, list.firstChild);
+    while (list.children.length > HOME_STREAM_MAX) {
+      list.removeChild(list.lastChild);
+    }
+  }
+
   // ── live update hook (called by SSE handlers via _homeOnEvent) ───────────
   // Instead of monkey-patching onDelDone/onHook (fragile), expose a single
   // entry point that graph.js CAN call (but doesn't have to — renderHome
   // also runs on a 2s rAF-throttled loop while Home is visible).
   var _homeRAF = null;
   function _homeOnEvent(ev) {
-    // Only re-render if Home is currently visible (save CPU).
     if (typeof currentView === 'undefined' || currentView !== 'home') return;
-    if (_homeRAF) return;  // throttle: one render per frame
+    try { _pushHomeStream(ev); } catch (_) {}
+    try { _renderFunnel(_phaseForEvent(ev)); } catch (_) {}
+    if (_homeRAF) return;
     _homeRAF = requestAnimationFrame(function () {
       _homeRAF = null;
       renderHome();
