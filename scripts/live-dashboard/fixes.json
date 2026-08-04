@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-04",
+  "description": "A-Wiki Known Fixes — structured catalog of problems, root causes, and copy-paste fix scripts. Source of truth for the dashboard Fixes module. Add entries here; they appear at /fixes.html automatically.",
+  "fixes": [
+    {
+      "id": "brother-hll3270cdw-usb-unknown-printer",
+      "title": "Brother HL-L3270CDW — USB ขึ้น UnknownPrinter",
+      "title_th": "เครื่องปริ้น Brother พิมพ์ผ่าน USB ไม่ได้ ขึ้น UnknownPrinter",
+      "device": "Brother HL-L3270CDW",
+      "category": "printer",
+      "os": ["windows"],
+      "tags": ["printer", "brother", "windows", "usb", "driver", "pnp"],
+      "severity": "medium",
+      "symptoms": [
+        "กดปริ้นผ่าน USB ไม่ออก แต่ WiFi ใช้ได้ปกติ",
+        "ใน Printer Properties → Ports tab เลือก USB001 แล้ว description เป็น UnknownPrinter หลังกด Apply",
+        "Device Manager เห็น Brother HL-L3270CDW series บน USB (Status: OK) แต่ไม่มี printer queue ของ Brother",
+        "Get-Printer แสดงแค่ 'Microsoft Print to PDF'"
+      ],
+      "root_cause": "brpsaa.inf (Brother PSA/IPP Extension driver v2.1.4.0) อยู่ใน Windows DriverStore แล้ว แต่ยังไม่ถูก bind เข้ากับ Brother USB device — Windows เลย fallback ไปใช้ generic driver ที่อ่าน device descriptor ไม่ออก → แสดงเป็น UnknownPrinter",
+      "steps": [
+        "เสียบสาย USB เข้าเครื่อง Brother และคอม",
+        "เปิด PowerShell as Administrator",
+        "รัน pnputil /add-driver <path>/brpsaa.inf /install เพื่อ bind driver เข้ากับ device",
+        "รัน pnputil /scan-devices เพื่อกระตุ้น Windows สร้าง printer queue อัตโนมัติ",
+        "ตรวจสอบว่ามี queue 'Brother HL-L3270CDW series' ขึ้นบน USB001",
+        "ตั้ง default printer และพิมพ์ Test Page"
+      ],
+      "scripts": [
+        {
+          "label": "ค้นหา brpsaa.inf ใน DriverStore",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-ChildItem -Path 'C:\\Windows\\System32\\DriverStore\\FileRepository' -Filter 'brpsaa.inf' -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName",
+          "note": "จะได้ path เช่น C:\\Windows\\System32\\DriverStore\\FileRepository\\brpsaa.inf_amd64_<hash>\\brpsaa.inf — คัดลอกไปใช้ในขั้นถัดไป"
+        },
+        {
+          "label": "Bind driver เข้ากับ device (ต้องใช้ Admin)",
+          "language": "powershell",
+          "requires_admin": true,
+          "os": ["windows"],
+          "code": "# เปลี่ยน <hash> ให้ตรงกับ path ที่ได้จากขั้นตอนก่อนหน้า\npnputil /add-driver \"C:\\Windows\\System32\\DriverStore\\FileRepository\\brpsaa.inf_amd64_<hash>\\brpsaa.inf\" /install",
+          "note": "ต้องเป็น path จริงที่มี brpsaa.inf อยู่ ถ้า path ผิดจะขึ้น 'The parameter is incorrect'"
+        },
+        {
+          "label": "บังคับ rescan + สร้าง queue อัตโนมัติ",
+          "language": "powershell",
+          "requires_admin": true,
+          "os": ["windows"],
+          "code": "pnputil /scan-devices\nStart-Sleep -Seconds 3\nGet-Printer | Format-Table Name, PortName, DriverName -AutoSize"
+        },
+        {
+          "label": "ตั้ง default printer + ทดสอบพิมพ์",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "(Get-WmiObject -Query \"SELECT * FROM Win32_Printer WHERE Name='Brother HL-L3270CDW series'\").SetDefaultPrinter()\n(Get-WmiObject -Query \"SELECT * FROM Win32_Printer WHERE Name='Brother HL-L3270CDW series'\").PrintTestPage()"
+        },
+        {
+          "label": "วินิจฉัยเบื้องต้น (อ่านอย่างเดียว)",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "# สถานะ device ผ่าน USB\nGet-PnpDevice -PresentOnly | Where-Object FriendlyName -match 'Brother' | Select-Object Status, Class, FriendlyName, InstanceId | Format-List\n\n# ตรวจสอบ ports ทั้งหมด\nGet-PrinterPort | Select-Object Name, Description, PortMonitor | Format-Table -AutoSize\n\n# ตรวจสอบ driver ที่ลงอยู่\nGet-PrinterDriver | Select-Object Name | Format-Table -AutoSize"
+        }
+      ],
+      "source_doc": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "source_url": "https://support.brother.com/g/b/downloadtop.aspx?c=th&lang=th&prod=hll3270cdw_all",
+      "created": "2026-08-04",
+      "updated": "2026-08-04",
+      "verified": "2026-08-04",
+      "related": ["brother-hll3270cdw-wsd-stale-port"]
+    },
+    {
+      "id": "brother-hll3270cdw-wsd-stale-port",
+      "title": "Brother HL-L3270CDW — WSD Port เสีย ปริ้นไม่ออก",
+      "title_th": "ปริ้นไม่ออก Error บน WSD Port (WiFi Direct)",
+      "device": "Brother HL-L3270CDW",
+      "category": "printer",
+      "os": ["windows"],
+      "tags": ["printer", "brother", "windows", "wsd", "wifi", "wifi-direct"],
+      "severity": "medium",
+      "symptoms": [
+        "กดปริ้นแล้ว print job ค้างสถานะ Error / Printing ทันที",
+        "ปริ้นไม่ออก แม้ว่าก่อนหน้านี้ใช้งานได้ปกติ",
+        "Get-Printer พบ PrinterStatus: Error และ JobCount: 1",
+        "ลบ job แล้ว job ใหม่ก็ Error อีกทันทีที่ส่งงาน"
+      ],
+      "root_cause": "WSD Port เสีย (Stale WSD Port) — WSD record หมดอายุหรือชี้ไปที่ endpoint ผิด แต่ Windows ยังพยายามส่งงานไปยัง endpoint เดิม → job Error ทุกครั้งที่ส่ง",
+      "steps": [
+        "Settings → Bluetooth & devices → Printers & scanners",
+        "คลิก Brother HL-L3270CDW → Remove",
+        "กด Add device → ถ้าไม่เจอ คลิก 'The printer that I want isn't listed'",
+        "เลือก 'Add a printer using a TCP/IP address or hostname'",
+        "ใส่ IP ของ printer บน WiFi Direct subnet",
+        "กด Next → Windows ดึง driver อัตโนมัติ → Finish",
+        "ตรวจสอบว่า PrinterStatus เป็น Normal"
+      ],
+      "scripts": [
+        {
+          "label": "ตรวจสถานะและ job ค้าง",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-Printer | Where-Object {$_.Name -like \"*Brother*\"} | Select Name, PrinterStatus, PortName, JobCount\nGet-PrintJob -PrinterName \"Brother HL-L3270CDW\" | Select Id, JobStatus, DocumentName"
+        },
+        {
+          "label": "ลบ job ค้าง",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-PrintJob -PrinterName \"Brother HL-L3270CDW\" | Remove-PrintJob"
+        },
+        {
+          "label": "ทดสอบ printer ตอบสนองไหม",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "# เปลี่ยน IP ให้ตรงกับเครื่องของคุณ\nTest-Connection -ComputerName <PRINTER_IP> -Count 2\nTest-NetConnection -ComputerName <PRINTER_IP> -Port 9100"
+        },
+        {
+          "label": "ตรวจสอบหลังแก้",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-Printer -Name \"Brother HL-L3270CDW*\" | Select Name, PrinterStatus, PortName"
+        }
+      ],
+      "source_doc": "wiki/concepts/it-support/brother-hl-l3270cdw-wsd-error.md",
+      "created": "2026-05-01",
+      "updated": "2026-08-04",
+      "verified": "2026-05-01",
+      "related": ["brother-hll3270cdw-usb-unknown-printer"]
+    },
+    {
+      "id": "windows-powershell-script-blocked-antivirus",
+      "title": "Windows — PowerShell .ps1 script ถูก AV block",
+      "title_th": "รัน .ps1 ไม่ได้ โดน antivirus block",
+      "device": "Windows (organization-managed)",
+      "category": "security",
+      "os": ["windows"],
+      "tags": ["windows", "powershell", "antivirus", "defender", "execution-policy"],
+      "severity": "low",
+      "symptoms": [
+        "รัน powershell -ExecutionPolicy Bypass -File script.ps1 แล้วถูก block",
+        "มี popup หรือ silent block จาก antivirus (Defender/3rd party)",
+        ".ps1 ถูก quarantine หรือลบทันที"
+      ],
+      "root_cause": "Organization-managed AV/EDR policy block .ps1 file execution (เพื่อป้องกัน ransomware/malware) โดยเฉพาะ .ps1 ที่ไม่ได้ signed หรือมี pattern ตรงกับ heuristic",
+      "steps": [
+        "พิมพ์คำสั่ง inline ใน PowerShell window ตรงๆ แทนการเรียกไฟล์ (AV มัก block ไฟล์ ไม่ block inline)",
+        "หรือใช้ GUI ธรรมดาแทน PowerShell (Settings, Control Panel)",
+        "หรือดาวน์โหลด installer .exe ที่ signed จากผู้ผลิต (เช่น Brother Full Driver Package)",
+        "ถ้าเป็นเครื่ององค์กร → ติดต่อ IT อย่างเป็นทางการ (ห้าม bypass AV ด้วยตัวเอง)"
+      ],
+      "scripts": [
+        {
+          "label": "ทดสอบ Execution Policy ปัจจุบัน",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-ExecutionPolicy -List\nGet-ExecutionPolicy"
+        },
+        {
+          "label": "รันคำสั่ง inline ทีละบรรทัด (หลีกเลี่ยง .ps1 block)",
+          "language": "powershell",
+          "requires_admin": true,
+          "os": ["windows"],
+          "code": "# ตัวอย่าง: รันคำสั่งตรงๆ ใน PowerShell Admin window\npnputil /scan-devices\npnputil /add-driver \"<path-to-inf>\" /install"
+        }
+      ],
+      "source_doc": "",
+      "created": "2026-08-04",
+      "updated": "2026-08-04",
+      "verified": "2026-08-04",
+      "related": ["brother-hll3270cdw-usb-unknown-printer"]
+    },
+    {
+      "id": "windows-unknown-usb-device-descriptor-failed",
+      "title": "Windows — Unknown USB Device (Device Descriptor Request Failed)",
+      "title_th": "USB Device ขึ้น Descriptor Request Failed ⚠️ เหลือง",
+      "device": "Any USB device",
+      "category": "hardware",
+      "os": ["windows"],
+      "tags": ["windows", "usb", "device-manager", "driver", "hardware"],
+      "severity": "medium",
+      "symptoms": [
+        "Device Manager มี 'Unknown USB Device (Device Descriptor Request Failed)' สถานะ Error",
+        "อุปกรณ์ USB เสียบแล้วไม่ทำงาน หรือทำงานไม่สม่ำเสมอ",
+        "อาจมี Code 43 หรือ Code 28 ใน device properties"
+      ],
+      "root_cause": "สาเหตุได้หลายอย่าง: สาย USB เสีย/หลวม, พอร์ต USB บนเครื่องมีปัญหา, power supply ไม่พอเลี้ยง, driver stack ค้าง, หรือตัวอุปกรณ์เองมีปัญหา",
+      "steps": [
+        "สลับสาย USB ใหม่ (สาย data ไม่ใช่ charge-only)",
+        "สลับพอร์ต USB (ลองพอร์ตหลังเครื่อง/Desktop หรือพอร์จะอื่น)",
+        "ถอดสาย → ปิดเครื่อง → ถอดปลั๊กไฟ 30 วินาที → เสียบใหม่",
+        "ใน Device Manager คลิกขวา → Uninstall device → Restart → เสียบใหม่",
+        "รัน hardware troubleshooter หรือ rescan"
+      ],
+      "scripts": [
+        {
+          "label": "ดูรายการ USB devices ที่มีปัญหา",
+          "language": "powershell",
+          "requires_admin": false,
+          "os": ["windows"],
+          "code": "Get-PnpDevice -PresentOnly | Where-Object { $_.Status -ne 'OK' } | Select-Object Status, Class, FriendlyName, InstanceId | Format-Table -AutoSize"
+        },
+        {
+          "label": "บังคับ rescan hardware (ต้องใช้ Admin)",
+          "language": "powershell",
+          "requires_admin": true,
+          "os": ["windows"],
+          "code": "pnputil /scan-devices"
+        },
+        {
+          "label": "ลบ device node ที่ Error ทิ้ง (ต้องใช้ Admin)",
+          "language": "powershell",
+          "requires_admin": true,
+          "os": ["windows"],
+          "code": "Get-PnpDevice -PresentOnly | Where-Object {\n    $_.FriendlyName -match 'Unknown USB Device.*Device Descriptor' -and $_.Status -eq 'Error'\n} | ForEach-Object {\n    $_ | Disable-PnpDevice -Confirm:$false\n    $_ | Remove-PnpDevice -Confirm:$false\n}"
+        }
+      ],
+      "source_doc": "",
+      "created": "2026-08-04",
+      "updated": "2026-08-04",
+      "verified": "2026-08-04",
+      "related": []
+    }
+  ]
+}

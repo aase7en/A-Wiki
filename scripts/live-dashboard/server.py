@@ -616,6 +616,15 @@ def _try_write_to_drive_secrets(key_name, key_value):
         pass
 
 
+def _is_subpath(path: Path, root: Path) -> bool:
+    """True if `path` is `root` itself or lives somewhere under `root`."""
+    try:
+        path.resolve(strict=False).relative_to(root.resolve(strict=False))
+        return True
+    except ValueError:
+        return False
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *args):
         pass
@@ -1010,6 +1019,13 @@ class Handler(BaseHTTPRequestHandler):
                 self._json_response({"error": str(e)}, 500)
         elif path.startswith("/api/uploads/"):
             self._serve_upload(path)
+        elif path in ("/fixes", "/fixes.html"):
+            # CHUNK FX: standalone Fixes module (troubleshooting knowledge).
+            self._serve_static_file("fixes.html", "text/html; charset=utf-8")
+        elif path == "/api/fixes":
+            self._api_fixes_list()
+        elif path.startswith("/api/fixes/open"):
+            self._api_fixes_open_path()
         else:
             self.send_error(404, "Not found")
 
@@ -1659,6 +1675,111 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.send_response(404)
             self.end_headers()
+
+    # ===== Fixes module (CHUNK FX) =====
+    # Troubleshooting knowledge catalog: fixes.json is the source of truth,
+    # fixes.html is the standalone UI, and /api/fixes/open is a whitelisted
+    # path opener (File Explorer / Finder / xdg-open). No arbitrary code
+    # execution from the browser — only folder-reveal.
+    _fixes_cache = None
+    _fixes_mtime = 0
+
+    def _api_fixes_list(self):
+        """Return fixes.json with lazy mtime-based reload (mirrors skills_service)."""
+        global _fixes_cache, _fixes_mtime
+        fixes_path = DASHBOARD_DIR / "fixes.json"
+        try:
+            mtime = fixes_path.stat().st_mtime
+        except OSError:
+            self._json_response({"error": "fixes.json not found", "fixes": []}, 404)
+            return
+        if self._fixes_cache is None or mtime != self._fixes_mtime:
+            try:
+                data = json.loads(fixes_path.read_text(encoding="utf-8"))
+                if not isinstance(data, dict) or not isinstance(data.get("fixes"), list):
+                    raise ValueError("fixes.json must be an object with a 'fixes' array")
+                Handler._fixes_cache = data
+                Handler._fixes_mtime = mtime
+            except (json.JSONDecodeError, ValueError) as e:
+                self._json_response({"error": f"fixes.json invalid: {e}", "fixes": []}, 500)
+                return
+        self._json_response(Handler._fixes_cache)
+
+    def _api_fixes_open_path(self):
+        """Open a folder in the OS file manager. Whitelist-only — rejects any
+        path outside allowed roots to prevent directory traversal / opening
+        arbitrary locations. Never opens individual files (which could execute
+        on some OSes); always the containing folder.
+        """
+        from urllib.parse import parse_qs
+        import subprocess
+        import platform
+
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        params = parse_qs(qs)
+        raw_path = params.get("path", [""])[0]
+        if not raw_path:
+            self._json_response({"success": False, "error": "missing path parameter"}, 400)
+            return
+
+        # Normalise and reject traversal attempts.
+        candidate = raw_path.replace("\\", "/").strip()
+        if ".." in candidate.split("/"):
+            self._json_response({"success": False, "error": "traversal rejected"}, 400)
+            return
+
+        # Whitelist of allowed path roots (public-safe repo paths only).
+        allowed_roots = [
+            REPO_ROOT / "scripts",
+            REPO_ROOT / "docs" / "runbooks",
+            REPO_ROOT / "wiki" / "concepts" / "it-support",
+            Path("C:/Windows/System32/DriverStore/FileRepository"),
+        ]
+
+        # Resolve to an absolute Path (best-effort). On Windows, drive letters
+        # like C:/... are absolute; relative paths anchor to REPO_ROOT.
+        try:
+            p = Path(candidate)
+            if not p.is_absolute():
+                p = REPO_ROOT / p
+            p = p.resolve(strict=False)
+        except (OSError, ValueError) as e:
+            self._json_response({"success": False, "error": f"invalid path: {e}"}, 400)
+            return
+
+        allowed = any(_is_subpath(p, root) for root in allowed_roots)
+        if not allowed:
+            self._json_response({
+                "success": False,
+                "error": "path outside whitelist",
+                "path": str(p),
+            }, 403)
+            return
+
+        # Open the containing folder (never the file itself, to avoid exec).
+        target_dir = p if p.is_dir() else p.parent
+
+        try:
+            system = platform.system()
+            if system == "Windows":
+                # explorer.exe exits non-zero sometimes even on success; we
+                # rely on no exception being raised.
+                subprocess.Popen(["explorer.exe", str(target_dir)],
+                                 close_fds=True, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+            elif system == "Darwin":
+                subprocess.Popen(["open", str(target_dir)],
+                                 close_fds=True, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+            else:  # Linux / other
+                subprocess.Popen(["xdg-open", str(target_dir)],
+                                 close_fds=True, stdout=subprocess.DEVNULL,
+                                 stderr=subprocess.DEVNULL)
+            self._json_response({"success": True, "opened_path": str(target_dir)})
+        except FileNotFoundError as e:
+            self._json_response({"success": False, "error": f"opener not found: {e}"}, 500)
+        except Exception as e:
+            self._json_response({"success": False, "error": str(e)}, 500)
 
     def _clear_log(self):
         try:

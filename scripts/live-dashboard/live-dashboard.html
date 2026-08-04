@@ -98,6 +98,7 @@
       <button class="view-btn pro-only" id="btn-race" onclick="setView('race')" role="tab" aria-selected="false" aria-controls="race-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-flag"/></svg> Race</button>
       <button class="view-btn pro-only" id="btn-council" onclick="setView('council')" role="tab" aria-selected="false" aria-controls="council-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-users"/></svg> Council</button>
       <button class="view-btn pro-only" id="btn-chat" onclick="setView('chat')" role="tab" aria-selected="false" aria-controls="chat-panel" tabindex="-1"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"/></svg> Chat</button>
+      <button class="view-btn" id="btn-fixes" onclick="window.open('/fixes.html','_blank')" role="tab" aria-selected="false" tabindex="0" title="ปัญหา + วิธีแก้ + สคริปต์สำเร็จ">🩹 Fixes</button>
     </div>
 
     <!-- HOME VIEW (v20 default landing for non-technical users) -->
@@ -196,6 +197,18 @@
 
       <!-- Plain-language callout (filled by CHUNK F20) -->
       <div class="home-callout" id="home-callout" hidden></div>
+
+      <!-- Quick actions (visible to everyone, not just Pro) -->
+      <div class="home-quick-actions" id="home-quick-actions">
+        <a class="home-quick-action" href="/fixes.html" target="_blank" rel="noopener">
+          <span class="home-quick-action-icon">🩹</span>
+          <span class="home-quick-action-body">
+            <span class="home-quick-action-label">Known Fixes</span>
+            <span class="home-quick-action-sub" id="fixes-count-tile">ปัญหาที่พบ + วิธีแก้ + สคริปต์ที่ก๊อปปี้ไปรันได้</span>
+          </span>
+          <span class="home-quick-action-arrow">→</span>
+        </a>
+      </div>
 
       <!-- Pro mode hint -->
       <div class="home-pro-hint">

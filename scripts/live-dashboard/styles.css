@@ -549,6 +549,16 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 .home-pro-hint a{color:var(--brand);cursor:pointer;text-decoration:none;font-weight:500}
 .home-pro-hint a:hover{text-decoration:underline}
 
+/* Quick actions strip (CHUNK FX) — visible to everyone, not just Pro mode */
+.home-quick-actions{margin-top:24px;display:grid;gap:10px}
+.home-quick-action{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--n-100);border:1px solid var(--n-400);border-radius:var(--r-md);text-decoration:none;color:var(--n-800);transition:var(--t-fast)}
+.home-quick-action:hover{border-color:var(--brand);background:var(--brand-muted)}
+.home-quick-action-icon{font-size:24px;line-height:1;flex-shrink:0}
+.home-quick-action-body{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.home-quick-action-label{font-size:var(--fs-sm);font-weight:600;color:var(--n-900)}
+.home-quick-action-sub{font-size:var(--fs-2xs);color:var(--n-600);line-height:1.4}
+.home-quick-action-arrow{color:var(--brand);font-weight:600;font-size:var(--fs-sm);flex-shrink:0}
+
 /* Pro mode: hide Pro-only buttons + Summary by default; show all when enabled */
 body:not(.pro-mode) .view-btn.pro-only{display:none}
 body.pro-mode .home-pro-hint{display:none}

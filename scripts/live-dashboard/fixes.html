@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<title>A-Wiki · 🩹 Known Fixes</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩹</text></svg>" />
+<style>
+/* ===== Design tokens (synced with dashboard DESIGN.md v17) ===== */
+:root {
+  /* Neutral scale — Linear-style 11 steps */
+  --n-0: #000000; --n-50: #0a0a0c; --n-100: #121215; --n-200: #1a1a1f;
+  --n-300: #27272e; --n-400: #3f3f47; --n-500: #52525b; --n-600: #71717a;
+  --n-700: #a1a1aa; --n-800: #d4d4d8; --n-900: #fafafa; --n-1000: #ffffff;
+  /* Accent (single hue — Linear violet) */
+  --brand: #5b5bd6; --brand-hover: #6d6dff;
+  --brand-muted: rgba(91,91,214,.12); --brand-fg: #ffffff;
+  /* Status */
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+  /* Typography (6 sizes) */
+  --fs-caption: clamp(11px,1.1vw,12px); --fs-body: clamp(13px,1.4vw,14px);
+  --fs-h4: clamp(15px,1.8vw,16px); --fs-h3: clamp(17px,2vw,18px);
+  --fs-h2: clamp(20px,2.5vw,22px); --fs-h1: clamp(24px,3vw,28px);
+  /* Spacing (4px base, 11 steps) */
+  --s-1: 2px; --s-2: 4px; --s-3: 6px; --s-4: 8px; --s-5: 12px;
+  --s-6: 16px; --s-7: 20px; --s-8: 24px; --s-10: 32px; --s-12: 48px;
+  /* Radius (2 values) */
+  --r-sm: 6px; --r-md: 10px;
+  /* Motion (3 transitions) */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --t-fast: 120ms var(--ease); --t-normal: 200ms var(--ease); --t-slow: 320ms var(--ease);
+  /* Syntax */
+  --code-bg: var(--n-50);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter var', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --n-50: #fafafa; --n-100: #f4f4f5; --n-200: #e4e4e7;
+  --n-300: #d4d4d8; --n-400: #a1a1aa; --n-500: #71717a;
+  --n-600: #52525b; --n-700: #3f3f47; --n-800: #27272e;
+  --n-900: #1a1a1f; --n-1000: #121215;
+  --code-bg: #f4f4f5;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--n-50);
+  color: var(--n-800);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ===== Layout ===== */
+.app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+.header {
+  grid-column: 1 / -1;
+  background: var(--n-100);
+  border-bottom: 1px solid var(--n-400);
+  padding: var(--s-6) var(--s-8);
+  display: flex; align-items: center; gap: var(--s-6);
+  position: sticky; top: 0; z-index: 10;
+}
+.header h1 {
+  font-size: var(--fs-h2); font-weight: 600;
+  color: var(--n-900); margin: 0;
+}
+.header .back-link {
+  color: var(--n-700); text-decoration: none;
+  font-size: var(--fs-caption); padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm); transition: var(--t-fast);
+  border: 1px solid transparent;
+}
+.header .back-link:hover { color: var(--n-900); background: var(--n-300); }
+.header .count-badge {
+  background: var(--brand-muted); color: var(--brand-hover);
+  padding: var(--s-1) var(--s-4); border-radius: var(--s-12);
+  font-size: var(--fs-caption); font-weight: 600;
+}
+.header .spacer { flex: 1; }
+
+.sidebar {
+  background: var(--n-100);
+  border-right: 1px solid var(--n-400);
+  padding: var(--s-6);
+  position: sticky; top: 65px; align-self: start;
+  max-height: calc(100vh - 65px); overflow-y: auto;
+}
+.sidebar section { margin-bottom: var(--s-8); }
+.sidebar h3 {
+  font-size: var(--fs-caption); text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--n-600);
+  margin: 0 0 var(--s-4) 0; font-weight: 600;
+}
+.sidebar .search-input {
+  width: 100%; background: var(--n-200);
+  border: 1px solid var(--n-500); border-radius: var(--r-sm);
+  color: var(--n-900); padding: var(--s-3) var(--s-4);
+  font-size: var(--fs-body); font-family: inherit;
+  transition: var(--t-fast);
+}
+.sidebar .search-input:focus {
+  outline: none; border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-muted);
+}
+.filter-list { list-style: none; padding: 0; margin: 0; }
+.filter-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: var(--s-2) var(--s-4); border-radius: var(--r-sm);
+  cursor: pointer; transition: var(--t-fast);
+  color: var(--n-700); font-size: var(--fs-body);
+  user-select: none;
+}
+.filter-item:hover { background: var(--n-300); color: var(--n-900); }
+.filter-item.active { background: var(--brand-muted); color: var(--brand-hover); font-weight: 600; }
+.filter-item .count {
+  font-size: var(--fs-caption); color: var(--n-600);
+  background: var(--n-200); padding: 0 var(--s-3); border-radius: var(--s-12);
+}
+.filter-item.active .count { background: var(--brand); color: var(--brand-fg); }
+
+.main { padding: var(--s-8); min-width: 0; }
+.empty-state {
+  text-align: center; padding: var(--s-12); color: var(--n-600);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: var(--s-4); }
+
+/* ===== Fix card ===== */
+.fixes-grid {
+  display: grid; gap: var(--s-6);
+  grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+}
+.fix-card {
+  background: var(--n-100);
+  border: 1px solid var(--n-400);
+  border-radius: var(--r-md);
+  padding: var(--s-7);
+  transition: var(--t-fast);
+}
+.fix-card:hover { border-color: var(--n-500); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+.fix-card .card-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s-4); margin-bottom: var(--s-5);
+}
+.fix-card h2 {
+  font-size: var(--fs-h4); font-weight: 600; color: var(--n-900);
+  margin: 0 0 var(--s-1) 0; line-height: 1.3;
+}
+.fix-card .title-en {
+  font-size: var(--fs-caption); color: var(--n-600); font-weight: 400;
+}
+.badges { display: flex; gap: var(--s-2); flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.badge {
+  font-size: var(--fs-caption); font-weight: 600;
+  padding: var(--s-1) var(--s-3); border-radius: var(--r-sm);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+.badge-severity-low { background: rgba(16,185,129,.12); color: var(--success); border-color: rgba(16,185,129,.3); }
+.badge-severity-medium { background: rgba(245,158,11,.12); color: var(--warn); border-color: rgba(245,158,11,.3); }
+.badge-severity-high { background: rgba(239,68,68,.12); color: var(--danger); border-color: rgba(239,68,68,.3); }
+.badge-cat {
+  background: var(--n-200); color: var(--n-700);
+  border: 1px solid var(--n-400);
+}
+.badge-os {
+  background: var(--n-200); color: var(--n-700);
+  border: 1px solid var(--n-400);
+}
+.badge-admin {
+  background: rgba(239,68,68,.08); color: var(--danger);
+  border: 1px solid rgba(239,68,68,.3);
+}
+
+.section-label {
+  font-size: var(--fs-caption); text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--n-600);
+  font-weight: 600; margin: var(--s-5) 0 var(--s-2) 0;
+}
+.fix-card ul, .fix-card ol {
+  margin: 0; padding-left: var(--s-6);
+  color: var(--n-800);
+}
+.fix-card ul li, .fix-card ol li { margin-bottom: var(--s-1); }
+.fix-card .root-cause {
+  background: var(--n-200); border-left: 3px solid var(--warn);
+  padding: var(--s-3) var(--s-4); border-radius: var(--r-sm);
+  color: var(--n-700); font-size: var(--fs-body);
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
+.tag {
+  font-size: var(--fs-caption); color: var(--n-600);
+  background: var(--n-200); padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-sm); border: 1px solid var(--n-400);
+  cursor: pointer; transition: var(--t-fast);
+}
+.tag:hover, .tag.active { color: var(--brand-hover); background: var(--brand-muted); border-color: var(--brand); }
+
+/* ===== Script block ===== */
+.script-block {
+  background: var(--code-bg);
+  border: 1px solid var(--n-400);
+  border-radius: var(--r-sm);
+  margin: var(--s-3) 0; overflow: hidden;
+}
+.script-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: var(--s-3) var(--s-4);
+  background: var(--n-100);
+  border-bottom: 1px solid var(--n-400);
+  gap: var(--s-3);
+}
+.script-label {
+  font-weight: 600; color: var(--n-900); font-size: var(--fs-body);
+  flex: 1; min-width: 0;
+}
+.script-actions { display: flex; gap: var(--s-2); flex-shrink: 0; }
+.btn {
+  background: var(--n-200); color: var(--n-800);
+  border: 1px solid var(--n-500); padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm); font-weight: 500; font-size: var(--fs-caption);
+  cursor: pointer; transition: var(--t-fast); font-family: inherit;
+  display: inline-flex; align-items: center; gap: var(--s-2);
+}
+.btn:hover { background: var(--n-300); border-color: var(--n-600); }
+.btn-primary {
+  background: var(--brand); color: var(--brand-fg); border-color: transparent;
+}
+.btn-primary:hover { background: var(--brand-hover); }
+.btn-copied {
+  background: var(--success); color: #fff; border-color: transparent;
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.script-code {
+  margin: 0; padding: var(--s-4);
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', monospace;
+  font-size: var(--fs-caption); line-height: 1.6;
+  color: var(--n-800); overflow-x: auto;
+  white-space: pre;
+}
+.script-code .lang-powershell .comment { color: var(--n-600); }
+.script-code .lang-powershell .string { color: var(--success); }
+.script-note {
+  padding: var(--s-2) var(--s-4) var(--s-3);
+  background: var(--n-100);
+  border-top: 1px solid var(--n-400);
+  font-size: var(--fs-caption); color: var(--n-600);
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed; bottom: var(--s-8); right: var(--s-8);
+  background: var(--success); color: #fff;
+  padding: var(--s-3) var(--s-6); border-radius: var(--r-sm);
+  font-weight: 600; font-size: var(--fs-body);
+  box-shadow: 0 4px 12px rgba(0,0,0,.2);
+  transform: translateY(20px); opacity: 0;
+  transition: var(--t-normal); pointer-events: none;
+  z-index: 100;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+.meta {
+  margin-top: var(--s-6); padding-top: var(--s-4);
+  border-top: 1px solid var(--n-300);
+  font-size: var(--fs-caption); color: var(--n-600);
+  display: flex; justify-content: space-between; gap: var(--s-4);
+  flex-wrap: wrap;
+}
+.meta a { color: var(--brand-hover); text-decoration: none; }
+.meta a:hover { text-decoration: underline; }
+
+/* ===== Theme toggle ===== */
+.theme-toggle {
+  background: var(--n-200); border: 1px solid var(--n-500);
+  color: var(--n-800); padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-sm); cursor: pointer;
+  font-size: var(--fs-caption); font-family: inherit;
+  transition: var(--t-fast);
+}
+.theme-toggle:hover { background: var(--n-300); }
+
+/* ===== Loading ===== */
+.loading {
+  display: flex; align-items: center; gap: var(--s-3);
+  padding: var(--s-12); justify-content: center; color: var(--n-600);
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--n-400); border-top-color: var(--brand);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-banner {
+  background: rgba(239,68,68,.1); border: 1px solid var(--danger);
+  color: var(--danger); padding: var(--s-4) var(--s-6);
+  border-radius: var(--r-md); margin-bottom: var(--s-6);
+  font-size: var(--fs-body);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--n-400); }
+  .fixes-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <a href="/" class="back-link" aria-label="กลับหน้า Dashboard">← Dashboard</a>
+    <h1>🩹 Known Fixes</h1>
+    <span class="count-badge" id="count-badge">—</span>
+    <div class="spacer"></div>
+    <button class="theme-toggle" id="theme-toggle" aria-label="สลับธีม">🌙 Dark</button>
+  </header>
+
+  <aside class="sidebar">
+    <section>
+      <h3>ค้นหา</h3>
+      <input type="search" class="search-input" id="search"
+             placeholder="ค้นหาจากอาการ, สาเหตุ, tag..." aria-label="ค้นหา" />
+    </section>
+    <section>
+      <h3>หมวดหมู่</h3>
+      <ul class="filter-list" id="category-filter" role="list">
+        <li class="filter-item active" data-filter="category" data-value="all">
+          ทั้งหมด <span class="count" id="count-all">—</span>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h3>OS</h3>
+      <ul class="filter-list" id="os-filter" role="list"></ul>
+    </section>
+    <section>
+      <h3>ความรุนแรง</h3>
+      <ul class="filter-list" id="severity-filter" role="list"></ul>
+    </section>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <span>กำลังโหลด...</span>
+    </div>
+    <div id="content"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">คัดลอกแล้ว!</div>
+
+<script>
+'use strict';
+
+// ===== State =====
+const state = {
+  fixes: [],
+  filtered: [],
+  filters: { q: '', category: 'all', os: 'all', severity: 'all', tag: null },
+};
+
+// ===== Theme =====
+function getStoredTheme() {
+  try { return localStorage.getItem('fixes-theme') || 'dark'; }
+  catch (e) { return 'dark'; }
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('fixes-theme', next); } catch (e) {}
+}
+applyTheme(getStoredTheme());
+
+// ===== API =====
+async function loadFixes() {
+  try {
+    const res = await fetch('/api/fixes', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    state.fixes = Array.isArray(data.fixes) ? data.fixes : [];
+  } catch (e) {
+    showError('โหลด fixes.json ไม่ได้: ' + e.message + ' — ตรวจสอบว่า dashboard server กำลังทำงานอยู่');
+    state.fixes = [];
+  }
+}
+
+// ===== Render filters =====
+function buildFilters() {
+  const categories = {}, oses = {}, severities = {};
+  state.fixes.forEach(f => {
+    categories[f.category] = (categories[f.category] || 0) + 1;
+    (f.os || []).forEach(o => { oses[o] = (oses[o] || 0) + 1; });
+    severities[f.severity] = (severities[f.severity] || 0) + 1;
+  });
+  renderFilterList('category-filter', 'category', categories);
+  renderFilterList('os-filter', 'os', oses);
+  renderFilterList('severity-filter', 'severity', severities);
+  document.getElementById('count-all').textContent = state.fixes.length;
+}
+function renderFilterList(elementId, filterName, counts) {
+  const ul = document.getElementById(elementId);
+  // Preserve "all" item
+  const allItem = ul.querySelector('[data-value="all"]');
+  ul.innerHTML = '';
+  if (allItem) ul.appendChild(allItem);
+  Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([value, count]) => {
+    const li = document.createElement('li');
+    li.className = 'filter-item';
+    li.dataset.filter = filterName;
+    li.dataset.value = value;
+    li.tabIndex = 0;
+    li.innerHTML = `${labelFor(filterName, value)} <span class="count">${count}</span>`;
+    li.addEventListener('click', () => setFilter(filterName, value));
+    li.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFilter(filterName, value); }
+    });
+    ul.appendChild(li);
+  });
+}
+function labelFor(filterName, value) {
+  const labels = {
+    category: { printer: '🖨️ Printer', security: '🔒 Security', hardware: '🔌 Hardware', network: '🌐 Network', software: '💿 Software', system: '⚙️ System' },
+    os: { windows: '🪟 Windows', macos: '🍎 macOS', linux: '🐧 Linux' },
+    severity: { low: '🟢 Low', medium: '🟡 Medium', high: '🔴 High' },
+  };
+  return (labels[filterName] && labels[filterName][value]) || value;
+}
+function setFilter(name, value) {
+  state.filters[name] = value;
+  // Update active classes
+  document.querySelectorAll(`[data-filter="${name}"]`).forEach(el => {
+    el.classList.toggle('active', el.dataset.value === value);
+  });
+  if (name !== 'tag') state.filters.tag = null;
+  applyFilters();
+}
+
+// ===== Filter logic =====
+function applyFilters() {
+  const { q, category, os, severity, tag } = state.filters;
+  const query = q.trim().toLowerCase();
+  state.filtered = state.fixes.filter(f => {
+    if (category !== 'all' && f.category !== category) return false;
+    if (os !== 'all' && !(f.os || []).includes(os)) return false;
+    if (severity !== 'all' && f.severity !== severity) return false;
+    if (tag && !(f.tags || []).includes(tag)) return false;
+    if (query) {
+      const haystack = [
+        f.title, f.title_th, f.root_cause, f.device,
+        (f.symptoms || []).join(' '), (f.steps || []).join(' '),
+        (f.tags || []).join(' '),
+        ...(f.scripts || []).map(s => s.label + ' ' + s.code),
+      ].join(' ').toLowerCase();
+      if (!haystack.includes(query)) return false;
+    }
+    return true;
+  });
+  renderFixes();
+}
+
+// ===== Render fixes =====
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+function highlightCode(code, lang) {
+  let html = escapeHtml(code);
+  if (lang === 'powershell') {
+    // Simple, safe highlighting (no regex on user input — escapeHtml already applied)
+    html = html.replace(/(#.*?)(\n|$)/g, '<span class="comment">$1</span>$2');
+  }
+  return html;
+}
+function renderFixes() {
+  document.getElementById('count-badge').textContent = state.filtered.length;
+  const container = document.getElementById('content');
+  if (state.filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <h2>ไม่พบการแก้ไขที่ตรงกับตัวกรอง</h2>
+        <p>ลองเปลี่ยนคำค้นหรือเคลียร์ตัวกรอง</p>
+      </div>`;
+    return;
+  }
+  const html = `<div class="fixes-grid">${state.filtered.map(renderCard).join('')}</div>`;
+  container.innerHTML = html;
+  // Wire up copy/open buttons
+  container.querySelectorAll('[data-action="copy"]').forEach(btn => {
+    btn.addEventListener('click', () => copyScript(btn));
+  });
+  container.querySelectorAll('[data-action="open"]').forEach(btn => {
+    btn.addEventListener('click', () => openPath(btn));
+  });
+  container.querySelectorAll('[data-action="tag"]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.filters.tag = el.dataset.tag;
+      state.filters.category = 'all';
+      applyFilters();
+      // Re-mark active tag
+      document.querySelectorAll('[data-action="tag"]').forEach(t => {
+        t.classList.toggle('active', t.dataset.tag === state.filters.tag);
+      });
+    });
+  });
+}
+function renderCard(f) {
+  const sevClass = `badge-severity-${f.severity || 'medium'}`;
+  const sevLabel = labelFor('severity', f.severity);
+  const osBadges = (f.os || []).map(o =>
+    `<span class="badge badge-os">${labelFor('os', o)}</span>`).join('');
+  const tagsHtml = (f.tags || []).map(t =>
+    `<span class="tag" data-action="tag" data-tag="${escapeHtml(t)}" tabindex="0">${escapeHtml(t)}</span>`
+  ).join('');
+  const symptomsHtml = (f.symptoms || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+  const stepsHtml = (f.steps || []).map((s, i) => `<li>${escapeHtml(s)}</li>`).join('');
+  const scriptsHtml = (f.scripts || []).map((s, i) => renderScript(s, i)).join('');
+  const sourceHtml = f.source_doc
+    ? `<a href="#" title="${escapeHtml(f.source_doc)}">📄 ${escapeHtml(f.source_doc.split('/').pop())}</a>`
+    : '<span>—</span>';
+  const urlHtml = f.source_url
+    ? `<a href="${escapeHtml(f.source_url)}" target="_blank" rel="noopener noreferrer">🔗 แหล่งที่มา ↗</a>`
+    : '';
+  return `
+    <article class="fix-card" data-id="${escapeHtml(f.id)}">
+      <div class="card-header">
+        <div>
+          <h2>${escapeHtml(f.title_th || f.title)}</h2>
+          ${f.title && f.title_th ? `<div class="title-en">${escapeHtml(f.title)}</div>` : ''}
+          ${f.device ? `<div class="title-en">อุปกรณ์: ${escapeHtml(f.device)}</div>` : ''}
+        </div>
+        <div class="badges">
+          <span class="badge ${sevClass}">${sevLabel}</span>
+          <span class="badge badge-cat">${escapeHtml(f.category)}</span>
+          ${osBadges}
+        </div>
+      </div>
+
+      ${symptomsHtml ? `
+        <div class="section-label">อาการ</div>
+        <ul>${symptomsHtml}</ul>` : ''}
+
+      ${f.root_cause ? `
+        <div class="section-label">สาเหตุ</div>
+        <div class="root-cause">${escapeHtml(f.root_cause)}</div>` : ''}
+
+      ${stepsHtml ? `
+        <div class="section-label">วิธีแก้ไข</div>
+        <ol>${stepsHtml}</ol>` : ''}
+
+      ${scriptsHtml ? `
+        <div class="section-label">สคริปต์ (Copy ไปรันเอง)</div>
+        ${scriptsHtml}` : ''}
+
+      ${tagsHtml ? `<div class="tags">${tagsHtml}</div>` : ''}
+
+      <div class="meta">
+        <span>📅 อัปเดต: ${escapeHtml(f.updated || f.created || '—')} · ✅ ตรวจสอบ: ${escapeHtml(f.verified || '—')}</span>
+        <span>${sourceHtml} ${urlHtml}</span>
+      </div>
+    </article>`;
+}
+function renderScript(s, idx) {
+  const langClass = `lang-${s.language || 'text'}`;
+  const adminBadge = s.requires_admin
+    ? `<span class="badge badge-admin" title="ต้องรันในฐานะผู้ดูแลระบบ">⚠️ Admin</span>`
+    : '';
+  const openBtn = s.open_path
+    ? `<button class="btn" data-action="open" data-path="${escapeHtml(s.open_path)}" title="เปิดโฟลเดอร์ที่เก็บไฟล์">📁 Open</button>`
+    : '';
+  return `
+    <div class="script-block">
+      <div class="script-header">
+        <span class="script-label">${escapeHtml(s.label)}</span>
+        <div class="script-actions">
+          ${adminBadge}
+          ${openBtn}
+          <button class="btn btn-primary" data-action="copy" data-idx="${idx}" title="คัดลอกไปยังคลิปบอร์ด">📋 Copy</button>
+        </div>
+      </div>
+      <pre class="script-code ${langClass}">${highlightCode(s.code, s.language)}</pre>
+      ${s.note ? `<div class="script-note">ℹ️ ${escapeHtml(s.note)}</div>` : ''}
+    </div>`;
+}
+
+// ===== Copy =====
+async function copyScript(btn) {
+  // Find the parent card, then the script index
+  const card = btn.closest('.fix-card');
+  const fixId = card.dataset.id;
+  const idx = parseInt(btn.dataset.idx, 10);
+  const fix = state.fixes.find(f => f.id === fixId);
+  if (!fix || !fix.scripts || !fix.scripts[idx]) return;
+  const code = fix.scripts[idx].code;
+  try {
+    await navigator.clipboard.writeText(code);
+    showToast('✅ คัดลอกแล้ว — วางใน PowerShell/terminal เพื่อรัน');
+    flashButton(btn, 'btn-copied', '✓ Copied');
+  } catch (e) {
+    // Fallback for non-secure contexts
+    const ta = document.createElement('textarea');
+    ta.value = code; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showToast('✅ คัดลอกแล้ว'); flashButton(btn, 'btn-copied', '✓ Copied'); }
+    catch (err) { showToast('❌ คัดลอกไม่ได้ — ลองคัดลอกเองจากกล่องโค้ด'); }
+    document.body.removeChild(ta);
+  }
+}
+
+// ===== Open path (via backend with whitelist) =====
+async function openPath(btn) {
+  const path = btn.dataset.path;
+  if (!path) return;
+  btn.disabled = true;
+  const original = btn.innerHTML;
+  btn.innerHTML = '⏳ Opening...';
+  try {
+    const res = await fetch('/api/fixes/open?path=' + encodeURIComponent(path));
+    const data = await res.json();
+    if (data.success) {
+      showToast('📁 เปิดแล้ว: ' + (data.opened_path || path));
+    } else {
+      showToast('⚠️ ' + (data.error || 'เปิด path ไม่ได้'));
+    }
+  } catch (e) {
+    showToast('⚠️ เปิดไม่ได้: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
+}
+
+// ===== Toast & flash =====
+let toastTimer = null;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+function flashButton(btn, cls, label) {
+  const original = btn.innerHTML;
+  btn.classList.add(cls);
+  btn.innerHTML = label;
+  setTimeout(() => {
+    btn.classList.remove(cls);
+    btn.innerHTML = original;
+  }, 1500);
+}
+
+// ===== Error banner =====
+function showError(msg) {
+  const main = document.getElementById('main');
+  document.getElementById('loading').style.display = 'none';
+  main.innerHTML = `<div class="error-banner">⚠️ ${escapeHtml(msg)}</div>`;
+}
+
+// ===== Search debounce =====
+let searchTimer = null;
+document.getElementById('search').addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.filters.q = e.target.value;
+    applyFilters();
+  }, 200);
+});
+
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+// ===== Boot =====
+(async function init() {
+  await loadFixes();
+  document.getElementById('loading').style.display = 'none';
+  buildFilters();
+  applyFilters();
+})();
+</script>
+</body>
+</html>
