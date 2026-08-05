@@ -8,7 +8,11 @@
 # Scoped Context — AI Tools Entities
 
 > **โดเมน**: AI Tools
+<<<<<<< Updated upstream
 > **Last updated**: 2026-08-02
+=======
+> **Last updated**: 2026-08-05
+>>>>>>> Stashed changes
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/ai-tools/ เท่านั้น**
 
 ---
