@@ -78,7 +78,7 @@ one you need. Full table with triggers: `wiki/A-ROUTER.md`.
 | A-phase | lifecycle skills |
 |---------|------------------|
 | ASK | `grill-with-docs`, `brainstorm-before-build` |
-| DESIGN | `spec-driven-development`, `frontend-design`, `domain-modeling`, `api-design`, `codebase-design` |
+| DESIGN | `spec-driven-development`, **`a-design`** (UX/UI spine), `ui-ux-pro-max` (data: palettes/fonts/rules), `taste-skill` (anti-slop), `accessibility` (WCAG from start), `domain-modeling`, `api-design`, `codebase-design` |
 | PLAN | `planning-and-task-breakdown`, `plan-orchestrate` |
 | IMPLEMENT | `implement`, `build`, `tdd`, `context-budget` |
 | REVIEW | `scrutinize`, `code-simplification`, `security-and-hardening`, `performance-optimization`, `two-axis-code-review` |

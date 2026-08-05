@@ -34,6 +34,11 @@
       "domain": "debug,code"
     },
     {
+      "name": "a-design",
+      "target": "skills/awiki/a-design/SKILL.md",
+      "domain": "design,ux-ui,engineering"
+    },
+    {
       "name": "a-doc",
       "target": "skills/awiki/a-doc/SKILL.md",
       "domain": "document,thai"
@@ -347,11 +352,6 @@
       "name": "deprecation-and-migration",
       "target": "skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md",
       "domain": "code,engineering"
-    },
-    {
-      "name": "design-system",
-      "target": "skills/ecosystem/design-system/SKILL.md",
-      "domain": "design"
     },
     {
       "name": "django-patterns",

@@ -243,6 +243,38 @@
       "a_phase": "debug"
     },
     {
+      "name": "a-design",
+      "aliases": [
+        "/a-design",
+        "adesign"
+      ],
+      "domain": [
+        "design",
+        "ux-ui",
+        "engineering"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-design/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessibility เข้ากับ composition/gate layer แบบ StyleSeed (8 grammars × Quality Gate 0-100)",
+      "invocation": "manual",
+      "invocation_hint": "/A-Design",
+      "a_phase": "design",
+      "triggers": [
+        "ออกแบบ ux",
+        "design system",
+        "wireframe",
+        "visual hierarchy",
+        "ui สวย"
+      ]
+    },
+    {
       "name": "a-doc",
       "aliases": [
         "/a-doc",
@@ -2733,43 +2765,6 @@
       "th_description": "เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + variants > rerolls workflow",
       "when_to_use": "ต้องการ spec-driven UI prompting ที่ consistent",
       "invocation_hint": "/design-first-ui-prompting"
-    },
-    {
-      "name": "design-system",
-      "aliases": [],
-      "domain": [
-        "design"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/design-system/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Use this skill to generate or audit design systems, check visual consistency, and review PRs that touch styling.",
-      "invocation": "manual",
-      "th_description": "ใช้สร้างหรือตรวจสอบ design system ตรวจสอบความสม่ำเสมอทางภาพ และรีวิว PR ที่เกี่ยวข้องกับสไตล์",
-      "when_to_use": "เมื่อต้องการตรวจสอบหรือสร้าง design system",
-      "examples": [
-        {
-          "scenario": "ทีมออกแบบต้องการตรวจสอบว่า component ต่างๆ มีสีและขนาดตรงตาม design system",
-          "how": "ใช้คำสั่ง /design-system audit"
-        },
-        {
-          "scenario": "มี PR ที่แก้ไขไฟล์ CSS หรือ theme ต้องการรีวิวความสม่ำเสมอ",
-          "how": "ใช้คำสั่ง /design-system review-pr"
-        }
-      ],
-      "process_steps": [
-        "รวบรวมข้อมูล component",
-        "ตรวจสอบสีและขนาด",
-        "เปรียบเทียบกับ design system",
-        "รายงานผล"
-      ],
-      "invocation_hint": "/design-system"
     },
     {
       "name": "django-patterns",

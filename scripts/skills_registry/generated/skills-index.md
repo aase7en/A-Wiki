@@ -9,6 +9,7 @@
 | `a-content` | media, business | meta | pipeline | `skills/awiki/a-content/SKILL.md` |
 | `a-council` | engineering | review | pipeline | `skills/awiki/a-council/SKILL.md` |
 | `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
+| `a-design` | design, ux-ui, engineering | meta | pipeline | `skills/awiki/a-design/SKILL.md` |
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
 | `a-doc-announce` | document, thai | build | pipeline | `skills/awiki/a-doc/types/announce/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
@@ -81,7 +82,6 @@
 | `delegate-subagent` | ai-ops | none | wiki | `skills/claude-code/delegate-subagent/SKILL.md` |
 | `deprecation-and-migration` | code, engineering | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md` |
 | `design-first-ui-prompting` | design | define | vendor-mengto | `skills/_upstream/mengto/agent-skills/ui/design-first-ui-prompting/SKILL.md` |
-| `design-system` | design | none | ecosystem | `skills/ecosystem/design-system/SKILL.md` |
 | `django-patterns` | code | none | ecosystem | `skills/ecosystem/django-patterns/SKILL.md` |
 | `django-verification` | code | none | ecosystem | `skills/ecosystem/django-verification/SKILL.md` |
 | `doc-coauthoring` | productivity | none | uncategorized | `skills/anthropic-skills/doc-coauthoring/SKILL.md` |
@@ -262,7 +262,7 @@
 | debug | 7 |
 | design | 22 |
 | document | 9 |
-| engineering | 54 |
+| engineering | 55 |
 | media | 17 |
 | medical | 4 |
 | pharmacy | 2 |
@@ -271,5 +271,5 @@
 | sre | 2 |
 | thai | 14 |
 | trader | 11 |
-| ux-ui | 7 |
+| ux-ui | 8 |
 | wiki | 9 |

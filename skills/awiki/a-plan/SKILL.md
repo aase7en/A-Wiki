@@ -66,7 +66,7 @@ Aggregator สำหรับงานวางแผนและออกแบ
 
 | Domain | Canonical skill | Output |
 |---|---|---|
-| **UX/UI** | `frontend-design` + `frontend-slides` | mockup HTML + 34 templates |
+| **UX/UI** | **`a-design`** (composition + Quality Gate spine) → `ui-ux-pro-max` (data) + `taste-skill` (anti-slop) + `accessibility` + `frontend-slides` | mockup HTML + composition decision (grammar × recipe) |
 | **Database** | `domain-modeling` | ER diagram + entity list |
 | **Architecture** | `codebase-design` + `api-design` | component diagram + API contract |
 | **Mixed** | ผสมตามโจทย์ | — |

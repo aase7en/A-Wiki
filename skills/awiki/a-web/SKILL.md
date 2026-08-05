@@ -45,7 +45,7 @@ focus_set({"skill": "a-web", "goal": "<done criteria>", "phase": "ask"})
 | Phase | ใช้ | ทำอะไร |
 |-------|-----|--------|
 | ASK | `a-think` · `grill-with-docs` | ถามให้ชัดก่อน: ใครใช้ อะไรคือ done |
-| DESIGN | `frontend-design` · `design-system` · `api-design` | layout, design system, สัญญา API |
+| DESIGN | **`ui-ux-pro-max`** (data: 161 palettes + 74 fonts + 99 rules) · **`taste-skill`** (anti-AI-slop) · **`a-design`** (composition + Quality Gate) · `accessibility` (WCAG 2.2 AA from start) · `api-design` (contract) | palette/font/style selection, anti-slop defaults, a11y, สัญญา API |
 | PLAN | `a-plan` | แตกเป็น slice ที่ ship ได้ทีละอัน |
 | IMPLEMENT | `react-patterns` · `nextjs-turbopack` · `frontend-patterns` · `vite-patterns` · `motion-ui` | เขียนจริง |
 | REVIEW | `a-council` · `frontend-a11y` | รีวิว + a11y (WCAG) |

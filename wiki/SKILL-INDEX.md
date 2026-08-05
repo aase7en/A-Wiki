@@ -16,8 +16,8 @@
 | `code` | เขียนโค้ด / ภาษาโปรแกรม | 101 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 22 |
-| `ux-ui` | UX/UI / Frontend / a11y | 7 |
-| `engineering` | วิศวกร / Architect / Agent harness | 54 |
+| `ux-ui` | UX/UI / Frontend / a11y | 8 |
+| `engineering` | วิศวกร / Architect / Agent harness | 55 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
@@ -158,6 +158,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `add-shader-cursor-trail` | build | vendor-mengto | เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks |
 | `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
@@ -167,7 +168,6 @@
 | `cinematic-gsap-lenis-motion-system` | build | vendor-mengto | Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll... |
 | `codebase-design` | build | mattpocock | ชุดคำศัพท์และแนวคิดสำหรับออกแบบโมดูลที่ลึก (deep modules) โดยเน้นการหาโอกาสในการขยาย (deepening o... |
 | `design-first-ui-prompting` | define | vendor-mengto | เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + varia... |
-| `design-system` | none | ecosystem | ใช้สร้างหรือตรวจสอบ design system ตรวจสอบความสม่ำเสมอทางภาพ และรีวิว PR ที่เกี่ยวข้องกับสไตล์ |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
 | `frontend-design` | none | uncategorized | ออกแบบ UI/UX หน้าเว็บ — layout, color, typography, component |
 | `gsap` | build | vendor-mengto | GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่อง... |
@@ -185,6 +185,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `accessibility` | none | ecosystem | ออกแบบ พัฒนา และตรวจสอบความสามารถในการเข้าถึงของผลิตภัณฑ์ดิจิทัลให้สอดคล้องกับมาตรฐาน WCAG 2.2 ระ... |
@@ -201,6 +202,7 @@
 | `a-backend` | meta | pipeline | backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/pris... |
 | `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
+| `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
 | `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
@@ -466,7 +468,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-escalate`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
