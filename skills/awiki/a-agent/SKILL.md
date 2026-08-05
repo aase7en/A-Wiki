@@ -45,7 +45,7 @@ focus_set({"skill": "a-agent", "goal": "<done criteria>", "phase": "ask"})
 | Phase | ใช้ | ทำอะไร |
 |-------|-----|--------|
 | ASK | `a-think` · `grill-with-docs` | นิยาม "agent" ให้ชัด: autonomous? tool-use? eval criteria? |
-| DESIGN | `agent-harness-construction` · `mcp-server-patterns` · `agent-architecture-audit` | วาง harness shape + tool surface + audit boundary |
+| DESIGN | `agent-harness-construction` · `mcp-server-patterns` · `agent-architecture-audit` · (agent UI/chat/dashboard? → `/A-Design` ใช้ grammar consumer-service) | วาง harness shape + tool surface + audit boundary + UI เมื่อ agent มีหน้าจอ |
 | PLAN | `a-plan` | แตกเป็น slice (harness → tool → eval) |
 | IMPLEMENT | `mcp-builder` · `continuous-agent-loop` · `delegate-subagent` | สร้างจริง |
 | REVIEW | `a-council` · `eval-harness` · `agent-eval` | รีวิว + วัดผล |

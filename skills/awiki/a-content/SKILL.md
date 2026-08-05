@@ -45,7 +45,7 @@ focus_set({"skill": "a-content", "goal": "<done criteria>", "phase": "ask"})
 | Phase | ใช้ | ทำอะไร |
 |-------|-----|--------|
 | ASK | `a-think` · `grill-with-docs` | ใครอ่าน? อยากให้เขาทำอะไรต่อ? |
-| DESIGN | `brand-voice` · `brand-guidelines` | น้ำเสียง โทน ข้อห้ามของแบรนด์ |
+| DESIGN | `brand-voice` · `brand-guidelines` · **`a-design`** (visual content: carousel/infographic/hero/card — ใช้ adapter social-carousel หรือ deck) | น้ำเสียง โทน ข้อห้ามของแบรนด์ + visual composition ของคอนเทนต์ |
 | PLAN | `content-engine` · `marketing-campaign` | ปฏิทินคอนเทนต์ / โครง campaign |
 | IMPLEMENT | `article-writing` · `thai-social-caption` | เขียนจริง |
 | REVIEW | `a-council` · `seo` | รีวิวคุณภาพ + SEO |

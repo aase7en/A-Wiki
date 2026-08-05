@@ -42,7 +42,7 @@ focus_set({"skill": "a-game", "goal": "<done criteria>", "phase": "ask"})
 | Phase | ใช้ | ทำอะไร |
 |-------|-----|--------|
 | ASK | `a-think` · `grill-with-docs` | 2D/3D? genre? platform? target FPS? |
-| DESIGN | `game-phaser-pipeline` (สำหรับ 2D Phaser) · scene structure | วาง scene graph + asset list + loop shape |
+| DESIGN | `game-phaser-pipeline` (สำหรับ 2D Phaser) · **`a-design`** (menu/HUD/onboarding UI — ใช้ grammar sequential-story สำหรับ tutorial, consumer-service สำหรับ settings/menu) · scene structure | วาง scene graph + asset list + loop shape + game UI composition |
 | PLAN | `a-plan` | แตกเป็น slice (boot → preload → main scene → physics → polish) |
 | IMPLEMENT (2D) | `phaser-core` · `phaser-arcade-physics` · `pixijs-rendering` | โค้ดจริง |
 | IMPLEMENT (3D) | `threejs-scene-setup` · `threejs-gltf-loading` · `threejs-materials-lighting` | โค้ดจริง |

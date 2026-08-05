@@ -44,7 +44,7 @@ focus_set({"skill": "a-backend", "goal": "<done criteria>", "phase": "ask"})
 | Phase | ใช้ | ทำอะไร |
 |-------|-----|--------|
 | ASK | `a-think` · `grill-with-docs` | นิยาม: REST/GraphQL/gRPC? sync/async? scale? |
-| DESIGN | `api-design` · `domain-modeling` | contract + schema + boundary |
+| DESIGN | `api-design` · `domain-modeling` · (admin/dashboard UI? → `/A-Design` ใช้ grammar operations-console) | contract + schema + boundary + admin UX เมื่อต้องมี |
 | PLAN | `a-plan` | แตกเป็น slice (model → endpoint → migration → test) |
 | IMPLEMENT | `backend-patterns` · `api-connector-builder` · framework pick | django/fastapi/laravel/nestjs/springboot/quarkus/golang/rust |
 | REVIEW | `a-council` · `error-handling` · `security-and-hardening` | รีวิว + ตรวจ error path + security |
