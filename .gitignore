@@ -66,6 +66,9 @@ yarn-debug.log*
 scripts/live-dashboard/node_modules/
 scripts/live-dashboard/app.min.js
 scripts/live-dashboard/app.min.js.map
+# Launcher.bat is generated per-machine by install-dashboard-protocol.ps1
+# (contains machine-specific python path — never commit).
+scripts/start-dashboard.bat
 yarn-error.log*
 .pnpm-store/
 *.tsbuildinfo

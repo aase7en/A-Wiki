@@ -22,8 +22,14 @@
 <div id="offline" class="show">
   <h2>รอ Dashboard Server…</h2>
   <p>A-Wiki <b style="color:var(--text-primary)">เปิดอัตโนมัติ</b> ตอนเริ่ม session (Claude / Codex) หรือเปิด folder ใน VS Code (Kilo / Cline). ถ้ายังไม่ขึ้น เปิดเอง:</p>
-  <code>bash scripts/dashboard-ensure.sh</code>
-  <button class="retry-btn" onclick="connect()"> ลองเชื่อมต่อใหม่</button>
+  <button class="launch-btn" id="launch-protocol-btn" onclick="launchDashboard()">⚡ เปิด Dashboard ตอนนี้</button>
+  <div id="launch-fallback" hidden>
+    <p style="margin-top:18px">ไม่ได้ติดตั้งปุ่มเร็ว? รันคำสั่งนี้ครั้งเดียวบนเครื่องนี้ (PowerShell) เพื่อเปิดใช้:</p>
+    <code>pwsh scripts/install-dashboard-protocol.ps1</code>
+    <p style="margin-top:12px">หรือเปิด server เอง:</p>
+    <code>bash scripts/dashboard-ensure.sh</code>
+  </div>
+  <button class="retry-btn" onclick="connect()" style="margin-top:14px"> ลองเชื่อมต่อใหม่</button>
 </div>
 
 <!-- Header -->
@@ -926,5 +932,67 @@
 <div id="aria-live" class="sr-only" aria-live="polite"></div>
 
 <script src="/app.min.js"></script>
+<script>
+// CHUNK FX2: click-to-launch via awiki:// custom protocol.
+// The bundled app.min.js is built via esbuild; for a single small helper that
+// must be reachable from an inline onclick handler, a tiny inline script here
+// is the lightest shape (no rebuild needed, no bundle churn).
+(function () {
+  'use strict';
+  var fallbackShown = false;
+
+  function showFallback() {
+    if (fallbackShown) return;
+    fallbackShown = true;
+    var el = document.getElementById('launch-fallback');
+    if (el) el.hidden = false;
+    var btn = document.getElementById('launch-protocol-btn');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '⚡ เปิด Dashboard ตอนนี้';
+    }
+  }
+
+  function launchDashboard() {
+    var btn = document.getElementById('launch-protocol-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ กำลังเปิด…'; }
+
+    // Try the custom protocol. The browser will show its own "open app?" prompt
+    // the first time per origin; we have no way to know from JS whether it
+    // succeeded, so we poll the server and either recover (overlay hides once
+    // SSE connects) or reveal the fallback instructions after a few seconds.
+    try {
+      // Use a hidden iframe so the protocol navigation does not navigate the
+      // top page away (which would lose this DOM state).
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = 'awiki://start';
+      document.body.appendChild(iframe);
+      setTimeout(function () { if (iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 2000);
+    } catch (e) {
+      showFallback();
+      return;
+    }
+
+    // Poll /status every second for up to ~15s. When the server boots, connect()
+    // (from app.min.js) will hide the overlay automatically via SSE onopen.
+    var tries = 0;
+    var maxTries = 15;
+    var timer = setInterval(function () {
+      tries += 1;
+      fetch('/status', { cache: 'no-store' })
+        .then(function (r) { if (r.ok) { clearInterval(timer); if (typeof connect === 'function') connect(); } })
+        .catch(function () { /* server not up yet */ });
+      if (tries >= maxTries) {
+        clearInterval(timer);
+        showFallback();
+      }
+    }, 1000);
+  }
+
+  // Expose globally for the inline onclick handler.
+  window.launchDashboard = launchDashboard;
+})();
+</script>
 </body>
 </html>
