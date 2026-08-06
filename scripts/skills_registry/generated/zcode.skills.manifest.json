@@ -79,6 +79,11 @@
       "domain": "engineering,ux-ui,design"
     },
     {
+      "name": "a-rabies-report",
+      "target": "skills/a-rabies-report/SKILL.md",
+      "domain": "medical"
+    },
+    {
       "name": "a-research",
       "target": "skills/awiki/a-research/SKILL.md",
       "domain": "engineering,data"

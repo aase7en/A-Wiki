@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 247 · **Aliases/deprecated**: 5
+**Total canonical skills**: 248 · **Aliases/deprecated**: 5
 
 ## 📊 Domain Summary
 
@@ -19,7 +19,7 @@
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
 | `engineering` | วิศวกร / Architect / Agent harness | 55 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
-| `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
+| `medical` | การแพทย์ / ร้านยา / HIPAA | 5 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
 | `data` | Data Visualization / DB / Query | 13 |
 | `security` | ความปลอดภัย / Hardening | 9 |
@@ -274,6 +274,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-rabies-report` | build | pipeline | ประมวลผลและสร้างรายงานการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies Vaccine & Immunoglobulin Report) ... |
 | `healthcare-phi-compliance` | none | ecosystem | รูปแบบการปฏิบัติตามข้อกำหนดด้านข้อมูลสุขภาพที่ได้รับการคุ้มครอง (PHI) และข้อมูลส่วนบุคคลที่สามารถ... |
 | `medical-pipeline` | meta | pipeline | ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบควา... |
 | `openmed` | none | uncategorized | ใช้ OpenMed สำหรับการสกัดข้อมูลทางการแพทย์ (medical entity extraction), การตรวจจับข้อมูลส่วนบุคคล... |
@@ -464,7 +465,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-doc-announce`, `a-med-order`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
+- **BUILD**: `a-doc`, `a-doc-announce`, `a-med-order`, `a-rabies-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`

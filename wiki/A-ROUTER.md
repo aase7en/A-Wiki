@@ -40,7 +40,7 @@
 | Skill | เรียกด้วย | Phase | Triggers |
 |-------|-----------|-------|----------|
 | `a-think` | `/A-Think` | ask | _(none — invoke explicitly)_ |
-| `a-design` | `/A-Design` | design | `ออกแบบ ux` · `design system` · `wireframe` · `visual hierarchy` · `ui สวย` |
+| `a-design` | `/A-Design` | design | `ออกแบบ ux` · `design system` · `wireframe` · `visual hierarchy` · `ui สวย` · `palette` · `typography` · `dark mode` |
 | `a-plan` | `/A-Plan` | design | `ออกแบบ` · `วางแผน` · `design` · `architecture` · `database schema` · `ux/ui` |
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
@@ -58,7 +58,7 @@
 | `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 | `a-web` | `/A-Web` | any | `สร้างเว็บ` · `เว็บไซต์` · `frontend` · `react` · `nextjs` |
 
-> อีก 3 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
+> อีก 4 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
 
 ---
 
@@ -107,4 +107,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_18 A-Suite entry points (+3 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_18 A-Suite entry points (+4 subskills) · spine = ask → design → plan → implement → review → debug → test_

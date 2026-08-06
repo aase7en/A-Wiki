@@ -271,7 +271,10 @@
         "design system",
         "wireframe",
         "visual hierarchy",
-        "ui สวย"
+        "ui สวย",
+        "palette",
+        "typography",
+        "dark mode"
       ]
     },
     {
@@ -8538,6 +8541,36 @@
         "ส่งออกผลลัพธ์"
       ],
       "invocation_hint": "/xlsx"
+    },
+    {
+      "name": "a-rabies-report",
+      "aliases": [
+        "/a-rabies-report",
+        "rabies-report"
+      ],
+      "domain": [
+        "medical"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/a-rabies-report/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "ประมวลผลและสร้างรายงานการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies Vaccine & Immunoglobulin Report) จากไฟล์ HIS Export (.xls/.xlsx) ตามเกณฑ์รายอุบัติการณ์ 28 วัน (IM, ID, ERIG, Booster/Primary, Mixed Regimens)",
+      "invocation": "manual",
+      "invocation_hint": "/a-rabies-report",
+      "a_phase": "any",
+      "triggers": [
+        "rabies",
+        "วัคซีนพิษสุนัขบ้า",
+        "พิษสุนัขบ้า",
+        "erig",
+        "rabiesvacc"
+      ]
     }
   ]
 }
