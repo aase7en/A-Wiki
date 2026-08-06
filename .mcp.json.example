@@ -67,6 +67,16 @@
       "env": {},
       "disabled": true,
       "autoApprove": []
+    },
+    "trello": {
+      "command": "npx",
+      "args": ["-y", "trello-mcp"],
+      "env": {
+        "TRELLO_API_KEY": "REPLACE_WITH_TRELLO_API_KEY",
+        "TRELLO_TOKEN": "REPLACE_WITH_TRELLO_TOKEN"
+      },
+      "disabled": true,
+      "autoApprove": []
     }
   }
 }
