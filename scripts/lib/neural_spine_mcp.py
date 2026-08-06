@@ -505,6 +505,35 @@ def tool_claim_advance(args: dict) -> dict:
     return _claims().advance(args["claim_id"], args["phase"])
 
 
+def tool_design_quality_gate(args: dict) -> dict:
+    """Evaluate design_tokens against the 8-category a-design Quality Gate.
+
+    Deterministic rubric (no LLM, no vision). Accepts the same design_tokens
+    JSON shape that a-design's composition layer produces, plus an optional
+    ship_threshold override (default 80). Returns {total, blocked,
+    per_category, fails, ship_threshold}.
+
+    See: skills/awiki/a-design/references/quality-gate.md for the rubric.
+    See: scripts/lib/a_design_gate.py for the implementation.
+    """
+    design_tokens = args.get("design_tokens") or {}
+    ship_threshold = args.get("ship_threshold", 80)
+    # Lazy import — avoid loading the rubric lib unless this tool is called.
+    import sys as _sys
+    from pathlib import Path as _Path
+    _root = _Path(__file__).resolve().parents[2]
+    if str(_root / "scripts" / "lib") not in _sys.path:
+        _sys.path.insert(0, str(_root / "scripts" / "lib"))
+    from a_design_gate import evaluate as _evaluate, CATEGORIES as _CATS  # noqa: E402
+    result = _evaluate(design_tokens)
+    # Apply caller's threshold if different from default (e.g., team wants 85)
+    if ship_threshold != result["ship_threshold"]:
+        result["ship_threshold"] = ship_threshold
+        result["blocked"] = result["total"] < ship_threshold
+    return result
+
+
+
 # ── TOOLS registry (merged into awiki MCP server TOOLS) ───────────────────
 TOOLS: dict[str, dict[str, Any]] = {
     "memory_recall": {
@@ -752,6 +781,48 @@ TOOLS: dict[str, dict[str, Any]] = {
                 "note": {"type": "string"},
             },
             "required": ["task_id", "status"],
+        },
+    },
+    "design_quality_gate": {
+        "fn": tool_design_quality_gate,
+        "description": (
+            "Evaluate design decisions against the a-design 8-category Quality Gate rubric "
+            "(Hierarchy / Typography / Color / Composition / Motion / Accessibility / "
+            "Distinctiveness / Craft, 100 pts total). Deterministic — no LLM, no vision. "
+            "Pass the design_tokens JSON produced by /A-Design's composition layer. "
+            "Returns {total (0-100), blocked (<threshold), per_category, fails}. "
+            "Default ship_threshold=80; override per team policy. "
+            "See skills/awiki/a-design/references/quality-gate.md for the rubric."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "design_tokens": {
+                    "type": "object",
+                    "description": (
+                        "Design decisions to evaluate. Recognized keys: "
+                        "focal_point (str), visual_weights (list[int]), "
+                        "uses_size_hierarchy (bool), type_scale_ratio (str e.g. '3:2'), "
+                        "body_line_height (float 1.4-1.6), body_font (str), "
+                        "serif_default (bool), palette (object with fg/bg/card/border/"
+                        "accent/destructive hex), grid_system (str), grammar (str), "
+                        "density (str), whitespace_intentional (bool), "
+                        "duration_tokens (bool), prefers_reduced_motion (bool), "
+                        "exit_duration_ms (int), enter_duration_ms (int), "
+                        "accessibility (object: touch_target_pt/focus_visible/aria_semantic/"
+                        "color_not_only_state), distinctiveness (object: icon_chip_cliche/"
+                        "all_even_grid/ghost_numbering/stock_hero_visual bool), "
+                        "craft (object: number_ratio_2to1/refined_black/low_opacity_shadow/"
+                        "single_accent/eyebrow_restraint bool). Missing keys score 0."
+                    ),
+                },
+                "ship_threshold": {
+                    "type": "integer",
+                    "default": 80,
+                    "description": "Score below which the design is 'blocked' (cannot ship).",
+                },
+            },
+            "required": ["design_tokens"],
         },
     },
 }
