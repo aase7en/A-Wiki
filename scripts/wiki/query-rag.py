@@ -125,7 +125,10 @@ def load_all_documents() -> list[dict]:
             continue
         for path in sorted(base.rglob("*.md")):
             try:
-                rel = str(path.relative_to(REPO_ROOT))
+                # as_posix() keeps path separators cross-platform (POSIX '/').
+                # Without it, Windows emits 'wiki\sources\iot\mqtt.md' which
+                # breaks substring matching in tests and FTS5 path lookups.
+                rel = path.relative_to(REPO_ROOT).as_posix()
                 text = path.read_text(encoding="utf-8")
             except (OSError, UnicodeDecodeError):
                 continue
