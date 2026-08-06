@@ -168,6 +168,68 @@ Before writing **any** new file, decide where it lives. The wrong choice either 
 
 ---
 
+## 🧬 Neural Spine — Cross-Device Memory & Auto-Recall
+
+> **What this is:** A-Wiki's append-only event-sourced memory layer. Lets ledger/blackboard/task-board state travel across machines (Win/Mac/Pi5) WITHOUT going through git-tracked files (`.tmp-sync/` is gitignored — transport is scp/HTTP/drive per A-Council decision `754a6bae`).
+>
+> **Why it matters for edits:** touching any of `scripts/lib/{atomic_json,memory_ledger,blackboard,task_board,cross_device_sync}.py` or `scripts/hooks/{recall_on_prompt,self_audit,auto_council_trigger,a_loop_distill}.py` changes how the brain remembers and recalls. These are load-bearing — break them and every session degrades silently.
+
+| Component | File | Role |
+|---|---|---|
+| **Atomic primitives** | `scripts/lib/atomic_json.py` | Cross-platform file lock (`msvcrt`/`fcntl`/`threading`) + atomic write (temp+rename) + `atomic_update` (read-modify-write under lock) |
+| **Memory ledger** | `scripts/lib/memory_ledger.py` | Append-only `JSONL` event log (decision/lesson/failure/outcome/idea). Auto-redacts secrets on append. `MAX_LOAD_ENTRIES=200` cap (older entries = "dark memory" — still on disk, not surfaced) |
+| **Blackboard** | `scripts/lib/blackboard.py` | Async inter-agent messaging with `@mention` threads |
+| **Task board** | `scripts/lib/task_board.py` | Atomic task claim/release with TTL leases; `parent_goal_id` for goal hierarchy |
+| **Goal store** | `scripts/lib/goal_store.py` | Thin wrapper on task_board for `/A-Loop` goal lifecycle |
+| **Cross-device sync** | `scripts/lib/cross_device_sync.py` | Per-device shards `.tmp-sync/<device>.jsonl` (Approach B — conflict-free concurrent writers). `export_shard` / `import_all_shards` + CLI (`--export --device X` / `--import`) |
+| **Semantic recall** | `scripts/lib/semantic_recall.py` | FTS5 BM25 search over ledger (zero-dep — no sqlite-vec/fastembed). Prefix queries for recall |
+| **Recall-on-prompt hook** | `scripts/hooks/recall_on_prompt.py` | `UserPromptSubmit` hook → auto-injects top ledger match as `additionalContext`. Threshold-gated (BM25>5.0 or term-overlap≥2). **R-SR2 defense**: machine-path scan blocks injection of `C:\Users\`/`/Users/`/`/home/` |
+| **Self-audit hook** | `scripts/hooks/self_audit.py` | `Stop` hook → checks open councils + unreviewed auto-councils; critical finding blocks ship |
+| **Auto-council trigger** | `scripts/hooks/auto_council_trigger.py` | `PostToolUse Edit|Write` → auto-opens council on sensitive paths (zero slash command) |
+| **Device health** | `scripts/live-dashboard/device_health.py` | Pure-function stale-device alarm + `/api/devices` endpoint. Clock-skew defense via filesystem mtime |
+
+### Cross-Device Sync — How It Works
+
+```
+device A:  python scripts/lib/cross_device_sync.py --export --device win-desktop
+           → writes .tmp-sync/win-desktop.jsonl (local, gitignored)
+           → scp to device B  (NOT git — .tmp-sync/ is gitignored by design)
+
+device B:  scp'd shard lands in .tmp-sync/win-desktop.jsonl
+           python scripts/lib/cross_device_sync.py --import
+           → import_all_shards() merges every *.jsonl into local .tmp/
+           → additive + idempotent (set-union, dedup by session_id+summary)
+```
+
+**3-layer secret defense** (Iron Law #6 — never leak to other devices):
+1. `memory_ledger._redact` on append (regex: sk-, AIza, AKIA, ghp_, xox-, JWT, generic tokens)
+2. `cross_device_sync._find_secret` on export (independent regex set + privacy-patterns.txt denylist for project names/codenames/foreign-repo paths). **Skip-ENTRY** (not block-whole-shard) — offending entries stay local-only, clean entries sync normally
+3. `pre-commit-awiki.sh` Layer 3 staged-diff scan (catches anything that slipped through)
+
+**Gotcha (audit finding 2026-08-04):** the original A-Council fix used catch-all block (any offending entry → block entire shard). This made sync UNUSABLE on real ledgers because entries naturally reference project names. Fixed to skip-ENTRY (graceful degradation) — same privacy goal, usable in production.
+
+### Smoke Test Commands
+
+```bash
+# Export this device's shard (skips secret-bearing entries)
+python scripts/lib/cross_device_sync.py --export --device <name>
+
+# Import all shards from other devices
+python scripts/lib/cross_device_sync.py --import
+
+# Cross-device via scp (matches A-Council out-of-band transport)
+scp .tmp-sync/<this-device>.jsonl umbrel@<pi5-ip>:~/A-Wiki/.tmp-sync/
+ssh umbrel@<pi5-ip> "cd ~/A-Wiki && python3 scripts/lib/cross_device_sync.py --import"
+
+# Device health check (dashboard sees all devices)
+python -c "import sys; sys.path.insert(0,'scripts/live-dashboard'); import device_health; print(device_health.device_summary('.tmp-sync'))"
+
+# Neural-spine test suite (~357 tests)
+python -m pytest tests/ -k "atomic or memory_ledger or blackboard or task_board or cross_device or device_health or recall_on_prompt or council or semantic_recall or self_audit"
+```
+
+---
+
 ## 🏗️ Agent Foundation Architecture (4 Layers)
 
 > **What this is:** A-Wiki's true "foundational roots" — the layers that, if removed, the system breaks or degrades. This corrects a common misreading where upstream tools (ECC, DeerFlow, GBrain, Graphify, Matt Pocock) are mistaken for the foundation. In reality the foundation is mostly A-Wiki-native; upstream tools are catalog / opt-in / rejected (see §Repository Integration).
