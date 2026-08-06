@@ -1,29 +1,33 @@
 ---
 type: entity
 category: project
-tags: [wastewater, supabase, migration, sibling-repo, companion-repo, fastapi]
+tags: [wastewater, supabase, migration, sibling-repo, companion-repo, react, vite, github-pages]
 sources: []
 created: 2026-07-05
-updated: 2026-07-16
-last_verified: 2026-07-16
+updated: 2026-08-07
+last_verified: 2026-08-07
 verify_tool: training
 ---
 
 # env-wastewater-webapp (sibling repo)
 
-**ประเภท**: Software project — data migration + monitoring webapp backend
-**สถานะ**: Phases P1–P5 เสร็จแล้ว (2026-07-16) — 907/907 rows migrated +
-schema stabilized (P1–P4) + FastAPI backend scaffolded with all v1 endpoints
-live (P5). PR #10 (https://github.com/aase7en/env-wastewater-webapp/pull/10)
-เปิดอยู่บน branch `claude/webapp-p5-fastapi`.
-ขั้นถัดไป: P6 frontend build-out (ยังไม่เริ่ม — รอ lock design direction) +
-P5b.2-live (DB introspection, blocked รอ SUPABASE_DB_URL). ดู `MIGRATION.md`
-ใน repo นั้นสำหรับ chunk plan + open follow-ups.
+**ประเภท**: Software project — data migration + monitoring webapp
+**สถานะ** (verified 2026-08-07 ผ่านการอ่าน `MIGRATION.md` + `git log`):
+907/907 rows migrated (P1–P4 เสร็จ 2026-07-07). **FastAPI backend ถูก retire
+ไปแล้ว** (`c6fc72a`, 2026-07-19, "Approach C — direct-to-Supabase") — frontend
+เรียก Supabase โดยตรงผ่าน JS client + PostgREST façade views. Frontend
+(React + Vite + TypeScript + Tailwind) shipped เป็น tracer-bullet P10+ แล้ว
+deploy บน GitHub Pages. งานปัจจุบันเป็น **two-track parallel**: Track F
+(Fable5/Claude — visual layer) ∥ Track Z (ZCode/GLM — feature/data/SQL layer).
+Shipped ล่าสุด: OAUTH-1..4 (Google/LINE + deny-pending RLS), SCHEMA5b (5
+reference tables), AI-SQL trio (P4-nl-sql + audit-viewer + suggest-chip), DOCK
+role-module-visibility, 6-bug backlog sweep, OPT-HYGIENE (carbon.ts tests +
+WO sync). ดู `MIGRATION.md` ใน repo นั้นสำหรับ chunk plan + In-progress claims.
 **Location**: sibling directory ของ A-Wiki บนเครื่องเดียวกัน (`$A_WIKI_ROOT/../env-wastewater-webapp` หรือตามที่ผู้ใช้ clone) — **แยก git repo จาก A-Wiki** (private, github.com/aase7en/env-wastewater-webapp)
 
 ## ภาพรวม
 
-Migrate ข้อมูลบ่อบำบัดน้ำเสียของ รพ.ประจำอำเภอ จาก Google Sheets/AppSheet เข้า Supabase Postgres (`wastewater`/`carbon`/`core` schema) แล้วต่อยอดเป็น monitoring webapp (FastAPI + frontend) ในอนาคต
+Migrate ข้อมูลบ่อบำบัดน้ำเสียของ รพ.ประจำอำเภอ จาก Google Sheets/AppSheet เข้า Supabase Postgres (`wastewater`/`carbon`/`core` schema) แล้วต่อยอดเป็น monitoring webapp (frontend เรียก Supabase ตรง — FastAPI ถูก retire แล้ว)
 
 **สาเหตุที่แยก repo**: งานนี้เป็น production application code (migration scripts วันนี้ + FastAPI/frontend อนาคต) ต้องการ git workflow ปกติ (branch/PR/CI) ไม่ผูกกับกฎ "commit ตรง main ห้าม branch" ของ A-Wiki (Core Rule #6) ผู้ใช้ตัดสินใจแยก repo แต่ยังต้องการให้ความรู้โดเมน (schema, ENV concepts) อยู่ที่ A-Wiki เหมือนเดิม
 
@@ -66,14 +70,13 @@ Schema ที่ implement จริงใน ENV_DB (P1–P4) ต่างอ�
 
 **สิ่งที่ยังใช้ได้จากเอกสารเก่า** (verified P5b.2-local):
 - computed-value สูตร: `do_average`, `energy_kwh`, `sv30_percent`,
-  `energy_per_m3`, `date_thai_be` (implement ใน `app/core/computed.py`)
-- alert thresholds: DO<2.0, Cl<0.5, pH 6.5–8.5 (stub ใน `app/core/alert.py`)
-- แนวคิด "computed ใน Pydantic ไม่เก็บ DB"
+  `energy_per_m3`, `date_thai_be` — implement ใน frontend (`lib/carbon.ts`,
+  `lib/utils.ts`) และ SQL views ฝั่ง Supabase (ไม่ใช่ Pydantic อีกต่อไป)
+- alert thresholds: DO<2.0, Cl<0.5, pH 6.5–8.5 (frontend inline warnings)
 
 **สำหรับ schema จริง** ดู:
-- `reports/schema-snapshot-p5.md` (local-source reconciliation, verified)
-- `scripts/introspect_schema.py` — รันเพื่อ snapshot live schema
-- `app/models/` — ORM models (11 ตัว, verified against INSERT contract)
+- `reports/schema-snapshot-live.md` (live introspection output)
+- `scripts/introspect_schema_api.py` — รันเพื่อ refresh snapshot ผ่าน Management API
 - `MIGRATION.md` — per-phase decisions สำหรับแต่ละตาราง
 
 ## ความสัมพันธ์
@@ -81,20 +84,21 @@ Schema ที่ implement จริงใน ENV_DB (P1–P4) ต่างอ�
 - เกี่ยวข้องกับ: [[hospital-wastewater-treatment]] — ความรู้โดเมน regulatory/technical
 - เกี่ยวข้องกับ: [[water-quality-parameters]] — parameter ที่ migrate (DO, pH, TDS, SV30, Free Chlorine)
 - Schema design (legacy, Pi5 era): [[env-webapp-schema-wastewater]] (synthesis) — **อ่านคำเตือนด้านบนก่อนใช้**
-- Backend ADR: `docs/adr/0003-fastapi-sqlalchemy-async-supabase-jwt.md` ใน sibling repo
+- Backend ADR (legacy FastAPI, superseded by Approach C): `docs/adr/0003-fastapi-sqlalchemy-async-supabase-jwt.md` ใน sibling repo
+- Removal record: `docs/work-orders/FASTAPI-removal.md` ใน sibling repo
 
-## P5 deliverables (2026-07-16, PR #10)
+## Current state (verified 2026-08-07)
 
-- `app/` — FastAPI: 11 ORM models, 15 endpoints (readings CRUD, dashboard,
-  reference, repair requests, PDF templates, `/api/me`)
-- `app/core/` — config, async DB layer, auth (stub + JWT-ready), computed
-  values, threshold alert stub
-- `tests/` — 44 unit tests (pure functions, schemas, auth, endpoint contracts)
-- `tests/integration/` — 8 tests ตรวจ schema/endpoints จริง (auto-skip จนกว่า
-  `SUPABASE_DB_URL` จะถูกตั้ง)
-- `scripts/introspect_schema.py` — snapshot live schema → `reports/schema-snapshot-live.md`
-- `.github/workflows/test.yml` — CI runs unit suite ทุก PR (ไม่ต้องการ secret)
-- สแต็ค: FastAPI + SQLAlchemy 2.0 async + asyncpg + Pydantic v2 (ADR-0003)
+> **⚠ FastAPI ถูก retire แล้ว** — section ข้างล่างเดิม ("P5 deliverables")
+> อธิบาย backend ที่ถูก removed ใน `c6fc72a` (2026-07-19). Source preserved
+> บน branch `archive/fastapi-backend` หากต้องการดู. คำตอบใน handoff docs
+> ที่บอก "FastAPI removal still open / assigned to Opus 4.8" = stale.
+
+Stack ปัจจุบัน: **React 18 + Vite + TypeScript + Tailwind + Supabase JS
+client + GitHub Pages** (no separate API tier). Auth = Supabase Auth
+(email/password + Google + LINE, OAuth-1..4). Tests = Vitest (132/132) +
+Playwright E2E (31/31). ดู `MIGRATION.md` ใน sibling repo สำหรับ
+In-progress claims table + chunk history + Track F/Z lane rules.
 
 ## แหล่งข้อมูล
 
