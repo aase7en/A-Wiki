@@ -170,9 +170,11 @@ bash scripts/setup-drive-link.sh
 # Backup userscript
 cp scripts/userscripts/waste-form-ocr-fill.user.js drive/personal-tools/userscripts/
 
-# OCR results
-drive/waste-reports/YYYY-MM/    ← photos + JSON results
-drive/ocr-feedback/             ← correction data (learning loop)
+# OCR results (restructure 2026-08-06: ย้ายไป drive/hospital-uthai/)
+drive/hospital-uthai/waste-reports/YYYY-MM/    ← photos + JSON results
+drive/hospital-uthai/ocr-feedback/             ← correction data (learning loop)
+drive/hospital-uthai/waste-ocr/                ← state files (settings, correlation, teaching_history)
+# (legacy paths drive/waste-reports, drive/ocr-feedback ยังใช้ได้ via backward-compat)
 ```
 
 แต่ละคนที่ clone A-Wiki setup `drive/` ของตัวเองแยกกัน — git ไม่รู้เรื่อง `drive/` (อยู่ใน `.gitignore`)

@@ -67,10 +67,32 @@ def get_drive_root() -> Path:
 
 
 def get_waste_reports_dir(year_month: str | None = None) -> Path:
-    """Return drive/waste-reports/ or drive/waste-reports/YYYY-MM/ path."""
-    base = get_drive_root() / "waste-reports"
+    """Return drive/waste-reports/ or drive/waste-reports/YYYY-MM/ path.
+
+    Backward-compat: หลัง restructure 2026-08-06, path จริงอยู่ที่
+    drive/hospital-uthai/waste-reports/ แต่ยังรองรับ path เดิม
+    drive/waste-reports/ (อาจเป็น symlink) ด้วย
+    """
+    root = get_drive_root()
+    # Prefer new canonical path
+    new_base = root / "hospital-uthai" / "waste-reports"
+    legacy_base = root / "waste-reports"
+    base = new_base if new_base.exists() or new_base.parent.exists() else legacy_base
     if year_month:
         base = base / year_month
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def get_hospital_uthai_dir(subdir: str | None = None) -> Path:
+    """Return drive/hospital-uthai/[subdir]/ — canonical path สำหรับไฟล์ รพ.อุทัย.
+
+    Subdirs: waste-ocr, waste-reports, waste-form-learning-images,
+             env-evaluations, hosxp, pharmacy, ocr-feedback
+    """
+    base = get_drive_root() / "hospital-uthai"
+    if subdir:
+        base = base / subdir
     base.mkdir(parents=True, exist_ok=True)
     return base
 
@@ -151,8 +173,11 @@ def is_drive_linked() -> bool:
 
 
 def get_pharmacy_dir(create: bool = True) -> Path:
-    """Return drive/pharmacy/ — real pharmacy business data (delivery
-    invoices, order history, alternative-source items, exports).
+    """Return drive/personal-business/pharmacy/ — real pharmacy business data.
+
+    Restructure 2026-08-06: ย้ายจาก drive/pharmacy/ → drive/personal-business/pharmacy/
+    เพราะเป็นธุรกิจส่วนตัว ไม่ใช่งาน รพ.อุทัย
+    Backward-compat: ถ้า drive/pharmacy/ ยังมีอยู่ (เครื่องเก่า) จะใช้ path เดิม
 
     Unlike get_waste_reports_dir()/get_ocr_feedback_dir(), this does NOT fall
     back to the unsynced ~/.a-wiki-data emergency directory: pharmacy records
@@ -171,9 +196,28 @@ def get_pharmacy_dir(create: bool = True) -> Path:
             "  bash scripts/setup-cloud-link.sh --status   # diagnose\n"
             "  echo /path/to/your/drive > .drive-path       # manual override"
         )
-    base = get_drive_root() / "pharmacy"
+    root = get_drive_root()
+    # Prefer new canonical path; fall back to legacy if it still exists
+    new_base = root / "personal-business" / "pharmacy"
+    legacy_base = root / "pharmacy"
+    if new_base.exists() or not legacy_base.exists():
+        base = new_base
+    else:
+        base = legacy_base
     if create:
         base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
+def get_personal_business_dir(subdir: str | None = None) -> Path:
+    """Return drive/personal-business/[subdir]/ — canonical สำหรับธุรกิจส่วนตัว.
+
+    Subdirs: pharmacy, sunday-estate
+    """
+    base = get_drive_root() / "personal-business"
+    if subdir:
+        base = base / subdir
+    base.mkdir(parents=True, exist_ok=True)
     return base
 
 
