@@ -70,4 +70,21 @@ if [ -n "${src:-}" ]; then
   fi
 fi
 
+# drive/.secrets -> hermes-sync/secrets.env (portable bundle for Pi5/MacBook)
+# Includes ALL A-Wiki secrets so headless machines can use MCP servers (e.g. Trello)
+# that authenticate via env vars. Principle: container later extracts only what it needs.
+SECRETS_SRC="$DRIVE_DIR/.secrets"
+if [ -f "$SECRETS_SRC" ]; then
+  if $DRY_RUN; then
+    info "DRY: secrets.env -> $SYNC/secrets.env"
+  else
+    [ -f "$SYNC/secrets.env" ] && cp "$SYNC/secrets.env" "$SYNC/secrets.env.bak-${TIMESTAMP}"
+    cp "$SECRETS_SRC" "$SYNC/secrets.env"
+    chmod 600 "$SYNC/secrets.env" 2>/dev/null || true
+    info "secrets.env -> $SYNC/secrets.env ($(wc -c < "$SYNC/secrets.env" 2>/dev/null || echo 0) B)"
+  fi
+else
+  warn "SKIP secrets.env (drive/.secrets not found at $SECRETS_SRC)"
+fi
+
 $DRY_RUN || info "DONE!"

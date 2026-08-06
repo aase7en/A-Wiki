@@ -74,6 +74,56 @@ if [ -n "${A_ENV:-}" ] && [ -f "$SYNC/global.env" ]; then
   fi
 fi
 
+# hermes-sync/secrets.env -> drive/.secrets (restore canonical secrets file)
+# This rebuilds the A-Wiki secrets store on machines without direct Drive symlink.
+SECRETS_DST="$DRIVE_DIR/.secrets"
+SECRETS_SRC_BUNDLE="$SYNC/secrets.env"
+if [ -f "$SECRETS_SRC_BUNDLE" ]; then
+  # Ensure parent dir exists (drive/ may be a missing symlink on fresh Pi5)
+  mkdir -p "$(dirname "$SECRETS_DST")"
+  if $DRY_RUN; then
+    info "DRY: drive/.secrets <- $SECRETS_SRC_BUNDLE"
+  else
+    [ -f "$SECRETS_DST" ] && cp "$SECRETS_DST" "${SECRETS_DST}.bak-${TIMESTAMP}"
+    cp "$SECRETS_SRC_BUNDLE" "$SECRETS_DST"
+    chmod 600 "$SECRETS_DST" 2>/dev/null || true
+    info "drive/.secrets <- $SECRETS_SRC_BUNDLE ($(wc -c < "$SECRETS_DST" 2>/dev/null || echo 0) B)"
+  fi
+else
+  warn "SKIP drive/.secrets (no secrets.env in Drive — run sync-secrets-to-drive.sh on Mac first)"
+fi
+
+# Extract TRELLO_* keys from secrets bundle -> profile .env (container-bound secrets)
+# Principle of least privilege: only inject what MCP servers actually need into the
+# container, never the full secrets store. Keys are stripped of any `export ` prefix
+# and surrounding quotes so the resulting .env is shell-portable.
+extract_secret() {
+  # $1 = KEY name, $2 = source file
+  local key="$1" src="$2"
+  [ -f "$src" ] || return 0
+  grep -E "^export[[:space:]]+${key}=|^${key}=" "$src" 2>/dev/null \
+    | tail -1 \
+    | sed -E 's/^export[[:space:]]+//' \
+    | sed -E "s/^${key}=//; s/^\"(.*)\"$/\1/; s/^'(.*)'$/\1/" \
+    | tr -d '\r\n'
+}
+
+if [ -f "$SECRETS_SRC_BUNDLE" ] && [ -f "$PROFILE_DIR/.env" ] && ! $DRY_RUN; then
+  updated=0
+  for key in TRELLO_API_KEY TRELLO_TOKEN; do
+    val=$(extract_secret "$key" "$SECRETS_SRC_BUNDLE")
+    [ -z "$val" ] && continue
+    # Remove any prior line for this key, then append fresh value
+    grep -vE "^${key}=" "$PROFILE_DIR/.env" > "${PROFILE_DIR}/.env.tmp-${TIMESTAMP}" || true
+    printf '%s=%s\n' "$key" "$val" >> "${PROFILE_DIR}/.env.tmp-${TIMESTAMP}"
+    mv "${PROFILE_DIR}/.env.tmp-${TIMESTAMP}" "$PROFILE_DIR/.env"
+    chmod 600 "$PROFILE_DIR/.env" 2>/dev/null || true
+    updated=$((updated + 1))
+  done
+  [ "$updated" -gt 0 ] && info "Injected $updated Trello key(s) into $PROFILE profile .env"
+fi
+$DRY_RUN && [ -f "$SECRETS_SRC_BUNDLE" ] && info "DRY: would inject TRELLO_* into profile .env"
+
 # Pi5 Docker import
 if hostname 2>/dev/null | grep -qi "umbrel\|raspberry"; then
   CONTAINER="${HERMES_CONTAINER:-hermes-agent_web_1}"
