@@ -1,0 +1,14 @@
+# Hospital report scripts (scripts/hospital/) — optional, install on machines that run rabies/pharmacy reports.
+# These are heavier than the core A-Wiki search deps, so they live in a separate file.
+#
+# Install:  pip install -r requirements-hospital.txt
+#
+# Cross-platform: pandas + xlrd read .xls (HIS exports). openpyxl reads/writes .xlsx.
+# Windows-only (optional): pywin32 for filling binary .doc templates via Word COM.
+#                          On macOS/Linux/Pi5, use python-docx + .docx templates instead.
+
+pandas>=2.0
+xlrd>=2.0.1          # read legacy .xls (HIS export format)
+openpyxl>=3.1        # read/write .xlsx
+python-docx>=1.0     # .docx generation/fill (cross-platform)
+# pywin32>=306       # Windows only — uncomment on Windows machines that fill .doc via Word

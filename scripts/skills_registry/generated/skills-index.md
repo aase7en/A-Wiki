@@ -18,7 +18,7 @@
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
 | `a-med-order` | pharmacy, business | build | pipeline | `skills/awiki/a-med-order/SKILL.md` |
 | `a-plan` | engineering, ux-ui, design | define | pipeline | `skills/awiki/a-plan/SKILL.md` |
-| `a-rabies-report` | document, thai, medical | build | pipeline | `skills/a-rabies-report/SKILL.md` |
+| `a-rabies-report` | document, thai, medical | build | pipeline | `skills/awiki/a-rabies-report/SKILL.md` |
 | `a-research` | engineering, data | meta | pipeline | `skills/awiki/a-research/SKILL.md` |
 | `a-router` | engineering | meta | pipeline | `skills/awiki/a-router/SKILL.md` |
 | `a-think` | engineering | meta | pipeline | `skills/awiki/a-think/SKILL.md` |

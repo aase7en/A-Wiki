@@ -8557,7 +8557,7 @@
       "lifecycle_phase": "build",
       "category": "pipeline",
       "source": "repo",
-      "path": "skills/a-rabies-report/SKILL.md",
+      "path": "skills/awiki/a-rabies-report/SKILL.md",
       "agents": [
         "all",
         "hermes"
