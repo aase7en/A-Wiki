@@ -79,6 +79,46 @@ aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 REVIEW เกิดเฉพาะเมื่อ **age is None** ใน Mixed tiebreak — เป็น data quality gap ของ HIS
 ไม่ใช่ algorithm gap. Audit: 916 cases จริง = **0 REVIEW**.
 
+### ⚠️ Prior = "เคยครบชุด" ไม่ใช่ "เคยฉีด" (bugfix 2026-08-07)
+
+**คำนิยามที่ถูก:** `has_prior = True` เมื่อคนไข้เคยได้รับวัคซีน **ครบชุด** (IM≥5 / ID≥4 / Mixed≥4) มาก่อน
+**ผิด (เดิม):** `has_prior = True` เมื่อคนไข้เคยฉีดวัคซีนแม้แค่ 1 เข็ม
+
+บั๊กเดิมทำให้ 49 เคสที่ prior เป็นแค่ 1 เข็มตก "complete" ทั้งที่จริงต้องเป็น "incomplete"
+แก้แล้ว: `annotate_prior()` ใช้ `is_complete_series()` กรองเฉพาะ prior case ที่ครบชุด
+
+### 📅 Lookback 10 ปี (จำเป็นสำหรับ accuracy)
+
+booster rule: "เคยครบชุด ≤180d = 1 เข้ม booster, ≥181d = 2 เข็ม" วัดจาก **complete series end date**
+- คนไข้ที่ครบชุดเมื่อ 3 ปีก่อน แล้วมา booster ใน Q3 ปัจจุบัน → prior_days ≥181 → ต้อง 2 เข็ม
+- ถ้า history มีแค่ Q1+Q2 (9 เดือน) → engine มองไม่เห็น complete series นั้น → has_prior=False → misclassify
+
+**ดังนั้น:** ส่ง `--history` ย้อนหลัง **~10 ปี** (ถ้า HIS export ได้) เพื่อ accuracy สูงสุด
+engine เตือน `⚠️ WARNING: history span < 1 year` ถ้าข้อมูลน้อยเกินไป
+
+## 📄 Template + Filename (จำใน skill)
+
+### Template (อ้างอิง)
+```
+drive/hospital-uthai/RabiesVacc/20260206_Template_RabiesReport.doc
+```
+(resolve ผ่าน `drive/` junction ของเครื่องนั้น — อย่า hardcode `L:\My Drive\...`)
+ไฟล์นี้คือ template ว่างของ "แบบรายงานสรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้าและอิมมุโนโกลบุลิน"
+มีตาราง 4 งวด × 9 ช่องนับ (ครบชุด/<5/ไม่ครบ × IM-ID + ERIG-HRIG)
+
+### Output filename pattern
+```
+YYMMDD_rabiesvac.<HOSPITAL>_Y<YY>.doc
+```
+- `YYMMDD` = วันที่ทำรายงาน (CE, 2 หลักปี)
+- `<HOSPITAL>` = ชื่อย่อโรงพยาบาล (เช่น `อุทัย`)
+- `Y<YY>` = ปีงบประมาณ (พ.ศ. 2 หลักสุดท้าย, เช่น `Y69` = ปีงบ ๒๕๖๙)
+
+**ตัวอย่าง:**
+- `260807_rabiesvac.อุทัย_Y69.doc` = ทำวันที่ 7 ส.ค. 2026, ปีงบ 2569
+
+⚠️ ใน public repo / log: ใช้ placeholder `<HOSPITAL>` ไม่ใช่ชื่อจริง (Iron Law #6)
+
 ## 🗄️ SQL version (ส่ง IT ให้ query จาก HIS ตรงๆ)
 
 `scripts/hospital/classify_rabies.sql` — PostgreSQL (HosXP) equivalent ของ Python engine

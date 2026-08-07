@@ -275,20 +275,49 @@ def cluster_cases(per_hn: pd.DataFrame) -> list[Case]:
 
 def annotate_prior(all_cases_by_hn: dict[str, list[Case]],
                    all_doses_by_hn: dict[str, list[dict]]) -> None:
-    """Set has_prior + prior_days_ago using the latest prior VACCINE dose date
-    (IM or ID) strictly before this case's start_date. Uses raw dose dates,
-    not Case.end_date, so single-dose prior episodes count correctly.
+    """Set has_prior + prior_days_ago using the latest prior COMPLETE SERIES.
+
+    CORRECT definition (2026-08-07 bugfix): "prior" = patient previously received
+    a COMPLETE rabies vaccination series before this case's start_date. A single
+    prior dose does NOT count — only a complete series does.
+
+    "Complete series" = pure IM≥5, pure ID≥4, or mixed total≥4 (any combination
+    that itself satisfies the complete rule).
+
+    ⚠️  This requires lookback data spanning the patient's full history. A patient
+    who completed a series 5+ years ago still qualifies for booster (1 or 2 doses).
+    The 180/181-day split (≤180=1 dose, ≥181=2 doses) measures time since the
+    COMPLETE series ended, not since any single dose.
+
+    For accurate results, pass history covering ~10 years. A single quarter (90d)
+    or even a year is NOT enough — a booster case in Q3 might reference a series
+    completed 3 years ago.
     """
+    def is_complete_series(c: Case) -> bool:
+        """A prior case counts as 'complete series' if it satisfies the complete
+        threshold by dose count alone (ignoring its own booster status, since
+        a prior booster already implies a prior complete series exists)."""
+        if c.total_vac == 0:
+            return False
+        if c.is_mixed:
+            return c.total_vac >= 4
+        return c.doses_im >= 5 or c.doses_id >= 4
+
     for hn, cases in all_cases_by_hn.items():
         for c in cases:
-            prior_vac_dates = [
-                d["date"] for d in all_doses_by_hn.get(hn, [])
-                if d["vac"] in (VAC_IM, VAC_ID) and d["date"] < c.start_date
+            # Find prior cases that ARE complete series (not just any dose)
+            prior_complete = [
+                pc for pc in all_cases_by_hn.get(hn, [])
+                if pc.start_date < c.start_date and is_complete_series(pc)
             ]
-            if prior_vac_dates:
-                last = max(prior_vac_dates)
+            if prior_complete:
+                # Use the LATEST complete series end_date for the days-ago calc
+                last = max(pc.end_date for pc in prior_complete)
                 c.has_prior = True
                 c.prior_days_ago = (c.start_date - last).days
+            else:
+                c.has_prior = False
+                c.prior_days_ago = None
 
 
 # ── Classification ──────────────────────────────────────────────────────────
@@ -418,6 +447,30 @@ def run(quarter_path: Path, history_paths: list[Path],
 
     q_df = load_xls(quarter_path)
     print(f"Loaded quarter: {quarter_path.name}  →  {len(q_df)} doses", file=sys.stderr)
+
+    # Warn if history is too short for accurate booster detection.
+    # A booster case in this quarter might reference a complete series from
+    # years ago. Spec: ≤180d = 1-dose booster, ≥181d = 2-dose booster, but the
+    # "complete series" itself could be 5+ years old.
+    if history_paths:
+        all_dates = []
+        for p in history_paths:
+            h = load_xls(p)
+            all_dates.extend(h["date"].dropna().tolist())
+        all_dates.extend(q_df["date"].dropna().tolist())
+        if all_dates:
+            earliest = min(all_dates)
+            span_days = (period_start - earliest).days
+            if span_days < 365:
+                print(f"⚠️  WARNING: history+quarter span = {span_days}d (< 1 year). "
+                      f"Booster detection may be incomplete — a patient whose complete "
+                      f"series was > {span_days}d ago will show has_prior=False. "
+                      f"Recommend: include ~10 years of history for accuracy.",
+                      file=sys.stderr)
+            elif span_days < 365 * 5:
+                print(f"ℹ️  History span = {span_days}d (~{span_days//365}y). "
+                      f"Booster detection covers this range. For full accuracy, "
+                      f"extend to ~10 years.", file=sys.stderr)
 
     # Combine for prior-history lookup, but classify only the quarter's cases
     all_df = pd.concat([hist_df, q_df], ignore_index=True)
