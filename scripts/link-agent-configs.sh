@@ -546,6 +546,22 @@ do_status() {
 
 do_unlink() {
     local a dir entry target
+    # Normalize REPO_ROOT/DRIVE_ROOT to POSIX form so the case-pattern match
+    # against readlink output works on Windows. On MSYS, readlink returns
+    # POSIX paths (/tmp/...) but $DRIVE_ROOT (from $A_WIKI_DRIVE_PATH) may be
+    # a Windows path (C:\...); without normalization the prefix comparison
+    # silently fails and managed links are NOT removed. cygpath -u converts
+    # both Windows and already-POSIX paths to POSIX; absent on Linux/macOS
+    # (no-op there — paths are already POSIX). Idempotent: re-running on an
+    # already-POSIX path leaves it unchanged.
+    local repo_posix drive_posix
+    if command -v cygpath >/dev/null 2>&1; then
+        repo_posix="$(cygpath -u "$REPO_ROOT" 2>/dev/null || echo "$REPO_ROOT")"
+        drive_posix="$(cygpath -u "$DRIVE_ROOT" 2>/dev/null || echo "$DRIVE_ROOT")"
+    else
+        repo_posix="$REPO_ROOT"
+        drive_posix="$DRIVE_ROOT"
+    fi
     for a in $(active_agents); do
         dir="$(agent_dir "$a")"
         [ -d "$dir" ] || continue
@@ -555,14 +571,14 @@ do_unlink() {
                 [ -L "$entry" ] || continue
                 target="$(readlink "$entry")"
                 case "$target" in
-                    "$REPO_ROOT"/*) run_rm "$entry" ;;
+                    "$REPO_ROOT"/*|"$repo_posix"/*) run_rm "$entry" ;;
                 esac
             done
         fi
         if [ -L "$dir/.env" ]; then
             target="$(readlink "$dir/.env")"
             case "$target" in
-                "$DRIVE_ROOT"/*) run_rm "$dir/.env" ;;
+                "$DRIVE_ROOT"/*|"$drive_posix"/*) run_rm "$dir/.env" ;;
             esac
         fi
         echo "  unlinked: $a"
@@ -571,7 +587,7 @@ do_unlink() {
     if [ "$SKIP_REPO_ENV" != "1" ] && [ -L "$REPO_ROOT/.env" ]; then
         target="$(readlink "$REPO_ROOT/.env")"
         case "$target" in
-            "$DRIVE_ROOT"/*) run_rm "$REPO_ROOT/.env" ;;
+            "$DRIVE_ROOT"/*|"$drive_posix"/*) run_rm "$REPO_ROOT/.env" ;;
         esac
     fi
     echo "✅ managed links removed (Drive-side data untouched)"
