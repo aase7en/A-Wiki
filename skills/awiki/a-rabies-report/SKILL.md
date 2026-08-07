@@ -7,7 +7,9 @@ domain: [document, thai, medical]
 lifecycle_phase: build
 category: pipeline
 agents: [all]
+status: canonical
 invocation: both
+invocation_hint: "/A-Rabies-Report"
 aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 ---
 
