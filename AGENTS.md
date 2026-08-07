@@ -409,6 +409,9 @@ Auto-pick มี **3 substrate** กิน `triggers` field เดียวก�
 | `a-loop` | `/A-Loop "<objective>"` | any | decompose → execute → verify → distill → improve (ข้าม session) |
 
 > `a-think` และ `a-loop` **ไม่มี trigger โดยตั้งใจ** — a-think เป็น fallback (ถ้ามี trigger จะไปแย่งงาน a-plan/a-debug), a-loop เป็น autonomous loop ข้าม session ที่ต้องเรียกเอง ไม่ใช่ให้ keyword จุดติด
+> **a-business** deprecated 2026-08 (เคยเป็น stub v0.1.0) — งานลงทุนย้ายไป `/A-Invest`, project-flow-ops/agent-sort เรียกตรงได้
+> **Registry state 2026-08-07**: **241 skills**, **22 a-* packs**. Cleanup history: Tier A (451→252: drop 31 subagent-personas + 8 deprecated + 9 a-doc stubs + 168 ECC cheatsheets demoted). Conservative cleanup (253→241: drop 5 dead aliases + 5 dead/stub + 3 framework-testing template dups). ECC cheatsheets ยังอยู่บน disk ที่ `skills/ecosystem/` และเสิร์ชผ่าน `documentation-lookup`/`ecc-guide` ได้. Registry ยังขาด ~200 skills ที่อยู่บน disk แต่ยังไม่ register (scan.py บายพาส `_upstream/`) — เป็น debt ค้างอยู่
+> **a-design ecosystem**: 3-layer Quality Gate (rubric lib → token MCP → screenshot MCP) + composition layer (8 grammars × 9 recipes) + Distinctiveness anti-AI-tell category. Bind `ui-ux-pro-max` (data) + `taste-skill` (anti-slop) + `transitions-dev` + `motion-*` trio + `accessibility`. ทำงานผ่าน `/A-Design` + MCP `design_quality_gate` + MCP `design_quality_gate_screenshot`
 
 **Audit**: `python scripts/audit_a_suite.py` (frontmatter + registry + cross-ref + Iron Laws). **Scrub pattern**: `<HOSPITAL>` / `<HOSPITAL_NAME>` / `<WORK_DIR>` placeholders สำหรับเอกสารราชการ (ห้าม publish ชื่อจริง — Iron Law #6).
 **Refresh upstream**: `bash scripts/refresh-9arm.sh` / `bash scripts/refresh-ecosystem.sh` / `bash scripts/refresh-mattpocock.sh`
