@@ -27,9 +27,9 @@
 | `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
-| `thai` | ภาษาไทย / เอกสารไทย | 14 |
+| `thai` | ภาษาไทย / เอกสารไทย | 15 |
 | `media` | สื่อ / วิดีโอ / รูปภาพ | 17 |
-| `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
+| `document` | เอกสาร / docx/pdf/pptx/xlsx | 10 |
 | `sre` | SRE / Observability / Deploy | 2 |
 
 ## 🎯 Skills by Domain
@@ -274,7 +274,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
-| `a-rabies-report` | build | pipeline | ประมวลผลและสร้างรายงานการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies Vaccine & Immunoglobulin Report) ... |
+| `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด |
 | `healthcare-phi-compliance` | none | ecosystem | รูปแบบการปฏิบัติตามข้อกำหนดด้านข้อมูลสุขภาพที่ได้รับการคุ้มครอง (PHI) และข้อมูลส่วนบุคคลที่สามารถ... |
 | `medical-pipeline` | meta | pipeline | ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบควา... |
 | `openmed` | none | uncategorized | ใช้ OpenMed สำหรับการสกัดข้อมูลทางการแพทย์ (medical entity extraction), การตรวจจับข้อมูลส่วนบุคคล... |
@@ -403,6 +403,7 @@
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
 | `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
+| `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด |
 | `thai-address` | none | thai | ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองร... |
 | `thai-customer-service` | none | thai | ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์ค... |
 | `thai-date-format` | none | thai | จัดรูปวันที่แบบไทย (พ.ศ., ปี ค.ศ. → พ.ศ.) — กันสับสน |
@@ -444,6 +445,7 @@
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
 | `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
+| `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด |
 | `assessment-generator` | none | uncategorized | สร้างข้อสอบหรือแบบประเมินจากเนื้อหาที่กำหนด โดยสามารถปรับระดับความยากและรูปแบบคำถามได้ เหมาะสำหรั... |
 | `docx` | none | uncategorized | ใช้สร้าง อ่าน แก้ไข หรือจัดการไฟล์ Word (.docx) โดยตรง รองรับการเพิ่มข้อความ ตาราง รูปภาพ และจัดร... |
 | `excel-generator` | none | wiki | สร้างสเปรดชีต Excel ระดับมืออาชีพที่เน้นความสวยงามและการวิเคราะห์ข้อมูล ใช้สำหรับจัดระเบียบ วิเคร... |

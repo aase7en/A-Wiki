@@ -81,7 +81,7 @@
     {
       "name": "a-rabies-report",
       "target": "skills/a-rabies-report/SKILL.md",
-      "domain": "medical"
+      "domain": "document,thai,medical"
     },
     {
       "name": "a-research",

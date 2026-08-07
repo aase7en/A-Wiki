@@ -43,6 +43,7 @@
 | `a-design` | `/A-Design` | design | `ออกแบบ ux` · `design system` · `wireframe` · `visual hierarchy` · `ui สวย` · `palette` · `typography` · `dark mode` |
 | `a-plan` | `/A-Plan` | design | `ออกแบบ` · `วางแผน` · `design` · `architecture` · `database schema` · `ux/ui` |
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
+| `a-rabies-report` | `/A-Rabies-Report` | implement | `erig` · `rabies` · `rabiesvacc` · `พิษสุนัขบ้า` · `รายงานไตรมาสพิษสุนัขบ้า` · `วัคซีนพิษสุนัขบ้า` · `สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า` · `สุนัขบ้า` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
 | `a-agent` | `/A-Agent` | any | `agent harness` · `mcp server` · `eval agent` · `prompt eng` · `agent loop` |
@@ -58,7 +59,7 @@
 | `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 | `a-web` | `/A-Web` | any | `สร้างเว็บ` · `เว็บไซต์` · `frontend` · `react` · `nextjs` |
 
-> อีก 4 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
+> อีก 3 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
 
 ---
 
@@ -107,4 +108,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_18 A-Suite entry points (+4 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_19 A-Suite entry points (+3 subskills) · spine = ask → design → plan → implement → review → debug → test_

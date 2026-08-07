@@ -59,6 +59,10 @@ def _is_entry_point(skill: dict) -> bool:
         (depth 6) rather than skills/awiki/<name>/SKILL.md (depth 4).
       * a-wiki-commands / a-wiki-telegram, which are integrations, not pipeline
         aggregators — they carry category "uncategorized".
+
+    Accepts both layouts:
+      - skills/awiki/<name>/SKILL.md   (depth 4)
+      - skills/<name>/SKILL.md          (depth 3, top-level like a-rabies-report)
     """
     if skill.get("status") != "canonical":
         return False
@@ -66,7 +70,14 @@ def _is_entry_point(skill: dict) -> bool:
         return False
     if skill.get("category") != "pipeline":
         return False
-    return len(skill.get("path", "").split("/")) == 4
+    parts = skill.get("path", "").split("/")
+    # depth 3 (skills/<name>/SKILL.md) or depth 4 (skills/awiki/<name>/SKILL.md)
+    if len(parts) not in (3, 4):
+        return False
+    # reject deeper subskill paths (e.g. skills/awiki/a-doc/types/<x>/SKILL.md = 6)
+    if len(parts) == 4 and parts[1] != "awiki":
+        return False
+    return True
 
 
 def _a_suite(registry: Registry) -> list[dict]:

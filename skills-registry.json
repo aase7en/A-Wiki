@@ -8546,9 +8546,12 @@
       "name": "a-rabies-report",
       "aliases": [
         "/a-rabies-report",
-        "rabies-report"
+        "/a-report-rabies-vacc",
+        "/a-rabies"
       ],
       "domain": [
+        "document",
+        "thai",
         "medical"
       ],
       "lifecycle_phase": "build",
@@ -8556,20 +8559,42 @@
       "source": "repo",
       "path": "skills/a-rabies-report/SKILL.md",
       "agents": [
-        "all"
+        "all",
+        "hermes"
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "ประมวลผลและสร้างรายงานการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า (Rabies Vaccine & Immunoglobulin Report) จากไฟล์ HIS Export (.xls/.xlsx) ตามเกณฑ์รายอุบัติการณ์ 28 วัน (IM, ID, ERIG, Booster/Primary, Mixed Regimens)",
-      "invocation": "manual",
-      "invocation_hint": "/a-rabies-report",
-      "a_phase": "any",
+      "description": "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน 9-cell. Engine: scripts/hospital/classify_rabies.py",
+      "invocation": "both",
+      "invocation_hint": "/A-Rabies-Report",
+      "a_phase": "implement",
       "triggers": [
-        "rabies",
-        "วัคซีนพิษสุนัขบ้า",
-        "พิษสุนัขบ้า",
         "erig",
-        "rabiesvacc"
+        "rabies",
+        "rabiesvacc",
+        "พิษสุนัขบ้า",
+        "รายงานไตรมาสพิษสุนัขบ้า",
+        "วัคซีนพิษสุนัขบ้า",
+        "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า",
+        "สุนัขบ้า"
+      ],
+      "th_description": "รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด",
+      "when_to_use": "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า, รายงานไตรมาสพิษสุนัขบ้า, rabies quarterly report",
+      "examples": [
+        {
+          "scenario": "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า Q3",
+          "how": "ส่งไฟล์ 260806_RabiesQ3.xls มา → engine กรอก template"
+        },
+        {
+          "scenario": "พิษสุนัขบ้า Q1 ปีหน้า",
+          "how": "ส่งไฟล์ + Q4 ปีก่อน (history 180 วัน) → engine run"
+        }
+      ],
+      "process_steps": [
+        "รับไฟล์ HIS Q<x>.xls",
+        "รัน classify_rabies.py + --history ย้อน 180 วัน",
+        "ตรวจ Mixed + REVIEW list",
+        "กรอก template .doc → ส่งจังหวัด"
       ]
     }
   ]
