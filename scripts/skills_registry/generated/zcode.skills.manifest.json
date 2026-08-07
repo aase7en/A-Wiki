@@ -304,11 +304,6 @@
       "domain": "code"
     },
     {
-      "name": "cpp-testing",
-      "target": "skills/ecosystem/cpp-testing/SKILL.md",
-      "domain": "code"
-    },
-    {
       "name": "crew-dispatch",
       "target": "skills/claude-code/crew-dispatch/SKILL.md",
       "domain": "code"
@@ -321,11 +316,6 @@
     {
       "name": "crosspost",
       "target": "skills/ecosystem/crosspost/SKILL.md",
-      "domain": "code"
-    },
-    {
-      "name": "csharp-testing",
-      "target": "skills/ecosystem/csharp-testing/SKILL.md",
       "domain": "code"
     },
     {
@@ -432,11 +422,6 @@
       "name": "frontend-slides",
       "target": "skills/ecosystem/frontend-slides/SKILL.md",
       "domain": "document"
-    },
-    {
-      "name": "fsharp-testing",
-      "target": "skills/ecosystem/fsharp-testing/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "game-phaser-pipeline",
@@ -592,11 +577,6 @@
       "name": "motion-patterns",
       "target": "skills/ecosystem/motion-patterns/SKILL.md",
       "domain": "code,media"
-    },
-    {
-      "name": "mysql-patterns",
-      "target": "skills/ecosystem/mysql-patterns/SKILL.md",
-      "domain": "data,code"
     },
     {
       "name": "nextjs-turbopack",

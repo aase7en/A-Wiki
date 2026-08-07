@@ -1403,37 +1403,6 @@
       "invocation_hint": "/audit-reference-originality"
     },
     {
-      "name": "autoglm-browser-agent",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "uncategorized",
-      "source": "external-installed",
-      "path": "~/.agents/skills/autoglm-browser-agent/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": ">-",
-      "invocation": "manual",
-      "th_description": "ทักษะนี้ช่วยให้ AI Agent สามารถควบคุมเบราว์เซอร์เพื่อทำงานอัตโนมัติ เช่น การนำทาง การกรอกฟอร์ม และการดึงข้อมูลจากหน้าเว็บ โดยใช้ AutoGLM สำหรับการโต้ตอบกับองค์ประกอบต่างๆ",
-      "when_to_use": "เมื่อต้องการให้ Agent ทำงานบนเบราว์เซอร์โดยอัตโนมัติ",
-      "examples": [
-        {
-          "scenario": "ต้องการดึงข้อมูลราคาหุ้นจากเว็บไซต์การเงิน",
-          "how": "ใช้คำสั่ง /browser navigate https://example.com/stocks แล้วตามด้วย /browser scrape"
-        },
-        {
-          "scenario": "ต้องการกรอกฟอร์มลงทะเบียนอัตโนมัติ",
-          "how": "ใช้คำสั่ง /browser fill form พร้อมระบุฟิลด์และค่าที่ต้องการ"
-        }
-      ],
-      "invocation_hint": "/autoglm-browser-agent"
-    },
-    {
       "name": "awiki-brain-improvement-gate",
       "aliases": [],
       "domain": [
@@ -2245,33 +2214,6 @@
       "notes": "2026-07-25 v2.0.0: ported 611-line content from autonomous-loops (deprecated) + generalized claude -p → cross-agent CLI table. Verified claude -p + gemini -p locally; codex exec + aider --message from public docs (verify on your version)."
     },
     {
-      "name": "continuous-learning",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "uncategorized",
-      "source": "external-installed",
-      "path": "~/.claude/skills/continuous-learning/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "[DEPRECATED - use continuous-learning-v2] Legacy v1 stop-hook skill extractor. v2 is a strict superset with instinct-based, project-scoped, hook-reliable learni",
-      "invocation": "manual",
-      "th_description": "สกิลนี้เป็นเวอร์ชันเก่าที่ถูกแทนที่ด้วย continuous-learning-v2 แล้ว ใช้สำหรับดึงข้อมูลจาก stop-hook เพื่อบันทึกการเรียนรู้ แต่ไม่แนะนำให้ใช้ต่อ ควรอัปเกรดเป็น v2 ซึ่งมี instinct-based และ project-scoped ที่ดีกว่า",
-      "when_to_use": "เมื่อต้องการดึงข้อมูลการเรียนรู้จาก stop-hook แบบเก่า",
-      "examples": [
-        {
-          "scenario": "ต้องการบันทึกการเรียนรู้จาก session ที่เพิ่งจบ",
-          "how": "เรียกใช้สคริปต์ ~/.claude/skills/continuous-learning/SKILL.md หรือใช้คำสั่ง /learn"
-        }
-      ],
-      "invocation_hint": "/continuous-learning"
-    },
-    {
       "name": "council",
       "aliases": [],
       "domain": [
@@ -2309,44 +2251,6 @@
         "ลงมติหรือตัดสินใจ"
       ],
       "invocation_hint": "/council"
-    },
-    {
-      "name": "cpp-testing",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/cpp-testing/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Use only when writing/updating/fixing C++ tests, configuring GoogleTest/CTest, diagnosing failing or flaky tests, or adding coverage/sanitizers.",
-      "invocation": "manual",
-      "th_description": "ใช้เมื่อเขียนหรือแก้ไข C++ tests, ตั้งค่า GoogleTest/CTest, วินิจฉัย test ที่ล้มเหลวหรือ flaky, หรือเพิ่ม coverage และ sanitizers",
-      "when_to_use": "เมื่อต้องจัดการ C++ tests หรือแก้ปัญหาการทดสอบ",
-      "examples": [
-        {
-          "scenario": "ต้องการเพิ่ม unit test สำหรับฟังก์ชันใหม่ในโปรเจกต์ C++",
-          "how": "รันคำสั่ง: cpp-testing add-test --file src/my_function.cpp"
-        },
-        {
-          "scenario": "พบ test flaky ที่ทำงานไม่เสถียร",
-          "how": "รันคำสั่ง: cpp-testing diagnose-flaky --test-name MyFlakyTest"
-        }
-      ],
-      "process_steps": [
-        "ระบุ test ที่ต้องการ",
-        "ตั้งค่า GoogleTest/CTest",
-        "รันและตรวจสอบผล",
-        "แก้ไขข้อผิดพลาด",
-        "เพิ่ม coverage/sanitizers"
-      ],
-      "invocation_hint": "/cpp-testing"
     },
     {
       "name": "crew-dispatch",
@@ -2466,44 +2370,6 @@
         "โพสต์ไปยังทุกแพลตฟอร์ม"
       ],
       "invocation_hint": "/crosspost"
-    },
-    {
-      "name": "csharp-testing",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/csharp-testing/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "C# and .NET testing patterns with xUnit, FluentAssertions, mocking, integration tests, and test organization best practices.",
-      "invocation": "manual",
-      "th_description": "ทักษะนี้ครอบคลุมการเขียนเทสต์ในภาษา C# และ .NET โดยใช้ xUnit, FluentAssertions, การจำลอง (mocking), การทดสอบแบบ integration และแนวทางการจัดระเบียบเทสต์อย่างมีประสิทธิภาพ",
-      "when_to_use": "เมื่อต้องการเขียนหรือปรับปรุงเทสต์ในโปรเจกต์ C# และ .NET",
-      "examples": [
-        {
-          "scenario": "ต้องการเขียน unit test สำหรับ service ที่มีการเรียก API ภายนอก",
-          "how": "ใช้คำสั่ง /csharp-testing พร้อมระบุ 'สร้าง unit test ด้วย xUnit และ Moq สำหรับ service ที่เรียก API'"
-        },
-        {
-          "scenario": "ต้องการจัดโครงสร้างเทสต์ใหม่ให้เป็นระเบียบตาม best practices",
-          "how": "ใช้คำสั่ง /csharp-testing พร้อมระบุ 'จัดระเบียบเทสต์ในโปรเจกต์ตาม Arrange-Act-Assert pattern'"
-        }
-      ],
-      "process_steps": [
-        "เลือก framework (xUnit, NUnit, MSTest)",
-        "เขียน unit test ด้วย Arrange-Act-Assert",
-        "ใช้ mocking สำหรับ dependencies",
-        "เพิ่ม integration test สำหรับ database",
-        "รันเทสต์และตรวจสอบ coverage"
-      ],
-      "invocation_hint": "/csharp-testing"
     },
     {
       "name": "data-throughput-accelerator",
@@ -3357,44 +3223,6 @@
       ]
     },
     {
-      "name": "fsharp-testing",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/fsharp-testing/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "F# testing patterns with xUnit, FsUnit, Unquote, FsCheck property-based testing, integration tests, and test organization best practices.",
-      "invocation": "manual",
-      "th_description": "ทักษะสำหรับการเขียนเทสต์ใน F# โดยใช้ xUnit, FsUnit, Unquote และ FsCheck สำหรับ property-based testing รวมถึงแนวทางการจัดระเบียบเทสต์และ integration tests",
-      "when_to_use": "เมื่อต้องการเขียนหรือปรับปรุงเทสต์ในโปรเจกต์ F#",
-      "examples": [
-        {
-          "scenario": "ต้องการเขียน unit test สำหรับฟังก์ชัน F# ด้วย xUnit และ FsUnit",
-          "how": "ใช้คำสั่ง /fsharp-testing unit-test"
-        },
-        {
-          "scenario": "ต้องการเพิ่ม property-based test ด้วย FsCheck เพื่อตรวจสอบสมบัติของฟังก์ชัน",
-          "how": "ใช้คำสั่ง /fsharp-testing property-test"
-        }
-      ],
-      "process_steps": [
-        "เลือก framework (xUnit, FsUnit, Unquote)",
-        "เขียน unit test สำหรับฟังก์ชัน",
-        "เพิ่ม property-based test ด้วย FsCheck",
-        "จัดระเบียบเทสต์ตามโฟลเดอร์",
-        "รันเทสต์และตรวจสอบผล"
-      ],
-      "invocation_hint": "/fsharp-testing"
-    },
-    {
       "name": "game-phaser-pipeline",
       "aliases": [],
       "domain": [
@@ -3767,33 +3595,6 @@
         "รวมผลลัพธ์เป็นรายงาน triaged"
       ],
       "invocation_hint": "/hermes-fan-out"
-    },
-    {
-      "name": "hipaa-compliance",
-      "aliases": [],
-      "domain": [
-        "medical"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/hipaa-compliance/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "alias",
-      "description": "HIPAA-specific entrypoint for healthcare privacy and security work. Use when a task is explicitly framed around HIPAA, PHI handling, covered entities, BAAs, bre",
-      "canonical": "healthcare-phi-compliance",
-      "invocation": "manual",
-      "th_description": "Alias ของ healthcare-phi-compliance — มาตรฐานคุ้มครองข้อมูลสุขภาพ (PHI/HIPAA) สำหรับระบบ medical/healthcare",
-      "when_to_use": "ทำระบบ healthcare ที่ต้องจัดการ PHI หรือ comply HIPAA",
-      "examples": [
-        {
-          "scenario": "เก็บข้อมูลคนไข้",
-          "how": "ดู healthcare-phi-compliance สำหรับแนวทางครบ"
-        }
-      ]
     },
     {
       "name": "hook-suggest",
@@ -4307,33 +4108,6 @@
         "ทดสอบและปรับแต่ง performance"
       ],
       "invocation_hint": "/laravel-patterns"
-    },
-    {
-      "name": "laravel-verification",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/laravel-verification/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "alias",
-      "description": "Verification loop for Laravel projects: env checks, linting, static analysis, tests with coverage, security scans, and deployment readiness.",
-      "canonical": "django-verification",
-      "invocation": "manual",
-      "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Laravel จาก django-verification มาใช้ (แนวทาง cross-framework เดียวกัน)",
-      "when_to_use": "verify งาน Laravel ผ่านแนวทางเดียวกับ django-verification",
-      "examples": [
-        {
-          "scenario": "ตรวจ Laravel service",
-          "how": "เปิด django-verification แล้ว map ไป Laravel"
-        }
-      ]
     },
     {
       "name": "latency-critical-systems",
@@ -4933,25 +4707,6 @@
         "ปรับแต่งตาม feedback"
       ],
       "invocation_hint": "/motion-ui"
-    },
-    {
-      "name": "mysql-patterns",
-      "aliases": [],
-      "domain": [
-        "data",
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/mysql-patterns/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "1.0.0",
-      "status": "canonical",
-      "description": "MySQL and MariaDB schema, query, indexing, transaction, replication, and connection-pool patterns for production backends.",
-      "invocation": "manual"
     },
     {
       "name": "nextjs-turbopack",
@@ -5799,37 +5554,6 @@
       "invocation_hint": "/project-flow-ops"
     },
     {
-      "name": "project-guidelines-example",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "uncategorized",
-      "source": "external-installed",
-      "path": "~/.claude/skills/project-guidelines-example/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "",
-      "invocation": "manual",
-      "th_description": "ทักษะนี้ให้ตัวอย่างแนวทางปฏิบัติสำหรับโปรเจกต์ เช่น การตั้งชื่อไฟล์ โครงสร้างโฟลเดอร์ และรูปแบบการเขียนโค้ด เพื่อให้ทีมพัฒนาทำงานเป็นมาตรฐานเดียวกัน",
-      "when_to_use": "เมื่อต้องการดูตัวอย่าง guideline หรือแนวทางปฏิบัติของโปรเจกต์",
-      "examples": [
-        {
-          "scenario": "ต้องการดูตัวอย่างการตั้งชื่อ branch ใน Git",
-          "how": "พิมพ์ /guidelines branch-naming"
-        },
-        {
-          "scenario": "ต้องการดูตัวอย่างโครงสร้างไฟล์สำหรับ React component",
-          "how": "พิมพ์ /guidelines react-component"
-        }
-      ],
-      "invocation_hint": "/project-guidelines-example"
-    },
-    {
       "name": "prompt-optimizer",
       "aliases": [],
       "domain": [
@@ -5923,33 +5647,6 @@
         "แก้ไขจน coverage ถึงเกณฑ์"
       ],
       "invocation_hint": "/python-testing"
-    },
-    {
-      "name": "quarkus-verification",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/quarkus-verification/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "alias",
-      "description": "Verification loop for Quarkus projects: build, static analysis, tests with coverage, security scans, native compilation, and diff review before release or PR.",
-      "canonical": "django-verification",
-      "invocation": "manual",
-      "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Quarkus จาก django-verification มาใช้",
-      "when_to_use": "verify งาน Quarkus ผ่านแนวทางเดียวกับ django-verification",
-      "examples": [
-        {
-          "scenario": "ตรวจ Quarkus service",
-          "how": "เปิด django-verification แล้ว map ไป Quarkus"
-        }
-      ]
     },
     {
       "name": "react-patterns",
@@ -7127,33 +6824,6 @@
       "invocation_hint": "/spec-driven-development"
     },
     {
-      "name": "springboot-verification",
-      "aliases": [],
-      "domain": [
-        "code"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/springboot-verification/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "alias",
-      "description": "Verification loop for Spring Boot projects: build, static analysis, tests with coverage, security scans, and diff review before release or PR.",
-      "canonical": "django-verification",
-      "invocation": "manual",
-      "th_description": "Alias ของ django-verification — นำ pattern ตรวจสอบ Spring Boot จาก django-verification มาใช้",
-      "when_to_use": "verify งาน Spring Boot ผ่านแนวทางเดียวกับ django-verification",
-      "examples": [
-        {
-          "scenario": "ตรวจ Spring Boot app",
-          "how": "เปิด django-verification แล้ว map ไป Spring"
-        }
-      ]
-    },
-    {
       "name": "strategic-compact",
       "aliases": [],
       "domain": [
@@ -7932,33 +7602,6 @@
         "สังเคราะห์เป็นโครงสร้าง PRD",
         "ตรวจสอบความครบถ้วน",
         "เผยแพร่เอกสาร"
-      ]
-    },
-    {
-      "name": "token-budget-advisor",
-      "aliases": [],
-      "domain": [
-        "ai-ops"
-      ],
-      "lifecycle_phase": "none",
-      "category": "ecosystem",
-      "source": "repo",
-      "path": "skills/ecosystem/token-budget-advisor/SKILL.md",
-      "agents": [
-        "all"
-      ],
-      "version": "",
-      "status": "alias",
-      "description": ">-",
-      "canonical": "context-budget",
-      "invocation": "manual",
-      "th_description": "Alias ของ context-budget — คำนวณและแนะนำ token budget ต่อ task/context เพื่อใช้ model budget อย่างคุ้มค่า",
-      "when_to_use": "ทำ multi-step task ที่กลัว token บาน หรือต้องการ budget estimate",
-      "examples": [
-        {
-          "scenario": "ทำ long ingest",
-          "how": "ดู context-budget ก่อนเริ่ม"
-        }
       ]
     },
     {
