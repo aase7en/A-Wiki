@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# scripts/hooks/session-stop-hermes-sync.sh — SessionStop hook: push Hermes context
-# This hook is called AFTER session ends
-
-echo "📤 Syncing Layer 2: Hermes Context..."
-bash scripts/hermes/sync-context.sh --push || echo "⚠️  Hermes context sync failed"
