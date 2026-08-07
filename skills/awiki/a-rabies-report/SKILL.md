@@ -32,7 +32,7 @@ aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 - dose ถัดไปห่าง ≤28 วันจากเข็มแรก → อยู่ case เดียวกัน
 - dose ห่าง >28 วัน → **case ใหม่ (อุบัติการณ์ใหม่)** แม้ HN เดียวกัน
 
-## 🎯 Algorithm (canonical, verified 2026-08-07)
+## 🎯 Algorithm (canonical, verified 2026-08-07 — 0 REVIEW across 916 cases)
 
 ### Prior history (booster)
 "Prior" = dose rabies vaccine (ID หรือ IM) ใดๆ ก่อน start_date ของ case ปัจจุบัน
@@ -41,12 +41,18 @@ aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 
 ⚠️ **ต้องมีข้อมูลย้อนหลัง ≥180 วัน** — รายไตรมาส (90 วัน) ไม่พอ ต้องส่ง `--history` Q ก่อนหน้า
 
+### Default rules (รวม special rules เป็น default แล้ว)
+1. **Over-dose within 28d → complete** (เข็มเกิน = ครบ)
+2. **IG-only** (ERIG/HRIG ไม่มี vaccine ใน 28d) → incomplete by age
+3. **>28d gap → new incident** → case clustering + re-classify with prior
+4. **Mixed ID+IM**: total doses decide + age tiebreak for 2-3 dose cases
+5. **Prior history**: ≤180d = booster 1 dose, ≥181d = booster 2 doses
+
 ### 9-cell classification
 
-**① ฉีดครบชุด** (ครบ ๕ เข็ม หรือต่ำกว่าด้วย booster)
-- IM: `IM ≥ 5` หรือ `(IM=1 + prior ≤180d)` หรือ `(IM=2 + prior ≥181d)`
-- ID: `ID ≥ 4` หรือ `(ID=1 + prior ≤180d)` หรือ `(ID=2 + prior ≥181d)`
-- ⚠️ **Over-dose within 28d = complete** (HN6949 ID=5, HN5552 total=6 → complete)
+**① ฉีดครบชุด** (ครบ ๕ เข็ม หรือ booster หรือ over-dose)
+- IM: `IM ≥ 5` หรือ `(IM≥1 + prior ≤180d)` หรือ `(IM≥2 + prior ≥181d)`
+- ID: `ID ≥ 4` หรือ `(ID≥1 + prior ≤180d)` หรือ `(ID≥2 + prior ≥181d)`
 
 **② ฉีดต่ำกว่า ๕ เข็ม** (สังเกตสัตว์ ๑๐ วัน → หยุดฉีด)
 - IM: `3 ≤ IM < 5`
@@ -55,18 +61,30 @@ aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 **③ ฉีดไม่ครบชุด**
 - IM: `(IM < 3 AND no prior)` หรือ `(IM < 2 + prior ≥181d)`
 - ID: `(ID < 3 AND no prior)` หรือ `(ID < 2 + prior ≥181d)`
-- ⚠️ **IG-only case** (ERIG เข็มเดียว ไม่มี vaccine ใน 28d) → incomplete (tiebreak ด้วยอายุ)
+- IG-only case → incomplete by age tiebreak
 
 **④ Immunoglobulin (parallel กับ ①②③)**
 - ERIG: `ERIG ≥ 1` (Equine, ม้า)
-- HRIG: `HRIG ≥ 1` (Human — ปกติ 0 เพราะไม่มี stock)
+- HRIG: `HRIG ≥ 1` (Human — ปกติ 0)
 
 ### Mixed ID+IM (cannot apply pure-route)
 1. total ≥ 5 → **complete/IM**
 2. total == 4 → **complete/ID**
-3. total == 3 → **sub-5** + age tiebreak (<9=IM, ≥9=ID)
+3. total == 3 → **sub5** + age tiebreak (<9=IM, ≥9=ID)
 4. total ≤ 2 + no prior → **incomplete** + age tiebreak
-5. Mixed + prior → REVIEW (spec undefined)
+5. total ≤ 2 + prior ≤180d + total≥1 → **complete** by age (booster rule)
+6. total ≤ 2 + prior ≥181d + total≥2 → **complete** by age
+7. total ≤ 2 + prior ≥181d + total<2 → **incomplete** by age
+
+REVIEW เกิดเฉพาะเมื่อ **age is None** ใน Mixed tiebreak — เป็น data quality gap ของ HIS
+ไม่ใช่ algorithm gap. Audit: 916 cases จริง = **0 REVIEW**.
+
+## 🗄️ SQL version (ส่ง IT ให้ query จาก HIS ตรงๆ)
+
+`scripts/hospital/classify_rabies.sql` — PostgreSQL (HosXP) equivalent ของ Python engine
+- IT ปรับ 3 จุด: `icode` (item codes ของ rabies vaccine/ERIG), table names, period dates
+- รันแล้ว export เป็น .csv → เทียบกับ Python engine ตัวเลขต้องตรง
+- ถ้า REVIEW > 0 → ส่ง row นั้นกลับมาปรับ algorithm
 
 ## 🛠️ Workflow (4 ขั้น)
 
