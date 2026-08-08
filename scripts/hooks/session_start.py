@@ -420,6 +420,7 @@ def run_steps(repo_root, lean: bool) -> None:
     the informational emitters (each line of hook output is injected into
     context every session — see docs/protocols/context-compaction.md)."""
     git_pull(repo_root)
+    check_history_divergence(repo_root)  # post-rewrite safety (2026-07-11 incident)
     clean_stale_cost_declarations(repo_root)
     clean_stale_focus_files(repo_root)
     show_agent_claims(repo_root)
@@ -440,6 +441,30 @@ def run_steps(repo_root, lean: bool) -> None:
     check_model_scout_freshness(repo_root)
     run_vendor_watch()
     run_skill_learning_watch()
+
+
+def check_history_divergence(repo_root) -> None:
+    """Post-rewrite safety net (2026-07-11 incident).
+
+    Detects if local HEAD and origin/main have truly diverged (neither is an
+    ancestor of the other) — the signature of a history rewrite or a stale
+    clone that missed a force-push. Emits a CRITICAL warning with the exact
+    recovery command (`git fetch origin && git reset --hard origin/main`) when
+    the divergence looks like a rewrite (merge-base older than 30 days).
+
+    Best-effort: never raises. Silent no-op if remote ref unavailable.
+    """
+    try:
+        import sys as _sys
+        _hooks_dir = os.path.join(repo_root, "scripts", "hooks")
+        if _hooks_dir not in _sys.path:
+            _sys.path.insert(0, _hooks_dir)
+        import check_history_divergence as _chd
+        result = _chd.check(repo_root)
+        if result.get("diverged"):
+            sys.stderr.write(result.get("message", "") + "\n")
+    except Exception:
+        pass  # never break session start on divergence check issues
 
 
 def replay_memory_ledger(repo_root) -> None:
