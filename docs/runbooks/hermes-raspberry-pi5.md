@@ -62,7 +62,7 @@ Script `awiki-init-pi5.sh` does ALL of this automatically:
 |------|------|
 | 1 | Clone/pull A-Wiki repo |
 | 2 | Link 20 lifecycle skills → `~/.hermes/skills/lifecycle/` |
-| 3 | Link meta-skill (awiki-lifecycle-router) → `~/.hermes/skills/awiki/` |
+| 3 | Link meta-skill (a-router) → `~/.hermes/skills/awiki/` (via link_awiki_skills.py) |
 | 4 | Link 4 A-Wiki native skills (debug-mantra, scrutinize, grill-me, post-mortem) |
 | 5 | Link 4 agent personas → `~/.hermes/agents/` |
 | 6 | Register lifecycle config → `~/.hermes/config.d/awiki-lifecycle.json` |
@@ -86,8 +86,8 @@ bash scripts/setup-local.sh
 # Lifecycle skills (20 skills)
 ln -s ~/A-Wiki/skills/engineering-lifecycle/*/ ~/.hermes/skills/lifecycle/
 
-# Meta-skill (router)
-ln -s ~/A-Wiki/skills/engineering-lifecycle/awiki-lifecycle-router/ ~/.hermes/skills/awiki/lifecycle-router/
+# Meta-skill (router) — a-router is linked by link_awiki_skills.py (Step 5)
+# (awiki-lifecycle-router merged into a-router 2026-08-09 — no separate symlink needed)
 
 # A-Wiki native skills (debug-mantra, scrutinize, grill-me, post-mortem)
 ln -s ~/A-Wiki/skills/engineering/*/ ~/.hermes/skills/awiki/native/
@@ -327,7 +327,7 @@ hermes chat -q "ค้นหา: mqtt broker ใน wiki"
 | `scripts/hermes/awiki-init-pi5.sh` | One-shot brain sync script |
 | `scripts/hermes/lifecycle-config.json` | Hermes phase routing config |
 | `hooks/lifecycle-session-start.sh` | Session start hook for lifecycle router |
-| `skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` | Meta-skill: intent→skill mapping |
+| `skills/awiki/a-router/SKILL.md` | Meta-skill: intent→skill mapping (merged lifecycle-router 2026-08-09) |
 | `agents/*.md` | 4 specialist personas |
 | `commands/*.md` | 7 slash commands |
 | `docs/runbooks/rpi5-docker-audit.md` | Docker compatibility audit |

@@ -36,7 +36,7 @@ done
 ECC_INCLUDE=(
   "agentic-engineering" "api-design"
   "git-workflow" "project-flow-ops" "python-patterns"
-  "python-testing" "tdd-workflow" "research-ops"
+  "python-testing" "research-ops"
   "article-writing" "terminal-ops" "frontend-patterns"
   "plankton-code-quality"
 )

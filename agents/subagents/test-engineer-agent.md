@@ -69,7 +69,7 @@ Produce tests that:
 - **Match the framework.** pytest/jest/go test/etc. — don't introduce a new
   framework.
 - **Don't test the implementation; test the behavior.**
-- Reuse A-Wiki skills `tdd`, `tdd-workflow`, `python-testing`, `react-testing`,
+- Reuse A-Wiki skills `tdd`, `python-testing`, `react-testing`,
   `kotlin-testing`, `rust-testing`, `golang-testing`, `cpp-testing`,
   `csharp-testing`, `fsharp-testing`, `e2e-testing`, `ai-regression-testing`,
   `laravel-tdd`, `django-tdd`, `springboot-tdd`, `quarkus-tdd`.

@@ -146,7 +146,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 | `/code-simplify` | `code-simplification` | Reduce complexity |
 | `/ship` | `shipping-and-launch` + parallel fan-out | Go/no-go |
 
-**Session start**: `hooks/lifecycle-session-start.sh` injects `awiki-lifecycle-router/SKILL.md`.
+**Session start**: `hooks/lifecycle-session-start.sh` injects `skills/awiki/a-router/SKILL.md` (merged awiki-lifecycle-router 2026-08-09).
 
 ### A-Wiki Overlap (keep ours)
 | A-Wiki | Replaces agent-skills |

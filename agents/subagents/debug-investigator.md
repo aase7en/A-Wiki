@@ -73,7 +73,7 @@ Turn "it's broken" into "here's the proven root cause":
 - **Failing test demonstrates the bug.** This becomes the regression test.
 - **Iron Law #2** — this subagent IS the named instrument of that law; do not
   shortcut it.
-- Reuse A-Wiki skills `debug-mantra`, `root-cause-first`, `diagnosing-bugs`,
+- Reuse A-Wiki skills `debug-mantra`,
   `post-mortem`, `error-handling`, `diagnosing-hooks`, `diagnosing-commands`.
 
 ## When NOT to use

@@ -59,8 +59,13 @@
 | [crew-dispatch](./delegation/crew-dispatch/SKILL.md) | Cross-agent dispatch (Claude ↔ Gemini) | beta |
 | [skill-creator](./delegation/skill-creator/SKILL.md) | Create and update agent skills | beta |
 
-### deprecated
-- **root-cause-first** — Superseded by debug-mantra (which covers the same ground with a more complete 4-step framework)
+### removed (2026-08-09 cleanup)
+- **root-cause-first** — removed; superseded by debug-mantra (Iron Law #2 canonical 4-step framework)
+- **diagnosing-bugs** — removed; concept overlaps debug-mantra
+- **tdd-workflow** — removed; duplicate of tdd (mattpocock, canonical)
+- **a-business** — removed; stub v0.1.0, investment moved to a-invest
+- **a-route** — removed; merged into a-router (Iron Law #10 — was hardcoding keyword dict)
+- **awiki-lifecycle-router** — removed; merged into a-router (session-start pointer duplicated registry-driven logic)
 
 ---
 

@@ -22,12 +22,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 REGISTRY = REPO / "skills-registry.json"
 
-# Skills created this session
+# Skills created this session — only registry-level skills (a-doc/types/* are
+# sub-skills of a-doc, not separate registry entries — audited via new_paths FM check only)
 NEW_SKILLS = [
     "a-think", "a-plan", "a-debug", "a-doc",
-    "a-doc-_template", "a-doc-order", "a-doc-memo", "a-doc-project",
-    "a-doc-procedure", "a-doc-procurement", "a-doc-jd", "a-doc-report",
-    "a-doc-form-record",
+    "a-router", "a-flow", "a-loop", "a-council",
 ]
 DEPRECATED = {
     "grill-me": "grill-with-docs",
@@ -82,10 +81,12 @@ def main() -> int:
         "a-think": "skills/awiki/a-think/SKILL.md",
         "a-plan": "skills/awiki/a-plan/SKILL.md",
         "a-debug": "skills/awiki/a-debug/SKILL.md",
-        "a-business": "skills/awiki/a-business/SKILL.md",
+        "a-router": "skills/awiki/a-router/SKILL.md",
+        "a-flow": "skills/awiki/a-flow/SKILL.md",
         "a-doc": "skills/awiki/a-doc/SKILL.md",
-        "a-doc-announce": "skills/awiki/a-doc/types/announce/SKILL.md",
+        # a-doc/types/* are sub-skills — audited informally, not registry entries
         "a-doc-_template": "skills/awiki/a-doc/types/_template/SKILL.md",
+        "a-doc-announce": "skills/awiki/a-doc/types/announce/SKILL.md",
         "a-doc-order": "skills/awiki/a-doc/types/order/SKILL.md",
         "a-doc-memo": "skills/awiki/a-doc/types/memo/SKILL.md",
         "a-doc-project": "skills/awiki/a-doc/types/project/SKILL.md",
@@ -118,7 +119,7 @@ def main() -> int:
 
     # ── 2. Registry entries exist + correct status ─────────────────
     _emit("")
-    _emit("=== AUDIT 2: Registry entries (15 new + 5 deprecated) ===")
+    _emit("=== AUDIT 2: Registry entries (new + deprecated) ===")
     for name in NEW_SKILLS:
         if name not in by_name:
             problems.append(f"[REG] {name}: missing from registry")
@@ -195,12 +196,20 @@ def main() -> int:
     # ── 7. Stub version consistency ───────────────────────────────
     _emit("")
     _emit("=== AUDIT 7: Stub version (0.1.x) vs canonical (1.x) ===")
-    for name in NEW_SKILLS:
-        s = by_name.get(name, {})
-        ver = s.get("version", "")
-        is_stub = name in ("a-doc-_template", "a-doc-order", "a-doc-memo",
-                           "a-doc-project", "a-doc-procedure", "a-doc-procurement",
-                           "a-doc-jd", "a-doc-report", "a-doc-form-record")
+    # Check stubs (a-doc/types/* except announce which is canonical-complete) from new_paths
+    stub_names = [n for n in new_paths if n.startswith("a-doc-") and n != "a-doc-announce"]
+    for name in stub_names + NEW_SKILLS:
+        is_stub = name in stub_names
+        if is_stub:
+            # sub-skills: read version from their own SKILL.md frontmatter (not in registry)
+            p = REPO / new_paths[name]
+            if not p.exists():
+                continue  # already flagged in AUDIT 1
+            fields = frontmatter_fields(p)
+            ver = fields.get("version", "")
+        else:
+            s = by_name.get(name, {})
+            ver = s.get("version", "")
         if is_stub:
             if not ver.startswith("0."):
                 problems.append(f"[VER] {name}: stub should be 0.x.x, got {ver}")

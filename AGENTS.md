@@ -239,7 +239,7 @@ python -m pytest tests/ -k "atomic or memory_ledger or blackboard or task_board 
 | Layer | Function | Components | Level |
 |-------|----------|------------|-------|
 | **1. Enforcement & Discipline** | What agents *must/must not* do — hard-enforced | **9 Iron Laws** (above) · **17 PreToolUse hooks** (`scripts/hooks/`: `check_skill_registry`, `check_source_original_file`, `check_harness_routing`, `check_output_format`, `check_raw_immutable`, `check_external_editor_drift`, `check_secret_leak`, `check_bash_no_branch` …) · **9arm skills** (`debug-mantra` is the named instrument of Iron Law #2; + `scrutinize`, `post-mortem`) · eval/safety personas (`agents/test-engineer.md`, `agents/security-auditor.md`) | 🔴 HARD + 🟡 SOFT |
-| **2. Orchestration & Routing** | The "OS" — task ordering, cost control, scale | **Hermes** (`scripts/hermes/` + `lifecycle-config.json` — the real long-horizon orchestrator; reason DeerFlow was rejected) · **awiki-lifecycle-router** (`skills/engineering-lifecycle/`, intent→skill flowchart, define→…→ship) · **Universal harness routing** (`scripts/batch/route.py` + MCP `wiki_ingest_route`) · **Cost-First Decision Pyramid** (below) · **Swarm Intelligence Protocol** (below) · Hermes `shortcut_blocklist` (`implement_without_spec` …) | 🔴 HARD + 🟡 SOFT |
+| **2. Orchestration & Routing** | The "OS" — task ordering, cost control, scale | **Hermes** (`scripts/hermes/` + `lifecycle-config.json` — the real long-horizon orchestrator; reason DeerFlow was rejected) · **a-router** (`skills/awiki/a-router/`, registry-driven intent→skill dispatcher + session-start pointer — merged a-route + awiki-lifecycle-router 2026-08-09) · **Universal harness routing** (`scripts/batch/route.py` + MCP `wiki_ingest_route`) · **Cost-First Decision Pyramid** (below) · **Swarm Intelligence Protocol** (below) · Hermes `shortcut_blocklist` (`implement_without_spec` …) | 🔴 HARD + 🟡 SOFT |
 | **3. Memory & Knowledge** | Remember + retrieve context | **`awiki` MCP server** (`scripts/mcp-wiki-server.py` — the only wiki/memory MCP with `disabled: false` + auto-approved) · **FTS5 + sqlite-vec** (`.wiki-index.db`, BM25 + 384-dim multilingual fastembed) · **`.wiki-graph.json`** (538 nodes / 1713 edges, A-Wiki's own knowledge graph) · **`wiki/context/`** (28 overview + `session-memory.md`) | 🔴 HARD + 🟡 SOFT |
 | **4. Skill Catalog** | What agents *can* do — all skills are catalog, not enforcement | **ECC** (228 vendored skills — bundle, NOT the OS/harness) · **addyosmani lifecycle** (define/plan/build/verify/review/ship) · **Matt Pocock** (25 skills, soft contributor: `tdd`, `grill-me`) · **9arm** (also soft here) · **GBrain / Graphify** (opt-in supplements, overlap with Layer 3 — NOT installed) · **DeerFlow** (**rejected** — see entity page) | ⚪ Optional |
 
@@ -550,7 +550,7 @@ DEFINE → PLAN → BUILD → VERIFY → REVIEW → SHIP
 
 ### Meta-Skill
 
-`skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` — loaded at session start by `hooks/lifecycle-session-start.sh`. Contains the intent→skill mapping flowchart.
+`skills/awiki/a-router/SKILL.md` — loaded at session start by `hooks/lifecycle-session-start.sh`. Contains the intent→skill mapping flowchart + 7-phase spine. (2026-08-09: merged awiki-lifecycle-router into a-router — single registry-driven router.)
 
 ### Intent → Skill Mapping (for Codex / OpenCode / Copilot)
 
