@@ -13,6 +13,7 @@
       "./skills/claude-code",
       "./skills/claude-thai",
       "./skills/delegation",
+      "./skills/domain",
       "./skills/ecosystem",
       "./skills/engineering",
       "./skills/engineering-lifecycle",

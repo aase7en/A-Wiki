@@ -9,9 +9,9 @@
 
 > **โดเมน**: Source documents — summaries of raw/ content
 <<<<<<< Updated upstream
-> **Last updated**: 2026-08-02
+> **Last updated**: 2026-08-09
 =======
-> **Last updated**: 2026-08-05
+> **Last updated**: 2026-08-09
 >>>>>>> Stashed changes
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน sources/**
 > ถ้าการแก้ source workflow เปลี่ยนความสามารถของ A-Wiki brain, ingestion, provenance, hooks, scripts, หรือ public-safe policy → อ่าน `docs/protocols/brain-improvement-gate.md` ก่อน

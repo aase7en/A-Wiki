@@ -67,7 +67,7 @@
 | `context-budget` | ai-ops | none | ecosystem | `skills/ecosystem/context-budget/SKILL.md` |
 | `continuous-agent-loop` | ai-ops | none | ecosystem | `skills/ecosystem/continuous-agent-loop/SKILL.md` |
 | `council` | code | none | ecosystem | `skills/ecosystem/council/SKILL.md` |
-| `crew-dispatch` | code | none | wiki | `skills/claude-code/crew-dispatch/SKILL.md` |
+| `crew-dispatch` | code | none | wiki | `skills/delegation/crew-dispatch/SKILL.md` |
 | `cross-agent-work-orders` | code | plan | wiki | `skills/awiki/cross-agent-work-orders/SKILL.md` |
 | `crosspost` | code | none | ecosystem | `skills/ecosystem/crosspost/SKILL.md` |
 | `data-throughput-accelerator` | data | none | uncategorized | `~/.claude/skills/data-throughput-accelerator/SKILL.md` |
@@ -75,7 +75,7 @@
 | `debug-mantra` | debug | none | uncategorized | `skills/engineering/debug-mantra/SKILL.md` |
 | `deep-research` | code | none | ecosystem | `skills/ecosystem/deep-research/SKILL.md` |
 | `defi-amm-security` | security, trader | none | ecosystem | `skills/ecosystem/defi-amm-security/SKILL.md` |
-| `delegate-subagent` | ai-ops | none | wiki | `skills/claude-code/delegate-subagent/SKILL.md` |
+| `delegate-subagent` | ai-ops | none | wiki | `skills/delegation/delegate-subagent/SKILL.md` |
 | `deprecation-and-migration` | code, engineering | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md` |
 | `design-first-ui-prompting` | design | define | vendor-mengto | `skills/_upstream/mengto/agent-skills/ui/design-first-ui-prompting/SKILL.md` |
 | `django-patterns` | code | none | ecosystem | `skills/ecosystem/django-patterns/SKILL.md` |
@@ -88,8 +88,8 @@
 | `error-handling` | engineering, code | none | ecosystem | `skills/ecosystem/error-handling/SKILL.md` |
 | `eval-harness` | ai-ops | none | ecosystem | `skills/ecosystem/eval-harness/SKILL.md` |
 | `everything-claude-code` | code | none | uncategorized | `~/.claude/skills/everything-claude-code/SKILL.md` |
-| `excel-generator` | document | none | wiki | `skills/claude-code/excel-generator/SKILL.md` |
-| `export-notebooklm` | wiki | none | wiki | `skills/claude-code/export-notebooklm/SKILL.md` |
+| `excel-generator` | document | none | wiki | `skills/domain/excel-generator/SKILL.md` |
+| `export-notebooklm` | wiki | none | wiki | `skills/wiki/export-notebooklm/SKILL.md` |
 | `finance-pipeline` | trader, data | meta | pipeline | `skills/awiki/finance-pipeline/SKILL.md` |
 | `frontend-a11y` | ux-ui | none | uncategorized | `~/.claude/skills/frontend-a11y/SKILL.md` |
 | `frontend-design` | design | none | uncategorized | `skills/anthropic-skills/frontend-design/SKILL.md` |
@@ -110,7 +110,7 @@
 | `imagegen` | media | none | uncategorized | `~/.codex/skills/.system/imagegen/SKILL.md` |
 | `implement` | code, engineering | build | mattpocock | `skills/mattpocock/implement/SKILL.md` |
 | `improve-codebase-architecture` | engineering | review | mattpocock | `skills/mattpocock/improve-codebase-architecture/SKILL.md` |
-| `ingest-source` | wiki | none | wiki | `skills/claude-code/ingest-source/SKILL.md` |
+| `ingest-source` | wiki | none | wiki | `skills/wiki/ingest-source/SKILL.md` |
 | `internal-comms` | business | none | uncategorized | `skills/anthropic-skills/internal-comms/SKILL.md` |
 | `internet-skill-finder` | code | none | uncategorized | `~/.claude/skills/internet-skill-finder/SKILL.md` |
 | `iterative-retrieval` | code | none | ecosystem | `skills/ecosystem/iterative-retrieval/SKILL.md` |
@@ -121,7 +121,7 @@
 | `kotlin-testing` | code | none | ecosystem | `skills/ecosystem/kotlin-testing/SKILL.md` |
 | `laravel-patterns` | code | none | ecosystem | `skills/ecosystem/laravel-patterns/SKILL.md` |
 | `latency-critical-systems` | engineering | none | uncategorized | `~/.claude/skills/latency-critical-systems/SKILL.md` |
-| `lint-wiki` | wiki | none | wiki | `skills/claude-code/lint-wiki/SKILL.md` |
+| `lint-wiki` | wiki | none | wiki | `skills/wiki/lint-wiki/SKILL.md` |
 | `literature-review` | data | none | ecosystem | `skills/ecosystem/scientific-thinking-literature-review/SKILL.md` |
 | `llm-trading-agent-security` | security, trader | none | ecosystem | `skills/ecosystem/llm-trading-agent-security/SKILL.md` |
 | `management-talk` | productivity | none | uncategorized | `skills/productivity/management-talk/SKILL.md` |
@@ -139,7 +139,7 @@
 | `motion-ui` | media | none | uncategorized | `~/.claude/skills/motion-ui/SKILL.md` |
 | `nextjs-turbopack` | code | none | ecosystem | `skills/ecosystem/nextjs-turbopack/SKILL.md` |
 | `observability-and-instrumentation` | code, engineering, sre | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/observability-and-instrumentation/SKILL.md` |
-| `obsidian` | wiki | none | wiki | `skills/claude-code/obsidian/SKILL.md` |
+| `obsidian` | wiki | none | wiki | `skills/wiki/obsidian/SKILL.md` |
 | `openai-docs` | code | none | uncategorized | `~/.codex/skills/.system/openai-docs/SKILL.md` |
 | `openmed` | medical | none | uncategorized | `skills/openmed/SKILL.md` |
 | `optimize-web-animations` | design, code | review | vendor-mengto | `skills/_upstream/mengto/agent-skills/codex/optimize-web-animations/SKILL.md` |
@@ -147,7 +147,7 @@
 | `pdf` | code | none | uncategorized | `skills/anthropic-skills/pdf/SKILL.md` |
 | `performance-optimization` | code, engineering | review | engineering-lifecycle | `skills/engineering-lifecycle/review/performance-optimization/SKILL.md` |
 | `perl-testing` | code | none | ecosystem | `skills/ecosystem/perl-testing/SKILL.md` |
-| `pharmacy-order-lookup` | medical, pharmacy | none | wiki | `skills/claude-code/pharmacy-order-lookup/SKILL.md` |
+| `pharmacy-order-lookup` | medical, pharmacy | none | wiki | `skills/domain/pharmacy-order-lookup/SKILL.md` |
 | `phaser-arcade-physics` | code, media | build | game | `skills/gamedev-skills/phaser-arcade-physics/SKILL.md` |
 | `phaser-core` | code, media | build | game | `skills/gamedev-skills/phaser-core/SKILL.md` |
 | `pixijs-rendering` | code, media | build | game | `skills/gamedev-skills/pixijs-rendering/SKILL.md` |
@@ -238,7 +238,7 @@
 | `webapp-testing` | code | none | uncategorized | `skills/anthropic-skills/webapp-testing/SKILL.md` |
 | `webgl-3d-object` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/webgl-3d-object/SKILL.md` |
 | `wiki` | wiki | none | awiki | `skills/awiki/wiki/SKILL.md` |
-| `wiki-search-local` | wiki | none | wiki | `skills/claude-code/wiki-search-local/SKILL.md` |
+| `wiki-search-local` | wiki | none | wiki | `skills/wiki/wiki-search-local/SKILL.md` |
 | `windows-desktop-e2e` | code | none | ecosystem | `skills/ecosystem/windows-desktop-e2e/SKILL.md` |
 | `word-generator` | document | none | uncategorized | `skills/word-generator/SKILL.md` |
 | `writing-great-skills` | productivity, ai-ops | meta | mattpocock | `skills/mattpocock/writing-great-skills/SKILL.md` |

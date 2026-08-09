@@ -889,7 +889,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/delegate-subagent/SKILL.md",
+      "path": "skills/delegation/delegate-subagent/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -996,7 +996,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/export-notebooklm/SKILL.md",
+      "path": "skills/wiki/export-notebooklm/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -1176,7 +1176,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/ingest-source/SKILL.md",
+      "path": "skills/wiki/ingest-source/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -1210,7 +1210,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/lint-wiki/SKILL.md",
+      "path": "skills/wiki/lint-wiki/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -1285,7 +1285,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/obsidian/SKILL.md",
+      "path": "skills/wiki/obsidian/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -1350,7 +1350,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
+      "path": "skills/domain/pharmacy-order-lookup/SKILL.md",
       "agents": [
         "all",
         "hermes"
@@ -2362,7 +2362,7 @@
       "lifecycle_phase": "none",
       "category": "wiki",
       "source": "repo",
-      "path": "skills/claude-code/wiki-search-local/SKILL.md",
+      "path": "skills/wiki/wiki-search-local/SKILL.md",
       "agents": [
         "all",
         "hermes"
