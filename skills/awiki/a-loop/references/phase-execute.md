@@ -22,7 +22,7 @@ goal_store.update_goal(goal_id, status="done")
 
 ## Hermes phases (sub-loop per task)
 
-แต่ละ task วิ่งผ่าน 6 phases ของ Hermes lifecycle (`awiki-lifecycle-router`):
+แต่ละ task วิ่งผ่าน 6 phases ของ Hermes lifecycle (orchestration contract ใน `scripts/hermes/lifecycle-config.json`):
 
 | Phase | Skill | ทำอะไร | Verify |
 |-------|-------|--------|--------|

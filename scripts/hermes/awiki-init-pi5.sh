@@ -65,12 +65,8 @@ if [ -d "$LIFECYCLE_DIR" ]; then
       fi
     done
   done
-  # Link meta-skill
-  if [ -f "$LIFECYCLE_DIR/awiki-lifecycle-router/SKILL.md" ]; then
-    mkdir -p "$HERMES_SKILLS/awiki"
-    ln -sf "$LIFECYCLE_DIR/awiki-lifecycle-router" "$HERMES_SKILLS/awiki/lifecycle-router"
-    info "Meta-skill linked"
-  fi
+  # Meta-skill (awiki-lifecycle-router) merged into a-router 2026-08-09.
+  # a-router is linked by link_awiki_skills.py (Step 5) — no separate symlink here.
   info "Linked $(ls -d "$HERMES_SKILLS/lifecycle"/*/ 2>/dev/null | wc -l) lifecycle skills"
 else
   warn "Lifecycle skills dir not found at $LIFECYCLE_DIR — skipping"

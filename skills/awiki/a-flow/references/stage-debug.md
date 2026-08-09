@@ -39,7 +39,7 @@ scrutinize (review fix ว่าไม่ทำใหม่ปัญหาอื
 ## Tools
 
 - `agent-introspection-debugging` — hook state introspection
-- `diagnosing-bugs` (Matt Pocock) — systematic
+- `debug-mantra` — canonical 4-step root cause discipline (Iron Law #2)
 - `diagnosing-commands` / `diagnosing-hooks` / `diagnosing-mcp` (ZCode plugin)
 
 ## Outputs

@@ -65,7 +65,6 @@ TELEGRAM_DOMAINS: frozenset[str] = frozenset({"wiki", "pharmacy", "thai"})
 # Explicit allowlist of meta/ops skills Hermes should always know about,
 # independent of lifecycle/domain heuristics.  Handoff §A2.
 META_ALLOWLIST: frozenset[str] = frozenset({
-    "awiki-lifecycle-router",
     "a-wiki-telegram",
     "wiki-search-local",
     "ingest-source",

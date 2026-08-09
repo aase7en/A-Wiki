@@ -49,7 +49,7 @@ VALID_DOMAINS: frozenset[str] = frozenset({
     "sre",         # observability, canary, production-audit, deployment
 })
 
-# Mirrors awiki-lifecycle-router phases + meta/none for non-lifecycle skills.
+# Mirrors a-router 7-phase spine + meta/none for non-lifecycle skills.
 VALID_LIFECYCLE_PHASES: frozenset[str] = frozenset({
     "define", "plan", "build", "verify", "review", "ship", "meta", "none",
 })
@@ -67,7 +67,7 @@ VALID_STATUSES: frozenset[str] = frozenset({
 })
 
 # v2 — how a skill is invoked. Used by the live dashboard "Skills" view.
-#   auto   = SessionStart hook loads it (e.g. lifecycle-router, debug-mantra)
+#   auto   = SessionStart hook loads it (e.g. debug-mantra)
 #   manual = user types /skill-name
 #   both   = auto in some contexts, manual otherwise
 VALID_INVOCATIONS: frozenset[str] = frozenset({"auto", "manual", "both"})

@@ -211,14 +211,6 @@ THAI_GUIDE: dict[str, dict] = {
         ],
         "process_steps": ["สรุปเหตุการณ์", "หา root cause", "ประเมิน impact", "กำหนด action items"],
     },
-    "root-cause-first": {
-        "invocation": "manual",
-        "th_description": "หา root cause ก่อนแก้ — ไม่ใช่แก้ symptom. ใช้ 5-Whys หรือ fishbone",
-        "when_to_use": "bug ซ้ำ, ปัญหาเรื้อรัง, หรือก่อนแก้ production issue",
-        "examples": [
-            {"scenario": "แอปช้าเป็นบางครั้ง", "how": "ถาม why 5 ครั้งจนถึง root: query N+1? cache miss? DB lock?"},
-        ],
-    },
     "verify-before-done": {
         "invocation": "manual",
         "th_description": "บังคับตรวจสอบก่อนบอกว่า 'เสร็จแล้ว' — รัน test, ตรวจ output, ยืนยันจริงไม่ใช่แค่คิดว่าเสร็จ",
@@ -322,15 +314,15 @@ THAI_GUIDE: dict[str, dict] = {
     },
 
     # ── Process / Meta ─────────────────────────────────────────────────────
-    "awiki-lifecycle-router": {
-        "invocation": "auto",
-        "th_description": "ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติตอน session start",
-        "when_to_use": "อัตโนมัติทุก session — เป็นตัวตัดสินใจว่าจะใช้ skill ไหน",
+    "a-router": {
+        "invocation": "manual",
+        "th_description": "ตัวจ่ายงานของ A-Suite — รับงานแล้วบอกว่าใช้ skill ไหน phase ไหน. อ่าน trigger table จาก wiki/A-ROUTER.md (generated จาก skills-registry.json) หรือเรียก MCP skill_route",
+        "when_to_use": "ได้งานมาแล้วไม่รู้ว่าควรใช้ skill ไหน หรืออยากเห็น 7-phase spine",
         "examples": [
-            {"scenario": "user พิมพ์ 'bug นี้'", "how": "router → debug-mantra"},
+            {"scenario": "user พิมพ์ 'bug นี้'", "how": "router → a-debug"},
             {"scenario": "user พิมพ์ 'deploy'", "how": "router → shipping-and-launch"},
         ],
-        "process_steps": ["define", "plan", "build", "verify", "review", "ship"],
+        "process_steps": ["ask", "design", "plan", "implement", "review", "debug", "test"],
     },
     "handoff": {
         "invocation": "manual",

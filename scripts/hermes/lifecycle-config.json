@@ -108,10 +108,10 @@
   ],
   "lifecycle_routing": {
     "skill_directory": "skills/engineering-lifecycle",
-    "meta_skill": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
+    "meta_skill": "skills/awiki/a-router/SKILL.md",
     "reference_directory": "references",
     "agent_directory": "agents",
     "a_suite_router": "wiki/A-ROUTER.md",
-    "_a_suite_note": "The DEFINE..SHIP phases above are the Hermes orchestration contract and stay as-is. A-Suite is the 7-phase user-facing spine (ask -> design -> plan -> implement -> review -> debug -> test); its entry points are linked into the Hermes skill root by scripts/hermes/link_awiki_skills.py and are answerable as /a-router /a-plan /a-debug /a-doc /a-council /a-loop /a-escalate /a-claim /a-think. Full trigger table: wiki/A-ROUTER.md."
+    "_a_suite_note": "The DEFINE..SHIP phases above are the Hermes orchestration contract and stay as-is. A-Suite is the 7-phase user-facing spine (ask -> design -> plan -> implement -> review -> debug -> test); its entry points are linked into the Hermes skill root by scripts/hermes/link_awiki_skills.py and are answerable as /a-router /a-plan /a-debug /a-doc /a-council /a-loop /a-escalate /a-claim /a-think. Full trigger table: wiki/A-ROUTER.md. (2026-08-09: awiki-lifecycle-router merged into a-router — single router now.)"
   }
 }

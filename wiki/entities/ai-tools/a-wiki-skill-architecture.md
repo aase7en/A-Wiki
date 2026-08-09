@@ -108,5 +108,5 @@ python -m pytest tests/test_skills_registry.py tests/test_check_skill_registry.p
 - [[skill-frontmatter-schema]]
 - [[skill-consolidation]]
 - [[agent-private-storage]]
-- [[awiki-lifecycle-router]]
+- [[a-router]]
 - [[skill-architecture-plan]]

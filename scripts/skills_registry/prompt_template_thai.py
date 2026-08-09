@@ -47,7 +47,7 @@ Output contract (STRICT — quality_gate will REJECT violations):
 
 5. process_steps: include ONLY if the skill has a clear ordered workflow (e.g. lifecycle phases, debugging mantras, TDD red-green-refactor). Each step is a short Thai phrase (5-25 chars). 3-6 steps. If the skill is a one-shot lookup or static reference, OMIT process_steps entirely.
 
-6. invocation: "manual" by default. Use "auto" if you know the skill is hook-loaded at session start (e.g. lifecycle-router, debug-mantra). Use "both" if it runs both ways. When unsure, output "manual".
+6. invocation: "manual" by default. Use "auto" if you know the skill is hook-loaded at session start (e.g. debug-mantra). Use "both" if it runs both ways. When unsure, output "manual".
 
 7. Public-safe: never include real paths (/Users/<name>, C:\\Users\\<name>, API keys, account names, internal codenames). Examples should use generic placeholders.
 
