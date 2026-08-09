@@ -235,6 +235,58 @@
       ]
     },
     {
+      "name": "a-flow",
+      "aliases": [
+        "/a-flow",
+        "aflow"
+      ],
+      "domain": [
+        "engineering",
+        "code"
+      ],
+      "lifecycle_phase": "meta",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-flow/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Master 7-stage dev pipeline (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST). Thin router delegates each stage to canonical skills. Hook-enforced (check_a_flow_discipline) — ห้ามข้าม stage. State in .tmp/a-flow.json",
+      "invocation": "manual",
+      "triggers": [
+        "/a-flow",
+        "workflow",
+        "dev pipeline",
+        "professional dev"
+      ],
+      "th_description": "Master pipeline 7 ขั้น — ทำให้ทุก task non-trivial เดินตาม dev cycle มืออาชีพ: ถาม→ออกแบบ→วางแผน→ลงมือ→รีวิว→แก้บั๊ก→ทดสอบ",
+      "when_to_use": "task non-trivial (≥3 files, design decision) / ขอ professional workflow / stake สูง (security, money, deploy)",
+      "examples": [
+        {
+          "scenario": "feature ใหม่ซับซ้อน",
+          "how": "/A-Flow → เดิน 7 stages พร้อม hook บังคับ"
+        },
+        {
+          "scenario": "ข้ามไป debug stage",
+          "how": "/A-Flow --stage DEBUG"
+        }
+      ],
+      "process_steps": [
+        "ask",
+        "design",
+        "plan",
+        "implement",
+        "review",
+        "debug",
+        "test"
+      ],
+      "invocation_hint": "/A-Flow",
+      "a_phase": "any"
+    },
+    {
       "name": "a-loop",
       "aliases": [],
       "domain": [
@@ -431,7 +483,9 @@
       "name": "a-router",
       "aliases": [
         "/a-router",
-        "arouter"
+        "arouter",
+        "/a-route",
+        "/a"
       ],
       "domain": [
         "engineering"
@@ -444,9 +498,9 @@
         "all",
         "hermes"
       ],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "canonical",
-      "description": "A-Suite dispatcher — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง",
+      "description": "A-Suite dispatcher + session-start pointer — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง. 2026-08-09: รวม a-route + awiki-lifecycle-router เข้าเป็น router เดียว",
       "invocation": "manual",
       "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
       "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
@@ -486,20 +540,20 @@
         "all",
         "hermes"
       ],
-      "version": "1.1.0",
+      "version": "1.2.0",
       "status": "canonical",
-      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove",
-      "invocation": "both",
-      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้",
-      "when_to_use": "ออกแบบ/debug/migration/competing-approaches/security-sensitive/multi-step",
+      "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove. Foundation leaf ที่ a-plan/a-debug/a-doc เรียกเป็น Stage 1 (manual — ไม่ใช่ entry point ของ intent design/debug)",
+      "invocation": "manual",
+      "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation leaf ที่ a-plan/a-debug เรียกเป็น Stage 1",
+      "when_to_use": "migration/competing-approaches/security-sensitive/multi-step (สำหรับ design/debug ให้เรียก a-plan/a-debug ตรง — a-think จะถูก chain เป็น Stage 1)",
       "examples": [
         {
           "scenario": "วางแผน migration DB",
           "how": "/A-Think [task]"
         },
         {
-          "scenario": "Debug bug ซับซ้อน",
-          "how": "/A-Think → เรียก A-Debug"
+          "scenario": "เลือก between competing approaches",
+          "how": "/A-Think → compare ≥2 approaches + trade-off"
         }
       ],
       "process_steps": [
@@ -578,47 +632,6 @@
         }
       ],
       "invocation_hint": "/ask-notebooklm"
-    },
-    {
-      "name": "awiki-lifecycle-router",
-      "aliases": [],
-      "domain": [
-        "code",
-        "engineering"
-      ],
-      "lifecycle_phase": "meta",
-      "category": "engineering-lifecycle",
-      "source": "repo",
-      "path": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
-      "agents": [
-        "all",
-        "hermes"
-      ],
-      "version": "",
-      "status": "canonical",
-      "description": "Discovers and invokes the right A-Wiki lifecycle skill. Use when starting a session or when you need to discover which skill applies to the current task. This i",
-      "invocation": "auto",
-      "th_description": "ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติตอน session start",
-      "when_to_use": "อัตโนมัติทุก session — เป็นตัวตัดสินใจว่าจะใช้ skill ไหน",
-      "examples": [
-        {
-          "scenario": "user พิมพ์ 'bug นี้'",
-          "how": "router → debug-mantra"
-        },
-        {
-          "scenario": "user พิมพ์ 'deploy'",
-          "how": "router → shipping-and-launch"
-        }
-      ],
-      "process_steps": [
-        "define",
-        "plan",
-        "build",
-        "verify",
-        "review",
-        "ship"
-      ],
-      "invocation_hint": "/awiki-lifecycle-router"
     },
     {
       "name": "brainstorm-before-build",

@@ -51,6 +51,7 @@
 | `a-claim` | `/A-Claim` | any | `claim` · `จอง` · `agent อื่น` · `ชนกัน` · `coordination` |
 | `a-content` | `/A-Content` | any | `คอนเทนต์` · `บทความ` · `การตลาด` · `content` · `marketing` · `seo` |
 | `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
+| `a-flow` | `/A-Flow` | any | `/a-flow` · `workflow` · `dev pipeline` · `professional dev` |
 | `a-game` | `/A-Game` | any | `game dev` · `phaser game` · `pixijs` · `threejs scene` · `webgl game` |
 | `a-invest` | `/A-Invest` | any | `ลงทุน` · `หุ้น` · `พอร์ต` · `investment` · `portfolio` |
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
@@ -59,7 +60,7 @@
 | `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
 | `a-web` | `/A-Web` | any | `สร้างเว็บ` · `เว็บไซต์` · `frontend` · `react` · `nextjs` |
 
-> อีก 3 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
+> อีก 2 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
 
 ---
 
@@ -108,4 +109,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_19 A-Suite entry points (+3 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_20 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_

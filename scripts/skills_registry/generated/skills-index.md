@@ -11,8 +11,8 @@
 | `a-debug` | debug, code | verify | pipeline | `skills/awiki/a-debug/SKILL.md` |
 | `a-design` | design, ux-ui, engineering | meta | pipeline | `skills/awiki/a-design/SKILL.md` |
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
-| `a-doc-announce` | document, thai | build | pipeline | `skills/awiki/a-doc/types/announce/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
+| `a-flow` | engineering, code | meta | pipeline | `skills/awiki/a-flow/SKILL.md` |
 | `a-game` | code, media | meta | pipeline | `skills/awiki/a-game/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
 | `a-loop` | engineering | meta | pipeline | `skills/awiki/a-loop/SKILL.md` |
@@ -45,7 +45,6 @@
 | `audit-reference-originality` | design, code | review | vendor-mengto | `skills/_upstream/mengto/agent-skills/codex/audit-reference-originality/SKILL.md` |
 | `awiki-brain-improvement-gate` | code | none | wiki | `skills/claude-code/awiki-brain-improvement-gate/SKILL.md` |
 | `awiki-creator-layer` | code | none | wiki | `skills/claude-code/awiki-creator-layer/SKILL.md` |
-| `awiki-lifecycle-router` | code, engineering | meta | engineering-lifecycle | `skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md` |
 | `backend-patterns` | engineering, code | none | ecosystem | `skills/ecosystem/backend-patterns/SKILL.md` |
 | `benchmark-optimization-loop` | ai-ops | none | uncategorized | `~/.claude/skills/benchmark-optimization-loop/SKILL.md` |
 | `blender-motion-state-inspection` | media, code | none | ecosystem | `skills/ecosystem/blender-motion-state-inspection/SKILL.md` |
@@ -255,7 +254,7 @@
 | data | 12 |
 | debug | 7 |
 | design | 22 |
-| document | 10 |
+| document | 9 |
 | engineering | 55 |
 | media | 17 |
 | medical | 5 |
@@ -263,7 +262,7 @@
 | productivity | 13 |
 | security | 9 |
 | sre | 2 |
-| thai | 15 |
+| thai | 14 |
 | trader | 11 |
 | ux-ui | 8 |
 | wiki | 9 |

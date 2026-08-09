@@ -400,17 +400,19 @@ Auto-pick มี **3 substrate** กิน `triggers` field เดียวก�
 
 | Skill | Slash | Phase | Chain (canonical skills) |
 |---|---|---|---|
-| `a-think` | `/A-Think` | ask | fable-method + fable5-standards merge — 7-step loop: Restate → Done → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove |
+| `a-router` | `/A-Router` | meta | A-Suite dispatcher — map request → skill + phase. อ่าน `wiki/A-ROUTER.md` (generated) หรือ MCP `skill_route`. รวม a-route + awiki-lifecycle-router (2026-08-09) |
+| `a-flow` | `/A-Flow` | meta | Master 7-stage pipeline executor (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST). Hook-enforced กันหลุด stage |
+| `a-think` | `/A-Think` | ask | fable-method + fable5-standards merge — 7-step loop: Restate → Done → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Foundation leaf — เรียกโดย a-plan/a-debug เป็น Stage 1 (manual invocation) |
 | `a-plan` | `/A-Plan` | design | a-think → grill-with-docs (≥3 Qs mandatory) → spec-driven-development → design tool → plan-orchestrate |
 | `a-doc` | `/A-Doc` | implement | router → grill format (paper/margins/font) → dispatch `types/<X>/` → docx/word-generator → render-html. 8 types: announce/order/memo/project/procedure(WI-SP)/procurement(PR-QT-PO)/jd/report/form-record |
 | `a-council` | `/A-Council` | review | 4 personas (code-reviewer / test-engineer / security-auditor / web-perf) → blackboard thread → block ship ถ้ามี critical |
 | `a-debug` | `/A-Debug` | debug | a-think → debug-mantra (Iron Law #2 + root-cause gate) → tdd (Iron Law #1) → fix → verify-before-done → scrutinize |
-| `a-business` | `/A-Business` | any | stub → finance-pipeline / project-flow-ops / agent-sort |
 | `a-loop` | `/A-Loop "<objective>"` | any | decompose → execute → verify → distill → improve (ข้าม session) |
 
-> `a-think` และ `a-loop` **ไม่มี trigger โดยตั้งใจ** — a-think เป็น fallback (ถ้ามี trigger จะไปแย่งงาน a-plan/a-debug), a-loop เป็น autonomous loop ข้าม session ที่ต้องเรียกเอง ไม่ใช่ให้ keyword จุดติด
-> **a-business** deprecated 2026-08 (เคยเป็น stub v0.1.0) — งานลงทุนย้ายไป `/A-Invest`, project-flow-ops/agent-sort เรียกตรงได้
-> **Registry state 2026-08-07**: **241 skills**, **22 a-* packs**. Cleanup history: Tier A (451→252: drop 31 subagent-personas + 8 deprecated + 9 a-doc stubs + 168 ECC cheatsheets demoted). Conservative cleanup (253→241: drop 5 dead aliases + 5 dead/stub + 3 framework-testing template dups). ECC cheatsheets ยังอยู่บน disk ที่ `skills/ecosystem/` และเสิร์ชผ่าน `documentation-lookup`/`ecc-guide` ได้. Registry ยังขาด ~200 skills ที่อยู่บน disk แต่ยังไม่ register (scan.py บายพาส `_upstream/`) — เป็น debt ค้างอยู่
+> `a-think` และ `a-loop` **ไม่มี trigger โดยตั้งใจ** — a-think เป็น foundation leaf ที่ a-plan/a-debug เรียกเป็น Stage 1 (ไม่ใช่ entry point ของ intent design/debug), a-loop เป็น autonomous loop ข้าม session ที่ต้องเรียกเอง
+> **a-business** removed 2026-08-09 (เคยเป็น stub v0.1.0) — งานลงทุนย้ายไป `/A-Invest`, project-flow-ops/agent-sort เรียกตรงได้
+> **Router consolidation 2026-08-09**: a-route + awiki-lifecycle-router รวมเข้า a-router (router เดียว registry-driven). a-flow registered ใน registry ครั้งแรก (เคย drift)
+> **Registry state**: cleanup 2026-08-09 ลด ~15 dead/duplicate skills. ECC cheatsheets ยังอยู่บน disk ที่ `skills/ecosystem/` และเสิร์ชผ่าน `documentation-lookup`/`ecc-guide` ได้
 > **a-design ecosystem**: 3-layer Quality Gate (rubric lib → token MCP → screenshot MCP) + composition layer (8 grammars × 9 recipes) + Distinctiveness anti-AI-tell category. Bind `ui-ux-pro-max` (data) + `taste-skill` (anti-slop) + `transitions-dev` + `motion-*` trio + `accessibility`. ทำงานผ่าน `/A-Design` + MCP `design_quality_gate` + MCP `design_quality_gate_screenshot`
 
 **Audit**: `python scripts/audit_a_suite.py` (frontmatter + registry + cross-ref + Iron Laws). **Scrub pattern**: `<HOSPITAL>` / `<HOSPITAL_NAME>` / `<WORK_DIR>` placeholders สำหรับเอกสารราชการ (ห้าม publish ชื่อจริง — Iron Law #6).

@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 241 · **Aliases/deprecated**: 0
+**Total canonical skills**: 240 · **Aliases/deprecated**: 0
 
 ## 📊 Domain Summary
 
@@ -27,9 +27,9 @@
 | `productivity` | Productivity / Management | 13 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
-| `thai` | ภาษาไทย / เอกสารไทย | 15 |
+| `thai` | ภาษาไทย / เอกสารไทย | 14 |
 | `media` | สื่อ / วิดีโอ / รูปภาพ | 17 |
-| `document` | เอกสาร / docx/pdf/pptx/xlsx | 10 |
+| `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
 | `sre` | SRE / Observability / Deploy | 2 |
 
 ## 🎯 Skills by Domain
@@ -42,6 +42,7 @@
 |-------|-----------|----------|-------------|
 | `a-backend` | meta | pipeline | backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/pris... |
 | `a-debug` | verify | pipeline | Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหร... |
+| `a-flow` | meta | pipeline | Master pipeline 7 ขั้น — ทำให้ทุก task non-trivial เดินตาม dev cycle มืออาชีพ: ถาม→ออกแบบ→วางแผน→... |
 | `a-game` | meta | pipeline | game dev (Phaser/PixiJS/Three.js) — bind game-phaser-pipeline, phaser-core, phaser-arcade-physics... |
 | `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `a-wiki-commands` | none | uncategorized | คำสั่งหลักของ A-Wiki — /today, /lint, /ingest, /search และอื่นๆ |
@@ -53,7 +54,6 @@
 | `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `awiki-brain-improvement-gate` | none | wiki | ใช้ก่อนแก้ไขความสามารถของ A-Wiki brain, agent instructions, skills, hooks, plugins, scripts, sync... |
 | `awiki-creator-layer` | none | wiki | เปลี่ยนบันทึก A-Wiki, หน้า wiki, สรุป source code และไฟล์เสียงส่วนตัว ให้เป็นโพสต์สาธารณะที่ปลอดภ... |
-| `awiki-lifecycle-router` | meta | engineering-lifecycle | ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติต... |
 | `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
 | `blender-motion-state-inspection` | none | ecosystem | Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground con... |
 | `brainstorm-before-build` | none | wiki | บังคับให้ถาม user 3 คำถาม (scope/constraint/success) ก่อนเริ่มสร้างสิ่งใหม่ ป้องกันการเขียนผิดทิศทาง |
@@ -198,6 +198,7 @@
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
 | `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
+| `a-flow` | meta | pipeline | Master pipeline 7 ขั้น — ทำให้ทุก task non-trivial เดินตาม dev cycle มืออาชีพ: ถาม→ออกแบบ→วางแผน→... |
 | `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
@@ -209,7 +210,6 @@
 | `api-connector-builder` | none | ecosystem | Build a new API connector or provider by matching the target repo's existing integration pattern ... |
 | `architecture-decision-records` | none | uncategorized | บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้า... |
 | `ask-matt` | none | mattpocock | ใช้ถามว่าควรใช้ skill หรือ flow ไหนสำหรับสถานการณ์ของคุณ โดยทำหน้าที่เป็น router วนดู skills ทั้ง... |
-| `awiki-lifecycle-router` | meta | engineering-lifecycle | ตัวกลางที่ map 'intent ของ user' → 'skill ที่เหมาะสม' ตาม lifecycle (define→ship). โหลดอัตโนมัติต... |
 | `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
 | `browser-testing-with-devtools` | verify | engineering-lifecycle | ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, pe... |
 | `ci-cd-and-automation` | ship | engineering-lifecycle | ตั้ง CI/CD pipeline — auto test, lint, build, deploy เพื่อลดมนุษย์ผิดพลาด |
@@ -394,7 +394,6 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
-| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
 | `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด |
 | `thai-address` | none | thai | ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองร... |
 | `thai-customer-service` | none | thai | ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์ค... |
@@ -436,7 +435,6 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-doc` | build | pipeline | เอกสารราชการไทย/โรงพยาบาล — router ไป 8 ประเภท พร้อม grill format ทุกครั้ง. รองรับการเรียนรู้จากไ... |
-| `a-doc-announce` | build | pipeline | ประกาศโรงพยาบาล — template canonical สมบูรณ์จากไฟล์จริง <HOSPITAL> |
 | `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด |
 | `assessment-generator` | none | uncategorized | สร้างข้อสอบหรือแบบประเมินจากเนื้อหาที่กำหนด โดยสามารถปรับระดับความยากและรูปแบบคำถามได้ เหมาะสำหรั... |
 | `docx` | none | uncategorized | ใช้สร้าง อ่าน แก้ไข หรือจัดการไฟล์ Word (.docx) โดยตรง รองรับการเพิ่มข้อความ ตาราง รูปภาพ และจัดร... |
@@ -459,11 +457,11 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-doc-announce`, `a-med-order`, `a-rabies-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
+- **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `awiki-lifecycle-router`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## ⚡ Quick-Pick — what to use when
 
@@ -473,8 +471,8 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 | Write a spec before coding | `spec-driven-development` |
 | Break a spec into verifiable tasks | `planning-and-task-breakdown` |
 | Implement code (thin slices) | `incremental-implementation` |
-| Write the failing test first | `test-driven-development` · `tdd` · `tdd-workflow` |
-| Something is broken — find root cause | `debug-mantra` · `root-cause-first` |
+| Write the failing test first | `test-driven-development` · `tdd` |
+| Something is broken — find root cause | `debug-mantra` |
 | Review code | `scrutinize` · `code-simplification` |
 | Security review | `security-and-hardening` · `hipaa-compliance` · `thai-pdpa` |
 | Performance optimization | `performance-optimization` · `react-performance` |

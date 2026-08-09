@@ -44,14 +44,14 @@
       "domain": "document,thai"
     },
     {
-      "name": "a-doc-announce",
-      "target": "skills/awiki/a-doc/types/announce/SKILL.md",
-      "domain": "document,thai"
-    },
-    {
       "name": "a-escalate",
       "target": "skills/awiki/a-escalate/SKILL.md",
       "domain": "engineering"
+    },
+    {
+      "name": "a-flow",
+      "target": "skills/awiki/a-flow/SKILL.md",
+      "domain": "engineering,code"
     },
     {
       "name": "a-game",
@@ -197,11 +197,6 @@
       "name": "awiki-creator-layer",
       "target": "skills/claude-code/awiki-creator-layer/SKILL.md",
       "domain": "code"
-    },
-    {
-      "name": "awiki-lifecycle-router",
-      "target": "skills/engineering-lifecycle/awiki-lifecycle-router/SKILL.md",
-      "domain": "code,engineering"
     },
     {
       "name": "backend-patterns",
