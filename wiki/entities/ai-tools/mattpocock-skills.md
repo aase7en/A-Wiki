@@ -26,7 +26,6 @@ repo จาก **Matt Pocock** (AI Hero / Total TypeScript) — ชุด Claude
 | engineering | **ask-matt** | Router — ถามว่า skill ไหนเหมาะกับสถานการณ์ |
 | engineering | **two-axis-code-review** *(เดิมชื่อ `code-review`)* | Review diff 2 แกน — Standards + Spec — ผ่าน parallel sub-agents |
 | engineering | **codebase-design** | คำศัพท์ร่วมสำหรับออกแบบ deep module |
-| engineering | **diagnosing-bugs** | Diagnosis loop สำหรับบัคยากและ performance regression |
 | engineering | **domain-modeling** | สร้าง/ลับ domain model, ADR, glossary |
 | engineering | **grill-with-docs** | สัมภาษณ์เค้นแผน + สร้าง ADR/glossary ไปพร้อมกัน (เรียก `/grilling`) |
 | engineering | **implement** | Implement งานจาก PRD/issues ด้วย TDD |

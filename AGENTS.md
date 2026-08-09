@@ -409,6 +409,8 @@ Auto-pick มี **3 substrate** กิน `triggers` field เดียวก�
 | `a-debug` | `/A-Debug` | debug | a-think → debug-mantra (Iron Law #2 + root-cause gate) → tdd (Iron Law #1) → fix → verify-before-done → scrutinize |
 | `a-loop` | `/A-Loop "<objective>"` | any | decompose → execute → verify → distill → improve (ข้าม session) |
 
+> **Domain dispatchers** (นอกเหนือจาก table ข้างบน): `a-web` · `a-content` · `a-invest` · `a-research` · `a-game` · `a-backend` · `a-design` · `a-agent` · `a-claim` · `a-med-order` · `a-rabies-report` · `a-escalate` — แต่ละตัว bind 7-phase spine เข้ากับ canonical skills เฉพาะ domain. Full trigger table → `wiki/A-ROUTER.md`
+
 > `a-think` และ `a-loop` **ไม่มี trigger โดยตั้งใจ** — a-think เป็น foundation leaf ที่ a-plan/a-debug เรียกเป็น Stage 1 (ไม่ใช่ entry point ของ intent design/debug), a-loop เป็น autonomous loop ข้าม session ที่ต้องเรียกเอง
 > **a-business** removed 2026-08-09 (เคยเป็น stub v0.1.0) — งานลงทุนย้ายไป `/A-Invest`, project-flow-ops/agent-sort เรียกตรงได้
 > **Router consolidation 2026-08-09**: a-route + awiki-lifecycle-router รวมเข้า a-router (router เดียว registry-driven). a-flow registered ใน registry ครั้งแรก (เคย drift)

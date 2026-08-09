@@ -29,7 +29,7 @@
 |---|---|---|
 | `brainstorm-before-build` | "ออกแบบ", "วางระบบ", "สร้างฟีเจอร์", "/brainstorm" | clarify 3 ข้อ → เสนอ 2-3 approach → user เลือกก่อนเริ่ม |
 | `verify-before-done` | "เสร็จแล้ว", "done", "/today", "commit" | 4-point self-check ก่อนบอกเสร็จ |
-| `root-cause-first` | "แก้บั๊ก", "ทำไมพัง", "error", "ไม่ทำงาน" | reproduce → root cause 1 ประโยค → fix |
+| `a-debug` | "แก้บั๊ก", "ทำไมพัง", "error", "ไม่ทำงาน" | a-think → debug-mantra (root cause) → tdd → fix → verify |
 
 ## คำสั่ง git workflow
 

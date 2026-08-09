@@ -50,7 +50,7 @@ keep the frontmatter simple: scalars and inline lists only.
 | `process_steps` | list of strings | _(absent)_ | ขั้นตอนสำหรับ simulation animation |
 
 **`invocation` meaning:**
-- `auto` — SessionStart hook โหลดอัตโนมัติ (เช่น `awiki-lifecycle-router`, `debug-mantra` ผ่าน hook)
+- `auto` — SessionStart hook โหลดอัตโนมัติ (เช่น `debug-mantra` ผ่าน hook)
 - `manual` — ผู้ใช้พิมพ์ `/skill-name`
 - `both` — auto ใน context บางอย่าง, manual ได้ปกติ
 
@@ -79,7 +79,7 @@ new domain = add it there + re-run `regen-skill-surfaces.py`.
 | `verify` | Testing, debugging, runtime verification |
 | `review` | Code review, security, performance, simplification |
 | `ship` | Git, CI/CD, docs, ADRs, observability, launch |
-| `meta` | Routers, gates, orchestration (awiki-lifecycle-router) |
+| `meta` | Routers, gates, orchestration (a-router) |
 | `none` | Domain skills outside the engineering lifecycle (default) |
 
 ---

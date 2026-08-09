@@ -27,15 +27,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 CONSOLIDATION_ACTIONS: list[dict[str, str]] = [
     # --- TRUE DUPLICATE: skill-creator ×3 ---
-    # Anthropic version (485 lines, eval-driven) is canonical. The claude-code +
-    # delegation copies are identical Manus-flavored 236-line forks. The scanner
-    # already dedups by name and kept the anthropic-skills path (source priority).
-    # We record the mirror paths so generators know where the duplicates live,
-    # and note them as superseded. We do NOT delete files (Iron Law safety).
+    # Anthropic version (485 lines, eval-driven) is canonical. The claude-code
+    # copy was removed 2026-08-09 (consolidated to delegation/). The scanner
+    # dedups by name and keeps the anthropic-skills path (source priority).
     {"name": "skill-creator", "action": "mark-canonical-with-mirrors", "mirror_paths": [
-        "skills/claude-code/skill-creator",
         "skills/delegation/skill-creator",
-    ], "note": "3 copies exist; anthropic-skills version is canonical, claude-code + delegation are Manus-fork mirrors"},
+    ], "note": "anthropic-skills version is canonical; delegation/ is the Manus-fork mirror (claude-code copy removed 2026-08-09)"},
 
     # --- THIN STUB re-routes (already stubs — formalize) ---
     {"name": "hipaa-compliance", "action": "alias", "canonical": "healthcare-phi-compliance", "note": "declared thin entrypoint in audit"},
