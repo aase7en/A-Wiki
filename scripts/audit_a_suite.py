@@ -24,8 +24,7 @@ REGISTRY = REPO / "skills-registry.json"
 
 # Skills created this session
 NEW_SKILLS = [
-    "a-think", "a-plan", "a-debug", "a-doc", "a-doc-announce",
-    "a-business",
+    "a-think", "a-plan", "a-debug", "a-doc",
     "a-doc-_template", "a-doc-order", "a-doc-memo", "a-doc-project",
     "a-doc-procedure", "a-doc-procurement", "a-doc-jd", "a-doc-report",
     "a-doc-form-record",
@@ -199,7 +198,7 @@ def main() -> int:
     for name in NEW_SKILLS:
         s = by_name.get(name, {})
         ver = s.get("version", "")
-        is_stub = name in ("a-business", "a-doc-_template", "a-doc-order", "a-doc-memo",
+        is_stub = name in ("a-doc-_template", "a-doc-order", "a-doc-memo",
                            "a-doc-project", "a-doc-procedure", "a-doc-procurement",
                            "a-doc-jd", "a-doc-report", "a-doc-form-record")
         if is_stub:

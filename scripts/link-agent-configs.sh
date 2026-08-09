@@ -212,7 +212,7 @@ list_skill_sources() {
         find "$REPO_ROOT/skills/mattpocock" -mindepth 1 -maxdepth 1 -type d -print0
     fi
     # A-Wiki-native skills (skills/awiki/) — includes a-think/a-plan/a-debug/a-doc/
-    # a-business/a-wiki-commands/a-wiki-telegram + pipeline skills.
+    # a-wiki-commands/a-wiki-telegram + pipeline skills (a-business removed 2026-08-09).
     # For a-doc subskills, link the parent a-doc/ (types/* are resolved at runtime
     # by reading SKILL.md dispatch table; do NOT link each type as a separate skill).
     if [ -d "$REPO_ROOT/skills/awiki" ]; then

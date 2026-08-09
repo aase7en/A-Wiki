@@ -1,16 +1,18 @@
 ---
 name: a-think
-description: "Core reasoning loop ที่ run ก่อนตอบ non-trivial request — merge fable-method (eval-driven, Sahir619) + fable5-standards (A-Wiki native). 7 steps: Restate → Done-criteria → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Trigger: design/debug/migration/multi-step/competing-approaches/security-sensitive. Skip: simple lookup, typo fix, ingest ตรง. Foundation ที่ A-Plan/A-Debug/A-Doc/A-Business เรียกใช้ (manual + referenced)."
-version: 1.1.0
+description: "Core reasoning loop ที่ run ก่อนตอบ non-trivial request — merge fable-method (eval-driven, Sahir619) + fable5-standards (A-Wiki native). 7 steps: Restate → Done-criteria → Decompose → ≥2 Approaches → Pre-mortem → Right-size → Prove. Foundation leaf ที่ A-Plan/A-Debug/A-Doc เรียกเป็น Stage 1 (manual invocation — ไม่ใช่ entry point ของ intent design/debug). Skip: simple lookup, typo fix, ingest ตรง."
+version: 1.2.0
 author: A-Wiki (fable merge)
 domain: [engineering]
 lifecycle_phase: meta
 category: pipeline
 agents: [all]
 status: canonical
-invocation: both
+invocation: manual
 invocation_hint: "/A-Think"
 tags: [reasoning, fable, fable5, planning, debug]
+# 2026-08-09 v1.2.0: invocation both→manual + ลบ design/debug triggers (เป็น sub-step
+#   ของ a-plan/a-debug ไม่ใช่ entry point ของ intent เหล่านั้น — กันแย่งงาน sibling)
 # 2026-07-26 v1.1.0: augment step 4 with design-first prompting template (MengTo pattern)
 # 2026-07-27 C1: เติม domain/lifecycle_phase/category/agents/status/invocation ที่หายไป
 #   — sibling A-* ทุกตัวมีครบ, registry ก็มีครบ, ขาดแค่ SKILL.md นี้ไฟล์เดียว
