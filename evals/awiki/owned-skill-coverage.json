@@ -65,7 +65,7 @@
     },
     {
       "id": "crew-dispatch-claude-code",
-      "skill": "skills/claude-code/crew-dispatch/SKILL.md",
+      "skill": "skills/delegation/crew-dispatch/SKILL.md",
       "required": [
         "Crew Dispatch",
         "parallel"
@@ -73,14 +73,14 @@
     },
     {
       "id": "delegate-subagent-claude-code",
-      "skill": "skills/claude-code/delegate-subagent/SKILL.md",
+      "skill": "skills/delegation/delegate-subagent/SKILL.md",
       "required": [
         "delegate-subagent"
       ]
     },
     {
       "id": "excel-generator-claude-code",
-      "skill": "skills/claude-code/excel-generator/SKILL.md",
+      "skill": "skills/domain/excel-generator/SKILL.md",
       "required": [
         "Excel Generator Skill",
         "Core Principle"
@@ -88,7 +88,7 @@
     },
     {
       "id": "export-notebooklm",
-      "skill": "skills/claude-code/export-notebooklm/SKILL.md",
+      "skill": "skills/wiki/export-notebooklm/SKILL.md",
       "required": [
         "export-notebooklm"
       ]
@@ -109,21 +109,21 @@
     },
     {
       "id": "lint-wiki",
-      "skill": "skills/claude-code/lint-wiki/SKILL.md",
+      "skill": "skills/wiki/lint-wiki/SKILL.md",
       "required": [
         "lint-wiki"
       ]
     },
     {
       "id": "obsidian",
-      "skill": "skills/claude-code/obsidian/SKILL.md",
+      "skill": "skills/wiki/obsidian/SKILL.md",
       "required": [
         "Obsidian Skills"
       ]
     },
     {
       "id": "pharmacy-order-lookup-claude-code",
-      "skill": "skills/claude-code/pharmacy-order-lookup/SKILL.md",
+      "skill": "skills/domain/pharmacy-order-lookup/SKILL.md",
       "required": [
         "pharmacy-order-lookup"
       ]
@@ -133,11 +133,13 @@
       "skill": "skills/claude-code/root-cause-first/SKILL.md",
       "required": [
         "root-cause-first"
-      ]
+      ],
+      "_status": "removed",
+      "_note": "skill deleted 2026-08-09 (duplicate of debug-mantra)"
     },
     {
       "id": "skill-creator-claude-code",
-      "skill": "skills/claude-code/skill-creator/SKILL.md",
+      "skill": "skills/delegation/skill-creator/SKILL.md",
       "required": [
         "Skill Creator"
       ]

@@ -20,7 +20,7 @@ tags: [reasoning, fable, fable5, planning, debug]
 
 # A-Think — Core Reasoning Loop
 
-> **Foundation skill** ของ A- suite — `/A-Plan`, `/A-Debug`, `/A-Doc`, `/A-Business` ทุกตัวเริ่มด้วย A-Think
+> **Foundation skill** ของ A- suite — `/A-Plan`, `/A-Debug`, `/A-Flow` เรียกเป็น Stage 1 (manual invocation)
 > Merge จุดเด่นของ **fable-method** (Sahir619 — eval-driven, classify/act/prove) + **fable5-standards** (A-Wiki native — stakeholder + communication)
 
 ## เมื่อไหร่ใช้

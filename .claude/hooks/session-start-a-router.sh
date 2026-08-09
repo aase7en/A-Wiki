@@ -18,7 +18,7 @@ set -u
 cat <<'EOF'
 🎯 A-Suite: ASK → DESIGN → PLAN → IMPLEMENT → REVIEW → DEBUG → TEST
    /A-Think (fallback) · /A-Plan ออกแบบ · /A-Doc เอกสาร · /A-Council รีวิว
-   /A-Debug แก้บั๊ก · /A-Business ธุรกิจ · /A-Loop งานยาว · /A-Escalate ส่งโมเดลเก่งกว่า
+   /A-Debug แก้บั๊ก · /A-Flow pipeline · /A-Loop งานยาว · /A-Escalate ส่งโมเดลเก่งกว่า
    ไม่รู้ใช้ตัวไหน → MCP `skill_route` หรืออ่าน wiki/A-ROUTER.md
    เริ่มงานหลาย step → MCP `focus_set` (กันหลุด phase)
 EOF

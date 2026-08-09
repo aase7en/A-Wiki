@@ -7,6 +7,7 @@ domain: [engineering, code]
 lifecycle_phase: meta
 category: pipeline
 agents: [all, hermes]
+status: canonical
 invocation: manual
 invocation_hint: "/A-Flow"
 # 2026-07-26: foundation skill ของ A-Wiki Pro Workflow System.
@@ -112,9 +113,9 @@ notes:
 | ASK | `a-think` (step 1-2: restate + done) + `grill-with-docs` (≥3 Qs mandatory) |
 | DESIGN | `a-think` (step 4-6: approaches + pre-mortem + right-size) + design tool ตาม domain |
 | PLAN | `a-plan` chain (grill → spec → design tool → plan-orchestrate) |
-| IMPLEMENT | `incremental-implementation` + `test-driven-development` (Iron Law #1) |
+| IMPLEMENT | `tdd` (Iron Law #1 — failing test first) + `implement`/`build` |
 | REVIEW | `scrutinize` + persona fan-out (`code-reviewer`, `test-engineer`, `security-auditor`, `web-performance-auditor`) |
-| DEBUG | `a-debug` chain (a-think → debug-mantra → root-cause-first → tdd → fix → verify → scrutinize) |
+| DEBUG | `a-debug` chain (a-think → debug-mantra → tdd → fix → verify → scrutinize) |
 | TEST | `verify-before-done` + domain test skill (`react-testing`/`python-testing`/`e2e-testing`/`browser-qa`) |
 
 ## Hook enforcement (`check_a_flow_discipline`)
@@ -146,7 +147,7 @@ Allow (auto-skip):
 | `grill-with-docs` | ASK stage (≥3 Qs) |
 | `scrutinize` + personas | REVIEW stage |
 | `verify-before-done` | TEST stage |
-| `incremental-implementation` + `tdd` | IMPLEMENT stage |
+| `tdd` + `implement`/`build` | IMPLEMENT stage |
 | `.tmp/task-board.json` (NS C5) | sub-task tracking |
 | Hook infrastructure | `check_a_flow_discipline` |
 

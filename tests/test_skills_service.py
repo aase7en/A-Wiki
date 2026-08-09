@@ -27,8 +27,9 @@ def test_list_all_returns_canonical():
 
 def test_filter_by_invocation_auto():
     r = skills_service.list_skills("invocation=auto")
-    # awiki-lifecycle-router + continuous-learning-v2 are marked auto in thai_guide
-    assert r["count"] >= 1, "expected at least one auto skill"
+    # 2026-08-09: awiki-lifecycle-router merged into a-router (manual).
+    # No skill is invocation=auto right now. Test verifies the FILTER works
+    # correctly (returns only auto skills if any exist), not that one exists.
     for s in r["skills"]:
         assert s["invocation"] == "auto"
 

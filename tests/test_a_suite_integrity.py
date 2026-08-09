@@ -106,7 +106,7 @@ class TestEntryPoint:
             assert phase in routing.VALID_A_PHASES
 
 
-ROUTER_DOC = REPO_ROOT / "skills" / "engineering-lifecycle" / "awiki-lifecycle-router" / "SKILL.md"
+ROUTER_DOC = REPO_ROOT / "skills" / "awiki" / "a-router" / "SKILL.md"
 COMMAND_DOCS = sorted((REPO_ROOT / "commands").glob("A-*.md"))
 
 
@@ -124,12 +124,13 @@ def _refs_resolve(path: Path) -> tuple[list[str], list[str]]:
 
 class TestLifecycleRouter:
     """The router rotted once already — seven routes into a build/ directory
-    that does not exist. Nothing noticed for months. Now it is checked."""
+    that does not exist. Nothing noticed for months. Now it is checked.
+    (2026-08-09: awiki-lifecycle-router merged into a-router — tests repointed.)"""
 
     def test_router_references_resolve(self):
         missing, deprecated = _refs_resolve(ROUTER_DOC)
-        assert not missing, f"awiki-lifecycle-router references missing skill(s): {missing}"
-        assert not deprecated, f"awiki-lifecycle-router routes to deprecated: {deprecated}"
+        assert not missing, f"a-router references missing skill(s): {missing}"
+        assert not deprecated, f"a-router routes to deprecated: {deprecated}"
 
     def test_router_points_at_the_generated_table(self):
         text = ROUTER_DOC.read_text(encoding="utf-8")
