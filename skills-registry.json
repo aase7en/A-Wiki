@@ -8219,6 +8219,79 @@
         "ส่งออกผลลัพธ์"
       ],
       "invocation_hint": "/xlsx"
+    },
+    {
+      "name": "grill-me",
+      "aliases": [
+        "/grill-me",
+        "grillme"
+      ],
+      "domain": [
+        "productivity",
+        "engineering"
+      ],
+      "lifecycle_phase": "define",
+      "category": "methodology",
+      "source": "repo",
+      "path": "skills/mattpocock/grill-me/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Matt Pocock grill-me — thin wrapper that invokes grilling skill to stress-test a plan before building. Foundation leaf called by grill-with-docs aggregator.",
+      "invocation": "manual",
+      "invocation_hint": "/grill-me",
+      "a_phase": "ask",
+      "triggers": []
+    },
+    {
+      "name": "grilling",
+      "aliases": [
+        "/grilling"
+      ],
+      "domain": [
+        "productivity",
+        "engineering"
+      ],
+      "lifecycle_phase": "define",
+      "category": "methodology",
+      "source": "repo",
+      "path": "skills/mattpocock/grilling/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Matt Pocock grilling — relentless interview to stress-test a plan/design before building. Foundation leaf — the underlying skill grill-me dispatches to.",
+      "invocation": "manual",
+      "invocation_hint": "/grilling",
+      "a_phase": "ask",
+      "triggers": []
+    },
+    {
+      "name": "spec",
+      "aliases": [
+        "/spec"
+      ],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "define",
+      "category": "command",
+      "source": "repo",
+      "path": "skills/awiki/spec/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task from message, routes to persona-orchestrator to draft a spec before code. Forces Iron Law #1 (spec before implementation).",
+      "invocation": "manual",
+      "invocation_hint": "/spec",
+      "a_phase": "ask",
+      "triggers": []
     }
   ]
 }
