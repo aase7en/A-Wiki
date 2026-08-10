@@ -176,7 +176,7 @@ def _detect_changed_files_from_command(command: str) -> list[str]:
 
 def main() -> int:
     """Hook entry point. Reads JSON from stdin, writes to ledger, exits 0."""
-    if os.environ.get("HOOK_SKIP") == "memory_capture":
+    if "memory_capture" in os.environ.get("HOOK_SKIP", ""):
         return 0
 
     try:
