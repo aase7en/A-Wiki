@@ -55,6 +55,14 @@
           {
             "type": "command",
             "command": "python3 scripts/hooks_runner.py check-a-focus"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-a-flow-discipline"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-test-before-code"
           }
         ]
       },
@@ -64,6 +72,10 @@
           {
             "type": "command",
             "command": "python3 scripts/hooks_runner.py check-cost-tier"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py check-subagent-fanout"
           }
         ]
       },
@@ -121,6 +133,15 @@
           {
             "type": "command",
             "command": "bash .codex/hooks/checkpoint-on-todo.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks_runner.py log-subagent-result"
           }
         ]
       },
@@ -190,6 +211,14 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/session-start-a-router.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks/check_drive_link.py"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start-initial-context.sh"
           }
         ]
       }
@@ -216,6 +245,14 @@
           {
             "type": "command",
             "command": "python3 scripts/hooks/release_agent_claims.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks/a_loop_distill.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 scripts/hooks/check_verify_before_done.py"
           }
         ]
       }
