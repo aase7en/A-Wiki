@@ -7,7 +7,7 @@
 > This is the central skill brain. **Every agent reads this at session
 > start** (USA-1 §6) so all agents see the same canonical skill set.
 
-**Total canonical skills**: 240 · **Aliases/deprecated**: 0
+**Total canonical skills**: 243 · **Aliases/deprecated**: 0
 
 ## 📊 Domain Summary
 
@@ -17,14 +17,14 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 22 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 55 |
+| `engineering` | วิศวกร / Architect / Agent harness | 57 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 5 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
 | `data` | Data Visualization / DB / Query | 12 |
 | `security` | ความปลอดภัย / Hardening | 9 |
-| `ai-ops` | AI ops / LLM / Cost | 26 |
-| `productivity` | Productivity / Management | 13 |
+| `ai-ops` | AI ops / LLM / Cost | 27 |
+| `productivity` | Productivity / Management | 15 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 14 |
@@ -221,7 +221,9 @@
 | `error-handling` | none | ecosystem | Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error ... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
+| `grill-me` | define | methodology | Matt Pocock grill-me — thin wrapper that invokes grilling skill to stress-test a plan before buil... |
 | `grill-with-docs` | define | mattpocock | เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน |
+| `grilling` | define | methodology | Matt Pocock grilling — relentless interview to stress-test a plan/design before building. Foundat... |
 | `implement` | build | mattpocock | ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โ... |
 | `improve-codebase-architecture` | review | mattpocock | สแกนโค้ดเบสเพื่อหาโอกาสในการปรับปรุงสถาปัตยกรรม สร้างรายงาน HTML แบบภาพ จากนั้นเจาะลึกประเด็นที่เ... |
 | `latency-critical-systems` | none | uncategorized | ใช้สำหรับระบบที่ไวต่อ latency เช่น realtime dashboard, market data, streaming agent, execution ga... |
@@ -346,6 +348,7 @@
 | `prompt-optimizer` | none | ecosystem | >- |
 | `review` | review | awiki | สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-... |
 | `ship` | ship | awiki | สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router แ... |
+| `spec` | define | command | Telegram /spec command-skill (DEFINE phase) — extracts task from message, routes to persona-orche... |
 | `strategic-compact` | none | ecosystem | แนะนำให้บีบอัดบริบทด้วยตนเองในช่วงเวลาที่เหมาะสมของงาน เพื่อรักษาบริบทที่สำคัญระหว่างขั้นตอนต่างๆ... |
 | `token-optimization` | none | wiki | ลดการใช้ token — ใช้ Markdown แทน HTML, compact JSON, ตัด verbose output |
 | `writing-great-skills` | meta | mattpocock | เอกสารอ้างอิงสำหรับการเขียนและแก้ไข skills ให้มีคุณภาพดี — ครอบคลุมหลักการและคำศัพท์ที่ทำให้ skil... |
@@ -357,6 +360,8 @@
 | `article-writing` | none | ecosystem | เขียนบทความ/บล็อก — มีโครง, hook, สาระ, ปิดท้าย |
 | `blueprint` | none | ecosystem | สกิลนี้ช่วยให้คุณสร้าง blueprint หรือพิมพ์เขียวสำหรับโปรเจกต์ใหม่ได้อย่างรวดเร็ว โดยกำหนดโครงสร้า... |
 | `doc-coauthoring` | none | uncategorized | แนะนำขั้นตอนการทำงานร่วมกันในการเขียนเอกสาร เช่น คู่มือ ข้อเสนอ สเปกเทคนิค หรือเอกสารตัดสินใจ โดย... |
+| `grill-me` | define | methodology | Matt Pocock grill-me — thin wrapper that invokes grilling skill to stress-test a plan before buil... |
+| `grilling` | define | methodology | Matt Pocock grilling — relentless interview to stress-test a plan/design before building. Foundat... |
 | `handoff` | meta | mattpocock | สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ |
 | `management-talk` | none | uncategorized | สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ |
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
@@ -455,7 +460,7 @@
 
 Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VERIFY→REVIEW→SHIP):
 
-- **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
+- **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-me`, `grill-with-docs`, `grilling`, `research`, `spec`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
