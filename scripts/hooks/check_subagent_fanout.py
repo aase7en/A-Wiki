@@ -196,7 +196,7 @@ def prune_old_calls(state: dict, now: float) -> list:
 # Main
 # ---------------------------------------------------------------------------
 def main() -> int:
-    if os.environ.get("HOOK_SKIP") == "check_subagent_fanout":
+    if "check_subagent_fanout" in os.environ.get("HOOK_SKIP", ""):
         return 0
 
     try:

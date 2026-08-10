@@ -249,7 +249,7 @@ def _append_capped(path: Path, line: str, cap: int) -> None:
 # Main
 # ---------------------------------------------------------------------------
 def main() -> int:
-    if os.environ.get("HOOK_SKIP") == "log_subagent_result":
+    if "log_subagent_result" in os.environ.get("HOOK_SKIP", ""):
         return 0
 
     try:

@@ -33,7 +33,7 @@ except Exception:
 
 
 def main() -> int:
-    if os.environ.get("HOOK_SKIP") == "check_git_rebase_safety":
+    if "check_git_rebase_safety" in os.environ.get("HOOK_SKIP", ""):
         return 0
     if not _GSB_OK:
         return 0  # can't import safety module — don't block

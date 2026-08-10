@@ -67,7 +67,7 @@ def reap_expired_claims(board_path: Path | str = DEFAULT_BOARD_PATH) -> int:
 
 def main() -> int:
     """Hook entry point. Reads nothing from stdin. Exits 0 always."""
-    if os.environ.get("HOOK_SKIP") == "task_lease_reaper":
+    if "task_lease_reaper" in os.environ.get("HOOK_SKIP", ""):
         return 0
     try:
         reap_expired_claims()

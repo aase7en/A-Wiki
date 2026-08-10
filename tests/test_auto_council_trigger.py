@@ -177,6 +177,33 @@ def test_main_respects_hook_skip(monkeypatch, tmp_path):
     assert act.main() == 0
 
 
+def test_main_hook_skip_substring_in_comma_list(monkeypatch, tmp_path):
+    """HOOK_SKIP='auto_council_trigger,other' must also skip (substring match).
+
+    Before the fix, exact equality (`==`) silently failed for the common
+    comma-separated form. Mirrors the bug pattern documented in
+    scripts/hooks/self_audit.py:191 and tests/test_a_loop_distill.py.
+
+    Detection: if skipped, the bb_path is NEVER written to. If the bug
+    is present (exact match fails), main() proceeds to open_lazy_council
+    which writes to bb_path.
+    """
+    bb_path = tmp_path / "bb.jsonl"
+    monkeypatch.setenv("HOOK_SKIP", "auto_council_trigger,other_hook")
+    monkeypatch.setattr(act, "DEFAULT_BB_PATH", bb_path)
+    monkeypatch.setattr("sys.stdin", _Stdin(json.dumps({
+        "tool_name": "Edit",
+        "tool_input": {"file_path": "scripts/auth/login.py"},
+    })))
+    rc = act.main()
+    assert rc == 0
+    # If properly skipped, bb_path is not created
+    assert not bb_path.exists(), (
+        "HOOK_SKIP='auto_council_trigger,other_hook' must skip the hook "
+        "(substring match) — bb_path was written, meaning the hook ran"
+    )
+
+
 class _Stdin:
     def __init__(self, payload):
         self._payload = payload

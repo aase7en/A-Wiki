@@ -202,7 +202,7 @@ def open_lazy_council(
 
 def main() -> int:
     """PostToolUse hook entry. Exits 0 always."""
-    if os.environ.get("HOOK_SKIP") == "auto_council_trigger":
+    if "auto_council_trigger" in os.environ.get("HOOK_SKIP", ""):
         return 0
     try:
         raw = sys.stdin.read()
