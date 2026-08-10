@@ -155,6 +155,7 @@ SKIP_PATHS = {
     "tests/test_git_safety_backup.py",  # temp-repo git config uses test@test.com
     "tests/test_recall_on_prompt.py",  # recall-on-prompt redaction fixtures
     "tests/test_cross_device_shards.py",  # cross-device shard redaction fixtures
+    "tests/test_check_secret_leak.py",   # fixtures are deliberate fake secret patterns
     "docs/architecture/skill-architecture-handoff.md",  # verification grep cites patterns
     "CHANGELOG.md",                  # historical record may cite redacted artifacts
     "CLAUDE.md",                     # protected doc; scrub only with explicit user permission
