@@ -338,6 +338,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks/release_agent_claims.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/a_loop_distill.py"
                     }
                 ]
             }
