@@ -100,7 +100,9 @@
 | `git-guardrails-claude-code` | engineering, security | none | mattpocock | `skills/mattpocock/git-guardrails-claude-code/SKILL.md` |
 | `git-workflow-and-versioning` | code, engineering | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/git-workflow-and-versioning/SKILL.md` |
 | `golang-testing` | code | none | ecosystem | `skills/ecosystem/golang-testing/SKILL.md` |
+| `grill-me` | productivity, engineering | define | methodology | `skills/mattpocock/grill-me/SKILL.md` |
 | `grill-with-docs` | engineering | define | mattpocock | `skills/mattpocock/grill-with-docs/SKILL.md` |
+| `grilling` | productivity, engineering | define | methodology | `skills/mattpocock/grilling/SKILL.md` |
 | `gsap` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/gsap/SKILL.md` |
 | `gsap-scrolltrigger-storytelling` | design | build | vendor-mengto | `skills/_upstream/mengto/agent-skills/web-design/gsap-scrolltrigger-storytelling/SKILL.md` |
 | `handoff` | productivity, ai-ops | meta | mattpocock | `skills/mattpocock/handoff/SKILL.md` |
@@ -199,6 +201,7 @@
 | `skill-scout` | code | none | ecosystem | `skills/ecosystem/skill-scout/SKILL.md` |
 | `slack-gif-creator` | media | none | uncategorized | `skills/anthropic-skills/slack-gif-creator/SKILL.md` |
 | `social-publisher` | code | none | uncategorized | `~/.claude/skills/social-publisher/SKILL.md` |
+| `spec` | ai-ops | define | command | `skills/awiki/spec/SKILL.md` |
 | `spec-driven-development` | code, engineering | define | engineering-lifecycle | `skills/engineering-lifecycle/define/spec-driven-development/SKILL.md` |
 | `strategic-compact` | ai-ops | none | ecosystem | `skills/ecosystem/strategic-compact/SKILL.md` |
 | `symlink-connector` | engineering | ship | extensibility | `agent-skills/extensibility/symlink-connector/SKILL.md` |
@@ -248,18 +251,18 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 26 |
+| ai-ops | 27 |
 | business | 7 |
 | code | 95 |
 | data | 12 |
 | debug | 7 |
 | design | 22 |
 | document | 9 |
-| engineering | 55 |
+| engineering | 57 |
 | media | 17 |
 | medical | 5 |
 | pharmacy | 2 |
-| productivity | 13 |
+| productivity | 15 |
 | security | 9 |
 | sre | 2 |
 | thai | 14 |

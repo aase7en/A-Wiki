@@ -444,9 +444,19 @@
       "domain": "code"
     },
     {
+      "name": "grill-me",
+      "target": "skills/mattpocock/grill-me/SKILL.md",
+      "domain": "productivity,engineering"
+    },
+    {
       "name": "grill-with-docs",
       "target": "skills/mattpocock/grill-with-docs/SKILL.md",
       "domain": "engineering"
+    },
+    {
+      "name": "grilling",
+      "target": "skills/mattpocock/grilling/SKILL.md",
+      "domain": "productivity,engineering"
     },
     {
       "name": "handoff",
@@ -812,6 +822,11 @@
       "name": "slack-gif-creator",
       "target": "skills/anthropic-skills/slack-gif-creator/SKILL.md",
       "domain": "media"
+    },
+    {
+      "name": "spec",
+      "target": "skills/awiki/spec/SKILL.md",
+      "domain": "ai-ops"
     },
     {
       "name": "spec-driven-development",

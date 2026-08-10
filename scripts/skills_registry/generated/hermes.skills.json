@@ -1754,6 +1754,30 @@
       ]
     },
     {
+      "name": "spec",
+      "aliases": [
+        "/spec"
+      ],
+      "domain": [
+        "ai-ops"
+      ],
+      "lifecycle_phase": "define",
+      "category": "command",
+      "source": "repo",
+      "path": "skills/awiki/spec/SKILL.md",
+      "agents": [
+        "all",
+        "hermes"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Telegram /spec command-skill (DEFINE phase) — extracts task from message, routes to persona-orchestrator to draft a spec before code. Forces Iron Law #1 (spec before implementation).",
+      "invocation": "manual",
+      "invocation_hint": "/spec",
+      "a_phase": "ask",
+      "triggers": []
+    },
+    {
       "name": "spec-driven-development",
       "aliases": [],
       "domain": [

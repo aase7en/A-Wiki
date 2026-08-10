@@ -2,6 +2,7 @@
   "skills": {
     "ai-ops": "../agent-skills/swarm-intelligence",
     "awiki": "../skills/awiki",
+    "command": "../skills/awiki",
     "delegation": "../skills/delegation",
     "design": "../skills/taste-skill",
     "ecosystem": "../skills/ecosystem",
@@ -9,6 +10,7 @@
     "extensibility": "../agent-skills/extensibility",
     "game": "../skills/awiki",
     "mattpocock": "../skills/mattpocock",
+    "methodology": "../skills/mattpocock",
     "persona": "../agents/code-reviewer.md",
     "pipeline": "../skills/awiki",
     "swarm": "../skills/awiki",
