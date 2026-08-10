@@ -189,7 +189,7 @@ def main() -> int:
       1. propose_ideas — distill ideas from failure patterns
       2. auto_propose_skill — draft skill proposals for repeated patterns
     """
-    if os.environ.get("HOOK_SKIP") == "a_loop_distill":
+    if "a_loop_distill" in os.environ.get("HOOK_SKIP", ""):
         return 0
     try:
         n_ideas = propose_ideas(DEFAULT_LEDGER_PATH)
