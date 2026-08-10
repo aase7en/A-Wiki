@@ -144,8 +144,10 @@ def parse_age(v) -> Optional[int]:
 
 def load_xls(path: Path, header_row: int = 0, date_format: Optional[str] = None) -> pd.DataFrame:
     """Load one quarter xls; auto-detect the sheet + header row by locating the 'ลำดับ' marker.
-    Date parsing is day-first (dd/mm/yyyy) when the cell is a string matching that pattern;
-    ISO datetimes pass through. NaT drops are counted and reported to stderr.
+    Falls back to synthetic headers for legacy exports that have no header row
+    (e.g. 2016 HIS export starts data at row 0). Date parsing is day-first
+    (dd/mm/yyyy) when the cell is a string matching that pattern; ISO datetimes
+    pass through. NaT drops are counted and reported to stderr.
     """
     xl = pd.ExcelFile(path)
     chosen_sheet = None
@@ -158,10 +160,24 @@ def load_xls(path: Path, header_row: int = 0, date_format: Optional[str] = None)
                 break
         if chosen_sheet is not None:
             break
+
     if chosen_sheet is None:
-        chosen_sheet, chosen_hdr = xl.sheet_names[0], header_row
-    df = pd.read_excel(path, sheet_name=chosen_sheet, header=chosen_hdr)
-    df.columns = [str(c).strip() for c in df.columns]
+        # Legacy export without header row — assign canonical column names.
+        # Column order observed across 2016-2025 HIS exports:
+        # 0:ลำดับ 1:HN 2:วันที่ตรวจ 3:ชื่อ-นามสกุล 4:อายุ 5:เบอร์โทรศัพท์ 6:สัญชาติ 7:วัคซีน
+        chosen_sheet = xl.sheet_names[0]
+        chosen_hdr = None  # read with header=None, assign names manually
+        raw = pd.read_excel(xl, sheet_name=chosen_sheet, header=None)
+        canon_cols = ["ลำดับ", "HN", "วันที่ตรวจ", "ชื่อ - นามสกุล",
+                      "อายุ", "เบอร์โทรศัพท์", "สัญชาติ", "วัคซีน"]
+        n = min(len(canon_cols), raw.shape[1])
+        df = raw.copy()
+        df.columns = canon_cols[:n] + [f"col_{i}" for i in range(n, raw.shape[1])]
+        print(f"WARN: {path.name}: no 'ลำดับ' header found — using synthetic column names "
+              f"({n} cols)", file=sys.stderr)
+    else:
+        df = pd.read_excel(path, sheet_name=chosen_sheet, header=chosen_hdr)
+        df.columns = [str(c).strip() for c in df.columns]
 
     def find(candidates):
         for c in candidates:
@@ -176,7 +192,10 @@ def load_xls(path: Path, header_row: int = 0, date_format: Optional[str] = None)
 
     df = df.rename(columns={hn_col: "HN", date_col: "date", vac_col: "vac",
                              name_col: "name"})
-    df["HN"] = df["HN"].astype(str).str.strip().str.replace(r"\.0$", "", regex=True).str.zfill(7)
+    df["HN"] = df["HN"].astype(str).str.strip().str.replace(r"\.0$", "", regex=True)
+    # Preserve HN as-is (don't force zfill — HIS legacy exports use 5-6 digits,
+    # modern use 7). Just strip non-digits and warn if mixed lengths across files.
+    df["HN"] = df["HN"].str.replace(r"[^\d]", "", regex=True)
 
     # Day-first date parsing: detect dd/mm/yyyy strings vs ISO datetimes
     sample = df["date"].dropna().astype(str).head(20)
