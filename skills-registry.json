@@ -665,9 +665,9 @@
         "all",
         "hermes"
       ],
-      "version": "1.0.0",
+      "version": "1.2.0",
       "status": "canonical",
-      "description": "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน 9-cell. Engine: scripts/hospital/classify_rabies.py",
+      "description": "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน, 9-cell, prior=complete-series (10y lookback). Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool",
       "invocation": "manual",
       "invocation_hint": "/A-Rabies-Report",
       "a_phase": "implement",

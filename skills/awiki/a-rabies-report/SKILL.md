@@ -1,7 +1,7 @@
 ---
 name: a-rabies-report
-description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน, 9-cell (ครบชุด/<5/ไม่ครบ IM-ID × ERIG-HRIG). Engine: scripts/hospital/classify_rabies.py. ใส่ไฟล์ HIS Q<x>.xls → ตัวเลข Q1-Q4 กรอก template .doc"
-version: 1.0.0
+description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน, 9-cell, prior=complete-series (10y lookback). Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
+version: 1.2.0
 author: A-Wiki
 domain: [document, thai, medical]
 lifecycle_phase: build
@@ -130,37 +130,53 @@ YYMMDD_rabiesvac.<HOSPITAL>_Y<YY>.doc
 
 ## 🛠️ Workflow (4 ขั้น)
 
+### ⭐ ขั้น 0 (สำคัญที่สุด — ห้ามลืม): รวบรวมข้อมูลย้อนหลัง 10 ปี
+
+**ก่อนรัน engine ทุกครั้ง** ต้องมี history ครอบคลุม **10 ปีย้อนหลัง**
+เพราะ booster rule ("เคยครบชุด ≤180d = 1 เข็ม / ≥181d = 2 เข็ม") วัดจาก complete series end date
+คนไข้ที่ครบชุดเมื่อ 5 ปีก่อนแล้วมา booster ใน Q3 → prior_days ≥181 → ต้อง 2 เข็ม
+ถ้า history มีแค่ Q1+Q2 (9 เดือน) → engine มองไม่เห็น → ตก incomplete ผิด
+
+**ไฟล์ที่ต้องหาใน Google Drive:**
+```
+drive/hospital-uthai/RabiesVacc/
+├── 2608010_Rabies_DB_<YYYY>.xls   ← ข้อมูลรายปี 2559-2568 (ไฟล์หลัก)
+├── 251231_RabiesQ1.xls            ← Q1 ปีงบ ๖๘ (เมื่อปีก่อน)
+├── 260331_RabiesQ2.xls            ← Q2 ปีงบ ๖๙ (Q ล่าสุดก่อนหน้า)
+└── 260806_RabiesQ3.xls            ← Q3 ปีงบ ๖๙ (Q ปัจจุบันที่จะทำ)
+```
+
+**ถ้า user ส่งไฟล์ใหม่มา (Q4 หรือปีใหม่):**
+1. อย่าเพิ่งรัน engine ด้วยไฟล์เดียว
+2. หาไฟล์ history ย้อนหลัง 10 ปีใน `drive/hospital-uthai/RabiesVacc/`
+3. ถ้าไม่ครบ → ขอ user export เพิ่ม
+4. engine เตือน `⚠️ WARNING: history span < 1 year` ถ้าไม่พอ — **ห้าม ignore warning นี้**
+
+### ขั้น 1-4: รัน engine + กรอก template
+
 ```bash
-# 1. รัน engine ต่อไตรมาส — ส่ง --history ของ Q ก่อนหน้าทั้งหมด (180-day lookback)
-# Q1 (ต.ค.–ธ.ค. ปีก่อน): ไม่มี history
-python scripts/hospital/classify_rabies.py \
-  "<drive>/RabiesVacc/<date>_RabiesQ1.xls" \
-  --period-start 2025-10-01 --period-end 2025-12-31
+# 1. รวบ history ทั้งหมด (10 ปีย้อนหลัง + Q ที่ผ่านมา)
+HISTORY=(
+  "<drive>/RabiesVacc/2608010_Rabies_DB_2559.xls"
+  "<drive>/RabiesVacc/2608010_Rabies_DB_2560.xls"
+  # ... ครบถึง 2568
+  "<drive>/RabiesVacc/251231_RabiesQ1.xls"
+  "<drive>/RabiesVacc/260331_RabiesQ2.xls"
+)
 
-# Q2 (ม.ค.–มี.ค.): history = Q1
+# 2. รัน engine ด้วย history เต็ม + Q ที่จะทำ
 python scripts/hospital/classify_rabies.py \
-  "<drive>/RabiesVacc/<date>_RabiesQ2.xls" \
-  --history "<drive>/RabiesVacc/<date>_RabiesQ1.xls" \
-  --period-start 2026-01-01 --period-end 2026-03-31
-
-# Q3 (เม.ย.–มิ.ย.): history = Q1+Q2
-python scripts/hospital/classify_rabies.py \
-  "<drive>/RabiesVacc/<date>_RabiesQ3.xls" \
-  --history "<drive>/RabiesQ1.xls" "<drive>/RabiesQ2.xls" \
+  "<drive>/RabiesVacc/260806_RabiesQ3.xls" \
+  --history "${HISTORY[@]}" \
   --period-start 2026-04-01 --period-end 2026-06-30
 
-# Q4 (ก.ค.–ก.ย.): history = Q1+Q2+Q3
-# (เหมือน pattern — เพิ่ม Q3 ใน --history)
+# 3. ตรวจ Mixed + REVIEW list (stderr)
+#    - Mixed HN ทั้งหมด engine ตัดสินด้วย rule แล้ว — ดูเพื่อ audit
+#    - REVIEW ควรเป็น 0; ถ้าไม่ใช่ แจ้ง user + ตรวจ data quality
 
-# 2. ระหว่างรัน → ตรวจ Mixed list + REVIEW list (stderr)
-#    - Mixed HN ทั้งหมด engine ตัดสินด้วย rule #1-5 แล้ว — ดูเพื่อ audit
-#    - REVIEW = cases ที่ไม่เข้า rule (ควรเป็น 0; ถ้าไม่ใช่ แจ้ง user)
-
-# 3. กรอกตัวเลข 9-cell ลง template .doc ด้วย python-docx (หรือ Word COM)
+# 4. กรอกตัวเลข 9-cell ลง template .doc
 #    Template: <drive>/RabiesVacc/20260206_Template_RabiesReport.doc
-#    Output:   <drive>/RabiesVacc/<yymmdd>_rabiesvac.<HOSPITAL>Y<be>.doc
-
-# 4. ส่งให้ user ตรวจ + sign + ส่งจังหวัด
+#    Output:   <drive>/RabiesVacc/<yymmdd>_rabiesvac.<HOSPITAL>_Y<YY>.doc
 ```
 
 ### ⚠️ กำหนดส่ง (deadline)
@@ -204,10 +220,80 @@ python scripts/hospital/classify_rabies.py \
 
 - **Algorithm source**: spec จาก รพ. + สอบถามจังหวัด (2026-08-07)
 - **Council review**: 4 critical + 12 important fixes applied (A-Council)
-- **A-Think**: confirmed Q1 history จำเป็น (180-day lookback)
+- **A-Think**: confirmed 10-year history จำเป็น (booster detection)
 - **Iron Laws**: #1 (test-first), #6 (privacy), #10 (registry), #11 (claim)
 - **Related skills**: `a-doc` (สร้างเอกสารทั่วไป), `a-council` (review), `a-think` (reasoning)
+
+## 🚀 Roadmap: Standalone Tool (PDPA-safe, ลด token, SaaS ในอนาคต)
+
+> **เป้าหมาย**: แปลง engine + skill นี้เป็น **โปรแกรม** ที่ รพ. ใช้เอง
+> ไม่ผ่าน AI Agent (ลด token) + ใช้ API ฟรีได้ + ขยายไป SaaS ได้
+
+### ข้อกำหนด (Requirements)
+- **PDPA-safe**: ข้อมูลคนไข้ไม่ออกจากเครื่อง รพ. (ไม่ส่งไป cloud LLM)
+- **ลด token AI**: engine หลักทำงาน offline (pure Python) AI เข้ามาเฉพาะตอน
+  generate report text / ตอบคำถาม user
+- **Free AI API**: รองรับ OpenRouter free / Gemini Flash (ผ่าน cost-pyramid)
+- **Data ingestion**: อัพโหลด xls/csv → บันทึก SQLite → dedup → query ได้
+- **Report builder**: เลือก template + field mapping → generate .docx/.pdf
+- **Extensible**: เพิ่ม report type ใหม่ได้ (ไม่ใช่แค่ rabies)
+
+### Architecture (4 layers, MVP → SaaS)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 4: UI (FastAPI web + Jinja2 templates)                │
+│   - อัพโหลดไฟล์ / เลือก template / ดูผล / export            │
+│   - Local-only (http://localhost:8000) สำหรับ รพ.           │
+│   - SaaS: deploy บน VPN/private cloud ถ้าขยาย               │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 3: Report Engine (รวม classify_rabies.py + อนาคต)     │
+│   - rabies-report (MVP — มีแล้ว)                             │
+│   - vaccine-coverage (อนาคต)                                │
+│   - adverse-event (อนาคต)                                   │
+│   - custom-report-builder (อนาคต — เหมือน Jaspersoft)       │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 2: Data Store (SQLite — single file, PDPA-safe)       │
+│   - tables: patients, doses, cases, reports, templates      │
+│   - ingest() auto-detect schema + dedup by (hn,date,vac)    │
+│   - query() SQL โดยตรง (เร็ว ไม่ต้องโหลดทั้งไฟล์)             │
+│   - 10-year history อยู่ใน DB เดียว → prior lookup ทันที     │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 1: AI Adapter (optional — เรียกเมื่อต้องการ)           │
+│   - Free API: OpenRouter free / Gemini Flash                │
+│   - ใช้ตอน: สรุปรายงานเป็นภาษาไทย / ตอบคำถาม / QC          │
+│   - ไม่ใช้ตอน: คำนวณตัวเลข (pure Python, ไม่ใช้ AI)         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### MVP scope (ทำก่อน, 1-2 สัปดาห์)
+- [ ] SQLite schema + `ingest.py` (dedup auto)
+- [ ] `query.py` CLI (เลือก period → export 9-cell numbers)
+- [ ] `fill_template.py` (map numbers → .docx template)
+- [ ] ทดสอบ: อัพโหลด 10-year history ครั้งเดียว → query Q3 → ได้ report
+
+### Phase 2 (1-2 เดือน)
+- [ ] Web UI (FastAPI + Jinja2) — อัพโหลดผ่าน browser
+- [ ] Multi-report (เพิ่ม report type อื่นที่ รพ. ทำประจำ)
+- [ ] User auth (local, สำหรับเจ้าหน้าที่ รพ.)
+
+### Phase 3 (SaaS — ถ้ามี รพ. อื่นสนใจ)
+- [ ] Multi-tenant (แยก DB ต่อ รพ.)
+- [ ] Deploy on private cloud (PDPA-compliant hosting)
+- [ ] Billing / subscription
+
+### 💡 ไอเดียเพิ่ม (เนื่องจากงาน รพ. ที่เห็น)
+1. **OP-card/reimbursement report builder** — คล้าย rabies แต่เปลี่ยน table
+2. **Auto-dedup + merge patient** — HN format เปลี่ยนข้ามปี (เห็นจริงใน 2559 vs 2560)
+3. **Vaccine coverage heatmap** — เห็นพื้นที่/ช่วงเวลาที่ควรรณรงค์
+4. **Adverse event tracker** — ติดตาม side effect หลังฉีด
+5. **Drug inventory forecast** — คาดการใช้ ERIG/vaccine ต่อไตรมาส
+6. **Thai form auto-fill** — เอกสาร สธ. อื่นๆ (เช่น รายงานโรค 506)
+7. **PDPA audit log** — ใครเข้าถึงข้อมูลคนไข้เมื่อไหร่ (สำคัญสำหรับ compliance)
+8. **Offline-first** — ทำงานได้แม้ HIS offline (สำคัญเพราะ HosXP มี downtime)
 
 ## 📝 Changelog
 
 - **v1.0.0** (2026-08-07): initial — Q1+Q2+Q3 ปีงบ ๒๕๖๘-๖๙ ครบ, REVIEW=0, engine + template + skill
+- **v1.1.0** (2026-08-10): bugfix prior=complete-series + 10-year lookback + FINAL numbers
+- **v1.2.0** (2026-08-10): Roadmap section (standalone tool → SaaS)
