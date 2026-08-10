@@ -206,6 +206,10 @@
                     {
                         "type": "command",
                         "command": "python3 scripts/hooks_runner.py check-a-flow-discipline"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py check-test-before-code"
                     }
                 ]
             },
