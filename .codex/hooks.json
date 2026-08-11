@@ -178,6 +178,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "python3 scripts/hooks/caveman_session_start.py"
+          },
+          {
+            "type": "command",
             "command": "bash .codex/hooks/session-start-git-pull.sh"
           },
           {
@@ -259,4 +263,3 @@
     ]
   }
 }
-

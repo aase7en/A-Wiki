@@ -218,6 +218,12 @@ list_skill_sources() {
     if [ -d "$REPO_ROOT/skills/awiki" ]; then
         find "$REPO_ROOT/skills/awiki" -mindepth 1 -maxdepth 1 -type d -print0
     fi
+    # Claude-Code-native skills (skills/claude-code/) — includes token-optimization
+    # (caveman mode rules), ingest-source, lint-wiki. Linked into ALL agents so
+    # caveman default + token discipline work cross-agent (Iron Law #7b, 2026-08-11).
+    if [ -d "$REPO_ROOT/skills/claude-code" ]; then
+        find "$REPO_ROOT/skills/claude-code" -mindepth 1 -maxdepth 1 -type d -print0
+    fi
 }
 
 # ── subagent sources (SA2-SA6 — .zcode/agents/ symlink farm) ────────────────
