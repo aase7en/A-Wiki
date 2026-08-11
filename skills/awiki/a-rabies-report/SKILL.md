@@ -354,3 +354,5 @@ python scripts/hospital/classify_rabies.py \
   - **#3 screening merge**: รวมประวัติจาก screening app (คนไข้ที่ฉีดที่ รพ. อื่น)
   - **#4 abandoned-dose + restart detection**: HN 176434 — 1 เข็ม abandoned + 4 เข็ม clean restart (10/03→07/04 perfect ID schedule)
   - **#5 quarter straddle → defer to end_date quarter**: "ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป Q ถัดไป"
+  - **Q3 v5 FINAL**: 337 cases (complete IM=23/ID=117, sub5 IM=16/ID=56, incomplete IM=18/ID=107, ERIG=110, HRIG=0)
+  - **Files**: `drive/hospital-uthai/RabiesVacc/260811_rabiesvac.<HOSPITAL>_Y69_FINALv3.doc` + `.docx`
