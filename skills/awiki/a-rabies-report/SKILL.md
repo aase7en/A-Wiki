@@ -1,7 +1,7 @@
 ---
 name: a-rabies-report
-description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน, 9-cell, prior=complete-series (10y lookback). Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
-version: 1.2.0
+description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส, 9-cell, prior=complete-series (10y lookback), 33d first-dose-anchored window + abandoned-dose detection + quarter-straddle deferral. Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
+version: 1.3.0
 author: A-Wiki
 domain: [document, thai, medical]
 lifecycle_phase: build
@@ -30,25 +30,76 @@ aliases: [/a-rabies-report, /a-report-rabies-vacc, /a-rabies]
 
 ## 📊 หน่วยนับ: "รายเคส" (ไม่ใช่ doses)
 
-**1 case = cluster ของ doses ของ HN เดียวกันภายใน 28 วันนับจากเข็มแรก**
-- dose ถัดไปห่าง ≤28 วันจากเข็มแรก → อยู่ case เดียวกัน
-- dose ห่าง >28 วัน → **case ใหม่ (อุบัติการณ์ใหม่)** แม้ HN เดียวกัน
+**1 case = cluster ของ doses ของ HN เดียวกันภายใน 33 วันนับจากเข็มแรก** (v1.3.0)
+
+> **เหตุผลที่ใช้ 33 วัน ไม่ใช่ 28:**
+> - Schedule IM (Essen): Day 0,3,7,14,**28** → last dose ตกวันที่ 28
+> - Schedule ID (IPC): Day 0,3,7,**28-30** → last dose ตกวันที่ 28-30
+> - CDC MMWR RR-5703: "delays of a few days are unimportant" → +3d grace
+> - รวม = **30d schedule + 3d grace = 33d** ครอบคลุมทั้ง IM และ ID + การมาสาย 1-3 วัน
+> - 28d window (เวอร์ชั่นเก่า) split เคสที่ Day-28 dose มาสาย 1 วัน (HN 10217, 388351)
+
+- dose ถัดไปห่าง ≤33 วันจากเข็มแรก → อยู่ case เดียวกัน
+- dose ห่าง >33 วัน → **case ใหม่ (อุบัติการณ์ใหม่)** — "หลักเดือน = รอบใหม่"
+- anchored ที่เข็มแรก (ไม่ใช่ sliding) → คนไข้ที่หายไป 2+ เดือนถูกแยกเป็นเคสใหม่ถูกต้อง
+
+### 🆕 Bugfix #4 (v1.3.0): "Abandoned dose + clean restart" detection
+
+บางครั้งคนไข้ได้ 1 เข็มแล้วหายไป (ขาดช่วง) แล้วมาเริ่มซีรี่ส์ใหม่ภายหลัง:
+```
+HN 176434:
+  03/03  ID + ERIG       (1 เข็ม → หายไป)
+  10/03  ID              (Day 0 ใหม่)
+  13/03  ID              (Day +3)
+  17/03  ID              (Day +7)
+  07/04  ID              (Day +28 — ID schedule สมบูรณ์จาก 10/03)
+```
+
+**อัลกอริทึม** (`refine_clusters_cross_window`):
+1. หลัง time-window clustering ให้ตรวจ schedule-fit ของ forward slice จากแต่ละ dose
+2. แยกเป็น 2 เคสเมื่อทั้ง 4 เงื่อนไข:
+   - **Strict schedule-fit**: ทุกเข็มต้องอยู่ใน ±2 วันของ day ที่คาดไว้ (no strays)
+   - **Dose count**: 4-7 เข็มใน forward slice (ไม่ใช่ 13 เข็มข้ามปี)
+   - **Span**: ≤35 วัน (one schedule + grace)
+   - **Pre-anchor doses ไม่ fit schedule ใด** (ถ้า fit แปล่า่า prior-complete + booster ไม่ใช่ abandoned)
+3. Pre-anchor doses → case A (abandoned, incomplete)
+4. Anchor + later doses → case B (clean restart, classified normally)
+
+> **STRICT conditions** สำคัญมาก (audit 2026-08-11): แบบเก้มี false positive
+> รวม HN 142753 (13 doses ข้าม 5 ปี → 2016-2026) เป็น 1 เคส "complete" ผิด
+
+### 🆕 Bugfix #5 (v1.3.0): Quarter straddle → defer to next quarter
+
+> **กฎของโรงพยาบาล:** "ถ้ารายการฉีดวัคซีน คาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ถือว่าเคสนั้น ขยับไปอยู่อีก Q ไตรมาสถัดไปแทน"
+
+- Case ที่เริ่มใน Q2 แต่จบใน Q3 → นับใน **Q3** (ไม่ใช่ Q2)
+- Case ทั้งหมดใน Q3 → ยังอยู่ Q3 (unchanged)
+- Case ทั้งหมดใน Q2 → ยังอยู่ Q2 (unchanged)
+
+**Implementation**: period filter ใช้ `end_date` ไม่ใช่ `start_date`
 
 ## 🎯 Algorithm (canonical, verified 2026-08-07 — 0 REVIEW across 916 cases)
 
-### Prior history (booster)
-"Prior" = dose rabies vaccine (ID หรือ IM) ใดๆ ก่อน start_date ของ case ปัจจุบัน
+### Prior history (booster) — v1.2.0+ bugfix #2
+"Prior" = **complete rabies vaccination series** (≥3 doses ID+IM combined) ก่อน start_date ของ case ปัจจุบัน
+- ≥3 doses = complete series (ตาม DDC pre-exposure 3-dose spec + screening app "เคยฉีด 3 เข็ม หรือมากกว่า")
 - ≤180 วัน → booster ต้องการ **1 เข็ม** ใน case นี้
 - ≥181 วัน → booster ต้องการ **2 เข็ม** ใน case นี้
 
-⚠️ **ต้องมีข้อมูลย้อนหลัง ≥180 วัน** — รายไตรมาส (90 วัน) ไม่พอ ต้องส่ง `--history` Q ก่อนหน้า
+**2 แหล่ง prior:**
+1. HIS data (lookback 10 ปี จาก `--history`)
+2. Screening app (ผู้ป่วยที่ฉีดที่โรงพยาบาลอื่น — `--screening` file)
 
-### Default rules (รวม special rules เป็น default แล้ว)
-1. **Over-dose within 28d → complete** (เข็มเกิน = ครบ)
-2. **IG-only** (ERIG/HRIG ไม่มี vaccine ใน 28d) → incomplete by age
-3. **>28d gap → new incident** → case clustering + re-classify with prior
-4. **Mixed ID+IM**: total doses decide + age tiebreak for 2-3 dose cases
-5. **Prior history**: ≤180d = booster 1 dose, ≥181d = booster 2 doses
+⚠️ **ต้องมีข้อมูลย้อนหลัง ≥180 วัน** — รายไตรมาส (90 วัน) ไม่พอ ต้องส่ง `--history` Q ก่อนหน้า + DB files 10 ปี
+
+### Default rules (v1.3.0 — รวม special rules, 33d window, abandoned-dose, straddle)
+1. **Over-dose within 33d → complete** (เข็มเกิน = ครบ)
+2. **IG-only** (ERIG/HRIG ไม่มี vaccine ใน 33d) → incomplete by age
+3. **>33d gap → new incident** → case clustering + re-classify with prior
+4. **Abandoned dose + clean restart** → split (v1.3.0 bugfix #4)
+5. **Quarter straddle** → case belongs to quarter of end_date (v1.3.0 bugfix #5)
+6. **Mixed ID+IM**: total doses decide + age tiebreak for 2-3 dose cases
+7. **Prior history** = complete series (≥3 doses) within 10y lookback: ≤180d = booster 1 dose, ≥181d = booster 2 doses
 
 ### 9-cell classification
 
@@ -297,3 +348,9 @@ python scripts/hospital/classify_rabies.py \
 - **v1.0.0** (2026-08-07): initial — Q1+Q2+Q3 ปีงบ ๒๕๖๘-๖๙ ครบ, REVIEW=0, engine + template + skill
 - **v1.1.0** (2026-08-10): bugfix prior=complete-series + 10-year lookback + FINAL numbers
 - **v1.2.0** (2026-08-10): Roadmap section (standalone tool → SaaS)
+- **v1.3.0** (2026-08-11): **5 bugfixes** (verified on Q3 + 4 specific HNs)
+  - **#1 window 33d**: 28d → 33d (schedule 30d + CDC grace 3d); ก่อนหน้านี้ split Day-28 IM dose ที่มาสาย 1 วัน (HN 10217, 388351)
+  - **#2 prior = ≥3 doses** (was IM≥5/ID≥4/mixed≥4): ตรงตาม DDC pre-exposure spec + screening app
+  - **#3 screening merge**: รวมประวัติจาก screening app (คนไข้ที่ฉีดที่ รพ. อื่น)
+  - **#4 abandoned-dose + restart detection**: HN 176434 — 1 เข็ม abandoned + 4 เข็ม clean restart (10/03→07/04 perfect ID schedule)
+  - **#5 quarter straddle → defer to end_date quarter**: "ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป Q ถัดไป"

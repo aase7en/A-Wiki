@@ -107,10 +107,24 @@ def enforce_drive_path(p: Path) -> Path:
     return p
 
 # ── Constants ───────────────────────────────────────────────────────────────
-CASE_WINDOW_DAYS = 28
+# Case window MUST cover BOTH post-exposure schedules end-to-end:
+#   - IM (Essen): Day 0,3,7,14,28  → last dose on Day 28
+#   - ID (IPC/Thai Red Cross): Day 0,3,7,28 (or 30) → last dose on Day 28-30
+# 28 days is the schedule itself — the last dose can legitimately fall ON Day 28
+# (or 1-3 days late per CDC guidance). A 28-day window would split every IM/ID
+# series where the final dose landed on Day 29-30. 33d = 30d schedule + 3d CDC
+# grace ("delays of a few days are unimportant"). 2026-08-11 fix (HN 10217/388351).
+CASE_WINDOW_DAYS = 33
 PRIOR_NEAR_DAYS = 180      # ≤180 → 1-dose booster
 PRIOR_FAR_DAYS = 181       # ≥181 → 2-dose booster
 MIXED_AGE_CUTOFF = 9       # <9 → IM, ≥9 → ID (year unit)
+
+# Schedule templates for "abandoned dose + restart" detection (bugfix #4, 2026-08-11).
+# A "clean PEP schedule" from a Day-0 anchor means each subsequent dose falls
+# within ±SCHEDULE_TOL_DAYS of one of the expected schedule days.
+SCHEDULE_TOL_DAYS = 2
+IM_SCHEDULE_DAYS = (0, 3, 7, 14, 28)   # Essen (5 doses)
+ID_SCHEDULE_DAYS = (0, 3, 7, 28)        # Thai Red Cross / IPC (4 doses)
 
 VAC_IM = "RABIES VACCINE 0.5 cc IM"
 VAC_ID = "RABIES VACCINE 0.1ml ID"
@@ -248,6 +262,11 @@ class Case:
     prior_days_ago: Optional[int] = None   # days from last prior dose → start_date
     age: Optional[int] = None
     names: set = field(default_factory=set)
+    # Per-dose log: list of (date, vac_code) — kept for schedule-fit analysis.
+    # Bugfix #4 (2026-08-11): needed by split_abandoned_dose() to detect
+    # "patient received 1 dose, disappeared, came back to start a clean new
+    # series" pattern (HN 176434).
+    dose_log: list = field(default_factory=list)
 
     @property
     def total_vac(self) -> int:
@@ -259,11 +278,38 @@ class Case:
 
 
 def cluster_cases(per_hn: pd.DataFrame) -> list[Case]:
-    """Split one HN's dose timeline into 28-day cases.
+    """Split one HN's dose timeline into cases anchored on the first dose.
 
-    A new case starts when a dose falls MORE THAN CASE_WINDOW_DAYS (28) days
-    after the FIRST dose of the current cluster (per hospital spec:
-    "รายเคส = ช่วงเวลา 28 วัน ของ HN เดียวกัน หลังจากได้รับเข็มแรก").
+    Rule (hospital + DDC spec + CDC guidance, 2026-08-11):
+      - A case starts at the first dose (Day 0).
+      - Subsequent doses belong to the same case while they fall within
+        CASE_WINDOW_DAYS (33) of the FIRST dose. This window covers the
+        full length of BOTH post-exposure schedules (IM Day 0→28, ID Day
+        0→30) plus a 3-day CDC-permitted grace period for "delays of a
+        few days [that] are unimportant". A dose falling 34+ days after
+        the first dose — i.e. roughly a month later, "หลักเดือน" per
+        hospital policy — starts a new episode.
+      - The window is anchored on the FIRST dose (not sliding). This means
+        a patient who returns 2+ months later is correctly treated as a new
+        incident even if each individual gap happens to be small. Pure
+        sliding windows merged unrelated episodes; the fixed anchor does
+        not.
+
+    2026-08-11 history: this had three failed approaches in sequence:
+      1. Strict 28d window → split the natural Day-28 IM dose when given
+         1 day late (HN 10217, HN 388351). The schedule's own length WAS
+         the cutoff.
+      2. Sliding window (gap between consecutive doses ≤ 28d) → merged
+         unrelated episodes months apart whenever each gap was small.
+      3. Calendar-month-aware window → split HN 10217 and 388351 again
+         because their Day-28 dose (given 1 day late) landed on the 1st
+         of the next calendar month.
+    The 33-day first-dose-anchored window below is the fourth and correct
+    attempt: it is derived from the actual schedule lengths (28 for IM,
+    30 for ID) plus CDC grace, not from arbitrary date arithmetic.
+
+    Reference: CDC MMWR RR-5703 "delays of a few days are unimportant ...
+    most interruptions do not require reinitiation."
     """
     per_hn = per_hn.sort_values("date").reset_index(drop=True)
     cases: list[Case] = []
@@ -287,53 +333,224 @@ def cluster_cases(per_hn: pd.DataFrame) -> list[Case]:
             current.doses_erig += 1
         elif v == VAC_HRIG:
             current.doses_hrig += 1
+        # Per-dose log (bugfix #4): record every dose with date + route for
+        # later schedule-fit analysis by split_abandoned_dose().
+        if v in (VAC_IM, VAC_ID):
+            current.dose_log.append((d, v))
         if row.get("age") is not None and current.age is None:
             current.age = row["age"]
     return cases
 
 
+def _schedule_offsets_match(actual_offsets: list[int],
+                            schedule_days: tuple[int, ...],
+                            tol: int = SCHEDULE_TOL_DAYS) -> bool:
+    """Return True if `actual_offsets` (day numbers from a Day-0 anchor) fit
+    the expected PEP schedule `schedule_days` within ±tol days per dose.
+
+    STRICT fit: every actual dose must be accounted for by an expected schedule
+    day within ±tol. NO stray doses (which would indicate multi-year merged
+    history being misinterpreted as one schedule).
+    """
+    if len(actual_offsets) < len(schedule_days):
+        return False
+    # Every actual dose must match at least one expected day (no strays)
+    for a in actual_offsets:
+        if not any(abs(a - expected) <= tol for expected in schedule_days):
+            return False
+    # Every expected day must have at least one actual dose matching it
+    for expected in schedule_days:
+        if not any(abs(a - expected) <= tol for a in actual_offsets):
+            return False
+    return True
+
+
+def _fits_any_schedule(offsets_from_anchor: list[int]) -> bool:
+    """Does this dose pattern (days from a putative Day 0) match the IM or ID
+    PEP schedule? Used to detect a 'clean restart'."""
+    return (_schedule_offsets_match(offsets_from_anchor, IM_SCHEDULE_DAYS)
+            or _schedule_offsets_match(offsets_from_anchor, ID_SCHEDULE_DAYS))
+
+
+def refine_clusters_cross_window(cases: list[Case]) -> list[Case]:
+    """Refine one HN's case list by detecting 'abandoned dose + clean restart'
+    ACROSS time-windowed case boundaries.
+
+    Bugfix #4 (2026-08-11, HN 176434): the 33-day time-window can split what
+    is actually a single coherent schedule into two cases — OR merge an
+    abandoned dose with the start of a new schedule. Examples:
+
+      HN 176434 timeline (5 vaccine doses + ERIG):
+        03/03  ID + ERIG       (1 dose, then patient disappears)
+        10/03  ID              (new Day 0)
+        13/03  ID              (Day +3)
+        17/03  ID              (Day +7)
+        07/04  ID              (Day +28 — perfect ID schedule from 10/03)
+      Time-window clusters (33d from first dose): case A 03/03→17/03 (4 ID),
+                                                  case B 07/04 (1 ID, incomplete).
+      Both wrong! 03/03→17/03 doses [0,7,10,14] don't fit any standard schedule,
+      and 10/03→07/04 doses [0,3,7,28] form a perfect ID schedule.
+      Correct: case A' 03/03 (1 ID, abandoned, incomplete/ID),
+               case B' 10/03→07/04 (4 ID, complete/ID).
+
+    STRICT detection (avoids false merges of multi-year histories):
+      1. Try every dose as a candidate Day-0 anchor.
+      2. For each candidate, check forward doses (anchor + all later).
+         STRICT schedule-fit: every dose must match an expected day, no strays.
+      3. ALSO require: total forward dose count is in [4, 7] (one schedule's
+         worth ± 2 over-dose, never 13 doses spanning years).
+      4. ALSO require: total span of forward doses ≤ 35 days (one schedule's
+         length + grace, never multi-year).
+      5. If candidate anchor fits all 4 conditions AND it's not the first
+         dose (meaning there's a true abandoned prefix), split.
+      6. Otherwise return cases unchanged.
+
+    Conditions 3+4 are the critical fixes after audit 2026-08-11: without
+    them, HN 142753 (5 years of scattered doses) was wrongly merged into
+    one "complete" case spanning 2016-2026.
+
+    Reference: hospital policy on restarts — patient lost to follow-up + later
+    re-presentation is treated as a new incident, not continuation.
+    """
+    if len(cases) <= 1:
+        return cases
+    # Flatten all vaccine doses across all cases, preserving order
+    flat: list[tuple] = []  # (date, vac)
+    for case in cases:
+        for dose in case.dose_log:
+            flat.append(dose)
+    flat.sort(key=lambda x: x[0])
+    if len(flat) < 4:
+        return cases
+
+    # Try each dose as a candidate Day-0 anchor for a "clean restart".
+    # Apply ALL 4 conditions; take the earliest anchor that satisfies them.
+    best_anchor_idx = None
+    for i in range(len(flat)):
+        anchor_date = flat[i][0]
+        forward = flat[i:]
+        # Condition 3: dose count
+        if not (4 <= len(forward) <= 7):
+            continue
+        # Condition 4: total span (anchor → last dose)
+        span_days = (forward[-1][0] - anchor_date).days
+        if span_days > 35:
+            continue
+        offsets = sorted((d - anchor_date).days for d, _ in forward)
+        # Conditions 2 (strict fit, no strays)
+        if _fits_any_schedule(offsets):
+            best_anchor_idx = i
+            break
+    if best_anchor_idx is None or best_anchor_idx == 0:
+        # Either no anchor fits all conditions, or the first dose itself fits
+        # (no abandoned prefix to split off).
+        return cases
+
+    # We have an abandoned prefix [0..best_anchor_idx) and a clean series
+    # [best_anchor_idx..end). Rebuild cases.
+    pre_doses = flat[:best_anchor_idx]
+    post_doses = flat[best_anchor_idx:]
+    # Source case for ERIG/HRIG allocation: the earliest original case whose
+    # time window overlaps the pre-doses. ERIG/HRIG were given at first
+    # presentation → stay with the abandoned case.
+    pre_d0_date = pre_doses[0][0]
+    source_case = None
+    for c in cases:
+        if c.start_date == pre_d0_date:
+            source_case = c
+            break
+    erig_count = source_case.doses_erig if source_case else 0
+    hrig_count = source_case.doses_hrig if source_case else 0
+
+    # Build case A (abandoned, single case for all pre-anchor doses)
+    all_names = set()
+    for c in cases:
+        all_names |= c.names
+    case_a = Case(
+        hn=cases[0].hn, case_idx=1,
+        start_date=pre_doses[0][0],
+        end_date=pre_doses[-1][0],
+        doses_erig=erig_count,
+        doses_hrig=hrig_count,
+        age=cases[0].age,
+        names=all_names,
+        dose_log=list(pre_doses),
+    )
+    for _, v in pre_doses:
+        if v == VAC_IM:
+            case_a.doses_im += 1
+        elif v == VAC_ID:
+            case_a.doses_id += 1
+    # Build case B (the clean restart series)
+    case_b = Case(
+        hn=cases[0].hn, case_idx=2,
+        start_date=post_doses[0][0],
+        end_date=post_doses[-1][0],
+        age=cases[0].age,
+        names=set(all_names),
+        dose_log=list(post_doses),
+    )
+    for _, v in post_doses:
+        if v == VAC_IM:
+            case_b.doses_im += 1
+        elif v == VAC_ID:
+            case_b.doses_id += 1
+    return [case_a, case_b]
+
+
 def annotate_prior(all_cases_by_hn: dict[str, list[Case]],
-                   all_doses_by_hn: dict[str, list[dict]]) -> None:
+                   all_doses_by_hn: dict[str, list[dict]],
+                   screening_prior: dict[str, bool] | None = None) -> None:
     """Set has_prior + prior_days_ago using the latest prior COMPLETE SERIES.
 
-    CORRECT definition (2026-08-07 bugfix): "prior" = patient previously received
-    a COMPLETE rabies vaccination series before this case's start_date. A single
-    prior dose does NOT count — only a complete series does.
+    CORRECT definition (2026-08-10 bugfix): "prior" = patient previously received
+    a COMPLETE rabies vaccination series before this case's start_date. Per the
+    Department of Disease Control spec and the hospital's screening app, a
+    complete prior series is defined as **≥3 doses** (ID or IM combined) — this
+    covers both pre-exposure (3 doses on Day 0,7,21/28) and post-exposure
+    full series (IM 5 / ID 4).
 
-    "Complete series" = pure IM≥5, pure ID≥4, or mixed total≥4 (any combination
-    that itself satisfies the complete rule).
+    The "≥3 doses" threshold replaces the earlier strict "IM≥5 / ID≥4 / mixed≥4"
+    because:
+      1. The screening app records "เคยฉีด 3 เข็มหรือมากกว่า" as the prior-status
+         field for patients with history at other hospitals
+      2. DDC spec defines pre-exposure as 3 doses
+      3. A patient who received 3 doses anywhere counts as previously vaccinated
+         for booster purposes
 
-    ⚠️  This requires lookback data spanning the patient's full history. A patient
-    who completed a series 5+ years ago still qualifies for booster (1 or 2 doses).
     The 180/181-day split (≤180=1 dose, ≥181=2 doses) measures time since the
-    COMPLETE series ended, not since any single dose.
+    COMPLETE series ended. Requires ~10-year lookback for accuracy.
 
-    For accurate results, pass history covering ~10 years. A single quarter (90d)
-    or even a year is NOT enough — a booster case in Q3 might reference a series
-    completed 3 years ago.
+    screening_prior (optional): dict mapping HN → True if the screening app
+    indicates prior complete series. Overrides HIS-derived detection — this
+    captures vaccinations at other hospitals that HIS doesn't record.
     """
     def is_complete_series(c: Case) -> bool:
-        """A prior case counts as 'complete series' if it satisfies the complete
-        threshold by dose count alone (ignoring its own booster status, since
-        a prior booster already implies a prior complete series exists)."""
-        if c.total_vac == 0:
-            return False
-        if c.is_mixed:
-            return c.total_vac >= 4
-        return c.doses_im >= 5 or c.doses_id >= 4
+        """A prior case counts as 'complete series' if total vaccine doses
+        (IM + ID combined) ≥ 3."""
+        return c.total_vac >= 3
 
+    screening_prior = screening_prior or {}
     for hn, cases in all_cases_by_hn.items():
         for c in cases:
-            # Find prior cases that ARE complete series (not just any dose)
+            # Source 1: HIS — find prior cases that ARE complete series
             prior_complete = [
                 pc for pc in all_cases_by_hn.get(hn, [])
                 if pc.start_date < c.start_date and is_complete_series(pc)
             ]
+            # Source 2: Screening app — external hospital history
+            screening_says_prior = screening_prior.get(hn, False)
+
             if prior_complete:
-                # Use the LATEST complete series end_date for the days-ago calc
                 last = max(pc.end_date for pc in prior_complete)
                 c.has_prior = True
                 c.prior_days_ago = (c.start_date - last).days
+            elif screening_says_prior:
+                # Screening says prior, but we don't know exact date.
+                # Use earliest dose date as proxy (conservative — assumes
+                # the prior series was long enough ago to be ≥181d)
+                c.has_prior = True
+                c.prior_days_ago = None  # unknown exact distance
             else:
                 c.has_prior = False
                 c.prior_days_ago = None
@@ -392,7 +609,14 @@ def classify(c: Case) -> tuple[str, str]:
             r = age_route(c.age)
             return ("incomplete", r) if r else ("REVIEW", "NONE")
         # Mixed total≤2 WITH prior: treat as booster — prior makes it complete
-        if total <= 2 and c.has_prior and c.prior_days_ago is not None:
+        if total <= 2 and c.has_prior:
+            # prior_days_ago None = screening-sourced, unknown exact distance
+            # → assume far (≥181d, conservative: needs 2 doses)
+            if c.prior_days_ago is None:
+                if total >= 2:
+                    return ("complete", age_route(c.age) or "ID")
+                r = age_route(c.age)
+                return ("incomplete", r) if r else ("REVIEW", "NONE")
             if c.prior_days_ago <= PRIOR_NEAR_DAYS and total >= 1:
                 return ("complete", age_route(c.age) or "ID")
             if c.prior_days_ago >= PRIOR_FAR_DAYS and total >= 2:
@@ -410,21 +634,26 @@ def classify(c: Case) -> tuple[str, str]:
     if route == "IM":
         if n >= 5:
             return ("complete", "IM")
-        if c.has_prior and c.prior_days_ago is not None:
-            if c.prior_days_ago <= PRIOR_NEAR_DAYS and n >= 1:
-                # booster ≤180d: ≥1 dose = complete (over-booster also complete)
+        if c.has_prior:
+            # prior_days_ago None = screening-sourced → assume far (≥181d)
+            if c.prior_days_ago is None and n >= 2:
                 return ("complete", "IM")
-            if c.prior_days_ago >= PRIOR_FAR_DAYS and n >= 2:
-                # booster ≥181d: ≥2 doses = complete
-                return ("complete", "IM")
+            if c.prior_days_ago is not None:
+                if c.prior_days_ago <= PRIOR_NEAR_DAYS and n >= 1:
+                    return ("complete", "IM")
+                if c.prior_days_ago >= PRIOR_FAR_DAYS and n >= 2:
+                    return ("complete", "IM")
     else:  # ID
         if n >= 4:
             return ("complete", "ID")
-        if c.has_prior and c.prior_days_ago is not None:
-            if c.prior_days_ago <= PRIOR_NEAR_DAYS and n >= 1:
+        if c.has_prior:
+            if c.prior_days_ago is None and n >= 2:
                 return ("complete", "ID")
-            if c.prior_days_ago >= PRIOR_FAR_DAYS and n >= 2:
-                return ("complete", "ID")
+            if c.prior_days_ago is not None:
+                if c.prior_days_ago <= PRIOR_NEAR_DAYS and n >= 1:
+                    return ("complete", "ID")
+                if c.prior_days_ago >= PRIOR_FAR_DAYS and n >= 2:
+                    return ("complete", "ID")
 
     # ── SUB5 ──
     if route == "IM":
@@ -440,11 +669,15 @@ def classify(c: Case) -> tuple[str, str]:
             return ("incomplete", "IM")
         if c.has_prior and c.prior_days_ago is not None and c.prior_days_ago >= PRIOR_FAR_DAYS and n < 2:
             return ("incomplete", "IM")
-        # prior ≤180d + n=1 already caught above; reach here = n=0 (impossible for pure)
+        # prior=None (screening) + n<2 → incomplete (booster needs 2)
+        if c.has_prior and c.prior_days_ago is None and n < 2:
+            return ("incomplete", "IM")
     else:
         if n < 3 and not c.has_prior:
             return ("incomplete", "ID")
         if c.has_prior and c.prior_days_ago is not None and c.prior_days_ago >= PRIOR_FAR_DAYS and n < 2:
+            return ("incomplete", "ID")
+        if c.has_prior and c.prior_days_ago is None and n < 2:
             return ("incomplete", "ID")
 
     # Should be unreachable for valid data — REVIEW flags a real algorithm gap
@@ -502,43 +735,54 @@ def run(quarter_path: Path, history_paths: list[Path],
     # Cluster all doses per HN across the full timeline
     cases_by_hn: dict[str, list[Case]] = {}
     for hn, sub in all_df.groupby("HN"):
-        cases_by_hn[hn] = cluster_cases(sub)
+        # Step 1: time-window clustering (33d first-dose-anchored)
+        cases = cluster_cases(sub)
+        # Step 2 (bugfix #4, 2026-08-11): cross-window refinement to detect
+        # "abandoned dose + clean restart" pattern that the time-window split
+        # incorrectly. Runs on the FULL dose timeline, not per-case.
+        cases = refine_clusters_cross_window(cases)
+        # Renumber case_idx after potential restructure
+        for i, c in enumerate(cases, 1):
+            c.case_idx = i
+        cases_by_hn[hn] = cases
     annotate_prior(cases_by_hn, all_doses_by_hn)
 
-    # Filter: only cases whose START DATE falls in the report period
+    # Filter: case belongs to the quarter of its END_DATE.
+    # Bugfix #5 (2026-08-11, HN 176434): "ถ้ารายการฉีดวัคซีน คาบเกี่ยวหรือข้าม
+    # ไตรมาส ต้องยังไม่นับเคสนั้น ให้ถือว่าเคสนั้น ขยับไปอยู่อีก Q ไตรมาสถัดไปแทน"
+    # — if a case straddles a quarter boundary, defer it to the quarter where
+    # its end_date falls. This matches the hospital's reporting cycle: a case
+    # is "done" only when its last dose is given, so it's counted in that
+    # quarter. Using start_date double-counted or missed straddling cases.
+    # Examples:
+    #   - case 10/03→07/04 (start Q2, end Q3) → counted in Q3 (was Q2)
+    #   - case entirely in Q3 → end in Q3 → counted in Q3 (unchanged)
+    #   - case entirely in Q2 → end in Q2 → counted in Q2 (unchanged)
     in_period: list[Case] = []
     for hn, cases in cases_by_hn.items():
         for c in cases:
-            if period_start <= c.start_date <= period_end:
+            if period_start <= c.end_date <= period_end:
                 in_period.append(c)
 
     print(f"Cases in period: {len(in_period)}", file=sys.stderr)
 
     # Dose-reconciliation invariant (test-engineer finding #15):
-    # Cases are period-scoped (start_date in period), so their doses can span
-    # the period boundary. The invariant: every quarter XLS dose is attributed
-    # to exactly ONE case (whether in-period or out-of-period). We verify the
-    # sum across ALL cases whose window touches the quarter date range.
-    q_im = int((q_df["vac"] == VAC_IM).sum())
-    q_id = int((q_df["vac"] == VAC_ID).sum())
-    q_erig = int((q_df["vac"] == VAC_ERIG).sum())
-    # All cases (any HN) whose window overlaps the quarter period — these consume
-    # at least one quarter dose. Sum their doses that fall within the quarter.
-    touch_period = []
-    for hn, cases in cases_by_hn.items():
-        for c in cases:
-            if c.end_date >= period_start and c.start_date <= period_end:
-                touch_period.append(c)
-    # For dose-level reconciliation we need the actual dose rows in-period, not
-    # case totals (case totals can include doses from the adjacent quarter).
-    # Simplest correct check: count q_df rows whose date falls in the period and
-    # whose HN produced at least one in-period case.
+    # With bugfix #5 (end_date-based period assignment), in-period cases may
+    # START before period_start (a straddling case). Their early doses still
+    # belong to the case. The reconciliation we keep is: every q_df dose whose
+    # DATE falls in the report period should be attributable to SOME in-period
+    # case OR to a case that straddles into this period from the previous one.
+    # (Such doses are counted in THIS period because their case's end_date is
+    # in this period — even if a particular dose date is before period_start,
+    # the case is reported here.)
     in_period_hns = {c.hn for c in in_period}
     q_in = q_df[(q_df["date"] >= period_start) & (q_df["date"] <= period_end)]
     q_orphan = q_in[~q_in["HN"].isin(in_period_hns)]
     if len(q_orphan):
-        print(f"WARN: {len(q_orphan)} quarter doses belong to HNs with no in-period case "
-              f"(their case started before period_start)", file=sys.stderr)
+        print(f"WARN: {len(q_orphan)} in-period quarter doses belong to HNs with no "
+              f"in-period case under end_date rule — likely the case ENDS after "
+              f"period_end (deferred to next quarter per bugfix #5).",
+              file=sys.stderr)
     else:
         print(f"OK: all {len(q_in)} in-period doses reconciled", file=sys.stderr)
 
