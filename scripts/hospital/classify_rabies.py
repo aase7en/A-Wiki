@@ -247,6 +247,59 @@ def load_xls(path: Path, header_row: int = 0, date_format: Optional[str] = None)
     return df
 
 
+def load_screening(path: Path) -> dict[str, str]:
+    """Load the screening-app .xls and return {str(HN): "near"|"far"} prior map.
+
+    Bugfix #6+#7 (2026-08-11): the screening file has NO header row — pandas
+    was eating row 1 as headers. Reload with header=None.
+
+    Expected schema (8 cols, no header):
+      col 0 = row number (1-based)
+      col 1 = HN (float — patient ID)
+      col 2 = date
+      col 3 = full name
+      col 4 = age
+      col 5 = phone
+      col 6 = nationality
+      col 7 = prior-status text — one of:
+               "เคยฉีด 3 เข็ม หรือมากกว่า (ภายใน 6 เดือน)"   → near (≤180d)
+               "เคยฉีด 3 เข็ม หรือมากกว่า (เกิน 6 เดือน)"     → far  (≥181d)
+               "ไม่เคยฉีดหรือเคยฉีดน้อยกว่า 3 เข็ม"             → (skip)
+
+    Returns:
+      dict[str(str(int(HN)))] = "near" | "far"
+      Only HNs with prior ≥3 doses are included.
+
+    HN dtype normalization: HIS HN is str ("175925"); screening HN is float
+    (175925.0). Caller must use str(int(...)) for matching.
+    """
+    df = pd.read_excel(path, header=None)
+    if df.shape[1] < 8:
+        print(f"WARN: {path.name}: expected ≥8 cols, got {df.shape[1]}",
+              file=sys.stderr)
+        return {}
+    prior_map: dict[str, str] = {}
+    for _, r in df.iterrows():
+        try:
+            hn_int = int(r[1])
+        except (ValueError, TypeError):
+            continue
+        status = str(r[7])
+        if "เคยฉีด 3 เข็ม" in status:
+            if "ภายใน" in status:
+                prior_map[str(hn_int)] = "near"
+            elif "เกิน" in status:
+                prior_map[str(hn_int)] = "far"
+            # else: ambiguous "เคยฉีด 3 เข็ม" without near/far — assume far (conservative)
+            else:
+                prior_map[str(hn_int)] = "far"
+    print(f"Loaded screening: {path.name}  →  {len(prior_map)} prior-complete HNs "
+          f"(near={sum(1 for v in prior_map.values() if v == 'near')}, "
+          f"far={sum(1 for v in prior_map.values() if v == 'far')})",
+          file=sys.stderr)
+    return prior_map
+
+
 # ── Case clustering ─────────────────────────────────────────────────────────
 @dataclass
 class Case:
@@ -500,7 +553,7 @@ def refine_clusters_cross_window(cases: list[Case]) -> list[Case]:
 
 def annotate_prior(all_cases_by_hn: dict[str, list[Case]],
                    all_doses_by_hn: dict[str, list[dict]],
-                   screening_prior: dict[str, bool] | None = None) -> None:
+                   screening_prior: dict[str, str] | None = None) -> None:
     """Set has_prior + prior_days_ago using the latest prior COMPLETE SERIES.
 
     CORRECT definition (2026-08-10 bugfix): "prior" = patient previously received
@@ -521,9 +574,17 @@ def annotate_prior(all_cases_by_hn: dict[str, list[Case]],
     The 180/181-day split (≤180=1 dose, ≥181=2 doses) measures time since the
     COMPLETE series ended. Requires ~10-year lookback for accuracy.
 
-    screening_prior (optional): dict mapping HN → True if the screening app
-    indicates prior complete series. Overrides HIS-derived detection — this
-    captures vaccinations at other hospitals that HIS doesn't record.
+    screening_prior (optional): dict mapping str(HN) → "near"|"far" if the
+    screening app indicates prior complete series. Values:
+      - "near" = "เคยฉีด 3 เข็ม หรือมากกว่า (ภายใน 6 เดือน)" → prior_days_ago=180
+      - "far"  = "เคยฉีด 3 เข็ม หรือมากกว่า (เกิน 6 เดือน)"   → prior_days_ago=365
+      - (other) = treat as no prior info
+
+    Captures vaccinations at other hospitals that HIS doesn't record.
+
+    Bugfix #6 (2026-08-11): added --screening CLI flag wires this through.
+    Bugfix #7 (2026-08-11): HN dtype normalization (screening HN is float;
+    HIS HN is str). Caller MUST convert screening HNs to str(int) for matching.
     """
     def is_complete_series(c: Case) -> bool:
         """A prior case counts as 'complete series' if total vaccine doses
@@ -539,18 +600,22 @@ def annotate_prior(all_cases_by_hn: dict[str, list[Case]],
                 if pc.start_date < c.start_date and is_complete_series(pc)
             ]
             # Source 2: Screening app — external hospital history
-            screening_says_prior = screening_prior.get(hn, False)
+            scr = screening_prior.get(hn)
 
             if prior_complete:
                 last = max(pc.end_date for pc in prior_complete)
                 c.has_prior = True
                 c.prior_days_ago = (c.start_date - last).days
-            elif screening_says_prior:
-                # Screening says prior, but we don't know exact date.
-                # Use earliest dose date as proxy (conservative — assumes
-                # the prior series was long enough ago to be ≥181d)
+            elif scr == "near":
+                # Screening: "ภายใน 6 เดือน" → set prior_days_ago to a value
+                # in the ≤180 range so the booster rule treats it as near
+                # (needs 1 dose). Use exactly 180 (boundary).
                 c.has_prior = True
-                c.prior_days_ago = None  # unknown exact distance
+                c.prior_days_ago = PRIOR_NEAR_DAYS
+            elif scr == "far":
+                # Screening: "เกิน 6 เดือน" → ≥181d → needs 2 doses
+                c.has_prior = True
+                c.prior_days_ago = PRIOR_FAR_DAYS
             else:
                 c.has_prior = False
                 c.prior_days_ago = None
@@ -686,7 +751,8 @@ def classify(c: Case) -> tuple[str, str]:
 
 # ── Main pipeline ───────────────────────────────────────────────────────────
 def run(quarter_path: Path, history_paths: list[Path],
-        period_start: datetime, period_end: datetime):
+        period_start: datetime, period_end: datetime,
+        screening_path: Optional[Path] = None):
     # Load history first (so prior annotation is correct), then current quarter
     frames = []
     for p in history_paths:
@@ -696,6 +762,11 @@ def run(quarter_path: Path, history_paths: list[Path],
         hist_df = pd.concat(frames, ignore_index=True)
     else:
         hist_df = pd.DataFrame(columns=["HN", "date", "vac", "name", "age"])
+
+    # Load screening prior map (bugfix #6+#7, 2026-08-11)
+    screening_prior: dict[str, str] = {}
+    if screening_path is not None:
+        screening_prior = load_screening(screening_path)
 
     q_df = load_xls(quarter_path)
     print(f"Loaded quarter: {quarter_path.name}  →  {len(q_df)} doses", file=sys.stderr)
@@ -745,7 +816,7 @@ def run(quarter_path: Path, history_paths: list[Path],
         for i, c in enumerate(cases, 1):
             c.case_idx = i
         cases_by_hn[hn] = cases
-    annotate_prior(cases_by_hn, all_doses_by_hn)
+    annotate_prior(cases_by_hn, all_doses_by_hn, screening_prior)
 
     # Filter: case belongs to the quarter of its END_DATE.
     # Bugfix #5 (2026-08-11, HN 176434): "ถ้ารายการฉีดวัคซีน คาบเกี่ยวหรือข้าม
@@ -842,6 +913,10 @@ def main():
     ap.add_argument("quarter", type=Path, help="Current quarter .xls (HIS export)")
     ap.add_argument("--history", type=Path, nargs="*", default=[],
                     help="Prior .xls files for prior-vaccine lookup")
+    ap.add_argument("--screening", type=Path, default=None,
+                    help="Screening-app .xls (no header row; col 1=HN float, "
+                         "col 7=prior-status text). Captures prior-complete "
+                         "patients vaccinated at other hospitals. Bugfix #6+#7.")
     ap.add_argument("--period-start", required=True, help="Report period start YYYY-MM-DD")
     ap.add_argument("--period-end", required=True, help="Report period end YYYY-MM-DD")
     ap.add_argument("--json", type=Path, help="Write full breakdown as JSON (must be under drive/)")
@@ -854,7 +929,8 @@ def main():
 
     ps = datetime.fromisoformat(args.period_start)
     pe = datetime.fromisoformat(args.period_end)
-    report, mixed, review, breakdown = run(args.quarter, args.history, ps, pe)
+    report, mixed, review, breakdown = run(
+        args.quarter, args.history, ps, pe, screening_path=args.screening)
 
     def fmt_hn(hn: str) -> str:
         return hn if args.verbose_phi else mask_hn(hn)

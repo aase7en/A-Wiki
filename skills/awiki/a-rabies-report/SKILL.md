@@ -1,7 +1,7 @@
 ---
 name: a-rabies-report
 description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส, 9-cell, prior=complete-series (10y lookback), 33d first-dose-anchored window + abandoned-dose detection + quarter-straddle deferral. Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
-version: 1.3.0
+version: 1.3.1
 author: A-Wiki
 domain: [document, thai, medical]
 lifecycle_phase: build
@@ -88,7 +88,10 @@ HN 176434:
 
 **2 แหล่ง prior:**
 1. HIS data (lookback 10 ปี จาก `--history`)
-2. Screening app (ผู้ป่วยที่ฉีดที่โรงพยาบาลอื่น — `--screening` file)
+2. Screening app (ผู้ป่วยที่ฉีดที่โรงพยาบาลอื่น — `--screening` file) — บอก near/far ด้วย:
+   - "ภายใน 6 เดือน" → near (≤180d, ต้องการ 1 เข็ม booster)
+   - "เกิน 6 เดือน" → far (≥181d, ต้องการ 2 เข็ม booster)
+3. HIS prior ชนะ screening เมื่อมีทั้งคู่ (รู้วันที่แน่ชัดกว่า)
 
 ⚠️ **ต้องมีข้อมูลย้อนหลัง ≥180 วัน** — รายไตรมาส (90 วัน) ไม่พอ ต้องส่ง `--history` Q ก่อนหน้า + DB files 10 ปี
 
@@ -215,10 +218,11 @@ HISTORY=(
   "<drive>/RabiesVacc/260331_RabiesQ2.xls"
 )
 
-# 2. รัน engine ด้วย history เต็ม + Q ที่จะทำ
+# 2. รัน engine ด้วย history เต็ม + screening + Q ที่จะทำ
 python scripts/hospital/classify_rabies.py \
   "<drive>/RabiesVacc/260806_RabiesQ3.xls" \
   --history "${HISTORY[@]}" \
+  --screening "<drive>/RabiesVacc/260810_Rabies_Screening.xls" \
   --period-start 2026-04-01 --period-end 2026-06-30
 
 # 3. ตรวจ Mixed + REVIEW list (stderr)
@@ -356,3 +360,15 @@ python scripts/hospital/classify_rabies.py \
   - **#5 quarter straddle → defer to end_date quarter**: "ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป Q ถัดไป"
   - **Q3 v5 FINAL**: 337 cases (complete IM=23/ID=117, sub5 IM=16/ID=56, incomplete IM=18/ID=107, ERIG=110, HRIG=0)
   - **Files**: `drive/hospital-uthai/RabiesVacc/260811_rabiesvac.<HOSPITAL>_Y69_FINALv3.doc` + `.docx`
+- **v1.3.1** (2026-08-11): **2 more bugfixes** (incomplete was inflated by 21 cases)
+  - **#6 `--screening` CLI flag was missing**: `annotate_prior()` had `screening_prior` parameter but no CLI/run/main() wiring → engine never read screening file in actual pipeline. Added `--screening FILE` flag + `load_screening()` helper.
+  - **#7 HN dtype mismatch**: screening xls has HN as `float64` (175925.0); HIS HN is `str` ("175925"). Direct string comparison failed → 0 overlap. Fixed by `str(int(...))` normalization in `load_screening()`.
+  - **Near/far split from screening**: screening file has 2 prior-status values:
+    - "เคยฉีด 3 เข็ม หรือมากกว่า (ภายใน 6 เดือน)" → prior_days_ago=180 (near, 1-dose booster)
+    - "เคยฉีด 3 เข็ม หรือมากกว่า (เกิน 6 เดือน)" → prior_days_ago=181 (far, 2-dose booster)
+  - **Q3 v6 FINAL**: 337 cases (same total — screening reclassifies 21 incomplete→complete)
+    - complete IM=24/ID=137 (+1/+20 vs v5)
+    - sub5 IM=16/ID=56 (unchanged)
+    - incomplete IM=17/ID=87 (−1/−20 vs v5) — **real** (69 cases = 1-dose lost-to-follow-up, 34 = 2-dose partial, 1 = IG-only)
+  - **Files**: `drive/hospital-uthai/RabiesVacc/260812_rabiesvac.<HOSPITAL>_Y69_FINALv4.doc` + `.docx`
+  - 61 unit tests pass (45 original + 11 v1.3.0 + 5 v1.3.1 screening)
