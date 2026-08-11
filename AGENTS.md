@@ -468,6 +468,18 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility smo
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
 6. **Commit directly to main only** — NO branch, NO PR, NO worktree
 7. **Output format (3-layer)** — Layer 1 durable knowledge (CLAUDE.md, AGENTS.md, wiki/, ADRs, docs/) = **Markdown**, git-diffable, re-readable. Layer 2 machine↔machine data = most **compact**: CSV/TSV > JSONL > JSON (never HTML — HTML costs ~2.1× Markdown tokens to read). Layer 3 human review = emit compact JSON → `render-html` → gitignored leaf HTML in `exports/html/` that agents **never re-ingest**; round-trip via Copy-as-JSON. **Render, don't dump**: never paste verbose reports/tables into chat — emit JSON, render, return the file path + 1–3 line summary. The only token saving from HTML is externalizing presentation out of the context window. Enforced on file writes by `scripts/hooks/check_output_format.py`. Verify: `python3 scripts/format-cost.py --demo`. See `docs/protocols/md-vs-html-output.md`.
+7b. **Caveman default** — every agent reply is caveman-style by default (ตั้งแต่ 2026-08-11, user complaint "พูดมากไม่สรุป"):
+    - **ตัด preamble** ("ผมจะ...", "ก่อนอื่น...", "let me...", "I'll now...")
+    - **ตัด recap** ของสิ่งที่เพิ่งทำ (user เห็น tool calls แล้ว)
+    - **Bullet ≤3 บรรทัดต่อ section** — เกินให้แตกเป็น sub-bullet หรือ render เป็น JSON
+    - **ตอบตรงคำถาม** — ใช่/ไม่ ให้ตอบ "ใช่ — <เหตุผล 1 บรรทัด>" จบ
+    - **Snippets ตรงประเด็น** ไม่ wrap ด้วย explanation ยาว
+    - **ตาราง > 5 แถว** → emit JSON/CSV → render → คืน path + 1-3 บรรทัดสรุป
+    - ประหยัด ~60-65% output tokens เทียบ verbose mode
+    - Opt-out: user พิมพ์ `/verbose` (`.tmp/caveman.flag` = `off`) เพื่อขยายเป็น verbose ชั่วคราว
+    - เหตุผล: user บ่นหลายครั้งว่า agent ตอบยาวเกิน → caveman = default; verbose = opt-in
+    - Enforcement: SessionStart hook `caveman_session_start.py` สร้าง `.tmp/caveman.flag` = `on`; skill `skills/claude-code/token-optimization/SKILL.md` Step 6 = rule set; symlink farm link ทุก agent
+    - See: `skills/claude-code/token-optimization/SKILL.md` (Step 6), `docs/protocols/context-compaction.md`
 8. **Cross-agent plan handoff** — any Plan Mode / multi-step plan must be chunked into resumable units and checkpointed in local `handoff.md` before limits, pauses, or Agent/IDE switches. When building any system: plan → design → split into chunks → **commit each completed sub-step to main** with `chunk(<ID>): <goal> [next: <ID>]` (cheap, no token cost), and **push at handoff boundaries** (pause / near rate limit / switching Agent/IDE) so VS Code+Cline, Antigravity, Manus, Codex, or Gemini CLI can `git pull` and resume from the commit log. The Delegation Gate allows `session(...)`, `chunk(...)`, and `step(...)` pushes. See `docs/protocols/cross-agent-plan-handoff.md` §Per-Sub-Step Commit Checkpoint.
 
 ## 🧠 Brain Improvement Gate
