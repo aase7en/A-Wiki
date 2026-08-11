@@ -291,5 +291,237 @@ class TestRealWorldCases(unittest.TestCase):
         self.assertEqual(classify(c), ("incomplete", "IM"))
 
 
+class TestWindow33d(unittest.TestCase):
+    """Bugfix #1 (v1.3.0): 33-day first-dose-anchored window.
+
+    Verifies that cluster_cases() correctly keeps a Day-28 dose that lands
+    1-3 days late within the same case (CDC "few days unimportant" grace).
+    """
+
+    def _build_df(self, dates_vacs):
+        """Build a per-HN DataFrame for clustering tests."""
+        import pandas as pd
+        rows = []
+        for d, v in dates_vacs:
+            rows.append({"HN": "TEST", "date": d, "vac": v, "name": "T", "age": 30})
+        return pd.DataFrame(rows)
+
+    def test_day_28_dose_1d_late_stays_one_case(self):
+        """IM Day 0,3,7,14,28+1 (Day 28 dose given 1 day late = Day 29)
+        must stay as ONE case (regression for HN 10217 / 388351)."""
+        from classify_rabies import cluster_cases, CASE_WINDOW_DAYS
+        self.assertEqual(CASE_WINDOW_DAYS, 33, "v1.3.0 expects 33d window")
+        d0 = datetime(2026, 4, 2)
+        df = self._build_df([
+            (d0,                          VAC_IM),
+            (d0 + timedelta(days=3),      VAC_IM),
+            (d0 + timedelta(days=7),      VAC_IM),
+            (d0 + timedelta(days=14),     VAC_IM),
+            (d0 + timedelta(days=29),     VAC_IM),  # Day 28 + 1 late
+        ])
+        cases = cluster_cases(df)
+        self.assertEqual(len(cases), 1, "Day-29 dose must NOT split")
+        self.assertEqual(cases[0].doses_im, 5)
+        self.assertEqual(cases[0].total_vac, 5)
+
+    def test_34d_gap_starts_new_case(self):
+        """Dose 34d after first dose starts a new case ("หลักเดือน = รอบใหม่")."""
+        from classify_rabies import cluster_cases
+        d0 = datetime(2026, 4, 2)
+        df = self._build_df([
+            (d0,                          VAC_ID),
+            (d0 + timedelta(days=34),     VAC_ID),  # >33d → new case
+        ])
+        cases = cluster_cases(df)
+        self.assertEqual(len(cases), 2, "34d gap must split into 2 cases")
+
+    def test_id_schedule_day_30_stays_one_case(self):
+        """ID Day 0,3,7,30 (Thai Red Cross schedule) must stay as ONE case."""
+        from classify_rabies import cluster_cases
+        d0 = datetime(2026, 4, 2)
+        df = self._build_df([
+            (d0,                          VAC_ID),
+            (d0 + timedelta(days=3),      VAC_ID),
+            (d0 + timedelta(days=7),      VAC_ID),
+            (d0 + timedelta(days=30),     VAC_ID),  # Day 30 within 33d
+        ])
+        cases = cluster_cases(df)
+        self.assertEqual(len(cases), 1, "ID Day 30 must NOT split (within 33d)")
+        self.assertEqual(cases[0].doses_id, 4)
+
+
+class TestAbandonedDoseDetection(unittest.TestCase):
+    """Bugfix #4 (v1.3.0): abandoned dose + clean restart split.
+
+    Verifies refine_clusters_cross_window() correctly splits HN 176434-style
+    pattern (1 dose abandoned, then clean ID/IM schedule from later anchor)
+    AND does NOT wrongly merge multi-year scattered histories (HN 142753).
+    """
+
+    def _build_df(self, dates_vacs):
+        import pandas as pd
+        rows = []
+        for d, v in dates_vacs:
+            rows.append({"HN": "TEST", "date": d, "vac": v, "name": "T", "age": 30})
+        return pd.DataFrame(rows)
+
+    def test_hn_176434_pattern_splits_correctly(self):
+        """1 dose on Day 0 + 4-dose clean ID schedule from Day 7 → 2 cases."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window, classify
+        d0 = datetime(2026, 3, 3)
+        df = self._build_df([
+            (d0,                          VAC_ERIG),
+            (d0,                          VAC_ID),    # abandoned dose 1
+            (d0 + timedelta(days=7),      VAC_ID),    # Day 0 of new series
+            (d0 + timedelta(days=10),     VAC_ID),    # Day +3
+            (d0 + timedelta(days=14),     VAC_ID),    # Day +7
+            (d0 + timedelta(days=35),     VAC_ID),    # Day +28 — perfect ID schedule
+        ])
+        tw = cluster_cases(df)
+        refined = refine_clusters_cross_window(tw)
+        self.assertEqual(len(refined), 2, "Must split into 2 cases")
+        # Case A: abandoned (03/03 only)
+        case_a = refined[0]
+        self.assertEqual(case_a.doses_id, 1)
+        self.assertEqual(case_a.doses_erig, 1)
+        self.assertEqual(classify(case_a), ("incomplete", "ID"))
+        # Case B: clean restart 10/03→07/04 (4 ID doses)
+        case_b = refined[1]
+        self.assertEqual(case_b.doses_id, 4)
+        self.assertEqual(case_b.start_date, d0 + timedelta(days=7))
+        self.assertEqual(classify(case_b), ("complete", "ID"))
+
+    def test_multi_year_scattered_NOT_merged(self):
+        """HN 142753 regression: 13 doses across 5 years must NOT merge into 1."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window
+        # 6 doses spread across 3 years (subset of HN 142753 pattern)
+        df = self._build_df([
+            (datetime(2020, 1, 1),  VAC_ID),
+            (datetime(2020, 1, 4),  VAC_ID),
+            (datetime(2022, 6, 1),  VAC_ID),
+            (datetime(2022, 6, 4),  VAC_ID),
+            (datetime(2024, 3, 1),  VAC_ID),
+            (datetime(2024, 3, 4),  VAC_ID),
+        ])
+        tw = cluster_cases(df)
+        refined = refine_clusters_cross_window(tw)
+        # Each year's pair should stay separate — refine MUST NOT merge them
+        self.assertEqual(len(refined), len(tw),
+                         "Multi-year doses must NOT be merged by refine")
+
+    def test_normal_complete_series_not_split(self):
+        """A normal 5-dose IM schedule must NOT be touched by refine."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window
+        d0 = datetime(2026, 4, 1)
+        df = self._build_df([
+            (d0,                       VAC_IM),
+            (d0 + timedelta(days=3),   VAC_IM),
+            (d0 + timedelta(days=7),   VAC_IM),
+            (d0 + timedelta(days=14),  VAC_IM),
+            (d0 + timedelta(days=28),  VAC_IM),
+        ])
+        tw = cluster_cases(df)
+        refined = refine_clusters_cross_window(tw)
+        self.assertEqual(len(refined), len(tw), "Normal series: refine = no-op")
+
+
+class TestQuarterStraddle(unittest.TestCase):
+    """Bugfix #5 (v1.3.0): case belongs to quarter of end_date.
+
+    Verifies that run() correctly includes a case whose start_date is in Q(N)
+    but end_date is in Q(N+1) — counted in Q(N+1) per hospital policy.
+    """
+
+    def test_straddle_case_counted_in_end_quarter(self):
+        """Case start=29/03 (Q2), end=07/04 (Q3) → counted in Q3."""
+        from classify_rabies import Case
+        from datetime import datetime
+        # Construct a case that straddles Q2/Q3 boundary
+        c = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2026, 3, 10),  # Q2 (Jan-Mar)
+            end_date=datetime(2026, 4, 7),     # Q3 (Apr-Jun)
+        )
+        ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
+        # End_date rule: in_period iff ps <= end <= pe
+        self.assertTrue(ps <= c.end_date <= pe, "Straddle case must be IN Q3 by end_date")
+        # And start_date rule (old) would have excluded it
+        self.assertFalse(ps <= c.start_date <= pe, "Old start_date rule would have excluded it")
+
+    def test_pure_q3_case_still_in_q3(self):
+        """Case entirely in Q3 → still in Q3 under both rules."""
+        from classify_rabies import Case
+        from datetime import datetime
+        c = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 28),
+        )
+        ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
+        self.assertTrue(ps <= c.end_date <= pe)
+
+    def test_pure_q2_case_not_in_q3(self):
+        """Case entirely in Q2 → NOT in Q3 under end_date rule."""
+        from classify_rabies import Case
+        from datetime import datetime
+        c = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2026, 2, 1),
+            end_date=datetime(2026, 2, 28),
+        )
+        ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
+        self.assertFalse(ps <= c.end_date <= pe)
+
+
+class TestPriorCompleteSeries(unittest.TestCase):
+    """Bugfix #2 (v1.2.0+): 'prior' = ≥3 doses (complete series), not any dose."""
+
+    def test_single_prior_dose_does_not_count(self):
+        """A patient with 1 prior dose (NOT a complete series) → has_prior=False."""
+        # Direct test of annotate_prior logic: build 2 cases, first has 1 dose
+        from classify_rabies import Case, annotate_prior
+        from datetime import datetime
+        prior_case = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2024, 1, 1),
+            end_date=datetime(2024, 1, 1),
+        )
+        prior_case.doses_id = 1  # only 1 dose — NOT complete series
+        current_case = Case(
+            hn="TEST", case_idx=2,
+            start_date=datetime(2026, 4, 1),
+            end_date=datetime(2026, 4, 28),
+        )
+        current_case.doses_id = 4
+        cases_by_hn = {"TEST": [prior_case, current_case]}
+        annotate_prior(cases_by_hn, {})
+        self.assertFalse(current_case.has_prior,
+                         "Single prior dose must NOT trigger booster rule")
+
+    def test_three_prior_doses_count_as_complete(self):
+        """A patient with 3 prior doses (complete series per DDC pre-exposure)
+        → has_prior=True."""
+        from classify_rabies import Case, annotate_prior
+        from datetime import datetime
+        prior_case = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2024, 1, 1),
+            end_date=datetime(2024, 1, 21),
+        )
+        prior_case.doses_id = 3  # 3 doses = complete series (DDC pre-exposure)
+        current_case = Case(
+            hn="TEST", case_idx=2,
+            start_date=datetime(2026, 4, 1),
+            end_date=datetime(2026, 4, 28),
+        )
+        current_case.doses_id = 2
+        cases_by_hn = {"TEST": [prior_case, current_case]}
+        annotate_prior(cases_by_hn, {})
+        self.assertTrue(current_case.has_prior,
+                        "3 prior doses = complete series → booster rule applies")
+        self.assertGreater(current_case.prior_days_ago, 181,
+                           "≥2 years ago → far booster (needs 2 doses)")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
