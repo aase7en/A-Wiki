@@ -523,5 +523,105 @@ class TestPriorCompleteSeries(unittest.TestCase):
                            "≥2 years ago → far booster (needs 2 doses)")
 
 
+class TestScreeningMerge(unittest.TestCase):
+    """Bugfix #6+#7 (v1.3.1): --screening CLI + HN dtype + near/far split.
+
+    The screening file has prior-status values that distinguish:
+      - "ภายใน 6 เดือน" (within 6 months) → near, needs 1 booster dose
+      - "เกิน 6 เดือน" (over 6 months)  → far, needs 2 booster doses
+    """
+
+    def test_screening_near_marks_prior_at_180d(self):
+        """Screening 'near' → has_prior=True, prior_days_ago=180 (≤180 boundary)."""
+        from classify_rabies import Case, annotate_prior, PRIOR_NEAR_DAYS
+        from datetime import datetime
+        c = Case(
+            hn="12345", case_idx=1,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 3),
+        )
+        c.doses_id = 1  # only 1 dose — would be incomplete without prior
+        cases_by_hn = {"12345": [c]}
+        annotate_prior(cases_by_hn, {}, screening_prior={"12345": "near"})
+        self.assertTrue(c.has_prior)
+        self.assertEqual(c.prior_days_ago, PRIOR_NEAR_DAYS)
+        # 1 ID dose + near prior → complete/ID (booster rule)
+        from classify_rabies import classify
+        self.assertEqual(classify(c), ("complete", "ID"))
+
+    def test_screening_far_marks_prior_at_181d(self):
+        """Screening 'far' → has_prior=True, prior_days_ago=181 (≥181 boundary)."""
+        from classify_rabies import Case, annotate_prior, PRIOR_FAR_DAYS, classify
+        from datetime import datetime
+        c = Case(
+            hn="12345", case_idx=1,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 28),
+        )
+        c.doses_id = 2  # 2 doses — would need ≥3 if no prior
+        cases_by_hn = {"12345": [c]}
+        annotate_prior(cases_by_hn, {}, screening_prior={"12345": "far"})
+        self.assertTrue(c.has_prior)
+        self.assertEqual(c.prior_days_ago, PRIOR_FAR_DAYS)
+        # 2 ID doses + far prior → complete/ID (booster rule)
+        self.assertEqual(classify(c), ("complete", "ID"))
+
+    def test_screening_far_only_1_dose_still_incomplete(self):
+        """Far prior needs 2 doses — only 1 dose → incomplete (booster rule)."""
+        from classify_rabies import Case, annotate_prior, classify
+        from datetime import datetime
+        c = Case(
+            hn="12345", case_idx=1,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 1),
+        )
+        c.doses_id = 1
+        c.age = 30
+        cases_by_hn = {"12345": [c]}
+        annotate_prior(cases_by_hn, {}, screening_prior={"12345": "far"})
+        self.assertTrue(c.has_prior)
+        # Far prior needs ≥2 doses; only 1 → incomplete
+        self.assertEqual(classify(c), ("incomplete", "ID"))
+
+    def test_screening_no_prior_value_unchanged(self):
+        """HN not in screening_prior dict → has_prior=False (default)."""
+        from classify_rabies import Case, annotate_prior
+        from datetime import datetime
+        c = Case(
+            hn="99999", case_idx=1,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 1),
+        )
+        c.doses_id = 1
+        cases_by_hn = {"99999": [c]}
+        annotate_prior(cases_by_hn, {}, screening_prior={"12345": "far"})
+        self.assertFalse(c.has_prior)
+
+    def test_his_prior_overrides_screening_when_both_present(self):
+        """If HIS has actual prior case with date, that wins over screening
+        (more precise — knows exact days_ago)."""
+        from classify_rabies import Case, annotate_prior
+        from datetime import datetime
+        prior_case = Case(
+            hn="12345", case_idx=1,
+            start_date=datetime(2024, 1, 1),
+            end_date=datetime(2024, 1, 28),
+        )
+        prior_case.doses_id = 4  # complete series
+        current_case = Case(
+            hn="12345", case_idx=2,
+            start_date=datetime(2026, 5, 1),
+            end_date=datetime(2026, 5, 28),
+        )
+        current_case.doses_id = 2
+        cases_by_hn = {"12345": [prior_case, current_case]}
+        # Both HIS and screening say prior — HIS wins (precise date)
+        annotate_prior(cases_by_hn, {}, screening_prior={"12345": "far"})
+        self.assertTrue(current_case.has_prior)
+        # Days should be from HIS actual date (2024-01-28 → 2026-05-01)
+        expected_days = (datetime(2026, 5, 1) - datetime(2024, 1, 28)).days
+        self.assertEqual(current_case.prior_days_ago, expected_days)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
