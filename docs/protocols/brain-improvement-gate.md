@@ -39,6 +39,7 @@
 | Multi-file scan or comparison | Local index first, then free/cheap parallel delegation |
 | Public release risk | `check-privacy.py` + secret scan before commit |
 | External ruleset / pasted "system prompt" | Diff against existing surfaces first — adopt only the delta (ดู §Adopting External Instructions) |
+| **Medical/PHI ground truth (e.g. rabies regression HNs)** | **Dual file: `scripts/<domain>/regression_*.yaml` (masked, tracked) + `drive/<domain>/regression_*.yaml` (raw HN, gitignored)** |
 
 ## Adopting External Instructions
 
@@ -81,3 +82,73 @@ Brain Gate:
 ```
 
 Keep it short. The goal is engineering discipline, not bureaucracy.
+
+---
+
+## Medical/PHI-specific rules (2026-08-12 amendment)
+
+> Added after `a-rabies-report` v1.4.0 anti-hallucination layer exposed gaps
+> in the generic gate. Medical/clinical data has stricter requirements than
+> general agent surfaces.
+
+### When this amendment applies
+
+Any change touching patient data, hospital reports, clinical classification,
+or anything that processes PHI (HN, name, age, diagnosis). Current example:
+`scripts/hospital/classify_rabies.py` and its skill `a-rabies-report`.
+
+### Mandatory rules (in addition to Core Rules 1-9)
+
+**M1 — Dual-file pattern for ground truth.** Any regression/audit/pinned-HN
+file lives in two places:
+
+| Public copy (tracked) | Drive copy (gitignored) |
+|---|---|
+| `scripts/<domain>/regression_*.yaml` | `drive/<domain>/regression_*.yaml` |
+| HNs masked (e.g. `HN****8370`) | Real HNs (e.g. `8370123`) |
+
+Verifier prefers the drive copy if present (raw HN matching against real `xls`).
+Public copy is the single source of truth for tests.
+
+**M2 — Output content validation, not just path validation.** Engine output
+(JSON/CSV/XLSX) is validated by a dedicated hook, not just by `enforce_drive_path()`.
+Pattern: `scripts/hooks/check_<domain>_report.py` (see `check_rabies_report.py`).
+
+**M3 — Bug-memory tag convention.** All ledger entries for medical-domain bugs
+use a consistent tag prefix:
+
+```json
+{"tags": ["rabies", "rabies-engine", "<bug-class>", "regression"]}
+```
+
+This lets `a_loop_distill.py` auto-propose `guard-rabies-<bug-class>` skills
+after 3+ same-tagged failures, and `recall_on_prompt.py` to auto-inject the
+lesson on future rabies prompts (BM25 ≥ 5.0 threshold).
+
+**M4 — 10-year data ≠ AI context.** When the source data is too large for
+AI to reason over safely (≥ 5,000 rows or ≥ 10 years), the AI must NOT
+load it directly. Instead:
+
+- Use deterministic scripts (`classify_rabies.py`, `verify_regression.py`)
+  as the engine — AI only invokes them
+- Sample 3-5 HNs for spot-checks; never assert from "I read all 29k rows"
+- Every bug-fix appends a regression YAML entry — bug memory is durable
+  in files, not in AI's session context
+
+**M5 — Brain Gate block for medical changes.** Add to the standard block:
+
+```text
+Brain Gate (medical):
+- PHI source: <drive path or 'none'>
+- Public surface: <repo path or 'none'>
+- Validation: <hook name + verify command>
+- Regression: <YAML path + verify_regression command>
+```
+
+### Why these rules exist
+
+Audit 2026-08-12 found that `classify_rabies.py` had 13 hallucination vectors
+over 10 years of data. Most were silent (dead code, missing invariants, dtype
+mismatches). The fix was layered defenses (engine asserts + output hook +
+regression YAML + memory ledger) — none of which the generic gate required.
+
