@@ -1,0 +1,118 @@
+# Machine-readable ground truth for rabies engine regression testing.
+# Single source of truth — verify_regression.py loads this; tests can be
+# regenerated from it. Append new bug-HNs as they are discovered.
+#
+# Schema:
+#   hn:           real HN (already in public test docstrings — public-safe)
+#   bugfix_ref:   version where this case was first verified
+#   pattern:      short description for human readers
+#   timeline:     list of doses the engine sees (date + vac type + optional erig flag)
+#   expected_cases: number of cases the engine should produce after clustering
+#   expected:     list of {category, route} for each case (in chronological order)
+#   reason:       what bug this prevents
+#
+# Test runner: `python scripts/hospital/verify_regression.py`
+# Override (emergencies only): SKIP_REGRESSION=1
+
+- hn: 176434
+  bugfix_ref: "v1.3.0 #4"
+  pattern: "abandoned dose + clean restart"
+  timeline:
+    - {date: "2026-03-03", vac: ID, erig: true}   # 1 dose, then patient disappears
+    - {date: "2026-03-10", vac: ID}                # Day 0 of restart
+    - {date: "2026-03-13", vac: ID}                # Day +3
+    - {date: "2026-03-17", vac: ID}                # Day +7
+    - {date: "2026-04-07", vac: ID}                # Day +28 (perfect ID schedule)
+  expected_cases: 2
+  expected:
+    - {category: incomplete, route: ID}            # 03/03 abandoned
+    - {category: complete,   route: ID}            # 10/03→07/04 clean restart
+  reason: >
+    Without bugfix #4 (refine_clusters_cross_window), the 33-day time-window
+    merges these into 1 case = 4 ID doses from 03/03 (Day 0,7,10,14 — does
+    NOT fit any standard PEP schedule). The clean ID schedule from 10/03 is
+    invisible.
+
+- hn: 142753
+  bugfix_ref: "v1.3.0 #4 (regression-guard)"
+  pattern: "multi-year scattered doses must NOT merge"
+  timeline:
+    - {date: "2016-02-05", vac: ID}
+    - {date: "2016-02-08", vac: ID}
+    - {date: "2016-02-15", vac: ID}
+    - {date: "2016-03-09", vac: ID}                # 4 doses Feb-Mar 2016
+    - {date: "2018-03-27", vac: ID}                # 2 years later
+    - {date: "2018-03-30", vac: ID}                # unrelated episode
+  expected_cases: 2                                # 2016 cluster + 2018 cluster
+  expected:
+    - {category: complete, route: ID}              # 2016 4-dose ID series
+    - {category: complete, route: ID}              # 2018 2-dose + prior=748d → booster complete
+  reason: >
+    Pre-audit v1.3.0 detection had no STRICT conditions on dose count / span /
+    stray-dose matching. This HN's 13 doses across 5 years (2016-2026) were
+    wrongly merged into 1 'complete' case spanning 2016-2026. The 4 STRICT
+    conditions (dose count 4-7, span ≤35d, no strays, pre-anchor doesn't fit)
+    prevent this — refine_clusters_cross_window returns cases unchanged here.
+    Case#2 (2 doses in 2018) is a far-booster (748d ≥ 181d → needs ≥2 doses,
+    got 2) → complete/ID.
+
+- hn: 10217
+  bugfix_ref: "v1.3.0 #1"
+  pattern: "Day-28 IM dose 1d late stays in same case"
+  timeline:
+    - {date: "2026-04-02", vac: IM, erig: true}   # Day 0
+    - {date: "2026-04-05", vac: ID}                # Day +3 (mixed)
+    - {date: "2026-04-09", vac: ID}                # Day +7 (mixed)
+    - {date: "2026-04-17", vac: IM}                # Day +14
+    - {date: "2026-05-01", vac: IM}                # Day +28+1 (1 day late)
+  expected_cases: 1
+  expected:
+    - {category: complete, route: IM}              # 5 mixed doses = complete/IM
+  reason: >
+    28-day window split this into 2 cases when the Day-28 IM dose landed on
+    Day 29 (HN 10217, HN 388351 — 2026-08-11 bug). CASE_WINDOW_DAYS bumped
+    from 28 → 33 (30d schedule + 3d CDC grace per MMWR RR-5703).
+
+- hn: 359258
+  bugfix_ref: "v1.2.0 #2"
+  pattern: "prior = complete series (≥3 doses), not any dose"
+  timeline:
+    # First series (2024) — IM 5 doses + ERIG = complete series
+    - {date: "2024-01-09", vac: IM, erig: true}
+    - {date: "2024-01-12", vac: IM}
+    - {date: "2024-01-16", vac: IM}
+    - {date: "2024-01-26", vac: IM}
+    - {date: "2024-02-09", vac: IM}
+    # 800 days later: 2-dose booster (mixed IM+ID)
+    - {date: "2026-04-19", vac: ID}
+    - {date: "2026-04-22", vac: IM}
+  expected_cases: 2
+  expected:
+    - {category: complete, route: IM}              # 2024 5-dose series
+    - {category: complete, route: ID}              # 2026 mixed booster (prior=800d, age≥9 → ID)
+  reason: >
+    v1.1.0 'prior = any dose' rule misclassified 49 booster cases as complete
+    when they only had 1 prior dose (not a complete series). v1.2.0 changed
+    is_complete_series to require ≥3 doses (DDC pre-exposure spec + screening
+    app definition). This HN verifies the new definition.
+    Case#2 (2026, mixed IM=1 ID=1, prior=800d, age=3 in YAML default) → booster
+    complete with age tiebreak route.
+
+- hn: 388351
+  bugfix_ref: "v1.3.0 #1 + #5"
+  pattern: "straddle quarter boundary — case counted in quarter of end_date"
+  timeline:
+    - {date: "2026-03-10", vac: IM, erig: true}   # Day 0 (Q2)
+    - {date: "2026-03-13", vac: IM}                # Day +3
+    - {date: "2026-03-17", vac: IM}                # Day +7
+    - {date: "2026-03-25", vac: IM}                # Day +14
+    - {date: "2026-04-08", vac: IM}                # Day +28+1 (Q3)
+  expected_cases: 1
+  expected:
+    - {category: complete, route: IM}
+  reason: >
+    Bugfix #1 (33d window) keeps the Day-28+1 dose in the same case.
+    Bugfix #5 (quarter straddle) means this case is counted in Q3 (where
+    its end_date 2026-04-08 falls), not Q2 (where its start_date falls).
+    Hospital policy: 'ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป
+    Q ถัดไป' — defer to end_date quarter.
