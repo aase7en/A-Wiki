@@ -548,6 +548,15 @@ def refine_clusters_cross_window(cases: list[Case]) -> list[Case]:
             case_b.doses_im += 1
         elif v == VAC_ID:
             case_b.doses_id += 1
+    # V10 anti-hallucination (2026-08-12): dose-conservation invariant.
+    # If dose_log was incomplete (the only source for `flat`), rebuilt counts
+    # silently diverge from the original cases' sums. Surface the divergence.
+    rebuilt_total = (case_a.doses_im + case_a.doses_id
+                     + case_b.doses_im + case_b.doses_id)
+    assert rebuilt_total == len(flat), (
+        f"INVARIANT VIOLATION: dose conservation in refine_clusters_cross_window — "
+        f"rebuilt {rebuilt_total} doses != source {len(flat)} from dose_log. "
+        f"The Case.dose_log was incomplete; rebuilt counts diverge.")
     return [case_a, case_b]
 
 
@@ -689,7 +698,14 @@ def classify(c: Case) -> tuple[str, str]:
             # prior≥181 + total=1 → incomplete (booster needs 2, only got 1)
             r = age_route(c.age)
             return ("incomplete", r) if r else ("REVIEW", "NONE")
-        return ("REVIEW", "MIXED")
+        # V2 anti-hallucination (2026-08-12): unreachable fallthrough was dead code
+        # returning ("REVIEW","MIXED") — AI edits to this branch had zero effect
+        # but appeared to add safety. Replace with assertion to surface regressions.
+        # Mixed requires doses_im>0 AND doses_id>0 (Case.is_mixed), so total ≥ 2.
+        assert total >= 2, (
+            f"INVARIANT VIOLATION: Mixed case with total_vac={total} "
+            f"(impossible — Mixed requires doses_im>0 AND doses_id>0). "
+            f"HN={c.hn} case#{c.case_idx}")
 
     # ── Pure-route (only IM, or only ID) ──
     route = "IM" if n_im > 0 else "ID"
@@ -752,7 +768,8 @@ def classify(c: Case) -> tuple[str, str]:
 # ── Main pipeline ───────────────────────────────────────────────────────────
 def run(quarter_path: Path, history_paths: list[Path],
         period_start: datetime, period_end: datetime,
-        screening_path: Optional[Path] = None):
+        screening_path: Optional[Path] = None,
+        strict_history: bool = False):
     # Load history first (so prior annotation is correct), then current quarter
     frames = []
     for p in history_paths:
@@ -775,21 +792,31 @@ def run(quarter_path: Path, history_paths: list[Path],
     # A booster case in this quarter might reference a complete series from
     # years ago. Spec: ≤180d = 1-dose booster, ≥181d = 2-dose booster, but the
     # "complete series" itself could be 5+ years old.
+    #
+    # V7 anti-hallucination (2026-08-12): the original code re-called load_xls()
+    # on every history file (already loaded into `frames` above), causing 2× the
+    # stderr warnings and a small race window. Now compute dates from the
+    # already-loaded frames.
     if history_paths:
-        all_dates = []
-        for p in history_paths:
-            h = load_xls(p)
-            all_dates.extend(h["date"].dropna().tolist())
-        all_dates.extend(q_df["date"].dropna().tolist())
+        all_dates = pd.concat(frames + [q_df], ignore_index=True)["date"].dropna().tolist()
         if all_dates:
             earliest = min(all_dates)
             span_days = (period_start - earliest).days
             if span_days < 365:
-                print(f"⚠️  WARNING: history+quarter span = {span_days}d (< 1 year). "
-                      f"Booster detection may be incomplete — a patient whose complete "
-                      f"series was > {span_days}d ago will show has_prior=False. "
-                      f"Recommend: include ~10 years of history for accuracy.",
-                      file=sys.stderr)
+                msg = (f"history+quarter span = {span_days}d (< 1 year). "
+                       f"Booster detection may be incomplete — a patient whose complete "
+                       f"series was > {span_days}d ago will show has_prior=False. "
+                       f"Recommend: include ~10 years of history for accuracy.")
+                if strict_history:
+                    # V9 anti-hallucination (2026-08-12): --strict-history flag
+                    # promotes the warning to a hard error. Catches the case where
+                    # AI ships a report with only 6 months of history (silently
+                    # under-counted boosters).
+                    raise SystemExit(
+                        f"🚫 --strict-history FAILED: {msg}\n"
+                        f"   Override: drop --strict-history flag (NOT recommended "
+                        f"for production reports).")
+                print(f"⚠️  WARNING: {msg}", file=sys.stderr)
             elif span_days < 365 * 5:
                 print(f"ℹ️  History span = {span_days}d (~{span_days//365}y). "
                       f"Booster detection covers this range. For full accuracy, "
@@ -836,6 +863,20 @@ def run(quarter_path: Path, history_paths: list[Path],
                 in_period.append(c)
 
     print(f"Cases in period: {len(in_period)}", file=sys.stderr)
+    if not in_period:
+        # V12 anti-hallucination (2026-08-12): empty-period alarm.
+        # A date-parsing bug (e.g. --period-start 2026-04-31 invalid) or swapped
+        # start/end would silently produce an empty report that still looks
+        # well-formed. Make it loud.
+        print(
+            f"🚨 EMPTY PERIOD: 0 cases produced for {period_start.date()} → "
+            f"{period_end.date()}. Likely causes:\n"
+            f"   1. Date format wrong (use YYYY-MM-DD CE, not BE 2569)\n"
+            f"   2. --period-start > --period-end (swapped)\n"
+            f"   3. Quarter .xls dates don't overlap the period\n"
+            f"   4. Wrong file passed as `quarter` arg\n"
+            f"   Engine will return all-zero 9-cell report — verify before trusting.",
+            file=sys.stderr)
 
     # Dose-reconciliation invariant (test-engineer finding #15):
     # With bugfix #5 (end_date-based period assignment), in-period cases may
@@ -882,11 +923,20 @@ def run(quarter_path: Path, history_paths: list[Path],
         }
         if (cat, route) in key_map:
             report[key_map[(cat, route)]] += 1
-        elif cat == "ig_only":
-            report["ig_only"] += 1
         elif cat == "REVIEW":
             report["review"] += 1
             review_list.append(c)
+        else:
+            # V1 anti-hallucination (2026-08-12): "ig_only" cell was dead code —
+            # classify() never returns ("ig_only", ...) — IG-only cases route to
+            # ("incomplete", route). The report["ig_only"] counter was永久 0,
+            # misleading AI into believing "no IG-only patients exist" when they
+            # were silently counted under incomplete. Removed the dead branch;
+            # assertion below guards against future regression.
+            assert cat not in ("ig_only",), (
+                f"INVARIANT VIOLATION: classify() returned cat={cat!r} — "
+                f"ig_only is no longer a valid category (use incomplete/route). "
+                f"HN={c.hn} case#{c.case_idx}")
         if erig_flag:
             report["erig"] += 1
         if hrig_flag:
@@ -905,6 +955,30 @@ def run(quarter_path: Path, history_paths: list[Path],
             "age": c.age, "cat": cat, "route": route, "mixed": c.is_mixed,
         })
 
+    # V3 anti-hallucination (2026-08-12): sum-of-cells invariant.
+    # Without this, a future bug introducing unknown (cat,route) tuple would
+    # silently drop cases from all 8 cells while "Total cases = N" line still
+    # shows the correct count. The 9-cell table and Total line could disagree
+    # with zero alarm. This assertion makes the divergence loud.
+    cells_sum = sum(report[k] for k in (
+        "complete_IM", "complete_ID",
+        "sub5_IM", "sub5_ID",
+        "incomplete_IM", "incomplete_ID",
+        "review",
+    ))
+    assert cells_sum == len(in_period), (
+        f"INVARIANT VIOLATION: 9-cell sum ({cells_sum}) != in_period count "
+        f"({len(in_period)}). Some cases were silently dropped during "
+        f"classification. Override: not available — this is a hard engine bug.")
+    # V4 anti-hallucination: ERIG/HRIG counts must not exceed total cases.
+    assert report["erig"] <= len(in_period), (
+        f"INVARIANT VIOLATION: ERIG count ({report['erig']}) > total cases "
+        f"({len(in_period)}). ERIG was double-counted in refine_clusters "
+        f"or classify loop. Override: not available — engine bug.")
+    assert report["hrig"] <= len(in_period), (
+        f"INVARIANT VIOLATION: HRIG count ({report['hrig']}) > total cases "
+        f"({len(in_period)}). HRIG was double-counted. Engine bug.")
+
     return report, mixed_list, review_list, case_breakdown
 
 
@@ -917,6 +991,11 @@ def main():
                     help="Screening-app .xls (no header row; col 1=HN float, "
                          "col 7=prior-status text). Captures prior-complete "
                          "patients vaccinated at other hospitals. Bugfix #6+#7.")
+    ap.add_argument("--strict-history", action="store_true",
+                    help="V9 anti-hallucination: promote history-span warning "
+                         "(< 1y) to a hard error. Catches AI shipping a report "
+                         "with insufficient lookback (silently under-counted "
+                         "boosters). Recommended for production reports.")
     ap.add_argument("--period-start", required=True, help="Report period start YYYY-MM-DD")
     ap.add_argument("--period-end", required=True, help="Report period end YYYY-MM-DD")
     ap.add_argument("--json", type=Path, help="Write full breakdown as JSON (must be under drive/)")
@@ -930,7 +1009,9 @@ def main():
     ps = datetime.fromisoformat(args.period_start)
     pe = datetime.fromisoformat(args.period_end)
     report, mixed, review, breakdown = run(
-        args.quarter, args.history, ps, pe, screening_path=args.screening)
+        args.quarter, args.history, ps, pe,
+        screening_path=args.screening,
+        strict_history=args.strict_history)
 
     def fmt_hn(hn: str) -> str:
         return hn if args.verbose_phi else mask_hn(hn)
