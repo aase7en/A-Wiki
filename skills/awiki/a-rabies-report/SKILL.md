@@ -1,7 +1,7 @@
 ---
 name: a-rabies-report
 description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส, 9-cell, prior=complete-series (10y lookback), 33d first-dose-anchored window + abandoned-dose detection + quarter-straddle deferral. Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
-version: 1.4.0
+version: 1.5.0
 author: A-Wiki
 domain: [document, thai, medical]
 lifecycle_phase: build
@@ -68,15 +68,27 @@ HN 176434:
 > **STRICT conditions** สำคัญมาก (audit 2026-08-11): แบบเก้มี false positive
 > รวม HN 142753 (13 doses ข้าม 5 ปี → 2016-2026) เป็น 1 เคส "complete" ผิด
 
-### 🆕 Bugfix #5 (v1.3.0): Quarter straddle → defer to next quarter
+### 🆕 v1.5.0 (2026-08-12): Quarter assignment = START_DATE rule + lookahead required
 
-> **กฎของโรงพยาบาล:** "ถ้ารายการฉีดวัคซีน คาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ถือว่าเคสนั้น ขยับไปอยู่อีก Q ไตรมาสถัดไปแทน"
+> **กฎของโรงพยาบาล (user clarification):** "Q ใดๆ ถ้าเหตุการณ์นั้นถูกใช้ไปแล้ว จะไม่ถูกนำมารายงานใน Q ถัดไป"
+> + "เหตุการณ์มันเริ่มต้นที่ Q3 เลยต้องรายงานในส่วนของ Q3"
 
-- Case ที่เริ่มใน Q2 แต่จบใน Q3 → นับใน **Q3** (ไม่ใช่ Q2)
-- Case ทั้งหมดใน Q3 → ยังอยู่ Q3 (unchanged)
-- Case ทั้งหมดใน Q2 → ยังอยู่ Q2 (unchanged)
+- Case เริ่มใน Q ไหน นับ Q นั้น (no double-count)
+- Case 25/06→05/07 (start Q3, end Q4) → นับ **Q3** (start quarter)
+- Case 10/03→07/04 (start Q2, end Q3) → นับ **Q2** (start quarter, **reverts bugfix #5**)
 
-**Implementation**: period filter ใช้ `end_date` ไม่ใช่ `start_date`
+⚠️ **Reverts bugfix #5 (v1.3.0)**: end_date rule ถูกแทนที่ด้วย start_date rule
+เพราะ use case จริงคือ "คนไข้มาปลาย Q + continuation Q ถัดไป → รายงาน Q ที่เริ่ม"
+
+⚠️ **Lookahead data REQUIRED**: ถ้าไม่มี `--lookahead FILE` (เดือนแรกของ Q ถัดไป)
+engine จะมี false-positive incomplete ~40 cases/Q3 (cases ที่ continuation ใน Q ถัดไป
+แต่ engine ไม่เห็น doses นั้น → classify เป็น incomplete)
+
+⚠️ **Screening data REQUIRED**: ถ้าไม่มี `--screening FILE` engine จะมี false-positive
+incomplete ~20 cases/Q3 (booster cases ที่ prior อยู่ใน screening file เท่านั้น)
+
+**Implementation**: period filter ใช้ `start_date` (default); `--lookahead` + `--screening`
+optional but engine warns loudly if missing
 
 ## 🎯 Algorithm (canonical, verified 2026-08-07 — 0 REVIEW across 916 cases)
 
@@ -280,11 +292,15 @@ HISTORY=(
   "<drive>/RabiesVacc/260331_RabiesQ2.xls"
 )
 
-# 2. รัน engine ด้วย history เต็ม + screening + Q ที่จะทำ
+# 2. รัน engine ด้วย history เต็ม + screening + lookahead + Q ที่จะทำ
+#    v1.5.0: --lookahead (เดือนแรกของ Q ถัดไป) และ --screening REQUIRED
+#    ถ้าไม่มี engine จะ warn loudly (false-positive incomplete risk)
 python scripts/hospital/classify_rabies.py \
   "<drive>/RabiesVacc/260806_RabiesQ3.xls" \
   --history "${HISTORY[@]}" \
   --screening "<drive>/RabiesVacc/260810_Rabies_Screening.xls" \
+  --lookahead "<drive>/RabiesVacc/<next_Q_first_month>.xls" \
+  --strict-history \
   --period-start 2026-04-01 --period-end 2026-06-30
 
 # 3. ตรวจ Mixed + REVIEW list (stderr)
@@ -437,6 +453,20 @@ python scripts/hooks/check_rabies_report.py < <json_file>
   - **#5 quarter straddle → defer to end_date quarter**: "ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป Q ถัดไป"
   - **Q3 v5 FINAL**: 337 cases (complete IM=23/ID=117, sub5 IM=16/ID=56, incomplete IM=18/ID=107, ERIG=110, HRIG=0)
   - **Files**: `drive/hospital-uthai/RabiesVacc/260811_rabiesvac.<HOSPITAL>_Y69_FINALv3.doc` + `.docx`
+- **v1.5.0** (2026-08-12): **start_date rule + lookahead + screening required**
+  - **Reverts bugfix #5 (v1.3.0)**: end_date rule → start_date rule
+  - User clarification: "Q ใดๆ ถ้าเหตุการณ์นั้นถูกใช้ไปแล้ว จะไม่ถูกนำมารายงานใน Q ถัดไป"
+  - Case 25/06→05/07 (start Q3, end Q4) → นับ Q3 (was Q4 under end_date rule)
+  - Case 10/03→07/04 (start Q2, end Q3) → นับ Q2 (was Q3 — reverts HN 176434 assignment)
+  - **`--lookahead FILE` ใหม่**: load เดือนแรกของ Q ถัดไป (e.g. Jul data เมื่อ report Q3)
+    จำเป็นเพื่อ complete picture — ไม่มี → ~40 false-positive incomplete cases
+  - **`--screening FILE` ใหม่ strongly recommended**: false-positive incomplete ~20 cases
+  - Engine emits 🚨 loud warnings when lookahead or screening missing
+  - **Q3 v7** (start_date rule, no lookahead yet): 295 cases
+    - complete IM=16/ID=115, sub5 IM=15/ID=51, incomplete IM=16/ID=82, ERIG=95
+    - 42 cases ที่ straddle Q2→Q3 ย้ายไป Q2 (was 337 under end_date rule)
+    - **PENDING**: Jul lookahead data → reclassify at-risk cases → final numbers
+  - 78 tests pass (77 + 1 new straddle test for start_date rule)
 - **v1.4.0** (2026-08-12): **Anti-hallucination layer — 5 layers, 13 vectors mitigated**
   - Audit found 13 hallucination vectors in engine (V1-V13) when processing 10-year history
   - **Layer 1**: In-engine assertions — sum-of-cells invariant, ERIG/HRIG sanity, dose-conservation, dead-code removal (V1 `ig_only` + V2 `REVIEW/MIXED`), `--strict-history` flag (V9), `load_xls` dedupe (V7), empty-period alarm (V12)

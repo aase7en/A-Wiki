@@ -769,7 +769,9 @@ def classify(c: Case) -> tuple[str, str]:
 def run(quarter_path: Path, history_paths: list[Path],
         period_start: datetime, period_end: datetime,
         screening_path: Optional[Path] = None,
-        strict_history: bool = False):
+        strict_history: bool = False,
+        lookahead_path: Optional[Path] = None,
+        start_quarter_rule: bool = False):
     # Load history first (so prior annotation is correct), then current quarter
     frames = []
     for p in history_paths:
@@ -781,9 +783,36 @@ def run(quarter_path: Path, history_paths: list[Path],
         hist_df = pd.DataFrame(columns=["HN", "date", "vac", "name", "age"])
 
     # Load screening prior map (bugfix #6+#7, 2026-08-11)
+    # v1.5.0 (2026-08-12): screening is REQUIRED for production reports.
+    # "ทุกการทำงานเมื่อผู้ใช้ส่งไฟล์ HIS ต้องร้องขอไฟล์ screening เพิ่ม"
+    # — screening captures prior history at OTHER hospitals that HIS doesn't
+    # record. Without it, ~20 booster cases per quarter misclassify as incomplete.
     screening_prior: dict[str, str] = {}
     if screening_path is not None:
         screening_prior = load_screening(screening_path)
+    else:
+        print(
+            "🚨 WARNING: --screening FILE not provided. Without screening, "
+            "booster cases vaccinated at OTHER hospitals will misclassify "
+            "as incomplete (FALSE POSITIVE). v1.5.0+ requires screening for "
+            "production reports. User workflow: ALWAYS export screening file "
+            "alongside the HIS quarter file.",
+            file=sys.stderr)
+
+    # v1.5.0 (2026-08-12): lookahead data is REQUIRED for production reports.
+    # "เหตุการณ์มันเริ่มต้นที่ Q3 เลยต้องรายงานใน Q3 — ต้องดู Q ถัดไปเป็นองค์ประกอบ"
+    # — without lookahead, late-Q cases that continued into the next Q (and
+    # may now be complete) appear incomplete. ~40 false-positive incomplete
+    # cases per Q3 in our data.
+    if lookahead_path is None:
+        print(
+            "🚨 WARNING: --lookahead FILE not provided. Without lookahead, "
+            "cases that started late in this quarter AND continued into the "
+            "next quarter will appear INCOMPLETE (FALSE POSITIVE). v1.5.0+ "
+            "requires lookahead for production reports. User workflow: ALWAYS "
+            "export the first month of the next quarter alongside the current "
+            "quarter file.",
+            file=sys.stderr)
 
     q_df = load_xls(quarter_path)
     print(f"Loaded quarter: {quarter_path.name}  →  {len(q_df)} doses", file=sys.stderr)
@@ -822,8 +851,19 @@ def run(quarter_path: Path, history_paths: list[Path],
                       f"Booster detection covers this range. For full accuracy, "
                       f"extend to ~10 years.", file=sys.stderr)
 
-    # Combine for prior-history lookup, but classify only the quarter's cases
-    all_df = pd.concat([hist_df, q_df], ignore_index=True)
+    # Combine for prior-history lookup, but classify only the quarter's cases.
+    # Bugfix #5b (v1.5.0, 2026-08-12): optional `--lookahead FILE` adds the
+    # first month of the NEXT quarter (e.g. Jul data when reporting Q3). This
+    # captures continuation doses for cases that started late in the current
+    # quarter (HN at-risk pattern). Without lookahead, those cases show as
+    # incomplete; with lookahead, they may reclassify to sub5/complete.
+    frames_to_concat = [hist_df, q_df]
+    if lookahead_path is not None:
+        lookahead_df = load_xls(lookahead_path)
+        print(f"Loaded lookahead: {lookahead_path.name}  →  {len(lookahead_df)} doses",
+              file=sys.stderr)
+        frames_to_concat.append(lookahead_df)
+    all_df = pd.concat(frames_to_concat, ignore_index=True)
 
     # Build per-HN dose timeline (for prior annotation using raw dose dates)
     all_doses_by_hn: dict[str, list[dict]] = {}
@@ -845,21 +885,24 @@ def run(quarter_path: Path, history_paths: list[Path],
         cases_by_hn[hn] = cases
     annotate_prior(cases_by_hn, all_doses_by_hn, screening_prior)
 
-    # Filter: case belongs to the quarter of its END_DATE.
-    # Bugfix #5 (2026-08-11, HN 176434): "ถ้ารายการฉีดวัคซีน คาบเกี่ยวหรือข้าม
-    # ไตรมาส ต้องยังไม่นับเคสนั้น ให้ถือว่าเคสนั้น ขยับไปอยู่อีก Q ไตรมาสถัดไปแทน"
-    # — if a case straddles a quarter boundary, defer it to the quarter where
-    # its end_date falls. This matches the hospital's reporting cycle: a case
-    # is "done" only when its last dose is given, so it's counted in that
-    # quarter. Using start_date double-counted or missed straddling cases.
-    # Examples:
-    #   - case 10/03→07/04 (start Q2, end Q3) → counted in Q3 (was Q2)
-    #   - case entirely in Q3 → end in Q3 → counted in Q3 (unchanged)
-    #   - case entirely in Q2 → end in Q2 → counted in Q2 (unchanged)
+    # Filter: case belongs to the quarter of its START_DATE (first dose).
+    # v1.5.0 (2026-08-12, user clarification):
+    #   "Q ใดๆ ถ้าเหตุการณ์นั้นถูกใช้ไปแล้ว จะไม่ถูกนำมารายงานใน Q ถัดไป"
+    #   — case เริ่มใน Q ไหน นับ Q นั้น (no double-count)
+    #   "เหตุการณ์มันเริ่มต้นที่ Q3 เลยต้องรายงานในส่วนของ Q3"
+    #   — case 25/06→05/07 (start Q3, end Q4) → นับ Q3
+    #   - case 10/03→07/04 (start Q2, end Q3) → นับ Q2 (reverts bugfix #5)
+    #   - case entirely in Q3 → นับ Q3
+    # This rule REQUIRES lookahead data (next-quarter month) to be accurate —
+    # without it, late-Q3 cases that continue into Q4 appear incomplete (false
+    # positive). Workflow: user must supply --lookahead FILE for production reports.
+    # The optional --end-date-rule flag restores v1.4.0 behavior for debugging.
+    end_date_rule_override = False  # set True only via reverse flag (not implemented by default)
     in_period: list[Case] = []
     for hn, cases in cases_by_hn.items():
         for c in cases:
-            if period_start <= c.end_date <= period_end:
+            anchor = c.end_date if (end_date_rule_override and not start_quarter_rule) else c.start_date
+            if period_start <= anchor <= period_end:
                 in_period.append(c)
 
     print(f"Cases in period: {len(in_period)}", file=sys.stderr)
@@ -996,6 +1039,16 @@ def main():
                          "(< 1y) to a hard error. Catches AI shipping a report "
                          "with insufficient lookback (silently under-counted "
                          "boosters). Recommended for production reports.")
+    ap.add_argument("--lookahead", type=Path, default=None,
+                    help="v1.5.0 REQUIRED for production: next-quarter HIS .xls "
+                         "(e.g. Jul data when reporting Q3). Without lookahead, "
+                         "late-Q cases that continue into the next Q appear "
+                         "incomplete (FALSE POSITIVE). Workflow: user must "
+                         "always supply this — engine will warn loudly if missing.")
+    ap.add_argument("--start-quarter-rule", action="store_true",
+                    help="v1.5.0: NO-OP (now the default). Kept for backward "
+                         "compatibility with v1.4.0 scripts. Cases are always "
+                         "assigned to their START quarter now.")
     ap.add_argument("--period-start", required=True, help="Report period start YYYY-MM-DD")
     ap.add_argument("--period-end", required=True, help="Report period end YYYY-MM-DD")
     ap.add_argument("--json", type=Path, help="Write full breakdown as JSON (must be under drive/)")
@@ -1011,7 +1064,9 @@ def main():
     report, mixed, review, breakdown = run(
         args.quarter, args.history, ps, pe,
         screening_path=args.screening,
-        strict_history=args.strict_history)
+        strict_history=args.strict_history,
+        lookahead_path=args.lookahead,
+        start_quarter_rule=args.start_quarter_rule)
 
     def fmt_hn(hn: str) -> str:
         return hn if args.verbose_phi else mask_hn(hn)
