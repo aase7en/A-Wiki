@@ -1,7 +1,7 @@
 ---
 name: a-rabies-report
 description: "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส, 9-cell, prior=complete-series (10y lookback), 33d first-dose-anchored window + abandoned-dose detection + quarter-straddle deferral. Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool"
-version: 1.3.1
+version: 1.4.0
 author: A-Wiki
 domain: [document, thai, medical]
 lifecycle_phase: build
@@ -152,6 +152,54 @@ booster rule: "เคยครบชุด ≤180d = 1 เข้ม booster, ≥
 **ดังนั้น:** ส่ง `--history` ย้อนหลัง **~10 ปี** (ถ้า HIS export ได้) เพื่อ accuracy สูงสุด
 engine เตือน `⚠️ WARNING: history span < 1 year` ถ้าข้อมูลน้อยเกินไป
 
+## 🛡️ Anti-hallucination defenses (v1.4.0 — 5 layers)
+
+> 10-year history (29,325 doses) ใหญ่เกินกว่า AI จะอ่านทั้งหมดแล้วไม่หลอน
+> Audit 2026-08-12 เจอ hallucination vectors 13 ตัว → ใส่ layered defense
+
+### Layer 1: In-engine assertions (always on)
+```python
+# classify_rabies.py มี asserts 5 ตัว (V1-V12):
+# - V3 sum-of-cells: complete+sub5+incomplete+review == len(in_period)
+# - V4 ERIG/HRIG ≤ total cases
+# - V10 dose-conservation in refine_clusters_cross_window
+# - V1+V2 dead-code removal + unreachability assertion
+# - V12 empty-period alarm
+# - V9 --strict-history flag (promotes <1y warning to SystemExit)
+```
+
+### Layer 2: Post-run output hook `check_rabies_report.py`
+- Fires on Write/Edit to `**/rabiesvac*.json`
+- Validates JSON schema + sum-of-cells + ERIG/HRIG + cat/route enum
+- Catches AI hand-editing JSON (engine asserts don't fire if engine didn't run)
+- Override: `HOOK_SKIP=check_rabies_report`
+
+### Layer 3: Regression ground truth `scripts/hospital/regression_HNs.yaml`
+5 pinned HNs (machine-loadable, single source of truth):
+```yaml
+- hn: 176434   # abandoned dose + clean restart (bugfix #4)
+- hn: 142753   # multi-year scattered must NOT merge (bugfix #4 audit)
+- hn: 10217    # Day-28 IM 1d late stays 1 case (bugfix #1)
+- hn: 359258   # prior = complete series ≥3 doses (bugfix #2)
+- hn: 388351   # quarter straddle → end_date quarter (bugfix #5)
+```
+Verify: `python scripts/hospital/verify_regression.py` (exit 0 = pass, 2 = regression)
+
+### Layer 4: Durable bug memory (memory_ledger)
+- 6 lesson entries with `tags=["rabies","rabies-engine","<bug-class>","regression"]`
+- `recall_on_prompt.py` auto-injects when prompt mentions "rabies", "screening", "dtype"
+- Verified: search "rabies screening dtype" → BM25 score 18.29 (≥5.0 threshold)
+- After 3+ same-tagged failures, `a_loop_distill.py` auto-proposes `guard-rabies-*` skill
+
+### Layer 5: Brain-gate medical amendment
+- `docs/protocols/brain-improvement-gate.md` Medical/PHI-specific rules (M1-M5)
+- Dual-file pattern for ground truth (public masked + drive raw)
+- Brain Gate block for medical changes (PHI source / public surface / validation / regression)
+
+### Principle (สำคัญ)
+**AI invokes deterministic scripts; AI does NOT read 29,325 rows directly.**
+Bug memory lives in files (YAML + ledger), not in AI session context.
+
 ## 📄 Template + Filename (จำใน skill)
 
 ### Template (อ้างอิง)
@@ -206,6 +254,20 @@ drive/hospital-uthai/RabiesVacc/
 3. ถ้าไม่ครบ → ขอ user export เพิ่ม
 4. engine เตือน `⚠️ WARNING: history span < 1 year` ถ้าไม่พอ — **ห้าม ignore warning นี้**
 
+### ขั้น 0.5: Verify regression HNs (anti-hallucination gate — ห้ามข้าม)
+
+**ก่อกรัน engine ทุกครั้ง** ให้ verify ว่า engine ยังคลาสสิฟาย 5 pinned HNs ถูก:
+
+```bash
+python scripts/hospital/verify_regression.py
+# exit 0 = pass, exit 2 = regression detected — ห้ามรัน engine จนกว่าจะแก้
+# 5 pinned HNs: 176434, 142753, 10217, 359258, 388351
+# Override (emergencies only): SKIP_REGRESSION=1
+```
+
+ถ้า regression → แก้ engine ก่อน อย่าแก้ YAML โดยไม่เข้าใจ root cause
+(YAML = expected behavior; engine = actual behavior; ถ้าไม่ตรง = engine bug)
+
 ### ขั้น 1-4: รัน engine + กรอก template
 
 ```bash
@@ -232,7 +294,22 @@ python scripts/hospital/classify_rabies.py \
 # 4. กรอกตัวเลข 9-cell ลง template .doc
 #    Template: <drive>/RabiesVacc/20260206_Template_RabiesReport.doc
 #    Output:   <drive>/RabiesVacc/<yymmdd>_rabiesvac.<HOSPITAL>_Y<YY>.doc
+
+# 5. Post-run invariant validation (anti-hallucination Layer 2)
+#    ใน Claude Code: hook ทำงานอัตโนมัติเวื่อ Write/Edit JSON
+#    ตรวจสอบด้วยตนเอง (manual check นอก Claude):
+python scripts/hooks/check_rabies_report.py < <json_file>
+# exit 2 = invariant violated (sum-of-cells, schema, etc.) — ห้าม commit
 ```
+
+### 🆕 Step 5b: Append bug memory (เมื่อเจอ bug ใหม่)
+
+ถ้ารัน engine แล้วเจอ HN ที่คลาสสิฟายผิด ให้:
+1. **Append YAML entry** — `scripts/hospital/regression_HNs.yaml` (timeline + expected)
+2. **Run verify** — `python scripts/hospital/verify_regression.py` ต้อง exit 0
+3. **Append ledger lesson** — บันทึก root cause + fix + HN + tags `["rabies","rabies-engine","<bug-class>","regression"]`
+4. **Add unit test** — `tests/test_classify_rabies.py` (parametrize from YAML ถ้าทำได้)
+5. **Commit** — "fix(rabies): bugfix #N — <1-line description>"
 
 ### ⚠️ กำหนดส่ง (deadline)
 - งวด ๑ (ต.ค.–ธ.ค.) → ๕ ก.พ.
@@ -360,6 +437,15 @@ python scripts/hospital/classify_rabies.py \
   - **#5 quarter straddle → defer to end_date quarter**: "ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป Q ถัดไป"
   - **Q3 v5 FINAL**: 337 cases (complete IM=23/ID=117, sub5 IM=16/ID=56, incomplete IM=18/ID=107, ERIG=110, HRIG=0)
   - **Files**: `drive/hospital-uthai/RabiesVacc/260811_rabiesvac.<HOSPITAL>_Y69_FINALv3.doc` + `.docx`
+- **v1.4.0** (2026-08-12): **Anti-hallucination layer — 5 layers, 13 vectors mitigated**
+  - Audit found 13 hallucination vectors in engine (V1-V13) when processing 10-year history
+  - **Layer 1**: In-engine assertions — sum-of-cells invariant, ERIG/HRIG sanity, dose-conservation, dead-code removal (V1 `ig_only` + V2 `REVIEW/MIXED`), `--strict-history` flag (V9), `load_xls` dedupe (V7), empty-period alarm (V12)
+  - **Layer 2**: `scripts/hooks/check_rabies_report.py` — post-run hook validates JSON output (V13)
+  - **Layer 3**: `scripts/hospital/regression_HNs.yaml` — 5 pinned HNs (176434, 142753, 10217, 359258, 388351) as single source of truth + `verify_regression.py` post-flight verifier
+  - **Layer 4**: 6 lesson entries in memory_ledger with `rabies-*` tags (auto-recall BM25=18.29 verified)
+  - **Layer 5**: `docs/protocols/brain-improvement-gate.md` medical/PHI amendment (rules M1-M5)
+  - Principle: AI invokes deterministic scripts; AI does NOT read 29k rows directly. Bug memory lives in files.
+  - Tests: 77 pass (61 original + 14 hook + 2 regression wrapper)
 - **v1.3.1** (2026-08-11): **2 more bugfixes** (incomplete was inflated by 21 cases)
   - **#6 `--screening` CLI flag was missing**: `annotate_prior()` had `screening_prior` parameter but no CLI/run/main() wiring → engine never read screening file in actual pipeline. Added `--screening FILE` flag + `load_screening()` helper.
   - **#7 HN dtype mismatch**: screening xls has HN as `float64` (175925.0); HIS HN is `str` ("175925"). Direct string comparison failed → 0 overlap. Fixed by `str(int(...))` normalization in `load_screening()`.
