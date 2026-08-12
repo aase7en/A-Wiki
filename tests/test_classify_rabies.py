@@ -426,30 +426,52 @@ class TestAbandonedDoseDetection(unittest.TestCase):
 
 
 class TestQuarterStraddle(unittest.TestCase):
-    """Bugfix #5 (v1.3.0): case belongs to quarter of end_date.
+    """v1.5.0 (2026-08-12): case belongs to quarter of START_DATE (first dose).
 
-    Verifies that run() correctly includes a case whose start_date is in Q(N)
-    but end_date is in Q(N+1) — counted in Q(N+1) per hospital policy.
+    User clarification:
+    "Q ใดๆ ถ้าเหตุการณ์นั้นถูกใช้ไปแล้ว จะไม่ถูกนำมารายงานใน Q ถัดไป"
+    — case เริ่มใน Q ไหน นับ Q นั้น (no double-count)
+    "เหตุการณ์มันเริ่มต้นที่ Q3 เลยต้องรายงานในส่วนของ Q3"
+    — case 25/06→05/07 (start Q3, end Q4) → นับ Q3
+
+    This REVERTS bugfix #5 (end_date rule) — required lookahead data to be accurate.
     """
 
-    def test_straddle_case_counted_in_end_quarter(self):
-        """Case start=29/03 (Q2), end=07/04 (Q3) → counted in Q3."""
+    def test_straddle_q2_q3_counted_in_start_quarter_q2(self):
+        """Case start=10/03 (Q2), end=07/04 (Q3) → counted in Q2 (start_date rule).
+        This is the HN 176434 pattern. v1.4.0 end_date rule counted it in Q3,
+        v1.5.0 reverts to Q2."""
         from classify_rabies import Case
         from datetime import datetime
-        # Construct a case that straddles Q2/Q3 boundary
         c = Case(
             hn="TEST", case_idx=1,
             start_date=datetime(2026, 3, 10),  # Q2 (Jan-Mar)
             end_date=datetime(2026, 4, 7),     # Q3 (Apr-Jun)
         )
-        ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
-        # End_date rule: in_period iff ps <= end <= pe
-        self.assertTrue(ps <= c.end_date <= pe, "Straddle case must be IN Q3 by end_date")
-        # And start_date rule (old) would have excluded it
-        self.assertFalse(ps <= c.start_date <= pe, "Old start_date rule would have excluded it")
+        ps_q3, pe_q3 = datetime(2026, 4, 1), datetime(2026, 6, 30)
+        ps_q2, pe_q2 = datetime(2026, 1, 1), datetime(2026, 3, 31)
+        # v1.5.0 start_date rule: case in Q2 (start quarter), NOT Q3
+        self.assertTrue(ps_q2 <= c.start_date <= pe_q2, "Must be in Q2 by start_date")
+        self.assertFalse(ps_q3 <= c.start_date <= pe_q3, "Must NOT be in Q3 (no double-count)")
+
+    def test_straddle_q3_q4_counted_in_start_quarter_q3(self):
+        """Case start=25/06 (Q3), end=05/07 (Q4) → counted in Q3 (start_date rule).
+        This is the at-risk pattern that drove v1.5.0."""
+        from classify_rabies import Case
+        from datetime import datetime
+        c = Case(
+            hn="TEST", case_idx=1,
+            start_date=datetime(2026, 6, 25),  # Q3 (Apr-Jun)
+            end_date=datetime(2026, 7, 5),     # Q4 (Jul-Sep)
+        )
+        ps_q3, pe_q3 = datetime(2026, 4, 1), datetime(2026, 6, 30)
+        ps_q4, pe_q4 = datetime(2026, 7, 1), datetime(2026, 9, 30)
+        # v1.5.0 start_date rule: case in Q3 (start quarter), NOT Q4
+        self.assertTrue(ps_q3 <= c.start_date <= pe_q3, "Must be in Q3 by start_date")
+        self.assertFalse(ps_q4 <= c.start_date <= pe_q4, "Must NOT be in Q4 (no double-count)")
 
     def test_pure_q3_case_still_in_q3(self):
-        """Case entirely in Q3 → still in Q3 under both rules."""
+        """Case entirely in Q3 → still in Q3."""
         from classify_rabies import Case
         from datetime import datetime
         c = Case(
@@ -458,10 +480,10 @@ class TestQuarterStraddle(unittest.TestCase):
             end_date=datetime(2026, 5, 28),
         )
         ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
-        self.assertTrue(ps <= c.end_date <= pe)
+        self.assertTrue(ps <= c.start_date <= pe)
 
     def test_pure_q2_case_not_in_q3(self):
-        """Case entirely in Q2 → NOT in Q3 under end_date rule."""
+        """Case entirely in Q2 → NOT in Q3."""
         from classify_rabies import Case
         from datetime import datetime
         c = Case(
@@ -470,7 +492,7 @@ class TestQuarterStraddle(unittest.TestCase):
             end_date=datetime(2026, 2, 28),
         )
         ps, pe = datetime(2026, 4, 1), datetime(2026, 6, 30)
-        self.assertFalse(ps <= c.end_date <= pe)
+        self.assertFalse(ps <= c.start_date <= pe)
 
 
 class TestPriorCompleteSeries(unittest.TestCase):
