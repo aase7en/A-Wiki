@@ -94,10 +94,17 @@ jobs:
           git add .kilo/agents/ wiki/context/agent-model-scan-log.jsonl
           git commit -m "feat(agents): model swap candidate $(date -u +%Y-%m-%d) [promotion gate: PR review + CI required]"
           git push origin "$BRANCH"
-          gh pr create \
-            --title "Agent model swap candidate $(date -u +%Y-%m-%d)" \
-            --body "Auto-generated **promotion candidate** (explicit \`apply_swaps\` dispatch; scheduled runs are report-only — P1.2). Review the workflow artifact + diff, verify locally, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
-            || echo "PR create failed (branch may already have an open PR)"
+          # R-P1-004: PR gate is fail-closed — detect an existing open PR
+          # explicitly; a failed creation FAILS this step (no || echo fallback)
+          EXISTING="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
+          if [ -n "$EXISTING" ]; then
+            echo "Promotion PR already open for $BRANCH: $EXISTING"
+          else
+            gh pr create \
+              --title "Agent model swap candidate $(date -u +%Y-%m-%d)" \
+              --body "Auto-generated **promotion candidate** (explicit \`apply_swaps\` dispatch; scheduled runs are report-only — P1.2). Review the workflow artifact + diff, verify locally, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Promotion PR created."
+          fi
 
       - name: Upload scan report
         uses: actions/upload-artifact@v4

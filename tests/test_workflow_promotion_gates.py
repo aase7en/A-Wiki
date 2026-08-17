@@ -52,6 +52,17 @@ def test_pull_request_permission_declared():
 
 
 # ---------------------------------------------------------------------------
+# R-P1-004 — promotion PR creation must be fail-closed/truthful
+# ---------------------------------------------------------------------------
+def test_agent_model_scan_pr_creation_is_fail_closed():
+    t = _text()
+    assert '|| echo "PR create failed' not in t, (
+        "a failed PR gate must not be reported as success (R-P1-004)"
+    )
+    assert "gh pr list --head" in t, "detect an already-open PR explicitly"
+
+
+# ---------------------------------------------------------------------------
 # P1.3 — model-pool telemetry must not be committed to git (runtime cache only)
 # ---------------------------------------------------------------------------
 POOL_WF = REPO_ROOT / ".github" / "workflows" / "model-pool-scout.yml"
