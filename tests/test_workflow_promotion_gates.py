@@ -49,3 +49,42 @@ def test_changes_land_on_promotion_branch_via_pr():
 
 def test_pull_request_permission_declared():
     assert "pull-requests: write" in _text()
+
+
+# ---------------------------------------------------------------------------
+# P1.3 — model-pool telemetry must not be committed to git (runtime cache only)
+# ---------------------------------------------------------------------------
+POOL_WF = REPO_ROOT / ".github" / "workflows" / "model-pool-scout.yml"
+POOL_JSON = "scripts/hermes/model-pool/model-pool.json"
+
+
+def test_model_pool_scout_reports_without_auto_commit():
+    t = POOL_WF.read_text(encoding="utf-8")
+    assert "schedule:" in t, "6h scan cadence must be preserved"
+    assert "actions/upload-artifact@v4" in t, "scan results must remain available as artifact"
+    assert "git commit" not in t, "runtime telemetry must not be committed (P1.3)"
+    assert "git push" not in t
+
+
+def test_model_pool_scout_has_no_write_permission():
+    t = POOL_WF.read_text(encoding="utf-8")
+    assert "contents: write" not in t
+
+
+def test_model_pool_json_is_runtime_cache_not_tracked():
+    import subprocess
+
+    tracked = subprocess.run(
+        ["git", "ls-files", "--", POOL_JSON], cwd=REPO_ROOT,
+        capture_output=True, text=True,
+    )
+    assert tracked.stdout.strip() == "", f"{POOL_JSON} must be untracked runtime cache"
+
+
+def test_model_pool_json_is_gitignored():
+    import subprocess
+
+    ign = subprocess.run(
+        ["git", "check-ignore", "-q", POOL_JSON], cwd=REPO_ROOT,
+    )
+    assert ign.returncode == 0, f"{POOL_JSON} must be listed in .gitignore"

@@ -1,6 +1,11 @@
 name: Model Pool Scout
-# 👁️ Scan all connected providers for free models, update pool every 6 hours
+# 👁️ Scan all connected providers for free models every 6 hours.
 # [Thai ไอ้A Plus Spot.] · A-Wiki Brain + Hermes Agent
+#
+# P1.3 (A-Wiki vNext): runtime telemetry is NO LONGER committed to git
+# (was: 'chore(swarm): auto-update model pool' every 6h — 28 commits/7d).
+# Results are published as a workflow artifact only; `model-pool.json`
+# is an untracked runtime cache regenerated locally by the scanner.
 
 on:
   schedule:
@@ -8,7 +13,7 @@ on:
   workflow_dispatch:          # Manual trigger
 
 permissions:
-  contents: write   # required for the auto-commit push step
+  contents: read    # report-only — no commits, no pushes
 
 jobs:
   scout-models:
@@ -36,18 +41,9 @@ jobs:
           GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
-      - name: Upload updated pool
+      - name: Upload scanned pool (runtime artifact — not committed)
         if: steps.cfg.outputs.configured == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: model-pool
           path: scripts/hermes/model-pool/model-pool.json
-
-      - name: Auto-commit if changed
-        if: steps.cfg.outputs.configured == 'true'
-        run: |
-          git config user.name "A-Wiki Bot"
-          git config user.email "bot@awiki.local"
-          git add scripts/hermes/model-pool/model-pool.json
-          git diff --staged --quiet || git commit -m "chore(swarm): auto-update model pool [skip ci]"
-          git push
