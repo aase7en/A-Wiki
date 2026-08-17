@@ -89,6 +89,9 @@ def test_tools_dict_has_all_neural_spine_tools():
         "skill_route", "focus_set", "focus_get", "focus_advance", "focus_clear",
         # Cross-agent claims (4)
         "claim_acquire", "claim_list", "claim_release", "claim_advance",
+        # Design quality gate (1) — added for /A-Design MCP gating; was the
+        # P2.5 parity gap (tool shipped without this list being extended).
+        "design_quality_gate",
     }
     actual = set(nsmcp.TOOLS.keys())
     missing = expected - actual
@@ -357,3 +360,17 @@ def test_claim_release_by_session_releases_all(monkeypatch):
     out = nsmcp.TOOLS["claim_release"]["fn"]({})  # no claim_id → by session
     # Finding: release_session returns the COUNT released (int, truthy).
     assert out["released"], f"expected truthy release count, got {out['released']!r}"
+
+
+def test_design_quality_gate_scores_and_blocks():
+    """P2.5 parity: the previously-untracked tool gets behavioral coverage."""
+    empty = nsmcp.TOOLS["design_quality_gate"]["fn"]({"design_tokens": {}})
+    for key in ("total", "blocked", "per_category", "fails", "ship_threshold"):
+        assert key in empty, f"missing result key: {key}"
+    assert 0 <= empty["total"] < 80, "empty tokens must not pass the default gate"
+    assert empty["blocked"] is True
+    lax = nsmcp.TOOLS["design_quality_gate"]["fn"](
+        {"design_tokens": {}, "ship_threshold": 0}
+    )
+    assert lax["blocked"] is False, "threshold 0 must never block"
+    assert lax["ship_threshold"] == 0
