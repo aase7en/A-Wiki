@@ -88,3 +88,22 @@ def test_model_pool_json_is_gitignored():
         ["git", "check-ignore", "-q", POOL_JSON], cwd=REPO_ROOT,
     )
     assert ign.returncode == 0, f"{POOL_JSON} must be listed in .gitignore"
+
+
+# ---------------------------------------------------------------------------
+# P1.4 — retired workflows (fail-open health + duplicate Pages deploy)
+# Reference inspection 2026-08-17: both files referenced only by migration
+# docs (descriptive); nothing pushes gh-pages; wiki-health-digest tests
+# target a different workflow; duties covered by wiki-health.yml + ci.yml
+# (freshness) + pages-deploy.yml (Pages).
+# ---------------------------------------------------------------------------
+def test_daily_maintenance_workflow_retired():
+    assert not (REPO_ROOT / ".github" / "workflows" / "daily-maintenance.yml").exists(), (
+        "fail-open health check + auto-commit main retired per master plan §6"
+    )
+
+
+def test_duplicate_pages_deploy_workflow_retired():
+    assert not (REPO_ROOT / ".github" / "workflows" / "deploy-awiki-live.yml").exists(), (
+        "duplicate of pages-deploy.yml (which already stages a minimal _site payload)"
+    )
