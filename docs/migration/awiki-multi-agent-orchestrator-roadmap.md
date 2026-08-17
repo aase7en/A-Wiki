@@ -5,6 +5,8 @@
 > Architecture branch: `architect/awiki-multi-agent-orchestrator-roadmap`
 > Design principle: **A-Wiki is the Team Operating System; individual AI agents are replaceable capability providers.**
 
+> Additional Project-context deltas are maintained in `docs/migration/awiki-project-context-architecture-deltas.md` and are normative where they sharpen repository boundaries, progressive disclosure, external-integration loading, portability, and cross-agent compatibility.
+
 ---
 
 ## 1. Why this roadmap exists
@@ -707,149 +709,173 @@ Deliver:
 
 Deliver:
 
-- task engine
-- handoff engine
-- review queue integration
-- agent registration/heartbeat
-- retry/reassign
+- task/state engine
+- GitHub transport adapter
 - MCP orchestration namespace
-- durable restart-safe state
+- resume/retry/reassign
+- task claims and leases
+- persistent audit trail
 
 #### Phase 15 — Operator UI / Integrations
 
 Deliver:
 
-- task/agent/review dashboard
-- quota/provider health
-- human escalation inbox
-- optional product-specific plugin/connectors
+- Active Agents
+- Task Board
+- Claims/Worktrees
+- Review Queue
+- Provider/Quota Health
+- Cost/Budget
+- Blocked/Escalations
+- READY_FOR_HUMAN
 
-Plugin/UI is not the core protocol.
+Product-specific plugins/connectors remain adapters around this core, not the core itself.
 
 #### Phase 16 — Autonomous Loop Hardening
 
 Deliver:
 
-- max-cycle controls
-- timeout/recovery
-- budget ceilings
-- crash recovery
-- stale claim recovery
-- adversarial/regression evals
-- multi-agent conflict handling
-- pending-review recovery when providers return
+- bounded retries
+- max review cycles
+- timeout/cooldown handling
+- provider recovery
+- pending-review queue
+- automated reassignment
+- failure injection tests
+- concurrency/race tests
+- quota-exhaustion tests
+- crash/restart recovery tests
+- security/privacy adversarial tests
+
+No automatic production deployment or protected-branch merge without separately approved policy.
 
 ---
 
 ## 19. MVP definition
 
-Do not start with a large swarm.
+The MVP should **not** be a giant swarm.
 
-The first useful orchestrator is complete when **two heterogeneous agents can collaborate without the user copying messages**.
+It is complete when two heterogeneous agents can collaborate on one repository without the human manually copying routine work between them.
 
-MVP acceptance criteria:
+Required MVP path:
 
-- one agent can register as executor;
-- another can register as reviewer;
-- task survives session restart;
-- exact HEAD SHA is review target;
-- findings have stable IDs;
-- executor automatically receives actionable findings;
-- executor can remediate and resubmit;
-- CI/mechanical verification contributes to readiness;
-- quota/unavailable reviewer can be substituted;
-- one-agent SOLO fallback remains usable;
-- pending independent review is represented truthfully;
-- claims/worktree isolation prevents collisions;
-- no automatic merge/deploy/destructive branch rewrite;
-- vendor/model replacement does not change the task protocol.
+```text
+USER GOAL
+    |
+    v
+A-Wiki task
+    |
+    v
+Executor selected
+    |
+    v
+isolated branch/worktree
+    |
+    v
+implementation + tests
+    |
+    v
+review request
+    |
+    v
+independent reviewer selected
+    |
+    +---- CHANGES_REQUIRED ----+
+    |                           |
+    v                           |
+executor fix <------------------+
+    |
+    v
+PASS + CI
+    |
+    v
+READY_FOR_HUMAN
+```
+
+Acceptance criteria:
+
+- no human copy/paste for normal handoff/review findings;
+- exact SHA review targeting;
+- agent/provider can be substituted without changing task protocol;
+- one unavailable provider does not stall all useful work;
+- single-agent fallback still works;
+- independent review is never fabricated;
+- claims/worktrees prevent concurrent file collision;
+- state survives process/session restart;
+- secrets/private context do not leak into shared transport;
+- no automatic merge/deploy by default.
 
 ---
 
-## 20. Example: current real-world scenario generalized
+## 20. Architecture quality gate
+
+Before adding any orchestration feature, ask:
 
 ```text
-OpenAI coding quota exhausted
-ChatGPT architecture/review available
-ZCode/GLM executor available
-
-AUTO evaluates task
-   -> large migration + independent review required
-   -> select ARCHITECT_EXECUTOR mode
-   -> ChatGPT = architect/reviewer capability
-   -> GLM = executor capability
-   -> GitHub = durable review transport
-   -> user only approves high-risk gates
+Does this remove real manual coordination?
+Does this improve portability across agents/vendors?
+Does it preserve graceful single-agent fallback?
+Does it reduce or control context/tool load?
+Can it be mechanically tested?
+Does it keep durable state independent of one chat session?
+Does it avoid widening privacy/security exposure?
 ```
 
-Later:
+If not, do not add it merely because multi-agent systems are fashionable.
 
-```text
-GLM quota exhausted
-Codex available
-
-Same task protocol
-   -> executor candidate changes
-   -> no workflow rewrite
-```
-
-This exact adaptability is a primary product requirement, not an edge case.
+The target is **the smallest reliable team for the task under the current constraints**, not the maximum number of agents.
 
 ---
 
 ## 21. Shared-conversation architecture intake
 
-Owner-provided public ChatGPT Share reference:
+Long prior conversations can contain useful architecture ideas but must not become an unstructured second source of truth.
+
+When a conversation source becomes accessible:
+
+```text
+Conversation
+  -> extract explicit requirements/decisions
+  -> deduplicate against canonical plans
+  -> privacy review
+  -> classify: CORE / MODULE / PATTERN / REFERENCE / REJECT
+  -> add only useful deltas
+  -> bind accepted deltas to a phase + acceptance criteria
+```
+
+Never invent requirements from an inaccessible share link. If a share page cannot be fetched, record the reference and defer intake until content is available through a reliable source.
+
+Current external conversation reference supplied by the owner:
 
 ```text
 https://chatgpt.com/share/6a835b35-9494-83ec-8c93-1d4cecb8710b
 ```
 
-At the time of this architecture update, the assistant environment could not retrieve the shared page content reliably. Therefore this document **does not invent or attribute unseen requirements** from that link.
-
-Future intake procedure when content is accessible:
-
-```text
-Fetch shared conversation
-  -> extract candidate requirements/ideas
-  -> classify: CORE / MODULE / PATTERN / REFERENCE / REJECT
-  -> deduplicate against this roadmap and existing A-Wiki capabilities
-  -> privacy check
-  -> architecture impact review
-  -> add only accepted deltas with provenance
-```
-
-This keeps external conversation intake evidence-based and prevents architecture drift.
+The current architecture roadmap is based only on content actually available in the active project context and repository evidence.
 
 ---
 
-## 22. Final operating model
+## 22. Project-context deltas
+
+Prior A-Wiki conversations grouped into the same ChatGPT Project have now been reconciled against this roadmap. The accepted non-duplicate deltas are recorded in:
 
 ```text
-USER
-  |
-  | "ทำงานนี้ให้"
-  v
-A-Wiki Orchestrator
-  |
-  +-- choose mode
-  +-- choose capabilities
-  +-- assign/claim worktrees
-  +-- provide relevant memory/skills
-  |
-  +--> one agent when sufficient
-  |
-  +--> multiple agents when beneficial
-  |
-  +--> substitute providers when unavailable
-  |
-  v
-Mechanical verification + independent review when required
-  |
-  v
-READY / BLOCKED / HUMAN_GATE
+docs/migration/awiki-project-context-architecture-deltas.md
 ```
 
-A-Wiki should not try to make every task multi-agent.
+That companion document is normative for:
 
-> **The goal is not “more agents.” The goal is the smallest reliable team that can complete the task under the current constraints.**
+- A-Wiki as control tower/kernel rather than implementation mega-repo;
+- explicit anti-duplication between A-Wiki and project repos;
+- project-adapter portability (`awiki attach .` / `awiki status`);
+- progressive disclosure and retrieval order;
+- lazy/default-off external MCP and integrations;
+- universal agent contract + generated platform surfaces;
+- capability-based model/provider routing;
+- whole-Team-OS observability;
+- control-plane vs project implementation state;
+- project-to-global memory promotion rules;
+- measurable-value gate for new infrastructure;
+- conservative repository movement and compatibility shims.
+
+These deltas refine Phases 3–16 without adding a competing phase sequence.
