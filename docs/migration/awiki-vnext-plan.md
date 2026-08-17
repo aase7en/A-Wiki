@@ -174,3 +174,5 @@ GLM must execute Phase 1 in this order unless new evidence makes a safety stop n
 ## Current Instruction to GLM 5.3
 
 Phase 0 is approved. Begin **Phase 1 only** on the clean isolated worktree/branch. Read `docs/migration/awiki-agent-review-bus-plan.md` as an additional architecture constraint, but do not build the full review orchestrator during Phase 1. The immediate safety priority is P1.1 (`session_start.py`).
+
+<!-- final-verification: synchronize re-fire 2026-08-18 (webhook drops during GitHub incident) -->
