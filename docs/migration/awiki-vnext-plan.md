@@ -100,6 +100,26 @@ Executed in entry order P1.1 → P1.5 on the clean worktree; every item TDD (fai
 
 Phase 1 exit state: no scheduled automation can mutate `main` ungated — every remaining writer is either report-only (artifacts/issues) or behind an explicit dispatch gate + PR.
 
+## Phase 1 Remediation Log (2026-08-17)
+
+Review `docs/migration/reviews/phase-1-review-0a4ffa0d.md` → **CHANGES_REQUIRED** (R-P1-001..004). Fixed in order, each TDD:
+
+- **R-P1-001 (BLOCKER) `9c577354`** — `subagent-eval.yml` split into 2 jobs: `eval` (schedule+dispatch, `contents: read`, results/races/previews are artifacts + issue only; removed "Commit new results file", race-history git snapshot, and both auto-apply direct commit/push paths) and `promote` (dispatch-only, `needs: eval`, restores artifacts, applies adaptive-routing + cost-optimizer, lands everything on `promotion/subagent-eval-*` + PR). 5 gate tests red-first.
+- **R-P1-002 (MAJOR) `14cbbcf6`** — new `scripts/hermes/telegram_report.py` `chunk_report()` chunks the ENTIRE report (header + `(i/n)` framing, ≤4,096/message); the P1.5 inline sender had truncated at 4,000 chars. 6 deterministic tests (>8k synthetic: content exactly once, in order, all sizes); dry-run smoke: 9,000 chars → 3 messages, max 3,610. `provider-balance.yml` now calls the helper.
+- **R-P1-003 (MAJOR)** — canonical clean-base comparison established (exact command `python -m pytest tests/ -q --tb=line`, detached worktree at base):
+
+  | Baseline | Context | Result |
+  |---|---|---|
+  | Phase-0 contaminated | pre-remediation history w/ 24 carried commits | 2,856 passed / 9 failed / 2 skipped (2,867 collected) |
+  | **Canonical clean-base** | `e532d2f0` (branch base) | **2,513 passed / 3 failed / 17 skipped** (466.83s) |
+  | Phase-1 head (pre-remediation) | `0a4ffa0d` | 2,538 passed / 3 failed / 17 skipped (522.34s) |
+  | Phase-1 fixed head | post R-P1-001..004 | **2,550 passed / 3 failed / 17 skipped** (457.64s) — failing IDs identical to base; +37 passed = Phase-1's new tests (11 git-pull + 20 workflow gates + 6 telegram) |
+
+  **Apples-to-apples verdict: 0 new failures** — same 3 pre-existing failing test IDs at base `e532d2f0` and fixed head, same skip count; the only delta is Phase-1's own green tests.
+
+  Failing test IDs are **identical** across base and head: `test_scanner_actually_flags_a_planted_secret` · `test_file_under_60kb` · `test_tools_dict_has_all_neural_spine_tools` — all pre-existing on `origin/main`, none touch Phase-1 files. Head's +25/+12 passed vs base = Phase-1's own new tests.
+- **R-P1-004 (MINOR) `3b7989ee`** — `agent-model-scan.yml` PR creation fail-closed: removed the `|| echo` success-masking fallback; explicit `gh pr list --head` detection; a failed creation fails the step.
+
 ## Review History
 
 | Phase | Verdict | Date | Notes |
@@ -108,6 +128,8 @@ Phase 1 exit state: no scheduled automation can mutate `main` ungated — every 
 | 0 | CHANGES REQUIRED | 2026-08-17 | Formal GitHub review found branch contamination: 24 unrelated commits / 63-file diff. |
 | 0 | **PASS** | 2026-08-17 | Clean branch verified independently: 4 commits ahead, 0 behind, docs-only 3-file diff. Phase 1 authorized. |
 | 1 | ⏳ awaiting | 2026-08-17 | P1.1–P1.5 complete, 5 TDD commits; full-suite regression evidence in handoff. |
+| 1 | CHANGES REQUIRED | 2026-08-17 | R-P1-001 subagent-eval main mutation · R-P1-002 telegram truncation · R-P1-003 baseline gap · R-P1-004 PR fail-open (`reviews/phase-1-review-0a4ffa0d.md`) |
+| 1 | ⏳ awaiting re-review | 2026-08-17 | All 4 findings fixed in order (Remediation Log above); base-vs-head comparison established. |
 
 ## Phase 1 Entry Order
 
