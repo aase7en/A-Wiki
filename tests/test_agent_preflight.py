@@ -154,3 +154,34 @@ def test_check_branch_still_fails_detached_head_outside_ci(monkeypatch):
     result = agent_preflight.check_branch()
 
     assert result.level == "FAIL"
+
+
+# ---------------------------------------------------------------------------
+# PR CI parity (2026-08-18): pull_request workflows check out the merge ref
+# (GITHUB_REF_NAME = "N/merge"). That ref IS the candidate main state under
+# review and must satisfy the main-only policy; arbitrary branches still fail.
+# ---------------------------------------------------------------------------
+def test_check_branch_accepts_ci_pr_merge_ref(monkeypatch):
+    monkeypatch.setattr(
+        agent_preflight, "run_git",
+        lambda args, timeout=10: __import__("subprocess").CompletedProcess(args, 0, stdout="", stderr=""),
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF_NAME", "11/merge")
+
+    result = agent_preflight.check_branch()
+
+    assert result.level == "OK", result.detail
+
+
+def test_check_branch_still_fails_ci_feature_branch_ref(monkeypatch):
+    monkeypatch.setattr(
+        agent_preflight, "run_git",
+        lambda args, timeout=10: __import__("subprocess").CompletedProcess(args, 0, stdout="", stderr=""),
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF_NAME", "feature/oops")
+
+    result = agent_preflight.check_branch()
+
+    assert result.level == "FAIL"
