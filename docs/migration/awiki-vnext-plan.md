@@ -37,17 +37,20 @@
 
 | # | Date | Decision / Deviation | Reason |
 |---|---|---|---|
-| D1 | 2026-08-17 | Branch based on local `main` @ `156a104e`, not origin/main (`e532d2f0`, +27) | Pulling with 15-path uncommitted rabies WIP risks destroying it (documented auto-pull incident). Sync decision deferred to user before Phase 1. |
+| D1 | 2026-08-17 | Branch based on local `main` @ `156a104e`, not origin/main (`e532d2f0`, +27) | Pulling with 15-path uncommitted rabies WIP risks destroying it (documented auto-pull incident). Sync decision deferred to user before Phase 1. **RESOLVED-BY-INCIDENT 15:29**: external automation auto-rebased the branch onto latest origin/main (see D6) — branch now 0 behind; `main` itself is still 27 behind. |
 | D2 | 2026-08-17 | Rabies WIP left untouched in working tree/index | Not migration scope; owner should commit on main separately. Commit for Phase 0 uses pathspec (`docs/migration/` only) so WIP stays staged-but-uncommitted. |
 | D3 | 2026-08-17 | Preflight branch-FAIL accepted as intentional | Master Plan mandates migration branch; preflight asserts main-only. Reconcile in Phase 2 (allow known migration branches). |
 | D4 | 2026-08-17 | 9 baseline test failures recorded, not fixed | Phase 0 is capture-only per Master Plan discovery protocol. |
 | D5 | 2026-08-17 | No `claim_acquire` MCP call at phase start | awiki MCP server not exposed in this executor's tool surface; hook parity for ZCode is manual. Noted as Iron Law #11 gap. |
+| D6 | 2026-08-17 | **INCIDENT** — `git pull --rebase origin main` ran on the migration branch at 15:29 +0700 by unidentified external automation (not the executor, not git hooks) | Branch base rewritten to latest origin/main (ungated). Rabies WIP restored 12/15 paths; modifications to 3 generated surfaces lost from working tree (regenerable via `regen-skill-surfaces.py` — `skills-registry.json` survived). Full record: `awiki-vnext-discoveries.md` DISC-001. Data-loss class → reported at phase gate per Master Plan stop rule. |
 
 ## Phase 0 Log (2026-08-17)
 
 - Branch created from `156a104e`; sync via `git fetch` (origin advanced cdd042b3→e532d2f0 during session).
 - Captured: preflight, CI runs (gh), 13 workflows, 49 hook scripts + 55 wired commands, 243-skill registry (no drift, 13 surfaces), MCP inventory (6 servers, 30 `awiki` tools), full pytest baseline (2,867 collected: **2,856 passed / 9 failed / 2 skipped**), known-failure registry, exit-criteria answers.
-- Deliverable: `docs/migration/awiki-vnext-baseline.md`.
+- Deliverable: `docs/migration/awiki-vnext-baseline.md` (+ this log + `awiki-vnext-discoveries.md` DISC-001..003).
+- **Mid-phase incident**: external auto-`pull --rebase` rewrote branch base + dropped 3 regenerable WIP surface edits (D6/DISC-001). Documented, not "fixed" — root cause belongs to Phase 1 scope.
+- Privacy gate caught & corrected: pre-commit blocked a `<drive>:\...` machine path in the baseline doc (Iron Law #6 working as intended).
 - Full report sent to user for ChatGPT architecture review — **stopped before Phase 1** per mandatory stop-point rule.
 
 ## Review History

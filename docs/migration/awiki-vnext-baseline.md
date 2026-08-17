@@ -8,7 +8,7 @@
 
 | Item | Value |
 |---|---|
-| Branch | `refactor/awiki-kernel-vnext` (base = local `main` @ `156a104e`) |
+| Branch | `refactor/awiki-kernel-vnext` — created from local `main` @ `156a104e`; **auto-rebased onto origin/main `e532d2f0` by external automation at 15:29 +0700 mid-session** (see §8.8 / DISC-001); now 25 ahead / 0 behind origin/main |
 | origin/main | `e532d2f0` — **local main 27 commits behind** |
 | Working tree | 15 changed paths — **rabies WIP from a prior session, preserved untouched** (staged + unstaged, NOT part of this migration) |
 | Test baseline | 2,867 collected · **2,856 passed · 9 failed · 2 skipped** (667.96s, full suite) |
@@ -97,6 +97,7 @@ Per Master Plan discovery protocol these are **recorded, not fixed** in Phase 0.
 5. **Local main 27 commits behind origin/main** — mostly telemetry churn; migration branch is based on local HEAD. **Decision needed before Phase 1**: how to sync (and who commits the rabies WIP).
 6. **Rabies WIP uncommitted (15 paths)** — ownership/handoff issue outside migration scope; preserved byte-for-byte.
 7. **Security scanner gap** (test #2 above).
+8. **INCIDENT 2026-08-17 15:29 (HIGH — data-loss class, damage regenerable)** — external automation ran `git pull --rebase origin main` on the migration branch mid-session (reflog evidence; not from git hooks; source unidentified — suspected concurrent agent session's SessionStart auto-pull, the documented 2026-07-27 incident class). Effects: branch base rewritten to latest origin/main (ungated but net-desirable); rabies WIP restored only partially — working-tree modifications to 3 generated surfaces (`gemini.skills.json`, `zcode.skills.manifest.json`, `skills-index.md`) vanished, present in no stash (all 5 stashes are from July–early Aug) and no commit. Recoverable via `regen-skill-surfaces.py` from the surviving modified `skills-registry.json`. Full record: `awiki-vnext-discoveries.md` DISC-001. Strongest live evidence for Master Plan §4.1/§4.3.
 
 ## 9. Phase 0 Exit Criteria — Answers
 
