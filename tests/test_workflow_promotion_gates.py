@@ -107,3 +107,35 @@ def test_duplicate_pages_deploy_workflow_retired():
     assert not (REPO_ROOT / ".github" / "workflows" / "deploy-awiki-live.yml").exists(), (
         "duplicate of pages-deploy.yml (which already stages a minimal _site payload)"
     )
+
+
+# ---------------------------------------------------------------------------
+# P1.5 — provider-balance: real reporting + pinned/no third-party action +
+#        minimal permissions
+# ---------------------------------------------------------------------------
+BALANCE_WF = REPO_ROOT / ".github" / "workflows" / "provider-balance.yml"
+
+
+def test_provider_balance_declares_minimal_permissions():
+    t = BALANCE_WF.read_text(encoding="utf-8")
+    assert "permissions:" in t
+    assert "contents: read" in t
+    assert "contents: write" not in t
+
+
+def test_provider_balance_has_no_unpinned_master_action():
+    t = BALANCE_WF.read_text(encoding="utf-8")
+    assert "@master" not in t, "mutable @master third-party action = supply-chain risk"
+
+
+def test_provider_balance_posts_report_content_not_literal_substitution():
+    t = BALANCE_WF.read_text(encoding="utf-8")
+    # `with:` values are literal — `$(cat ...)` was being posted verbatim
+    assert "$(cat" not in t
+    assert "provider-balance-report.md" in t
+    assert "sendMessage" in t
+
+
+def test_provider_balance_uploads_report_artifact():
+    t = BALANCE_WF.read_text(encoding="utf-8")
+    assert "actions/upload-artifact@v4" in t
