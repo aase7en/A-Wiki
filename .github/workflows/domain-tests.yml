@@ -1,0 +1,83 @@
+name: A-Wiki Domain Tests
+
+# P2.3 (vNext Phase 2): expensive domain regression split out of core CI.
+# Runs ONLY when quant/MC-related paths change (or weekly / on demand) so
+# ordinary wiki/hook/skill changes stop paying the scipy+notebook tax.
+# Coverage preserved verbatim from the old monolithic ci.yml MC step.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/awiki/monte-carlo-quant-analysis/**'
+      - 'tests/test_monte_carlo_*.py'
+      - 'tests/test_var_backtest.py'
+      - 'tests/test_benchmark_mc.py'
+      - 'tests/test_mc_quant.py'
+      - 'tests/test_mc_snapshot.py'
+      - 'requirements-optional.txt'
+      - '.github/workflows/domain-tests.yml'
+  schedule:
+    - cron: '23 4 * * 1'  # weekly safety net even without path hits
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: awiki-domain-tests
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  quant:
+    name: Monte Carlo / quant regression (scipy stack)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest nbconvert ipykernel numpy scipy -r requirements-optional.txt
+
+      - name: MC notebook re-execution + copula math tests
+        # Two guards run together (both need the scipy/numpy optional stack):
+        #  (1) Re-run the seeded MC portfolio notebook (seeds 42/123) and warn
+        #      if any output drifted — catches numpy/scipy API regressions
+        #      silently changing the skill's canonical example outputs.
+        #      Advisory (not hard-fail): numpy/scipy release cadence causes
+        #      legitimate float-formatting drift that is NOT a real regression.
+        #      The MC pytest suite (guard 2) remains the binding check.
+        #  (2) Run the full scipy-gated MC regression suite (Heston/Merton/
+        #      Bates/Kou/Hawkes/QMC/MLMC/bootstrap/convergence/VaR + the
+        #      reusable quant-risk API mc_quant.py + mc_snapshot.py).
+        run: |
+          set -o pipefail
+          NB="skills/awiki/monte-carlo-quant-analysis/examples/portfolio_mc_1yr.ipynb"
+          jupyter nbconvert --to notebook --execute "$NB" \
+            --output-dir . --output reexec_tmp 2>&1 | tail -1
+          python -c "
+          import json, sys
+          def load(p):
+              nb = json.load(open(p))
+              for c in nb['cells']:
+                  c.pop('execution_count', None)
+                  c.get('metadata', {}).pop('execution', None)
+              return nb
+          if load('$NB') != load('reexec_tmp.ipynb'):
+              print('::warning::MC notebook outputs drifted (numpy/scipy version/platform drift) — re-baseline when stable')
+          "
+          rm -f reexec_tmp.ipynb
+          python -m pytest tests/test_monte_carlo_copula.py tests/test_monte_carlo_stochastic_vol.py tests/test_monte_carlo_jump_diffusion.py tests/test_monte_carlo_multilevel.py tests/test_monte_carlo_bootstrap.py tests/test_monte_carlo_convergence.py tests/test_monte_carlo_bates.py tests/test_monte_carlo_kou.py tests/test_monte_carlo_hawkes.py tests/test_monte_carlo_qmc.py tests/test_var_backtest.py tests/test_benchmark_mc.py tests/test_mc_quant.py tests/test_mc_snapshot.py -v

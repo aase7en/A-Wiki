@@ -202,3 +202,55 @@ def test_subagent_eval_promote_job_is_dispatch_gated():
     promote_at = t.index("promote:")
     assert "needs: eval" in t[promote_at:]
     assert "github.event_name == 'workflow_dispatch'" in t[promote_at:]
+
+
+# ---------------------------------------------------------------------------
+# P2.3/P2.4 — core CI vs domain split + CI-level smoke/parity
+# ---------------------------------------------------------------------------
+CI_CORE = REPO_ROOT / ".github" / "workflows" / "ci-core.yml"
+DOMAIN = REPO_ROOT / ".github" / "workflows" / "domain-tests.yml"
+OLD_CI = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+
+
+def test_old_monolithic_ci_replaced_by_core_workflow():
+    assert CI_CORE.exists(), "ci-core.yml must exist"
+    assert not OLD_CI.exists(), "monolithic ci.yml replaced by ci-core.yml + domain-tests.yml"
+
+
+def test_ci_core_uses_python_security_scanner():
+    t = CI_CORE.read_text(encoding="utf-8")
+    assert "scripts/security/scan_repo.py" in t
+    assert "scripts/security/baseline.txt" in t
+    assert "$(cat" not in t, "no fragile cat/word-splitting scan loops"
+
+
+def test_ci_core_runs_truthful_wiki_health():
+    t = CI_CORE.read_text(encoding="utf-8")
+    assert "scripts/health/wiki_health.py" in t
+    assert "scripts/health/wiki-health-baseline.txt" in t
+
+
+def test_ci_core_has_mcp_and_hook_runner_smoke():
+    t = CI_CORE.read_text(encoding="utf-8")
+    assert "mcp-wiki-server.py" in t
+    assert "hooks_runner.py" in t
+
+
+def test_ci_core_keeps_privacy_registry_readiness_gates():
+    t = CI_CORE.read_text(encoding="utf-8")
+    for must in (
+        "scripts/check-privacy.py",
+        "scripts/regen-skill-surfaces.py --validate",
+        "scripts/verify-awiki-ready.py",
+        "python -m pytest -q",
+    ):
+        assert must in t, f"core gate lost: {must}"
+
+
+def test_domain_workflow_is_path_triggered_and_keeps_mc_coverage():
+    t = DOMAIN.read_text(encoding="utf-8")
+    assert "paths:" in t, "domain tests must be path-triggered, not unconditional"
+    assert "monte-carlo-quant-analysis" in t
+    assert "test_monte_carlo_copula.py" in t
+    assert "test_var_backtest.py" in t
+    assert "requirements-optional.txt" in t
