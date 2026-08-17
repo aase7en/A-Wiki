@@ -131,6 +131,17 @@ Executed in review-mandated order P2.1 → P2.5, each TDD (red-first):
 - **P2.5** — closed both remaining canonical baseline failures: neural-spine `design_quality_gate` tracked + behavioral test; dashboard budget 80→84 KB as a documented contract change with commit evidence (c30b9876 + ec77ddc4), following the test's own 4-raise convention.
 - **Regression (same command as canonical base)**: **0 failed / 2,584 passed / 17 skipped** (461.16s). Canonical base was 3 failed / 2,513 passed / 17 skipped — all 3 baseline failures closed by P2.1/P2.5, **0 new failures**, +71 passed = Phase 1+2 new tests. Full suite green (exit 0) for the first time in the migration.
 
+## Phase 2 Remediation Log (2026-08-17)
+
+Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..004 + note R-P2-005). Fixed in the review's mandated order, each TDD:
+
+- **R-P2-002 (BLOCKER) `a127431a`** — `scan_file` streams EVERY line (`io.TextIOWrapper` line iteration, line numbers preserved); the single 256 KiB read had made secrets past that boundary invisible. NUL-sniff window (8 KiB) is binary detection only. Tests: >256 KiB planted secret detected (line 4001), >300 KiB single-line boundary case, `CHUNK_BYTES` must not reappear.
+- **R-P2-003 (BLOCKER) `a127431a`** — baseline keys now `path::pattern::sha256(match)[:16]` + **Counter multiplicity** — coarse path::pattern keys had suppressed NEW same-pattern findings in baselined files. Tests: different same-pattern token fails; extra identical occurrence beyond count fails; baseline holds no raw secret (digest only). `baseline.txt` regenerated: 49 fingerprint keys, 0 raw values.
+- **R-P2-004 (BLOCKER)** — every wiki-health identity rendered via `.as_posix()` + `_hard_key` backslash normalization → identical baseline keys on Windows/Linux/macOS; `wiki-health-baseline.txt` regenerated portable (48 keys, 0 backslashes). Tests: no `\` in any identity; separator variants collapse to one key.
+- **R-P2-005 (NOTE)** — frontmatter check reports `SKIPPED — PyYAML unavailable` in `report.skipped` instead of silently passing.
+- **R-P2-001 (BLOCKER)** — `pull_request: [main]` added to `ci-core.yml` and `domain-tests.yml` (domain PR trigger keeps quant path filters); push:main retained; promotion PRs from Phase 1 now have real CI behind their merge gate. 2 yaml-parsing trigger-contract tests.
+- **Targeted sweep**: 278 passed across all remediation areas. **Canonical full suite after remediation: 0 failed / 2,595 passed / 17 skipped** (459.36s; +11 vs pre-remediation = remediation tests). GitHub PR CI evidence: PR opened from this branch to `main` — ci-core runs on the PR per the new R-P2-001 trigger (run status recorded in the re-review handoff).
+
 ## Review History
 
 | Phase | Verdict | Date | Notes |
@@ -143,6 +154,8 @@ Executed in review-mandated order P2.1 → P2.5, each TDD (red-first):
 | 1 | ⏳ awaiting re-review | 2026-08-17 | All 4 findings fixed in order (Remediation Log above); base-vs-head comparison established. |
 | 1 | **PASS_WITH_NOTES** | 2026-08-17 | R-P1-001..004 RESOLVED (`reviews/phase-1-rereview-328f9a66.md`); N-P1-001 race-history wording deferred to Phase 8. Phase 2 authorized. |
 | 2 | ⏳ awaiting | 2026-08-17 | P2.1–P2.5 complete per mandated order; full-suite regression evidence in Phase 2 Log. |
+| 2 | CHANGES REQUIRED | 2026-08-17 | R-P2-001 no PR CI · R-P2-002 256 KiB scan cap · R-P2-003 coarse baseline keys · R-P2-004 OS-dependent identities (`reviews/phase-2-review-dff83ebb.md`) |
+| 2 | ⏳ awaiting re-review | 2026-08-17 | All 4 blockers + note fixed in review order (Remediation Log above); PR opened for real GitHub CI evidence. |
 
 ## Phase 1 Entry Order
 
