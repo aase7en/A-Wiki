@@ -117,10 +117,15 @@ def check_branch() -> CheckResult:
         return CheckResult("OK", "git branch", "main")
     # GitHub Actions checks out a detached HEAD; the real branch lives in
     # GITHUB_REF_NAME. Detached-at-main on CI satisfies the main-only policy.
+    # A "N/merge" ref is a pull_request event's merge commit — the candidate
+    # main state under review — so PR CI is a legitimate main-policy context.
+    # Any other branch still fails.
     if not branch and os.environ.get("GITHUB_ACTIONS") == "true":
         ref = os.environ.get("GITHUB_REF_NAME", "")
         if ref == "main":
             return CheckResult("OK", "git branch", "detached HEAD on CI (GITHUB_REF_NAME=main)")
+        if re.fullmatch(r"\d+/merge", ref or ""):
+            return CheckResult("OK", "git branch", f"PR merge ref on CI ({ref}) — candidate main under review")
         return CheckResult("FAIL", "git branch", f"CI ref {ref or 'unknown'}; expected main")
     return CheckResult("FAIL", "git branch", branch or "unknown; expected main")
 

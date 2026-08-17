@@ -18,17 +18,23 @@ PATTERNS_FILE = REPO_ROOT / "scripts" / "hooks" / "security_patterns.yaml"
 
 
 def _load_patterns() -> list[tuple[str, re.Pattern[str], list[str]]]:
-    """Load secret + machine-path patterns from YAML (builtin fallback)."""
+    """Load secret + machine-path patterns from YAML (builtin fallback).
+
+    Every entry — YAML-loaded or builtin — is a 3-tuple (name, regex,
+    allowlist). The builtin fallback previously emitted 2-tuples, which
+    crashed the scan loop in environments without PyYAML and turned the
+    layer-2 gate fail-open (2026-08-17, P2.1 root cause).
+    """
     builtin_secrets = [
-        ("sk- key", re.compile(r"sk-[A-Za-z0-9_-]{24,}")),
-        ("AIza key", re.compile(r"AIza[0-9A-Za-z_-]{30,}")),
-        ("gh token", re.compile(r"gh[pousr]_[A-Za-z0-9_]{30,}")),
-        ("JWT", re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}")),
+        ("sk- key", re.compile(r"sk-[A-Za-z0-9_-]{24,}"), []),
+        ("AIza key", re.compile(r"AIza[0-9A-Za-z_-]{30,}"), []),
+        ("gh token", re.compile(r"gh[pousr]_[A-Za-z0-9_]{30,}"), []),
+        ("JWT", re.compile(r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"), []),
     ]
     builtin_machine = [
-        ("Windows user home", re.compile(r"C:\\Users\\([A-Za-z0-9._-]+)\\")),
-        ("macOS user home", re.compile(r"/Users/([A-Za-z0-9._-]+)/")),
-        ("Google Drive account", re.compile(r"CloudStorage/GoogleDrive-([A-Za-z0-9._-]+)")),
+        ("Windows user home", re.compile(r"C:\\Users\\([A-Za-z0-9._-]+)\\"), []),
+        ("macOS user home", re.compile(r"/Users/([A-Za-z0-9._-]+)/"), []),
+        ("Google Drive account", re.compile(r"CloudStorage/GoogleDrive-([A-Za-z0-9._-]+)"), []),
     ]
     try:
         import yaml  # type: ignore

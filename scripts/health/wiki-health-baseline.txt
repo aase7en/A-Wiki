@@ -1,0 +1,53 @@
+# Wiki-health hard-error baseline (P2.2 ratchet; R-P2-004 portable keys).
+# Keys are page::target with POSIX separators - identical on Windows/Linux/macOS.
+# Generated 2026-08-17. Baselined errors are reported but do NOT fail CI;
+# any NEW hard error fails. Ratchet down by fixing debt and removing keys.
+
+[wikilinks] CLAUDE.md::concept-name
+[wikilinks] CLAUDE.md::concepts/...
+[wikilinks] CLAUDE.md::entities/...
+[wikilinks] CLAUDE.md::page-name
+[wikilinks] CLAUDE.md::page-name
+[wikilinks] CLAUDE.md::page-name
+[wikilinks] CLAUDE.md::sources/...
+[wikilinks] CLAUDE.md::sources/source-slug
+[wikilinks] CLAUDE.md::sources/source-slug
+[wikilinks] concepts/ai-tools/agent-framework-tradeoffs.md::CLAUDE.md
+[wikilinks] concepts/ai-tools/ai-glossary.md::entities/ai-tools/openrouter-api
+[wikilinks] concepts/env/water-quality-parameters.md::concepts/iot/mqtt-protocol
+[wikilinks] concepts/pharmacy/drug-aliases.md::raw/pharmacy/sp_drugs_full_3760.json
+[wikilinks] concepts/pharmacy/drug-aliases.md::raw/pharmacy/sp_drugs_full_3760.json
+[wikilinks] context/model-roster.md::sources/claude-model-cost-switching-strategy
+[wikilinks] context/review-report.md::claude-code
+[wikilinks] context/review-report.md::cointh-glm
+[wikilinks] context/review-report.md::concepts/iot/mqtt-protocol
+[wikilinks] context/review-report.md::concepts/iot/mqtt-protocol
+[wikilinks] context/review-report.md::entities/ai-tools/a-wiki
+[wikilinks] context/review-report.md::entities/ai-tools/game-lightweight-highend-capability-hub
+[wikilinks] context/review-report.md::entities/ai-tools/openrouter-api
+[wikilinks] context/review-report.md::entities/ai-tools/openrouter-api
+[wikilinks] context/review-report.md::frontend-design
+[wikilinks] context/review-report.md::monte-carlo-quant-analysis
+[wikilinks] context/review-report.md::monte-carlo-quant-analysis
+[wikilinks] context/review-report.md::monte-carlo-quant-analysis
+[wikilinks] context/review-report.md::theme-factory
+[wikilinks] context/wiki-overview.md::entities/iot/h…
+[wikilinks] context/wiki-overview.md::entities/io…
+[wikilinks] context/wiki-overview.md::e…
+[wikilinks] entities/ai-tools/a-wiki-skill-architecture.md::a-router
+[wikilinks] entities/ai-tools/agents-md-spec.md::.codex/
+[wikilinks] entities/ai-tools/agents-md-spec.md::.cursorrules
+[wikilinks] entities/ai-tools/agents-md-spec.md::.gemini/
+[wikilinks] entities/ai-tools/gamedev-skills.md::entities/ai-tools/game-lightweight-highend-capability-hub
+[wikilinks] entities/ai-tools/open-design.md::claude-code
+[wikilinks] entities/ai-tools/open-design.md::cointh-glm
+[wikilinks] entities/ai-tools/open-design.md::frontend-design
+[wikilinks] entities/ai-tools/open-design.md::theme-factory
+[wikilinks] entities/ai-tools/openmed.md::wiki/entities/pharmacy
+[wikilinks] entities/ai-tools/pake.md::entities/ai-tools/a-wiki
+[wikilinks] sources/ai-engineering-glossary.md::entities/ai-tools/openrouter-api
+[wikilinks] sources/akashdeepo-monte-carlo-rrr.md::monte-carlo-quant-analysis
+[wikilinks] sources/firmai-financial-machine-learning.md::monte-carlo-quant-analysis
+[wikilinks] sources/unpingco-python-stats-ml.md::monte-carlo-quant-analysis
+[wikilinks] synthesis/appsheet-to-webapp-pi5.md::concepts/iot/mqtt-protocol
+[wikilinks] synthesis/dream-projects.md::profile.md

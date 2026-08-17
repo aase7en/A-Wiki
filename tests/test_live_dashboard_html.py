@@ -92,7 +92,13 @@ def test_file_under_60kb():
     # hero + 4 tiles + 5-stage funnel + stream container + onboarding (~6 KB).
     # Sprite itself lives in JS bundle (app.min.js 280 KB budget) — HTML
     # gain is only the <use> references, not the sprite paths.
-    assert size < 80 * 1024, f"HTML too large: {size} bytes (limit 80 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup + v19 Lucide <use> refs + v20 Home panel)"
+    # raised to 84 KB (2026-08-17, P2.5 documented contract change): two
+    # shipped features after the 2026-08-03 raise pushed markup past 80 KB —
+    # c30b9876 Fixes module (troubleshooting knowledge) + ec77ddc4 awiki://
+    # click-to-launch protocol (offline overlay + fallback). 82,986 B actual.
+    # Same convention as the four prior documented raises: budget tracks
+    # markup growth of shipped panels; JS/CSS stay in their own files.
+    assert size < 84 * 1024, f"HTML too large: {size} bytes (limit 84 KB — JS/CSS extracted in v8; raised for post-v9 panels + v11 Backup + v19 Lucide <use> refs + v20 Home panel + Fixes module + awiki:// launch)"
 
 
 # ── Phase 0: token reconciliation + size contract ─────────────────────────

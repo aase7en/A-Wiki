@@ -9,9 +9,9 @@
 
 > **โดเมน**: Environmental Health (อนามัยสิ่งแวดล้อม)
 <<<<<<< Updated upstream
-> **Last updated**: 2026-08-09
+> **Last updated**: 2026-08-18
 =======
-> **Last updated**: 2026-08-09
+> **Last updated**: 2026-08-18
 >>>>>>> Stashed changes
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/env/ เท่านั้น**
 
