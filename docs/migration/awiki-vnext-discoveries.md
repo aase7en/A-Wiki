@@ -17,13 +17,14 @@
   - `.git/hooks`: only `pre-commit` + `post-merge` (relink shims) — pull did NOT come from git hooks.
   - **Root cause CONFIRMED (post-phase attribution)**: `scripts/hooks/session_start.py` → `git_pull()` (line 61) runs `git pull --rebase origin main` at every SessionStart of wired agents (Claude Code / Codex via hooks_runner). A concurrent agent session starting on this machine at ~15:29 triggered it. Git config `rebase.autoStash=true` auto-stashed the dirty tree; post-rebase pop restored 12/15 WIP paths; the 3 generated-surface edits were lost in that flow (no leftover autostash entry, no conflict markers — exact inner loss path undetermined).
   - **Ruled out — Hermes/Pi5**: every Hermes sync path uses `git pull --ff-only` (`auto-sync.ps1:22`, `sync-all.sh:242`, `auto-sync-from-git.sh:38`) which cannot create a rebase; no Hermes scheduled task on this machine; the Pi5 operates only its own clone and cannot move this Windows checkout's refs. Windows task `WikiAutoSync-Pull` points at the legacy `Aase7en-InW-Wiki` repo and is **Disabled**.
+  - **Reviewer finding (architecture review, 2026-08-17)**: independent GitHub-side review confirmed `scripts/hooks/session_start.py::git_pull()` executes `git pull --rebase origin main` (line 61) **despite the file-level description referring to fast-forward synchronization** ("git pull (fast-forward only)", line 6) — docstring/implementation mismatch. Hook fix is designated **Phase 1 Priority #1** (not fixed in Phase 0; Phase 0 stays documentation-only).
   - Z2 safety net (`.tmp/git-head-backup.jsonl`) backs up HEAD commits only — all commits intact; it does not protect working-tree edits.
 - **Impact:**
   - Lost working-tree edits to 3 **generated** surfaces — recoverable via `python scripts/regen-skill-surfaces.py` because the modified `skills-registry.json` (source of truth) survived in the working tree.
   - Migration branch base moved to latest origin/main without review (net effect desirable: 0 behind origin, but ungated).
   - Demonstrates in production the exact P0 the Master Plan targets (§4.1 ungated automation mutating repo state; §4.3 CI/automation not authoritative).
 - **Suggested action:**
-  1. Phase 1 must harden `session_start.py::git_pull`: (a) run only when current branch is `main`; (b) use `--ff-only` (align with the Hermes scripts' correct pattern) or require a clean tree before any rebase; (c) never rebase a non-main branch onto `origin/main`.
+  1. **Phase 1 Priority #1** (per review verdict): harden `session_start.py::git_pull`: (a) run only when current branch is `main`; (b) use `--ff-only` (align with the Hermes scripts' correct pattern, and with the file's own description) or require a clean tree before any rebase; (c) never rebase a non-main branch onto `origin/main`.
   2. Owner of the rabies WIP session: commit your WIP on main (Iron Law #11 corollary "commit early"), regenerate the 3 surfaces if needed.
   3. Keep `rebase.autoStash` but note it does not guarantee lossless pop; treat "clean tree before sync" as the real invariant.
 - **Recommended phase:** Phase 1 (Stabilize Automation)

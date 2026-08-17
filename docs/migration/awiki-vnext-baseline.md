@@ -1,17 +1,25 @@
 # A-Wiki vNext Migration — Baseline (Phase 0)
 
-> Capture date: 2026-08-17 · Executor: ZCode/GLM-5.3 · Branch: `refactor/awiki-kernel-vnext`
+> Capture date: 2026-08-17 · Executor: ZCode/GLM-5.3 · Final review branch: `refactor/awiki-kernel-vnext-clean`
 > Reference: A-WIKI-MASTER-DEVELOPMENT-PLAN (user-provided, external) §41 Phase 0
-> Status: **COMPLETE** — awaiting Architecture Review before Phase 1
+> Status: **COMPLETE** — CHANGES REQUIRED received (branch isolation) → remediated via clean branch; awaiting final review before Phase 1
 
-## 0. Snapshot
+## 0. Snapshot — Branch State Timeline
+
+Three distinct states are recorded so capture-time evidence is never confused with incident effects or the final review state:
+
+| State | Time (+0700) | Branch | Base | Ahead/behind origin/main | Working tree |
+|---|---|---|---|---|---|
+| **Capture-time** | ~15:00 | `refactor/awiki-kernel-vnext` (new) | local `main` @ `156a104e` | +24 local commits / −27 (diverged) | 15 changed paths (rabies WIP, pre-existing) |
+| **Incident state** | 15:29 | same branch — **auto-rebased by external automation** (DISC-001) | `origin/main` @ `e532d2f0` | +27 (24 carried + 3 Phase 0) / 0 | 12 changed paths (3 regenerable surface edits lost) |
+| **Final clean review state** | post-remediation | `refactor/awiki-kernel-vnext-clean` (fresh worktree, cherry-pick ×3) | `origin/main` @ `e532d2f0` | **only Phase 0 docs commits** / 0 | clean — carries none of the WIP |
+
+The original branch `refactor/awiki-kernel-vnext` is **preserved untouched as forensic evidence** (not merged, not deleted). The original checkout's 12-path rabies WIP is likewise untouched.
 
 | Item | Value |
 |---|---|
-| Branch | `refactor/awiki-kernel-vnext` — created from local `main` @ `156a104e`; **auto-rebased onto origin/main `e532d2f0` by external automation at 15:29 +0700 mid-session** (see §8.8 / DISC-001); now 25 ahead / 0 behind origin/main |
-| origin/main | `e532d2f0` — **local main 27 commits behind** |
-| Working tree | 15 changed paths — **rabies WIP from a prior session, preserved untouched** (staged + unstaged, NOT part of this migration) |
-| Test baseline | 2,867 collected · **2,856 passed · 9 failed · 2 skipped** (667.96s, full suite) |
+| origin/main | `e532d2f0` — **local `main` 27 commits behind** (mostly model-pool telemetry churn, §3) |
+| Test baseline (capture-time, original checkout) | 2,867 collected · **2,856 passed · 9 failed · 2 skipped** (667.96s, full suite) |
 | Skill surfaces | `regen-skill-surfaces --check` → No drift (13 surfaces match registry) |
 
 ## 1. Repo Health (preflight `scripts/agent-preflight.py`)
@@ -21,7 +29,7 @@
 | ❌ FAIL | git branch | Preflight expects `main`; migration branch violates by design (Master Plan §44 rule 1). Preflight needs a migration-branch allowance in a later phase. |
 | ❌ FAIL | A-Wiki-Data folders | `waste-reports` missing at drive mount (`<A_WIKI_DRIVE_PATH>/A-Wiki-Data` — machine-local path, resolved via `drive/` junction) — partial Drive link |
 | ❌ FAIL | generated wiki context | `wiki/context/wiki-overview.md` out of date — needs `scripts/gen-index.py` |
-| ⚠️ WARN | working tree | 15 changed paths (rabies WIP) |
+| ⚠️ WARN | working tree | 15 changed paths at capture-time (rabies WIP; 12 remain post-incident — see §0 timeline) |
 | ⚠️ WARN | cross-device handoff | stale-session advisory |
 | ✅ OK | origin reachable / 12 core hooks present / hook command paths / 10 guardrails wired / platform instruction parity | — |
 
@@ -94,10 +102,10 @@ Per Master Plan discovery protocol these are **recorded, not fixed** in Phase 0.
 2. **Bot auto-mutation of main** (§4.1 P0): `agent-model-scan.yml` committed `feat(agents): auto-scan model swap` directly to main; `model-pool-scout.yml` commits telemetry (§4.2 P0).
 3. **Fail-open health check**: `daily-maintenance.yml` (`|| echo "OK"`).
 4. **Drive link partial**: `waste-reports` folder missing from `A-Wiki-Data` mount.
-5. **Local main 27 commits behind origin/main** — mostly telemetry churn; migration branch is based on local HEAD. **Decision needed before Phase 1**: how to sync (and who commits the rabies WIP).
-6. **Rabies WIP uncommitted (15 paths)** — ownership/handoff issue outside migration scope; preserved byte-for-byte.
+5. **Local main 27 commits behind origin/main** — mostly telemetry churn. *(Superseded for the migration itself: the clean review branch is based directly on `origin/main` @ `e532d2f0`.)* Sync of local `main` + who commits the rabies WIP remains a user decision.
+6. **Rabies WIP uncommitted (15 paths at capture; 12 after incident)** — ownership/handoff issue outside migration scope; preserved in the original checkout, untouched by remediation.
 7. **Security scanner gap** (test #2 above).
-8. **INCIDENT 2026-08-17 15:29 (HIGH — data-loss class, damage regenerable)** — external automation ran `git pull --rebase origin main` on the migration branch mid-session (reflog evidence; not from git hooks; source unidentified — suspected concurrent agent session's SessionStart auto-pull, the documented 2026-07-27 incident class). Effects: branch base rewritten to latest origin/main (ungated but net-desirable); rabies WIP restored only partially — working-tree modifications to 3 generated surfaces (`gemini.skills.json`, `zcode.skills.manifest.json`, `skills-index.md`) vanished, present in no stash (all 5 stashes are from July–early Aug) and no commit. Recoverable via `regen-skill-surfaces.py` from the surviving modified `skills-registry.json`. Full record: `awiki-vnext-discoveries.md` DISC-001. Strongest live evidence for Master Plan §4.1/§4.3.
+8. **INCIDENT 2026-08-17 15:29 (HIGH — data-loss class, damage regenerable)** — root cause confirmed post-phase: `scripts/hooks/session_start.py::git_pull()` ran `git pull --rebase origin main` from a concurrent agent session (not git hooks; Hermes/Pi5 ruled out — see DISC-001 for the full evidence chain including the docstring-vs-implementation mismatch independently confirmed by architecture review). Effects: branch base rewritten to latest origin/main (ungated); rabies WIP restored 12/15 paths — modifications to 3 generated surfaces (`gemini.skills.json`, `zcode.skills.manifest.json`, `skills-index.md`) vanished (no stash, no commit; recoverable via `regen-skill-surfaces.py` from the surviving `skills-registry.json`). **Remediation**: clean worktree branch `refactor/awiki-vnext-clean` from `origin/main` with only the Phase 0 docs cherry-picked; contaminated branch preserved as forensic evidence. Hook fix = **Phase 1 Priority #1** (not fixed in Phase 0 — documentation-only). Strongest live evidence for Master Plan §4.1/§4.3.
 
 ## 9. Phase 0 Exit Criteria — Answers
 
@@ -112,4 +120,4 @@ Per Master Plan discovery protocol these are **recorded, not fixed** in Phase 0.
 
 ## 10. Rollback
 
-Phase 0 added docs only. Rollback = `git checkout main && git branch -D refactor/awiki-kernel-vnext` (working-tree WIP unaffected).
+Phase 0 added docs only. Rollback = delete branch `refactor/awiki-kernel-vnext-clean` (+ worktree) and, if forensic value has expired, `refactor/awiki-kernel-vnext`. Original checkout's working-tree WIP is unaffected by all of these.

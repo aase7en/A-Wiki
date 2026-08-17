@@ -1,13 +1,13 @@
 # A-Wiki vNext Migration — Plan & Tracking Log
 
-> Living document for the `refactor/awiki-kernel-vnext` migration.
+> Living document for the A-Wiki vNext migration. Active review branch: **`refactor/awiki-kernel-vnext-clean`** (clean worktree from `origin/main`; forensic branch `refactor/awiki-kernel-vnext` preserved untouched per DISC-001).
 > Source of authority: A-WIKI-MASTER-DEVELOPMENT-PLAN (user-provided, external — ChatGPT architect + GLM-5.3 executor model).
 > Rule: **one phase per review cycle** — implement → test → report → STOP → ChatGPT review verdict (PASS / PASS WITH NOTES / CHANGES REQUIRED / BLOCK) → next phase.
 > Discoveries during work (non-blocking) → `awiki-vnext-discoveries.md` (same dir). Security leak / data loss / repo corruption → stop and report immediately.
 
 ## Guardrails (binding for every phase)
 
-1. Work only on `refactor/awiki-kernel-vnext` — never `main`.
+1. Work only on `refactor/awiki-kernel-vnext-clean` (isolated worktree `../A-Wiki-vnext-clean`) — never `main`, never the contaminated forensic branch.
 2. Inspect before delete (`git grep` / `rg` references first) — record evidence.
 3. Preserve public/private boundary; no machine paths, no secrets, no real hospital names.
 4. Respect Iron Laws (test-first, root-cause, raw immutable, registry SoT, claims on shared surfaces).
@@ -20,7 +20,7 @@
 
 | Phase | Scope | Status | Commit |
 |---|---|---|---|
-| 0 | Baseline & safety | ✅ COMPLETE (awaiting review) | this branch |
+| 0 | Baseline & safety | ✅ COMPLETE — remediation submitted (CHANGES REQUIRED: branch isolation → clean branch) | `7aae5935` `857faf57` `5b4e297d` + doc-normalization commit |
 | 1 | Stabilize automation (stop ungated main mutation, retire daily-maintenance/deploy-awiki-live, telemetry → runtime cache, pin Actions) | ⬜ pending review gate | — |
 | 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ⬜ | — |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) | ⬜ | — |
@@ -43,6 +43,7 @@
 | D4 | 2026-08-17 | 9 baseline test failures recorded, not fixed | Phase 0 is capture-only per Master Plan discovery protocol. |
 | D5 | 2026-08-17 | No `claim_acquire` MCP call at phase start | awiki MCP server not exposed in this executor's tool surface; hook parity for ZCode is manual. Noted as Iron Law #11 gap. |
 | D6 | 2026-08-17 | **INCIDENT** — `git pull --rebase origin main` ran on the migration branch at 15:29 +0700 | Root cause: `scripts/hooks/session_start.py::git_pull` SessionStart auto-pull from a concurrent agent session (Hermes/Pi5 **ruled out** — all Hermes syncs are `--ff-only`; see DISC-001). Branch base rewritten to latest origin/main (ungated). Rabies WIP restored 12/15 paths; modifications to 3 generated surfaces lost from working tree (regenerable via `regen-skill-surfaces.py` — `skills-registry.json` survived). Full record: `awiki-vnext-discoveries.md` DISC-001. Data-loss class → reported at phase gate per Master Plan stop rule. |
+| D7 | 2026-08-17 | **Remediation per CHANGES REQUIRED** — created isolated worktree `../A-Wiki-vnext-clean` + branch `refactor/awiki-kernel-vnext-clean` directly from `origin/main` @ `e532d2f0`; cherry-picked ONLY the 3 Phase 0 docs commits (`d591dda4` `2591b324` `171cb82d` → `7aae5935` `857faf57` `5b4e297d`); normalized docs to 3-state timeline (capture-time / incident / final clean); added reviewer finding to DISC-001 (docstring-vs-implementation mismatch, Phase 1 Priority #1) | Restore branch isolation so Phase diffs stay attributable to migration only. Original checkout (12-path rabies WIP) and contaminated branch both untouched — no force-push, no reset, no stash. |
 
 ## Phase 0 Log (2026-08-17)
 
@@ -57,4 +58,4 @@
 
 | Phase | Verdict | Date | Notes |
 |---|---|---|---|
-| 0 | ⏳ awaiting | 2026-08-17 | — |
+| 0 | **CHANGES REQUIRED** (provisional PASS WITH NOTES → formal) | 2026-08-17 | Analysis/baseline/incident-investigation PASS; **branch isolation FAIL** (24 unrelated commits carried by DISC-001 auto-rebase). Remediation D7: clean branch `refactor/awiki-kernel-vnext-clean` (docs-only diff). Awaiting final PASS. |
