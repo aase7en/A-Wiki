@@ -1,0 +1,87 @@
+# A-Wiki Kernel Configuration Contract — awiki-kernel/v1
+#
+# This file is the STABLE kernel contract surface (Phase 3). It declares
+# vocabulary, boundaries, and gates — NOT runtime state, NOT agent/model
+# names as policy, NOT telemetry. Normative document:
+# docs/architecture/A-WIKI-KERNEL.md
+#
+# Deterministic validation: scripts/health/validate_integrations.py (registry)
+# + scripts/health/wiki_health.py (wires it). Changing boundaries here is an
+# architecture decision requiring review, like any kernel contract change.
+
+schema: awiki-kernel/v1
+
+kernel:
+  # What the kernel IS (see A-WIKI-KERNEL.md §identity for the full contract):
+  identity: universal-personal-ai-team-os
+  brain_root_env: A_WIKI_ROOT
+
+  # D-CTX-006: one canonical contract, generated platform surfaces.
+  canonical_sources:
+    - AGENTS.md
+    - skills-registry.json
+    - config/awiki.yaml
+    - config/integrations.yaml
+    - schemas/
+
+state_boundaries:
+  # Durable state = committed, reviewable, survives restarts.
+  durable:
+    - git-branches-and-commits
+    - review-state            # awiki-review/v1 records + review docs
+    - task-contracts          # awiki-task/v1 envelopes
+    - handoff-contracts       # awiki-handoff/v1 envelopes (tracked form)
+    - kernel-config           # this file + integrations registry
+    - adr-and-protocol-docs
+  # Runtime state = machine-local, regenerable, NEVER committed as policy.
+  runtime:
+    - model-pool-and-provider-telemetry   # scripts/hermes/model-pool/*.json (untracked since P1.3)
+    - agent-availability-quota-health
+    - claim-leases             # .tmp/ task-board leases (TTL, self-reaping)
+    - code-context-caches      # ProjectCodeContextProvider local caches
+    - scratch-and-handoff-live # handoff.md working copy (gitignored; example tracked)
+
+control_plane_vs_project:
+  # D-CTX-009: A-Wiki points at project work without swallowing project repos.
+  control_plane_holds: [project-registry, task-review-handoff-state, reusable-knowledge,
+                        capability-policy, safety-and-privacy-gates]
+  project_repo_holds: [implementation-code, project-tests, project-adrs,
+                       deployment-config, product-plans]
+  attach_flow: awiki attach .   # Phase 4 — contract reserved, not implemented
+
+memory_promotion:
+  # D-CTX-010 — the only path from project experience to global knowledge.
+  pipeline: [distill, privacy-check, generalize, evidence-check, global-promotion]
+  never_promote: [raw-agent-chatter, private-project-data, customer-secrets,
+                   temporary-implementation-notes, source-code-excerpts]
+  default: manual-with-evidence
+
+capability_vocabulary:
+  # Closed enums live in schemas/awiki-task/v1.schema.json — single source.
+  # Vendor/model names appear ONLY as runtime candidates (assigned.preferred),
+  # never as stable policy.
+  source: schemas/awiki-task/v1.schema.json
+  agent_availability_states: [AVAILABLE, BUSY, DEGRADED, QUOTA_LOW, QUOTA_EXHAUSTED,
+                              RATE_LIMITED, COOLDOWN, OFFLINE, AUTH_REQUIRED, UNKNOWN]
+
+project_code_context:
+  # G0 contract-only (graft-integration-plan.md §13). No provider installed.
+  provider_interface: ProjectCodeContextProvider
+  operations: [status, orient, find, file_api, trace, search, freshness]
+  routing_rule: no-provider-needed -> native file/grep; one sufficient -> one;
+                 degraded -> fallback; never load all providers because they exist
+  registration: config/integrations.yaml
+
+integration_registry:
+  file: config/integrations.yaml
+  schema: awiki-integrations/v1
+  validator: scripts/health/validate_integrations.py
+  classification_gate: docs/protocols/integration-intake (checklist before integrate)
+
+stability_rules:
+  - contracts-change-only-via-review
+  - capability-based-not-vendor-based
+  - progressive-disclosure-mandatory      # D-CTX-004
+  - external-modules-default-off          # D-CTX-005
+  - runtime-never-churns-git              # enforced by scan_repo + baselines
+  - hard-safety-parity-across-agents      # enforced by ci-core smokes (P2.4)

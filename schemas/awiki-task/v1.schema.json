@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-wiki.local/schemas/awiki-task/v1.schema.json",
+  "title": "awiki-task/v1",
+  "description": "Vendor-neutral durable task contract. Agents/providers are capability candidates, never hardcoded policy. Extends the work-order concept (docs/protocols/cross-agent-work-orders.md) and the task-board runtime primitive into a stable envelope.",
+  "type": "object",
+  "required": ["schema", "id", "goal", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "awiki-task/v1" },
+    "id": { "type": "string", "pattern": "^[A-Z]+-[A-Za-z0-9.-]+$", "description": "Stable task id, e.g. AW-219" },
+    "goal": { "type": "string", "minLength": 1 },
+    "project": { "type": ["string", "null"], "description": "Project-adapter identity or null for A-Wiki itself" },
+    "risk": { "enum": ["low", "medium", "high", "critical"] },
+    "mode": {
+      "enum": ["auto", "solo", "pair", "architect_executor", "parallel", "council", "swarm"],
+      "description": "Execution mode; AUTO selects the lightest sufficient mode"
+    },
+    "status": {
+      "enum": ["planned", "implementing", "testing", "review_requested", "reviewing",
+               "changes_required", "ci_verify", "ready", "blocked", "security_stop",
+               "data_loss_stop", "scope_drift", "review_conflict", "max_review_cycles"]
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": { "enum": [
+        "repository-read", "repository-write", "shell", "tests", "code-review",
+        "deep-reasoning", "architecture-review", "security-review", "long-context",
+        "web-research", "documentation", "translation", "data-analysis",
+        "independent-judgement"
+      ] },
+      "description": "Closed vendor-neutral capability vocabulary (Kernel Contract §agent-roles)"
+    },
+    "independent_review": { "enum": ["required", "pending", "not-required", "waived-with-evidence"] },
+    "acceptance": { "type": "array", "items": { "type": "string" }, "description": "Mechanical acceptance criteria" },
+    "assigned": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "executor": { "$ref": "#/$defs/agentRef" },
+        "reviewer": { "$ref": "#/$defs/agentRef" },
+        "architect": { "$ref": "#/$defs/agentRef" }
+      }
+    },
+    "head_sha": { "type": ["string", "null"], "description": "Exact review target; new SHA invalidates old approval" },
+    "branch": { "type": ["string", "null"] },
+    "claims": {
+      "type": "array",
+      "description": "File/path leases (extends scripts/lib/task_board claim semantics)",
+      "items": {
+        "type": "object",
+        "required": ["scope", "holder"],
+        "properties": {
+          "scope": { "type": "array", "items": { "type": "string" } },
+          "holder": { "type": "string" },
+          "lease_minutes": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "agentRef": {
+      "type": "object",
+      "description": "Capability-based assignment. `preferred` entries are runtime candidates, not policy.",
+      "additionalProperties": false,
+      "properties": {
+        "requires": { "type": "array", "items": { "type": "string" } },
+        "preferred": { "type": "array", "items": { "type": "string" } },
+        "fallback": { "const": "any-capable-agent" },
+        "independent_from": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

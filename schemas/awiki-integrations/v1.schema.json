@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-wiki.local/schemas/awiki-integrations/v1.schema.json",
+  "title": "awiki-integrations/v1",
+  "description": "Integration-registry contract for config/integrations.yaml (D-CTX-005). Every external module declares capability, trust, storage, and lifecycle; CORE/MODULE/PATTERN/REFERENCE/REJECT classification gates intake (docs/protocols/integration-intake checklist).",
+  "type": "object",
+  "required": ["schema", "integrations"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "awiki-integrations/v1" },
+    "integrations": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["classification", "default", "lazy"],
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "oneOf": [
+            { "enum": ["core", "module", "pattern", "reference", "reject"] },
+            { "type": "array", "minItems": 1, "uniqueItems": true,
+              "items": { "enum": ["core", "module", "pattern", "reference", "reject"] } }
+          ]
+        },
+        "type": { "enum": ["mcp", "pattern", "repo", "service", "adapter"] },
+        "domain": { "type": ["string", "array"] },
+        "status": { "enum": ["active", "optional", "merged", "rejected", "planned", "deprecated"] },
+        "default": { "type": "boolean" },
+        "lazy": { "type": "boolean" },
+        "autoload": { "enum": [false, "project", "domain"] },
+        "runtime": { "enum": ["local", "external", "none"] },
+        "requires": { "type": "array", "items": { "type": "string" } },
+        "provides": { "type": "array", "items": { "type": "string" } },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "enum": ["local-regenerable-cache", "durable-repo", "private-drive", "none"] },
+            "commit": { "type": "boolean" }
+          }
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "structural": { "type": "boolean" },
+            "enrichment": { "enum": ["off", "optional", "on"] }
+          }
+        },
+        "trust": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "deep_enrichment": { "enum": ["project-policy", "approved-only", "never"] },
+            "private_context": { "type": "boolean", "description": "Whether private context may flow to this integration" }
+          }
+        },
+        "reference": { "type": "string", "description": "Path to the authoritative plan doc (must exist)" },
+        "implemented_by": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
