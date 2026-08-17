@@ -42,7 +42,7 @@
 | D3 | 2026-08-17 | Preflight branch-FAIL accepted as intentional | Master Plan mandates migration branch; preflight asserts main-only. Reconcile in Phase 2 (allow known migration branches). |
 | D4 | 2026-08-17 | 9 baseline test failures recorded, not fixed | Phase 0 is capture-only per Master Plan discovery protocol. |
 | D5 | 2026-08-17 | No `claim_acquire` MCP call at phase start | awiki MCP server not exposed in this executor's tool surface; hook parity for ZCode is manual. Noted as Iron Law #11 gap. |
-| D6 | 2026-08-17 | **INCIDENT** — `git pull --rebase origin main` ran on the migration branch at 15:29 +0700 by unidentified external automation (not the executor, not git hooks) | Branch base rewritten to latest origin/main (ungated). Rabies WIP restored 12/15 paths; modifications to 3 generated surfaces lost from working tree (regenerable via `regen-skill-surfaces.py` — `skills-registry.json` survived). Full record: `awiki-vnext-discoveries.md` DISC-001. Data-loss class → reported at phase gate per Master Plan stop rule. |
+| D6 | 2026-08-17 | **INCIDENT** — `git pull --rebase origin main` ran on the migration branch at 15:29 +0700 | Root cause: `scripts/hooks/session_start.py::git_pull` SessionStart auto-pull from a concurrent agent session (Hermes/Pi5 **ruled out** — all Hermes syncs are `--ff-only`; see DISC-001). Branch base rewritten to latest origin/main (ungated). Rabies WIP restored 12/15 paths; modifications to 3 generated surfaces lost from working tree (regenerable via `regen-skill-surfaces.py` — `skills-registry.json` survived). Full record: `awiki-vnext-discoveries.md` DISC-001. Data-loss class → reported at phase gate per Master Plan stop rule. |
 
 ## Phase 0 Log (2026-08-17)
 
