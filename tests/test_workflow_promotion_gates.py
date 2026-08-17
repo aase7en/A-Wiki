@@ -254,3 +254,29 @@ def test_domain_workflow_is_path_triggered_and_keeps_mc_coverage():
     assert "test_monte_carlo_copula.py" in t
     assert "test_var_backtest.py" in t
     assert "requirements-optional.txt" in t
+
+
+# ---------------------------------------------------------------------------
+# R-P2-001 — PR triggers: promotion PRs must receive CI before merge
+# ---------------------------------------------------------------------------
+def test_ci_core_triggers_on_pull_requests():
+    import yaml
+
+    cfg = yaml.safe_load(CI_CORE.read_text(encoding="utf-8"))
+    triggers = cfg[True] if True in cfg else cfg.get("on", cfg)
+    assert "pull_request" in triggers, "core CI must run on PRs to main"
+    assert "push" in triggers, "push-to-main post-merge defense retained"
+    assert triggers.get("pull_request", {}).get("branches") == ["main"] or \
+        triggers["pull_request"] is None or triggers["pull_request"] == {}
+
+
+def test_domain_tests_trigger_on_pull_requests_with_paths():
+    import yaml
+
+    cfg = yaml.safe_load(DOMAIN.read_text(encoding="utf-8"))
+    triggers = cfg[True] if True in cfg else cfg.get("on", cfg)
+    assert "pull_request" in triggers, "domain regression must gate quant-path PRs"
+    pr = triggers["pull_request"]
+    if isinstance(pr, dict):
+        assert pr.get("branches") == ["main"]
+        assert pr.get("paths"), "PR trigger must keep the quant path filters"

@@ -17,6 +17,17 @@ on:
       - 'tests/test_mc_snapshot.py'
       - 'requirements-optional.txt'
       - '.github/workflows/domain-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/awiki/monte-carlo-quant-analysis/**'
+      - 'tests/test_monte_carlo_*.py'
+      - 'tests/test_var_backtest.py'
+      - 'tests/test_benchmark_mc.py'
+      - 'tests/test_mc_quant.py'
+      - 'tests/test_mc_snapshot.py'
+      - 'requirements-optional.txt'
+      - '.github/workflows/domain-tests.yml'
   schedule:
     - cron: '23 4 * * 1'  # weekly safety net even without path hits
   workflow_dispatch:
