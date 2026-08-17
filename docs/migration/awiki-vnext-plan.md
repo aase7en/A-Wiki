@@ -23,7 +23,7 @@
 | Phase | Scope | Status | Commit |
 |---|---|---|---|
 | 0 | Baseline & safety | ✅ **PASS** — clean branch isolation independently verified: 4 commits ahead / 0 behind, diff limited to 3 migration docs | `7aae5935` `857faf57` `5b4e297d` `4d9c40b3` |
-| 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ▶ NEXT | — |
+| 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ COMPLETE — P1.1–P1.5 done TDD, awaiting review | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
 | 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ⬜ | — |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ⬜ | — |
 | 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ⬜ | — |
@@ -87,6 +87,19 @@ Important: do **not** pause Phase 1–2 to build a large orchestrator. Phase 3 d
 - Clean remediation branch was created directly from `origin/main`; final independent GitHub review confirmed `ahead=4`, `behind=0`, and only the 3 migration docs differ from `main`.
 - Phase 0 is therefore closed as PASS.
 
+## Phase 1 Log (2026-08-17)
+
+Executed in entry order P1.1 → P1.5 on the clean worktree; every item TDD (failing test first):
+
+- **P1.1 `d4223d90`** — `session_start.py::git_pull` DISC-001 guards: G1 main-branch-only, G2 clean tracked tree (untracked OK), G3 `--ff-only` (no rebase/merge/autostash ever), G4 diverged-main warns without recovery. Z2 wiring dropped from this path (no rebase → no lost commits here). Tests: 11 new (7 red first), lean+encoding suites green (73).
+- **P1.2 `77bb1f77`** — `agent-model-scan.yml` promotion gate: scheduled runs dry-run report + candidate issue; `--apply` only via dispatch `apply_swaps=true` → `promotion/agent-model-swap-*` branch + PR; `pull-requests: write` declared; no bare `git push`. Tests: 4 gate (red first) + 16 script tests green.
+- **P1.3 `a68e0c44`** — model-pool telemetry out of git: workflow report-only (`contents: read`, artifact upload), `model-pool.json` `git rm --cached` + gitignored (runtime cache; consumers degrade gracefully via `load_pool` error path). Tests: 4 gate (red first) + model-intel suite green.
+- **P1.4 `8ff7d8fd`** — retired `daily-maintenance.yml` (fail-open `|| echo OK` + auto-commit main path) and `deploy-awiki-live.yml` (duplicate Pages deploy; nothing pushes gh-pages; `pages-deploy.yml` already stages minimal `_site`). Reference inspection recorded in test docstring. Tests: 2 retire-assertions (red first) + health-digest suite green.
+- **P1.5 `cccb10a6`** — `provider-balance.yml`: Telegram was receiving a literal `cat` string (`with:` never shell-expands) — replaced unpinned `telegram-action@master` with stdlib Bot-API POST (4096-char chunking), added `permissions: contents: read` + report artifact. Tests: 4 gate (red first), 14/14 green; embedded python compile-checked.
+- **Regression set (full suite on clean branch, 2026-08-17)**: **3 failed / 2,538 passed / 17 skipped** (522.34s). All 3 failures are pre-existing on `origin/main` and already recorded in Phase 0 baseline §7 / DISC-002 — `test_scanner_actually_flags_a_planted_secret` (scanner crash unpacking PATTERNS), `test_file_under_60kb` (dashboard 82,986 B > 80 KB), `test_tools_dict_has_all_neural_spine_tools` (untracked `design_quality_gate`). Phase 1 diff touches none of their files → **0 new failures**. Deferred to Phase 2 as planned.
+
+Phase 1 exit state: no scheduled automation can mutate `main` ungated — every remaining writer is either report-only (artifacts/issues) or behind an explicit dispatch gate + PR.
+
 ## Review History
 
 | Phase | Verdict | Date | Notes |
@@ -94,6 +107,7 @@ Important: do **not** pause Phase 1–2 to build a large orchestrator. Phase 3 d
 | 0 | PROVISIONAL PASS WITH NOTES | 2026-08-17 | Report quality looked good, but commits were not yet visible remotely. |
 | 0 | CHANGES REQUIRED | 2026-08-17 | Formal GitHub review found branch contamination: 24 unrelated commits / 63-file diff. |
 | 0 | **PASS** | 2026-08-17 | Clean branch verified independently: 4 commits ahead, 0 behind, docs-only 3-file diff. Phase 1 authorized. |
+| 1 | ⏳ awaiting | 2026-08-17 | P1.1–P1.5 complete, 5 TDD commits; full-suite regression evidence in handoff. |
 
 ## Phase 1 Entry Order
 
