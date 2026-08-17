@@ -10,11 +10,15 @@ spaces, and there was no binary detection. This orchestrator:
   - reuses the SAME pattern source as every other defense layer
     (scripts/hooks/security_patterns.yaml, via _scan_staged_diff) — no
     second pattern list to drift
-  - skips binaries (NUL byte or undecodable content in the first chunk)
+  - streams EVERY line of every tracked text file — no silent byte cap
+    (R-P2-002); binaries (NUL byte in the sniff window) are skipped by
+    explicit policy
   - respects per-pattern allowlists + global placeholder windows
     (identical semantics to the staged-diff scanner)
   - supports exclude globs (vendored snapshots, upstream dirs, ...)
-  - `--ci` exits 1 on any finding so CI can fail truthfully
+  - baseline ratchet keys are path::pattern::fingerprint — finding-specific
+    and multiplicity-aware via Counter, with NO raw secrets stored (R-P2-003)
+  - `--ci` exits 1 on any non-baselined finding so CI fails truthfully
 
 Usage:
   python scripts/security/scan_repo.py [--ci] [--exclude GLOB ...] [--repo-root PATH]
@@ -23,9 +27,12 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
+import hashlib
+import io
 import re
 import subprocess
 import sys
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -34,7 +41,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
 
 from _scan_staged_diff import PATTERNS, PLACEHOLDERS  # noqa: E402 -- single pattern source
 
-CHUNK_BYTES = 262_144  # scan in 256 KiB chunks; secrets are line-local
+BINARY_SNIFF_BYTES = 8192  # NUL-byte detection window ONLY — not a scan cap (R-P2-002)
 
 DEFAULT_EXCLUDES = [
     "skills/_upstream/**",
@@ -54,12 +61,38 @@ class Finding:
     pattern: str
     match: str
 
+    def fingerprint(self) -> str:
+        """Stable, secret-free digest of the matched value (R-P2-003)."""
+        return hashlib.sha256(self.match.encode("utf-8")).hexdigest()[:16]
+
     def baseline_key(self) -> str:
-        """Stable identity for the legacy-debt ratchet (path + pattern)."""
-        return f"{self.path}::{self.pattern}"
+        """Finding-specific ratchet identity — path + pattern + match digest.
+
+        Coarse path::pattern keys suppressed NEW same-pattern findings in the
+        same file; the fingerprint makes the ratchet finding-specific while
+        keeping raw secrets out of baseline files. Multiplicity is handled by
+        the Counter the caller builds from these keys.
+        """
+        return f"{self.path}::{self.pattern}::{self.fingerprint()}"
 
     def render(self) -> str:
         return f"{self.path}:{self.line}: [{self.pattern}] {self.match[:80]}"
+
+
+def _scan_line(line: str, patterns, placeholders) -> list[tuple[str, str]]:
+    """All real hits in one line: (pattern_name, matched_text)."""
+    out: list[tuple[str, str]] = []
+    line_lower = line.lower()
+    for name, regex, allowlist in patterns:
+        for m in regex.finditer(line):
+            window = line_lower[max(0, m.start() - 40): m.end() + 40]
+            if any(a in window for a in allowlist):
+                continue
+            if any(p in window for p in placeholders):
+                continue
+            out.append((name, m.group(0)))
+            break  # one hit per pattern per line
+    return out
 
 
 def scan_text(
@@ -67,29 +100,12 @@ def scan_text(
     patterns: list[tuple[str, re.Pattern[str], list[str]]],
     placeholders: list[str],
 ) -> list[tuple[int, str, str]]:
-    """Return (line_no, pattern_name, matched_text) for every real hit.
-
-    Placeholder semantics mirror _scan_staged_diff: a hit is suppressed when
-    the lowercased ±40-char window around it contains an allowlist entry or
-    a global placeholder substring.
-    """
+    """Return (line_no, pattern_name, matched_text) for every real hit."""
     hits: list[tuple[int, str, str]] = []
     for line_no, line in enumerate(text.splitlines(), 1):
-        line_lower = line.lower()
-        for name, regex, allowlist in patterns:
-            for m in regex.finditer(line):
-                window = line_lower[max(0, m.start() - 40): m.end() + 40]
-                if any(a in window for a in allowlist):
-                    continue
-                if any(p in window for p in placeholders):
-                    continue
-                hits.append((line_no, name, m.group(0)))
-                break  # one hit per pattern per line
+        for name, match in _scan_line(line, patterns, placeholders):
+            hits.append((line_no, name, match))
     return hits
-
-
-def _looks_binary(head: bytes) -> bool:
-    return b"\x00" in head
 
 
 def scan_file(
@@ -97,18 +113,25 @@ def scan_file(
     patterns: list[tuple[str, re.Pattern[str], list[str]]],
     placeholders: list[str],
 ) -> list[tuple[int, str, str]]:
-    """Scan one file; binary files (NUL byte / undecodable) are skipped."""
+    """Stream EVERY line of the file — no byte cap (R-P2-002).
+
+    Binary policy: NUL byte in the sniff window → skip (explicit, narrow).
+    All other bytes are decoded with replacement and scanned, so a secret
+    anywhere in the file — including past any size boundary — is detected.
+    """
     try:
-        head = path.open("rb").read(CHUNK_BYTES)
+        with path.open("rb") as raw:
+            if b"\x00" in raw.read(BINARY_SNIFF_BYTES):
+                return []
+            raw.seek(0)
+            hits: list[tuple[int, str, str]] = []
+            with io.TextIOWrapper(raw, encoding="utf-8", errors="replace") as tf:
+                for line_no, line in enumerate(tf, 1):
+                    for name, match in _scan_line(line, patterns, placeholders):
+                        hits.append((line_no, name, match))
+            return hits
     except OSError:
         return []
-    if _looks_binary(head):
-        return []
-    try:
-        text = head.decode("utf-8")
-    except UnicodeDecodeError:
-        return []  # non-UTF-8 payload — not a source/config file we can lint
-    return scan_text(text, patterns, placeholders)
 
 
 def iter_tracked_files(repo_root: Path) -> list[Path]:
@@ -155,26 +178,37 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     parser.add_argument(
         "--baseline", type=Path, default=None,
-        help="file of known 'path::pattern' keys (legacy debt ratchet). "
-             "Findings matching the baseline are reported but do not fail CI; "
-             "coverage is NOT reduced — every file is still scanned.",
+        help="file of known 'path::pattern::fingerprint' keys (legacy debt "
+             "ratchet). Multiplicity-aware: N identical baselined occurrences "
+             "suppress exactly N findings; anything beyond fails. No raw "
+             "secrets are stored — keys carry a sha256 digest only.",
     )
     args = parser.parse_args(argv)
 
     findings = scan_repo(args.repo_root, PATTERNS, PLACEHOLDERS, excludes=args.exclude)
 
-    baseline_keys: set[str] = set()
+    baseline_counts: Counter[str] = Counter()
     if args.baseline and args.baseline.exists():
-        baseline_keys = {
+        baseline_counts = Counter(
             line.strip() for line in
             args.baseline.read_text(encoding="utf-8").splitlines()
             if line.strip() and not line.startswith("#")
-        }
+        )
 
-    new_findings = [f for f in findings if f.baseline_key() not in baseline_keys]
+    remaining = baseline_counts.copy()
+    new_findings: list[Finding] = []
+    baselined: list[Finding] = []
     for f in findings:
-        marker = "" if f.baseline_key() not in baseline_keys else "  (baseline)"
-        print(f.render() + marker)
+        key = f.baseline_key()
+        if remaining[key] > 0:
+            remaining[key] -= 1
+            baselined.append(f)
+        else:
+            new_findings.append(f)
+    for f in new_findings:
+        print(f.render())
+    for f in baselined:
+        print(f.render() + "  (baseline)")
     print(f"scanned: {len(iter_tracked_files(args.repo_root))} tracked files, "
           f"{len(findings)} finding(s), {len(new_findings)} new (non-baseline)")
     if new_findings and args.ci:
