@@ -139,3 +139,54 @@ def test_provider_balance_posts_report_content_not_literal_substitution():
 def test_provider_balance_uploads_report_artifact():
     t = BALANCE_WF.read_text(encoding="utf-8")
     assert "actions/upload-artifact@v4" in t
+
+
+# ---------------------------------------------------------------------------
+# R-P1-001 — subagent-eval must not mutate the checked-out default branch
+# ---------------------------------------------------------------------------
+SUBEVAL_WF = REPO_ROOT / ".github" / "workflows" / "subagent-eval.yml"
+
+
+def _subeval() -> str:
+    return SUBEVAL_WF.read_text(encoding="utf-8")
+
+
+def test_subagent_eval_has_no_bare_git_push():
+    t = _subeval()
+    assert not re.search(r"^\s*git push\s*$", t, re.M), (
+        "bare `git push` pushes the checked-out default branch (R-P1-001)"
+    )
+
+
+def test_subagent_eval_pushes_only_named_promotion_branches():
+    t = _subeval()
+    pushes = [l.strip() for l in t.splitlines() if "git push" in l]
+    assert pushes, "expected at least one push (promotion path)"
+    for p in pushes:
+        assert 'origin "$BRANCH"' in p, f"push must target a named promotion branch: {p}"
+
+
+def test_subagent_eval_mutation_is_pr_gated():
+    t = _subeval()
+    assert "promotion/subagent-eval-" in t
+    assert "gh pr create" in t
+
+
+def test_subagent_eval_scheduled_job_is_read_only():
+    t = _subeval()
+    promote_at = t.index("promote:")
+    eval_block = t[:promote_at]
+    # the eval job (runs on schedule) must hold read-only contents and never commit
+    assert "contents: read" in eval_block
+    assert "git commit" not in eval_block
+    # write permission exists only in the dispatch-gated promote job
+    assert t.count("contents: write") == 1
+    assert "contents: write" in t[promote_at:]
+    assert "pull-requests: write" in t[promote_at:]
+
+
+def test_subagent_eval_promote_job_is_dispatch_gated():
+    t = _subeval()
+    promote_at = t.index("promote:")
+    assert "needs: eval" in t[promote_at:]
+    assert "github.event_name == 'workflow_dispatch'" in t[promote_at:]
