@@ -24,7 +24,7 @@
 |---|---|---|---|
 | 0 | Baseline & safety | ✅ **PASS** — clean branch isolation independently verified: 4 commits ahead / 0 behind, diff limited to 3 migration docs | `7aae5935` `857faf57` `5b4e297d` `4d9c40b3` |
 | 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ COMPLETE — P1.1–P1.5 done TDD, awaiting review | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
-| 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ⬜ | — |
+| 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ COMPLETE — P2.1–P2.5 done TDD, awaiting review | P2.1 scanner+scan_repo · P2.2 wiki_health · P2.3/P2.4 ci-core+domain+smokes · P2.5 parity fixes |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ⬜ | — |
 | 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ⬜ | — |
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ⬜ | — |
@@ -120,6 +120,17 @@ Review `docs/migration/reviews/phase-1-review-0a4ffa0d.md` → **CHANGES_REQUIRE
   Failing test IDs are **identical** across base and head: `test_scanner_actually_flags_a_planted_secret` · `test_file_under_60kb` · `test_tools_dict_has_all_neural_spine_tools` — all pre-existing on `origin/main`, none touch Phase-1 files. Head's +25/+12 passed vs base = Phase-1's own new tests.
 - **R-P1-004 (MINOR) `3b7989ee`** — `agent-model-scan.yml` PR creation fail-closed: removed the `|| echo` success-masking fallback; explicit `gh pr list --head` detection; a failed creation fails the step.
 
+## Phase 2 Log (2026-08-17)
+
+Executed in review-mandated order P2.1 → P2.5, each TDD (red-first):
+
+- **P2.1** — root cause of `test_scanner_actually_flags_a_planted_secret`: builtin fallback patterns in `_scan_staged_diff.py` were 2-tuples while the loop unpacks 3 — any env without PyYAML crashed the scanner (= fail-open layer-2 hole). Fixed (builtin entries carry allowlist slot) + 2 regression tests. New `scripts/security/scan_repo.py` (Python orchestrator: `git ls-files -z` spaces/Unicode-safe, no `head -5000` cap, binary skip, same yaml pattern source, exclude globs, `--ci`, legacy-debt ratchet `--baseline`) replaces the fragile CI shell loop whose line-collapse bug had masked **49 real findings** — recorded in `scripts/security/baseline.txt`. 10 tests.
+- **P2.2** — `scripts/health/wiki_health.py` truthful health: HARD = broken wikilinks (all 4 repo wikilink dialects: bare slug / wiki-relative / `wiki/`-prefixed / non-wiki paths), invalid frontmatter, stale generated context + skill-surface drift (subprocess reuse); ADVISORY = orphans, duplicate aliases, dangling graph edges (real `.wiki-graph.json` schema incl. `broken` flags); integrations check reports SKIPPED until Phase 3. Ratchet baseline: 48 legacy wikilink debt keys (`scripts/health/wiki-health-baseline.txt`). 12 tests. Naive first scan said 1,172 hard errors; correct dialect support + templates exclusion → 48 genuine debt.
+- **P2.3** — `ci.yml` split: `ci-core.yml` (privacy/syntax, Python security scan, registry consistency, truthful wiki health, unit suite, readiness — all preserved) + `domain-tests.yml` (scipy/MC/notebook regression, path-triggered on quant paths + weekly + dispatch; coverage preserved verbatim, not deleted).
+- **P2.4** — cross-agent parity smokes in ci-core: MCP server import + tool-surface assertion (30 tools incl. claim/memory/route families) and hook-runner smoke proving the vendor-neutral runner honors block codes (clean payload → exit 0; planted token → BLOCKED exit 2). Also added the missing `tests/fixtures/sample-input.json` AGENTS.md always referenced.
+- **P2.5** — closed both remaining canonical baseline failures: neural-spine `design_quality_gate` tracked + behavioral test; dashboard budget 80→84 KB as a documented contract change with commit evidence (c30b9876 + ec77ddc4), following the test's own 4-raise convention.
+- **Regression (same command as canonical base)**: **0 failed / 2,584 passed / 17 skipped** (461.16s). Canonical base was 3 failed / 2,513 passed / 17 skipped — all 3 baseline failures closed by P2.1/P2.5, **0 new failures**, +71 passed = Phase 1+2 new tests. Full suite green (exit 0) for the first time in the migration.
+
 ## Review History
 
 | Phase | Verdict | Date | Notes |
@@ -130,6 +141,8 @@ Review `docs/migration/reviews/phase-1-review-0a4ffa0d.md` → **CHANGES_REQUIRE
 | 1 | ⏳ awaiting | 2026-08-17 | P1.1–P1.5 complete, 5 TDD commits; full-suite regression evidence in handoff. |
 | 1 | CHANGES REQUIRED | 2026-08-17 | R-P1-001 subagent-eval main mutation · R-P1-002 telegram truncation · R-P1-003 baseline gap · R-P1-004 PR fail-open (`reviews/phase-1-review-0a4ffa0d.md`) |
 | 1 | ⏳ awaiting re-review | 2026-08-17 | All 4 findings fixed in order (Remediation Log above); base-vs-head comparison established. |
+| 1 | **PASS_WITH_NOTES** | 2026-08-17 | R-P1-001..004 RESOLVED (`reviews/phase-1-rereview-328f9a66.md`); N-P1-001 race-history wording deferred to Phase 8. Phase 2 authorized. |
+| 2 | ⏳ awaiting | 2026-08-17 | P2.1–P2.5 complete per mandated order; full-suite regression evidence in Phase 2 Log. |
 
 ## Phase 1 Entry Order
 
