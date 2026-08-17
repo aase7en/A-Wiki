@@ -487,3 +487,20 @@ def test_untracked_file_is_scanned_by_default(tmp_path, monkeypatch):
     files = {f["file"] for f in findings}
     assert "brand-new.md" in files, "untracked non-ignored file must be scanned"
     assert "ignored.md" not in files, "properly gitignored file stays exempt"
+
+
+# ---------------------------------------------------------------------------
+# Core-CI PR evidence (2026-08-18): public vendor support address in an
+# ingested source summary must follow the deepseek.com/sov.ai precedent.
+# ---------------------------------------------------------------------------
+def test_public_vendor_support_email_is_not_personal():
+    assert not check_privacy.email_is_personal("support@quickchart.io")
+
+
+def test_public_vendor_support_email_not_flagged_in_scan(tmp_path, monkeypatch):
+    monkeypatch.setattr(check_privacy, "REPO_ROOT", tmp_path)
+    src = tmp_path / "wiki" / "sources" / "vendor-doc.md"
+    src.parent.mkdir(parents=True, exist_ok=True)
+    src.write_text("Need help? [Send us a message](mailto:support@quickchart.io).")
+    findings = check_privacy.scan(files=[src])
+    assert not any(f["kind"] == "email" for f in findings)

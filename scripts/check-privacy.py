@@ -120,6 +120,7 @@ EMAIL_WHITELIST_DOMAINS = {
     "pdpc.or.th",
     "deepseek.com",   # public org contact in source summaries, not personal
     "sov.ai",  # FIRMAI public org contact in ingested README (research@sov.ai)
+    "quickchart.io",  # public vendor support contact in ingested source summary (support@)
 }
 
 # Substrings that mark a line as a template/example, not a real value.
