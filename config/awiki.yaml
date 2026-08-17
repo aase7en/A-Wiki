@@ -28,9 +28,7 @@ state_boundaries:
   # Durable state = committed, reviewable, survives restarts.
   durable:
     - git-branches-and-commits
-    - review-state            # awiki-review/v1 records + review docs
-    - task-contracts          # awiki-task/v1 envelopes
-    - handoff-contracts       # awiki-handoff/v1 envelopes (tracked form)
+    - review-and-handoff-state  # awiki-review/v1 + awiki-handoff/v1 records
     - kernel-config           # this file + integrations registry
     - adr-and-protocol-docs
   # Runtime state = machine-local, regenerable, NEVER committed as policy.
@@ -43,7 +41,7 @@ state_boundaries:
 
 control_plane_vs_project:
   # D-CTX-009: A-Wiki points at project work without swallowing project repos.
-  control_plane_holds: [project-registry, task-review-handoff-state, reusable-knowledge,
+  control_plane_holds: [project-registry, review-and-handoff-state, reusable-knowledge,
                         capability-policy, safety-and-privacy-gates]
   project_repo_holds: [implementation-code, project-tests, project-adrs,
                        deployment-config, product-plans]
