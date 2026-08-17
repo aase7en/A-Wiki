@@ -133,7 +133,8 @@ def test_provider_balance_posts_report_content_not_literal_substitution():
     # `with:` values are literal — `$(cat ...)` was being posted verbatim
     assert "$(cat" not in t
     assert "provider-balance-report.md" in t
-    assert "sendMessage" in t
+    # R-P1-002: full-report chunking lives in the tested helper, not inline YAML
+    assert "scripts/hermes/telegram_report.py" in t
 
 
 def test_provider_balance_uploads_report_artifact():
