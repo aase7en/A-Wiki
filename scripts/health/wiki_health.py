@@ -32,6 +32,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
+
+try:
+    import yaml  # type: ignore  # R-P2-005: probe once, report skip if missing
+    _YAML_AVAILABLE = True
+except ImportError:
+    _YAML_AVAILABLE = False
 FRONTMATTER_FENCE = "---"
 
 
@@ -41,6 +47,7 @@ class CheckResult:
     severity: str = "ok"  # ok | advisory | hard
     errors: list[str] = field(default_factory=list)
     advisories: list[str] = field(default_factory=list)
+    skipped: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -107,7 +114,7 @@ def check_wikilinks(wiki_root: Path) -> CheckResult:
                 continue
             if not _resolves(target, index, known_paths):
                 result.errors.append(
-                    f"{page.relative_to(wiki_root)}: broken wikilink [[{target}]]"
+                    f"{page.relative_to(wiki_root).as_posix()}: broken wikilink [[{target}]]"
                 )
     if result.errors:
         result.severity = "hard"
@@ -122,12 +129,10 @@ def _parse_frontmatter(text: str) -> tuple[dict | None, str | None]:
     if len(parts) < 2:
         return None, "unterminated frontmatter fence"
     raw = parts[0][len(FRONTMATTER_FENCE):]
+    if not _YAML_AVAILABLE:
+        return None, "SKIP: PyYAML unavailable"
     try:
-        import yaml  # type: ignore
-
         data = yaml.safe_load(raw)
-    except ImportError:
-        return None, None  # cannot validate without yaml — treated as ok
     except Exception as e:  # yaml.YAMLError
         return None, f"unparseable frontmatter: {e}"
     if data is None:
@@ -139,11 +144,14 @@ def _parse_frontmatter(text: str) -> tuple[dict | None, str | None]:
 
 def check_frontmatter(wiki_root: Path) -> CheckResult:
     result = CheckResult("frontmatter")
+    if not _YAML_AVAILABLE:
+        result.skipped.append("frontmatter validation — PyYAML unavailable (R-P2-005)")
+        return result
     for page in _md_files(wiki_root):
         text = page.read_text(encoding="utf-8", errors="replace")
         _, err = _parse_frontmatter(text)
         if err:
-            result.errors.append(f"{page.relative_to(wiki_root)}: {err}")
+            result.errors.append(f"{page.relative_to(wiki_root).as_posix()}: {err}")
     if result.errors:
         result.severity = "hard"
     return result
@@ -164,12 +172,12 @@ def check_duplicate_aliases(wiki_root: Path) -> CheckResult:
             key = str(alias).strip().lower()
             if not key:
                 continue
-            if key in seen and seen[key] != str(page.relative_to(wiki_root)):
+            if key in seen and seen[key] != page.relative_to(wiki_root).as_posix():
                 result.advisories.append(
-                    f"alias '{alias}' used by both {seen[key]} and {page.relative_to(wiki_root)}"
+                    f"alias '{alias}' used by both {seen[key]} and {page.relative_to(wiki_root).as_posix()}"
                 )
             else:
-                seen[key] = str(page.relative_to(wiki_root))
+                seen[key] = page.relative_to(wiki_root).as_posix()
     if result.advisories:
         result.severity = "advisory"
     return result
@@ -228,7 +236,7 @@ def check_orphans(wiki_root: Path) -> CheckResult:
     for page in pages:
         rel = page.relative_to(wiki_root).as_posix()[:-len(".md")]
         if page.stem not in linked and rel not in linked:
-            result.advisories.append(f"orphan page (no inbound wikilink): {page.relative_to(wiki_root)}")
+            result.advisories.append(f"orphan page (no inbound wikilink): {page.relative_to(wiki_root).as_posix()}")
     if result.advisories:
         result.severity = "advisory"
     return result
@@ -283,7 +291,12 @@ def check_integrations(repo_root: Path) -> CheckResult:
 
 
 def _hard_key(error: str) -> str:
-    """Stable identity for the hard-error ratchet: 'page::target'."""
+    """Stable, platform-independent ratchet identity: 'page::target'.
+
+    Backslashes are normalized to forward slashes so Windows-generated
+    baselines match Linux/macOS CI (R-P2-004).
+    """
+    error = error.replace("\\", "/")
     page, _, rest = error.partition(": ")
     target = rest.split("[[")[-1].rstrip("]") if "[[" in rest else rest
     return f"{page}::{target}"
@@ -326,6 +339,8 @@ def run_all(
         }
 
     for c in checks:
+        for s in c.skipped:
+            report.skipped.append(s)
         for e in c.errors:
             full = f"[{c.name}] {e}"
             if baseline_keys and _hard_key(full) in baseline_keys:

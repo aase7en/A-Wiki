@@ -155,3 +155,38 @@ def test_baseline_ratchet_suppresses_known_debt_but_not_new(tmp_path):
     assert ratcheted.exit_code() == 0, "baselined debt must not fail"
     assert len(ratcheted.baselined_hard) == 1
     assert ratcheted.hard_errors == []
+
+
+# ---------------------------------------------------------------------------
+# R-P2-004 — baseline identities must be platform-independent
+# ---------------------------------------------------------------------------
+def test_hard_keys_never_contain_backslashes(tmp_path):
+    """Windows renders relative_to() with backslashes; baseline keys must not."""
+    _write(tmp_path / "wiki" / "concepts" / "a.md", "See [[nowhere]].\n")
+    report = wh.run_all(tmp_path, slow_checks=False)
+    assert report.hard_errors
+    for e in report.hard_errors + report.baselined_hard + report.advisories:
+        assert "\\" not in e, f"platform-native separator leaked into identity: {e}"
+
+
+def test_hard_key_normalizes_separator_variants():
+    """Equivalent Windows/Linux renderings collapse to ONE baseline key."""
+    bs = chr(92)  # backslash, built via chr() so no escape-sequence ambiguity
+    win = "[wikilinks] concepts" + bs + "ai-tools" + bs + "tradeoffs.md: broken wikilink [[X]]"
+    lin = "[wikilinks] concepts/ai-tools/tradeoffs.md: broken wikilink [[X]]"
+    assert wh._hard_key(win) == wh._hard_key(lin)
+
+
+def test_frontmatter_skip_is_visible_without_pyyaml(monkeypatch, tmp_path):
+    """R-P2-005: missing PyYAML must be REPORTED, never silently green."""
+    import importlib
+    import sys
+
+    _write(tmp_path / "wiki" / "concepts" / "a.md", "no frontmatter\n")
+    monkeypatch.setitem(sys.modules, "yaml", None)
+    importlib.reload(wh)
+    try:
+        report = wh.run_all(tmp_path, slow_checks=False)
+        assert any("PyYAML" in s for s in report.skipped), report.skipped
+    finally:
+        importlib.reload(wh)  # restore real yaml state
