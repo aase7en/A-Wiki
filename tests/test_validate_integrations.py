@@ -35,6 +35,7 @@ integrations:
     provides: [symbol-search]
     requires: [node>=20]
     storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: project-policy, private_context: false}
 """
 
 
@@ -138,3 +139,62 @@ def test_runtime_telemetry_field_rejected(tmp_path):
     text = GOOD.replace("    lazy: true\n", "    lazy: true\n    quota_state: exhausted\n")
     result = vi.validate(_write(tmp_path, text))
     assert result.exit_code() == 1
+
+
+# ---------------------------------------------------------------------------
+# R-P3-002 (re-review) — module trust/privacy policy is machine-REQUIRED
+# ---------------------------------------------------------------------------
+def test_module_without_trust_rejected(tmp_path):
+    text = """\
+schema: awiki-integrations/v1
+integrations:
+  graft:
+    classification: module
+    domain: project-code-context
+    default: false
+    lazy: true
+    runtime: local
+    provides: [symbol-search]
+    requires: [node>=20]
+    storage: {type: local-regenerable-cache, commit: false}
+"""
+    result = vi.validate(_write(tmp_path, text))
+    assert result.exit_code() == 1
+    assert any("trust" in e.lower() for e in result.errors)
+
+
+def test_module_trust_without_private_context_rejected(tmp_path):
+    text = """\
+schema: awiki-integrations/v1
+integrations:
+  graft:
+    classification: module
+    domain: project-code-context
+    default: false
+    lazy: true
+    runtime: local
+    provides: [symbol-search]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: project-policy}
+"""
+    result = vi.validate(_write(tmp_path, text))
+    assert result.exit_code() == 1
+    assert any("private_context" in e.lower() for e in result.errors)
+
+
+def test_module_with_explicit_trust_passes(tmp_path):
+    text = """\
+schema: awiki-integrations/v1
+integrations:
+  graft:
+    classification: module
+    domain: project-code-context
+    default: false
+    lazy: true
+    runtime: local
+    provides: [symbol-search]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: project-policy, private_context: false}
+"""
+    result = vi.validate(_write(tmp_path, text))
+    assert result.errors == [], result.errors

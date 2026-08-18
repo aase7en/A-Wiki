@@ -102,6 +102,12 @@ def _semantic_checks(data: dict, repo_root: Path, result: ValidationResult) -> N
             result.errors.append(f"{name}: module-classified entry must declare storage")
         if is_module and not entry.get("provides"):
             result.errors.append(f"{name}: module-classified entry must declare capabilities (provides)")
+        if is_module:
+            trust = entry.get("trust")
+            if not isinstance(trust, dict):
+                result.errors.append(f"{name}: module must declare an explicit trust/privacy policy (R-P3-002)")
+            elif "private_context" not in trust:
+                result.errors.append(f"{name}: trust must make an explicit private_context decision")
 
         storage = entry.get("storage")
         if isinstance(storage, dict):

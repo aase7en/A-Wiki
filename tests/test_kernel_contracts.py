@@ -90,10 +90,8 @@ def test_graft_provider_vocabulary_defined():
 def test_capability_enum_is_vendor_neutral():
     """Stable enums must carry capabilities, not vendor names."""
     task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
-    props = task.get("properties", {})
-    caps = props.get("required_capabilities", {})
-    enum = caps.get("items", {}).get("enum") or caps.get("enum")
-    assert enum, "required_capabilities must be a closed enum (stable vocabulary)"
+    enum = task["$defs"]["capability"]["enum"]  # canonical def (R-P3-004)
+    assert enum, "capability vocabulary must be a closed enum"
     for cap in enum:
         low = cap.lower()
         for token in FORBIDDEN_VENDOR_TOKENS:
@@ -220,7 +218,7 @@ def test_task_assigned_supports_tester_role():
 
 def test_task_capability_enum_covers_context_and_memory_capabilities():
     task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
-    enum = set(task["properties"]["required_capabilities"]["items"]["enum"])
+    enum = set(task["$defs"]["capability"]["enum"])
     for cap in ("project-code-context", "symbol-search", "call-graph",
                 "blast-radius", "memory-read", "memory-write"):
         assert cap in enum, f"advertised capability not requestable by tasks: {cap}"
@@ -250,7 +248,7 @@ def test_handoff_roles_are_subset_of_kernel_roles():
 def test_provider_capabilities_advertised_in_registry_are_requestable():
     reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
     task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
-    enum = set(task["properties"]["required_capabilities"]["items"]["enum"])
+    enum = set(task["$defs"]["capability"]["enum"])
     context_caps = {"symbol-search", "call-graph", "blast-radius"}
     graft = reg["integrations"]["graft"]["provides"]
     assert context_caps <= set(graft), "graft advertises the context capabilities"
@@ -342,3 +340,46 @@ def test_graft_freshness_pattern_is_not_marked_merged():
     assert fp["status"] != "merged", \
         "wiki-health/scan-repo do not implement Graft query-path freshness/refresh semantics"
     assert not fp.get("implemented_by"), "no implementors exist yet"
+
+
+# ---------------------------------------------------------------------------
+# R-P3-004 (re-review) — ONE canonical capability vocabulary, no bypass
+# ---------------------------------------------------------------------------
+def test_agentref_requires_uses_canonical_capability_enum():
+    task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    caps = task["$defs"]["capability"]["enum"]
+    req_items = task["properties"]["required_capabilities"]["items"]
+    assert req_items.get("$ref") == "#/$defs/capability", \
+        "required_capabilities must $ref the canonical capability def"
+    for role in ("executor", "reviewer", "architect", "tester"):
+        role_schema = task["properties"]["assigned"]["properties"][role]
+        assert role_schema.get("$ref") == "#/$defs/agentRef", \
+            f"assigned.{role} must $ref agentRef (single assignment contract)"
+    agent_ref = task["$defs"]["agentRef"]
+    assert agent_ref["properties"]["requires"]["items"].get("$ref") == "#/$defs/capability", \
+        "agentRef.requires must $ref the canonical capability def (R-P3-004)"
+
+
+def test_vendor_token_in_assigned_requires_rejected():
+    with pytest.raises(Exception):
+        _validate_task(_task_instance(assigned={
+            "executor": {"requires": ["codex-magic"], "preferred": ["x"]},
+        }))
+
+
+def test_nonexistent_capability_in_assigned_requires_rejected():
+    with pytest.raises(Exception):
+        _validate_task(_task_instance(assigned={
+            "executor": {"requires": ["mind-reading"]},
+        }))
+
+
+def test_real_registry_module_entries_declare_trust():
+    reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
+    for name, entry in reg["integrations"].items():
+        classes = {entry["classification"]} if isinstance(entry["classification"], str) \
+            else set(entry["classification"] or [])
+        if "module" in classes:
+            trust = entry.get("trust")
+            assert isinstance(trust, dict), f"{name}: module must declare trust policy"
+            assert "private_context" in trust, f"{name}: trust must decide private_context"
