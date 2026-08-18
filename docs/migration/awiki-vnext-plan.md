@@ -175,6 +175,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 3 | ⏳ awaiting re-review (2) | 2026-08-18 | Trust machine-required (+4 truthful module entries), single $defs.capability for both enum paths, capability-map regen (attributable diff). Canonical 0 failed / 2,659 passed / 17 skipped. |
 | 3 | **PASS** (merged) | 2026-08-18 | PR #13 merged; post-merge main `2e84759c`. Kernel Contract closed. |
 | 4 | ⏳ awaiting | 2026-08-18 | Project Adapter complete (Phase 4 Log). |
+| 4 | CHANGES_REQUIRED | 2026-08-18 | R-P4-001..006 (PR #14 review): containment, attach symlink safety, required policy, safe yaml gen, registry cross-check, attachment surface. |
+| 4 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (41 adapter tests); canonical 0 failed / 2,700 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -198,6 +200,18 @@ Thin, portable project adapter — base main `2e84759c`, TDD (18 tests red-first
 - **`scripts/project/attach.py`** — idempotent + non-destructive: creates `.awiki/{project.yaml,context.md,state/}` only-if-absent (existing policy byte-preserved); AGENTS.md created if missing else ONE marked section appended (marker `awiki-project-adapter`), existing content preserved verbatim, never appended twice. No submodules/symlinks/A-Wiki copies; pathlib-only (cross-platform).
 - **`scripts/project/status.py`** — read-only + deterministic; --json reports id, adapter_valid, domains, memory, integrations, privacy/trust, state-dir availability, context.md presence; exit 1 without a valid adapter.
 - Gates: privacy ✓ · scan_repo 49 known/0 new ✓ · wiki-health 0 hard/48 baselined ✓ · gen-index fresh (no regen needed). Canonical suite: see Review History row.
+
+## Phase 4 Remediation Log (2026-08-18)
+
+Review: PR #14 vs `4248caa3`. All findings TDD (negative tests first, 21 red before fixes):
+
+- **R-P4-001** — `_contains()` resolved-path containment helper (symlink escapes + nested `..` rejected by resolution, not string checks); path regex extended host-OS-independently (UNC `\server`, extended `\?\` device, `/etc` `/tmp` `/var` `/opt` `/root` `/private`, drive-letter lookbehind keeps `https://` clean). Fixed a real self-bug found by the tests: the joined candidate is always absolute — absoluteness must be checked on the REF.
+- **R-P4-002** — attach refuses to run when ANY adapter path is a symlink (checked before any write); tests prove external targets' bytes and directories remain untouched, no partial attach.
+- **R-P4-003** — schema structurally requires privacy (project_private), trust (private_context), memory (all four scope decisions); attach template generates the full trust policy; negatives for each omission.
+- **R-P4-004** — project.yaml generated from a mapping via `yaml.safe_dump` (punctuation/Unicode domains round-trip verbatim — tested with commas/colons/brackets/Thai/Chinese); id pattern reconciled to min-1 (`_slug` alignment); attach self-validates the RESULT and exits 1 on invalid (tested via a real pre-existing invalid project.yaml that must stay byte-preserved).
+- **R-P4-005** — `integrations.allowed` cross-checked offline against the canonical registry (fail-closed if the registry is unreadable); unknown-id negative + known-id positive.
+- **R-P4-006** — canonical attachment surface enforced: AGENTS.md with the adapter marker + context.md + state/ all required; negatives for deleted AGENTS.md, markerless AGENTS.md, missing state/.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,700 passed / 17 skipped**.
 
 ## Phase 1 Entry Order
 
