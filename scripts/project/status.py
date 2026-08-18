@@ -21,21 +21,32 @@ from attach import AGENTS_MARKER  # noqa: E402 -- one marker definition
 
 def status(project_root: Path) -> dict:
     yml = project_root / ".awiki" / "project.yaml"
-    data: dict = {}
-    if yml.is_file():
-        try:
-            loaded = yaml.safe_load(yml.read_bytes().decode("utf-8"))
-            if isinstance(loaded, dict):
-                data = loaded
-        except (yaml.YAMLError, UnicodeDecodeError, OSError):
-            data = {}
 
-    result = pv.validate(project_root)
+    # ── R-P4-007: safe-surface check BEFORE reading anything (lstat only).
+    # An unsafe (symlinked) canonical surface must never be parsed/reported.
+    unsafe = any((project_root / rel).is_symlink() for rel in pv.CANONICAL_SURFACE)
+    data: dict = {}
+    if unsafe:
+        result = pv.ValidationResult(errors=["canonical adapter surface is a symlink "
+                                             "(must be project-contained) — not read"])
+    else:
+        if yml.is_file():
+            try:
+                loaded = yaml.safe_load(yml.read_bytes().decode("utf-8"))
+                if isinstance(loaded, dict):
+                    data = loaded
+            except (yaml.YAMLError, UnicodeDecodeError, OSError):
+                data = {}
+        result = pv.validate(project_root)
+
     agents = project_root / "AGENTS.md"
-    try:
-        agents_text = agents.read_bytes().decode("utf-8") if agents.is_file() else ""
-    except (UnicodeDecodeError, OSError):
-        agents_text = ""
+    if unsafe or agents.is_symlink():
+        agents_text = ""  # never read through an unsafe surface
+    else:
+        try:
+            agents_text = agents.read_bytes().decode("utf-8") if agents.is_file() else ""
+        except (UnicodeDecodeError, OSError):
+            agents_text = ""
 
     return {
         "project_root": str(project_root),

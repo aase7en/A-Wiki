@@ -613,3 +613,104 @@ def test_status_reports_invalid_on_invalid_utf8(tmp_path):
     proc = _run(STATUS, "--json", str(project), cwd=tmp_path)
     assert proc.returncode == 1
     assert json.loads(proc.stdout)["adapter_valid"] is False
+
+
+# ---------------------------------------------------------------------------
+# R-P4-007 (re-review) — unsafe symlink targets must NEVER be read
+# ---------------------------------------------------------------------------
+_TOKEN = "ghp_" + "T9" + "0123456789abcdef" * 2  # secret-shaped canary
+
+
+def _can_symlink():
+    return hasattr(__import__("os"), "symlink")
+
+
+def test_validate_does_not_read_symlinked_project_yaml_target(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "external-project.yaml"
+    external.write_text(_valid_project_yaml().replace(
+        "domains: [web-development]", f"domains: [canary-{_TOKEN}]"),
+        encoding="utf-8")  # secret-shaped canary inside the external target
+    (project / ".awiki" / "project.yaml").unlink()
+    os.symlink(external, project / ".awiki" / "project.yaml")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+    assert not any("secret" in e.lower() for e in result.errors),         "external target content was read (secret canary leaked into validation)"
+
+
+def test_validate_does_not_read_symlinked_awiki_target(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    real = tmp_path / "real-aw"
+    (project / ".awiki").rename(real)
+    (real / "project.yaml").write_text(
+        _valid_project_yaml().replace(
+            "domains: [web-development]", f"domains: [canary-{_TOKEN}]"),
+        encoding="utf-8")
+    os.symlink(real, project / ".awiki")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+    assert not any("secret" in e.lower() for e in result.errors),         "external .awiki target content was read"
+
+
+def test_validate_does_not_read_symlinked_agents_md_target(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "external-agents.md"
+    external.write_text(f"canary {_TOKEN}\n", encoding="utf-8")
+    (project / "AGENTS.md").unlink()
+    os.symlink(external, project / "AGENTS.md")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+    assert not any("secret" in e.lower() for e in result.errors)
+
+
+def test_status_does_not_report_from_symlinked_surface(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "ext-project.yaml"
+    external.write_text(_valid_project_yaml().replace(
+        "id: fixture-app", "id: attacker-controlled-id"), encoding="utf-8")
+    (project / ".awiki" / "project.yaml").unlink()
+    os.symlink(external, project / ".awiki" / "project.yaml")
+    proc = _run(STATUS, "--json", str(project), cwd=tmp_path)
+    assert proc.returncode == 1
+    data = json.loads(proc.stdout)
+    assert data["adapter_valid"] is False
+    assert data.get("id") != "attacker-controlled-id", \
+        "status must not parse/report fields from an unsafe surface"
+
+
+# ---------------------------------------------------------------------------
+# R-P4-008 (re-review) — MODULE+PATTERN eligible; pattern-only/reject not
+# ---------------------------------------------------------------------------
+def test_graft_module_pattern_is_eligible(tmp_path):
+    text = _valid_project_yaml().replace("allowed: []", "allowed: [graft]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 0, result.errors
+
+
+def test_gitnexus_pure_module_remains_eligible(tmp_path):
+    text = _valid_project_yaml().replace("allowed: []", "allowed: [gitnexus]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 0, result.errors

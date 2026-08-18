@@ -107,7 +107,9 @@ def _eligible_integration_ids() -> set[str] | None:
                 continue
             cls = entry.get("classification")
             classes = set(cls) if isinstance(cls, list) else {cls}
-            if classes == {"module"}:
+            # R-P4-008: membership, not equality — graft is [module, pattern]
+            # and stays eligible; reject/reference-only/pattern-only do not.
+            if "module" in classes and "reject" not in classes:
                 out.add(name)
         return out
     except Exception:
@@ -130,6 +132,13 @@ def validate(project_root: Path) -> ValidationResult:
     aw = project_root / ".awiki"
     yml = aw / "project.yaml"
 
+    # ── R-P4-007: canonical-surface symlink checks BEFORE any read/parse.
+    # is_symlink() is an lstat — it does NOT follow the link, so an unsafe
+    # target's bytes are never consumed by this process.
+    _check_canonical_surface(project_root, result)
+    if any("symlink" in e.lower() for e in result.errors):
+        return result
+
     if not yml.is_file():
         result.errors.append(f"missing adapter metadata: {yml}")
         return result
@@ -149,9 +158,6 @@ def validate(project_root: Path) -> ValidationResult:
     except yaml.YAMLError as e:
         result.errors.append(f"malformed project.yaml (fail closed): {str(e).splitlines()[0]}")
         return result
-
-    # ── R-P4-007: canonical surface must not be symlinked ──
-    _check_canonical_surface(project_root, result)
 
     # ── schema (unknown fields, required policy fields) ──
     try:
