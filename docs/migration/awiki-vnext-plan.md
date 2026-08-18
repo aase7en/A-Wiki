@@ -171,6 +171,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 2 | **PASS** (merged) | 2026-08-18 | PR #11 merged by human gate; post-merge main `05140b15`; Core+Domain CI green on the PR; local canonical suite 0 failed / 2,599 passed / 17 skipped. |
 | 3 | CHANGES_REQUIRED | 2026-08-18 | R-P3-001..007 (PR #13 review): review state machine, validator authority, lost task semantics, vocabulary gaps, handoff looseness, missing intake artifact, ineffective graft test. |
 | 3 | ⏳ awaiting re-review | 2026-08-18 | All 7 findings fixed TDD (Phase 3 Remediation Log); canonical suite green; pushed for re-review on exact new HEAD. |
+| 3 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P3-001/003/005/006/007 VERIFIED; open: R-P3-002 trust not machine-required, R-P3-004 capability bypass via assigned.requires, R-P3-008 PR Core CI red (stale capability-map). |
+| 3 | ⏳ awaiting re-review (2) | 2026-08-18 | Trust machine-required (+4 truthful module entries), single $defs.capability for both enum paths, capability-map regen (attributable diff). Canonical 0 failed / 2,659 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
