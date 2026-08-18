@@ -26,7 +26,7 @@
 | 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ COMPLETE — P1.1–P1.5 done TDD, awaiting review | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
 | 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ COMPLETE — P2.1–P2.5 done TDD, awaiting review | P2.1 scanner+scan_repo · P2.2 wiki_health · P2.3/P2.4 ci-core+domain+smokes · P2.5 parity fixes |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ COMPLETE — 3 TDD commits, awaiting review | `9a0d985e` `8f338174` `a58906c6` |
-| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ⬜ | — |
+| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ COMPLETE — TDD, awaiting review | schema + 3 CLIs + 18 tests |
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ⬜ | — |
 | 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⬜ | — |
 | 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ | — |
@@ -173,6 +173,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 3 | ⏳ awaiting re-review | 2026-08-18 | All 7 findings fixed TDD (Phase 3 Remediation Log); canonical suite green; pushed for re-review on exact new HEAD. |
 | 3 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P3-001/003/005/006/007 VERIFIED; open: R-P3-002 trust not machine-required, R-P3-004 capability bypass via assigned.requires, R-P3-008 PR Core CI red (stale capability-map). |
 | 3 | ⏳ awaiting re-review (2) | 2026-08-18 | Trust machine-required (+4 truthful module entries), single $defs.capability for both enum paths, capability-map regen (attributable diff). Canonical 0 failed / 2,659 passed / 17 skipped. |
+| 3 | **PASS** (merged) | 2026-08-18 | PR #13 merged; post-merge main `2e84759c`. Kernel Contract closed. |
+| 4 | ⏳ awaiting | 2026-08-18 | Project Adapter complete (Phase 4 Log). |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -186,6 +188,16 @@ Review: PR #13 vs `8ae924d7`. Every fix TDD with negative instance tests:
 - **R-P3-006** — `docs/protocols/integration-intake.md` created (13-question checklist, classification vocabulary, decision-record requirement, hard intake rules — reconciled with brain-improvement-gate scope split); normative-reference test resolves `awiki.yaml` classification-gate pointer + every registry `reference:`.
 - **R-P3-007** — graft classification test rewritten with explicit scalar/list normalization + set comparison; negative cases (`reject`, `["module","reject"]`, `[]`, `None`) prove the check bites.
 - Gates: privacy ✓ · scan_repo 49 known/0 new (one self-inflicted literal drive path in a test assembled at runtime instead) ✓ · wiki_health 0 hard/48 baselined with the overhauled integrations check active ✓ · canonical suite green (see Review History).
+
+## Phase 4 Log (2026-08-18)
+
+Thin, portable project adapter — base main `2e84759c`, TDD (18 tests red-first, temp fixture repos only):
+
+- **`schemas/awiki-project/v1.schema.json`** — stable project policy ONLY: id, repository identity, domains, skills/integrations allowlists, memory scopes, privacy/trust, optional code_context policy (G0 vocabulary, `global_memory_promotion: false` const), project-relative resources. `additionalProperties:false` structurally rejects secrets/quota/telemetry-shaped fields.
+- **`scripts/project/validate.py`** — deterministic/offline, fail-closed: duplicate-key-safe loader (reused from integrations validator — one loading contract), JSON Schema, semantic checks — absolute/private machine paths rejected (drive-letter regex with lookbehind so `https://` never false-positives), secret-shaped values rejected via the kernel's single security-pattern source, referenced local files must exist, context.md required.
+- **`scripts/project/attach.py`** — idempotent + non-destructive: creates `.awiki/{project.yaml,context.md,state/}` only-if-absent (existing policy byte-preserved); AGENTS.md created if missing else ONE marked section appended (marker `awiki-project-adapter`), existing content preserved verbatim, never appended twice. No submodules/symlinks/A-Wiki copies; pathlib-only (cross-platform).
+- **`scripts/project/status.py`** — read-only + deterministic; --json reports id, adapter_valid, domains, memory, integrations, privacy/trust, state-dir availability, context.md presence; exit 1 without a valid adapter.
+- Gates: privacy ✓ · scan_repo 49 known/0 new ✓ · wiki-health 0 hard/48 baselined ✓ · gen-index fresh (no regen needed). Canonical suite: see Review History row.
 
 ## Phase 1 Entry Order
 
