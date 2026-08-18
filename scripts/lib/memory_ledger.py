@@ -45,6 +45,10 @@ import atomic_json  # noqa: E402 -- sibling primitive (chunk 1)
 
 VALID_TYPES = {"decision", "lesson", "failure", "outcome", "idea"}
 
+# R-P5-006: canonical entry fields `extra` must never contain or overwrite.
+_RESERVED_KEYS = {"ts", "session_id", "type", "summary", "files", "tags",
+                  "parent_ts", "extra"}
+
 # Secret-redaction patterns. Conservative: redact anything that looks like a
 # common secret format so a captured commit/block message can't leak a key.
 _SECRET_PATTERNS = [
@@ -81,6 +85,19 @@ def _redact(text: str) -> str:
     return out
 
 
+def _redact_deep(value):
+    """Recursive redaction for nested extra/metadata (R-P5-006): every
+    string inside dicts/lists is redacted with the same patterns; other
+    scalar types pass through unchanged."""
+    if isinstance(value, str):
+        return _redact(value)
+    if isinstance(value, dict):
+        return {str(k): _redact_deep(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_redact_deep(v) for v in value]
+    return value
+
+
 class MemoryLedger:
     """Append-only event-sourced memory store.
 
@@ -99,16 +116,30 @@ class MemoryLedger:
         files: list[str] | None = None,
         tags: list[str] | None = None,
         parent_ts: float | None = None,
+        extra: dict | None = None,
     ) -> float:
         """Append one entry. Returns the entry's ts.
 
         Validates type. Redacts secrets from summary. Truncates oversized
         summaries. Files/tags normalized.
+
+        ``extra`` (Phase 5, R-P5-006): optional caller-owned metadata stored
+        under ONE reserved namespaced key ``entry["extra"]`` — collision-safe
+        by construction. Reserved canonical keys (``ts``, ``session_id``,
+        ``type``, ``summary``, ``files``, ``tags``, ``parent_ts``, ``extra``)
+        are rejected inside ``extra`` with ValueError, and every string in
+        the nested structure is recursively redacted before persisting.
+        Vanilla callers (no ``extra``) see an unchanged entry shape.
         """
         if type not in VALID_TYPES:
             raise ValueError(
                 f"invalid type {type!r}; must be one of {sorted(VALID_TYPES)}"
             )
+        if extra:
+            clash = _RESERVED_KEYS & {str(k) for k in extra}
+            if clash:
+                raise ValueError(
+                    f"extra must not contain canonical ledger fields: {sorted(clash)}")
         ts = time.time()
         # Normalize + cap summary to prevent disk/memory bombs
         summary_str = str(summary) if summary is not None else ""
@@ -123,6 +154,8 @@ class MemoryLedger:
             "tags": [str(t) for t in tags] if tags else [],
             "parent_ts": parent_ts,
         }
+        if extra:
+            entry["extra"] = _redact_deep(dict(extra))
         atomic_json.atomic_append_jsonl(self.path, entry)
         return ts
 
