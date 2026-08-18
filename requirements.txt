@@ -20,3 +20,7 @@ apsw>=3.45.0
 # so they keep working even without these SDKs installed.
 anthropic>=0.40.0
 openai>=1.50.0
+
+# Kernel contract validation (Phase 3): schemas/awiki-* validated by
+# scripts/health/validate_integrations.py + tests. Pure-python, no transitive deps.
+jsonschema>=4.0
