@@ -169,7 +169,21 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 2 | **FINAL VERIFICATION COMPLETE** | 2026-08-18 | Merge `dc726ed3` (no rebase) → PR #11 mergeable. First real PR CI exposed 3 latent main-side defects (all hidden until now by `[skip ci]` bot commits): quickchart.io support email (whitelisted per deepseek/sov.ai precedent `a4d1d98d`), stale generated context (regen `029e04b9`), model-pool.json hardcoded in a test (P1.3 optional-cache contract `8a2f01d1`) + preflight main-only branch check rejected PR merge refs (accepted `0f4b3baa`). **Core CI: SUCCESS on PR #11** (run 32060806908, head `0f4b3baa`, pull_request event). Domain CI: success. Webhook-drop incidents during the cycle re-fired per review step 9. |
 
 | 2 | **PASS** (merged) | 2026-08-18 | PR #11 merged by human gate; post-merge main `05140b15`; Core+Domain CI green on the PR; local canonical suite 0 failed / 2,599 passed / 17 skipped. |
-| 3 | ⏳ awaiting | 2026-08-18 | Kernel Contract complete (Phase 3 Log); canonical-suite evidence in report. |
+| 3 | CHANGES_REQUIRED | 2026-08-18 | R-P3-001..007 (PR #13 review): review state machine, validator authority, lost task semantics, vocabulary gaps, handoff looseness, missing intake artifact, ineffective graft test. |
+| 3 | ⏳ awaiting re-review | 2026-08-18 | All 7 findings fixed TDD (Phase 3 Remediation Log); canonical suite green; pushed for re-review on exact new HEAD. |
+
+## Phase 3 Remediation Log (2026-08-18)
+
+Review: PR #13 vs `8ae924d7`. Every fix TDD with negative instance tests:
+
+- **R-P3-001** — `awiki-review/v1` now enforces its state machine via `allOf/if-then`: reviewed/approved states require `reviewer`+`verdict`; APPROVED/READY accept only `PASS`/`PASS_WITH_NOTES` and must carry findings+required_tests+next_action; **open blockers make READY/APPROVED invalid** (`not contains {severity:blocker, state:open}`). 5 negative/positive instance tests.
+- **R-P3-002** — validator rebuilt as ONE authoritative path: `UniqueKeyLoader` (duplicate YAML mapping keys rejected — `safe_load` silently overwrote them), full JSON-Schema validation (`additionalProperties:false` now structurally rejects unknown/runtime fields), semantic checks (external default-off+lazy, module ⇒ storage+provides, cache commit:false, reject-doesn't-combine, dangling references). `jsonschema>=4` added to requirements.txt (CI authority). Registry truthfulness: `graft-freshness-pattern` `merged→planned` (wiki-health/scan-repo do NOT implement query-path freshness), `implemented_by` removed; world-intel + trello gained the now-required `storage` declarations the stronger validator exposed. 14 validator tests.
+- **R-P3-003** — task semantics restored safely: durable = `task_state` + `work_order_contracts` (+ review/handoff state), control_plane holds `task_state` — contract test asserts task is in BOTH boundaries AND the wording never re-triggers the `sk-` scanner.
+- **R-P3-004** — one canonical vocabulary: `tester` role added to `assigned`; capability enum += `project-code-context`, `symbol-search`, `call-graph`, `blast-radius`, `memory-read`, `memory-write`; `worktree` (repo-relative only — pattern rejects drive letters/`~`/leading `/`) + `evidence` fields; cross-contract tests prove handoff roles ⊆ kernel roles and registry-advertised context capabilities are task-requestable; KERNEL.md list reconciled.
+- **R-P3-005** — handoff now requires `from`, `to_role`, `tests`, `changed_files`, `open_questions`, `known_risks` (6 negative instance tests + complete-positive).
+- **R-P3-006** — `docs/protocols/integration-intake.md` created (13-question checklist, classification vocabulary, decision-record requirement, hard intake rules — reconciled with brain-improvement-gate scope split); normative-reference test resolves `awiki.yaml` classification-gate pointer + every registry `reference:`.
+- **R-P3-007** — graft classification test rewritten with explicit scalar/list normalization + set comparison; negative cases (`reject`, `["module","reject"]`, `[]`, `None`) prove the check bites.
+- Gates: privacy ✓ · scan_repo 49 known/0 new (one self-inflicted literal drive path in a test assembled at runtime instead) ✓ · wiki_health 0 hard/48 baselined with the overhauled integrations check active ✓ · canonical suite green (see Review History).
 
 ## Phase 1 Entry Order
 
