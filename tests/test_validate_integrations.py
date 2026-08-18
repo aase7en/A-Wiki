@@ -97,3 +97,44 @@ def test_dangling_file_reference_fails(tmp_path):
                         "    storage: {type: local-regenerable-cache, commit: false}\n    reference: docs/does-not-exist.md\n")
     result = vi.validate(_write(tmp_path, text))
     assert any("reference" in e.lower() for e in result.errors)
+
+
+# ---------------------------------------------------------------------------
+# R-P3-002 — one authoritative path: JSON Schema + duplicate keys + semantics
+# ---------------------------------------------------------------------------
+def test_unknown_field_rejected_by_schema(tmp_path):
+    text = GOOD.replace("    lazy: true\n", "    lazy: true\n    last_seen: 2026-08-18T00:00:00Z\n")
+    result = vi.validate(_write(tmp_path, text))
+    assert result.exit_code() == 1
+    assert any("last_seen" in e or "additional" in e.lower() for e in result.errors)
+
+
+def test_duplicate_yaml_key_rejected(tmp_path):
+    dup = GOOD + "    lazy: false\n"  # second 'lazy' under graft
+    result = vi.validate(_write(tmp_path, dup))
+    assert result.exit_code() == 1
+    assert any("duplicate" in e.lower() for e in result.errors)
+
+
+def test_module_without_storage_rejected(tmp_path):
+    text = GOOD.replace("    storage: {type: local-regenerable-cache, commit: false}\n", "")
+    result = vi.validate(_write(tmp_path, text))
+    assert any("storage" in e.lower() for e in result.errors)
+
+
+def test_module_without_capabilities_rejected(tmp_path):
+    text = GOOD.replace("    provides: [symbol-search]\n", "")
+    result = vi.validate(_write(tmp_path, text))
+    assert any("provides" in e.lower() for e in result.errors)
+
+
+def test_contradictory_classification_rejected(tmp_path):
+    text = GOOD.replace("classification: module", "classification: [module, reject]")
+    result = vi.validate(_write(tmp_path, text))
+    assert any("reject" in e.lower() and "combine" in e.lower() for e in result.errors)
+
+
+def test_runtime_telemetry_field_rejected(tmp_path):
+    text = GOOD.replace("    lazy: true\n", "    lazy: true\n    quota_state: exhausted\n")
+    result = vi.validate(_write(tmp_path, text))
+    assert result.exit_code() == 1

@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 """Deterministic integration-registry validation (A-Wiki vNext Phase 3).
 
-Validates config/integrations.yaml against the awiki-integrations/v1
-contract WITHOUT network, subprocesses, or side effects — safe to run in
-wiki_health, CI, or any executor. Enforces the D-CTX-005 invariants:
+One authoritative path (R-P3-002):
+  1. YAML parse with duplicate-mapping-key detection (safe_load silently
+     overwrites duplicates — a registry hazard).
+  2. Full JSON-Schema validation against schemas/awiki-integrations/v1
+     (additionalProperties:false rejects unknown/runtime fields structurally).
+  3. Semantic checks the schema cannot express: external-module completeness,
+     contradictory classifications, cache-commit rules, dangling references.
 
-  - exact schema key
-  - classification in core|module|pattern|reference|reject (or list of)
-  - external modules must be default-off AND lazy
-  - cache storage must never be committed
-  - reference paths, when given, must exist in the repo
-  - rejected entries must not be default-on
-
-Exit 0 = valid; 1 = contract violations (also printed to stdout).
+Fully deterministic and offline — safe in wiki_health, CI, any executor.
+Exit 0 = valid; 1 = violations (also printed to stdout).
 """
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -25,11 +24,42 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_REGISTRY = REPO_ROOT / "config" / "integrations.yaml"
+SCHEMA_FILE = REPO_ROOT / "schemas" / "awiki-integrations" / "v1.schema.json"
 
 SCHEMA_KEY = "awiki-integrations/v1"
 CLASSIFICATIONS = {"core", "module", "pattern", "reference", "reject"}
-EXTERNAL_CLASSIFICATIONS = {"module", "reference"}  # things that pull outside code/services
+EXTERNAL_CLASSES = {"module", "reference"}
 CACHE_STORAGE_TYPES = {"local-regenerable-cache"}
+
+
+class _DuplicateKeyError(yaml.YAMLError):
+    pass
+
+
+class UniqueKeyLoader(yaml.SafeLoader):
+    """SafeLoader that raises on duplicate mapping keys instead of silently
+    overwriting them (last-key-wins is a registry integrity hazard)."""
+
+    def construct_mapping(self, node, deep=False):
+        seen = set()
+        for key_node, _ in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            try:
+                hashable = key in seen
+            except TypeError:
+                continue
+            if hashable:
+                mark = getattr(key_node, "start_mark", None)
+                where = f" line {mark.line + 1}" if mark else ""
+                raise _DuplicateKeyError(f"duplicate mapping key{where}: {key!r}")
+            seen.add(key)
+        return super().construct_mapping(node, deep=deep)
+
+
+UniqueKeyLoader.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    UniqueKeyLoader.construct_mapping,
+)
 
 
 @dataclass
@@ -41,12 +71,48 @@ class ValidationResult:
         return 1 if self.errors else 0
 
 
-def _classify_ok(value) -> bool:
+def _classes_of(value) -> set:
     if isinstance(value, str):
-        return value in CLASSIFICATIONS
-    if isinstance(value, list) and value:
-        return all(v in CLASSIFICATIONS for v in value)
-    return False
+        return {value}
+    if isinstance(value, list):
+        return set(value)
+    return set()
+
+
+def _semantic_checks(data: dict, repo_root: Path, result: ValidationResult) -> None:
+    integrations = data["integrations"]
+    for name, entry in integrations.items():
+        if not isinstance(entry, dict):
+            continue  # schema validation already reports the type error
+        classes = _classes_of(entry.get("classification"))
+
+        if "reject" in classes and len(classes) > 1:
+            result.errors.append(f"{name}: classification 'reject' cannot combine with other classes")
+
+        is_external = bool(classes & EXTERNAL_CLASSES)
+        if is_external and entry.get("default") is True:
+            result.errors.append(f"{name}: external module must be default-off (D-CTX-005)")
+        if is_external and entry.get("lazy") is not True:
+            result.errors.append(f"{name}: external module must be lazy")
+        if classes == {"reject"} and entry.get("default") is True:
+            result.errors.append(f"{name}: rejected integration must not be default-on")
+
+        is_module = "module" in classes
+        if is_module and "storage" not in entry:
+            result.errors.append(f"{name}: module-classified entry must declare storage")
+        if is_module and not entry.get("provides"):
+            result.errors.append(f"{name}: module-classified entry must declare capabilities (provides)")
+
+        storage = entry.get("storage")
+        if isinstance(storage, dict):
+            if storage.get("type") in CACHE_STORAGE_TYPES and storage.get("commit") is not False:
+                result.errors.append(f"{name}: cache storage must set commit: false")
+            if storage.get("commit") is True:
+                result.errors.append(f"{name}: storage commit must not be true")
+
+        ref = entry.get("reference")
+        if isinstance(ref, str) and ref and not (repo_root / ref).exists():
+            result.errors.append(f"{name}: reference path does not exist: {ref}")
 
 
 def validate(path: Path) -> ValidationResult:
@@ -56,7 +122,10 @@ def validate(path: Path) -> ValidationResult:
         return result
 
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        data = yaml.load(path.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
+    except _DuplicateKeyError as e:
+        result.errors.append(f"duplicate yaml key: {e}")
+        return result
     except yaml.YAMLError as e:
         result.errors.append(f"yaml parse error: {str(e).splitlines()[0]}")
         return result
@@ -71,50 +140,26 @@ def validate(path: Path) -> ValidationResult:
     if not isinstance(integrations, dict) or not integrations:
         result.errors.append("'integrations' must be a non-empty mapping")
         return result
+    result.entries = len(integrations)
 
+    # ── 2. authoritative schema validation (unknown/runtime fields etc.) ──
+    try:
+        import jsonschema  # type: ignore
+    except ImportError:
+        result.errors.append(
+            "jsonschema unavailable — schema validation SKIPPED "
+            "(install jsonschema; declared in requirements.txt)"
+        )
+    else:
+        schema = json.loads(SCHEMA_FILE.read_text(encoding="utf-8"))
+        validator = jsonschema.Draft202012Validator(schema)
+        for err in sorted(validator.iter_errors(data), key=lambda e: list(e.absolute_path)):
+            loc = "/".join(str(p) for p in err.absolute_path) or "<root>"
+            result.errors.append(f"schema: {loc}: {err.message}")
+
+    # ── 3. semantic checks ──
     repo_root = path.resolve().parents[1] if path.parent.name == "config" else path.parent
-
-    for name, entry in integrations.items():
-        result.entries += 1
-        if not isinstance(entry, dict):
-            result.errors.append(f"{name}: entry must be a mapping")
-            continue
-
-        if not _classify_ok(entry.get("classification")):
-            result.errors.append(
-                f"{name}: classification must be one of {sorted(CLASSIFICATIONS)} "
-                f"(got {entry.get('classification')!r})"
-            )
-
-        classification = entry.get("classification")
-        classes = set(classification) if isinstance(classification, list) else {classification}
-        is_external = bool(classes & EXTERNAL_CLASSIFICATIONS)
-        default_on = entry.get("default") is True
-
-        if is_external and default_on:
-            result.errors.append(f"{name}: external module must be default-off (D-CTX-005)")
-
-        if classes == {"reject"} and default_on:
-            result.errors.append(f"{name}: rejected integration must not be default-on")
-
-        if is_external and entry.get("lazy") is not True:
-            result.errors.append(f"{name}: external module must be lazy")
-
-        storage = entry.get("storage")
-        if isinstance(storage, dict):
-            if storage.get("type") in CACHE_STORAGE_TYPES and storage.get("commit") is not False:
-                result.errors.append(f"{name}: cache storage must set commit: false")
-            if storage.get("commit") is True:
-                result.errors.append(f"{name}: storage commit must not be true")
-
-        for key in ("provides", "requires", "implemented_by"):
-            value = entry.get(key)
-            if value is not None and not isinstance(value, list):
-                result.errors.append(f"{name}: '{key}' must be a list")
-
-        ref = entry.get("reference")
-        if isinstance(ref, str) and ref and not (repo_root / ref).exists():
-            result.errors.append(f"{name}: reference path does not exist: {ref}")
+    _semantic_checks(data, repo_root, result)
 
     return result
 

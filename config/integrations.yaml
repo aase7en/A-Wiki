@@ -77,6 +77,7 @@ integrations:
     lazy: true
     runtime: external
     provides: [external-events, market-data, news-context]
+    storage: {type: local-regenerable-cache, commit: false}
     trust: {deep_enrichment: approved-only, private_context: false}
     reference: docs/migration/awiki-vnext-baseline.md
 
@@ -89,6 +90,7 @@ integrations:
     lazy: true
     runtime: external
     provides: [board-management]
+    storage: {type: local-regenerable-cache, commit: false}
 
   # ── Patterns absorbed into A-Wiki (implemented by existing primitives) ──
   autoresearch:
@@ -102,11 +104,12 @@ integrations:
     storage: {type: none, commit: false}
 
   graft-freshness-pattern:
-    # graft-integration-plan.md §9 — absorb regardless of provider choice
+    # graft-integration-plan.md §9 — query-path freshness/refresh semantics.
+    # Pattern-only and PLANNED: wiki-health checks and scan-repo do NOT yet
+    # implement probe-before-answer refresh-on-the-query-path semantics.
     classification: pattern
     type: pattern
-    status: merged
-    implemented_by: [wiki-health-checks, scan-repo]
+    status: planned
     default: false
     lazy: true
     runtime: none
