@@ -27,7 +27,7 @@
 | 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ COMPLETE — P2.1–P2.5 done TDD, awaiting review | P2.1 scanner+scan_repo · P2.2 wiki_health · P2.3/P2.4 ci-core+domain+smokes · P2.5 parity fixes |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ COMPLETE — 3 TDD commits, awaiting review | `9a0d985e` `8f338174` `a58906c6` |
 | 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ COMPLETE — TDD, awaiting review | schema + 3 CLIs + 18 tests |
-| 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ⬜ | — |
+| 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ COMPLETE — TDD, awaiting review | `583ae72a` `2b650c08` — memory plane core + thin CLIs + 32 tests |
 | 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⬜ | — |
 | 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ | — |
 | 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ | — |
@@ -181,6 +181,7 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 4 | ⏳ awaiting re-review (2) | 2026-08-18 | R-P4-007..009 fixed TDD (49 adapter tests); canonical 0 failed / 2,708 passed / 17 skipped. |
 | 4 | CHANGES_REQUIRED (re-review 2) | 2026-08-18 | R-P4-007 checks ran after reading; R-P4-008 module+pattern (graft) wrongly ineligible. |
 | 4 | ⏳ awaiting re-review (3) | 2026-08-18 | Symlink checks BEFORE any read (lstat-only) in validate+status; eligibility = membership. 55 adapter tests; canonical 0 failed / 2,714 passed / 17 skipped. |
+| 5 | ⏳ awaiting | 2026-08-18 | Memory layers complete (Phase 5 Log). Canonical 0 failed / 2,746 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -233,6 +234,18 @@ Review: PR #14 vs `f5995089`. TDD (4 negatives red-first: secret-canary external
 - **R-P4-007 (final)** — canonical-surface symlink checks now run BEFORE any `is_file`/`read_bytes`/YAML parse/AGENTS read (`is_symlink()` = lstat, never follows the link); on unsafe surface validate returns immediately with ONLY the symlink violation. `status()` performs the same safe-surface check first and never parses/reports fields (e.g. attacker-controlled `id`) from an unsafe surface. Canary tests: external project.yaml/.awiki/AGENTS.md targets containing a secret-shaped token yield symlink errors ONLY — no secret error proves the bytes were never consumed.
 - **R-P4-008 (final)** — eligibility is membership-based (`"module" in classes and "reject" not in classes`): graft `[module, pattern]` eligible, gitnexus pure-module eligible; `autoresearch` (pattern-only) and `deer-flow` (reject) stay ineligible. Contract-only — no Graft runtime installed/enabled.
 - Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,714 passed / 17 skipped**.
+
+## Phase 5 Log (2026-08-18)
+
+Memory plane per `docs/migration/phase-5-memory-layers-work-order.md` — base main `10507cee`, branch `refactor/awiki-memory-layers`, TDD (32 tests, work-order invariants 1–25), temp fixture repos/storage only:
+
+- **`scripts/lib/memory_layers.py`** — normative L0–L5 policy (`LAYER_POLICY`: durability runtime/durable, `global_knowledge`, `auto_promote` all False, `writable_via_memory_api` L3/L4=False) + `transition_allowed()`: the ONLY legal transition is L2→L3 via "promotion"; everything else raises `LayerViolation`. Mirrored in **`config/memory-layers.yaml`** (`awiki-memory-layers/v1`); a lockstep consistency test keeps the two from drifting.
+- **`scripts/lib/project_memory.py`** — `ProjectMemoryStore` on Phase-4 authority: adapter validated via `scripts/project/validate.py` (invalid → fail closed `AdapterInvalid`); `scopes.project` required for L2 ops (`ScopeDenied`); `scopes.global is not True` blocks promotion; storage `projects/<id>/memory/` under `AWIKI_DATA_DIR` → drive-root resolution (absolute REQUIRED; relative/traversal/symlink data roots rejected); per-entry project tag + isolation guard (Project A never sees B's entries); `write_layer` refuses L3/L4.
+- **`scripts/lib/experiment_memory.py`** — `ExperimentStore`: `baseline.json` immutable after init (`BaselineImmutable`), `iterations.jsonl` append-only (`AppendOnly` always raised on overwrite), `winner.json` must reference a recorded iteration (`WinnerValidationError`), strict experiment-id regex (`MalformedRecord`), per-experiment `.project` marker (cross-project access → `ProjectIsolationError`).
+- **`scripts/lib/promotion.py`** — five-gate pipeline in one place: distill (non-empty, ≤2000 chars) → privacy (reuses `_scan_staged_diff` PATTERNS/PLACEHOLDERS + adapter `ABSOLUTE_PATH_RE` — no new scanner) → generalize (project-specific detail detector) → provenance-evidence (whitelisted types: commit_sha/tests_passed/experiment_id/adr_path/wiki_ref/review_finding/task_ref/handoff_ref; SHA-validated; path-free values) → write. Dry-run default; `--apply` writes exactly ONE candidate file to `wiki/promotion-candidates/`; no Git machinery anywhere. `ScopeDenied` imported from `project_memory` (single contract — the duplicate-class bug was caught and removed).
+- **`scripts/memory/status.py` + `scripts/memory/promote.py`** — thin CLIs: read-only `status --json` (exit 1 invalid adapter); `promote --text --evidence type=value [--apply] [--json]` dry-run-first.
+- Existing substrates reused, not duplicated: MemoryLedger stays L1 (`memory_remember`/`memory_recall` caller contracts green), wiki/ stays L3, raw/ stays L4, `.tmp` stays L0. No hook-engine changes, no Graft, no search rearchitecture, no auto-promotion, no background jobs.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard / 48 baselined ✓ / canonical **0 failed / 2,746 passed / 17 skipped** (521.87s).
 
 ## Phase 1 Entry Order
 
