@@ -4,7 +4,8 @@
   "title": "awiki-handoff/v1",
   "description": "Durable handoff envelope so a different agent can resume without hidden chat history. Extends the existing handoff.md plan-chunk system (docs/protocols/cross-agent-plan-handoff.md) with machine-validated shape. No private chain-of-thought — decisions, evidence, assumptions, outputs, reproducible commands only.",
   "type": "object",
-  "required": ["schema", "task_id", "branch", "head_sha", "next_action"],
+  "required": ["schema", "task_id", "from", "to_role", "branch", "head_sha",
+               "changed_files", "tests", "open_questions", "known_risks", "next_action"],
   "additionalProperties": false,
   "properties": {
     "schema": { "const": "awiki-handoff/v1" },

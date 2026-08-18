@@ -36,5 +36,38 @@
     "required_tests": { "type": "array", "items": { "type": "string" }, "description": "Commands that must pass before READY" },
     "next_action": { "enum": ["FIX_AND_REREVIEW", "RUN_CI_GATE", "MARK_READY", "ESCALATE_HUMAN", "NONE"] },
     "transport": { "enum": ["github", "local-mcp", "remote-queue"], "description": "Durable transport; adapters normalize into this contract" }
-  }
+  },
+
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "enum": ["REVIEWING", "CHANGES_REQUIRED", "APPROVED", "READY"] } } },
+      "then": { "required": ["reviewer", "verdict"],
+                "description": "reviewed/approved states need a named reviewer and an explicit verdict" }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["APPROVED", "READY"] } } },
+      "then": {
+        "properties": { "verdict": { "enum": ["PASS", "PASS_WITH_NOTES"] } },
+        "required": ["findings", "required_tests", "next_action"],
+        "description": "approval states accept only passing verdicts and must carry evidence"
+      }
+    },
+    {
+      "if": { "properties": { "status": { "enum": ["APPROVED", "READY"] } } },
+      "then": {
+        "properties": {
+          "findings": {
+            "not": {
+              "contains": {
+                "type": "object",
+                "properties": { "severity": { "const": "blocker" }, "state": { "const": "open" } },
+                "required": ["severity", "state"]
+              }
+            }
+          }
+        },
+        "description": "unresolved blockers prevent READY/APPROVED (kernel invariant §8)"
+      }
+    }
+  ]
 }

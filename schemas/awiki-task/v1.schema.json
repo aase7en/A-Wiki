@@ -27,9 +27,10 @@
         "repository-read", "repository-write", "shell", "tests", "code-review",
         "deep-reasoning", "architecture-review", "security-review", "long-context",
         "web-research", "documentation", "translation", "data-analysis",
-        "independent-judgement"
+        "independent-judgement", "project-code-context", "symbol-search",
+        "call-graph", "blast-radius", "memory-read", "memory-write"
       ] },
-      "description": "Closed vendor-neutral capability vocabulary (Kernel Contract §agent-roles)"
+      "description": "Closed vendor-neutral capability vocabulary (Kernel Contract §agent-roles). Context/memory capabilities mirror what the integration registry advertises (provides), so tasks can actually request them."
     },
     "independent_review": { "enum": ["required", "pending", "not-required", "waived-with-evidence"] },
     "acceptance": { "type": "array", "items": { "type": "string" }, "description": "Mechanical acceptance criteria" },
@@ -39,8 +40,19 @@
       "properties": {
         "executor": { "$ref": "#/$defs/agentRef" },
         "reviewer": { "$ref": "#/$defs/agentRef" },
-        "architect": { "$ref": "#/$defs/agentRef" }
+        "architect": { "$ref": "#/$defs/agentRef" },
+        "tester": { "$ref": "#/$defs/agentRef" }
       }
+    },
+    "worktree": {
+      "type": "string",
+      "pattern": "^(?![A-Za-z]:|[/~])[A-Za-z0-9._][A-Za-z0-9._/\\-]*$",
+      "description": "Isolated worktree identity — REPO-RELATIVE only (never absolute or private machine paths; DISC-001 isolation requirement)"
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Mechanical evidence references: commands run, artifact paths, CI run links"
     },
     "head_sha": { "type": ["string", "null"], "description": "Exact review target; new SHA invalidates old approval" },
     "branch": { "type": ["string", "null"] },

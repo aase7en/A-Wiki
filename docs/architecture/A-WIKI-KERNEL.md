@@ -43,7 +43,11 @@ names (D-CTX-007). Vendor names appear only as `preferred` runtime candidates.
 - Closed capability enum lives in `schemas/awiki-task/v1.schema.json`
   (`repository-read/write`, `shell`, `tests`, `code-review`, `deep-reasoning`,
   `architecture-review`, `security-review`, `long-context`, `web-research`,
-  `documentation`, `translation`, `data-analysis`, `independent-judgement`).
+  `documentation`, `translation`, `data-analysis`, `independent-judgement`,
+  `project-code-context`, `symbol-search`, `call-graph`, `blast-radius`,
+  `memory-read`, `memory-write`). Context/memory capabilities mirror what the
+  integration registry advertises, so tasks can request exactly what providers
+  offer — one vocabulary across kernel/task/handoff/registry contracts.
 - Agent availability states (runtime only, never committed policy):
   `AVAILABLE BUSY DEGRADED QUOTA_LOW QUOTA_EXHAUSTED RATE_LIMITED COOLDOWN
   OFFLINE AUTH_REQUIRED UNKNOWN`.

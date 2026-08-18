@@ -68,8 +68,10 @@ def test_graft_contract_is_module_default_off_noncommitted():
     data = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
     graft = data["integrations"].get("graft")
     assert graft, "graft must be registered (G0 contract-only)"
-    assert graft["classification"] in ("module", "pattern") or \
-        [c in ("module", "pattern") for c in graft["classification"]] if isinstance(graft["classification"], list) else True
+    classes = {graft["classification"]} if isinstance(graft["classification"], str) \
+        else set(graft["classification"] or [])
+    assert classes and classes <= {"module", "pattern"}, \
+        f"graft classification must be module/pattern only: {classes}"
     assert graft.get("default") is False, "Graft stays default-off (Phase 10+)"
     assert graft.get("lazy") is True
     storage = graft.get("storage", {})
@@ -121,3 +123,222 @@ def test_handoff_schema_carries_resume_evidence():
     props = hand["properties"]
     for must in ("task_id", "branch", "head_sha", "tests", "next_action"):
         assert must in props, f"handoff missing {must}"
+
+
+# ---------------------------------------------------------------------------
+# R-P3-001 — awiki-review/v1 must enforce its safety state machine
+# ---------------------------------------------------------------------------
+def _review_instance(**overrides):
+    base = {
+        "schema": "awiki-review/v1", "phase": "3", "cycle": 1,
+        "executor": "agent-a", "reviewer": "agent-b",
+        "status": "REVIEW_REQUESTED", "head_sha": "abc1234",
+    }
+    base.update(overrides)
+    return base
+
+
+def _validate_review(instance):
+    jsonschema = pytest.importorskip("jsonschema")
+    schema = json.loads((SCHEMAS / "awiki-review/v1.schema.json").read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator(schema).validate(instance)  # raises on invalid
+
+
+def test_review_ready_requires_reviewer_verdict_and_evidence():
+    with pytest.raises(Exception):
+        _validate_review(_review_instance(status="READY"))
+
+
+def test_review_approved_rejects_changes_required_verdict():
+    with pytest.raises(Exception):
+        _validate_review(_review_instance(status="APPROVED", verdict="CHANGES_REQUIRED"))
+
+
+def test_review_ready_rejects_open_blocker_finding():
+    with pytest.raises(Exception):
+        _validate_review(_review_instance(
+            status="READY", verdict="PASS",
+            findings=[{"id": "R-X-001", "severity": "blocker", "area": "x",
+                       "summary": "s", "state": "open"}],
+        ))
+
+
+def test_review_ready_accepts_verified_blocker_and_pass():
+    _validate_review(_review_instance(
+        status="READY", verdict="PASS_WITH_NOTES",
+        findings=[{"id": "R-X-001", "severity": "blocker", "area": "x",
+                   "summary": "s", "state": "verified"}],
+        required_tests=["python -m pytest tests/ -q"],
+        next_action="MARK_READY",
+    ))
+
+
+def test_review_reviewing_requires_reviewer():
+    with pytest.raises(Exception):
+        _validate_review(_review_instance(status="REVIEWING", reviewer=None))
+
+
+# ---------------------------------------------------------------------------
+# R-P3-003 — task state must stay in the durable + control-plane boundaries
+# ---------------------------------------------------------------------------
+def test_task_state_is_durable_and_control_plane():
+    data = yaml.safe_load((CONFIG / "awiki.yaml").read_text(encoding="utf-8"))
+    durable = " ".join(data["state_boundaries"]["durable"]).lower()
+    control = " ".join(data["control_plane_vs_project"]["control_plane_holds"]).lower()
+    assert "task" in durable, "task state must be listed as durable"
+    assert "task" in control, "task state must be listed as control-plane held"
+    # and the wording must never re-trigger the sk- secret scanner
+    import re
+    for bucket in (durable, control):
+        assert not re.search(r"sk-[A-Za-z0-9_-]{24,}", bucket)
+
+
+# ---------------------------------------------------------------------------
+# R-P3-004 — one canonical role/capability vocabulary across contracts
+# ---------------------------------------------------------------------------
+def _task_instance(**overrides):
+    base = {
+        "schema": "awiki-task/v1", "id": "AW-001", "goal": "g",
+        "status": "planned", "mode": "pair",
+    }
+    base.update(overrides)
+    return base
+
+
+def _validate_task(instance):
+    jsonschema = pytest.importorskip("jsonschema")
+    schema = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator(schema).validate(instance)
+
+
+def test_task_assigned_supports_tester_role():
+    task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    roles = set(task["properties"]["assigned"]["properties"])
+    assert {"executor", "reviewer", "architect", "tester"} <= roles, \
+        "KERNEL.md lists tester as assignable; schema must match"
+
+
+def test_task_capability_enum_covers_context_and_memory_capabilities():
+    task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    enum = set(task["properties"]["required_capabilities"]["items"]["enum"])
+    for cap in ("project-code-context", "symbol-search", "call-graph",
+                "blast-radius", "memory-read", "memory-write"):
+        assert cap in enum, f"advertised capability not requestable by tasks: {cap}"
+
+
+def test_task_worktree_rejects_absolute_and_private_paths():
+    _validate_task(_task_instance(worktree=".worktrees/AW-001"))  # repo-relative ok
+    drive = "C" + chr(58) + chr(92)  # "C:" + backslash, assembled — no literal machine path here
+    for bad in (drive + "private" + chr(92) + "wt",
+                chr(47) + "home/user/wt", "~" + chr(47) + "wt"):
+        with pytest.raises(Exception):
+            _validate_task(_task_instance(worktree=bad))
+
+
+def test_task_has_evidence_field():
+    _validate_task(_task_instance(evidence=["python -m pytest tests/ -q", "run/abc.md"]))
+
+
+def test_handoff_roles_are_subset_of_kernel_roles():
+    hand = json.loads((SCHEMAS / "awiki-handoff/v1.schema.json").read_text(encoding="utf-8"))
+    task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    kernel_roles = set(task["properties"]["assigned"]["properties"])
+    handoff_roles = set(hand["properties"]["to_role"]["enum"])
+    assert handoff_roles - {"any-capable-agent"} <= kernel_roles
+
+
+def test_provider_capabilities_advertised_in_registry_are_requestable():
+    reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
+    task = json.loads((SCHEMAS / "awiki-task/v1.schema.json").read_text(encoding="utf-8"))
+    enum = set(task["properties"]["required_capabilities"]["items"]["enum"])
+    context_caps = {"symbol-search", "call-graph", "blast-radius"}
+    graft = reg["integrations"]["graft"]["provides"]
+    assert context_caps <= set(graft), "graft advertises the context capabilities"
+    assert context_caps <= enum, "task enum must be able to request them"
+
+
+def test_kernel_doc_lists_context_and_memory_capabilities():
+    kernel = (REPO_ROOT / "docs" / "architecture" / "A-WIKI-KERNEL.md").read_text(encoding="utf-8")
+    for cap in ("project-code-context", "symbol-search", "call-graph",
+                "blast-radius", "memory-read", "memory-write"):
+        assert cap in kernel, f"KERNEL.md capability list missing {cap}"
+
+
+# ---------------------------------------------------------------------------
+# R-P3-005 — handoff must carry complete resume evidence
+# ---------------------------------------------------------------------------
+def _handoff_instance(**overrides):
+    base = {
+        "schema": "awiki-handoff/v1", "task_id": "AW-001", "from": "agent-a",
+        "to_role": "executor", "branch": "feature/x", "head_sha": "abc1234",
+        "changed_files": ["src/a.py"], "tests": {"passed": ["t1"], "failed": []},
+        "open_questions": [], "known_risks": [], "next_action": "test",
+    }
+    base.update(overrides)
+    return base
+
+
+def _validate_handoff(instance):
+    jsonschema = pytest.importorskip("jsonschema")
+    schema = json.loads((SCHEMAS / "awiki-handoff/v1.schema.json").read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator(schema).validate(instance)
+
+
+def test_complete_handoff_is_valid():
+    _validate_handoff(_handoff_instance())
+
+
+@pytest.mark.parametrize("missing", [
+    "from", "to_role", "tests", "changed_files", "open_questions", "known_risks",
+])
+def test_incomplete_handoff_is_rejected(missing):
+    inst = _handoff_instance()
+    inst.pop(missing)
+    with pytest.raises(Exception):
+        _validate_handoff(inst)
+
+
+# ---------------------------------------------------------------------------
+# R-P3-007 — graft classification test must actually prove MODULE/PATTERN
+# ---------------------------------------------------------------------------
+def _graft_classification_ok(value):
+    classes = {value} if isinstance(value, str) else set(value or [])
+    return bool(classes) and classes <= {"module", "pattern"}
+
+
+def test_graft_classification_check_normalizes_and_proves():
+    reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
+    graft = reg["integrations"]["graft"]
+    assert _graft_classification_ok(graft["classification"]), graft["classification"]
+    # negative cases the old truthy-expression accepted by accident
+    assert not _graft_classification_ok("reject")
+    assert not _graft_classification_ok(["module", "reject"])
+    assert not _graft_classification_ok([])
+    assert not _graft_classification_ok(None)
+
+
+# ---------------------------------------------------------------------------
+# R-P3-006 — normative contract references must resolve
+# ---------------------------------------------------------------------------
+def test_normative_reference_paths_resolve():
+    # awiki.yaml's classification-gate pointer must exist
+    data = yaml.safe_load((CONFIG / "awiki.yaml").read_text(encoding="utf-8"))
+    gate = data["integration_registry"]["classification_gate"]
+    gate_path = REPO_ROOT / gate.split()[0].rstrip("/")
+    assert gate_path.with_suffix(".md").is_file() or gate_path.is_file(), \
+        f"normative reference missing: {gate}"
+    # every registry reference must exist (validator also enforces; kernel test doubles it)
+    reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
+    for name, entry in reg["integrations"].items():
+        ref = entry.get("reference")
+        if ref:
+            assert (REPO_ROOT / ref).is_file(), f"{name}: reference missing: {ref}"
+
+
+def test_graft_freshness_pattern_is_not_marked_merged():
+    """R-P3-002 truthfulness: query-path freshness is planned, not implemented."""
+    reg = yaml.safe_load((CONFIG / "integrations.yaml").read_text(encoding="utf-8"))
+    fp = reg["integrations"]["graft-freshness-pattern"]
+    assert fp["status"] != "merged", \
+        "wiki-health/scan-repo do not implement Graft query-path freshness/refresh semantics"
+    assert not fp.get("implemented_by"), "no implementors exist yet"
