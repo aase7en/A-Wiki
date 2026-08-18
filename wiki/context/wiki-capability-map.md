@@ -10,7 +10,7 @@
 | Wiki pages | 518 |
 | Owned skills | 31 |
 | Script capabilities | 11 |
-| Protocols/runbooks | 66 |
+| Protocols/runbooks | 67 |
 | HTML surfaces | 13 |
 
 ## Wiki Knowledge Surface
@@ -148,6 +148,7 @@
 | Edit Protection — CLAUDE.md ห้ามแก้โดยไม่ได้รับอนุญาต | docs/protocols | `docs/protocols/edit-protection.md` |
 | FABLE5-REASONING-STANDARDS.md | docs/protocols | `docs/protocols/fable5-reasoning-standards.md` |
 | Hybrid Drive Rule — three-layer storage for A-Wiki | docs/protocols | `docs/protocols/hybrid-drive-rule.md` |
+| Integration Intake Protocol | docs/protocols | `docs/protocols/integration-intake.md` |
 | Knowledge Currency Protocol — รับมือข้อมูลล้าหลัง | docs/protocols | `docs/protocols/knowledge-currency.md` |
 | Session Lifecycle Protocols — Mobile & Session End | docs/protocols | `docs/protocols/lifecycle.md` |
 | Protocol: Output Format — Durability Stratification + Render-Don't-Dump | docs/protocols | `docs/protocols/md-vs-html-output.md` |
