@@ -177,6 +177,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 4 | ⏳ awaiting | 2026-08-18 | Project Adapter complete (Phase 4 Log). |
 | 4 | CHANGES_REQUIRED | 2026-08-18 | R-P4-001..006 (PR #14 review): containment, attach symlink safety, required policy, safe yaml gen, registry cross-check, attachment surface. |
 | 4 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (41 adapter tests); canonical 0 failed / 2,700 passed / 17 skipped. |
+| 4 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P4-007 read-path symlinks · R-P4-008 allowlist eligibility · R-P4-009 decode fail-closed. |
+| 4 | ⏳ awaiting re-review (2) | 2026-08-18 | R-P4-007..009 fixed TDD (49 adapter tests); canonical 0 failed / 2,708 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -212,6 +214,15 @@ Review: PR #14 vs `4248caa3`. All findings TDD (negative tests first, 21 red bef
 - **R-P4-005** — `integrations.allowed` cross-checked offline against the canonical registry (fail-closed if the registry is unreadable); unknown-id negative + known-id positive.
 - **R-P4-006** — canonical attachment surface enforced: AGENTS.md with the adapter marker + context.md + state/ all required; negatives for deleted AGENTS.md, markerless AGENTS.md, missing state/.
 - Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,700 passed / 17 skipped**.
+
+## Phase 4 Remediation Log 2 (2026-08-18)
+
+Review: PR #14 vs `25f488a1`. TDD (8 negatives red-first):
+
+- **R-P4-007** — the READ path now enforces the same no-symlink invariant as attach: `_check_canonical_surface` rejects any symlinked canonical path (AGENTS.md, .awiki, project.yaml, context.md, state) before metadata is consumed; status reports INVALID instead of reading an external surface. Negatives: symlinked .awiki / AGENTS.md / project.yaml + status-INVALID.
+- **R-P4-008** — allowlist eligibility by registry SEMANTICS (`_eligible_integration_ids`: MODULE-classified only); REJECT (deer-flow) and pattern-only (autoresearch) entries are ineligible even though their ids exist; planned/optional MODULE pre-authorization preserved. Negatives + existing module positive.
+- **R-P4-009** — decode/read errors converted to deterministic validation errors (fail closed, no silent byte replacement in policy metadata): validate catches OSError + UnicodeDecodeError on project.yaml; status guards both project.yaml and AGENTS.md reads. Negatives: invalid-UTF-8 project.yaml (validate + status).
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,708 passed / 17 skipped**.
 
 ## Phase 1 Entry Order
 
