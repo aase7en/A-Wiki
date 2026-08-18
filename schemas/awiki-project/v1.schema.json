@@ -4,33 +4,66 @@
   "title": "awiki-project/v1",
   "description": "Thin, portable project-adapter policy (kernel §control-plane-vs-project). STABLE POLICY ONLY — never secrets, absolute/private machine paths, provider quota/health, transient telemetry, hidden prompts, or implementation-repo contents.",
   "type": "object",
-  "required": ["schema", "id", "domains"],
+  "required": [
+    "schema",
+    "id",
+    "domains",
+    "privacy",
+    "trust",
+    "memory"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema": { "const": "awiki-project/v1" },
-    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$" },
+    "schema": {
+      "const": "awiki-project/v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+    },
     "repository": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "url": { "type": "string", "description": "Stable repository identity (https/git URL or relative reference)" },
-        "note": { "type": "string" }
+        "url": {
+          "type": "string",
+          "description": "Stable repository identity (https/git URL or relative reference)"
+        },
+        "note": {
+          "type": "string"
+        }
       }
     },
-    "domains": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
     "skills": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "auto": { "type": "array", "items": { "type": "string" } }
+        "auto": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "integrations": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "allowed": { "type": "array", "items": { "type": "string" },
-                     "description": "Ids from config/integrations.yaml the project may use" }
+        "allowed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ids from config/integrations.yaml the project may use"
+        }
       }
     },
     "memory": {
@@ -41,51 +74,111 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "global": { "type": "boolean" },
-            "project": { "type": "boolean" },
-            "session": { "type": "boolean" },
-            "private": { "type": "boolean" }
-          }
+            "global": {
+              "type": "boolean"
+            },
+            "project": {
+              "type": "boolean"
+            },
+            "session": {
+              "type": "boolean"
+            },
+            "private": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "global",
+            "project",
+            "session",
+            "private"
+          ]
         }
-      }
+      },
+      "required": [
+        "scopes"
+      ]
     },
     "privacy": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "project_private": { "type": "boolean",
-                             "description": "Project contains private data; promotion gates apply" }
-      }
+        "project_private": {
+          "type": "boolean",
+          "description": "Project contains private data; promotion gates apply"
+        }
+      },
+      "required": [
+        "project_private"
+      ]
     },
     "trust": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "deep_enrichment": { "enum": ["project-policy", "approved-only", "never"] },
-        "private_context": { "type": "boolean" }
-      }
+        "deep_enrichment": {
+          "enum": [
+            "project-policy",
+            "approved-only",
+            "never"
+          ]
+        },
+        "private_context": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "private_context"
+      ]
     },
     "code_context": {
       "type": "object",
       "additionalProperties": false,
       "description": "Optional ProjectCodeContextProvider policy (G0 contract only — no provider runtime)",
       "properties": {
-        "enabled": { "type": "boolean" },
-        "mode": { "enum": ["auto", "preferred"] },
-        "preferred": { "type": "array", "items": { "type": "string" } },
+        "enabled": {
+          "type": "boolean"
+        },
+        "mode": {
+          "enum": [
+            "auto",
+            "preferred"
+          ]
+        },
+        "preferred": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "required_capabilities": {
           "type": "array",
-          "items": { "enum": ["symbol-search", "call-graph", "blast-radius", "code-search",
-                              "repo-map", "freshness", "project-code-context"] }
+          "items": {
+            "enum": [
+              "symbol-search",
+              "call-graph",
+              "blast-radius",
+              "code-search",
+              "repo-map",
+              "freshness",
+              "project-code-context"
+            ]
+          }
         },
-        "cache_policy": { "const": "local-regenerable" },
-        "global_memory_promotion": { "const": false,
-                                     "description": "Code-context caches never promote to global memory" }
+        "cache_policy": {
+          "const": "local-regenerable"
+        },
+        "global_memory_promotion": {
+          "const": false,
+          "description": "Code-context caches never promote to global memory"
+        }
       }
     },
     "resources": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Project-relative references to project-owned adapter files (validated to exist)"
     }
   }

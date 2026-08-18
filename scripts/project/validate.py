@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """Deterministic, offline awiki-project/v1 adapter validation (Phase 4).
 
-Fail-closed validation of a project's `.awiki/project.yaml`:
+Fail-closed validation of a project's `.awiki/project.yaml` + canonical
+attachment surface:
   1. YAML parse (duplicate-key-safe loader reused from the integrations
      validator — one loading contract across the kernel).
   2. JSON-Schema validation (unknown fields rejected structurally).
-  3. Semantic checks: no absolute/private machine paths in any string,
-     no secret-shaped values (reuses the kernel's single security-pattern
-     source), referenced local adapter files must exist, context.md present.
+  3. Semantic checks:
+     - no absolute/private machine paths in ANY string (Windows drive/UNC/
+       extended, Unix absolute/private, tilde) — host-OS independent
+     - no secret-shaped values (kernel's single security-pattern source)
+     - resources are containment-safe: resolved target must stay under the
+       resolved project root (nested `..` and symlink escapes rejected)
+     - integrations.allowed ids must exist in the canonical registry
+     - canonical surface: AGENTS.md with the adapter marker + context.md +
+       state/ present
 
-No network, no subprocesses, no side effects — safe in CI and any executor.
-Exit 0 = valid; 1 = violations (printed).
+No network, no subprocesses, no side effects. Exit 0 = valid; 1 = violations.
 """
 from __future__ import annotations
 
@@ -25,17 +31,24 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_FILE = REPO_ROOT / "schemas" / "awiki-project" / "v1.schema.json"
+REGISTRY_FILE = REPO_ROOT / "config" / "integrations.yaml"
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "health"))
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
 
 from validate_integrations import UniqueKeyLoader  # noqa: E402 -- one loader contract
 from _scan_staged_diff import PATTERNS, PLACEHOLDERS  # noqa: E402 -- one pattern source
 
-# Absolute / private machine-path shapes (mirrors kernel privacy rules).
-# (?<![A-Za-z]) keeps https://github.com (the "s:") from matching a drive letter.
+AGENTS_MARKER = "awiki-project-adapter"
+
+# Absolute/private machine-path shapes, host-OS independent (R-P4-001).
+# - drive letters guarded by (?<![A-Za-z]) so https:// never matches
+# - UNC \\\\server\\share and Windows extended \\\\?\\ / \\??\\ device paths
+# - Unix absolute-private roots incl. general /etc,/tmp,/var,/opt,/root
+# - ~ home references
 ABSOLUTE_PATH_RE = re.compile(
     r"(?<![A-Za-z])[A-Za-z]:[\\/][^\s\"']*"
-    r"|/(?:home|Users)/[^\s\"']*"
+    r"|\\\\[^\s\"']*"                        # UNC \\server\share + extended \\?\ device paths
+    r"|/(?:home|Users|etc|tmp|var|opt|root|private)(?:/[^\s\"']*)?"
     r"|~/"
     r"|\.(?:gitnexus|kilo|hermes)/"
 )
@@ -61,8 +74,34 @@ def _iter_strings(node, prefix=""):
         yield prefix, node
 
 
+def _contains(project_root: Path, candidate: Path) -> bool:
+    """True iff candidate (resolved) is project_root (resolved) or beneath it.
+    Resolves symlinks — a link pointing outside escapes containment (R-P4-001)."""
+    try:
+        root_resolved = project_root.resolve()
+        target_resolved = candidate.resolve()
+    except OSError:
+        return False
+    try:
+        target_resolved.relative_to(root_resolved)
+        return True
+    except ValueError:
+        return False
+
+
+def _known_integration_ids() -> set[str] | None:
+    """Ids from the canonical registry; None if the registry itself is broken
+    (caller fails closed — validating against a corrupt registry is worse)."""
+    try:
+        data = yaml.load(REGISTRY_FILE.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
+        return set((data.get("integrations") or {}).keys())
+    except Exception:
+        return None
+
+
 def validate(project_root: Path) -> ValidationResult:
     result = ValidationResult()
+    project_root = project_root.resolve()
     aw = project_root / ".awiki"
     yml = aw / "project.yaml"
 
@@ -100,23 +139,45 @@ def validate(project_root: Path) -> ValidationResult:
             result.errors.append(f"secret-shaped value at {loc}: [{name}]")
             break
 
-    # ── absolute/private machine paths ──
+    # ── absolute/private machine paths (any string field) ──
     for loc, value in _iter_strings(data):
         if ABSOLUTE_PATH_RE.search(value):
             result.errors.append(f"absolute/private machine path at {loc}: {value[:60]!r}")
 
-    # ── referenced local adapter files must exist (project-relative only) ──
-    for ref in data.get("resources", []) if isinstance(data, dict) else []:
-        if not isinstance(ref, str):
-            continue
-        if Path(ref).is_absolute() or ref.startswith(".."):
-            result.errors.append(f"resource must be project-relative: {ref}")
-        elif not (project_root / ref).exists():
-            result.errors.append(f"referenced adapter file does not exist: {ref}")
+    if isinstance(data, dict):
+        # ── resources: containment-safe local references ──
+        for ref in data.get("resources", []) or []:
+            if not isinstance(ref, str):
+                continue
+            candidate = project_root / ref
+            if Path(ref).is_absolute() or ref.startswith("..") or not ref:
+                result.errors.append(f"resource must be project-relative: {ref}")
+            elif not candidate.exists():
+                result.errors.append(f"referenced adapter file does not exist: {ref}")
+            elif not _contains(project_root, candidate):
+                result.errors.append(
+                    f"resource escapes the project root (nested .. or symlink): {ref}")
 
-    # ── context.md is part of the adapter contract ──
+        # ── integration allowlist vs canonical registry (offline) ──
+        allowed = (data.get("integrations") or {}).get("allowed") or []
+        known = _known_integration_ids()
+        if known is None:
+            result.errors.append("canonical integration registry unreadable — cannot verify allowlist (fail closed)")
+        else:
+            for iid in allowed:
+                if iid not in known:
+                    result.errors.append(f"unknown integration id (not in config/integrations.yaml): {iid}")
+
+    # ── canonical attachment surface (R-P4-006) ──
+    agents = project_root / "AGENTS.md"
+    if not agents.is_file():
+        result.errors.append("missing discovery surface: AGENTS.md")
+    elif AGENTS_MARKER not in agents.read_text(encoding="utf-8", errors="replace"):
+        result.errors.append(f"AGENTS.md lacks the adapter marker ({AGENTS_MARKER}) — not attached")
     if not (aw / "context.md").is_file():
         result.errors.append("missing adapter file: .awiki/context.md")
+    if not (aw / "state").is_dir():
+        result.errors.append("missing adapter dir: .awiki/state/")
 
     return result
 

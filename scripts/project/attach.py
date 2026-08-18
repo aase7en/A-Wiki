@@ -4,13 +4,20 @@
 Phase 4 kernel contract (§control-plane-vs-project): projects ATTACH to
 A-Wiki; A-Wiki is never copied/symlinked/submoduled into the project.
 
-Behavior (idempotent + non-destructive):
-  - creates .awiki/project.yaml ONLY if absent (existing policy untouched)
+Behavior (idempotent + non-destructive + project-contained):
+  - REFUSES to run if any adapter path (AGENTS.md, .awiki, project.yaml,
+    context.md, state) is a symlink — never follows a link outside the
+    project, never touches its target (R-P4-002)
+  - creates .awiki/project.yaml ONLY if absent (existing policy untouched),
+    generated via yaml.safe_dump from a mapping (never string interpolation,
+    R-P4-004) including the required privacy/trust/memory policy (R-P4-003)
   - creates .awiki/context.md stub ONLY if absent
   - creates .awiki/state/ (+ .gitkeep) ONLY if absent
   - AGENTS.md: creates a minimal adapter file if absent; if present, appends
     ONE clearly-marked adapter section (marker below) preserving every
-    existing byte — never rewrites, never appends twice.
+    existing byte — never rewrites, never appends twice
+  - self-validates the result with the offline validator and FAILS (exit 1)
+    if the generated adapter is invalid (R-P4-004)
 No Git operations, no symlinks, no A-Wiki content copies. Cross-platform.
 """
 from __future__ import annotations
@@ -19,6 +26,11 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import validate as pv  # noqa: E402 -- self-validation after attach
 
 AGENTS_MARKER = "awiki-project-adapter"
 ADAPTER_SECTION = f"""
@@ -33,26 +45,44 @@ contract for boundaries. Removing this section detaches cleanly.
 <!-- /{AGENTS_MARKER} -->
 """
 
-PROJECT_YAML_TEMPLATE = """\
-schema: awiki-project/v1
-id: {id}
-# repository: {{url: https://github.com/example/{id}}}   # stable identity — fill in
-domains: [{domains}]
-skills:
-  auto: [a-router]
-integrations:
-  allowed: []          # ids from A-Wiki config/integrations.yaml
-memory:
-  scopes: {{global: true, project: true, session: true, private: false}}
-privacy:
-  project_private: true
-code_context:
-  enabled: false       # ProjectCodeContextProvider policy only (no runtime)
-  preferred: []
-  cache_policy: local-regenerable
-  global_memory_promotion: false
-resources: []          # project-relative adapter files (validated to exist)
-"""
+ADAPTER_PATHS = ["AGENTS.md", ".awiki", ".awiki/project.yaml",
+                 ".awiki/context.md", ".awiki/state"]
+
+
+def _slug(name: str) -> str:
+    slug = re.sub(r"[^a-z0-9-]+", "-", name.lower()).strip("-")
+    return (slug or "project")[:64]
+
+
+def _check_no_unsafe_symlinks(project_root: Path) -> list[str]:
+    """R-P4-002: refuse adapter paths that are symlinks (targets may live
+    outside the project — following them writes through the boundary)."""
+    problems = []
+    for rel in ADAPTER_PATHS:
+        p = project_root / rel
+        if p.is_symlink():
+            problems.append(f"refusing: {rel} is a symlink (adapter paths must be project-contained)")
+    return problems
+
+
+def _project_yaml_mapping(project_id: str, domains: list[str]) -> dict:
+    """Stable policy mapping (R-P4-003/004) — serialized with safe_dump."""
+    return {
+        "schema": "awiki-project/v1",
+        "id": project_id,
+        "domains": sorted(dict.fromkeys(domains)) or ["general"],
+        "skills": {"auto": ["a-router"]},
+        "integrations": {"allowed": []},
+        "memory": {"scopes": {"global": True, "project": True,
+                              "session": True, "private": False}},
+        "privacy": {"project_private": True},
+        "trust": {"deep_enrichment": "project-policy", "private_context": False},
+        "code_context": {"enabled": False, "preferred": [],
+                         "cache_policy": "local-regenerable",
+                         "global_memory_promotion": False},
+        "resources": [],
+    }
+
 
 CONTEXT_MD_TEMPLATE = """\
 # Project Context — {id}
@@ -63,26 +93,25 @@ in the project repo). See .awiki/project.yaml for policy.
 """
 
 
-def _slug(name: str) -> str:
-    slug = re.sub(r"[^a-z0-9-]+", "-", name.lower()).strip("-")
-    return (slug or "project")[:64]
-
-
 def attach(project_root: Path, project_id: str, domains: list[str]) -> dict:
     report = {"created": [], "preserved": [], "appended_agents_section": False}
     aw = project_root / ".awiki"
 
-    # ── .awiki/project.yaml (never overwrite) ──
+    # ── R-P4-002: symlink refusal BEFORE any write ──
+    unsafe = _check_no_unsafe_symlinks(project_root)
+    if unsafe:
+        report["refused"] = unsafe
+        return report
+
+    # ── .awiki/project.yaml (never overwrite; safe_dump, R-P4-004) ──
     yml = aw / "project.yaml"
     if yml.is_file():
         report["preserved"].append(".awiki/project.yaml")
     else:
         aw.mkdir(parents=True, exist_ok=True)
+        mapping = _project_yaml_mapping(project_id, domains)
         yml.write_text(
-            PROJECT_YAML_TEMPLATE.format(
-                id=project_id,
-                domains=", ".join(sorted(dict.fromkeys(domains))) or "general",
-            ),
+            yaml.safe_dump(mapping, sort_keys=False, allow_unicode=True),
             encoding="utf-8",
         )
         report["created"].append(".awiki/project.yaml")
@@ -137,12 +166,26 @@ def main(argv: list[str] | None = None) -> int:
 
     project_id = _slug(args.id or root.name)
     report = attach(root, project_id, args.domain)
+
+    if "refused" in report:
+        for problem in report["refused"]:
+            print(f"attach: {problem}", file=sys.stderr)
+        return 2
+
     for item in report["created"]:
         print(f"created  : {item}")
     for item in report["preserved"]:
         print(f"preserved: {item}")
     if report["appended_agents_section"]:
         print(f"appended : AGENTS.md adapter section (marker: {AGENTS_MARKER})")
+
+    # ── R-P4-004: never report success on an invalid generated adapter ──
+    result = pv.validate(root)
+    if result.exit_code() != 0:
+        for e in result.errors:
+            print(f"attach: generated adapter is INVALID — {e}", file=sys.stderr)
+        return 1
+
     print(f"attached : {project_id} (idempotent — rerun anytime)")
     return 0
 

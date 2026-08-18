@@ -46,9 +46,10 @@ def _valid_project_yaml(**overrides) -> str:
         "repository": {"url": "https://github.com/example/fixture-app"},
         "domains": ["web-development"],
         "skills": {"auto": ["a-router"]},
-        "integrations": {"allowed": ["gitnexus"]},
+        "integrations": {"allowed": []},
         "memory": {"scopes": {"global": True, "project": True, "session": True, "private": False}},
         "privacy": {"project_private": True},
+        "trust": {"deep_enrichment": "project-policy", "private_context": False},
         "code_context": {
             "enabled": False,
             "preferred": [],
@@ -58,7 +59,7 @@ def _valid_project_yaml(**overrides) -> str:
         "resources": [],
     }
     data.update(overrides)
-    return yaml.safe_dump(data, sort_keys=False)
+    return yaml.safe_dump(data, sort_keys=False, default_flow_style=True).strip()
 
 
 def _adapter_dir(tmp_path: Path) -> Path:
@@ -105,10 +106,15 @@ def test_project_schema_rejects_missing_id():
 # validate — deterministic/offline, fail closed
 # ---------------------------------------------------------------------------
 def _write_adapter(project: Path, yaml_text: str, context: str = "# context\n"):
+    """Create the FULL canonical surface so 'valid' fixtures really are valid."""
     aw = project / ".awiki"
     aw.mkdir(parents=True, exist_ok=True)
     (aw / "project.yaml").write_text(yaml_text, encoding="utf-8")
     (aw / "context.md").write_text(context, encoding="utf-8")
+    (aw / "state").mkdir(exist_ok=True)
+    agents = project / "AGENTS.md"
+    if not agents.exists():
+        agents.write_text(f"hdr\n<!-- {AGENTS_MARKER} v1 -->\n", encoding="utf-8")
     return aw
 
 
@@ -132,7 +138,10 @@ def test_validate_rejects_absolute_private_path(tmp_path):
 
 def test_validate_rejects_secret_shaped_value(tmp_path):
     token = "ghp_" + "S1" + "0123456789abcdef" * 2
-    text = _valid_project_yaml().replace("id: fixture-app", f"id: fixture-app\nnote: token {token}")
+    # inject into an existing string value (flow-style yaml: no raw newlines)
+    text = _valid_project_yaml().replace(
+        "domains: [web-development]", f"domains: ['web-development {token}']")
+    assert token in text, "injection must land"
     project = _adapter_dir(tmp_path)
     _write_adapter(project, text)
     result = pv.validate(project)
@@ -260,3 +269,236 @@ def test_status_fails_deterministically_without_adapter(tmp_path):
     assert proc.returncode == 1
     data = json.loads(proc.stdout)
     assert data["adapter_valid"] is False
+
+
+# ---------------------------------------------------------------------------
+# R-P4-001 — containment-safe resource + cross-platform path detection
+# ---------------------------------------------------------------------------
+def test_validate_rejects_nested_traversal_resource(tmp_path):
+    secret_outside = tmp_path / "outside.txt"
+    secret_outside.write_text("outside", encoding="utf-8")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / "docs").mkdir()
+    (project / "docs" / "real.md").write_text("x", encoding="utf-8")
+    text = _valid_project_yaml().replace(
+        "resources: []", "resources: ['docs/real.md', 'docs/../../outside.txt']")
+    (project / ".awiki" / "project.yaml").write_text(text, encoding="utf-8")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("outside.txt" in e or "escape" in e.lower() for e in result.errors)
+
+
+def test_validate_rejects_symlink_escape_resource(tmp_path):
+    if not hasattr(__import__("os"), "symlink"):
+        pytest.skip("symlinks unavailable on this platform")
+    import os
+    outside = tmp_path / "outside-doc.md"
+    outside.write_text("outside", encoding="utf-8")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / "docs").mkdir()
+    os.symlink(outside, project / "docs" / "linked.md")
+    text = _valid_project_yaml().replace("resources: []", "resources: ['docs/linked.md']")
+    (project / ".awiki" / "project.yaml").write_text(text, encoding="utf-8")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("escape" in e.lower() or "symlink" in e.lower() for e in result.errors)
+
+
+@pytest.mark.parametrize("bad_path", [
+    "/etc/passwd", "/tmp/x", "~" + chr(47) + "secrets",       # unix absolute/private + tilde
+    chr(92) * 2 + "server" + chr(92) + "share" + chr(92) + "f",  # UNC
+    chr(92) * 2 + "?" + chr(92) + "C:" + chr(92) + "x",          # Windows extended/device
+])
+def test_validate_rejects_cross_platform_path_strings(tmp_path, bad_path):
+    # quoted injection: flow-style yaml keeps any path shape parseable
+    text = _valid_project_yaml().replace("domains: [web-development]",
+                                         "domains: ['" + bad_path + "']")
+    assert "web-development" not in text, "injection must land"
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 1, f"must reject path string: {bad_path}"
+    assert any("machine path" in e.lower() for e in result.errors)
+
+
+# ---------------------------------------------------------------------------
+# R-P4-002 — attach must not follow unsafe pre-existing symlinks
+# ---------------------------------------------------------------------------
+def test_attach_refuses_agents_md_symlink_and_leaves_target_untouched(tmp_path):
+    if not hasattr(__import__("os"), "symlink"):
+        pytest.skip("symlinks unavailable on this platform")
+    import os
+    external = tmp_path / "external-agents.md"
+    external.write_text("PRECIOUS EXTERNAL CONTENT\n", encoding="utf-8")
+    project = _adapter_dir(tmp_path)
+    os.symlink(external, project / "AGENTS.md")
+    proc = _run(ATTACH, str(project), "--id", "fixture-app", cwd=tmp_path)
+    assert proc.returncode != 0, "attach must refuse a symlinked AGENTS.md"
+    assert external.read_text(encoding="utf-8") == "PRECIOUS EXTERNAL CONTENT\n"
+    assert not (project / ".awiki" / "project.yaml").exists(), "no partial attach after refusal"
+
+
+def test_attach_refuses_awiki_dir_symlink(tmp_path):
+    if not hasattr(__import__("os"), "symlink"):
+        pytest.skip("symlinks unavailable on this platform")
+    import os
+    outside_dir = tmp_path / "outside-aw"
+    outside_dir.mkdir()
+    project = _adapter_dir(tmp_path)
+    os.symlink(outside_dir, project / ".awiki")
+    proc = _run(ATTACH, str(project), "--id", "fixture-app", cwd=tmp_path)
+    assert proc.returncode != 0
+    assert list(outside_dir.iterdir()) == [], "external dir must remain untouched"
+
+
+# ---------------------------------------------------------------------------
+# R-P4-003 — privacy/trust/memory policy structurally required
+# ---------------------------------------------------------------------------
+def test_adapter_without_trust_is_invalid(tmp_path):
+    data = yaml.safe_load(_valid_project_yaml())
+    del data["trust"]
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, yaml.safe_dump(data, sort_keys=False))
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("trust" in e.lower() for e in result.errors)
+
+
+def test_adapter_without_privacy_is_invalid(tmp_path):
+    data = yaml.safe_load(_valid_project_yaml())
+    del data["privacy"]
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, yaml.safe_dump(data, sort_keys=False))
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+
+
+def test_adapter_without_memory_is_invalid(tmp_path):
+    data = yaml.safe_load(_valid_project_yaml())
+    del data["memory"]
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, yaml.safe_dump(data, sort_keys=False))
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+
+
+def test_trust_without_private_context_is_invalid(tmp_path):
+    data = yaml.safe_load(_valid_project_yaml())
+    data["trust"] = {"deep_enrichment": "project-policy"}
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, yaml.safe_dump(data, sort_keys=False))
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+
+
+def test_fresh_attach_generates_trust_policy(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _run(ATTACH, str(project), "--id", "fixture-app", cwd=tmp_path)
+    data = yaml.safe_load((project / ".awiki" / "project.yaml").read_text(encoding="utf-8"))
+    assert isinstance(data.get("trust"), dict)
+    assert "private_context" in data["trust"]
+
+
+# ---------------------------------------------------------------------------
+# R-P4-004 — safe YAML generation + id reconciliation + self-validation
+# ---------------------------------------------------------------------------
+def test_attach_survives_punctuated_and_unicode_domains(tmp_path):
+    project = tmp_path / "p"
+    project.mkdir()
+    weird = "web, dev: #1 [x] — ไทย/中文"
+    proc = _run(ATTACH, str(project), "--id", "weird-app",
+                "--domain", weird, cwd=tmp_path)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    data = yaml.safe_load((project / ".awiki" / "project.yaml").read_text(encoding="utf-8"))
+    assert weird in data["domains"], "domain must round-trip verbatim"
+    assert pv.validate(project).exit_code() == 0
+
+
+def test_attach_single_char_id_round_trips(tmp_path):
+    project = tmp_path / "x"
+    project.mkdir()
+    proc = _run(ATTACH, str(project), cwd=tmp_path)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    data = yaml.safe_load((project / ".awiki" / "project.yaml").read_text(encoding="utf-8"))
+    assert data["id"]
+    assert pv.validate(project).exit_code() == 0
+
+
+def test_attach_reports_failure_if_generated_adapter_invalid(tmp_path):
+    # Subprocess sabotage via a REAL pre-existing invalid project.yaml:
+    # attach must preserve it (non-destructive) and then FAIL self-validation.
+    project = _adapter_dir(tmp_path)
+    aw = project / ".awiki"
+    aw.mkdir()
+    (aw / "project.yaml").write_text(
+        "schema: awiki-project/v1\nid: incomplete\n", encoding="utf-8")  # missing required policy
+    proc = _run(ATTACH, str(project), "--id", "fixture-app", cwd=tmp_path)
+    assert proc.returncode != 0, "attach must not report success on an invalid resulting adapter"
+    # the invalid pre-existing policy must still be byte-preserved
+    assert (aw / "project.yaml").read_text(encoding="utf-8") == \
+        "schema: awiki-project/v1\nid: incomplete\n"
+
+
+# ---------------------------------------------------------------------------
+#
+
+
+# ---------------------------------------------------------------------------
+# R-P4-005 — integration allowlist cross-checked against canonical registry
+# ---------------------------------------------------------------------------
+def test_validate_rejects_unknown_integration_id(tmp_path):
+    text = _valid_project_yaml().replace(
+        "allowed: []", "allowed: [not-a-real-integration]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("not-a-real-integration" in e for e in result.errors)
+
+
+def test_validate_accepts_known_integration_id(tmp_path):
+    text = _valid_project_yaml().replace("allowed: []", "allowed: [gitnexus]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 0, result.errors
+
+
+# ---------------------------------------------------------------------------
+# R-P4-006 — canonical attachment surface enforced
+# ---------------------------------------------------------------------------
+def test_adapter_without_agents_md_is_invalid(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / "AGENTS.md").unlink()  # remove the discovery surface explicitly
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("AGENTS.md" in e for e in result.errors)
+
+
+def test_adapter_with_markerless_agents_md_is_invalid(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / "AGENTS.md").write_text("# plain instructions\n", encoding="utf-8")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("marker" in e.lower() for e in result.errors)
+
+
+def test_adapter_without_state_dir_is_invalid(tmp_path):
+    import shutil
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    shutil.rmtree(project / ".awiki" / "state")  # remove state/ explicitly
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("state" in e.lower() for e in result.errors)
+
+
+def test_full_canonical_surface_is_valid(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())  # already creates the full surface
+    result = pv.validate(project)
+    assert result.exit_code() == 0, result.errors
