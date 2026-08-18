@@ -97,7 +97,7 @@ def _can_be_symlinked() -> bool:
 def test_promotion_without_l2_source_entry_fails(tmp_path):
     p = _project(tmp_path, "src1")
     res = promo.promote(
-        project_root=p, distilled="Generalized durable lesson.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=None, dry_run=True, data_root=tmp_path / "data")
     assert res["ok"] is False
@@ -111,7 +111,7 @@ def test_promotion_rejects_non_l2_source_layers(tmp_path, monkeypatch, layer):
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     res = promo.promote(
-        project_root=p, distilled="Looks clean and generalized.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_layer=layer, source_entry_ts=None,
         dry_run=False, data_root=tmp_path / "data")          # apply attempted
@@ -127,7 +127,7 @@ def test_promotion_unknown_entry_ts_fails_closed(tmp_path, monkeypatch):
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=123.456,            # not in this project's L2 store
         dry_run=False, data_root=tmp_path / "data")
@@ -138,12 +138,12 @@ def test_promotion_unknown_entry_ts_fails_closed(tmp_path, monkeypatch):
 def test_promotion_happy_path_bound_to_real_l2_entry(tmp_path, monkeypatch):
     p = _project(tmp_path, "src4")
     root = tmp_path / "data"
-    ts = _l2_source(p, root, "lesson about explicit enums")
+    ts = _l2_source(p, root, "Prefer explicit capability enums in contracts.")
     out_root = tmp_path / "l3out"
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     res = promo.promote(
-        project_root=p, distilled="Prefer explicit capability enums in contracts.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=ts, dry_run=False, data_root=root)
     assert res["ok"] is True, res["gates"]
@@ -158,7 +158,7 @@ def test_promotion_source_cannot_come_from_foreign_project(tmp_path):
     root = tmp_path / "data"
     ts_a = _l2_source(a, root, "alpha-only lesson")
     res = promo.promote(
-        project_root=b, distilled="Generalized lesson.",
+        project_root=b,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=ts_a, dry_run=True, data_root=root)
     assert res["ok"] is False, "beta promoted using alpha's L2 entry"
@@ -299,7 +299,7 @@ def test_provenance_secret_value_blocked_even_on_apply(tmp_path, monkeypatch):
     out = _candidate_dir(tmp_path, monkeypatch)
     token = "sk-ant-api03-" + "0123456789abcdef" * 3
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson.",
+        project_root=p,
         provenance={"type": "task_ref", "value": token},
         source_entry_ts=_l2_source(p, tmp_path / "data"),
         dry_run=False, data_root=tmp_path / "data")
@@ -311,7 +311,7 @@ def test_provenance_newline_frontmatter_injection_blocked(tmp_path, monkeypatch)
     p = _project(tmp_path, "prov2")
     out = _candidate_dir(tmp_path, monkeypatch)
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson.",
+        project_root=p,
         provenance={"type": "review_finding", "value": "R-P5-001\ninjected: yes"},
         source_entry_ts=_l2_source(p, tmp_path / "data"),
         dry_run=False, data_root=tmp_path / "data")
@@ -322,7 +322,7 @@ def test_provenance_newline_frontmatter_injection_blocked(tmp_path, monkeypatch)
 def test_provenance_control_characters_blocked(tmp_path, monkeypatch):
     p = _project(tmp_path, "prov3")
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson.",
+        project_root=p,
         provenance={"type": "handoff_ref", "value": "x\x00y\x1fz"},
         source_entry_ts=_l2_source(p, tmp_path / "data"),
         dry_run=True, data_root=tmp_path / "data")
@@ -339,7 +339,7 @@ def test_provenance_control_characters_blocked(tmp_path, monkeypatch):
 def test_provenance_strict_value_shapes(tmp_path, etype, value):
     p = _project(tmp_path, "prov4")
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson.",
+        project_root=p,
         provenance={"type": etype, "value": value},
         source_entry_ts=_l2_source(p, tmp_path / "data"),
         dry_run=True, data_root=tmp_path / "data")
@@ -349,9 +349,10 @@ def test_provenance_strict_value_shapes(tmp_path, etype, value):
 def test_candidate_front_matter_is_safe_yaml(tmp_path, monkeypatch):
     p = _project(tmp_path, "prov5")
     out = _candidate_dir(tmp_path, monkeypatch)
-    ts = _l2_source(p, tmp_path / "data")
+    ts = _l2_source(p, tmp_path / "data",
+                    "Generalized lesson with provenance-safe front matter.")
     res = promo.promote(
-        project_root=p, distilled="Generalized lesson with provenance-safe front matter.",
+        project_root=p,
         provenance={"type": "task_ref", "value": "TASK-42"},
         source_entry_ts=ts, dry_run=False, data_root=tmp_path / "data")
     assert res["ok"] is True, res["gates"]
@@ -431,7 +432,7 @@ def test_l2_entries_have_ledger_schema(tmp_path):
     for key in ("ts", "session_id", "type", "summary"):
         assert key in line, f"ledger schema key {key} missing from L2 entry"
     assert line["ts"] == ts
-    assert line["project"] == "seam1"           # project tag preserved
+    assert line["extra"]["project"] == "seam1"   # namespaced project tag (R-P5-006)
     # readable through the ledger seam itself
     ledger = memory_ledger.MemoryLedger(entries_file)
     assert any("ledger seam" in e["summary"] for e in ledger.search("ledger seam"))
@@ -471,7 +472,7 @@ def test_l2_concurrent_appends_stay_valid_jsonl(tmp_path):
     lines = [x for x in entries_file.read_text(encoding="utf-8").splitlines() if x.strip()]
     assert len(lines) == 11                      # 1 seed + 2×5 concurrent
     parsed = [json.loads(x) for x in lines]      # every line valid JSON
-    assert all(e.get("project") == "seam3" for e in parsed)
+    assert all(e["extra"]["project"] == "seam3" for e in parsed)
 
 
 def test_l2_isolation_guard_skips_foreign_lines(tmp_path):
@@ -482,11 +483,11 @@ def test_l2_isolation_guard_skips_foreign_lines(tmp_path):
     entries_file = root / "projects" / "seam4" / "memory" / "entries.jsonl"
     foreign = json.dumps({"ts": 999.0, "session_id": "x", "type": "lesson",
                           "summary": "own entry foreign", "tags": [],
-                          "project": "someone-else"})
+                          "extra": {"project": "someone-else"}})
     with entries_file.open("a", encoding="utf-8") as f:
         f.write(foreign + "\n")
     hits = store.read_entries("entry")
-    assert all(h.get("project") == "seam4" for h in hits), "foreign line leaked through"
+    assert all(h["extra"]["project"] == "seam4" for h in hits), "foreign line leaked through"
 
 
 def test_memory_ledger_vanilla_append_unchanged(tmp_path):

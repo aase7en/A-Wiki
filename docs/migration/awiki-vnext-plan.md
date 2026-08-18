@@ -184,6 +184,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 5 | ⏳ awaiting | 2026-08-18 | Memory layers complete (Phase 5 Log). Canonical 0 failed / 2,746 passed / 17 skipped. |
 | 5 | CHANGES_REQUIRED | 2026-08-18 | R-P5-001..006 (PR #15 review): L2-bound promotion, nested symlink escapes, adapter-authoritative L5, provenance privacy/safe YAML, read-only status, ledger seam. |
 | 5 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (33 negative tests, 29 red-first); canonical 0 failed / 2,779 passed / 17 skipped. |
+| 5 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P5-002..005 VERIFIED; open: R-P5-001 content not bound to source entry, R-P5-006 extra seam redaction/collision. |
+| 5 | ⏳ awaiting re-review (2) | 2026-08-18 | promote() consumes the stored L2 summary (no free-form text; source identity+digest persisted); extra namespaced + recursively redacted + reserved-key rejection. 10 red-first tests; canonical 0 failed / 2,789 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -259,6 +261,14 @@ Review: PR #15 vs `715cc19e`. All 6 findings fixed TDD — 33 negative tests wri
 - **R-P5-004 (provenance privacy + safe YAML)** — every persisted provenance value now clears the SAME privacy scanner as the distilled text (secret patterns + absolute-path detector), plus strict per-type value shapes for all 8 evidence types and a newline/control-char rejection. Candidate front matter is produced by `yaml.safe_dump` — no string interpolation; injection/key-addition tests prove it parses back to exactly the intended mapping.
 - **R-P5-005 (read-only status)** — `resolve_data_root_readonly()` mirrors `get_drive_root()`'s chain but raises `DataRootUnavailable` instead of creating `~/.a-wiki-data`; status constructs the store `read_only=True`, emits NO absolute/private paths (identity = adapter id), and converts adapter/storage/symlink failures into deterministic JSON (`storage_ok`/`storage_error`) with stable exit behavior. Snapshot tests prove the filesystem is byte-identical before/after.
 - **R-P5-006 (ledger seam)** — L2 storage routes through `MemoryLedger` via a narrowly-justified extension (`extra` kwarg merges caller fields AFTER redaction; vanilla entry shape unchanged — pinned by test). `append_entry` returns the ledger ts; appends inherit secret redaction + `atomic_json` lock-protected writes; `read_entries` = ledger.search + project filter (foreign lines skipped). Concurrency test: 2 threads × 5 appends → 11 valid JSONL lines.
+
+## Phase 5 Remediation Log 2 (2026-08-18)
+
+Re-review vs `30538744` (Core CI run #20 SUCCESS at that HEAD): R-P5-002/003/004/005 VERIFIED. Remaining two fixed TDD (10 negative tests red-first):
+
+- **R-P5-001 (final) — content bound to the verified L2 entry.** `promote()` no longer accepts a free-form `distilled` argument (TypeError by construction — pinned by test). The promoted candidate IS the verified L2 entry's STORED summary, fetched by `get_entry(source_entry_ts)` inside gate 0; the distill/privacy/generalize gates evaluate that stored text, so a valid L2 ts can never authorize unrelated text, and the redaction that happened at append time is the redaction the candidate carries (secret-in-source test: token absent from the written candidate). Front matter persists the source identity — `source: {layer: L2, entry_ts, summary_digest: sha256[:16]}` — verifiable offline. Negative test: valid ts for benign A + apply writes exactly A; a second ts whose stored text is unpromotable ("At project … prod-db-01") writes nothing. CLI dropped `--text` (candidate comes from `--source-ts`).
+- **R-P5-006 (final) — collision-safe, recursively-redacted extra.** `extra` is now stored under ONE reserved namespaced key `entry["extra"]` — canonical fields (`ts/session_id/type/summary/files/tags/parent_ts/extra`) cannot be overwritten by construction AND are rejected inside `extra` with ValueError before any write (nothing persisted). New `_redact_deep()` recursively redacts every string in nested dict/list metadata with the same secret patterns (top-level + nested-list + deep-dict tokens all proven absent; non-secrets intact). ProjectMemoryStore reads the namespaced tag (`entry["extra"]["project"]`) for isolation/get_entry; vanilla `append()` entry shape pinned unchanged.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard / 48 baselined ✓ / canonical **0 failed / 2,789 passed / 17 skipped**. Focused: 75/75 across the three Phase-5 files; compat sweep 301 passed.
 
 ## Phase 1 Entry Order
 

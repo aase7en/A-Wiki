@@ -192,8 +192,9 @@ class ProjectMemoryStore:
     def append_entry(self, text: str, meta: dict | None = None) -> float:
         """Append one L2 entry; returns the ledger entry ts (its identity).
 
-        Storage goes through MemoryLedger.append → secret redaction +
-        atomic_json lock-protected append. Project tag is authoritative.
+        Storage goes through MemoryLedger.append → secret redaction
+        (recursively applied to meta, R-P5-006) + atomic_json lock-protected
+        append. Project tag rides the ledger's namespaced `extra` seam.
         """
         self._require_scope("project")
         meta = meta or {}
@@ -211,11 +212,16 @@ class ProjectMemoryStore:
             extra={"project": self.project_id, "meta": meta},
         )
 
+    @staticmethod
+    def _entry_project(entry: dict) -> str | None:
+        extra = entry.get("extra")
+        return extra.get("project") if isinstance(extra, dict) else None
+
     def read_entries(self, query: str, limit: int = 20) -> list[dict]:
         """Ledger-seamed search; only THIS project's entries ever return."""
         self._require_scope("project")
         hits = [e for e in self._ledger().search(query, limit * 3)
-                if e.get("project") == self.project_id]
+                if self._entry_project(e) == self.project_id]
         return hits[:limit]
 
     def get_entry(self, ts: float) -> dict | None:
@@ -224,7 +230,7 @@ class ProjectMemoryStore:
         self._require_scope("project")
         for e in self._ledger()._load_all():
             if e.get("ts") == ts:
-                if e.get("project") != self.project_id:
+                if self._entry_project(e) != self.project_id:
                     return None  # foreign entry — never a valid source
                 return e
         return None

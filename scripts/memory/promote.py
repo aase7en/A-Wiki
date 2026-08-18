@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """awiki memory promote — five-gate L2→L3 promotion (Phase 5).
 
-Manual-with-evidence, DRY-RUN FIRST. --apply writes exactly one reviewable
-candidate under wiki/promotion-candidates/ — never Git refs/remotes.
+Manual-with-evidence, DRY-RUN FIRST. The promoted candidate IS the verified
+L2 source entry's stored summary (R-P5-001) — there is no free-form text
+argument. --apply writes exactly one reviewable candidate under
+wiki/promotion-candidates/ — never Git refs/remotes.
 
-  python scripts/memory/promote.py <project-root> --text "lesson" \
+  python scripts/memory/promote.py <project-root> --source-ts 1755... \
       --evidence commit_sha=10507cee            # dry-run (default)
-  python scripts/memory/promote.py <project> --text ... --evidence ... --apply
+  python scripts/memory/promote.py <project> --source-ts ... --evidence ... --apply
 """
 from __future__ import annotations
 
@@ -24,11 +26,10 @@ import promotion as promo
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Five-gate memory promotion (dry-run first)")
     parser.add_argument("project_root", type=Path)
-    parser.add_argument("--text", required=True, help="distilled candidate lesson")
+    parser.add_argument("--source-ts", type=float, required=True,
+                        help="ts of the L2 source entry — its stored summary is the candidate")
     parser.add_argument("--evidence", required=True,
                         help="type=value e.g. commit_sha=10507cee / experiment_id=EXP-1")
-    parser.add_argument("--source-ts", type=float, required=True,
-                        help="ts of the L2 source entry (verified gate 0 — R-P5-001)")
     parser.add_argument("--data-root", type=Path, default=None)
     parser.add_argument("--apply", action="store_true",
                         help="write the candidate file (still never touches Git)")
@@ -38,7 +39,6 @@ def main(argv: list[str] | None = None) -> int:
     etype, _, evalue = args.evidence.partition("=")
     result = promo.promote(
         project_root=args.project_root.resolve(),
-        distilled=args.text,
         provenance={"type": etype, "value": evalue},
         source_layer="L2",
         source_entry_ts=args.source_ts,

@@ -139,7 +139,7 @@ def test_disabled_global_scope_blocks_promotion(tmp_path):
                                             "session": True, "private": False})
     with pytest.raises(pm.ScopeDenied):
         promo.promote(
-            project_root=p, distilled="generalized lesson",
+            project_root=p,
             provenance={"type": "commit_sha", "value": "abc1234"},
             dry_run=True,
         )
@@ -175,27 +175,38 @@ def test_malformed_project_id_rejected(tmp_path):
 # 8–12: promotion gates (privacy / generalize / evidence / provenance paths)
 # ---------------------------------------------------------------------------
 def test_private_project_promotion_requires_privacy_gate(tmp_path):
-    p = _project(tmp_path, "priv", private=True)
-    token = "ghp_" + "P5" + "0123456789abcdef" * 2
+    p = _project(tmp_path, "priv")
+    root = tmp_path / "data"
+    # secrets are redacted at L2 append — the privacy gate must instead catch
+    # private material redaction cannot neutralize: an absolute machine path
+    # stored in the L2 summary.
+    drive = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "notes.md"
+    ts = _l2(p, root, f"lesson written from private file {drive}")
     res = promo.promote(
-        project_root=p, distilled=f"lesson with {token} inside",
-        provenance={"type": "commit_sha", "value": "abc1234"}, dry_run=True)
+        project_root=p,
+        provenance={"type": "commit_sha", "value": "abc1234"},
+        source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is False
     assert any("privacy" in g["gate"] and not g["passed"] for g in res["gates"])
 
 
 def test_promotion_without_evidence_fails(tmp_path):
     p = _project(tmp_path, "noev")
-    res = promo.promote(project_root=p, distilled="lesson",
-                        provenance=None, dry_run=True)
+    ts = _l2(p, tmp_path / "data")
+    res = promo.promote(project_root=p,
+                        provenance=None, source_entry_ts=ts,
+                        dry_run=True, data_root=tmp_path / "data")
     assert res["ok"] is False
     assert any("evidence" in g["gate"] and not g["passed"] for g in res["gates"])
 
 
 def test_promotion_bad_evidence_type_fails(tmp_path):
     p = _project(tmp_path, "badev")
-    res = promo.promote(project_root=p, distilled="lesson",
-                        provenance={"type": "vibes", "value": "x"}, dry_run=True)
+    ts = _l2(p, tmp_path / "data")
+    res = promo.promote(project_root=p,
+                        provenance={"type": "vibes", "value": "x"},
+                        source_entry_ts=ts, dry_run=True,
+                        data_root=tmp_path / "data")
     assert res["ok"] is False
     assert any("evidence" in g["gate"] and not g["passed"] for g in res["gates"])
 
@@ -203,18 +214,24 @@ def test_promotion_bad_evidence_type_fails(tmp_path):
 def test_promotion_absolute_machine_path_in_provenance_fails(tmp_path):
     p = _project(tmp_path, "pathprov")
     drive = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "proof.txt"
-    res = promo.promote(project_root=p, distilled="lesson",
-                        provenance={"type": "wiki_ref", "value": drive}, dry_run=True)
+    ts = _l2(p, tmp_path / "data")
+    res = promo.promote(project_root=p,
+                        provenance={"type": "wiki_ref", "value": drive},
+                        source_entry_ts=ts, dry_run=True,
+                        data_root=tmp_path / "data")
     assert res["ok"] is False
     assert any("provenance" in g["gate"] and not g["passed"] for g in res["gates"])
 
 
 def test_promotion_rejects_project_specific_generalization(tmp_path):
     p = _project(tmp_path, "gen", private=True)
+    root = tmp_path / "data"
+    ts = _l2(p, root,
+             "At project alpha we always deploy server alpha-prod-01 on Friday")
     res = promo.promote(
         project_root=p,
-        distilled="At project alpha we always deploy server alpha-prod-01 on Friday",
-        provenance={"type": "commit_sha", "value": "abc1234"}, dry_run=True)
+        provenance={"type": "commit_sha", "value": "abc1234"},
+        source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is False
     assert any("generalize" in g["gate"] and not g["passed"] for g in res["gates"])
 
@@ -222,10 +239,9 @@ def test_promotion_rejects_project_specific_generalization(tmp_path):
 def test_clean_promotion_dry_run_passes_all_gates(tmp_path):
     p = _project(tmp_path, "clean")
     root = tmp_path / "data"
-    ts = _l2(p, root)
+    ts = _l2(p, root, "Prefer explicit capability enums over vendor names in stable contracts.")
     res = promo.promote(
         project_root=p,
-        distilled="Prefer explicit capability enums over vendor names in stable contracts.",
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is True, res["gates"]
@@ -238,9 +254,9 @@ def test_clean_promotion_dry_run_passes_all_gates(tmp_path):
 def test_dry_run_changes_nothing(tmp_path):
     p = _project(tmp_path, "dry")
     root = tmp_path / "data"
-    ts = _l2(p, root)
+    ts = _l2(p, root, "Generalized durable lesson.")
     res = promo.promote(
-        project_root=p, distilled="Generalized durable lesson.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is True
@@ -252,12 +268,12 @@ def test_dry_run_changes_nothing(tmp_path):
 def test_explicit_apply_writes_candidate_only(tmp_path, monkeypatch):
     p = _project(tmp_path, "applyp")
     root = tmp_path / "data"
-    ts = _l2(p, root)
+    ts = _l2(p, root, "Generalized durable lesson two.")
     out_root = tmp_path / "l3candidates"
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     res = promo.promote(
-        project_root=p, distilled="Generalized durable lesson two.",
+        project_root=p,
         provenance={"type": "commit_sha", "value": "10507cee"},
         source_entry_ts=ts, dry_run=False, data_root=root)
     assert res["ok"] is True and res.get("written") is True
@@ -269,11 +285,11 @@ def test_explicit_apply_writes_candidate_only(tmp_path, monkeypatch):
 def test_apply_never_touches_git(tmp_path, monkeypatch):
     p = _project(tmp_path, "gitcheck")
     root = tmp_path / "data"
-    ts = _l2(p, root)
+    ts = _l2(p, root, "Lesson.")
     out_root = tmp_path / "l3b"
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
-    promo.promote(project_root=p, distilled="Lesson.",
+    promo.promote(project_root=p,
                   provenance={"type": "commit_sha", "value": "10507cee"},
                   source_entry_ts=ts, dry_run=False, data_root=root)
     assert not hasattr(promo, "_git")  # no git machinery in the module

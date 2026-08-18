@@ -123,37 +123,43 @@ def _provenance_errors(provenance: dict | None) -> list[str]:
 
 
 def _l2_source_gate(project_root: Path, data_root: Path | None,
-                    source_layer: str, source_entry_ts) -> tuple[bool, str]:
-    """R-P5-001 — mechanically verify the candidate originates from THIS
-    project's L2 store. The transition table is load-bearing here."""
+                    source_layer: str, source_entry_ts) -> tuple[bool, str, dict | None]:
+    """R-P5-001 — mechanically verify the source AND return the entry: the
+    promoted candidate IS this entry's stored summary; no free-form text
+    channel exists. The transition table is load-bearing here."""
     if not ml.transition_allowed(source_layer, "L3", via="promotion"):
-        return False, (f"source layer {source_layer} cannot reach L3 — only "
-                       f"L2 via the promotion pipeline")
+        return (False, f"source layer {source_layer} cannot reach L3 — only "
+                f"L2 via the promotion pipeline", None)
     if source_entry_ts is None:
-        return False, "no L2 source entry provided (promotion requires a verified L2 origin)"
+        return (False, "no L2 source entry provided (promotion requires a verified L2 origin)", None)
     try:
         store = ProjectMemoryStore(project_root, data_root=data_root)
     except AdapterInvalid as e:
-        return False, f"L2 store unavailable (adapter): {e}"
+        return False, f"L2 store unavailable (adapter): {e}", None
     except ScopeDenied as e:
-        return False, f"L2 store unavailable (scope): {e}"
+        return False, f"L2 store unavailable (scope): {e}", None
     except (StorageUnsafe, ValueError) as e:
-        return False, f"L2 store unavailable (storage): {e}"
+        return False, f"L2 store unavailable (storage): {e}", None
     try:
         entry = store.get_entry(source_entry_ts)
     except ScopeDenied:
-        return False, "project memory scope disabled — no L2 source exists"
+        return False, "project memory scope disabled — no L2 source exists", None
     except (StorageUnsafe, ValueError) as e:
-        return False, f"L2 store unsafe: {e}"
+        return False, f"L2 store unsafe: {e}", None
     if entry is None:
-        return False, "source entry not found in this project's L2 store"
-    return True, f"verified L2 entry ts={source_entry_ts} (project {store.project_id})"
+        return False, "source entry not found in this project's L2 store", None
+    return True, f"verified L2 entry ts={source_entry_ts} (project {store.project_id})", entry
 
 
-def promote(project_root: Path, distilled: str, provenance: dict | None,
+def promote(project_root: Path, provenance: dict | None,
             *, source_layer: str = "L2", source_entry_ts=None,
             dry_run: bool = True, data_root: Path | None = None) -> dict:
     """Run the gated pipeline. Returns a gate-by-gate report.
+
+    R-P5-001: there is NO distilled/text argument. The promoted candidate
+    is the verified L2 entry's STORED (already secret-redacted) summary —
+    a valid L2 ts can never authorize unrelated text. The candidate's
+    front matter persists the source identity + content digest.
 
     dry_run=True (default) performs ZERO writes. dry_run=False writes exactly
     one reviewable markdown candidate into CANDIDATES_DIR — nothing else.
@@ -174,17 +180,18 @@ def promote(project_root: Path, distilled: str, provenance: dict | None,
     pid = data.get("id", "project")
     gates: list[dict] = []
 
-    # ── 0. L2 source (R-P5-001) ──
-    src_ok, src_detail = _l2_source_gate(
+    # ── 0. L2 source (R-P5-001) — entry in, candidate out ──
+    src_ok, src_detail, source_entry = _l2_source_gate(
         project_root, data_root, source_layer, source_entry_ts)
     gates.append(_gate("l2-source", src_ok, src_detail))
 
-    # ── 1. Distill ──
-    text = (distilled or "").strip()
+    # ── 1. Distill — evaluated on the STORED summary, not caller text ──
+    text = str((source_entry or {}).get("summary") or "").strip()
     is_distilled = bool(text) and len(text) <= 2000 and "\n\n\n" not in text
     gates.append(_gate("distill", is_distilled,
-                       "concise candidate lesson" if is_distilled else
-                       "empty or transcript-dump-shaped candidate"))
+                       "candidate is the verified L2 entry's stored summary"
+                       if is_distilled else
+                       "stored L2 summary empty or transcript-dump-shaped"))
 
     # ── 2. Privacy (distilled text) ──
     priv = _privacy_findings(text)
@@ -206,16 +213,24 @@ def promote(project_root: Path, distilled: str, provenance: dict | None,
 
     # ── 5. Global Promotion (dry-run first) ──
     if ok:
+        import hashlib
         slug = re.sub(r"[^a-z0-9-]+", "-", text.lower())[:60].strip("-") or "candidate"
         stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
         path = CANDIDATES_DIR / f"{stamp}-{slug}.md"
+        # R-P5-001: persist the source identity + content digest so the
+        # candidate↔L2 binding is verifiable offline.
         # R-P5-004: front matter is YAML-SERIALIZED (safe_dump), never
-        # string-interpolated — nothing in distilled/provenance/pid can
-        # inject keys or break out of the block.
+        # string-interpolated.
         front = yaml.safe_dump(
             {
                 "schema": "awiki-promotion-candidate/v1",
                 "project": pid,
+                "source": {
+                    "layer": "L2",
+                    "entry_ts": source_entry_ts,
+                    "summary_digest": hashlib.sha256(
+                        text.encode("utf-8")).hexdigest()[:16],
+                },
                 "provenance": {"type": provenance["type"], "value": provenance["value"]},
                 "created_at": datetime.now(timezone.utc).isoformat(),
             },
