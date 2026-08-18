@@ -40,6 +40,11 @@ from _scan_staged_diff import PATTERNS, PLACEHOLDERS  # noqa: E402 -- one patter
 
 AGENTS_MARKER = "awiki-project-adapter"
 
+# Canonical adapter surface paths that must never be symlinks (R-P4-007):
+# the read path must be as strict as the attach write path.
+CANONICAL_SURFACE = ["AGENTS.md", ".awiki", ".awiki/project.yaml",
+                     ".awiki/context.md", ".awiki/state"]
+
 # Absolute/private machine-path shapes, host-OS independent (R-P4-001).
 # - drive letters guarded by (?<![A-Za-z]) so https:// never matches
 # - UNC \\\\server\\share and Windows extended \\\\?\\ / \\??\\ device paths
@@ -89,14 +94,34 @@ def _contains(project_root: Path, candidate: Path) -> bool:
         return False
 
 
-def _known_integration_ids() -> set[str] | None:
-    """Ids from the canonical registry; None if the registry itself is broken
-    (caller fails closed — validating against a corrupt registry is worse)."""
+def _eligible_integration_ids() -> set[str] | None:
+    """Runtime-usable integration ids (MODULE classification) from the canonical
+    registry; None if the registry is broken (caller fails closed). REJECT and
+    pattern/reference-only entries are not usable project integrations (R-P4-008);
+    planned/optional MODULE entries may be pre-authorized by a project."""
     try:
         data = yaml.load(REGISTRY_FILE.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
-        return set((data.get("integrations") or {}).keys())
+        out = set()
+        for name, entry in (data.get("integrations") or {}).items():
+            if not isinstance(entry, dict):
+                continue
+            cls = entry.get("classification")
+            classes = set(cls) if isinstance(cls, list) else {cls}
+            if classes == {"module"}:
+                out.add(name)
+        return out
     except Exception:
         return None
+
+
+def _check_canonical_surface(project_root: Path, result: ValidationResult) -> None:
+    """R-P4-007: canonical adapter paths must not be symlinks — the read path
+    enforces the same project-contained invariant as the attach write path."""
+    for rel in CANONICAL_SURFACE:
+        p = project_root / rel
+        if p.is_symlink():
+            result.errors.append(
+                f"canonical adapter path is a symlink (must be project-contained): {rel}")
 
 
 def validate(project_root: Path) -> ValidationResult:
@@ -110,10 +135,23 @@ def validate(project_root: Path) -> ValidationResult:
         return result
 
     try:
-        data = yaml.load(yml.read_text(encoding="utf-8"), Loader=UniqueKeyLoader)
+        raw = yml.read_bytes()
+    except OSError as e:
+        result.errors.append(f"cannot read project.yaml (fail closed): {e}")
+        return result
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as e:
+        result.errors.append(f"project.yaml is not valid UTF-8 (fail closed): {e}")
+        return result
+    try:
+        data = yaml.load(text, Loader=UniqueKeyLoader)
     except yaml.YAMLError as e:
         result.errors.append(f"malformed project.yaml (fail closed): {str(e).splitlines()[0]}")
         return result
+
+    # ── R-P4-007: canonical surface must not be symlinked ──
+    _check_canonical_surface(project_root, result)
 
     # ── schema (unknown fields, required policy fields) ──
     try:
@@ -158,15 +196,17 @@ def validate(project_root: Path) -> ValidationResult:
                 result.errors.append(
                     f"resource escapes the project root (nested .. or symlink): {ref}")
 
-        # ── integration allowlist vs canonical registry (offline) ──
+        # ── integration allowlist vs canonical registry eligibility (offline) ──
         allowed = (data.get("integrations") or {}).get("allowed") or []
-        known = _known_integration_ids()
-        if known is None:
+        eligible = _eligible_integration_ids()
+        if eligible is None:
             result.errors.append("canonical integration registry unreadable — cannot verify allowlist (fail closed)")
         else:
             for iid in allowed:
-                if iid not in known:
-                    result.errors.append(f"unknown integration id (not in config/integrations.yaml): {iid}")
+                if iid not in eligible:
+                    result.errors.append(
+                        f"integration id is not a runtime-usable MODULE in config/integrations.yaml "
+                        f"(REJECT/pattern/reference-only are ineligible): {iid}")
 
     # ── canonical attachment surface (R-P4-006) ──
     agents = project_root / "AGENTS.md"

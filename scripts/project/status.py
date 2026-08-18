@@ -24,15 +24,18 @@ def status(project_root: Path) -> dict:
     data: dict = {}
     if yml.is_file():
         try:
-            loaded = yaml.safe_load(yml.read_text(encoding="utf-8"))
+            loaded = yaml.safe_load(yml.read_bytes().decode("utf-8"))
             if isinstance(loaded, dict):
                 data = loaded
-        except yaml.YAMLError:
+        except (yaml.YAMLError, UnicodeDecodeError, OSError):
             data = {}
 
     result = pv.validate(project_root)
     agents = project_root / "AGENTS.md"
-    agents_text = agents.read_text(encoding="utf-8") if agents.is_file() else ""
+    try:
+        agents_text = agents.read_bytes().decode("utf-8") if agents.is_file() else ""
+    except (UnicodeDecodeError, OSError):
+        agents_text = ""
 
     return {
         "project_root": str(project_root),

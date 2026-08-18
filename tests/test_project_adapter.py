@@ -502,3 +502,114 @@ def test_full_canonical_surface_is_valid(tmp_path):
     _write_adapter(project, _valid_project_yaml())  # already creates the full surface
     result = pv.validate(project)
     assert result.exit_code() == 0, result.errors
+
+
+# ---------------------------------------------------------------------------
+# R-P4-007 — read path must reject symlinked canonical adapter surfaces
+# ---------------------------------------------------------------------------
+def _can_symlink():
+    return hasattr(__import__("os"), "symlink")
+
+
+def test_validate_rejects_symlinked_awiki_dir(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    real = tmp_path / "real-aw"
+    _write_adapter(project, _valid_project_yaml())
+    real_aw = project / ".awiki"
+    real_aw.rename(real)
+    os.symlink(real, real_aw)  # canonical .awiki now a symlink (even in-tree)
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+
+
+def test_validate_rejects_symlinked_agents_md(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "external-agents.md"
+    external.write_text(f"<!-- {AGENTS_MARKER} v1 -->\n", encoding="utf-8")
+    (project / "AGENTS.md").unlink()
+    os.symlink(external, project / "AGENTS.md")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+
+
+def test_validate_rejects_symlinked_project_yaml(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "external-project.yaml"
+    external.write_text(_valid_project_yaml(), encoding="utf-8")
+    (project / ".awiki" / "project.yaml").unlink()
+    os.symlink(external, project / ".awiki" / "project.yaml")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("symlink" in e.lower() for e in result.errors)
+
+
+def test_status_reports_invalid_for_symlinked_surface(tmp_path):
+    if not _can_symlink():
+        pytest.skip("symlinks unavailable")
+    import os
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    external = tmp_path / "ext-agents.md"
+    external.write_text(f"<!-- {AGENTS_MARKER} v1 -->\n", encoding="utf-8")
+    (project / "AGENTS.md").unlink()
+    os.symlink(external, project / "AGENTS.md")
+    proc = _run(STATUS, "--json", str(project), cwd=tmp_path)
+    assert proc.returncode == 1
+    assert json.loads(proc.stdout)["adapter_valid"] is False
+
+
+# ---------------------------------------------------------------------------
+# R-P4-008 — allowlist eligibility by registry semantics, not id existence
+# ---------------------------------------------------------------------------
+def test_validate_rejects_rejected_integration(tmp_path):
+    text = _valid_project_yaml().replace("allowed: []", "allowed: [deer-flow]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("deer-flow" in e for e in result.errors)
+
+
+def test_validate_rejects_pattern_only_integration(tmp_path):
+    text = _valid_project_yaml().replace("allowed: []", "allowed: [autoresearch]")
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, text)
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("autoresearch" in e for e in result.errors)
+
+
+# ---------------------------------------------------------------------------
+# R-P4-009 — malformed encoding must fail closed, never traceback
+# ---------------------------------------------------------------------------
+def test_validate_fails_closed_on_invalid_utf8_project_yaml(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / ".awiki" / "project.yaml").write_bytes(
+        b"\xff\xfe not-utf8 \x80\x81")
+    result = pv.validate(project)
+    assert result.exit_code() == 1
+    assert any("decode" in e.lower() or "utf-8" in e.lower() or "malformed" in e.lower()
+               for e in result.errors)
+
+
+def test_status_reports_invalid_on_invalid_utf8(tmp_path):
+    project = _adapter_dir(tmp_path)
+    _write_adapter(project, _valid_project_yaml())
+    (project / ".awiki" / "project.yaml").write_bytes(b"\xff\xfe\x80")
+    proc = _run(STATUS, "--json", str(project), cwd=tmp_path)
+    assert proc.returncode == 1
+    assert json.loads(proc.stdout)["adapter_valid"] is False
