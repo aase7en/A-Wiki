@@ -26,7 +26,7 @@
 | 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ COMPLETE — P1.1–P1.5 done TDD, awaiting review | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
 | 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ COMPLETE — P2.1–P2.5 done TDD, awaiting review | P2.1 scanner+scan_repo · P2.2 wiki_health · P2.3/P2.4 ci-core+domain+smokes · P2.5 parity fixes |
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ COMPLETE — 3 TDD commits, awaiting review | `9a0d985e` `8f338174` `a58906c6` |
-| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ⬜ | — |
+| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ COMPLETE — TDD, awaiting review | schema + 3 CLIs + 18 tests |
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ⬜ | — |
 | 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⬜ | — |
 | 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ | — |
@@ -173,6 +173,14 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 3 | ⏳ awaiting re-review | 2026-08-18 | All 7 findings fixed TDD (Phase 3 Remediation Log); canonical suite green; pushed for re-review on exact new HEAD. |
 | 3 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P3-001/003/005/006/007 VERIFIED; open: R-P3-002 trust not machine-required, R-P3-004 capability bypass via assigned.requires, R-P3-008 PR Core CI red (stale capability-map). |
 | 3 | ⏳ awaiting re-review (2) | 2026-08-18 | Trust machine-required (+4 truthful module entries), single $defs.capability for both enum paths, capability-map regen (attributable diff). Canonical 0 failed / 2,659 passed / 17 skipped. |
+| 3 | **PASS** (merged) | 2026-08-18 | PR #13 merged; post-merge main `2e84759c`. Kernel Contract closed. |
+| 4 | ⏳ awaiting | 2026-08-18 | Project Adapter complete (Phase 4 Log). |
+| 4 | CHANGES_REQUIRED | 2026-08-18 | R-P4-001..006 (PR #14 review): containment, attach symlink safety, required policy, safe yaml gen, registry cross-check, attachment surface. |
+| 4 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (41 adapter tests); canonical 0 failed / 2,700 passed / 17 skipped. |
+| 4 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P4-007 read-path symlinks · R-P4-008 allowlist eligibility · R-P4-009 decode fail-closed. |
+| 4 | ⏳ awaiting re-review (2) | 2026-08-18 | R-P4-007..009 fixed TDD (49 adapter tests); canonical 0 failed / 2,708 passed / 17 skipped. |
+| 4 | CHANGES_REQUIRED (re-review 2) | 2026-08-18 | R-P4-007 checks ran after reading; R-P4-008 module+pattern (graft) wrongly ineligible. |
+| 4 | ⏳ awaiting re-review (3) | 2026-08-18 | Symlink checks BEFORE any read (lstat-only) in validate+status; eligibility = membership. 55 adapter tests; canonical 0 failed / 2,714 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -186,6 +194,45 @@ Review: PR #13 vs `8ae924d7`. Every fix TDD with negative instance tests:
 - **R-P3-006** — `docs/protocols/integration-intake.md` created (13-question checklist, classification vocabulary, decision-record requirement, hard intake rules — reconciled with brain-improvement-gate scope split); normative-reference test resolves `awiki.yaml` classification-gate pointer + every registry `reference:`.
 - **R-P3-007** — graft classification test rewritten with explicit scalar/list normalization + set comparison; negative cases (`reject`, `["module","reject"]`, `[]`, `None`) prove the check bites.
 - Gates: privacy ✓ · scan_repo 49 known/0 new (one self-inflicted literal drive path in a test assembled at runtime instead) ✓ · wiki_health 0 hard/48 baselined with the overhauled integrations check active ✓ · canonical suite green (see Review History).
+
+## Phase 4 Log (2026-08-18)
+
+Thin, portable project adapter — base main `2e84759c`, TDD (18 tests red-first, temp fixture repos only):
+
+- **`schemas/awiki-project/v1.schema.json`** — stable project policy ONLY: id, repository identity, domains, skills/integrations allowlists, memory scopes, privacy/trust, optional code_context policy (G0 vocabulary, `global_memory_promotion: false` const), project-relative resources. `additionalProperties:false` structurally rejects secrets/quota/telemetry-shaped fields.
+- **`scripts/project/validate.py`** — deterministic/offline, fail-closed: duplicate-key-safe loader (reused from integrations validator — one loading contract), JSON Schema, semantic checks — absolute/private machine paths rejected (drive-letter regex with lookbehind so `https://` never false-positives), secret-shaped values rejected via the kernel's single security-pattern source, referenced local files must exist, context.md required.
+- **`scripts/project/attach.py`** — idempotent + non-destructive: creates `.awiki/{project.yaml,context.md,state/}` only-if-absent (existing policy byte-preserved); AGENTS.md created if missing else ONE marked section appended (marker `awiki-project-adapter`), existing content preserved verbatim, never appended twice. No submodules/symlinks/A-Wiki copies; pathlib-only (cross-platform).
+- **`scripts/project/status.py`** — read-only + deterministic; --json reports id, adapter_valid, domains, memory, integrations, privacy/trust, state-dir availability, context.md presence; exit 1 without a valid adapter.
+- Gates: privacy ✓ · scan_repo 49 known/0 new ✓ · wiki-health 0 hard/48 baselined ✓ · gen-index fresh (no regen needed). Canonical suite: see Review History row.
+
+## Phase 4 Remediation Log (2026-08-18)
+
+Review: PR #14 vs `4248caa3`. All findings TDD (negative tests first, 21 red before fixes):
+
+- **R-P4-001** — `_contains()` resolved-path containment helper (symlink escapes + nested `..` rejected by resolution, not string checks); path regex extended host-OS-independently (UNC `\server`, extended `\?\` device, `/etc` `/tmp` `/var` `/opt` `/root` `/private`, drive-letter lookbehind keeps `https://` clean). Fixed a real self-bug found by the tests: the joined candidate is always absolute — absoluteness must be checked on the REF.
+- **R-P4-002** — attach refuses to run when ANY adapter path is a symlink (checked before any write); tests prove external targets' bytes and directories remain untouched, no partial attach.
+- **R-P4-003** — schema structurally requires privacy (project_private), trust (private_context), memory (all four scope decisions); attach template generates the full trust policy; negatives for each omission.
+- **R-P4-004** — project.yaml generated from a mapping via `yaml.safe_dump` (punctuation/Unicode domains round-trip verbatim — tested with commas/colons/brackets/Thai/Chinese); id pattern reconciled to min-1 (`_slug` alignment); attach self-validates the RESULT and exits 1 on invalid (tested via a real pre-existing invalid project.yaml that must stay byte-preserved).
+- **R-P4-005** — `integrations.allowed` cross-checked offline against the canonical registry (fail-closed if the registry is unreadable); unknown-id negative + known-id positive.
+- **R-P4-006** — canonical attachment surface enforced: AGENTS.md with the adapter marker + context.md + state/ all required; negatives for deleted AGENTS.md, markerless AGENTS.md, missing state/.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,700 passed / 17 skipped**.
+
+## Phase 4 Remediation Log 2 (2026-08-18)
+
+Review: PR #14 vs `25f488a1`. TDD (8 negatives red-first):
+
+- **R-P4-007** — the READ path now enforces the same no-symlink invariant as attach: `_check_canonical_surface` rejects any symlinked canonical path (AGENTS.md, .awiki, project.yaml, context.md, state) before metadata is consumed; status reports INVALID instead of reading an external surface. Negatives: symlinked .awiki / AGENTS.md / project.yaml + status-INVALID.
+- **R-P4-008** — allowlist eligibility by registry SEMANTICS (`_eligible_integration_ids`: MODULE-classified only); REJECT (deer-flow) and pattern-only (autoresearch) entries are ineligible even though their ids exist; planned/optional MODULE pre-authorization preserved. Negatives + existing module positive.
+- **R-P4-009** — decode/read errors converted to deterministic validation errors (fail closed, no silent byte replacement in policy metadata): validate catches OSError + UnicodeDecodeError on project.yaml; status guards both project.yaml and AGENTS.md reads. Negatives: invalid-UTF-8 project.yaml (validate + status).
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,708 passed / 17 skipped**.
+
+## Phase 4 Remediation Log 3 (2026-08-18)
+
+Review: PR #14 vs `f5995089`. TDD (4 negatives red-first: secret-canary external targets prove they are never read):
+
+- **R-P4-007 (final)** — canonical-surface symlink checks now run BEFORE any `is_file`/`read_bytes`/YAML parse/AGENTS read (`is_symlink()` = lstat, never follows the link); on unsafe surface validate returns immediately with ONLY the symlink violation. `status()` performs the same safe-surface check first and never parses/reports fields (e.g. attacker-controlled `id`) from an unsafe surface. Canary tests: external project.yaml/.awiki/AGENTS.md targets containing a secret-shaped token yield symlink errors ONLY — no secret error proves the bytes were never consumed.
+- **R-P4-008 (final)** — eligibility is membership-based (`"module" in classes and "reject" not in classes`): graft `[module, pattern]` eligible, gitnexus pure-module eligible; `autoresearch` (pattern-only) and `deer-flow` (reject) stay ineligible. Contract-only — no Graft runtime installed/enabled.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,714 passed / 17 skipped**.
 
 ## Phase 1 Entry Order
 
