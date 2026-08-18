@@ -27,6 +27,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--text", required=True, help="distilled candidate lesson")
     parser.add_argument("--evidence", required=True,
                         help="type=value e.g. commit_sha=10507cee / experiment_id=EXP-1")
+    parser.add_argument("--source-ts", type=float, required=True,
+                        help="ts of the L2 source entry (verified gate 0 — R-P5-001)")
+    parser.add_argument("--data-root", type=Path, default=None)
     parser.add_argument("--apply", action="store_true",
                         help="write the candidate file (still never touches Git)")
     parser.add_argument("--json", action="store_true")
@@ -37,7 +40,10 @@ def main(argv: list[str] | None = None) -> int:
         project_root=args.project_root.resolve(),
         distilled=args.text,
         provenance={"type": etype, "value": evalue},
+        source_layer="L2",
+        source_entry_ts=args.source_ts,
         dry_run=not args.apply,
+        data_root=args.data_root,
     )
 
     if args.json:

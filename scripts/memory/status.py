@@ -2,8 +2,11 @@
 """awiki memory status — read-only Memory Plane inspection (Phase 5).
 
 Reports, per project adapter: layer policy scopes, L2 store availability,
-L5 experiment count, promotion config. Deterministic; never writes.
-Exit 0 = adapter valid; 1 = invalid/missing adapter.
+L5 experiment count, promotion config. Deterministic; NEVER writes —
+R-P5-005: storage resolution is read-only (no ~/.a-wiki-data fallback
+creation) and the report emits no absolute/private machine paths.
+Storage-resolution failures become deterministic JSON fields, never tracebacks.
+Exit 0 = adapter valid (storage issues reported in JSON); 1 = invalid/missing adapter.
 """
 from __future__ import annotations
 
@@ -14,6 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "project"))
 
 import memory_layers as ml
 import project_memory as pm
@@ -21,12 +25,23 @@ import experiment_memory as em
 
 
 def status(project_root: Path, data_root: Path | None = None) -> dict:
-    info: dict = {"project_root": str(project_root)}
+    # R-P5-005: no resolved/absolute project path in the report — identity
+    # is the adapter's project id, never a machine path.
+    info: dict = {"project_id": None, "adapter_valid": False, "storage_ok": True}
     try:
-        store = pm.ProjectMemoryStore(project_root, data_root=data_root)
+        store = pm.ProjectMemoryStore(project_root, data_root=data_root, read_only=True)
     except pm.AdapterInvalid as e:
-        info["adapter_valid"] = False
         info["error"] = str(e)
+        return info
+    except (pm.DataRootUnavailable, pm.StorageUnsafe, ValueError, OSError) as e:
+        # adapter may still be valid — report it truthfully, storage broken
+        try:
+            import validate as project_validate
+            info["adapter_valid"] = project_validate.validate(project_root).exit_code() == 0
+        except Exception:                       # noqa: BLE001 -- report shape first
+            info["adapter_valid"] = False
+        info["storage_ok"] = False
+        info["storage_error"] = str(e).splitlines()[0][:200]
         return info
 
     info["adapter_valid"] = True
@@ -34,16 +49,21 @@ def status(project_root: Path, data_root: Path | None = None) -> dict:
     info["scopes"] = store.scopes
     info["privacy"] = store.privacy
     info["trust"] = store.trust
-    info["memory_dir_available"] = store.memory_dir.is_dir()
-    info["l2_entries"] = 0
-    if store.scopes.get("project") and (store.memory_dir / "entries.jsonl").is_file():
-        info["l2_entries"] = sum(
-            1 for line in (store.memory_dir / "entries.jsonl")
-            .read_text(encoding="utf-8").splitlines() if line.strip())
-    exp_root = store._root / "projects" / store.project_id / "experiments"
-    info["l5_experiments"] = len([d for d in exp_root.iterdir()]) if exp_root.is_dir() else 0
     info["promotion"] = {"default_mode": "manual-with-evidence", "dry_run_first": True}
     info["layers"] = {k: v["durability"] for k, v in ml.LAYER_POLICY.items()}
+
+    # storage facts — every access through the containment-safe paths; a
+    # symlinked/escaped store reports unavailable instead of being followed
+    try:
+        info["memory_dir_available"] = store.memory_dir.is_dir()
+        info["l2_entries"] = store.count_entries() if store.scopes.get("project") else 0
+        exps = store.experiments_dir
+        info["l5_experiments"] = len(list(exps.iterdir())) if exps.is_dir() else 0
+    except (pm.ScopeDenied, pm.StorageUnsafe, ValueError, OSError) as e:
+        info["storage_ok"] = False
+        info["storage_error"] = str(e).splitlines()[0][:200]
+        info["l2_entries"] = 0
+        info["l5_experiments"] = 0
     return info
 
 
@@ -54,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
 
-    info = status(args.project_root.resolve(), args.data_root)
+    info = status(args.project_root, args.data_root)
     if args.json:
         print(json.dumps(info, ensure_ascii=False, indent=2, default=str))
     else:

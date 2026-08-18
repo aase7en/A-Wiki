@@ -221,10 +221,13 @@ def test_promotion_rejects_project_specific_generalization(tmp_path):
 
 def test_clean_promotion_dry_run_passes_all_gates(tmp_path):
     p = _project(tmp_path, "clean")
+    root = tmp_path / "data"
+    ts = _l2(p, root)
     res = promo.promote(
         project_root=p,
         distilled="Prefer explicit capability enums over vendor names in stable contracts.",
-        provenance={"type": "commit_sha", "value": "10507cee"}, dry_run=True)
+        provenance={"type": "commit_sha", "value": "10507cee"},
+        source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is True, res["gates"]
     assert all(g["passed"] for g in res["gates"])
 
@@ -234,9 +237,12 @@ def test_clean_promotion_dry_run_passes_all_gates(tmp_path):
 # ---------------------------------------------------------------------------
 def test_dry_run_changes_nothing(tmp_path):
     p = _project(tmp_path, "dry")
+    root = tmp_path / "data"
+    ts = _l2(p, root)
     res = promo.promote(
         project_root=p, distilled="Generalized durable lesson.",
-        provenance={"type": "commit_sha", "value": "10507cee"}, dry_run=True)
+        provenance={"type": "commit_sha", "value": "10507cee"},
+        source_entry_ts=ts, dry_run=True, data_root=root)
     assert res["ok"] is True
     assert res.get("written") in (None, False)
     cands = REPO_ROOT / "wiki" / "promotion-candidates"
@@ -245,12 +251,15 @@ def test_dry_run_changes_nothing(tmp_path):
 
 def test_explicit_apply_writes_candidate_only(tmp_path, monkeypatch):
     p = _project(tmp_path, "applyp")
+    root = tmp_path / "data"
+    ts = _l2(p, root)
     out_root = tmp_path / "l3candidates"
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     res = promo.promote(
         project_root=p, distilled="Generalized durable lesson two.",
-        provenance={"type": "commit_sha", "value": "10507cee"}, dry_run=False)
+        provenance={"type": "commit_sha", "value": "10507cee"},
+        source_entry_ts=ts, dry_run=False, data_root=root)
     assert res["ok"] is True and res.get("written") is True
     files = list(out_root.glob("*.md"))
     assert len(files) == 1
@@ -259,11 +268,14 @@ def test_explicit_apply_writes_candidate_only(tmp_path, monkeypatch):
 
 def test_apply_never_touches_git(tmp_path, monkeypatch):
     p = _project(tmp_path, "gitcheck")
+    root = tmp_path / "data"
+    ts = _l2(p, root)
     out_root = tmp_path / "l3b"
     out_root.mkdir()
     monkeypatch.setattr(promo, "CANDIDATES_DIR", out_root)
     promo.promote(project_root=p, distilled="Lesson.",
-                  provenance={"type": "commit_sha", "value": "10507cee"}, dry_run=False)
+                  provenance={"type": "commit_sha", "value": "10507cee"},
+                  source_entry_ts=ts, dry_run=False, data_root=root)
     assert not hasattr(promo, "_git")  # no git machinery in the module
 
 
@@ -286,9 +298,15 @@ def test_raw_cannot_directly_promote_to_l3():
 # 15–19: experiment memory
 # ---------------------------------------------------------------------------
 def _exp(tmp_path, pid="alpha", eid="EXP-001"):
-    store = em.ExperimentStore(data_root=tmp_path / "data", project_id=pid)
+    proj = _project(tmp_path, pid)
+    store = em.ExperimentStore(proj, data_root=tmp_path / "data")   # adapter-bound (R-P5-003)
     store.initialize(eid, baseline={"metric": "pass_at_k", "value": 0.74})
     return store, eid
+
+
+def _l2(p: Path, data_root: Path, text: str = "stabilized project lesson") -> float:
+    """R-P5-001: promotion tests bind to a real L2 source entry."""
+    return pm.ProjectMemoryStore(p, data_root=data_root).append_entry(text)
 
 
 def test_experiment_baseline_immutable(tmp_path):
@@ -317,19 +335,20 @@ def test_winner_must_reference_existing_iteration(tmp_path):
 
 
 def test_malformed_experiment_records_fail(tmp_path):
-    store = em.ExperimentStore(data_root=tmp_path / "data", project_id="alpha")
+    store = em.ExperimentStore(_project(tmp_path, "alpha"), data_root=tmp_path / "data")
     with pytest.raises((em.MalformedRecord, ValueError)):
         store.initialize("BAD ID WITH SPACES", baseline={})
 
 
 def test_experiment_project_crossover_fails(tmp_path):
-    """Isolation is structural: per-project paths mean B cannot address A's
-    experiment at all (reads see nothing), and B's same-named experiment
-    never clobbers A's records."""
-    store_a = em.ExperimentStore(data_root=tmp_path / "data", project_id="alpha")
+    """Isolation is structural + adapter-authoritative: B's store (bound to
+    beta's adapter) cannot address A's experiment at all."""
+    proj_a = _project(tmp_path, "alpha")
+    proj_b = _project(tmp_path, "beta")
+    store_a = em.ExperimentStore(proj_a, data_root=tmp_path / "data")
     store_a.initialize("EXP-1", baseline={"m": 1})
     store_a.append_iteration("EXP-1", {"change": "a-only", "score": 0.5})
-    store_b = em.ExperimentStore(data_root=tmp_path / "data", project_id="beta")
+    store_b = em.ExperimentStore(proj_b, data_root=tmp_path / "data")
     # B cannot see A's iterations through any store API
     assert store_b.read_iterations("EXP-1") == []
     # B creating its own EXP-1 does not touch A's records

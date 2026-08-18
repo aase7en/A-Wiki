@@ -99,11 +99,18 @@ class MemoryLedger:
         files: list[str] | None = None,
         tags: list[str] | None = None,
         parent_ts: float | None = None,
+        extra: dict | None = None,
     ) -> float:
         """Append one entry. Returns the entry's ts.
 
         Validates type. Redacts secrets from summary. Truncates oversized
         summaries. Files/tags normalized.
+
+        ``extra`` (Phase 5, R-P5-006): optional caller-owned fields merged
+        verbatim into the entry — used by ProjectMemoryStore to carry the
+        authoritative ``project`` tag + caller meta. String values inside
+        ``extra`` are redacted with the same patterns as the summary.
+        Vanilla callers (no ``extra``) see an unchanged entry shape.
         """
         if type not in VALID_TYPES:
             raise ValueError(
@@ -123,6 +130,11 @@ class MemoryLedger:
             "tags": [str(t) for t in tags] if tags else [],
             "parent_ts": parent_ts,
         }
+        if extra:
+            safe_extra: dict[str, Any] = {}
+            for k, v in extra.items():
+                safe_extra[str(k)] = _redact(v) if isinstance(v, str) else v
+            entry.update(safe_extra)
         atomic_json.atomic_append_jsonl(self.path, entry)
         return ts
 

@@ -182,6 +182,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 4 | CHANGES_REQUIRED (re-review 2) | 2026-08-18 | R-P4-007 checks ran after reading; R-P4-008 module+pattern (graft) wrongly ineligible. |
 | 4 | ⏳ awaiting re-review (3) | 2026-08-18 | Symlink checks BEFORE any read (lstat-only) in validate+status; eligibility = membership. 55 adapter tests; canonical 0 failed / 2,714 passed / 17 skipped. |
 | 5 | ⏳ awaiting | 2026-08-18 | Memory layers complete (Phase 5 Log). Canonical 0 failed / 2,746 passed / 17 skipped. |
+| 5 | CHANGES_REQUIRED | 2026-08-18 | R-P5-001..006 (PR #15 review): L2-bound promotion, nested symlink escapes, adapter-authoritative L5, provenance privacy/safe YAML, read-only status, ledger seam. |
+| 5 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (33 negative tests, 29 red-first); canonical 0 failed / 2,779 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -246,6 +248,17 @@ Memory plane per `docs/migration/phase-5-memory-layers-work-order.md` — base m
 - **`scripts/memory/status.py` + `scripts/memory/promote.py`** — thin CLIs: read-only `status --json` (exit 1 invalid adapter); `promote --text --evidence type=value [--apply] [--json]` dry-run-first.
 - Existing substrates reused, not duplicated: MemoryLedger stays L1 (`memory_remember`/`memory_recall` caller contracts green), wiki/ stays L3, raw/ stays L4, `.tmp` stays L0. No hook-engine changes, no Graft, no search rearchitecture, no auto-promotion, no background jobs.
 - Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard / 48 baselined ✓ / canonical **0 failed / 2,746 passed / 17 skipped** (521.87s).
+
+## Phase 5 Remediation Log (2026-08-18)
+
+Review: PR #15 vs `715cc19e`. All 6 findings fixed TDD — 33 negative tests written FIRST (29 red), then implementation. Focused: 65/65 memory + 291 compat; canonical **0 failed / 2,779 passed / 17 skipped**.
+
+- **R-P5-001 (L2-bound promotion)** — `promote()` gained gate 0 `l2-source`: mechanically verifies a `source_entry_ts` exists in THIS project's L2 store (`ProjectMemoryStore.get_entry`, foreign-project entries return None) and consults `transition_allowed(source_layer, "L3", via="promotion")` on the execution path. L0/L1/L4 sources or a missing/foreign ts can never reach candidate write (proven with `dry_run=False` + empty candidates dir). CLI requires `--source-ts`.
+- **R-P5-002 (nested symlink escapes)** — new `safe_join_under_root()`: component-wise symlink + Windows reparse-point rejection (lstat-only, `drive_path.is_reparse_point`) AND resolved-realpath containment within the canonical data root, before ANY read/write, for every L2/L5 path (projects/, project-id/, memory/, experiments/, exp-id/, leaf files) — re-verified after mkdir. Tests: symlinked `projects/`, leaf `entries.jsonl` (victim byte-identical after), symlinked experiment dir + baseline leaf.
+- **R-P5-003 (adapter-authoritative L5)** — `ExperimentStore(project_root, data_root)` now derives identity from the validated Phase-4 adapter; a caller-supplied `project_id` may only re-state the adapter's own id and any mismatch raises `ProjectIsolationError` BEFORE storage is touched; requires `scopes.project`. Beta-supplying-alpha fails with alpha's tree unwritten.
+- **R-P5-004 (provenance privacy + safe YAML)** — every persisted provenance value now clears the SAME privacy scanner as the distilled text (secret patterns + absolute-path detector), plus strict per-type value shapes for all 8 evidence types and a newline/control-char rejection. Candidate front matter is produced by `yaml.safe_dump` — no string interpolation; injection/key-addition tests prove it parses back to exactly the intended mapping.
+- **R-P5-005 (read-only status)** — `resolve_data_root_readonly()` mirrors `get_drive_root()`'s chain but raises `DataRootUnavailable` instead of creating `~/.a-wiki-data`; status constructs the store `read_only=True`, emits NO absolute/private paths (identity = adapter id), and converts adapter/storage/symlink failures into deterministic JSON (`storage_ok`/`storage_error`) with stable exit behavior. Snapshot tests prove the filesystem is byte-identical before/after.
+- **R-P5-006 (ledger seam)** — L2 storage routes through `MemoryLedger` via a narrowly-justified extension (`extra` kwarg merges caller fields AFTER redaction; vanilla entry shape unchanged — pinned by test). `append_entry` returns the ledger ts; appends inherit secret redaction + `atomic_json` lock-protected writes; `read_entries` = ledger.search + project filter (foreign lines skipped). Concurrency test: 2 threads × 5 appends → 11 valid JSONL lines.
 
 ## Phase 1 Entry Order
 
