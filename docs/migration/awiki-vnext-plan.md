@@ -179,6 +179,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 4 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (41 adapter tests); canonical 0 failed / 2,700 passed / 17 skipped. |
 | 4 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P4-007 read-path symlinks · R-P4-008 allowlist eligibility · R-P4-009 decode fail-closed. |
 | 4 | ⏳ awaiting re-review (2) | 2026-08-18 | R-P4-007..009 fixed TDD (49 adapter tests); canonical 0 failed / 2,708 passed / 17 skipped. |
+| 4 | CHANGES_REQUIRED (re-review 2) | 2026-08-18 | R-P4-007 checks ran after reading; R-P4-008 module+pattern (graft) wrongly ineligible. |
+| 4 | ⏳ awaiting re-review (3) | 2026-08-18 | Symlink checks BEFORE any read (lstat-only) in validate+status; eligibility = membership. 55 adapter tests; canonical 0 failed / 2,714 passed / 17 skipped. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -223,6 +225,14 @@ Review: PR #14 vs `25f488a1`. TDD (8 negatives red-first):
 - **R-P4-008** — allowlist eligibility by registry SEMANTICS (`_eligible_integration_ids`: MODULE-classified only); REJECT (deer-flow) and pattern-only (autoresearch) entries are ineligible even though their ids exist; planned/optional MODULE pre-authorization preserved. Negatives + existing module positive.
 - **R-P4-009** — decode/read errors converted to deterministic validation errors (fail closed, no silent byte replacement in policy metadata): validate catches OSError + UnicodeDecodeError on project.yaml; status guards both project.yaml and AGENTS.md reads. Negatives: invalid-UTF-8 project.yaml (validate + status).
 - Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,708 passed / 17 skipped**.
+
+## Phase 4 Remediation Log 3 (2026-08-18)
+
+Review: PR #14 vs `f5995089`. TDD (4 negatives red-first: secret-canary external targets prove they are never read):
+
+- **R-P4-007 (final)** — canonical-surface symlink checks now run BEFORE any `is_file`/`read_bytes`/YAML parse/AGENTS read (`is_symlink()` = lstat, never follows the link); on unsafe surface validate returns immediately with ONLY the symlink violation. `status()` performs the same safe-surface check first and never parses/reports fields (e.g. attacker-controlled `id`) from an unsafe surface. Canary tests: external project.yaml/.awiki/AGENTS.md targets containing a secret-shaped token yield symlink errors ONLY — no secret error proves the bytes were never consumed.
+- **R-P4-008 (final)** — eligibility is membership-based (`"module" in classes and "reject" not in classes`): graft `[module, pattern]` eligible, gitnexus pure-module eligible; `autoresearch` (pattern-only) and `deer-flow` (reject) stay ineligible. Contract-only — no Graft runtime installed/enabled.
+- Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard ✓ · canonical **0 failed / 2,714 passed / 17 skipped**.
 
 ## Phase 1 Entry Order
 
