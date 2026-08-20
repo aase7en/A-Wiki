@@ -157,26 +157,37 @@ class TestStopHook:
 
 
 class TestWiring:
-    def test_pretooluse_guard_is_routed_through_hooks_runner(self):
+    def test_pretooluse_guard_is_routed_through_registry_event_sweep(self):
         cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        blob = json.dumps(cfg)
-        assert "check-a-focus" in blob or "check_a_focus" in blob
+        commands = [
+            h.get("command", "")
+            for grp in cfg["hooks"].get("PreToolUse", [])
+            for h in grp.get("hooks", [])
+        ]
+        assert any(
+            "hooks_runner.py --provider claude --event PreToolUse" in c
+            for c in commands
+        )
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry
+        entry = registry.HOOK_REGISTRY["check_a_focus"]
+        assert "PreToolUse" in entry["events"]
+        assert entry["classification"] == "hard"
 
-    def test_stop_hook_is_wired_DIRECT_not_through_the_runner(self):
-        """hooks_runner uses capture_output=True and only forwards stderr on
-        exit 2. A Stop hook that always exits 0 would be completely invisible
-        through the runner — which is exactly why self_audit.py's warnings
-        never reach anyone today. This one must be wired directly.
-        """
+    def test_stop_hook_is_wired_via_registry_event_sweep_with_context(self):
+        """Phase 6 keeps Stop advisory output visible through runner context."""
         cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
         stop_cmds = [
             h.get("command", "")
             for grp in cfg["hooks"].get("Stop", [])
             for h in grp.get("hooks", [])
         ]
-        direct = [c for c in stop_cmds if "a_focus_stop.py" in c]
-        assert direct, "a_focus_stop.py not wired on Stop"
-        for c in direct:
-            assert "hooks_runner" not in c, (
-                "a_focus_stop.py must be wired directly — the runner swallows stdout"
-            )
+        assert any(
+            "hooks_runner.py --provider claude --event Stop" in c
+            for c in stop_cmds
+        ), "Stop must enter the canonical registry event sweep"
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry
+        entry = registry.HOOK_REGISTRY["a_focus_stop"]
+        assert "Stop" in entry["events"]
+        assert entry["allow_context_stdout"] is True

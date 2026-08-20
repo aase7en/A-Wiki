@@ -28,8 +28,12 @@ sys.path.insert(0, str(HOOKS_DIR))
 import council_persistent  # noqa: E402
 import memory_ledger  # noqa: E402
 
-DEFAULT_BB_PATH = REPO_ROOT / ".tmp" / "blackboard.jsonl"
-DEFAULT_LEDGER_PATH = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
+DEFAULT_BB_PATH = Path(
+    os.environ.get("AWIKI_BLACKBOARD_PATH", str(REPO_ROOT / ".tmp" / "blackboard.jsonl"))
+)
+DEFAULT_LEDGER_PATH = Path(
+    os.environ.get("AWIKI_MEMORY_LEDGER_PATH", str(REPO_ROOT / ".tmp" / "memory-ledger.jsonl"))
+)
 
 
 def check_unreviewed_councils(bb_path: Path | str = DEFAULT_BB_PATH) -> list[dict]:

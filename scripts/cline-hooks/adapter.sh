@@ -23,12 +23,14 @@
 # Environment:
 #   HOOK_SKIP       — comma-separated hooks to skip (forwarded to runner)
 #   HOOK_TIMEOUT    — seconds per hook (forwarded to runner, default 5)
+#   AWIKI_PYTHON    — explicit Python interpreter (default: python3)
 # ============================================================================
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 HOOKS_RUNNER="$REPO_ROOT/scripts/hooks_runner.py"
-LOG_FILE="$REPO_ROOT/logs/cline-hooks.log"
+LOG_FILE="${CLINE_HOOK_LOG_FILE:-$REPO_ROOT/logs/cline-hooks.log}"
+PYTHON_BIN="${AWIKI_PYTHON:-python3}"
 
 # ── Infer event name from the symlink name that invoked us ──────────────────
 # $0 could be: .clinerules/hooks/PreToolUse  → event = PreToolUse
@@ -45,52 +47,26 @@ fi
 # ── Read Cline JSON from stdin ──────────────────────────────────────────────
 INPUT="$(cat)"
 
+# ── Parse only optional log metadata; never transform the provider payload ──
+# Malformed JSON is allowed to flow unchanged to the canonical runner.
+TOOL_NAME="$(printf '%s' "$INPUT" | "$PYTHON_BIN" -c '
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    inner = data.get("preToolUse") or data.get("postToolUse") or {}
+    value = inner.get("toolName", "") if isinstance(inner, dict) else ""
+    sys.stdout.write(str(value))
+except Exception:
+    pass
+' 2>/dev/null || true)"
+
 # ── Log the incoming event ──────────────────────────────────────────────────
 mkdir -p "$(dirname "$LOG_FILE")"
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT tool=$(echo "$INPUT" | jq -r '(.preToolUse.toolName // .postToolUse.toolName // "")' 2>/dev/null)" >> "$LOG_FILE"
+echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT tool=$TOOL_NAME" >> "$LOG_FILE"
 
-# ── Convert Cline hook format → hooks_runner.py format ──────────────────────
-# Cline sends:  {"preToolUse":  {"toolName":"...", "parameters":{...}}}
-#                {"postToolUse": {"toolName":"...", "parameters":{...}, "result":...}}
-#                {"taskStart":   {"task":"...", "apiProvider":"..."}}
-#                {"taskComplete":{"task":"...", "apiProvider":"...", ...}}
-#
-# hooks_runner.py expects: {"tool_name":"...", ...}
-#
-# Strategy: flatten the inner object, rename toolName→tool_name,
-#           add event_type field.
-HOOK_DATA="{}"
-case "$EVENT" in
-  PreToolUse)
-    HOOK_DATA=$(echo "$INPUT" | jq -c '
-      .preToolUse // {}
-      | if .toolName then . + {"tool_name": .toolName} | del(.toolName) else . end
-      | . + {"event_type": "PreToolUse"}
-    ' 2>/dev/null) || HOOK_DATA="{}"
-    ;;
-  PostToolUse)
-    HOOK_DATA=$(echo "$INPUT" | jq -c '
-      .postToolUse // {}
-      | if .toolName then . + {"tool_name": .toolName} | del(.toolName) else . end
-      | . + {"event_type": "PostToolUse"}
-    ' 2>/dev/null) || HOOK_DATA="{}"
-    ;;
-  TaskStart)
-    HOOK_DATA=$(echo "$INPUT" | jq -c '
-      .taskStart // {}
-      | . + {"event_type": "TaskStart"}
-    ' 2>/dev/null) || HOOK_DATA="{}"
-    ;;
-  TaskComplete)
-    HOOK_DATA=$(echo "$INPUT" | jq -c '
-      .taskComplete // {}
-      | . + {"event_type": "TaskComplete"}
-    ' 2>/dev/null) || HOOK_DATA="{}"
-    ;;
-  *)
-    HOOK_DATA=$(echo "$INPUT" | jq -c '. + {"event_type": $event}' --arg event "$EVENT" 2>/dev/null) || HOOK_DATA="{}"
-    ;;
-esac
+# ── Preserve provider-native payload for canonical normalization ─────────────
+# Do not fabricate `{}` on malformed input. The canonical provider boundary
+# in hooks_runner.py owns malformed-vs-empty semantics.
 
 # ── Forward to hooks_runner.py ──────────────────────────────────────────────
 # hooks_runner.py exit codes:
@@ -99,7 +75,7 @@ esac
 #   other non-zero → pass with warning
 STDERR_FILE="$(mktemp)"
 EXIT_CODE=0
-echo "$HOOK_DATA" | python3 "$HOOKS_RUNNER" 2>"$STDERR_FILE" || EXIT_CODE=$?
+printf '%s' "$INPUT" | "$PYTHON_BIN" "$HOOKS_RUNNER" --provider cline --event "$EVENT" 2>"$STDERR_FILE" || EXIT_CODE=$?
 
 STDERR_OUT="$(cat "$STDERR_FILE" 2>/dev/null || true)"
 rm -f "$STDERR_FILE"
@@ -109,12 +85,16 @@ if [ "$EXIT_CODE" -eq 2 ]; then
   # BLOCK — return cancel:true
   BLOCK_REASON="${STDERR_OUT:-Blocked by A-Wiki hook (Iron Law violation)}"
   # Also log to live-events.jsonl for dashboard
-  python3 "$REPO_ROOT/scripts/live-dashboard/event_logger.py" hook_block \
+  "$PYTHON_BIN" "$REPO_ROOT/scripts/live-dashboard/event_logger.py" hook_block \
     event="$EVENT" \
     reason="$BLOCK_REASON" \
-    "tool=$(echo "$HOOK_DATA" | jq -r '.tool_name // ""' 2>/dev/null)" \
+    "tool=$TOOL_NAME" \
     2>/dev/null || true
-  echo "{\"cancel\":true,\"contextModification\":\"\",\"errorMessage\":$(echo "$BLOCK_REASON" | jq -Rs .)}"
+  if ! ENCODED_REASON="$(printf '%s' "$BLOCK_REASON" | "$PYTHON_BIN" -c 'import json, sys; sys.stdout.write(json.dumps(sys.stdin.read()))' 2>/dev/null)"; then
+    ENCODED_REASON='"Blocked by A-Wiki hook"'
+  fi
+  [ -n "$ENCODED_REASON" ] || ENCODED_REASON='"Blocked by A-Wiki hook"'
+  printf '{"cancel":true,"contextModification":"","errorMessage":%s}\n' "$ENCODED_REASON"
   echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT result=BLOCK reason=$BLOCK_REASON" >> "$LOG_FILE"
   exit 0
 fi
@@ -127,11 +107,11 @@ fi
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT result=PASS" >> "$LOG_FILE"
 
 # Emit pass event to live dashboard
-python3 "$REPO_ROOT/scripts/live-dashboard/event_logger.py" hook_check \
+"$PYTHON_BIN" "$REPO_ROOT/scripts/live-dashboard/event_logger.py" hook_check \
   "hook=cline-adapter" \
   "event=$EVENT" \
   "result=pass" \
-  "tool=$(echo "$HOOK_DATA" | jq -r '.tool_name // ""' 2>/dev/null)" \
+  "tool=$TOOL_NAME" \
   2>/dev/null || true
 
 echo '{"cancel":false,"contextModification":"","errorMessage":""}'

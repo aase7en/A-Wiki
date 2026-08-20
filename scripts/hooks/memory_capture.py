@@ -30,7 +30,9 @@ sys.path.insert(0, str(LIB_DIR))
 sys.path.insert(0, str(HOOKS_DIR))
 
 import memory_ledger  # noqa: E402 -- chunk 2
-LEDGER_PATH = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
+LEDGER_PATH = Path(os.environ.get(
+    "AWIKI_MEMORY_LEDGER_PATH", str(REPO_ROOT / ".tmp" / "memory-ledger.jsonl")
+))
 
 
 # Patterns that identify a Bash command as a real git commit (not just a

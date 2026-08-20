@@ -39,7 +39,7 @@
           {
             "name": "a-wiki-hooks-runner",
             "type": "command",
-            "command": "python3 scripts/hooks_runner.py",
+            "command": "python3 scripts/hooks_runner.py --provider gemini --event BeforeTool",
             "timeout": 60000
           }
         ]

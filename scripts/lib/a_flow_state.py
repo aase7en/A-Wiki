@@ -53,6 +53,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # Falls back to a-flow.json when no session id available (CLI testing).
 def _state_path() -> Path:
     import re as _re
+    base_dir = Path(os.environ.get("AWIKI_FLOW_STATE_DIR", REPO_ROOT / ".tmp"))
     session = (
         os.environ.get("ZCODE_SESSION_ID")
         or os.environ.get("CLAUDE_SESSION_ID")
@@ -61,8 +62,8 @@ def _state_path() -> Path:
     )
     if session:
         safe = _re.sub(r"[^A-Za-z0-9_-]", "_", session)
-        return REPO_ROOT / ".tmp" / f"a-focus-{safe}.json"
-    return REPO_ROOT / ".tmp" / "a-flow.json"
+        return base_dir / f"a-focus-{safe}.json"
+    return base_dir / "a-flow.json"
 
 
 # Compat alias (module-level STATE_FILE used by some tests + older callers).

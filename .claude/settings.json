@@ -88,7 +88,7 @@
                     },
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks/check_drive_link.py"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event SessionStart"
                     },
                     {
                         "type": "command",
@@ -134,15 +134,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks/check_compaction_suggest.py"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks/check_a_route.py"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks/recall_on_prompt.py"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event UserPromptSubmit"
                     }
                 ]
             }
@@ -153,59 +145,11 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-agent-claim"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-cost-tier"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
                     },
                     {
                         "type": "command",
                         "command": "bash .claude/hooks/pre-edit-staleness-check.sh"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-claudemd-lock"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-raw-immutable"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-source-original-file"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-external-editor-drift"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-output-format"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-harness-routing"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-skill-registry"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-machine-path"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-secret-leak"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-a-focus"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-a-flow-discipline"
                     }
                 ]
             },
@@ -214,11 +158,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-cost-tier"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-subagent-fanout"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
                     }
                 ]
             },
@@ -227,27 +167,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-bash-destructive-git"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-bash-no-branch"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-secret-leak"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-apikey"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-delegation-gate"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks_runner.py check-git-rebase-safety"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
                     }
                 ]
             }
@@ -258,7 +178,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py log-subagent-result"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
                     }
                 ]
             },
@@ -275,7 +195,7 @@
                     },
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py auto-council-trigger"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
                     }
                 ]
             },
@@ -301,7 +221,7 @@
                     },
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks_runner.py memory-capture"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
                     }
                 ]
             }
@@ -329,15 +249,7 @@
                     },
                     {
                         "type": "command",
-                        "command": "python3 scripts/hooks/self_audit.py"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks/a_focus_stop.py"
-                    },
-                    {
-                        "type": "command",
-                        "command": "python3 scripts/hooks/release_agent_claims.py"
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event Stop"
                     }
                 ]
             }
