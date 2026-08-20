@@ -21,6 +21,8 @@
 *oauth*
 *jwt*
 *secrets*
+# public test files legitimately named *secret* — tests are public-safe
+!tests/
 !scripts/lib/drive_secrets.py
 !scripts/hooks/check_secret_leak.py
 # Essential tracked scripts caught by the name globs above (no secrets inside):
