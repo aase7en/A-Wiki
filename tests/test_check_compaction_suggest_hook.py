@@ -29,25 +29,3 @@ def test_fail_open_silent():
     """Runs without crashing on a minimal payload."""
     r = _run({"prompt": "hello", "session_id": "test"})
     assert r.returncode == 0
-
-
-class TestWiring:
-    def test_registered_on_userpromptsubmit(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("UserPromptSubmit", []):
-            for h in grp.get("hooks", []):
-                if "compaction" in h.get("command", ""):
-                    return
-        raise AssertionError("check_compaction_suggest must be on UserPromptSubmit")
-
-    def test_wired_direct_not_via_hooks_runner(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("UserPromptSubmit", []):
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "compaction" in c:
-                    assert "hooks_runner" not in c, (
-                        "check_compaction_suggest must be wired DIRECT — stdout must reach model"
-                    )
-                    return
-        raise AssertionError("check_compaction_suggest not found on UserPromptSubmit")

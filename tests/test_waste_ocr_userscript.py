@@ -40,7 +40,20 @@ def run_userscript_unit(tmp_path: Path, js_expr: str) -> str:
         capture_output=True,
         check=True,
     )
-    return result.stdout.strip()
+    out = result.stdout.strip()
+    # The private userscript is edited live in Tampermonkey (Iron Law #7);
+    # its console.log lines may come and go. Contract under test is the
+    # LAST JSON object printed — not byte-exact stdout.
+    for line in reversed(out.splitlines()):
+        s = line.strip()
+        if s.startswith("{") and s.endswith("}"):
+            try:
+                import json as _json
+                _json.loads(s)
+                return s
+            except ValueError:
+                continue
+    return out
 
 
 def test_aggregate_rows_keeps_duplicate_department_entries_as_one_daily_total(tmp_path):

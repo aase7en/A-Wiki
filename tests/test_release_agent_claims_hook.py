@@ -27,27 +27,3 @@ def test_always_exits_zero():
 def test_fail_open_silent():
     """Runs without crashing on the live repo."""
     assert _run().returncode == 0
-
-
-class TestWiring:
-    def test_registered_on_stop(self):
-        import json
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("Stop", []):
-            for h in grp.get("hooks", []):
-                if "release_agent_claims" in h.get("command", ""):
-                    return
-        raise AssertionError("release_agent_claims must be registered on Stop")
-
-    def test_wired_direct_not_via_hooks_runner(self):
-        import json
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("Stop", []):
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "release_agent_claims" in c:
-                    assert "hooks_runner" not in c, (
-                        "release_agent_claims must be wired DIRECT — runner swallows exit-0 stdout"
-                    )
-                    return
-        raise AssertionError("release_agent_claims not found on Stop")

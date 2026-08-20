@@ -53,3 +53,5 @@ tests/test_memory_ledger.py::OpenAI/Anthropic/OpenRouter style key::29421cee1851
 tests/test_pi5_brain_sync.py::Linux user home (/home/<user>/)::15741ad3caa9b193
 tests/test_quality_gate_thai.py::OpenAI/Anthropic/OpenRouter style key::067c2acafaa06ccc
 wiki/synthesis/waste-form-automation.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+tests/test_check_machine_path_hook.py::Linux user home (/home/<user>/)::7c66d8eb71b4ee51
+tests/test_check_machine_path_hook.py::Linux user home (/home/<user>/)::7c66d8eb71b4ee51

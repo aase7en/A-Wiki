@@ -159,7 +159,8 @@ def _staged_files() -> list[str]:
         import subprocess
         r = subprocess.run(
             ["git", "diff", "--name-only", "HEAD"],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=5,
             cwd=str(REPO_ROOT),
         )
         if r.returncode != 0:

@@ -61,15 +61,6 @@
         ]
       },
       {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py log-subagent-result"
-          }
-        ]
-      },
-      {
         "matcher": "Bash",
         "hooks": [
           {
@@ -100,10 +91,6 @@
     "SessionStart": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks/caveman_session_start.py"
-          },
           {
             "type": "command",
             "command": "bash .codex/hooks/session-start-git-pull.sh"
@@ -143,14 +130,6 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/session-start-a-router.sh"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks/check_drive_link.py"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/session-start-initial-context.sh"
           }
         ]
       }

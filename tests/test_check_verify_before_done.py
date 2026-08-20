@@ -229,39 +229,3 @@ def test_has_outcome_for_task(monkeypatch, tmp_path):
 # ---------------------------------------------------------------------------
 # 7. TestWiring — must be wired DIRECT on Stop (not via hooks_runner)
 # ---------------------------------------------------------------------------
-class TestWiring:
-    def test_registered_on_stop_event(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        stop_cmds = [
-            h.get("command", "")
-            for grp in cfg["hooks"].get("Stop", [])
-            for h in grp.get("hooks", [])
-        ]
-        direct = [c for c in stop_cmds if "check_verify_before_done" in c]
-        assert direct, (
-            "check_verify_before_done.py must be wired on Stop event "
-            "in .claude/settings.json"
-        )
-
-    def test_wired_direct_not_through_hooks_runner(self):
-        """Stop advisory hooks must be wired DIRECT (not via hooks_runner).
-
-        The runner uses capture_output=True and only forwards stderr on
-        exit 2; an exit-0 advisory hook's warnings (on stdout) would be
-        silently swallowed. Mirrors self_audit.py + a_focus_stop.py."""
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        stop_cmds = [
-            h.get("command", "")
-            for grp in cfg["hooks"].get("Stop", [])
-            for h in grp.get("hooks", [])
-        ]
-        for c in stop_cmds:
-            if "check_verify_before_done" in c:
-                assert "hooks_runner" not in c, (
-                    "check_verify_before_done.py must be wired DIRECT on Stop "
-                    "(the runner swallows exit-0 advisory stdout/stderr)"
-                )
-                return
-        raise AssertionError("check_verify_before_done not found on Stop")

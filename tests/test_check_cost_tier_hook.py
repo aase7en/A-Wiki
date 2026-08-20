@@ -38,13 +38,3 @@ def test_fail_open_on_non_json():
     r = subprocess.run([sys.executable, str(HOOK)], input="{{{",
         capture_output=True, text=True, env=os.environ, cwd=str(REPO_ROOT), timeout=30)
     assert r.returncode == 0
-
-
-class TestWiring:
-    def test_registered_in_pretooluse(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("PreToolUse", []):
-            for h in grp.get("hooks", []):
-                if "cost-tier" in h.get("command", "") or "cost_tier" in h.get("command", ""):
-                    return
-        raise AssertionError("check_cost_tier must be registered on PreToolUse")

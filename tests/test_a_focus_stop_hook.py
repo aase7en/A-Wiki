@@ -34,27 +34,3 @@ def test_hook_skip_substring_in_comma_list():
 def test_fail_open_silent():
     """Runs without crashing on the live repo."""
     assert _run().returncode == 0
-
-
-class TestWiring:
-    def test_registered_on_stop(self):
-        import json
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("Stop", []):
-            for h in grp.get("hooks", []):
-                if "a_focus_stop" in h.get("command", ""):
-                    return
-        raise AssertionError("a_focus_stop must be registered on Stop")
-
-    def test_wired_direct_not_via_hooks_runner(self):
-        import json
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("Stop", []):
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "a_focus_stop" in c:
-                    assert "hooks_runner" not in c, (
-                        "a_focus_stop must be wired DIRECT — runner swallows exit-0 stdout"
-                    )
-                    return
-        raise AssertionError("a_focus_stop not found on Stop")

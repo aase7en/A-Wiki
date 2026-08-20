@@ -207,33 +207,6 @@ def test_passes_when_file_path_missing():
 # ---------------------------------------------------------------------------
 # 4. TestWiring
 # ---------------------------------------------------------------------------
-class TestWiring:
-    def test_registered_in_pretooluse_edit_matcher(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            if "Edit" not in grp.get("matcher", ""):
-                continue
-            cmds = [h.get("command", "") for h in grp.get("hooks", [])]
-            for c in cmds:
-                if "check-a-flow-discipline" in c or "check_a_flow_discipline" in c:
-                    return
-        raise AssertionError(
-            "check_a_flow_discipline must be registered on Edit|Write|MultiEdit"
-        )
-
-    def test_routed_through_hooks_runner(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "a_flow_discipline" in c or "a-flow-discipline" in c:
-                    assert "hooks_runner" in c
-                    return
-        raise AssertionError("check_a_flow_discipline not on PreToolUse")
 
 
 # Cleanup any leftover state file

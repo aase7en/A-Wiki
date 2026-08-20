@@ -71,6 +71,16 @@ class TestWiring:
         for grp in cfg["hooks"].get("PreToolUse", []):
             if "Edit" in grp.get("matcher", ""):
                 for h in grp.get("hooks", []):
-                    if "machine-path" in h.get("command", "") or "machine_path" in h.get("command", ""):
+                    cmd = h.get("command", "")
+                    if "machine-path" in cmd or "machine_path" in cmd:
                         return
+                    # Phase 6 sweep form: registry-driven dispatch proves the
+                    # hook runs for Edit tools via its declared matchers.
+                    if "--event PreToolUse" in cmd:
+                        import sys as _sys
+                        _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+                        import registry as _reg
+                        entry = _reg.HOOK_REGISTRY.get("check_machine_path")
+                        if entry and "Edit|Write|MultiEdit" in entry["matchers"]:
+                            return
         raise AssertionError("check_machine_path must be on Edit PreToolUse matcher")

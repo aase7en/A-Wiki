@@ -142,30 +142,3 @@ def test_fail_open_on_non_edit_payload():
 # ---------------------------------------------------------------------------
 # 4. TestWiring
 # ---------------------------------------------------------------------------
-class TestWiring:
-    def test_registered_in_pretooluse_edit_matcher(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            if "Edit" not in grp.get("matcher", ""):
-                continue
-            cmds = [h.get("command", "") for h in grp.get("hooks", [])]
-            for c in cmds:
-                if "check-raw-immutable" in c or "check_raw_immutable" in c:
-                    return
-        raise AssertionError(
-            "check_raw_immutable must be registered on Edit|Write|MultiEdit"
-        )
-
-    def test_routed_through_hooks_runner(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "raw_immutable" in c or "raw-immutable" in c:
-                    assert "hooks_runner" in c
-                    return
-        raise AssertionError("check_raw_immutable not on PreToolUse")

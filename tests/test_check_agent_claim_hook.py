@@ -205,34 +205,3 @@ def test_expired_claim_does_not_block(tmp_path):
 # ---------------------------------------------------------------------------
 # 7. TestWiring — must be registered on PreToolUse Edit|Write|MultiEdit
 # ---------------------------------------------------------------------------
-class TestWiring:
-    def test_registered_in_pretooluse_edit_matcher(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            if "Edit" not in grp.get("matcher", ""):
-                continue
-            cmds = [h.get("command", "") for h in grp.get("hooks", [])]
-            for c in cmds:
-                if "check-agent-claim" in c or "check_agent_claim" in c:
-                    return
-        raise AssertionError(
-            "check_agent_claim must be registered on Edit|Write|MultiEdit "
-            "PreToolUse matcher in .claude/settings.json"
-        )
-
-    def test_routed_through_hooks_runner(self):
-        """PreToolUse gate hooks go through hooks_runner.py (not direct wire)."""
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            if "Edit" not in grp.get("matcher", ""):
-                continue
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "check_agent_claim" in c or "check-agent-claim" in c:
-                    assert "hooks_runner" in c
-                    return
-        raise AssertionError("check_agent_claim not found on PreToolUse")

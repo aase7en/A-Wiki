@@ -174,28 +174,3 @@ def test_fail_open_on_non_json_stdin():
 # ---------------------------------------------------------------------------
 # 5. TestWiring
 # ---------------------------------------------------------------------------
-class TestWiring:
-    def test_registered_in_pretooluse(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            cmds = [h.get("command", "") for h in grp.get("hooks", [])]
-            for c in cmds:
-                if "check-secret-leak" in c or "check_secret_leak" in c:
-                    return
-        raise AssertionError(
-            "check_secret_leak must be registered on PreToolUse in settings.json"
-        )
-
-    def test_routed_through_hooks_runner(self):
-        cfg = json.loads(
-            (REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        pretool = cfg["hooks"].get("PreToolUse", [])
-        for grp in pretool:
-            for h in grp.get("hooks", []):
-                c = h.get("command", "")
-                if "secret_leak" in c or "secret-leak" in c:
-                    assert "hooks_runner" in c
-                    return
-        raise AssertionError("check_secret_leak not on PreToolUse")

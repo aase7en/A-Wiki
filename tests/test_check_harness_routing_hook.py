@@ -31,17 +31,11 @@ def test_passes_for_non_wiki_sources_file():
 
 
 def test_fail_open_on_non_json():
-    r = subprocess.run([sys.executable, str(RUNNER), "check-harness-routing"], input="{{{",
+    # Phase 6: malformed payload on an event with hard gates fails CLOSED
+    # (exit 2 + suppression notice) — the old blanket exit 0 let malformed
+    # input dodge every hard gate.
+    r = subprocess.run([sys.executable, str(RUNNER), "check-harness-routing",
+                        "--event", "PreToolUse"], input="{{{",
         capture_output=True, text=True, env=os.environ, cwd=str(REPO_ROOT), timeout=30)
-    assert r.returncode == 0
-
-
-class TestWiring:
-    def test_registered_in_pretooluse_edit_matcher(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("PreToolUse", []):
-            if "Edit" in grp.get("matcher", ""):
-                for h in grp.get("hooks", []):
-                    if "harness-routing" in h.get("command", "") or "harness_routing" in h.get("command", ""):
-                        return
-        raise AssertionError("check_harness_routing must be on Edit PreToolUse matcher")
+    assert r.returncode == 2
+    assert "suppressed" in r.stderr.lower()

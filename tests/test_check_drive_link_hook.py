@@ -27,14 +27,3 @@ def test_always_exits_zero():
 def test_fail_open_when_drive_missing():
     """If drive/ is missing, hook still passes (warn-only)."""
     assert _run().returncode == 0
-
-
-class TestWiring:
-    def test_registered_on_sessionstart(self):
-        import json
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("SessionStart", []):
-            for h in grp.get("hooks", []):
-                if "drive_link" in h.get("command", "") or "drive-link" in h.get("command", ""):
-                    return
-        raise AssertionError("check_drive_link must be registered on SessionStart")

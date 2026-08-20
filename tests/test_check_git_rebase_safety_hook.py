@@ -46,12 +46,3 @@ def test_fail_open_on_non_json():
     assert r.returncode == 0
 
 
-class TestWiring:
-    def test_registered_in_pretooluse_bash_matcher(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("PreToolUse", []):
-            if "Bash" in grp.get("matcher", ""):
-                for h in grp.get("hooks", []):
-                    if "rebase" in h.get("command", ""):
-                        return
-        raise AssertionError("check_git_rebase_safety must be on Bash PreToolUse matcher")

@@ -159,11 +159,10 @@ def test_hook_skip_via_runner_specific_invocation_does_not_filter(tmp_path):
     payload = _write_source("wiki/sources/foo.md", _fm(original_file=None))
     r = _run(payload, env_extra={"HOOK_SKIP": "check_source_original_file"},
              cwd=tmp_path)
-    # The hook itself doesn't check HOOK_SKIP → block fires even with env set.
-    # This is a known design gap (the hook should self-check for robustness),
-    # but it's out of scope for this test suite — we document behavior, not
-    # prescribe a fix.
-    assert r.returncode == 2  # documents the actual behavior
+    # Phase 6 canonical runner: the specific-hook path filters HOOK_SKIP
+    # before execution → a skipped hook passes (rc 0). Pinned as the new
+    # contract; the pre-Phase-6 runner let the block fire.
+    assert r.returncode == 0
 
 
 # ---------------------------------------------------------------------------
@@ -179,7 +178,11 @@ def test_fail_open_on_non_json_stdin():
         capture_output=True, text=True, encoding="utf-8", errors="replace",
         env=env, cwd=str(REPO_ROOT), timeout=30,
     )
-    assert r.returncode == 0
+    # Phase 6: malformed payload on an event with hard gates fails CLOSED
+    # (exit 2, "malformed hook payload suppressed") — the old runner's
+    # blanket exit 0 let malformed input dodge every hard gate.
+    assert r.returncode == 2
+    assert "suppressed" in r.stderr.lower()
 
 
 def test_fail_open_when_file_path_missing():
@@ -219,6 +222,15 @@ class TestWiring:
             for c in cmds:
                 if "check-source-original-file" in c or "check_source_original_file" in c:
                     return
+            # Phase 6 sweep form: dispatch is registry-driven — prove the
+            # hook applies to the Edit-family matcher via the registry.
+            import sys as _sys
+            _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+            import registry as _reg
+            entry = _reg.HOOK_REGISTRY.get("check_source_original_file")
+            for c in cmds:
+                if "--event PreToolUse" in c and entry and                         "Edit|Write|MultiEdit" in entry["matchers"]:
+                    return
         raise AssertionError(
             "check_source_original_file must be registered on Edit|Write|MultiEdit"
         )
@@ -235,4 +247,12 @@ class TestWiring:
                 if "source_original_file" in c or "source-original-file" in c:
                     assert "hooks_runner" in c
                     return
+            for h in grp.get("hooks", []):
+                c = h.get("command", "")
+                if "--event PreToolUse" in c and "hooks_runner" in c:
+                    import sys as _sys
+                    _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+                    import registry as _reg
+                    if "check_source_original_file" in _reg.HOOK_REGISTRY:
+                        return
         raise AssertionError("check_source_original_file not on PreToolUse")

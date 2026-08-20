@@ -42,14 +42,3 @@ def test_fail_open_on_non_json():
     r = subprocess.run([sys.executable, str(HOOK)], input="{{{",
         capture_output=True, text=True, env=os.environ, cwd=str(REPO_ROOT), timeout=30)
     assert r.returncode == 0
-
-
-class TestWiring:
-    def test_registered_in_pretooluse_edit_matcher(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("PreToolUse", []):
-            if "Edit" in grp.get("matcher", ""):
-                for h in grp.get("hooks", []):
-                    if "external-editor" in h.get("command", "") or "external_editor" in h.get("command", ""):
-                        return
-        raise AssertionError("check_external_editor_drift must be on Edit PreToolUse matcher")

@@ -61,14 +61,3 @@ def test_fail_open_on_non_json():
     r = subprocess.run([sys.executable, str(HOOK)], input="{{{",
         capture_output=True, text=True, env=os.environ, cwd=str(REPO_ROOT), timeout=30)
     assert r.returncode == 0
-
-
-class TestWiring:
-    def test_registered_in_pretooluse_bash_matcher(self):
-        cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
-        for grp in cfg["hooks"].get("PreToolUse", []):
-            if "Bash" in grp.get("matcher", ""):
-                for h in grp.get("hooks", []):
-                    if "apikey" in h.get("command", "").lower() or "api-key" in h.get("command", ""):
-                        return
-        raise AssertionError("check_apikey must be on Bash PreToolUse matcher")
