@@ -30,8 +30,8 @@ Phase 6 is not complete. Implementation exists only as uncommitted local work an
 - local implementation state: **PARTIAL**, uncommitted, independently reviewed
 - live claims: zero across all discovered worktree claim stores
 - open Phase 6 implementation PR at audit time: none
-- docs-only continuity branch / HEAD: `docs/awiki-continuity-recovery-20260820` / `3944efadf4ec1bdc2721c78a1ce44707f252c2b1`
-- durable checkpoint transport: draft PR #16 targeting the Phase 6 branch
+- docs-only continuity branch: `docs/awiki-continuity-recovery-20260820`
+- durable checkpoint transport: draft PR #16 targeting the Phase 6 branch; the PR's current head is the immutable documentation target
 
 The separate local `main` worktree is 24 commits ahead and 104 behind `origin/main` with unrelated dirty work. Historical tool worktrees also contain type-change noise. They are protected other work for this task: do not reset, clean, merge, rebase, switch, or otherwise normalize them.
 
