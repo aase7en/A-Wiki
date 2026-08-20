@@ -17,6 +17,7 @@
 8. Push only to the migration/review branch; never merge or deploy automatically.
 9. An approval applies to an exact reviewed HEAD SHA; a new implementation SHA requires a new review cycle.
 10. Agent-to-agent review automation must use durable state (GitHub/review-state protocol), not hidden conversational memory.
+11. **Review-flow rule (from Phase 6 onward, 2026-08-20):** when a phase/remediation reaches REVIEW state, open the **draft PR** to `main` FIRST, then send the independent reviewer (stronger model / GPT Work Ultra-High) the PR link + the pinned review SHA. Rationale: the PR is the only surface that produces real CI evidence (ci-core runs on `pull_request`, incl. the Python 3.8 hook-engine smoke) plus an anchored line-comment diff. The reviewer NEVER merges; APPROVED merely releases the phase to the human merge gate.
 
 ## Phase Checklist
 
