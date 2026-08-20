@@ -12,6 +12,11 @@ from pathlib import Path
 
 import pytest
 
+# Optional-dep self-skip: verify_regression drives the pandas/openpyxl
+# domain stack (domain-tests.yml). Core CI skips; domain CI proves it.
+pytest.importorskip("pandas", reason="rabies regression needs the domain stack")
+pytest.importorskip("openpyxl", reason="rabies regression HN workbook needs openpyxl")
+
 VERIFIER = Path(__file__).resolve().parent.parent / "scripts" / "hospital" / "verify_regression.py"
 
 
