@@ -19,8 +19,8 @@ GitHub was verified during continuity recovery:
 - merge-base with main: `51258fac665add6e65e6f4a239fda5d597670f0e`
 - remote delta: one Phase 6 work-order commit; no implementation commit
 - open Phase 6 implementation PR at audit time: none
-- docs-only continuity branch / HEAD: `docs/awiki-continuity-recovery-20260820` / `3944efadf4ec1bdc2721c78a1ce44707f252c2b1`
-- durable checkpoint transport: draft PR #16 targeting the Phase 6 branch
+- docs-only continuity branch: `docs/awiki-continuity-recovery-20260820`
+- durable checkpoint transport: draft PR #16 targeting the Phase 6 branch; the PR's current head is the immutable documentation target
 
 GPT Work shell access mechanically verified the local state after Serena became unavailable:
 
