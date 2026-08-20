@@ -115,6 +115,10 @@ def enforce_drive_path(p: Path) -> Path:
 # series where the final dose landed on Day 29-30. 33d = 30d schedule + 3d CDC
 # grace ("delays of a few days are unimportant"). 2026-08-11 fix (HN 10217/388351).
 CASE_WINDOW_DAYS = 33
+# Automatic catch-up merge is intentionally narrower than the clinical rule
+# "resume, do not restart" because HIS has no exposure/incident identifier.
+# Longer or ambiguous gaps require screening/manual review.
+DELAYED_FINAL_MAX_GAP_DAYS = 31
 PRIOR_NEAR_DAYS = 180      # ≤180 → 1-dose booster
 PRIOR_FAR_DAYS = 181       # ≥181 → 2-dose booster
 MIXED_AGE_CUTOFF = 9       # <9 → IM, ≥9 → ID (year unit)
@@ -425,6 +429,78 @@ def _fits_any_schedule(offsets_from_anchor: list[int]) -> bool:
             or _schedule_offsets_match(offsets_from_anchor, ID_SCHEDULE_DAYS))
 
 
+def _merge_delayed_final_dose(cases: list[Case]) -> list[Case]:
+    """Merge a delayed final dose split by the 33-day episode window.
+
+    A delayed dose continues the original PEP series; it does not restart it.
+    Without an exposure identifier, however, a later single dose can also be a
+    true booster for a new exposure. Automatic merging therefore requires a
+    narrow continuation signature:
+
+      * previous case is exactly one dose short (IM=4 or ID=3),
+      * next case contains exactly one vaccine dose of the same route,
+      * next case has no ERIG/HRIG suggesting a new exposure, and
+      * gap from the previous vaccine is <= DELAYED_FINAL_MAX_GAP_DAYS.
+
+    Ambiguous longer gaps remain separate for screening/manual review.
+    """
+    if len(cases) <= 1:
+        return cases
+
+    merged: list[Case] = []
+    i = 0
+    while i < len(cases):
+        first = cases[i]
+        if i + 1 >= len(cases):
+            merged.append(first)
+            break
+        tail = cases[i + 1]
+
+        first_route = None
+        if first.doses_im == 4 and first.doses_id == 0:
+            first_route = VAC_IM
+        elif first.doses_id == 3 and first.doses_im == 0:
+            first_route = VAC_ID
+
+        tail_route = None
+        if tail.doses_im == 1 and tail.doses_id == 0:
+            tail_route = VAC_IM
+        elif tail.doses_id == 1 and tail.doses_im == 0:
+            tail_route = VAC_ID
+
+        gap_days = (tail.start_date - first.end_date).days
+        should_merge = (
+            first_route is not None
+            and tail_route == first_route
+            and tail.total_vac == 1
+            and tail.doses_erig == 0
+            and tail.doses_hrig == 0
+            and 0 <= gap_days <= DELAYED_FINAL_MAX_GAP_DAYS
+        )
+        if not should_merge:
+            merged.append(first)
+            i += 1
+            continue
+
+        combined = Case(
+            hn=first.hn,
+            case_idx=first.case_idx,
+            start_date=first.start_date,
+            end_date=max(first.end_date, tail.end_date),
+            doses_im=first.doses_im + tail.doses_im,
+            doses_id=first.doses_id + tail.doses_id,
+            doses_erig=first.doses_erig + tail.doses_erig,
+            doses_hrig=first.doses_hrig + tail.doses_hrig,
+            age=first.age if first.age is not None else tail.age,
+            names=set(first.names) | set(tail.names),
+            dose_log=sorted(first.dose_log + tail.dose_log, key=lambda x: x[0]),
+        )
+        assert combined.total_vac == first.total_vac + tail.total_vac
+        merged.append(combined)
+        i += 2
+    return merged
+
+
 def refine_clusters_cross_window(cases: list[Case]) -> list[Case]:
     """Refine one HN's case list by detecting 'abandoned dose + clean restart'
     ACROSS time-windowed case boundaries.
@@ -465,6 +541,7 @@ def refine_clusters_cross_window(cases: list[Case]) -> list[Case]:
     Reference: hospital policy on restarts — patient lost to follow-up + later
     re-presentation is treated as a new incident, not continuation.
     """
+    cases = _merge_delayed_final_dose(cases)
     if len(cases) <= 1:
         return cases
     # Flatten all vaccine doses across all cases, preserving order

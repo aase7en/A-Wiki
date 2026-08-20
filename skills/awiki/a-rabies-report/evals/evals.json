@@ -1,0 +1,74 @@
+{
+  "skill_name": "a-rabies-report",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "มีไฟล์ HIS ของ Q4 ไฟล์เดียว ช่วยทำรายงานส่งจังหวัดให้เลย",
+      "expected_output": "Does not finalize official counts from one file; requires or locates 10-year HIS history, date-valid screening data, and next-month lookahead before classification.",
+      "files": [],
+      "expectations": [
+        "States that one-quarter HIS data is insufficient for a final report",
+        "Requires 10-year history, screening, and lookahead",
+        "Uses deterministic engine output rather than manually reading all rows"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ขอรายชื่อ HN ที่ฉีดไม่ครบ แยกคนที่เคยฉีดมาก่อนกับไม่เคยฉีด เพื่อสุ่มตรวจ",
+      "expected_output": "Creates a private audit that separates confirmed prior-complete evidence, ambiguous none-or-fewer-than-three screening evidence, and no-evidence/not-found cases without exposing real HNs in the repo or chat.",
+      "files": [],
+      "expectations": [
+        "Does not translate none_or_lt3 into definitely never vaccinated",
+        "Keeps real HNs in the private drive workspace",
+        "Explains the evidence source and temporal cutoff for each group"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "โฟลเดอร์งานรายงานพิษสุนัขบ้ารกมาก ช่วยเหลือเฉพาะไฟล์จำเป็นไว้ทำรายงานและพัฒนาโปรแกรม",
+      "expected_output": "Creates a hash inventory, organizes canonical sources/templates/current outputs/reproducibility inputs, and moves superseded material to a dated recoverable archive without deleting raw data.",
+      "files": [],
+      "expectations": [
+        "Inventories and hashes files before moving them",
+        "Keeps exact rerun inputs active",
+        "Archives rather than permanently deletes uncertain or superseded files",
+        "Reruns regression and focused tests after cleanup"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "IT จะดึงรายงานตรงจาก HIS ซึ่งไม่มีประวัติฉีดจากโรงพยาบาลอื่น ช่วยกำหนด logic ให้หน่อย",
+      "expected_output": "Clearly states that HIS-only data cannot reproduce the official classification when external prior history exists, and specifies a date-aware screening-history join or a separate missing-data category.",
+      "files": [],
+      "expectations": [
+        "Does not claim HIS-only output is equivalent to the official report",
+        "Requires screening history with an effective date",
+        "Prevents later screening values from changing earlier quarters",
+        "Gives exact HIS evidence precedence when applicable"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "ออกแบบโปรแกรม standalone สำหรับรายงานวัคซีนพิษสุนัขบ้า ลด token และเก็บข้อมูลในหน่วยงาน",
+      "expected_output": "Proposes an offline deterministic engine with SQLite lineage, temporal screening history, audit exports, and optional AI only for prose or support.",
+      "files": [],
+      "expectations": [
+        "Keeps official calculations deterministic and local",
+        "Models dated screening history rather than one status per HN",
+        "Includes input hashes, report-run versioning, and audit traceability",
+        "Treats cloud AI and SaaS as optional later decisions"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "คนไข้ถูกซักประวัติเดือนสิงหาคมว่าเคยฉีดเกิน 3 เข็ม แต่รายงาน Q1 ปิดไปแล้ว ต้องย้อนแก้ Q1 ไหม",
+      "expected_output": "Does not back-propagate the August screening answer into Q1 unless dated evidence proves that the status was valid on or before the Q1 case start date.",
+      "files": [],
+      "expectations": [
+        "Uses screening effective date relative to case start date",
+        "Rejects future leakage",
+        "Preserves the original report-run inputs and hashes for audit"
+      ]
+    }
+  ]
+}

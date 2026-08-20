@@ -312,3 +312,4 @@ scripts/hermes/.hermes/auth.json
 scripts/live-dashboard/test-results/
 scripts/live-dashboard/playwright-report/
 scripts/live-dashboard/.cache/
+.codex/config.toml

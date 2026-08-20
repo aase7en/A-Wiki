@@ -444,39 +444,39 @@
         "all",
         "hermes"
       ],
-      "version": "1.2.0",
+      "version": "1.9.2",
       "status": "canonical",
-      "description": "รายงานไตรมาสพิษสุนัขบ้าส่ง สธ.จังหวัด — นับรายเคส 28 วัน, 9-cell, prior=complete-series (10y lookback). Engine: scripts/hospital/classify_rabies.py + .sql. Roadmap: standalone PDPA-safe tool",
-      "invocation": "manual",
+      "description": "รายงานไตรมาสพิษสุนัขบ้าจาก HIS + screening — นับรายเคส 33 วัน, prior-complete 10 ปี, lookahead, HN audit และ Word รวม Q1-Q4 ไฟล์เดียวต่อปีงบประมาณแบบ overwrite",
+      "invocation": "both",
       "invocation_hint": "/A-Rabies-Report",
       "a_phase": "implement",
       "triggers": [
-        "erig",
         "rabies",
         "rabiesvacc",
+        "rabies_db",
+        "rabies_screening",
         "พิษสุนัขบ้า",
-        "รายงานไตรมาสพิษสุนัขบ้า",
-        "วัคซีนพิษสุนัขบ้า",
-        "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า",
-        "สุนัขบ้า"
+        "hn ฉีดไม่ครบ",
+        "โปรแกรมรายงานพิษสุนัขบ้า",
+        "จัดระเบียบไฟล์รายงานพิษสุนัขบ้า"
       ],
-      "th_description": "รายงานไตรมาสพิษสุนัขบ้า — ใส่ไฟล์ HIS Q<x>.xls แล้วได้ตัวเลข 9-cell กรอก template .doc ส่งจังหวัด",
-      "when_to_use": "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า, รายงานไตรมาสพิษสุนัขบ้า, rabies quarterly report",
+      "th_description": "รายงานไตรมาสพิษสุนัขบ้าแบบตรวจสอบย้อนกลับ — ใช้ HIS 10 ปี, screening ตามเวลา และ lookahead เพื่อสร้าง 9-cell, HN audit และเอกสารส่งจังหวัด",
+      "when_to_use": "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า, HN ฉีดไม่ครบ, จัดระเบียบข้อมูล rabies, ออกแบบ standalone rabies report",
       "examples": [
         {
           "scenario": "สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า Q3",
-          "how": "ส่งไฟล์ 260806_RabiesQ3.xls มา → engine กรอก template"
+          "how": "ใช้ Q3 + HIS ย้อนหลัง 10 ปี + screening cutoff + lookahead → engine กรอก template"
         },
         {
           "scenario": "พิษสุนัขบ้า Q1 ปีหน้า",
-          "how": "ส่งไฟล์ + Q4 ปีก่อน (history 180 วัน) → engine run"
+          "how": "ใช้ HIS ย้อนหลัง 10 ปี + screening ที่มีผลถึง Q1 + lookahead เดือนแรกของ Q2"
         }
       ],
       "process_steps": [
-        "รับไฟล์ HIS Q<x>.xls",
-        "รัน classify_rabies.py + --history ย้อน 180 วัน",
-        "ตรวจ Mixed + REVIEW list",
-        "กรอก template .doc → ส่งจังหวัด"
+        "ตรวจ source inventory, coverage และ regression gate",
+        "รัน classify_rabies.py ด้วย history 10 ปี + screening cutoff + lookahead",
+        "ตรวจ reconciliation, Mixed, REVIEW และ incomplete HN audit",
+        "กรอก template และเก็บ input hashes เพื่อ rerun"
       ]
     },
     {

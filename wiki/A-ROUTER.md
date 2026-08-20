@@ -43,7 +43,7 @@
 | `a-design` | `/A-Design` | design | `ออกแบบ ux` · `design system` · `wireframe` · `visual hierarchy` · `ui สวย` · `palette` · `typography` · `dark mode` |
 | `a-plan` | `/A-Plan` | design | `ออกแบบ` · `วางแผน` · `design` · `architecture` · `database schema` · `ux/ui` |
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
-| `a-rabies-report` | `/A-Rabies-Report` | implement | `erig` · `rabies` · `rabiesvacc` · `พิษสุนัขบ้า` · `รายงานไตรมาสพิษสุนัขบ้า` · `วัคซีนพิษสุนัขบ้า` · `สรุปผลการฉีดวัคซีนป้องกันโรคพิษสุนัขบ้า` · `สุนัขบ้า` |
+| `a-rabies-report` | `/A-Rabies-Report` | implement | `rabies` · `rabiesvacc` · `rabies_db` · `rabies_screening` · `พิษสุนัขบ้า` · `hn ฉีดไม่ครบ` · `โปรแกรมรายงานพิษสุนัขบ้า` · `จัดระเบียบไฟล์รายงานพิษสุนัขบ้า` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
 | `a-agent` | `/A-Agent` | any | `agent harness` · `mcp server` · `eval agent` · `prompt eng` · `agent loop` |

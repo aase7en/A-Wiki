@@ -99,8 +99,8 @@
     complete with age tiebreak route.
 
 - hn: 388351
-  bugfix_ref: "v1.3.0 #1 + #5"
-  pattern: "straddle quarter boundary — case counted in quarter of end_date"
+  bugfix_ref: "v1.3.0 #1 + v1.5.0 start_date rule"
+  pattern: "Day-29 dose stays in one 33-day case; quarter assignment uses start_date"
   timeline:
     - {date: "2026-03-10", vac: IM, erig: true}   # Day 0 (Q2)
     - {date: "2026-03-13", vac: IM}                # Day +3
@@ -112,7 +112,7 @@
     - {category: complete, route: IM}
   reason: >
     Bugfix #1 (33d window) keeps the Day-28+1 dose in the same case.
-    Bugfix #5 (quarter straddle) means this case is counted in Q3 (where
-    its end_date 2026-04-08 falls), not Q2 (where its start_date falls).
-    Hospital policy: 'ถ้าคาบเกี่ยวหรือข้ามไตรมาส ต้องยังไม่นับเคสนั้น ให้ขยับไป
-    Q ถัดไป' — defer to end_date quarter.
+    v1.5.0 reverted the old end_date assignment: this case belongs to Q2,
+    where start_date 2026-03-10 falls. April data is still required as
+    lookahead so the Q2 run can see the complete series without counting it
+    again in Q3.

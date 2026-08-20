@@ -424,6 +424,71 @@ class TestAbandonedDoseDetection(unittest.TestCase):
         refined = refine_clusters_cross_window(tw)
         self.assertEqual(len(refined), len(tw), "Normal series: refine = no-op")
 
+    def test_delayed_final_im_dose_merges_across_33d_window(self):
+        """IM 0,3,7,15,36 is one continued series, not sub5 + booster."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window, classify
+        d0 = datetime(2026, 4, 4)
+        df = self._build_df([
+            (d0,                       VAC_IM),
+            (d0 + timedelta(days=1),  VAC_ERIG),
+            (d0 + timedelta(days=3),  VAC_IM),
+            (d0 + timedelta(days=7),  VAC_IM),
+            (d0 + timedelta(days=15), VAC_IM),
+            (d0 + timedelta(days=36), VAC_IM),
+        ])
+        tw = cluster_cases(df)
+        self.assertEqual(len(tw), 2, "33-day window creates the pre-refine split")
+        refined = refine_clusters_cross_window(tw)
+        self.assertEqual(len(refined), 1)
+        self.assertEqual(refined[0].doses_im, 5)
+        self.assertEqual(refined[0].doses_erig, 1)
+        self.assertEqual(classify(refined[0]), ("complete", "IM"))
+
+    def test_delayed_final_id_dose_merges_across_33d_window(self):
+        """ID 0,3,28,38 is one continued four-dose series."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window, classify
+        d0 = datetime(2026, 4, 29)
+        df = self._build_df([
+            (d0,                       VAC_ERIG),
+            (d0,                       VAC_ID),
+            (d0 + timedelta(days=3),  VAC_ID),
+            (d0 + timedelta(days=28), VAC_ID),
+            (d0 + timedelta(days=38), VAC_ID),
+        ])
+        refined = refine_clusters_cross_window(cluster_cases(df))
+        self.assertEqual(len(refined), 1)
+        self.assertEqual(refined[0].doses_id, 4)
+        self.assertEqual(classify(refined[0]), ("complete", "ID"))
+
+    def test_possible_new_exposure_with_rig_is_not_auto_merged(self):
+        """A new RIG at the one-dose tail is evidence against auto-merge."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window
+        d0 = datetime(2026, 4, 1)
+        df = self._build_df([
+            (d0,                       VAC_IM),
+            (d0 + timedelta(days=3),  VAC_IM),
+            (d0 + timedelta(days=7),  VAC_IM),
+            (d0 + timedelta(days=14), VAC_IM),
+            (d0 + timedelta(days=36), VAC_ERIG),
+            (d0 + timedelta(days=36), VAC_IM),
+        ])
+        refined = refine_clusters_cross_window(cluster_cases(df))
+        self.assertEqual(len(refined), 2)
+
+    def test_long_gap_single_dose_is_not_auto_merged(self):
+        """Ambiguous long gaps stay separate for screening/manual review."""
+        from classify_rabies import cluster_cases, refine_clusters_cross_window
+        d0 = datetime(2026, 4, 1)
+        df = self._build_df([
+            (d0,                       VAC_IM),
+            (d0 + timedelta(days=3),  VAC_IM),
+            (d0 + timedelta(days=7),  VAC_IM),
+            (d0 + timedelta(days=14), VAC_IM),
+            (d0 + timedelta(days=60), VAC_IM),
+        ])
+        refined = refine_clusters_cross_window(cluster_cases(df))
+        self.assertEqual(len(refined), 2)
+
 
 class TestQuarterStraddle(unittest.TestCase):
     """v1.5.0 (2026-08-12): case belongs to quarter of START_DATE (first dose).
