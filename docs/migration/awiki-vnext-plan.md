@@ -1,13 +1,15 @@
 # A-Wiki vNext Migration — Plan & Tracking Log
 
-> Living document for the A-Wiki vNext migration. Active execution branch: **`refactor/awiki-kernel-vnext-clean`** (isolated clean worktree from `origin/main`; forensic branch `refactor/awiki-kernel-vnext` remains preserved per DISC-001).
-> Source of authority: A-WIKI-MASTER-DEVELOPMENT-PLAN plus `docs/migration/awiki-agent-review-bus-plan.md`.
-> Current execution model: ZCode / GLM-5.3 = executor; ChatGPT = architecture reviewer/QA when invoked. Future reviewers may be automated through the same A-Wiki Review Bus protocol.
+> Living document for the A-Wiki vNext migration. The current implementation branch is **`refactor/awiki-hook-engine`**; the current phase contract is `docs/migration/phase-6-hook-engine-work-order.md`.
+> Source of authority: A-WIKI-MASTER-DEVELOPMENT-PLAN, `docs/architecture/A-WIKI-KERNEL.md`, this plan, the approved orchestrator/review-bus plans, and the current phase work order in that order.
+> Current state: Phase 5 is **PASS + MERGED**. Phase 6 is **CHANGES_REQUIRED** after independent review of an uncommitted local snapshot based on `fcef705cdf8e0814927d498bdd467c8987fcc59e`; see `docs/migration/reviews/phase-6-review-local-fcef705c.md`.
+> Operating model: select roles by capability. A high-reasoning agent acts as architect/reviewer; a cost-effective or local agent may execute; deterministic tools verify. Provider and model names are runtime candidates, never stable policy.
+> Local state note: GPT Work shell access mechanically verified the Phase 6 worktree, branch, HEAD, upstream, semantic diff, all discovered worktrees, and local claim stores on 2026-08-20. **LOCAL_WORKTREE_VERIFICATION: COMPLETE**. Serena was explicitly not required by the user.
 > Rule: one phase per review cycle. Security leak / data loss / repo corruption = immediate stop.
 
 ## Guardrails (binding for every phase)
 
-1. Work only on `refactor/awiki-kernel-vnext-clean` using its isolated worktree — never `main`, never the contaminated forensic branch.
+1. Work only in the branch/worktree authorized by the current phase work order. For Phase 6 this is `refactor/awiki-hook-engine` — never `main`, and never an unrelated or forensic checkout.
 2. Inspect before delete (`git grep` / `rg` references first) and record evidence.
 3. Preserve the public/private boundary; no machine paths, secrets, or private operational data in the public repo.
 4. Respect Iron Laws: test-first where applicable, root-cause before fixes, raw immutable, registry as source of truth, claims on shared surfaces.
@@ -23,47 +25,40 @@
 | Phase | Scope | Status | Commit |
 |---|---|---|---|
 | 0 | Baseline & safety | ✅ **PASS** — clean branch isolation independently verified: 4 commits ahead / 0 behind, diff limited to 3 migration docs | `7aae5935` `857faf57` `5b4e297d` `4d9c40b3` |
-| 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ COMPLETE — P1.1–P1.5 done TDD, awaiting review | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
-| 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ COMPLETE — P2.1–P2.5 done TDD, awaiting review | P2.1 scanner+scan_repo · P2.2 wiki_health · P2.3/P2.4 ci-core+domain+smokes · P2.5 parity fixes |
-| 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ COMPLETE — 3 TDD commits, awaiting review | `9a0d985e` `8f338174` `a58906c6` |
-| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ COMPLETE — TDD, awaiting review | schema + 3 CLIs + 18 tests |
-| 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ COMPLETE — TDD, awaiting review | `583ae72a` `2b650c08` — memory plane core + thin CLIs + 32 tests |
-| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⬜ | — |
-| 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ | — |
-| 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ | — |
-| 9 | A-Loop v2 + connect improvement-loop states to review verdict/state machine | ⬜ | — |
-| 10 | Optional external modules (world-intel MCP — lazy, no vendoring) | ⬜ | — |
-| 11 | Documentation slimming + review-bus operator docs | ⬜ | — |
+| 1 | Stabilize automation (Priority #1: harden `session_start.py::git_pull`; stop ungated main mutation; retire duplicate/fail-open workflows; remove model telemetry Git churn; pin/fix Actions) | ✅ **PASS** — merged; review cycle closed before Phase 2 | `d4223d90` `77bb1f77` `a68e0c44` `8ff7d8fd` `cccb10a6` + doc commit |
+| 2 | CI & health refactor (`ci-core.yml`, domain split, real `wiki_health.py`, Python security scan, MCP/hook smoke, integration-registry validation) | ✅ **PASS** — PR #11 merged | post-merge main `05140b153c8838ba93bfb005a35e1a607cd994a7` |
+| 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ **PASS** — PR #13 merged | reviewed head `dfd4946112a68d2933ece276462193f1583ed6e9`; merge `2e84759ca21e29bd007e4c2a0787f06a54658bf5` |
+| 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ **PASS** — PR #14 merged | reviewed head `6c75f936b5bc99f6ad8deb4964f3e6c1efc08a77`; merge `10507ceec1c286c53f62e331813692c9e2225e81` |
+| 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ **PASS** — PR #15 merged | reviewed head `5def54757ed7189f6408878a911f6bcd785d0adc`; merge `51258fac665add6e65e6f4a239fda5d597670f0e` |
+| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⚠️ **CHANGES_REQUIRED** — local snapshot reviewed; implementation not pushed; local recheck pending | work-order HEAD `fcef705cdf8e0814927d498bdd467c8987fcc59e`; `reviews/phase-6-review-local-fcef705c.md` |
+| 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ **NOT_STARTED** | — |
+| 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ **NOT_STARTED** | — |
+| 9 | A-Loop v2 + connect improvement-loop states to review verdict/state machine | ⬜ **NOT_STARTED** | — |
+| 10 | Optional external modules (world-intel MCP — lazy, no vendoring) | ⬜ **NOT_STARTED** | — |
+| 11 | Documentation slimming + review-bus operator docs | ⬜ **NOT_STARTED** | — |
+
+Phases 12–16 are **NOT_STARTED** and are defined only in `docs/migration/awiki-multi-agent-orchestrator-roadmap.md`: Agent Registry & Availability, Assignment Engine, Orchestrator Service + MCP, Operator UI/integrations, and Autonomous Loop Hardening. This plan points to that sequence instead of duplicating it.
 
 ## Parallel Track — Agent Review Bus
 
 Architecture plan: `docs/migration/awiki-agent-review-bus-plan.md`.
 
-Purpose: remove the user as the copy/paste transport between executor and reviewer agents.
+Purpose: remove the user as the copy/paste transport between executor and reviewer agents while preserving exact-SHA review, durable findings, and human control of high-risk decisions.
 
-Near-term mode while Codex is unavailable:
-
-```text
-GLM executor
-  -> implement/test/commit/push
-  -> structured GitHub review handoff
-  -> ChatGPT reads branch directly when invoked
-  -> verdict/finding IDs
-  -> GLM fixes and resubmits
-```
-
-Future mode:
+Current durable flow:
 
 ```text
-GLM executor
-  -> GitHub Review Bus
-  -> automatic reviewer adapter (Codex/OpenAI API/other)
-  -> normalized awiki-review/v1 findings
-  -> GLM auto-fix/retest/re-review
-  -> READY only when review + CI gates pass
+capable executor
+  -> implement/test/commit/push exact SHA
+  -> independent capable reviewer
+  -> durable PASS or stable CHANGES_REQUIRED findings
+  -> executor fixes/retests/resubmits
+  -> READY only after review + CI gates
 ```
 
-Important: do **not** pause Phase 1–2 to build a large orchestrator. Phase 3 defines the protocol formally; Phase 8–9 implements automation after the safety/CI foundations are stable.
+The Phase 6 independent review targeted an uncommitted local snapshot. Its findings are durable, but it cannot grant approval to an immutable implementation SHA. Remediation must be committed/pushed and independently reviewed again at the exact new HEAD.
+
+Do **not** pause or reorder the migration to build a large orchestrator. Phase 8 owns the first automated reviewer adapter foundations; Phases 12–16 own the wider orchestrator roadmap.
 
 ## Decisions & Deviations Log
 
@@ -186,6 +181,8 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 5 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (33 negative tests, 29 red-first); canonical 0 failed / 2,779 passed / 17 skipped. |
 | 5 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P5-002..005 VERIFIED; open: R-P5-001 content not bound to source entry, R-P5-006 extra seam redaction/collision. |
 | 5 | ⏳ awaiting re-review (2) | 2026-08-18 | promote() consumes the stored L2 summary (no free-form text; source identity+digest persisted); extra namespaced + recursively redacted + reserved-key rejection. 10 red-first tests; canonical 0 failed / 2,789 passed / 17 skipped. |
+| 5 | **PASS** (merged) | 2026-08-18 | PR #15 independently passed at reviewed head `5def54757ed7189f6408878a911f6bcd785d0adc`; human-gate merge produced main `51258fac665add6e65e6f4a239fda5d597670f0e`. |
+| 6 | **CHANGES_REQUIRED** | 2026-08-20 | Independent review of an uncommitted local snapshot based on `fcef705cdf8e0814927d498bdd467c8987fcc59e` found P6-R01..P6-R07. Findings are durable in `reviews/phase-6-review-local-fcef705c.md`; fresh local identity/dirty-state verification remains pending. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
@@ -270,20 +267,127 @@ Re-review vs `30538744` (Core CI run #20 SUCCESS at that HEAD): R-P5-002/003/004
 - **R-P5-006 (final) — collision-safe, recursively-redacted extra.** `extra` is now stored under ONE reserved namespaced key `entry["extra"]` — canonical fields (`ts/session_id/type/summary/files/tags/parent_ts/extra`) cannot be overwritten by construction AND are rejected inside `extra` with ValueError before any write (nothing persisted). New `_redact_deep()` recursively redacts every string in nested dict/list metadata with the same secret patterns (top-level + nested-list + deep-dict tokens all proven absent; non-secrets intact). ProjectMemoryStore reads the namespaced tag (`entry["extra"]["project"]`) for isolation/get_entry; vanilla `append()` entry shape pinned unchanged.
 - Gates: privacy ✓ / scan_repo 49 known 0 new ✓ / wiki-health 0 hard / 48 baselined ✓ / canonical **0 failed / 2,789 passed / 17 skipped**. Focused: 75/75 across the three Phase-5 files; compat sweep 301 passed.
 
-## Phase 1 Entry Order
+## Historical Phase 1 Entry Order (closed)
 
-GLM must execute Phase 1 in this order unless new evidence makes a safety stop necessary:
+The former Phase 1 execution instruction is retained by the Phase 1 logs and review history above. It is **not current work** and must not be executed. Phases 1–5 are closed; Phase 6 is the only authorized implementation phase.
 
-1. **P1.1 — Fix `scripts/hooks/session_start.py::git_pull` first.** Add tests before/with the fix. Non-main branches must never be silently rebased/pulled onto `origin/main`; synchronization must not endanger dirty working trees.
-2. **P1.2 — Stop ungated model-policy mutation of `main`.** Convert scheduled mutation to candidate/report/recommendation behavior; promotion requires explicit gate.
-3. **P1.3 — Stop model-pool/runtime telemetry commits.** Preserve capability while moving observations to runtime cache/artifact/private runtime storage as appropriate.
-4. **P1.4 — Retire `daily-maintenance.yml` fail-open behavior and old duplicate Pages deployment workflow only after reference/dependency inspection.**
-5. **P1.5 — Fix `provider-balance.yml` reporting/pinning/minimal permissions as scoped by the master plan.**
-6. Run targeted tests after each coherent change; run the required Phase 1 regression set before requesting review.
-7. Return a structured Phase 1 review handoff and STOP before Phase 2.
+## Current Continuity Checkpoint (2026-08-20)
 
-## Current Instruction to GLM 5.3
+### Project / objective / task
 
-Phase 0 is approved. Begin **Phase 1 only** on the clean isolated worktree/branch. Read `docs/migration/awiki-agent-review-bus-plan.md` as an additional architecture constraint, but do not build the full review orchestrator during Phase 1. The immediate safety priority is P1.1 (`session_start.py`).
+- **Project:** A-Wiki vNext migration
+- **Current objective:** remediate the independent Phase 6 review findings without expanding scope
+- **Current phase:** Phase 6 — Hook Engine Consolidation
+- **Task ID:** `P6-REMEDIATE-REVIEW-001`
+- **Status:** **CHANGES_REQUIRED**
+- **Local classification:** **PARTIAL** — implementation exists locally but has material review defects and is not committed
+- **LOCAL_WORKTREE_VERIFICATION:** **COMPLETE** through GPT Work shell on 2026-08-20
+- **LOCAL_SERENA_VERIFICATION:** **NOT_REQUIRED** by explicit user direction
 
-<!-- final-verification: synchronize re-fire 2026-08-18 (webhook drops during GitHub incident) -->
+### Completed and evidence
+
+- Phase 5 passed at `5def54757ed7189f6408878a911f6bcd785d0adc` and merged through PR #15 as `51258fac665add6e65e6f4a239fda5d597670f0e`.
+- GitHub branch `refactor/awiki-hook-engine` points to `fcef705cdf8e0814927d498bdd467c8987fcc59e`, directly ahead of Phase 5 main by the authoritative Phase 6 work order only.
+- An independent read-only review examined the uncommitted Phase 6 semantic delta and returned **CHANGES_REQUIRED**. See `docs/migration/reviews/phase-6-review-local-fcef705c.md`.
+- No Phase 7 or Phase 12–16 implementation is authorized or mechanically present in the reviewed delta.
+- At continuity recovery time GitHub showed no open pull request for Phase 6.
+
+### Repository / worktree state
+
+- **GitHub main:** `51258fac665add6e65e6f4a239fda5d597670f0e`
+- **GitHub Phase 6 branch:** `refactor/awiki-hook-engine`
+- **GitHub Phase 6 HEAD:** `fcef705cdf8e0814927d498bdd467c8987fcc59e`
+- **Recovery documentation branch:** `docs/awiki-continuity-recovery-20260820` (docs only; proposed against the Phase 6 branch)
+- **Verified local project/worktree:** `A-Wiki-vnext-clean`; repository identity matches `aase7en/A-Wiki`
+- **Verified branch / HEAD / upstream:** `refactor/awiki-hook-engine` / `fcef705cdf8e0814927d498bdd467c8987fcc59e` / `origin/refactor/awiki-hook-engine` at the same SHA
+- **Verified merge-base / distance from origin/main:** `51258fac665add6e65e6f4a239fda5d597670f0e`; 0 behind / 1 ahead
+- **Verified dirty state:** 14 semantic Phase 6 files, 16 tracked diff-empty Windows stat/EOL entries, and pre-existing untracked `.serena/` tooling state
+- **Claims:** no live claim in any discovered worktree claim store
+- **Other worktrees:** the separate local `main` worktree is 24 commits ahead and 104 behind `origin/main` with unrelated dirty work; historical tool worktrees also contain type-change noise. None owns Phase 6. Do not normalize or modify them.
+
+### Files changed in the reviewed local snapshot
+
+```text
+.claude/settings.json
+.codex/hooks.json
+scripts/hooks_runner.py
+scripts/setup-codex-config.py
+scripts/hooks/providers.py
+scripts/hooks/registry.py
+tests/test_hook_engine.py
+tests/test_hooks.py
+tests/test_a_focus_hook.py
+tests/test_a_route_hook.py
+tests/test_compaction_suggest.py
+tests/test_hook_stdout_encoding.py
+tests/test_self_audit_visibility.py
+docs/migration/phase-6-execution-handoff.md
+```
+
+The recovery branch changes only this tracking plan, the review-bus plan, the project-context architecture deltas, a corrected durable Phase 6 execution handoff, and the new Phase 6 review record.
+
+### Decisions made
+
+- `D-P6-001` — **FAIL overall**: the core malformed sentinel works, but supported adapter paths still collapse or bypass it.
+- `D-P6-002` — **PASS**: duplicate IDs are checked before lookup-map collapse.
+- `D-P6-003` — **FAIL**: deployed provider paths can bypass canonical event selection/order.
+- `D-P6-004` — **FAIL end-to-end**: startup/sanitizer failure paths can leak raw diagnostics and violate the 0/2 exit contract.
+- `D-P6-005` — **PASS narrowly** for present tracked hard gates; generated/tracked config parity still fails.
+- `D-P6-006` — **FAIL overall**: named runner compatibility passes in isolation, but active bare-invocation provider paths regress.
+- A-Wiki, Conductor, and Serena remain separate surfaces; see `awiki-project-context-architecture-deltas.md#d-ctx-013--separate-brain-orchestration-and-local-execution-surfaces`.
+
+### DECISION_REQUIRED
+
+No new architecture decision is required. The docs-only recovery branch must be reconciled into the Phase 6 branch without overwriting local WIP; this is an execution step, not an architecture choice.
+
+### Known problems / warnings
+
+- Serena returned repeated gateway timeouts, but GPT Work shell access completed the same mechanical local identity/ownership audit; no local evidence remains pending.
+- Phase 6 focused evidence recorded 123 passed / 1 skipped / 3 warnings / 0 failures, but several focused tests touch live repository state and therefore were not rerun during the read-only review.
+- The historical full suite recorded 2,827 passed / 41 failed / 17 skipped / 8 warnings. Most failures were plausibly platform-related, but no final full-suite run exists at a committed Phase 6 SHA.
+- Passing privacy/security/diff gates did not detect all reviewed diagnostic/path leaks and therefore is not approval evidence by itself.
+- The long local untracked handoff still says `REVIEW_REQUESTED`, marks all locked decisions green, and contains machine-specific paths. The corrected durable handoff on the recovery branch supersedes that draft; do not commit the stale local version blindly.
+- The unrelated dirty/diverged local `main` worktree is protected external WIP for this task.
+
+### Do not do
+
+- Do not reset, clean, stash, rebase, delete, or overwrite the uncommitted Phase 6 work.
+- Do not edit `main` directly.
+- Do not begin Phase 7 or Phases 12–16.
+- Do not regenerate configuration during continuity recovery.
+- Do not treat the local-snapshot review as approval of a future commit.
+
+### Ordered TODO
+
+1. Reconcile the docs-only recovery PR into the Phase 6 branch without overwriting the 14-file local WIP or the protected other worktrees.
+2. Replace the stale local handoff with the corrected durable handoff during that reconciliation.
+3. Remediate P6-R01 first, test-first, then P6-R02..P6-R07 in severity order within the Phase 6 work order only.
+4. Run isolated focused tests, registry counts, privacy/security/CI-secret smoke, generated-config parity, `git diff --check`, and the appropriate full regression suite.
+5. Commit and push an attributable Phase 6 implementation SHA.
+6. Request a fresh independent review of that exact SHA; only PASS plus CI may advance the phase.
+
+### Single next safe action
+
+Reconcile the docs-only recovery PR into the verified Phase 6 branch without overwriting the 14-file local WIP; then begin the P6-R01 test-first remediation slice.
+
+### Resume checks
+
+At the start of the next session, repeat these read-only checks through any available local shell/tool surface before mutation:
+
+```text
+git rev-parse --show-toplevel
+git branch --show-current
+git rev-parse HEAD
+git status --short
+git remote get-url origin
+git rev-parse origin/main
+git rev-parse origin/refactor/awiki-hook-engine
+git merge-base HEAD origin/main
+git worktree list --porcelain
+git diff --name-only
+git diff --check
+```
+
+Also inspect every local claim store and all open A-Wiki pull requests through GitHub. At this checkpoint there were zero live claims; the only expected open PR is the docs-only continuity recovery PR.
+
+<!-- final-verification: continuity recovery 2026-08-20; LOCAL_WORKTREE_VERIFICATION: COMPLETE -->
