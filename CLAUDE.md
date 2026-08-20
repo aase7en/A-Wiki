@@ -468,3 +468,5 @@ This project is indexed by GitNexus as **A-Wiki** (72358 symbols, 91151 relation
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+> 🤝 **Multi-agent repo**: read `COLLAB.md` before working — lanes, claims, work orders, pause/resume (A-Wiki cross-agent-work-orders standard).
