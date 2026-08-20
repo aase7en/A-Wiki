@@ -1442,7 +1442,10 @@ def test_gemini_hard_command_maps_missing_interpreter_to_exit_two(tmp_path):
         "tool_input": {"file_path": "scripts/x.py", "content": "ok"},
     }
     result = subprocess.run(
-        [_git_bash_executable(), "-lc", command], input=json.dumps(payload),
+        # NOT a login shell: -l would reload /etc/profile and RESTORE PATH
+        # (python3 reappears on CI runners → the missing-interpreter path
+        # under test never fires). Plain -c matches the config command.
+        [_git_bash_executable(), "-c", command], input=json.dumps(payload),
         capture_output=True, text=True, encoding="utf-8", errors="replace",
         cwd=str(REPO_ROOT), env=env, timeout=30,
     )
