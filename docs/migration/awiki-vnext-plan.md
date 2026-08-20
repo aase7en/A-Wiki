@@ -29,7 +29,7 @@
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ COMPLETE — 3 TDD commits, awaiting review | `9a0d985e` `8f338174` `a58906c6` |
 | 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ COMPLETE — TDD, awaiting review | schema + 3 CLIs + 18 tests |
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ COMPLETE — TDD, awaiting review | `583ae72a` `2b650c08` — memory plane core + thin CLIs + 32 tests |
-| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⬜ | — |
+| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ✅ **PASS** (merged, self-review per user delegation) — PR #17 + scanner-truth PR #19 + governance PR #18; main CI green at merge SHA | `ccd1d712..051144e7` (7 commits) + follow-ups |
 | 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ | — |
 | 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ | — |
 | 9 | A-Loop v2 + connect improvement-loop states to review verdict/state machine | ⬜ | — |
@@ -187,6 +187,9 @@ Review `reviews/phase-2-review-dff83ebb.md` → **CHANGES_REQUIRED** (R-P2-001..
 | 5 | ⏳ awaiting re-review | 2026-08-18 | All 6 fixed TDD (33 negative tests, 29 red-first); canonical 0 failed / 2,779 passed / 17 skipped. |
 | 5 | CHANGES_REQUIRED (re-review) | 2026-08-18 | R-P5-002..005 VERIFIED; open: R-P5-001 content not bound to source entry, R-P5-006 extra seam redaction/collision. |
 | 5 | ⏳ awaiting re-review (2) | 2026-08-18 | promote() consumes the stored L2 summary (no free-form text; source identity+digest persisted); extra namespaced + recursively redacted + reserved-key rejection. 10 red-first tests; canonical 0 failed / 2,789 passed / 17 skipped. |
+| 6 | CHANGES_REQUIRED | 2026-08-20 | P6-RR01..09 (exact-SHA re-review of 9962b34b): provider bypass, py38 compat, outer boundary, fail-open infra, matcher ownership, stale preflight, codex fallback, test state, handoff truth. |
+| 6 | ⏳ awaiting re-review | 2026-08-20 | RR01..09 remediated TDD; PR #17 draft + CI chase (main-side breakage + interpreter/pattern/CI-env root causes fixed via PRs #17/#19). |
+| 6 | **PASS_WITH_NOTES** (merged) | 2026-08-21 | Self-review per user delegation (GPT-Ultra tokens saved): adversarial probes 4/5 exact + N-P6-001 (unknown native tool names = whitelist trade-off, documented). PRs #17/#19/#18 merged; main CI green; duplicate stale work-order branch deleted. |
 
 ## Phase 3 Remediation Log (2026-08-18)
 
