@@ -9,16 +9,22 @@
 
 > **โดเมน**: Source documents — summaries of raw/ content
 <<<<<<< Updated upstream
-> **Last updated**: 2026-08-09
+<<<<<<< Updated upstream
+> **Last updated**: 2026-08-20
 =======
-> **Last updated**: 2026-08-09
+> **Last updated**: 2026-08-20
+=======
+> **Last updated**: 2026-08-20
+=======
+> **Last updated**: 2026-08-20
+>>>>>>> Stashed changes
 >>>>>>> Stashed changes
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน sources/**
 > ถ้าการแก้ source workflow เปลี่ยนความสามารถของ A-Wiki brain, ingestion, provenance, hooks, scripts, หรือ public-safe policy → อ่าน `docs/protocols/brain-improvement-gate.md` ก่อน
 
 ---
 
-## Sources ที่มีอยู่ (162 files)
+## Sources ที่มีอยู่ (163 files)
 
 ครอบคลุม 4 domains: IoT (ส่วนใหญ่), Environmental Health, AI Tools, Pharmacy
 

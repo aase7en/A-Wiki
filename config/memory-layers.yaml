@@ -1,0 +1,62 @@
+# A-Wiki Memory Layers — normative manifest (awiki-memory-layers/v1)
+#
+# Phase 5 kernel contract. This manifest MIRRORS scripts/lib/memory_layers.py
+# LAYER_POLICY (a consistency test keeps them in lockstep — do not hand-edit
+# one without the other). Durable policy only; runtime state never lives here.
+
+schema: awiki-memory-layers/v1
+
+layers:
+  L0:
+    name: working-context
+    durability: runtime
+    store: .tmp/ (or equivalent runtime store)
+    global_knowledge: false
+    auto_promote: false
+    writable_via_memory_api: true
+  L1:
+    name: session-operational
+    durability: durable
+    store: memory ledger (scripts/lib/memory_ledger.py — JSONL)
+    global_knowledge: false
+    auto_promote: false
+    writable_via_memory_api: true
+  L2:
+    name: project
+    durability: durable
+    store: projects/<project-id>/memory/ under the A-Wiki data root
+    global_knowledge: false
+    auto_promote: false
+    writable_via_memory_api: true
+  L3:
+    name: global-knowledge
+    durability: durable
+    store: wiki/ (canonical global plane — unchanged)
+    global_knowledge: true
+    auto_promote: false
+    writable_via_memory_api: false   # only via the five-gate promotion pipeline
+  L4:
+    name: raw-evidence
+    durability: durable
+    store: raw/ (immutable)
+    global_knowledge: false
+    auto_promote: false
+    writable_via_memory_api: false   # never mutated by memory operations
+  L5:
+    name: experiment
+    durability: durable
+    store: projects/<project-id>/experiments/<exp-id>/ under the data root
+    global_knowledge: false
+    auto_promote: false
+    writable_via_memory_api: true    # through ExperimentStore semantics
+
+promotion:
+  pipeline: [distill, privacy-check, generalize, evidence-check, global-promotion]
+  default_mode: manual-with-evidence
+  dry_run_first: true
+  auto_promote_from: []            # nothing auto-promotes; no L0/L1/L4 -> L3
+  apply_writes: wiki/promotion-candidates/ (one reviewable markdown file — never Git refs)
+
+data_root:
+  resolution: env:AWIKI_DATA_DIR -> drive_path.get_drive_root()
+  containment: absolute, non-symlink, project-id slugged; traversal rejected

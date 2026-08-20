@@ -198,7 +198,7 @@ class TestOptOut:
 
 
 class TestWiring:
-    def test_settings_json_wires_user_prompt_submit(self):
+    def test_settings_json_wires_user_prompt_submit_via_registry_event_sweep(self):
         settings = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
         blocks = settings.get("hooks", {}).get("UserPromptSubmit", [])
         commands = [
@@ -206,7 +206,10 @@ class TestWiring:
             for block in blocks
             for h in block.get("hooks", [])
         ]
-        assert any("check_compaction_suggest" in c for c in commands), (
-            "check_compaction_suggest.py must be wired directly (not via hooks_runner, "
-            "which swallows stdout) under hooks.UserPromptSubmit"
+        assert any(
+            "hooks_runner.py --provider claude --event UserPromptSubmit" in c
+            for c in commands
         )
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry
+        assert "UserPromptSubmit" in registry.HOOK_REGISTRY["check_compaction_suggest"]["events"]

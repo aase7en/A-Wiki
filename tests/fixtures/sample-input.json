@@ -1,0 +1,10 @@
+{
+  "session_id": "ci-smoke",
+  "prompt": "smoke test",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "README.md",
+    "old_string": "hello",
+    "new_string": "world"
+  }
+}

@@ -142,3 +142,38 @@ def test_scanner_actually_flags_a_planted_secret() -> None:
         "scanner reported nothing for a diff containing an obvious GitHub "
         "token — it is not actually scanning."
     )
+
+
+# ---------------------------------------------------------------------------
+# P2.1 (2026-08-17) — root cause of the planted-secret crash: builtin
+# fallback patterns were 2-tuples (name, regex) while the scanner loop
+# unpacks 3 values (name, regex, allowlist). Any environment where the
+# YAML patterns cannot load (e.g. a `python3` without PyYAML) hit the
+# fallback and crashed the scanner — a fail-open hole, since the layer-2
+# shell gate treats a crashed scanner as "no findings".
+# ---------------------------------------------------------------------------
+def test_scanner_pattern_tuples_always_have_allowlist() -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+    import _scan_staged_diff as ssd
+
+    assert ssd.PATTERNS, "no patterns loaded at all"
+    bad = [p[0] for p in ssd.PATTERNS if len(p) != 3]
+    assert not bad, f"patterns without allowlist slot crash the loop: {bad}"
+
+
+def test_scanner_builtin_fallback_still_unpacks_safely(monkeypatch) -> None:
+    import importlib
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+    monkeypatch.setitem(sys.modules, "yaml", None)  # force ImportError branch
+    import _scan_staged_diff as ssd
+
+    importlib.reload(ssd)
+    try:
+        assert ssd.PATTERNS, "builtin fallback must never be empty"
+        assert all(len(p) == 3 for p in ssd.PATTERNS)
+    finally:
+        importlib.reload(ssd)  # restore YAML-loaded state for other tests

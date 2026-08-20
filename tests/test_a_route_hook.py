@@ -144,17 +144,17 @@ class TestFailOpen:
 
 
 class TestWiring:
-    def test_wired_direct_on_userpromptsubmit_not_via_runner(self):
+    def test_wired_on_userpromptsubmit_via_registry_event_sweep(self):
         cfg = json.loads((REPO_ROOT / ".claude" / "settings.json").read_text(encoding="utf-8"))
         cmds = [
             h.get("command", "")
             for grp in cfg["hooks"].get("UserPromptSubmit", [])
             for h in grp.get("hooks", [])
         ]
-        mine = [c for c in cmds if "check_a_route.py" in c]
-        assert mine, "check_a_route.py not wired on UserPromptSubmit"
-        for c in mine:
-            assert "hooks_runner" not in c, (
-                "must be direct — hooks_runner captures stdout, so suggestions "
-                "would never reach the model"
-            )
+        assert any(
+            "hooks_runner.py --provider claude --event UserPromptSubmit" in c
+            for c in cmds
+        )
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry
+        assert "UserPromptSubmit" in registry.HOOK_REGISTRY["check_a_route"]["events"]

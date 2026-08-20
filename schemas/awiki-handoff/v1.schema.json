@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-wiki.local/schemas/awiki-handoff/v1.schema.json",
+  "title": "awiki-handoff/v1",
+  "description": "Durable handoff envelope so a different agent can resume without hidden chat history. Extends the existing handoff.md plan-chunk system (docs/protocols/cross-agent-plan-handoff.md) with machine-validated shape. No private chain-of-thought — decisions, evidence, assumptions, outputs, reproducible commands only.",
+  "type": "object",
+  "required": ["schema", "task_id", "from", "to_role", "branch", "head_sha",
+               "changed_files", "tests", "open_questions", "known_risks", "next_action"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "awiki-handoff/v1" },
+    "task_id": { "type": "string", "minLength": 1 },
+    "from": { "type": "string" },
+    "to_role": { "enum": ["executor", "reviewer", "architect", "tester", "any-capable-agent"] },
+    "branch": { "type": "string" },
+    "head_sha": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "changed_files": { "type": "array", "items": { "type": "string" } },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "passed": { "type": "array", "items": { "type": "string" } },
+        "failed": { "type": "array", "items": { "type": "string" } },
+        "summary": { "type": ["string", "null"] }
+      }
+    },
+    "open_questions": { "type": "array", "items": { "type": "string" } },
+    "known_risks": { "type": "array", "items": { "type": "string" } },
+    "decisions": { "type": "array", "items": { "type": "string" }, "description": "Made-with-evidence decisions the receiver must not silently relitigate" },
+    "reproduce_commands": { "type": "array", "items": { "type": "string" } },
+    "context_queries": {
+      "type": "array",
+      "description": "ProjectCodeContextProvider queries the receiver re-runs fresh instead of trusting copied prose",
+      "items": { "type": "string" }
+    },
+    "changed_symbols": { "type": "array", "items": { "type": "string" } },
+    "next_action": { "enum": ["implement", "test", "review", "fix", "verify", "handoff", "stop"] }
+  }
+}

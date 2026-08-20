@@ -1,0 +1,133 @@
+# A-Wiki Integration Registry — awiki-integrations/v1
+#
+# Single registry for every external integration (D-CTX-005). Each entry
+# declares capability, trust, storage, and lifecycle. External modules are
+# default-off + lazy; A-Router / project profiles enable the minimum set for
+# the active task. Deterministic validation:
+#   python scripts/health/validate_integrations.py [path]
+# (wired into wiki_health + ci-core automatically once this file exists).
+#
+# classification gate: docs/protocols/integration-intake (checklist) —
+# every new integration needs a decision record BEFORE entry here.
+
+schema: awiki-integrations/v1
+
+integrations:
+
+  # ── External MCP modules (optional, default-off) ─────────────────────────
+  graft:
+    classification: [module, pattern]
+    type: mcp
+    status: planned            # G0 contract-only; actual work is Phase 10+
+    domain: project-code-context
+    default: false
+    lazy: true
+    autoload: false
+    runtime: local
+    requires: [node>=20]
+    provides: [symbol-search, call-graph, blast-radius, repo-map, code-search, freshness]
+    storage: {type: local-regenerable-cache, commit: false}
+    network: {structural: false, enrichment: optional}
+    trust: {deep_enrichment: project-policy, private_context: false}
+    reference: docs/migration/graft-integration-plan.md
+
+  gitnexus:
+    classification: module
+    type: mcp
+    status: active
+    domain: software-engineering
+    default: false
+    lazy: true
+    autoload: project
+    runtime: external
+    provides: [code-intelligence-graph, impact-analysis, execution-flows]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: project-policy, private_context: false}
+    reference: docs/architecture/skill-architecture-plan.md
+
+  graphify:
+    classification: module
+    type: mcp
+    status: optional
+    domain: knowledge-graphs
+    default: false
+    lazy: true
+    runtime: local
+    provides: [pdf-image-to-graph, token-reduction]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: approved-only, private_context: false}
+    reference: wiki/entities/ai-tools/graphify.md
+
+  gbrain:
+    classification: module
+    type: mcp
+    status: optional
+    domain: memory
+    default: false
+    lazy: true
+    runtime: external
+    provides: [self-wiring-knowledge-graph]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: project-policy, private_context: false}
+    reference: wiki/entities/ai-tools/gbrain.md
+
+  world-intel:
+    classification: module
+    type: mcp
+    status: planned            # Phase 10; no vendoring, domain-triggered only
+    domain: [investment, environment, geopolitical, health, cyber, disaster]
+    default: false
+    lazy: true
+    runtime: external
+    provides: [external-events, market-data, news-context]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: approved-only, private_context: false}
+    reference: docs/migration/awiki-vnext-baseline.md
+
+  trello:
+    classification: module
+    type: mcp
+    status: active
+    domain: productivity
+    default: false
+    lazy: true
+    runtime: external
+    provides: [board-management]
+    storage: {type: local-regenerable-cache, commit: false}
+    trust: {deep_enrichment: never, private_context: false}
+
+  # ── Patterns absorbed into A-Wiki (implemented by existing primitives) ──
+  autoresearch:
+    classification: pattern
+    type: pattern
+    status: merged
+    implemented_by: [a-loop]
+    default: false
+    lazy: true
+    runtime: none
+    storage: {type: none, commit: false}
+
+  graft-freshness-pattern:
+    # graft-integration-plan.md §9 — query-path freshness/refresh semantics.
+    # Pattern-only and PLANNED: wiki-health checks and scan-repo do NOT yet
+    # implement probe-before-answer refresh-on-the-query-path semantics.
+    classification: pattern
+    type: pattern
+    status: planned
+    default: false
+    lazy: true
+    runtime: none
+    storage: {type: none, commit: false}
+    reference: docs/migration/graft-integration-plan.md
+
+  # ── Reference / rejected ──────────────────────────────────────────────────
+  deer-flow:
+    classification: reject
+    type: repo
+    status: rejected
+    domain: long-horizon-orchestration
+    default: false
+    lazy: true
+    runtime: none
+    storage: {type: none, commit: false}
+    reference: wiki/entities/ai-tools/deer-flow.md

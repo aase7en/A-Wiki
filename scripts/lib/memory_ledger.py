@@ -45,6 +45,10 @@ import atomic_json  # noqa: E402 -- sibling primitive (chunk 1)
 
 VALID_TYPES = {"decision", "lesson", "failure", "outcome", "idea"}
 
+# R-P5-006: canonical entry fields `extra` must never contain or overwrite.
+_RESERVED_KEYS = {"ts", "session_id", "type", "summary", "files", "tags",
+                  "parent_ts", "extra"}
+
 # Secret-redaction patterns. Conservative: redact anything that looks like a
 # common secret format so a captured commit/block message can't leak a key.
 _SECRET_PATTERNS = [
@@ -67,6 +71,17 @@ _SECRET_PATTERNS = [
     re.compile(r"\b(?:api[_-]?key|token|secret|password|pwd)[\"'\s:=]+([A-Za-z0-9_\-]{32,})\b", re.IGNORECASE),
 ]
 _REDACTED = "***"
+
+# Diagnostics and persisted summaries can contain credentials that do not look
+# like a vendor token (for example PASSWORD=p@ss/word or API_KEY=short-value).
+# Redact assignments by key name regardless of value length/character set.
+_CREDENTIAL_ASSIGNMENT_RE = re.compile(
+    r"\b([A-Za-z0-9_]*(?:api[_-]?key|token|secret|password|pwd)[A-Za-z0-9_]*)"
+    r"(\s*[:=]\s*)"
+    r"(\"[^\"\r\n]*\"|'[^'\r\n]*'|[^\s,;]+)",
+    re.IGNORECASE,
+)
+
 MAX_SUMMARY_LEN = 8192  # cap summary at 8KB (prevents disk/memory bombs)
 MAX_LOAD_ENTRIES = 200  # cap _load_all to last N entries (bounded memory)
 
@@ -75,10 +90,36 @@ def _redact(text: str) -> str:
     """Replace likely-secret substrings with ***. Best-effort, never raises."""
     if not text:
         return text
-    out = text
-    for pat in _SECRET_PATTERNS:
-        out = pat.sub(_REDACTED, out)
-    return out
+    try:
+        out = text
+        for pat in _SECRET_PATTERNS:
+            out = pat.sub(_REDACTED, out)
+
+        def _mask_assignment(match):
+            raw_value = match.group(3)
+            if len(raw_value) >= 2 and raw_value[0] in ("'", '"') and raw_value[-1] == raw_value[0]:
+                masked = raw_value[0] + _REDACTED + raw_value[-1]
+            else:
+                masked = _REDACTED
+            return match.group(1) + match.group(2) + masked
+
+        return _CREDENTIAL_ASSIGNMENT_RE.sub(_mask_assignment, out)
+    except Exception:
+        # Redaction failure must never expose the original sensitive text.
+        return _REDACTED
+
+
+def _redact_deep(value):
+    """Recursive redaction for nested extra/metadata (R-P5-006): every
+    string inside dicts/lists is redacted with the same patterns; other
+    scalar types pass through unchanged."""
+    if isinstance(value, str):
+        return _redact(value)
+    if isinstance(value, dict):
+        return {str(k): _redact_deep(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_redact_deep(v) for v in value]
+    return value
 
 
 class MemoryLedger:
@@ -99,16 +140,30 @@ class MemoryLedger:
         files: list[str] | None = None,
         tags: list[str] | None = None,
         parent_ts: float | None = None,
+        extra: dict | None = None,
     ) -> float:
         """Append one entry. Returns the entry's ts.
 
         Validates type. Redacts secrets from summary. Truncates oversized
         summaries. Files/tags normalized.
+
+        ``extra`` (Phase 5, R-P5-006): optional caller-owned metadata stored
+        under ONE reserved namespaced key ``entry["extra"]`` — collision-safe
+        by construction. Reserved canonical keys (``ts``, ``session_id``,
+        ``type``, ``summary``, ``files``, ``tags``, ``parent_ts``, ``extra``)
+        are rejected inside ``extra`` with ValueError, and every string in
+        the nested structure is recursively redacted before persisting.
+        Vanilla callers (no ``extra``) see an unchanged entry shape.
         """
         if type not in VALID_TYPES:
             raise ValueError(
                 f"invalid type {type!r}; must be one of {sorted(VALID_TYPES)}"
             )
+        if extra:
+            clash = _RESERVED_KEYS & {str(k) for k in extra}
+            if clash:
+                raise ValueError(
+                    f"extra must not contain canonical ledger fields: {sorted(clash)}")
         ts = time.time()
         # Normalize + cap summary to prevent disk/memory bombs
         summary_str = str(summary) if summary is not None else ""
@@ -123,6 +178,8 @@ class MemoryLedger:
             "tags": [str(t) for t in tags] if tags else [],
             "parent_ts": parent_ts,
         }
+        if extra:
+            entry["extra"] = _redact_deep(dict(extra))
         atomic_json.atomic_append_jsonl(self.path, entry)
         return ts
 

@@ -5,10 +5,13 @@ name: A-Wiki Subagent Eval
 # (evals/subagents/results/results-*.json), and opens a regression issue if any
 # (suite, model) pair dropped > 0.10.
 #
-# NOTE: starts workflow_dispatch-ONLY. The schedule trigger is commented out
-# until the workflow has been verified green at least once manually (avoids
-# burning free-tier API quota weekly if there is a logic bug). After a
-# successful manual run, uncomment the schedule block.
+# R-P1-001 (vNext Phase 1 remediation): this workflow no longer mutates the
+# checked-out default branch — ever. Two jobs:
+#   eval    — runs on schedule AND dispatch; contents: read; results/reports
+#             go to artifacts + issues only (race history included).
+#   promote — dispatch-only; restores artifacts, applies adaptive-routing /
+#             cost-optimizer changes, and lands EVERYTHING on a named
+#             promotion/* branch via PR. No direct default-branch pushes remain.
 
 on:
   workflow_dispatch:
@@ -33,10 +36,6 @@ on:
     # Mon 3:23 UTC (after agent-model-scan 2:41 + cross-platform 3:17)
     - cron: "23 3 * * 1"
 
-permissions:
-  contents: write
-  issues: write
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
@@ -46,9 +45,12 @@ concurrency:
 
 jobs:
   eval:
-    name: Run subagent eval + regression check
+    name: Run subagent eval + regression check (read-only)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read   # scheduled/report execution holds no write (R-P1-001.5)
+      issues: write    # regression issue
 
     steps:
       - name: Checkout
@@ -177,19 +179,6 @@ jobs:
           print(report)
           PYEOF
 
-      - name: Commit new results file
-        run: |
-          set -euo pipefail
-          git config user.name "a-wiki-subagent-eval"
-          git config user.email "subagent-eval@a-wiki"
-          git add evals/subagents/results/results-*.json 2>/dev/null || true
-          if ! git diff --cached --quiet; then
-            git commit -m "test(eval): subagent eval results $(date -u +%Y-%m-%d)"
-            git push
-          else
-            echo "No new results file to commit."
-          fi
-
       # ── T4: Multi-model race ทุก suite (concurrent, ขยายจาก S5 medical pilot) ──
       # Fires 3 candidate models ที่ทุก single-agent suite concurrently (k=1, cheap).
       # ข้าม pipeline-*.json (DAG suites — race ใช้กับ single-agent เท่านั้น).
@@ -229,32 +218,24 @@ jobs:
                   continue
           " 2>/dev/null || echo "(race summary failed)"
 
-      # ── V2: Commit race results to tracked dir for history trend ──
-      # snapshot race results ลง evals/subagents/races/<suite>-<date>.json
-      # เพื่อให้ dashboard แสดง trend ของ best model ได้
-      - name: Snapshot race results (history)
+      # ── V2 (R-P1-001): race history เป็น artifact แทน tracked dir + commit ──
+      # snapshot race results ลง .tmp (artifact) — trend อ่านจาก artifact history
+      - name: Snapshot race results (history artifact — no git)
         continue-on-error: true
         run: |
           set -uo pipefail
-          mkdir -p evals/subagents/races
-          DATE_TAG=$(date -u +%Y%m%d-%H%M%S)
+          mkdir -p .tmp/subagent-eval/races-history
           if [ -d .tmp/subagent-eval/races ]; then
+            DATE_TAG=$(date -u +%Y%m%d-%H%M%S)
             for f in .tmp/subagent-eval/races/*.json; do
               [ -f "$f" ] || continue
               suite=$(basename "$f" .json)
-              cp "$f" "evals/subagents/races/${suite}-${DATE_TAG}.json"
+              cp "$f" ".tmp/subagent-eval/races-history/${suite}-${DATE_TAG}.json"
             done
-            git add evals/subagents/races/*.json 2>/dev/null || true
-            if ! git diff --cached --quiet; then
-              git commit -m "test(eval): race results snapshot ${DATE_TAG}"
-              git push
-              echo "✓ Race snapshot committed."
-            fi
+            echo "✓ Race snapshot staged for artifact upload (no repo writes — R-P1-001)."
           fi
 
       # ── W4: DAG pipeline eval (council pattern + finance/medical) ──
-      # รัน pipeline suites แยกจาก single-agent eval (ใช้ run_pipeline_eval.py).
-      # continue-on-error: pipeline fail ไม่ block main eval pipeline.
       - name: DAG pipeline eval (council + finance + medical)
         continue-on-error: true
         env:
@@ -273,11 +254,7 @@ jobs:
           echo "=== Pipeline eval done ==="
           cat .tmp/subagent-eval/pipeline-results.json 2>/dev/null | python3 -m json.tool 2>/dev/null | head -30 || echo "(pipeline eval skipped)"
 
-      # ── Q6: Adaptive routing (preview always, auto-apply on manual trigger) ──
-      # Guardrails are intentionally tight: min 30 samples (3× default) + min_delta
-      # 0.20 (1.33× default). schedule trigger = preview-only (no writes);
-      # workflow_dispatch = auto-apply (manual consent). Each apply is a separate
-      # atomic commit for easy revert.
+      # ── Q6: Adaptive routing preview (always; apply moved to promote job) ──
       - name: Adaptive routing preview (always)
         run: |
           set -euo pipefail
@@ -294,49 +271,7 @@ jobs:
           echo "=== Adaptive routing preview ==="
           cat .tmp/subagent-eval/adaptive-preview.txt || true
 
-      - name: Auto-apply recommendations (manual trigger only)
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          set -euo pipefail
-          # Count how many recommendations have status == 'recommend'.
-          RECS=$(python3 -c "
-          import json, sys
-          sys.path.insert(0, 'scripts/eval')
-          import apply_adaptive_routing as aa
-          import adaptive_routing as ar
-          stats = json.load(open('.tmp/subagent-eval/latest-stats.json'))
-          from pathlib import Path
-          eval_results = aa._load_results(Path('evals/subagents/results/'))
-          if not eval_results:
-              print(0); sys.exit()
-          current = aa._load_current_models()
-          mapping = aa.build_suite_to_subagents(aa.SUITES_DIR)
-          changes = ar.recommend_model_changes(stats, eval_results, current, mapping,
-                                               config={'min_samples': 30, 'min_delta': 0.20})
-          print(sum(1 for c in changes if c.get('status') == 'recommend'))
-          " 2>/dev/null || echo 0)
-          echo "Recommendations to apply: $RECS"
-          if [ "$RECS" -gt 0 ]; then
-            python3 scripts/eval/apply_adaptive_routing.py --apply \
-              --stats-json .tmp/subagent-eval/latest-stats.json \
-              --eval-results evals/subagents/results/ \
-              --min-samples 30 --min-delta 0.20
-            git add agents/subagents/ .tmp/adaptive-routing-log.jsonl 2>/dev/null || true
-            if ! git diff --cached --quiet; then
-              git commit -m "feat(subagent): auto-apply model swap $(date -u +%Y-%m-%d) [CI guardrails: 30s/0.20δ]"
-              git push
-              echo "✓ Applied $RECS recommendation(s) and pushed."
-            else
-              echo "No frontmatter changes after apply (recommendations were no-ops)."
-            fi
-          else
-            echo "No recommendations met the tight guardrails (30 samples / 0.20 delta). Skipping apply."
-          fi
-
-      # ── U1: Cost optimization auto-apply (manual trigger, tight guardrails) ──
-      # Recommend model swaps ที่ "ดีพอ (pass@k ≥ 0.7) + ประหยัด ≥ $1.00/1k calls".
-      # Guardrails แน่นกว่า CLI default (min-savings $1.00) + workflow_dispatch only.
-      # แยกจาก adaptive routing (Q6) เพื่อให้ revert อิสระ.
+      # ── U1: Cost optimization preview (always; apply moved to promote job) ──
       - name: Cost optimization preview (always)
         continue-on-error: true
         run: |
@@ -345,46 +280,6 @@ jobs:
             > .tmp/subagent-eval/cost-optimize-preview.txt 2>&1 || true
           echo "=== Cost optimization preview ==="
           cat .tmp/subagent-eval/cost-optimize-preview.txt || echo "(no recommendations)"
-
-      - name: Cost optimization auto-apply (manual trigger only)
-        if: github.event_name == 'workflow_dispatch'
-        continue-on-error: true
-        run: |
-          set -uo pipefail
-          # Count recommendations with status == 'recommend' (savings >= $1.00).
-          RECS=$(python3 -c "
-          import glob, json, sys
-          sys.path.insert(0, 'scripts/eval')
-          import cost_optimizer as co, cost_aware_recommend as cr
-          files = sorted(glob.glob('evals/subagents/results/results-*.json'))
-          if not files: print(0); sys.exit()
-          results = json.loads(open(files[-1], encoding='utf-8').read())
-          cm = cr._load_default_cost_matrix()
-          n = 0
-          for suite, sd in results.items():
-              if not isinstance(sd, dict): continue
-              bm = sd.get('by_model', {})
-              if not bm: continue
-              cbm = {m: cr.cost_per_1k_calls(m, cm) or 0.0 for m in bm}
-              cur = list(bm.keys())[0] if bm else ''
-              r = co.analyze_suite(suite, bm, cbm, cur, min_pass_at_k=0.7, min_savings=1.00)
-              if r and r.get('status') == 'recommend': n += 1
-          print(n)
-          " 2>/dev/null || echo 0)
-          echo "Cost optimization recommendations (>= \$1.00 savings): $RECS"
-          if [ "$RECS" -gt 0 ]; then
-            python3 scripts/eval/apply_cost_optimizer.py --apply --min-savings 1.00 || true
-            git add agents/subagents/ .tmp/cost-optimization-log.jsonl 2>/dev/null || true
-            if ! git diff --cached --quiet; then
-              git commit -m "feat(subagent): cost-optimize model swap $(date -u +%Y-%m-%d) [CI guardrails: pass@k≥0.7 / save≥\$1.00]"
-              git push
-              echo "✓ Applied $RECS cost optimization(s) and pushed."
-            else
-              echo "No frontmatter changes after cost-optimize apply."
-            fi
-          else
-            echo "No cost optimizations met guardrails (pass@k ≥ 0.7, savings ≥ \$1.00). Skipping."
-          fi
 
       - name: Upload report + results
         uses: actions/upload-artifact@v4
@@ -427,3 +322,116 @@ jobs:
             gh issue create --title "$title" --body-file "$body_file"
             echo "Created new regression issue."
           fi
+
+  # ── R-P1-001: promotion job — dispatch-only, PR-gated, never pushes main ──
+  promote:
+    name: Promote results + recommendations (manual only, PR-gated)
+    needs: eval
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write        # push promotion branch only
+      pull-requests: write   # open the promotion PR (the gate)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore eval artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: subagent-eval-report
+          path: restored
+
+      - name: Place artifacts back into workspace paths
+        run: |
+          set -euo pipefail
+          mkdir -p evals/subagents
+          cp -r restored/.tmp . 2>/dev/null || true
+          cp -r restored/evals/subagents/results evals/subagents/ 2>/dev/null || true
+          ls -la .tmp/subagent-eval/ || true
+
+      - name: Apply adaptive-routing recommendations
+        run: |
+          set -euo pipefail
+          RECS=$(python3 -c "
+          import json, sys
+          sys.path.insert(0, 'scripts/eval')
+          import apply_adaptive_routing as aa
+          import adaptive_routing as ar
+          stats = json.load(open('.tmp/subagent-eval/latest-stats.json'))
+          from pathlib import Path
+          eval_results = aa._load_results(Path('evals/subagents/results/'))
+          if not eval_results:
+              print(0); sys.exit()
+          current = aa._load_current_models()
+          mapping = aa.build_suite_to_subagents(aa.SUITES_DIR)
+          changes = ar.recommend_model_changes(stats, eval_results, current, mapping,
+                                               config={'min_samples': 30, 'min_delta': 0.20})
+          print(sum(1 for c in changes if c.get('status') == 'recommend'))
+          " 2>/dev/null || echo 0)
+          echo "Adaptive-routing recommendations to apply: $RECS"
+          if [ "$RECS" -gt 0 ]; then
+            python3 scripts/eval/apply_adaptive_routing.py --apply \
+              --stats-json .tmp/subagent-eval/latest-stats.json \
+              --eval-results evals/subagents/results/ \
+              --min-samples 30 --min-delta 0.20
+          else
+            echo "No recommendations met the tight guardrails (30 samples / 0.20 delta)."
+          fi
+
+      - name: Apply cost-optimization recommendations
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          RECS=$(python3 -c "
+          import glob, json, sys
+          sys.path.insert(0, 'scripts/eval')
+          import cost_optimizer as co, cost_aware_recommend as cr
+          files = sorted(glob.glob('evals/subagents/results/results-*.json'))
+          if not files: print(0); sys.exit()
+          results = json.loads(open(files[-1], encoding='utf-8').read())
+          cm = cr._load_default_cost_matrix()
+          n = 0
+          for suite, sd in results.items():
+              if not isinstance(sd, dict): continue
+              bm = sd.get('by_model', {})
+              if not bm: continue
+              cbm = {m: cr.cost_per_1k_calls(m, cm) or 0.0 for m in bm}
+              cur = list(bm.keys())[0] if bm else ''
+              r = co.analyze_suite(suite, bm, cbm, cur, min_pass_at_k=0.7, min_savings=1.00)
+              if r and r.get('status') == 'recommend': n += 1
+          print(n)
+          " 2>/dev/null || echo 0)
+          echo "Cost optimization recommendations (>= \$1.00 savings): $RECS"
+          if [ "$RECS" -gt 0 ]; then
+            python3 scripts/eval/apply_cost_optimizer.py --apply --min-savings 1.00 || true
+          else
+            echo "No cost optimizations met guardrails (pass@k ≥ 0.7, savings ≥ \$1.00)."
+          fi
+
+      - name: Commit everything to promotion branch + open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "a-wiki-subagent-eval"
+          git config user.email "subagent-eval@a-wiki"
+          git add evals/subagents/results/ evals/subagents/races/ agents/subagents/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Nothing to promote (no results, races, or policy changes)."
+            exit 0
+          fi
+          BRANCH="promotion/subagent-eval-$(date -u +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH"
+          git commit -m "test(eval): subagent eval promotion candidate $(date -u +%Y-%m-%d) [PR-gated: results + races + recommended model swaps]"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "Subagent eval promotion candidate $(date -u +%Y-%m-%d)" \
+            --body "Auto-generated **promotion candidate** from a manual subagent-eval dispatch (R-P1-001 gate): results snapshots, race history, and guardrailed adaptive-routing / cost-optimization model swaps. Scheduled runs are report-only. Review diff + artifact, run \`python -m pytest tests/test_regression_check.py tests/test_run_subagent_eval.py -q\`, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

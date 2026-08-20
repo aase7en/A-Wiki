@@ -1,0 +1,179 @@
+name: A-Wiki Core CI
+
+# P2.3/P2.4 (vNext Phase 2): core verification only — privacy/security,
+# syntax, registry + generated surfaces, hooks, memory/core libraries,
+# MCP + hook-runner smoke, wiki health, unit tests, readiness.
+# Expensive domain regression (Monte Carlo / quant / scipy stack) moved to
+# domain-tests.yml (path-triggered). Coverage preserved, not deleted.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: awiki-ci-core-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  verify:
+    name: Core verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pyyaml
+          python -m pip install -r requirements.txt
+
+      - name: Prepare fake external data layer
+        run: |
+          bash scripts/setup-cloud-link.sh --provider local --force
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from drive_path import get_drive_root
+
+          root = get_drive_root()
+          # full agent-preflight EXPECTED_DRIVE_FOLDERS contract
+          for name in ("raw", "waste-reports", "personal-tools", "ocr-feedback", "individual-tasks"):
+              (root / name).mkdir(parents=True, exist_ok=True)
+          (root / "raw" / "ci-smoke.md").write_text("# CI smoke source\n", encoding="utf-8")
+          (root / ".secrets").write_text(
+              "OPENROUTER_API_KEY=sk-or-v1-example\n"
+              "GEMINI_API_KEY=AIza-example\n",
+              encoding="utf-8",
+          )
+          PY
+          bash scripts/setup-cloud-link.sh --status
+          python scripts/lib/drive_secrets.py --check
+
+      - name: Prepare local generated config
+        run: |
+          bash scripts/setup-codex-hooks.sh
+          python scripts/build-wiki-index.py
+          # P6-RR07: prove the tracked .codex/hooks.json exactly matches the
+          # single-source generator (check-before-write parity truth).
+          python scripts/setup-codex-config.py --check
+
+      - name: Privacy and syntax checks
+        run: |
+          python scripts/check-privacy.py
+          bash -n scripts/setup-local.sh scripts/setup-cloud-link.sh scripts/update-model-roster.sh scripts/delegate.sh scripts/swarm/delegate.sh
+
+      - name: Security pattern scan (Python orchestrator, P2.1)
+        # Repo-wide scan via git ls-files -z (spaces/Unicode-safe, no cap),
+        # same yaml pattern source as every layer, legacy-debt ratchet:
+        # fails only on NEW findings.
+        run: python scripts/security/scan_repo.py --ci --baseline scripts/security/baseline.txt
+
+      - name: Skill registry consistency
+        run: |
+          python scripts/regen-skill-surfaces.py --validate
+          python scripts/regen-skill-surfaces.py --check
+          python scripts/verify-skill-surfaces.py
+
+      - name: Wiki health (truthful, P2.2)
+        # Hard errors: broken wikilinks, invalid frontmatter, stale generated
+        # context, skill-surface drift. Advisories: orphans/aliases/graph.
+        # Baseline ratchet: 48 legacy wikilink debt keys.
+        run: python scripts/health/wiki_health.py --json --baseline scripts/health/wiki-health-baseline.txt
+
+      - name: MCP server smoke (cross-agent parity, P2.4)
+        # The awiki MCP server is the canonical brain interface for every
+        # executor vendor — import it and verify the tool surface.
+        run: |
+          python - <<'PY'
+          import importlib.util
+          spec = importlib.util.spec_from_file_location("awiki_mcp", "scripts/mcp-wiki-server.py")
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          tools = sorted(mod.TOOLS)
+          assert len(tools) >= 30, f"expected >=30 MCP tools, got {len(tools)}"
+          for must in ("wiki_search", "wiki_ingest_route", "memory_recall",
+                       "memory_remember", "claim_acquire", "claim_list",
+                       "skill_route", "task_claim", "bb_post"):
+              assert must in tools, f"core MCP tool missing: {must}"
+          print(f"mcp smoke ok: {len(tools)} tools")
+          PY
+
+      - name: Hook runner smoke (cross-agent hard-gate parity, P2.4)
+        # Hard gates must not depend solely on Claude-specific hooks — prove
+        # the vendor-neutral runner executes them and honors block codes.
+        run: |
+          set -euo pipefail
+          python scripts/hooks_runner.py check_secret_leak < tests/fixtures/sample-input.json
+          # Blocking path: a planted token (runtime-concatenated, never stored)
+          # must make the gate exit 2 on ANY executor.
+          PLANTED="$(printf '%s%s%s' 'ghp_' 'CiSmoke0123456789abcdef012345' 'XY')"
+          printf '{"session_id":"ci","tool_name":"Edit","tool_input":{"file_path":"x.py","new_string":"%s"}}' \
+            "$PLANTED" > .tmp/planted-input.json
+          set +e
+          python scripts/hooks_runner.py check_secret_leak < .tmp/planted-input.json
+          RC=$?
+          set -e
+          [ "$RC" -eq 2 ] || { echo "::error::secret gate did not block (exit=$RC)"; exit 1; }
+
+      - name: Unit tests (core suite; optional-dep tests self-skip)
+        # Surface failing test ids as ::error annotations so they are
+        # readable via the public check-runs API (logs need auth).
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tee pytest-out.txt || {
+            grep -E "^(FAILED|ERROR) " pytest-out.txt | head -20 | while IFS= read -r line; do
+              echo "::error::${line}"
+            done
+            exit 1
+          }
+
+      - name: Readiness smoke
+        # Surface [FAIL] lines as ::error annotations (public-API readable).
+        run: |
+          set -o pipefail
+          # direct preflight run first: its per-check lines land in ready-out.txt
+          # so failures annotate precisely (verify only reports the last line)
+          python scripts/agent-preflight.py --skip-remote 2>&1 | tee ready-out.txt || true
+          python scripts/verify-awiki-ready.py --skip-remote --skip-evals 2>&1 | tee -a ready-out.txt || {
+            grep -E "FAIL" ready-out.txt | head -10 | while IFS= read -r line; do
+              echo "::error::${line}"
+            done
+            exit 1
+          }
+
+  py38-smoke:
+    # P6-RR02/RR07: real Python 3.8 runtime evidence for the documented
+    # support contract. SEPARATE JOB on purpose: setup-python switches the
+    # job's interpreter for every later step, which made the security scan
+    # run under a dependency-less 3.8 and silently fall back to builtin
+    # patterns (baseline mismatch — incident 2026-08-20, PR #17 CI).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+      - name: Hook-engine imports + registry check + benign sweep
+        run: |
+          python -c "import sys; sys.path.insert(0, 'scripts/hooks'); sys.path.insert(0, 'scripts'); import hooks_runner, registry, providers; print('py38 hook-engine imports OK')"
+          python scripts/hooks/registry.py --check
+          echo '{}' | python scripts/hooks_runner.py --event PostCompact

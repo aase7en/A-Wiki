@@ -1,21 +1,22 @@
 {
-  "generated_at": "2026-08-09",
+  "generated_at": "2026-08-20",
   "stats": {
     "nodes": 550,
-    "edges": 1838,
+    "edges": 1839,
     "edges_by_type": {
       "wikilink": 1315,
-      "depends": 387,
+      "depends": 388,
       "implements": 53,
       "mdlink": 41,
       "extends": 42
     },
-    "broken_links": 39,
-    "orphans": 30,
+    "broken_links": 40,
+    "orphans": 28,
     "orphan_by_domain": {
-      "context": 17,
+      "context": 14,
       "env": 8,
       "ai-tools": 3,
+      "meta": 1,
       "other": 1,
       "sources": 1
     },
@@ -64,6 +65,7 @@
     "orphans_list": [
       "wiki/SKILL-INDEX.md",
       "wiki/concepts/ai-tools/hexagonal-architecture.md",
+      "wiki/concepts/meta/coordination-artifacts.md",
       "wiki/context/device-session.md",
       "wiki/context/graph-hygiene.md",
       "wiki/context/local-sources.md",
@@ -77,11 +79,10 @@
       "wiki/context/overview-trader.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory-2026-06-24.md",
-      "wiki/context/session-memory.md",
-      "wiki/context/session-summary-2026-06-24.md",
       "wiki/context/wiki-capability-map.md",
-      "wiki/entities/ai-tools/news-intelligence-pipeline.md"
+      "wiki/entities/ai-tools/news-intelligence-pipeline.md",
+      "wiki/entities/ai-tools/open-design.md",
+      "wiki/entities/env/building.md"
     ]
   },
   "nodes": [
@@ -401,6 +402,11 @@
       "domain": "it-support"
     },
     {
+      "path": "wiki/concepts/meta/coordination-artifacts.md",
+      "title": "Coordination Artifacts — เลือกไฟล์ไหนเก็บอะไร",
+      "domain": "meta"
+    },
+    {
       "path": "wiki/concepts/pharmacy/CLAUDE.md",
       "title": "Scoped Context — Pharmacy Concepts",
       "domain": "pharmacy"
@@ -512,22 +518,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-08-05",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory-2026-06-24.md",
-      "title": "session-memory-2026-06-24",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-summary-2026-06-24.md",
-      "title": "session-summary-2026-06-24",
+      "title": "Review Report — 2026-08-20",
       "domain": "context"
     },
     {
@@ -1138,6 +1129,11 @@
     {
       "path": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "title": "Charlie Hills — \"I turned Claude into an entire company\" (42-skill org chart)",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/chart-images-from-url.md",
+      "title": "chart-images-from-url",
       "domain": "sources"
     },
     {
@@ -2138,6 +2134,11 @@
     {
       "path": "wiki/synthesis/synth-charliejhills-claude-skills-org-chart-2026.md",
       "title": "Charlie Hills — I turned Claude into an entire company (42-skill org chart) — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-chart-images-from-url.md",
+      "title": "**Embed charts anywhere.** Our chart API generates [chart images](https://quickc — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -7153,8 +7154,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": false,
-      "external": true
+      "broken": true,
+      "external": false
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
@@ -14369,6 +14370,13 @@
     {
       "from": "wiki/synthesis/synth-charliejhills-claude-skills-org-chart-2026.md",
       "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-chart-images-from-url.md",
+      "to": "wiki/sources/chart-images-from-url.md",
       "type": "depends",
       "broken": false,
       "external": false

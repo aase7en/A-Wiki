@@ -3,8 +3,16 @@ name: A-Wiki Agent Model Scan
 on:
   workflow_dispatch:
     inputs:
+      apply_swaps:
+        description: "Explicit promotion gate — apply safe swaps on a promotion branch + PR. Scheduled runs NEVER apply (P1.2)."
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
       create_issue:
-        description: "Create or update an issue when tier-up proposals exist"
+        description: "Create or update an issue when candidate swaps exist"
         required: false
         default: "true"
         type: choice
@@ -15,8 +23,9 @@ on:
     - cron: "41 2 * * 1"
 
 permissions:
-  contents: write
+  contents: write        # push promotion branch only — main is never pushed by this workflow
   issues: write
+  pull-requests: write   # open the promotion PR (the actual gate)
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -27,7 +36,7 @@ concurrency:
 
 jobs:
   scan:
-    name: Scan agent model benchmarks
+    name: Scan agent model benchmarks (report-only by default)
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -40,17 +49,25 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run scan (apply safe swaps)
+      - name: Run scan (candidates; apply only behind explicit dispatch gate)
         id: scan
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           set -euo pipefail
           mkdir -p .tmp/agent-model-scan
-
-          python3 scripts/agents/agent_model_scan.py \
-            --apply \
-            --offline > .tmp/agent-model-scan/report.md
+          MODE="--dry-run"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.apply_swaps }}" = "true" ]; then
+            MODE="--apply"
+          fi
+          python3 scripts/agents/agent_model_scan.py $MODE --offline > .tmp/agent-model-scan/report.md
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          # candidate detection works in both modes (report lists swaps as "A → B")
+          if grep -q ' → ' .tmp/agent-model-scan/report.md; then
+            echo "candidates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "candidates=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check for changes
         id: changes
@@ -64,15 +81,30 @@ jobs:
               > .tmp/agent-model-scan/agent-model-scan.diff
           fi
 
-      - name: Commit + push safe swaps
+      - name: Commit candidates to promotion branch + open PR (never main)
         if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          BRANCH="promotion/agent-model-swap-$(date -u +%Y%m%d-%H%M%S)"
           git config user.name "a-wiki-agent-model-scan"
           git config user.email "agent-model-scan@a-wiki"
+          git checkout -b "$BRANCH"
           git add .kilo/agents/ wiki/context/agent-model-scan-log.jsonl
-          git commit -m "feat(agents): auto-scan model swap $(date -u +%Y-%m-%d)"
-          git push
+          git commit -m "feat(agents): model swap candidate $(date -u +%Y-%m-%d) [promotion gate: PR review + CI required]"
+          git push origin "$BRANCH"
+          # R-P1-004: PR gate is fail-closed — detect an existing open PR
+          # explicitly; a failed creation FAILS this step (no || echo fallback)
+          EXISTING="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
+          if [ -n "$EXISTING" ]; then
+            echo "Promotion PR already open for $BRANCH: $EXISTING"
+          else
+            gh pr create \
+              --title "Agent model swap candidate $(date -u +%Y-%m-%d)" \
+              --body "Auto-generated **promotion candidate** (explicit \`apply_swaps\` dispatch; scheduled runs are report-only — P1.2). Review the workflow artifact + diff, verify locally, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Promotion PR created."
+          fi
 
       - name: Upload scan report
         uses: actions/upload-artifact@v4
@@ -83,32 +115,36 @@ jobs:
             .tmp/agent-model-scan/agent-model-scan.diff
           if-no-files-found: ignore
 
-      - name: Create or update tier-up proposal issue
-        if: steps.changes.outputs.changed == 'true' && (github.event_name == 'schedule' || inputs.create_issue == 'true')
+      - name: Create or update candidate-swap issue
+        if: steps.scan.outputs.candidates == 'true' && (github.event_name == 'schedule' || inputs.create_issue == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          title="A-Wiki agent model scan — changes available"
+          title="A-Wiki agent model scan — candidate swaps available"
           existing="$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')"
           body_file=".tmp/agent-model-scan/issue-body.md"
           {
-            echo "A scheduled agent model benchmark scan found candidate changes."
+            echo "A scan found candidate model swaps. Nothing was applied automatically."
             echo ""
-            echo "## Safe swaps (auto-applied)"
+            echo "## Candidate swaps (report-only)"
             echo ""
             echo '```'
             python3 scripts/agents/agent_model_scan.py --dry-run --offline 2>&1
             echo '```'
             echo ""
-            echo "## Review"
+            echo "## How to promote (explicit gate)"
             echo ""
-            echo "Review the attached workflow artifact, then verify locally:"
+            echo "1. Review the attached workflow artifact"
+            echo "2. Re-run this workflow via dispatch with \`apply_swaps=true\` — it opens a promotion PR"
+            echo "3. Review + merge the PR (CI must pass)"
+            echo ""
+            echo "Or verify locally:"
             echo ""
             echo '```bash'
-            echo 'python3 scripts/agents/agent_model_scan.py --dry-run'
-            echo 'python3 -m pytest tests/test_agent_model_scan.py -v'
+            echo "python3 scripts/agents/agent_model_scan.py --dry-run"
+            echo "python3 -m pytest tests/test_agent_model_scan.py -v"
             echo '```'
             echo ""
             echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

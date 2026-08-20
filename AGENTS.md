@@ -41,6 +41,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 
 ## 🚨 First Action Every Session
 
+0. **Agent Continuity Gate (BINDING 2026-08-20)** — ทุก agent ทุก session ผ่าน 5 ขั้นก่อน mutation ใดๆ: อ่าน `COLLAB.md` (lanes+claims) → อ่าน work order/handoff ของงาน → เช็ค `git branch -a` กับตาราง claim (งานใกล้เคียง = ทำต่อ ห้ามเริ่มใหม่) → จอง claim → ทำตาม phase work order อย่างเดียว + ก่อนสร้างไฟล์ plan/todo/handoff ใหม่ อ่าน file-purpose map ก่อน (ห้ามสร้างซ้ำ role) + auto-commit สิ้นสมัย session ห้าม push generated noise เข้า main โดยไม่ผ่าน security scan มีรายละเอียดทั้งหมดที่ `docs/protocols/agent-continuity-gate.md`
 1. Read `agent-skills/README.md` — Iron Laws + Swarm Architecture
 2. Read `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. Read `wiki/context/session-memory.md` — local/private cross-session decisions + TODOs. If missing, use `wiki/context/session-memory.md.example` and run `bash scripts/setup-local.sh`.
@@ -748,3 +749,5 @@ Pi5 runs Hermes Telegram gateway 24/7:
 4. Commands: `/wiki`, `/search`, `/backup`, `/status`, lifecycle commands
 
 See: `docs/runbooks/hermes-multi-device.md`
+
+> 🤝 **Multi-agent repo**: read `COLLAB.md` before working — lanes, claims, work orders, pause/resume (A-Wiki cross-agent-work-orders standard).

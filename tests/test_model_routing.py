@@ -192,11 +192,25 @@ def test_handle_failure_rate_limit_cooldowns_model(tmp_path, monkeypatch):
 # ---------------------------------------------------------------------------
 
 @pytest.mark.parametrize("fname", [
-    "model-pool.json",
     "model-priority-config.json",
     "restrict-state.json",
 ])
 def test_json_files_valid(fname):
     path = POOL_DIR / fname
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+
+
+def test_model_pool_runtime_cache_valid_when_present():
+    """P1.3 contract: model-pool.json is an UNTRACKED runtime cache.
+
+    Absent on fresh checkouts (CI) by design; present on machines that ran
+    scripts/hermes/model-pool/model-pool-scanner.py. Validate only when it
+    exists; skip visibly otherwise — never hard-fail a clean clone for
+    missing runtime telemetry.
+    """
+    path = POOL_DIR / "model-pool.json"
+    if not path.exists():
+        pytest.skip("model-pool.json is untracked runtime cache (P1.3) — not on fresh checkouts")
     data = json.loads(path.read_text(encoding="utf-8"))
     assert isinstance(data, dict)

@@ -1,11 +1,19 @@
 name: Provider Balance Check
 # ☁️ Query API balances from all connected providers
 # [Thai ไอ้A Plus Spot.] · A-Wiki Brain + Hermes Agent
+#
+# P1.5 (A-Wiki vNext): the unpinned third-party telegram action is gone —
+# shell command substitution does NOT expand inside `with:` blocks, so the
+# old message body was posted as a literal string instead of the report.
+# Reports now ship as workflow artifact + direct Bot-API POST via Python stdlib.
 
 on:
   workflow_dispatch:          # Manual trigger
   schedule:
     - cron: '0 6 * * *'      # Daily 6AM UTC = 1PM ICT
+
+permissions:
+  contents: read    # script checkout only — no commits, no pushes
 
 jobs:
   check-balance:
@@ -43,15 +51,25 @@ jobs:
           FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
 
+      - name: Upload balance report artifact
+        if: steps.cfg.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: provider-balance-report
+          path: |
+            provider-balance-report.md
+            provider-balance-report.json
+          if-no-files-found: ignore
+
       # NOTE: the `secrets` context is not usable in step-level `if` —
       # gate via the cfg step outputs instead.
       - name: Post results to Telegram
         if: steps.cfg.outputs.configured == 'true' && steps.cfg.outputs.telegram == 'true'
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: |
-            ☁️ Provider Balance Report
-            
-            $(cat provider-balance-report.md)
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          python3 scripts/hermes/telegram_report.py \
+            --file provider-balance-report.md \
+            --header "☁️ Provider Balance Report"

@@ -263,11 +263,17 @@ def test_z3_hook_registered_in_settings():
                 bash_hooks.append(h.get("command", ""))
     # Z3 hook must be among the registered Bash PreToolUse hooks
     joined = " ".join(bash_hooks)
-    assert "check-git-rebase-safety" in joined or "check_git_rebase_safety" in joined, (
-        "Z3 hook (check-git-rebase-safety) is NOT registered in "
-        ".claude/settings.json PreToolUse → Bash. It exists as a file but "
-        "will never run. Wire it in."
-    )
+    if "check-git-rebase-safety" not in joined and "check_git_rebase_safety" not in joined:
+        # Phase 6 sweep form: registry-driven dispatch under the Bash matcher
+        import sys as _sys
+        _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry as _reg
+        entry = _reg.HOOK_REGISTRY.get("check_git_rebase_safety")
+        sweep = "--event PreToolUse" in joined
+        assert sweep and entry and "Bash" in entry["matchers"], (
+            "Z3 hook (check-git-rebase-safety) is neither named nor "
+            "sweep-dispatched for Bash in .claude/settings.json"
+        )
 
 
 def test_z3_hook_registered_in_codex_settings():
@@ -288,10 +294,18 @@ def test_z3_hook_registered_in_codex_settings():
             for h in group.get("hooks", []):
                 bash_hooks.append(h.get("command", ""))
     joined = " ".join(bash_hooks)
-    assert "check-git-rebase-safety" in joined or "check_git_rebase_safety" in joined, (
-        "Z3 hook (check-git-rebase-safety) is NOT registered in "
-        ".codex/hooks.json PreToolUse → Bash. Codex users are unprotected."
-    )
+    if "check-git-rebase-safety" not in joined and "check_git_rebase_safety" not in joined:
+        # Phase 6 sweep form: registry-driven dispatch under the Bash matcher
+        import sys as _sys
+        _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry as _reg
+        entry = _reg.HOOK_REGISTRY.get("check_git_rebase_safety")
+        sweep = "--event PreToolUse" in joined
+        assert sweep and entry and "Bash" in entry["matchers"], (
+            "Z3 hook (check-git-rebase-safety) is neither named nor "
+            "sweep-dispatched for Bash in .codex/hooks.json — Codex users "
+            "are unprotected"
+        )
 
 
 def test_z3_hook_does_not_block_pull_rebase(tmp_path, monkeypatch, capsys):

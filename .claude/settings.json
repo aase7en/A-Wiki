@@ -149,76 +149,182 @@
             "command": "python3 scripts/hooks/recall_on_prompt.py"
           }
         ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-agent-claim"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-cost-tier"
-          },
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/pre-edit-staleness-check.sh"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-claudemd-lock"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-raw-immutable"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-source-original-file"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-external-editor-drift"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-output-format"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-harness-routing"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-skill-registry"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-machine-path"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-secret-leak"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-a-focus"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-a-flow-discipline"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-test-before-code"
-          },
-          {
-            "type": "command",
-            "command": "python3 scripts/hooks_runner.py check-rabies-report"
-          }
+    },
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-git-pull.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event SessionStart"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/wiki-context-check.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-binary-scan.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash scripts/show-active-todos.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash scripts/hooks/load-drive-keys.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-apikey-check.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/build-pharmacy-db.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks/session_start.py"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-initial-context.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/session-start-a-router.sh"
+                    }
+                ]
+            }
+        ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event UserPromptSubmit"
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/pre-edit-staleness-check.sh"
+                    }
+                ]
+            },
+            {
+                "matcher": "Agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PreToolUse"
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Agent",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
+                    }
+                ]
+            },
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/handoff-auto-export.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/post-wiki-edit-gen-index.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
+                    }
+                ]
+            },
+            {
+                "matcher": "TodoWrite",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/checkpoint-on-todo.sh"
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/checkpoint-on-commit.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/post-push-todo-remind.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event PostToolUse"
+                    }
+                ]
+            }
+        ],
+        "PostCompact": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "echo 'Context compacted. Re-read wiki/context/wiki-overview.md and wiki/context/session-memory.md to restore wiki state, then resume from session-memory.md TODOs.'"
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "bash scripts/agent-switch.sh stop"
+                    },
+                    {
+                        "type": "command",
+                        "command": "bash .claude/hooks/stop-auto-commit.sh"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 scripts/hooks_runner.py --provider claude --event Stop"
+                    }
+                ]
+            }
         ]
       },
       {

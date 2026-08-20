@@ -1,0 +1,55 @@
+# Security-scan legacy baseline (P2.1 ratchet; R-P2-003 finding-specific
+# keys: path::pattern::sha256(match)[:16], multiplicity-aware via Counter).
+# Generated 2026-08-17. Keys suppress exactly the recorded occurrences;
+# any NEW finding (different value, or count beyond baseline) fails CI.
+# No raw secrets are stored - keys carry a sha256 digest only.
+
+AGENTS.md::Windows drive absolute path (e.g. L:\...)::e9f06d746eb62787
+docs/architecture/hermes-cross-agent-handoff.md::Linux user home (/home/<user>/)::14f1d8d99cc94e7b
+docs/protocols/cross-device-sync.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/protocols/cross-device-sync.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/protocols/cross-device-sync.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/protocols/cross-device-sync.md::Windows drive absolute path (e.g. L:\...)::26d2ad7838016dca
+docs/runbooks/a-wiki-handoff-priority-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-handoff-priority-plan.md::Windows drive absolute path (e.g. L:\...)::f5c73311ce214ebb
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::f5c73311ce214ebb
+docs/runbooks/a-wiki-platform-hardening-plan.md::Windows drive absolute path (e.g. L:\...)::f5c73311ce214ebb
+docs/runbooks/cross-device-setup.md::Windows drive absolute path (e.g. L:\...)::f5c73311ce214ebb
+docs/runbooks/cross-device-setup.md::Windows drive absolute path (e.g. L:\...)::f5c73311ce214ebb
+docs/runbooks/hermes-container-recovery.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/runbooks/hermes-container-recovery.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/runbooks/hermes-container-recovery.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+docs/runbooks/hermes-container-recovery.md::Linux user home (/home/<user>/)::15741ad3caa9b193
+scripts/check-privacy.py::Linux user home (/home/<user>/)::14f1d8d99cc94e7b
+scripts/check-privacy.py::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/check-privacy.py::Linux user home (/home/<user>/)::cad509ffa5d7a360
+scripts/hermes/IMPORT-NOTES.md::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/IMPORT-NOTES.md::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/container-recovery/deploy-to-pi5.sh::Linux user home (/home/<user>/)::15741ad3caa9b193
+scripts/hermes/export-macbook-config.sh::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/export-macbook-config.sh::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/import-on-pi5.sh::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/import-on-pi5.sh::Linux user home (/home/<user>/)::a9ac41907f289cdc
+scripts/hermes/sync-all.sh::Linux user home (/home/<user>/)::14f1d8d99cc94e7b
+scripts/hermes/sync-secrets-from-drive.sh::Linux user home (/home/<user>/)::14f1d8d99cc94e7b
+scripts/hooks/security_patterns.yaml::Windows drive absolute path (e.g. L:\...)::e9f06d746eb62787
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/delegation/skill-creator/SKILL.md::Linux user home (/home/<user>/)::068381d43898a672
+skills/ecosystem/windows-desktop-e2e/SKILL.md::Windows drive absolute path (e.g. L:\...)::a92031370302613a
+tests/test_check_privacy.py::Linux user home (/home/<user>/)::cad509ffa5d7a360
+tests/test_check_privacy.py::Linux user home (/home/<user>/)::cad509ffa5d7a360
+tests/test_memory_ledger.py::JWT::e64abf2c9843bafe
+tests/test_memory_ledger.py::OpenAI/Anthropic/OpenRouter style key::29421cee1851b6fa
+tests/test_pi5_brain_sync.py::Linux user home (/home/<user>/)::15741ad3caa9b193
+tests/test_quality_gate_thai.py::OpenAI/Anthropic/OpenRouter style key::067c2acafaa06ccc
+wiki/synthesis/waste-form-automation.md::Windows drive absolute path (e.g. L:\...)::d084332ee7c4d131

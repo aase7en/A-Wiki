@@ -42,49 +42,76 @@ from scripts.lib.personal_paths import session_memory_path
 _WIN_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0) if os.name == "nt" else 0
 
 
-def git_pull(repo_root):
-    """git pull --rebase to stay in sync.
-
-    Z2 (Git Safety Net): backup HEAD ก่อน rebase + auto-recover ถ้าทิ้ง commits.
-    กัน commit หายจาก concurrent session rebase (เหตุการณ์ 2026-07-16).
-    """
-    # Z2: backup HEAD ก่อน rebase (safety net)
-    try:
-        sys.path.insert(0, str(Path(__file__).resolve().parent))
-        import git_safety_backup as gsb
-        gsb.backup_head(repo_root)
-    except Exception:
-        pass  # backup failure ไม่ block pull
-
+def _git_output(repo_root, args):
+    """Read-only git query; return stdout on success, None on any failure."""
     try:
         result = subprocess.run(
-            ["git", "pull", "--rebase", "origin", "main"],
+            ["git", *args],
             cwd=repo_root,
-            capture_output=True,
-            text=True, encoding="utf-8", errors="replace",
-            timeout=30,
-            creationflags=_WIN_NO_WINDOW,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=15, creationflags=_WIN_NO_WINDOW,
+        )
+        if result.returncode == 0:
+            return result.stdout
+    except Exception:
+        pass
+    return None
+
+
+def git_pull(repo_root):
+    """Sync from origin/main — fast-forward only, with DISC-001 guards.
+
+    Incident 2026-08-17 (DISC-001): this function used to run
+    `git pull --rebase origin main` on ANY branch — a concurrent session
+    on a migration branch had its history rewritten and uncommitted edits
+    were lost. Guards in force:
+      G1  current branch must be exactly `main`
+      G2  tracked working tree must be clean (untracked files are fine)
+      G3  `--ff-only` — no rebase, no merge commit, no autostash, ever
+    Any guard failure = skip with a warning; never mutate, never block session.
+    """
+    # G1: only `main` may be synced
+    branch = _git_output(repo_root, ["rev-parse", "--abbrev-ref", "HEAD"])
+    if branch is None:
+        sys.stderr.write("⚠️ git pull skipped: could not determine current branch\n")
+        return
+    branch = branch.strip()
+    if branch != "main":
+        sys.stderr.write(
+            f"⏭️ git pull skipped: current branch is '{branch}', not 'main' "
+            "(DISC-001 guard: never pull/rebase a non-main branch)\n"
+        )
+        return
+
+    # G2: dirty tracked tree blocks sync (untracked ?? entries are harmless)
+    status = _git_output(repo_root, ["status", "--porcelain"])
+    if status is None:
+        sys.stderr.write("⚠️ git pull skipped: could not inspect working tree\n")
+        return
+    dirty = [line for line in status.splitlines() if line.strip() and not line.startswith("??")]
+    if dirty:
+        sys.stderr.write(
+            f"⚠️ git pull skipped: {len(dirty)} tracked change(s) in working tree — "
+            "commit or stash first (DISC-001 guard: never sync a dirty tree)\n"
+        )
+        return
+
+    # G3: fast-forward only
+    try:
+        result = subprocess.run(
+            ["git", "pull", "--ff-only", "origin", "main"],
+            cwd=repo_root,
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=30, creationflags=_WIN_NO_WINDOW,
         )
         if result.returncode == 0:
             if "Already up to date" not in result.stdout:
-                sys.stderr.write(f"📥 Synced from origin: {result.stdout.strip()}\n")
-            # Z2: หลัง rebase สำเร็จ → ตรวจ lost commits
-            try:
-                lost = gsb.find_lost_commits(repo_root)
-                if lost:
-                    sys.stderr.write(
-                        f"⚠️ Rebase dropped {len(lost)} commit(s)! Auto-recovering...\n"
-                    )
-                    recovered = gsb.recover_lost_commits(repo_root)
-                    if recovered:
-                        sys.stderr.write(
-                            f"✓ Recovered {len(recovered)}/{len(lost)} commit(s). "
-                            f"(ถ้าไม่ครบ: python scripts/hooks/git_safety_backup.py --recover)\n"
-                        )
-            except Exception:
-                pass  # recovery check failure ไม่ block
+                sys.stderr.write(f"📥 Synced from origin (ff-only): {result.stdout.strip()}\n")
         else:
-            sys.stderr.write(f"⚠️ git pull warning: {result.stderr.strip()}\n")
+            sys.stderr.write(
+                "⚠️ git pull --ff-only failed (local main diverged from origin?) — "
+                "not forcing sync; resolve manually\n"
+            )
     except subprocess.TimeoutExpired:
         sys.stderr.write("⚠️ git pull timed out (network?)\n")
     except Exception as e:
