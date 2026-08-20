@@ -1435,8 +1435,19 @@ def test_gemini_hard_command_maps_missing_interpreter_to_exit_two(tmp_path):
     )
     command = cfg["hooks"]["BeforeTool"][0]["hooks"][0]["command"]
     env = _isolated_provider_env(tmp_path)
-    # Git Bash utilities remain available, but python3 is deliberately absent.
-    env["PATH"] = "/usr/bin:/bin"
+    # PATH contains ONLY a bash staging dir: on CI runners python3 lives in
+    # /usr/bin next to bash, so string-trimming PATH cannot remove it while
+    # keeping bash. A one-binary staging dir makes "bash resolves, python3
+    # does not" deterministic on every platform.
+    staging = tmp_path / "bin-staging"
+    staging.mkdir()
+    import shutil as _shutil
+    bash_path = _shutil.which("bash") or _git_bash_executable()
+    try:
+        os.symlink(bash_path, staging / "bash")
+    except OSError:
+        _shutil.copy2(bash_path, staging / "bash")
+    env["PATH"] = str(staging)
     payload = {
         "tool_name": "write_file",
         "tool_input": {"file_path": "scripts/x.py", "content": "ok"},
