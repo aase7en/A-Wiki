@@ -32,6 +32,15 @@ HOOKS_RUNNER="$REPO_ROOT/scripts/hooks_runner.py"
 LOG_FILE="${CLINE_HOOK_LOG_FILE:-$REPO_ROOT/logs/cline-hooks.log}"
 PYTHON_BIN="${AWIKI_PYTHON:-python3}"
 
+# ── Non-fatal logging (P6-RR04): a broken/unwritable log path must never
+# kill the adapter BEFORE policy evaluation, and never bypass a block. ──────
+_log() {
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*" >> "$LOG_FILE" 2>/dev/null || true
+}
+_prepare_log() {
+  mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || true
+}
+
 # ── Infer event name from the symlink name that invoked us ──────────────────
 # $0 could be: .clinerules/hooks/PreToolUse  → event = PreToolUse
 #              .clinerules/hooks/PostToolUse → event = PostToolUse
@@ -60,9 +69,9 @@ except Exception:
     pass
 ' 2>/dev/null || true)"
 
-# ── Log the incoming event ──────────────────────────────────────────────────
-mkdir -p "$(dirname "$LOG_FILE")"
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT tool=$TOOL_NAME" >> "$LOG_FILE"
+# ── Log the incoming event (non-fatal by contract) ─────────────────────────
+_prepare_log
+_log "event=$EVENT tool=$TOOL_NAME"
 
 # ── Preserve provider-native payload for canonical normalization ─────────────
 # Do not fabricate `{}` on malformed input. The canonical provider boundary
@@ -81,6 +90,17 @@ STDERR_OUT="$(cat "$STDERR_FILE" 2>/dev/null || true)"
 rm -f "$STDERR_FILE"
 
 # ── Convert result → Cline response format ──────────────────────────────────
+# hooks_runner.py contract: ONLY 0 (pass) and 2 (block) are policy outcomes.
+# Any other exit code (127 missing interpreter, 126 not executable, 1 crash,
+# 139 segfault…) is an INFRASTRUCTURE failure — the policy could not be
+# evaluated, so the adapter fails CLOSED (P6-RR04): hard lifecycle events
+# must never pass because the guard itself could not run.
+if [ "$EXIT_CODE" -ne 0 ] && [ "$EXIT_CODE" -ne 2 ]; then
+  _log "event=$EVENT result=INFRA_FAILURE runner_exit=$EXIT_CODE (failing closed)"
+  printf '{"cancel":true,"contextModification":"","errorMessage":"A-Wiki hook infrastructure failure — blocking to stay safe"}\n'
+  exit 0
+fi
+
 if [ "$EXIT_CODE" -eq 2 ]; then
   # BLOCK — return cancel:true
   BLOCK_REASON="${STDERR_OUT:-Blocked by A-Wiki hook (Iron Law violation)}"
@@ -95,16 +115,16 @@ if [ "$EXIT_CODE" -eq 2 ]; then
   fi
   [ -n "$ENCODED_REASON" ] || ENCODED_REASON='"Blocked by A-Wiki hook"'
   printf '{"cancel":true,"contextModification":"","errorMessage":%s}\n' "$ENCODED_REASON"
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT result=BLOCK reason=$BLOCK_REASON" >> "$LOG_FILE"
+  _log "event=$EVENT result=BLOCK"
   exit 0
 fi
 
 # PASS — return cancel:false
 if [ -n "$STDERR_OUT" ]; then
   # Warning but not blocking
-  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT result=PASS_WARNING stderr=$STDERR_OUT" >> "$LOG_FILE"
+  _log "event=$EVENT result=PASS_WARNING stderr=$STDERR_OUT"
 fi
-echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] event=$EVENT result=PASS" >> "$LOG_FILE"
+_log "event=$EVENT result=PASS"
 
 # Emit pass event to live dashboard
 "$PYTHON_BIN" "$REPO_ROOT/scripts/live-dashboard/event_logger.py" hook_check \

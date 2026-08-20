@@ -51,10 +51,14 @@ class RegistryError(Exception):
     """Registry invalid/unavailable — callers must fail CLOSED."""
 
 
-def _e(events, classification, order, *, timeout_s=None, context=False):
+def _e(events, classification, order, *, timeout_s=None, context=False,
+       matchers=("*",)):
+    """`matchers` (P6-RR05): the tool-name patterns this hook applies to —
+    plain tool names, pipe-alternations like "Edit|Write|MultiEdit", or "*".
+    The registry, not provider habit, owns dispatch applicability."""
     return {"events": list(events), "classification": classification,
             "order": order, "timeout_s": timeout_s,
-            "allow_context_stdout": context}
+            "allow_context_stdout": context, "matchers": list(matchers)}
 
 
 # ── THE authority ────────────────────────────────────────────────────────
@@ -71,34 +75,34 @@ HOOK_SPECS: tuple[tuple[str, dict], ...] = (
     ("recall_on_prompt",         _e(["UserPromptSubmit"], "soft", 30, context=True)),
 
     # PreToolUse — Edit|Write|MultiEdit enforcement (hard)
-    ("check_agent_claim",           _e(["PreToolUse"], "hard", 110)),
-    ("check_claudemd_lock",         _e(["PreToolUse"], "hard", 120)),
-    ("check_raw_immutable",         _e(["PreToolUse"], "hard", 130)),
-    ("check_source_original_file",  _e(["PreToolUse"], "hard", 140)),
-    ("check_external_editor_drift", _e(["PreToolUse"], "hard", 150)),
-    ("check_skill_registry",        _e(["PreToolUse"], "hard", 160)),
-    ("check_machine_path",          _e(["PreToolUse"], "hard", 170)),
-    ("check_secret_leak",           _e(["PreToolUse"], "hard", 180)),
-    ("check_harness_routing",       _e(["PreToolUse"], "hard", 190)),
-    ("check_output_format",         _e(["PreToolUse"], "hard", 200)),
-    ("check_cost_tier",             _e(["PreToolUse"], "hard", 210)),
-    ("check_a_focus",               _e(["PreToolUse"], "hard", 220)),
-    ("check_a_flow_discipline",     _e(["PreToolUse"], "hard", 230)),
+    ("check_agent_claim",           _e(["PreToolUse"], "hard", 110, matchers=("Edit|Write|MultiEdit",))),
+    ("check_claudemd_lock",         _e(["PreToolUse"], "hard", 120, matchers=("Edit|Write|MultiEdit",))),
+    ("check_raw_immutable",         _e(["PreToolUse"], "hard", 130, matchers=("Edit|Write|MultiEdit",))),
+    ("check_source_original_file",  _e(["PreToolUse"], "hard", 140, matchers=("Edit|Write|MultiEdit",))),
+    ("check_external_editor_drift", _e(["PreToolUse"], "hard", 150, matchers=("Edit|Write|MultiEdit",))),
+    ("check_skill_registry",        _e(["PreToolUse"], "hard", 160, matchers=("Edit|Write|MultiEdit",))),
+    ("check_machine_path",          _e(["PreToolUse"], "hard", 170, matchers=("Edit|Write|MultiEdit",))),
+    ("check_secret_leak",           _e(["PreToolUse"], "hard", 180, matchers=("Edit|Write|MultiEdit", "Bash"))),
+    ("check_harness_routing",       _e(["PreToolUse"], "hard", 190, matchers=("Edit|Write|MultiEdit",))),
+    ("check_output_format",         _e(["PreToolUse"], "hard", 200, matchers=("Edit|Write|MultiEdit",))),
+    ("check_cost_tier",             _e(["PreToolUse"], "hard", 210, matchers=("Edit|Write|MultiEdit", "Agent"))),
+    ("check_a_focus",               _e(["PreToolUse"], "hard", 220, matchers=("Edit|Write|MultiEdit",))),
+    ("check_a_flow_discipline",     _e(["PreToolUse"], "hard", 230, matchers=("Edit|Write|MultiEdit",))),
     # PreToolUse — Bash enforcement (hard)
-    ("check_bash_destructive_git", _e(["PreToolUse"], "hard", 240)),
-    ("check_bash_no_branch",       _e(["PreToolUse"], "hard", 250)),
-    ("check_apikey",               _e(["PreToolUse"], "hard", 260)),
-    ("check_delegation_gate",      _e(["PreToolUse"], "hard", 270)),
+    ("check_bash_destructive_git", _e(["PreToolUse"], "hard", 240, matchers=("Bash",))),
+    ("check_bash_no_branch",       _e(["PreToolUse"], "hard", 250, matchers=("Bash",))),
+    ("check_apikey",               _e(["PreToolUse"], "hard", 260, matchers=("Bash",))),
+    ("check_delegation_gate",      _e(["PreToolUse"], "hard", 270, matchers=("Bash",))),
     # PreToolUse — Bash advisory (soft; source: "never block — warn + backup
     # only" — it backs up HEAD then warns; invoked via runner in Claude wiring)
-    ("check_git_rebase_safety", _e(["PreToolUse"], "soft", 275)),
+    ("check_git_rebase_safety", _e(["PreToolUse"], "soft", 275, matchers=("Bash",))),
     # PreToolUse — Agent advisory (soft; source: "WARN-ONLY ... Never blocks")
-    ("check_subagent_fanout", _e(["PreToolUse"], "soft", 280)),
+    ("check_subagent_fanout", _e(["PreToolUse"], "soft", 280, matchers=("Agent",))),
 
     # PostToolUse — observers (soft)
-    ("log_subagent_result",  _e(["PostToolUse"], "soft", 300)),
-    ("auto_council_trigger", _e(["PostToolUse"], "soft", 310)),
-    ("memory_capture",       _e(["PostToolUse"], "soft", 320)),
+    ("log_subagent_result",  _e(["PostToolUse"], "soft", 300, matchers=("Agent",))),
+    ("auto_council_trigger", _e(["PostToolUse"], "soft", 310, matchers=("Edit|Write|MultiEdit",))),
+    ("memory_capture",       _e(["PostToolUse"], "soft", 320, matchers=("Bash",))),
 
     # Stop — advisors/cleanup (soft; self_audit warns "BLOCK SHIP" but
     # never exits 2 — advisory by design per AGENTS.md Layer 1)
@@ -153,6 +157,12 @@ def validate_registry(registry=None, hooks_dir: Path | None = None,
         cls = entry.get("classification")
         if cls not in CLASSIFICATIONS:
             errors.append(f"{name}: classification must be one of {CLASSIFICATIONS}")
+        matchers = entry.get("matchers")
+        if not isinstance(matchers, list) or not matchers or any(
+                not isinstance(m, str) or not m for m in matchers):
+            errors.append(f"{name}: must declare non-empty matchers "
+                          f"(tool applicability — P6-RR05)")
+
         order = entry.get("order")
         if not isinstance(order, int) or isinstance(order, bool):
             errors.append(f"{name}: order must be an int")
@@ -193,10 +203,27 @@ def classification_of(name: str, registry: dict | None = None) -> str:
         raise RegistryError(f"hook not registered: {name}") from e
 
 
-def hooks_for_event(event: str, registry: dict | None = None) -> list[str]:
-    """Registered hooks for one event in deterministic (order, name) order."""
+def hooks_for_event(event: str, registry: dict | None = None,
+                    tool_name: str | None = None) -> list[str]:
+    """Registered hooks for one event in deterministic (order, name) order.
+
+    P6-RR05: when ``tool_name`` is given, only hooks whose declared matchers
+    apply to that tool are returned — the registry owns applicability, so a
+    Bash payload cannot run Edit-only gates (over-dispatch) and an Edit
+    payload cannot skip Edit gates (under-dispatch).
+    """
     reg = registry if registry is not None else HOOK_REGISTRY
-    names = [n for n, e in reg.items() if event in (e.get("events") or [])]
+
+    def _applies(matchers) -> bool:
+        if tool_name is None:
+            return True
+        for m in matchers or []:
+            if m == "*" or tool_name == m or tool_name in m.split("|"):
+                return True
+        return False
+
+    names = [n for n, e in reg.items()
+             if event in (e.get("events") or []) and _applies(e.get("matchers"))]
     return sorted(names, key=lambda n: (reg[n].get("order", 10**9), n))
 
 

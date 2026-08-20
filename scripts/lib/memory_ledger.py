@@ -71,6 +71,17 @@ _SECRET_PATTERNS = [
     re.compile(r"\b(?:api[_-]?key|token|secret|password|pwd)[\"'\s:=]+([A-Za-z0-9_\-]{32,})\b", re.IGNORECASE),
 ]
 _REDACTED = "***"
+
+# Diagnostics and persisted summaries can contain credentials that do not look
+# like a vendor token (for example PASSWORD=p@ss/word or API_KEY=short-value).
+# Redact assignments by key name regardless of value length/character set.
+_CREDENTIAL_ASSIGNMENT_RE = re.compile(
+    r"\b([A-Za-z0-9_]*(?:api[_-]?key|token|secret|password|pwd)[A-Za-z0-9_]*)"
+    r"(\s*[:=]\s*)"
+    r"(\"[^\"\r\n]*\"|'[^'\r\n]*'|[^\s,;]+)",
+    re.IGNORECASE,
+)
+
 MAX_SUMMARY_LEN = 8192  # cap summary at 8KB (prevents disk/memory bombs)
 MAX_LOAD_ENTRIES = 200  # cap _load_all to last N entries (bounded memory)
 
@@ -79,10 +90,23 @@ def _redact(text: str) -> str:
     """Replace likely-secret substrings with ***. Best-effort, never raises."""
     if not text:
         return text
-    out = text
-    for pat in _SECRET_PATTERNS:
-        out = pat.sub(_REDACTED, out)
-    return out
+    try:
+        out = text
+        for pat in _SECRET_PATTERNS:
+            out = pat.sub(_REDACTED, out)
+
+        def _mask_assignment(match):
+            raw_value = match.group(3)
+            if len(raw_value) >= 2 and raw_value[0] in ("'", '"') and raw_value[-1] == raw_value[0]:
+                masked = raw_value[0] + _REDACTED + raw_value[-1]
+            else:
+                masked = _REDACTED
+            return match.group(1) + match.group(2) + masked
+
+        return _CREDENTIAL_ASSIGNMENT_RE.sub(_mask_assignment, out)
+    except Exception:
+        # Redaction failure must never expose the original sensitive text.
+        return _REDACTED
 
 
 def _redact_deep(value):

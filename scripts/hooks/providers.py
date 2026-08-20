@@ -62,6 +62,38 @@ class ProviderError(Exception):
 MALFORMED_PAYLOAD = object()
 
 
+# Provider-native tool names are normalized here so every registered policy
+# hook receives the same Claude-shaped action vocabulary. Policy hooks must not
+# grow their own provider-specific alias lists.
+_TOOL_NAME_MAP = {
+    "gemini": {
+        "write_file": "Write",
+        "replace": "Edit",
+        "run_shell_command": "Bash",
+    },
+    "cline": {
+        "write_to_file": "Write",
+        "replace_in_file": "Edit",
+        "execute_command": "Bash",
+    },
+}
+
+
+def _canonicalize_tool_call(provider, tool_name, tool_input):
+    """Normalize one provider-native tool call to the canonical hook schema."""
+    canonical_name = _TOOL_NAME_MAP.get(provider, {}).get(tool_name, tool_name)
+    if not isinstance(tool_input, dict):
+        return canonical_name, tool_input
+
+    canonical_input = dict(tool_input)
+    if provider == "cline" and canonical_name in ("Write", "Edit", "MultiEdit"):
+        # Cline file tools use `path`; canonical A-Wiki hooks use `file_path`.
+        if "file_path" not in canonical_input and "path" in canonical_input:
+            canonical_input["file_path"] = canonical_input["path"]
+        canonical_input.pop("path", None)
+    return canonical_name, canonical_input
+
+
 def supported_events(provider: str) -> list[str]:
     try:
         return list(PROVIDERS[provider]["event_map"])
@@ -108,7 +140,20 @@ def normalize_payload(provider: str, raw, *, event: str | None = None):
         return MALFORMED_PAYLOAD
 
     if shape == "canonical":
-        return data
+        if provider != "gemini" or not data:
+            return data
+        result = dict(data)
+        tool_name = result.get("tool_name")
+        tool_input = result.get("tool_input")
+        if tool_name is not None:
+            if not isinstance(tool_name, str) or not isinstance(tool_input, dict):
+                return MALFORMED_PAYLOAD
+            tool_name, tool_input = _canonicalize_tool_call(
+                provider, tool_name, tool_input
+            )
+            result["tool_name"] = tool_name
+            result["tool_input"] = tool_input
+        return result
     if shape != "cline":
         raise ProviderError(f"unsupported payload shape for {provider!r}: {shape!r}")
 
@@ -133,12 +178,26 @@ def normalize_payload(provider: str, raw, *, event: str | None = None):
 
     result = dict(inner)
     if event in ("PreToolUse", "PostToolUse"):
+        # Cline documentation has used both `toolName` and `tool` across hook
+        # surfaces. Accept either, but conflicting values are malformed rather
+        # than choosing a weaker policy path.
         tool_name = result.pop("toolName", None)
+        tool_alias = result.pop("tool", None)
+        if tool_name is not None and tool_alias is not None and tool_name != tool_alias:
+            return MALFORMED_PAYLOAD
+        if tool_name is None:
+            tool_name = tool_alias
+
         parameters = result.pop("parameters", None)
         if tool_name is not None:
-            result["tool_name"] = tool_name
-        if parameters is not None:
-            if not isinstance(parameters, dict):
+            if not isinstance(tool_name, str) or not isinstance(parameters, dict):
                 return MALFORMED_PAYLOAD
+            tool_name, parameters = _canonicalize_tool_call(
+                provider, tool_name, parameters
+            )
+            result["tool_name"] = tool_name
             result["tool_input"] = parameters
+        elif parameters is not None:
+            # Parameters without an action cannot be safely classified.
+            return MALFORMED_PAYLOAD
     return result

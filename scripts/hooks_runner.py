@@ -49,6 +49,8 @@ import os
 import re
 import subprocess
 import glob
+import time
+from typing import Optional
 
 # Windows consoles default to cp874/cp1252 — force UTF-8 for hook output this
 # runner re-emits itself (e.g. a blocked hook's Thai stderr message,
@@ -62,14 +64,21 @@ for _stream in (sys.stdout, sys.stderr):
 
 HOOKS_DIR = os.environ.get("AWIKI_HOOKS_DIR",
                            os.path.join(os.path.dirname(__file__), "hooks"))
-_STARTUP_CONFIG_ERROR: str | None = None
+_STARTUP_CONFIG_ERROR: Optional[str] = None
 try:
     HOOK_TIMEOUT = int(os.environ.get("HOOK_TIMEOUT", "5"))
-    if HOOK_TIMEOUT <= 0:
-        raise ValueError("timeout must be positive")
+    HOOK_TOTAL_TIMEOUT = float(os.environ.get("HOOK_TOTAL_TIMEOUT", "20"))
+    if HOOK_TIMEOUT <= 0 or HOOK_TOTAL_TIMEOUT <= 0:
+        raise ValueError("timeouts must be positive")
 except (TypeError, ValueError):
     HOOK_TIMEOUT = 5
+    HOOK_TOTAL_TIMEOUT = 20.0
     _STARTUP_CONFIG_ERROR = "hook runner configuration invalid (fail closed)"
+
+# CLI lifecycle sweeps set this deadline so execute() can cap each child by
+# the remaining provider-safe total budget. Direct unit-level execute() calls
+# keep their historical per-hook timeout when no lifecycle is active.
+_ACTIVE_TOTAL_DEADLINE = None
 
 # ── Live Dashboard event logger ───────────────────────────────────────────────
 _REPO_ROOT = os.path.dirname(os.path.abspath(__file__))  # scripts/
@@ -127,7 +136,7 @@ HOOK_SKIP = set(
 )
 
 # ── registry (the classification authority — fail CLOSED when broken) ────────
-_REGISTRY_LOAD_ERROR: str | None = None
+_REGISTRY_LOAD_ERROR: Optional[str] = None
 try:
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                     "hooks"))
@@ -151,11 +160,11 @@ def get_hooks():
             if f"{name}.py" not in HOOK_SKIP]
 
 
-def run_event_hooks_order(event: str):
+def run_event_hooks_order(event: str, tool_name: str = None):
     """Deterministic hook-name order for one event (test surface)."""
     if _REGISTRY_LOAD_ERROR or hook_registry is None:
         return []
-    return [n for n in hook_registry.hooks_for_event(event, REGISTRY)
+    return [n for n in hook_registry.hooks_for_event(event, REGISTRY, tool_name=tool_name)
             if f"{n}.py" not in HOOK_SKIP]
 
 
@@ -192,7 +201,7 @@ def run_hook(hook_name, input_data):
         return True, ""
 
 
-def execute(name: str, input_data: dict, event: str | None = None) -> dict:
+def execute(name: str, input_data: dict, event: Optional[str] = None) -> dict:
     """Canonical classified execution of ONE registered hook.
 
     Returns {"decision": "pass"|"block", "reason": str,
@@ -222,7 +231,17 @@ def execute(name: str, input_data: dict, event: str | None = None) -> dict:
                 "context_stdout": "", "hook": name}
 
     classification = entry["classification"]
-    timeout = entry.get("timeout_s") or HOOK_TIMEOUT
+    timeout = float(entry.get("timeout_s") or HOOK_TIMEOUT)
+    if _ACTIVE_TOTAL_DEADLINE is not None:
+        remaining = _ACTIVE_TOTAL_DEADLINE - time.monotonic()
+        if remaining <= 0:
+            if classification == "hard":
+                return {"decision": "block",
+                        "reason": "hook lifecycle total timeout exceeded (fail closed)",
+                        "context_stdout": "", "hook": name}
+            sys.stderr.write("soft hook skipped: lifecycle total timeout exceeded\n")
+            return {"decision": "pass", "reason": "", "context_stdout": "", "hook": name}
+        timeout = min(timeout, max(0.001, remaining))
     hook_path = os.path.join(HOOKS_DIR, f"{name}.py")
 
     def _pass(reason: str = "", stdout_text: str = "") -> dict:
@@ -315,7 +334,8 @@ def _emit_hook_event(hook_name: str, input_data: dict, result: str) -> None:
     _log_event("hook_check", **kwargs)
 
 
-def main():
+def _main_impl():
+    global _ACTIVE_TOTAL_DEADLINE
     args = [a for a in sys.argv[1:]]
     event = None
     provider = None
@@ -391,7 +411,12 @@ def main():
 
         if f"{name}.py" in HOOK_SKIP:
             sys.exit(0)
-        res = execute(name, input_data, event=event)
+        previous_deadline = _ACTIVE_TOTAL_DEADLINE
+        _ACTIVE_TOTAL_DEADLINE = time.monotonic() + HOOK_TOTAL_TIMEOUT
+        try:
+            res = execute(name, input_data, event=event)
+        finally:
+            _ACTIVE_TOTAL_DEADLINE = previous_deadline
         if res["decision"] == "block":
             sys.stderr.write(_sanitize(res["reason"]) + "\n")
             sys.exit(2)
@@ -419,14 +444,51 @@ def main():
         sys.exit(2 if has_hard_gate else 0)
 
     any_block = False
-    for name in run_event_hooks_order(event):
-        res = execute(name, input_data, event=event)
-        if res["decision"] == "block":
-            any_block = True
-            sys.stderr.write(_sanitize(res["reason"]) + "\n")
-        elif res["context_stdout"]:
-            sys.stdout.write(res["context_stdout"])
+    tool_name = str(input_data.get("tool_name") or "") or None  # dict here by construction
+    names = run_event_hooks_order(event, tool_name=tool_name)
+    previous_deadline = _ACTIVE_TOTAL_DEADLINE
+    _ACTIVE_TOTAL_DEADLINE = time.monotonic() + HOOK_TOTAL_TIMEOUT
+    try:
+        for index, name in enumerate(names):
+            if time.monotonic() >= _ACTIVE_TOTAL_DEADLINE:
+                remaining_names = names[index:]
+                hard_remains = any(
+                    REGISTRY.get(candidate, {}).get("classification") == "hard"
+                    for candidate in remaining_names
+                )
+                if hard_remains:
+                    any_block = True
+                    sys.stderr.write(
+                        "hook lifecycle total timeout exceeded (fail closed)\n"
+                    )
+                else:
+                    sys.stderr.write(
+                        "soft hook lifecycle total timeout exceeded (non-blocking)\n"
+                    )
+                break
+
+            res = execute(name, input_data, event=event)
+            if res["decision"] == "block":
+                any_block = True
+                sys.stderr.write(_sanitize(res["reason"]) + "\n")
+            elif res["context_stdout"]:
+                sys.stdout.write(res["context_stdout"])
+    finally:
+        _ACTIVE_TOTAL_DEADLINE = previous_deadline
     sys.exit(2 if any_block else 0)
+
+
+def main():
+    """Public CLI boundary: normalize every unexpected failure to safe rc=2."""
+    try:
+        return _main_impl()
+    except SystemExit:
+        raise
+    except Exception:
+        # Never include the exception object here. Provider/runtime exceptions
+        # may embed secrets or machine-private paths in their message.
+        sys.stderr.write("hook runner internal failure (fail closed)\n")
+        sys.exit(2)
 
 
 if __name__ == "__main__":
