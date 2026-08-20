@@ -93,7 +93,9 @@ def test_codex_hook_setup_script_uses_relative_commands():
     text = script.read_text(encoding="utf-8")
 
     assert ".codex/hooks.json" in text
-    assert "scripts/hooks_runner.py" in text
+    # Phase 6 single source of truth (P6-RR07): the wrapper delegates to the
+    # generator (relative path, no embedded hook list anymore).
+    assert "scripts/setup-codex-config.py" in text
     assert "/Users/" not in text
     assert "A:\\\\" not in text
 
@@ -207,7 +209,8 @@ def test_setup_scripts_and_delegate_use_shared_drive_key_loader():
     delegate = (REPO_ROOT / "scripts" / "swarm" / "delegate.sh").read_text(encoding="utf-8")
 
     assert "bash scripts/hooks/load-drive-keys.sh" in setup_py
-    assert "bash scripts/hooks/load-drive-keys.sh" in setup_sh
+    # setup_sh delegates wholesale to setup-codex-config.py (P6-RR07) — the
+    # loader wiring is owned by the generator, asserted above via setup_py.
     assert "session-start-load-drive-keys.sh" not in setup_py
     assert "session-start-load-drive-keys.sh" not in setup_sh
     assert 'LOAD_DRIVE_KEYS_SH="$REPO_ROOT/scripts/hooks/load-drive-keys.sh"' in delegate

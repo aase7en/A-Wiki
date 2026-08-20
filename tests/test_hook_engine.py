@@ -59,7 +59,7 @@ def run_runner(args, payload, env_extra=None, cwd=None, isolate=None):
               "AWIKI_FOCUS_DIR", "AWIKI_COST_GATE_TMP_DIR",
               "AWIKI_FLOW_STATE_DIR", "AWIKI_GIT_GUARD_REPO_ROOT",
               "AWIKI_LIVE_LOG_PATH", "AWIKI_LIVE_SESSION_FILE",
-              "AWIKI_MEMORY_LEDGER_PATH", "CLINE_HOOK_LOG_FILE",
+              "AWIKI_MEMORY_LEDGER_PATH", "CLINE_HOOK_LOG_FILE", "CI",
               "WIKI_UNLOCK", "AUTH_BY_DRIVE_MOUNT",
               # session ids would redirect stateful hooks at THIS live
               # session's state files — tests must control their own
@@ -1228,7 +1228,7 @@ def _isolated_provider_env(tmp_path: Path) -> dict[str, str]:
         "AWIKI_COST_GATE_TMP_DIR", "AWIKI_LIVE_LOG_PATH",
         "AWIKI_LIVE_SESSION_FILE", "CLINE_HOOK_LOG_FILE", "AWIKI_PYTHON",
         "ZCODE_SESSION_ID", "CLAUDE_SESSION_ID", "CODEX_SESSION_ID",
-        "GEMINI_SESSION_ID", "WIKI_UNLOCK", "AUTH_BY_DRIVE_MOUNT",
+        "GEMINI_SESSION_ID", "WIKI_UNLOCK", "CI", "AUTH_BY_DRIVE_MOUNT",
     ):
         env.pop(key, None)
 

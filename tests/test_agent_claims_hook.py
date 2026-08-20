@@ -119,4 +119,14 @@ class TestConsistency:
         for cfg_path in (".claude/settings.json", ".codex/hooks.json"):
             cfg = json.loads((REPO_ROOT / cfg_path).read_text(encoding="utf-8"))
             blob = json.dumps(cfg)
-            assert "check-agent-claim" in blob or "check_agent_claim" in blob, cfg_path
+            if "check-agent-claim" not in blob and "check_agent_claim" not in blob:
+                # Phase 6 sweep form: registry-driven dispatch — the hook runs
+                # if the config has a PreToolUse event sweep AND the registry
+                # declares it for the Edit-family matcher.
+                import sys as _sys
+                _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+                import registry as _reg
+                entry = _reg.HOOK_REGISTRY.get("check_agent_claim")
+                sweep = "--event PreToolUse" in blob
+                assert sweep and entry and "Edit|Write|MultiEdit" in entry["matchers"], (
+                    f"check_agent_claim neither named nor sweep-dispatched in {cfg_path}")
