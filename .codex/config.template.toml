@@ -1,0 +1,135 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+# A-Wiki — Codex Project Config (Public-Safe Template)
+#
+# Posture: Guarded Full-Auto — hooks act as guardrails instead of approval prompts.
+#   approval_policy = "never"          → no per-action interrupts; hooks block bad actions
+#   sandbox_mode    = "danger-full-access" → full workspace write; required for wiki edits + scripts
+#
+# Secrets policy: NEVER in this file.
+#   Keys live in drive/.secrets and are loaded via scripts/import-keys.py at session start.
+#   See CLAUDE.md §Secrets Policy and scripts/lib/drive_secrets.py.
+#
+# Regenerate this file on a new machine:
+#   python3 scripts/setup-codex-config.py
+#
+# Official docs:
+#   https://developers.openai.com/codex/config-reference
+#   https://developers.openai.com/codex/multi-agent
+
+# ── Model ────────────────────────────────────────────────────────────────────
+# Top-model for planning + advisor role (highest reasoning on this platform).
+# Executors are dispatched via scripts/swarm/delegate.sh → free/cheap models.
+# Update model name after `codex doctor` detects drift.
+model          = "o3"
+model_provider = "openai"
+
+# Reasoning effort for planner/advisor role — high for planning, medium for execution
+# Override at the CLI with: codex --reasoning-effort medium <task>
+reasoning_effort = "high"
+
+# ── Posture ───────────────────────────────────────────────────────────────────
+# Guarded full-auto: hooks enforce all guardrails; no manual approval needed.
+approval_policy = "never"
+sandbox_mode    = "danger-full-access"
+web_search      = "live"
+
+# ── Session instructions ──────────────────────────────────────────────────────
+# persistent_instructions are appended to every prompt.
+# Key rules: cost-first, free-first, hooks protect raw/ and CLAUDE.md.
+persistent_instructions = """
+Follow AGENTS.md at the project root — it is the single source of truth for A-Wiki rules.
+
+COST-FIRST (enforced by check_cost_tier hook):
+  Before ANY Edit/Write/Agent call: create .tmp/cost-tier-YYYY-MM-DD.txt with level L1..L4.
+  L1 = local FTS5/grep (free) | L2 = cheap model | L3 = low-scout | L4 = this primary model.
+  Start at the lowest tier that can do the job. Escalate only when lower tiers fail.
+
+FREE-FIRST DELEGATION:
+  For search/lookup/summarize/reason/scan tasks → use scripts/swarm/delegate.sh, NOT this model.
+  Delegate reads OPENROUTER_API_KEY / GEMINI_API_KEY / GROQ_API_KEY from env (loaded by session-start).
+  Only use this primary model for planning, validation, and tasks that require full context.
+
+AG2 GOAL ORCHESTRATION:
+  For multi-step goals with a declared objective → scripts/swarm/goal.sh "<goal>" --dry-run first.
+  AG2 Planner (this model) chunks the goal → Executors (free models via delegate.sh) do the work.
+  Primary validates all executor outputs before committing.
+
+A-WIKI GUARDRAILS (enforced by hooks — blocking):
+  raw/ is immutable. CLAUDE.md/AGENTS.md require explicit permission to edit.
+  Secrets never in code — use drive/.secrets via scripts/lib/drive_secrets.py.
+  Every wiki/sources/ entry needs original_file: frontmatter pointing to raw/.
+"""
+
+# ── Multi-agent ───────────────────────────────────────────────────────────────
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 8    # Parallel executor slots (free models are cheap to parallelize)
+max_depth   = 2    # Planner → Executor → (validation) depth
+
+[agents.planner]
+description  = "High-reasoning planner: decomposes goals, validates executor outputs."
+model        = "o3"
+reasoning_effort = "high"
+
+[agents.executor]
+description  = "Low-cost executor: runs delegated subtasks via delegate.sh / free models."
+model        = "gpt-4.1-mini"
+reasoning_effort = "low"
+
+[agents.skeptical_reviewer]
+description  = "Independent reviewer: checks planner outputs for correctness before write."
+config_file  = "agents/skeptical-reviewer.toml"
+
+# ── MCP Servers ───────────────────────────────────────────────────────────────
+# awiki: local knowledge graph + wiki search (free, offline)
+[mcp_servers.awiki]
+command = "python3"
+args    = ["scripts/mcp-wiki-server.py"]
+startup_timeout_sec = 15
+
+# gitnexus: code call graph — impact analysis + symbol search
+[mcp_servers.gitnexus]
+command = "npx"
+args    = ["gitnexus", "mcp", "--repo", "."]
+startup_timeout_sec = 20
+
+# github: PR/issue operations
+[mcp_servers.github]
+command = "npx"
+args    = ["-y", "@modelcontextprotocol/server-github"]
+startup_timeout_sec = 30
+
+# sequential-thinking: structured reasoning chains for planner
+[mcp_servers.sequential_thinking]
+command = "npx"
+args    = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+startup_timeout_sec = 20
+
+# memory: cross-session key-value store (mirrors .claude/projects/.../memory/)
+[mcp_servers.memory]
+command = "npx"
+args    = ["-y", "@modelcontextprotocol/server-memory"]
+startup_timeout_sec = 20
+
+# ── Profiles — switch with: codex -p <name> ──────────────────────────────────
+[profiles.strict]
+# Use when working in shared / production context; prompts before every action.
+approval_policy  = "on-request"
+sandbox_mode     = "workspace-write"
+web_search       = "cached"
+reasoning_effort = "medium"
+
+[profiles.plan]
+# Planning / design sessions — full web, approvals on, no writes without confirm.
+approval_policy  = "on-request"
+sandbox_mode     = "workspace-write"
+web_search       = "live"
+reasoning_effort = "high"
+
+[profiles.yolo]
+# Local experimentation only — no approvals, full access.
+approval_policy = "never"
+sandbox_mode    = "danger-full-access"
+web_search      = "live"

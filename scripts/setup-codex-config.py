@@ -225,11 +225,20 @@ def main(argv: list[str] | None = None) -> None:
     # Write mode
     print("🔧 Setting up Codex config for A-Wiki...")
 
-    # 1. config.toml — already tracked in repo; verify it exists
-    if CONFIG_TEMPLATE.exists():
-        print(f"  ✅ .codex/config.toml exists (template tracked in repo)")
+    # 1. config.toml — machine-local (untracked 2026-08-21: may carry live
+    # keys). The tracked secret-free config.template.toml seeds it on
+    # fresh clones/CI; existing local copies are never overwritten.
+    if not CONFIG_TEMPLATE.exists():
+        seed = CODEX_DIR / "config.template.toml"
+        if seed.is_file():
+            CODEX_DIR.mkdir(exist_ok=True)
+            CONFIG_TEMPLATE.write_text(seed.read_text(encoding="utf-8"),
+                                       encoding="utf-8")
+            print("  ✅ .codex/config.toml seeded from tracked template")
+        else:
+            print(f"  ⚠️  .codex/config.toml AND template missing")
     else:
-        print(f"  ⚠️  .codex/config.toml missing — expected tracked template in repo")
+        print(f"  ✅ .codex/config.toml exists (machine-local)")
 
     # 2. hooks.json — always regenerate (never downgrade guardrails)
     if HOOKS_JSON_PATH.exists():
