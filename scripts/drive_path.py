@@ -85,7 +85,7 @@ def get_waste_reports_dir(year_month: str | None = None) -> Path:
 
 
 def get_hospital_uthai_dir(subdir: str | None = None) -> Path:
-    """Return drive/hospital-uthai/[subdir]/ — canonical path สำหรับไฟล์ รพ.อุทัย.
+    """Return drive/hospital-uthai/[subdir]/ — canonical path สำหรับไฟล์ <HOSPITAL>.
 
     Subdirs: waste-ocr, waste-reports, waste-form-learning-images,
              env-evaluations, hosxp, pharmacy, ocr-feedback
@@ -176,7 +176,7 @@ def get_pharmacy_dir(create: bool = True) -> Path:
     """Return drive/personal-business/pharmacy/ — real pharmacy business data.
 
     Restructure 2026-08-06: ย้ายจาก drive/pharmacy/ → drive/personal-business/pharmacy/
-    เพราะเป็นธุรกิจส่วนตัว ไม่ใช่งาน รพ.อุทัย
+    เพราะเป็นธุรกิจส่วนตัว ไม่ใช่งาน <HOSPITAL>
     Backward-compat: ถ้า drive/pharmacy/ ยังมีอยู่ (เครื่องเก่า) จะใช้ path เดิม
 
     Unlike get_waste_reports_dir()/get_ocr_feedback_dir(), this does NOT fall
