@@ -1,0 +1,4 @@
+This product includes design concepts inspired by Serena
+(https://github.com/oraios/serena), distributed under the MIT License.
+No Serena source code is included; attribution is given for the
+layered-config / contexts / modes architecture that informed this design.
