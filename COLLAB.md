@@ -19,8 +19,12 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
-| Phase 6 hook-engine (P6-RR01..09 remediated, awaiting re-review) | GLM/ZCode | 2026-08-20 | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/agent-preflight.py`, `.gemini/settings.json`, `.github/workflows/ci-core.yml`, `tests/test_hook*.py` | `refactor/awiki-hook-engine` · draft PR #17 |
-| ⚠️ `phase6-hook-engine-consolidation` branch บน origin — **ทับซ้อนกับ Phase 6 claim ด้านบน** เจ้าของไม่ระบุตัว — ใครสร้างโปรดมาระบุตัว/ปลด branch นี้ | unknown | ? | — | `phase6-hook-engine-consolidation` |
+| Phase 6 hook-engine (RR01..09 remediated + CI-truthful follow-ups; **CI เขียวครบ Core+py38-smoke**; รอ independent re-review — prompt พร้อมส่งอยู่ที่ `docs/migration/reviews/phase6-rereview-request-prompt.md`) | GLM/ZCode | 2026-08-20 | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/agent-preflight.py`, `.gemini/settings.json`, `.github/workflows/ci-core.yml`, `tests/test_hook*.py` | `refactor/awiki-hook-engine` · draft PR #17 · HEAD `051144e7` |
+| Agent Continuity Gate (COLLAB + entry protocol + gated stop-auto-commit + Conductor notes) — **CI เขียว** | GLM/ZCode | 2026-08-20 | `COLLAB.md`, `docs/protocols/**`, `docs/architecture/conductor-serena-fork-notes.md`, `.claude/hooks/stop-auto-commit.sh`, `AGENTS.md` | `governance/agent-continuity-gate` · draft PR #18 |
+| Scanner strict pattern-source (ปิด root cause phantom findings) — **CI เขียว** · merge หลัง PR #17 | GLM/ZCode | 2026-08-20 | `scripts/hooks/_scan_staged_diff.py`, `scripts/security/scan_repo.py` | `fix/scanner-ci-pattern-source` · draft PR #19 |
+| ⚠️ `phase6-hook-engine-consolidation` branch บน origin — **ทับซ้อนกับ Phase 6 claim** เจ้าของไม่ระบุตัว — ใครสร้างโปรดมาระบุตัว/ปลด branch นี้ | unknown | ? | — | `phase6-hook-engine-consolidation` |
+
+**Night-shift log 2026-08-20:** main ถูกซ่อม (revert `59ebdede` ของ auto-commit เสีย `c343542c` — เจ้าของ commit มาจาก MacBook ของเจ้าของ repo เอง) · ทุก PR ผ่าน CI · stop-auto-commit ติด gate 2 ชั้นแล้ว (noise ล้วนไม่ push + scan ไม่ผ่านไม่ push) — เหตุการณ์แบบนี้ไม่ควรเกิดซ้ำ
 
 > ก่อนสร้าง branch/เริ่มงานใหม่: อ่านตารางนี้ + `git branch -a` ก่อนเสมอ — ชื่องานใกล้เคียง = ห้ามเริ่ม ให้ claim ต่อจากของเดิม (Rule 7)
 
