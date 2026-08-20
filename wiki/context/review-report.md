@@ -1,11 +1,11 @@
-# Review Report — 2026-08-09
+# Review Report — 2026-08-20
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 843
-- ⚠ Warnings: 306
+- ✓ Passed: 844
+- ⚠ Warnings: 308
 - ❌ Failures: 76
 
 ## Top Actionable Issues
@@ -30,7 +30,7 @@
 - ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- … 362 more issue(s) below
+- … 364 more issue(s) below
 
 ---
 
@@ -154,6 +154,7 @@
 - wiki\concepts\iot\publish-subscribe.md: missing frontmatter key: title
 - wiki\concepts\iot\tinyml.md: missing frontmatter key: title
 - wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing frontmatter key: title
+- wiki\concepts\meta\coordination-artifacts.md: missing frontmatter key: title
 - wiki\concepts\pharmacy\drug-aliases.md: missing frontmatter key: title
 - wiki\concepts\pharmacy\drug-classification.md: missing frontmatter key: title
 - wiki\concepts\pharmacy\drug-validation.md: missing frontmatter key: title
@@ -334,6 +335,7 @@
 - wiki\concepts\iot\publish-subscribe.md: missing TL;DR line
 - wiki\concepts\iot\tinyml.md: missing TL;DR line
 - wiki\concepts\it-support\brother-hl-l3270cdw-wsd-error.md: missing TL;DR line
+- wiki\concepts\meta\coordination-artifacts.md: missing TL;DR line
 - wiki\concepts\pharmacy\drug-aliases.md: missing TL;DR line
 - wiki\concepts\pharmacy\drug-classification.md: missing TL;DR line
 - wiki\concepts\pharmacy\drug-validation.md: missing TL;DR line
@@ -431,10 +433,10 @@
 
 ---
 
-## ✓ Passed Checks (843 total)
+## ✓ Passed Checks (844 total)
 
 - **L2**: 345 passed
-- **L3**: 495 passed
+- **L3**: 496 passed
 - **L6**: 3 passed
 
 ---
