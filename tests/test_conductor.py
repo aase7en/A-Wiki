@@ -199,3 +199,126 @@ class TestColabParsingRegression:
         claims = parse_claims(tmp_path / "COLLAB.md")
         chunks = [c["chunk"] for c in claims]
         assert chunks == ["real-task"], f"lanes leaked into claims: {chunks}"
+
+
+# ══════════════════════════════════════════════════════════════════════
+# v0.2 — Brain Bridge: verify / recall / claim
+# ══════════════════════════════════════════════════════════════════════
+class TestVerify:
+    def test_verify_runs_repo_gates_bounded_and_structured(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from conductor.bridge import run_verify
+        out = run_verify(repo_root=REPO_ROOT, gates=["registry"], timeout=120)
+        assert out["schema"] == "awiki-conductor/v1"
+        g = {r["gate"]: r for r in out["results"]}
+        assert g["registry"]["passed"] is True
+        assert g["registry"]["duration_s"] >= 0
+
+    def test_verify_unknown_gate_fails_closed(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from conductor.bridge import run_verify, VerifyError
+        with pytest.raises(VerifyError):
+            run_verify(repo_root=REPO_ROOT, gates=["not-a-gate"], timeout=10)
+
+    def test_verify_bounded_timeout_reports_failure(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from conductor.bridge import run_verify
+        out = run_verify(repo_root=REPO_ROOT, gates=["registry"], timeout=0)
+        assert out["results"][0]["passed"] is False
+        assert "timeout" in out["results"][0]["detail"].lower()
+
+
+class TestRecall:
+    def test_recall_reads_ledger_read_only(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        led = tmp_path / "ledger.jsonl"
+        import time as _t
+        rows = [
+            {"ts": _t.time() - 5, "session_id": "s1", "type": "lesson",
+             "summary": "hook engine registry owns matchers", "files": [], "tags": [],
+             "parent_ts": None},
+            {"ts": _t.time(), "session_id": "s2", "type": "decision",
+             "summary": "scanner strict mode fail-closed", "files": [], "tags": [],
+             "parent_ts": None},
+        ]
+        led.write_text("\n".join(json.dumps(r) for r in rows), encoding="utf-8")
+        from conductor.bridge import recall
+        hits = recall("registry", ledger=led, limit=5)
+        assert any("matchers" in h["summary"] for h in hits)
+        # read-only: file unchanged
+        assert len(led.read_text(encoding="utf-8").splitlines()) == 2
+
+    def test_recall_never_emits_secrets(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        led = tmp_path / "ledger.jsonl"
+        token = "sk-" + "RecallProbe" + "0123456789abcdef"
+        led.write_text(json.dumps({
+            "ts": 1.0, "session_id": "s", "type": "lesson",
+            "summary": f"leaked {token} once", "files": [], "tags": [],
+            "parent_ts": None}), encoding="utf-8")
+        from conductor.bridge import recall
+        hits = recall("leaked", ledger=led)
+        blob = json.dumps(hits)
+        assert token not in blob and "***" in blob
+
+
+class TestClaim:
+    def _collab(self, tmp_path, rows=""):
+        p = tmp_path / "COLLAB.md"
+        p.write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n" + rows, encoding="utf-8")
+        return p
+
+    def test_claim_appends_row_after_go(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        p = self._collab(tmp_path)
+        from conductor.bridge import add_claim
+        out = add_claim(repo_root=tmp_path, topic="fresh-thing",
+                        agent="zcode", scope="scripts/x.py", branch="feat/x")
+        assert out["claimed"] is True
+        text = p.read_text(encoding="utf-8")
+        assert "fresh-thing" in text and "zcode" in text and "feat/x" in text
+
+    def test_claim_refuses_on_conflict(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path, "| taken-topic | claude | 2026-08-21 | a/** | feat/a |\n")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict):
+            add_claim(repo_root=tmp_path, topic="taken-topic", agent="zcode")
+
+    def test_claim_idempotent_same_agent(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path)
+        from conductor.bridge import add_claim
+        add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
+        out = add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
+        assert out["claimed"] is True and out.get("already") is True
+        text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+        assert text.count("| t1 |") == 1
+
+    def test_claim_refuses_when_collab_missing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict):
+            add_claim(repo_root=tmp_path, topic="x", agent="z")
+
+
+class TestBridgeCli:
+    def _run(self, *args):
+        import subprocess
+        return subprocess.run(
+            [sys.executable, "-m", "conductor", *args],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT), timeout=180)
+
+    def test_verify_cli(self):
+        r = self._run("verify", "--gates", "registry", "--json")
+        assert r.returncode == 0, r.stderr[:300]
+        out = json.loads(r.stdout)
+        assert out["results"][0]["gate"] == "registry"
+
+    def test_recall_cli(self):
+        r = self._run("recall", "--query", "phase", "--json")
+        assert r.returncode == 0, r.stderr[:300]
+        assert "hits" in json.loads(r.stdout)

@@ -30,6 +30,23 @@ def main(argv: list[str] | None = None) -> int:
     p_gate.add_argument("--agent", default="unknown")
     p_gate.add_argument("--json", action="store_true")
 
+    p_verify = sub.add_parser("verify", help="run repo gates bounded → JSON")
+    p_verify.add_argument("--gates", default="registry",
+                          help="comma list: registry,scan,health")
+    p_verify.add_argument("--json", action="store_true")
+
+    p_recall = sub.add_parser("recall", help="search L1 memory ledger (read-only)")
+    p_recall.add_argument("--query", required=True)
+    p_recall.add_argument("--limit", type=int, default=10)
+    p_recall.add_argument("--json", action="store_true")
+
+    p_claim = sub.add_parser("claim", help="append a COLLAB claim row (gate-guarded)")
+    p_claim.add_argument("--topic", required=True)
+    p_claim.add_argument("--agent", required=True)
+    p_claim.add_argument("--scope", default="<scope>")
+    p_claim.add_argument("--branch", default="<branch>")
+    p_claim.add_argument("--json", action="store_true")
+
     p_plan = sub.add_parser("plan", help="objective → work orders")
     p_plan.add_argument("objective")
     p_plan.add_argument("--write", action="store_true",
@@ -48,6 +65,29 @@ def main(argv: list[str] | None = None) -> int:
         v = entry_gate(REPO_ROOT, topic=args.topic, agent=args.agent)
         _emit(v, args.json)
         return 0 if v["verdict"] == "GO" else 1
+
+    if args.cmd == "verify":
+        from .bridge import run_verify
+        out = run_verify(REPO_ROOT, gates=[g.strip() for g in args.gates.split(",") if g.strip()])
+        _emit(out, args.json)
+        return 0 if out["all_passed"] else 1
+
+    if args.cmd == "recall":
+        from .bridge import recall
+        _emit({"schema": "awiki-conductor/v1",
+               "hits": recall(args.query, limit=args.limit)}, args.json)
+        return 0
+
+    if args.cmd == "claim":
+        from .bridge import add_claim, ClaimConflict
+        try:
+            out = add_claim(REPO_ROOT, topic=args.topic, agent=args.agent,
+                            scope=args.scope, branch=args.branch)
+        except ClaimConflict as e:
+            _emit({"claimed": False, "reason": str(e)}, args.json)
+            return 1
+        _emit(out, args.json)
+        return 0
 
     if args.cmd == "plan":
         from .plan import plan_objective
