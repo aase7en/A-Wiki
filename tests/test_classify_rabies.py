@@ -17,6 +17,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts" / "hospital"))
 
 import unittest
+
+import pytest
+
+# Optional-dep self-skip (core CI has no pandas — the domain stack lives in
+# domain-tests.yml). Same pattern as the other optional-dep suites.
+pytest.importorskip("pandas", reason="classify_rabies requires pandas (domain stack)")
+
 from classify_rabies import (
     Case, classify, age_route,
     VAC_IM, VAC_ID, VAC_ERIG, VAC_HRIG,
