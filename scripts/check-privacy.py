@@ -112,6 +112,7 @@ EMAIL_WHITELIST_DOMAINS = {
     "a-wiki.local", "test.local", "umbrel.local",
     "noreply.github.com", "users.noreply.github.com",
     "anthropic.com",  # Co-Authored-By in commit trailers is OK if surfaced
+    "quickchart.io",  # public vendor support address quoted in source notes
     "github.com",     # git@github.com SSH URL prefix is not a real email
     "gitlab.com",
     "codeberg.org",

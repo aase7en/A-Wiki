@@ -148,7 +148,9 @@ def main() -> int:
 
     yaml_path = Path(__file__).resolve().parent / "regression_HNs.yaml"
     # Also check for drive-side raw-HN copy (prefers drive if present)
-    drive_yaml = Path("drive/hospital-uthai/RabiesVacc/regression_HNs.yaml")
+    import os
+    _hdir = os.environ.get("AWIKI_HOSPITAL_DIR", "hospital-main")
+    drive_yaml = Path(f"drive/{_hdir}/RabiesVacc/regression_HNs.yaml")
     if drive_yaml.exists():
         yaml_path = drive_yaml
         print(f"Using drive-side raw-HN copy: {yaml_path}", file=sys.stderr)

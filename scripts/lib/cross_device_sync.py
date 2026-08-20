@@ -76,7 +76,7 @@ def _load_privacy_patterns() -> list[re.Pattern]:
 
     A-Council test-engineer 2026-08-03 (cb839d5d regression): _scan_for_secret
     only matched credential SHAPES (sk-/AKIA/...). It had no concept of
-    private project names, so `sunday-estate-webapp` sailed through Layer 2
+    private project names, so `<ESTATE>-webapp` sailed through Layer 2
     AND Layer 3 (staged-diff), even though check-privacy.py (Layer 3.5 / CI)
     caught it. This closes the gap by reading the SAME source of truth
     check-privacy.py uses (drive/personal/privacy-patterns.txt, overridable
@@ -272,7 +272,7 @@ def _entry_has_secret(entry: Any) -> bool:
     individual entries rather than blocking the whole shard.
 
     Audit finding 2026-08-04: the previous catch-all block made sync unusable
-    on real ledgers (project names like 'sunday-estate' blocked the entire
+    on real ledgers (project names like '<ESTATE>' blocked the entire
     shard → nothing synced). Per-entry skip achieves the same goal (offending
     entries never appear in any shard → never leak) while letting clean
     entries through.

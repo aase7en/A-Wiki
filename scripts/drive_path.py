@@ -84,13 +84,21 @@ def get_waste_reports_dir(year_month: str | None = None) -> Path:
     return base
 
 
-def get_hospital_uthai_dir(subdir: str | None = None) -> Path:
+def _hospital_dir_name() -> str:
+    """Machine-private hospital folder name (Iron Law #6: the real name
+    never lives in the public repo). Set AWIKI_HOSPITAL_DIR on machines
+    that use a custom folder; the neutral default matches fresh setups."""
+    import os
+    return os.environ.get("AWIKI_HOSPITAL_DIR", "hospital-main")
+
+
+def get_hospital_dir(subdir: str | None = None) -> Path:
     """Return drive/hospital-uthai/[subdir]/ — canonical path สำหรับไฟล์ <HOSPITAL>.
 
     Subdirs: waste-ocr, waste-reports, waste-form-learning-images,
              env-evaluations, hosxp, pharmacy, ocr-feedback
     """
-    base = get_drive_root() / "hospital-uthai"
+    base = get_drive_root() / _hospital_dir_name()
     if subdir:
         base = base / subdir
     base.mkdir(parents=True, exist_ok=True)
@@ -212,7 +220,7 @@ def get_pharmacy_dir(create: bool = True) -> Path:
 def get_personal_business_dir(subdir: str | None = None) -> Path:
     """Return drive/personal-business/[subdir]/ — canonical สำหรับธุรกิจส่วนตัว.
 
-    Subdirs: pharmacy, sunday-estate
+    Subdirs: pharmacy, <ESTATE>
     """
     base = get_drive_root() / "personal-business"
     if subdir:
@@ -226,3 +234,6 @@ if __name__ == "__main__":
     print(f"Drive linked: {is_drive_linked()}")
     print(f"Waste reports: {get_waste_reports_dir()}")
     print(f"OCR feedback: {get_ocr_feedback_dir()}")
+
+# Backwards-compat alias — historical name kept callable
+get_hospital_uthai_dir = get_hospital_dir
