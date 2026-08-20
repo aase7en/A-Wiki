@@ -1,6 +1,6 @@
-# A-Wiki Conductor (v0.1.0)
+# A-Wiki Brain Bridge (conductor/, v0.2.0)
 
-Orchestration head ที่นั่งบนสมอง A-Wiki — บอกว่า *ใครทำอะไรอยู่ / เริ่มงานใหม่ได้เลยไหม / แตกงานอย่างไร* โดยไม่เพิ่ม background service ใดๆ (อ่านอย่างเดียว + deterministic)
+**Thin brain-side API** ที่ให้ A-Wiki-Conductor (control plane) และ agent ใดๆ เรียกใช้สมอง A-Wiki — read-mostly + จอง claim แบบ gate-guarded · ดู division of labor: `docs/architecture/brain-vs-conductor-division.md` — บอกว่า *ใครทำอะไรอยู่ / เริ่มงานใหม่ได้เลยไหม / แตกงานอย่างไร* โดยไม่เพิ่ม background service ใดๆ (อ่านอย่างเดียว + deterministic)
 
 > ออกแบบโดยได้แรงบันดาลใจจาก Serena (MIT) — ดู `NOTICE` และ `decisions/adr-conductor-fork-mit.md`
 
@@ -16,6 +16,11 @@ python -m conductor gate --topic "fresh-idea" --agent zcode --json
 # แตก objective เป็น work orders (deterministic — ไม่เดา)
 python -m conductor plan "spike: config layering, entry gate, CLI" --json
 python -m conductor plan "spike: a, b, c" --write   # เขียน WO ไฟล์จริง
+
+# v0.2 — brain bridge สำหรับ control plane
+python -m conductor verify --gates registry,scan,health --json  # รัน gates แบบ bounded
+python -m conductor recall --query "phase 6" --json             # ค้น L1 memory (redacted)
+python -m conductor claim --topic x --agent zcode --branch feat/x  # จอง claim (gate-guarded, idempotent)
 ```
 
 ## กลไก
@@ -28,13 +33,13 @@ python -m conductor plan "spike: a, b, c" --write   # เขียน WO ไฟ�
 | `plan.py` | `objective → work orders` ด้วยกฎแตกคงที่ (หลัง `:` แยกด้วย `,`/`and`) · เลือก lane จาก path · verify ผูกกับ gates จริงของ repo · `--write` ออกไฟล์ WO มาตรฐาม |
 | `cli.py` | `status` / `gate` / `plan` — exit code พาเส้นทาง CI (`gate` NO-GO = exit 1) |
 
-## ขอบเขต v0.1.0 (ตั้งใจ)
+## ขอบเขต v0.2 (ตั้งใจ)
 
-- ✅ อ่าน state รวม + gate + plan deterministic + CLI
-- ⛔ ยังไม่มี: การกระจายงานจริงให้ agents, scheduler, daemon, model routing (เป็นเป้าของรอบถัดไปตาม roadmap)
+- ✅ v0.1: status/gate/plan · v0.2: verify (bounded gates) + recall (L1 redacted) + claim (gate-guarded idempotent)
+- ⛔ dispatch/process/UI/model routing = ของ A-Wiki-Conductor (control plane) — bridge ไม่ทำซ้ำ (ตาม division doc)
 
 ## การพัฒนา
 
 ```bash
-python -m pytest tests/test_conductor.py -q   # 18 contract tests (TDD)
+python -m pytest tests/test_conductor.py -q   # 29 contract tests (TDD)
 ```
