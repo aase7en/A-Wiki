@@ -19,6 +19,9 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
+| ✅ **MERGED 2026-08-21 night-2: local rabies/domain stack (26 commits) integrated into vNext main** — canonical 3260/0 green, Core CI SUCCESS at `7b1b808e`; secrets prevented from entering git (.codex/config.toml untracked + tracked secret-free template); รพ. real name scrubbed → <HOSPITAL> | GLM/ZCode | 2026-08-21 | merge + repair | main `7b1b808e` |
+| 📌 FOLLOW-UPS (จดไว้ให้ user): (1) sunday-estate dir-name → placeholder design (P0 pre-exists on origin) (2) quickchart support email allowlist (3) git stash เก่า 2 ตัว (C3-7 / ci-sim) ตรวจแล้ว **ไม่มี secret** แต่เป็นงานค้างยุคเก่า ให้ตัดสิน merge หรือทิ้ง (4) identifier "uthai" ใน drive_path/get_hospital_uthai_dir — rename เป็น <HOSPITAL> theme รอบถัดไป | GLM/ZCode | 2026-08-21 | audit | — |
+
 | ✅ Phase 6 hook-engine — **MERGED (PR #17)** self-review PASS_WITH_NOTES 2026-08-21 | GLM/ZCode | done | — | merged |
 | ✅ Agent Continuity Gate — **MERGED (PR #18)** | GLM/ZCode | done | — | merged |
 | ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
