@@ -10,9 +10,9 @@
 > **โดเมน**: Source documents — summaries of raw/ content
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-> **Last updated**: 2026-08-18
+> **Last updated**: 2026-08-20
 =======
-> **Last updated**: 2026-08-18
+> **Last updated**: 2026-08-20
 =======
 > **Last updated**: 2026-08-20
 =======

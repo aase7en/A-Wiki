@@ -4,10 +4,10 @@ _Generated: 2026-08-20_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen
 
 ## Stats
 
-- **Nodes**: 551
+- **Nodes**: 550
 - **Edges**: 1839
 - **Broken links**: 40 (run `python3 scripts/query-graph.py --broken`)
-- **Orphans**: 30 (run `python3 scripts/query-graph.py --orphans`)
+- **Orphans**: 28 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 
