@@ -1,10 +1,9 @@
 # A-Wiki Agent Review Bus — Implementation Plan
 
-> Status: Architecture plan approved for the A-Wiki vNext migration.
+> Status: Architecture plan approved for the A-Wiki vNext migration; the Phase 3 protocol contract is durable and the first automated adapter remains Phase 8 scope.
 > Track: Parallel architecture track; implementation must not bypass the active phase gates.
-> Current executor: ZCode / GLM 5.3.
-> Current architecture reviewer: ChatGPT on demand through GitHub review handoffs.
-> Future reviewers: Codex / OpenAI API / other compatible agents through the same protocol.
+> Current migration state: Phase 6 is **CHANGES_REQUIRED**; Phases 7+ are **NOT_STARTED**.
+> Role contract: choose a claimed executor and an independent reviewer by capability, trust, availability, cost/latency envelope, and required evidence. Provider/model names are runtime candidates, not policy.
 
 ## 1. Purpose
 
@@ -27,7 +26,7 @@ GitHub PR / Review State
      |                     |
      v                     v
 Reviewer A             Reviewer B
-Codex                  ChatGPT/API/etc.
+hosted adapter         local/human adapter
 ```
 
 The protocol must continue to work when one provider is unavailable.
@@ -65,7 +64,7 @@ Benefits:
 
 ### Executor
 
-Current implementation role: `ZCode / GLM 5.3`
+Current implementation role: any claimed executor that satisfies the task's capability, trust, isolation, and verification contract. A cost-effective or local agent is preferred when it meets that contract.
 
 Responsibilities:
 
@@ -86,19 +85,15 @@ The executor must not self-approve architecture changes.
 
 ### Reviewer
 
-Current role while Codex quota is unavailable:
+Current role: an independent high-reasoning reviewer that did not implement the target change and can inspect the exact durable target and its evidence.
+
+Compatible reviewer surfaces:
 
 ```text
-ChatGPT architecture review through GitHub handoff
-```
-
-Future compatible reviewers:
-
-```text
-Codex GitHub reviewer
-OpenAI API reviewer
-local reviewer model
-other vendor reviewer
+hosted reviewer adapter
+local reviewer adapter
+human reviewer
+other contract-compatible reviewer
 ```
 
 Reviewer responsibilities:
@@ -196,8 +191,8 @@ Example:
   "schema": "awiki-review/v1",
   "phase": "1",
   "cycle": 2,
-  "executor": "zcode-glm-5.3",
-  "reviewer": "codex",
+  "executor": "claimed-executor-1",
+  "reviewer": "independent-reviewer-1",
   "status": "CHANGES_REQUIRED",
   "head_sha": "<commit>",
   "findings": [
@@ -303,37 +298,29 @@ The protocol must not depend on one GitHub bot identity.
 
 ---
 
-## 9. Current Mode While Codex Is Unavailable
+## 9. Current Durable Mode Before Automatic Reviewer
 
-Until an automatic reviewer is available, use:
+Until the Phase 8 adapter exists, use the same contract manually against durable GitHub state:
 
 ```text
-GLM executor
+claimed executor
    |
    v
-push branch
+implement, test, commit, push exact SHA
    |
    v
 structured review handoff
    |
    v
-ChatGPT reads GitHub directly
+independent reviewer reads repository state directly
    |
    v
-verdict
+durable verdict and stable finding IDs
 ```
 
-The user should only send a short trigger such as:
+The user should only provide a short trigger when GitHub already contains the target and evidence. Normal findings must not require the user to relay logs or prompts between agents.
 
-```text
-Review Phase 1 clean branch
-```
-
-The user should not copy full logs/diffs when GitHub already contains the data.
-
-This is an interim mode, not the final autonomous mode.
-
----
+A local uncommitted snapshot may be inspected to find defects, but it cannot receive PASS because there is no immutable review target. This is the current Phase 6 condition.
 
 ## 10. Future Automatic Reviewer Mode
 
@@ -440,57 +427,38 @@ before review starts.
 
 This plan is a **parallel track**, not permission to skip the existing A-Wiki vNext phases.
 
-Recommended sequencing:
+Current sequencing:
 
 ```text
-Phase 0  Baseline                 DONE
-Phase 1  Stabilize Automation     NEXT
-Phase 2  CI / Health
-Phase 3  Kernel Contract
-         + define review protocol as a kernel protocol
-Phase 4  Project Adapter
-Phase 5  Memory Layers
-Phase 6  Hook Engine
-Phase 7  Model Control Plane
-Phase 8  Eval / Promotion
-         + implement automatic review adapter foundations
-Phase 9  A-Loop v2
-         + connect review loop states to A-Loop
-Phase 10 External Modules
-Phase 11 Docs Slimming
+Phase 0–5  DONE / PASS + merged
+Phase 6    Hook Engine — CHANGES_REQUIRED (current)
+Phase 7    Model Control Plane — NOT_STARTED
+Phase 8    Eval / Promotion
+           + first automated review adapter foundations — NOT_STARTED
+Phase 9    A-Loop v2
+           + connect review loop states to A-Loop — NOT_STARTED
+Phase 10   External Modules — NOT_STARTED
+Phase 11   Docs Slimming — NOT_STARTED
 ```
 
-Do not stop Phase 1–2 to build a large orchestrator.
+Phases 12–16 are separately defined by `docs/migration/awiki-multi-agent-orchestrator-roadmap.md` and are all **NOT_STARTED**. Do not pull that implementation into Phase 6.
 
----
-
-## 15. Near-Term Work for GLM 5.3
+## 15. Near-Term Work
 
 ### Now
 
-Continue the original migration.
+Remediate only the durable Phase 6 findings P6-R01..P6-R07 after the local identity, claim, worktree, and dirty-state gates succeed. Preserve the current work order and do not overwrite uncommitted work.
 
-Phase 1 Priority #1 remains:
+### After remediation
 
-```text
-harden scripts/hooks/session_start.py::git_pull
-```
+Run the required Phase 6 gates, commit and push an attributable implementation SHA, then request independent review of that exact SHA. An approval of an older or uncommitted snapshot is invalid.
 
-Then continue Phase 1 according to the master plan.
+### Later phases
 
-### During Phase 1–2
-
-GLM should only add lightweight review handoff metadata when useful; do not create a new framework yet.
-
-### During Phase 3
-
-Add the formal protocol document/schema design to the Kernel Contract.
-
-### During Phase 8–9
-
-Implement the first automated review transport/adapter and loop.
-
----
+- Phase 7 owns the model/provider control plane and remains NOT_STARTED.
+- Phase 8 owns the first automated review transport/adapter foundations.
+- Phase 9 connects review-loop states to A-Loop.
+- Phases 12–16 own the wider Conductor/orchestrator service and operator surface.
 
 ## 16. Acceptance Criteria for Agent Review Bus v1
 
@@ -520,7 +488,7 @@ USER GOAL
 A-Wiki Router / Plan
    |
    v
-GLM Executor
+Executor
    |
    v
 Tests
@@ -534,7 +502,7 @@ Reviewer Agent
    +---- CHANGES_REQUIRED ----+
    |                           |
    v                           |
-GLM Fix <----------------------+
+Executor Fix <-----------------+
    |
    v
 Retest / Re-review
