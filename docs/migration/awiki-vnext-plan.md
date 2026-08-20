@@ -297,7 +297,7 @@ The former Phase 1 execution instruction is retained by the Phase 1 logs and rev
 - **GitHub main:** `51258fac665add6e65e6f4a239fda5d597670f0e`
 - **GitHub Phase 6 branch:** `refactor/awiki-hook-engine`
 - **GitHub Phase 6 HEAD:** `fcef705cdf8e0814927d498bdd467c8987fcc59e`
-- **Recovery documentation branch / HEAD:** `docs/awiki-continuity-recovery-20260820` / `3944efadf4ec1bdc2721c78a1ce44707f252c2b1` at draft PR #16 (docs only; targets the Phase 6 branch)
+- **Recovery documentation branch:** `docs/awiki-continuity-recovery-20260820` at draft PR #16 (docs only; targets the Phase 6 branch). Use the PR's current head as the immutable documentation target; do not copy a self-referential branch SHA into this file.
 - **Verified local project/worktree:** `A-Wiki-vnext-clean`; repository identity matches `aase7en/A-Wiki`
 - **Verified branch / HEAD / upstream:** `refactor/awiki-hook-engine` / `fcef705cdf8e0814927d498bdd467c8987fcc59e` / `origin/refactor/awiki-hook-engine` at the same SHA
 - **Verified merge-base / distance from origin/main:** `51258fac665add6e65e6f4a239fda5d597670f0e`; 0 behind / 1 ahead
