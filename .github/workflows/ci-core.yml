@@ -72,6 +72,9 @@ jobs:
         run: |
           bash scripts/setup-codex-hooks.sh
           python scripts/build-wiki-index.py
+          # P6-RR07: prove the tracked .codex/hooks.json exactly matches the
+          # single-source generator (check-before-write parity truth).
+          python scripts/setup-codex-config.py --check
 
       - name: Privacy and syntax checks
         run: |
@@ -156,3 +159,21 @@ jobs:
             done
             exit 1
           }
+
+  py38-smoke:
+    # P6-RR02/RR07: real Python 3.8 runtime evidence for the documented
+    # support contract. SEPARATE JOB on purpose: setup-python switches the
+    # job's interpreter for every later step, which made the security scan
+    # run under a dependency-less 3.8 and silently fall back to builtin
+    # patterns (baseline mismatch — incident 2026-08-20, PR #17 CI).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+      - name: Hook-engine imports + registry check + benign sweep
+        run: |
+          python -c "import sys; sys.path.insert(0, 'scripts/hooks'); sys.path.insert(0, 'scripts'); import hooks_runner, registry, providers; print('py38 hook-engine imports OK')"
+          python scripts/hooks/registry.py --check
+          echo '{}' | python scripts/hooks_runner.py --event PostCompact

@@ -39,37 +39,6 @@ EXPECTED_DRIVE_FOLDERS = [
     "individual-tasks",
 ]
 
-REQUIRED_HOOKS = [
-    "check_bash_destructive_git.py",
-    "check_bash_no_branch.py",
-    "check_drive_link.py",
-    "check_external_editor_drift.py",
-    "check_raw_immutable.py",
-    "check_secret_leak.py",
-    # Cost-first + output guardrails (added 2026-06-14)
-    "check_cost_tier.py",
-    "check_harness_routing.py",
-    "check_output_format.py",
-    "check_source_original_file.py",
-    "check_claudemd_lock.py",
-    # Skill registry gate (added 2026-07-01, architecture Chunk 3)
-    "check_skill_registry.py",
-]
-
-# Guardrail names that must appear in hooks config files (by name substring)
-REQUIRED_GUARDRAIL_NAMES = [
-    "check-cost-tier",
-    "check-harness-routing",
-    "check-claudemd-lock",
-    "check-raw-immutable",
-    "check-output-format",
-    "check-source-original-file",
-    "check-bash-destructive-git",
-    "check-bash-no-branch",
-    "check-secret-leak",
-    "check-skill-registry",
-]
-
 PREFLIGHT_DOCS = [
     "AGENTS.md",
     "CLAUDE.md",
@@ -180,20 +149,45 @@ def check_generated_index() -> CheckResult:
     return CheckResult("FAIL", "generated wiki context", detail[0] if detail else "stale")
 
 
-def check_hooks() -> CheckResult:
-    missing = []
-    for hook in REQUIRED_HOOKS:
-        if not (REPO_ROOT / "scripts" / "hooks" / hook).is_file():
-            missing.append(f"scripts/hooks/{hook}")
+def check_hooks(hooks_dir=None) -> CheckResult:
+    """P6-RR06: hook presence is validated against the REGISTRY authority
+    (scripts/hooks/registry.py), not a frozen filename list — every
+    registered executable must exist and the registry must validate."""
     if not (REPO_ROOT / "scripts" / "hooks_runner.py").is_file():
-        missing.append("scripts/hooks_runner.py")
+        return CheckResult("FAIL", "core hooks", "missing: scripts/hooks_runner.py")
+    import sys
+    hooks_root = Path(hooks_dir) if hooks_dir else REPO_ROOT / "scripts" / "hooks"
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+    import registry as hook_registry
+    # registry validation is STRUCTURAL by approved contract; executable
+    # presence is this check's own responsibility (P6-RR06)
+    errors = hook_registry.validate_registry(skip_executable_check=True)
+    if errors:
+        return CheckResult("FAIL", "core hooks",
+                           "registry invalid: " + "; ".join(errors[:5]))
+    missing = [n for n in hook_registry.HOOK_REGISTRY
+               if not (hooks_root / f"{n}.py").is_file()]
     if missing:
-        return CheckResult("FAIL", "core hooks", "missing: " + ", ".join(missing))
-    return CheckResult("OK", "core hooks", f"{len(REQUIRED_HOOKS)} required hook(s) present")
+        return CheckResult("FAIL", "core hooks",
+                           "registered executables missing: " + ", ".join(missing[:8]))
+    n = len(hook_registry.HOOK_REGISTRY)
+    hard = sum(1 for v in hook_registry.HOOK_REGISTRY.values()
+               if v["classification"] == "hard")
+    return CheckResult("OK", "core hooks",
+                       f"{n} registered hook(s) valid via registry authority ({hard} hard)")
 
 
 def check_guardrail_coverage() -> CheckResult:
-    """Assert that required guardrail names appear in hook config files (not just file presence)."""
+    """P6-RR06: coverage is derived from the REGISTRY's hard PreToolUse
+    gates, not a frozen name list. A config satisfies a gate either by a
+    named per-hook runner invocation or structurally via an event-sweep
+    command (the runner applies registry matchers internally)."""
+    import json as _json
+    import sys
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+    import registry as hook_registry
+    hard_gates = {n for n, e in hook_registry.HOOK_REGISTRY.items()
+                  if "PreToolUse" in e["events"] and e["classification"] == "hard"}
     missing_by_config: dict[str, list[str]] = {}
     for rel in HOOK_CONFIGS:
         path = REPO_ROOT / rel
@@ -201,15 +195,22 @@ def check_guardrail_coverage() -> CheckResult:
             continue
         try:
             raw = path.read_text(encoding="utf-8")
+            cfg = _json.loads(raw)
         except Exception:
             continue
-        missing = [g for g in REQUIRED_GUARDRAIL_NAMES if g not in raw]
+        commands = collect_hook_commands(cfg)
+        has_sweep = any("--event" in c and "hooks_runner.py" in c for c in commands)
+        if has_sweep:
+            continue  # sweep dispatch covers all registry gates by construction
+        dashed = {c.replace("-", "_") for c in commands}
+        missing = [g for g in sorted(hard_gates) if g not in dashed]
         if missing:
             missing_by_config[rel] = missing
     if missing_by_config:
         parts = [f"{cfg}: {m}" for cfg, m in missing_by_config.items()]
         return CheckResult("FAIL", "guardrail coverage", "; ".join(parts))
-    return CheckResult("OK", "guardrail coverage", f"{len(REQUIRED_GUARDRAIL_NAMES)} guardrail(s) wired in all configs")
+    return CheckResult("OK", "guardrail coverage",
+                       f"{len(hard_gates)} hard PreToolUse registry gate(s) wired in all configs")
 
 
 def collect_hook_commands(value) -> list[str]:

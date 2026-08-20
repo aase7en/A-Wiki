@@ -22,11 +22,15 @@ import uuid
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
+LOG_FILE = Path(os.environ.get(
+    "AWIKI_LIVE_LOG_PATH", str(REPO_ROOT / ".tmp" / "live-events.jsonl")
+))
 MAX_LINES = 1000
 
 # ── Session ID cache ──────────────────────────────────────────────
-_SESSION_ID_FILE = REPO_ROOT / ".tmp" / ".live-dashboard-session-id"
+_SESSION_ID_FILE = Path(os.environ.get(
+    "AWIKI_LIVE_SESSION_FILE", str(LOG_FILE.parent / ".live-dashboard-session-id")
+))
 _session_id_cache: str | None = None
 
 

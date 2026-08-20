@@ -1,15 +1,12 @@
 """Regression tests for the self_audit ship gate's visibility.
 
-self_audit.py landed as a Stop hook that always exits 0 and wrote to stderr,
-wired through hooks_runner.py. hooks_runner.run_hook uses
-subprocess.run(capture_output=True) and re-emits stderr ONLY when the child
-exits 2 — so every warning the ship gate ever produced was discarded. The gate
-existed, ran on every session, and had never once spoken to anyone.
+Phase 6 routes registered hooks through the canonical runner.  self_audit is a
+soft Stop advisor, so its user-facing stdout must remain visible through the
+registry's ``allow_context_stdout`` policy instead of bypassing the runner.
 
-These tests pin down the two properties that fix required:
-  1. it is wired DIRECTLY on Stop, not through the runner
-  2. it writes to stdout, which is the channel a direct-wired hook reaches the
-     user on
+These tests pin down both requirements:
+  1. Stop wiring uses the canonical runner in Claude and Codex;
+  2. registry policy explicitly allows self_audit contextual stdout.
 """
 from __future__ import annotations
 
@@ -27,27 +24,31 @@ SOURCE = HOOK.read_text(encoding="utf-8")
 
 
 class TestWiring:
-    @pytest.mark.parametrize("cfg_path", [".claude/settings.json", ".codex/hooks.json"])
-    def test_wired_direct_on_stop_not_through_the_runner(self, cfg_path):
+    @pytest.mark.parametrize(
+        "cfg_path,provider",
+        [(".claude/settings.json", "claude"), (".codex/hooks.json", "codex")],
+    )
+    def test_wired_on_stop_through_canonical_runner_with_context(self, cfg_path, provider):
         cfg = json.loads((REPO_ROOT / cfg_path).read_text(encoding="utf-8"))
         cmds = [
             h.get("command", "")
             for grp in cfg["hooks"].get("Stop", [])
             for h in grp.get("hooks", [])
         ]
-        mine = [c for c in cmds if "self_audit" in c or "self-audit" in c]
-        assert mine, f"{cfg_path}: self_audit not wired on Stop"
-        for c in mine:
-            assert "hooks_runner" not in c, (
-                f"{cfg_path}: self_audit routed through hooks_runner, which "
-                f"swallows the stdout of an exit-0 hook — its warnings would be "
-                f"invisible again"
-            )
+        expected = f"hooks_runner.py --provider {provider} --event Stop"
+        assert any(expected in c for c in cmds), (
+            f"{cfg_path}: Stop must dispatch through the canonical provider event sweep"
+        )
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+        import registry
+        entry = registry.HOOK_REGISTRY["self_audit"]
+        assert "Stop" in entry["events"]
+        assert entry["allow_context_stdout"] is True
 
 
 class TestOutputChannel:
     def test_user_facing_messages_go_to_stdout(self):
-        """A direct-wired Stop hook reaches the user on stdout."""
+        """Runner context forwarding preserves the hook's user-facing stdout."""
         _, _, main_body = SOURCE.partition("def main() -> int:")
         assert "sys.stderr.write(" not in main_body, (
             "main() still writes user-facing output to stderr"
@@ -63,19 +64,20 @@ class TestOutputChannel:
         assert 'os.environ.get("HOOK_SKIP") == "self_audit"' not in SOURCE
         assert '"self_audit" in os.environ.get("HOOK_SKIP"' in SOURCE
 
+    def test_runtime_state_has_explicit_isolation_seams(self):
+        """P6-R06: self-audit tests must not borrow live repo state."""
+        assert "AWIKI_BLACKBOARD_PATH" in SOURCE
+        assert "AWIKI_MEMORY_LEDGER_PATH" in SOURCE
+
 
 class TestBehaviour:
-    """End-to-end against a seeded blackboard, restoring the real one after."""
+    """End-to-end against a seeded blackboard under pytest tmp_path only."""
 
     @pytest.fixture
-    def seeded_blackboard(self, monkeypatch):
-        import shutil, time
-        bb = REPO_ROOT / ".tmp" / "blackboard.jsonl"
-        bak = REPO_ROOT / ".tmp" / "blackboard.jsonl.pytest-bak"
-        bb.parent.mkdir(exist_ok=True)
-        had = bb.exists()
-        if had:
-            shutil.copy2(bb, bak)
+    def seeded_blackboard(self, tmp_path):
+        import time
+        bb = tmp_path / "blackboard.jsonl"
+        led = tmp_path / "memory-ledger.jsonl"
         now = time.time()
         rows = [
             {"ts": now, "thread_id": "PYTEST", "frm": "claude", "to": "*",
@@ -87,19 +89,10 @@ class TestBehaviour:
              "finding": "pytest fixture finding", "body": "pytest fixture finding"},
         ]
         bb.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
-        yield bb
-        if had:
-            shutil.move(str(bak), str(bb))
-        else:
-            bb.unlink(missing_ok=True)
-        # drop the ledger rows this fixture caused
-        led = REPO_ROOT / ".tmp" / "memory-ledger.jsonl"
-        if led.exists():
-            keep = [
-                l for l in led.read_text(encoding="utf-8").splitlines()
-                if l.strip() and "pytest fixture finding" not in l
-            ]
-            led.write_text("\n".join(keep) + ("\n" if keep else ""), encoding="utf-8")
+        return {
+            "AWIKI_BLACKBOARD_PATH": str(bb),
+            "AWIKI_MEMORY_LEDGER_PATH": str(led),
+        }
 
     def _run(self, env_extra=None):
         env = dict(os.environ)
@@ -112,18 +105,18 @@ class TestBehaviour:
         )
 
     def test_critical_finding_reaches_stdout(self, seeded_blackboard):
-        r = self._run()
+        r = self._run(seeded_blackboard)
         assert r.returncode == 0, "the gate must never hard-kill a session"
         assert "BLOCK SHIP" in r.stdout
         assert "critical" in r.stdout
 
     def test_survives_a_cp874_console(self, seeded_blackboard):
-        r = self._run({"PYTHONIOENCODING": "cp874"})
+        r = self._run({**seeded_blackboard, "PYTHONIOENCODING": "cp874"})
         assert r.returncode == 0
         assert "[self-audit] error:" not in r.stdout, "emoji crash swallowed again"
         assert "BLOCK SHIP" in r.stdout
 
     def test_hook_skip_silences_it(self, seeded_blackboard):
-        r = self._run({"HOOK_SKIP": "self_audit,check_apikey"})
+        r = self._run({**seeded_blackboard, "HOOK_SKIP": "self_audit,check_apikey"})
         assert r.returncode == 0
         assert r.stdout.strip() == ""

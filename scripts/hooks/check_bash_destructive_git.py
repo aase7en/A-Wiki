@@ -89,8 +89,11 @@ def main():
     if not hits:
         sys.exit(0)
 
-    # Check if working tree is dirty
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    # Check if working tree is dirty. Tests may point this at an isolated repo;
+    # production defaults to the real A-Wiki root.
+    repo_root = os.environ.get("AWIKI_GIT_GUARD_REPO_ROOT") or os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../..")
+    )
     try:
         status_result = subprocess.run(["git", "status", "--porcelain"], cwd=repo_root, capture_output=True, text=True, encoding="utf-8", errors="replace", check=True)
         dirty = status_result.stdout.strip()

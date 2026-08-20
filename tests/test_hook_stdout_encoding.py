@@ -44,7 +44,17 @@ def _cost_gate_block_payload() -> dict:
 
 
 def _cp874_env(tmp_path) -> dict:
-    env = {**os.environ, "PYTHONIOENCODING": "cp874", "AWIKI_COST_GATE_TMP_DIR": str(tmp_path)}
+    env = {
+        **os.environ,
+        "PYTHONIOENCODING": "cp874",
+        "AWIKI_COST_GATE_TMP_DIR": str(tmp_path / "cost-gate"),
+        "AWIKI_LIVE_LOG_PATH": str(tmp_path / "live-events.jsonl"),
+        "AWIKI_LIVE_SESSION_FILE": str(tmp_path / "live-session-id"),
+        "AWIKI_MEMORY_LEDGER_PATH": str(tmp_path / "memory-ledger.jsonl"),
+        "AWIKI_FLOW_STATE_DIR": str(tmp_path / "flow-state"),
+        "AWIKI_FOCUS_DIR": str(tmp_path / "focus-state"),
+        "AWIKI_CLAIMS_STORE": str(tmp_path / "agent-claims.json"),
+    }
     env.pop("CI", None)
     env.pop("HOOK_SKIP", None)
     return env
@@ -109,12 +119,12 @@ def test_check_cost_tier_no_crash_under_cp874(tmp_path):
 
 
 # (e) hooks_runner's own direct writes (e.g. the ⚠️ emoji, not representable
-#     in cp874) must not crash either — run ALL hooks under cp874 so
-#     hooks_runner's own sys.stderr.write() relay paths get exercised too.
+#     in cp874) must not crash either — sweep the canonical PreToolUse lifecycle
+#     under cp874 so hooks_runner's own sys.stderr.write() relay paths execute.
 def test_hooks_runner_own_writes_survive_cp874(tmp_path):
     env = _cp874_env(tmp_path)
     proc = subprocess.run(
-        [sys.executable, str(HOOKS_RUNNER)],
+        [sys.executable, str(HOOKS_RUNNER), "--event", "PreToolUse"],
         input=json.dumps({"tool_name": "Bash", "tool_input": {"command": "echo hi"}}),
         capture_output=True, text=True, encoding="utf-8", errors="replace",
         env=env, cwd=str(REPO_ROOT), timeout=30,

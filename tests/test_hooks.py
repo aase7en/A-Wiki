@@ -10,6 +10,7 @@ import os
 import sys
 import json
 import subprocess
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,22 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from hooks_runner import get_hooks, run_hook, HOOKS_DIR
+
+
+@pytest.fixture(autouse=True)
+def _isolate_hook_runtime(monkeypatch, tmp_path):
+    """All integration subprocesses use temporary runtime state, never live .tmp."""
+    flow = tmp_path / "flow"
+    focus = tmp_path / "focus"
+    flow.mkdir()
+    focus.mkdir()
+    monkeypatch.setenv("AWIKI_LIVE_LOG_PATH", str(tmp_path / "live-events.jsonl"))
+    monkeypatch.setenv("AWIKI_LIVE_SESSION_FILE", str(tmp_path / "live-session-id"))
+    monkeypatch.setenv("AWIKI_MEMORY_LEDGER_PATH", str(tmp_path / "memory-ledger.jsonl"))
+    monkeypatch.setenv("AWIKI_FLOW_STATE_DIR", str(flow))
+    monkeypatch.setenv("AWIKI_FOCUS_DIR", str(focus))
+    monkeypatch.setenv("AWIKI_CLAIMS_STORE", str(tmp_path / "agent-claims.json"))
+    monkeypatch.setenv("AWIKI_AGENT", "phase6-test")
 
 
 # ── get_hooks ──────────────────────────────────────────────────────────
@@ -150,12 +167,38 @@ class TestHooksRunnerCLI:
 
     RUNNER = str(REPO_ROOT / "scripts" / "hooks_runner.py")
 
-    def test_stdin_json_passes(self):
-        """echo '{}' | python3 hooks_runner.py -> exit 0."""
+    def test_stdin_json_run_all_requires_event(self):
+        """Phase 6: run-all without --event is refused — registry-driven
+        lifecycle dispatch (running every hook on any payload is not a
+        valid lifecycle)."""
         result = subprocess.run(
             [sys.executable, self.RUNNER],
             input=json.dumps({"paths": {"wiki": "ok"}}),
             capture_output=True, text=True,
+        )
+        assert result.returncode == 2
+        assert "--event" in result.stderr
+
+    def test_stdin_json_event_sweep_pretooluse(self, tmp_path):
+        """Run ALL registered PreToolUse hooks on a benign Edit payload —
+        the equivalent canonical action passes end-to-end with hard-gate
+        prerequisites isolated from the developer's real .tmp state."""
+        cost_tmp = tmp_path / "cost-gate"
+        cost_tmp.mkdir()
+        now = datetime.now()
+        for day in (now, now + timedelta(days=1)):
+            (cost_tmp / f"cost-tier-{day:%Y-%m-%d}.txt").write_text(
+                "L4|test|canonical hook integration", encoding="utf-8")
+        env = os.environ.copy()
+        env["AWIKI_COST_GATE_TMP_DIR"] = str(cost_tmp)
+        env["PYTHONUTF8"] = "1"
+        result = subprocess.run(
+            [sys.executable, self.RUNNER, "--event", "PreToolUse"],
+            input=json.dumps({"tool_name": "Edit",
+                              "tool_input": {"file_path": "scripts/x.py",
+                                             "new_string": "ok",
+                                             "old_string": "old"}}),
+            capture_output=True, text=True, env=env,
         )
         assert result.returncode == 0, result.stderr
 
@@ -250,10 +293,10 @@ class TestHooksRunnerCLI:
         assert proc.returncode == 2, proc.stderr
         assert "staged" in proc.stderr.lower()
 
-    def test_all_hooks_run_successfully(self, hook_input):
-        """Running all hooks with clean input should pass."""
+    def test_all_userpromptsubmit_hooks_run_successfully(self, hook_input):
+        """Run-all requires an explicit lifecycle event."""
         proc = subprocess.run(
-            [sys.executable, self.RUNNER],
+            [sys.executable, self.RUNNER, "--event", "UserPromptSubmit"],
             input=json.dumps(hook_input),
             capture_output=True, text=True,
         )

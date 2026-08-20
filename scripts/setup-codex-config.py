@@ -6,7 +6,7 @@ for A-Wiki on any machine (Mac / Linux / WSL / Git Bash).
 What it does:
   1. Copies .codex/config.toml from the tracked template (this repo contains the
      public-safe template; secrets are never written here).
-  2. Writes .codex/hooks.json with full guardrail coverage matching Claude Code parity.
+  2. Writes .codex/hooks.json with exact structured hook parity matching Claude Code parity.
   3. Creates .codex/hooks/ symlink → .claude/hooks/ if .claude/hooks/ exists.
   4. Validates that required guardrail hook scripts exist.
   5. Prints a readiness summary.
@@ -41,65 +41,30 @@ HOOKS_JSON_PATH = CODEX_DIR / "hooks.json"
 CLAUDE_HOOKS_DIR = REPO_ROOT / ".claude" / "hooks"
 CODEX_HOOKS_DIR = CODEX_DIR / "hooks"
 
-# These guardrails MUST be present in PreToolUse Edit|Write|MultiEdit hooks
-REQUIRED_GUARDRAILS = [
-    "check-cost-tier",
-    "check-claudemd-lock",
-    "check-raw-immutable",
-    "check-harness-routing",
-    "check-output-format",
-    "check-source-original-file",
-    "check-external-editor-drift",
-    "check-skill-registry",
-]
 
-# These guardrails MUST be in PreToolUse Bash hooks.
-# check-delegation-gate belongs here (NOT under Agent) — the hook only acts on
-# Bash `git push`, so wiring it under any other matcher makes it dead.
-REQUIRED_BASH_GUARDRAILS = [
-    "check-bash-destructive-git",
-    "check-bash-no-branch",
-    "check-secret-leak",
-    "check-apikey",
-    "check-delegation-gate",
-    "check-git-rebase-safety",
-]
+def _runner(event: str) -> dict[str, str]:
+    """Canonical Codex lifecycle dispatch command for one provider event."""
+    return {
+        "type": "command",
+        "command": f"python3 scripts/hooks_runner.py --provider codex --event {event}",
+    }
 
+
+# Full tracked Codex hook surface. This is the ONE generated structured model:
+# registered hooks enter through event sweeps; compatibility utilities remain
+# explicit because they are not registry policy engines.
 HOOKS_CONFIG: dict = {
     "hooks": {
         "PreToolUse": [
             {
                 "matcher": "Edit|Write|MultiEdit",
                 "hooks": [
-                    {"type": "command", "command": f"python3 scripts/hooks_runner.py {g}"}
-                    for g in [
-                        "check-agent-claim",
-                        "check-cost-tier",
-                        "check-claudemd-lock",
-                        "check-raw-immutable",
-                        "check-source-original-file",
-                        "check-external-editor-drift",
-                        "check-output-format",
-                        "check-harness-routing",
-                        "check-skill-registry",
-                    ]
-                ] + [
+                    _runner("PreToolUse"),
                     {"type": "command", "command": "bash .codex/hooks/pre-edit-staleness-check.sh"},
                 ],
             },
-            {
-                "matcher": "Agent",
-                "hooks": [
-                    {"type": "command", "command": "python3 scripts/hooks_runner.py check-cost-tier"},
-                ],
-            },
-            {
-                "matcher": "Bash",
-                "hooks": [
-                    {"type": "command", "command": f"python3 scripts/hooks_runner.py {g}"}
-                    for g in REQUIRED_BASH_GUARDRAILS
-                ],
-            },
+            {"matcher": "Agent", "hooks": [_runner("PreToolUse")]},
+            {"matcher": "Bash", "hooks": [_runner("PreToolUse")]},
         ],
         "PostToolUse": [
             {
@@ -107,6 +72,7 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": "bash .codex/hooks/handoff-auto-export.sh"},
                     {"type": "command", "command": "bash .codex/hooks/post-wiki-edit-gen-index.sh"},
+                    _runner("PostToolUse"),
                 ],
             },
             {
@@ -120,6 +86,7 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": "bash .codex/hooks/checkpoint-on-commit.sh"},
                     {"type": "command", "command": "bash .codex/hooks/post-push-todo-remind.sh"},
+                    _runner("PostToolUse"),
                 ],
             },
         ],
@@ -140,6 +107,7 @@ HOOKS_CONFIG: dict = {
             {
                 "hooks": [
                     {"type": "command", "command": "bash .codex/hooks/session-start-git-pull.sh"},
+                    _runner("SessionStart"),
                     {"type": "command", "command": "bash .codex/hooks/wiki-context-check.sh"},
                     {"type": "command", "command": "bash .codex/hooks/session-start-binary-scan.sh"},
                     {"type": "command", "command": "bash scripts/show-active-todos.sh"},
@@ -147,6 +115,7 @@ HOOKS_CONFIG: dict = {
                     {"type": "command", "command": "bash .codex/hooks/session-start-apikey-check.sh"},
                     {"type": "command", "command": "bash .codex/hooks/build-pharmacy-db.sh"},
                     {"type": "command", "command": "python3 scripts/hooks/session_start.py"},
+                    {"type": "command", "command": "bash .claude/hooks/session-start-a-router.sh"},
                 ]
             }
         ],
@@ -155,9 +124,7 @@ HOOKS_CONFIG: dict = {
                 "hooks": [
                     {"type": "command", "command": "bash scripts/agent-switch.sh stop"},
                     {"type": "command", "command": "bash .codex/hooks/stop-auto-commit.sh"},
-                    {"type": "command", "command": "python3 scripts/hooks/self_audit.py"},
-                    {"type": "command", "command": "python3 scripts/hooks/a_focus_stop.py"},
-                    {"type": "command", "command": "python3 scripts/hooks/release_agent_claims.py"},
+                    _runner("Stop"),
                 ]
             }
         ],
@@ -166,18 +133,47 @@ HOOKS_CONFIG: dict = {
 
 
 def check_guardrail_parity(hooks_data: dict) -> list[str]:
-    """Return list of missing required guardrails."""
-    missing = []
-    pre_tool = hooks_data.get("hooks", {}).get("PreToolUse", [])
-    all_commands: list[str] = []
-    for entry in pre_tool:
-        for hook in entry.get("hooks", []):
-            all_commands.append(hook.get("command", ""))
+    """Return exact structured parity errors against the canonical model.
 
-    for g in REQUIRED_GUARDRAILS + REQUIRED_BASH_GUARDRAILS:
-        if not any(g in cmd for cmd in all_commands):
-            missing.append(g)
-    return missing
+    The old checker substring-scanned commands and could approve a required
+    hook under the wrong matcher/event. Exact recursive comparison validates
+    event, matcher, command, type, list order, and compatibility utilities.
+    """
+    errors: list[str] = []
+
+    def compare(expected, actual, path: str) -> None:
+        if type(expected) is not type(actual):
+            errors.append(
+                f"{path}: type mismatch expected {type(expected).__name__}, "
+                f"got {type(actual).__name__}"
+            )
+            return
+        if isinstance(expected, dict):
+            expected_keys = list(expected)
+            actual_keys = list(actual)
+            if expected_keys != actual_keys:
+                errors.append(
+                    f"{path}: keys/order mismatch expected {expected_keys!r}, "
+                    f"got {actual_keys!r}"
+                )
+                return
+            for key in expected_keys:
+                compare(expected[key], actual[key], f"{path}.{key}")
+            return
+        if isinstance(expected, list):
+            if len(expected) != len(actual):
+                errors.append(
+                    f"{path}: length mismatch expected {len(expected)}, got {len(actual)}"
+                )
+                return
+            for index, (exp_item, act_item) in enumerate(zip(expected, actual)):
+                compare(exp_item, act_item, f"{path}[{index}]")
+            return
+        if expected != actual:
+            errors.append(f"{path}: expected {expected!r}, got {actual!r}")
+
+    compare(HOOKS_CONFIG, hooks_data, "$" )
+    return errors
 
 
 def setup_hooks_symlink() -> None:
@@ -192,10 +188,10 @@ def setup_hooks_symlink() -> None:
     print(f"  ✓ Created .codex/hooks → .claude/hooks symlink")
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Setup or validate Codex config + hooks for A-Wiki")
     parser.add_argument("--check", action="store_true", help="Validate only; do not write files")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     os.chdir(REPO_ROOT)
     CODEX_DIR.mkdir(exist_ok=True)
@@ -214,10 +210,10 @@ def main() -> None:
                 hooks_data = json.loads(HOOKS_JSON_PATH.read_text())
                 missing = check_guardrail_parity(hooks_data)
                 if missing:
-                    print(f"❌ Missing guardrails in .codex/hooks.json: {missing}")
+                    print(f"❌ .codex/hooks.json structured parity errors: {missing[:5]}")
                     ok = False
                 else:
-                    print("✅ .codex/hooks.json has full guardrail coverage")
+                    print("✅ .codex/hooks.json has exact structured hook parity")
             except json.JSONDecodeError as e:
                 print(f"❌ .codex/hooks.json invalid JSON: {e}")
                 ok = False
@@ -236,25 +232,22 @@ def main() -> None:
         print(f"  ⚠️  .codex/config.toml missing — expected tracked template in repo")
 
     # 2. hooks.json — always regenerate (never downgrade guardrails)
-    existing_commands: list[str] = []
     if HOOKS_JSON_PATH.exists():
         try:
             old_data = json.loads(HOOKS_JSON_PATH.read_text())
-            missing = check_guardrail_parity(old_data)
-            if not missing:
-                print(f"  ✅ .codex/hooks.json already has full guardrail coverage")
-                existing_commands = [
-                    h["command"]
-                    for entry in old_data.get("hooks", {}).get("PreToolUse", [])
-                    for h in entry.get("hooks", [])
-                ]
+            parity_errors = check_guardrail_parity(old_data)
+            if not parity_errors:
+                print("  ✅ .codex/hooks.json already has exact structured hook parity")
             else:
-                print(f"  ⚠️  .codex/hooks.json missing guardrails {missing} — upgrading")
+                print(
+                    "  ⚠️  .codex/hooks.json differs from canonical structured model "
+                    f"({parity_errors[:3]}) — regenerating"
+                )
         except Exception:
             pass
 
     HOOKS_JSON_PATH.write_text(json.dumps(HOOKS_CONFIG, indent=2, ensure_ascii=False) + "\n")
-    print(f"  ✓ .codex/hooks.json written (guardrail count: {len(REQUIRED_GUARDRAILS + REQUIRED_BASH_GUARDRAILS)})")
+    print("  ✓ .codex/hooks.json written from canonical structured model")
 
     # 3. hooks symlink
     setup_hooks_symlink()
@@ -262,7 +255,7 @@ def main() -> None:
     # 4. Validate
     missing = check_guardrail_parity(json.loads(HOOKS_JSON_PATH.read_text()))
     if missing:
-        print(f"  ❌ Still missing guardrails after write: {missing}")
+        print(f"  ❌ Structured parity still invalid after write: {missing[:5]}")
         sys.exit(1)
 
     print("\n✅ Codex config setup complete for A-Wiki")
