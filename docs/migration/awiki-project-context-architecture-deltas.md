@@ -264,13 +264,31 @@ verify mechanically
 
 Behavior and contracts take priority over directory aesthetics. Large repository reorganization remains a late-stage option only after the kernel interfaces are stable.
 
+## D-CTX-013 — Separate brain, orchestration, and local execution surfaces
+
+The following surfaces cooperate but are not one monolithic system:
+
+- **A-Wiki** is the durable brain: memory, contracts, governance, project/task references, decisions, evidence, and promotion boundaries.
+- **Conductor** is the manager/orchestration control surface: assignment, lifecycle coordination, retries, review routing, and operator control. It consumes A-Wiki contracts; it does not replace A-Wiki's durable authority.
+- **Serena** is a local execution/tooling surface: project identity, code navigation, filesystem operations, and worktree execution. It is not the durable source of project policy or review truth.
+
+Role selection is capability-based:
+
+- a high-reasoning agent may serve as architect or independent reviewer
+- a cost-effective or local agent may serve as worker/executor
+- deterministic tools serve as verifier wherever a mechanical gate exists
+
+Provider and model names are runtime candidates selected by availability, trust, capability, quality, cost, latency, and eval evidence. Stable contracts must not depend on a vendor name.
+
+This clarifies D-CTX-001 and D-CTX-007 without changing the kernel schema or adding a phase. `A-WIKI-KERNEL.md` already states that the current kernel is not an always-running orchestrator daemon. Conductor implementation remains in Phases 12–16; Serena integration remains an adapter/tool concern. Neither belongs in Phase 6.
+
 ## Integration into phases
 
 These deltas map onto the existing roadmap rather than adding a competing phase sequence:
 
 ```text
 Phase 3  Kernel Contract
-         -> D-CTX-001/002/006/007/009
+         -> D-CTX-001/002/006/007/009/013 (contract boundary only)
 
 Phase 4  Project Adapter
          -> D-CTX-003/009
@@ -294,7 +312,7 @@ Phase 11 Documentation / Compatibility
          -> D-CTX-004/006/012
 
 Phase 12–16 Multi-Agent Orchestrator
-         -> all deltas, especially D-CTX-001/004/008/009/011
+         -> all deltas, especially D-CTX-001/004/008/009/011/013
 ```
 
 ## Acceptance principle
