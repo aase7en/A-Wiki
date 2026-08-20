@@ -7,10 +7,17 @@
 
 | Metric | Count |
 |---|---:|
+<<<<<<< Updated upstream
 | Nodes | 550 |
 | Edges | 1838 |
 | Broken links | 39 |
 | Orphans | 30 |
+=======
+| Nodes | 547 |
+| Edges | 1835 |
+| Broken links | 40 |
+| Orphans | 29 |
+>>>>>>> Stashed changes
 
 ## Broken links by source domain
 
@@ -25,7 +32,7 @@
 
 | Domain | Count |
 |---|---:|
-| context | 17 |
+| context | 15 |
 | env | 8 |
 | ai-tools | 3 |
 | other | 1 |
