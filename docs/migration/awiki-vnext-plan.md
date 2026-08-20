@@ -30,7 +30,7 @@
 | 3 | Kernel contract (`A-WIKI-KERNEL.md`, `config/awiki.yaml`, `config/integrations.yaml`, intake/storage/project-memory protocols) + formalize `awiki-review/v1` protocol/schema design | ✅ **PASS** — PR #13 merged | reviewed head `dfd4946112a68d2933ece276462193f1583ed6e9`; merge `2e84759ca21e29bd007e4c2a0787f06a54658bf5` |
 | 4 | Project adapter (`scripts/project/{attach,status,validate}.py`, schema, cross-platform tests) | ✅ **PASS** — PR #14 merged | reviewed head `6c75f936b5bc99f6ad8deb4964f3e6c1efc08a77`; merge `10507ceec1c286c53f62e331813692c9e2225e81` |
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ **PASS** — PR #15 merged | reviewed head `5def54757ed7189f6408878a911f6bcd785d0adc`; merge `51258fac665add6e65e6f4a239fda5d597670f0e` |
-| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⚠️ **CHANGES_REQUIRED** — local snapshot reviewed; implementation not pushed; local recheck pending | work-order HEAD `fcef705cdf8e0814927d498bdd467c8987fcc59e`; `reviews/phase-6-review-local-fcef705c.md` |
+| 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ⚠️ **CHANGES_REQUIRED** — local snapshot reviewed; implementation not pushed; local verification complete | work-order HEAD `fcef705cdf8e0814927d498bdd467c8987fcc59e`; `reviews/phase-6-review-local-fcef705c.md` |
 | 7 | Model control plane (`scripts/lib/providers/`, `config/models/` policy-vs-runtime split) | ⬜ **NOT_STARTED** | — |
 | 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ **NOT_STARTED** | — |
 | 9 | A-Loop v2 + connect improvement-loop states to review verdict/state machine | ⬜ **NOT_STARTED** | — |
@@ -290,14 +290,14 @@ The former Phase 1 execution instruction is retained by the Phase 1 logs and rev
 - GitHub branch `refactor/awiki-hook-engine` points to `fcef705cdf8e0814927d498bdd467c8987fcc59e`, directly ahead of Phase 5 main by the authoritative Phase 6 work order only.
 - An independent read-only review examined the uncommitted Phase 6 semantic delta and returned **CHANGES_REQUIRED**. See `docs/migration/reviews/phase-6-review-local-fcef705c.md`.
 - No Phase 7 or Phase 12–16 implementation is authorized or mechanically present in the reviewed delta.
-- At continuity recovery time GitHub showed no open pull request for Phase 6.
+- GitHub showed no open Phase 6 implementation PR. Draft docs-only continuity PR #16 now preserves this checkpoint against the Phase 6 branch.
 
 ### Repository / worktree state
 
 - **GitHub main:** `51258fac665add6e65e6f4a239fda5d597670f0e`
 - **GitHub Phase 6 branch:** `refactor/awiki-hook-engine`
 - **GitHub Phase 6 HEAD:** `fcef705cdf8e0814927d498bdd467c8987fcc59e`
-- **Recovery documentation branch:** `docs/awiki-continuity-recovery-20260820` (docs only; proposed against the Phase 6 branch)
+- **Recovery documentation branch / HEAD:** `docs/awiki-continuity-recovery-20260820` / `3944efadf4ec1bdc2721c78a1ce44707f252c2b1` at draft PR #16 (docs only; targets the Phase 6 branch)
 - **Verified local project/worktree:** `A-Wiki-vnext-clean`; repository identity matches `aase7en/A-Wiki`
 - **Verified branch / HEAD / upstream:** `refactor/awiki-hook-engine` / `fcef705cdf8e0814927d498bdd467c8987fcc59e` / `origin/refactor/awiki-hook-engine` at the same SHA
 - **Verified merge-base / distance from origin/main:** `51258fac665add6e65e6f4a239fda5d597670f0e`; 0 behind / 1 ahead
@@ -359,7 +359,7 @@ No new architecture decision is required. The docs-only recovery branch must be 
 
 ### Ordered TODO
 
-1. Reconcile the docs-only recovery PR into the Phase 6 branch without overwriting the 14-file local WIP or the protected other worktrees.
+1. Reconcile the draft continuity PR #16 into the Phase 6 branch without overwriting the 14-file local WIP or the protected other worktrees.
 2. Replace the stale local handoff with the corrected durable handoff during that reconciliation.
 3. Remediate P6-R01 first, test-first, then P6-R02..P6-R07 in severity order within the Phase 6 work order only.
 4. Run isolated focused tests, registry counts, privacy/security/CI-secret smoke, generated-config parity, `git diff --check`, and the appropriate full regression suite.
@@ -368,7 +368,7 @@ No new architecture decision is required. The docs-only recovery branch must be 
 
 ### Single next safe action
 
-Reconcile the docs-only recovery PR into the verified Phase 6 branch without overwriting the 14-file local WIP; then begin the P6-R01 test-first remediation slice.
+Reconcile the draft continuity PR #16 into the verified Phase 6 branch without overwriting the 14-file local WIP; then begin the P6-R01 test-first remediation slice.
 
 ### Resume checks
 
@@ -388,6 +388,6 @@ git diff --name-only
 git diff --check
 ```
 
-Also inspect every local claim store and all open A-Wiki pull requests through GitHub. At this checkpoint there were zero live claims; the only expected open PR is the docs-only continuity recovery PR.
+Also inspect every local claim store and all open A-Wiki pull requests through GitHub. At this checkpoint there were zero live claims; the only expected open PR is draft continuity PR #16.
 
 <!-- final-verification: continuity recovery 2026-08-20; LOCAL_WORKTREE_VERIFICATION: COMPLETE -->
