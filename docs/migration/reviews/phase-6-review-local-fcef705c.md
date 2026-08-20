@@ -18,7 +18,9 @@ GitHub was verified during continuity recovery:
 - remote Phase 6 HEAD: `fcef705cdf8e0814927d498bdd467c8987fcc59e`
 - merge-base with main: `51258fac665add6e65e6f4a239fda5d597670f0e`
 - remote delta: one Phase 6 work-order commit; no implementation commit
-- open Phase 6 PR at audit time: none
+- open Phase 6 implementation PR at audit time: none
+- docs-only continuity branch / HEAD: `docs/awiki-continuity-recovery-20260820` / `3944efadf4ec1bdc2721c78a1ce44707f252c2b1`
+- durable checkpoint transport: draft PR #16 targeting the Phase 6 branch
 
 GPT Work shell access mechanically verified the local state after Serena became unavailable:
 
@@ -188,7 +190,7 @@ All are **NOT_STARTED**. No finding authorizes their implementation during Phase
 
 1. Recheck repository identity, branch, HEAD, dirty state, all worktrees, live claims, and open PRs through any available local/GitHub tool surface.
 2. Stop on identity or ownership conflict.
-3. Reconcile the docs-only continuity PR without overwriting the local Phase 6 delta or protected other worktrees.
+3. Reconcile the draft continuity PR #16 without overwriting the local Phase 6 delta or protected other worktrees.
 4. Replace the stale local handoff with the corrected durable handoff.
 5. Remediate P6-R01 first, then P6-R02..P6-R07, test-first and within the authoritative work order.
 6. Run isolated focused, parity, privacy, security, CI-secret, diff, and full regression gates.
@@ -196,4 +198,4 @@ All are **NOT_STARTED**. No finding authorizes their implementation during Phase
 
 ## Single next safe action
 
-Reconcile the docs-only continuity PR into the verified Phase 6 branch without overwriting local WIP; then begin the P6-R01 test-first remediation slice.
+Reconcile the draft continuity PR #16 into the verified Phase 6 branch without overwriting local WIP; then begin the P6-R01 test-first remediation slice.
