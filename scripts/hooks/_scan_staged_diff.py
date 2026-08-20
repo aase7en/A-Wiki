@@ -17,7 +17,13 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PATTERNS_FILE = REPO_ROOT / "scripts" / "hooks" / "security_patterns.yaml"
 
 
-def _load_patterns() -> list[tuple[str, re.Pattern[str], list[str]]]:
+class PatternSourceUnavailable(RuntimeError):
+    """The canonical yaml pattern source cannot be used. In strict/CI mode
+    this ABORTS the scan — a silently degraded pattern set is how the
+    2026-08-20 PR #17 CI incident produced 20 phantom baseline mismatches."""
+
+
+def _load_patterns(strict: bool = False) -> list[tuple[str, re.Pattern[str], list[str]]]:
     """Load secret + machine-path patterns from YAML (builtin fallback).
 
     Every entry — YAML-loaded or builtin — is a 3-tuple (name, regex,
@@ -36,16 +42,29 @@ def _load_patterns() -> list[tuple[str, re.Pattern[str], list[str]]]:
         ("macOS user home", re.compile(r"/Users/([A-Za-z0-9._-]+)/"), []),
         ("Google Drive account", re.compile(r"CloudStorage/GoogleDrive-([A-Za-z0-9._-]+)"), []),
     ]
+    def _unavailable(reason: str):
+        if strict:
+            raise PatternSourceUnavailable(
+                f"security pattern source unavailable ({reason}) — refusing "
+                f"to scan with a degraded pattern set in strict/CI mode. "
+                f"Fix the environment (install PyYAML / restore "
+                f"{PATTERNS_FILE}) and re-run.")
+        sys.stderr.write(
+            f"⚠️  security pattern source unavailable ({reason}) — falling "
+            f"back to the SMALL builtin pattern subset; coverage is reduced "
+            f"until this is fixed.\n")
+        return builtin_secrets + builtin_machine
+
     try:
         import yaml  # type: ignore
     except ImportError:
-        return builtin_secrets + builtin_machine
+        return _unavailable("PyYAML not installed")
     if not PATTERNS_FILE.exists():
-        return builtin_secrets + builtin_machine
+        return _unavailable(f"missing {PATTERNS_FILE}")
     try:
         data = yaml.safe_load(PATTERNS_FILE.read_text(encoding="utf-8")) or {}
-    except Exception:
-        return builtin_secrets + builtin_machine
+    except Exception as e:
+        return _unavailable(f"malformed yaml: {e}")
     out: list[tuple[str, re.Pattern[str], list[str]]] = []
     for key in ("secret_patterns", "machine_path_patterns"):
         for e in data.get(key) or []:
@@ -57,7 +76,9 @@ def _load_patterns() -> list[tuple[str, re.Pattern[str], list[str]]]:
                 ))
             except (KeyError, re.error):
                 continue
-    return out or (builtin_secrets + builtin_machine)
+    if not out:
+        return _unavailable("yaml loaded but defines no patterns")
+    return out
 
 
 PATTERNS = _load_patterns()

@@ -39,7 +39,17 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
 
-from _scan_staged_diff import PATTERNS, PLACEHOLDERS  # noqa: E402 -- single pattern source
+from _scan_staged_diff import (  # noqa: E402 -- single pattern source
+    PLACEHOLDERS, PatternSourceUnavailable, _load_patterns)
+
+# CI mode loads the pattern source STRICTLY: a missing/broken yaml
+# pattern file must abort the scan, never quietly degrade to the
+# builtin subset (2026-08-20 incident: dependency-less Python made
+# every baseline key mismatch → 20 phantom findings).
+
+# Back-compat module surface for existing tests/tools (non-strict load —
+# the STRICT load happens per-run inside main() when --ci is set).
+PATTERNS = _load_patterns()
 
 BINARY_SNIFF_BYTES = 8192  # NUL-byte detection window ONLY — not a scan cap (R-P2-002)
 
@@ -185,7 +195,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    findings = scan_repo(args.repo_root, PATTERNS, PLACEHOLDERS, excludes=args.exclude)
+    patterns = _load_patterns(strict=args.ci)
+    findings = scan_repo(args.repo_root, patterns, PLACEHOLDERS, excludes=args.exclude)
 
     baseline_counts: Counter[str] = Counter()
     if args.baseline and args.baseline.exists():
