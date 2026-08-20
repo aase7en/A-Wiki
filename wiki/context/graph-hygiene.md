@@ -7,31 +7,32 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 551 |
+| Nodes | 550 |
 | Edges | 1839 |
 | Broken links | 40 |
-| Orphans | 30 |
+| Orphans | 28 |
 
 ## Broken links by source domain
 
 | Domain | Count |
 |---|---:|
 | repo-root | 21 |
-| ai-tools | 11 |
+| ai-tools | 10 |
 | sources | 6 |
 | env | 2 |
+| pharmacy | 1 |
 
 ## Orphans by domain
 
 | Domain | Count |
 |---|---:|
-| context | 15 |
+| context | 14 |
 | env | 8 |
 | ai-tools | 3 |
-| other | 2 |
 | meta | 1 |
+| other | 1 |
 | sources | 1 |
 
 ## Orphan samples
 
-`wiki/A-ROUTER.md`, `wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`
+`wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`
