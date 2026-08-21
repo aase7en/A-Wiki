@@ -154,6 +154,10 @@ def check_external_data() -> CheckResult:
     # The drive layer is OPTIONAL (CI / fresh clones have none). Only a
     # PROVEN drive (has raw/ or .secrets content) can FAIL on layout —
     # an auto-created fallback dir is a WARN, not a defect.
+    import os as _os
+    if _os.environ.get("CI") == "true":
+        return CheckResult("WARN", "A-Wiki-Data",
+                           "CI runner — private drive layer not applicable")
     has_real_drive = (drive_root / "raw").is_dir() or (drive_root / ".secrets").is_file()
     if not has_real_drive:
         return CheckResult("WARN", "A-Wiki-Data",
