@@ -47,6 +47,9 @@ def main(argv: list[str] | None = None) -> int:
     p_claim.add_argument("--branch", default="<branch>")
     p_claim.add_argument("--json", action="store_true")
 
+    p_models = sub.add_parser("models", help="model policy + runtime slots (read-only)")
+    p_models.add_argument("--json", action="store_true")
+
     p_plan = sub.add_parser("plan", help="objective → work orders")
     p_plan.add_argument("objective")
     p_plan.add_argument("--write", action="store_true",
@@ -87,6 +90,13 @@ def main(argv: list[str] | None = None) -> int:
             _emit({"claimed": False, "reason": str(e)}, args.json)
             return 1
         _emit(out, args.json)
+        return 0
+
+    if args.cmd == "models":
+        import sys as _sys
+        _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+        from model_policy import policy_summary
+        _emit(policy_summary(), args.json)
         return 0
 
     if args.cmd == "plan":
