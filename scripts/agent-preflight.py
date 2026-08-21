@@ -151,6 +151,13 @@ def check_session_handoff() -> CheckResult:
 
 def check_external_data() -> CheckResult:
     drive_root = get_drive_root()
+    # The drive layer is OPTIONAL (CI / fresh clones have none). A machine
+    # without a linked drive gets a WARN, not a FAIL — the fallback
+    # ~/.a-wiki-data dir being empty is not a defect.
+    from drive_path import is_drive_linked
+    if not is_drive_linked():
+        return CheckResult("WARN", "A-Wiki-Data",
+                           f"no linked drive (fallback {drive_root}) — optional layer")
     missing = [name for name in EXPECTED_DRIVE_FOLDERS if not (drive_root / name).is_dir()]
     if missing:
         return CheckResult("FAIL", "A-Wiki-Data folders", f"missing: {', '.join(missing)} at {drive_root}")
