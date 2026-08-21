@@ -184,7 +184,7 @@ def _table_rows(rows: list[dict]) -> list[str]:
 
 def render_main(pages: dict[str, dict[str, list[dict]]]) -> str:
     """Slim main overview — stats + synthesis (cross-domain) + pointers."""
-    today = dt.date.today().isoformat()
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()  # UTC: CI runners and local machines must agree on "today"
     total = sum(len(rows) for sec in pages.values() for rows in sec.values())
     counts = {sec: sum(len(rows) for rows in pages[sec].values()) for sec in SECTION_ORDER}
 
@@ -251,7 +251,7 @@ def render_main(pages: dict[str, dict[str, list[dict]]]) -> str:
 
 def render_domain(domain: str, pages: dict[str, dict[str, list[dict]]]) -> str:
     """Per-domain overview — entities + concepts for one domain."""
-    today = dt.date.today().isoformat()
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()  # UTC: CI runners and local machines must agree on "today"
     title = DOMAIN_TITLES[domain]
     entities = pages.get("entities", {}).get(domain, [])
     concepts = pages.get("concepts", {}).get(domain, [])
@@ -291,7 +291,7 @@ def render_domain(domain: str, pages: dict[str, dict[str, list[dict]]]) -> str:
 
 def render_sources(pages: dict[str, dict[str, list[dict]]]) -> str:
     """All sources in a single file (kept out of baseline to save tokens)."""
-    today = dt.date.today().isoformat()
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()  # UTC: CI runners and local machines must agree on "today"
     src_pages = pages.get("sources", {})
     rows: list[dict] = []
     for v in src_pages.values():
@@ -542,7 +542,7 @@ def main() -> int:
     # contexts so they don't drift behind the actual file tree. Touches only the
     # specific patterns shown below — leaves prose untouched. Safe because
     # nested CLAUDE.md is NOT protected by check_claudemd_lock (root only).
-    _today = dt.date.today().isoformat()
+    _today = dt.datetime.now(dt.timezone.utc).date().isoformat()  # UTC: CI runners and local machines must agree on "today"
     _date_pat = re.compile(r"(>\s*\*\*Last updated\*\*:\s*)\d{4}-\d{2}-\d{2}")
     nested_targets = [
         # (path, pattern, replacement-with-{n})

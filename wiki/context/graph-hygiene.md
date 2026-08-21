@@ -7,10 +7,10 @@
 
 | Metric | Count |
 |---|---:|
-| Nodes | 550 |
+| Nodes | 553 |
 | Edges | 1839 |
-| Broken links | 40 |
-| Orphans | 28 |
+| Broken links | 39 |
+| Orphans | 31 |
 
 ## Broken links by source domain
 
@@ -20,13 +20,12 @@
 | ai-tools | 10 |
 | sources | 6 |
 | env | 2 |
-| pharmacy | 1 |
 
 ## Orphans by domain
 
 | Domain | Count |
 |---|---:|
-| context | 14 |
+| context | 17 |
 | env | 8 |
 | ai-tools | 3 |
 | meta | 1 |
