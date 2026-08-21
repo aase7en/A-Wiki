@@ -21,3 +21,13 @@
 python -m conductor status|gate|plan|verify|recall|claim|models --json
 ```
 (gate = GO/NO-GO ก่อนเริ่ม topic · verify = รัน gates · claim = จองงานใน COLLAB)
+
+## SSoT Map (หนึ่ง role = หนึ่งไฟล์ — ห้ามสร้างซ้ำ)
+| ต้องการ | ไปที่ (มีอยู่แล้ว อย่าสร้างใหม่) |
+|---|---|
+| สถานะงาน/claims/PR | `COLLAB.md` · สดๆ รัน `python -m conductor status --json` |
+| แผน/roadmap/checklist | `docs/migration/awiki-vnext-plan.md` (+ phase work orders ข้างๆ) |
+| ใบสั่งงาน | `docs/work-orders/` · migration phases อยู่ `docs/migration/phase-N-*.md` |
+| ความจำ/บทเรียน (ledger) | `python -m conductor recall --query ...` (JSONL ที่ .tmp — ห้ามแก้ ให้เติม) |
+| กติกาข้าม agent | `docs/protocols/cross-agent-work-orders.md` + `agent-continuity-gate.md` + `cross-agent-plan-handoff.md` |
+| STATE สด (PR เปิด/ขั้นถัดไป) | `python -m conductor status --json` = generated STATE — ไม่มีไฟล์ hand-edit ค้างสมัย |
