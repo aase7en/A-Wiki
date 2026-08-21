@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-08-20",
+  "generated_at": "2026-08-21",
   "stats": {
-    "nodes": 550,
+    "nodes": 553,
     "edges": 1839,
     "edges_by_type": {
       "wikilink": 1315,
@@ -10,10 +10,10 @@
       "mdlink": 41,
       "extends": 42
     },
-    "broken_links": 40,
-    "orphans": 28,
+    "broken_links": 39,
+    "orphans": 31,
     "orphan_by_domain": {
-      "context": 14,
+      "context": 17,
       "env": 8,
       "ai-tools": 3,
       "meta": 1,
@@ -79,10 +79,10 @@
       "wiki/context/overview-trader.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/wiki-capability-map.md",
-      "wiki/entities/ai-tools/news-intelligence-pipeline.md",
-      "wiki/entities/ai-tools/open-design.md",
-      "wiki/entities/env/building.md"
+      "wiki/context/session-memory-2026-06-24.md",
+      "wiki/context/session-memory.md",
+      "wiki/context/session-summary-2026-06-24.md",
+      "wiki/context/wiki-capability-map.md"
     ]
   },
   "nodes": [
@@ -519,6 +519,21 @@
     {
       "path": "wiki/context/review-report.md",
       "title": "Review Report — 2026-08-20",
+      "domain": "context"
+    },
+    {
+      "path": "wiki/context/session-memory-2026-06-24.md",
+      "title": "session-memory-2026-06-24",
+      "domain": "context"
+    },
+    {
+      "path": "wiki/context/session-memory.md",
+      "title": "Session Memory",
+      "domain": "context"
+    },
+    {
+      "path": "wiki/context/session-summary-2026-06-24.md",
+      "title": "session-summary-2026-06-24",
       "domain": "context"
     },
     {
@@ -7154,8 +7169,8 @@
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "raw/pharmacy/sp_drugs_full_3760.json",
       "type": "wikilink",
-      "broken": true,
-      "external": false
+      "broken": false,
+      "external": true
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",

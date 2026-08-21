@@ -31,13 +31,35 @@ class CheckResult:
     detail: str
 
 
-EXPECTED_DRIVE_FOLDERS = [
-    "raw",
-    "waste-reports",
-    "personal-tools",
-    "ocr-feedback",
-    "individual-tasks",
-]
+def _expected_drive_folders():
+    """Drive layout per LAYOUT.md (restructure 2026-08-06): waste-reports
+    lives under the hospital dir (AWIKI_HOSPITAL_DIR), not at the root."""
+    import os
+    hospital = os.environ.get("AWIKI_HOSPITAL_DIR", "")
+    if not hospital:
+        # Machines keep this in drive/.env (private layer). Read ONLY this
+        # key — never load or print the rest of that file.
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            from drive_path import get_drive_root
+            env_file = get_drive_root() / ".env"
+            for line in env_file.read_text(encoding="utf-8").splitlines():
+                if line.startswith("AWIKI_HOSPITAL_DIR="):
+                    hospital = line.split("=", 1)[1].strip()
+                    break
+        except Exception:
+            pass
+    hospital = hospital or "hospital-main"
+    return [
+        "raw",
+        f"{hospital}/waste-reports",
+        "personal-tools",
+        "ocr-feedback",
+        "individual-tasks",
+    ]
+
+
+EXPECTED_DRIVE_FOLDERS = _expected_drive_folders()
 
 PREFLIGHT_DOCS = [
     "AGENTS.md",
