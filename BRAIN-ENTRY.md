@@ -16,6 +16,14 @@
 | เส้นทาง skill | `wiki/A-ROUTER.md` + `wiki/SKILL-INDEX.md` |
 | กติกาละเอียด | `AGENTS.md` (ใหญ่ — อ่านเฉพาะเมื่อทำงานใน repo นี้) · `docs/protocols/` |
 
+
+## ค้นหา / กราฟ (ใช้แทนการเปิดไฟล์ไล่ทีละอัน)
+```bash
+python -m conductor search --query "esp32 lora" --json        # ความรู้ (hybrid FTS+vec)
+python -m conductor related --page wiki/entities/iot/esp32.md --json  # เพื่อนบ้านในกราฟ
+python -m conductor hubs --json                               # hub สำคัญ (553 โหนด)
+```
+
 ## Programmatic (agent ที่รัน script ได้)
 ```bash
 python -m conductor status|gate|plan|verify|recall|claim|models --json

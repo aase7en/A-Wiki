@@ -47,6 +47,22 @@ def main(argv: list[str] | None = None) -> int:
     p_claim.add_argument("--branch", default="<branch>")
     p_claim.add_argument("--json", action="store_true")
 
+    p_search = sub.add_parser("search", help="wiki knowledge search (fts|hybrid)")
+    p_search.add_argument("--query", required=True)
+    p_search.add_argument("--mode", default="hybrid", choices=("fts", "hybrid"))
+    p_search.add_argument("--limit", type=int, default=8)
+    p_search.add_argument("--json", action="store_true")
+
+    p_related = sub.add_parser("related", help="graph neighbors of a wiki page")
+    p_related.add_argument("--page", required=True)
+    p_related.add_argument("--type", default=None, help="edge type filter")
+    p_related.add_argument("--json", action="store_true")
+
+    p_hubs = sub.add_parser("hubs", help="top hub pages by graph degree")
+    p_hubs.add_argument("--domain", default=None)
+    p_hubs.add_argument("--limit", type=int, default=10)
+    p_hubs.add_argument("--json", action="store_true")
+
     p_models = sub.add_parser("models", help="model policy + runtime slots (read-only)")
     p_models.add_argument("--json", action="store_true")
 
@@ -90,6 +106,21 @@ def main(argv: list[str] | None = None) -> int:
             _emit({"claimed": False, "reason": str(e)}, args.json)
             return 1
         _emit(out, args.json)
+        return 0
+
+    if args.cmd == "search":
+        from .bridge import search_wiki
+        _emit(search_wiki(args.query, mode=args.mode, limit=args.limit), args.json)
+        return 0
+
+    if args.cmd == "related":
+        from .bridge import related_pages
+        _emit(related_pages(args.page, edge_type=args.type), args.json)
+        return 0
+
+    if args.cmd == "hubs":
+        from .bridge import graph_hubs
+        _emit(graph_hubs(limit=args.limit, domain=args.domain), args.json)
         return 0
 
     if args.cmd == "models":

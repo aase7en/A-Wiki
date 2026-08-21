@@ -10,6 +10,7 @@ thin brain-side operations for the A-Conductor control plane (and any agent):
 """
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 import time
@@ -75,7 +76,10 @@ def recall(query: str, ledger: Path | None = None, limit: int = 10) -> list[dict
         return []
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
     import memory_ledger  # the L1 primitive — one engine, no duplicates
-    hits = memory_ledger.MemoryLedger(path).search(query, limit=limit)
+    import semantic_recall  # same BM25 engine the recall_on_prompt hook uses
+    hits = semantic_recall.search(path, query, limit=limit)
+    if not hits:  # small ledgers (<10) fall back to term-overlap in the hook
+        hits = memory_ledger.MemoryLedger(path).search(query, limit=limit)
     out = []
     for h in hits:
         entry = dict(h)
@@ -123,3 +127,98 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     collab.write_text("".join(lines), encoding="utf-8")
     return {"claimed": True, "already": False, "topic": topic,
             "claim_row": row.strip()}
+
+
+# ── Slice 1: wiki search + graph navigation (A-Conductor Phase 4) ──────
+# Thin wrappers over the brain's existing engines — query-rag.py (hybrid
+# FTS5+vec RRF), search-wiki.py (FTS5 BM25), query-graph.py (neighbors/
+# hubs). The bridge adds NO engine of its own (division of labor).
+
+def _run_json(argv: list[str], timeout: float = 120) -> list[dict]:
+    proc = subprocess.run(
+        [sys.executable, *argv], capture_output=True, text=True,
+        encoding="utf-8", errors="replace", cwd=str(REPO_ROOT), timeout=timeout)
+    if proc.returncode != 0:
+        raise RuntimeError(f"{' '.join(argv[:2])} failed: "
+                           f"{(proc.stderr or proc.stdout).strip()[:200]}")
+    return json.loads(proc.stdout or "[]")
+
+
+def search_wiki(query: str, mode: str = "hybrid", limit: int = 8) -> dict:
+    if mode not in ("fts", "hybrid"):
+        raise VerifyError(f"unknown search mode {mode!r} (fts|hybrid)")
+    if not query.strip():
+        return {"schema": SCHEMA, "mode": mode, "hits": []}
+    try:
+        if mode == "hybrid":
+            hits = _run_json(["scripts/wiki/query-rag.py", query,
+                              "--limit", str(limit), "--json"], timeout=180)
+        else:
+            hits = _run_json(["scripts/wiki/search-wiki.py", query,
+                              "--limit", str(limit), "--json"])
+    except (RuntimeError, json.JSONDecodeError):
+        if mode == "hybrid":
+            # vector deps missing on this machine → deterministic downgrade
+            # to plain FTS, reported honestly (never a silent empty answer)
+            mode = "fts"
+            hits = _run_json(["scripts/wiki/search-wiki.py", query,
+                              "--limit", str(limit), "--json"])
+        else:
+            raise
+    slim = [{"path": h.get("path"), "title": h.get("title"),
+             "score": h.get("score"), "snippet": (h.get("snippet") or "")[:200]}
+            for h in hits[:limit]]
+    return {"schema": SCHEMA, "mode": mode, "query": query, "hits": slim}
+
+
+def _load_graph() -> dict:
+    graph_path = REPO_ROOT / ".wiki-graph.json"
+    if not graph_path.is_file():
+        return {"nodes": [], "edges": []}
+    return json.loads(graph_path.read_text(encoding="utf-8"))
+
+
+def related_pages(page: str, edge_type: str | None = None) -> dict:
+    """Graph neighbors of one page (adjacency over .wiki-graph.json)."""
+    graph = _load_graph()
+    edges = graph.get("edges", [])
+    want = page.replace("\\", "/").lstrip("./")
+    neighbors: dict[str, dict] = {}
+    for e in edges:
+        if edge_type and e.get("type") != edge_type:
+            continue
+        src = (e.get("from") or "").replace("\\", "/")
+        dst = (e.get("to") or "").replace("\\", "/")
+        if src == want:
+            key = dst
+            rel = "outgoing"
+        elif dst == want:
+            key = src
+            rel = "incoming"
+        else:
+            continue
+        if key and not e.get("broken"):
+            slot = neighbors.setdefault(key, {"page": key, "relations": set()})
+            slot["relations"].add(f'{rel}:{e.get("type", "wikilink")}')
+    out = [{"page": v["page"],
+            "relations": sorted(v["relations"])} for v in neighbors.values()]
+    out.sort(key=lambda n: -len(n["relations"]))
+    return {"schema": SCHEMA, "page": want, "neighbors": out}
+
+
+def graph_hubs(limit: int = 10, domain: str | None = None) -> dict:
+    graph = _load_graph()
+    if domain:
+        dom_by_path = {n.get("path"): n.get("domain")
+                       for n in graph.get("nodes", [])}
+    degree: dict[str, int] = {}
+    for e in graph.get("edges", []):
+        if e.get("broken"):
+            continue
+        for end in (e.get("from"), e.get("to")):
+            if end:
+                degree[end] = degree.get(end, 0) + 1
+    hubs = [{"path": p, "degree": d} for p, d in degree.items()
+            if not domain or dom_by_path.get(p) == domain]
+    hubs.sort(key=lambda h: -h["degree"])
+    return {"schema": SCHEMA, "hubs": hubs[:limit]}
