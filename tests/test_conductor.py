@@ -322,3 +322,102 @@ class TestBridgeCli:
         r = self._run("recall", "--query", "phase", "--json")
         assert r.returncode == 0, r.stderr[:300]
         assert "hits" in json.loads(r.stdout)
+
+
+# ══════════════════════════════════════════════════════════════════════
+# Slice 1 — Brain Bridge graph/search navigation (A-Conductor Phase 4)
+# ══════════════════════════════════════════════════════════════════════
+class TestBridgeSearch:
+    def _run(self, *args):
+        import subprocess
+        return subprocess.run(
+            [sys.executable, "-m", "conductor", *args],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT), timeout=180)
+
+    def test_search_fts_returns_structured_hits(self):
+        r = self._run("search", "--query", "esp32 lora", "--mode", "fts", "--json")
+        assert r.returncode == 0, r.stderr[:400]
+        out = json.loads(r.stdout)
+        assert out["schema"] == "awiki-conductor/v1"
+        assert out["mode"] == "fts"
+        assert isinstance(out["hits"], list) and out["hits"], "must find esp32/lora pages"
+        hit = out["hits"][0]
+        for key in ("path", "title", "score"):
+            assert key in hit
+
+    def test_search_hybrid_mode_is_default(self):
+        r = self._run("search", "--query", "mqtt protocol iot", "--json")
+        assert r.returncode == 0, r.stderr[:400]
+        out = json.loads(r.stdout)
+        assert out["mode"] in ("hybrid", "fts")  # hybrid when deps present, else fts
+
+    def test_search_bad_mode_fails_closed(self):
+        r = self._run("search", "--query", "x", "--mode", "bogus", "--json")
+        assert r.returncode != 0
+        assert "mode" in r.stdout + r.stderr
+
+
+class TestBridgeRelated:
+    def _run(self, *args):
+        import subprocess
+        return subprocess.run(
+            [sys.executable, "-m", "conductor", *args],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT), timeout=120)
+
+    def test_related_returns_graph_neighbors(self):
+        r = self._run("related", "--page", "wiki/entities/iot/esp32.md", "--json")
+        assert r.returncode == 0, r.stderr[:400]
+        out = json.loads(r.stdout)
+        assert out["page"] == "wiki/entities/iot/esp32.md"
+        assert isinstance(out.get("neighbors"), list)
+        # a hub page must actually have neighbors
+        assert out["neighbors"], "esp32 is a hub — must have graph neighbors"
+
+    def test_related_unknown_page_is_deterministic(self):
+        r = self._run("related", "--page", "wiki/no/such-page.md", "--json")
+        assert r.returncode == 0
+        out = json.loads(r.stdout)
+        assert out["neighbors"] == []
+
+
+class TestBridgeHubs:
+    def _run(self, *args):
+        import subprocess
+        return subprocess.run(
+            [sys.executable, "-m", "conductor", *args],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT), timeout=120)
+
+    def test_hubs_returns_ranked_list(self):
+        r = self._run("hubs", "--json")
+        assert r.returncode == 0, r.stderr[:400]
+        out = json.loads(r.stdout)
+        assert isinstance(out["hubs"], list) and out["hubs"]
+        top = out["hubs"][0]
+        assert "path" in top and "degree" in top
+        degrees = [h["degree"] for h in out["hubs"]]
+        assert degrees == sorted(degrees, reverse=True)
+
+
+class TestRecallBM25:
+    def test_recall_ranks_by_relevance_not_substring(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        led = tmp_path / "ledger.jsonl"
+        import time as _t
+        rows = [
+            {"ts": 1.0, "session_id": "s1", "type": "lesson",
+             "summary": "unrelated topic alpha beta", "files": [], "tags": [], "parent_ts": None},
+            {"ts": 2.0, "session_id": "s2", "type": "lesson",
+             "summary": "esp32 lora gateway deep lesson learned", "files": [], "tags": [], "parent_ts": None},
+            {"ts": 3.0, "session_id": "s3", "type": "decision",
+             "summary": "esp32 pinout note only — no lora here", "files": [], "tags": [], "parent_ts": None},
+        ]
+        led.write_text("\n".join(json.dumps(x) for x in rows), encoding="utf-8")
+        from conductor.bridge import recall
+        hits = recall("esp32 lora gateway", ledger=led)
+        assert hits, "must find the relevant entry"
+        assert "esp32 lora" in hits[0]["summary"], (
+            "top hit must be the entry matching MOST query terms — a "
+            "single-token distractor must lose to the multi-term match")
