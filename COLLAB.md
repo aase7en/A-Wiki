@@ -20,6 +20,7 @@
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
 | ✅ **MERGED 2026-08-21 night-2: local rabies/domain stack (26 commits) integrated into vNext main** — canonical 3260/0 green, Core CI SUCCESS at `7b1b808e`; secrets prevented from entering git (.codex/config.toml untracked + tracked secret-free template); รพ. real name scrubbed → <HOSPITAL> | GLM/ZCode | 2026-08-21 | merge + repair | main `7b1b808e` |
+| 📂 **Drive layer จัดเรียงแล้ว 2026-08-21**: `L:/My Drive/A-Wiki-Data` มี `AGENTS.md` (กฎ 3 ข้อ สำหรับทุก agent) + `LAYOUT.md` (หนึ่ง role = หนึ่ง path) + `inbox/` (ไม่รู้จะวางไหน → วางที่นั่น ห้ามสร้างโครงสร้างใหม่) + `_archive/` (MANIFEST ครบ) · agents ที่จะเขียนลง drive ต้องอ่านสองไฟล์นั้นก่อน | GLM/ZCode | 2026-08-21 | done | — |
 | ✅ FOLLOW-UPS ปิดหมด 2026-08-21 เช้า: (1) <ESTATE> dir-name scrub แล้ว (2) quickchart allowlist แล้ว (3) stash เก่า 2 ตัว drop (archive ที่ .tmp/stash-archive-20260821) (4) hospital identifier → get_hospital_dir + AWIKI_HOSPITAL_DIR env — เครื่องที่ใช้โฟลเดอร์จริง ตั้ง `AWIKI_HOSPITAL_DIR=<ชื่อโฟลเดอร์>` ใน shell profile | GLM/ZCode | 2026-08-21 | done | — |
 
 | ✅ Phase 6 hook-engine — **MERGED (PR #17)** self-review PASS_WITH_NOTES 2026-08-21 | GLM/ZCode | done | — | merged |
