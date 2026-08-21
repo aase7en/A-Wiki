@@ -173,15 +173,36 @@ def route(
     rather than guessing.
     """
     scored: list[tuple[str, int]] = []
+    candidates: list[dict] = []  # every canonical skill (tier-2 pool)
+    has_trigger_hit = False
     for skill in getattr(registry, "skills", []) or []:
         if skill.get("status") != "canonical":
             continue
+        candidates.append(skill)
         triggers = skill.get("triggers")
-        if not triggers:
-            continue
-        score = match_score(triggers, text)
-        if score >= threshold:
-            scored.append((skill["name"], score))
+        if triggers:
+            score = match_score(triggers, text)
+            if score >= threshold:
+                has_trigger_hit = True
+                scored.append((skill["name"], score))
+    if not scored:
+        # Tier-2 fallback (Slice 2): triggerless skills are discoverable by
+        # scoring their description + domain — agents pick skills lazily
+        # instead of loading the 81KB SKILL-INDEX. Only consulted when the
+        # trigger tier found NOTHING, so explicit triggers always win.
+        # description tier: treat description+domain words as triggers
+        import re as _re
+        tokens = _re.findall(r"[A-Za-z0-9]+", text.lower())
+        fallback: list[tuple[str, int]] = []
+        for skill in candidates:
+            name = skill["name"]
+            hay = f"{skill.get('description','')} {skill.get('domain','')}".lower()
+            fscore = sum(1 for tok in set(tokens) if len(tok) >= 4 and tok in hay)
+            if fscore >= 2:  # two distinct >=4-char terms = real relevance
+                fallback.append((name, fscore))
+        if fallback:
+            fallback.sort(key=lambda pair: (-pair[1], len(pair[0]), pair[0]))
+            return fallback[:limit]
     scored.sort(key=lambda pair: (-pair[1], len(pair[0]), pair[0]))
     return scored[:limit]
 

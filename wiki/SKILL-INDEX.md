@@ -4,8 +4,10 @@
 > from `skills-registry.json`. **Do not edit by hand** (Iron Law #9).
 > Run `python scripts/regen-skill-surfaces.py` to refresh.
 >
-> This is the central skill brain. **Every agent reads this at session
-> start** (USA-1 §6) so all agents see the same canonical skill set.
+> **Search-first (Slice 2):** run MCP `skill_route` (trigger + description
+> fallback) or the A-ROUTER trigger table BEFORE scanning this file.
+> This index is a REFERENCE for choosing manually — read only the domain
+> section you need, not the whole table at session start.
 
 **Total canonical skills**: 243 · **Aliases/deprecated**: 0
 
