@@ -320,3 +320,7 @@ scripts/live-dashboard/test-results/
 scripts/live-dashboard/playwright-report/
 scripts/live-dashboard/.cache/
 .codex/config.toml
+
+# Phase 7 model runtime bindings — machine-local, may name real models
+config/models/runtime.local.yaml
+config/models/runtime.local.yml

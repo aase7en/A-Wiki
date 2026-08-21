@@ -1,0 +1,43 @@
+schema: awiki-model-policy/v1
+
+# Brain-side MODEL POLICY — vendor-neutral capability tiers.
+# Real model/provider names live ONLY in gitignored machine-local runtime
+# files (runtime.local.yaml) resolved by the A-Conductor control plane.
+
+tiers:
+  free:
+    description: "Zero-cost tier — local indexes, hooks, deterministic scripts, search"
+    cost_class: zero
+    allowed_tasks: [search, lookup, lint, classify, hook-dispatch]
+  cheap:
+    description: "Low-cost tier — light reasoning, tables, mechanical summaries"
+    cost_class: low
+    allowed_tasks: [summary, table, mechanical-edit, regression-triage]
+  capable:
+    description: "Mid tier — multi-file analysis, implementation chunks with review"
+    cost_class: medium
+    allowed_tasks: [implementation, review, refactor, investigation]
+  primary:
+    description: "Top tier — architecture decisions, security review, final verification"
+    cost_class: high
+    allowed_tasks: [architecture, security-review, final-verify, planning]
+    requires: [human-or-independent-review]
+
+budgets:
+  default:
+    max_tier: capable
+    note: "ordinary task work stays at or below capable"
+  hooks:
+    max_tier: free
+    note: "hook police work must be free/deterministic"
+  ingestion:
+    max_tier: cheap
+    note: "bulk ingest rides cheap tiers"
+  migration-phase:
+    max_tier: primary
+    note: "phase work may use primary with review gate"
+
+rules:
+  - no-hardcoded-vendor-names-in-public-files
+  - runtime-bindings-machine-local-only
+  - cost-first-ascend-only-when-insufficient

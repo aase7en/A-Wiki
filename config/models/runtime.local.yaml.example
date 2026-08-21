@@ -1,0 +1,17 @@
+# Machine-local runtime bindings (EXAMPLE — copy to runtime.local.yaml,
+# which is GITIGNORED). Real model/provider names are allowed ONLY here.
+schema: awiki-model-runtime/v1
+
+slots:
+  free:
+    provider: <provider-id>
+    model: <model-name>
+  cheap:
+    provider: <provider-id>
+    model: <model-name>
+  capable:
+    provider: <provider-id>
+    model: <model-name>
+  primary:
+    provider: <provider-id>
+    model: <model-name>
