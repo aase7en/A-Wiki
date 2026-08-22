@@ -78,13 +78,13 @@ Drive data layer (`A-Wiki-Data` บน Google Drive ของเครื่อ�
 
 ## 6. งานค้างทั้งระบบ (ตรวจแล้ว 2026-08-21)
 
-### ฝั่งสมอง (HOLD รอ A-Conductor จบ — user decision)
+### ฝั่งสมอง (HOLD ถูกปลดโดย user 2026-08-22 — เฟส 8–11 เสร็จครบ)
 | # | งาน | เฟส | เหตุผลที่ค้าง |
 |---|---|---|---|
-| 1 | Eval vs routing promotion split + automated reviewer foundations | 8 | HOLD |
-| 2 | A-Loop v2 (เชื่อม improvement-loop กับ review state machine) | 9 | HOLD (L5 substrate พร้อมแล้ว) |
-| 3 | world-intel MCP (optional, lazy) | 10 | HOLD |
-| 4 | Docs slimming + review-bus operator docs | 11 | HOLD (รวม JOBS/ สองที่เป็นที่เดียว) |
+| 1 | Eval vs routing promotion split + automated reviewer foundations | 8 | ✅ DONE `0db9cf0d` |
+| 2 | A-Loop v2 (เชื่อม improvement-loop กับ review state machine) | 9 | ✅ DONE `55541e5b` |
+| 3 | world-intel MCP (optional, lazy) | 10 | ✅ DONE `07d210a0` |
+| 4 | Docs slimming + review-bus operator docs | 11 | ✅ DONE — runbook + status sync |
 | 5 | follow-up เล็ก: ชื่อ identifier อื่นที่ยังมี "uthai" ใน function เก่า (alias คงไว้แล้ว) | — | เสริมได้เมื่อไหร่ |
 
 ### ฝั่ง A-Conductor (จากแผน/สถานะของมันเอง)

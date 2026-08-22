@@ -31,10 +31,10 @@
 | 5 | Memory layers (L0–L5 separation, experiment memory, promotion pipeline, privacy gate) | ✅ COMPLETE — TDD, awaiting review | `583ae72a` `2b650c08` — memory plane core + thin CLIs + 32 tests |
 | 6 | Hook engine consolidation (lifecycle runner, unit tests for every hard gate) | ✅ **PASS** (merged, self-review per user delegation) — PR #17 + scanner-truth PR #19 + governance PR #18; main CI green at merge SHA | `ccd1d712..051144e7` (7 commits) + follow-ups |
 | 7 | Model control plane (`config/models/policy.yaml` tiers+budgets, `model_policy.py` fail-closed, runtime gitignored, `conductor models` bridge) | ✅ **PASS** (merged PR #22, self-review per delegation) — policy authority แยกจาก dispatch ของ A-Conductor ตาม division doc | `policy.yaml` + `model_policy.py` + 14 tests |
-| 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ⬜ | — |
-| 9 | A-Loop v2 + connect improvement-loop states to review verdict/state machine | ⬜ | — |
-| 10 | Optional external modules (world-intel MCP — lazy, no vendoring) | ⬜ | — |
-| 11 | Documentation slimming + review-bus operator docs | ⬜ | — |
+| 8 | Eval vs routing promotion split + first automated reviewer adapter/review-state foundations | ✅ COMPLETE 2026-08-22 | `0db9cf0d` — review_bus engine (16 tests, §16 criteria 1:1) + N-P1-001 races=telemetry policy |
+| 9 | A-Loop v2 (review states wired into the loop completion gate) | ✅ COMPLETE 2026-08-22 | `55541e5b` — a_loop_review gate (6 tests): complete ONLY at READY, stale-SHA reopens |
+| 10 | Optional external modules (world-intel MCP — lazy, no vendoring) | ✅ COMPLETE 2026-08-22 | `07d210a0` — lazy stdio bridge, default-off, vendor-free (5 tests) |
+| 11 | Documentation slimming + review-bus operator docs | ✅ COMPLETE 2026-08-22 | runbook `docs/runbooks/review-bus.md` + status sync (JOBS/ merge note: no such dir existed — void) |
 
 ## Parallel Track — Agent Review Bus
 
