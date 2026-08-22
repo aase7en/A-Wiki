@@ -294,16 +294,29 @@ def tool_wiki_regen_index(args: dict) -> dict:
 
 def _harness_import():
     """Lazy import of batch harness — keeps MCP server startup fast and
-    isolates failures (e.g. missing openai/anthropic SDK) to the call site."""
+    isolates failures (e.g. missing openai/anthropic SDK) to the call site.
+
+    `adapters` namespace clash (found by user-journey E2E 2026-08-22): the
+    neural-spine import at startup caches sys.modules["adapters"] =
+    scripts/lib/adapters. The batch harness also has a top-level `adapters`
+    package (scripts/batch/adapters with IngestRequest/IngestResult) and
+    imports it bare for standalone CLI use. Purge the cached entry for the
+    duration of the batch import so it resolves against the batch path,
+    then restore the lib one for neural-spine callers."""
     sys.path.insert(0, str(REPO_ROOT / "scripts"))
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "batch"))
-    from batch.collect import collect_batch, write_results  # noqa: E402
-    from batch.config import load_conf  # noqa: E402
-    from batch.poll import _refresh_one  # noqa: E402
-    from batch.router import (  # noqa: E402
-        build_requests, discover_backlog, dispatch, estimate_cost, select_tier,
-    )
-    from batch.state import get_batch, list_batches  # noqa: E402
+    _saved_adapters = sys.modules.pop("adapters", None)
+    try:
+        from batch.collect import collect_batch, write_results  # noqa: E402
+        from batch.config import load_conf  # noqa: E402
+        from batch.poll import _refresh_one  # noqa: E402
+        from batch.router import (  # noqa: E402
+            build_requests, discover_backlog, dispatch, estimate_cost, select_tier,
+        )
+        from batch.state import get_batch, list_batches  # noqa: E402
+    finally:
+        if _saved_adapters is not None:
+            sys.modules["adapters"] = _saved_adapters
     return {
         "collect_batch": collect_batch,
         "write_results": write_results,
@@ -645,12 +658,15 @@ def handle_call_tool(req: dict) -> dict:
     if name not in TOOLS:
         raise MCPError(-32601, f"Tool not found: {name}")
     result = TOOLS[name]["fn"](args)
+    # JSON เสมอ แม้ result เป็น list (เช่น skill_route candidates) —
+    # str(list) คืน Python repr ที่ MCP client parse ไม่ได้ (E2E 2026-08-22)
+    text = (json.dumps(result, ensure_ascii=False, indent=2)
+            if isinstance(result, (dict, list)) else str(result))
     return {
         "content": [
             {
                 "type": "text",
-                "text": json.dumps(result, ensure_ascii=False, indent=2)
-                if isinstance(result, dict) else str(result),
+                "text": text,
             }
         ],
         "isError": False,

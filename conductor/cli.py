@@ -126,8 +126,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "models":
         import sys as _sys
         _sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
-        from model_policy import policy_summary
-        _emit(policy_summary(), args.json)
+        from model_policy import PolicyError, policy_summary
+        try:
+            _emit(policy_summary(), args.json)
+        except PolicyError as e:
+            # Read-only button must degrade with a clean verdict, never a
+            # traceback (e.g. pyyaml missing on a fresh machine).
+            _emit({"schema": "awiki-conductor/v1", "models_unavailable": True,
+                   "reason": str(e)}, args.json)
+            return 1
         return 0
 
     if args.cmd == "plan":

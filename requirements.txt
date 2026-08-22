@@ -9,6 +9,10 @@
 # Use Homebrew, pyenv, or python.org build if the extension probe fails.
 
 sqlite-vec>=0.1.6
+
+# YAML config authority (config/models/policy.yaml,
+# scripts/lib/model_policy.py + 10 more importers) — previously undeclared.
+pyyaml>=6.0
 fastembed>=0.4.0
 # apsw: third-party SQLite binding that always supports loadable extensions.
 # Needed because Python's stdlib sqlite3 has enable_load_extension disabled

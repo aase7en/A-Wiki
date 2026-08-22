@@ -10,8 +10,6 @@ import os
 import sys
 from pathlib import Path
 
-import yaml
-
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_POLICY = REPO_ROOT / "config" / "models" / "policy.yaml"
 DEFAULT_RUNTIME = REPO_ROOT / "config" / "models" / "runtime.local.yaml"
@@ -24,6 +22,14 @@ class PolicyError(RuntimeError):
 
 
 def _load_yaml(path: Path) -> dict:
+    # PyYAML is declared in requirements.txt but a fresh machine may not
+    # have installed it yet — surface that as PolicyError (clean, catchable
+    # by the conductor CLI) instead of crashing the import itself.
+    try:
+        import yaml
+    except ModuleNotFoundError as e:
+        raise PolicyError(
+            "PyYAML not installed — run: pip install -r requirements.txt") from e
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except (yaml.YAMLError, OSError, UnicodeDecodeError) as e:
