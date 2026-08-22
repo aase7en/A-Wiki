@@ -447,6 +447,9 @@ class TestJourney5CloseDay:
             f"claim must refuse empty rows: rc={res.returncode} out={res.stdout[:200]}"
 
     def test_generator_check_buttons(self, journey_env):
+        if not (REPO_ROOT / ".zcode" / "config.json").is_file():
+            pytest.skip(".zcode/config.json is machine-local (gitignored) — "
+                        "wiring is covered by TestZcodeProviderWiring units")
         for script in ("scripts/setup-zcode-config.py", "scripts/setup-codex-config.py"):
             res = _run([script, "--check"], journey_env)
             assert res.returncode == 0, f"{script} --check failed: {res.stdout + res.stderr[:300]}"

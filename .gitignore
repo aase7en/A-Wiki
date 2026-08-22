@@ -19,6 +19,8 @@
 # แต่ skill token-optimization จำเป็นต้อง track
 !skills/claude-code/token-optimization/
 *oauth*
+!skills/anthropic-skills/doc-coauthoring/
+!skills/anthropic-skills/doc-coauthoring/**  # "coauthoring" contains the substring oauth
 *jwt*
 *secrets*
 # public test files legitimately named *secret* — tests are public-safe
@@ -324,3 +326,4 @@ scripts/live-dashboard/.cache/
 # Phase 7 model runtime bindings — machine-local, may name real models
 config/models/runtime.local.yaml
 config/models/runtime.local.yml
+awiki_cli/*.pyc

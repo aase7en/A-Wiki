@@ -607,7 +607,14 @@ try:
     }
     _configured = {k: v for k, v in _seam.items() if v}
     if _configured:
-        _ns.set_paths(**_configured)
+        try:
+            _ns.set_paths(**_configured)
+        except Exception as _se:
+            # Fail-soft: an unusable env path (outside the sandbox, unwritable)
+            # degrades to default state paths — it must NEVER take the whole
+            # neural-spine tool set down with it (CI catch 2026-08-22).
+            sys.stderr.write(f"[mcp-wiki-server] state seam rejected, using "
+                             f"default paths: {_se}\n")
     TOOLS.update(_ns.TOOLS)
 except Exception as _e:
     sys.stderr.write(f"[mcp-wiki-server] Neural Spine tools load failed: {_e}\n")
