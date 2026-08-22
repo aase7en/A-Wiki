@@ -107,7 +107,7 @@ class TestEntryPoint:
 
 
 ROUTER_DOC = REPO_ROOT / "skills" / "awiki" / "a-router" / "SKILL.md"
-COMMAND_DOCS = sorted((REPO_ROOT / "commands").glob("A-*.md"))
+COMMAND_DOCS = sorted((REPO_ROOT / "commands").glob("A*.md"))  # A*.md: A-*.md entries + the /A one-entry doc
 
 
 def _refs_resolve(path: Path) -> tuple[list[str], list[str]]:
