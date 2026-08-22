@@ -146,17 +146,6 @@ jobs:
             exit 1
           }
 
-      - name: Diag — wiki drift before readiness
-        # Temporary forensic step (2026-08-22): the readiness gen-index
-        # check sees one more wiki/sources page than any clean checkout
-        # reproduces. Name the exact untracked/modified files here.
-        run: |
-          echo "=== git status wiki/ ==="; git status --short wiki/ || true
-          echo "=== sources md count ==="; find wiki/sources -name '*.md' | wc -l
-          echo "=== untracked sources ==="; git ls-files --others --exclude-standard wiki/sources || true
-          echo "=== last-modified wiki files ==="; find wiki -name '*.md' -newer .git/FETCH_HEAD -printf '%T@ %p
-' 2>/dev/null | sort -n | tail -8 || true
-
       - name: Readiness smoke
         # Surface [FAIL] lines as ::error annotations (public-API readable).
         run: |

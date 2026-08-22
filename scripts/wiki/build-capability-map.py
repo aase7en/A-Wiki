@@ -312,10 +312,30 @@ def discover_render_surfaces(root: Path) -> list[dict[str, str]]:
 
 
 def parse_wiki_stats(root: Path) -> dict[str, int]:
+    """Tracked-content-only counts (determinism contract, 2026-08-22):
+    runtime/untracked pages a test drops into wiki/ must not shift the
+    capability map between machines — same contract as gen-index."""
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "--", "wiki"], cwd=root,
+            capture_output=True, text=True, timeout=30)
+        tracked = ({l for l in out.stdout.splitlines() if l.endswith(".md")}
+                   if (out.returncode == 0 and out.stdout.strip()) else None)
+    except Exception:
+        tracked = None
     stats: dict[str, int] = {}
     for section in ("entities", "concepts", "synthesis", "sources"):
         base = root / "wiki" / section
-        stats[section] = len(list(base.rglob("*.md"))) if base.exists() else 0
+        if not base.exists():
+            stats[section] = 0
+            continue
+        if tracked is None:
+            stats[section] = len(list(base.rglob("*.md")))
+            continue
+        stats[section] = sum(
+            1 for m in base.rglob("*.md")
+            if m.relative_to(root).as_posix() in tracked)
     stats["total_pages"] = sum(stats.values())
     return stats
 

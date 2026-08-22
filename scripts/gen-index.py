@@ -145,14 +145,43 @@ def domain_from_path(p: Path, section: str) -> str:
     return ""
 
 
+def _tracked_md_set() -> set[str] | None:
+    """Tracked wiki/*.md paths (posix, repo-relative) — None if git unusable.
+
+    Generated context must be a function of TRACKED content only: any
+    runtime/untracked page a test or harness drops into wiki/ otherwise
+    desyncs `--check` between machines (CI catch 2026-08-22: one stray
+    sources page flipped SOURCES 164->165 and red-inked every run).
+    """
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "--", "wiki"], cwd=REPO_ROOT,
+            capture_output=True, text=True, timeout=30,
+        )
+    except Exception:
+        return None
+    if out.returncode != 0 or not out.stdout.strip():
+        # empty output = not a git tree (e.g. a patched WIKI_DIR inside a
+        # test fixture) — no tracked set to enforce, do not filter
+        return None
+    return {line for line in out.stdout.splitlines() if line.endswith(".md")}
+
+
 def collect_pages() -> dict[str, dict[str, list[dict]]]:
     """Walk wiki/, return {section: {domain: [page_record, ...]}}."""
     pages: dict[str, dict[str, list[dict]]] = defaultdict(lambda: defaultdict(list))
+    tracked = _tracked_md_set()
+    excluded_untracked = 0
     for section in SECTION_ORDER:
         section_dir = WIKI_DIR / section
         if not section_dir.is_dir():
             continue
         for md_path in sorted(section_dir.rglob("*.md")):
+            rel = md_path.relative_to(REPO_ROOT).as_posix()
+            if tracked is not None and rel not in tracked:
+                excluded_untracked += 1
+                continue
             try:
                 text = md_path.read_text(encoding="utf-8")
             except Exception as e:
@@ -171,6 +200,10 @@ def collect_pages() -> dict[str, dict[str, list[dict]]]:
                 "title": meta.get("title", ""),
             }
             pages[section][domain].append(rec)
+    if excluded_untracked:
+        print(f"[gen-index] {excluded_untracked} untracked wiki page(s) excluded "
+              f"from generated context — git add them to include "
+              f"(determinism: tracked content only)", file=sys.stderr)
     return pages
 
 
@@ -516,13 +549,6 @@ def main() -> int:
                     "tracked", "generated", lineterm=""))[:24]
                 for line in diff:
                     print("  " + line, file=sys.stderr)
-            # name the exact page population so platform drift (a file the
-            # runner sees but the author machine does not) is identifiable
-            # from the log alone
-            for sec in SECTION_ORDER:
-                mds = sorted((WIKI_DIR / sec).rglob("*.md")) if (WIKI_DIR / sec).is_dir() else []
-                names = [str(m.relative_to(WIKI_DIR)).replace(chr(92), "/") for m in mds]
-                print(f"  [diag] {sec}={len(names)} tail={names[-6:]}", file=sys.stderr)
             return 1
         return 0
 
