@@ -179,7 +179,10 @@ def check_generated_index() -> CheckResult:
     if proc.returncode == 0:
         return CheckResult("OK", "generated wiki context", "fresh")
     detail = (proc.stderr or proc.stdout).strip().splitlines()
-    return CheckResult("FAIL", "generated wiki context", detail[0] if detail else "stale")
+    # join the leading lines: gen-index --check now prints a unified diff
+    # for each stale file — the first line alone never says WHY it is stale
+    return CheckResult("FAIL", "generated wiki context",
+                       " | ".join(detail[:10]) if detail else "stale")
 
 
 def check_hooks(hooks_dir=None) -> CheckResult:
