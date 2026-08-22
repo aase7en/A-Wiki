@@ -559,6 +559,99 @@ class TestProviderConfigConsistency:
 
 
 # ══════════════════════════════════════════════════════════════════════
+# ZCode provider wiring — PreToolUse hard gates must be live
+# (defect #1, docs/plans/2026-08-21-auto-skill-consolidation.md §4:
+#  .zcode/config.json had NO PreToolUse wiring — every hard gate was dead
+#  on ZCode; the platform supports the Claude hook contract, verified in
+#  live session 2026-08-22)
+# ══════════════════════════════════════════════════════════════════════
+class TestZcodeProviderWiring:
+    """ZCode mirrors the Claude Code hook contract (same settings schema,
+    same tool vocabulary — Edit/Write/MultiEdit/Bash/Agent), so it must be
+    a first-class provider: event sweeps, never named registered dispatch."""
+
+    def _load_generator(self, name="zcode_cfg"):
+        import importlib.util as ilu
+        spec = ilu.spec_from_file_location(
+            name, REPO_ROOT / "scripts" / "setup-zcode-config.py")
+        mod = ilu.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_zcode_provider_adapter_is_known_and_claude_shaped(self):
+        import providers
+        events = providers.supported_events("zcode")
+        assert "PreToolUse" in events
+        assert "UserPromptSubmit" in events
+        for ev in events:
+            assert providers.normalize_event("zcode", ev) == ev
+        payload = {"tool_name": "Edit", "tool_input": {"file_path": "wiki/x.md"}}
+        assert providers.normalize_payload("zcode", json.dumps(payload)) == payload
+
+    def test_zcode_hooks_model_dispatches_pretooluse_hard_gate_sweeps(self):
+        mod = self._load_generator()
+        blocks = mod.HOOKS_CONFIG["events"]["PreToolUse"]
+        matchers = {b.get("matcher", "") for b in blocks}
+        assert {"Edit|Write|MultiEdit", "Bash", "Agent"} <= matchers
+        for b in blocks:
+            for h in b.get("hooks", []):
+                cmd = h.get("command", "")
+                if "hooks_runner.py" in cmd:
+                    assert cmd.startswith(
+                        "python3 ${ZCODE_PROJECT_DIR}/scripts/hooks_runner.py"
+                        " --provider zcode --event PreToolUse"), cmd
+        import registry
+        sweep_view = {"hooks": mod.HOOKS_CONFIG["events"]}
+        named = _runner_hook_ids(_all_commands(sweep_view)) & set(registry.HOOK_REGISTRY)
+        assert named == set(), f"named registered dispatch must not exist: {sorted(named)}"
+
+    def test_zcode_generator_merges_hooks_and_preserves_machine_sections(self, tmp_path):
+        mod = self._load_generator("zcode_cfg_merge")
+        machine = {
+            "mcp": {"servers": {"node_repl": {"command": "C:\\machine\\node.exe",
+                                              "args": []}}},
+            "hooks": {"enabled": True, "events": {
+                "Stop": [{"hooks": [{"type": "command",
+                                     "command": "python3 x.py"}]}]}},
+        }
+        merged = mod.merge_config(machine)
+        assert merged["mcp"] == machine["mcp"], "machine-local mcp section must survive"
+        assert merged["hooks"]["enabled"] is True
+        assert merged["hooks"]["events"] == mod.HOOKS_CONFIG["events"]
+        assert mod.merge_config(merged) == merged, "merge must be idempotent"
+
+    def test_zcode_runner_pretooluse_sweep_passes_benign_edit(self):
+        """End-to-end: benign Edit payload must pass once the provider is
+        wired. Before the fix this exited 2 — unknown provider, fail-closed —
+        which would have blocked every tool call had the sweep been wired.
+        The cost gate is satisfied the way production satisfies it: one
+        tier declaration per day (docs/protocols/cost-gate.md)."""
+        from datetime import date
+        iso = tempfile.mkdtemp(prefix="zcode-sweep-")
+        Path(iso, "costgate").mkdir(exist_ok=True)
+        Path(iso, "costgate",
+             f"cost-tier-{date.today():%Y-%m-%d}.txt").write_text(
+            "L4|implementation|zcode wiring test", encoding="utf-8")
+        res = run_runner(
+            ["--provider", "zcode", "--event", "PreToolUse"],
+            edit(file_path="wiki/concepts/ai-tools/test.md"),
+            isolate=iso,
+        )
+        assert res.returncode == 0, res.stderr
+
+    def test_zcode_runner_pretooluse_sweep_blocks_raw_edit(self):
+        """Regression guard: Iron Law #4 (raw/ immutable) must hold through
+        the ZCode sweep once the provider exists."""
+        res = run_runner(
+            ["--provider", "zcode", "--event", "PreToolUse"],
+            edit(file_path="raw/immutable-source.md"),
+            isolate=tempfile.mkdtemp(prefix="zcode-sweep-"),
+        )
+        assert res.returncode == 2
+
+
+
+# ══════════════════════════════════════════════════════════════════════
 # Runner semantics — hard fail-closed, soft never blocks (items 5–14)
 # ══════════════════════════════════════════════════════════════════════
 class TestRunnerHardSoftSemantics:

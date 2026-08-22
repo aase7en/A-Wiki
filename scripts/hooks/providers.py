@@ -50,6 +50,22 @@ PROVIDERS: dict[str, dict] = {
         },
         "payload_shape": "cline",
     },
+    # ZCode is a Claude Code workalike: same hook settings schema (matcher /
+    # command blocks), same tool vocabulary (Edit/Write/MultiEdit/Bash/Agent),
+    # Claude-shaped stdin payloads. Verified live 2026-08-22 — PreToolUse
+    # hooks fire; previously .zcode/config.json simply never wired them
+    # (docs/plans/2026-08-21-auto-skill-consolidation.md §4 defect #1).
+    "zcode": {
+        "event_map": {
+            "SessionStart": "SessionStart",
+            "UserPromptSubmit": "UserPromptSubmit",
+            "PreToolUse": "PreToolUse",
+            "PostToolUse": "PostToolUse",
+            "Stop": "Stop",
+            "PostCompact": "PostCompact",
+        },
+        "payload_shape": "canonical",
+    },
 }
 
 
