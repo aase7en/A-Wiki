@@ -516,6 +516,13 @@ def main() -> int:
                     "tracked", "generated", lineterm=""))[:24]
                 for line in diff:
                     print("  " + line, file=sys.stderr)
+            # name the exact page population so platform drift (a file the
+            # runner sees but the author machine does not) is identifiable
+            # from the log alone
+            for sec in SECTION_ORDER:
+                mds = sorted((WIKI_DIR / sec).rglob("*.md")) if (WIKI_DIR / sec).is_dir() else []
+                names = [str(m.relative_to(WIKI_DIR)).replace(chr(92), "/") for m in mds]
+                print(f"  [diag] {sec}={len(names)} tail={names[-6:]}", file=sys.stderr)
             return 1
         return 0
 
