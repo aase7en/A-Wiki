@@ -45,7 +45,7 @@
 | # | ความรุนแรง | สิ่งที่พบ (evidence ใน memory ledger) |
 |---|---|---|
 | 1 | 🔴 HIGH | ~~**ZCode ไม่มี PreToolUse wiring เลย**~~ **✅ FIXED 2026-08-22** — เพิ่ม `zcode` adapter ใน `scripts/hooks/providers.py` (Claude-shaped, verified live) + generator `scripts/setup-zcode-config.py` (merge hooks section, preserve mcp) + `.zcode/config.json` เครื่องนี้ wire แล้วทั้ง 6 events (sweep ไม่ใช่ named dispatch) — 17 hard gates live บน ZCode ตั้งแต่ session ถัดไป (config อ่านตอน startup) |
-| 2 | 🔴 HIGH | Gemini ขาด PostToolUse/Stop/UserPromptSubmit (19/29 live) |
+| 2 | 🔴 HIGH | ~~Gemini ขาด PostToolUse/Stop/UserPromptSubmit (19/29 live)~~ **✅ FIXED 2026-08-22 (บางส่วนโดยจำเป็น)** — verify กับ gemini-cli docs จริง: wire เพิ่ม `AfterTool`→PostToolUse (memory-capture/council) + `SessionEnd`→Stop (release-claims/self-audit) ส่วน UserPromptSubmit **ไม่มี equivalent ปลอดภัย** (BeforeAgent exit-2 = ลบ prompt ของ user) — routing คงอยู่บน MCP `skill_route` ตาม substrate table แล้ว จึงถือว่าปิด |
 | 3 | 🟡 MED | registry 30/243 paths ชี้ `~/.claude/...` = machine-dependent พังบน clone อื่น |
 | 4 | 🟡 MED | 2 skills description ว่าง (assessment-generator, word-generator) + gate ไม่ตรวจ + ใช้ `# Skill:` แทน frontmatter |
 | 5 | 🟡 MED | Gemini wrapper แปลง exit ทุกตัวที่ ≠0 เป็น block (ล้นเจตนา) |

@@ -650,6 +650,58 @@ class TestZcodeProviderWiring:
         assert res.returncode == 2
 
 
+# ══════════════════════════════════════════════════════════════════════
+# Gemini event coverage — defect #2 (docs/plans/2026-08-21-auto-skill-
+# consolidation.md §4): Gemini CLI supports AfterTool + SessionEnd natively
+# (docs/hooks/reference.md, verified 2026-08-22) but only SessionStart +
+# BeforeTool were wired. UserPromptSubmit has NO safe Gemini equivalent
+# (BeforeAgent exit-2 erases the prompt) — routing stays on MCP skill_route
+# per wiki/A-ROUTER.md substrate table.
+# ══════════════════════════════════════════════════════════════════════
+class TestGeminiEventCoverage:
+
+    def test_gemini_adapter_maps_supported_native_events(self):
+        import providers
+        assert providers.normalize_event("gemini", "BeforeTool") == "PreToolUse"
+        assert providers.normalize_event("gemini", "AfterTool") == "PostToolUse"
+        assert providers.normalize_event("gemini", "SessionStart") == "SessionStart"
+        assert providers.normalize_event("gemini", "SessionEnd") == "Stop"
+
+    def test_gemini_settings_wire_aftertool_and_sessionend_sweeps(self):
+        gemini = json.loads(
+            (REPO_ROOT / ".gemini" / "settings.json").read_text(encoding="utf-8"))
+        hooks = gemini.get("hooks", {})
+        for event in ("AfterTool", "SessionEnd"):
+            blocks = hooks.get(event, [])
+            assert blocks, f".gemini/settings.json missing {event} wiring"
+            commands = [h.get("command", "")
+                        for b in blocks for h in b.get("hooks", [])]
+            assert any(
+                f"hooks_runner.py --provider gemini --event {event}" in c
+                for c in commands), f"{event} must dispatch through the runner"
+
+    def test_gemini_aftertool_sweep_passes_benign_bash(self):
+        """End-to-end: AfterTool must reach PostToolUse hooks (memory capture,
+        council trigger). Before the fix normalize_event raised → exit 2."""
+        payload = {"tool_name": "run_shell_command",
+                   "tool_input": {"command": "git status"}}
+        res = run_runner(
+            ["--provider", "gemini", "--event", "AfterTool"],
+            payload,
+            isolate=tempfile.mkdtemp(prefix="gemini-aftertool-"),
+        )
+        assert res.returncode == 0, res.stderr
+
+    def test_gemini_sessionend_sweep_passes(self):
+        payload = {"session_id": "test-session"}
+        res = run_runner(
+            ["--provider", "gemini", "--event", "SessionEnd"],
+            payload,
+            isolate=tempfile.mkdtemp(prefix="gemini-sessionend-"),
+        )
+        assert res.returncode == 0, res.stderr
+
+
 
 # ══════════════════════════════════════════════════════════════════════
 # Runner semantics — hard fail-closed, soft never blocks (items 5–14)

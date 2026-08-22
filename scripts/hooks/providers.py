@@ -38,7 +38,16 @@ PROVIDERS: dict[str, dict] = {
         "payload_shape": "canonical",
     },
     "gemini": {
-        "event_map": {"BeforeTool": "PreToolUse"},
+        # Native events verified against google-gemini/gemini-cli
+        # docs/hooks/reference.md (2026-08-22). BeforeAgent is deliberately
+        # NOT mapped to UserPromptSubmit: its exit-2 erases the user prompt —
+        # no safe equivalent (routing stays on MCP skill_route).
+        "event_map": {
+            "BeforeTool": "PreToolUse",
+            "AfterTool": "PostToolUse",
+            "SessionStart": "SessionStart",
+            "SessionEnd": "Stop",
+        },
         "payload_shape": "canonical",
     },
     "cline": {
