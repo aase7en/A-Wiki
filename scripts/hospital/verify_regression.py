@@ -148,7 +148,9 @@ def main() -> int:
 
     yaml_path = Path(__file__).resolve().parent / "regression_HNs.yaml"
     # Also check for drive-side raw-HN copy (prefers drive if present)
-    import os
+    # (`os` is module-level; a local `import os` here shadowed it and made
+    # the earlier os.environ.get() at the top of main() raise
+    # UnboundLocalError — full-suite catch, 2026-08-22)
     _hdir = os.environ.get("AWIKI_HOSPITAL_DIR", "hospital-main")
     drive_yaml = Path(f"drive/{_hdir}/RabiesVacc/regression_HNs.yaml")
     if drive_yaml.exists():
