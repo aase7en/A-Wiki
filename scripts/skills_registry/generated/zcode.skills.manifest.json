@@ -209,11 +209,6 @@
       "domain": "media,code"
     },
     {
-      "name": "blueprint",
-      "target": "skills/ecosystem/blueprint/SKILL.md",
-      "domain": "productivity"
-    },
-    {
       "name": "brainstorm-before-build",
       "target": "skills/claude-code/brainstorm-before-build/SKILL.md",
       "domain": "code"
@@ -284,19 +279,9 @@
       "domain": "code"
     },
     {
-      "name": "context-budget",
-      "target": "skills/ecosystem/context-budget/SKILL.md",
-      "domain": "ai-ops"
-    },
-    {
       "name": "continuous-agent-loop",
       "target": "skills/ecosystem/continuous-agent-loop/SKILL.md",
       "domain": "ai-ops"
-    },
-    {
-      "name": "council",
-      "target": "skills/ecosystem/council/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "crew-dispatch",
@@ -342,16 +327,6 @@
       "name": "deprecation-and-migration",
       "target": "skills/engineering-lifecycle/ship/deprecation-and-migration/SKILL.md",
       "domain": "code,engineering"
-    },
-    {
-      "name": "django-patterns",
-      "target": "skills/ecosystem/django-patterns/SKILL.md",
-      "domain": "code"
-    },
-    {
-      "name": "django-verification",
-      "target": "skills/ecosystem/django-verification/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "doc-coauthoring",
@@ -424,11 +399,6 @@
       "domain": "code,media"
     },
     {
-      "name": "gateguard",
-      "target": "skills/ecosystem/gateguard/SKILL.md",
-      "domain": "security"
-    },
-    {
       "name": "git-guardrails-claude-code",
       "target": "skills/mattpocock/git-guardrails-claude-code/SKILL.md",
       "domain": "engineering,security"
@@ -439,34 +409,14 @@
       "domain": "code,engineering"
     },
     {
-      "name": "golang-testing",
-      "target": "skills/ecosystem/golang-testing/SKILL.md",
-      "domain": "code"
-    },
-    {
-      "name": "grill-me",
-      "target": "skills/mattpocock/grill-me/SKILL.md",
-      "domain": "productivity,engineering"
-    },
-    {
       "name": "grill-with-docs",
       "target": "skills/mattpocock/grill-with-docs/SKILL.md",
       "domain": "engineering"
     },
     {
-      "name": "grilling",
-      "target": "skills/mattpocock/grilling/SKILL.md",
-      "domain": "productivity,engineering"
-    },
-    {
       "name": "handoff",
       "target": "skills/mattpocock/handoff/SKILL.md",
       "domain": "productivity,ai-ops"
-    },
-    {
-      "name": "healthcare-phi-compliance",
-      "target": "skills/ecosystem/healthcare-phi-compliance/SKILL.md",
-      "domain": "medical"
     },
     {
       "name": "hermes-fan-out",
@@ -504,16 +454,6 @@
       "domain": "code"
     },
     {
-      "name": "kotlin-testing",
-      "target": "skills/ecosystem/kotlin-testing/SKILL.md",
-      "domain": "code"
-    },
-    {
-      "name": "laravel-patterns",
-      "target": "skills/ecosystem/laravel-patterns/SKILL.md",
-      "domain": "code"
-    },
-    {
       "name": "lint-wiki",
       "target": "skills/wiki/lint-wiki/SKILL.md",
       "domain": "wiki"
@@ -522,11 +462,6 @@
       "name": "literature-review",
       "target": "skills/ecosystem/scientific-thinking-literature-review/SKILL.md",
       "domain": "data"
-    },
-    {
-      "name": "llm-trading-agent-security",
-      "target": "skills/ecosystem/llm-trading-agent-security/SKILL.md",
-      "domain": "security,trader"
     },
     {
       "name": "management-talk",
@@ -612,11 +547,6 @@
       "name": "performance-optimization",
       "target": "skills/engineering-lifecycle/review/performance-optimization/SKILL.md",
       "domain": "code,engineering"
-    },
-    {
-      "name": "perl-testing",
-      "target": "skills/ecosystem/perl-testing/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "pharmacy-order-lookup",
@@ -729,16 +659,6 @@
       "domain": "ai-ops"
     },
     {
-      "name": "rust-testing",
-      "target": "skills/ecosystem/rust-testing/SKILL.md",
-      "domain": "code"
-    },
-    {
-      "name": "safety-guard",
-      "target": "skills/ecosystem/safety-guard/SKILL.md",
-      "domain": "security"
-    },
-    {
       "name": "scaffold-exercises",
       "target": "skills/mattpocock/scaffold-exercises/SKILL.md",
       "domain": "engineering"
@@ -776,11 +696,6 @@
     {
       "name": "security-auditor",
       "target": "agents/security-auditor.md",
-      "domain": "security"
-    },
-    {
-      "name": "security-scan",
-      "target": "skills/ecosystem/security-scan/SKILL.md",
       "domain": "security"
     },
     {
@@ -824,19 +739,9 @@
       "domain": "media"
     },
     {
-      "name": "spec",
-      "target": "skills/awiki/spec/SKILL.md",
-      "domain": "ai-ops"
-    },
-    {
       "name": "spec-driven-development",
       "target": "skills/engineering-lifecycle/define/spec-driven-development/SKILL.md",
       "domain": "code,engineering"
-    },
-    {
-      "name": "strategic-compact",
-      "target": "skills/ecosystem/strategic-compact/SKILL.md",
-      "domain": "ai-ops"
     },
     {
       "name": "symlink-connector",
@@ -1017,11 +922,6 @@
       "name": "wiki-search-local",
       "target": "skills/wiki/wiki-search-local/SKILL.md",
       "domain": "wiki"
-    },
-    {
-      "name": "windows-desktop-e2e",
-      "target": "skills/ecosystem/windows-desktop-e2e/SKILL.md",
-      "domain": "code"
     },
     {
       "name": "word-generator",

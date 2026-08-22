@@ -21,7 +21,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "บังคับ: ประกาศงานก่อนแตะ shared surface เพื่อไม่ให้ agent หลายตัวทำซ้ำกัน. claim_acquire/list/release/advance ผ่าน MCP; PreToolUse hook block เมื่อชน claim ของ agent อื่น; lease หมดอายุเอง",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook block เมื่อชนกัน",
       "when_to_use": "ก่อนแก้ skills/, scripts/, commands/, registry — หรืออยากรู้ว่า agent อื่นทำอะไรอยู่",
       "examples": [
@@ -68,7 +68,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a blackboard thread that survives sessions. Auto-aggregates severity, blocks ship if critical.",
-      "invocation": "manual",
+      "invocation": "auto",
       "invocation_hint": "/A-Council \"<topic>\"",
       "triggers": [
         "ตรวจสอบ",
@@ -99,7 +99,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Debug loop ครบวงจร — A-Think → debug-mantra (+ root-cause gate) → tdd (failing test) → fix → verify → scrutinize. บังคับ Iron Law #1+#2. Subagent fan-out สำหรับ bug ซับซ้อน",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "Debug loop ครบวงจร — บังคับ failing test ก่อน fix + root cause ก่อน. รองรับ subagent fan-out สำหรับ bug ซับซ้อน",
       "when_to_use": "แก้ bug, หา root cause, test แดง, production incident",
       "examples": [
@@ -255,7 +255,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Master 7-stage dev pipeline (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST). Thin router delegates each stage to canonical skills. Hook-enforced (check_a_flow_discipline) — ห้ามข้าม stage. State in .tmp/a-flow.json",
-      "invocation": "manual",
+      "invocation": "auto",
       "triggers": [
         "/a-flow",
         "workflow",
@@ -303,7 +303,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
-      "invocation": "manual",
+      "invocation": "auto",
       "invocation_hint": "/A-Loop \"<objective>\"",
       "a_phase": "any"
     },
@@ -393,7 +393,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "วางแผน+ออกแบบ UX/UI/DB/Architecture — chain: A-Think → grill-with-docs → spec-driven → design tool → plan-orchestrate. บังคับ grill ≥3 Qs ก่อน implement",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement",
       "when_to_use": "วางแผน/ออกแบบ ระบบ ใหม่, database schema, UX/UI",
       "examples": [
@@ -447,7 +447,7 @@
       "version": "1.9.2",
       "status": "canonical",
       "description": "รายงานไตรมาสพิษสุนัขบ้าจาก HIS + screening — นับรายเคส 33 วัน, prior-complete 10 ปี, lookahead, HN audit และ Word รวม Q1-Q4 ไฟล์เดียวต่อปีงบประมาณแบบ overwrite",
-      "invocation": "both",
+      "invocation": "manual",
       "invocation_hint": "/A-Rabies-Report",
       "a_phase": "implement",
       "triggers": [
@@ -502,7 +502,7 @@
       "version": "1.1.0",
       "status": "canonical",
       "description": "A-Suite dispatcher + session-start pointer — map a request to the right A-* skill + phase. อ่าน wiki/A-ROUTER.md (generated) หรือเรียก MCP skill_route. ไม่มี trigger เอง เพื่อไม่แย่งงาน skill ปลายทาง. 2026-08-09: รวม a-route + awiki-lifecycle-router เข้าเป็น router เดียว",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ generate จาก registry",
       "when_to_use": "ไม่รู้ว่าจะใช้ skill ไหน / อยากเห็น 7-phase spine / ต้องการ route งานเข้า A-*",
       "examples": [
@@ -545,7 +545,7 @@
       "version": "1.2.0",
       "status": "canonical",
       "description": "Core reasoning loop ก่อนตอบ non-trivial — merge fable-method + fable5-standards. 7 steps: Restate/Done/Decompose/Approaches/Pre-mortem/Right-size/Prove. Foundation leaf ที่ a-plan/a-debug/a-doc เรียกเป็น Stage 1 (manual — ไม่ใช่ entry point ของ intent design/debug)",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. Foundation leaf ที่ a-plan/a-debug เรียกเป็น Stage 1",
       "when_to_use": "migration/competing-approaches/security-sensitive/multi-step (สำหรับ design/debug ให้เรียก a-plan/a-debug ตรง — a-think จะถูก chain เป็น Stage 1)",
       "examples": [
@@ -587,7 +587,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "A-Wiki Telegram integration — wiki search, lifecycle commands, backup via Telegram bot",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เชื่อมต่อ A-Wiki กับ Telegram bot เพื่อให้ค้นหาข้อมูล wiki, สั่ง lifecycle commands และทำ backup ผ่าน Telegram ได้โดยตรง สะดวกสำหรับการทำงานระยะไกล",
       "when_to_use": "เมื่อต้องการค้นหาหรือจัดการ wiki ผ่าน Telegram",
       "examples": [
@@ -624,7 +624,7 @@
       "version": "",
       "status": "canonical",
       "description": "Synthesize multiple A-Wiki pages in one domain through the Gemini-backed NotebookLM helper when local search is insufficient.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สังเคราะห์คำตอบข้ามหลายไฟล์ใน wiki โดยใช้ Gemini API — เหมาะกับคำถามที่ต้องรวมข้อมูลหลายแหล่ง",
       "when_to_use": "คำถามที่คำตอบอยู่กระจายในหลายหน้า wiki, ต้องการ synthesis ไม่ใช่แค่ search",
       "examples": [
@@ -652,7 +652,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use BEFORE designing/building anything new — features, systems, wiki domains, scripts, hooks, skills. Triggers: \"ออกแบบ\", \"วางระบบ\", \"สร้างฟีเจอร์\", \"สร้าง skil",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บังคับให้ถาม user 3 คำถาม (scope/constraint/success) ก่อนเริ่มสร้างสิ่งใหม่ ป้องกันการเขียนผิดทิศทาง",
       "when_to_use": "ก่อนสร้าง skill/hook/script/feature ใหม่ หรือ refactor ที่กระทบ >3 ไฟล์",
       "examples": [
@@ -687,7 +687,7 @@
       "version": "",
       "status": "canonical",
       "description": "Chrome DevTools MCP for live runtime data — DOM inspection, console logs, network traces, performance profiling. Use when building or debugging anything that ru",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, performance",
       "when_to_use": "debug frontend, ตรวจ layout, วัด performance, หา error ใน console",
       "examples": [
@@ -722,7 +722,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /build command-skill (BUILD phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for incremental implementation + TDD guidance.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-orchestrator.py สำหรับการพัฒนาแบบเพิ่มทีละขั้น พร้อมแนะนำ TDD",
       "when_to_use": "เมื่อต้องการเริ่มพัฒนาโค้ดแบบ incremental พร้อม TDD guidance",
       "examples": [
@@ -764,7 +764,7 @@
       "version": "",
       "status": "canonical",
       "description": "Automated quality gates, shift-left testing, and deployment pipelines. Use when setting up or modifying build and deploy pipelines. Use when adding automated ch",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตั้ง CI/CD pipeline — auto test, lint, build, deploy เพื่อลดมนุษย์ผิดพลาด",
       "when_to_use": "project ใหม่, หรืออยาก automate งานที่ทำซ้ำ",
       "examples": [
@@ -803,7 +803,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Senior Staff Engineer persona for code review — architecture, idioms, debt, hidden coupling, missing tests. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing tests",
       "when_to_use": "เรียกใน REVIEW stage ของ A-Flow หรือผ่าน /A-Council เพื่อตรวจ code review หลายมุม",
       "invocation_hint": "/code-reviewer"
@@ -826,7 +826,7 @@
       "version": "",
       "status": "canonical",
       "description": "Reduce unnecessary complexity while preserving exact behavior. Use when code works but is harder to read or maintain than it should be. Use when reviewing code ",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น",
       "when_to_use": "โค้ดอ่านยาก, มี duplicate, ฟังก์ชันยาวเกินไป หรือหลัง implement เสร็จ",
       "examples": [
@@ -861,7 +861,7 @@
       "version": "",
       "status": "canonical",
       "description": "Four-mantra debugging discipline — reproduce, trace the fail path, falsify the hypothesis, cross-reference every breadcrumb. Recite the mantra block verbatim at",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "[Iron Law #2] debug-mantra 4 ขั้น — reproduce → hypothesize → test-fix → verify — ไม่ใช่ try-and-see",
       "when_to_use": "ทุกครั้งที่เจอ bug — ห้ามแก้โดยไม่หา root cause ก่อน",
       "examples": [
@@ -899,7 +899,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user asks for /lint, asks a wiki question that requires reading 5+ files, asks to ingest a source longer than 2000 lines, or asks a cros",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "มอบหมายงานย่อยให้ subagent/worker model — เพื่อประหยัด context ของ primary agent",
       "when_to_use": "งานซ้ำๆ (scan, lint, gather), หรือเมื่อ primary agent เริ่มเต็ม context",
       "examples": [
@@ -935,7 +935,7 @@
       "version": "",
       "status": "canonical",
       "description": "Remove old systems and migrate users safely. Use when removing old systems, migrating users, or sunsetting features. Use before making a breaking change to plan",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback",
       "when_to_use": "ย้าย API, เปลี่ยน library, หรือปิดฟีเจอร์เก่า",
       "examples": [
@@ -972,7 +972,7 @@
       "version": "",
       "status": "canonical",
       "description": "Architecture Decision Records, API documentation, and inline documentation standards — document the why. Use when making architectural decisions, changing APIs,",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้",
       "when_to_use": "ตัดสินใจ architecture, เปลี่ยนเทคโนโลยี, หรือ doc สำคัญ",
       "examples": [
@@ -1006,7 +1006,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use when the user types /snapshot-nb, asks to refresh the NotebookLM snapshot, asks to export the wiki for NotebookLM, or wants to update NotebookLM after inges",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สร้างหรือรีเฟรช snapshot ของ wiki เพื่อส่งออกไปยัง NotebookLM โดยเฉพาะเมื่อผู้ใช้พิมพ์ /snapshot-nb หรือขอให้อัปเดตเนื้อหาหลังจาก ingest ข้อมูลใหม่",
       "when_to_use": "เมื่อผู้ใช้ต้องการ export wiki ไปยัง NotebookLM หรือรีเฟรช snapshot",
       "examples": [
@@ -1039,7 +1039,7 @@
       "version": "",
       "status": "canonical",
       "description": "Trunk-based development with atomic commits, change sizing, and clean history. Use when making any code change to ensure proper commit discipline. Use before ev",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "มาตรฐาน git: commit message format, branching, versioning, tagging",
       "when_to_use": "เริ่ม project, ตั้ง convention, หรือก่อน release",
       "examples": [
@@ -1074,7 +1074,7 @@
       "version": "",
       "status": "canonical",
       "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADRs and glossary) as it goes.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน",
       "when_to_use": "ต้องการทั้งลับแผนและได้เอกสาร ADR/glossary ในรอบเดียว",
       "examples": [
@@ -1108,7 +1108,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Sequential persona fan-out for Hermes (no native concurrency) — runs code-reviewer, test-engineer, security-auditor in sequence, merges into a triaged report.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "รัน persona หลายตัวตามลำดับสำหรับ Hermes (ไม่มี concurrency ดั้งเดิม) — code-reviewer, test-engineer, security-auditor ทำงานทีละตัว แล้วรวมเป็นรายงาน triaged",
       "when_to_use": "เมื่อต้องการตรวจสอบโค้ดแบบหลายมุมมองโดยไม่ต้องรันพร้อมกัน",
       "examples": [
@@ -1147,7 +1147,7 @@
       "version": "",
       "status": "canonical",
       "description": "Implement a piece of work based on a PRD or set of issues, using TDD where possible.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โค้ดมีคุณภาพและผ่านการทดสอบก่อน deploy",
       "when_to_use": "เมื่อต้อง implement งานจาก PRD หรือ issues",
       "examples": [
@@ -1186,7 +1186,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user sends a new source (file in raw/, URL, or pasted text) to be ingested into the wiki. Full workflow below — model-agnostic.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เอา source ใหม่ (URL, PDF, text) เข้า wiki — บันทึก raw ก่อน, สร้าง source summary, อัปเดต index",
       "when_to_use": "user ส่ง URL/PDF/file ให้เก็บเป็นความรู้ใน wiki",
       "examples": [
@@ -1220,7 +1220,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill when the user asks for /lint, /status, or requests a wiki health check. Full workflow below — model-agnostic.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตรวจสุขภาพ wiki: broken links, missing frontmatter, ชื่อไฟล์ผิด format, confidence markers",
       "when_to_use": "หลังแก้ wiki เยอะ, หรือเป็น routine health check",
       "examples": [
@@ -1256,7 +1256,7 @@
       "version": "",
       "status": "canonical",
       "description": "Structured logging, RED metrics, OpenTelemetry tracing, symptom-based alerting — instrument as you build. Use when adding telemetry, or shipping anything that r",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างการ build เพื่อให้ระบบมี telemetry พร้อม ship ทันที เน้นการ instrument ตั้งแต่แรก ไม่ใช่เพิ่มทีหลัง",
       "when_to_use": "เมื่อต้องการเพิ่ม telemetry หรือ ship service ใหม่",
       "examples": [
@@ -1295,7 +1295,7 @@
       "version": "",
       "status": "canonical",
       "description": "Enhance wiki content with Obsidian skills (wikilinks, bases, canvas, defuddle, CLI). Use when creating or editing markdown files in wiki/, working with pharmacy",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "จัดการ notes ใน Obsidian — wikilinks, tags, template, graph view",
       "when_to_use": "ใช้ Obsidian เป็น knowledge base ส่วนตัว",
       "examples": [
@@ -1324,7 +1324,7 @@
       "version": "",
       "status": "canonical",
       "description": "Measure-first approach to web performance. Use when performance requirements exist, you suspect regressions, or you need to optimize a specific metric. Use when",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา",
       "when_to_use": "แอป/API ช้า, ใช้ CPU/DB เยอะ, หรือ user ร้องเรียนความเร็ว",
       "examples": [
@@ -1392,7 +1392,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /plan command-skill (PLAN phase) — extracts task, calls telegram-command-router → persona-orchestrator.py to break work into verifiable tasks.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สกิลนี้ใช้รับคำสั่ง /plan จาก Telegram เพื่อแยกงานที่ซับซ้อนออกเป็นงานย่อยที่ตรวจสอบได้ โดยเรียกใช้ telegram-command-router และ persona-orchestrator.py เพื่อวางแผนการทำงานในเฟส PLAN",
       "when_to_use": "เมื่อต้องการแยกงานใหญ่เป็นงานย่อยที่ตรวจสอบได้ผ่าน Telegram",
       "examples": [
@@ -1429,7 +1429,7 @@
       "version": "",
       "status": "canonical",
       "description": "Decompose specs into small, verifiable tasks with acceptance criteria and dependency ordering. Use when you have a validated spec and need implementable units. ",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ",
       "when_to_use": "งานมีหลายขั้นตอน, ต้องประเมินเวลา, หรือแบ่งงานให้หลายคน/หลาย agent",
       "examples": [
@@ -1464,7 +1464,7 @@
       "version": "",
       "status": "canonical",
       "description": "Write the canonical engineering record of a fixed bug — root cause, mechanism, fix, validation, and how it slipped through. Engineer-audience, code identifiers ",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เขียนบทเรียนหลัง incident: เกิดอะไรขึ้น, root cause, impact, แก้อย่างไร, ป้องกันยังไงคราวหน้า",
       "when_to_use": "หลัง production incident, outage, หรือ bug รุนแรง",
       "examples": [
@@ -1498,7 +1498,7 @@
       "version": "",
       "status": "canonical",
       "description": "Turn A-Wiki structured data (model-scout results, post-mortems/code-reviews, health digests, knowledge graph, plan files) into a self-contained, interactive HTM",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "render JSON/report เป็น HTML สวยๆ สำหรับดู — ประหยัด token เพราะ HTML ไม่กลับเข้า context",
       "when_to_use": "ต้องการดู report/ตารางแบบสวย แต่ไม่อยากเปลือง context window",
       "examples": [
@@ -1532,7 +1532,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /review command-skill — extracts task, calls telegram-command-router → persona-orchestrator.py for sequential multi-persona review (code-reviewer, test-engineer, security-auditor).",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-command-router และ persona-orchestrator.py เพื่อดำเนินการตรวจสอบแบบหลายบทบาทตามลำดับ ได้แก่ code-reviewer, test-engineer และ security-auditor",
       "when_to_use": "เมื่อต้องการให้ AI ตรวจสอบโค้ด การทดสอบ และความปลอดภัยแบบหลายมุมมอง",
       "examples": [
@@ -1572,7 +1572,7 @@
       "version": "",
       "status": "canonical",
       "description": "Outsider-perspective end-to-end review of a plan, PR, or code change. First questions intent and whether a simpler/more elegant approach would achieve the same ",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "รีวิวแบบเข้ม — ตั้งคำถามทุก assumption, หา edge case, เช็ค security/perf. ใช้คู่กับ code-review",
       "when_to_use": "รีวิวงานก่อน merge, audit ระบบเก่า, หรือตรวจงานที่ risky",
       "examples": [
@@ -1606,7 +1606,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /search command-skill — wiki FTS5 search alias of /wiki. Extracts query, calls telegram-command-router → search-wiki.py.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ค้นหาข้อมูลในวิกิด้วยคำสั่ง /search ซึ่งเป็น alias ของ /wiki ใช้ FTS5 ในการค้นหาแบบเต็มข้อความ ส่งคำค้นหาไปยัง telegram-command-router แล้วเรียกสคริปต์ search-wiki.py เพื่อแสดงผลลัพธ์",
       "when_to_use": "เมื่อต้องการค้นหาข้อมูลในวิกิอย่างรวดเร็ว",
       "examples": [
@@ -1640,7 +1640,7 @@
       "version": "",
       "status": "canonical",
       "description": "OWASP Top 10 prevention, authentication patterns, secrets management, dependency auditing, and input validation. Use when handling user input, authentication, d",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation",
       "when_to_use": "รีวิว security, ก่อน deploy, หรือรับงานที่ sensitive",
       "examples": [
@@ -1679,7 +1679,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Security Engineer persona — auth, secrets, injection, OWASP, threat model, sandbox escapes. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model",
       "when_to_use": "เรียกเมื่อ review security-sensitive code หรือ /A-Council",
       "invocation_hint": "/security-auditor"
@@ -1701,7 +1701,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /ship command-skill (SHIP phase) — extracts task, calls telegram-command-router → persona-orchestrator.py for pre-launch checklist + parallel persona review.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router และ persona-orchestrator.py เพื่อรัน pre-launch checklist และให้ persona ตรวจสอบแบบ parallel ก่อน deploy จริง",
       "when_to_use": "เมื่อต้องการตรวจสอบความพร้อมก่อน deploy หรือ ship งาน",
       "examples": [
@@ -1737,7 +1737,7 @@
       "version": "",
       "status": "canonical",
       "description": "Pre-launch checklists, feature flag lifecycle, staged rollouts, rollback procedures, monitoring setup. Use when preparing to deploy to production.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เช็คลิสต์ก่อน release: test, docs, migration, rollback plan, monitoring — ให้มั่นใจว่า launch ปลอดภัย",
       "when_to_use": "ก่อน deploy ขึ้น production, release ฟีเจอร์ใหญ่, หรือส่งมอบงาน",
       "examples": [
@@ -1772,12 +1772,14 @@
         "hermes"
       ],
       "version": "1.0.0",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Telegram /spec command-skill (DEFINE phase) — extracts task from message, routes to persona-orchestrator to draft a spec before code. Forces Iron Law #1 (spec before implementation).",
-      "invocation": "manual",
+      "invocation": "auto",
       "invocation_hint": "/spec",
       "a_phase": "ask",
-      "triggers": []
+      "triggers": [],
+      "migrated_to": "spec-driven-development",
+      "note": "name collision with built-in /spec — superseded by spec-driven-development"
     },
     {
       "name": "spec-driven-development",
@@ -1797,7 +1799,7 @@
       "version": "",
       "status": "canonical",
       "description": "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear,",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เขียนสเปก/requirements ให้ชัดก่อนเริ่มเขียนโค้ด เพื่อให้ทุกคน (และ AI) เข้าใจตรงกันว่าต้องทำอะไร ถึงเงื่อนไขไหนถือว่าเสร็จ",
       "when_to_use": "เริ่มฟีเจอร์ใหม่, แก้ bug ใหญ่, หรือทำงานที่ซับซ้อนเกิน 1 ไฟล์",
       "examples": [
@@ -1836,7 +1838,7 @@
       "version": "",
       "status": "canonical",
       "description": "Test-driven development — the red-green-refactor loop, what makes a test worth keeping, anti-patterns.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "เขียน test ก่อนโค้ด (Red-Green-Refactor) เพื่อให้แน่ใจว่าโค้ดทำงานถูกและกัน regression",
       "when_to_use": "เขียนฟังก์ชันใหม่, แก้ bug (เขียน test สำหรับ bug ก่อน), หรือ refactor",
       "examples": [
@@ -1872,7 +1874,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "QA Specialist persona — missing edge cases, integration gaps, failure modes, test pyramid coverage. Used by /A-Council and a-flow TEST stage.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บุคลิก QA Specialist — edge cases, integration gaps, failure modes, test coverage",
       "when_to_use": "เรียกใน TEST stage ของ A-Flow หรือ /A-Council",
       "invocation_hint": "/test-engineer"
@@ -1894,7 +1896,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai postal address parsing, validation, formatting, or province/postcode lookup. Trigger whenever the user asks to: parse",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้สำหรับแยกวิเคราะห์ ตรวจสอบ และจัดรูปแบบที่อยู่ของไทย รวมถึงการค้นหารหัสไปรษณีย์และจังหวัด รองรับการ parse ที่อยู่จากข้อความที่ไม่เป็นทางการให้เป็นโครงสร้างที่ชัดเจน",
       "when_to_use": "เมื่อต้องการ parse หรือตรวจสอบที่อยู่ของไทย",
       "examples": [
@@ -1933,7 +1935,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai customer service messaging — replies, apologies, status updates, refund/return scripts, and auto-replies on LINE OA, ",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้สำหรับสร้างข้อความบริการลูกค้าภาษาไทย เช่น การตอบกลับ การขอโทษ การแจ้งสถานะคำสั่งซื้อ สคริปต์คืนเงิน/คืนสินค้า และข้อความตอบกลับอัตโนมัติบน LINE OA",
       "when_to_use": "เมื่อต้องการข้อความบริการลูกค้าภาษาไทย",
       "examples": [
@@ -1965,7 +1967,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai date formatting, Buddhist Era (พ.ศ.) ↔ Gregorian (ค.ศ.) year conversion, or Arabic ↔ Thai numeral conversion. Trigger",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "จัดรูปวันที่แบบไทย (พ.ศ., ปี ค.ศ. → พ.ศ.) — กันสับสน",
       "when_to_use": "แสดงวันที่ให้ user ไทย, หรือออกเอกสาร",
       "examples": [
@@ -2070,7 +2072,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai national ID, tax ID, phone number, or PromptPay QR code validation, normalization, or generation. Trigger whenever th",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้สำหรับตรวจสอบความถูกต้องของเลขบัตรประจำตัวประชาชนไทย เลขประจำตัวผู้เสียภาษี เบอร์โทรศัพท์ และ QR PromptPay รวมถึงการปรับรูปแบบให้เป็นมาตรฐานและการสร้าง QR PromptPay",
       "when_to_use": "เมื่อต้องการตรวจสอบหรือสร้างข้อมูลระบุตัวตนของไทย",
       "examples": [
@@ -2149,7 +2151,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for tasks involving Thailand's PDPA (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562). Trigger whenever the user asks to: draft a Thai privacy notice, w",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตรวจสอบการปฏิบัติตาม พ.ร.บ. PDPA — การเก็บ/ใช้/เปิดเผยข้อมูลส่วนบุคคล",
       "when_to_use": "แอปเก็บข้อมูล user, หรือต้อง compliance ไทย",
       "examples": [
@@ -2209,7 +2211,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving writing Thai-language social media captions, posts, or short-form copy. Trigger whenever the user asks to: write a caption",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ใช้สำหรับเขียนแคปชั่นภาษาไทยสำหรับโซเชียลมีเดีย โพสต์ หรือข้อความสั้น ๆ เหมาะกับงานที่ต้องการเนื้อหาที่กระชับ เข้าใจง่าย และตรงกับกลุ่มเป้าหมาย",
       "when_to_use": "เมื่อต้องการเขียนแคปชั่นภาษาไทย",
       "examples": [
@@ -2248,7 +2250,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving Thai text in code — word segmentation, Unicode normalization, sorting/collation, search indexing, romanization, truncation",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ตัดคำ/normalize ข้อความไทย — จัดการกับ tokenization ที่ไทยไม่มีวรรคตอน",
       "when_to_use": "ประมวลผล text ไทย, search, หรือ NLP",
       "examples": [
@@ -2276,7 +2278,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use this skill for any task involving English-Thai or Thai-English translation, localization, or rewording. Trigger whenever the user asks to: translate text be",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "แปลไทย-อังกฤษ คำศัพท์เทคนิค — รักษา context, ใช้คำเทคนิคที่คนไทยคุ้น",
       "when_to_use": "แปล doc, สื่อสารกับคนไทย, หรือทำ content สองภาษา",
       "examples": [
@@ -2304,7 +2306,7 @@
       "version": "",
       "status": "canonical",
       "description": "Use BEFORE declaring task complete OR before any destructive git op (reset --hard, clean -f, checkout --, restore, branch -D). Triggers: \"เสร็จแล้ว\", \"done\", \"/",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บังคับตรวจสอบก่อนบอกว่า 'เสร็จแล้ว' — รัน test, ตรวจ output, ยืนยันจริงไม่ใช่แค่คิดว่าเสร็จ",
       "when_to_use": "ก่อนบอก user ว่าทำเสร็จ, ก่อน commit, หรือหลัง refactor",
       "examples": [
@@ -2342,7 +2344,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Web Performance Engineer persona — Core Web Vitals, bundle size, runtime jank, animation cost, render path. Used by /A-Council and a-flow REVIEW stage.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "บุคลิก Web Performance Engineer — Core Web Vitals, bundle size, jank, animation cost",
       "when_to_use": "เรียกเมื่อ review web perf หรือ /A-Council",
       "invocation_hint": "/web-performance-auditor"
@@ -2364,7 +2366,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Telegram /wiki command-skill — extracts query, calls telegram-command-router → search-wiki.py FTS5, returns top 5 hits. LLM-route backing for the Pi5 gateway (closes C4 gap).",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ค้นหาข้อมูลจาก Wikipedia ผ่านคำสั่ง /wiki โดยส่งคำค้นหาไปยัง Telegram-command-router แล้วเรียกใช้ search-wiki.py เพื่อค้นหาแบบ FTS5 และส่งกลับ 5 ผลลัพธ์แรก ช่วยปิดช่องว่าง C4 สำหรับ Pi5 gateway",
       "when_to_use": "เมื่อต้องการค้นหาข้อมูลจาก Wikipedia อย่างรวดเร็ว",
       "examples": [
@@ -2396,7 +2398,7 @@
       "version": "",
       "status": "canonical",
       "description": "Search A-Wiki through local FTS5 before higher-cost model or web routes.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "ค้น wiki แบบ offline ผ่าน FTS5 — เร็ว, ฟรี, ไม่ต้องเรียก LLM",
       "when_to_use": "อยากค้นความรู้ใน wiki, หาหน้าที่เกี่ยวข้อง, ก่อนเขียนหน้าใหม่เพื่อกันซ้ำ",
       "examples": [

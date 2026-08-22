@@ -9,24 +9,24 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 236 · **Aliases/deprecated**: 7
+**Total canonical skills**: 198 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 91 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 77 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
-| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 22 |
+| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 56 |
-| `trader` | เทรด / DeFi / ตลาด | 11 |
-| `medical` | การแพทย์ / ร้านยา / HIPAA | 5 |
+| `engineering` | วิศวกร / Architect / Agent harness | 53 |
+| `trader` | เทรด / DeFi / ตลาด | 8 |
+| `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
-| `data` | Data Visualization / DB / Query | 12 |
-| `security` | ความปลอดภัย / Hardening | 9 |
-| `ai-ops` | AI ops / LLM / Cost | 27 |
-| `productivity` | Productivity / Management | 15 |
+| `data` | Data Visualization / DB / Query | 11 |
+| `security` | ความปลอดภัย / Hardening | 4 |
+| `ai-ops` | AI ops / LLM / Cost | 23 |
+| `productivity` | Productivity / Management | 12 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 14 |
@@ -53,7 +53,6 @@
 | `ai-regression-testing` | none | ecosystem | Regression testing strategies for AI-assisted development. Sandbox-mode API testing without datab... |
 | `api-connector-builder` | none | ecosystem | Build a new API connector or provider by matching the target repo's existing integration pattern ... |
 | `api-design` | none | ecosystem | ออกแบบ REST/GraphQL API — endpoint, schema, versioning, error format |
-| `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `awiki-brain-improvement-gate` | none | wiki | ใช้ก่อนแก้ไขความสามารถของ A-Wiki brain, agent instructions, skills, hooks, plugins, scripts, sync... |
 | `awiki-creator-layer` | none | wiki | เปลี่ยนบันทึก A-Wiki, หน้า wiki, สรุป source code และไฟล์เสียงส่วนตัว ให้เป็นโพสต์สาธารณะที่ปลอดภ... |
 | `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
@@ -67,36 +66,26 @@
 | `code-reviewer` | review | persona | บุคลิก Senior Staff Engineer สำหรับ review โค้ด — architecture, idioms, debt, coupling, missing t... |
 | `code-simplification` | review | engineering-lifecycle | ลดความซับซ้อนของโค้ด โดยไม่เปลี่ยนพฤติกรรม — ทำให้อ่านง่ายขึ้น ลดซ้ำ ตัดส่วนที่ไม่จำเป็น |
 | `content-engine` | none | ecosystem | สร้างระบบเนื้อหาที่ปรับให้เข้ากับแต่ละแพลตฟอร์ม เช่น X, LinkedIn, TikTok, YouTube และจดหมายข่าว พ... |
-| `council` | none | ecosystem | เรียกประชุมสภาสี่เสียงเพื่อช่วยตัดสินใจในสถานการณ์ที่คลุมเครือ มีหลายทางเลือก หรือต้องประเมินข้อด... |
 | `crew-dispatch` | none | wiki | แยกคำถาม A-Wiki ที่ซับซ้อนหลายมิติออกเป็น subtasks ย่อยแบบขนาน โดยให้ primary agent ตรวจสอบและควบ... |
 | `cross-agent-work-orders` | plan | wiki | มาตรฐานบังคับให้ทุก agent ทำงานร่วมกันใน repo เดียว: work orders + ตาราง claim + เลนไฟล์ + pause/... |
 | `crosspost` | none | ecosystem | แจกจ่ายเนื้อหาไปยังหลายแพลตฟอร์มพร้อมกัน เช่น X, LinkedIn, Threads และ Bluesky โดยปรับรูปแบบเนื้อ... |
 | `database-migrations` | none | ecosystem | Database migration best practices for schema changes, data migrations, rollbacks, and zero-downti... |
 | `deep-research` | none | ecosystem | ค้นหาข้อมูลเชิงลึกจากหลายแหล่งผ่าน firecrawl และ exa MCPs สังเคราะห์ผลลัพธ์และสร้างรายงานพร้อมการ... |
 | `deprecation-and-migration` | ship | engineering-lifecycle | เลิกใช้/ย้ายระบบเก่าอย่างปลอดภัย — มี migration path, sunset timeline, fallback |
-| `django-patterns` | none | ecosystem | design pattern Django — architecture, DRF REST API, ORM best practice, caching, signals, middleware |
-| `django-verification` | none | ecosystem | ตรวจสอบความพร้อมของโปรเจกต์ Django ก่อน release หรือ PR ครอบคลุม migrations, linting, tests พร้อม... |
 | `documentation-and-adrs` | ship | engineering-lifecycle | เขียน doc และ ADR (Architecture Decision Record) — บันทึกทำไมถึงตัดสินใจแบบนี้ |
 | `e2e-testing` | none | ecosystem | ทักษะสำหรับการเขียนและจัดการ E2E test ด้วย Playwright ครอบคลุม Page Object Model, การตั้งค่า conf... |
 | `error-handling` | none | ecosystem | Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error ... |
-| `everything-claude-code` | none | uncategorized | ทักษะนี้กำหนดรูปแบบและแนวปฏิบัติสำหรับการพัฒนาโปรเจกต์ JavaScript โดยใช้ conventional commits เพื... |
 | `frontend-patterns` | none | ecosystem | รวบรวมแนวทางการพัฒนา frontend สำหรับ React, Next.js, การจัดการ state, การเพิ่มประสิทธิภาพ และ UI ... |
 | `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
-| `golang-testing` | none | ecosystem | ทักษะการทดสอบ Go ที่ครอบคลุม table-driven tests, subtests, benchmarks, fuzzing และ test coverage ... |
 | `hook-suggest` | none | wiki | แนะนำ hook ที่เหมาะสมสำหรับการทำงานต่าง ๆ ในโปรเจกต์ เช่น pre-commit, pre-push หรือ post-checkout... |
 | `implement` | build | mattpocock | ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โ... |
 | `iterative-retrieval` | none | ecosystem | รูปแบบการดึงข้อมูลแบบวนซ้ำเพื่อปรับปรุงบริบทที่เกี่ยวข้องให้ดีขึ้นเรื่อย ๆ แก้ปัญหาที่ subagent ม... |
-| `kotlin-testing` | none | ecosystem | ทักษะการทดสอบ Kotlin ด้วย Kotest, MockK, การทดสอบ coroutine, property-based testing และ Kover cov... |
-| `laravel-patterns` | none | ecosystem | อธิบายรูปแบบสถาปัตยกรรม Laravel สำหรับแอปพลิเคชันระดับ production ครอบคลุมการจัดโครงสร้าง routing... |
 | `motion-patterns` | none | ecosystem | รวมแพทเทิร์น animation สำหรับ React / Next.js ที่พร้อมใช้งานจริง ครอบคลุมปุ่มกด, modal, toast, st... |
 | `nextjs-turbopack` | none | ecosystem | อธิบายการใช้งาน Next.js 16+ ร่วมกับ Turbopack ซึ่งเป็น incremental bundler ที่ช่วยเพิ่มความเร็วใน... |
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
-| `optimize-web-animations` | review | vendor-mengto | Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks... |
-| `parallel-execution-optimizer` | none | uncategorized | ใช้เมื่อต้องการให้งานเสร็จเร็วขึ้นด้วยการทำงานแบบ parallel, concurrent agents, batched tool calls... |
 | `pdf` | none | uncategorized | ใช้เมื่อต้องการทำงานกับไฟล์ PDF เช่น อ่านหรือดึงข้อความ/ตารางจาก PDF รวมหรือรวมหลายไฟล์ PDF เข้าด... |
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
-| `perl-testing` | none | ecosystem | ทักษะสำหรับการทดสอบ Perl โดยใช้ Test2::V0, Test::More, prove runner, การ mock, การวัด coverage ด้... |
 | `phaser-arcade-physics` | build | game | Phaser 3 Arcade Physics reference (colliders, overlap, velocity/gravity tuning) — vendored from g... |
 | `phaser-core` | build | game | Phaser 3 core engine reference (scenes, game config, loader, sprites) — vendored from gamedev-ski... |
 | `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
@@ -110,10 +99,8 @@
 | `react-patterns` | none | uncategorized | รวบรวมแพทเทิร์น React 18/19 ที่จำเป็น เช่น การใช้ hooks อย่างมีวินัย, การแบ่งขอบเขต Server/Client... |
 | `react-performance` | none | uncategorized | optimize React/Next.js — memo, code-splitting, lazy loading, render budget ตามแนวทาง Vercel engin... |
 | `react-testing` | none | uncategorized | test React component ด้วย React Testing Library + Vitest/Jest + MSW mock network + accessibility ... |
-| `recursive-decision-ledger` | none | uncategorized | ใช้เมื่อต้องการติดตามการตัดสินใจแบบวนซ้ำในกระบวนการค้นหาหรือปรับแต่งหลายขั้นตอน เช่น การสุ่มสำรวจ... |
 | `redis-patterns` | none | ecosystem | Redis data structure patterns, caching strategies, distributed locks, rate limiting, pub/sub, and... |
 | `resolving-merge-conflicts` | none | mattpocock | ช่วยแก้ไข conflict ที่เกิดขึ้นระหว่างการ merge หรือ rebase โดยวิเคราะห์ความตั้งใจของแต่ละ hunk แท... |
-| `rust-testing` | none | ecosystem | กลยุทธ์ test Rust — unit, integration, async test, property-based test, doctest |
 | `scrape-web` | none | uncategorized | ส่ง URL ไปยัง scraper ที่เหมาะสมที่สุด โดยไล่ระดับจาก curl → Scrapling → Crawl4AI → Firecrawl → B... |
 | `search-first` | none | ecosystem | ค้นหาเครื่องมือ ไลบรารี และแพทเทิร์นที่มีอยู่ก่อนเริ่มเขียนโค้ดใหม่ เพื่อลดงานซ้ำซ้อนและใช้ทรัพยา... |
 | `security-and-hardening` | review | engineering-lifecycle | ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation |
@@ -132,7 +119,6 @@
 | `web-artifacts-builder` | none | uncategorized | สร้าง HTML artifact หลาย component บน claude.ai ด้วย modern frontend — ดีไซน์สวย, โต้ตอบได้ |
 | `web-research` | none | wiki | ค้นหาข้อมูลจากเว็บโดยอัตโนมัติ เช่น ตรวจสอบราคา ดาต้าชีท หาตัวเลือก หรือยืนยันข้อเท็จจริง รองรับห... |
 | `webapp-testing` | none | uncategorized | ชุดเครื่องมือสำหรับทดสอบและโต้ตอบกับเว็บแอปพลิเคชันที่รันในเครื่อง โดยใช้ Playwright เพื่อตรวจสอบ... |
-| `windows-desktop-e2e` | none | ecosystem | สกิลสำหรับเขียน E2E test สำหรับแอปพลิเคชัน Windows desktop (WPF, WinForms, Win32/MFC, Qt) โดยใช้ ... |
 
 ### `debug` — ดีบัก / หาสาเหตุปัญหา
 
@@ -152,26 +138,17 @@
 |-------|-----------|----------|-------------|
 | `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
-| `add-shader-cursor-trail` | build | vendor-mengto | เอฟเฟกต์ cursor trail บน WebGPU — halftone twinkling, chromatic ripples, film grain พร้อม fallbacks |
-| `audit-reference-originality` | review | vendor-mengto | ตรวจสอบ originality ของเว็บ vs ข้อมูลอ้างอิง หา plagiarism risk พร้อม evidence + แนวแก้ |
 | `brand-guidelines` | none | uncategorized | ใช้สีและฟอนต์ของแบรนด์ Anthropic กับ artifact ใดๆ เพื่อให้มีลุคและฟีลแบบทางการของ Anthropic |
 | `brand-voice` | none | ecosystem | สร้างโปรไฟล์สไตล์การเขียนจากเนื้อหาจริง เช่น โพสต์ บทความ เอกสาร หรือเว็บไซต์ จากนั้นนำโปรไฟล์นั้... |
 | `canvas-design` | none | uncategorized | สร้างงานศิลปะภาพและเอกสาร .png และ .pdf ที่สวยงาม โดยใช้หลักการออกแบบและปรัชญาศิลปะ เหมาะสำหรับทำ... |
-| `cinematic-gsap-lenis-motion-system` | build | vendor-mengto | Motion system ระดับพรีเมียมด้วย GSAP + ScrollTrigger + Lenis — luxury editorial, Awwwards, scroll... |
 | `codebase-design` | build | mattpocock | ชุดคำศัพท์และแนวคิดสำหรับออกแบบโมดูลที่ลึก (deep modules) โดยเน้นการหาโอกาสในการขยาย (deepening o... |
 | `design-first-ui-prompting` | define | vendor-mengto | เทมเพลต prompt แบบ design-first: goal -> format -> layout -> type -> color -> constraints + varia... |
 | `domain-modeling` | define | mattpocock | ออกแบบและปรับปรุง domain model ของโปรเจกต์ — กำหนดคำศัพท์เฉพาะ, สร้าง ubiquitous language, และบัน... |
 | `frontend-design` | none | uncategorized | ออกแบบ UI/UX หน้าเว็บ — layout, color, typography, component |
-| `gsap` | build | vendor-mengto | GSAP animations — timelines, ScrollTrigger, stagger, transforms สำหรับ HTML/CSS/JS/React เติมช่อง... |
-| `gsap-scrolltrigger-storytelling` | build | vendor-mengto | Storytelling แบบ sticky scroll ด้วย GSAP ScrollTrigger — progressive reveals, scroll-synced anima... |
-| `optimize-web-animations` | review | vendor-mengto | Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks... |
-| `shaders-cursor-ripples` | build | vendor-mengto | เอฟเฟกต์น้ำเกร่อน (water ripple) ตามเมาส์บนรูปด้วย WebGPU + Shaders library |
 | `taste-skill` | build | design | Anti-slop frontend taste layer (Leonxlnx/taste-skill, MIT, 59.4k star) — infers design intent for... |
 | `theme-factory` | none | uncategorized | ชุดเครื่องมือสำหรับปรับแต่งสไตล์ของ artifacts เช่น สไลด์ เอกสาร รายงาน หรือหน้า HTML Landing Page... |
-| `threejs` | build | vendor-mengto | Three.js สำหรับเว็บ — scene/camera/renderer, lights, GLTF, controls, performance (เน้น designer p... |
 | `transitions-dev` | build | design | 18 production-ready CSS transitions + reveal/review/apply audit workflow (Jakubantalik/transition... |
 | `ui-ux-pro-max` | build | design | Searchable local design-intelligence database (nextlevelbuilder/ui-ux-pro-max-skill, MIT) — 161 p... |
-| `webgl-3d-object` | build | vendor-mengto | วัตถุ 3D บนเว็บด้วย WebGL — mesh depth, PBR material, แสงจริง, perspective camera, subtle rotatio... |
 
 ### `ux-ui` — UX/UI / Frontend / a11y
 
@@ -218,12 +195,9 @@
 | `error-handling` | none | ecosystem | Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error ... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
 | `git-workflow-and-versioning` | ship | engineering-lifecycle | มาตรฐาน git: commit message format, branching, versioning, tagging |
-| `grill-me` | define | methodology | Matt Pocock grill-me — thin wrapper that invokes grilling skill to stress-test a plan before buil... |
 | `grill-with-docs` | define | mattpocock | เหมือน grilling แต่ผลพลอยได้คือเอกสาร — ADR + glossary เกิดตามมาจากการสอบสวน |
-| `grilling` | define | methodology | Matt Pocock grilling — relentless interview to stress-test a plan/design before building. Foundat... |
 | `implement` | build | mattpocock | ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โ... |
 | `improve-codebase-architecture` | review | mattpocock | สแกนโค้ดเบสเพื่อหาโอกาสในการปรับปรุงสถาปัตยกรรม สร้างรายงาน HTML แบบภาพ จากนั้นเจาะลึกประเด็นที่เ... |
-| `latency-critical-systems` | none | uncategorized | ใช้สำหรับระบบที่ไวต่อ latency เช่น realtime dashboard, market data, streaming agent, execution ga... |
 | `mcp-server-patterns` | none | ecosystem | Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, stdio vs ... |
 | `migrate-to-shoehorn` | none | mattpocock | แปลงไฟล์ทดสอบ TypeScript ที่ใช้ type assertion แบบ `as` ให้ใช้ `@total-typescript/shoehorn` แทน เ... |
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
@@ -255,12 +229,9 @@
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
 | `ito-basket-compare` | none | uncategorized | เปรียบเทียบตะกร้า Itô prediction-market กับฐานความรู้ บันทึกพอร์ต บริบทการเงิน รายการเฝ้าดู หรือว... |
-| `ito-data-atlas-agent` | none | uncategorized | ออกแบบ Data Atlas agent สำหรับการวิจัยตะกร้า Itô, การค้นพบตลาด, การร่างพารามิเตอร์, และการแก้ไขแบ... |
 | `ito-market-intelligence` | none | uncategorized | ใช้สำหรับค้นหาข้อมูลเกี่ยวกับ prediction market เช่น อีเวนต์ เวนิว underlier สภาพคล่อง และข่าวสาร... |
 | `ito-trade-planner` | none | uncategorized | สร้างเวิร์กชีตวางแผนการซื้อขายสำหรับตลาดทำนายแบบ Itô หรือ venue workflows โดยไม่ให้คำแนะนำทางการเ... |
-| `llm-trading-agent-security` | none | ecosystem | รูปแบบความปลอดภัยสำหรับเอเจนต์เทรดดิ้งอัตโนมัติที่มีสิทธิ์เข้าถึงกระเป๋าเงินหรือทำธุรกรรม ครอบคลุ... |
 | `monte-carlo-quant-analysis` | none | awiki | Monte Carlo simulation + synthetic data + quant risk (VaR/CVaR/Sharpe/drawdown/RRR) สำหรับ portfo... |
-| `prediction-market-oracle-research` | none | uncategorized | ค้นคว้าข้อมูลจาก prediction market เพื่อใช้เป็น oracle signal หรือ data source สำหรับผลิตภัณฑ์, A... |
 | `prediction-market-risk-review` | none | uncategorized | ตรวจสอบเวิร์กโฟลว์ของ prediction market, basket, oracle และ trading agent ด้าน compliance, ความปล... |
 
 ### `medical` — การแพทย์ / ร้านยา / HIPAA
@@ -268,7 +239,6 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-rabies-report` | build | pipeline | รายงานไตรมาสพิษสุนัขบ้าแบบตรวจสอบย้อนกลับ — ใช้ HIS 10 ปี, screening ตามเวลา และ lookahead เพื่อส... |
-| `healthcare-phi-compliance` | none | ecosystem | รูปแบบการปฏิบัติตามข้อกำหนดด้านข้อมูลสุขภาพที่ได้รับการคุ้มครอง (PHI) และข้อมูลส่วนบุคคลที่สามารถ... |
 | `medical-pipeline` | meta | pipeline | ไปป์ไลน์คำถามคลินิกแบบ evidence-based — สืบค้นหลักฐาน -> วินิจฉัยแยกโรค/แนวทางรักษา -> ตรวจสอบควา... |
 | `openmed` | none | uncategorized | ใช้ OpenMed สำหรับการสกัดข้อมูลทางการแพทย์ (medical entity extraction), การตรวจจับข้อมูลส่วนบุคคล... |
 | `pharmacy-order-lookup` | none | wiki | ค้นหาข้อมูลใบสั่งยาจากร้านขายยา โดยใช้หมายเลขใบสั่งยา (Order ID) หรือชื่อผู้ป่วย เพื่อดึงรายละเอี... |
@@ -291,7 +261,6 @@
 |-------|-----------|----------|-------------|
 | `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
 | `clickhouse-io` | none | ecosystem | ClickHouse database patterns, query optimization, analytics, and data engineering best practices ... |
-| `data-throughput-accelerator` | none | uncategorized | ใช้เมื่อต้องการเร่งความเร็วการนำเข้าข้อมูลขนาดใหญ่ การ backfill การส่งออก ETL การโหลดคลังข้อมูล ก... |
 | `database-migrations` | none | ecosystem | Database migration best practices for schema changes, data migrations, rollbacks, and zero-downti... |
 | `finance-pipeline` | meta | pipeline | ไปป์ไลน์วิเคราะห์การลงทุนแบบครบวงจร — ดึงข้อมูล -> วิเคราะห์ (เทคนิค+พื้นฐาน+ความรู้สึกตลาด) -> โ... |
 | `literature-review` | none | ecosystem | ทักษะนี้ช่วยวางแผนการค้นหา คัดกรองแหล่งข้อมูล สังเคราะห์ และจัดการอ้างอิงสำหรับงานทบทวนวรรณกรรมอย... |
@@ -309,14 +278,9 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
-| `gateguard` | none | ecosystem | เกทที่บังคับให้ผู้ใช้ตรวจสอบข้อเท็จจริงก่อนดำเนินการแก้ไข เขียน หรือรัน Bash โดยจะบล็อกคำสั่ง Edi... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
-| `llm-trading-agent-security` | none | ecosystem | รูปแบบความปลอดภัยสำหรับเอเจนต์เทรดดิ้งอัตโนมัติที่มีสิทธิ์เข้าถึงกระเป๋าเงินหรือทำธุรกรรม ครอบคลุ... |
-| `safety-guard` | none | ecosystem | ตรวจสอบความปลอดภัยก่อนทำการที่เสียหายได้ยาก — delete, force push, ส่งข้อมูลออก, เปลี่ยน production |
 | `security-and-hardening` | review | engineering-lifecycle | ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation |
 | `security-auditor` | review | persona | บุคลิก Security Engineer — auth, secrets, injection, OWASP, threat model |
-| `security-review` | none | uncategorized | ใช้เมื่อเพิ่มระบบ authentication, จัดการ user input, ทำงานกับ secrets, สร้าง API endpoints หรือ i... |
-| `security-scan` | none | ecosystem | สแกนการตั้งค่า Claude Code ในโฟลเดอร์ .claude/ เพื่อหาช่องโหว่ด้านความปลอดภัย การตั้งค่าที่ผิดพลา... |
 
 ### `ai-ops` — AI ops / LLM / Cost
 
@@ -330,9 +294,7 @@
 | `agent-introspection-debugging` | none | ecosystem | debug agent failure แบบมีโครง — capture, diagnosis, contained recovery, prevention — ไม่ใช่แค่ลอง... |
 | `agent-sort` | none | ecosystem | เรียง skills/commands/rules/hooks สำหรับ repo หนึ่งๆ เป็น install plan โดยอ้างหลักฐาน — ไม่เดา |
 | `ai-regression-testing` | none | ecosystem | Regression testing strategies for AI-assisted development. Sandbox-mode API testing without datab... |
-| `benchmark-optimization-loop` | none | uncategorized | ใช้เมื่อต้องการปรับปรุงประสิทธิภาพของโค้ดหรือระบบ โดยลองหลายรูปแบบ วัด latency/throughput/cost แล... |
 | `build` | build | awiki | สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-... |
-| `context-budget` | none | ecosystem | จัดการ context window — โหลดเฉพาะข้อมูลที่จำเป็น, compact เมื่อใกล้เต็ม |
 | `continuous-agent-loop` | none | ecosystem | รูปแบบและสถาปัตยกรรม canonical สำหรับ autonomous agent loop — รองรับหลาย agent (Claude Code / Gem... |
 | `delegate-subagent` | none | wiki | มอบหมายงานย่อยให้ subagent/worker model — เพื่อประหยัด context ของ primary agent |
 | `eval-harness` | none | ecosystem | กรอบงานประเมินผลแบบเป็นทางการสำหรับ Claude Code sessions ที่ใช้หลักการ eval-driven development (E... |
@@ -345,8 +307,6 @@
 | `prompt-optimizer` | none | ecosystem | >- |
 | `review` | review | awiki | สกิลนี้ทำงานผ่านคำสั่ง /review ใน Telegram เพื่อดึงงานที่ต้องการตรวจสอบ จากนั้นเรียกใช้ telegram-... |
 | `ship` | ship | awiki | สกิลนี้ใช้คำสั่ง /ship เพื่อดึงข้อมูล task จาก Telegram แล้วส่งต่อไปยัง telegram-command-router แ... |
-| `spec` | define | command | Telegram /spec command-skill (DEFINE phase) — extracts task from message, routes to persona-orche... |
-| `strategic-compact` | none | ecosystem | แนะนำให้บีบอัดบริบทด้วยตนเองในช่วงเวลาที่เหมาะสมของงาน เพื่อรักษาบริบทที่สำคัญระหว่างขั้นตอนต่างๆ... |
 | `token-optimization` | none | wiki | ลดการใช้ token — ใช้ Markdown แทน HTML, compact JSON, ตัด verbose output |
 | `writing-great-skills` | meta | mattpocock | เอกสารอ้างอิงสำหรับการเขียนและแก้ไข skills ให้มีคุณภาพดี — ครอบคลุมหลักการและคำศัพท์ที่ทำให้ skil... |
 
@@ -355,10 +315,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `article-writing` | none | ecosystem | เขียนบทความ/บล็อก — มีโครง, hook, สาระ, ปิดท้าย |
-| `blueprint` | none | ecosystem | สกิลนี้ช่วยให้คุณสร้าง blueprint หรือพิมพ์เขียวสำหรับโปรเจกต์ใหม่ได้อย่างรวดเร็ว โดยกำหนดโครงสร้า... |
 | `doc-coauthoring` | none | uncategorized | แนะนำขั้นตอนการทำงานร่วมกันในการเขียนเอกสาร เช่น คู่มือ ข้อเสนอ สเปกเทคนิค หรือเอกสารตัดสินใจ โดย... |
-| `grill-me` | define | methodology | Matt Pocock grill-me — thin wrapper that invokes grilling skill to stress-test a plan before buil... |
-| `grilling` | define | methodology | Matt Pocock grilling — relentless interview to stress-test a plan/design before building. Foundat... |
 | `handoff` | meta | mattpocock | สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ |
 | `management-talk` | none | uncategorized | สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ |
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
@@ -455,11 +412,11 @@
 
 Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VERIFY→REVIEW→SHIP):
 
-- **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-me`, `grill-with-docs`, `grilling`, `research`, `spec`, `spec-driven-development`, `to-prd`
+- **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `add-shader-cursor-trail`, `build`, `cinematic-gsap-lenis-motion-system`, `codebase-design`, `game-phaser-pipeline`, `gsap`, `gsap-scrolltrigger-storytelling`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `shaders-cursor-ripples`, `taste-skill`, `tdd`, `threejs`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`, `webgl-3d-object`
+- **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
-- **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
+- **REVIEW**: `a-council`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
@@ -470,13 +427,53 @@ alias name auto-resolve to the canonical (USA-1 §7.2).
 
 | Alias / Deprecated | → Canonical | Note |
 |--------------------|-------------|------|
+| `add-shader-cursor-trail` | `a-router` | a-router |
 | `architecture-decision-records` | `documentation-and-adrs` | documentation-and-adrs |
+| `audit-reference-originality` | `a-router` | a-router |
+| `benchmark-optimization-loop` | `a-router` | a-router |
+| `blueprint` | `a-router` | a-router |
+| `cinematic-gsap-lenis-motion-system` | `a-router` | a-router |
+| `context-budget` | `a-router` | a-router |
+| `council` | `a-router` | a-router |
+| `data-throughput-accelerator` | `a-router` | a-router |
+| `django-patterns` | `a-router` | a-router |
+| `django-verification` | `a-router` | a-router |
+| `everything-claude-code` | `a-router` | a-router |
+| `fable5-standards` | `a-think` | a-think |
+| `gateguard` | `a-router` | a-router |
+| `golang-testing` | `a-router` | a-router |
+| `grill-me` | `grill-with-docs` | grill-with-docs |
+| `grilling` | `grill-with-docs` | grill-with-docs |
+| `gsap` | `a-router` | a-router |
+| `gsap-scrolltrigger-storytelling` | `a-router` | a-router |
+| `healthcare-phi-compliance` | `a-router` | a-router |
 | `imagegen` | `a-design` | a-design |
 | `internet-skill-finder` | `skill-scout` | skill-scout |
+| `ito-data-atlas-agent` | `a-router` | a-router |
+| `kotlin-testing` | `a-router` | a-router |
+| `laravel-patterns` | `a-router` | a-router |
+| `latency-critical-systems` | `a-router` | a-router |
+| `llm-trading-agent-security` | `a-router` | a-router |
 | `motion-ui` | `motion-advanced` | motion-advanced |
 | `openai-docs` | `documentation-and-adrs` | documentation-and-adrs |
+| `optimize-web-animations` | `a-router` | a-router |
+| `parallel-execution-optimizer` | `a-router` | a-router |
+| `perl-testing` | `a-router` | a-router |
 | `plugin-creator` | `skill-creator` | skill-creator |
+| `prediction-market-oracle-research` | `a-router` | a-router |
+| `recursive-decision-ledger` | `a-router` | a-router |
+| `rust-testing` | `a-router` | a-router |
+| `safety-guard` | `a-router` | a-router |
+| `security-review` | `a-router` | a-router |
+| `security-scan` | `a-router` | a-router |
+| `shaders-cursor-ripples` | `a-router` | a-router |
 | `skill-installer` | `skill-creator` | skill-creator |
+| `spec` | `spec-driven-development` | spec-driven-development |
+| `strategic-compact` | `a-router` | a-router |
+| `tdd-workflow` | `tdd` | tdd |
+| `threejs` | `a-router` | a-router |
+| `webgl-3d-object` | `a-router` | a-router |
+| `windows-desktop-e2e` | `a-router` | a-router |
 
 ## ⚡ Quick-Pick — what to use when
 
