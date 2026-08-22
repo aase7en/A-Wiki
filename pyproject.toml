@@ -9,7 +9,6 @@ description = "One-command access to your A-Wiki second brain (awiki search/stat
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "aase7en" }]
 keywords = ["ai", "second-brain", "knowledge-base", "agents", "wiki"]
 classifiers = [
   "Programming Language :: Python :: 3",
