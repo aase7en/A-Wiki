@@ -61,7 +61,26 @@
 | Self-evolving context DB | OpenViking | เป็นเป้าเฟส 8+ (eval loop) ฝั่งสมอง |
 | Content→Skill pipeline | cangjie-skill / book-to-skill | ต่อ `ingest-source` → เสนอ skill ใหม่ผ่าน A-Loop Phase 4 (มี mechanism พอดี) |
 
-(X/Twitter/Facebook/TikTok/YouTube ยังไม่ได้สำรวจในรอบนี้ — จำกัด context; บันทึกไว้เป็น optional step ก่อน implement)
+### 5.1 สำรวจ Social (2026-08-22 — X/TikTok/Facebook/YouTube ผ่าน Brave search; DDG โดน CAPTCHA, YouTube direct JS-rendered)
+
+**X/Twitter** — @milesdeutscher: second brain Claude+Obsidian trained on years of knowledge · @0xkkai: kepano (Obsidian creator) ปล่อย official Claude Skills pack — 44k installs · @oikon48: subagents persistent memory ผ่าน frontmatter + agent-memory dir · @NickSpisak_: skill trio `/second-brain` `/ingest` `/query` (scaffold vault + process sources → wiki pages) · @Av1dlive: Karpathy wiki-based second brain (claude-obsidian plugin) — notes queryable + **compound over time** · @Bober_smart: 20-min second-brain folder setup
+
+**TikTok** — @techtiff: port ChatGPT memory เข้า Claude + JSON-file external brain สำหรับ business · @willfrancis24: **nightly memory synthesis** + built-in RAG chat search + import ChatGPT memories · @jaredrhod: ย้าย memory ไป Obsidian + disable native memory → "memory vault" บน GitHub · @taki.gpt: Claude Code + Obsidian pairing
+
+**Facebook** — กลุ่ม Claude AI Community / Claude Community: ถาม "second brain คุ้มไหม?", tutorial markdown-for-Claude — สัญญาณ = คนทั่วไปยังสับสนเริ่มยังไง (ไม่มีไอเดียเทคนิคใหม่)
+
+**YouTube** — "How To Build The ULTIMATE AI Second Brain (Obsidian + Claude Code)" (58:33, เม.ย.) · "Claude Built the Ultimate Second Brain" (ก.ค.) · "Every Way To Set Up A Claude Second Brain Explained" (มิ.ย.) — แนวทาง setup-guide ยาว ไม่มี architecture ใหม่
+
+### 5.2 ไอเดียที่รับมาใช้ได้จริง (distilled)
+
+| ไอเดีย | ที่มา | ปรับใช้กับ A-Wiki |
+|---|---|---|
+| Skill trio เดียวจบ: ingest + query ใน entry เดียว | @NickSpisak_ (X) | ยืนยัน `/A` one-entry (§6.2) — community มาถึง conclusion เดียวกัน |
+| **Nightly memory synthesis** (cron) | @willfrancis24 (TikTok) | a_loop_distill ตอน Stop มีแล้ว — เพิ่ม nightly cron กลั่น ledger → เสนอ promotion (เฟส 8+) |
+| Subagent memory แยกต่อ persona | @oikon48 (X) | a-council personas ยังไร้ memory ส่วนตัว — บันทึกเป็นไอเดีย follow-up |
+| Cross-vendor memory import (ChatGPT → Claude) | @techtiff (TikTok) | cross-device sync มีแล้ว — cross-**vendor** import เป็นช่องใหม่ (low priority) |
+| "Compound over time" เป็น metric | @Av1dlive (Karpathy) | วัด graph growth + recall hit-rate ต่อเดือน = evidence ว่าสมองโตจริง |
+| Markdown-first vault เป็น standard | kepano 44k installs (X) | ยืนยัน wiki/ markdown ใช้ถูกทาง — อย่าเปลี่ยน schema |
 
 ## 6. ลำดับงาน (เมื่อ implement รอบหน้า)
 
