@@ -1,4 +1,16 @@
-# Skill: Word Generator (ตัวสร้างเอกสาร Word มาตรฐานไทย)
+---
+name: word-generator
+description: "Thai Standard Word Document Generator - เอกสาร Word .docx ฟอนต์ TH SarabunPSK ตามมาตรฐานสารบรรณไทย (python-docx + style mapping)"
+version: 1.0.0
+domain: [document]
+lifecycle_phase: none
+category: document
+agents: [all]
+status: canonical
+invocation: manual
+---
+
+# Word Generator (ตัวสร้างเอกสาร Word มาตรฐานไทย)
 
 ## 🎯 Overview
 ความสามารถในการสร้างเอกสาร Microsoft Word (.docx) ที่ถูกต้องตามมาตรฐานงานสารบรรณไทย โดยเน้นการใช้ฟอนต์ **TH SarabunPSK** หรือ **TH Sarabun New** เป็นหลัก

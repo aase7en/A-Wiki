@@ -9,17 +9,17 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 243 · **Aliases/deprecated**: 0
+**Total canonical skills**: 236 · **Aliases/deprecated**: 7
 
 ## 📊 Domain Summary
 
 | Domain | Thai | Skills |
 |--------|------|--------|
-| `code` | เขียนโค้ด / ภาษาโปรแกรม | 95 |
+| `code` | เขียนโค้ด / ภาษาโปรแกรม | 91 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 22 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 57 |
+| `engineering` | วิศวกร / Architect / Agent harness | 56 |
 | `trader` | เทรด / DeFi / ตลาด | 11 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 5 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
@@ -30,7 +30,7 @@
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 14 |
-| `media` | สื่อ / วิดีโอ / รูปภาพ | 17 |
+| `media` | สื่อ / วิดีโอ / รูปภาพ | 15 |
 | `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
 | `sre` | SRE / Observability / Deploy | 2 |
 
@@ -86,14 +86,12 @@
 | `golang-testing` | none | ecosystem | ทักษะการทดสอบ Go ที่ครอบคลุม table-driven tests, subtests, benchmarks, fuzzing และ test coverage ... |
 | `hook-suggest` | none | wiki | แนะนำ hook ที่เหมาะสมสำหรับการทำงานต่าง ๆ ในโปรเจกต์ เช่น pre-commit, pre-push หรือ post-checkout... |
 | `implement` | build | mattpocock | ใช้ทักษะนี้เพื่อ implement ฟีเจอร์หรือแก้ไขโค้ดตาม PRD หรือ issues ที่กำหนด โดยเน้น TDD เพื่อให้โ... |
-| `internet-skill-finder` | none | uncategorized | ค้นหาและแนะนำ Agent Skills จาก GitHub repositories ที่ผ่านการตรวจสอบแล้ว ใช้เมื่อผู้ใช้ต้องการค้น... |
 | `iterative-retrieval` | none | ecosystem | รูปแบบการดึงข้อมูลแบบวนซ้ำเพื่อปรับปรุงบริบทที่เกี่ยวข้องให้ดีขึ้นเรื่อย ๆ แก้ปัญหาที่ subagent ม... |
 | `kotlin-testing` | none | ecosystem | ทักษะการทดสอบ Kotlin ด้วย Kotest, MockK, การทดสอบ coroutine, property-based testing และ Kover cov... |
 | `laravel-patterns` | none | ecosystem | อธิบายรูปแบบสถาปัตยกรรม Laravel สำหรับแอปพลิเคชันระดับ production ครอบคลุมการจัดโครงสร้าง routing... |
 | `motion-patterns` | none | ecosystem | รวมแพทเทิร์น animation สำหรับ React / Next.js ที่พร้อมใช้งานจริง ครอบคลุมปุ่มกด, modal, toast, st... |
 | `nextjs-turbopack` | none | ecosystem | อธิบายการใช้งาน Next.js 16+ ร่วมกับ Turbopack ซึ่งเป็น incremental bundler ที่ช่วยเพิ่มความเร็วใน... |
 | `observability-and-instrumentation` | ship | engineering-lifecycle | เพิ่ม structured logging, RED metrics, OpenTelemetry tracing และ symptom-based alerting ระหว่างกา... |
-| `openai-docs` | none | uncategorized | ใช้ค้นหาหรืออ้างอิงเอกสารทางการของ OpenAI สำหรับการสร้างแอปพลิเคชันด้วย API, Codex, หรือผลิตภัณฑ์... |
 | `optimize-web-animations` | review | vendor-mengto | Profile + optimize performance ของ animation — CSS, canvas/WebGL, GSAP/Three/Matter, memory leaks... |
 | `parallel-execution-optimizer` | none | uncategorized | ใช้เมื่อต้องการให้งานเสร็จเร็วขึ้นด้วยการทำงานแบบ parallel, concurrent agents, batched tool calls... |
 | `pdf` | none | uncategorized | ใช้เมื่อต้องการทำงานกับไฟล์ PDF เช่น อ่านหรือดึงข้อความ/ตารางจาก PDF รวมหรือรวมหลายไฟล์ PDF เข้าด... |
@@ -104,7 +102,6 @@
 | `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
-| `plugin-creator` | none | uncategorized | สร้างและจัดโครงสร้าง plugin สำหรับ Codex โดยสร้างโฟลเดอร์ .codex-plugin/ พร้อมไฟล์ plugin.json ที... |
 | `postgres-patterns` | none | ecosystem | PostgreSQL database patterns for query optimization, schema design, indexing, and security. Based... |
 | `prisma-patterns` | none | ecosystem | Prisma ORM patterns for TypeScript backends — schema design, query optimization, transactions, pa... |
 | `project-flow-ops` | none | ecosystem | จัดการการทำงานระหว่าง GitHub และ Linear โดยการจัดลำดับความสำคัญของ issues และ pull requests, เชื่... |
@@ -122,7 +119,6 @@
 | `security-and-hardening` | review | engineering-lifecycle | ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation |
 | `shipping-and-launch` | ship | engineering-lifecycle | เช็คลิสต์ก่อน release: test, docs, migration, rollback plan, monitoring — ให้มั่นใจว่า launch ปลอ... |
 | `skill-creator` | none | uncategorized | สร้างทักษะใหม่ ปรับปรุงทักษะที่มีอยู่ และวัดประสิทธิภาพของทักษะ ช่วยให้คุณออกแบบและปรับแต่งทักษะต... |
-| `skill-installer` | none | uncategorized | ติดตั้งสกิล Codex จากรายการที่คัดสรรหรือจาก GitHub repo ลงใน $CODEX_HOME/skills ใช้เมื่อผู้ใช้ต้อ... |
 | `skill-scout` | none | ecosystem | ค้นหาสกิลที่มีอยู่แล้วจากแหล่งต่างๆ ทั้งในเครื่อง, marketplace, GitHub และเว็บ ก่อนที่จะสร้างสกิล... |
 | `social-publisher` | none | uncategorized | ช่วยกำหนดเวลาและเผยแพร่โพสต์โซเชียลมีเดียไปยัง 13 แพลตฟอร์มผ่าน SocialClaw เช่น X, LinkedIn, Inst... |
 | `spec-driven-development` | define | engineering-lifecycle | เขียนสเปก/requirements ให้ชัดก่อนเริ่มเขียนโค้ด เพื่อให้ทุกคน (และ AI) เข้าใจตรงกันว่าต้องทำอะไร ... |
@@ -210,7 +206,6 @@
 | `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
 | `agent-harness-construction` | none | ecosystem | Design and optimize AI agent action spaces, tool definitions, and observation formatting for high... |
 | `api-connector-builder` | none | ecosystem | Build a new API connector or provider by matching the target repo's existing integration pattern ... |
-| `architecture-decision-records` | none | uncategorized | บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้า... |
 | `ask-matt` | none | mattpocock | ใช้ถามว่าควรใช้ skill หรือ flow ไหนสำหรับสถานการณ์ของคุณ โดยทำหน้าที่เป็น router วนดู skills ทั้ง... |
 | `backend-patterns` | none | ecosystem | Backend architecture patterns, API design, database optimization, and server-side best practices ... |
 | `browser-testing-with-devtools` | verify | engineering-lifecycle | ใช้ Chrome DevTools MCP ดึงข้อมูล runtime จริง — DOM inspection, console logs, network traces, pe... |
@@ -424,11 +419,9 @@
 | `algorithmic-art` | none | uncategorized | สร้างงานศิลปะเชิงอัลกอริทึมด้วย p5.js โดยใช้ seeded randomness เพื่อให้ผลลัพธ์ reproducible และให... |
 | `blender-motion-state-inspection` | none | ecosystem | Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground con... |
 | `game-phaser-pipeline` | build | game | Pipeline เกมสำหรับโปรเจก game ของ A-Wiki (PWQ) — Phaser + Vite + TypeScript + PixelLab ครบ: route... |
-| `imagegen` | none | uncategorized | สร้างหรือแก้ไขภาพบิตแมปเมื่อต้องการภาพถ่าย ภาพประกอบ พื้นผิว สไปรต์ หรือภาพโปร่งใสที่ AI สร้างขึ้... |
 | `motion-advanced` | none | ecosystem | ทักษะนี้รวบรวมเทคนิค motion ขั้นสูงสำหรับ React และ Next.js ครอบคลุม drag & drop, gesture, text a... |
 | `motion-foundations` | none | ecosystem | จัดการ motion tokens, spring presets, และกฎ performance สำหรับ React/Next.js ด้วย motion/react คร... |
 | `motion-patterns` | none | ecosystem | รวมแพทเทิร์น animation สำหรับ React / Next.js ที่พร้อมใช้งานจริง ครอบคลุมปุ่มกด, modal, toast, st... |
-| `motion-ui` | none | uncategorized | ระบบ motion สำหรับ UI ที่พร้อมใช้งานจริงใน React/Next.js ใช้สำหรับเพิ่ม animation, transition และ... |
 | `phaser-arcade-physics` | build | game | Phaser 3 Arcade Physics reference (colliders, overlap, velocity/gravity tuning) — vendored from g... |
 | `phaser-core` | build | game | Phaser 3 core engine reference (scenes, game config, loader, sprites) — vendored from gamedev-ski... |
 | `pixijs-rendering` | build | game | PixiJS rendering reference (containers, sprites, filters, render pipeline) — vendored from gamede... |
@@ -469,6 +462,21 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **REVIEW**: `a-council`, `audit-reference-originality`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `optimize-web-animations`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+
+## 🔁 Alias → Canonical Resolution
+
+Deprecated/alias skills and their canonical replacement. Agents invoking the
+alias name auto-resolve to the canonical (USA-1 §7.2).
+
+| Alias / Deprecated | → Canonical | Note |
+|--------------------|-------------|------|
+| `architecture-decision-records` | `documentation-and-adrs` | documentation-and-adrs |
+| `imagegen` | `a-design` | a-design |
+| `internet-skill-finder` | `skill-scout` | skill-scout |
+| `motion-ui` | `motion-advanced` | motion-advanced |
+| `openai-docs` | `documentation-and-adrs` | documentation-and-adrs |
+| `plugin-creator` | `skill-creator` | skill-creator |
+| `skill-installer` | `skill-creator` | skill-creator |
 
 ## ⚡ Quick-Pick — what to use when
 

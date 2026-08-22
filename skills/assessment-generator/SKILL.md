@@ -1,4 +1,16 @@
-# Skill: Assessment Generator (แบบประเมินสมรรถภาพมืออาชีพ)
+---
+name: assessment-generator
+description: "Professional Competency Assessment Generator - สร้างแบบประเมินสมรรถนะ (Rubrics + Weighting + Excel/PDF forms) จาก job description ตามบริบทงานจริง"
+version: 1.0.0
+domain: [document]
+lifecycle_phase: none
+category: document
+agents: [all]
+status: canonical
+invocation: manual
+---
+
+# Assessment Generator (แบบประเมินสมรรถภาพมืออาชีพ)
 
 ## 🎯 Overview
 ความสามารถในการสร้างแบบประเมินสมรรถภาพการทำงาน (Competency Assessment) ที่ครอบคลุมทั้งเกณฑ์การให้คะแนน (Rubrics), น้ำหนักคะแนน (Weighting) และแบบฟอร์มประเมินที่พร้อมใช้งานในรูปแบบ Excel และ PDF โดยเน้นการวิเคราะห์ตามบริบทจริงของงาน

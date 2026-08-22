@@ -1302,7 +1302,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Capture architectural decisions made during Claude Code sessions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, an",
       "invocation": "manual",
       "th_description": "บันทึกการตัดสินใจทางสถาปัตยกรรมที่เกิดขึ้นระหว่าง Claude Code sessions ในรูปแบบ ADR ที่มีโครงสร้าง โดยตรวจจับช่วงเวลาที่มีการตัดสินใจโดยอัตโนมัติ บันทึกบริบท ทางเลือกที่พิจารณา และข้อสรุป",
@@ -1323,7 +1323,9 @@
         "สรุปข้อตัดสินใจ",
         "จัดเก็บ ADR เป็นไฟล์"
       ],
-      "invocation_hint": "/architecture-decision-records"
+      "invocation_hint": "/architecture-decision-records",
+      "note": "no tracked in-repo copy (only stale .claude worktree); re-add when vendored",
+      "migrated_to": "documentation-and-adrs"
     },
     {
       "name": "article-writing",
@@ -1433,7 +1435,7 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "",
+      "description": "Professional Competency Assessment Generator - สร้างแบบประเมินสมรรถนะ (Rubrics + Weighting + Excel/PDF forms) จาก job description ตามบริบทงานจริง",
       "invocation": "manual",
       "th_description": "สร้างข้อสอบหรือแบบประเมินจากเนื้อหาที่กำหนด โดยสามารถปรับระดับความยากและรูปแบบคำถามได้ เหมาะสำหรับการวัดความเข้าใจในเอกสารหรือหัวข้อที่ศึกษา",
       "when_to_use": "เมื่อต้องการสร้างข้อสอบหรือแบบประเมินจากเนื้อหาเอกสาร",
@@ -1580,7 +1582,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/benchmark-optimization-loop/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/benchmark-optimization-loop/SKILL.md",
       "agents": [
         "all"
       ],
@@ -2415,7 +2417,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/data-throughput-accelerator/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/data-throughput-accelerator/SKILL.md",
       "agents": [
         "all"
       ],
@@ -2988,7 +2990,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/everything-claude-code/SKILL.md",
+      "path": "skills/_upstream/ecc/.claude/skills/everything-claude-code/SKILL.md",
       "agents": [
         "all"
       ],
@@ -3125,7 +3127,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/frontend-a11y/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/frontend-a11y/SKILL.md",
       "agents": [
         "all"
       ],
@@ -3682,7 +3684,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-b",
       "invocation": "manual",
       "th_description": "สร้างหรือแก้ไขภาพบิตแมปเมื่อต้องการภาพถ่าย ภาพประกอบ พื้นผิว สไปรต์ หรือภาพโปร่งใสที่ AI สร้างขึ้นมา ใช้สำหรับงานที่ต้องการภาพที่มนุษย์วาดเองไม่ได้หรือใช้เวลานานเกินไป",
@@ -3703,7 +3705,9 @@
         "รอ AI สร้างภาพ",
         "ตรวจสอบและปรับแต่งเพิ่มเติม"
       ],
-      "invocation_hint": "/imagegen"
+      "invocation_hint": "/imagegen",
+      "note": "Codex/ZCode .system skill — installed by the agent runtime per machine, not repo content",
+      "migrated_to": "a-design"
     },
     {
       "name": "implement",
@@ -3858,7 +3862,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Search and recommend Agent Skills from verified GitHub repositories. Use when users ask to find, discover, search for, or recommend skills/plugins for specific ",
       "invocation": "manual",
       "th_description": "ค้นหาและแนะนำ Agent Skills จาก GitHub repositories ที่ผ่านการตรวจสอบแล้ว ใช้เมื่อผู้ใช้ต้องการค้นหา ค้นพบ หรือแนะนำ skills/plugins สำหรับงานเฉพาะด้าน",
@@ -3879,7 +3883,9 @@
         "กรองเฉพาะที่ผ่านการตรวจสอบ",
         "แสดงผลลัพธ์พร้อมคำแนะนำ"
       ],
-      "invocation_hint": "/internet-skill-finder"
+      "invocation_hint": "/internet-skill-finder",
+      "note": "no tracked in-repo copy (only stale .claude worktree); re-add when vendored",
+      "migrated_to": "skill-scout"
     },
     {
       "name": "iterative-retrieval",
@@ -3929,7 +3935,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/ito-basket-compare/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/ito-basket-compare/SKILL.md",
       "agents": [
         "all"
       ],
@@ -3965,7 +3971,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/ito-data-atlas-agent/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/ito-data-atlas-agent/SKILL.md",
       "agents": [
         "all"
       ],
@@ -4003,7 +4009,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/ito-market-intelligence/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/ito-market-intelligence/SKILL.md",
       "agents": [
         "all"
       ],
@@ -4039,7 +4045,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/ito-trade-planner/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/ito-trade-planner/SKILL.md",
       "agents": [
         "all"
       ],
@@ -4153,7 +4159,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/latency-critical-systems/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/latency-critical-systems/SKILL.md",
       "agents": [
         "all"
       ],
@@ -4374,7 +4380,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/marketing-campaign/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/marketing-campaign/SKILL.md",
       "agents": [
         "all"
       ],
@@ -4719,7 +4725,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Production-ready UI motion system for React/Next.js. Use when implementing animations, transitions, or motion patterns.",
       "invocation": "manual",
       "th_description": "ระบบ motion สำหรับ UI ที่พร้อมใช้งานจริงใน React/Next.js ใช้สำหรับเพิ่ม animation, transition และ motion pattern ต่าง ๆ ให้กับส่วนติดต่อผู้ใช้",
@@ -4741,7 +4747,9 @@
         "ทดสอบการทำงาน",
         "ปรับแต่งตาม feedback"
       ],
-      "invocation_hint": "/motion-ui"
+      "invocation_hint": "/motion-ui",
+      "note": "no tracked in-repo copy (only stale .claude worktree); re-add when vendored",
+      "migrated_to": "motion-advanced"
     },
     {
       "name": "nextjs-turbopack",
@@ -4864,7 +4872,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Use when the user asks how to build with OpenAI products or APIs, asks about Codex itself or choosing Codex surfaces, needs up-to-date official documentation wi",
       "invocation": "manual",
       "th_description": "ใช้ค้นหาหรืออ้างอิงเอกสารทางการของ OpenAI สำหรับการสร้างแอปพลิเคชันด้วย API, Codex, หรือผลิตภัณฑ์อื่นๆ รวมถึงวิธีการเลือก surface ที่เหมาะสม",
@@ -4879,7 +4887,9 @@
           "how": "พิมพ์ /openai-docs choosing Codex surfaces"
         }
       ],
-      "invocation_hint": "/openai-docs"
+      "invocation_hint": "/openai-docs",
+      "note": "Codex/ZCode .system skill — installed by the agent runtime per machine, not repo content",
+      "migrated_to": "documentation-and-adrs"
     },
     {
       "name": "openmed",
@@ -4949,7 +4959,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/parallel-execution-optimizer/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/parallel-execution-optimizer/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5340,7 +5350,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Create and scaffold plugin directories for Codex with a required `.codex-plugin/plugin.json`, optional plugin folders/files, valid manifest defaults, and person",
       "invocation": "manual",
       "th_description": "สร้างและจัดโครงสร้าง plugin สำหรับ Codex โดยสร้างโฟลเดอร์ .codex-plugin/ พร้อมไฟล์ plugin.json ที่มีค่าเริ่มต้นถูกต้อง รวมถึงโฟลเดอร์และไฟล์เสริมที่ต้องการ และกำหนดผู้พัฒนา (person) ได้",
@@ -5363,7 +5373,9 @@
         "สร้างโฟลเดอร์และไฟล์ตามที่เลือก",
         "ตรวจสอบความถูกต้องของ manifest"
       ],
-      "invocation_hint": "/plugin-creator"
+      "invocation_hint": "/plugin-creator",
+      "note": "Codex/ZCode .system skill — installed by the agent runtime per machine, not repo content",
+      "migrated_to": "skill-creator"
     },
     {
       "name": "post-mortem",
@@ -5464,7 +5476,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/prediction-market-oracle-research/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/prediction-market-oracle-research/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5502,7 +5514,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/prediction-market-risk-review/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/prediction-market-risk-review/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5692,7 +5704,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/react-patterns/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/react-patterns/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5729,7 +5741,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/react-performance/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/react-performance/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5764,7 +5776,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/react-testing/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/react-testing/SKILL.md",
       "agents": [
         "all"
       ],
@@ -5798,7 +5810,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/recursive-decision-ledger/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/recursive-decision-ledger/SKILL.md",
       "agents": [
         "all"
       ],
@@ -6366,7 +6378,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/security-review/SKILL.md",
+      "path": "skills/_upstream/ecc/.kiro/skills/security-review/SKILL.md",
       "agents": [
         "all"
       ],
@@ -6683,7 +6695,7 @@
         "all"
       ],
       "version": "",
-      "status": "canonical",
+      "status": "deprecated",
       "description": "Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill",
       "invocation": "manual",
       "th_description": "ติดตั้งสกิล Codex จากรายการที่คัดสรรหรือจาก GitHub repo ลงใน $CODEX_HOME/skills ใช้เมื่อผู้ใช้ต้องการดูรายการสกิลที่ติดตั้งได้หรือติดตั้งสกิลที่แนะนำ",
@@ -6704,7 +6716,9 @@
         "เลือกสกิลหรือระบุ GitHub repo",
         "ดาวน์โหลดและติดตั้งลง $CODEX_HOME/skills",
         "ยืนยันการติดตั้งสำเร็จ"
-      ]
+      ],
+      "note": "Codex/ZCode .system skill — installed by the agent runtime per machine, not repo content",
+      "migrated_to": "skill-creator"
     },
     {
       "name": "skill-scout",
@@ -6790,7 +6804,7 @@
       "lifecycle_phase": "none",
       "category": "uncategorized",
       "source": "external-installed",
-      "path": "~/.claude/skills/social-publisher/SKILL.md",
+      "path": "skills/_upstream/ecc/skills/social-publisher/SKILL.md",
       "agents": [
         "all"
       ],
@@ -8127,7 +8141,7 @@
       ],
       "version": "",
       "status": "canonical",
-      "description": "",
+      "description": "Thai Standard Word Document Generator - เอกสาร Word .docx ฟอนต์ TH SarabunPSK ตามมาตรฐานสารบรรณไทย (python-docx + style mapping)",
       "invocation": "manual",
       "th_description": "สร้างคำศัพท์หรือข้อความแบบสุ่มตามพารามิเตอร์ที่กำหนด เช่น จำนวนคำ ประเภทของคำ หรือรูปแบบที่ต้องการ ใช้สำหรับทดสอบเนื้อหา สร้างข้อมูลจำลอง หรือเพิ่มไอเดียในการเขียน",
       "when_to_use": "เมื่อต้องการสร้างคำหรือข้อความสุ่มเพื่อทดสอบหรือสร้างไอเดีย",

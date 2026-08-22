@@ -55,7 +55,7 @@
           {
             "name": "a-wiki-hooks-runner-aftertool",
             "type": "command",
-            "command": "bash -c 'python3 scripts/hooks_runner.py --provider gemini --event AfterTool; rc=$?; if [ $rc -eq 0 ]; then exit 0; fi; exit 2'",
+            "command": "python3 scripts/hooks_runner.py --provider gemini --event AfterTool",
             "timeout": 60000
           }
         ]
@@ -68,7 +68,7 @@
           {
             "name": "a-wiki-hooks-runner-sessionend",
             "type": "command",
-            "command": "bash -c 'python3 scripts/hooks_runner.py --provider gemini --event SessionEnd; rc=$?; if [ $rc -eq 0 ]; then exit 0; fi; exit 2'",
+            "command": "python3 scripts/hooks_runner.py --provider gemini --event SessionEnd",
             "timeout": 60000
           }
         ]

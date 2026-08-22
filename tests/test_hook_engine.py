@@ -701,6 +701,25 @@ class TestGeminiEventCoverage:
         )
         assert res.returncode == 0, res.stderr
 
+    def test_gemini_commands_have_no_bash_rc_wrapper(self):
+        """defect #5: the runner already normalizes every outcome to 0/2 — the
+        `bash -c '...; rc=$?; ...'` wrapper must exist ONLY on events that
+        carry hard gates (BeforeTool: interpreter-missing rc 127 must still
+        fail closed per P6-RR04). Soft-only events (AfterTool, SessionEnd)
+        must call the runner directly: wrapper-converted blocks there are
+        over-intent and add a needless bash dependency on Windows."""
+        gemini = json.loads(
+            (REPO_ROOT / ".gemini" / "settings.json").read_text(encoding="utf-8"))
+        for event, blocks in gemini.get("hooks", {}).items():
+            for block in blocks:
+                for hook in block.get("hooks", []):
+                    cmd = hook.get("command", "")
+                    if "hooks_runner.py" not in cmd:
+                        continue
+                    assert cmd.startswith(("python3 ", "bash -c 'python3 ")), cmd
+                    if event in ("AfterTool", "SessionEnd"):
+                        assert "bash -c" not in cmd and "rc=$?" not in cmd, cmd
+
 
 
 # ══════════════════════════════════════════════════════════════════════
@@ -1433,12 +1452,13 @@ def _run_gemini_config(tmp_path: Path, payload):
         (REPO_ROOT / ".gemini" / "settings.json").read_text(encoding="utf-8")
     )
     command = cfg["hooks"]["BeforeTool"][0]["hooks"][0]["command"]
-    # P6-RR04: the command is a fail-closed bash wrapper
-    # (`bash -c 'python3 …; rc=$?; … exit 2'`). Extract the inner python3
-    # invocation so this E2E exercises the runner portion directly.
-    m = re.search(r"python3\s+(.+?);", command)
+    # The command may be a direct runner invocation (post defect-#5) or the
+    # historical fail-closed bash wrapper (`bash -c 'python3 …; rc=$?; …'`).
+    # Extract the inner python3 invocation either way so this E2E exercises
+    # the runner portion directly.
+    m = re.search(r"python3\s+([^;']+)", command)
     assert m, f"gemini command must invoke python3: {command!r}"
-    parts = shlex.split("python3 " + m.group(1), posix=True)
+    parts = shlex.split("python3 " + m.group(1).strip(), posix=True)
     assert parts[0] == "python3"
     raw = payload if isinstance(payload, str) else json.dumps(payload)
     return subprocess.run(
@@ -1471,9 +1491,9 @@ def test_gemini_provider_path_e2e_valid_empty_malformed_and_hard_failure(tmp_pat
     # Execute the RUNNER portion (inner python3 invocation of the fail-closed
     # bash wrapper) with every hook executable unavailable: PreToolUse contains
     # hard gates, so the registry failure must fail closed (exit 2).
-    m = re.search(r"python3\s+(.+?);", cfg["hooks"]["BeforeTool"][0]["hooks"][0]["command"])
+    m = re.search(r"python3\s+([^;']+)", cfg["hooks"]["BeforeTool"][0]["hooks"][0]["command"])
     assert m, "gemini command must invoke python3"
-    inner = shlex.split(m.group(1), posix=True)
+    inner = shlex.split(m.group(1).strip(), posix=True)
     missing = subprocess.run(
         [sys.executable, *inner], input=json.dumps(native_valid),
         capture_output=True, text=True, encoding="utf-8", errors="replace",
