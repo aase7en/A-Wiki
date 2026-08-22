@@ -255,7 +255,7 @@ def _subprocess_check(name: str, cmd: list[str], repo_root: Path) -> CheckResult
         result.severity = "hard"
         return result
     if proc.returncode != 0:
-        tail = (proc.stdout + proc.stderr).strip().splitlines()[:3]
+        tail = (proc.stdout + proc.stderr).strip().splitlines()[:30]
         result.errors.append(f"{name}: {' | '.join(tail) or 'non-zero exit'}")
         result.severity = "hard"
     return result
