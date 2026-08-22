@@ -168,9 +168,14 @@ def route(
     """Rank canonical skills against ``text``.
 
     Returns ``[(skill_name, score), ...]`` sorted by score desc, then by shorter
-    name (a shorter name is the more general entry point of a family). Returns
-    ``[]`` when nothing clears ``threshold`` — callers fall back to ``a-think``
-    rather than guessing.
+    name (a shorter name is the more general entry point of a family).
+
+    Tier 3 (default spine, 2026-08-22 plan §6.2): an OBJECTIVE that matches no
+    skill lands on the spine executor ``a-flow`` with score 0 — the one-entry
+    promise: user states an objective, the brain walks the full spine (think →
+    grill → council → implement → debug → PR → verify) instead of answering
+    "don't know". Trivial text (single word / short greeting) stays ``[]`` so
+    the default never swallows non-objective chatter.
     """
     scored: list[tuple[str, int]] = []
     candidates: list[dict] = []  # every canonical skill (tier-2 pool)
@@ -203,6 +208,24 @@ def route(
         if fallback:
             fallback.sort(key=lambda pair: (-pair[1], len(pair[0]), pair[0]))
             return fallback[:limit]
+        # Tier-3 default spine: objective-shaped text only — ASCII needs >=2
+        # words; Thai has no spaces so a phrase-length floor (12 chars)
+        # separates objectives ("จัดระเบียบคลังภาพทั้งหมด...") from
+        # greetings/one-word replies ("ขอบคุณ", "ทดสอบ"). Short objectives
+        # like "ทำเว็บ" are caught at tier-1 by the domain skill's trigger.
+        # Questions are NOT objectives ("what is the weather today" asks for
+        # an answer, not for the 7-phase pipeline) — they stay silent.
+        thai = _re.sub(r"[A-Za-z0-9\s]+", "", text)
+        lowered = text.lower().lstrip()
+        is_question = (
+            "?" in text
+            or _re.match(r"(what|why|how|when|where|who|which|is|are|do|does|can)\b",
+                         lowered) is not None
+        )
+        looks_like_objective = (
+            not is_question and (len(tokens) >= 2 or len(thai) >= 12))
+        if looks_like_objective:
+            return [("a-flow", 0)]
     scored.sort(key=lambda pair: (-pair[1], len(pair[0]), pair[0]))
     return scored[:limit]
 

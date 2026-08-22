@@ -482,6 +482,7 @@
     {
       "name": "a-router",
       "aliases": [
+        "/A",
         "/a-router",
         "arouter",
         "/a-route",
@@ -520,8 +521,9 @@
         "focus_set",
         "ส่งต่อ skill ปลายทาง"
       ],
-      "invocation_hint": "/A-Router",
-      "a_phase": "any"
+      "invocation_hint": "/A",
+      "a_phase": "any",
+      "default_spine": "a-flow (unmatched objective -> full 7-phase spine)"
     },
     {
       "name": "a-think",

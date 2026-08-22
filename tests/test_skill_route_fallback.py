@@ -47,7 +47,10 @@ class TestDescriptionFallback:
                     "description": "Blender motion inspection",
                     "domain": "gamedev", "triggers": []})
         hits = routing.route(reg, "kubernetes cluster upgrade")
-        assert hits == [], "irrelevant query must NOT produce noise hits"
+        # 2026-08-22 tier-3: unmatched OBJECTIVES land on the default spine
+        # by design — noise would be random skills scoring above it.
+        assert hits == [("a-flow", 0)], (
+            f"irrelevant query must yield only the default spine, got: {hits}")
 
     def test_trigger_hits_still_win_over_description(self):
         reg = _reg(

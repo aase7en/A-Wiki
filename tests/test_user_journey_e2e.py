@@ -323,6 +323,16 @@ class TestJourney2bMcpButtons:
         out2 = mcp.call("skill_route", {"text": "help me review code quality"})
         assert isinstance(out2, list), f"tier-2 must return a list: {str(out2)[:200]}"
 
+    def test_routing_default_spine_button(self, mcp):
+        """ปุ่ม /A one-entry: objective ที่ไม่ match skill ใด → a-flow (spine)
+        ส่วนคำถาม/คำทักทายต้องเงียบ ([]) — tier-3 contract"""
+        out = mcp.call("skill_route", {"text": "จัดระเบียบคลังภาพถ่ายทั้งหมดของบริษัท"})
+        assert isinstance(out, list) and out, "objective must not get an empty answer"
+        first = out[0]
+        assert first.get("skill") == "a-flow" and first.get("score") == 0, first
+        quiet = mcp.call("skill_route", {"text": "what is the weather today"})
+        assert quiet == [], f"question must stay silent: {str(quiet)[:150]}"
+
     def test_destructive_buttons_refuse_gracefully(self, mcp):
         """ปุ่มอันตราย: ต้องปฏิเสธ/ตอบ error ที่ควบคุมได้ ไม่ใช่ crash"""
         out = mcp.call("wiki_regen_index", {})

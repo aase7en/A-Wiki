@@ -39,6 +39,21 @@ a_phase: any
 - รู้อยู่แล้วว่าจะใช้อะไร → เรียกตรง (`/A-Debug`, `/A-Plan`, …)
 - งาน trivial (ตอบคำถามสั้น, typo, lookup) → ทำเลย ไม่ต้อง route
 
+## `/A` one-entry (2026-08-22 — plan §6.2)
+
+> `/A <objective>` คือทางเข้าเดียวที่ต้องจำ — เช่น `/A ทำเว็บขายของ`
+
+**Default spine mode**: objective ที่ไม่ match skill ใด (tier-1 trigger /
+tier-2 description ไม่เจอ) → routing tier-3 ส่งเข้า **`a-flow`** เดิน spine
+ครบ 7 phase (ASK→DESIGN→PLAN→IMPLEMENT→REVIEW→DEBUG→TEST — think, grill
+ถามกลับ, council ช่วยคิด, implement, debug loop, verify จน production)
+แทนที่จะตอบว่า "ไม่รู้" — คำทักทาย/คำเดียวยังคงเงียบ (ไม่ใช่ objective)
+
+| ผลของ route | ความหมาย |
+|---|---|
+| skill + score > 0 | match เนื้อหาจริง (trigger/description) — ไป skill นั้น |
+| `a-flow` score 0 | **default spine** — objective ไม่ match ตรงไหน เดินกระบวนการเต็ม |
+
 ## Iron Law
 
 > **ROUTE แล้วต้อง `focus_set` เสมอ** — ถ้า route แล้วไม่ประกาศ focus

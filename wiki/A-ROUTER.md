@@ -57,7 +57,7 @@
 | `a-loop` | `/A-Loop "<objective>"` | any | _(none — invoke explicitly)_ |
 | `a-med-order` | `/A-Med-Order` | any | `รายการยาหมด` · `รายการสั่งยา` · `สั่งยา` · `ใบสั่งยา` · `ยาหมด` · `ใบสั่งซื้อยา` · `pharmacy order` · `สั่งยาผ่าน telegram` |
 | `a-research` | `/A-Research` | any | `วิจัย` · `ค้นคว้า` · `research` · `สืบค้น` |
-| `a-router` | `/A-Router` | any | _(none — invoke explicitly)_ |
+| `a-router` | `/A` | any | _(none — invoke explicitly)_ |
 | `a-web` | `/A-Web` | any | `สร้างเว็บ` · `เว็บไซต์` · `frontend` · `react` · `nextjs` |
 
 > อีก 2 skill เป็น **subskill** ที่ parent เรียกเอง (เช่น `a-doc` → `types/<type>/`) — ไม่ต้องเรียกตรง จึงไม่อยู่ในตารางนี้
