@@ -508,6 +508,14 @@ def main() -> int:
             for p in stale:
                 print(f"::: {p.relative_to(REPO_ROOT)} is out of date — run scripts/gen-index.py",
                       file=sys.stderr)
+                existing = p.read_text(encoding="utf-8") if p.exists() else ""
+                import difflib
+                diff = list(difflib.unified_diff(
+                    _norm(existing).splitlines()[:400],
+                    _norm(outputs[p]).splitlines()[:400],
+                    "tracked", "generated", lineterm=""))[:24]
+                for line in diff:
+                    print("  " + line, file=sys.stderr)
             return 1
         return 0
 
