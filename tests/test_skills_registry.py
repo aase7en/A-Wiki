@@ -671,3 +671,16 @@ class TestConsoleEncodingResilience:
             "regen --check must exit 0 on a cp874 console (no real drift); "
             f"stderr tail: {result.stderr[-400:]!r}"
         )
+
+
+def test_scan_script_runs_directly():
+    """defect #6: scan.py must work as a direct script (python scan.py),
+    not only as a module — quiet failure hid bootstrap drift for weeks."""
+    import subprocess, sys
+    res = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "skills_registry" / "scan.py"),
+         "--help"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        timeout=60, cwd=str(REPO_ROOT))
+    assert res.returncode == 0, res.stderr[-300:]
+    assert "usage" in (res.stdout + res.stderr).lower()

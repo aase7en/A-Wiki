@@ -15,15 +15,25 @@ review; it is not authoritative until committed to skills-registry.json.
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
-from . import (
-    SCHEMA_VERSION,
-    VALID_DOMAINS,
-    VALID_LIFECYCLE_PHASES,
-    VALID_SOURCES,
-)
+try:
+    from . import (
+        SCHEMA_VERSION,
+        VALID_DOMAINS,
+        VALID_LIFECYCLE_PHASES,
+        VALID_SOURCES,
+    )
+except ImportError:  # direct script run (python scripts/skills_registry/scan.py)
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from skills_registry import (  # noqa: E402
+        SCHEMA_VERSION,
+        VALID_DOMAINS,
+        VALID_LIFECYCLE_PHASES,
+        VALID_SOURCES,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -309,3 +319,38 @@ __all__ = [
     "find_skill_files",
     "build_draft_registry",
 ]
+
+
+def main(argv: list[str] | None = None) -> int:
+    """CLI (defect #6 fix): bootstrap-scan and write the draft registry.
+
+    Usage:
+      python scripts/skills_registry/scan.py [--out FILE] [--count]
+    The draft is a REVIEW artifact — it never touches skills-registry.json.
+    """
+    import argparse
+    import datetime as _dt
+    import json
+
+    ap = argparse.ArgumentParser(description="A-Wiki skill bootstrap scanner")
+    ap.add_argument("--out", default="skills-registry.draft.json",
+                    help="output draft file (default skills-registry.draft.json)")
+    ap.add_argument("--count", action="store_true",
+                    help="print the entry count only, write nothing")
+    args = ap.parse_args(argv)
+
+    repo_root = Path(__file__).resolve().parents[2]
+    draft = build_draft_registry(
+        repo_root, generated_at=_dt.datetime.now().isoformat(timespec="seconds"))
+    if args.count:
+        print(len(draft.get("skills", [])))
+        return 0
+    out = Path(args.out)
+    out.write_text(json.dumps(draft, ensure_ascii=False, indent=2) + "\n",
+                   encoding="utf-8")
+    print(f"draft written: {out} ({len(draft.get('skills', []))} entries)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

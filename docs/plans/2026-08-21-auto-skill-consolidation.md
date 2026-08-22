@@ -51,7 +51,7 @@
 | 3 | 🟡 MED | ~~registry paths ชี้ `~/.claude/...`~~ **✅ FIXED 2026-08-22** — 19 ตัวชี้ `skills/_upstream/ecc` snapshot · 7 ตัวไม่มีคู่ใน repo → deprecated + migrated_to |
 | 4 | 🟡 MED | ~~2 skills description ว่าง~~ **✅ FIXED 2026-08-22** — แปลง frontmatter มาตรฐาน + description ครบ (บังคับโดย test_registry_health) |
 | 5 | 🟡 MED | ~~Gemini wrapper ล้นเจตนา~~ **✅ FIXED 2026-08-22** — ตัดบน soft events (AfterTool/SessionEnd) · คงไว้บน BeforeTool (hard gates fail-closed เมื่อ interpreter หาย — P6-RR04) |
-| 6 | 🟢 LOW | scan.py เงียบ/รันตรงไม่ได้ · draft.json drift 331 vs 243 · council `cb839d5d` ยังเปิด |
+| 6 | 🟢 LOW | ~~scan.py เงียบ~~ **✅ FIXED 2026-08-22** — มี CLI แล้ว (`--out/--count`) + direct-run import fix · draft regen สด (412 entries จาก scan จริง ไม่ใช่ 331 เก่า) · council เก่า 2026-07-12 archived (จบแล้วโดยธรรมชาติ status=ok) · Kilo template แก้ครบก่อนหน้าแล้ว (awiki/ecosystem/anthropic/claude-thai ครบ) |
 
 ## 5. ไอเดียจาก community (สำรวจ GitHub 2026-08-21 — รับมาพัฒนาต่อ)
 
