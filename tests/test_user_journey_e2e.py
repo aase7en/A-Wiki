@@ -450,3 +450,36 @@ class TestJourney5CloseDay:
         for script in ("scripts/setup-zcode-config.py", "scripts/setup-codex-config.py"):
             res = _run([script, "--check"], journey_env)
             assert res.returncode == 0, f"{script} --check failed: {res.stdout + res.stderr[:300]}"
+
+
+# ══════════════════════════════════════════════════════════════════════
+# MCP env seam — stateful buttons must honor AWIKI_* state paths so
+# harnesses/tests never write real runtime state (known-gap fix)
+# ══════════════════════════════════════════════════════════════════════
+class TestMcpStatefulButtonsIsolated:
+
+    def test_stateful_writes_honor_env_paths(self, tmp_path):
+        env = {**os.environ, "PYTHONIOENCODING": "utf-8",
+               "AWIKI_DATA_DIR": str(tmp_path),
+               "AWIKI_MEMORY_LEDGER_PATH": str(tmp_path / "ledger.jsonl"),
+               "AWIKI_BLACKBOARD_PATH": str(tmp_path / "bb.jsonl"),
+               "AWIKI_TASK_BOARD_PATH": str(tmp_path / "board.json"),
+               "AWIKI_FOCUS_DIR": str(tmp_path / "focus")}
+        session = _McpSession(env)
+        try:
+            out = session.call("memory_remember",
+                               {"type": "outcome", "summary": "seam e2e"})
+            assert isinstance(out, float) and out > 0, out
+            task = session.call("task_add", {"goal": "seam task"})
+            assert "__error" not in task, task
+            posted = session.call("bb_post",
+                                  {"frm": "seam-test", "to": "board", "body": "seam note"})
+            assert "__error" not in posted, posted
+            focused = session.call("focus_set", {"skill": "a-router", "phase": "design"})
+            assert "__error" not in focused, focused
+            assert (tmp_path / "ledger.jsonl").exists(), \
+                "ledger must land at AWIKI_MEMORY_LEDGER_PATH"
+            assert (tmp_path / "board.json").exists() or \
+                (tmp_path / "focus").exists(), "task/focus state must land in tmp"
+        finally:
+            session.close()

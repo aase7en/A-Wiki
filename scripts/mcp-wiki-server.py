@@ -596,6 +596,18 @@ TOOLS = {
 try:
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
     import neural_spine_mcp as _ns
+    # Env seam (2026-08-22): honor AWIKI_* state paths so tests/harnesses
+    # isolate stateful buttons instead of writing real runtime state.
+    # AWIKI_DATA_DIR broadens the sandbox root for out-of-repo tmp dirs.
+    _seam = {
+        "ledger": os.environ.get("AWIKI_MEMORY_LEDGER_PATH"),
+        "blackboard": os.environ.get("AWIKI_BLACKBOARD_PATH"),
+        "task_board": os.environ.get("AWIKI_TASK_BOARD_PATH"),
+        "focus_dir": os.environ.get("AWIKI_FOCUS_DIR"),
+    }
+    _configured = {k: v for k, v in _seam.items() if v}
+    if _configured:
+        _ns.set_paths(**_configured)
     TOOLS.update(_ns.TOOLS)
 except Exception as _e:
     sys.stderr.write(f"[mcp-wiki-server] Neural Spine tools load failed: {_e}\n")
