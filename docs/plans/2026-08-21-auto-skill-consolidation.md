@@ -38,6 +38,8 @@
 | **MANUAL** (user เรียกเอง — งานเฉพาะตัว) | ~15 | a-doc/a-med-order/a-rabies-report/thai-gov forms/thai-invoice/a-rabies | คง registry + trigger ชัด |
 | **ARCHIVE** | ~190 | ecosystem ซ้ำ/ไม่เคยใช้/vendor-specific | ย้าย `skills/_archive/` + status: archived ใน registry (ห้ามลบ — ยัง grep ได้) |
 
+**ผลลัพธ์จริง (2026-08-22, commit ed155f96):** invocation: **auto = 189** · **manual = 12** (เฉพาะงานเฉพาะตัว user) · **deprecated = 47** (catalog ไม่ถูกอ้าง + cleanup ข้าม) — ทุก surface regen no-drift · audit_a_suite 0 problems · บังคับโดย tests/test_skill_tiers.py
+
 วิธี: registry-driven (แก้ `skills-registry.json` + `consolidate.py` มีอยู่แล้ว) → regen → ทุก agent surface ลดลงตาม
 
 ## 4. ข้อบกพร่องจริงจาก audit (2026-08-21 — ต้องแก้ก่อน/พร้อมแผน)
@@ -46,9 +48,9 @@
 |---|---|---|
 | 1 | 🔴 HIGH | ~~**ZCode ไม่มี PreToolUse wiring เลย**~~ **✅ FIXED 2026-08-22** — เพิ่ม `zcode` adapter ใน `scripts/hooks/providers.py` (Claude-shaped, verified live) + generator `scripts/setup-zcode-config.py` (merge hooks section, preserve mcp) + `.zcode/config.json` เครื่องนี้ wire แล้วทั้ง 6 events (sweep ไม่ใช่ named dispatch) — 17 hard gates live บน ZCode ตั้งแต่ session ถัดไป (config อ่านตอน startup) |
 | 2 | 🔴 HIGH | ~~Gemini ขาด PostToolUse/Stop/UserPromptSubmit (19/29 live)~~ **✅ FIXED 2026-08-22 (บางส่วนโดยจำเป็น)** — verify กับ gemini-cli docs จริง: wire เพิ่ม `AfterTool`→PostToolUse (memory-capture/council) + `SessionEnd`→Stop (release-claims/self-audit) ส่วน UserPromptSubmit **ไม่มี equivalent ปลอดภัย** (BeforeAgent exit-2 = ลบ prompt ของ user) — routing คงอยู่บน MCP `skill_route` ตาม substrate table แล้ว จึงถือว่าปิด |
-| 3 | 🟡 MED | registry 30/243 paths ชี้ `~/.claude/...` = machine-dependent พังบน clone อื่น |
-| 4 | 🟡 MED | 2 skills description ว่าง (assessment-generator, word-generator) + gate ไม่ตรวจ + ใช้ `# Skill:` แทน frontmatter |
-| 5 | 🟡 MED | Gemini wrapper แปลง exit ทุกตัวที่ ≠0 เป็น block (ล้นเจตนา) |
+| 3 | 🟡 MED | ~~registry paths ชี้ `~/.claude/...`~~ **✅ FIXED 2026-08-22** — 19 ตัวชี้ `skills/_upstream/ecc` snapshot · 7 ตัวไม่มีคู่ใน repo → deprecated + migrated_to |
+| 4 | 🟡 MED | ~~2 skills description ว่าง~~ **✅ FIXED 2026-08-22** — แปลง frontmatter มาตรฐาน + description ครบ (บังคับโดย test_registry_health) |
+| 5 | 🟡 MED | ~~Gemini wrapper ล้นเจตนา~~ **✅ FIXED 2026-08-22** — ตัดบน soft events (AfterTool/SessionEnd) · คงไว้บน BeforeTool (hard gates fail-closed เมื่อ interpreter หาย — P6-RR04) |
 | 6 | 🟢 LOW | scan.py เงียบ/รันตรงไม่ได้ · draft.json drift 331 vs 243 · council `cb839d5d` ยังเปิด |
 
 ## 5. ไอเดียจาก community (สำรวจ GitHub 2026-08-21 — รับมาพัฒนาต่อ)
@@ -82,7 +84,9 @@
 | "Compound over time" เป็น metric | @Av1dlive (Karpathy) | วัด graph growth + recall hit-rate ต่อเดือน = evidence ว่าสมองโตจริง |
 | Markdown-first vault เป็น standard | kepano 44k installs (X) | ยืนยัน wiki/ markdown ใช้ถูกทาง — อย่าเปลี่ยน schema |
 
-## 6. ลำดับงาน (เมื่อ implement รอบหน้า)
+## 6. ลำดับงาน (อัปเดต 2026-08-22: ข้อ 1–4 เสร็จ · ข้อ 5 E2E ทำใน tests/test_user_journey_e2e.py + test_a_one_entry.py แล้ว)
+
+> สถานะ: **งาน §6 ครบทุกข้อ** — 1) defects #1–#5 ✅ (9412763f, 16168db8, 3079ae9a) 2) /A one-entry default spine ✅ (5539f24d) 3) tier consolidation ✅ (ed155f96) 4) defects #3–#5 ✅ 5) E2E กดทุกปุ่ม 37 tests ✅ (b6449243)
 
 1. **แก้ defect #1–#2 ก่อน** (hook wiring ZCode/Gemini) — งานเล็ก ผลใหญ่ ผ่าน gate ทุกชั้น
 2. `/A` one-entry: แก้ a-router ให้ default เข้า spine (จุดเดียว ไม่ต้องแตะ skills อื่น)

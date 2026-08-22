@@ -78,8 +78,17 @@ def test_zcode_posttooluse_bash_has_memory_capture():
             for h in group.get("hooks", []):
                 bash_cmds.append(h.get("command", ""))
     joined = " ".join(bash_cmds)
-    assert "memory-capture" in joined or "memory_capture" in joined, (
-        "PostToolUse Bash must call memory-capture hook so commits are "
+    # 2026-08-22: the canonical ZCode surface uses the runner event sweep
+    # (memory_capture is a REGISTERED PostToolUse hook — see
+    # scripts/hooks/registry.py), not named dispatch.
+    import sys as _sys
+    _sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
+    import registry as _reg
+    has_sweep = "hooks_runner.py --provider zcode --event PostToolUse" in joined
+    reg_entry = _reg.HOOK_REGISTRY.get("memory_capture")
+    registered = bool(reg_entry) and "PostToolUse" in reg_entry.get("events", [])
+    assert has_sweep and registered, (
+        "PostToolUse Bash must reach memory-capture via the runner sweep so commits are "
         "auto-captured to the Memory Ledger"
     )
 

@@ -122,27 +122,26 @@ class TestHookDeprecated:
     the policy reverses, but no live test can exercise it without
     faking registry contents.
 
-    The original test_deprecated_skill_warns used `root-cause-first` as a
-    fixture, but that entry was dropped from the registry in Tier A. We
-    instead assert the CURRENT policy directly: the registry should have
-    zero status:deprecated entries. If this assertion fails, either the
-    policy reversed (re-add the hook test) or someone reintroduced a
-    deprecated entry by mistake.
+    2026-08-22 policy reversal (auto-skill consolidation plan §3, commit
+    ed155f96): deprecated entries are KEPT in the registry as flagged
+    history — grep-able, never deleted — each with migrated_to + note.
+    The hook warning path (Gate 3) is therefore live again for these
+    entries; structural contract is enforced by test_registry_health.py
+    and test_skill_tiers.py.
     """
 
-    def test_registry_has_no_deprecated_entries(self) -> None:
-        """Tier A policy: deprecated skills are dropped, not flagged.
-
-        This is the positive assertion of the policy that made the old
-        test_deprecated_skill_warns fixture invalid. If you intentionally
-        revert the policy (keep deprecated in registry), update this test
-        and re-add a hook-behavior test using a registry monkeypatch.
-        """
+    def test_deprecated_entries_carry_migration_contract(self) -> None:
+        """Consolidation policy (2026-08-22): deprecated skills stay in the
+        registry as flagged history — but ONLY with a full migration
+        contract (migrated_to + note), never as dangling entries."""
         registry_path = REPO_ROOT / "skills-registry.json"
         data = json.loads(registry_path.read_text(encoding="utf-8"))
-        deprecated = [s["name"] for s in data.get("skills", []) if s.get("status") == "deprecated"]
-        assert deprecated == [], (
-            f"Tier A policy violation: {len(deprecated)} deprecated entries still "
-            f"in registry: {deprecated}. Either drop them (Tier A policy) or "
-            f"re-add the hook deprecated-warning test."
+        bad = [
+            f"{s['name']}: migrated_to={s.get('migrated_to')!r} note={bool(s.get('note'))}"
+            for s in data.get("skills", [])
+            if s.get("status") == "deprecated"
+            and (not s.get("migrated_to") or not str(s.get("note", "")).strip())
+        ]
+        assert bad == [], (
+            f"deprecated entries without migration contract: {bad}"
         )
