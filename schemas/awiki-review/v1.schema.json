@@ -4,64 +4,273 @@
   "title": "awiki-review/v1",
   "description": "Canonical independent-review contract (Agent Review Bus). Codifies the verdict/finding lifecycle practiced through the vNext phase gates. No secrets, private data, hidden reasoning, or full private prompts.",
   "type": "object",
-  "required": ["schema", "phase", "cycle", "executor", "status", "head_sha"],
+  "required": [
+    "schema",
+    "phase",
+    "cycle",
+    "executor",
+    "status",
+    "head_sha"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema": { "const": "awiki-review/v1" },
-    "phase": { "type": "string", "minLength": 1 },
-    "cycle": { "type": "integer", "minimum": 1, "description": "Each cycle is attributable to exactly one HEAD SHA" },
-    "executor": { "type": "string" },
-    "reviewer": { "type": "string" },
-    "status": { "enum": ["PLANNED", "IMPLEMENTING", "TESTING", "REVIEW_REQUESTED", "REVIEWING",
-                         "CHANGES_REQUIRED", "APPROVED", "CI_VERIFY", "FAILED", "READY"] },
-    "verdict": { "enum": ["PASS", "PASS_WITH_NOTES", "CHANGES_REQUIRED", "BLOCK"] },
-    "head_sha": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "schema": {
+      "const": "awiki-review/v1"
+    },
+    "phase": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cycle": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Each cycle is attributable to exactly one HEAD SHA"
+    },
+    "executor": {
+      "type": "string"
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PLANNED",
+        "IMPLEMENTING",
+        "TESTING",
+        "REVIEW_REQUESTED",
+        "REVIEWING",
+        "CHANGES_REQUIRED",
+        "APPROVED",
+        "CI_VERIFY",
+        "FAILED",
+        "READY"
+      ]
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "PASS_WITH_NOTES",
+        "CHANGES_REQUIRED",
+        "BLOCK"
+      ]
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$"
+    },
     "findings": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "severity", "area", "summary", "state"],
+        "required": [
+          "id",
+          "severity",
+          "area",
+          "summary",
+          "state"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string", "pattern": "^R-[A-Za-z0-9-]+-\\d{3}$", "description": "Stable finding id, e.g. R-P1-001" },
-          "severity": { "enum": ["blocker", "major", "minor", "note"] },
-          "area": { "type": "string" },
-          "file": { "type": ["string", "null"] },
-          "summary": { "type": "string" },
-          "required_action": { "type": ["string", "null"] },
-          "state": { "enum": ["open", "addressed", "verified", "wont_fix", "superseded"] }
+          "id": {
+            "type": "string",
+            "pattern": "^R-[A-Za-z0-9-]+-\\d{3}$",
+            "description": "Stable finding id, e.g. R-P1-001"
+          },
+          "severity": {
+            "enum": [
+              "blocker",
+              "major",
+              "minor",
+              "note"
+            ]
+          },
+          "area": {
+            "type": "string"
+          },
+          "file": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "required_action": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "enum": [
+              "open",
+              "addressed",
+              "verified",
+              "wont_fix",
+              "superseded"
+            ]
+          },
+          "fix_sha": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9a-f]{7,40}$",
+            "description": "Phase 8: SHA of the commit that addressed this finding"
+          }
         }
       }
     },
-    "required_tests": { "type": "array", "items": { "type": "string" }, "description": "Commands that must pass before READY" },
-    "next_action": { "enum": ["FIX_AND_REREVIEW", "RUN_CI_GATE", "MARK_READY", "ESCALATE_HUMAN", "NONE"] },
-    "transport": { "enum": ["github", "local-mcp", "remote-queue"], "description": "Durable transport; adapters normalize into this contract" }
+    "required_tests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Commands that must pass before READY"
+    },
+    "next_action": {
+      "enum": [
+        "FIX_AND_REREVIEW",
+        "RUN_CI_GATE",
+        "MARK_READY",
+        "ESCALATE_HUMAN",
+        "NONE"
+      ]
+    },
+    "transport": {
+      "enum": [
+        "github",
+        "local-mcp",
+        "remote-queue"
+      ],
+      "description": "Durable transport; adapters normalize into this contract"
+    },
+    "retest": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Phase 8: retest evidence — must pass at the CURRENT head_sha",
+      "properties": {
+        "sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{7,40}$"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "ts": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "sha",
+        "ok",
+        "ts"
+      ],
+      "additionalProperties": false
+    },
+    "ci": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Phase 8: CI verification evidence for this cycle",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "ts": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "ok",
+        "ts"
+      ],
+      "additionalProperties": false
+    }
   },
-
   "allOf": [
     {
-      "if": { "properties": { "status": { "enum": ["REVIEWING", "CHANGES_REQUIRED", "APPROVED", "READY"] } } },
-      "then": { "required": ["reviewer", "verdict"],
-                "description": "reviewed/approved states need a named reviewer and an explicit verdict" }
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "REVIEWING",
+              "CHANGES_REQUIRED",
+              "APPROVED",
+              "READY"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reviewer",
+          "verdict"
+        ],
+        "description": "reviewed/approved states need a named reviewer and an explicit verdict"
+      }
     },
     {
-      "if": { "properties": { "status": { "enum": ["APPROVED", "READY"] } } },
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "APPROVED",
+              "READY"
+            ]
+          }
+        }
+      },
       "then": {
-        "properties": { "verdict": { "enum": ["PASS", "PASS_WITH_NOTES"] } },
-        "required": ["findings", "required_tests", "next_action"],
+        "properties": {
+          "verdict": {
+            "enum": [
+              "PASS",
+              "PASS_WITH_NOTES"
+            ]
+          }
+        },
+        "required": [
+          "findings",
+          "required_tests",
+          "next_action"
+        ],
         "description": "approval states accept only passing verdicts and must carry evidence"
       }
     },
     {
-      "if": { "properties": { "status": { "enum": ["APPROVED", "READY"] } } },
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "APPROVED",
+              "READY"
+            ]
+          }
+        }
+      },
       "then": {
         "properties": {
           "findings": {
             "not": {
               "contains": {
                 "type": "object",
-                "properties": { "severity": { "const": "blocker" }, "state": { "const": "open" } },
-                "required": ["severity", "state"]
+                "properties": {
+                  "severity": {
+                    "const": "blocker"
+                  },
+                  "state": {
+                    "const": "open"
+                  }
+                },
+                "required": [
+                  "severity",
+                  "state"
+                ]
               }
             }
           }

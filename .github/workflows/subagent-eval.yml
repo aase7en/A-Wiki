@@ -423,15 +423,17 @@ jobs:
           set -euo pipefail
           git config user.name "a-wiki-subagent-eval"
           git config user.email "subagent-eval@a-wiki"
-          git add evals/subagents/results/ evals/subagents/races/ agents/subagents/ 2>/dev/null || true
+          # N-P1-001 policy (Phase 8): races = artifact telemetry only — never
+          # copied into the tracked tree by promotion.
+          git add evals/subagents/results/ agents/subagents/ 2>/dev/null || true
           if git diff --cached --quiet; then
-            echo "Nothing to promote (no results, races, or policy changes)."
+            echo "Nothing to promote (no results or policy changes)."
             exit 0
           fi
           BRANCH="promotion/subagent-eval-$(date -u +%Y%m%d-%H%M%S)"
           git checkout -b "$BRANCH"
-          git commit -m "test(eval): subagent eval promotion candidate $(date -u +%Y-%m-%d) [PR-gated: results + races + recommended model swaps]"
+          git commit -m "test(eval): subagent eval promotion candidate $(date -u +%Y-%m-%d) [PR-gated: results + recommended model swaps · races = artifact telemetry only]"
           git push origin "$BRANCH"
           gh pr create \
             --title "Subagent eval promotion candidate $(date -u +%Y-%m-%d)" \
-            --body "Auto-generated **promotion candidate** from a manual subagent-eval dispatch (R-P1-001 gate): results snapshots, race history, and guardrailed adaptive-routing / cost-optimization model swaps. Scheduled runs are report-only. Review diff + artifact, run \`python -m pytest tests/test_regression_check.py tests/test_run_subagent_eval.py -q\`, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            --body "Auto-generated **promotion candidate** from a manual subagent-eval dispatch (R-P1-001 gate): results snapshots and guardrailed adaptive-routing / cost-optimization model swaps (races = artifact telemetry only, not promoted). Scheduled runs are report-only. Review diff + artifact, run \`python -m pytest tests/test_regression_check.py tests/test_run_subagent_eval.py -q\`, then merge explicitly. Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
