@@ -58,6 +58,27 @@ If you fork A-Wiki, you are not just copying prompts. You are copying a working 
 
 ---
 
+## 🎯 The One Entry: `/A <objective>`
+
+You no longer need to memorize commands. Type your objective once and the brain routes everything:
+
+```
+/A ทำเว็บขายของให้ร้านกาแฟ          → routes to the web pipeline
+/A ออกแบบ dashboard พลังงาน รพ.      → design pipeline + it asks YOU ≥3 questions first
+/A จัดระเบียบคลังภาพทั้งบริษัท         → no exact skill? walks the FULL spine
+```
+
+The **default spine** (Phase 9 loop): think → ask you back (grill) → council review → implement → debug loop → **review bus** (findings have stable IDs, approval binds to one commit SHA, a new commit re-opens review) → retest + CI green → READY. A task is never "done" until its review cycle is READY.
+
+**12 manual buttons remain for your own domain work** — `/A-Doc` (Thai government documents, 8 types), `/A-Med-Order`, `/A-Rabies-Report`, `word-generator` (TH SarabunPSK), `assessment-generator`, `pharmacy-order-lookup`, `thai-government-form` / `thai-invoice` / `thai-resume` / `thai-festival-card`, `monte-carlo-quant-analysis`. Everything else (189 skills) is AUTO — agents pull them via 3-tier routing.
+
+### What's new (2026-08-22)
+
+- **Phases 1–11 complete** — hook engine (29 hooks, 4 providers incl. ZCode+Gemini), memory layers, model control, review bus, A-Loop v2, world-intel lazy bridge, operator runbook
+- **Skill tiers consolidated**: 189 auto / 12 manual / 47 deprecated-with-successors (was 226 manual)
+- **E2E journey harness** — 38 tests pressing every user-facing button (CLI, MCP 31 tools, gates on every provider) on every commit
+- **`awiki` pip package** — see Quick Start below
+
 ## ⚡ Four Superpowers. One Repository.
 
 | Superpower | What It Does | Your Win |
@@ -155,12 +176,13 @@ python scripts/wiki/query-rag.py "mqtt vs lorawan"
 
 ### Step 3: Open Any AI Tool — Brain Is Ready
 
-Open your preferred AI client in the repo directory. The brain loads automatically:
+From now on your only entry point is:
 
-- **Claude Code / Cline / Cursor / Windsurf** → reads the config file for your platform
-- **Gemini CLI** → reads `GEMINI.md`
-- **Codex** → reads `AGENTS.md`
-- **All platforms** → Iron Laws, Cost Pyramid, Swarm Protocol, Wiki access
+```
+/A <what you want to happen>
+```
+
+Ask questions in plain language — memory recall and skill routing happen automatically. See `docs/getting-started.md` for the full user guide (Thai + English) and `docs/runbooks/review-bus.md` for the review workflow.
 
 ### CI / Cross-Platform Proof
 
