@@ -63,7 +63,11 @@ next = goal_store.next_todo(goal_id)
 task_board.claim(next, claimant="me")
 # รัน Hermes phase (define→plan→build→verify→review→ship)
 # fail → debug-mantra + tdd → retry (cap 3)
-# pass → task_update(status="done") → วนกลับหา next_todo
+# pass → A-Loop v2 completion gate (scripts/lib/a_loop_review.py):
+#   open_review_for_task → review-bus cycle → task_gate
+#   gate READY (verdict PASS + retest ที่ head ปัจจุบัน + CI เขียว + ไม่มี blocker)
+#   เท่านั้นถึง task_update(status="done") — fix ที่ head ใหม่ = approval เก่าเพิกถอน
+#   วนกลับหา next_todo
 ```
 → ดูรายละเอียด: `references/phase-execute.md`
 
