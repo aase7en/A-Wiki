@@ -74,7 +74,9 @@ integrations:
   world-intel:
     classification: module
     type: mcp
-    status: planned            # Phase 10; no vendoring, domain-triggered only
+    status: optional          # Phase 10 (2026-08-22): lazy stdio bridge in
+                              # scripts/lib/world_intel.py — default-off, no vendoring,
+                              # binds via WORLD_INTEL_MCP_CMD (machine-local)
     domain: [investment, environment, geopolitical, health, cyber, disaster]
     default: false
     lazy: true
