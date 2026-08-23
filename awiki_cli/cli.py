@@ -49,6 +49,10 @@ def build_command(args: list[str]) -> list[str]:
         root = find_repo_root()
         return [sys.executable,
                 str(root / "scripts" / "awiki-adopt.py"), *args[1:]]
+    if args and args[0] in ("doctor", "guide"):
+        root = find_repo_root()
+        script = "awiki-doctor.py" if args[0] == "doctor" else "awiki-guide.py"
+        return [sys.executable, str(root / "scripts" / script), *args[1:]]
     if args and args[0] == "skill":
         root = find_repo_root()
         return [sys.executable,
