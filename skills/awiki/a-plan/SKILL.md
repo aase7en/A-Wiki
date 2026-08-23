@@ -49,6 +49,11 @@ Aggregator สำหรับงานวางแผนและออกแบ
 รัน 7-step reasoning loop ก่อน — โดยเฉพาะ step 1 (Restate) + step 2 (Done-criteria)
 
 ### Stage 2: `grill-with-docs` (MANDATORY — บังคับ)
+> **Live upstream (2026-08-23 Slice C):** skill ที่เกี่ยวเครื่องมือภายนอกและมี
+> frontmatter `docs: <raw-markdown-url>` — ดึงเอกสารเวอร์ชันล่าสุดจริงก่อนถาม:
+> `fetch_doc(url, .tmp)` จาก `scripts/lib/live_docs.py` (cache 7 วัน, offline ใช้
+> cache เก่าพร้อมป้าย `cache-stale`, ไม่พลาด never-crash) — คำถามกลับต้องอ้าง
+> API/เวอร์ชันปัจจุบัน ไม่ใช่ความจำ training
 - ถาม user **ทีละข้อ ไม่พร้อมกัน** ≥3 questions:
   1. ขอบเขต: ครอบคลุมแค่ไหน? domain ไหน?
   2. ข้อจำกัด: token/time budget? mobile? legacy compat?
