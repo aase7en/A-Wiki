@@ -84,6 +84,19 @@
 | "Compound over time" เป็น metric | @Av1dlive (Karpathy) | วัด graph growth + recall hit-rate ต่อเดือน = evidence ว่าสมองโตจริง |
 | Markdown-first vault เป็น standard | kepano 44k installs (X) | ยืนยัน wiki/ markdown ใช้ถูกทาง — อย่าเปลี่ยน schema |
 
+### 5.3 Community research รอบสอง (2026-08-23 — Reddit/GitHub/X/HN 4 แหล่ง) เรื่อง workflow shapes
+
+**5 ค่ายหลักที่เจอ:**
+1. **Spec-driven** (github/spec-kit, Kiro, liatrio-labs/spec-driven-workflow): idea → reviewed spec → plan → disciplined loop → **CI gate บังคับว่าแก้โค้ดแล้ว spec ต้องอัปเดตด้วย** (merge blocked on stale spec)
+2. **Hooks-enforced discipline** (tdd-guard, r/ClaudeAI): "prompts drift, hooks don't" — บังคับ TDD/กระบวนการด้วย hooks ไม่ใช่ system prompt ← A-Wiki เลือกทางนี้แล้ว (29 hooks) — ชิงถูกทาง
+3. **Session-end deviation fold-back** (r/ClaudeCode): จบ session = พับ deviations กลับเข้า ADR/plan ("kill stale specs") ← ยกระดับได้จาก stop hooks ปัจจุบัน
+4. **Project.md/todo-only execution** (HN): ไฟล์เดียว SSoT + agent ทำเฉพาะ todos ← A-Wiki generalized กว่าแล้ว (plans + work orders + claims)
+5. **Run-as-change-request** (GitHub community): ทุก agent run = change request มี durable evidence + git เป็น byte-level truth + **expose budget/verifier/halt-reason เป็น first-class state กัน runaway loop** (Agentic Workflows preview)
+
+**Insight ตลอดแหล่ง:** episodic memory ข้าม session ยังเป็น gap กลางวงการ (@calcsam: "you become the agent's memory"; @hwchase17 กำลังเตรียม expose previous conversations as files) — ledger + cross-device sync ของเรานำหน้า / "model is commodity, harness is the asset" (@Av1dlive 11-element guide)
+
+**3 อย่างที่ community ทำแล้วแต่เรายังไม่มี:** (1) stale-spec CI gate (2) deviation fold-back อัตโนมัติตอน session จบ (3) budget/halt state กัน loop รันเกิน
+
 ## 6. ลำดับงาน (อัปเดต 2026-08-22: ข้อ 1–4 เสร็จ · ข้อ 5 E2E ทำใน tests/test_user_journey_e2e.py + test_a_one_entry.py แล้ว)
 
 > สถานะ: **งาน §6 ครบทุกข้อ** — 1) defects #1–#5 ✅ (9412763f, 16168db8, 3079ae9a) 2) /A one-entry default spine ✅ (5539f24d) 3) tier consolidation ✅ (ed155f96) 4) defects #3–#5 ✅ 5) E2E กดทุกปุ่ม 37 tests ✅ (b6449243)
