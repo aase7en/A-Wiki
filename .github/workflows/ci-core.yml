@@ -99,6 +99,9 @@ jobs:
         # Baseline ratchet: 48 legacy wikilink debt keys.
         run: python scripts/health/wiki_health.py --json --baseline scripts/health/wiki-health-baseline.txt
 
+      - name: Stale-spec gate (plans own their scoped files)
+        run: python scripts/check-stale-specs.py
+
       - name: MCP server smoke (cross-agent parity, P2.4)
         # The awiki MCP server is the canonical brain interface for every
         # executor vendor — import it and verify the tool surface.

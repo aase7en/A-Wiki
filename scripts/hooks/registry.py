@@ -109,6 +109,9 @@ HOOK_SPECS: tuple[tuple[str, dict], ...] = (
     ("self_audit",           _e(["Stop"], "soft", 400, context=True)),
     ("a_focus_stop",         _e(["Stop"], "soft", 410, context=True)),
     ("release_agent_claims", _e(["Stop"], "soft", 420)),
+    # Slice D2: fold today's decisions back into scope-owning plans so
+    # the plan file (not the chat log) stays the SSoT. Observe-only.
+    ("plan_foldback", _e(["Stop"], "soft", 430, context=True)),
 )
 
 # NOT registered (deliberately): prompt_redactor, task_lease_reaper,
