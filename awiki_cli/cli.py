@@ -49,6 +49,10 @@ def build_command(args: list[str]) -> list[str]:
         root = find_repo_root()
         return [sys.executable,
                 str(root / "scripts" / "awiki-adopt.py"), *args[1:]]
+    if args and args[0] == "skill":
+        root = find_repo_root()
+        return [sys.executable,
+                str(root / "scripts" / "skill-pipeline.py"), *args[1:]]
     root = find_repo_root()
     return [sys.executable, "-m", "conductor", *args]
 
