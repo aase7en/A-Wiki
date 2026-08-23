@@ -160,6 +160,26 @@ def get_hooks():
             if f"{name}.py" not in HOOK_SKIP]
 
 
+def _export_workspace_env(input_data: dict, env: Optional[dict] = None) -> Optional[dict]:
+    """Scope per-workspace state to the repo the agent is editing (Slice A).
+
+    With payload `cwd` (adopted foreign repos) and no explicit override,
+    export AWIKI_CLAIMS_STORE at <workspace>/.tmp/agent-claims.json so
+    foreign claim gates never touch the brain's claims. Returns the
+    (possibly updated) env mapping; exports nothing without a cwd.
+    """
+    import os as _os
+    target = env if env is not None else _os.environ
+    cwd = input_data.get("cwd") if isinstance(input_data, dict) else None
+    if not (isinstance(cwd, str) and cwd.strip()):
+        return target
+    if target.get("AWIKI_CLAIMS_STORE", "").strip():
+        return target
+    target["AWIKI_CLAIMS_STORE"] = _os.path.abspath(
+        _os.path.join(cwd, ".tmp", "agent-claims.json"))
+    return target
+
+
 def run_event_hooks_order(event: str, tool_name: str = None):
     """Deterministic hook-name order for one event (test surface)."""
     if _REGISTRY_LOAD_ERROR or hook_registry is None:
@@ -364,6 +384,15 @@ def _main_impl():
 
     malformed_payload = object()
     raw_input = sys.stdin.read()
+    # Slice A: scope per-workspace env (claims store) from payload cwd
+    # before any hook executes. Cheap pre-parse: only look for "cwd".
+    if '"cwd"' in raw_input or raw_input.strip().startswith("{"):
+        try:
+            _pre = json.loads(raw_input)
+            if isinstance(_pre, dict):
+                _export_workspace_env(_pre)
+        except Exception:
+            pass
     if provider is not None:
         if event is None:
             sys.stderr.write("provider dispatch requires --event\n")

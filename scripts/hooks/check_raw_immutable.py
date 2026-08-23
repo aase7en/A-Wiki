@@ -27,8 +27,10 @@ def main():
     if not file_path:
         sys.exit(0)
 
-    # Locate repo root
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    # Locate repo root: the WORKSPACE the agent is editing (payload cwd —
+    # foreign adopted repos), falling back to the brain itself (legacy).
+    from _repo_root import resolve_repo_root
+    repo_root = resolve_repo_root(input_data)
     # Use realpath (not abspath) to resolve junctions/symlinks on Windows and Mac.
     # This ensures drive/raw/ (alias) is treated identically to raw/ (canonical).
     raw_dir = os.path.realpath(os.path.join(repo_root, "raw"))

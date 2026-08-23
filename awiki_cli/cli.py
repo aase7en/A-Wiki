@@ -43,6 +43,12 @@ def find_repo_root() -> Path:
 
 
 def build_command(args: list[str]) -> list[str]:
+    # `awiki adopt <repo>` runs the brain's adopt installer (does NOT need
+    # cwd to be a repo — it may be run from anywhere)
+    if args and args[0] == "adopt":
+        root = find_repo_root()
+        return [sys.executable,
+                str(root / "scripts" / "awiki-adopt.py"), *args[1:]]
     root = find_repo_root()
     return [sys.executable, "-m", "conductor", *args]
 

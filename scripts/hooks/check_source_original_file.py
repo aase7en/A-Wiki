@@ -145,7 +145,10 @@ def main() -> None:
     if not file_path:
         sys.exit(0)
 
-    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    # Workspace root from payload cwd (adopted foreign repos); legacy
+    # fallback = the brain itself.
+    from _repo_root import resolve_repo_root
+    repo_root = resolve_repo_root(input_data)
 
     if not _is_source_entry(file_path, repo_root):
         sys.exit(0)
