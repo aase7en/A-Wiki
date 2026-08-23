@@ -99,6 +99,9 @@ class ReviewBus:
             "transport": transport,
             "retest": None,
             "ci": None,
+            "retries": 0,
+            "max_retries": 3,
+            "halt_reason": None,
         }
         if reviewer:
             doc["reviewer"] = reviewer
@@ -183,6 +186,10 @@ class ReviewBus:
             doc["next_action"] = "FIX_AND_REREVIEW"
         doc["head_sha"] = sha
         doc["retest"] = {"sha": sha, "ok": bool(ok), "ts": _now()}
+        if not ok:
+            doc["retries"] = int(doc.get("retries", 0)) + 1
+            if doc["retries"] >= int(doc.get("max_retries", 3)):
+                doc["halt_reason"] = "retries-exceeded"
         self._validate(doc)
         self._save(doc)
         return doc
@@ -199,6 +206,8 @@ class ReviewBus:
         retest passed at this sha, CI green. Reports every gap otherwise."""
         doc = self._load_latest(cid)
         reasons: list[str] = []
+        if doc.get("halt_reason"):
+            reasons.append(f"halted: {doc['halt_reason']}")
         if doc.get("verdict") not in _PASSING_VERDICTS:
             reasons.append("no passing verdict")
         blockers = [f["id"] for f in doc["findings"]
@@ -218,6 +227,15 @@ class ReviewBus:
             self._save(doc)
             return {"ready": True, "reasons": [], "cycle": doc["cycle"]}
         return {"ready": False, "reasons": reasons, "cycle": doc["cycle"]}
+
+    def clear_halt(self, cid=None) -> dict:
+        """Human reset of a halted cycle (retries counter back to 0)."""
+        doc = self._load_latest(cid)
+        doc["halt_reason"] = None
+        doc["retries"] = 0
+        self._validate(doc)
+        self._save(doc)
+        return doc
 
     # ── helpers ───────────────────────────────────────────────────────
     def _load_latest(self, cid) -> dict:

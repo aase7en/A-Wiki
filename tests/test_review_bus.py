@@ -196,3 +196,30 @@ def test_every_written_state_validates_against_schema(tmp_path):
     bus.record_ci(ok=True)
     bus.readiness("P8-c1")
     jsonschema_validate(bus.load("P8-c1"))
+
+
+# ── Slice E1: loop budget + first-class halt reason ────────────────────
+def test_budget_retries_exhausted_halts(tmp_path):
+    """A loop may not spin forever: exceeding max_retries records a
+    halt_reason and readiness refuses until a human resets it."""
+    bus = _bus(tmp_path)
+    _publish(bus, sha="a1b2c3d")
+    for i in range(3):
+        bus.record_retest(sha="a1b2c3d", ok=False)
+    doc = bus.load("P8-c1")
+    assert doc["halt_reason"] == "retries-exceeded"
+    bus.set_verdict(reviewer="r", verdict="PASS")
+    r = bus.readiness()
+    assert r["ready"] is False
+    assert any("halt" in x for x in r["reasons"])
+    # human reset clears the halt
+    bus.clear_halt("P8-c1")
+    assert bus.load("P8-c1").get("halt_reason") is None
+
+
+def test_retries_within_budget_do_not_halt(tmp_path):
+    bus = _bus(tmp_path)
+    _publish(bus, sha="a1b2c3d")
+    bus.record_retest(sha="a1b2c3d", ok=False)
+    bus.record_retest(sha="a1b2c3d", ok=False)
+    assert bus.load("P8-c1").get("halt_reason") is None

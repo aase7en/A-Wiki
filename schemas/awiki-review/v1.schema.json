@@ -190,6 +190,23 @@
         "ts"
       ],
       "additionalProperties": false
+    },
+    "retries": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Phase E: consecutive failed retests in this cycle"
+    },
+    "max_retries": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Phase E: loop budget — exceeding halts the cycle"
+    },
+    "halt_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Phase E: first-class halt state (e.g. retries-exceeded); readiness refuses until a human clears it"
     }
   },
   "allOf": [

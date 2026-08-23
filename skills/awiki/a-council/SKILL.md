@@ -16,6 +16,17 @@ invocation_hint: "/A-Council \"<topic>\""
 > Tier 2 #8. Council (multi-perspective review) แบบถาวร — thread คงอยู่ข้าม session,
 > dashboard แสดงได้, resume ได้. พื้นฐานของ self-audit (Tier 2 #7).
 
+## Persona memory (Slice E)
+
+นักวิจารณ์แต่ละคนมีความจำของตัวเองจาก ledger กลาง — ก่อนรีวิวให้ดึงบทเรียนเดิม:
+
+```python
+from scripts.lib.persona_memory import persona_entries
+persona_entries(Path(".tmp/memory-ledger.jsonl"), "security-auditor")
+```
+
+ใช้ entries เหล่านั้นเป็น "สิ่งที่ฉันเคยสอนไว้" — ไม่ต้องสอนซ้ำ และจับ regression ของคำแนะนำตัวเอง
+
 ## เมื่อไหร่ใช้
 
 ✅ ใช้:
