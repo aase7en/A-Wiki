@@ -467,7 +467,7 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility smo
 3. **Update local/private `log.md` and `wiki/context/session-memory.md` plus regenerated `wiki/context/`** after every ingest or significant edit
 4. **Confidence markers required**: `[training]` / `[verified YYYY-MM-DD]` / `[wiki]` / `[notebooklm YYYY-MM-DD]`
 5. **Plan before implementing** — if change affects >3 files, specify: "will edit [files] — doing X in each"
-6. **Commit directly to main only** — NO branch, NO PR, NO worktree
+6. **Shared/reviewed work ships through a work-order branch + PR** — no direct production mutation of `main`. Use the branch named by the active claim/work order; open a draft PR for exact-SHA review/CI; merge only through the authorized gate, then fetch `origin` and verify the resulting `main` SHA.
 7. **Output format (3-layer)** — Layer 1 durable knowledge (CLAUDE.md, AGENTS.md, wiki/, ADRs, docs/) = **Markdown**, git-diffable, re-readable. Layer 2 machine↔machine data = most **compact**: CSV/TSV > JSONL > JSON (never HTML — HTML costs ~2.1× Markdown tokens to read). Layer 3 human review = emit compact JSON → `render-html` → gitignored leaf HTML in `exports/html/` that agents **never re-ingest**; round-trip via Copy-as-JSON. **Render, don't dump**: never paste verbose reports/tables into chat — emit JSON, render, return the file path + 1–3 line summary. The only token saving from HTML is externalizing presentation out of the context window. Enforced on file writes by `scripts/hooks/check_output_format.py`. Verify: `python3 scripts/format-cost.py --demo`. See `docs/protocols/md-vs-html-output.md`.
 7b. **Caveman default** — every agent reply is caveman-style by default (ตั้งแต่ 2026-08-11, user complaint "พูดมากไม่สรุป"):
     - **ตัด preamble** ("ผมจะ...", "ก่อนอื่น...", "let me...", "I'll now...")
@@ -481,7 +481,44 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility smo
     - เหตุผล: user บ่นหลายครั้งว่า agent ตอบยาวเกิน → caveman = default; verbose = opt-in
     - Enforcement: SessionStart hook `caveman_session_start.py` สร้าง `.tmp/caveman.flag` = `on`; skill `skills/claude-code/token-optimization/SKILL.md` Step 6 = rule set; symlink farm link ทุก agent
     - See: `skills/claude-code/token-optimization/SKILL.md` (Step 6), `docs/protocols/context-compaction.md`
-8. **Cross-agent plan handoff** — any Plan Mode / multi-step plan must be chunked into resumable units and checkpointed in local `handoff.md` before limits, pauses, or Agent/IDE switches. When building any system: plan → design → split into chunks → **commit each completed sub-step to main** with `chunk(<ID>): <goal> [next: <ID>]` (cheap, no token cost), and **push at handoff boundaries** (pause / near rate limit / switching Agent/IDE) so VS Code+Cline, Antigravity, Manus, Codex, or Gemini CLI can `git pull` and resume from the commit log. The Delegation Gate allows `session(...)`, `chunk(...)`, and `step(...)` pushes. See `docs/protocols/cross-agent-plan-handoff.md` §Per-Sub-Step Commit Checkpoint.
+8. **Cross-agent plan handoff** — any Plan Mode / multi-step plan must be chunked into resumable units and checkpointed in the active work order plus local `handoff.md` where applicable before limits, pauses, or Agent/IDE switches. Commit each completed sub-step to the **work-order branch** with `chunk(<ID>): <goal> [next: <ID>]`; push that branch at handoff boundaries so another agent can fetch/pull and resume. Before final review, open/update the draft PR; after authorized merge, fetch `origin` and verify the resulting `main` SHA. Never leave the only current state in chat. See `docs/protocols/cross-agent-plan-handoff.md` §Per-Sub-Step Commit Checkpoint.
+
+## 🔁 Binding Loop Engineer — cross-agent full cycle
+
+For any non-trivial implementation, remediation, migration, security fix, or multi-file change, the repository SSoT is authoritative. **Chat memory is never the execution source of truth.** Read the active work order/checkpoint, claim table, branch/HEAD, and tests before acting.
+
+Required cycle per coherent slice:
+
+`Grill Me / Grill Me with docs -> Brainstorm -> Plan -> Implement -> Review -> Debug -> Test/E2E -> Report -> Memory -> Open PR -> CI/CD -> Fetch merge state`
+
+1. **Grill Me / Grill Me with docs** — challenge assumptions, abuse/failure modes, scope, and done criteria before coding. When using an upstream-backed doc/skill, verify the upstream GitHub source/ref/date when network access exists. If freshness cannot be checked, write `UPSTREAM_UNVERIFIED`; never pretend the local vendored copy is current.
+2. **Brainstorm** — compare at least two approaches when design risk is non-trivial. If the active Agent CLI supports subagents, use them for independent design/security/test perspectives; the primary agent owns the decision and evidence.
+3. **Plan mode / deep reasoning** — write root cause, invariants, files, tests-first order, rollback, and acceptance evidence into the active work order or canonical plan. Split into micro-steps that another agent can resume.
+4. **Implement** — failing test first for production code; smallest safe change; stay inside the claimed scope.
+5. **Review** — independent reviewer/stronger reasoning mode where available; review is valid only for the exact SHA reviewed.
+6. **Debug** — isolate root cause before patching; never weaken assertions merely to get green.
+7. **Test/E2E** — targeted tests plus realistic end-to-end/adversarial flows through the real integration path; distinguish tool/transport failure from product failure.
+8. **Report** — persist exact commands, decisive outputs, files changed, residual risks, and verdict in repo SSoT. Say `VERIFIED` only for evidence actually run/read.
+9. **Memory** — record reusable defect-prevention lessons in the approved durable memory/knowledge mechanism; do not store secrets, private paths, or raw private data.
+10. **Open PR** — push the work-order branch and open/update a draft PR before independent final review when PR CI provides evidence.
+11. **CI/CD** — require the intended workflow(s) at the reviewed PR HEAD; an unrelated successful run is not evidence.
+12. **Fetch merge state** — reviewer does not silently merge. After the authorized/human merge gate, fetch `origin`, verify the resulting `main` SHA/PR state, and checkpoint `MERGED` or `AWAITING_MERGE`.
+
+### Cross-agent dispatch prompt contract
+
+When handing work to Codex, GPT Work, GLM/ZCode, Claude, Gemini, or another agent, the prompt must include:
+
+- repo + active work-order path + assigned finding/chunk only;
+- explicit instruction that repo SSoT beats chat memory;
+- entry-gate checks: `AGENTS.md`, `COLLAB.md`, work order, branch/HEAD/status/claims/checkpoint;
+- the complete loop above, including upstream freshness labeling and subagent use when supported;
+- exact evidence rule (`VERIFIED` only if run/read; transport failure stays unverified);
+- stop/handoff rule: update the work-order checkpoint before the agent stops;
+- PR/CI/merge rule: draft PR -> exact-SHA independent review -> required CI -> authorized merge -> fetch/verify `main`.
+
+For the current R-FR remediation, use the ready-to-copy Codex and GPT Work prompts plus routing/effort levels in `docs/work-orders/WO-RFR-20260824.md`.
+
+---
 
 ## 🧠 Brain Improvement Gate
 
@@ -601,12 +638,15 @@ When a task arrives, map the user's intent:
 
 ## 📝 Commit / PR Rules
 
-- **Commit directly to `main`** — never create branches or PRs
-- **Commit message format**: `type(scope): description`
+- **Use the active work-order/claim branch for reviewed work** — do not commit production changes directly to `main`.
+- **Commit message format**: `type(scope): description`; resumable chunks may use `chunk(<ID>): <goal> [next: <ID>]` or `step(<ID>): ...`.
   - Types: `feat` · `fix` · `docs` · `wiki` · `refactor` · `test` · `chore`
-  - Examples: `wiki(iot): add MQTT broker entity`, `feat(swarm): add model roster auto-update`
-- **Atomic commits** — one logical change per commit
-- **No force push** — never `git push --force` on main
+  - Examples: `wiki(iot): add MQTT broker entity`, `fix(live-docs): block private redirect targets`
+- **Atomic commits** — one logical change per commit; checkpoint before agent/session handoff.
+- **Draft PR before final independent review** when PR-triggered CI is part of acceptance; review approval is pinned to the exact PR HEAD SHA.
+- **Required CI must pass at the reviewed SHA** before the authorized merge gate.
+- **After merge**: fetch `origin`, verify PR/merge state and resulting `main` SHA, then update the active work order/handoff.
+- **No force push** to shared branches or `main`; use a new commit/revert instead.
 
 ---
 

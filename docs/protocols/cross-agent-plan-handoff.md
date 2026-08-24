@@ -84,13 +84,11 @@ The script bootstraps `handoff.md` from the example if needed.
 ## Per-Sub-Step Commit Checkpoint
 
 When building any system, plan and design first, split into small chunks, and
-**commit each completed sub-step to `main`** so the work is durable and another
+**commit each completed sub-step to the active work-order branch** so the work is durable and another
 agent (VS Code + Cline, Antigravity, Manus, Codex, Gemini CLI, Cursor) can
-resume after a rate limit, pause, or tool switch.
+resume after a rate limit, pause, or tool switch. Do not use direct-to-`main` mutation as a handoff mechanism.
 
-Because `handoff.md` and `session-memory.md` are gitignored, the **commit log on
-`origin/main` is the tracked, public-safe breadcrumb**. The next agent runs
-`git log --oneline` to see exactly where to resume.
+Because `handoff.md` and `session-memory.md` are gitignored, the **commit log on the active remote work-order branch plus its PR is the tracked, public-safe breadcrumb**. The next agent fetches the branch and runs `git log --oneline` to see exactly where to resume. `origin/main` becomes authoritative only after the authorized merge is fetched and verified.
 
 ### Commit message convention
 
@@ -110,11 +108,13 @@ chunk(<ID>): <one concrete result> [next: <ID>]
 
 | Action | When |
 |---|---|
-| `git commit -m "chunk(<ID>): ..."` | After **every** completed sub-step (local, cheap, no token cost) |
-| `git push origin main` | At a handoff boundary: **pause, near rate limit, or switching Agent/IDE/device** |
+| `git commit -m "chunk(<ID>): ..."` | After **every** completed sub-step on the active work-order branch |
+| `git push origin <work-order-branch>` | At a handoff boundary: **pause, near rate limit, or switching Agent/IDE/device** |
+| open/update draft PR | Before final independent review when PR CI is part of acceptance |
+| fetch `origin` + verify merged `main` SHA | After the authorized/human merge gate |
 
-Commit often so nothing is lost; push at handoff boundaries so a resuming agent
-can pull the latest. A normal session still closes with the full
+Commit often so nothing is lost; push the work-order branch at handoff boundaries so a resuming agent
+can fetch/pull the latest. Do not use direct-to-main push as the normal handoff path. A normal session still closes with the full
 **SESSION END PROTOCOL** (`session(YYYY-MM-DD): ...` commit + `log.md` +
 `session-memory.md`).
 
