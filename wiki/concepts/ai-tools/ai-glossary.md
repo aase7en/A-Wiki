@@ -119,7 +119,7 @@ verify_tool: WebFetch
 - ดู [[concepts/ai-tools/ai-myths]] — myths จาก same source, เสริมกัน
 - ดู [[concepts/ai-tools/multi-agent-theory]] — expand จาก Swarm + Agent entries (P2a)
 - ดู [[concepts/ai-tools/llm-rag-architecture]] — expand จาก RAG entry (P4)
-- ดู [[entities/ai-tools/openrouter-api]] — LLM routing ใน A-Wiki
+- ดู [[concepts/ai-tools/openrouter-api]] — LLM routing ใน A-Wiki
 - ดู [[agent-skills/swarm-intelligence/agile-swarm]] — Swarm implementation ใน A-Wiki
 
 ## แหล่งข้อมูล

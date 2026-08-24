@@ -129,7 +129,12 @@ def clip(s: str) -> str:
     s = re.sub(r"\s+", " ", s).strip()
     if len(s) <= ABSTRACT_MAX:
         return s
-    return s[: ABSTRACT_MAX - 1].rstrip() + "…"
+    cut = s[: ABSTRACT_MAX - 1]
+    # a truncated [[... leaves a broken wikilink in generated pages —
+    # drop the dangling opener entirely instead
+    if "[[" in cut and cut.count("[[") > cut.count("]]"):
+        cut = cut[:cut.rfind("[[")].rstrip()
+    return cut.rstrip() + "…"
 
 
 def slug_from_path(p: Path) -> str:

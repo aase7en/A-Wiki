@@ -10,13 +10,13 @@
 > **โดเมน**: Pharmacy (ร้านขายยา — ภูฟาร์มาซี)
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-23
 =======
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-23
 =======
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-23
 =======
-> **Last updated**: 2026-08-22
+> **Last updated**: 2026-08-23
 >>>>>>> Stashed changes
 >>>>>>> Stashed changes
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/pharmacy/ เท่านั้น**

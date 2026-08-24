@@ -144,7 +144,7 @@ Option C: Dynamic DNS + Router port forward — เสี่ยงกว่า
 ## สิ่งที่ Wiki รู้อยู่แล้วที่ใช้ได้เลย
 
 - **[[entities/iot/esp32]]** → sensor node สำหรับ DO, pH, TDS
-- **[[concepts/iot/mqtt-protocol]]** → ส่งข้อมูล sensor → Pi5
+- **[[entities/iot/mqtt-protocol]]** → ส่งข้อมูล sensor → Pi5
 - **[[entities/iot/raspberry-pi]]** → server hardware
 - **[[synthesis/pi4-lora-gateway-server]]** → สถาปัตยกรรม Pi server ที่เคยวางไว้
 - **[[synthesis/temperature-monitor-project]]** → ตัวอย่าง sensor → dashboard

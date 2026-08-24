@@ -84,11 +84,39 @@ def _resolution_indexes(wiki_root: Path) -> tuple[dict[str, Path], set[str]]:
     skip = {".git", "_upstream", "node_modules", ".gitnexus", "drive", "raw"}
     index: dict[str, Path] = {}
     paths: set[str] = set()
+    files: list[Path] = []
     for p in repo_root.rglob("*.md"):
         if not p.is_file() or any(part in skip for part in p.parts):
             continue
+        files.append(p)
         index.setdefault(p.stem, p)
         paths.add(p.relative_to(repo_root).as_posix()[:-len(".md")])
+    # Skills are real link targets: [[monte-carlo-quant-analysis]] /
+    # [[a-router]] / [[theme-factory]] referenced from entity pages and
+    # generated reports resolve to their SKILL.md (registry is the SSoT;
+    # fall back to skill dir names when the registry is unreadable).
+    try:
+        reg_path = repo_root / "skills-registry.json"
+        reg = json.loads(reg_path.read_text(encoding="utf-8"))
+        for entry in reg.get("skills", []):
+            name = entry.get("name")
+            skill_path = entry.get("path")
+            if name and skill_path:
+                sp = repo_root / skill_path
+                if sp.is_file():
+                    index.setdefault(name, sp)
+    except Exception:
+        pass
+    skills_root = repo_root / "skills"
+    if skills_root.is_dir():
+        for sp in skills_root.rglob("SKILL.md"):
+            parts = sp.relative_to(skills_root).parts[:-1]
+            for name in parts:  # every ancestor dir is a valid target
+                index.setdefault(name, sp)
+    # Exact file targets (with extension) resolve when the file exists
+    # repo-relative ([[CLAUDE.md]], [[profile.md]]).
+    for p in files:
+        paths.add(p.relative_to(repo_root).as_posix())
     return index, paths
 
 
@@ -108,6 +136,10 @@ def check_wikilinks(wiki_root: Path) -> CheckResult:
     index, known_paths = _resolution_indexes(wiki_root)
     for page in _md_files(wiki_root):
         text = page.read_text(encoding="utf-8", errors="replace")
+        # Docs teach link SYNTAX: examples inside code fences/spans are
+        # not real links (CLAUDE.md placeholders kept failing as "broken").
+        text = re.sub(r"```.*?```", "", text, flags=re.S)
+        text = re.sub(r"`[^`\n]*`", "", text)
         for m in WIKILINK_RE.finditer(text):
             target = m.group(1).strip()
             if not target or target.startswith("http"):

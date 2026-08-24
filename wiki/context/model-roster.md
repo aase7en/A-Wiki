@@ -49,7 +49,7 @@
 
 > สำหรับเลือก **primary model + effort** เมื่องานอยู่ระดับ Level 4 ของ Cost-First Pyramid
 > วิธีใช้เต็ม: `docs/protocols/model-switching.md` + skill `model-cost-switching`
-> sources: [[sources/claude-model-cost-switching-strategy]] · last_verified: 2026-06-12 · verify_tool: claude-api-skill
+> sources: claude-model-cost-switching-strategy · last_verified: 2026-06-12 · verify_tool: claude-api-skill
 
 | Tier | Model | $/MTok (in/out) | เหมาะกับ |
 |---|---|---|---|

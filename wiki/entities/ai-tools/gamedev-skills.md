@@ -26,7 +26,7 @@ cherry-pick เฉพาะ `skills/web-engines/*` มา 6 ตัว: `phaser-a
 
 ## ตำแหน่งใน A-Wiki
 
-- เสริม [[entities/ai-tools/game-lightweight-highend-capability-hub]] chain — `skills/awiki/game-phaser-pipeline/`
+- เสริม game lightweight/highend capability hub chain — `skills/awiki/game-phaser-pipeline/`
   (route/convention/safety ของ A-Wiki เอง) ชี้มาที่นี่เมื่อต้องการรายละเอียดระดับ engine API
 - Path: `skills/gamedev-skills/{skill-name}/SKILL.md` — verbatim จาก upstream, ไม่แก้เนื้อหา
 - Attribution: `skills/gamedev-skills/NOTICE.md`

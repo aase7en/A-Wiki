@@ -5,7 +5,7 @@ type: entity
 created: 2026-08-01
 related:
   - "[[claude-code]]"
-  - "[[cointh-glm]]"
+  - cointh-glm
   - "[[frontend-design]]"
   - "[[theme-factory]]"
 tags: [design, electron, byok, agent-orchestrator, ai-tools]

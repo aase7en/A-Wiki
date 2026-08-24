@@ -8,16 +8,16 @@
 | Metric | Count |
 |---|---:|
 | Nodes | 553 |
-| Edges | 1839 |
-| Broken links | 39 |
-| Orphans | 31 |
+| Edges | 1830 |
+| Broken links | 38 |
+| Orphans | 33 |
 
 ## Broken links by source domain
 
 | Domain | Count |
 |---|---:|
 | repo-root | 21 |
-| ai-tools | 10 |
+| ai-tools | 9 |
 | sources | 6 |
 | env | 2 |
 
@@ -28,10 +28,10 @@
 | context | 17 |
 | env | 8 |
 | ai-tools | 3 |
+| other | 3 |
 | meta | 1 |
-| other | 1 |
 | sources | 1 |
 
 ## Orphan samples
 
-`wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`, `wiki/context/overview-env.md`
+`profile.md`, `wiki/CLAUDE.md`, `wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`

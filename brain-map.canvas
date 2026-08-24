@@ -8305,14 +8305,6 @@
       "color": "2"
     },
     {
-      "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-CLAUDE-md",
-      "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
-      "fromSide": "left",
-      "toNode": "wiki-CLAUDE-md",
-      "toSide": "right",
-      "color": "2"
-    },
-    {
       "id": "edge-wiki-concepts-ai-tools-agent-framework-tradeoffs-md-wiki-sources-agent-frameworks-local-debug-2026-md",
       "fromNode": "wiki-concepts-ai-tools-agent-framework-tradeoffs-md",
       "fromSide": "left",
@@ -10901,14 +10893,6 @@
       "fromNode": "wiki-entities-ai-tools-gamedev-skills-md",
       "fromSide": "left",
       "toNode": "wiki-sources-charliejhills-claude-skills-org-chart-2026-md",
-      "toSide": "right",
-      "color": "2"
-    },
-    {
-      "id": "edge-wiki-entities-ai-tools-gamedev-skills-md-wiki-synthesis-game-lightweight-highend-capability-hub-md",
-      "fromNode": "wiki-entities-ai-tools-gamedev-skills-md",
-      "fromSide": "left",
-      "toNode": "wiki-synthesis-game-lightweight-highend-capability-hub-md",
       "toSide": "right",
       "color": "2"
     },
@@ -16758,14 +16742,6 @@
       "fromSide": "bottom",
       "toNode": "wiki-entities-iot-raspberry-pi-md",
       "toSide": "top",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-synthesis-dream-projects-md-profile-md",
-      "fromNode": "wiki-synthesis-dream-projects-md",
-      "fromSide": "left",
-      "toNode": "profile-md",
-      "toSide": "right",
       "color": "6"
     },
     {

@@ -48,4 +48,4 @@ upstream: https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/glos
 
 - [[concepts/ai-tools/ai-glossary]] ← concept index สร้างใหม่
 - [[concepts/ai-tools/multi-agent-theory]] ← เสริม (planned P2a)
-- [[entities/ai-tools/openrouter-api]] ← cross-ref เพิ่มเติม
+- [[concepts/ai-tools/openrouter-api]] ← cross-ref เพิ่มเติม

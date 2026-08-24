@@ -79,7 +79,7 @@ updated: 2026-04-22
 ## ความสัมพันธ์
 
 - [[entities/env/activated-sludge-system]] — ระบบบำบัดที่ใช้ค่าเหล่านี้
-- [[concepts/iot/mqtt-protocol]] — protocol ส่งข้อมูล sensor real-time
+- [[entities/iot/mqtt-protocol]] — protocol ส่งข้อมูล sensor real-time
 - [[entities/iot/esp32]] — sensor node ที่จะใช้วัดค่าอัตโนมัติ
 - [[synthesis/appsheet-to-webapp-pi5]] — แผน IoT integration ในโปรเจ็คใหม่
 

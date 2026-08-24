@@ -68,4 +68,4 @@ pake https://aase7en.github.io/A-Wiki/awiki-live.html --name "A-Wiki Live" --wid
 ## ความสัมพันธ์
 
 - ใช้ร่วมกับ: [[entities/ai-tools/hermes-agent]] (wrap chat interface)
-- ใช้ร่วมกับ: [[entities/ai-tools/a-wiki]] (search + showcase)
+- ใช้ร่วมกับ: A-Wiki (search + showcase)

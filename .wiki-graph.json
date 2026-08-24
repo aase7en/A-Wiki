@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-08-23",
+  "generated_at": "2026-08-24",
   "stats": {
     "nodes": 553,
-    "edges": 1839,
+    "edges": 1829,
     "edges_by_type": {
-      "wikilink": 1315,
+      "wikilink": 1306,
       "depends": 388,
       "implements": 53,
       "mdlink": 41,
-      "extends": 42
+      "extends": 41
     },
-    "broken_links": 39,
-    "orphans": 31,
+    "broken_links": 37,
+    "orphans": 33,
     "orphan_by_domain": {
       "context": 17,
       "env": 8,
       "ai-tools": 3,
+      "other": 3,
       "meta": 1,
-      "other": 1,
       "sources": 1
     },
     "hubs": [
@@ -63,6 +63,8 @@
       }
     ],
     "orphans_list": [
+      "profile.md",
+      "wiki/CLAUDE.md",
       "wiki/SKILL-INDEX.md",
       "wiki/concepts/ai-tools/hexagonal-architecture.md",
       "wiki/concepts/meta/coordination-artifacts.md",
@@ -80,9 +82,7 @@
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
       "wiki/context/session-memory-2026-06-24.md",
-      "wiki/context/session-memory.md",
-      "wiki/context/session-summary-2026-06-24.md",
-      "wiki/context/wiki-capability-map.md"
+      "wiki/context/session-memory.md"
     ]
   },
   "nodes": [
@@ -518,7 +518,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-08-23",
+      "title": "Review Report — 2026-08-24",
       "domain": "context"
     },
     {
@@ -5382,13 +5382,6 @@
     },
     {
       "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
-      "to": "wiki/CLAUDE.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/concepts/ai-tools/agent-framework-tradeoffs.md",
       "to": "wiki/sources/agent-frameworks-local-debug-2026.md",
       "type": "wikilink",
       "broken": false,
@@ -7167,13 +7160,6 @@
     },
     {
       "from": "wiki/concepts/pharmacy/drug-aliases.md",
-      "to": "raw/pharmacy/sp_drugs_full_3760.json",
-      "type": "wikilink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/concepts/pharmacy/drug-aliases.md",
       "to": "wiki/concepts/pharmacy/ordering-workflow.md",
       "type": "wikilink",
       "broken": false,
@@ -7516,27 +7502,6 @@
       "external": false
     },
     {
-      "from": "wiki/entities/ai-tools/agents-md-spec.md",
-      "to": ".cursorrules",
-      "type": "wikilink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/entities/ai-tools/agents-md-spec.md",
-      "to": ".codex/",
-      "type": "wikilink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "wiki/entities/ai-tools/agents-md-spec.md",
-      "to": ".gemini/",
-      "type": "wikilink",
-      "broken": false,
-      "external": true
-    },
-    {
       "from": "wiki/entities/ai-tools/anthropic-skills.md",
       "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "depends",
@@ -7750,13 +7715,6 @@
       "from": "wiki/entities/ai-tools/gamedev-skills.md",
       "to": "wiki/sources/charliejhills-claude-skills-org-chart-2026.md",
       "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/gamedev-skills.md",
-      "to": "wiki/synthesis/game-lightweight-highend-capability-hub.md",
-      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -8168,13 +8126,6 @@
     },
     {
       "from": "wiki/entities/ai-tools/open-design.md",
-      "to": "cointh-glm",
-      "type": "extends",
-      "broken": true,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/open-design.md",
       "to": "frontend-design",
       "type": "extends",
       "broken": true,
@@ -8186,13 +8137,6 @@
       "type": "wikilink",
       "broken": true,
       "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/openmed.md",
-      "to": "wiki/entities/pharmacy",
-      "type": "wikilink",
-      "broken": false,
-      "external": true
     },
     {
       "from": "wiki/entities/ai-tools/openmed.md",
@@ -8213,13 +8157,6 @@
       "to": "wiki/entities/ai-tools/hermes-agent.md",
       "type": "wikilink",
       "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/entities/ai-tools/pake.md",
-      "to": "entities/ai-tools/a-wiki",
-      "type": "wikilink",
-      "broken": true,
       "external": false
     },
     {
@@ -13069,13 +13006,6 @@
     {
       "from": "wiki/synthesis/dream-projects.md",
       "to": "wiki/entities/iot/raspberry-pi.md",
-      "type": "wikilink",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/dream-projects.md",
-      "to": "profile.md",
       "type": "wikilink",
       "broken": false,
       "external": false

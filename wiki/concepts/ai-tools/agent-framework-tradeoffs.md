@@ -72,7 +72,7 @@ Tradeoff ระหว่าง 3 แกนของ AI agent design — **ขน
 
 - Implement: [[entities/ai-tools/hermes-agent]] — ตัวอย่าง Autonomous Specialist
 - เปรียบเทียบ: [[concepts/ai-tools/openrouter-claude-code]] — Claude Code = lean execution layer
-- Cross-domain: pattern เดียวกันใช้กับ Claude+Gemini delegation workflow ใน [[CLAUDE.md]]
+- Cross-domain: pattern เดียวกันใช้กับ Claude+Gemini delegation workflow ใน `CLAUDE.md`
 
 ## แหล่งข้อมูล
 

@@ -52,7 +52,7 @@ A-Wiki มี **`AGENTS.md`** (10.2 KB) ที่ครอบคลุมทุ�
 
 - เกี่ยวข้องกับ: [[claude-skills]], [[ecc]] — Claude-specific layer ที่อยู่บนนี้
 - เปรียบเทียบกับ: `CLAUDE.md` — Claude-specific, AGENTS.md = universal
-- ใช้ร่วมกับ: [[.cursorrules]], [[.codex/]], [[.gemini/]] — agent-specific configs
+- ใช้ร่วมกับ: `.cursorrules`, `.codex/`, `.gemini/` — agent-specific configs
 
 ## แหล่งข้อมูล
 

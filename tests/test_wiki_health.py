@@ -190,3 +190,29 @@ def test_frontmatter_skip_is_visible_without_pyyaml(monkeypatch, tmp_path):
         assert any("PyYAML" in s for s in report.skipped), report.skipped
     finally:
         importlib.reload(wh)  # restore real yaml state
+
+
+class TestWikilinkResolutionExtensions:
+    """2026-08-24: skills and repo files are real link targets."""
+
+    def _idx(self):
+        import importlib.util as ilu, sys as _sys
+        spec = ilu.spec_from_file_location(
+            "wh_real", REPO_ROOT / "scripts" / "health" / "wiki_health.py")
+        wh = ilu.module_from_spec(spec)
+        _sys.modules["wh_real"] = wh  # dataclasses need a registered module
+        spec.loader.exec_module(wh)
+        # the REAL repo: skill/registry resolution is repo-wide by design
+        return wh, REPO_ROOT / "wiki"
+
+    def test_skill_names_resolve(self, tmp_path):
+        wh, wiki = self._idx()
+        index, paths = wh._resolution_indexes(wiki)
+        assert "monte-carlo-quant-analysis" in index, "skill name must resolve"
+        assert "a-router" in index and "theme-factory" in index
+
+    def test_repo_md_file_with_extension_resolves(self, tmp_path):
+        wh, wiki = self._idx()
+        index, paths = wh._resolution_indexes(wiki)
+        assert wh._resolves("CLAUDE.md", index, paths), "root CLAUDE.md must resolve"
+        assert wh._resolves("profile.md", index, paths)

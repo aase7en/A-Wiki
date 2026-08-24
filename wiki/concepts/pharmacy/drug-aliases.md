@@ -13,7 +13,7 @@ updated: 2026-04-30
 **สถานะ**: Active
 
 ## ภาพรวม
-หน้านี้รวบรวม "ชื่อเล่น" (aliases), ชื่อย่อ (abbreviations), หรือการสะกดคำที่พบบ่อยในการสั่งยาของลูกน้อง เพื่อใช้เป็นฐานข้อมูลให้ AI ([[wiki/synthesis/pharmacy-order-checker]]) นำไปทำ Fuzzy Match กับฐานข้อมูลยาหลัก ([[raw/pharmacy/sp_drugs_full_3760.json]])
+หน้านี้รวบรวม "ชื่อเล่น" (aliases), ชื่อย่อ (abbreviations), หรือการสะกดคำที่พบบ่อยในการสั่งยาของลูกน้อง เพื่อใช้เป็นฐานข้อมูลให้ AI ([[wiki/synthesis/pharmacy-order-checker]]) นำไปทำ Fuzzy Match กับฐานข้อมูลยาหลัก (`raw/pharmacy/sp_drugs_full_3760.json`)
 
 ## รายการ Aliases ที่พบบ่อย
 
@@ -111,5 +111,5 @@ updated: 2026-04-30
 | **FISH OIL salmon 75s [VISTRA]** | vistra salmon fish oil 75, vistra fish oil 75 | ระบุยี่ห้อ VISTRA + ขนาด |
 
 ## แหล่งข้อมูล
-- [[raw/pharmacy/sp_drugs_full_3760.json]]
+- `raw/pharmacy/sp_drugs_full_3760.json`
 - [[wiki/sources/drug-aliases-reference]]

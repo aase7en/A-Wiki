@@ -97,4 +97,4 @@ updated: 2026-04-29 (AI cost strategy + Mac Mini AI server)
 - [[synthesis/iot-lora-architecture]] — architecture หลักของ IoT hospital
 - [[synthesis/dual-ai-workflow]] — workflow AI ที่ใช้อยู่
 - [[entities/iot/raspberry-pi]] — hardware หลักของ home server
-- [[profile.md]] — ข้อมูลส่วนตัว + goals
+- `profile.md` — ข้อมูลส่วนตัว + goals

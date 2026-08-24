@@ -107,6 +107,6 @@ entities = analyze_text(clean, model="pharma_detection_superclinical")
 
 ## ความสัมพันธ์
 
-- ใช้ใน domain: [[wiki/entities/pharmacy]] — drug entity extraction
+- ใช้ใน domain: `wiki/entities/pharmacy/` — drug entity extraction
 - เกี่ยวข้องกับ: [[anthropic-skills]] — ใช้ร่วมกับ docx/pdf skill สำหรับ medical documents
 - ทางเลือก: spaCy scispaCy (lighter), HuggingFace biomedical models (more flexible)

@@ -1,12 +1,12 @@
-# Review Report — 2026-08-23
+# Review Report — 2026-08-24
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 844
+- ✓ Passed: 850
 - ⚠ Warnings: 308
-- ❌ Failures: 76
+- ❌ Failures: 69
 
 ## Top Actionable Issues
 
@@ -30,25 +30,19 @@
 - ⚠ **L2** wiki\concepts\ai-tools\session-setup.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\swarm-optimization.md: missing frontmatter key: title
 - ⚠ **L2** wiki\concepts\ai-tools\symlinks-ssot.md: missing frontmatter key: title
-- … 364 more issue(s) below
+- … 357 more issue(s) below
 
 ---
 
 ## ❌ L3: Link Integrity (wiki links resolve) — Failures
 
-- wiki\concepts\ai-tools\ai-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
-- wiki\concepts\env\water-quality-parameters.md: broken link: [[concepts/iot/mqtt-protocol]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-frontmatter-schema]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-consolidation]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[agent-private-storage]]
 - wiki\entities\ai-tools\a-wiki-skill-architecture.md: broken link: [[skill-architecture-plan]]
-- wiki\entities\ai-tools\gamedev-skills.md: broken link: [[entities/ai-tools/game-lightweight-highend-capability-hub]]
 - wiki\entities\ai-tools\open-design.md: broken link: [[claude-code]]
-- wiki\entities\ai-tools\open-design.md: broken link: [[cointh-glm]]
 - wiki\entities\ai-tools\open-design.md: broken link: [[frontend-design]]
 - wiki\entities\ai-tools\open-design.md: broken link: [[theme-factory]]
-- wiki\entities\ai-tools\pake.md: broken link: [[entities/ai-tools/a-wiki]]
-- wiki\sources\ai-engineering-glossary.md: broken link: [[entities/ai-tools/openrouter-api]]
 - wiki\sources\akashdeepo-monte-carlo-rrr.md: broken link: [[monte-carlo-quant-analysis]]
 - wiki\sources\firmai-financial-machine-learning.md: broken link: [[monte-carlo-quant-analysis]]
 - wiki\sources\muratcankoyyan-context-eng-ref.md: broken link: [context-fundamentals](skills/context-fundamentals/)
@@ -111,7 +105,6 @@
 - wiki\sources\prat011-llm-skills-ref.md: broken link: [Contributing Guidelines](CONTRIBUTING.md)
 - wiki\sources\unpingco-pystats-readme.md: broken link: [Draft cover](./python_for_probability_statistics_and_machine_learning.jpg)
 - wiki\sources\unpingco-python-stats-ml.md: broken link: [[monte-carlo-quant-analysis]]
-- wiki\synthesis\appsheet-to-webapp-pi5.md: broken link: [[concepts/iot/mqtt-protocol]]
 
 ---
 
@@ -433,10 +426,10 @@
 
 ---
 
-## ✓ Passed Checks (844 total)
+## ✓ Passed Checks (850 total)
 
 - **L2**: 345 passed
-- **L3**: 496 passed
+- **L3**: 502 passed
 - **L6**: 3 passed
 
 ---
