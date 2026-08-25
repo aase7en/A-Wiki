@@ -169,6 +169,19 @@ Before writing **any** new file, decide where it lives. The wrong choice either 
 
 ---
 
+## 🔁 Universal Loop Contract (CI-enforced — binds EVERY agent)
+
+> ตั้งตามคำสั่ง user 2026-08-24 บน branch `docs/repo-health-100` — ผูกทุก agent (GLM/GPT/Claude/Codex/Gemini/อนาคต) เท่ากันที่จุดเดียว: **CI ของ PR**
+
+งานที่ไม่ trivial ต้องจบ **loop เต็ม**: Grill (challenge ก่อนโค้ด; ถ้าเช็ค upstream ได้ให้ใช้ docs สด — `scripts/lib/live_docs.py`) → Brainstorm (≥2 approaches เมื่อเสี่ยง) → Plan → Implement (test ก่อนโค้ด) → Review → Debug root-cause → Test/E2E จริง → Report → Memory (defect→บทเรียน กันซ้ำ) → PR → CI → merge
+
+**สัญญาที่ถูกบังคับด้วยกลไก (`.github/workflows/pr-loop-gate.yml` + `scripts/check_pr_loop.py`):**
+1. ทุก PR ต้องมี section `## Loop-Evidence` ใน PR body อ้าง **WO/finding id** + **สิ่งที่ถูกทดสอบ** — ความจำแชทไม่ใช่หลักฐาน (SSoT rule)
+2. PR ที่แก้โค้ด production ต้องแก้/เพิ่ม tests ด้วย (Iron Law #1 ยกระดับขึ้น PR) — docs-only/test-only ยกเว้นข้อ 2
+3. ใช้ template `.github/PULL_REQUEST_TEMPLATE.md`
+
+**การแบ่ง lane (WO-LANES):** งาน visual/UX/สร้างภาพ/asset = lane GPT · งาน deterministic/โค้ด/tests/docs = lane GLM — รายละเอียด+คิว: `docs/work-orders/WO-LANES-20260824.md`
+
 ## 🧬 Neural Spine — Cross-Device Memory & Auto-Recall
 
 > **What this is:** A-Wiki's append-only event-sourced memory layer. Lets ledger/blackboard/task-board state travel across machines (Win/Mac/Pi5) WITHOUT going through git-tracked files (`.tmp-sync/` is gitignored — transport is scp/HTTP/drive per A-Council decision `754a6bae`).

@@ -1,0 +1,40 @@
+name: PR Loop Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  loop-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Universal Loop Contract gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          # checker comes from the PR HEAD itself (dogfood: the gate's own
+          # PR must pass the version it introduces)
+          BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
+          gh pr view "$PR_NUMBER" --json files --jq '.files[].path' > pr-files.txt
+          python - <<PY
+          import json, subprocess, sys
+          body = json.loads(subprocess.check_output(
+              ["gh", "pr", "view", "${PR_NUMBER}", "--json", "body",
+               "--jq", "."]).decode()).get("body", "")
+          files = open("pr-files.txt").read().split()
+          payload = json.dumps({"body": body, "files": files})
+          res = subprocess.run(
+              [sys.executable, "scripts/check_pr_loop.py"],
+              input=payload, text=True, capture_output=True)
+          print(res.stdout)
+          sys.exit(res.returncode)
+          PY
