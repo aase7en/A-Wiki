@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1680" role="img" aria-labelledby="title desc">
+<title id="title">A-Wiki system architecture</title>
+<desc id="desc">A mobile-first vertical architecture diagram showing the human owner, A-Wiki brain, thin brain bridge, A-Conductor control plane, and Serena workers and agents. A-Wiki owns knowledge, policy, memory and gates. A-Conductor owns orchestration and worker coordination. Workers execute bounded tasks and return evidence.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050b14"/><stop offset="1" stop-color="#0b1220"/></linearGradient>
+  <linearGradient id="brain" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#38bdf8"/></linearGradient>
+  <linearGradient id="control" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#818cf8"/></linearGradient>
+  <linearGradient id="exec" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient>
+  <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#94a3b8" stroke-opacity=".045"/></pattern>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M1 1l10 5-10 5z" fill="#64748b"/></marker>
+  <marker id="arrowCyan" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M1 1l10 5-10 5z" fill="#38bdf8"/></marker>
+</defs>
+<rect width="1080" height="1680" rx="34" fill="url(#bg)"/>
+<rect width="1080" height="1680" rx="34" fill="url(#grid)"/>
+
+<text x="64" y="82" fill="#f8fafc" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="58" font-weight="750">A-Wiki System Architecture</text>
+<text x="64" y="136" fill="#a5b4c8" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="38">One brain · one control plane · many agents</text>
+<rect x="64" y="158" width="330" height="6" rx="3" fill="url(#brain)"/>
+
+<rect x="170" y="204" width="740" height="126" rx="26" fill="#0d1828" stroke="#334155" stroke-width="2"/>
+<circle cx="240" cy="267" r="31" fill="#17243a" stroke="#94a3b8" stroke-width="2"/>
+<circle cx="240" cy="254" r="10" fill="#dbeafe"/><path d="M220 286c5-14 14-21 20-21s15 7 20 21" fill="none" stroke="#dbeafe" stroke-width="7" stroke-linecap="round"/>
+<text x="298" y="255" fill="#f8fafc" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="42" font-weight="750">HUMAN OWNER</text>
+<text x="298" y="299" fill="#cbd5e1" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34">Goals · decisions · merge authority</text>
+<path d="M540 330v48" stroke="#64748b" stroke-width="4" marker-end="url(#arrow)"/>
+
+<rect x="64" y="392" width="952" height="410" rx="30" fill="#081927" stroke="#2dd4bf" stroke-opacity=".7" stroke-width="3"/>
+<rect x="64" y="392" width="952" height="9" rx="4" fill="url(#brain)"/>
+<circle cx="134" cy="470" r="38" fill="#0c2430" stroke="#5eead4" stroke-width="3"/>
+<path d="M110 476c4-23 18-38 31-38 16 0 29 14 29 31 0 20-14 35-35 35-16 0-27-10-27-25 0-13 8-23 20-27" fill="none" stroke="#67e8f9" stroke-width="6" stroke-linecap="round"/>
+<circle cx="123" cy="463" r="5" fill="#5eead4"/><circle cx="145" cy="449" r="5" fill="#38bdf8"/><circle cx="154" cy="479" r="5" fill="#818cf8"/>
+<text x="198" y="461" fill="#ecfeff" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="48" font-weight="800">A-WIKI · BRAIN</text>
+<text x="198" y="508" fill="#b6e7ef" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="36">Knowledge · policy · memory · enforcement</text>
+
+<g font-family="Segoe UI,Tahoma,Arial,sans-serif">
+  <rect x="104" y="558" width="406" height="102" rx="20" fill="#0d2230" stroke="#1f4c58"/>
+  <text x="130" y="600" fill="#99f6e4" font-size="38" font-weight="750">KNOWLEDGE</text><text x="130" y="638" fill="#cbd5e1" font-size="34">wiki · graph</text>
+  <rect x="570" y="558" width="406" height="102" rx="20" fill="#0d2230" stroke="#1f4c58"/>
+  <text x="596" y="600" fill="#99f6e4" font-size="38" font-weight="750">POLICY + GATES</text><text x="596" y="638" fill="#cbd5e1" font-size="34">Iron Laws · hooks</text>
+  <rect x="104" y="680" width="406" height="102" rx="20" fill="#0d2230" stroke="#1f4c58"/>
+  <text x="130" y="722" fill="#bae6fd" font-size="38" font-weight="750">MEMORY</text><text x="130" y="760" fill="#cbd5e1" font-size="34">recall · handoff</text>
+  <rect x="570" y="680" width="406" height="102" rx="20" fill="#0d2230" stroke="#1f4c58"/>
+  <text x="596" y="722" fill="#bae6fd" font-size="38" font-weight="750">MODEL POLICY</text><text x="596" y="760" fill="#cbd5e1" font-size="34">tiers · budgets</text>
+</g>
+
+<path d="M540 802v54" stroke="#38bdf8" stroke-width="4" marker-end="url(#arrowCyan)"/>
+<path d="M514 856v-54" stroke="#64748b" stroke-width="3" stroke-dasharray="9 8" marker-end="url(#arrow)"/>
+<rect x="120" y="858" width="840" height="124" rx="26" fill="#0c1729" stroke="#38bdf8" stroke-opacity=".65" stroke-width="2"/>
+<text x="540" y="908" text-anchor="middle" fill="#e0f2fe" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="42" font-weight="800">BRAIN BRIDGE · THIN CONTRACT</text>
+<text x="540" y="953" text-anchor="middle" fill="#bae6fd" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34">gate · plan · verify · recall · claim · search</text>
+<path d="M540 982v54" stroke="#38bdf8" stroke-width="4" marker-end="url(#arrowCyan)"/>
+<path d="M514 1036v-54" stroke="#64748b" stroke-width="3" stroke-dasharray="9 8" marker-end="url(#arrow)"/>
+
+<rect x="64" y="1048" width="952" height="324" rx="30" fill="#0b172b" stroke="#818cf8" stroke-opacity=".72" stroke-width="3"/>
+<rect x="64" y="1048" width="952" height="9" rx="4" fill="url(#control)"/>
+<rect x="100" y="1096" width="70" height="70" rx="18" fill="#111f3a" stroke="#818cf8" stroke-width="2"/>
+<path d="M120 1131h30M135 1116v30" stroke="#c7d2fe" stroke-width="7" stroke-linecap="round"/>
+<text x="198" y="1128" fill="#eef2ff" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="46" font-weight="800">A-CONDUCTOR · CONTROL PLANE</text>
+<text x="198" y="1172" fill="#c7d2fe" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34">Orchestration · lifecycle · worker coordination</text>
+<g font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="36" font-weight="750">
+  <rect x="104" y="1212" width="204" height="82" rx="18" fill="#111d34" stroke="#334a79"/><text x="206" y="1265" text-anchor="middle" fill="#dbeafe">ROUTE</text>
+  <rect x="326" y="1212" width="204" height="82" rx="18" fill="#111d34" stroke="#334a79"/><text x="428" y="1265" text-anchor="middle" fill="#dbeafe">DISPATCH</text>
+  <rect x="548" y="1212" width="204" height="82" rx="18" fill="#111d34" stroke="#334a79"/><text x="650" y="1265" text-anchor="middle" fill="#dbeafe">RECOVERY</text>
+  <rect x="770" y="1212" width="206" height="82" rx="18" fill="#111d34" stroke="#334a79"/><text x="873" y="1265" text-anchor="middle" fill="#dbeafe">MONITOR</text>
+</g>
+<text x="540" y="1342" text-anchor="middle" fill="#a5b4c8" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34">No duplicated brain policy, memory or gates</text>
+<path d="M540 1372v50" stroke="#818cf8" stroke-width="4" marker-end="url(#arrow)"/>
+
+<rect x="112" y="1432" width="856" height="132" rx="26" fill="#13152d" stroke="#a78bfa" stroke-opacity=".75" stroke-width="3"/>
+<text x="540" y="1482" text-anchor="middle" fill="#ede9fe" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="42" font-weight="800">SERENA WORKERS + AGENTS</text>
+<text x="540" y="1526" text-anchor="middle" fill="#ddd6fe" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34">bounded execution · BRAIN-ENTRY context</text>
+<text x="540" y="1558" text-anchor="middle" fill="#c4b5fd" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="32">execute → test/review → return evidence</text>
+
+<rect x="112" y="1590" width="856" height="66" rx="22" fill="#0b1524" stroke="#334155" stroke-width="2"/>
+<text x="540" y="1632" text-anchor="middle" fill="#cbd5e1" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="34" font-weight="700">Brain owns rules · Conductor orchestrates · Workers execute</text>
+</svg>
