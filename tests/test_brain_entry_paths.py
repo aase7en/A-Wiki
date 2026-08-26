@@ -20,10 +20,14 @@ def test_every_referenced_repo_file_exists():
     must never point at a file that does not exist."""
     refs = set(re.findall(r"`([\w./-]+\.(?:md|yaml|json))`", ENTRY))
     assert refs, "entry should reference concrete files"
-    # drive/* is the private machine layer (junction) — exists only where
-    # the drive is mounted, never on CI; it is exempt by design
+    # machine-local exemptions (never present on CI, by design):
+    # drive/* (private junction layer) and session-memory.md (per-machine
+    # private memory; BRAIN-ENTRY itself notes it may be absent)
+    EXEMPT_PREFIX = ("drive/",)
+    EXEMPT_FILES = {"wiki/context/session-memory.md"}
     missing = [r for r in refs
-               if not r.startswith("drive/")
+               if not any(r.startswith(pfx) for pfx in EXEMPT_PREFIX)
+               and r not in EXEMPT_FILES
                and not (REPO_ROOT / r).is_file()]
     assert not missing, f"BRAIN-ENTRY references missing files: {missing}"
 
