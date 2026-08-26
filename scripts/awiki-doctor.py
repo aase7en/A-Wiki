@@ -62,6 +62,8 @@ def main(argv=None) -> int:
     ap.add_argument("--full", action="store_true",
                     help="add preflight + last CI verdict (slower)")
     args = ap.parse_args(argv)
+    version = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()         if (REPO_ROOT / "VERSION").is_file() else "?"
+    print(f"🧠 A-Wiki brain v{version}" + ("  (--full)" if args.full else ""))
     rows = sections(args.full)
     bad = 0
     for name, ok, what, msg in rows:
