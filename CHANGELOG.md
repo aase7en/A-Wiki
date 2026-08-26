@@ -6,6 +6,39 @@ agent can tell what capability level the repository is at.
 Format: keep the newest release first. Use small, operational entries that
 explain what changed and how to verify it.
 
+## 1.4.0 - 2026-08-26
+
+Migration complete + brain-enhancement round (≈1,100 commits since 1.3.0;
+verify each via `python scripts/awiki-doctor.py --full`, full pytest suite,
+and CI history).
+
+### Added
+- **vNext migration phases 5–11 complete**: memory layers L0–L5 · hook
+  engine (registry authority, 30 hooks, 4 providers incl. ZCode+Gemini
+  wiring) · model control plane · review-bus (findings/SHA-bound
+  approval/halt) · A-Loop v2 completion gate · world-intel lazy bridge ·
+  operator runbook.
+- **Brain enhancement (6 slices)**: `awiki adopt <repo>` (brain gates in
+  any repo, cross-repo E2E) · skill pipeline (propose → deterministic
+  auto-eval → one-button approve + scout) · grill with live upstream docs
+  (`docs:` frontmatter, honest cache-stale labels) · stale-spec CI gate +
+  plan fold-back stop hook · loop budget/halt + persona memory + nightly
+  synthesis cron · `awiki doctor`/`guide` + TH/EN getting-started.
+- **Universal Loop Contract (CI-enforced)**: every PR carries
+  `## Loop-Evidence` (WO/finding + tested); production-code PRs must pair
+  with tests — `pr-loop-gate` workflow binds ALL agents equally.
+- **`awiki` pip package** (`pip install git+…`): thin launcher CLI
+  (status/search/adopt/skill/doctor/guide).
+- **Repo Health 100%**: wiki-health 0 hard/0 baselined (root-cause fixes:
+  link resolution for skills/files, code-span examples, truncation), CI
+  green streak restored via deterministic generated context.
+
+### Changed
+- Skill tiers consolidated: 198 canonical (12 manual buttons) / 47
+  deprecated-with-successors; routing now 3-tier (trigger → description →
+  default spine `/A`).
+- `/A <objective>` is THE single entry (question-guard, default spine).
+
 ## 1.3.0 - 2026-06-12
 
 ### Added

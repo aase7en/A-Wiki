@@ -1,0 +1,71 @@
+# PROJECT-GRAPH — machine-readable DOCUMENT routing for A-Wiki
+#
+# LAYER SEPARATION (binding): this graph routes DOCUMENTS ONLY — which
+# workflow file an agent should read for a given state. The RUNTIME
+# execution state machine belongs to a-flow (the A-Suite pipeline skill)
+# — do not merge the two layers.
+#
+# Purpose: context economy — agents read ONLY the nodes their current
+# state requires instead of the whole AGENTS.md every session.
+version: 1
+name: awiki-document-graph
+principles:
+  - "SSoT > chat memory"
+  - "read the minimum node set for the current state"
+  - "executable memory beats prose (defect-memory ladder)"
+
+nodes:
+  entry:
+    file: "BRAIN-ENTRY.md"
+    always_read: true
+    purpose: "Index + 3 rules + common paths — the single wake-up file."
+
+  agents:
+    file: "AGENTS.md"
+    read_when: [substantial_repo_work, shared_surface_edit, any_mutation]
+    purpose: "Iron Laws, storage rules, cost pyramid, loop contract."
+
+  collab:
+    file: "COLLAB.md"
+    read_when: [session_start, resume, shared_surface_edit]
+    purpose: "Lanes/claims — collision avoidance with other agents."
+
+  ssot:
+    file: "docs/migration/awiki-vnext-plan.md"
+    read_when: [resume, state_conflict, checkpoint_question]
+    purpose: "Authoritative migration plan + phase checkpoints."
+
+  defect_memory:
+    file: "docs/protocols/defect-memory.md"
+    read_when: [material_defect_found, recurring_failure, postmortem]
+    purpose: "9-tier prevention ladder; ledger lessons need a mechanism tier."
+
+  loop_contract:
+    file: ".github/PULL_REQUEST_TEMPLATE.md"
+    read_when: [open_pr, review_pr]
+    purpose: "Loop-Evidence section required by the CI pr-loop-gate."
+
+  continuity:
+    file: "docs/protocols/agent-continuity-gate.md"
+    read_when: [session_start, resume, context_rotation]
+    purpose: "5-step gate before any mutation."
+
+  work_orders:
+    file: "docs/work-orders/WO-LANES-20260824.md"
+    read_when: [task_assignment, lane_question]
+    purpose: "GLM vs GPT lanes, queues, checkpoints."
+
+  handoff:
+    file: "docs/protocols/cross-agent-plan-handoff.md"
+    read_when: [handoff, session_switch, context_rotation]
+    purpose: "Chunked resumable plans; commit-at-boundaries."
+
+  brain_gate:
+    file: "docs/protocols/brain-improvement-gate.md"
+    read_when: [brain_capability_change, hook_or_skill_change]
+    purpose: "Intake gate before changing brain capabilities."
+
+  universal_routing:
+    file: "docs/protocols/universal-routing.md"
+    read_when: [source_ingest, cost_question]
+    purpose: "Cost-first routing; harness-only ingestion."
