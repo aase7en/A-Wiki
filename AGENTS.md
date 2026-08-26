@@ -485,6 +485,8 @@ python scripts/verify-skill-surfaces.py             # cross-agent visibility smo
 
 ## 🔁 Binding Loop Engineer — cross-agent full cycle
 
+> Elaboration of the **Universal Loop Contract** (`AGENTS.md` §Universal Loop Contract — CI-enforced): that section is the binding minimum every PR must satisfy (Loop-Evidence + tests); this section defines how to execute the full 12-stage cycle across agents. One contract — stage names map 1:1.
+
 For any non-trivial implementation, remediation, migration, security fix, or multi-file change, the repository SSoT is authoritative. **Chat memory is never the execution source of truth.** Read the active work order/checkpoint, claim table, branch/HEAD, and tests before acting.
 
 Required cycle per coherent slice:
