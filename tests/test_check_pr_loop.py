@@ -80,3 +80,19 @@ def test_cli_reads_json_payload_and_exits():
         input=json.dumps(bad), capture_output=True, text=True,
         encoding="utf-8", errors="replace", timeout=60)
     assert res2.returncode == 1
+
+
+def test_gate_workflow_checks_out_merge_ref_not_head():
+    """Regression 2026-08-26 (PR #26 incident): pinning the checkout to
+    head.sha made the gate exit 2 (checker file not found) on any branch
+    cut before scripts/check_pr_loop.py landed. The merge ref (the default
+    checkout) carries main's checker and a PR's own edits to it, so the
+    dogfood property survives without breaking pre-checker branches."""
+    import re
+    yaml_text = (REPO_ROOT / ".github" / "workflows" / "pr-loop-gate.yml"
+                 ).read_text(encoding="utf-8")
+    assert "scripts/check_pr_loop.py" in yaml_text
+    ref_pins = re.findall(r"^\s*ref:\s*\S.*$", yaml_text, flags=re.M)
+    assert not any("head.sha" in pin for pin in ref_pins), (
+        "pr-loop-gate must run the checker from the merge ref (default "
+        "checkout); a head.sha ref pin breaks branches predating the checker")

@@ -13,7 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          # merge ref (default) — carries main's checker for branches that
+          # predate it, and a PR's own edits when the PR modifies the
+          # checker (dogfood preserved). Never pin head.sha here: branches
+          # without scripts/check_pr_loop.py would exit 2 (PR #26 incident).
           persist-credentials: false
       - name: Universal Loop Contract gate
         env:
@@ -21,8 +24,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          # checker comes from the PR HEAD itself (dogfood: the gate's own
-          # PR must pass the version it introduces)
           BODY="$(gh pr view "$PR_NUMBER" --json body --jq .body)"
           gh pr view "$PR_NUMBER" --json files --jq '.files[].path' > pr-files.txt
           python - <<PY
