@@ -1,13 +1,13 @@
 # A-Wiki vNext Migration — Plan & Tracking Log
 
-> Living document for the A-Wiki vNext migration. Active execution branch: **`refactor/awiki-kernel-vnext-clean`** (isolated clean worktree from `origin/main`; forensic branch `refactor/awiki-kernel-vnext` remains preserved per DISC-001).
-> Source of authority: A-WIKI-MASTER-DEVELOPMENT-PLAN plus `docs/migration/awiki-agent-review-bus-plan.md`.
-> Current execution model: ZCode / GLM-5.3 = executor; ChatGPT = architecture reviewer/QA when invoked. Future reviewers may be automated through the same A-Wiki Review Bus protocol.
-> Rule: one phase per review cycle. Security leak / data loss / repo corruption = immediate stop.
+> Living document for the A-Wiki vNext migration and post-migration hardening. Historical isolated branches are preserved for attribution; current remediation starts from the reviewed `main` baseline and a work-order-owned branch.
+> Source of authority: A-WIKI-MASTER-DEVELOPMENT-PLAN plus `docs/migration/awiki-agent-review-bus-plan.md`; active post-review remediation authority: `docs/work-orders/WO-RFR-20260824.md`.
+> Current execution model: capability-routed, not vendor-bound. High-risk security/integrity slices use the strongest available independent reasoner (recommended GPT-5.6 Sol Ultra / UltraHigh); complex deterministic slices use GPT-5.6 Sol MAX / HighMax; mechanical minors/tests may use GLM 5.3 or another lower-cost capable executor; final re-review returns to the strongest independent reviewer.
+> Rule: repository SSoT beats chat memory; one remediation slice/group per review cycle; security leak / data loss / repo corruption = immediate stop.
 
 ## Guardrails (binding for every phase)
 
-1. Work only on `refactor/awiki-kernel-vnext-clean` using its isolated worktree — never `main`, never the contaminated forensic branch.
+1. Work on the branch named by the active work order/claim. For post-review remediation, never mutate `main` directly; branch -> draft PR -> exact-SHA review -> required CI -> authorized merge -> fetch/verify merged `main`. Historical migration worktrees remain read-only evidence unless a specific work order reactivates them.
 2. Inspect before delete (`git grep` / `rg` references first) and record evidence.
 3. Preserve the public/private boundary; no machine paths, secrets, or private operational data in the public repo.
 4. Respect Iron Laws: test-first where applicable, root-cause before fixes, raw immutable, registry as source of truth, claims on shared surfaces.
@@ -35,6 +35,39 @@
 | 9 | A-Loop v2 (review states wired into the loop completion gate) | ✅ COMPLETE 2026-08-22 | `55541e5b` — a_loop_review gate (6 tests): complete ONLY at READY, stale-SHA reopens |
 | 10 | Optional external modules (world-intel MCP — lazy, no vendoring) | ✅ COMPLETE 2026-08-22 | `07d210a0` — lazy stdio bridge, default-off, vendor-free (5 tests) |
 | 11 | Documentation slimming + review-bus operator docs | ✅ COMPLETE 2026-08-22 | runbook `docs/runbooks/review-bus.md` + status sync (JOBS/ merge note: no such dir existed — void) |
+
+## Post-review hardening track — R-FR-001..011 (2026-08-24)
+
+Authoritative work order: `docs/work-orders/WO-RFR-20260824.md`.
+
+This track exists because the independent Senior Staff review of `main` at `14019f98` returned **CHANGES_REQUIRED** with 7 major + 4 minor findings. The remediation order is risk-first, with the full loop-engineer cycle required for every slice:
+
+`Grill Me / Grill Me with docs -> brainstorm -> deep plan -> implement -> review -> debug -> test/E2E -> report -> durable defect-prevention memory -> open draft PR -> required CI/CD -> fetch/verify authorized merge state`
+
+Routing:
+
+| Order | Finding group | Recommended execution/review tier |
+|---|---|---|
+| M1 | baseline evidence | GLM 5.3 / MAX; mechanical evidence only |
+| M2 | R-FR-002 live-docs trust boundary | GPT-5.6 Sol Ultra / UltraHigh |
+| M3 | R-FR-006 + R-FR-007 adopt preservation + exact check | GPT-5.6 Sol Ultra / UltraHigh |
+| M4 | R-FR-001 skill eval->approve artifact binding | GPT-5.6 Sol Ultra / UltraHigh |
+| M5 | R-FR-003 stale-spec CI/history/path semantics | GPT-5.6 Sol MAX / HighMax |
+| M6 | R-FR-004 + R-FR-005 fold-back correctness/integrity | GPT-5.6 Sol MAX / HighMax |
+| M7 | R-FR-008..011 minor E2E/order/doctor/Markdown consistency | GLM 5.3 or Sol MAX |
+| M8 | final independent adversarial re-review | GPT-5.6 Sol Ultra / UltraHigh |
+
+The model names are routing recommendations only. If unavailable, preserve the capability rule: high-blast-radius security/integrity work gets the strongest independent reasoner; deterministic/mechanical work uses the cheapest capable executor; final approval comes from an independent strong reviewer pinned to the exact PR HEAD SHA.
+
+Minimum baseline/final evidence:
+
+```bash
+python -m pytest tests/ -q
+python scripts/awiki-doctor.py --full
+python scripts/health/wiki_health.py
+```
+
+No result is `VERIFIED` unless the responsible agent ran/read its evidence. Transport/MCP/tool failure is recorded as `UNVERIFIED — transport/tool failure`, not converted into a test failure or a pass.
 
 ## Parallel Track — Agent Review Bus
 
@@ -286,8 +319,8 @@ GLM must execute Phase 1 in this order unless new evidence makes a safety stop n
 6. Run targeted tests after each coherent change; run the required Phase 1 regression set before requesting review.
 7. Return a structured Phase 1 review handoff and STOP before Phase 2.
 
-## Current Instruction to GLM 5.3
+## Current execution instruction
 
-Phase 0 is approved. Begin **Phase 1 only** on the clean isolated worktree/branch. Read `docs/migration/awiki-agent-review-bus-plan.md` as an additional architecture constraint, but do not build the full review orchestrator during Phase 1. The immediate safety priority is P1.1 (`session_start.py`).
+Phases 0–11 are historical/completed migration state. Current remediation authority is `docs/work-orders/WO-RFR-20260824.md`; begin at its latest incomplete micro-step. Do not revive historical Phase 1 instructions or infer work from chat. Route each finding by risk/capability, complete the full loop-engineer cycle, and checkpoint the work order before any agent/session handoff.
 
 <!-- final-verification: synchronize re-fire 2026-08-18 (webhook drops during GitHub incident) -->
