@@ -30,15 +30,16 @@ def ensure_db() -> None:
 
 
 def normalize_query(q: str) -> str:
-    """FTS5-friendly query. Bare terms → match-anywhere; quoted phrases preserved."""
+    """FTS5-friendly query while treating ordinary user terms as literals."""
     q = q.strip()
     if not q:
         return q
-    # If user wrote raw FTS5 (contains : or AND/OR/NEAR), pass through
+    # Preserve explicit FTS5 syntax for power users. Ordinary free text must be
+    # quoted so punctuation such as the hyphen in "Agent-Reach" is literal.
     if any(tok in q for tok in (":", " AND ", " OR ", " NEAR(", '"')):
         return q
     parts = shlex.split(q)
-    return " ".join(parts)
+    return " ".join(f'"{part.replace(chr(34), chr(34) * 2)}"' for part in parts)
 
 
 def search(query: str, limit: int, field: str | None) -> list[tuple]:
