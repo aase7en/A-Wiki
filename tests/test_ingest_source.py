@@ -214,6 +214,104 @@ def _load_module(rel_path: str, mod_name: str):
     return mod
 
 
+
+# CAP-2: raw-first provenance for MarkItDown local binaries
+class TestMarkItDownRawFirstProvenance:
+    @pytest.mark.parametrize("suffix", [".pdf", ".docx", ".xlsx", ".pptx", ".html"])
+    def test_original_binary_exists_in_raw_before_conversion(
+        self, suffix: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        import sys
+        import types
+
+        source = tmp_path / f"Quarterly Report{suffix}"
+        original_bytes = b"AWIKI-BINARY-ORIGINAL\x00\x01\xff"
+        source.write_bytes(original_bytes)
+        slug = "quarterly-report"
+        expected_raw = tmp_path / "raw" / f"{slug}{suffix}"
+
+        class _Result:
+            text_content = "# Converted\n\nNormalized Markdown.\n"
+
+        class _FakeMarkItDown:
+            def convert(self, path: str):
+                assert Path(path) == source
+                assert expected_raw.exists(), "immutable original must be saved before conversion"
+                assert expected_raw.read_bytes() == original_bytes
+                return _Result()
+
+        fake_module = types.ModuleType("markitdown")
+        fake_module.MarkItDown = _FakeMarkItDown
+        monkeypatch.setitem(sys.modules, "markitdown", fake_module)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+
+        text = ingest_source_mod.extract_text_from_file(str(source), slug=slug)
+
+        assert text == _Result.text_content
+        assert expected_raw.read_bytes() == original_bytes
+        assert not (tmp_path / "raw" / f"{slug}.md").exists(), (
+            "normalized Markdown must not replace the immutable raw original"
+        )
+
+
+    @pytest.mark.parametrize("failure_mode", ["missing", "convert-error"])
+    def test_binary_conversion_failure_is_fail_closed_but_keeps_raw(
+        self, failure_mode: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        import sys
+        import types
+
+        source = tmp_path / "Evidence.pdf"
+        original_bytes = b"%PDF-AWIKI-RAW\x00\xff"
+        source.write_bytes(original_bytes)
+        expected_raw = tmp_path / "raw" / "evidence.pdf"
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+
+        if failure_mode == "missing":
+            monkeypatch.setitem(sys.modules, "markitdown", None)
+        else:
+            class _BrokenMarkItDown:
+                def convert(self, path: str):
+                    raise RuntimeError("synthetic conversion failure")
+
+            fake_module = types.ModuleType("markitdown")
+            fake_module.MarkItDown = _BrokenMarkItDown
+            monkeypatch.setitem(sys.modules, "markitdown", fake_module)
+
+        text = ingest_source_mod.extract_text_from_file(str(source), slug="evidence")
+
+        assert text is None, "binary input must not fall back to lossy text decoding"
+        assert expected_raw.read_bytes() == original_bytes
+
+
+    def test_local_ingest_uses_repo_relative_raw_ref_not_machine_path(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ):
+        import sys
+
+        source = tmp_path / "Evidence.txt"
+        source.write_text("# Evidence\n\nPublic-safe local source.\n", encoding="utf-8")
+        captured: dict[str, Any] = {}
+
+        def _capture_ingest(**kwargs):
+            captured.update(kwargs)
+            return tmp_path / "source.md"
+
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        monkeypatch.setattr(ingest_source_mod, "ingest_source", _capture_ingest)
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["ingest-source.py", "--file", str(source), "--domain", "iot"],
+        )
+
+        ingest_source_mod.main()
+
+        assert captured["original_file"] == "raw/evidence.txt"
+        assert captured["ref"] == "raw/evidence.txt"
+        assert str(tmp_path) not in captured["ref"]
+
+
 class TestTraderDomain:
     """B6 — trader domain must work end-to-end across the ingest pipeline.
 

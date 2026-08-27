@@ -109,12 +109,26 @@ def extract_text_from_url(url: str) -> str | None:
     return None
 
 
+def _preserve_raw_original(path: Path, slug: str) -> Path:
+    """Copy a local source into immutable raw storage without overwriting it."""
+    raw_path = REPO_ROOT / "raw" / f"{slug}{path.suffix.lower()}"
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    if raw_path.exists():
+        if raw_path.read_bytes() != path.read_bytes():
+            raise FileExistsError(
+                f"raw provenance collision: {raw_path} already exists with different content"
+            )
+        return raw_path
+    shutil.copy2(path, raw_path)
+    return raw_path
+
+
 def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
-    converts to Markdown via MarkItDown and saves to ``raw/<slug>.md``
-    so the provenance hook passes.
+    preserves the immutable original under ``raw/<slug>.<ext>`` before
+    converting it to normalized Markdown via MarkItDown.
     """
     p = Path(path)
     if not p.exists():
@@ -129,25 +143,27 @@ def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
         except Exception:
             return None
 
-    # Binary/office formats — use MarkItDown
+    # Binary/office formats: preserve immutable original before conversion.
     if ext in BINARY_EXTS:
+        if slug:
+            try:
+                raw_path = _preserve_raw_original(p, slug)
+                print(f"raw original saved: {raw_path}", file=sys.stderr)
+            except (OSError, FileExistsError) as e:
+                print(f"warn: could not preserve raw original for {path}: {e}", file=sys.stderr)
+                return None
         try:
             from markitdown import MarkItDown  # type: ignore[import-untyped]
 
             md = MarkItDown()
             result = md.convert(str(p))
             if result and result.text_content:
-                text = result.text_content
-                if slug:
-                    raw_path = REPO_ROOT / "raw" / f"{slug}.md"
-                    raw_path.parent.mkdir(parents=True, exist_ok=True)
-                    raw_path.write_text(text, encoding="utf-8")
-                    print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
-                return text
+                return result.text_content
         except ImportError:
-            print("warn: MarkItDown not installed — install: pip install markitdown", file=sys.stderr)
+            print("warn: MarkItDown not installed; install optional dependency: markitdown", file=sys.stderr)
         except Exception as e:
             print(f"warn: MarkItDown conversion failed for {path}: {e}", file=sys.stderr)
+        return None
 
     # Fallback: try plain text with error replacement
     try:
@@ -459,20 +475,18 @@ def main() -> None:
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
         raw_text = extract_text_from_file(args.file, slug=file_slug)
-        ref = str(file_path.resolve())
+        ref = file_path.name
         source_type = args.source_type or "other"
-        # Determine original_file: MarkItDown may have created raw/<slug>.md
+        # Bind provenance to the immutable original, never normalized Markdown.
         if raw_text:
-            raw_md = REPO_ROOT / "raw" / f"{file_slug}.md"
-            if raw_md.exists():
-                original_file = f"raw/{file_slug}.md"
-            else:
-                # Binary copy to raw/ for non-MarkItDown files
-                raw_dest = REPO_ROOT / "raw" / f"{file_slug}{file_path.suffix}"
-                raw_dest.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(file_path, raw_dest)
-                print(f"💾 Raw copy saved: {raw_dest}", file=sys.stderr)
-                original_file = f"raw/{file_slug}{file_path.suffix}"
+            try:
+                raw_dest = _preserve_raw_original(file_path, file_slug)
+            except (OSError, FileExistsError) as e:
+                print(f"error: could not preserve raw original: {e}", file=sys.stderr)
+                sys.exit(1)
+            print(f"raw original ready: {raw_dest}", file=sys.stderr)
+            original_file = f"raw/{raw_dest.name}"
+            ref = original_file
 
     if not raw_text:
         print("error: could not fetch/read content", file=sys.stderr)
