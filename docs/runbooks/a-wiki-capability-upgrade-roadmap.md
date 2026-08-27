@@ -49,6 +49,31 @@ Triage order:
 | Revenue | Creator Layer and Thai/social skills exist | Add public-safe monetization loop from wiki source to validated product/content | Privacy scan + source/date/link review |
 | Auto trading | Freqtrade reference, read-only feed, and Bot Trading Iron Law exist | Separate paper/read-only/live backend tiers | Trading security review before live adapter |
 
+## Capability Intelligence Layer ? 2026-08-27
+
+This layer extends existing authority; it does **not** create another active skill registry.
+
+| Concern | Authority / durable surface | Rule |
+|---|---|---|
+| Canonical active skills | `skills-registry.json` | Generated agent surfaces derive from this authority only |
+| External integrations/providers | `config/integrations.yaml` + integration intake protocol | Default-disabled/lazy unless evidence justifies stronger status |
+| External candidate knowledge | `wiki/sources/**`, `wiki/entities/**`, dated audit evidence | Search on demand; candidate detail is not always-on context |
+| Capability view | `scripts/wiki/build-capability-map.py` | Generated/read-only view; never a second SSoT |
+
+Candidate lifecycle:
+
+`DISCOVERED -> RESEARCHED -> EVALUATED -> ACCEPTED_DELTA -> CANONICAL`
+
+or `REJECTED | DEFERRED | CATALOG_ONLY | SUPERSEDED`.
+
+External evaluation records provenance/version, overlap, license, maintenance, dependency/context/runtime/API cost, cross-platform/auth/data-egress/privacy/security/instruction risk, deterministic verification, before/after eval, rollback and placement. Prefer `REUSE -> WRAP -> EXTEND`; `NEW/REPLACE` require measured advantage.
+
+Research routing keeps factual authority separate from social signal: `FACTUAL -> primary/official`, `CURRENT -> fresh authoritative source`, `TREND/SENTIMENT -> recent community/social with timestamps`, `SPECIALIZED_SCRAPE -> fallback only`. Outputs label FACT / INFERENCE / RECOMMENDATION / DECISION when material.
+
+A-Wiki owns stable capability requirements, policy, canonical skills and durable lessons. A-Conductor owns live provider/worker availability, permission/cost/risk gates and execution evidence. Bridge with a small versioned capability ID/mapping seam; never copy whole registries between repositories.
+
+Current external delta evidence: `docs/audits/2026-08-27-external-capability-delta-audit.json`. Active execution state: `docs/work-orders/WO-CAP-20260827.md`.
+
 ## MCP And Plugin Policy
 
 Keep MCP lightweight and allowlisted:

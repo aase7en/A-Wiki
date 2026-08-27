@@ -30,7 +30,7 @@
 | ✅ Agent Continuity Gate — **MERGED (PR #18)** | GLM/ZCode | done | — | merged |
 | ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
 | ✅ duplicate branch `phase6-hook-engine-consolidation` — ตรวจแล้ว: docs-only ฉบับ superseded → **ลบแล้ว** 2026-08-21 |
-| WO-CAP-20260827 Capability Intelligence Brain Wave 0 audit+architecture | ChatGPT-GPT-5.6-Sol | 2026-08-27 | COLLAB.md; docs/work-orders/WO-CAP-20260827.md; docs/runbooks/a-wiki-capability-upgrade-roadmap.md; docs/audits/2026-08-27-external-capability-delta-audit.json | feat/wo-cap-20260827-capability-intelligence |
+| WO-CAP-20260827 Capability Intelligence Brain Wave 0 audit+architecture | ChatGPT-GPT-5.6-Sol | 2026-08-27 | COLLAB.md; docs/work-orders/WO-CAP-20260827.md; docs/runbooks/a-wiki-capability-upgrade-roadmap.md; docs/audits/2026-08-27-external-capability-delta-audit.json; docs/audits/2026-08-27-branch-conflict-overlap-audit.json | feat/wo-cap-20260827-capability-intelligence |
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
