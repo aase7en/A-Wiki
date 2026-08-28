@@ -42,7 +42,7 @@ Admin password endpoints currently authenticate only the `/api/admin/auth` call;
 ## Acceptance
 
 1. Fresh default startup cannot listen beyond loopback.
-2. Non-loopback host configuration fails unless explicit remote opt-in is present.
+2. Non-loopback host configuration fails closed even if the legacy remote opt-in variable is set.
 3. Tests prove the network contract without relying on prose.
 4. Existing dashboard autostart tests and relevant HTTP/API tests remain green.
 5. Privacy/security checks report no new findings.
@@ -50,7 +50,7 @@ Admin password endpoints currently authenticate only the `/api/admin/auth` call;
 
 ## Next safe action
 
-Write failing tests for the loopback default and explicit remote-bind gate, then implement the smallest server binding seam.
+Complete exact-SHA independent security review, then merge only after required gates and authorization are satisfied; rebuild/restart and verify the live listener afterward.
 
 ## Checkpoint — 2026-08-28 pre-PR
 
@@ -79,3 +79,27 @@ Pre-PR evidence:
 Current live service note: the already-running dashboard process was started from the pre-fix main checkout. Do not treat the live listener as remediated until this PR is merged, main is refreshed, the local bundle is rebuilt, and the service is restarted/verified on loopback.
 
 Next safe action: commit/push the bounded security slice, open a draft PR, inspect remote diff and CI, perform exact-SHA independent security re-review, then merge only after all gates pass and verify the restarted local service.
+
+
+## Checkpoint — 2026-08-28 exact-SHA re-audit expansion
+
+Review of PR #31 at `999bb7890e8581f8992da02c1c5e57c2293dd1b7` found two additional pre-existing upload defects in the same write surface:
+
+- multipart `filename` was trusted directly, so `../escape.txt` could write outside `UPLOAD_DIR`;
+- the handler read the declared request body into memory with no upload-size ceiling;
+- happy-path verification also found multipart framing CRLF was being persisted into uploaded file bytes.
+
+TDD evidence: traversal and oversize tests failed before the upload patch. The final handler rejects path components/NUL/overlong names, verifies resolved containment under `UPLOAD_DIR`, caps uploads at 10 MiB before body read, requires a boundary, and removes only the multipart separator CRLF.
+
+Post-fix evidence:
+
+- focused dashboard security: 17 passed;
+- dashboard security/autostart/UI/API regression bundle: 246 passed;
+- repository security scan: 6,312 tracked files, 51 baseline findings, 0 new;
+- privacy: clean;
+- `gen-index --check`: pass;
+- `npm ci`: pass, 0 vulnerabilities reported;
+- `npm run precheck` + `npm run size`: pass, bundle 256.0 KB;
+- `git diff --check`: pass.
+
+The PR head must change after this checkpoint. Any previous CI/review on `999bb789...` becomes stale for merge authorization. Next: commit/push, update Loop-Evidence to the new exact SHA, rerun CI, then obtain an independent security review pinned to that SHA.

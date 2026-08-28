@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import http.client
 import importlib.util
 import json
 import threading
@@ -138,3 +139,98 @@ def test_dashboard_package_lock_matches_manifest_root_contract():
     assert root["name"] == manifest["name"]
     assert root["version"] == manifest["version"]
     assert root.get("devDependencies", {}) == manifest.get("devDependencies", {})
+
+
+def _multipart_body(filename: str, payload: bytes = b"data") -> tuple[bytes, str]:
+    boundary = "awiki-test-boundary"
+    body = (
+        f"--{boundary}\r\n"
+        f'Content-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+        "Content-Type: text/plain\r\n\r\n"
+    ).encode("utf-8") + payload + f"\r\n--{boundary}--\r\n".encode("utf-8")
+    return body, boundary
+
+
+def test_upload_filename_cannot_escape_upload_dir(tmp_path):
+    module = _server_module()
+    module.UPLOAD_DIR = tmp_path / "uploads"
+    server, _ = _run_http_server(module, tmp_path)
+    body, boundary = _multipart_body("../escape.txt")
+    try:
+        url = f"http://127.0.0.1:{server.server_port}/api/upload"
+        request = urllib.request.Request(
+            url,
+            data=body,
+            headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+            method="POST",
+        )
+        with pytest.raises(urllib.error.HTTPError) as exc:
+            urllib.request.urlopen(request, timeout=3)
+        assert exc.value.code == 400
+        assert not (tmp_path / "escape.txt").exists()
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_upload_rejects_oversized_content_length_before_reading_body(tmp_path):
+    module = _server_module()
+    module.UPLOAD_DIR = tmp_path / "uploads"
+    server, _ = _run_http_server(module, tmp_path)
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=3)
+        conn.putrequest("POST", "/api/upload")
+        conn.putheader("Content-Type", "multipart/form-data; boundary=x")
+        conn.putheader("Content-Length", str(module.MAX_UPLOAD_BYTES + 1))
+        conn.endheaders()
+        response = conn.getresponse()
+        assert response.status == 413
+        assert not module.UPLOAD_DIR.exists()
+        response.read()
+        conn.close()
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+def test_upload_allows_normal_basename_and_writes_inside_upload_dir(tmp_path):
+    module = _server_module()
+    module.UPLOAD_DIR = tmp_path / "uploads"
+    server, _ = _run_http_server(module, tmp_path)
+    body, boundary = _multipart_body("note.txt", b"safe")
+    try:
+        url = f"http://127.0.0.1:{server.server_port}/api/upload"
+        request = urllib.request.Request(
+            url,
+            data=body,
+            headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=3) as response:
+            assert response.status == 200
+        assert (module.UPLOAD_DIR / "note.txt").read_bytes() == b"safe"
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
+@pytest.mark.parametrize("filename", [r"..\escape.txt", "C:" + r"\fakepath\note.txt", "/tmp/note.txt"])
+def test_upload_rejects_path_components(filename, tmp_path):
+    module = _server_module()
+    module.UPLOAD_DIR = tmp_path / "uploads"
+    server, _ = _run_http_server(module, tmp_path)
+    body, boundary = _multipart_body(filename)
+    try:
+        url = f"http://127.0.0.1:{server.server_port}/api/upload"
+        request = urllib.request.Request(
+            url,
+            data=body,
+            headers={"Content-Type": f"multipart/form-data; boundary={boundary}"},
+            method="POST",
+        )
+        with pytest.raises(urllib.error.HTTPError) as exc:
+            urllib.request.urlopen(request, timeout=3)
+        assert exc.value.code == 400
+    finally:
+        server.shutdown()
+        server.server_close()

@@ -107,6 +107,7 @@ AGENT_REGISTRY_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "agent-registry
 AGENT_CONFIG_FILE = REPO_ROOT / ".tmp" / "agent-config.json"
 CHAT_LOG_FILE = REPO_ROOT / ".tmp" / "chat-log.jsonl"
 UPLOAD_DIR = REPO_ROOT / ".tmp" / "uploads"
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 
 # ── Run-this-skill: explicit allowlist (security) ──────────────────────────
 # Only scripts in this dict can be executed via POST /api/run. Each entry
@@ -1669,22 +1670,50 @@ class Handler(BaseHTTPRequestHandler):
         if "multipart/form-data" not in ctype:
             self._json_response({"error": "multipart/form-data required"}, 400)
             return
-        length = int(self.headers.get("Content-Length", 0))
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+        except (TypeError, ValueError):
+            self._json_response({"error": "invalid Content-Length"}, 400)
+            return
+        if length < 0 or length > MAX_UPLOAD_BYTES:
+            self._json_response({"error": "upload too large"}, 413)
+            return
+        if "boundary=" not in ctype:
+            self._json_response({"error": "multipart boundary required"}, 400)
+            return
         body = self.rfile.read(length)
-        boundary = ctype.split("boundary=")[1].strip()
+        boundary = ctype.split("boundary=", 1)[1].strip().strip(chr(34))
         parts = body.split(b"--" + boundary.encode())
         for part in parts:
             if b"filename=" in part:
                 header, data = part.split(b"\r\n\r\n", 1)
                 data = data.rsplit(b"\r\n--", 1)[0]
+                if data.endswith(b"\r\n"):
+                    data = data[:-2]
                 fname = "upload_" + str(int(time.time()))
                 for line in header.decode(errors="ignore").split("\r\n"):
                     if "filename=" in line:
-                        fn = line.split("filename=")[1].strip(chr(34))
+                        fn = line.split("filename=", 1)[1].strip(chr(34))
                         if fn:
                             fname = fn
+                if (
+                    not fname
+                    or fname in {".", ".."}
+                    or "/" in fname
+                    or "\\" in fname
+                    or "\x00" in fname
+                    or len(fname) > 255
+                ):
+                    self._json_response({"error": "invalid upload filename"}, 400)
+                    return
                 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-                dest = UPLOAD_DIR / fname
+                root = UPLOAD_DIR.resolve(strict=False)
+                dest = (UPLOAD_DIR / fname).resolve(strict=False)
+                try:
+                    dest.relative_to(root)
+                except ValueError:
+                    self._json_response({"error": "invalid upload filename"}, 400)
+                    return
                 dest.write_bytes(data)
                 evt = {"ts": round(time.time(), 3), "type": "file_uploaded", "filename": fname, "size": len(data), "path": str(dest.relative_to(REPO_ROOT))}
                 broadcast(json.dumps(evt, ensure_ascii=False))
