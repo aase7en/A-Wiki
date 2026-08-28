@@ -103,3 +103,12 @@ Post-fix evidence:
 - `git diff --check`: pass.
 
 The PR head must change after this checkpoint. Any previous CI/review on `999bb789...` becomes stale for merge authorization. Next: commit/push, update Loop-Evidence to the new exact SHA, rerun CI, then obtain an independent security review pinned to that SHA.
+
+
+## Checkpoint — 2026-08-28 CI portability repair
+
+Core CI on PR #31 at `bcad8e926f0e66717bf06b939d7fd8c46a102a82` failed one happy-path upload test on Linux: the test redirected `UPLOAD_DIR` to pytest's system temp but left `REPO_ROOT` pointing at the checkout, so the production event-path calculation correctly refused `dest.relative_to(REPO_ROOT)`. Local runs had hidden this because a custom `--basetemp=.tmp/...` placed pytest temp under the repo.
+
+Classification: test-environment fidelity defect, not product upload failure. The fixture now binds `REPO_ROOT` and `UPLOAD_DIR` to the same isolated temp root. Re-run without a custom `--basetemp`: focused security 17/17 passed; dashboard security/autostart/UI/API bundle 246/246 passed; privacy clean; security scan 6,312 tracked files / 51 baseline / 0 new; `git diff --check` pass.
+
+Next: commit/push the portability-only test+checkpoint change, update exact review SHA, and require a fresh CI cycle.

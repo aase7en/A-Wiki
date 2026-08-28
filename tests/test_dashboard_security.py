@@ -195,6 +195,7 @@ def test_upload_rejects_oversized_content_length_before_reading_body(tmp_path):
 
 def test_upload_allows_normal_basename_and_writes_inside_upload_dir(tmp_path):
     module = _server_module()
+    module.REPO_ROOT = tmp_path
     module.UPLOAD_DIR = tmp_path / "uploads"
     server, _ = _run_http_server(module, tmp_path)
     body, boundary = _multipart_body("note.txt", b"safe")
