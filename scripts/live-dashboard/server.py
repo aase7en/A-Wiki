@@ -68,6 +68,40 @@ DASHBOARD_KEYS_FILE = REPO_ROOT / ".tmp" / "live-dashboard-keys.env"
 CAPABILITY_CACHE = REPO_ROOT / ".tmp" / "model-capability-cache.json"
 CAPABILITY_SCORECARD = REPO_ROOT / "wiki" / "context" / "model-capability-scores.json"
 PORT = 7790
+
+
+def resolve_bind_host() -> str:
+    """Return a loopback-only dashboard bind host.
+
+    Remote/LAN serving is intentionally unsupported until A-Wiki Live has a
+    real authenticated remote transport. A legacy opt-in flag must not weaken
+    this boundary.
+    """
+    host = os.environ.get("AWIKI_DASHBOARD_HOST", "127.0.0.1").strip() or "127.0.0.1"
+    if host not in {"127.0.0.1", "localhost", "::1"}:
+        raise RuntimeError(
+            "A-Wiki Live is loopback-only; authenticated remote serving is not implemented"
+        )
+    return host
+
+
+def is_allowed_browser_origin(origin: str | None) -> bool:
+    """Allow CLI/no-Origin requests and browser requests from loopback only."""
+    if not origin:
+        return True
+    try:
+        from urllib.parse import urlsplit
+        parsed = urlsplit(origin)
+        port = parsed.port
+    except ValueError:
+        return False
+    return (
+        parsed.scheme == "http"
+        and parsed.hostname in {"127.0.0.1", "localhost", "::1"}
+        and port == PORT
+    )
+
+
 ADMIN_PASSWORD_FILE = REPO_ROOT / ".tmp" / "admin-password.hash"
 AGENT_REGISTRY_FILE = REPO_ROOT / "scripts" / "live-dashboard" / "agent-registry.json"
 AGENT_CONFIG_FILE = REPO_ROOT / ".tmp" / "agent-config.json"
@@ -630,9 +664,35 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def _cors(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin")
+        if origin and is_allowed_browser_origin(origin):
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Vary", "Origin")
+
+    def _discard_request_body(self, *, max_bytes: int = 1024 * 1024) -> None:
+        """Drain a rejected request body in bounded chunks to avoid TCP RST on Windows."""
+        try:
+            remaining = int(self.headers.get("Content-Length", "0") or 0)
+        except (TypeError, ValueError):
+            remaining = 0
+        remaining = max(0, min(remaining, max_bytes))
+        while remaining:
+            chunk = self.rfile.read(min(remaining, 64 * 1024))
+            if not chunk:
+                break
+            remaining -= len(chunk)
+
+    def _require_safe_browser_origin(self) -> bool:
+        origin = self.headers.get("Origin")
+        if is_allowed_browser_origin(origin):
+            return True
+        self._discard_request_body()
+        self._json_response({"error": "cross-origin browser request rejected"}, 403)
+        return False
 
     def do_OPTIONS(self):
+        if not self._require_safe_browser_origin():
+            return
         self.send_response(204)
         self._cors()
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -659,8 +719,6 @@ class Handler(BaseHTTPRequestHandler):
             self._serve_static_file("app.min.js", "application/javascript")
         elif path == "/app.min.js.map":
             self._serve_static_file("app.min.js.map", "application/json")
-        elif path == "/clear":
-            self._clear_log()
         elif path == "/status":
             self._status()
         elif path == "/api/models":
@@ -1024,14 +1082,18 @@ class Handler(BaseHTTPRequestHandler):
             self._serve_static_file("fixes.html", "text/html; charset=utf-8")
         elif path == "/api/fixes":
             self._api_fixes_list()
-        elif path.startswith("/api/fixes/open"):
-            self._api_fixes_open_path()
         else:
             self.send_error(404, "Not found")
 
     def do_POST(self):
+        if not self._require_safe_browser_origin():
+            return
         path = self.path.split("?")[0]
-        if path == "/api/models":
+        if path == "/clear":
+            self._clear_log()
+        elif path.startswith("/api/fixes/open"):
+            self._api_fixes_open_path()
+        elif path == "/api/models":
             self._api_models_post()
         elif path == "/api/keys":
             self._api_keys_post()
@@ -1850,7 +1912,8 @@ if __name__ == "__main__":
         print("⚠️  WARNING: app.min.js not found — run `npm install && npm run build` in scripts/live-dashboard/")
         print("   The dashboard will load with a blank page until the JS bundle is built.")
 
-    server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
+    BIND_HOST = resolve_bind_host()
+    server = ThreadingHTTPServer((BIND_HOST, PORT), Handler)
     server.daemon_threads = True
     _server_ref = server
 
