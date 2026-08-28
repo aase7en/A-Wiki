@@ -31,6 +31,7 @@
 | ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
 | ✅ duplicate branch `phase6-hook-engine-consolidation` — ตรวจแล้ว: docs-only ฉบับ superseded → **ลบแล้ว** 2026-08-21 |
 | WO-RFR-20260824 stale branch reconciliation evidence | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md | docs/wo-rfr-branch-reconciliation-20260828 |
+| WO-RFR-20260824 Y1 prompt producer restoration | ChatGPT-GPT-5.6-Sol | 2026-08-29 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/hooks/log_subagent_result.py; tests/test_log_subagent_result.py | fix/wo-rfr-y1-prompt-producer |
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
