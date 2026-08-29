@@ -638,7 +638,7 @@ async function openPath(btn) {
   const original = btn.innerHTML;
   btn.innerHTML = '⏳ Opening...';
   try {
-    const res = await fetch('/api/fixes/open?path=' + encodeURIComponent(path));
+    const res = await fetch('/api/fixes/open?path=' + encodeURIComponent(path), { method: 'POST' });
     const data = await res.json();
     if (data.success) {
       showToast('📁 เปิดแล้ว: ' + (data.opened_path || path));
