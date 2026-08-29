@@ -233,3 +233,88 @@ def test_hook_no_ab_tag_when_no_experiment(tmp_path):
         from pathlib import Path as _P
         ab_routing.DEFAULT_CONFIG = _P(hook.REPO_ROOT) / "agents" / "ab-experiments.json"
         ab_routing.DEFAULT_STATE = _P(hook.REPO_ROOT) / ".tmp" / "ab-experiment-state.json"
+
+
+# ---------------------------------------------------------------------------
+# Y1: opt-in production-prompt logging (restoration TDD)
+# ---------------------------------------------------------------------------
+def test_prompt_logging_is_default_off(monkeypatch, tmp_path):
+    monkeypatch.delenv("AWIKI_LOG_PROMPTS", raising=False)
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", tmp_path / "prompts", raising=False)
+
+    assert hasattr(hook, "_maybe_log_prompt")
+    hook._maybe_log_prompt("Explore", "ordinary prompt")
+
+    assert not (tmp_path / "prompts").exists()
+
+
+def test_prompt_logging_opt_in_redacts_before_persist(monkeypatch, tmp_path):
+    monkeypatch.setenv("AWIKI_LOG_PROMPTS", "1")
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", tmp_path / "prompts", raising=False)
+
+    assert hasattr(hook, "_maybe_log_prompt")
+    private_email = "private.person" + "@" + "private.invalid"
+    hook._maybe_log_prompt("Explore", f"contact {private_email} about this")
+
+    files = list((tmp_path / "prompts").glob("Explore-*.jsonl"))
+    assert len(files) == 1
+    entry = json.loads(files[0].read_text(encoding="utf-8").strip())
+    assert entry["subagent"] == "Explore"
+    assert entry["prompt"] == "contact *** about this"
+    assert private_email not in files[0].read_text(encoding="utf-8")
+
+
+def test_hook_opt_in_forwards_prompt_to_local_prompt_log(monkeypatch, tmp_path):
+    monkeypatch.setenv("AWIKI_LOG_PROMPTS", "1")
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", tmp_path / "prompts", raising=False)
+    log_file = tmp_path / "live-events.jsonl"
+    input_data = {
+        "tool_name": "Agent",
+        "tool_input": {"subagent_type": "Explore", "prompt": "CAPTURE-ME"},
+        "tool_response": "done",
+    }
+
+    assert _run_hook_with_input(input_data, log_file) == 0
+    prompt_files = list((tmp_path / "prompts").glob("Explore-*.jsonl"))
+    assert len(prompt_files) == 1
+    assert "CAPTURE-ME" in prompt_files[0].read_text(encoding="utf-8")
+
+
+def test_prompt_logging_io_failure_never_blocks(monkeypatch, tmp_path):
+    monkeypatch.setenv("AWIKI_LOG_PROMPTS", "1")
+    blocked = tmp_path / "not-a-directory"
+    blocked.write_text("file", encoding="utf-8")
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", blocked / "prompts", raising=False)
+
+    assert hasattr(hook, "_maybe_log_prompt")
+    assert hook._maybe_log_prompt("Explore", "still best effort") is None
+
+
+def test_prompt_logging_subagent_name_cannot_escape_log_dir(monkeypatch, tmp_path):
+    monkeypatch.setenv("AWIKI_LOG_PROMPTS", "1")
+    prompt_dir = tmp_path / "prompts"
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", prompt_dir, raising=False)
+
+    assert hasattr(hook, "_maybe_log_prompt")
+    hook._maybe_log_prompt("../../escape", "safe prompt")
+
+    assert not (tmp_path / "escape").exists()
+    files = list(prompt_dir.glob("*.jsonl"))
+    assert len(files) == 1
+    assert files[0].parent.resolve() == prompt_dir.resolve()
+
+
+def test_prompt_producer_output_is_consumable_by_prompts_to_suite(monkeypatch, tmp_path):
+    monkeypatch.setenv("AWIKI_LOG_PROMPTS", "1")
+    prompt_dir = tmp_path / "prompts"
+    monkeypatch.setattr(hook, "PROMPT_LOG_DIR", prompt_dir)
+
+    hook._maybe_log_prompt("Explore", "repeatable prompt")
+    hook._maybe_log_prompt("Explore", "repeatable prompt")
+
+    import prompts_to_suite
+
+    collected = prompts_to_suite.collect_prompts(
+        "Explore", prompts_dir=prompt_dir, min_count=2
+    )
+    assert collected == [{"prompt": "repeatable prompt", "count": 2}]

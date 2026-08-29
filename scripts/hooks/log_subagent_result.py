@@ -41,7 +41,9 @@ HOOKS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = HOOKS_DIR.parent.parent
 LOG_FILE = REPO_ROOT / ".tmp" / "live-events.jsonl"
 STATE_FILE = REPO_ROOT / ".tmp" / "subagent_fanout_state.json"
+PROMPT_LOG_DIR = REPO_ROOT / ".tmp" / "prompts"
 MAX_LOG_LINES = 2000
+MAX_PROMPT_LOG_LINES = 2000
 
 # Reuse the fanout guard's model + bucket resolvers (single source of truth).
 sys.path.insert(0, str(HOOKS_DIR))
@@ -85,6 +87,22 @@ def _ab_tag(subagent_type: str) -> dict | None:
     except Exception:
         return None
 
+
+
+def _maybe_log_prompt(subagent_type: str, prompt: str) -> None:
+    """Opt-in, redacted, local-only prompt logging; never blocks the hook."""
+    if os.environ.get("AWIKI_LOG_PROMPTS") != "1" or not prompt:
+        return
+    try:
+        from prompt_redactor import redact
+
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "-", str(subagent_type)).strip(".-_")[:80] or "subagent"
+        PROMPT_LOG_DIR.mkdir(parents=True, exist_ok=True)
+        log_file = PROMPT_LOG_DIR / f"{safe_name}-{time.strftime('%Y%m%d')}.jsonl"
+        entry = {"ts": round(time.time(), 3), "subagent": subagent_type, "prompt": redact(prompt)}
+        _append_capped(log_file, json.dumps(entry, ensure_ascii=False) + "\n", MAX_PROMPT_LOG_LINES)
+    except Exception:
+        return
 
 # ---------------------------------------------------------------------------
 # Error detection
@@ -291,6 +309,7 @@ def main() -> int:
         tokens_out=tokens_out,
         **(_ab_tag(subagent_type) or {}),  # R4: ab_phase + ab_model if active
     )
+    _maybe_log_prompt(subagent_type, prompt)
     return 0
 
 

@@ -1,59 +1,59 @@
-﻿# COLLAB โ€” Multi-agent coordination (เธกเธฒเธ•เธฃเธเธฒเธ A-Wiki cross-agent-work-orders)
+# COLLAB — Multi-agent coordination (มาตรฐาน A-Wiki cross-agent-work-orders)
 
-> Agent เธ—เธธเธเธ•เธฑเธง (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/Kilo/...) เธญเนเธฒเธเนเธเธฅเนเธเธตเน
-> เธเนเธญเธเน€เธฃเธดเนเธกเธเธฒเธเนเธ repo เธเธตเน ยท Protocol เน€เธ•เนเธก: A-Wiki `docs/protocols/cross-agent-work-orders.md`
+> Agent ทุกตัว (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/Kilo/...) อ่านไฟล์นี้
+> ก่อนเริ่มงานใน repo นี้ · Protocol เต็ม: A-Wiki `docs/protocols/cross-agent-work-orders.md`
 
-## Lanes (เธเธฃเธฑเธเธ•เธฒเธก repo โ€” เธ•เธฑเธงเธญเธขเนเธฒเธ 2 เน€เธฅเธ เน€เธเธดเนเธกเนเธ”เนเธ•เธฒเธกเธเธณเธเธงเธ agent)
+## Lanes (ปรับตาม repo — ตัวอย่าง 2 เลน เพิ่มได้ตามจำนวน agent)
 
-| Lane | เธเธตเธกเธเธฒเธ | เนเธเธฅเนเธ—เธตเนเน€เธเนเธเน€เธเนเธฒเธเธญเธ | เธซเนเธฒเธกเนเธ•เธฐ |
+| Lane | ธีมงาน | ไฟล์ที่เป็นเจ้าของ | ห้ามแตะ |
 |---|---|---|---|
-| migration | A-Wiki vNext migration (phases, work orders, review flow) | `docs/migration/**`, `refactor/*` branches | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
-| hook-engine | hooks/registry/runner/provider adapters | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/cline-hooks/**`, `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json` | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
-| governance | protocols/claims/COLLAB/continuity | `COLLAB.md`, `docs/protocols/**`, `AGENTS.md` (เนเธเนเธ•เนเธญเน€เธกเธทเนเธญเธกเธตเธชเธดเธ—เธเธดเนเธ•เธฒเธก Iron Law #5) | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
+| migration | A-Wiki vNext migration (phases, work orders, review flow) | `docs/migration/**`, `refactor/*` branches | ไฟล์ของเลนอื่น |
+| hook-engine | hooks/registry/runner/provider adapters | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/cline-hooks/**`, `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json` | ไฟล์ของเลนอื่น |
+| governance | protocols/claims/COLLAB/continuity | `COLLAB.md`, `docs/protocols/**`, `AGENTS.md` (แก้ต่อเมื่อมีสิทธิ์ตาม Iron Law #5) | ไฟล์ของเลนอื่น |
 | wiki-knowledge | wiki pages + generated surfaces | `wiki/**`, `.wiki-graph.json`, `brain-map.canvas` | `scripts/**`, `docs/migration/**` |
-| infra-CI | workflows, security/health scanners, baselines | `.github/workflows/**`, `scripts/security/**`, `scripts/health/**` | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
+| infra-CI | workflows, security/health scanners, baselines | `.github/workflows/**`, `scripts/security/**`, `scripts/health/**` | ไฟล์ของเลนอื่น |
 
-**Hotspot files (เนเธเนเธ—เธตเธฅเธฐ agent เธ•เธฒเธกเธ—เธตเนเธฃเธฐเธเธธ):** `AGENTS.md` ยท `skills-registry.json` ยท `.claude/settings.json` ยท `.github/workflows/ci-core.yml` ยท `scripts/security/baseline.txt` โ€” เนเธเนเนเธ”เนเน€เธเธเธฒเธฐเธเธนเนเธ–เธทเธญ claim เธ—เธตเนเธฃเธฐเธเธธเนเธเธฅเนเน€เธซเธฅเนเธฒเธเธตเนเนเธ scope
+**Hotspot files (แก้ทีละ agent ตามที่ระบุ):** `AGENTS.md` · `skills-registry.json` · `.claude/settings.json` · `.github/workflows/ci-core.yml` · `scripts/security/baseline.txt` — แก้ได้เฉพาะผู้ถือ claim ที่ระบุไฟล์เหล่านี้ใน scope
 
-## In-progress claims (Rule 1 โ€” claim เธเนเธญเธเธ—เธณ, เธเธฅเธ”เนเธ commit เธเธญเธ chunk เน€เธญเธ)
+## In-progress claims (Rule 1 — claim ก่อนทำ, ปลดใน commit ของ chunk เอง)
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
-| โ… **MERGED 2026-08-26: WO-RFR-20260824 governance PR #26 โ’ main `f0c3a78e`** โ€” reviewer (GLM/ZCode) re-ran all claimed validation on branch HEAD (5/5 handoff tests ยท privacy clean ยท health 0 hard), added Loop-Evidence + cross-ref of Binding Loop Engineer โ” Universal Loop Contract (`fe80c1d0`), fixed pr-loop-gate head.sha checkout bug on main (`c140b0d1`, TDD), all 3 checks green at `a68d8fc5`, user-authorized merge + fetch-verified ยท **next: M1 baseline evidence โ’ Group A R-FR-002** | ChatGPT Sol (plan author) + GLM/ZCode (review/merge) | 2026-08-24 | `AGENTS.md`, `docs/migration/awiki-vnext-plan.md`, `docs/work-orders/WO-RFR-20260824.md`, `docs/protocols/cross-agent-plan-handoff.md`, `COLLAB.md` | main `f0c3a78e` |
-| โ… **MERGED 2026-08-21 night-2: local rabies/domain stack (26 commits) integrated into vNext main** โ€” canonical 3260/0 green, Core CI SUCCESS at `7b1b808e`; secrets prevented from entering git (.codex/config.toml untracked + tracked secret-free template); เธฃเธ. real name scrubbed โ’ <HOSPITAL> | GLM/ZCode | 2026-08-21 | merge + repair | main `7b1b808e` |
-| โ… **Fast-graph brain plan 3 slices MERGED 2026-08-21** (user-approved): S1 PR#23 bridge `search/related/hubs` (hybrid FTS+vec) + recallโ’BM25 ยท S2 PR#24 skill tier-2 description-fallback (226 triggerless skills เธซเธฒเนเธ”เนเนเธฅเนเธงเนเธ”เธขเนเธกเนเธญเนเธฒเธ index 81KB) + SKILL-INDEX search-first mandate ยท S3 symlink farm pruned เนเธ”เธข post-merge relink (323โ’94, 0 broken, surfaces no-drift) | GLM/ZCode | 2026-08-21 | done | main `992fa059` |
-| โธ๏ธ **HOLD เน€เธเธช 8โ€“11 (user decision 2026-08-21):** เธซเธขเธธเธ”เธเธฒเธ migration เธเธฑเนเธเธชเธกเธญเธ เธฃเธญ A-Conductor (repo เนเธขเธ) เธชเธฃเนเธฒเธเน€เธชเธฃเนเธเธเนเธญเธ โ€” เธเธฑเนเธเธเธฑเนเธเธเธณเธฅเธฑเธเธ—เธณเธเธฒเธเน€เธเธดเนเธกเธเธฒเธเนเธเธเน€เธ”เธดเธก เธเธฅเธฑเธงเธเธเธเธฑเธ ยท agent เธ•เธฑเธงเธ–เธฑเธ”เนเธ **เธซเนเธฒเธกเน€เธฃเธดเนเธกเน€เธเธช 8+ เนเธ”เธขเนเธกเนเธกเธตเธเธณเธชเธฑเนเธเนเธซเธกเนเธเธฒเธ user** ยท เธเธฒเธเธ—เธตเนเธขเธฑเธเธ—เธณเนเธ”เน: bug fix/gates/bridge additions เธ—เธตเน A-Conductor เธฃเนเธญเธเธเธญเน€เธ—เนเธฒเธเธฑเนเธ | GLM/ZCode | 2026-08-21 | hold | โ€” |
-| ๐“ **Drive layer เธเธฑเธ”เน€เธฃเธตเธขเธเนเธฅเนเธง 2026-08-21**: `L:/My Drive/A-Wiki-Data` เธกเธต `AGENTS.md` (เธเธ 3 เธเนเธญ เธชเธณเธซเธฃเธฑเธเธ—เธธเธ agent) + `LAYOUT.md` (เธซเธเธถเนเธ role = เธซเธเธถเนเธ path) + `inbox/` (เนเธกเนเธฃเธนเนเธเธฐเธงเธฒเธเนเธซเธ โ’ เธงเธฒเธเธ—เธตเนเธเธฑเนเธ เธซเนเธฒเธกเธชเธฃเนเธฒเธเนเธเธฃเธเธชเธฃเนเธฒเธเนเธซเธกเน) + `_archive/` (MANIFEST เธเธฃเธ) ยท agents เธ—เธตเนเธเธฐเน€เธเธตเธขเธเธฅเธ drive เธ•เนเธญเธเธญเนเธฒเธเธชเธญเธเนเธเธฅเนเธเธฑเนเธเธเนเธญเธ | GLM/ZCode | 2026-08-21 | done | โ€” |
-| โ… FOLLOW-UPS เธเธดเธ”เธซเธกเธ” 2026-08-21 เน€เธเนเธฒ: (1) <ESTATE> dir-name scrub เนเธฅเนเธง (2) quickchart allowlist เนเธฅเนเธง (3) stash เน€เธเนเธฒ 2 เธ•เธฑเธง drop (archive เธ—เธตเน .tmp/stash-archive-20260821) (4) hospital identifier โ’ get_hospital_dir + AWIKI_HOSPITAL_DIR env โ€” เน€เธเธฃเธทเนเธญเธเธ—เธตเนเนเธเนเนเธเธฅเน€เธ”เธญเธฃเนเธเธฃเธดเธ เธ•เธฑเนเธ `AWIKI_HOSPITAL_DIR=<เธเธทเนเธญเนเธเธฅเน€เธ”เธญเธฃเน>` เนเธ shell profile | GLM/ZCode | 2026-08-21 | done | โ€” |
+| ✅ **MERGED 2026-08-26: WO-RFR-20260824 governance PR #26 → main `f0c3a78e`** — reviewer (GLM/ZCode) re-ran all claimed validation on branch HEAD (5/5 handoff tests · privacy clean · health 0 hard), added Loop-Evidence + cross-ref of Binding Loop Engineer ↔ Universal Loop Contract (`fe80c1d0`), fixed pr-loop-gate head.sha checkout bug on main (`c140b0d1`, TDD), all 3 checks green at `a68d8fc5`, user-authorized merge + fetch-verified · **next: M1 baseline evidence → Group A R-FR-002** | ChatGPT Sol (plan author) + GLM/ZCode (review/merge) | 2026-08-24 | `AGENTS.md`, `docs/migration/awiki-vnext-plan.md`, `docs/work-orders/WO-RFR-20260824.md`, `docs/protocols/cross-agent-plan-handoff.md`, `COLLAB.md` | main `f0c3a78e` |
+| ✅ **MERGED 2026-08-21 night-2: local rabies/domain stack (26 commits) integrated into vNext main** — canonical 3260/0 green, Core CI SUCCESS at `7b1b808e`; secrets prevented from entering git (.codex/config.toml untracked + tracked secret-free template); รพ. real name scrubbed → <HOSPITAL> | GLM/ZCode | 2026-08-21 | merge + repair | main `7b1b808e` |
+| ✅ **Fast-graph brain plan 3 slices MERGED 2026-08-21** (user-approved): S1 PR#23 bridge `search/related/hubs` (hybrid FTS+vec) + recall→BM25 · S2 PR#24 skill tier-2 description-fallback (226 triggerless skills หาได้แล้วโดยไม่อ่าน index 81KB) + SKILL-INDEX search-first mandate · S3 symlink farm pruned โดย post-merge relink (323→94, 0 broken, surfaces no-drift) | GLM/ZCode | 2026-08-21 | done | main `992fa059` |
+| ⏸️ **HOLD เฟส 8–11 (user decision 2026-08-21):** หยุดงาน migration ฝั่งสมอง รอ A-Conductor (repo แยก) สร้างเสร็จก่อน — ฝั่งนั้นกำลังทำงานเพิ่มจากแผนเดิม กลัวชนกัน · agent ตัวถัดไป **ห้ามเริ่มเฟส 8+ โดยไม่มีคำสั่งใหม่จาก user** · งานที่ยังทำได้: bug fix/gates/bridge additions ที่ A-Conductor ร้องขอเท่านั้น | GLM/ZCode | 2026-08-21 | hold | — |
+| 📂 **Drive layer จัดเรียงแล้ว 2026-08-21**: `L:/My Drive/A-Wiki-Data` มี `AGENTS.md` (กฎ 3 ข้อ สำหรับทุก agent) + `LAYOUT.md` (หนึ่ง role = หนึ่ง path) + `inbox/` (ไม่รู้จะวางไหน → วางที่นั่น ห้ามสร้างโครงสร้างใหม่) + `_archive/` (MANIFEST ครบ) · agents ที่จะเขียนลง drive ต้องอ่านสองไฟล์นั้นก่อน | GLM/ZCode | 2026-08-21 | done | — |
+| ✅ FOLLOW-UPS ปิดหมด 2026-08-21 เช้า: (1) <ESTATE> dir-name scrub แล้ว (2) quickchart allowlist แล้ว (3) stash เก่า 2 ตัว drop (archive ที่ .tmp/stash-archive-20260821) (4) hospital identifier → get_hospital_dir + AWIKI_HOSPITAL_DIR env — เครื่องที่ใช้โฟลเดอร์จริง ตั้ง `AWIKI_HOSPITAL_DIR=<ชื่อโฟลเดอร์>` ใน shell profile | GLM/ZCode | 2026-08-21 | done | — |
 
-| โ… Phase 6 hook-engine โ€” **MERGED (PR #17)** self-review PASS_WITH_NOTES 2026-08-21 | GLM/ZCode | done | โ€” | merged |
-| โ… Agent Continuity Gate โ€” **MERGED (PR #18)** | GLM/ZCode | done | โ€” | merged |
-| โ… Scanner strict pattern-source โ€” **MERGED (PR #19)** | GLM/ZCode | done | โ€” | merged |
-| โ… duplicate branch `phase6-hook-engine-consolidation` โ€” เธ•เธฃเธงเธเนเธฅเนเธง: docs-only เธเธเธฑเธ superseded โ’ **เธฅเธเนเธฅเนเธง** 2026-08-21 |
+| ✅ Phase 6 hook-engine — **MERGED (PR #17)** self-review PASS_WITH_NOTES 2026-08-21 | GLM/ZCode | done | — | merged |
+| ✅ Agent Continuity Gate — **MERGED (PR #18)** | GLM/ZCode | done | — | merged |
+| ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
+| ✅ duplicate branch `phase6-hook-engine-consolidation` — ตรวจแล้ว: docs-only ฉบับ superseded → **ลบแล้ว** 2026-08-21 |
 | WO-RFR-20260824 stale branch reconciliation evidence | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md | docs/wo-rfr-branch-reconciliation-20260828 |
+| WO-RFR-20260824 Y1 prompt producer restoration | ChatGPT-GPT-5.6-Sol | 2026-08-29 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/hooks/log_subagent_result.py; tests/test_log_subagent_result.py | fix/wo-rfr-y1-prompt-producer |
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
 
-**Night-shift log 2026-08-21 (เธ•เนเธญเน€เธเธทเนเธญเธ):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` เนเธเนเนเธ”เนเธเธฃเธดเธ; Serena MIT credited) ยท Phase 6/#17/#18/#19 เธเธดเธ”เธซเธกเธ”
+**Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
-**Night-shift log 2026-08-20:** main เธ–เธนเธเธเนเธญเธก (revert `59ebdede` เธเธญเธ auto-commit เน€เธชเธตเธข `c343542c` โ€” เน€เธเนเธฒเธเธญเธ commit เธกเธฒเธเธฒเธ MacBook เธเธญเธเน€เธเนเธฒเธเธญเธ repo เน€เธญเธ) ยท เธ—เธธเธ PR เธเนเธฒเธ CI ยท stop-auto-commit เธ•เธดเธ” gate 2 เธเธฑเนเธเนเธฅเนเธง (noise เธฅเนเธงเธเนเธกเน push + scan เนเธกเนเธเนเธฒเธเนเธกเน push) โ€” เน€เธซเธ•เธธเธเธฒเธฃเธ“เนเนเธเธเธเธตเนเนเธกเนเธเธงเธฃเน€เธเธดเธ”เธเนเธณ
+**Night-shift log 2026-08-20:** main ถูกซ่อม (revert `59ebdede` ของ auto-commit เสีย `c343542c` — เจ้าของ commit มาจาก MacBook ของเจ้าของ repo เอง) · ทุก PR ผ่าน CI · stop-auto-commit ติด gate 2 ชั้นแล้ว (noise ล้วนไม่ push + scan ไม่ผ่านไม่ push) — เหตุการณ์แบบนี้ไม่ควรเกิดซ้ำ
 
-> เธเนเธญเธเธชเธฃเนเธฒเธ branch/เน€เธฃเธดเนเธกเธเธฒเธเนเธซเธกเน: เธญเนเธฒเธเธ•เธฒเธฃเธฒเธเธเธตเน + `git branch -a` เธเนเธญเธเน€เธชเธกเธญ โ€” เธเธทเนเธญเธเธฒเธเนเธเธฅเนเน€เธเธตเธขเธ = เธซเนเธฒเธกเน€เธฃเธดเนเธก เนเธซเน claim เธ•เนเธญเธเธฒเธเธเธญเธเน€เธ”เธดเธก (Rule 7)
+> ก่อนสร้าง branch/เริ่มงานใหม่: อ่านตารางนี้ + `git branch -a` ก่อนเสมอ — ชื่องานใกล้เคียง = ห้ามเริ่ม ให้ claim ต่อจากของเดิม (Rule 7)
 
-## เธเธ•เธดเธเธฒ 8 เธเนเธญ (เธขเนเธญ โ€” เธเธเธฑเธเน€เธ•เนเธกเนเธเนเธเธฅเน protocol)
+## กติกา 8 ข้อ (ย่อ — ฉบับเต็มในไฟล์ protocol)
 
-1. Claim เธเนเธญเธเธ—เธณ (commit+push เนเธ–เธง claim เธเนเธญเธเน€เธฃเธดเนเธก); เธซเนเธฒเธกเนเธ•เธฐ scope เธเธญเธ claim เธเธเธญเธทเนเธ
-2. `git pull --ff-only` + build/test เธเนเธฒเธ เธเนเธญเธ push เธ—เธธเธเธเธฃเธฑเนเธ
-3. Hotspot files เนเธเนเนเธ”เนเธ—เธตเธฅเธฐ agent เธ•เธฒเธกเธ•เธฒเธฃเธฒเธเธเนเธฒเธเธเธ
-4. เนเธเธฅเนเน€เธ”เธตเธขเธงเธเธฑเธเธซเนเธฒเธกเธ—เธณเธเธฃเนเธญเธกเธเธฑเธ โ€” เธ”เธนเธ•เธฒเธฃเธฒเธ claim เธเนเธญเธ
-5. **เธซเนเธฒเธก `git reset --hard` / `git checkout -- .` / `git clean` เนเธ shared tree** โ€” เนเธเน stash/revert; agent เธ—เธตเนเธ•เนเธญเธ reset เธเนเธญเธข โ’ agent เธญเธทเนเธเนเธขเธ git worktree + branch เนเธฅเนเธง merge เธเธฅเธฑเธ; เธซเนเธฒเธกเธฅเธ branch/worktree เธเธญเธเธเธฑเธ
-6. เธ—เธธเธ chunk เธกเธต work order เนเธ `docs/work-orders/` + append Checkpoint เธ—เธธเธเธเธฃเธฑเนเธเธ—เธตเนเธซเธขเธธเธ”/เธชเนเธเธ•เนเธญ
-7. Scope เธเธนเธเธเธฑเธ chunk เนเธกเนเธเธนเธเธเธฑเธ agent โ€” เนเธเธฃเธ–เธทเธญ claim เธเธเธเธฑเนเธเธ—เธณ (เธเธฅเนเธเธชเธฅเธฑเธเธกเธทเธญเธเนเธฒเธก 5-hr limit)
-8. Additive-first: เธเธญเธเนเธซเธกเน = เนเธเธฅเนเนเธซเธกเน; เนเธเธฅเนเธฃเนเธงเธกเนเธเนเนเธ”เธขเธเธนเนเธ–เธทเธญ WO เน€เธ—เนเธฒเธเธฑเนเธ
+1. Claim ก่อนทำ (commit+push แถว claim ก่อนเริ่ม); ห้ามแตะ scope ของ claim คนอื่น
+2. `git pull --ff-only` + build/test ผ่าน ก่อน push ทุกครั้ง
+3. Hotspot files แก้ได้ทีละ agent ตามตารางข้างบน
+4. ไฟล์เดียวกันห้ามทำพร้อมกัน — ดูตาราง claim ก่อน
+5. **ห้าม `git reset --hard` / `git checkout -- .` / `git clean` ใน shared tree** — ใช้ stash/revert; agent ที่ต้อง reset บ่อย → agent อื่นแยก git worktree + branch แล้ว merge กลับ; ห้ามลบ branch/worktree ของกัน
+6. ทุก chunk มี work order ใน `docs/work-orders/` + append Checkpoint ทุกครั้งที่หยุด/ส่งต่อ
+7. Scope ผูกกับ chunk ไม่ผูกกับ agent — ใครถือ claim คนนั้นทำ (กลไกสลับมือข้าม 5-hr limit)
+8. Additive-first: ของใหม่ = ไฟล์ใหม่; ไฟล์ร่วมแก้โดยผู้ถือ WO เท่านั้น
 
-## Pause โ’ Resume (เธ•เธดเธ” limit / เธชเธฅเธฑเธ agent)
+## Pause → Resume (ติด limit / สลับ agent)
 
-เธซเธขเธธเธ”: commit เธเธฒเธเธเนเธฒเธ (build เธเธฑเธ โ’ branch `wip/<id>`) โ’ checkpoint + `โธ paused` + เธญเธฑเธเน€เธ”เธ• claim โ’ push
-เธฃเธฑเธ: user เธงเธฒเธ prompt โ’ `เธญเนเธฒเธ COLLAB.md + docs/work-orders/<id>.md เธ—เธณเธ•เนเธญเธเธฒเธ Checkpoint เธฅเนเธฒเธชเธธเธ” เน€เธเธเธฒเธฐเนเธ Lane/files เธ—เธตเนเธฃเธฐเธเธธ เน€เธฃเธดเนเธกเธเธฒเธ branch เธ—เธตเนเธฃเธฐเธเธธ เน€เธชเธฃเนเธเนเธฅเนเธง merge main + set done`
-
+หยุด: commit งานค้าง (build พัง → branch `wip/<id>`) → checkpoint + `⏸ paused` + อัปเดต claim → push
+รับ: user วาง prompt → `อ่าน COLLAB.md + docs/work-orders/<id>.md ทำต่อจาก Checkpoint ล่าสุด เฉพาะใน Lane/files ที่ระบุ เริ่มจาก branch ที่ระบุ เสร็จแล้ว merge main + set done`
