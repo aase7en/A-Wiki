@@ -267,7 +267,7 @@ function modelShort(m){const id=(m||'').toLowerCase();const map=[
 ['qwen','Qwen'],['claude-haiku','Claude Haiku'],['claude-sonnet','Claude Sonnet'],['gpt-4o-mini','GPT-4o mini'],
 ['gpt-4o','GPT-4o'],['glm','GLM']];
 for(const[k,n]of map)if(id.includes(k))return n;return(m||'?').split('/').pop().slice(0,18);}
-function doClear(){fetch('/clear').catch(()=>{});doClearLocal();}
+function doClear(){fetch('/clear',{method:'POST'}).catch(()=>{});doClearLocal();}
 function doClearLocal(){
 $('timeline-list').innerHTML='';$('hook-strip').innerHTML='';
 _lanes={};S.hookCount=0;S.eventCount=0;S.modelsUsed.clear();S.active={};S.activeCount=0;
