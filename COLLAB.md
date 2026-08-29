@@ -1,4 +1,4 @@
-﻿# COLLAB โ€” Multi-agent coordination (เธกเธฒเธ•เธฃเธเธฒเธ A-Wiki cross-agent-work-orders)
+# COLLAB โ€” Multi-agent coordination (เธกเธฒเธ•เธฃเธเธฒเธ A-Wiki cross-agent-work-orders)
 
 > Agent เธ—เธธเธเธ•เธฑเธง (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/Kilo/...) เธญเนเธฒเธเนเธเธฅเนเธเธตเน
 > เธเนเธญเธเน€เธฃเธดเนเธกเธเธฒเธเนเธ repo เธเธตเน ยท Protocol เน€เธ•เนเธก: A-Wiki `docs/protocols/cross-agent-work-orders.md`
@@ -31,13 +31,10 @@
 | โ… Scanner strict pattern-source โ€” **MERGED (PR #19)** | GLM/ZCode | done | โ€” | merged |
 | โ… duplicate branch `phase6-hook-engine-consolidation` โ€” เธ•เธฃเธงเธเนเธฅเนเธง: docs-only เธเธเธฑเธ superseded โ’ **เธฅเธเนเธฅเนเธง** 2026-08-21 |
 | WO-RFR-20260824 stale branch reconciliation evidence | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md | docs/wo-rfr-branch-reconciliation-20260828 |
-<<<<<<< HEAD
 | WO-RFR-20260824 Y1 prompt producer restoration | ChatGPT-GPT-5.6-Sol | 2026-08-29 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/hooks/log_subagent_result.py; tests/test_log_subagent_result.py | fix/wo-rfr-y1-prompt-producer |
-=======
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
->>>>>>> origin/main
 
 **Night-shift log 2026-08-21 (เธ•เนเธญเน€เธเธทเนเธญเธ):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` เนเธเนเนเธ”เนเธเธฃเธดเธ; Serena MIT credited) ยท Phase 6/#17/#18/#19 เธเธดเธ”เธซเธกเธ”
 
@@ -60,4 +57,3 @@
 
 เธซเธขเธธเธ”: commit เธเธฒเธเธเนเธฒเธ (build เธเธฑเธ โ’ branch `wip/<id>`) โ’ checkpoint + `โธ paused` + เธญเธฑเธเน€เธ”เธ• claim โ’ push
 เธฃเธฑเธ: user เธงเธฒเธ prompt โ’ `เธญเนเธฒเธ COLLAB.md + docs/work-orders/<id>.md เธ—เธณเธ•เนเธญเธเธฒเธ Checkpoint เธฅเนเธฒเธชเธธเธ” เน€เธเธเธฒเธฐเนเธ Lane/files เธ—เธตเนเธฃเธฐเธเธธ เน€เธฃเธดเนเธกเธเธฒเธ branch เธ—เธตเนเธฃเธฐเธเธธ เน€เธชเธฃเนเธเนเธฅเนเธง merge main + set done`
-
