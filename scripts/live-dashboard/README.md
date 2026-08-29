@@ -100,7 +100,7 @@ All Z1 metrics are **client-derived** from the SSE event stream — zero server 
 |----------|:------:|---------|
 | `/` | GET | Dashboard HTML |
 | `/events` | GET | SSE stream (tails `.tmp/live-events.jsonl`) |
-| `/clear` | GET | เคลียร์ event log |
+| `/clear` | POST | เคลียร์ event log (same-origin only) |
 | `/status` | GET | JSON status |
 | `/api/models` | GET/POST | อ่าน/บันทึก model config |
 | `/api/keys` | GET/POST | สถานะ key (set/unset, **ไม่คืนค่า**) / บันทึก key |
