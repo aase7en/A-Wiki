@@ -38,6 +38,7 @@
 | WO-RFR-20260824 M1 baseline + cross-agent no-human-relay refresh | ChatGPT-GPT-5.6-Sol | 2026-08-30 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; docs/protocols/cross-agent-work-orders.md; docs/protocols/agent-continuity-gate.md; docs/migration/awiki-vnext-plan.md | docs/wo-rfr-m1-reconcile-20260830 |
 | WO-RFR-20260824 M2 R-FR-002 live-docs trust boundary | ChatGPT-GPT-5.6-Sol | 2026-08-30 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/lib/live_docs.py; tests/test_live_docs.py | fix/wo-rfr-m2-live-docs |
 | WO-RFR-20260824 M3 R-FR-006/007 adopt integrity | ChatGPT-GPT-5.6-Sol | 2026-08-30 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/awiki-adopt.py; tests/test_awiki_adopt.py | fix/wo-rfr-m3-adopt-integrity |
+| WO-RFR-20260824 M4 R-FR-001 skill artifact binding | ChatGPT-GPT-5.6-Sol | 2026-08-31 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/lib/skill_pipeline.py; scripts/new-skill.py; tests/test_skill_pipeline.py; tests/test_new_skill.py | fix/wo-rfr-m4-skill-artifact-binding-v2 |
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
