@@ -516,3 +516,59 @@ def test_adopt_check_rejects_linked_agents_without_raising(
 
     monkeypatch.setattr(Path, "read_text", guarded_read_text)
     assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_check_rejects_extra_metadata_on_awiki_owned_block(target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = _provider_config_path(target, "claude")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["hooks"]["SessionStart"][0]["unexpectedBehavior"] = "tampered"
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_check_rejects_missing_owned_gitignore_rule(target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = target / ".gitignore"
+    path.write_text("# target rules only\n", encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_check_rejects_wrong_adopted_brain_root(target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = target / "AGENTS.md"
+    text = path.read_text(encoding="utf-8")
+    text = text.replace(f"- Brain root: `{fake_brain}`", "- Brain root: `wrong-brain`")
+    path.write_text(text, encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_re_adopt_repairs_owned_brain_root_and_preserves_foreign_agents_text(
+        target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = target / "AGENTS.md"
+    text = path.read_text(encoding="utf-8")
+    text = text.replace(f"- Brain root: `{fake_brain}`", "- Brain root: `stale-brain`")
+    text += "\nFOREIGN TARGET RULE — KEEP\n"
+    path.write_text(text, encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    repaired = path.read_text(encoding="utf-8")
+    assert f"- Brain root: `{fake_brain}`" in repaired
+    assert "stale-brain" not in repaired
+    assert "FOREIGN TARGET RULE — KEEP" in repaired
+
+
+def test_re_adopt_restores_exact_gitignore_rule_when_only_comment_mentions_it(
+        target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = target / ".gitignore"
+    path.write_text("# .tmp/ rule intentionally removed\n", encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    lines = [line.strip() for line in path.read_text(encoding="utf-8").splitlines()]
+    assert ".tmp/" in lines

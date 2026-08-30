@@ -278,6 +278,36 @@ def _install_mcp(target: Path, brain: Path) -> bool:
     return _write_json_if(target / ".mcp.json",
                           lambda d: _build_mcp(d, brain), target=target)
 
+def _brain_root_line(brain: Path) -> str:
+    return f"- Brain root: `{brain}` (จุดเดียวที่จริง — hooks/MCP/สมองชี้มาที่นี่)"
+
+
+def _has_exact_line(text: str, expected: str) -> bool:
+    return any(line.strip() == expected for line in text.splitlines())
+
+
+def _repair_brain_root_line(text: str, brain: Path) -> str:
+    """Repair only the A-Wiki-owned Brain root line; preserve target text."""
+    marker_line = f"## {AGENT_SECTION_MARKER}"
+    lines = text.splitlines(keepends=True)
+    marker_index = next((i for i, line in enumerate(lines)
+                         if line.rstrip("\r\n") == marker_line), None)
+    if marker_index is None:
+        return text
+    expected = _brain_root_line(brain)
+    for index in range(marker_index + 1, len(lines)):
+        stripped = lines[index].rstrip("\r\n")
+        if stripped.startswith("## "):
+            break
+        if stripped.startswith("- Brain root: `"):
+            ending = "\r\n" if lines[index].endswith("\r\n") else "\n"
+            lines[index] = expected + ending
+            return "".join(lines)
+    ending = "\r\n" if any(line.endswith("\r\n") for line in lines) else "\n"
+    lines.insert(marker_index + 1, ending + expected + ending)
+    return "".join(lines)
+
+
 def _install_seeds(target: Path, brain: Path) -> dict:
     out = {}
     for name, body in (("BRAIN-ENTRY.md", BRAIN_ENTRY), ("COLLAB.md", COLLAB)):
@@ -293,17 +323,22 @@ def _install_seeds(target: Path, brain: Path) -> dict:
     text = agents.read_text(encoding="utf-8") if agents.is_file() else ""
     if AGENT_SECTION_MARKER not in text:
         section = (f"\n\n## {AGENT_SECTION_MARKER}\n\n"
-                   f"- Brain root: `{brain}` (จุดเดียวที่จริง — hooks/MCP/สมองชี้มาที่นี่)\n"
+                   f"{_brain_root_line(brain)}\n"
                    f"- อ่าน `BRAIN-ENTRY.md` ทุกครั้งที่เริ่ม session ใน repo นี้\n"
                    f"- เริ่มงาน: `/A <objective>` · ค้นสมอง: `awiki search` หรือ MCP `awiki`\n")
         agents.write_text(text + section, encoding="utf-8")
         out["AGENTS.md"] = True
     else:
-        out["AGENTS.md"] = False
+        repaired = _repair_brain_root_line(text, brain)
+        if repaired != text:
+            agents.write_text(repaired, encoding="utf-8")
+            out["AGENTS.md"] = True
+        else:
+            out["AGENTS.md"] = False
     gi = target / ".gitignore"
     _assert_safe_surface(target, gi)
     gi_text = gi.read_text(encoding="utf-8") if gi.is_file() else ""
-    if ".tmp/" not in gi_text:
+    if not _has_exact_line(gi_text, ".tmp/"):
         gi.write_text(gi_text.rstrip() + "\n.tmp/\n", encoding="utf-8")
         out[".gitignore"] = True
     else:
@@ -334,8 +369,10 @@ def _owned_sweeps(events: dict, provider: str) -> dict:
                 if _is_awiki_hook(hook):
                     owned_hooks.append(hook)
             if owned_hooks:
-                owned_blocks.append({"matcher": block.get("matcher", ""),
-                                     "hooks": owned_hooks})
+                normalized = {key: value for key, value in block.items()
+                              if key != "hooks"}
+                normalized["hooks"] = owned_hooks
+                owned_blocks.append(normalized)
         if owned_blocks:
             owned[event] = owned_blocks
     return owned
@@ -383,12 +420,22 @@ def _verify(target: Path, brain: Path) -> list[str]:
     agents = target / "AGENTS.md"
     try:
         _assert_safe_surface(target, agents)
-        agents_ok = (agents.is_file()
-                     and AGENT_SECTION_MARKER in agents.read_text(encoding="utf-8"))
+        agents_text = agents.read_text(encoding="utf-8") if agents.is_file() else ""
+        agents_ok = (AGENT_SECTION_MARKER in agents_text
+                     and _has_exact_line(agents_text, _brain_root_line(brain)))
     except (OSError, UnicodeDecodeError, ValueError):
         agents_ok = False
     if not agents_ok:
-        problems.append("AGENTS.md adopted section missing")
+        problems.append("AGENTS.md adopted wiring drift")
+
+    gi = target / ".gitignore"
+    try:
+        _assert_safe_surface(target, gi)
+        gi_text = gi.read_text(encoding="utf-8") if gi.is_file() else ""
+        if not _has_exact_line(gi_text, ".tmp/"):
+            problems.append(".gitignore missing A-Wiki .tmp/ rule")
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        problems.append(f".gitignore invalid: {exc}")
     return problems
 
 def main(argv=None) -> int:
