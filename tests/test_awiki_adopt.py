@@ -366,3 +366,153 @@ def test_adopt_check_requires_exact_awiki_mcp_entry_but_allows_foreign_servers(t
     data["mcpServers"]["awiki"]["args"] = ["wrong-server.py"]
     path.write_text(json.dumps(data), encoding="utf-8")
     assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_adopt_preserves_foreign_empty_event_list(target, fake_brain, provider):
+    path = _provider_config_path(target, provider)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    events = {"ForeignEmpty": []}
+    data = ({"hooks": {"events": events, "foreignHooksKey": "keep"}}
+            if provider == "zcode" else {"hooks": events})
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    installed = json.loads(path.read_text(encoding="utf-8"))
+    installed_events = _provider_events(installed, provider)
+    assert "ForeignEmpty" in installed_events
+    assert installed_events["ForeignEmpty"] == []
+
+
+def _symlink_or_skip(link, target, *, directory=False):
+    try:
+        link.symlink_to(target, target_is_directory=directory)
+    except (OSError, NotImplementedError) as exc:
+        pytest.skip(f"symlink unavailable: {exc}")
+
+
+def test_adopt_rejects_symlinked_provider_file_without_touching_external_target(
+        target, fake_brain, tmp_path):
+    outside = tmp_path / "outside-settings.json"
+    original = b'{"external":"must-stay"}'
+    outside.write_bytes(original)
+    path = _provider_config_path(target, "claude")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    _symlink_or_skip(path, outside)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert outside.read_bytes() == original
+
+
+def test_adopt_rejects_symlinked_provider_parent_without_writing_outside(
+        target, fake_brain, tmp_path):
+    outside_dir = tmp_path / "outside-claude"
+    outside_dir.mkdir()
+    parent = target / ".claude"
+    _symlink_or_skip(parent, outside_dir, directory=True)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert not (outside_dir / "settings.json").exists()
+
+
+def test_adopt_preflight_is_all_or_nothing_when_late_provider_is_invalid(
+        target, fake_brain):
+    codex = _provider_config_path(target, "codex")
+    codex.parent.mkdir(parents=True, exist_ok=True)
+    original = b'{"hooks":'
+    codex.write_bytes(original)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert codex.read_bytes() == original
+    assert not _provider_config_path(target, "claude").exists()
+    assert not _provider_config_path(target, "zcode").exists()
+    assert not (target / ".mcp.json").exists()
+
+
+def test_adopt_check_rejects_exact_field_and_duplicate_drift(target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+
+    claude_path = _provider_config_path(target, "claude")
+    claude = json.loads(claude_path.read_text(encoding="utf-8"))
+    claude["hooks"]["SessionStart"][0]["hooks"][0]["timeout"] = 31
+    claude_path.write_text(json.dumps(claude), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+
+    codex_path = _provider_config_path(target, "codex")
+    codex = json.loads(codex_path.read_text(encoding="utf-8"))
+    codex["hooks"]["PreToolUse"][0]["matcher"] = "WrongMatcher"
+    codex_path.write_text(json.dumps(codex), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+
+    zcode_path = _provider_config_path(target, "zcode")
+    zcode = json.loads(zcode_path.read_text(encoding="utf-8"))
+    zcode["hooks"]["enabled"] = False
+    zcode_path.write_text(json.dumps(zcode), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+
+    claude = json.loads(claude_path.read_text(encoding="utf-8"))
+    claude["hooks"]["SessionStart"].append(claude["hooks"]["SessionStart"][-1])
+    claude_path.write_text(json.dumps(claude), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_rejects_symlinked_seed_without_touching_external_target(
+        target, fake_brain, tmp_path):
+    outside = tmp_path / "outside-agents.md"
+    original = b"external instructions must stay\n"
+    outside.write_bytes(original)
+    agents = target / "AGENTS.md"
+    _symlink_or_skip(agents, outside)
+
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert outside.read_bytes() == original
+    assert not _provider_config_path(target, "claude").exists()
+    assert not (target / ".mcp.json").exists()
+
+
+def test_adopt_check_rejects_symlinked_provider(
+        target, fake_brain, tmp_path):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = _provider_config_path(target, "claude")
+    path.unlink()
+    outside = tmp_path / "external-check.json"
+    outside.write_text('{"hooks": {}}', encoding="utf-8")
+    _symlink_or_skip(path, outside)
+
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_check_rejects_link_before_read(target, fake_brain, tmp_path, monkeypatch):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = _provider_config_path(target, "claude")
+    path.unlink()
+    outside = tmp_path / "external-link-canary.json"
+    outside.write_text('{"hooks": {}}', encoding="utf-8")
+    _symlink_or_skip(path, outside)
+    original_read_text = Path.read_text
+
+    def guarded_read_text(self, *args, **kwargs):
+        if self == path and self.is_symlink():
+            raise AssertionError("verifier read linked config before rejecting it")
+        return original_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+
+
+def test_adopt_check_rejects_linked_agents_without_raising(
+        target, fake_brain, tmp_path, monkeypatch):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    agents = target / "AGENTS.md"
+    agents.unlink()
+    outside = tmp_path / "external-agents-canary.md"
+    outside.write_text("external\n", encoding="utf-8")
+    _symlink_or_skip(agents, outside)
+    original_read_text = Path.read_text
+
+    def guarded_read_text(self, *args, **kwargs):
+        if self == agents and self.is_symlink():
+            raise AssertionError("verifier read linked AGENTS.md")
+        return original_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
