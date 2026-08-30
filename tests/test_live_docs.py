@@ -10,6 +10,7 @@ import json
 import os
 import socket
 import sys
+import threading
 import time
 import urllib.request
 from pathlib import Path
@@ -151,6 +152,10 @@ def test_fetch_rejects_missing_hostname_before_custom_transport(tmp_path):
     "[::]",
     "[ff02::1]",
     "[2001:db8::1]",
+    "[::127.0.0.1]",
+    "[::8.8.8.8]",
+    "[::ffff:8.8.8.8]",
+    "[64:ff9b::7f00:1]",
 ])
 def test_fetch_rejects_blocked_literal_targets_before_custom_transport(tmp_path, host):
     calls = []
@@ -352,3 +357,77 @@ def test_cache_payload_url_must_match_requested_url(tmp_path):
     result = fetch_doc(url, tmp_path, http_get=_ok("fresh-secure"))
     assert result["source"] == "live"
     assert result["content"] == "fresh-secure"
+
+
+def test_fetch_rejects_url_credentials_before_custom_transport(tmp_path):
+    calls = []
+
+    def get(target, timeout):
+        calls.append(target)
+        return "unsafe"
+
+    result = fetch_doc("https://user:pass@example.com/docs.md", tmp_path, http_get=get)
+    assert result["source"] == "unavailable"
+    assert calls == []
+
+
+@pytest.mark.parametrize("url", [
+    "https://example.com/docs.md\r\nX-Test: injected",
+    "https://exa\tmple.com/docs.md",
+])
+def test_fetch_rejects_control_characters_before_parsing(tmp_path, url):
+    calls = []
+
+    def get(target, timeout):
+        calls.append(target)
+        return "unsafe"
+
+    result = fetch_doc(url, tmp_path, http_get=get)
+    assert result["source"] == "unavailable"
+    assert calls == []
+
+
+def test_dns_resolution_is_bounded_by_total_deadline(monkeypatch):
+    import live_docs
+
+    gate = threading.Event()
+
+    def stuck_dns(*args, **kwargs):
+        gate.wait(1.0)
+        return []
+
+    monkeypatch.setattr(socket, "getaddrinfo", stuck_dns)
+    started = time.monotonic()
+    with pytest.raises(TimeoutError, match="DNS|deadline"):
+        live_docs._resolve_public_ips("example.com", 443, time.monotonic() + 0.03)
+    assert time.monotonic() - started < 0.5
+
+
+def test_request_once_rejects_connected_peer_different_from_pinned_ip(monkeypatch):
+    import live_docs
+
+    class Sock:
+        def getpeername(self):
+            return ("1.1.1.1", 443)
+
+    class Conn:
+        sock = Sock()
+
+        def close(self):
+            pass
+
+    resp = _FakeResponse(b"ok")
+    resp.status = 200
+    monkeypatch.setattr(live_docs, "_resolve_public_ips", lambda *args: ["8.8.8.8"])
+    monkeypatch.setattr(live_docs, "_open_pinned_https", lambda *args: (Conn(), resp))
+    with pytest.raises(ValueError, match="peer differs"):
+        live_docs._request_once("https://example.com/docs.md", time.monotonic() + 1)
+
+
+def test_declared_content_length_over_cap_is_rejected():
+    import live_docs
+
+    resp = _FakeResponse(b"x")
+    resp.headers["Content-Length"] = str(2 * 1024 * 1024 + 1)
+    with pytest.raises(ValueError, match="size|limit"):
+        live_docs._read_limited_body(resp, time.monotonic() + 1)

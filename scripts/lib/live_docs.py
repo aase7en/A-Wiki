@@ -57,6 +57,18 @@ def _remaining(deadline: float) -> float:
 
 def _is_public_address(value: str | ipaddress._BaseAddress) -> bool:
     address = value if isinstance(value, ipaddress._BaseAddress) else ipaddress.ip_address(value)
+    if isinstance(address, ipaddress.IPv6Address):
+        # Fail closed on IPv4-transition encodings. Their effective IPv4
+        # destination can differ from the apparent globally-routable IPv6
+        # address (for example IPv4-mapped or NAT64 forms).
+        if address.ipv4_mapped is not None or address.sixtofour is not None or address.teredo is not None:
+            return False
+        if address in ipaddress.IPv6Network("::/96"):
+            return False
+        if address in ipaddress.IPv6Network("64:ff9b::/96"):
+            return False
+        if address in ipaddress.IPv6Network("64:ff9b:1::/48"):
+            return False
     return bool(
         address.is_global
         and not address.is_private
@@ -69,6 +81,8 @@ def _is_public_address(value: str | ipaddress._BaseAddress) -> bool:
 
 
 def _validate_target_url(url: str) -> tuple[SplitResult, str, int, str]:
+    if any(ord(ch) < 0x20 or ord(ch) == 0x7f for ch in url):
+        raise ValueError("live-docs URL contains control characters")
     try:
         parts = urlsplit(url)
     except ValueError as exc:
