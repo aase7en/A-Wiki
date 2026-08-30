@@ -31,27 +31,23 @@
 
 **ฝั่งหยุด**: (1) build ผ่าน → commit เข้า branch ปกติ; ไม่ผ่าน → commit เข้า `wip/<id>` — **ห้ามทิ้ง uncommitted เด็ดขาด** (2) append checkpoint + Status `⏸ paused` + อัปเดตตาราง claim → push
 
-**Receiver** ? recover from repo state first. If direct invocation is unavailable, the human sends only the bounded WO pointer shown in the No-human-relay contract below.
+**Receiver** - recover from repo state first. If direct invocation is unavailable, the human sends only the bounded WO pointer shown in the No-human-relay contract below.
 
 ```text
 Read BRAIN-ENTRY.md + COLLAB.md + docs/work-orders/<id>.md; fetch origin; resume the assigned READY lane; checkpoint+push when done.
 ```
 
-## Model routing (ประหยัด credit — ผูกกับ Cost-First Pyramid)
+## Model routing - capability-first, benchmark-informed
 
-ทุก WO ประกาศ `Model tier` บนหัวไฟล์ แล้ว user dispatch ตาม tier:
+A WO declares risk/capability requirements before vendor/model identity:
 
-- **cheap-ok** (GLM/Sonnet-tier): งาน mechanical ที่ WO ให้ `Reference pattern`
-  (ไฟล์+สิ่งที่ copy) ครบ — conformance, icon swap, CRUD UI ตาม golden reference
-- **mid** (Opus-tier): reasoning ปานกลาง spec ปิดช่องแล้ว (mapping/สูตรอยู่ใน WO)
-- **primary-only** (frontier model): design ใหม่, security, cross-system, แก้ protocol
-  — และทำหน้าที่ **เขียน WO + ตรวจ diff งาน tier ล่าง** (Senior Critic ตาม Swarm Protocol)
+- **deterministic-executor** - repo archaeology, bounded implementation, regression/test expansion, mechanical migration, evidence capture.
+- **strong-reasoner** - complex root cause, cross-file correctness, ambiguous integration, deep debug.
+- **strongest-independent** - security/trust boundary, architecture/protocol, high blast radius, final exact-SHA critic.
 
-WO ระดับ cheap-ok/mid ต้องมี `Reference pattern` + `Forbidden` (หยุด+checkpoint
-เมื่อเจอนอก spec — ห้ามเดา) + `Verify commands` แบบ copy-paste — เกณฑ์ผ่าน
-"junior test": อ่านแล้วทำได้โดยไม่ต้องถามเพิ่ม. ดูตัวจริง:
-`env-wastewater-webapp/docs/work-orders/F4-page-conformance.md`.
-เลือกรุ่นตามสด: `model-cost-switching` skill + `docs/protocols/model-switching.md`
+Before important dispatch, the primary agent checks current task-relevant benchmark/capability evidence and records source/date/reason briefly in the WO/checkpoint. Vendor benchmarks are routing signals, not proof of universal superiority. Lanes bind to scope + capability, not permanently to one vendor/model.
+
+Deterministic-executor work must include `Reference pattern` + `Forbidden` + `Verify commands`. High-risk work is shaped by a strong reasoner and receives independent exact-SHA review.
 
 ## Bootstrap repo ใหม่ (หรือ repo เก่าที่ยังไม่มี)
 
@@ -83,13 +79,3 @@ Do not ask the human to relay your result to another agent.
 ```
 
 Before new work search `goal/WO -> durable claim -> branch/worktree -> PR -> implementation`. Found means `RESUME/RECONCILE`; only absent means CREATE. Local `.tmp/` claims are acceleration, not cross-machine authority. Prefer `python -m conductor claim ...`; after it succeeds, agents must not add a duplicate COLLAB row manually.
-
-### Capability-first routing
-
-Route by risk and capability before vendor/model name:
-
-- `deterministic-executor`: repo archaeology, bounded implementation, regression/test expansion, mechanical migration, evidence capture.
-- `strong-reasoner`: complex root cause, cross-file correctness, ambiguous integration, deep debug.
-- `strongest-independent`: security/trust boundary, architecture/protocol, high blast radius, final exact-SHA critic.
-
-Before important dispatch, check current task-relevant benchmark/capability evidence and record source/date/reason briefly in the WO/checkpoint. Vendor benchmarks are routing signals, not proof of universal superiority. Lanes bind to scope + capability, not permanently to one vendor.

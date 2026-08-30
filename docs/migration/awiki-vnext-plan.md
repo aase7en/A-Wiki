@@ -57,7 +57,7 @@ Routing:
 | M7 | R-FR-008..011 minor E2E/order/doctor/Markdown consistency | deterministic executor + independent review |
 | M8 | final independent adversarial re-review | strongest independent reviewer |
 
-The model names are routing recommendations only. If unavailable, preserve the capability rule: high-blast-radius security/integrity work gets the strongest independent reasoner; deterministic/mechanical work uses the cheapest capable executor; final approval comes from an independent strong reviewer pinned to the exact PR HEAD SHA.
+Routing labels are capability recommendations, not vendor dependencies: high-blast-radius security/integrity work gets the strongest suitable independent reasoner; deterministic/mechanical work uses a capable executor; final approval comes from an independent strong reviewer pinned to the exact PR HEAD SHA.
 
 Minimum baseline/final evidence:
 
