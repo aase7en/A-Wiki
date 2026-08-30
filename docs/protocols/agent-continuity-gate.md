@@ -18,8 +18,8 @@
                                 + handoff ล่าสุดของงานนั้น
 3. เช็คชนกัน                  → git branch -a + ตาราง claim: ชื่องานใกล้เคียง = ห้ามเริ่มใหม่
                                 ให้ claim ต่อจากของเดิม (scope ผูกกับ chunk ไม่ผูกกับ agent)
-4. จอง claim                 → เพิ่มแถวใน COLLAB.md (chunk, agent, scope, branch)
-                                commit+push แถวนั้นก่อนเริ่มแก้โค้ดจริง
+4. Claim via conductor       -> run `python -m conductor claim ...` as the primary durable COLLAB writer
+                            -> if it succeeds, do not add a manual duplicate row; commit+push the claim before real code mutation
 5. ถ้างานเป็น migration phase → ทำตาม work order ของ phase นั้นเท่านั้น (ห้ามข้าม phase)
 ```
 
@@ -74,3 +74,11 @@ commit งานค้าง (build พัง → `wip/<id>`) → append Checkpo
       + PreToolUse เช็ค stamp ก่อนให้แก้ shared surface (upgrade จาก warning → block เมื่อทดสอบแล้วว่าไม่ deadlock)
 - [ ] stop-auto-commit ผ่าน scan-gate ตามกฎข้อ 3 ก่อน push main
 - [ ] แจ้งเตือนใน COLLAB เมื่อมี branch ใหม่บน origin ที่ไม่มีแถว claim รองรับ
+
+## 7. Cross-machine no-human-relay amendment (2026-08-30)
+
+Before creating work, search in this order: `python -m conductor status --json` -> active WO/checkpoint -> `git branch -a` -> open PRs -> existing implementation. A similar goal/WO/branch means `RESUME/RECONCILE`, not CREATE.
+
+Use `python -m conductor claim ...` as the primary claim-row writer. If it succeeds, do not manually add another COLLAB row. Commit and push the claim before real mutation.
+
+Agents must fetch/read checkpoint state from the repository themselves. When a platform cannot invoke another agent directly, the human relays only a WO-ID/pointer prompt. HEAD, tests, evidence, blockers, and next action belong in the WO/branch/PR; never require the human to copy an agent result back into another chat.

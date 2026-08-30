@@ -18,7 +18,7 @@
 
 ## กติกา 8 ข้อ (Rules — สำเนาลง COLLAB.md ของทุก repo)
 
-1. **Claim ก่อนทำ**: เพิ่มแถวในตาราง claim (chunk, agent, วันที่, scope ไฟล์) → commit+push → ค่อยเริ่ม; เสร็จแล้วปลด claim ใน commit ของ chunk นั้นเอง — ห้ามแตะไฟล์ใน scope ของ claim คนอื่น
+1. **Claim before mutation**: use `python -m conductor claim ...` as the primary writer of the durable COLLAB row (chunk, agent, date, scope, branch). Commit+push that claim before real work. If the command succeeds, do not add another row manually. Release/update the same claim when the chunk ends; never touch another live claim scope.
 2. **Pull ก่อน commit เสมอ** (`git pull --ff-only`; diverge → rebase commit ตัวเอง) + build/test ของ repo ต้องผ่านก่อน push
 3. **Hotspot files** ประกาศไว้ใน COLLAB.md (เช่น route file, package.json, entry html) — แก้ได้ทีละ agent ตามที่ระบุ
 4. **ไฟล์เดียวกันห้ามทำพร้อมกัน** — ดูตาราง claim ก่อนเริ่มเสมอ
@@ -31,29 +31,23 @@
 
 **ฝั่งหยุด**: (1) build ผ่าน → commit เข้า branch ปกติ; ไม่ผ่าน → commit เข้า `wip/<id>` — **ห้ามทิ้ง uncommitted เด็ดขาด** (2) append checkpoint + Status `⏸ paused` + อัปเดตตาราง claim → push
 
-**ฝั่งรับ** — user วาง resume prompt มาตรฐาน (ใช้ได้กับทุก agent):
+**Receiver** - recover from repo state first. If direct invocation is unavailable, the human sends only the bounded WO pointer shown in the No-human-relay contract below.
 
-```
-อ่าน COLLAB.md + docs/work-orders/<id>.md ของ repo นี้
-ทำต่อจาก Checkpoint ล่าสุด เฉพาะใน Lane/files ที่ระบุ
-เริ่มจาก branch ที่ work order ระบุ; เสร็จแล้ว merge เข้า main + set done
+```text
+Read BRAIN-ENTRY.md + COLLAB.md + docs/work-orders/<id>.md; fetch origin; resume the assigned READY lane; checkpoint+push when done.
 ```
 
-## Model routing (ประหยัด credit — ผูกกับ Cost-First Pyramid)
+## Model routing - capability-first, benchmark-informed
 
-ทุก WO ประกาศ `Model tier` บนหัวไฟล์ แล้ว user dispatch ตาม tier:
+A WO declares risk/capability requirements before vendor/model identity:
 
-- **cheap-ok** (GLM/Sonnet-tier): งาน mechanical ที่ WO ให้ `Reference pattern`
-  (ไฟล์+สิ่งที่ copy) ครบ — conformance, icon swap, CRUD UI ตาม golden reference
-- **mid** (Opus-tier): reasoning ปานกลาง spec ปิดช่องแล้ว (mapping/สูตรอยู่ใน WO)
-- **primary-only** (frontier model): design ใหม่, security, cross-system, แก้ protocol
-  — และทำหน้าที่ **เขียน WO + ตรวจ diff งาน tier ล่าง** (Senior Critic ตาม Swarm Protocol)
+- **deterministic-executor** - repo archaeology, bounded implementation, regression/test expansion, mechanical migration, evidence capture.
+- **strong-reasoner** - complex root cause, cross-file correctness, ambiguous integration, deep debug.
+- **strongest-independent** - security/trust boundary, architecture/protocol, high blast radius, final exact-SHA critic.
 
-WO ระดับ cheap-ok/mid ต้องมี `Reference pattern` + `Forbidden` (หยุด+checkpoint
-เมื่อเจอนอก spec — ห้ามเดา) + `Verify commands` แบบ copy-paste — เกณฑ์ผ่าน
-"junior test": อ่านแล้วทำได้โดยไม่ต้องถามเพิ่ม. ดูตัวจริง:
-`env-wastewater-webapp/docs/work-orders/F4-page-conformance.md`.
-เลือกรุ่นตามสด: `model-cost-switching` skill + `docs/protocols/model-switching.md`
+Before important dispatch, the primary agent checks current task-relevant benchmark/capability evidence and records source/date/reason briefly in the WO/checkpoint. Vendor benchmarks are routing signals, not proof of universal superiority. Lanes bind to scope + capability, not permanently to one vendor/model.
+
+Deterministic-executor work must include `Reference pattern` + `Forbidden` + `Verify commands`. High-risk work is shaped by a strong reasoner and receives independent exact-SHA review.
 
 ## Bootstrap repo ใหม่ (หรือ repo เก่าที่ยังไม่มี)
 
@@ -70,3 +64,18 @@ AGENTS.md/CLAUDE.md ของ repo นั้น (ถ้ามี) — จาก�
 - **ไฟล์นี้** = ประสานงาน **หลาย agent ระดับ repo** (ทำพร้อมกัน + ส่งมือข้าม limit) — ใช้คู่กันได้: checkpoint ใน work order คือ handoff ฉบับผูกกับ chunk
 
 *Skill: `cross-agent-work-orders` (registry) · Template: `templates/work-orders/` · ผ่าน Brain Improvement Gate: เบา (docs+script), cross-platform, public-safe, reusable, ทำให้ agent ทุกตัวทำงานร่วมกันได้จริง*
+
+## No-human-relay contract - repository as the message bus
+
+The sending agent updates the SAME work order with `status / branch / HEAD / tests / evidence / blockers / next safe action`, then commits and pushes. The receiving agent runs `git fetch origin` and reads `BRAIN-ENTRY.md -> COLLAB.md -> WO/checkpoint -> branch/PR`. Chat is transport/pointer only, never execution SSoT.
+
+If direct agent-to-agent invocation is unavailable, the human sends only this bounded pointer:
+
+```text
+A-Wiki only. Read BRAIN-ENTRY.md -> COLLAB.md -> docs/work-orders/<WO-ID>.md.
+Fetch origin. Resume only the assigned READY lane; claim via conductor; obey scope.
+Run the required loop/tests. Update the SAME WO checkpoint with HEAD/tests/evidence/next action, commit+push, then stop.
+Do not ask the human to relay your result to another agent.
+```
+
+Before new work search `goal/WO -> durable claim -> branch/worktree -> PR -> implementation`. Found means `RESUME/RECONCILE`; only absent means CREATE. Local `.tmp/` claims are acceleration, not cross-machine authority. Prefer `python -m conductor claim ...`; after it succeeds, agents must not add a duplicate COLLAB row manually.

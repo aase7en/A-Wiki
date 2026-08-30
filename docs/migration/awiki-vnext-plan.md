@@ -48,16 +48,16 @@ Routing:
 
 | Order | Finding group | Recommended execution/review tier |
 |---|---|---|
-| M1 | baseline evidence | GLM 5.3 / MAX; mechanical evidence only |
-| M2 | R-FR-002 live-docs trust boundary | GPT-5.6 Sol Ultra / UltraHigh |
-| M3 | R-FR-006 + R-FR-007 adopt preservation + exact check | GPT-5.6 Sol Ultra / UltraHigh |
-| M4 | R-FR-001 skill eval->approve artifact binding | GPT-5.6 Sol Ultra / UltraHigh |
-| M5 | R-FR-003 stale-spec CI/history/path semantics | GPT-5.6 Sol MAX / HighMax |
-| M6 | R-FR-004 + R-FR-005 fold-back correctness/integrity | GPT-5.6 Sol MAX / HighMax |
-| M7 | R-FR-008..011 minor E2E/order/doctor/Markdown consistency | GLM 5.3 or Sol MAX |
-| M8 | final independent adversarial re-review | GPT-5.6 Sol Ultra / UltraHigh |
+| M1 | baseline evidence | deterministic evidence capture - captured 2026-08-30; local Windows defects recorded, exact-main Core CI green |
+| M2 | R-FR-002 live-docs trust boundary | strongest security-capable executor + independent reviewer |
+| M3 | R-FR-006 + R-FR-007 adopt preservation + exact check | strongest integrity-capable reasoner |
+| M4 | R-FR-001 skill eval->approve artifact binding | strongest integrity-capable reasoner |
+| M5 | R-FR-003 stale-spec CI/history/path semantics | strong deterministic reasoner |
+| M6 | R-FR-004 + R-FR-005 fold-back correctness/integrity | strong deterministic reasoner |
+| M7 | R-FR-008..011 minor E2E/order/doctor/Markdown consistency | deterministic executor + independent review |
+| M8 | final independent adversarial re-review | strongest independent reviewer |
 
-The model names are routing recommendations only. If unavailable, preserve the capability rule: high-blast-radius security/integrity work gets the strongest independent reasoner; deterministic/mechanical work uses the cheapest capable executor; final approval comes from an independent strong reviewer pinned to the exact PR HEAD SHA.
+Routing labels are capability recommendations, not vendor dependencies: high-blast-radius security/integrity work gets the strongest suitable independent reasoner; deterministic/mechanical work uses a capable executor; final approval comes from an independent strong reviewer pinned to the exact PR HEAD SHA.
 
 Minimum baseline/final evidence:
 
