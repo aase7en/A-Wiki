@@ -152,3 +152,108 @@ def test_scout_fills_gaps_into_the_queue(workdir, monkeypatch):
                              queue_dir=workdir,
                              registry_path=REPO_ROOT / "skills-registry.json")
     assert again == []
+
+
+# ---------------------------------------------------------------------------
+# R-FR-001 — evaluated artifact identity must bind approval/apply
+# ---------------------------------------------------------------------------
+
+
+def test_auto_eval_binds_exact_artifact_bytes(workdir, tmp_path):
+    import hashlib
+
+    page = _page(tmp_path, name="artifact-bound-skill")
+    prop = pipe.propose_from_page(page, queue_dir=workdir)
+    expected = prop["skill_md"].encode("utf-8")
+
+    result = pipe.run_eval(prop["id"], queue_dir=workdir,
+                           brain_root=REPO_ROOT, scratch=tmp_path / "exact-eval")
+
+    assert (tmp_path / "exact-eval" / f"{prop['id']}-draft-SKILL.md").read_bytes() == expected
+    assert result["artifact"] == {
+        "sha256": hashlib.sha256(expected).hexdigest(),
+        "size": len(expected),
+        "encoding": "utf-8",
+    }
+
+
+def test_approve_rejects_post_eval_artifact_drift_and_requires_reeval(workdir, tmp_path):
+    page = _page(tmp_path, name="artifact-drift-skill")
+    prop = pipe.propose_from_page(page, queue_dir=workdir)
+    pipe.run_eval(prop["id"], queue_dir=workdir,
+                  brain_root=REPO_ROOT, scratch=tmp_path / "drift-eval")
+
+    saved_path = workdir / f"{prop['id']}.json"
+    saved = json.loads(saved_path.read_text(encoding="utf-8"))
+    saved["skill_md"] += "\n## Mutated after eval\nthis content was never evaluated\n"
+    saved_path.write_text(json.dumps(saved, ensure_ascii=False), encoding="utf-8")
+
+    calls = []
+    rc = pipe.approve(prop["id"], queue_dir=workdir,
+                      apply_fn=lambda payload: (calls.append(payload) or (0, "")))
+
+    assert rc != 0
+    assert calls == [], "stale evaluated content must never reach apply"
+    after = pipe.load(prop["id"], queue_dir=workdir)
+    assert after["status"] == "draft", "artifact drift must require explicit re-evaluation"
+    assert after["eval"]["stale"] is True
+    assert after["eval"]["current_artifact"]["sha256"] != after["eval"]["artifact"]["sha256"]
+
+
+def test_approve_records_exact_approved_artifact_identity(workdir, tmp_path):
+    page = _page(tmp_path, name="artifact-provenance-skill")
+    prop = pipe.propose_from_page(page, queue_dir=workdir)
+    pipe.run_eval(prop["id"], queue_dir=workdir,
+                  brain_root=REPO_ROOT, scratch=tmp_path / "approved-eval")
+
+    assert pipe.approve(prop["id"], queue_dir=workdir,
+                        apply_fn=lambda payload: (0, "ok")) == 0
+    saved = pipe.load(prop["id"], queue_dir=workdir)
+    assert saved["approved_artifact"] == saved["eval"]["artifact"]
+
+
+def test_default_apply_hands_new_skill_exact_artifact_and_expected_hash(monkeypatch):
+    import hashlib
+    import subprocess
+    from types import SimpleNamespace
+
+    artifact = "---\nname: exact-handoff\ndescription: exact\n---\n\n# exact-handoff\n"
+    digest = hashlib.sha256(artifact.encode("utf-8")).hexdigest()
+    captured = {}
+
+    def fake_run(cmd, **kwargs):
+        captured["cmd"] = list(cmd)
+        captured["kwargs"] = dict(kwargs)
+        if "--skill-file" in cmd:
+            p = Path(cmd[cmd.index("--skill-file") + 1])
+            captured["path"] = p
+            captured["bytes"] = p.read_bytes()
+        return SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    rc, _ = pipe._default_apply({
+        "id": "exact-handoff",
+        "skill_md": artifact,
+        "eval": {"artifact": {"sha256": digest, "size": len(artifact.encode("utf-8")),
+                                "encoding": "utf-8"}},
+    })
+
+    assert rc == 0
+    assert captured["bytes"] == artifact.encode("utf-8")
+    assert captured["cmd"][captured["cmd"].index("--expected-sha256") + 1] == digest
+    assert "--apply" in captured["cmd"]
+    assert not captured["path"].exists(), "temporary handoff artifact must be cleaned after apply"
+
+
+def test_generated_pipeline_draft_uses_canonical_registry_domain(workdir, tmp_path):
+    import re
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    from skills_registry import VALID_DOMAINS
+
+    prop = pipe.propose_from_page(_page(tmp_path, name="domain-valid-skill"), queue_dir=workdir)
+    match = re.search(r"^domain:\s*\[([^\]]+)\]", prop["skill_md"], re.MULTILINE)
+    assert match, "generated skill draft must declare a domain"
+    domains = [item.strip() for item in match.group(1).split(",") if item.strip()]
+    assert domains and all(domain in VALID_DOMAINS for domain in domains)

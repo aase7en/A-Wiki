@@ -35,6 +35,7 @@ See: docs/architecture/skill-architecture-plan.md
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -56,7 +57,10 @@ for _stream in (sys.stdout, sys.stderr):
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from skills_registry import VALID_DOMAINS, VALID_LIFECYCLE_PHASES  # noqa: E402
+from skills_registry import (  # noqa: E402
+    VALID_DOMAINS, VALID_INVOCATIONS, VALID_LIFECYCLE_PHASES, VALID_STATUSES,
+)
+from skills_registry.scan import parse_frontmatter  # noqa: E402
 
 DEFAULT_PATH_ROOT = "skills/awiki"
 DEFAULT_CATEGORY = "uncategorized"
@@ -114,6 +118,12 @@ class ScaffoldConfig:
     description: str = ""
     path_root: str = DEFAULT_PATH_ROOT
     apply: bool = False
+    version: str = "1.0.0"
+    agents: tuple[str, ...] = ("all",)
+    status: str = "canonical"
+    invocation: str = "manual"
+    skill_md: Optional[str] = None
+    artifact_sha256: Optional[str] = None
 
 
 @dataclass
@@ -157,11 +167,11 @@ def build_entry(cfg: ScaffoldConfig) -> dict:
         "category": cfg.category,
         "source": "repo",
         "path": f"{cfg.path_root}/{cfg.name}/SKILL.md",
-        "agents": ["all"],
-        "version": "1.0.0",
-        "status": "canonical",
+        "agents": list(cfg.agents),
+        "version": cfg.version,
+        "status": cfg.status,
         "description": cfg.description,
-        "invocation": "manual",
+        "invocation": cfg.invocation,
         "th_description": cfg.description,
         "when_to_use": cfg.description,
         "examples": [],
@@ -203,6 +213,37 @@ TODO: describe what this skill does and when Claude should use it.
 """
 
 
+def _validate_exact_artifact(cfg: ScaffoldConfig) -> None:
+    """Fail closed if exact-mode content/hash/frontmatter disagree with cfg."""
+    if cfg.skill_md is None:
+        if cfg.artifact_sha256 is not None:
+            raise ScaffoldError("artifact sha256 requires exact skill_md content")
+        return
+    if not cfg.artifact_sha256:
+        raise ScaffoldError("exact skill artifact requires expected sha256")
+    actual = hashlib.sha256(cfg.skill_md.encode("utf-8")).hexdigest()
+    if actual.lower() != cfg.artifact_sha256.lower():
+        raise ScaffoldError(
+            f"skill artifact sha256 mismatch: expected {cfg.artifact_sha256}, got {actual}")
+
+    fm = parse_frontmatter(cfg.skill_md)
+    expected = {
+        "name": cfg.name,
+        "description": cfg.description,
+        "version": cfg.version,
+        "domain": list(cfg.domain),
+        "lifecycle_phase": cfg.phase,
+        "category": cfg.category,
+        "agents": list(cfg.agents),
+        "status": cfg.status,
+        "invocation": cfg.invocation,
+    }
+    for key, value in expected.items():
+        if fm.get(key) != value:
+            raise ScaffoldError(
+                f"exact skill frontmatter {key!r} mismatch: expected {value!r}, got {fm.get(key)!r}")
+
+
 # ---------------------------------------------------------------------------
 # Scaffold — injectable fs/runner so this is testable without real I/O
 # ---------------------------------------------------------------------------
@@ -228,6 +269,7 @@ def run_scaffold(
     validate_kebab_case(cfg.name)
     validate_domains(cfg.domain)
     validate_phase(cfg.phase)
+    _validate_exact_artifact(cfg)
 
     entry = build_entry(cfg)
     skill_md_path = repo_root / cfg.path_root / cfg.name / "SKILL.md"
@@ -255,7 +297,7 @@ def run_scaffold(
     fs.write_text(registry_path, json.dumps(registry_data, indent=2, ensure_ascii=False) + "\n")
 
     recorder.record("write_skill_md")
-    fs.write_text(skill_md_path, render_skill_md(cfg))
+    fs.write_text(skill_md_path, cfg.skill_md if cfg.skill_md is not None else render_skill_md(cfg))
 
     # --- regen surfaces, then verify no drift ---
     regen_script = repo_root / "scripts" / "regen-skill-surfaces.py"
@@ -325,12 +367,12 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     )
     ap.add_argument("name", help="Skill name in kebab-case, e.g. my-new-skill")
     ap.add_argument(
-        "--domain", required=True,
-        help="Comma-separated domain(s) from the canonical VALID_DOMAINS set, e.g. code,debug",
+        "--domain", default=None,
+        help="Comma-separated domain(s); required for scaffold mode, derived from --skill-file in exact mode",
     )
     ap.add_argument(
-        "--phase", required=True,
-        help="Lifecycle phase from the canonical VALID_LIFECYCLE_PHASES set, e.g. build",
+        "--phase", default=None,
+        help="Lifecycle phase; required for scaffold mode, derived from --skill-file in exact mode",
     )
     ap.add_argument(
         "--category", default=DEFAULT_CATEGORY,
@@ -345,14 +387,93 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         help=f"Root directory the skill is created under (default: {DEFAULT_PATH_ROOT})",
     )
     ap.add_argument(
+        "--skill-file", dest="skill_file", default=None,
+        help="Install this exact evaluated SKILL.md instead of rendering a scaffold",
+    )
+    ap.add_argument(
+        "--expected-sha256", dest="expected_sha256", default=None,
+        help="Required with --skill-file; content address that must match before any write",
+    )
+    ap.add_argument(
         "--apply", action="store_true",
         help="Write registry + SKILL.md + run regen-skill-surfaces.py (default: dry-run)",
     )
     return ap.parse_args(argv)
 
 
-def build_config(args: argparse.Namespace) -> ScaffoldConfig:
+def _tuple_field(value: Any, field: str) -> tuple[str, ...]:
+    if isinstance(value, list):
+        items = tuple(str(v).strip() for v in value if str(v).strip())
+    elif isinstance(value, str) and value.strip():
+        items = (value.strip(),)
+    else:
+        items = ()
+    if not items:
+        raise ScaffoldError(f"exact skill frontmatter requires non-empty {field}")
+    return items
+
+
+def build_config(
+    args: argparse.Namespace, *,
+    skill_md: Optional[str] = None,
+    artifact_sha256: Optional[str] = None,
+) -> ScaffoldConfig:
     validate_kebab_case(args.name)
+
+    if skill_md is not None:
+        expected = args.expected_sha256
+        if not expected or not re.fullmatch(r"[0-9A-Fa-f]{64}", expected):
+            raise ScaffoldError("--skill-file requires a valid --expected-sha256")
+        if not artifact_sha256 or artifact_sha256.lower() != expected.lower():
+            raise ScaffoldError(
+                f"skill artifact sha256 mismatch: expected {expected}, got {artifact_sha256}")
+        fm = parse_frontmatter(skill_md)
+        if fm.get("name") != args.name:
+            raise ScaffoldError(
+                f"exact skill frontmatter name mismatch: expected {args.name!r}, got {fm.get('name')!r}")
+        domain = _tuple_field(fm.get("domain"), "domain")
+        phase = str(fm.get("lifecycle_phase") or "")
+        validate_domains(domain)
+        validate_phase(phase)
+        if args.domain:
+            requested = tuple(d.strip() for d in args.domain.split(",") if d.strip())
+            if requested != domain:
+                raise ScaffoldError(f"--domain {requested!r} disagrees with exact artifact {domain!r}")
+        if args.phase and args.phase != phase:
+            raise ScaffoldError(f"--phase {args.phase!r} disagrees with exact artifact {phase!r}")
+
+        description = fm.get("description")
+        version = fm.get("version")
+        category = fm.get("category")
+        agents = _tuple_field(fm.get("agents"), "agents")
+        status = fm.get("status")
+        invocation = fm.get("invocation", "manual")
+        for field, value in (("description", description), ("version", version),
+                             ("category", category), ("status", status)):
+            if not isinstance(value, str) or not value:
+                raise ScaffoldError(f"exact skill frontmatter requires {field}")
+        if status not in VALID_STATUSES:
+            raise ScaffoldError(f"invalid skill status {status!r}")
+        if invocation not in VALID_INVOCATIONS:
+            raise ScaffoldError(f"invalid skill invocation {invocation!r}")
+        if args.description and args.description != description:
+            raise ScaffoldError("--description disagrees with exact artifact frontmatter")
+        if args.category != DEFAULT_CATEGORY and args.category != category:
+            raise ScaffoldError("--category disagrees with exact artifact frontmatter")
+
+        return ScaffoldConfig(
+            name=args.name, domain=domain, phase=phase, category=category,
+            description=description, path_root=args.path_root, apply=args.apply,
+            version=version, agents=agents, status=status, invocation=invocation,
+            skill_md=skill_md, artifact_sha256=artifact_sha256.lower(),
+        )
+
+    if args.skill_file:
+        raise ScaffoldError("--skill-file content was not loaded")
+    if args.expected_sha256:
+        raise ScaffoldError("--expected-sha256 requires --skill-file")
+    if not args.domain or not args.phase:
+        raise ScaffoldError("scaffold mode requires --domain and --phase")
     domain = tuple(d.strip() for d in args.domain.split(",") if d.strip())
     validate_domains(domain)
     validate_phase(args.phase)
@@ -362,20 +483,24 @@ def build_config(args: argparse.Namespace) -> ScaffoldConfig:
     )
 
     return ScaffoldConfig(
-        name=args.name,
-        domain=domain,
-        phase=args.phase,
-        category=args.category,
-        description=description,
-        path_root=args.path_root,
-        apply=args.apply,
+        name=args.name, domain=domain, phase=args.phase, category=args.category,
+        description=description, path_root=args.path_root, apply=args.apply,
     )
 
 
 def main(argv: Optional[list[str]] = None) -> int:
     try:
         args = parse_args(argv)
-        cfg = build_config(args)
+        skill_md = None
+        artifact_sha256 = None
+        if args.skill_file:
+            try:
+                raw = Path(args.skill_file).read_bytes()
+                skill_md = raw.decode("utf-8")
+            except (OSError, UnicodeDecodeError) as exc:
+                raise ScaffoldError(f"cannot read exact skill artifact: {exc}") from exc
+            artifact_sha256 = hashlib.sha256(raw).hexdigest()
+        cfg = build_config(args, skill_md=skill_md, artifact_sha256=artifact_sha256)
     except ScaffoldError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

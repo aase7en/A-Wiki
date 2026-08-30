@@ -384,3 +384,156 @@ class TestCLI:
         monkeypatch.setattr(new_skill, "REPO_ROOT", tmp_path)
         rc = new_skill.main(["Bad_Name", "--domain", "code", "--phase", "build"])
         assert rc != 0
+
+
+# ---------------------------------------------------------------------------
+# R-FR-001 — exact evaluated artifact install mode
+# ---------------------------------------------------------------------------
+
+
+def _exact_skill_artifact(name="demo-skill"):
+    return f"""---
+name: {name}
+description: "Exact evaluated artifact."
+version: 0.1.0
+domain: [productivity]
+lifecycle_phase: none
+category: pipeline
+agents: [all]
+status: canonical
+invocation: auto
+---
+
+# {name}
+
+This body is the exact content that passed deterministic evaluation.
+"""
+
+
+def test_exact_artifact_cli_does_not_require_redundant_domain_or_phase():
+    args = new_skill.parse_args([
+        "demo-skill", "--skill-file", "candidate.md",
+        "--expected-sha256", "a" * 64, "--apply",
+    ])
+    assert args.skill_file == "candidate.md"
+    assert args.expected_sha256 == "a" * 64
+    assert args.apply is True
+
+
+def test_exact_artifact_config_derives_registry_metadata_from_frontmatter():
+    import hashlib
+
+    artifact = _exact_skill_artifact()
+    digest = hashlib.sha256(artifact.encode("utf-8")).hexdigest()
+    args = new_skill.parse_args([
+        "demo-skill", "--skill-file", "candidate.md",
+        "--expected-sha256", digest, "--apply",
+    ])
+    cfg = new_skill.build_config(args, skill_md=artifact, artifact_sha256=digest)
+
+    assert cfg.name == "demo-skill"
+    assert cfg.domain == ("productivity",)
+    assert cfg.phase == "none"
+    assert cfg.category == "pipeline"
+    assert cfg.description == "Exact evaluated artifact."
+    assert cfg.version == "0.1.0"
+    assert cfg.agents == ("all",)
+    assert cfg.status == "canonical"
+    assert cfg.invocation == "auto"
+    assert cfg.skill_md == artifact
+    assert cfg.artifact_sha256 == digest
+
+
+def test_exact_artifact_hash_mismatch_fails_before_any_repo_write(tmp_path):
+    artifact = _exact_skill_artifact()
+    args = new_skill.parse_args([
+        "demo-skill", "--skill-file", "candidate.md",
+        "--expected-sha256", "0" * 64, "--apply",
+    ])
+
+    with pytest.raises(new_skill.ScaffoldError, match="sha256"):
+        new_skill.build_config(args, skill_md=artifact,
+                               artifact_sha256="f" * 64)
+
+
+def test_exact_artifact_name_mismatch_fails_closed():
+    import hashlib
+
+    artifact = _exact_skill_artifact(name="other-skill")
+    digest = hashlib.sha256(artifact.encode("utf-8")).hexdigest()
+    args = new_skill.parse_args([
+        "demo-skill", "--skill-file", "candidate.md",
+        "--expected-sha256", digest, "--apply",
+    ])
+
+    with pytest.raises(new_skill.ScaffoldError, match="name"):
+        new_skill.build_config(args, skill_md=artifact, artifact_sha256=digest)
+
+
+def test_exact_artifact_is_written_byte_for_byte_and_registry_matches(tmp_path):
+    import hashlib
+
+    artifact = _exact_skill_artifact()
+    digest = hashlib.sha256(artifact.encode("utf-8")).hexdigest()
+    args = new_skill.parse_args([
+        "demo-skill", "--skill-file", "candidate.md",
+        "--expected-sha256", digest, "--apply",
+    ])
+    cfg = new_skill.build_config(args, skill_md=artifact, artifact_sha256=digest)
+    registry_path = tmp_path / "skills-registry.json"
+    fs = FakeFS({str(registry_path): json.dumps(EMPTY_REGISTRY)})
+    runner = FakeRunner(returncode=0)
+    recorder = new_skill.StepRecorder()
+
+    result = new_skill.run_scaffold(
+        cfg, fs=fs, runner=runner, recorder=recorder, repo_root=tmp_path
+    )
+
+    assert fs.files[str(result.skill_md_path)] == artifact
+    entry = json.loads(fs.files[str(registry_path)])["skills"][0]
+    assert entry["name"] == "demo-skill"
+    assert entry["description"] == "Exact evaluated artifact."
+    assert entry["version"] == "0.1.0"
+    assert entry["domain"] == ["productivity"]
+    assert entry["lifecycle_phase"] == "none"
+    assert entry["category"] == "pipeline"
+    assert entry["status"] == "canonical"
+    assert entry["invocation"] == "auto"
+    assert recorder.steps.index("write_registry") < recorder.steps.index("write_skill_md")
+
+
+def test_normal_scaffold_mode_still_requires_domain_and_phase():
+    args = new_skill.parse_args(["demo-skill"])
+    with pytest.raises(new_skill.ScaffoldError):
+        new_skill.build_config(args)
+
+
+def test_main_exact_artifact_e2e_writes_exact_bytes_to_real_filesystem(tmp_path, monkeypatch):
+    import hashlib
+
+    artifact = _exact_skill_artifact(name="cli-exact-skill")
+    digest = hashlib.sha256(artifact.encode("utf-8")).hexdigest()
+    artifact_path = tmp_path / "evaluated-SKILL.md"
+    artifact_path.write_bytes(artifact.encode("utf-8"))
+    (tmp_path / "skills-registry.json").write_text(
+        json.dumps(EMPTY_REGISTRY), encoding="utf-8", newline="\n")
+
+    runner = FakeRunner(returncode=0)
+    monkeypatch.setattr(new_skill, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(new_skill, "_RealRunner", lambda: runner)
+
+    rc = new_skill.main([
+        "cli-exact-skill", "--skill-file", str(artifact_path),
+        "--expected-sha256", digest, "--apply",
+    ])
+
+    installed = tmp_path / "skills" / "awiki" / "cli-exact-skill" / "SKILL.md"
+    assert rc == 0
+    assert installed.read_bytes() == artifact.encode("utf-8")
+    assert hashlib.sha256(installed.read_bytes()).hexdigest() == digest
+    registry = json.loads((tmp_path / "skills-registry.json").read_text(encoding="utf-8"))
+    entry = next(s for s in registry["skills"] if s["name"] == "cli-exact-skill")
+    assert entry["version"] == "0.1.0"
+    assert entry["domain"] == ["productivity"]
+    assert entry["invocation"] == "auto"
+    assert len(runner.calls) == 2

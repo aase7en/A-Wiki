@@ -14,8 +14,10 @@ Storage: one JSON per proposal; status in draft|ready|failed|approved.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+import tempfile
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -26,6 +28,18 @@ _FORBIDDEN_HINTS = ["sk-", "ghp_", "AKIA", "password ="]
 
 def _now() -> float:
     return round(time.time(), 3)
+
+
+def _artifact_identity(skill_md: str) -> dict:
+    """Content address for the exact UTF-8 bytes evaluated/applied."""
+    if not isinstance(skill_md, str):
+        raise ValueError("skill_md must be text")
+    payload = skill_md.encode("utf-8")
+    return {
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "size": len(payload),
+        "encoding": "utf-8",
+    }
 
 
 def _slug(name: str) -> str:
@@ -61,7 +75,7 @@ def _draft_skill_md(pid: str, description: str, when_to_use: str,
 name: {pid}
 description: "{description}"
 version: 0.1.0
-domain: [general]
+domain: [productivity]
 lifecycle_phase: none
 category: pipeline
 agents: [all]
@@ -174,7 +188,10 @@ def run_eval(pid: str, queue_dir: Path, brain_root: Path,
     prop = load(pid, queue_dir)
     scratch = Path(scratch); scratch.mkdir(parents=True, exist_ok=True)
     skill_path = scratch / f"{pid}-draft-SKILL.md"
-    skill_path.write_text(prop["skill_md"], encoding="utf-8")
+    artifact = _artifact_identity(prop["skill_md"])
+    # Exact bytes matter: Path.write_text() may translate LF -> CRLF on
+    # Windows, which would mean the evaluator saw a different artifact.
+    skill_path.write_bytes(prop["skill_md"].encode("utf-8"))
     suite_path = scratch / f"{pid}-suite.json"
     suite = _build_suite(prop)
     suite_path.write_text(json.dumps(suite, ensure_ascii=False, indent=2),
@@ -193,6 +210,7 @@ def run_eval(pid: str, queue_dir: Path, brain_root: Path,
                    "min_chars": case.get("min_chars")},
         "result": result,
         "passed": passed, "ran_at": _now(),
+        "artifact": artifact,
     }
     prop["status"] = "ready" if passed else "failed"
     _save(Path(queue_dir), prop)
@@ -201,21 +219,56 @@ def run_eval(pid: str, queue_dir: Path, brain_root: Path,
 
 def _default_apply(prop: dict) -> tuple[int, str]:
     import subprocess, sys
-    cmd = [sys.executable, "scripts/new-skill.py", prop["id"],
-           "--domain", "general", "--phase", "none", "--apply"]
-    proc = subprocess.run(cmd, capture_output=True, text=True,
-                          encoding="utf-8", errors="replace", timeout=300)
+
+    artifact = prop.get("eval", {}).get("artifact") or {}
+    expected_sha256 = artifact.get("sha256")
+    skill_md = prop.get("skill_md")
+    if not isinstance(skill_md, str) or not expected_sha256:
+        return 1, "missing evaluated artifact identity"
+    if _artifact_identity(skill_md) != artifact:
+        return 1, "current skill artifact does not match evaluated identity"
+
+    # NamedTemporaryFile cannot be re-opened reliably by a subprocess on
+    # Windows while still open, so use a short-lived directory and close the
+    # file before invoking new-skill.py.
+    with tempfile.TemporaryDirectory(prefix="awiki-skill-artifact-") as td:
+        artifact_path = Path(td) / "SKILL.md"
+        artifact_path.write_bytes(skill_md.encode("utf-8"))
+        cmd = [
+            sys.executable, "scripts/new-skill.py", prop["id"],
+            "--skill-file", str(artifact_path),
+            "--expected-sha256", expected_sha256,
+            "--apply",
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", timeout=300)
     return proc.returncode, (proc.stdout + proc.stderr)[-500:]
 
 
 def approve(pid: str, queue_dir: Path,
             apply_fn: Callable[[dict], tuple[int, str]] | None = None) -> int:
-    """The ONE button. ready proposals only; records provenance."""
+    """The ONE button. Only the exact evaluated artifact may be applied."""
     prop = load(pid, queue_dir)
-    if prop.get("status") != "ready":
+    eval_data = prop.get("eval") or {}
+    artifact = eval_data.get("artifact")
+    if (prop.get("status") != "ready" or eval_data.get("passed") is not True
+            or not isinstance(artifact, dict)):
         print(f"❌ {pid} is {prop.get('status')} — run_eval must pass first "
               f"(Iron Law #3: quality gate before apply)")
         return 1
+
+    try:
+        current_artifact = _artifact_identity(prop.get("skill_md"))
+    except ValueError:
+        current_artifact = {"sha256": None, "size": 0, "encoding": "utf-8"}
+    if current_artifact != artifact:
+        eval_data["stale"] = True
+        eval_data["current_artifact"] = current_artifact
+        prop["status"] = "draft"
+        _save(Path(queue_dir), prop)
+        print(f"❌ {pid} changed after eval — re-run eval before approve")
+        return 1
+
     apply_fn = apply_fn or _default_apply
     rc, log = apply_fn(prop)
     if rc != 0:
@@ -226,6 +279,7 @@ def approve(pid: str, queue_dir: Path,
         return rc or 1
     prop["status"] = "approved"
     prop["approved_at"] = _now()
+    prop["approved_artifact"] = dict(artifact)
     _save(Path(queue_dir), prop)
     print(f"✅ {pid} approved + applied — run regen-skill-surfaces + commit")
     return 0
