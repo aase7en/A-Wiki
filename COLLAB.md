@@ -45,7 +45,7 @@
 
 ## กติกา 8 ข้อ (ย่อ — ฉบับเต็มในไฟล์ protocol)
 
-1. Claim ก่อนทำ (commit+push แถว claim ก่อนเริ่ม); ห้ามแตะ scope ของ claim คนอื่น
+1. Claim before mutation via `python -m conductor claim ...` as the primary COLLAB row writer; if it succeeds, do not add a duplicate row manually. Commit+push the claim before touching the claimed scope; never touch another live claim scope.
 2. `git pull --ff-only` + build/test ผ่าน ก่อน push ทุกครั้ง
 3. Hotspot files แก้ได้ทีละ agent ตามตารางข้างบน
 4. ไฟล์เดียวกันห้ามทำพร้อมกัน — ดูตาราง claim ก่อน
@@ -57,4 +57,4 @@
 ## Pause → Resume (ติด limit / สลับ agent)
 
 หยุด: commit งานค้าง (build พัง → branch `wip/<id>`) → checkpoint + `⏸ paused` + อัปเดต claim → push
-รับ: user วาง prompt → `อ่าน COLLAB.md + docs/work-orders/<id>.md ทำต่อจาก Checkpoint ล่าสุด เฉพาะใน Lane/files ที่ระบุ เริ่มจาก branch ที่ระบุ เสร็จแล้ว merge main + set done`
+Receive: fetch origin -> read `BRAIN-ENTRY.md` -> `COLLAB.md` -> the SAME WO/checkpoint -> branch/PR. If direct invocation is unavailable, human relays only the WO-ID pointer; receiver resumes the assigned READY lane and does not ask the human to relay detailed results.

@@ -18,8 +18,8 @@
                                 + handoff ล่าสุดของงานนั้น
 3. เช็คชนกัน                  → git branch -a + ตาราง claim: ชื่องานใกล้เคียง = ห้ามเริ่มใหม่
                                 ให้ claim ต่อจากของเดิม (scope ผูกกับ chunk ไม่ผูกกับ agent)
-4. จอง claim                 → เพิ่มแถวใน COLLAB.md (chunk, agent, scope, branch)
-                                commit+push แถวนั้นก่อนเริ่มแก้โค้ดจริง
+4. Claim via conductor       -> run `python -m conductor claim ...` as the primary durable COLLAB writer
+                            -> if it succeeds, do not add a manual duplicate row; commit+push the claim before real code mutation
 5. ถ้างานเป็น migration phase → ทำตาม work order ของ phase นั้นเท่านั้น (ห้ามข้าม phase)
 ```
 
