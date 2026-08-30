@@ -243,3 +243,17 @@ def test_default_apply_hands_new_skill_exact_artifact_and_expected_hash(monkeypa
     assert captured["cmd"][captured["cmd"].index("--expected-sha256") + 1] == digest
     assert "--apply" in captured["cmd"]
     assert not captured["path"].exists(), "temporary handoff artifact must be cleaned after apply"
+
+
+def test_generated_pipeline_draft_uses_canonical_registry_domain(workdir, tmp_path):
+    import re
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+    from skills_registry import VALID_DOMAINS
+
+    prop = pipe.propose_from_page(_page(tmp_path, name="domain-valid-skill"), queue_dir=workdir)
+    match = re.search(r"^domain:\s*\[([^\]]+)\]", prop["skill_md"], re.MULTILINE)
+    assert match, "generated skill draft must declare a domain"
+    domains = [item.strip() for item in match.group(1).split(",") if item.strip()]
+    assert domains and all(domain in VALID_DOMAINS for domain in domains)
