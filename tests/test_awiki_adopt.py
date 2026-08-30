@@ -203,3 +203,166 @@ class TestAdoptE2EWithRealBrain:
         finally:
             proc.stdin.close()
             proc.kill()
+
+
+# R-FR-006/007 adversarial preservation + exactness coverage.
+def _provider_config_path(target, provider):
+    return {
+        "claude": target / ".claude" / "settings.json",
+        "codex": target / ".codex" / "hooks.json",
+        "zcode": target / ".zcode" / "config.json",
+    }[provider]
+
+
+def _provider_events(data, provider):
+    if provider == "zcode":
+        return data["hooks"]["events"]
+    return data["hooks"]
+
+
+def _hook_commands(events):
+    return [
+        h.get("command", "")
+        for blocks in events.values()
+        if isinstance(blocks, list)
+        for block in blocks
+        if isinstance(block, dict)
+        for h in block.get("hooks", [])
+        if isinstance(h, dict)
+    ]
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_adopt_preserves_foreign_provider_hooks_and_top_level_fields(
+        target, fake_brain, provider):
+    path = _provider_config_path(target, provider)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    foreign_block = {
+        "matcher": "ForeignTool",
+        "hooks": [{"type": "command", "command": "foreign-hook --keep", "timeout": 9}],
+        "foreignBlockField": "keep",
+    }
+    events = {"PreToolUse": [foreign_block], "ForeignEvent": [foreign_block]}
+    if provider == "zcode":
+        original = {
+            "foreignTop": {"keep": True},
+            "hooks": {"enabled": False, "foreignHooksKey": "keep", "events": events},
+        }
+    else:
+        original = {"foreignTop": {"keep": True}, "hooks": events}
+    path.write_text(json.dumps(original, ensure_ascii=False), encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert data["foreignTop"] == {"keep": True}
+    if provider == "zcode":
+        assert data["hooks"]["foreignHooksKey"] == "keep"
+        assert data["hooks"]["enabled"] is True
+    installed_events = _provider_events(data, provider)
+    assert installed_events["ForeignEvent"][0] == foreign_block
+    assert any(c == "foreign-hook --keep" for c in _hook_commands(installed_events))
+    assert sum("hooks_runner.py" in c for c in _hook_commands(installed_events)) == 7
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_re_adopt_replaces_stale_awiki_hooks_but_keeps_mixed_foreign_hook(
+        target, fake_brain, provider):
+    path = _provider_config_path(target, provider)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stale = {
+        "type": "command",
+        "command": '"python" "old-brain/scripts/hooks_runner.py" --provider wrong --event PreToolUse',
+        "timeout": 999,
+    }
+    foreign = {"type": "command", "command": "foreign-hook --keep", "timeout": 5}
+    mixed = {"matcher": "Edit", "hooks": [foreign, stale]}
+    events = {"PreToolUse": [mixed]}
+    data = ({"hooks": {"events": events, "foreignHooksKey": "keep"}}
+            if provider == "zcode" else {"hooks": events})
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    installed = json.loads(path.read_text(encoding="utf-8"))
+    commands = _hook_commands(_provider_events(installed, provider))
+    assert "foreign-hook --keep" in commands
+    assert all("old-brain" not in c for c in commands)
+    assert sum("hooks_runner.py" in c for c in commands) == 7
+    before = path.read_bytes()
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_adopt_check_rejects_tampered_awiki_hook_wiring(target, fake_brain, provider):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = _provider_config_path(target, provider)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    events = _provider_events(data, provider)
+    for blocks in events.values():
+        for block in blocks:
+            for hook in block.get("hooks", []):
+                if "hooks_runner.py" in hook.get("command", ""):
+                    hook["command"] += " --tampered"
+                    path.write_text(json.dumps(data), encoding="utf-8")
+                    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
+                    return
+    raise AssertionError("expected an A-Wiki hook")
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_adopt_check_allows_foreign_hooks_added_after_adopt(target, fake_brain, provider):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = _provider_config_path(target, provider)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    events = _provider_events(data, provider)
+    events["ForeignEvent"] = [{
+        "matcher": "X",
+        "hooks": [{"type": "command", "command": "foreign-added", "timeout": 3}],
+    }]
+    data["foreignTop"] = "allowed"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 0
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex", "zcode"])
+def test_adopt_invalid_provider_json_fails_closed_and_preserves_bytes(
+        target, fake_brain, provider):
+    path = _provider_config_path(target, provider)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    original = b'{"hooks":'
+    path.write_bytes(original)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("provider", ["claude", "codex"])
+def test_adopt_wrong_hooks_container_fails_closed_and_preserves_bytes(
+        target, fake_brain, provider):
+    path = _provider_config_path(target, provider)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    original = json.dumps({"hooks": ["foreign"]}).encode()
+    path.write_bytes(original)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert path.read_bytes() == original
+
+
+def test_adopt_wrong_zcode_events_container_fails_closed_and_preserves_bytes(target, fake_brain):
+    path = _provider_config_path(target, "zcode")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    original = json.dumps({"hooks": {"events": ["foreign"]}}).encode()
+    path.write_bytes(original)
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 1
+    assert path.read_bytes() == original
+
+
+def test_adopt_check_requires_exact_awiki_mcp_entry_but_allows_foreign_servers(target, fake_brain):
+    assert adopt.main([str(target), "--brain", str(fake_brain)]) == 0
+    path = target / ".mcp.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["mcpServers"]["foreign"] = {"command": "keep"}
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 0
+
+    data["mcpServers"]["awiki"]["args"] = ["wrong-server.py"]
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert adopt.main([str(target), "--brain", str(fake_brain), "--check"]) == 1
