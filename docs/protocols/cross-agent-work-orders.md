@@ -70,3 +70,28 @@ AGENTS.md/CLAUDE.md ของ repo นั้น (ถ้ามี) — จาก�
 - **ไฟล์นี้** = ประสานงาน **หลาย agent ระดับ repo** (ทำพร้อมกัน + ส่งมือข้าม limit) — ใช้คู่กันได้: checkpoint ใน work order คือ handoff ฉบับผูกกับ chunk
 
 *Skill: `cross-agent-work-orders` (registry) · Template: `templates/work-orders/` · ผ่าน Brain Improvement Gate: เบา (docs+script), cross-platform, public-safe, reusable, ทำให้ agent ทุกตัวทำงานร่วมกันได้จริง*
+
+## No-human-relay contract - repository as the message bus
+
+The sending agent updates the SAME work order with `status / branch / HEAD / tests / evidence / blockers / next safe action`, then commits and pushes. The receiving agent runs `git fetch origin` and reads `BRAIN-ENTRY.md -> COLLAB.md -> WO/checkpoint -> branch/PR`. Chat is transport/pointer only, never execution SSoT.
+
+If direct agent-to-agent invocation is unavailable, the human sends only this bounded pointer:
+
+```text
+A-Wiki only. Read BRAIN-ENTRY.md -> COLLAB.md -> docs/work-orders/<WO-ID>.md.
+Fetch origin. Resume only the assigned READY lane; claim via conductor; obey scope.
+Run the required loop/tests. Update the SAME WO checkpoint with HEAD/tests/evidence/next action, commit+push, then stop.
+Do not ask the human to relay your result to another agent.
+```
+
+Before new work search `goal/WO -> durable claim -> branch/worktree -> PR -> implementation`. Found means `RESUME/RECONCILE`; only absent means CREATE. Local `.tmp/` claims are acceleration, not cross-machine authority. Prefer `python -m conductor claim ...`; after it succeeds, agents must not add a duplicate COLLAB row manually.
+
+### Capability-first routing
+
+Route by risk and capability before vendor/model name:
+
+- `deterministic-executor`: repo archaeology, bounded implementation, regression/test expansion, mechanical migration, evidence capture.
+- `strong-reasoner`: complex root cause, cross-file correctness, ambiguous integration, deep debug.
+- `strongest-independent`: security/trust boundary, architecture/protocol, high blast radius, final exact-SHA critic.
+
+Before important dispatch, check current task-relevant benchmark/capability evidence and record source/date/reason briefly in the WO/checkpoint. Vendor benchmarks are routing signals, not proof of universal superiority. Lanes bind to scope + capability, not permanently to one vendor.
