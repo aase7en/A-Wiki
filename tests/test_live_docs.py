@@ -311,3 +311,44 @@ def test_cache_directory_failure_does_not_break_live_fetch(tmp_path, monkeypatch
     result = fetch_doc("https://example.com/docs.md", tmp_path, http_get=_ok("body"))
     assert result["source"] == "live"
     assert result["content"] == "body"
+
+
+
+def test_legacy_cache_without_security_policy_is_not_trusted(tmp_path):
+    import live_docs
+
+    url = "https://example.com/docs.md"
+    cp = live_docs._cache_path(url, tmp_path)
+    cp.parent.mkdir(parents=True, exist_ok=True)
+    cp.write_text(json.dumps({
+        "url": url,
+        "content": "legacy-untrusted",
+        "fetched_at": time.time(),
+    }), encoding="utf-8")
+    calls = []
+
+    def get(target, timeout):
+        calls.append(target)
+        return "fresh-secure"
+
+    result = fetch_doc(url, tmp_path, http_get=get)
+    assert result["source"] == "live"
+    assert result["content"] == "fresh-secure"
+    assert calls == [url]
+
+
+def test_cache_payload_url_must_match_requested_url(tmp_path):
+    import live_docs
+
+    url = "https://example.com/docs.md"
+    cp = live_docs._cache_path(url, tmp_path)
+    cp.parent.mkdir(parents=True, exist_ok=True)
+    cp.write_text(json.dumps({
+        "policy": "public-https-pinned-v1",
+        "url": "https://other.example/docs.md",
+        "content": "wrong-url-cache",
+        "fetched_at": time.time(),
+    }), encoding="utf-8")
+    result = fetch_doc(url, tmp_path, http_get=_ok("fresh-secure"))
+    assert result["source"] == "live"
+    assert result["content"] == "fresh-secure"
