@@ -18,7 +18,7 @@
 
 ## กติกา 8 ข้อ (Rules — สำเนาลง COLLAB.md ของทุก repo)
 
-1. **Claim ก่อนทำ**: เพิ่มแถวในตาราง claim (chunk, agent, วันที่, scope ไฟล์) → commit+push → ค่อยเริ่ม; เสร็จแล้วปลด claim ใน commit ของ chunk นั้นเอง — ห้ามแตะไฟล์ใน scope ของ claim คนอื่น
+1. **Claim before mutation**: use `python -m conductor claim ...` as the primary writer of the durable COLLAB row (chunk, agent, date, scope, branch). Commit+push that claim before real work. If the command succeeds, do not add another row manually. Release/update the same claim when the chunk ends; never touch another live claim scope.
 2. **Pull ก่อน commit เสมอ** (`git pull --ff-only`; diverge → rebase commit ตัวเอง) + build/test ของ repo ต้องผ่านก่อน push
 3. **Hotspot files** ประกาศไว้ใน COLLAB.md (เช่น route file, package.json, entry html) — แก้ได้ทีละ agent ตามที่ระบุ
 4. **ไฟล์เดียวกันห้ามทำพร้อมกัน** — ดูตาราง claim ก่อนเริ่มเสมอ
@@ -31,12 +31,10 @@
 
 **ฝั่งหยุด**: (1) build ผ่าน → commit เข้า branch ปกติ; ไม่ผ่าน → commit เข้า `wip/<id>` — **ห้ามทิ้ง uncommitted เด็ดขาด** (2) append checkpoint + Status `⏸ paused` + อัปเดตตาราง claim → push
 
-**ฝั่งรับ** — user วาง resume prompt มาตรฐาน (ใช้ได้กับทุก agent):
+**Receiver** ? recover from repo state first. If direct invocation is unavailable, the human sends only the bounded WO pointer shown in the No-human-relay contract below.
 
-```
-อ่าน COLLAB.md + docs/work-orders/<id>.md ของ repo นี้
-ทำต่อจาก Checkpoint ล่าสุด เฉพาะใน Lane/files ที่ระบุ
-เริ่มจาก branch ที่ work order ระบุ; เสร็จแล้ว merge เข้า main + set done
+```text
+Read BRAIN-ENTRY.md + COLLAB.md + docs/work-orders/<id>.md; fetch origin; resume the assigned READY lane; checkpoint+push when done.
 ```
 
 ## Model routing (ประหยัด credit — ผูกกับ Cost-First Pyramid)
