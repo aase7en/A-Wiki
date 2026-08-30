@@ -36,6 +36,7 @@
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
 | WO-RFR-20260824 M1 baseline + cross-agent no-human-relay refresh | ChatGPT-GPT-5.6-Sol | 2026-08-30 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; docs/protocols/cross-agent-work-orders.md; docs/protocols/agent-continuity-gate.md; docs/migration/awiki-vnext-plan.md | docs/wo-rfr-m1-reconcile-20260830 |
+| WO-RFR-20260824 M2 R-FR-002 live-docs trust boundary | ChatGPT-GPT-5.6-Sol | 2026-08-30 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/lib/live_docs.py; tests/test_live_docs.py | fix/wo-rfr-m2-live-docs |
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
