@@ -355,3 +355,100 @@ def test_foldback_idempotent(tmp_path):
     first = plan.read_text(encoding="utf-8")
     assert fb.foldback(plan, ledger) == 0
     assert plan.read_text(encoding="utf-8") == first
+
+# ── R-FR-004/005 adversarial fold-back integrity ──────────────────────
+def _decision_entry(*, ts, summary, files=None, tags=None, session_id="s"):
+    return {"ts": ts, "type": "decision", "session_id": session_id,
+            "summary": summary, "files": files or [], "tags": tags or []}
+
+
+def test_foldback_matches_structural_files_without_summary_path(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="changed implementation", files=["src/app.py"])])
+    assert fb.foldback(plan, ledger) == 1
+    assert "changed implementation" in plan.read_text(encoding="utf-8")
+
+
+def test_foldback_files_override_misleading_summary(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="mentions src/app.py but did not touch it",
+        files=["src/other.py"])])
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_normalizes_windows_file_separators(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="windows path", files=[r"src\app.py"])])
+    assert fb.foldback(plan, ledger) == 1
+
+
+def test_foldback_does_not_match_similar_prefix_path(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="backup only", files=["src/app.py.bak"])])
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_invalid_structural_file_does_not_fall_back_to_summary(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    unsafe = ".." + "/src/app.py"
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="mentions src/app.py", files=[unsafe])])
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_legacy_entry_without_files_keeps_compatibility(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="legacy decision for src/app.py", files=[])])
+    assert fb.foldback(plan, ledger) == 1
+
+
+def test_foldback_escapes_untrusted_markdown_and_newlines(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    summary = "safe\n## injected\n[click](https://example.invalid)\n```boom```"
+    session = "sess]\n## session-injected"
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary=summary, files=["src/app.py"], session_id=session)])
+    assert fb.foldback(plan, ledger) == 1
+    out = plan.read_text(encoding="utf-8")
+    assert "\n## injected" not in out
+    assert "\n## session-injected" not in out
+    assert "\n```boom```" not in out
+    assert "[click](https://example.invalid)" not in out
+    assert "awiki-foldback:" in out
+
+
+def test_foldback_same_timestamp_distinct_entries_do_not_collide(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    now = time.time()
+    ledger = _ledger(tmp_path, [
+        _decision_entry(ts=now, summary="first", files=["src/app.py"], session_id="a"),
+        _decision_entry(ts=now, summary="second", files=["src/app.py"], session_id="b"),
+    ])
+    assert fb.foldback(plan, ledger) == 2
+    out = plan.read_text(encoding="utf-8")
+    assert out.count("awiki-foldback:") == 2
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_respects_legacy_ts_marker(tmp_path):
+    now = time.time()
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN + f"\n{fb.MARKER}\n\n- old entry (ts={now})\n", encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=now, summary="legacy decision for src/app.py", files=[])])
+    assert fb.foldback(plan, ledger) == 0
+    assert plan.read_text(encoding="utf-8").count(f"(ts={now})") == 1
+
