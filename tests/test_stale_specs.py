@@ -1,8 +1,8 @@
 """Stale-spec gate + plan fold-back — Slice D (community patterns).
 
-1) check-stale-specs: a plan/ADR with frontmatter `scope:` owns files;
-   if a scoped file's LAST COMMIT is newer than the plan's last commit,
-   the plan is stale -> CI red (unless `plan-frozen: true`).
+1) check-stale-specs: a plan/ADR with frontmatter `scope:` owns exact paths;
+   any scoped-path change reachable after the spec commit makes it stale,
+   and unknown/shallow Git history fails closed (unless `plan-frozen: true`).
 2) plan_foldback: session-end — today's ledger decisions touching a
    plan's scope are folded back into the plan's Deviations section
    (idempotent), so chat memory never stays the only record.
@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import importlib.util as ilu
 import json
+import os
+import re
 import subprocess
 import sys
 import time
@@ -52,7 +54,8 @@ def _sleep_commit_gap():
 
 def test_fresh_plan_passes(tmp_path):
     r = _git_repo(tmp_path)
-    plan = r / "PLAN.md"
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "fresh.md"
     plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n",
                     encoding="utf-8")
     src = r / "src" / "app.py"; src.parent.mkdir()
@@ -80,7 +83,8 @@ def test_scoped_file_newer_than_plan_fails(tmp_path):
 
 def test_frozen_plan_exempt(tmp_path):
     r = _git_repo(tmp_path)
-    plan = r / "PLAN.md"
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "frozen.md"
     plan.write_text("---\nplan-frozen: true\nscope:\n  - src/app.py\n---\n# plan\n",
                     encoding="utf-8")
     src = r / "src" / "app.py"; src.parent.mkdir()
@@ -90,6 +94,224 @@ def test_frozen_plan_exempt(tmp_path):
     src.write_text("x = 2\n", encoding="utf-8")
     _commit(r, "later change", src)
     assert stale.check_repo(r) == []
+
+
+def _commit_with_date(r: Path, msg: str, when: str):
+    env = os.environ.copy()
+    env["GIT_AUTHOR_DATE"] = when
+    env["GIT_COMMITTER_DATE"] = when
+    subprocess.run(["git", "add", "-A"], cwd=r, check=True,
+                   capture_output=True, env=env)
+    subprocess.run(["git", "commit", "-q", "-m", msg], cwd=r,
+                   check=True, capture_output=True, env=env)
+
+
+def test_clock_skew_does_not_hide_scoped_change(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "clock.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit_with_date(r, "baseline", "2030-01-01T00:00:00+0000")
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit_with_date(r, "later topology, older clock", "2000-01-01T00:00:00+0000")
+    problems = stale.check_repo(r)
+    assert problems and any("clock.md" in p for p in problems), problems
+
+
+def test_shallow_history_fails_closed(tmp_path):
+    source_parent = tmp_path / "source-parent"; source_parent.mkdir()
+    r = _git_repo(source_parent)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "shallow.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "plan and src")
+    (r / "README.md").write_text("tip\n", encoding="utf-8")
+    _commit(r, "unrelated tip")
+    clone = tmp_path / "shallow-clone"
+    subprocess.run(["git", "clone", "--depth", "1", "-q", r.as_uri(), str(clone)],
+                   check=True, capture_output=True, timeout=60)
+    problems = stale.check_repo(clone)
+    assert problems and any("shallow" in p.lower() for p in problems), problems
+
+
+def test_scope_path_normalizes_cross_platform_separators():
+    assert stale._normalize_scope_path(r"src\app.py") == "src/app.py"
+    assert stale._normalize_scope_path("./src/app.py") == "src/app.py"
+
+
+@pytest.mark.parametrize("raw", [
+    "../src/app.py",
+    "src/../app.py",
+    "/src/app.py",
+    "C:" + "/src/app.py",
+    "C:" + "\\" + "src\\app.py",
+    "\\" * 2 + "server\\share\\app.py",
+])
+def test_scope_path_rejects_escape_or_absolute_forms(raw):
+    with pytest.raises(ValueError):
+        stale._normalize_scope_path(raw)
+
+
+def test_missing_scoped_path_history_fails_closed(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "missing.md"
+    plan.write_text("---\nscope:\n  - src/missing.py\n---\n# plan\n", encoding="utf-8")
+    _commit(r, "plan references missing path")
+    problems = stale.check_repo(r)
+    assert problems and any("src/missing.py" in p for p in problems), problems
+
+
+def test_deleted_scoped_file_after_plan_is_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "delete.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "plan and src")
+    subprocess.run(["git", "rm", "-q", "src/app.py"], cwd=r, check=True,
+                   capture_output=True)
+    _commit(r, "delete scoped file")
+    problems = stale.check_repo(r)
+    assert problems and any("delete.md" in p for p in problems), problems
+
+
+def test_scope_history_uses_literal_pathspecs(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "literal.md"
+    src_dir = r / "src"; src_dir.mkdir()
+    literal = src_dir / "[ab].py"
+    other = src_dir / "a.py"
+    plan.write_text("---\nscope:\n  - src/[ab].py\n---\n# plan\n", encoding="utf-8")
+    literal.write_text("literal = 1\n", encoding="utf-8")
+    other.write_text("other = 1\n", encoding="utf-8")
+    _commit_with_date(r, "baseline", "2000-01-01T00:00:00+0000")
+    other.write_text("other = 2\n", encoding="utf-8")
+    _commit_with_date(r, "change only glob lookalike", "2030-01-01T00:00:00+0000")
+    assert stale.check_repo(r) == []
+
+
+def test_non_git_history_fails_closed(tmp_path):
+    r = tmp_path / "not-a-repo"
+    (r / "docs" / "plans").mkdir(parents=True)
+    (r / "src").mkdir()
+    (r / "docs" / "plans" / "nogit.md").write_text(
+        "---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    (r / "src" / "app.py").write_text("x = 1\n", encoding="utf-8")
+    problems = stale.check_repo(r)
+    assert problems and any("history" in p.lower() or "git" in p.lower() for p in problems), problems
+
+
+def test_core_ci_fetches_full_history_for_stale_spec_gate():
+    text = (REPO_ROOT / ".github" / "workflows" / "ci-core.yml").read_text(encoding="utf-8")
+    assert re.search(
+        r"(?m)^      - name: Checkout\n"
+        r"        uses: actions/checkout@v4\n"
+        r"        with:\n"
+        r"          fetch-depth: 0$",
+        text,
+    ), "Core verification checkout must fetch full Git history for stale-spec semantics"
+
+
+def test_spec_update_after_scoped_change_restores_freshness(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "updated.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan v1\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "change scoped file")
+    assert stale.check_repo(r), "target change after spec must be stale before spec refresh"
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan v2 covers x=2\n", encoding="utf-8")
+    _commit(r, "refresh spec")
+    assert stale.check_repo(r) == []
+
+
+def test_rename_of_scoped_path_after_spec_is_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "rename.md"
+    src = r / "src" / "old.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/old.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    subprocess.run(["git", "mv", "src/old.py", "src/new.py"], cwd=r,
+                   check=True, capture_output=True)
+    _commit(r, "rename scoped file")
+    problems = stale.check_repo(r)
+    assert problems and any("rename.md" in p for p in problems), problems
+
+
+def test_change_then_revert_after_spec_is_still_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "revert.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "temporary scoped change")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "revert scoped change")
+    problems = stale.check_repo(r)
+    assert problems and any("revert.md" in p for p in problems), problems
+
+
+def test_merged_side_branch_scoped_change_is_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "merge.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    initial = subprocess.run(
+        ["git", "branch", "--show-current"], cwd=r, check=True, capture_output=True,
+        text=True, encoding="utf-8", timeout=60,
+    ).stdout.strip()
+    assert initial
+    subprocess.run(["git", "checkout", "-q", "-b", "side"], cwd=r, check=True)
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "side scoped change")
+    subprocess.run(["git", "checkout", "-q", initial], cwd=r, check=True)
+    (r / "README.md").write_text("main\n", encoding="utf-8")
+    _commit(r, "main unrelated")
+    subprocess.run(["git", "merge", "--no-ff", "-q", "side", "-m", "merge side"],
+                   cwd=r, check=True, capture_output=True)
+    problems = stale.check_repo(r)
+    assert problems and any("merge.md" in p for p in problems), problems
+
+
+def test_shallow_cli_exits_nonzero_and_names_history_problem(tmp_path):
+    source_parent = tmp_path / "cli-source-parent"; source_parent.mkdir()
+    r = _git_repo(source_parent)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "cli-shallow.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    (r / "README.md").write_text("tip\n", encoding="utf-8")
+    _commit(r, "tip")
+    clone = tmp_path / "cli-shallow"
+    subprocess.run(["git", "clone", "--depth", "1", "-q", r.as_uri(), str(clone)],
+                   check=True, capture_output=True, timeout=60)
+    proc = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "check-stale-specs.py"),
+         "--root", str(clone)], capture_output=True, text=True,
+        encoding="utf-8", errors="replace", timeout=60,
+    )
+    assert proc.returncode == 1, proc.stdout + proc.stderr
+    assert "shallow" in proc.stdout.lower(), proc.stdout
 
 
 # ── fold-back ─────────────────────────────────────────────────────────
