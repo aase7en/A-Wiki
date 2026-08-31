@@ -12,12 +12,10 @@ Hook รับ input JSON ผ่าน stdin (เหมือน hooks อื่
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
@@ -208,7 +206,7 @@ def _git(tmp_path: Path) -> Path:
         return subprocess.run(["git", *args], cwd=repo, check=True,
                               capture_output=True, text=True, encoding="utf-8")
     run("init", "-q")
-    run("config", "user.email", "test@example.invalid")
+    run("config", "user.email", "test.invalid")
     run("config", "user.name", "test")
     return repo
 
@@ -280,3 +278,7 @@ def test_hook_main_persists_real_commit_files(monkeypatch, tmp_path):
     entry = ml.MemoryLedger(ledger_path).recent(limit=1)[0]
     assert entry["files"] == ["src/app.py"]
 
+
+def test_changed_files_path_normalizer_rejects_control_characters():
+    assert mc._normalize_repo_path("src/line\nbreak.py") is None
+    assert mc._normalize_repo_path("src/tab\tbreak.py") is None

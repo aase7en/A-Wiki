@@ -2,17 +2,20 @@
 """plan_foldback.py — Slice D2 Stop hook: fold today's decisions back
 into the plans that own the touched files.
 
-Community pattern ("kill stale specs"): at session end, ledger decisions
-whose summary/tags reference a path inside a plan's `scope:` are
-appended to that plan's "## Deviations (auto-folded)" section — so the
-plan file, not the chat log, stays the SSoT. Idempotent per entry ts.
+Community pattern ("kill stale specs"): at session end, recent ledger
+decisions whose normalized changed-file evidence intersects a plan's exact
+`scope:` are appended to "## Deviations (auto-folded)". Legacy/manual
+entries without structural file evidence retain a bounded prose fallback.
+Inserted Markdown is escaped and idempotent by a stable SHA-256 entry ID.
 
 Stdin: Stop-hook payload (session_id used only for logging).
 Exit 0 always (soft observe-only; registry classification: soft).
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import math
 import re
 import sys
 import time
@@ -47,20 +50,94 @@ def _today_entries(ledger: Path) -> list[dict]:
         return []
     out = []
     cutoff = time.time() - 24 * 3600
-    for line in ledger.read_text(encoding="utf-8").splitlines():
+    for line in ledger.read_text(encoding="utf-8", errors="replace").splitlines():
         try:
             e = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if e.get("type") == "decision" and float(e.get("ts", 0)) >= cutoff:
+        if not isinstance(e, dict) or e.get("type") != "decision":
+            continue
+        try:
+            ts_value = float(e.get("ts", 0))
+        except (TypeError, ValueError):
+            continue
+        if not math.isfinite(ts_value):
+            continue
+        try:
+            time.localtime(ts_value)
+        except (OverflowError, OSError, ValueError):
+            continue
+        if ts_value >= cutoff:
             out.append(e)
     return out
 
 
+def _normalize_repo_path(value: object) -> str | None:
+    """Normalize one exact repo-relative path; reject escapes/absolutes."""
+    if not isinstance(value, str):
+        return None
+    raw = value.strip().replace("\\", "/")
+    while raw.startswith("./"):
+        raw = raw[2:]
+    if (not raw or raw.startswith("/") or raw.startswith("//")
+            or re.match(r"^[A-Za-z]:", raw)):
+        return None
+    parts = []
+    for part in raw.split("/"):
+        if part in ("", "."):
+            continue
+        if part == ".." or any(ord(ch) < 32 for ch in part):
+            return None
+        parts.append(part)
+    return "/".join(parts) or None
+
+
 def _touches(entry: dict, scope: list[str]) -> bool:
-    hay = " ".join([entry.get("summary", "")]
+    normalized_scope = {
+        value for raw in scope
+        if (value := _normalize_repo_path(raw)) is not None
+    }
+    if not normalized_scope:
+        return False
+
+    files = entry.get("files")
+    if isinstance(files, list) and files:
+        normalized_files = {
+            value for raw in files
+            if (value := _normalize_repo_path(raw)) is not None
+        }
+        # Structural evidence is authoritative. Invalid/non-matching evidence
+        # must never fall back to a prose mention and create a false positive.
+        return bool(normalized_scope & normalized_files)
+
+    tags = [str(t) for t in entry.get("tags", [])]
+    if "commit" in tags:
+        # A captured commit with missing Git evidence must fail closed. Falling
+        # back to its prose subject would recreate R-FR-004 false matches.
+        return False
+
+    # Backward compatibility for legacy/manual non-commit decisions.
+    hay = " ".join([str(entry.get("summary", ""))]
                    + [str(t) for t in entry.get("tags", [])])
-    return any(s and s in hay for s in scope)
+    return any(s in hay for s in normalized_scope)
+
+
+def _markdown_inline(value: object) -> str:
+    """Collapse untrusted ledger text to one escaped Markdown-safe line."""
+    out = re.sub(r"\s+", " ", str(value) if value is not None else "").strip()
+    out = out.replace("\\", "\\\\")
+    for char in ("`", "*", "_", "[", "]", "(", ")", "<", ">", "#", "!", "|"):
+        out = out.replace(char, "\\" + char)
+    return out
+
+
+def _entry_id(entry: dict) -> str:
+    """Collision-resistant stable identity over the persisted ledger entry."""
+    canonical = json.dumps(
+        entry, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+        default=str,
+    ).encode("utf-8")
+    return hashlib.sha256(canonical).hexdigest()
 
 
 def foldback(plan: Path, ledger: Path) -> int:
@@ -75,16 +152,30 @@ def foldback(plan: Path, ledger: Path) -> int:
         return 0
 
     existing = text
+    original_existing = text  # legacy ts markers only count before this run
     if MARKER not in existing:
         existing = existing.rstrip() + f"\n\n{MARKER}\n\n"
     added = 0
     for e in entries:
-        stamp = f"ts={e.get('ts')}"
-        if stamp in existing:  # idempotent per entry
+        raw_ts = e.get("ts", 0)
+        legacy_stamp = f"ts={raw_ts}"
+        legacy_marker = f"({legacy_stamp})"
+        entry_id = _entry_id(e)
+        id_marker = f"<!-- awiki-foldback:{entry_id} -->"
+        if id_marker in existing:
             continue
-        date = time.strftime("%Y-%m-%d %H:%M", time.localtime(e.get("ts", 0)))
-        line = (f"- {date} [{e.get('session_id', '?')}] "
-                f"{e.get('summary', '').strip()} ({stamp})")
+        if legacy_marker in original_existing:
+            # Preserve idempotency for lines produced by the pre-hash format.
+            continue
+        try:
+            ts_value = float(raw_ts)
+        except (TypeError, ValueError):
+            ts_value = 0.0
+        date = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts_value))
+        session = _markdown_inline(e.get("session_id", "?")) or "?"
+        summary = _markdown_inline(e.get("summary", ""))
+        line = (f"- {date} [{session}] {summary} ({legacy_stamp}) "
+                f"{id_marker}")
         existing = existing.rstrip() + "\n" + line
         added += 1
     if added:

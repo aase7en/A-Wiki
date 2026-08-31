@@ -452,3 +452,64 @@ def test_foldback_respects_legacy_ts_marker(tmp_path):
     assert fb.foldback(plan, ledger) == 0
     assert plan.read_text(encoding="utf-8").count(f"(ts={now})") == 1
 
+
+def test_foldback_legacy_timestamp_match_is_not_prefix(tmp_path):
+    now = time.time()
+    plan = tmp_path / "PLAN.md"
+    # A different legacy timestamp merely starts with the same characters.
+    plan.write_text(PLAN + f"\n{fb.MARKER}\n\n- other (ts={now}0)\n", encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=now, summary="legacy decision for src/app.py", files=[])])
+    assert fb.foldback(plan, ledger) == 1
+    out = plan.read_text(encoding="utf-8")
+    assert f"(ts={now})" in out
+    assert "awiki-foldback:" in out
+
+
+def test_foldback_invalid_non_string_files_do_not_fall_back_to_summary(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    entry = _decision_entry(ts=time.time(), summary="mentions src/app.py", files=[123, None])
+    ledger = _ledger(tmp_path, [entry])
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_skips_malformed_or_nonfinite_ledger_entries(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    now = time.time()
+    ledger = tmp_path / "ledger.jsonl"
+    lines = [
+        "[]",
+        json.dumps({"type": "decision", "ts": "not-a-number", "summary": "bad"}),
+        json.dumps({"type": "decision", "ts": float("inf"), "summary": "bad inf"}),
+        json.dumps(_decision_entry(ts=now, summary="good", files=["src/app.py"])),
+    ]
+    ledger.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    assert fb.foldback(plan, ledger) == 1
+    out = plan.read_text(encoding="utf-8")
+    assert "good" in out
+    assert "bad inf" not in out
+    assert "not-a-number" not in out
+
+def test_foldback_commit_without_file_evidence_fails_closed(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    ledger = _ledger(tmp_path, [_decision_entry(
+        ts=time.time(), summary="commit mentions src/app.py", files=[], tags=["commit"])])
+    assert fb.foldback(plan, ledger) == 0
+
+
+def test_foldback_skips_unrepresentable_timestamp(tmp_path):
+    plan = tmp_path / "PLAN.md"
+    plan.write_text(PLAN, encoding="utf-8")
+    now = time.time()
+    ledger = _ledger(tmp_path, [
+        _decision_entry(ts=1e308, summary="bad future", files=["src/app.py"]),
+        _decision_entry(ts=now, summary="good", files=["src/app.py"]),
+    ])
+    assert fb.foldback(plan, ledger) == 1
+    out = plan.read_text(encoding="utf-8")
+    assert "good" in out
+    assert "bad future" not in out
+

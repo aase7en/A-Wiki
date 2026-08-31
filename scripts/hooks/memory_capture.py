@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -168,12 +169,82 @@ def replay_for_session_start(
     return "\n".join(lines)
 
 
-def _detect_changed_files_from_command(command: str) -> list[str]:
-    """Best-effort: we can't reliably know files changed in a hook without
-    a git call. Return [] — memory_ledger entries can be enriched later by
-    a separate richer capture. Keeping this dependency-free.
+def _commit_oid_from_output(hook_input: dict) -> str | None:
+    """Extract the commit OID printed by a successful ``git commit``.
+
+    Git can decorate root commits inside the bracket (``(root-commit)``), so
+    take the final hex token before ``]`` instead of assuming a fixed layout.
+    No printed OID means no structural evidence: callers must not guess HEAD.
     """
-    return []
+    if not isinstance(hook_input, dict):
+        return None
+    response = hook_input.get("tool_response") or {}
+    output = response.get("output", "") if isinstance(response, dict) else ""
+    if not isinstance(output, str):
+        return None
+    for line in output.splitlines():
+        m = re.match(r"^\[([^\]]+)\]\s+.+$", line)
+        if not m:
+            continue
+        tokens = m.group(1).split()
+        if tokens and re.fullmatch(r"[0-9a-fA-F]{4,64}", tokens[-1]):
+            return tokens[-1]
+    return None
+
+
+def _normalize_repo_path(value: object) -> str | None:
+    """Return a canonical repo-relative POSIX path, or None if unsafe."""
+    if not isinstance(value, str):
+        return None
+    raw = value.strip().replace("\\", "/")
+    while raw.startswith("./"):
+        raw = raw[2:]
+    if (not raw or raw.startswith("/") or raw.startswith("//")
+            or re.match(r"^[A-Za-z]:", raw)):
+        return None
+    parts = []
+    for part in raw.split("/"):
+        if part in ("", "."):
+            continue
+        if part == ".." or any(ord(ch) < 32 for ch in part):
+            return None
+        parts.append(part)
+    return "/".join(parts) or None
+
+
+def _changed_files_for_commit(
+    hook_input: dict,
+    *,
+    repo_root: Path | None = None,
+) -> list[str]:
+    """Read changed paths from the exact commit proven by hook output.
+
+    ``--no-renames`` keeps both old and new paths for renames, ``--root``
+    covers first commits, ``-m`` covers merge-parent diffs, and ``-z`` makes
+    raw Git path records unambiguous before repo-path safety normalization.
+    Control-character/escaping paths are rejected. This hook is soft: unavailable
+    Git evidence degrades to [] rather than blocking the session.
+    """
+    oid = _commit_oid_from_output(hook_input)
+    if not oid:
+        return []
+    root = Path(repo_root) if repo_root is not None else Path.cwd()
+    try:
+        proc = subprocess.run(
+            ["git", "diff-tree", "--root", "-m", "--no-renames",
+             "--no-commit-id", "--name-only", "-r", "-z", oid],
+            cwd=root, capture_output=True, text=True, encoding="utf-8",
+            errors="replace", timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return []
+    if proc.returncode != 0:
+        return []
+    normalized = {
+        path for raw in proc.stdout.split("\0")
+        if raw and (path := _normalize_repo_path(raw)) is not None
+    }
+    return sorted(normalized)
 
 
 def main() -> int:
@@ -198,8 +269,7 @@ def main() -> int:
     except Exception:
         msg = None
     if msg:
-        command = (hook_input.get("tool_input") or {}).get("command", "")
-        files = _detect_changed_files_from_command(command) if isinstance(command, str) else []
+        files = _changed_files_for_commit(hook_input)
         capture_commit(
             ledger_path=LEDGER_PATH,
             session_id=session_id,
