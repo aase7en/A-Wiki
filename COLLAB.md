@@ -35,11 +35,10 @@
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
-| WO-RFR-20260824 M5 R-FR-003 stale-spec semantics | ChatGPT-GPT-5.6-Sol | 2026-08-31 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; scripts/check-stale-specs.py; tests/test_stale_specs.py; .github/workflows/ci-core.yml | fix/wo-rfr-m5-stale-spec-integrity |
 | WO-RFR-20260824 M6 R-FR-004/005 fold-back integrity | ChatGPT-GPT-5.6-Sol | 2026-08-31 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; scripts/hooks/plan_foldback.py; scripts/hooks/memory_capture.py; tests/test_stale_specs.py; tests/test_memory_capture.py | fix/wo-rfr-m6-foldback-integrity |
 
 
-RFR continuity release 2026-08-31: M1-M4 active claim rows were removed only after their merge/post-merge evidence was verified; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M5 is the active R-FR lane.
+RFR continuity release 2026-08-31: M1-M5 active claim rows were removed only after merge/post-merge verification; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M6 is the active R-FR lane.
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
