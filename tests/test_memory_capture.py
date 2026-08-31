@@ -12,11 +12,10 @@ Hook รับ input JSON ผ่าน stdin (เหมือน hooks อื่
 from __future__ import annotations
 
 import json
-import os
+import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "hooks"))
@@ -196,3 +195,90 @@ def test_format_for_session_start_includes_recent_decisions(tmp_path):
     # All three types should appear in the replay (they're all worth surfacing)
     assert "D1" in out
     assert "O1" in out
+
+# ---------------------------------------------------------------------------
+# 7. R-FR-004 — commit file evidence must be structural, not prose-derived
+# ---------------------------------------------------------------------------
+def _git(tmp_path: Path) -> Path:
+    repo = tmp_path / "git-repo"
+    repo.mkdir()
+    def run(*args):
+        return subprocess.run(["git", *args], cwd=repo, check=True,
+                              capture_output=True, text=True, encoding="utf-8")
+    run("init", "-q")
+    run("config", "user.email", "test.invalid")
+    run("config", "user.name", "test")
+    return repo
+
+
+def _commit_event(repo: Path, message: str) -> dict:
+    short = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"], cwd=repo, check=True,
+        capture_output=True, text=True, encoding="utf-8").stdout.strip()
+    branch = subprocess.run(
+        ["git", "branch", "--show-current"], cwd=repo, check=True,
+        capture_output=True, text=True, encoding="utf-8").stdout.strip() or "HEAD"
+    return {
+        "tool_name": "Bash",
+        "tool_input": {"command": f"git commit -m '{message}'"},
+        "tool_response": {"output": f"[{branch} {short}] {message}\n 1 file changed"},
+    }
+
+
+def test_changed_files_from_real_root_commit(tmp_path):
+    repo = _git(tmp_path)
+    (repo / "src").mkdir()
+    (repo / "src" / "a.py").write_text("a=1\n", encoding="utf-8")
+    (repo / "README.md").write_text("x\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "root"], cwd=repo, check=True)
+    files = mc._changed_files_for_commit(_commit_event(repo, "root"), repo_root=repo)
+    assert files == ["README.md", "src/a.py"]
+
+
+def test_changed_files_preserve_old_and_new_paths_for_rename_and_delete(tmp_path):
+    repo = _git(tmp_path)
+    (repo / "src").mkdir()
+    (repo / "src" / "old.py").write_text("x=1\n", encoding="utf-8")
+    (repo / "src" / "gone.py").write_text("gone\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "base"], cwd=repo, check=True)
+    subprocess.run(["git", "mv", "src/old.py", "src/new.py"], cwd=repo, check=True)
+    (repo / "src" / "gone.py").unlink()
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "move"], cwd=repo, check=True)
+    files = mc._changed_files_for_commit(_commit_event(repo, "move"), repo_root=repo)
+    assert {"src/old.py", "src/new.py", "src/gone.py"} <= set(files)
+
+
+def test_changed_files_do_not_guess_head_without_commit_oid(tmp_path):
+    repo = _git(tmp_path)
+    (repo / "a.txt").write_text("x\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "base"], cwd=repo, check=True)
+    event = {
+        "tool_name": "Bash",
+        "tool_input": {"command": "git commit -m 'maybe failed'"},
+        "tool_response": {"output": "nothing to commit, working tree clean"},
+    }
+    assert mc._changed_files_for_commit(event, repo_root=repo) == []
+
+
+def test_hook_main_persists_real_commit_files(monkeypatch, tmp_path):
+    repo = _git(tmp_path)
+    (repo / "src").mkdir()
+    (repo / "src" / "app.py").write_text("x=1\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-q", "-m", "capture"], cwd=repo, check=True)
+    ledger_path = tmp_path / "ledger.jsonl"
+    monkeypatch.setattr(mc, "LEDGER_PATH", ledger_path)
+    monkeypatch.chdir(repo)
+    monkeypatch.setattr("sys.stdin", _StdinStub(json.dumps(_commit_event(repo, "capture"))))
+    assert mc.main() == 0
+    entry = ml.MemoryLedger(ledger_path).recent(limit=1)[0]
+    assert entry["files"] == ["src/app.py"]
+
+
+def test_changed_files_path_normalizer_rejects_control_characters():
+    assert mc._normalize_repo_path("src/line\nbreak.py") is None
+    assert mc._normalize_repo_path("src/tab\tbreak.py") is None
