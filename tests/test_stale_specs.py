@@ -1,8 +1,8 @@
 """Stale-spec gate + plan fold-back — Slice D (community patterns).
 
-1) check-stale-specs: a plan/ADR with frontmatter `scope:` owns files;
-   if a scoped file's LAST COMMIT is newer than the plan's last commit,
-   the plan is stale -> CI red (unless `plan-frozen: true`).
+1) check-stale-specs: a plan/ADR with frontmatter `scope:` owns exact paths;
+   any scoped-path change reachable after the spec commit makes it stale,
+   and unknown/shallow Git history fails closed (unless `plan-frozen: true`).
 2) plan_foldback: session-end — today's ledger decisions touching a
    plan's scope are folded back into the plan's Deviations section
    (idempotent), so chat memory never stays the only record.
@@ -54,7 +54,8 @@ def _sleep_commit_gap():
 
 def test_fresh_plan_passes(tmp_path):
     r = _git_repo(tmp_path)
-    plan = r / "PLAN.md"
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "fresh.md"
     plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n",
                     encoding="utf-8")
     src = r / "src" / "app.py"; src.parent.mkdir()
@@ -82,7 +83,8 @@ def test_scoped_file_newer_than_plan_fails(tmp_path):
 
 def test_frozen_plan_exempt(tmp_path):
     r = _git_repo(tmp_path)
-    plan = r / "PLAN.md"
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "frozen.md"
     plan.write_text("---\nplan-frozen: true\nscope:\n  - src/app.py\n---\n# plan\n",
                     encoding="utf-8")
     src = r / "src" / "app.py"; src.parent.mkdir()
@@ -215,6 +217,101 @@ def test_core_ci_fetches_full_history_for_stale_spec_gate():
         r"          fetch-depth: 0$",
         text,
     ), "Core verification checkout must fetch full Git history for stale-spec semantics"
+
+
+def test_spec_update_after_scoped_change_restores_freshness(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "updated.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan v1\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "change scoped file")
+    assert stale.check_repo(r), "target change after spec must be stale before spec refresh"
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan v2 covers x=2\n", encoding="utf-8")
+    _commit(r, "refresh spec")
+    assert stale.check_repo(r) == []
+
+
+def test_rename_of_scoped_path_after_spec_is_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "rename.md"
+    src = r / "src" / "old.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/old.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    subprocess.run(["git", "mv", "src/old.py", "src/new.py"], cwd=r,
+                   check=True, capture_output=True)
+    _commit(r, "rename scoped file")
+    problems = stale.check_repo(r)
+    assert problems and any("rename.md" in p for p in problems), problems
+
+
+def test_change_then_revert_after_spec_is_still_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "revert.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "temporary scoped change")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "revert scoped change")
+    problems = stale.check_repo(r)
+    assert problems and any("revert.md" in p for p in problems), problems
+
+
+def test_merged_side_branch_scoped_change_is_stale(tmp_path):
+    r = _git_repo(tmp_path)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "merge.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    initial = subprocess.run(
+        ["git", "branch", "--show-current"], cwd=r, check=True, capture_output=True,
+        text=True, encoding="utf-8", timeout=60,
+    ).stdout.strip()
+    assert initial
+    subprocess.run(["git", "checkout", "-q", "-b", "side"], cwd=r, check=True)
+    src.write_text("x = 2\n", encoding="utf-8")
+    _commit(r, "side scoped change")
+    subprocess.run(["git", "checkout", "-q", initial], cwd=r, check=True)
+    (r / "README.md").write_text("main\n", encoding="utf-8")
+    _commit(r, "main unrelated")
+    subprocess.run(["git", "merge", "--no-ff", "-q", "side", "-m", "merge side"],
+                   cwd=r, check=True, capture_output=True)
+    problems = stale.check_repo(r)
+    assert problems and any("merge.md" in p for p in problems), problems
+
+
+def test_shallow_cli_exits_nonzero_and_names_history_problem(tmp_path):
+    source_parent = tmp_path / "cli-source-parent"; source_parent.mkdir()
+    r = _git_repo(source_parent)
+    (r / "docs" / "plans").mkdir(parents=True)
+    plan = r / "docs" / "plans" / "cli-shallow.md"
+    src = r / "src" / "app.py"; src.parent.mkdir()
+    plan.write_text("---\nscope:\n  - src/app.py\n---\n# plan\n", encoding="utf-8")
+    src.write_text("x = 1\n", encoding="utf-8")
+    _commit(r, "baseline")
+    (r / "README.md").write_text("tip\n", encoding="utf-8")
+    _commit(r, "tip")
+    clone = tmp_path / "cli-shallow"
+    subprocess.run(["git", "clone", "--depth", "1", "-q", r.as_uri(), str(clone)],
+                   check=True, capture_output=True, timeout=60)
+    proc = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "check-stale-specs.py"),
+         "--root", str(clone)], capture_output=True, text=True,
+        encoding="utf-8", errors="replace", timeout=60,
+    )
+    assert proc.returncode == 1, proc.stdout + proc.stderr
+    assert "shallow" in proc.stdout.lower(), proc.stdout
 
 
 # ── fold-back ─────────────────────────────────────────────────────────

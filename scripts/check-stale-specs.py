@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
-"""check-stale-specs.py — Slice D1: plans/ADRs own files via `scope:`.
+"""check-stale-specs.py — plans/ADRs own exact repo-relative paths via `scope:`.
 
-A spec file (docs/plans/*.md, decisions/*.md) with frontmatter
-
-    ---
-    scope:
-      - src/app.py
-      - scripts/lib/x.py
-    ---
-
-OWNS those paths. If a scoped path's last commit is newer than the
-spec's last commit, the spec is stale -> exit 1 (CI gate, community
-spec-kit pattern). `plan-frozen: true` exempts (historical records).
+A non-frozen spec is current only when full Git history proves that no scoped
+path changed in commits reachable from HEAD but not from the spec's own last
+commit. History is graph-ordered, never wall-clock ordered. Shallow, missing,
+or invalid history fails closed so CI cannot report a false green.
 
 Usage: python scripts/check-stale-specs.py [--root DIR]
 """
@@ -25,22 +18,70 @@ from pathlib import Path
 
 _SPEC_GLOBS = ("docs/plans/*.md", "decisions/*.md")
 FM_RE = re.compile(r"^---\n(.*?)\n---", re.S)
+_DRIVE_RE = re.compile(r"^[A-Za-z]:")
+
+
+class HistoryError(RuntimeError):
+    """Git history is unavailable or incomplete; stale-spec must fail closed."""
 
 
 def _git(root: Path, *args: str) -> str:
-    out = subprocess.run(["git", *args], cwd=root, capture_output=True,
-                         text=True, encoding="utf-8", errors="replace",
-                         timeout=60)
-    return out.stdout.strip() if out.returncode == 0 else ""
-
-
-def _last_commit_ts(root: Path, path: Path) -> int:
-    rel = path.relative_to(root).as_posix()
-    ts = _git(root, "log", "-1", "--format=%ct", "--", rel)
     try:
-        return int(ts)
-    except ValueError:
-        return 0  # never committed -> ignore (untracked scratch)
+        proc = subprocess.run(
+            ["git", *args], cwd=root, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=60,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise HistoryError(f"git {' '.join(args[:2])} failed: {exc}") from exc
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout or "git command failed").strip().splitlines()
+        raise HistoryError(detail[-1][:240] if detail else "git command failed")
+    return proc.stdout.strip()
+
+
+def _require_full_history(root: Path) -> None:
+    shallow = _git(root, "rev-parse", "--is-shallow-repository").strip().lower()
+    if shallow == "true":
+        raise HistoryError("shallow Git history; fetch full history before stale-spec verification")
+    if shallow != "false":
+        raise HistoryError(f"could not determine shallow-repository state: {shallow!r}")
+    if not _git(root, "rev-parse", "--verify", "HEAD^{commit}"):
+        raise HistoryError("HEAD commit is unavailable")
+
+
+def _normalize_scope_path(raw: str) -> str:
+    value = raw.strip().replace("\\", "/")
+    if not value:
+        raise ValueError("scope path is empty")
+    if value.startswith("/") or _DRIVE_RE.match(value):
+        raise ValueError("scope path must be repo-relative")
+    parts: list[str] = []
+    for part in value.split("/"):
+        if part in ("", "."):
+            continue
+        if part == "..":
+            raise ValueError("scope path may not contain '..'")
+        if any(ord(ch) < 32 for ch in part):
+            raise ValueError("scope path contains a control character")
+        parts.append(part)
+    if not parts:
+        raise ValueError("scope path is empty after normalization")
+    return "/".join(parts)
+
+
+def _last_commit_oid(root: Path, rel: str) -> str:
+    oid = _git(root, "--literal-pathspecs", "log", "-1", "--format=%H", "HEAD", "--", rel)
+    if not oid:
+        raise HistoryError(f"no committed history for {rel}")
+    return oid
+
+
+def _changed_after_spec(root: Path, spec_oid: str, rel: str) -> bool:
+    oid = _git(
+        root, "--literal-pathspecs", "log", "-1", "--format=%H",
+        f"{spec_oid}..HEAD", "--", rel,
+    )
+    return bool(oid)
 
 
 def _parse_spec(text: str) -> tuple[dict, list[str]]:
@@ -65,25 +106,44 @@ def _parse_spec(text: str) -> tuple[dict, list[str]]:
 
 
 def check_repo(root: Path) -> list[str]:
+    root = Path(root).resolve()
     problems: list[str] = []
+    try:
+        _require_full_history(root)
+    except HistoryError as exc:
+        return [f"Git history unavailable: {exc}"]
+
     for pattern in _SPEC_GLOBS:
-        for spec in (root / ".").glob(pattern) if pattern.startswith("docs") \
-                else (root / ".").glob(pattern):
+        for spec in root.glob(pattern):
             if not spec.is_file():
                 continue
             meta, scope = _parse_spec(spec.read_text(encoding="utf-8"))
             if not scope or meta.get("frozen"):
                 continue
-            spec_ts = _last_commit_ts(root, spec)
-            for rel in scope:
-                target = root / rel
-                if not target.exists():
+            spec_rel = spec.relative_to(root).as_posix()
+            try:
+                spec_oid = _last_commit_oid(root, spec_rel)
+            except HistoryError as exc:
+                problems.append(f"{spec_rel} history unavailable: {exc}")
+                continue
+
+            for raw_rel in scope:
+                try:
+                    rel = _normalize_scope_path(raw_rel)
+                except ValueError as exc:
+                    problems.append(f"{spec_rel} has invalid scope path {raw_rel!r}: {exc}")
                     continue
-                if _last_commit_ts(root, target) > spec_ts:
+                try:
+                    _last_commit_oid(root, rel)  # distinguish unchanged history from no history
+                    changed = _changed_after_spec(root, spec_oid, rel)
+                except HistoryError as exc:
+                    problems.append(f"{spec_rel} scoped file {rel} history unavailable: {exc}")
+                    continue
+                if changed:
                     problems.append(
-                        f"{spec.relative_to(root).as_posix()} is stale: "
-                        f"scoped file {rel} has newer commits than the spec "
-                        f"(update the spec, or mark plan-frozen: true)")
+                        f"{spec_rel} is stale: scoped file {rel} changed after spec commit "
+                        f"{spec_oid[:12]} (update the spec, or mark plan-frozen: true)"
+                    )
     return problems
 
 
@@ -91,12 +151,12 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", default=".")
     args = ap.parse_args(argv)
-    problems = check_repo(Path(args.root).resolve())
-    for p in problems:
-        print(f"❌ {p}")
+    problems = check_repo(Path(args.root))
+    for problem in problems:
+        print(f"[FAIL] {problem}")
     if problems:
         return 1
-    print("✅ no stale specs (scoped files are covered by their plans)")
+    print("[OK] no stale specs (full Git history covers exact scoped paths)")
     return 0
 
 
