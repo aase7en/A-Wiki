@@ -40,6 +40,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WIKI_DIR = REPO_ROOT / "wiki"
 OUTPUT = REPO_ROOT / ".wiki-graph.json"
+LIB_DIR = Path(__file__).resolve().parent / "lib"
+if str(LIB_DIR) not in sys.path:
+    sys.path.insert(0, str(LIB_DIR))
+from markdown_code import strip_markdown_code
 
 # Root-level pages that are wiki-linkable (referenced from inside wiki/)
 ROOT_PAGES = ("CLAUDE.md", "README.md", "profile.md", "index.md")
@@ -53,10 +57,6 @@ WIKILINK_RE = re.compile(r"\[\[([^\]\|#]+)(?:#[^\]\|]*)?(?:\|[^\]]+)?\]\]")
 MDLINK_RE = re.compile(r"\[(?:[^\]]+)\]\(([^)]+\.md)(?:#[^)]*)?\)")
 H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
-# Strip fenced code blocks (``` ... ```) and inline code (`...`) before link extraction
-CODE_FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
-INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
-
 # Semantic type triggers: key phrases within the surrounding line of the link
 SEMANTIC_TRIGGERS: dict[str, list[re.Pattern]] = {
     "depends": [
@@ -87,10 +87,8 @@ def collect_files() -> list[Path]:
 
 
 def strip_code(text: str) -> str:
-    """Remove fenced and inline code so placeholder wikilinks in examples aren't matched."""
-    text = CODE_FENCE_RE.sub("", text)
-    text = INLINE_CODE_RE.sub("", text)
-    return text
+    """Remove Markdown code regions before extracting graph links."""
+    return strip_markdown_code(text)
 
 
 def should_parse_links(path: Path) -> bool:

@@ -30,6 +30,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+LIB_DIR = Path(__file__).resolve().parents[1] / "lib"
+if str(LIB_DIR) not in sys.path:
+    sys.path.insert(0, str(LIB_DIR))
+from markdown_code import strip_markdown_code
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]")
 
@@ -136,10 +140,8 @@ def check_wikilinks(wiki_root: Path) -> CheckResult:
     index, known_paths = _resolution_indexes(wiki_root)
     for page in _md_files(wiki_root):
         text = page.read_text(encoding="utf-8", errors="replace")
-        # Docs teach link SYNTAX: examples inside code fences/spans are
-        # not real links (CLAUDE.md placeholders kept failing as "broken").
-        text = re.sub(r"```.*?```", "", text, flags=re.S)
-        text = re.sub(r"`[^`\n]*`", "", text)
+        # Code examples are not real links; share the same scanner as graph build.
+        text = strip_markdown_code(text)
         for m in WIKILINK_RE.finditer(text):
             target = m.group(1).strip()
             if not target or target.startswith("http"):
@@ -261,6 +263,7 @@ def check_orphans(wiki_root: Path) -> CheckResult:
     linked: set[str] = set()
     for page in pages:
         text = page.read_text(encoding="utf-8", errors="replace")
+        text = strip_markdown_code(text)
         for m in WIKILINK_RE.finditer(text):
             target = m.group(1).strip()
             if target and not target.startswith("http"):

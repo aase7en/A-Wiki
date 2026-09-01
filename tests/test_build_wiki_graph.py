@@ -42,3 +42,21 @@ def test_build_reports_full_orphan_domain_counts(tmp_path, monkeypatch):
         "iot": 1,
         "sources": 1,
     }
+
+
+def test_strip_code_handles_commonmark_delimiter_runs_and_tilde_fences():
+    cases = [
+        ("`` `literal` [[fake]] ``\n[[real]]", "[[real]]"),
+        ("````md\n[[fake]]\n````\n[[real]]", "[[real]]"),
+        ("~~~~md\n[[fake]]\n~~~~\n[[real]]", "[[real]]"),
+    ]
+    for source, visible in cases:
+        cleaned = build_wiki_graph.strip_code(source)
+        assert "[[fake]]" not in cleaned
+        assert visible in cleaned
+
+
+def test_escaped_backticks_do_not_hide_real_wikilinks():
+    source = r"\`[[real]]\`"
+    cleaned = build_wiki_graph.strip_code(source)
+    assert "[[real]]" in cleaned
