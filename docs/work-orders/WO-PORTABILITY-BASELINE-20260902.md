@@ -1,6 +1,6 @@
 # WO-PORTABILITY-BASELINE-20260902 — Windows portability baseline burn-down
 
-Status: CLAIMED_P0_INVENTORY
+Status: PB0_MEASURED_PB1_CLAIM_EXPANSION_NEXT
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol
 Branch: `fix/wo-portability-baseline-glm-20260902`
@@ -48,6 +48,72 @@ PB-1 — cp874 / subprocess decoding / console-output defects.
 PB-2 — Git-Bash / MSYS / path / symlink deterministic defects.
 PB-3 — remaining linked-worktree/path assumptions only if still reproducible and not already covered by PR #46.
 PB-4 — full regression, audit, checkpoint, Primary handoff.
+
+## PB-0 checkpoint — 2026-09-02 fresh baseline measured
+
+**Environment (exact):**
+- Worktree `<WORKTREE>/A-Wiki-portability-glm-20260902`, branch `fix/wo-portability-baseline-glm-20260902`, HEAD `29352ab41d90ef6396745e3aad2949ccbdc53ac2` (= pushed remote HEAD; clean tree).
+- Python `3.11.15` (hermes-agent venv interpreter), pytest `9.1.1`.
+- OS Windows 10.0.26200 x64, shell Git Bash; console codepage Thai `cp874`.
+- Note: machine-level env carries system-wide `PYTHONUTF8=1` / `PYTHONIOENCODING=utf-8`; the baseline run explicitly removed both (`env -u PYTHONUTF8 -u PYTHONIOENCODING`), matching the M8 no-override protocol.
+
+**Fresh baseline (no UTF-8 override): `python -m pytest tests -q` = 21 failed / 3599 passed / 19 skipped in 1324.49s.**
+
+Comparison: M1 = 58F/3398P/19S; M8 = 54F/3531P/19S. Baseline debt dropped 54→21 (33 previously failing nodeids were repaired by later merges, incl. PR #46 linked-worktree `gitdir:` family). The 21 below are the current authority.
+
+**Failure matrix (all 21 nodeids, root signal from the run log):**
+
+| # | Nodeid | Root signal | Family |
+|---|---|---|---|
+| 1 | tests/test_awiki_cli.py::test_cli_status_end_to_end | child `python -m conductor status --json` rc1; `cp874.py line 19 charmap_encode` | CP874/ENCODING (child encode) |
+| 2 | tests/test_check_machine_path_hook.py::test_blocks_windows_user_path | hook child rc1 (expected 2); `UnicodeEncodeError` in child | CP874/ENCODING (child encode) |
+| 3 | tests/test_check_machine_path_hook.py::test_blocks_posix_user_path | same | CP874/ENCODING (child encode) |
+| 4 | tests/test_check_pr_loop.py::test_cli_reads_json_payload_and_exits | `UnicodeEncodeError: 'charmap' codec can't encode '\u2705' position 0` | CP874/ENCODING (child encode) |
+| 5 | tests/test_conductor.py::TestCli::test_status_json_valid | conductor child rc1, stderr ends `...EncodeError` | CP874/ENCODING (child encode) |
+| 6 | tests/test_conductor.py::TestBridgeSearch::test_search_fts_returns_structured_hits | conductor child rc1, same | CP874/ENCODING (child encode) |
+| 7 | tests/test_conductor.py::TestBridgeSearch::test_search_hybrid_mode_is_default | same | CP874/ENCODING (child encode) |
+| 8 | tests/test_doctor_guide.py::test_doctor_runs_and_reports_sections | doctor stdout empty (crash before sections) | CP874/ENCODING (child encode) |
+| 9 | tests/test_doctor_guide.py::test_guide_topics | guide child stdout empty; stderr `EncodeError`; Thai assertion | CP874/ENCODING (child encode) |
+| 10 | tests/test_graph_yaml.py::test_cli_exit_zero_when_clean | child `check-graph-yaml.py` traceback at `cp874.py line 19 charmap_encode` | CP874/ENCODING (child encode) |
+| 11 | tests/test_rabies_regression.py::test_regression_hns_pass | `verify_regression.py` exit1, `'\u2705' position 2` encode crash | CP874/ENCODING (child encode) |
+| 12 | tests/test_versioning.py::test_doctor_prints_version | doctor stdout `''`; child EncodeError | CP874/ENCODING (child encode) |
+| 13 | tests/test_versioning.py::test_doctor_version_line_is_first_class | version idx -1 (empty stdout) | CP874/ENCODING (child encode) |
+| 14 | tests/test_link_agent_configs.py::test_keeps_existing_real_directory | parent reader-thread `UnicodeDecodeError: 'charmap' can't decode byte 0x9f` → `stdout=None` | CP874/ENCODING (parent decode of UTF-8 bash output) |
+| 15 | tests/test_link_agent_configs.py::test_without_force_skills_real_dir_is_left_alone | same mechanism | CP874/ENCODING (parent decode) |
+| 16 | tests/test_link_agent_configs.py::test_msys_ln_copy_behavior_never_leaves_silent_copy | same | CP874/ENCODING (parent decode) |
+| 17 | tests/test_link_agent_configs.py::test_status_ok_after_link | same | CP874/ENCODING (parent decode) |
+| 18 | tests/test_link_agent_configs.py::test_status_counts_real_link_target_not_just_symlink_bit | same | CP874/ENCODING (parent decode) |
+| 19 | tests/test_link_agent_configs.py::test_clean_backups_dry_run_deletes_nothing | same | CP874/ENCODING (parent decode) |
+| 20 | tests/test_link_my_skills.py::test_link_my_skills_skips_existing_real_directory | same | CP874/ENCODING (parent decode) |
+| 21 | tests/test_user_journey_e2e.py::TestJourney2bMcpButtons::test_semantic_search_button_degrades_honestly | MCP `wiki_semantic_search` returns `Internal error: TypeError: the JSON object must be str, bytes or bytearray, not NoneType` instead of honest `missing dependency` degrade | OTHER (degrade-path defect, repo-owned) |
+
+**Family classification totals:** CP874/ENCODING = 20 (13 child-encode + 7 parent-decode) · GIT_BASH_MSYS_PATH = 0 distinct remaining (all 7 link-script failures reproduce as pure cp874 decode crashes in the pytest reader thread — reproduced directly: `UnicodeDecodeError ... byte 0x9f` in `subprocess._readerthread`, after which `stdout` becomes None) · WORKTREE_GIT = 0 (PR #46 fixed that family) · FTS_ENVIRONMENT = 0 failing (the M8 FTS-debt test is now among the 19 skipped or passes; the conductor search failures above are encode crashes, not FTS) · OTHER = 1 (MCP degrade path).
+
+**Mechanism note (single root cause for 20/21):** on native Thai Windows, Python child processes whose stdout is a pipe encode with locale `cp874`; printing `✅`/emoji/Thai crashes (`charmap_encode`), and parent tests using `text=True` without explicit encoding decode the UTF-8 bash-script output as cp874 and crash the reader thread (stdout→None). The repo already has an established inline guard idiom — `sys.stdout/stderr.reconfigure(encoding="utf-8", errors="replace")` (scripts/hooks_runner.py, scripts/a_escalate.py, scripts/check-staged-syntax.py, scripts/regen-skill-surfaces.py) — the failing entries simply lack it. All 13 encode-side test parents already pass `encoding="utf-8", errors="replace"` to subprocess, so the child entry scripts are the only encode-side gap; the 2 link-script test helpers are the only decode-side gap.
+
+**Smallest exact file scope for PB-1 (first independent family — CP874/ENCODING):**
+
+Production (add the existing reconfigure guard idiom at entry):
+1. `conductor/__main__.py` (covers #1,5,6,7)
+2. `scripts/awiki-doctor.py` (covers #8,12,13)
+3. `scripts/awiki-guide.py` (covers #9)
+4. `scripts/check_pr_loop.py` (covers #4)
+5. `scripts/hooks/check_machine_path.py` (covers #2,3)
+6. `scripts/check-graph-yaml.py` (covers #10)
+7. `scripts/hospital/verify_regression.py` (covers #11)
+
+Tests (decode-side harness portability — explicit UTF-8 decode matching the documented UTF-8 bash-script output; not assertion weakening):
+8. `tests/test_link_agent_configs.py` (covers #14-19)
+9. `tests/test_link_my_skills.py` (covers #20)
+
+New deterministic Tier-1 regression (so the family stays fixed on any locale, not only cp874 machines):
+10. `tests/test_console_pipe_safety.py` (NEW — spawn representative children with `PYTHONIOENCODING=cp874` forced, assert rc/decoded output)
+
+Deferred to its own family: #21 (`scripts/mcp-wiki-server.py` degrade path) — investigate/fix after PB-1.
+
+RED evidence = the 21 baseline failures above (per-family focused re-run commands recorded below as work proceeds).
+
+Next safe action: GitNexus impact for the 7 production entry symbols, then claim expansion to exactly the 10 files above, commit+push, then RED/TDD per file.
 
 ## Parallel-lane boundaries
 
