@@ -1,6 +1,6 @@
 # WO-PORTABILITY-BASELINE-20260902 — Windows portability baseline burn-down
 
-Status: PB0_MEASURED_PB1_CLAIM_EXPANSION_NEXT
+Status: READY_FOR_GPT_PRIMARY_REVIEW
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol
 Branch: `fix/wo-portability-baseline-glm-20260902`
@@ -150,6 +150,27 @@ Next safe action: GitNexus impact for the 7 production entry symbols, then claim
 **Safety gates at this checkpoint (pre-final-regression):** privacy = "no personal data detected" PASS · security `scan_repo.py --ci` = **6324 tracked / 51 baseline / 0 new** · stale-spec = `[OK] no stale specs` PASS · wiki-health = **0 hard / 352 advisory** (advisory count unchanged from M8) · `git diff --check` PASS.
 
 **Remaining before completion:** final full native regression, final WO verdict, claim release.
+
+## PB-4 final checkpoint — 2026-09-02 complete, handoff to GPT Primary
+
+**Final full native regression (no UTF-8 override, same protocol as PB-0):**
+`env -u PYTHONUTF8 -u PYTHONIOENCODING python -m pytest tests -q` = **3627 passed / 0 failed / 19 skipped in 728.14s (0:12:08)**, pytest exit 0, 0 FAILED/ERROR lines in the raw log.
+
+**Delta vs the fresh PB-0 baseline:**
+- OLD: 21 failed / 3599 passed / 19 skipped (1324.49s)
+- NEW: 0 failed / 3627 passed / 19 skipped (728.14s)
+- FIXED: all 21 baseline nodeids (#1-#13 via the 7 entry guards, #14-#20 via the 2 helper decodes, #21 via the MCP server decode fix)
+- STILL_FAILING: 0 · NEW_REGRESSION: 0 · ENVIRONMENT_ONLY: 0 failing (GitNexus FTS extension unavailable = tool limitation, not a failing test) · DEFERRED_WITH_REASON: 0
+- +7 passed = the new deterministic `tests/test_console_pipe_safety.py` (3599+21=3620; 3620+7=3627). Runtime halved because 21 crashing-child tests no longer burn crash/retry overhead.
+
+**Final gates:** privacy PASS (no personal data detected) · security = 6324 tracked / 51 baseline / **0 new** · stale-spec = `[OK] no stale specs` · wiki-health = **0 hard / 352 advisory** (advisory count unchanged from M8) · `git diff --check` PASS · GitNexus final `detect-changes --scope compare --base-ref 8dfcbe06` = **13 files / 22 symbols / 0 processes / risk LOW** (10 code+test files + COLLAB.md + this WO + mcp-wiki-server.py; symbol attribution is line-shift-sensitive, risk verdict is the reconciliation signal).
+
+**Commits on the branch (base `8dfcbe06`):**
+- `29352ab4` seed WO (checkpoint) · `5f2efb55` PB-0 matrix · `79a162c6` claim expansion (impact all LOW) · `71246e8c` PB-1 CP874 family fix (10 files) · `51d3be66` PB-1b MCP decode fix · `afc2a80c` PB-3 evidence+gates · this commit = PB-4 final verdict + PB-1 claim release.
+
+**Claim release:** the `PB-1 cp874 pipe-safety family` COLLAB row is released in this commit (candidate stable: full suite green at final HEAD). The base WO row (`COLLAB.md; docs/work-orders/WO-PORTABILITY-BASELINE-20260902.md`) is released on handoff to Primary review.
+
+**Verdict: READY_FOR_GPT_PRIMARY_REVIEW.** Do not merge from this lane — Primary owns exact-SHA independent review, remote diff audit, CI verdict (pr-loop-gate will require the Loop-Evidence section quoting this WO), merge, and post-merge fetch/SHA verification. Residual environment-only debt (no repo action): GitNexus FTS Windows extension needs OpenSSL DLLs unavailable on this machine; three stashes on this worktree hold regenerable test-run wiki surfaces (rounds 1-3), intentionally never committed.
 
 ## Parallel-lane boundaries
 
