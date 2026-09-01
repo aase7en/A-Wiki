@@ -33,11 +33,10 @@
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
-| WO-RFR-20260824 M7 R-FR-008..011 mechanical minors | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; scripts/hooks_runner.py; scripts/hooks/providers.py; scripts/awiki-doctor.py; scripts/lib/markdown_code.py; scripts/build-wiki-graph.py; scripts/health/wiki_health.py; tests/test_awiki_adopt.py; tests/test_repo_root_seam.py; tests/test_hook_engine.py; tests/test_doctor_guide.py; tests/test_build_wiki_graph.py; tests/test_wiki_health.py | fix/wo-rfr-m7-mechanical-minors |
 | WO-RFR-20260824 M8 final regression continuity audit | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; conductor/state.py; tests/test_conductor.py | fix/wo-rfr-m8-continuity-finalize |
 
 
-RFR continuity release 2026-09-01: M1-M6 plus superseded reconciliation/Y1 active claim rows were removed only after clean-worktree + ancestor/merge verification; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M7 is the active R-FR lane.
+RFR continuity release 2026-09-01: M1-M7 are merge/post-merge verified; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M8 final regression/continuity audit is the sole active R-FR lane.
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
