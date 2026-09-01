@@ -77,12 +77,17 @@ def run_script(
     full_args = list(args)
     if not manage_repo_env:
         full_args.append("--no-repo-env")
+    # The bash script emits UTF-8 (✓/emoji status); text=True alone would
+    # decode with the locale codec and crash the reader thread on cp874
+    # Windows, silently turning stdout into None.
     return subprocess.run(
         ["bash", str(SCRIPT), *full_args],
         cwd=REPO_ROOT,
         env=env,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
 
