@@ -19,6 +19,8 @@ fires; this installer is the supported path.
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -62,6 +64,18 @@ def test_build_hooks_block_routes_stop_and_ssot():
     assert any("hooks_runner" in t for t in ss_targets), "existing runner stack stays wired"
 
 
+
+def test_build_hooks_block_omits_matcher_for_match_all_events():
+    """ZCode rejects matcher=""; omit matcher to match all events."""
+    block = szh.build_hooks_block("P", "L")
+    for event, groups in block["events"].items():
+        for group in groups:
+            assert group.get("matcher") != "", f"{event} must not emit an empty matcher"
+    for event in ("UserPromptSubmit", "Stop"):
+        assert any("matcher" not in group for group in block["events"][event]), (
+            f"{event} match-all group must omit matcher"
+        )
+
 def test_merge_hooks_config_idempotent_and_preserves_foreign():
     block = szh.build_hooks_block("P", "L")
     existing = {
@@ -103,6 +117,20 @@ def test_install_copies_loader_and_writes_config(tmp_path):
     # backup written before mutating an existing config
     assert any(p.name.startswith("config.json.bak") for p in (zcode_home / "cli").glob("*"))
 
+
+
+def test_installer_cli_survives_cp874_console(tmp_path):
+    """Installer output must not crash on the default Thai Windows console."""
+    zcode_home = tmp_path / ".zcode"
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "cp874"
+    result = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "setup_zcode_hooks.py"),
+         "--zcode-home", str(zcode_home), "--python-exe", sys.executable],
+        cwd=REPO_ROOT, env=env, capture_output=True, timeout=30,
+    )
+    assert result.returncode == 0, result.stderr.decode("cp874", errors="replace")
+    assert (zcode_home / "cli" / "config.json").is_file()
 
 def test_install_dry_run_writes_nothing(tmp_path):
     zcode_home = tmp_path / ".zcode"
