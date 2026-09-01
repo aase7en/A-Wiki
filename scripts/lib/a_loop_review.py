@@ -7,16 +7,21 @@ no open blockers, retest green at the CURRENT head, CI green). A fix
 commit lands as a new head, which invalidates the previous approval and
 sends the loop back around — that cycling IS the v2 improvement loop.
 
-Pure adapter: reads git state via file IO only (no subprocess), never
-mutates goal/task stores, owns just one small task→cycle map beside the
-review-bus state.
+Pure adapter: resolves the exact git HEAD via bounded git plumbing
+(`git rev-parse HEAD` — worktree/detached/packed-refs safe; WO-REVIEW-BUS
+RB-1), never mutates goal/task stores, owns just one small task→cycle
+map beside the review-bus state.
 """
 from __future__ import annotations
 
 import json
+import re
+import subprocess
 from pathlib import Path
 
 import review_bus as rb
+
+_SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
 
 
 class ALoopReview:
@@ -24,17 +29,39 @@ class ALoopReview:
         self.bus = bus
         self._git_dir = Path(git_dir) if git_dir else None
 
-    # ── git head via pure file IO ────────────────────────────────────
-    def head_sha(self) -> str:
+    # ── git head via bounded plumbing ────────────────────────────────
+    def _resolve_git_dir(self) -> Path:
+        """Return the real git dir behind `.git` for BOTH shapes:
+        a normal checkout (directory) and a linked worktree (gitfile
+        pointer whose single line is `gitdir: <path>`)."""
         git = self._git_dir
         if git is None:
             raise rb.ReviewBusError("git_dir not configured")
-        head_file = git / "HEAD"
-        ref = head_file.read_text(encoding="utf-8").strip()
-        if ref.startswith("ref:"):
-            ref_path = git / ref.split(" ", 1)[1]
-            return ref_path.read_text(encoding="utf-8").strip()
-        return ref  # detached head — the sha itself
+        if git.is_dir():
+            return git
+        if git.is_file():
+            line = git.read_text(encoding="utf-8").strip()
+            prefix = "gitdir:"
+            if line.startswith(prefix):
+                return Path(line[len(prefix):].strip())
+            raise rb.ReviewBusError(
+                f"unrecognized gitfile at {git}: missing 'gitdir:' pointer")
+        raise rb.ReviewBusError(f"git metadata not found at {git}")
+
+    def head_sha(self) -> str:
+        git_dir = self._resolve_git_dir()
+        try:
+            out = subprocess.run(
+                ["git", "--git-dir", str(git_dir), "rev-parse", "HEAD"],
+                capture_output=True, text=True, timeout=15)
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise rb.ReviewBusError(f"git rev-parse HEAD failed: {e!r}") from e
+        sha = out.stdout.strip()
+        if out.returncode != 0 or not _SHA_RE.fullmatch(sha):
+            detail = out.stderr.strip()[:200] or "no SHA on stdout"
+            raise rb.ReviewBusError(
+                f"git rev-parse HEAD failed (rc={out.returncode}): {detail}")
+        return sha
 
     # ── task ↔ cycle map ─────────────────────────────────────────────
     def _map_path(self, task_id: str) -> Path:
