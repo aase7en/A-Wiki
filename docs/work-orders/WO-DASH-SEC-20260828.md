@@ -2,8 +2,10 @@
 
 ## Status
 
-CLAIMED — owner: `ChatGPT-GPT-5.6-Sol`
-Branch: `fix/wo-dash-sec-20260828-loopback`
+VERIFIED_COMPLETE - owner: `ChatGPT-GPT-5.6-Sol`
+Branch: `docs/wo-dash-sec-closeout-20260901`
+
+Closeout checkpoint 2026-09-01: PR #31 head `4df3f578` merged as `cdb220f3`; reviewed/merged tree `a8ae9177`; push-main Core CI run `33265172839` SUCCESS. Ownership continues on `docs/wo-dash-sec-closeout-20260901` for post-merge runtime/startup verification and claim release.
 
 ## Goal
 
@@ -31,7 +33,7 @@ This is a local-network/write-surface exposure, not an observed exploitation inc
 | DASH-SEC-1 | Default loopback bind; reject remote/LAN | VERIFIED | RED 4/4 -> focused green; remote bind fails closed |
 | DASH-SEC-2 | Reconcile CORS/CSRF + state-changing GET semantics | VERIFIED | evil Origin 403; state unchanged; 10x repeat stable |
 | DASH-SEC-3 | Dashboard regression + reproducible bundle | VERIFIED (pre-PR) | 253 pytest; npm ci/build; 256.0 KB bundle |
-| DASH-SEC-4 | Report, defect memory, PR, CI, re-audit | IN_PROGRESS | regression tests are Tier-1 executable memory; PR/CI next |
+| DASH-SEC-4 | Report, defect memory, PR, CI, re-audit | VERIFIED | PR #31 merged; push-main CI + runtime loopback E2E verified |
 
 ## Root-cause notes
 
@@ -50,7 +52,7 @@ Admin password endpoints currently authenticate only the `/api/admin/auth` call;
 
 ## Next safe action
 
-Complete exact-SHA independent security review, then merge only after required gates and authorization are satisfied; rebuild/restart and verify the live listener afterward.
+Security closeout complete. Keep the primary checkout protected until its unrelated dirty state is reconciled; the Windows Startup guard now fails closed unless that checkout contains PR #31 security merge `cdb220f3`.
 
 ## Checkpoint — 2026-08-28 pre-PR
 
@@ -112,3 +114,12 @@ Core CI on PR #31 at `bcad8e926f0e66717bf06b939d7fd8c46a102a82` failed one happy
 Classification: test-environment fidelity defect, not product upload failure. The fixture now binds `REPO_ROOT` and `UPLOAD_DIR` to the same isolated temp root. Re-run without a custom `--basetemp`: focused security 17/17 passed; dashboard security/autostart/UI/API bundle 246/246 passed; privacy clean; security scan 6,312 tracked files / 51 baseline / 0 new; `git diff --check` pass.
 
 Next: commit/push the portability-only test+checkpoint change, update exact review SHA, and require a fresh CI cycle.
+
+## Checkpoint - 2026-09-01 post-merge runtime VERIFIED
+
+- PR #31 final head `4df3f5782c7825422db3834436df99b7fadb0960` merged as `cdb220f3605f1ab84bb5a888a50d26f1be7138ec`; reviewed/merged tree `a8ae91772c05caed20a3855345e200de23bb953f`; push-main Core CI run `33265172839` SUCCESS.
+- Latest-main focused regression: `tests/test_dashboard_security.py` + `tests/test_dashboard_autostart.py` = **22 passed**.
+- Machine startup root cause remained external to git: `Startup/A-wikilive.bat` pointed at protected primary checkout `290626ba...`, whose server still binds `0.0.0.0` and is not a descendant of `cdb220f3`. The startup batch now checks `git merge-base --is-ancestor cdb220f3 HEAD` and exits without launching when the checkout is pre-fix. Executing it in the current stale state produced **NO_LISTENER**.
+- Safe runtime was started from clean `docs/wo-dash-sec-closeout-20260901` at current main. Live evidence: `127.0.0.1:7790` only; process path resolves to this clean worktree; `/api/admin/status` reachable; evil-origin OPTIONS returns **403**; TCP attempts to local LAN/VPN IPv4 addresses do not connect.
+- Current service is therefore safe and usable on loopback. On a future reboot, autostart intentionally fails closed until the primary checkout contains the security merge; do not weaken that guard to regain convenience.
+- All three `WO-DASH-SEC-20260828` claims are released in this closeout. Durable defect prevention remains in `tests/test_dashboard_security.py`; no new handoff/status file is created.
