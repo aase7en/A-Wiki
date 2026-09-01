@@ -162,7 +162,12 @@ def tool_wiki_semantic_search(args: dict) -> dict:
     ]
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        # Children emit UTF-8 (emoji/Thai in snippets); text=True alone would
+        # decode with the locale codec (cp874 on Thai Windows), crash the
+        # reader thread and turn stdout into None → json.loads(None).
+        result = subprocess.run(
+            cmd, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=60)
         if result.returncode != 0:
             raise MCPError(-32000, f"query-rag.py failed: {result.stderr.strip()}")
         raw = json.loads(result.stdout)
@@ -271,7 +276,8 @@ def tool_wiki_regen_index(args: dict) -> dict:
     try:
         result = subprocess.run(
             [sys.executable, str(GEN_INDEX)],
-            capture_output=True, text=True, timeout=120,
+            capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=120,
         )
         if result.returncode != 0:
             raise MCPError(-32000, f"gen-index.py failed: {result.stderr.strip()}")
@@ -279,7 +285,8 @@ def tool_wiki_regen_index(args: dict) -> dict:
         if not no_emb:
             vec = subprocess.run(
                 [sys.executable, str(VEC_BUILDER)],
-                capture_output=True, text=True, timeout=300,
+                capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=300,
             )
             if vec.returncode != 0:
                 raise MCPError(-32000, f"build-vec-index.py failed: {vec.stderr.strip()}")
