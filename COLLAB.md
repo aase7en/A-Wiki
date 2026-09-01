@@ -19,24 +19,12 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
-| ✅ **MERGED 2026-08-26: WO-RFR-20260824 governance PR #26 → main `f0c3a78e`** — reviewer (GLM/ZCode) re-ran all claimed validation on branch HEAD (5/5 handoff tests · privacy clean · health 0 hard), added Loop-Evidence + cross-ref of Binding Loop Engineer ↔ Universal Loop Contract (`fe80c1d0`), fixed pr-loop-gate head.sha checkout bug on main (`c140b0d1`, TDD), all 3 checks green at `a68d8fc5`, user-authorized merge + fetch-verified · **next: M1 baseline evidence → Group A R-FR-002** | ChatGPT Sol (plan author) + GLM/ZCode (review/merge) | 2026-08-24 | `AGENTS.md`, `docs/migration/awiki-vnext-plan.md`, `docs/work-orders/WO-RFR-20260824.md`, `docs/protocols/cross-agent-plan-handoff.md`, `COLLAB.md` | main `f0c3a78e` |
-| ✅ **MERGED 2026-08-21 night-2: local rabies/domain stack (26 commits) integrated into vNext main** — canonical 3260/0 green, Core CI SUCCESS at `7b1b808e`; secrets prevented from entering git (.codex/config.toml untracked + tracked secret-free template); รพ. real name scrubbed → <HOSPITAL> | GLM/ZCode | 2026-08-21 | merge + repair | main `7b1b808e` |
-| ✅ **Fast-graph brain plan 3 slices MERGED 2026-08-21** (user-approved): S1 PR#23 bridge `search/related/hubs` (hybrid FTS+vec) + recall→BM25 · S2 PR#24 skill tier-2 description-fallback (226 triggerless skills หาได้แล้วโดยไม่อ่าน index 81KB) + SKILL-INDEX search-first mandate · S3 symlink farm pruned โดย post-merge relink (323→94, 0 broken, surfaces no-drift) | GLM/ZCode | 2026-08-21 | done | main `992fa059` |
-| ⏸️ **HOLD เฟส 8–11 (user decision 2026-08-21):** หยุดงาน migration ฝั่งสมอง รอ A-Conductor (repo แยก) สร้างเสร็จก่อน — ฝั่งนั้นกำลังทำงานเพิ่มจากแผนเดิม กลัวชนกัน · agent ตัวถัดไป **ห้ามเริ่มเฟส 8+ โดยไม่มีคำสั่งใหม่จาก user** · งานที่ยังทำได้: bug fix/gates/bridge additions ที่ A-Conductor ร้องขอเท่านั้น | GLM/ZCode | 2026-08-21 | hold | — |
-| 📂 **Drive layer จัดเรียงแล้ว 2026-08-21**: `L:/My Drive/A-Wiki-Data` มี `AGENTS.md` (กฎ 3 ข้อ สำหรับทุก agent) + `LAYOUT.md` (หนึ่ง role = หนึ่ง path) + `inbox/` (ไม่รู้จะวางไหน → วางที่นั่น ห้ามสร้างโครงสร้างใหม่) + `_archive/` (MANIFEST ครบ) · agents ที่จะเขียนลง drive ต้องอ่านสองไฟล์นั้นก่อน | GLM/ZCode | 2026-08-21 | done | — |
-| ✅ FOLLOW-UPS ปิดหมด 2026-08-21 เช้า: (1) <ESTATE> dir-name scrub แล้ว (2) quickchart allowlist แล้ว (3) stash เก่า 2 ตัว drop (archive ที่ .tmp/stash-archive-20260821) (4) hospital identifier → get_hospital_dir + AWIKI_HOSPITAL_DIR env — เครื่องที่ใช้โฟลเดอร์จริง ตั้ง `AWIKI_HOSPITAL_DIR=<ชื่อโฟลเดอร์>` ใน shell profile | GLM/ZCode | 2026-08-21 | done | — |
-
-| ✅ Phase 6 hook-engine — **MERGED (PR #17)** self-review PASS_WITH_NOTES 2026-08-21 | GLM/ZCode | done | — | merged |
-| ✅ Agent Continuity Gate — **MERGED (PR #18)** | GLM/ZCode | done | — | merged |
-| ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
-| ✅ duplicate branch `phase6-hook-engine-consolidation` — ตรวจแล้ว: docs-only ฉบับ superseded → **ลบแล้ว** 2026-08-21 |
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
-| WO-RFR-20260824 M8 final regression continuity audit | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; docs/migration/awiki-vnext-plan.md; conductor/state.py; tests/test_conductor.py | fix/wo-rfr-m8-continuity-finalize |
 
 
-RFR continuity release 2026-09-01: M1-M7 are merge/post-merge verified; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M8 final regression/continuity audit is the sole active R-FR lane.
+RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
