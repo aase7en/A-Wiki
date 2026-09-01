@@ -521,7 +521,7 @@
         "all",
         "hermes"
       ],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "canonical",
       "description": "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions.",
       "invocation": "auto",

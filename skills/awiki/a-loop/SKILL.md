@@ -1,7 +1,7 @@
 ---
 name: a-loop
 description: "Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that drives a goal to completion across sessions."
-version: 1.0.0
+version: 1.1.0
 domain: [engineering]
 lifecycle_phase: meta
 category: pipeline
@@ -81,6 +81,22 @@ task_board.claim(next, claimant="me")
 - user ยืนยัน → `new-skill.py --apply`
 → ดูรายละเอียด: `references/phase-skill.md`
 
+## Loop Engineer mode (ZCode hooks — บังคับด้วยกลไก ไม่ใช่ prompt-only)
+
+ZCode รองรับ hooks 7 events และ **Stop hook สั่ง "ทำต่อ" ได้** (`decision:"block"` + reason — ZCode cap 3 รอบติด; verified 2026-09-01 zcode.z.ai/en/docs/hooks) → a-loop วนต่อเองได้จริง:
+
+| กลไก | Event | ไฟล์ |
+|---|---|---|
+| SSoT inject (goal + NEXT READY NODE + WO checkpoints) ทุก session | SessionStart | `scripts/hooks/a_loop_ssot.py` |
+| Continue จนจบ (งบ ≤3/task, reset เมื่อ task ขยับ, ตัน → checkpoint ไม่ spin) | Stop | `scripts/hooks/a_loop_continue.py` |
+| claim gate (Iron Law #11) + hard gates ทั้งชุด | PreToolUse | `scripts/hooks_runner.py --provider zcode` |
+
+เปิดใช้ (ครั้งเดียวต่อเครื่อง): `python scripts/setup_zcode_hooks.py` — ติดตั้ง loader + merge hooks เข้า `~/.zcode/cli/config.json` (workspace `.zcode/config.json` โดน ZCode เมิน — เหตุที่ wiring เดิมไม่ยิง)
+
+สั่ง loop อัตโนมัติ: ตอน `/A-Loop` ถ้า user บอก "loop จนจบ" → เขียน goal_id ลง `.tmp/a-loop-autonomous` → Stop hook ผลักทำต่อเองทุกจุดหยุด; พูด "หยุด loop" → ลบ flag
+
+แผนที่ 30 ขั้น Loop Engineer → กลไก + semantics เต็ม: `references/zcode-loop-engineer.md`
+
 ## Handoff contract (cross-session safe)
 
 ทุก phase เขียน state ลง disk (ไม่ถือใน context):
@@ -137,5 +153,9 @@ Cost guard: ถ้า Opus5 calls > 4 ต่อ run → เตือน + sugges
 | `references/phase-execute.md` | Phase 2 detail |
 | `references/phase-distill.md` | Phase 3 detail |
 | `references/phase-skill.md` | Phase 4 detail |
+| `references/zcode-loop-engineer.md` | ZCode hooks mode — ติดตั้ง/semantics/แผนที่ loop |
 | `scripts/lib/goal_store.py` | Goal lifecycle wrapper |
 | `scripts/hooks/a_loop_distill.py` | Phase 3 Stop hook |
+| `scripts/hooks/a_loop_continue.py` | ZCode Stop continuation driver (Loop Engineer) |
+| `scripts/hooks/a_loop_ssot.py` | ZCode SessionStart SSoT injection |
+| `scripts/setup_zcode_hooks.py` | ติดตั้ง A-Wiki hooks เข้า ZCode user config (per machine) |
