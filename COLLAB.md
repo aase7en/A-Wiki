@@ -30,15 +30,13 @@
 | ✅ Agent Continuity Gate — **MERGED (PR #18)** | GLM/ZCode | done | — | merged |
 | ✅ Scanner strict pattern-source — **MERGED (PR #19)** | GLM/ZCode | done | — | merged |
 | ✅ duplicate branch `phase6-hook-engine-consolidation` — ตรวจแล้ว: docs-only ฉบับ superseded → **ลบแล้ว** 2026-08-21 |
-| WO-RFR-20260824 stale branch reconciliation evidence | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md | docs/wo-rfr-branch-reconciliation-20260828 |
-| WO-RFR-20260824 Y1 prompt producer restoration | ChatGPT-GPT-5.6-Sol | 2026-08-29 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; scripts/hooks/log_subagent_result.py; tests/test_log_subagent_result.py | fix/wo-rfr-y1-prompt-producer |
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
-| WO-RFR-20260824 M6 R-FR-004/005 fold-back integrity | ChatGPT-GPT-5.6-Sol | 2026-08-31 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; scripts/hooks/plan_foldback.py; scripts/hooks/memory_capture.py; tests/test_stale_specs.py; tests/test_memory_capture.py | fix/wo-rfr-m6-foldback-integrity |
+| WO-RFR-20260824 M7 R-FR-008..011 mechanical minors | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; scripts/hooks_runner.py; scripts/hooks/providers.py; scripts/awiki-doctor.py; scripts/lib/markdown_code.py; scripts/build-wiki-graph.py; scripts/health/wiki_health.py; tests/test_awiki_adopt.py; tests/test_repo_root_seam.py; tests/test_hook_engine.py; tests/test_doctor_guide.py; tests/test_build_wiki_graph.py; tests/test_wiki_health.py | fix/wo-rfr-m7-mechanical-minors |
 
 
-RFR continuity release 2026-08-31: M1-M5 active claim rows were removed only after merge/post-merge verification; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M6 is the active R-FR lane.
+RFR continuity release 2026-09-01: M1-M6 plus superseded reconciliation/Y1 active claim rows were removed only after clean-worktree + ancestor/merge verification; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M7 is the active R-FR lane.
 
 **Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
