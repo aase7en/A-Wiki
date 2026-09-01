@@ -37,7 +37,7 @@ bus.readiness()   # {"ready": bool, "reasons": [...]} — ครบทุกเ�
 
 ```python
 from a_loop_review import ALoopReview
-gate = ALoopReview(bus)                      # อ่าน head ผ่าน file IO ล้วน
+gate = ALoopReview(bus)  # head ผ่าน git plumbing (rev-parse) — worktree/detached-safe (RB-1)
 gate.open_review_for_task("T-101", ["pytest..."])
 gate.task_gate("T-101")
 # {"allow_complete": True เฉพาะ READY, "status", "blockers", "reasons"}
