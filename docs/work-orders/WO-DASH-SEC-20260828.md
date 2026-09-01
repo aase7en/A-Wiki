@@ -3,7 +3,9 @@
 ## Status
 
 CLAIMED — owner: `ChatGPT-GPT-5.6-Sol`
-Branch: `fix/wo-dash-sec-20260828-loopback`
+Branch: `docs/wo-dash-sec-closeout-20260901`
+
+Closeout checkpoint 2026-09-01: PR #31 head `4df3f578` merged as `cdb220f3`; reviewed/merged tree `a8ae9177`; push-main Core CI run `33265172839` SUCCESS. Ownership continues on `docs/wo-dash-sec-closeout-20260901` for post-merge runtime/startup verification and claim release.
 
 ## Goal
 
