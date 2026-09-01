@@ -20,7 +20,6 @@
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
 | ✅ **MERGED 2026-09-01: WO-ALOOP-ZCODE-20260901 — a-loop Loop Engineer บน ZCode hooks จริง (PR #45 → main `05c0e4e5`)** — CI 3/3 เขียวที่ `b4d9cf69` · Stop-continuation + SSoT inject + loader/installer · TDD 23/23 + regression 117 · ติดตั้งเครื่อง Win แล้ว · next: verify ใน ZCode session ใหม่ | GLM/ZCode | 2026-09-01 | done | main `05c0e4e5` |
-| WO-REVIEW-BUS-OPS-20260901 Primary integration and exact-SHA repair | ChatGPT-GPT-5.6-Sol | 2026-09-02 | COLLAB.md; docs/work-orders/WO-REVIEW-BUS-OPS-20260901.md; scripts/lib/a_loop_review.py; tests/test_a_loop_review.py; docs/runbooks/review-bus.md | fix/wo-review-bus-ops-primary-integration |
 
 
 RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.

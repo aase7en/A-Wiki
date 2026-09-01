@@ -1,6 +1,6 @@
 # WO-REVIEW-BUS-OPS-20260901 — Operational no-human-relay hardening
 
-Status: PRIMARY_INTEGRATION_GREEN / PR_PENDING
+Status: MERGE_READY / CLAIM_RELEASED
 Executor: GLM5.3-ZCode-MAX (implementation) + GPT-5.6-Sol (integration/review)
 Integrity / final reviewer: GPT-5.6-Sol exact-SHA gate; independent transport required when available
 Branch: `fix/wo-review-bus-ops-primary-integration`
@@ -146,3 +146,11 @@ Repair keeps the original design: parse only the stable `gitdir:` line; reject a
 GREEN: target regression 1/1; `test_a_loop_review.py + test_review_bus.py + test_kernel_contracts.py` = 74 passed; broader set adding `test_a_loop_zcode_hooks.py` = 91 passed; `py_compile` PASS. Privacy PASS; security 6,322 tracked / 51 baseline / 0 new; stale-spec PASS; wiki-health 0 hard / 352 advisory; `git diff --check` clean. GitNexus pre-edit impact for `head_sha`: LOW, one direct caller (`open_review_for_task`), zero execution flows. Durable defect memory is the new regression test; no duplicate memory/handoff file is created.
 
 Next safe action: finish fresh GitNexus index + staged `detect_changes`, commit/push the repaired exact candidate, open draft PR to current `main`, audit remote diff/CI, exact-SHA re-audit, then authorized merge/fetch/post-merge verification. Independent reviewer transport remains separate evidence; no PASS may be inferred from tool unavailability.
+
+## Checkpoint - 2026-09-02 #3 (exact-SHA merge gate)
+
+PR #46 candidate `feacf4149bcd055d5bb0a639bccb9a3816d19075` was independently re-audited against the remote branch: local/remote SHA and tree match, remote diff is limited to the five claimed files, and Git 2.49 `worktree add --relative-paths` E2E resolved the exact linked-worktree HEAD correctly. Exact focused/broader regression = **91 passed**; privacy PASS; stale-spec PASS; `git diff --check` PASS. Required PR checks are all green: PR Loop Gate, Core verification, and py38-smoke.
+
+Independent Ultrareview transport could not launch (`Ultrareview is currently unavailable`), so that evidence remains **UNVERIFIED - reviewer-tool failure**, never PASS. GPT Primary's direct exact-SHA review found and repaired the relative-gitdir defect before this gate. The active claim is released in this final docs-only commit immediately before merge; no new implementation scope is opened.
+
+Next safe action: push this docs-only release commit, require the fresh PR checks at the new exact SHA, verify remote diff/tree again, then use the user's standing authorization to merge PR #46, fetch origin/main, verify candidate ancestry/tree and push-main Core CI.
