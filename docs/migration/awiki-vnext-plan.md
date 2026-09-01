@@ -40,6 +40,8 @@
 
 Authoritative work order: `docs/work-orders/WO-RFR-20260824.md`.
 
+Status: **COMPLETE 2026-09-01** - M1-M8 verified and R-FR-001..011 closed. M8 PR #42 reviewed `31f69c3d`, merged as `17712b3c`, reviewed/merged tree `fefe5bae`, and push-main Core CI `33511998492` succeeded. Independent Ultrareview transport remained unavailable, so that lane is recorded UNVERIFIED (tool failure), not PASS; exact-SHA primary re-audit plus required CI found no blocker.
+
 This track exists because the independent Senior Staff review of `main` at `14019f98` returned **CHANGES_REQUIRED** with 7 major + 4 minor findings. The remediation order is risk-first, with the full loop-engineer cycle required for every slice:
 
 `Grill Me / Grill Me with docs -> brainstorm -> deep plan -> implement -> review -> debug -> test/E2E -> report -> durable defect-prevention memory -> open draft PR -> required CI/CD -> fetch/verify authorized merge state`
@@ -321,6 +323,6 @@ GLM must execute Phase 1 in this order unless new evidence makes a safety stop n
 
 ## Current execution instruction
 
-Phases 0–11 are historical/completed migration state. Current remediation authority is `docs/work-orders/WO-RFR-20260824.md`; begin at its latest incomplete micro-step. Do not revive historical Phase 1 instructions or infer work from chat. Route each finding by risk/capability, complete the full loop-engineer cycle, and checkpoint the work order before any agent/session handoff.
+Phases 0-11 and post-review R-FR-001..011 are historical/completed state. Do not reopen R-FR from chat memory, stale branches, or old prompts. For new work recover from `BRAIN-ENTRY.md` -> `COLLAB.md` -> the active authoritative WO/checkpoint -> `python -m conductor status --json`, then execute the next READY node under the current roadmap.
 
 <!-- final-verification: synchronize re-fire 2026-08-18 (webhook drops during GitHub incident) -->
