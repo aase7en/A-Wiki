@@ -50,10 +50,15 @@ def sections(full: bool) -> list[tuple[str, bool, str, str]]:
         ok, msg = _run([sys.executable, "scripts/agent-preflight.py",
                         "--skip-remote"])
         out.append(("preflight", ok, "full machine preflight", msg))
-        ok, msg = _run(["gh", "run", "list", "--limit", "1",
-                        "--json", "conclusion", "--jq", ".[0].conclusion"])
+        head_ok, head = _run(["git", "rev-parse", "HEAD"])
+        if head_ok and head:
+            ok, msg = _run(["gh", "run", "list", "--workflow",
+                            "ci-core.yml", "--commit", head, "--limit", "1",
+                            "--json", "conclusion", "--jq", ".[0].conclusion"])
+        else:
+            ok, msg = False, head or "unable to resolve HEAD"
         out.append(("ci", ok and msg == "success",
-                    "last GitHub CI run", msg or "unknown"))
+                    "Core CI at current HEAD", msg or "unknown"))
     return out
 
 

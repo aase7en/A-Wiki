@@ -384,15 +384,6 @@ def _main_impl():
 
     malformed_payload = object()
     raw_input = sys.stdin.read()
-    # Slice A: scope per-workspace env (claims store) from payload cwd
-    # before any hook executes. Cheap pre-parse: only look for "cwd".
-    if '"cwd"' in raw_input or raw_input.strip().startswith("{"):
-        try:
-            _pre = json.loads(raw_input)
-            if isinstance(_pre, dict):
-                _export_workspace_env(_pre)
-        except Exception:
-            pass
     if provider is not None:
         if event is None:
             sys.stderr.write("provider dispatch requires --event\n")
@@ -417,6 +408,11 @@ def _main_impl():
             input_data = parsed_input if isinstance(parsed_input, dict) else malformed_payload
         except Exception:
             input_data = malformed_payload
+
+    # Export workspace-scoped state only after provider normalization, so
+    # provider-native workspace metadata cannot be lost before isolation.
+    if isinstance(input_data, dict):
+        _export_workspace_env(input_data)
 
     if event is not None and event not in hook_registry.KNOWN_EVENTS:
         sys.stderr.write(f"unknown lifecycle event: {event!r} "

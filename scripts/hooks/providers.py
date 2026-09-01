@@ -201,7 +201,19 @@ def normalize_payload(provider: str, raw, *, event: str | None = None):
     if not isinstance(inner, dict):
         return MALFORMED_PAYLOAD
 
+    workspace_roots = data.get("workspaceRoots")
+    if workspace_roots is not None:
+        if not isinstance(workspace_roots, list) or any(
+            not isinstance(root, str) or not root.strip()
+            for root in workspace_roots
+        ):
+            return MALFORMED_PAYLOAD
     result = dict(inner)
+    if workspace_roots:
+        if event in ("PreToolUse", "PostToolUse") and len(workspace_roots) != 1:
+            return MALFORMED_PAYLOAD
+        if len(workspace_roots) == 1:
+            result["cwd"] = workspace_roots[0].strip()
     if event in ("PreToolUse", "PostToolUse"):
         # Cline documentation has used both `toolName` and `tool` across hook
         # surfaces. Accept either, but conflicting values are malformed rather

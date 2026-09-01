@@ -129,3 +129,64 @@ def test_hooks_runner_scopes_claims_store_to_workspace(tmp_path):
                                     {"AWIKI_CLAIMS_STORE": "custom"})
     assert kept["AWIKI_CLAIMS_STORE"] == "custom"
     assert hr._export_workspace_env({}, {}) == {}
+
+
+def _seed_foreign_claim(target: Path) -> Path:
+    lib = REPO_ROOT / "scripts" / "lib"
+    sys.path.insert(0, str(lib))
+    import agent_claims as ac
+    store = target / ".tmp" / "agent-claims.json"
+    ac.set_store(store)
+    try:
+        ac.acquire(
+            agent="foreign-owner",
+            scope=["scripts/lib/**"],
+            goal="foreign ownership",
+            phase="implement",
+            session_id="foreign-owner-session",
+        )
+    finally:
+        ac.set_store(None)
+    return store
+
+
+def _run_real_claim_gate(payload: dict, target: Path) -> subprocess.CompletedProcess:
+    env = dict(os.environ)
+    env.pop("AWIKI_CLAIMS_STORE", None)
+    env.pop("HOOK_SKIP", None)
+    env["AWIKI_AGENT"] = "intruder"
+    env["PYTHONIOENCODING"] = "utf-8"
+    return subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "hooks_runner.py"),
+         "--provider", payload.pop("_provider"), "--event", "PreToolUse"],
+        input=json.dumps(payload), capture_output=True, text=True,
+        encoding="utf-8", errors="replace", cwd=str(target), env=env,
+        timeout=120,
+    )
+
+
+def test_real_runner_derives_claim_store_from_canonical_cwd(tmp_path):
+    target = tmp_path / "foreign-claude"
+    target.mkdir()
+    _seed_foreign_claim(target)
+    payload = {
+        "_provider": "claude", "cwd": str(target), "tool_name": "Edit",
+        "tool_input": {"file_path": "scripts/lib/demo.py",
+                       "old_string": "a", "new_string": "b"},
+    }
+    res = _run_real_claim_gate(payload, target)
+    assert res.returncode == 2, res.stderr
+    assert "foreign-owner" in res.stderr
+
+
+def test_cline_workspace_roots_normalize_before_claim_store_export(tmp_path):
+    target = tmp_path / "foreign-cline"
+    target.mkdir()
+    _seed_foreign_claim(target)
+    payload = {"_provider": "cline", "workspaceRoots": [str(target)],
+               "preToolUse": {"toolName": "replace_in_file",
+                              "parameters": {"path": "scripts/lib/demo.py",
+                                             "diff": "SEARCH/REPLACE"}}}
+    res = _run_real_claim_gate(payload, target)
+    assert res.returncode == 2, res.stderr
+    assert "foreign-owner" in res.stderr

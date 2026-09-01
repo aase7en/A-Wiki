@@ -2032,3 +2032,34 @@ class TestMutableStateIsolation:
                        isolate=tmp_path / "iso",
                        env_extra={"AWIKI_COST_GATE_TMP_DIR": str(cost_dir)})
         assert r.returncode == 0, r.stderr[:300]
+
+
+def test_cline_single_workspace_root_becomes_canonical_cwd(tmp_path):
+    """R-FR-009: workspace identity must survive provider normalization."""
+    import providers
+    workspace = tmp_path / "workspace"
+    payload = {
+        "workspaceRoots": [str(workspace)],
+        "preToolUse": {
+            "toolName": "replace_in_file",
+            "parameters": {"path": "scripts/lib/demo.py", "diff": "x"},
+        },
+    }
+    out = providers.normalize_payload("cline", payload, event="PreToolUse")
+    assert out["cwd"] == str(workspace)
+    assert out["tool_name"] == "Edit"
+    assert out["tool_input"]["file_path"] == "scripts/lib/demo.py"
+
+
+def test_cline_ambiguous_multiple_workspace_roots_fail_closed(tmp_path):
+    """R-FR-009: never guess which repo owns mutable state in multi-root Cline."""
+    import providers
+    payload = {
+        "workspaceRoots": [str(tmp_path / "one"), str(tmp_path / "two")],
+        "preToolUse": {
+            "toolName": "replace_in_file",
+            "parameters": {"path": "scripts/lib/demo.py", "diff": "x"},
+        },
+    }
+    out = providers.normalize_payload("cline", payload, event="PreToolUse")
+    assert out is providers.MALFORMED_PAYLOAD

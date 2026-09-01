@@ -216,3 +216,23 @@ class TestWikilinkResolutionExtensions:
         index, paths = wh._resolution_indexes(wiki)
         assert wh._resolves("CLAUDE.md", index, paths), "root CLAUDE.md must resolve"
         assert wh._resolves("profile.md", index, paths)
+
+
+def test_wikilinks_ignore_commonmark_code_spans_and_fences(tmp_path):
+    wiki = tmp_path / "wiki"
+    _write(wiki / "concepts" / "a.md", (
+        "`` `literal` [[fake-inline]] ``\n"
+        "````md\n[[fake-four]]\n````\n"
+        "~~~~md\n[[fake-tilde]]\n~~~~\n"
+        "Self [[a]].\n"
+    ))
+    result = wh.check_wikilinks(wiki)
+    assert result.severity == "ok", result.errors
+
+
+def test_orphans_ignore_links_that_exist_only_inside_code(tmp_path):
+    wiki = tmp_path / "wiki"
+    _write(wiki / "concepts" / "lonely.md", "# lonely\n")
+    _write(wiki / "concepts" / "source.md", "~~~~md\n[[lonely]]\n~~~~\n")
+    result = wh.check_orphans(wiki)
+    assert any("lonely" in item for item in result.advisories)
