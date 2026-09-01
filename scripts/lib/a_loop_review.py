@@ -43,7 +43,14 @@ class ALoopReview:
             line = git.read_text(encoding="utf-8").strip()
             prefix = "gitdir:"
             if line.startswith(prefix):
-                return Path(line[len(prefix):].strip())
+                raw_pointer = line[len(prefix):].strip()
+                if not raw_pointer:
+                    raise rb.ReviewBusError(
+                        f"unrecognized gitfile at {git}: empty 'gitdir:' pointer")
+                target = Path(raw_pointer)
+                if not target.is_absolute():
+                    target = (git.parent / target).resolve(strict=False)
+                return target
             raise rb.ReviewBusError(
                 f"unrecognized gitfile at {git}: missing 'gitdir:' pointer")
         raise rb.ReviewBusError(f"git metadata not found at {git}")

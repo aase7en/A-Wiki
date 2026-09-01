@@ -1,10 +1,10 @@
 # WO-REVIEW-BUS-OPS-20260901 — Operational no-human-relay hardening
 
-Status: CLAIMED
-Executor: GLM5.3-ZCode-MAX
-Integrity / final reviewer: GPT-5.6-Sol
-Branch: `fix/wo-review-bus-ops-20260901`
-Base: `c9b0994419dfb37db65734a5c41139716d1959e7`
+Status: PRIMARY_INTEGRATION_GREEN / PR_PENDING
+Executor: GLM5.3-ZCode-MAX (implementation) + GPT-5.6-Sol (integration/review)
+Integrity / final reviewer: GPT-5.6-Sol exact-SHA gate; independent transport required when available
+Branch: `fix/wo-review-bus-ops-primary-integration`
+Base: `cdee1a36e9722470508144ba9960d495528ced0f`
 
 ## Goal
 
@@ -134,3 +134,15 @@ Use Loop Engineer: `RECOVER -> VERIFY -> CLAIM -> IMPACT -> RED -> IMPLEMENT -> 
 ## Handoff/result rule
 
 ZCode may use Goal/Plan and relevant A-Wiki skills (`a-plan`, `a-debug`, `a-claim`, `a-loop`). Continue autonomously through READY micro-steps inside the claimed scope. Stop only for `HUMAN_DECISION_REQUIRED`, `OWNERSHIP_CONFLICT`, `SAFETY_BLOCK`, or required scope expansion. Write the requested machine-readable result to the task packet's declared destination; GPT will also recover state from this WO and Git, so the human must not relay detailed results.
+
+## Checkpoint — 2026-09-02 #2 (GPT Primary integration)
+
+GLM candidate `02c9ea17edd7c64d950d65fa992d34518d52a59f` was clean/pushed and explicitly handed off to Primary. Main had advanced six commits to `cdee1a36e9722470508144ba9960d495528ced0f`; `git merge-tree` found no conflict. Primary claimed isolated branch `fix/wo-review-bus-ops-primary-integration` at claim commit `421fd36b` and cherry-picked only the GLM implementation commit as `d7bc1808` (the GLM claim commit was not duplicated).
+
+Independent review found RB-1A: Git 2.49 supports relative worktree metadata, but `_resolve_git_dir()` treated `gitdir: ../...` relative to process CWD instead of the gitfile parent. A synthetic gitfile pointing relatively to a real repository reproduced `ReviewBusError: git rev-parse HEAD failed (rc=128)` before the production repair. The deterministic regression is `test_head_sha_resolves_relative_linked_worktree_gitfile`.
+
+Repair keeps the original design: parse only the stable `gitdir:` line; reject an empty pointer; absolute pointers remain unchanged; relative pointers resolve from `git.parent`; Git plumbing remains the authority for HEAD/packed refs/detached state. The stale test-module claim of “pure file IO” was corrected. Review Bus/schema SHA width remains unchanged (7–40 hex) because that is the existing protocol authority and is outside this repair.
+
+GREEN: target regression 1/1; `test_a_loop_review.py + test_review_bus.py + test_kernel_contracts.py` = 74 passed; broader set adding `test_a_loop_zcode_hooks.py` = 91 passed; `py_compile` PASS. Privacy PASS; security 6,322 tracked / 51 baseline / 0 new; stale-spec PASS; wiki-health 0 hard / 352 advisory; `git diff --check` clean. GitNexus pre-edit impact for `head_sha`: LOW, one direct caller (`open_review_for_task`), zero execution flows. Durable defect memory is the new regression test; no duplicate memory/handoff file is created.
+
+Next safe action: finish fresh GitNexus index + staged `detect_changes`, commit/push the repaired exact candidate, open draft PR to current `main`, audit remote diff/CI, exact-SHA re-audit, then authorized merge/fetch/post-merge verification. Independent reviewer transport remains separate evidence; no PASS may be inferred from tool unavailability.

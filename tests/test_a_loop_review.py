@@ -4,11 +4,12 @@ state machine (review_bus.py, Phase 8).
 Contract: a task may only be marked complete when its review cycle is
 READY; CHANGES_REQUIRED pushes the loop back into fixing (with the
 finding ids); a stale approval at an old SHA re-opens review — the loop
-keeps cycling until everything aligns. This adapter reads git state via
-pure file IO (no subprocess) and never mutates goal/task stores.
+keeps cycling until everything aligns. This adapter resolves git state via
+bounded Git plumbing and never mutates goal/task stores.
 """
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -136,6 +137,19 @@ def test_head_sha_resolves_in_linked_worktree_gitfile(tmp_path):
     loop = ALoopReview(bus, git_dir=git_path)
     assert loop.head_sha() == sha
 
+
+def test_head_sha_resolves_relative_linked_worktree_gitfile(tmp_path):
+    """Gitfiles may store `gitdir:` relative to the gitfile location.
+    Resolve the pointer from `.git`'s parent, never process CWD."""
+    repo, sha = _mini_repo(tmp_path)
+    wt = tmp_path / "relative-gitfile-wt"
+    wt.mkdir()
+    git_path = wt / ".git"
+    relative = os.path.relpath(repo / ".git", start=wt)
+    git_path.write_text(f"gitdir: {relative}\n", encoding="utf-8")
+    bus = rb.ReviewBus(tmp_path / "relative-bus", phase="RB")
+    loop = ALoopReview(bus, git_dir=git_path)
+    assert loop.head_sha() == sha
 
 def test_head_sha_supports_detached_head(tmp_path):
     repo, sha = _mini_repo(tmp_path)
