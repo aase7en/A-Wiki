@@ -4,13 +4,17 @@ state machine (review_bus.py, Phase 8).
 Contract: a task may only be marked complete when its review cycle is
 READY; CHANGES_REQUIRED pushes the loop back into fixing (with the
 finding ids); a stale approval at an old SHA re-opens review — the loop
-keeps cycling until everything aligns. This adapter reads git state via
-pure file IO (no subprocess) and never mutates goal/task stores.
+keeps cycling until everything aligns. This adapter resolves git state via
+bounded Git plumbing and never mutates goal/task stores.
 """
 from __future__ import annotations
 
+import os
+import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
@@ -89,3 +93,97 @@ def test_gate_unknown_task_is_explicit(tmp_path):
     g = loop.task_gate("T-404")
     assert g["allow_complete"] is False
     assert g["status"] == "NO_REVIEW"
+
+
+# ── RB-1: worktree-safe exact HEAD resolution ────────────────────────
+def _mini_repo(tmp_path: Path):
+    """Real one-commit repo; returns (repo_root, head_sha)."""
+    r = tmp_path / "repo"
+    r.mkdir()
+
+    def git(*a):
+        subprocess.run(["git", *a], cwd=r, check=True,
+                       capture_output=True, timeout=30)
+
+    git("init", "-q")
+    git("config", "user.email", "t@t")
+    git("config", "user.name", "t")
+    (r / "f.txt").write_text("x", encoding="utf-8")
+    git("add", "-A")
+    git("commit", "-q", "-m", "c1")
+    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=r, check=True,
+                         capture_output=True, text=True,
+                         timeout=30).stdout.strip()
+    return r, sha
+
+
+def test_head_sha_resolves_in_normal_checkout(tmp_path):
+    repo, sha = _mini_repo(tmp_path)
+    bus = rb.ReviewBus(tmp_path / "bus", phase="RB")
+    loop = ALoopReview(bus, git_dir=repo / ".git")
+    assert loop.head_sha() == sha
+
+
+def test_head_sha_resolves_in_linked_worktree_gitfile(tmp_path):
+    """Linked worktree: .git is a gitfile POINTER, not a directory — the
+    exact condition that broke head_sha() (WO RB-1 regression)."""
+    repo, sha = _mini_repo(tmp_path)
+    wt = tmp_path / "linked-wt"
+    subprocess.run(["git", "-C", str(repo), "worktree", "add", "-q", str(wt)],
+                   check=True, capture_output=True, timeout=60)
+    git_path = wt / ".git"
+    assert git_path.is_file(), "linked worktree .git must be a gitfile"
+    bus = rb.ReviewBus(tmp_path / "bus", phase="RB")
+    loop = ALoopReview(bus, git_dir=git_path)
+    assert loop.head_sha() == sha
+
+
+def test_head_sha_resolves_relative_linked_worktree_gitfile(tmp_path):
+    """Gitfiles may store `gitdir:` relative to the gitfile location.
+    Resolve the pointer from `.git`'s parent, never process CWD."""
+    repo, sha = _mini_repo(tmp_path)
+    wt = tmp_path / "relative-gitfile-wt"
+    wt.mkdir()
+    git_path = wt / ".git"
+    relative = os.path.relpath(repo / ".git", start=wt)
+    git_path.write_text(f"gitdir: {relative}\n", encoding="utf-8")
+    bus = rb.ReviewBus(tmp_path / "relative-bus", phase="RB")
+    loop = ALoopReview(bus, git_dir=git_path)
+    assert loop.head_sha() == sha
+
+def test_head_sha_supports_detached_head(tmp_path):
+    repo, sha = _mini_repo(tmp_path)
+    subprocess.run(["git", "-C", str(repo), "checkout", "-q", "--detach"],
+                   check=True, capture_output=True, timeout=30)
+    bus = rb.ReviewBus(tmp_path / "bus2", phase="RB")
+    loop = ALoopReview(bus, git_dir=repo / ".git")
+    assert loop.head_sha() == sha
+
+
+def test_head_sha_fails_explicitly_on_missing_git_dir(tmp_path):
+    bus = rb.ReviewBus(tmp_path / "bus3", phase="RB")
+    loop = ALoopReview(bus, git_dir=tmp_path / "nonexistent")
+    with pytest.raises(rb.ReviewBusError):
+        loop.head_sha()
+
+
+def test_head_sha_fails_explicitly_on_invalid_gitfile(tmp_path):
+    bad = tmp_path / "repo2"
+    bad.mkdir()
+    (bad / ".git").write_text("garbage without gitdir prefix",
+                              encoding="utf-8")
+    bus = rb.ReviewBus(tmp_path / "bus4", phase="RB")
+    loop = ALoopReview(bus, git_dir=bad / ".git")
+    with pytest.raises(rb.ReviewBusError):
+        loop.head_sha()
+
+
+def test_head_sha_never_falls_back_on_git_failure(tmp_path):
+    """A directory that is not a git dir must raise, never return a
+    guessed/stale SHA."""
+    empty = tmp_path / "empty-git"
+    empty.mkdir()
+    bus = rb.ReviewBus(tmp_path / "bus5", phase="RB")
+    loop = ALoopReview(bus, git_dir=empty)
+    with pytest.raises(rb.ReviewBusError):
+        loop.head_sha()
