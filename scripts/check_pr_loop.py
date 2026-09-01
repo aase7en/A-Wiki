@@ -21,6 +21,14 @@ import json
 import re
 import sys
 
+# Locale pipes (Thai-Windows cp874 etc.) crash printing ✅ status output;
+# pin pipes to UTF-8 like scripts/hooks_runner.py does.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):
+        pass
+
 _EVIDENCE_HEADER = re.compile(r"^#{1,3}\s*Loop-Evidence\s*$", re.I | re.M)
 _REFERENCE = re.compile(r"\b(WO-[A-Za-z0-9-]+|R-[A-Z]+-\d+|finding|M\d\b)", re.I)
 _TESTED_HINT = re.compile(r"test|pytest|verify|e2e|eval", re.I)

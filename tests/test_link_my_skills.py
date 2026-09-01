@@ -15,12 +15,17 @@ def test_link_my_skills_skips_existing_real_directory(tmp_path):
     marker = existing_pdf / "KEEP"
     marker.write_text("do not delete", encoding="utf-8")
 
+    # The bash script emits UTF-8 (✓/emoji status); text=True alone would
+    # decode with the locale codec and crash the reader thread on cp874
+    # Windows, silently turning stdout into None.
     result = subprocess.run(
         ["bash", str(SCRIPT), "--codex"],
         cwd=REPO_ROOT,
         env={"HOME": str(tmp_path), "PATH": "/usr/bin:/bin:/usr/sbin:/sbin"},
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
 

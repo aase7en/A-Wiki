@@ -32,6 +32,14 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# Locale pipes (Thai-Windows cp874 etc.) crash printing ✅ status output;
+# pin pipes to UTF-8 like scripts/hooks_runner.py does.
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):
+        pass
+
 # Make scripts/hospital importable
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
