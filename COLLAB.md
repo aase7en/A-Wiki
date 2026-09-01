@@ -19,6 +19,7 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
+| WO-REVIEW-BUS-OPS-20260901 worktree-safe A-Loop review integration | GLM5.3-ZCode-MAX | 2026-09-01 | COLLAB.md; docs/work-orders/WO-REVIEW-BUS-OPS-20260901.md; scripts/lib/a_loop_review.py; tests/test_a_loop_review.py; docs/runbooks/review-bus.md | fix/wo-review-bus-ops-20260901 |
 
 
 RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.
