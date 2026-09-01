@@ -33,7 +33,7 @@
 | WO-DASH-SEC-20260828 A-Wiki Live loopback write-surface hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | COLLAB.md; docs/work-orders/WO-DASH-SEC-20260828.md; scripts/live-dashboard/server.py; tests/test_dashboard_security.py; tests/test_dashboard_autostart.py; scripts/dashboard-ensure.sh | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 CSRF and state-changing GET hardening | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/src/graph.js; scripts/live-dashboard/fixes.html; scripts/live-dashboard/README.md; tests/test_dashboard_security.py | fix/wo-dash-sec-20260828-loopback |
 | WO-DASH-SEC-20260828 dashboard shipped bundle refresh | ChatGPT-GPT-5.6-Sol | 2026-08-28 | scripts/live-dashboard/app.min.js; scripts/live-dashboard/app.min.js.map; scripts/live-dashboard/package-lock.json | fix/wo-dash-sec-20260828-loopback |
-| WO-RFR-20260824 M8 final regression continuity audit | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; conductor/state.py; tests/test_conductor.py | fix/wo-rfr-m8-continuity-finalize |
+| WO-RFR-20260824 M8 final regression continuity audit | ChatGPT-GPT-5.6-Sol | 2026-09-01 | COLLAB.md; docs/work-orders/WO-RFR-20260824.md; docs/work-orders/WO-LANES-20260824.md; docs/migration/awiki-vnext-plan.md; conductor/state.py; tests/test_conductor.py | fix/wo-rfr-m8-continuity-finalize |
 
 
 RFR continuity release 2026-09-01: M1-M7 are merge/post-merge verified; canonical evidence remains in `docs/work-orders/WO-RFR-20260824.md`. M8 final regression/continuity audit is the sole active R-FR lane.
