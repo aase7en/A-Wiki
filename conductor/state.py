@@ -25,7 +25,13 @@ def parse_claims(collab: Path) -> list[dict]:
             continue
         if in_table and line.startswith("|") and "chunk/wo" not in line.lower()                 and set(line.replace("|", "").replace("-", "").strip()) <= set(": "):
             continue  # separator row of the claims table
-        if not in_table or not line.strip().startswith("|"):
+        if not in_table:
+            continue
+        if not line.strip():
+            # Formatting-only blank lines are tolerated inside the claims
+            # section; a non-table prose line still terminates the section.
+            continue
+        if not line.strip().startswith("|"):
             in_table = False
             continue
         if line.lower().startswith("| lane"):

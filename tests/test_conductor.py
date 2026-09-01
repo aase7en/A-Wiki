@@ -200,6 +200,34 @@ class TestColabParsingRegression:
         chunks = [c["chunk"] for c in claims]
         assert chunks == ["real-task"], f"lanes leaked into claims: {chunks}"
 
+    def test_claims_parser_keeps_claim_rows_after_blank_lines(self, tmp_path):
+        """Blank formatting inside the claims section must not hide live claims."""
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n"
+            "| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| old-task | claude | 2026-08-21 | a/** | feat/a |\n\n"
+            "| live-task | zcode | 2026-09-01 | b/** | feat/b |\n\n"
+            "continuity note\n",
+            encoding="utf-8")
+        from conductor.state import parse_claims
+        claims = parse_claims(tmp_path / "COLLAB.md")
+        assert [c["chunk"] for c in claims] == ["old-task", "live-task"]
+
+    def test_entry_gate_sees_conflict_after_blank_line(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n"
+            "| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| old-task | claude | 2026-08-21 | a/** | feat/a |\n\n"
+            "| fresh-idea | zcode | 2026-09-01 | b/** | feat/fresh-idea |\n",
+            encoding="utf-8")
+        from conductor.gate import entry_gate
+        verdict = entry_gate(repo_root=tmp_path, topic="fresh-idea", agent="codex")
+        assert verdict["verdict"] == "NO-GO"
+        assert any("fresh-idea" in conflict for conflict in verdict["conflicts"])
+
 
 # ══════════════════════════════════════════════════════════════════════
 # v0.2 — Brain Bridge: verify / recall / claim
