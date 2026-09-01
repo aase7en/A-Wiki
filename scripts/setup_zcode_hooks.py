@@ -45,7 +45,7 @@ HOOK_WIRING = [
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "SessionStart"]),
     ("SessionStart", "startup|resume|clear|compact",
      "scripts/hooks/a_loop_ssot.py", []),
-    ("UserPromptSubmit", "",
+    ("UserPromptSubmit", None,
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "UserPromptSubmit"]),
     ("PreToolUse", "Edit|Write|MultiEdit",
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "PreToolUse"]),
@@ -57,9 +57,9 @@ HOOK_WIRING = [
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "PostToolUse"]),
     ("PostToolUse", "Bash",
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "PostToolUse"]),
-    ("Stop", "",
+    ("Stop", None,
      "scripts/hooks_runner.py", ["--provider", "zcode", "--event", "Stop"]),
-    ("Stop", "",
+    ("Stop", None,
      "scripts/hooks/a_loop_continue.py", []),
 ]
 
@@ -80,11 +80,14 @@ def build_hooks_block(python_exe: str, loader_path: str) -> dict:
     for event, matcher, target, extra in HOOK_WIRING:
         entry = _hook_entry(python_exe, loader_path, target, extra)
         for group in events.setdefault(event, []):
-            if group["matcher"] == matcher:
+            if group.get("matcher") == matcher:
                 group["hooks"].append(entry)
                 break
         else:
-            events[event].append({"matcher": matcher, "hooks": [entry]})
+            group = {"hooks": [entry]}
+            if matcher is not None:
+                group["matcher"] = matcher
+            events[event].append(group)
     return {"enabled": True, "timeoutMs": DEFAULT_TIMEOUT_MS, "events": events}
 
 
@@ -193,9 +196,8 @@ def main(argv=None) -> int:
     print(f"  entries: {n} process hooks across "
           f"{len(report['hooks_block']['events'])} events")
     if not args.dry_run:
-        print("Next: เปิด ZCode session ใหม่ → hooks ทำงาน (config อ่านตอน session start)")
-        print("Verify: session ใหม่ใน repo ที่มี goal active ต้องเห็น '[a-loop SSoT]' "
-              "+ Stop hook ของ /A-Loop จะสั่งทำต่อ ≤3 รอบ")
+        print("Next: open a new ZCode session; hooks are read at session start.")
+        print("Verify: with an active goal, expect [a-loop SSoT] context and Stop continuation up to 3 rounds.")
     return 0 if (args.dry_run or report.get("config_updated")) else 1
 
 
