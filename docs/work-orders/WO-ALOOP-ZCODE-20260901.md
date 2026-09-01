@@ -1,6 +1,6 @@
 # WO-ALOOP-ZCODE-20260901 — a-loop Loop Engineer mode บน ZCode (hooks จริง)
 
-Status: ACTIVE · Created: 2026-09-01 · Owner: GLM/ZCode (lane GLM — deterministic/โค้ด)
+Status: DONE (MERGED) · Created: 2026-09-01 · Owner: GLM/ZCode (lane GLM — deterministic/โค้ด)
 Related: `skills/awiki/a-loop` · `docs/protocols/brain-improvement-gate.md` · AGENTS.md §Universal Loop Contract
 
 ## Goal
@@ -58,6 +58,12 @@ python scripts/audit_a_suite.py                   # a-loop pass
 
 ## Checkpoint
 
+- 2026-09-01 **✅ MERGED — PR #45 → main `05c0e4e5`** (user-authorized): CI 3/3 เขียวที่ rebased HEAD `b4d9cf69`
+  (Core verification 6m17s · loop-contract · py38-smoke) · rebase resolve COLLAB conflict กับ main ใหม่
+  (PRs #42-44 ล้างตาราง claim เก่า — เคารพ cleanup ฝั่งนั้น) · fetch-verify main SHA แล้ว ·
+  ติดตั้งบนเครื่อง Win แล้ว (`~/.zcode/cli/config.json` 11 hooks/5 events + loader, backup
+  `config.json.bak-20260901-233637`) · remaining: verify ใน ZCode session ใหม่ (SSoT inject + Stop
+  continuation) + backlog: แพ็ก ZCode plugin
 - 2026-09-01 created: facts verified (online + local + side-effect), TDD 23/23 เขียว,
   skill v1.1.0 + reference เขียนแล้ว, branch `feat/a-loop-zcode-loop-engineer`
 - 2026-09-01 next: regen-check/privacy/audit → commit chunks → draft PR (Loop-Evidence) →
