@@ -115,6 +115,42 @@ RED evidence = the 21 baseline failures above (per-family focused re-run command
 
 Next safe action: GitNexus impact for the 7 production entry symbols, then claim expansion to exactly the 10 files above, commit+push, then RED/TDD per file.
 
+## PB-1 checkpoint — CP874/ENCODING family repaired (2026-09-02)
+
+**Claim expansion:** conductor claim row `WO-PORTABILITY-BASELINE-20260902 PB-1 cp874 pipe-safety family` (13 exact files incl. `scripts/mcp-wiki-server.py` + `tests/test_user_journey_e2e.py` for PB-1b), pushed at `79a162c6`. No overlap with GPT Primary's ZCode-runtime lane. GitNexus impact before edit: all 7 production entry `main` symbols = **LOW** (0-2 direct callers, 0 processes); `tool_wiki_semantic_search`/`tool_wiki_regen_index` = 0 direct callers (registry-dispatched).
+
+**RED (deterministic Tier-1, new file `tests/test_console_pipe_safety.py`):**
+`env -u PYTHONUTF8 -u PYTHONIOENCODING python -m pytest tests/test_console_pipe_safety.py -q` = **7 failed in 3.15s** — every child crashed with the exact baseline signature `UnicodeEncodeError: 'charmap' codec can't encode character '\u2705'`. The tests force `PYTHONIOENCODING=cp874` + `PYTHONUTF8=0` in the child, so the crash reproduces on ANY locale (UTF-8 CI included), not only Thai-Windows machines.
+
+**Fix (commit `71246e8c`, 10 files, +170 lines):**
+- 7 production entries gained the existing repo guard idiom `for _s in (sys.stdout, sys.stderr): _s.reconfigure(encoding="utf-8", errors="replace")` (same as scripts/hooks_runner.py / scripts/a_escalate.py): `conductor/__main__.py`, `scripts/awiki-doctor.py`, `scripts/awiki-guide.py`, `scripts/check_pr_loop.py`, `scripts/hooks/check_machine_path.py`, `scripts/check-graph-yaml.py`, `scripts/hospital/verify_regression.py`.
+- 2 test helpers gained explicit `encoding="utf-8", errors="replace"` (bash scripts emit UTF-8; `text=True` alone decodes with the locale codec and crashes the reader thread, silently turning `stdout` into None): `tests/test_link_agent_configs.py::run_script`, `tests/test_link_my_skills.py`.
+- Guard scope note: interactive Windows consoles already use UTF-16 WriteConsoleW; the guard only changes byte-pipe streams, which is exactly where the crash lived.
+
+**GREEN:** `tests/test_console_pipe_safety.py` = **7 passed in 7.58s**. Full family sweep (all 11 affected files): **101 tests, 100 passed / 1 failed** — the 1 was `test_doctor_guide.py::test_doctor_runs_and_reports_sections` failing on the doctor **privacy section being red**, caused by the new test file's first payload (a non-placeholder Linux-home username) tripping `check-privacy.py`'s `home_path` scanner. Resolved by switching the fixture to the scanner's doc-placeholder username `you` (still denied rc 2 by the hook — that name is not on the hook allowlist). After that: privacy = "no personal data detected" (rc 0) and `tests/test_console_pipe_safety.py + tests/test_doctor_guide.py` = **10 passed**.
+
+**Pre-commit gates for `71246e8c`:** `git diff --check` PASS · managed Python 3.8 `py_compile` on all 7 production files + 3 test files PASS · privacy PASS · GitNexus `detect-changes --scope staged` = 10 files / 18 symbols / **0 processes / risk LOW**.
+
+## PB-1b checkpoint — MCP semantic-search decode defect repaired (2026-09-02)
+
+**Root cause (#21):** `scripts/mcp-wiki-server.py::tool_wiki_semantic_search` ran `query-rag.py` via `subprocess.run(..., text=True)` without an explicit encoding. The child emits UTF-8 (emoji/Thai in snippets — verified 94 non-ASCII bytes per response); under a locale-pipe the parent's reader thread dies on undefined cp874 byte 0x9F (UTF-8 emoji trail byte), `stdout` silently becomes None, and `json.loads(None)` raises `TypeError` surfaced as JSON-RPC `Internal error` instead of the honest missing-dependency degrade the journey test demands. Same family as PB-1, but on the production side of the pipe. (Verified: standalone mimic with matching env succeeded, isolating the failure to the fixture's UTF-8 env + locale-decode combination.)
+
+**RED:** `env -u PYTHONUTF8 -u PYTHONIOENCODING python -m pytest "tests/test_user_journey_e2e.py::TestJourney2bMcpButtons::test_semantic_search_button_degrades_honestly" -q` = **1 failed** (`TypeError: the JSON object must be str, bytes or bytearray, not NoneType` inside the tool).
+
+**Fix (commit `51d3be66`):** explicit `encoding="utf-8", errors="replace"` on all three text-mode child pipes in the server — `tool_wiki_semantic_search` (query-rag) and `tool_wiki_regen_index` (gen-index + build-vec-index, same latent gap: `result.stdout.strip()` would have raised AttributeError on None).
+
+**GREEN:** full `tests/test_user_journey_e2e.py` = **38 passed / 1 skipped in 90.52s**; related `tests/test_mcp_wiki_server.py + tests/test_awiki_adopt.py` = **64 passed**. Python 3.8 `py_compile` PASS; `git diff --check` PASS; GitNexus `detect-changes --scope staged` = 1 file / 2 symbols / **0 processes / risk LOW**.
+
+## PB-2 / PB-3 classification — no distinct defects remain in those families
+
+- **PB-2 (Git-Bash/MSYS/path/symlink):** the 7 link-script failures were 100% the cp874 parent-decode mechanism (reader-thread `UnicodeDecodeError byte 0x9f` → stdout None). After the helper decode fix, all 7 pass — junction/symlink/MSYS-ln logic itself (skip-existing, msys-ln guard, status counts, dry-run) behaves correctly on this machine. No production symlink defect to fix. GIT_BASH_MSYS_PATH final = 0.
+- **PB-3 (linked-worktree/git):** 0 failures in the fresh baseline — PR #46's relative-gitdir fix covers this family. Nothing to repair.
+- **FTS_ENVIRONMENT:** 0 failing nodeids in the fresh baseline (the M8-era FTS-debt test is skipped/passes). GitNexus FTS extension remains unavailable on this Windows runtime (OpenSSL DLL dependency) — recorded as environment/tool limitation, no machine mutation attempted, per WO rules.
+
+**Safety gates at this checkpoint (pre-final-regression):** privacy = "no personal data detected" PASS · security `scan_repo.py --ci` = **6324 tracked / 51 baseline / 0 new** · stale-spec = `[OK] no stale specs` PASS · wiki-health = **0 hard / 352 advisory** (advisory count unchanged from M8) · `git diff --check` PASS.
+
+**Remaining before completion:** final full native regression, final WO verdict, claim release.
+
 ## Parallel-lane boundaries
 
 GPT Primary concurrently owns the ZCode runtime repair lane. Do NOT modify:
