@@ -1,6 +1,6 @@
 # WO-ALOOP-ZCODE-20260901 — a-loop Loop Engineer mode บน ZCode (hooks จริง)
 
-Status: DONE (MERGED) · Created: 2026-09-01 · Owner: GLM/ZCode (lane GLM — deterministic/โค้ด)
+Status: RUNTIME_REPAIR_GREEN / PR_PENDING · Created: 2026-09-01 · Owner: GLM/ZCode (lane GLM — deterministic/โค้ด)
 Related: `skills/awiki/a-loop` · `docs/protocols/brain-improvement-gate.md` · AGENTS.md §Universal Loop Contract
 
 ## Goal
@@ -72,3 +72,13 @@ python scripts/audit_a_suite.py                   # a-loop pass
   tests ~30 นาที — gap ที่ควรเริ่ม claim ก่อน; note เพื่อไม่ทำซ้ำ; ironic จุดนี้คือ claim-gate
   hook ที่ควะกันเรื่องนี้เองไม่ได้ยิงบน ZCode = ปัญหาที่ WO นี้แก้)
 - Backlog: แพ็กเป็น ZCode plugin (hooks/hooks.json) แจกข้ามเครื่องไม่ต้อง setup ต่อเครื่อง
+
+## Checkpoint - 2026-09-02 runtime matcher + cp874 repair
+
+Post-merge live ZCode logs exposed a real runtime blocker that PR #45 tests missed: `~/.zcode/cli/config.json` was rejected with `config_file_invalid` because generated `UserPromptSubmit` and `Stop` groups used `matcher: ""`; ZCode requires a non-empty matcher and documents omission as match-all. The active desktop session therefore had no A-Wiki user-hook execution evidence.
+
+TDD repair 1: regression `test_build_hooks_block_omits_matcher_for_match_all_events` was RED on the shipped generator. GitNexus pre-edit impact for `build_hooks_block` = MEDIUM, 9 impacted symbols, 0 execution flows. `HOOK_WIRING` now uses `None` for match-all and `build_hooks_block()` omits the matcher key instead of serializing an empty string. Target GREEN; related ZCode installer/hook suite reached 24 passed.
+
+Live reinstall then exposed a second deterministic Windows defect: config was written correctly but installer exited 1 because its final Thai/arrow console text raised `UnicodeEncodeError` under cp874. Regression `test_installer_cli_survives_cp874_console` reproduced the failure. GitNexus impact for `main()` = LOW, 2 impacted symbols, 0 execution flows. CLI guidance is now ASCII-safe; compile PASS and related suite = **25 passed**.
+
+Machine E2E after repair: installer exit 0, backup `config.json.bak-20260902-005621`, 11 process hooks across 5 events, `empty_matchers=[]`, and match-all matcher omitted for both UserPromptSubmit and Stop. A fresh ZCode CLI process from `%TEMP%` ran `skills list --json` with `rc=0`, `stderr=0`, loaded 473 skills, and reported no `config_file_invalid` diagnostic. Two unrelated pre-existing `skill_description_too_long` diagnostics remain outside this WO. Existing ZCode GUI sessions still use their startup snapshot; the next fresh GUI/task session is the remaining presentation-layer confirmation for SessionStart/Stop behavior.
