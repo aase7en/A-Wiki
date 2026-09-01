@@ -54,3 +54,9 @@ def test_strip_code_handles_commonmark_delimiter_runs_and_tilde_fences():
         cleaned = build_wiki_graph.strip_code(source)
         assert "[[fake]]" not in cleaned
         assert visible in cleaned
+
+
+def test_escaped_backticks_do_not_hide_real_wikilinks():
+    source = r"\`[[real]]\`"
+    cleaned = build_wiki_graph.strip_code(source)
+    assert "[[real]]" in cleaned

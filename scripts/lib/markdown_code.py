@@ -50,11 +50,20 @@ def _strip_fenced_code(text: str) -> str:
     return "".join(out)
 
 
+def _is_escaped(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return backslashes % 2 == 1
+
+
 def _strip_code_spans(text: str) -> str:
     chars = list(text)
     i = 0
     while i < len(text):
-        if text[i] != "`":
+        if text[i] != "`" or _is_escaped(text, i):
             i += 1
             continue
 
@@ -66,7 +75,7 @@ def _strip_code_spans(text: str) -> str:
         cursor = opener_end
         close_end = -1
         while cursor < len(text):
-            if text[cursor] != "`":
+            if text[cursor] != "`" or _is_escaped(text, cursor):
                 cursor += 1
                 continue
             candidate_end = cursor + 1
