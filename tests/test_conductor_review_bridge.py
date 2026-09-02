@@ -557,3 +557,146 @@ def test_record_retest_new_sha_keeps_task_map_head_in_sync(tmp_path):
     persisted = json.loads(br._map_path(tid).read_text(encoding="utf-8"))
     assert st["head_sha"] == new_sha
     assert persisted["head_sha"] == new_sha
+
+
+# --- GPT adversarial rereview REDs: original RB-A1..A7 blockers ---
+
+def _commit_new_head(repo: Path, name: str = "probe.txt") -> str:
+    target = repo / name
+    target.write_text(uuid.uuid4().hex + "\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repo), "add", name], check=True)
+    subprocess.run(
+        ["git", "-C", str(repo), "commit", "-m", "probe head advance"],
+        check=True, capture_output=True, text=True,
+    )
+    return _head(repo)
+
+
+def test_stale_result_rejected_after_actual_git_head_advances(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    _commit_new_head(br._root)
+    with pytest.raises(ReviewBridgeError, match="head|stale"):
+        br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+
+
+def test_ready_not_usable_after_actual_git_head_advances(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+    br.record_retest(tid, ok=True)
+    br.record_ci(tid, ok=True)
+    assert br.status(tid)["allow_complete"] is True
+    _commit_new_head(br._root, "advance.txt")
+    assert br.status(tid)["allow_complete"] is False
+
+
+def test_dirty_worktree_cannot_reach_or_keep_ready(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+    br.record_retest(tid, ok=True)
+    (br._root / "dirty.txt").write_text("dirty", encoding="utf-8")
+    br.record_ci(tid, ok=True)
+    assert br.status(tid)["allow_complete"] is False
+
+
+def test_repeated_open_cannot_hide_existing_blocker(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    br.ingest(tid, _result(
+        tid, opened["head_sha"], verdict="CHANGES_REQUIRED",
+        findings=[{"severity": "P1", "area": "trust", "summary": "block"}],
+    ))
+    _commit_new_head(br._root, "fix.txt")
+    with pytest.raises(ReviewBridgeError, match="block|review|cycle"):
+        br.open(tid, ["retest"])
+
+
+def test_pinned_reviewer_identity_is_enforced(tmp_path):
+    br = _bridge(tmp_path)
+    tid = _tid()
+    opened = br.open(tid, ["t"], reviewer="glm-5.3")
+    with pytest.raises(ReviewBridgeError, match="reviewer|model|identity"):
+        br.ingest(tid, _result(
+            tid, opened["head_sha"], verdict="PASS", findings=[], model="other-model",
+        ))
+    with pytest.raises(ReviewBridgeError, match="reviewer|model|identity"):
+        br.ingest(tid, _result(
+            tid, opened["head_sha"], verdict="PASS", findings=[],
+            model="glm-5.3", reviewer="other-model",
+        ))
+
+
+def test_ingest_replay_after_partial_bus_mutation_does_not_duplicate(tmp_path, monkeypatch):
+    br, tid, opened = _open(tmp_path)
+    result = _result(
+        tid, opened["head_sha"], verdict="CHANGES_REQUIRED",
+        findings=[
+            {"severity": "P2", "area": "a", "summary": "one"},
+            {"severity": "P2", "area": "b", "summary": "two"},
+        ],
+    )
+    original = br.bus.add_finding
+    calls = {"n": 0}
+
+    def crash_after_first_add(**kwargs):
+        finding = original(**kwargs)
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("simulated crash after ReviewBus mutation")
+        return finding
+    monkeypatch.setattr(br.bus, "add_finding", crash_after_first_add)
+    with pytest.raises(RuntimeError, match="simulated crash"):
+        br.ingest(tid, result)
+    monkeypatch.setattr(br.bus, "add_finding", original)
+
+    replay = br.ingest(tid, result)
+    doc = br.bus.load(opened["cycle"])
+    assert len(doc["findings"]) == 2
+    assert [f["summary"] for f in doc["findings"]] == ["one", "two"]
+    assert replay["duplicate"] is True
+
+
+def test_atomic_map_save_preserves_previous_bytes_on_write_failure(tmp_path, monkeypatch):
+    br, tid, _opened = _open(tmp_path)
+    path = br._map_path(tid)
+    before = path.read_bytes()
+    original_write_text = Path.write_text
+
+    def fail_after_partial_write(self, data, *args, **kwargs):
+        self.write_bytes(b"{broken")
+        raise OSError("simulated partial write")
+
+    monkeypatch.setattr(Path, "write_text", fail_after_partial_write)
+    with pytest.raises(OSError, match="partial write"):
+        br._save_map(tid, {"task_id": tid, "cycle": "XRB-c999", "head_sha": "0" * 40, "ingest": None})
+    monkeypatch.setattr(Path, "write_text", original_write_text)
+    assert path.read_bytes() == before
+
+
+def test_pinned_reviewer_rejects_missing_identity(tmp_path):
+    br = _bridge(tmp_path)
+    tid = _tid()
+    opened = br.open(tid, ["t"], reviewer="glm-5.3")
+    with pytest.raises(ReviewBridgeError, match="reviewer|model|identity"):
+        br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+
+
+def test_cli_oversized_result_rejected_before_whole_file_read(tmp_path, monkeypatch, capsys):
+    from conductor import cli as conductor_cli
+
+    result_file = tmp_path / "oversized-result.json"
+    result_file.write_bytes(b"x" * (64_000 + 1))
+    original_read_text = Path.read_text
+
+    def guarded_read_text(self, *args, **kwargs):
+        if self == result_file:
+            raise AssertionError("whole-file-read")
+        return original_read_text(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    rc = conductor_cli.main([
+        "review", "ingest", "--task", "oversized-probe",
+        "--file", str(result_file), "--json",
+    ])
+    captured = capsys.readouterr()
+    assert rc == 1
+    assert "size" in captured.out.lower() or "large" in captured.out.lower()
+    assert "whole-file-read" not in captured.out + captured.err
