@@ -521,3 +521,39 @@ def test_cli_corrupt_task_map_is_bounded_json_without_traceback():
         assert "Traceback" not in p.stdout and "Traceback" not in p.stderr
     finally:
         path.unlink(missing_ok=True)
+
+
+# --- GPT adversarial rereview REDs: map ↔ ReviewBus binding ---
+
+def test_task_map_cycle_must_belong_to_same_bridge_task(tmp_path):
+    br = _bridge(tmp_path)
+    a = _tid()
+    b = _tid()
+    br.open(a, ["a"])
+    br.open(b, ["b"])
+    ma = json.loads(br._map_path(a).read_text(encoding="utf-8"))
+    mb = json.loads(br._map_path(b).read_text(encoding="utf-8"))
+    ma["cycle"] = mb["cycle"]
+    ma["head_sha"] = mb["head_sha"]
+    br._map_path(a).write_text(json.dumps(ma), encoding="utf-8")
+    with pytest.raises(ReviewBridgeError, match="cycle|identity|task"):
+        br.status(a)
+
+
+def test_task_map_head_must_match_review_bus_head(tmp_path):
+    br, tid, _opened = _open(tmp_path)
+    m = json.loads(br._map_path(tid).read_text(encoding="utf-8"))
+    m["head_sha"] = "0" * 40
+    br._map_path(tid).write_text(json.dumps(m), encoding="utf-8")
+    with pytest.raises(ReviewBridgeError, match="head"):
+        br.status(tid)
+
+
+def test_record_retest_new_sha_keeps_task_map_head_in_sync(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    new_sha = opened["head_sha"][:-1] + ("0" if opened["head_sha"][-1] != "0" else "1")
+    br.record_retest(tid, ok=True, sha=new_sha)
+    st = br.status(tid)
+    persisted = json.loads(br._map_path(tid).read_text(encoding="utf-8"))
+    assert st["head_sha"] == new_sha
+    assert persisted["head_sha"] == new_sha
