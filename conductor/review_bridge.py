@@ -233,7 +233,8 @@ class ReviewBridge:
                                transport=TRANSPORT)
         cid = f"{doc['phase']}-c{doc['cycle']}"
         self._save_map(task_id, {"task_id": task_id, "cycle": cid,
-                                 "head_sha": head, "ingest": None})
+                                 "head_sha": head, "reviewer": rev,
+                                 "ingest": None})
         return {"schema": SCHEMA, "task_id": task_id, "cycle": cid,
                 "head_sha": head, "transport": TRANSPORT,
                 "status": doc["status"]}
@@ -278,7 +279,7 @@ class ReviewBridge:
         if model is not None and result_reviewer is not None and model != result_reviewer:
             raise ReviewBridgeError("conflicting model/reviewer identity")
         supplied_identity = model or result_reviewer
-        pinned = doc.get("reviewer")
+        pinned = m.get("reviewer")
         if pinned is not None and supplied_identity != pinned:
             raise ReviewBridgeError(
                 f"reviewer identity mismatch: cycle is pinned to {pinned!r}"
