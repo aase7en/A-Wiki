@@ -7,6 +7,7 @@ real Google Drive mount are never touched.
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,24 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = REPO_ROOT / "scripts" / "link-agent-configs.sh"
 
 IS_WINDOWS = sys.platform == "win32" or os.name == "nt"
+
+
+def _bash_executable() -> str:
+    """Use Git-for-Windows bash for Windows-path-aware script tests.
+
+    Native Windows may expose ``WindowsApps\\bash.exe`` as the WSL launcher;
+    feeding it ``A:\\...`` paths is a different runtime and can fail before
+    the script starts. Resolve bash next to the installed Git executable so
+    PowerShell and Git-Bash test entry points exercise the same MSYS runtime.
+    """
+    if IS_WINDOWS:
+        git_exe = shutil.which("git")
+        if git_exe:
+            git_root = Path(git_exe).resolve().parent.parent
+            candidate = git_root / "bin" / "bash.exe"
+            if candidate.is_file():
+                return str(candidate)
+    return "bash"
 
 
 def _is_managed_link(link: Path, expected_target: Path) -> bool:
@@ -53,12 +72,32 @@ def _base_path() -> str:
     return "/usr/bin:/bin:/usr/sbin:/sbin"
 
 
+def _sandbox_path_wrapper(is_windows: bool) -> str:
+    """Build the shell prefix used to shadow Unix commands in sandbox tests.
+
+    Git-for-Windows needs cygpath for host Path values; POSIX paths are already
+    shell-native and must not depend on the Windows-only cygpath utility.
+    """
+    if is_windows:
+        return (
+            'prefix="$(cygpath -u "$AWIKI_TEST_PATH_PREFIX")"; '
+            'script="$(cygpath -u "$AWIKI_TEST_SCRIPT")"; '
+            'export PATH="$prefix:/usr/bin:/bin:/usr/sbin:/sbin"; '
+            'exec "$script" "$@"'
+        )
+    return (
+        'export PATH="$AWIKI_TEST_PATH_PREFIX:/usr/bin:/bin:/usr/sbin:/sbin"; '
+        'exec "$AWIKI_TEST_SCRIPT" "$@"'
+    )
+
+
 def run_script(
     *args: str,
     home: Path,
     drive: Path,
     extra_env: dict[str, str] | None = None,
     manage_repo_env: bool = False,
+    bash_path_prefix: Path | None = None,
 ) -> subprocess.CompletedProcess[str]:
     """Run the real script against a sandboxed HOME + fake drive.
 
@@ -77,12 +116,26 @@ def run_script(
     full_args = list(args)
     if not manage_repo_env:
         full_args.append("--no-repo-env")
+    # Git-for-Windows prepends its default /usr/bin paths at shell startup,
+    # ahead of an inherited PATH. Tests that must shadow one Unix command need
+    # to prepend their sandbox path *inside* bash after startup.
+    command = [_bash_executable(), str(SCRIPT), *full_args]
+    if bash_path_prefix is not None:
+        env["AWIKI_TEST_PATH_PREFIX"] = str(bash_path_prefix)
+        env["AWIKI_TEST_SCRIPT"] = str(SCRIPT)
+        wrapper = _sandbox_path_wrapper(IS_WINDOWS)
+        command = [_bash_executable(), "-c", wrapper, "awiki-test", *full_args]
+    # The bash script emits UTF-8 (✓/emoji status); text=True alone would
+    # decode with the locale codec and crash the reader thread on cp874
+    # Windows, silently turning stdout into None.
     return subprocess.run(
-        ["bash", str(SCRIPT), *full_args],
+        command,
         cwd=REPO_ROOT,
         env=env,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
 
@@ -323,6 +376,15 @@ def test_repo_env_linked_via_repo_root(tmp_path):
     assert _is_managed_link(link, expected)
 
 
+def test_sandbox_path_wrapper_uses_cygpath_only_on_windows():
+    windows = _sandbox_path_wrapper(True)
+    posix = _sandbox_path_wrapper(False)
+    assert "cygpath" in windows
+    assert "cygpath" not in posix
+    assert "$AWIKI_TEST_PATH_PREFIX" in posix
+    assert "$AWIKI_TEST_SCRIPT" in posix
+
+
 def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
     """Git Bash/MSYS `ln -s` silently deep-copies (or creates a fake dir) and
     exits 0 when symlink support is off. Simulate that with a stub `ln` that
@@ -337,9 +399,13 @@ def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
     fakebin = tmp_path / "fakebin"
     fakebin.mkdir()
     stub = fakebin / "ln"
+    marker = tmp_path / "ln-stub-invoked"
     stub.write_text(
         "#!/bin/bash\n"
         '# mimic MSYS silent fallback: `ln -s <target> <link>` deep-copies, exit 0\n'
+        'marker="$AWIKI_LN_STUB_MARKER"\n'
+        'if command -v cygpath >/dev/null 2>&1; then marker="$(cygpath -u "$marker")"; fi\n'
+        'printf invoked > "$marker"\n'
         'if [ "$1" = "-s" ]; then cp -r "$2" "$3"; exit 0; fi\n'
         'exec /bin/ln "$@"\n',
         encoding="utf-8",
@@ -349,9 +415,14 @@ def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
     result = run_script(
         home=home,
         drive=drive,
-        extra_env={"PATH": f"{fakebin}:/usr/bin:/bin:/usr/sbin:/sbin"},
+        extra_env={"AWIKI_LN_STUB_MARKER": str(marker)},
+        bash_path_prefix=fakebin,
     )
     assert result.returncode == 0, result.stderr + result.stdout
+    assert marker.read_text(encoding="utf-8") == "invoked", (
+        "fake ln must actually intercept create_link; otherwise this regression "
+        "does not exercise the MSYS silent-copy path"
+    )
 
     target = home / ".claude" / "skills" / "debug-mantra"
     assert not target.exists(), "silent copy left behind masquerading as a link"

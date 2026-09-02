@@ -9,6 +9,15 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+def _configure_utf8_stdio() -> None:
+    """Pin CLI byte streams to UTF-8 without mutating host stdio on import."""
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GRAPH = REPO_ROOT / "docs" / "graph" / "PROJECT-GRAPH.yaml"
 
@@ -40,6 +49,7 @@ def check_graph(path: Path) -> list[str]:
 
 
 def main() -> int:
+    _configure_utf8_stdio()
     problems = check_graph(GRAPH)
     for p in problems:
         print(f"❌ {p}")

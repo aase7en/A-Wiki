@@ -27,6 +27,15 @@ import re
 import sys
 from pathlib import Path
 
+def _configure_utf8_stdio() -> None:
+    """Pin CLI byte streams to UTF-8 without mutating host stdio on import."""
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PATTERNS_FILE = REPO_ROOT / "scripts" / "hooks" / "security_patterns.yaml"
 
@@ -99,6 +108,7 @@ def _scan(text: str) -> list[str]:
 
 
 def main() -> int:
+    _configure_utf8_stdio()
     if os.environ.get("HOOK_SKIP", "").split() and "check_machine_path" in os.environ["HOOK_SKIP"].split():
         return 0
 

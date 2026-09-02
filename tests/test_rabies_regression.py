@@ -28,7 +28,7 @@ def test_regression_hns_pass():
     """
     proc = subprocess.run(
         [sys.executable, str(VERIFIER)],
-        capture_output=True, text=True, timeout=60,
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60,
     )
     assert proc.returncode == 0, (
         f"verify_regression.py failed (exit {proc.returncode}):\n"
