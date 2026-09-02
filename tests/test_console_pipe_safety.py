@@ -102,3 +102,37 @@ def test_verify_regression_survives_cp874_pipe():
     pytest.importorskip("openpyxl", reason="rabies regression HN workbook needs openpyxl")
     r = _run([sys.executable, "scripts/hospital/verify_regression.py"], timeout=120)
     assert r.returncode == 0, r.stderr[-300:]
+
+
+@pytest.mark.parametrize("relative_path", [
+    "scripts/awiki-doctor.py",
+    "scripts/awiki-guide.py",
+    "scripts/check-graph-yaml.py",
+    "scripts/check_pr_loop.py",
+    "scripts/hooks/check_machine_path.py",
+    "scripts/hospital/verify_regression.py",
+])
+def test_import_does_not_reconfigure_host_stdio(relative_path: str):
+    """Importing a CLI module must not mutate the embedding process streams.
+
+    The cp874 repair belongs to CLI execution only. Some of these files are
+    imported with importlib by tests/tools, so module import must preserve the
+    caller's stdout/stderr encoding.
+    """
+    probe = (
+        "import runpy,sys; "
+        "before=sys.stdout.encoding; "
+        "runpy.run_path(sys.argv[1], run_name='awiki_import_probe'); "
+        "after=sys.stdout.encoding; "
+        "raise SystemExit(0 if before == after else 9)"
+    )
+    env = {**os.environ, "PYTHONIOENCODING": "cp874", "PYTHONUTF8": "0"}
+    r = subprocess.run(
+        [sys.executable, "-c", probe, str(REPO_ROOT / relative_path)],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        env=env, cwd=str(REPO_ROOT), timeout=120,
+    )
+    assert r.returncode == 0, (
+        f"import mutated host stdio for {relative_path}: rc={r.returncode}; "
+        f"stderr={r.stderr[-300:]}"
+    )

@@ -10,13 +10,14 @@
 """
 import sys
 
-# Locale pipes (Thai-Windows cp874 etc.) crash printing ✅/Thai guide
-# output; pin pipes to UTF-8 like scripts/hooks_runner.py does.
-for _s in (sys.stdout, sys.stderr):
-    try:
-        _s.reconfigure(encoding="utf-8", errors="replace")
-    except (AttributeError, OSError, ValueError):
-        pass
+def _configure_utf8_stdio() -> None:
+    """Pin CLI byte streams to UTF-8 without mutating host stdio on import."""
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
 
 GUIDE = {
     "": """
@@ -68,6 +69,7 @@ GUIDE = {
 
 
 def main(argv=None) -> int:
+    _configure_utf8_stdio()
     topic = (argv or sys.argv[1:])[0] if (argv or sys.argv[1:]) else ""
     print(GUIDE.get(topic, GUIDE[""]))
     if topic not in GUIDE:
