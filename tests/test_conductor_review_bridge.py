@@ -474,3 +474,15 @@ def test_engine_contract_error_is_translated_to_bridge_error(tmp_path):
         br.resolve(tid, "R-XRB-999", fix_sha="abc1234")
     with pytest.raises(ReviewBridgeError, match="finding"):
         br.verify_finding(tid, "R-XRB-999")
+
+
+def test_cli_unknown_finding_is_bounded_json_without_traceback():
+    br = ReviewBridge(REPO_ROOT)
+    tid = "CLI-ERR-" + uuid.uuid4().hex[:10]
+    br.open(tid, ["t"])
+    p = _cli("resolve", "--task", tid, "--finding", "R-XRB-999", "--fix-sha", "abc1234")
+    assert p.returncode == 1
+    data = json.loads(p.stdout)
+    assert data["ok"] is False
+    assert "finding" in data["error"]
+    assert "Traceback" not in p.stdout and "Traceback" not in p.stderr
