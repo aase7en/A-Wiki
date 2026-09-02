@@ -181,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "review":
-        from .review_bridge import ReviewBridge, ReviewBridgeError
+        from .review_bridge import MAX_RESULT_BYTES, ReviewBridge, ReviewBridgeError
         bridge = ReviewBridge(REPO_ROOT)
         ok = args.ok == "true" if hasattr(args, "ok") else None
         try:
@@ -195,8 +195,14 @@ def main(argv: list[str] | None = None) -> int:
                     raise ReviewBridgeError(f"result file not found: {args.file}")
                 import json as _json
                 try:
+                    size = path.stat().st_size
+                    if size > MAX_RESULT_BYTES:
+                        raise ReviewBridgeError(
+                            f"result file exceeds size bound ({MAX_RESULT_BYTES} bytes)")
                     payload = _json.loads(path.read_text(encoding="utf-8"))
-                except (OSError, _json.JSONDecodeError) as e:
+                except ReviewBridgeError:
+                    raise
+                except (OSError, UnicodeError, _json.JSONDecodeError) as e:
                     raise ReviewBridgeError(
                         f"result file unreadable/invalid JSON: {e}") from None
                 out = bridge.ingest(args.task, payload)

@@ -332,7 +332,8 @@ def test_new_sha_invalidates_stale_approval(tmp_path):
     br.record_ci(tid, ok=True)
     assert br.status(tid)["allow_complete"] is True
     # a fix landed → new head retested → the old approval is revoked
-    br.record_retest(tid, ok=True, sha=head[:-1] + ("0" if head[-1] != "0" else "1"))
+    new_head = _commit_new_head(br._root, "rb8-new-head.txt")
+    br.record_retest(tid, ok=True, sha=new_head)
     st = br.status(tid)
     assert st["allow_complete"] is False
     assert st["status"] == "REVIEW_REQUESTED"
@@ -551,7 +552,7 @@ def test_task_map_head_must_match_review_bus_head(tmp_path):
 
 def test_record_retest_new_sha_keeps_task_map_head_in_sync(tmp_path):
     br, tid, opened = _open(tmp_path)
-    new_sha = opened["head_sha"][:-1] + ("0" if opened["head_sha"][-1] != "0" else "1")
+    new_sha = _commit_new_head(br._root, "map-sync.txt")
     br.record_retest(tid, ok=True, sha=new_sha)
     st = br.status(tid)
     persisted = json.loads(br._map_path(tid).read_text(encoding="utf-8"))
@@ -594,7 +595,8 @@ def test_dirty_worktree_cannot_reach_or_keep_ready(tmp_path):
     br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
     br.record_retest(tid, ok=True)
     (br._root / "dirty.txt").write_text("dirty", encoding="utf-8")
-    br.record_ci(tid, ok=True)
+    with pytest.raises(ReviewBridgeError, match="dirty"):
+        br.record_ci(tid, ok=True)
     assert br.status(tid)["allow_complete"] is False
 
 
