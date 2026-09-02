@@ -10,6 +10,15 @@
 """
 import sys
 
+def _configure_utf8_stdio() -> None:
+    """Pin CLI byte streams to UTF-8 without mutating host stdio on import."""
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
 GUIDE = {
     "": """
 🧠 A-Wiki ใน 30 วินาที
@@ -60,6 +69,7 @@ GUIDE = {
 
 
 def main(argv=None) -> int:
+    _configure_utf8_stdio()
     topic = (argv or sys.argv[1:])[0] if (argv or sys.argv[1:]) else ""
     print(GUIDE.get(topic, GUIDE[""]))
     if topic not in GUIDE:

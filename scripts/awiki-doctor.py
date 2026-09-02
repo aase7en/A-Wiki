@@ -16,6 +16,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+def _configure_utf8_stdio() -> None:
+    """Pin CLI byte streams to UTF-8 without mutating host stdio on import."""
+    for _s in (sys.stdout, sys.stderr):
+        try:
+            _s.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, OSError, ValueError):
+            pass
+
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -63,6 +72,7 @@ def sections(full: bool) -> list[tuple[str, bool, str, str]]:
 
 
 def main(argv=None) -> int:
+    _configure_utf8_stdio()
     ap = argparse.ArgumentParser(description="A-Wiki brain health check")
     ap.add_argument("--full", action="store_true",
                     help="add preflight + last CI verdict (slower)")
