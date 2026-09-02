@@ -1,6 +1,6 @@
 ﻿# WO-PORTABILITY-BASELINE-20260902 — Windows portability baseline burn-down
 
-Status: PRIMARY_INTEGRATION_READY / CLAIM_RELEASED
+Status: COMPLETE / MERGED / POST_MAIN_GREEN / VERIFIED / CLAIM_RELEASED
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol
 Branch: `fix/wo-portability-baseline-glm-20260902`
@@ -266,3 +266,24 @@ Exact PR head `f30edc56324f7bb54cc013069465ea80e5b4481c` produced hosted Core CI
 **Preflight note:** `python scripts/agent-preflight.py` reports FAIL only because its legacy branch check demands `main`; current repo policy requires a work-order branch for reviewed production work. It also reports the expected 3 changed claimed paths. No preflight-driven scope expansion was made.
 
 **Claim release / next action:** the PR #48 CI-repair claim is released in the same final candidate commit. Stage only this WO, `COLLAB.md`, and the two repaired tests; rerun staged GitNexus detect/diff gates; commit+push exact SHA; require fresh hosted Core CI; re-audit the remote diff and exact latest SHA before merge.
+
+
+## GPT Primary final merge/post-main closeout — 2026-09-02
+
+This checkpoint supersedes the earlier `PRIMARY_INTEGRATION_READY` handoff status. The implementation, CI repair, exact-SHA release, merge, and post-main verification are complete.
+
+**Reviewed/released candidate:** PR #48 head `1c00c6290eefc8977dcb0a38f28678f9b5c75bc8`.
+
+**Exact-head PR evidence:** A-Wiki Core CI `Core verification` SUCCESS, `py38-smoke` SUCCESS, and PR Loop Gate `loop-contract` SUCCESS at the reviewed PR head. The earlier CI RED at `f30edc56...` was repaired before this final candidate; no failed required PR check remained at merge.
+
+**Merge:** PR #48 is `MERGED`; merge commit `531ed22ecdecc5dfbda9c71e44545bdaba80cb04`, merged 2026-09-02. `git merge-base --is-ancestor 1c00c629... origin/main` returned 0 and `origin/main` resolved to the same merge commit during this closeout audit.
+
+**Post-main CI:** push workflow run `33616441173` at exact head `531ed22ecdecc5dfbda9c71e44545bdaba80cb04` completed `success`; both `Core verification` and `py38-smoke` jobs completed successfully, including privacy, security, registry, wiki-health, stale-spec, MCP smoke, hook smoke, unit tests, and readiness smoke.
+
+**Native Windows runtime verification:** the portability affected family was re-run on this closeout worktree with `PYTHONUTF8` and `PYTHONIOENCODING` unset and `PytestUnhandledThreadExceptionWarning` promoted to error: `tests/test_console_pipe_safety.py tests/test_link_agent_configs.py tests/test_link_my_skills.py tests/test_rabies_regression.py` = **38 passed in 448.75s (0:07:28)**, exit 0.
+
+**Independent reviewer transport:** Ultrareview remained unavailable during exact-SHA review, so that review axis is `UNVERIFIED — tool failure`, never PASS. Deterministic exact-head tests, hosted CI, remote diff/tree audit, expected-SHA merge, and post-main CI are the accepted release evidence.
+
+**Residual environment-only debt:** GitNexus FTS extension remains unavailable on this Windows machine because of the known OpenSSL runtime dependency. No system DLL installation was attempted. Graph/impact/detect functionality was usable for the implementation lane and this does not reopen the completed portability scope.
+
+**Final verdict:** the portability implementation is merged and post-main green. No portability production work remains READY. Future work must recover from current `main` and current work orders instead of reopening this lane from stale branch/history.
