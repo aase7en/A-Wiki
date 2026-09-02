@@ -81,4 +81,29 @@ Forbidden: `scripts/lib/review_bus.py`, `schemas/**`, A-Conductor repo, `AGENTS.
 
 ## Checkpoints
 
-(appended below per coherent chunk — same-file continuity only)
+### 2026-09-02 #1 — RB-1..RB-10 implemented GREEN (GLM5.3-ZCode-MAX)
+
+Commits on this lane: `2a306a32` (claim+WO, gate GO) → `0e456634` (bridge+CLI+contract tests) → `7a5bc5cd` (tmp-repo unit harness + status/resolve contract fixes) → `45bce005` (CLI unknown-task = NO_REVIEW rc 0, aligned with API). Tree clean at each commit.
+
+**RED evidence:** `env -u PYTHONUTF8 -u PYTHONIOENCODING python -m pytest tests/test_conductor_review_bridge.py -q` = collection error `ModuleNotFoundError: No module named 'conductor.review_bridge'` (full contract RED before implementation); then 20 failed / 22 passed against the first implementation draft (dirty-tree fail-closed + API shape defects — see below).
+
+**Design decisions / root causes fixed during GREEN:**
+- Unit tests bind to a throwaway real git repo under `tmp_path` (`_mkrepo`), not this development worktree — the exact-clean-HEAD contract otherwise chicken-and-eggs with uncommitted test edits. CLI tests intentionally run against `REPO_ROOT` (clean tree at commit boundaries).
+- `status()` on an unknown task returns a bounded `NO_REVIEW` answer (rc 0) — same contract as `ALoopReview.task_gate`; only validation failures are rc 1.
+- Dirty probe moved out of gitignored `.tmp` (invisible to `git status --porcelain`).
+- `resolve`/`verify_finding` spread the finding fields top-level (machine-readable CLI contract).
+- Oversized-result (>64,000 bytes) and >50 findings are separate fail-closed bounds.
+
+**GREEN evidence:** `tests/test_conductor_review_bridge.py` = **43 passed in 19.35s** at `45bce005` (clean tree). Coverage: RB-1 (11 adversarial identity cases incl. `../x`, `..\x`, separators, absolute, control chars, empty, oversized, leading punctuation; no file written before rejection), RB-2 (exact HEAD == `git rev-parse HEAD`, transport=remote-queue, dirty-tree fail-closed, bounded non-empty tests), RB-3 (wrong task / stale+wrong head / unknown verdict / oversized / malformed findings / unknown task / extra fields incl. forged `retest`/`ci`/`ready`/`merge` ignored), RB-4 (`SEVERITY_MAP` P0/P1/P2→blocker P3→note via the single `map_severity`; unknown fails; PASS+P1 rejected with cycle untouched), RB-5 (same-digest replay `duplicate:true`, no finding duplication; different digest same cycle fails closed), RB-6 (resolve bad-sha fail / resolve+verify roundtrip; NO_REVIEW status), RB-7 (PASS alone → `allow_complete:false` with retest+ci reasons; +record-retest still false; +record-ci → READY `allow_complete:true`), RB-8 (`record_retest` at a new sha → `REVIEW_REQUESTED`, approval revoked), RB-9 (fresh instance over same state dir resumes cycle; cross-process: API-opened cycle read by separate CLI subprocess), RB-10 (CLI open→ingest→record-retest→record-ci→READY lifecycle; bounded JSON errors rc 1 without traceback; resolve/verify-finding CLI roundtrip; unknown-task NO_REVIEW rc 0).
+
+**Related regression:** `tests/test_review_bus.py tests/test_a_loop_review.py tests/test_conductor.py tests/test_kernel_contracts.py` = **110 passed / 2 failed** — both failures are the known pre-existing cp874 conductor-search tests on main base `fc9a981d` (root signal `'charmap' codec can't encode '\xab'`; same family as the 21-failure portability baseline), already fixed by the pending `fix/wo-portability-baseline-glm-20260902` PR and outside this lane's claimed scope. NOT caused by this change (this lane does not touch `conductor/__main__.py`).
+
+**Reuse audit:** zero modification to `scripts/lib/review_bus.py`, `scripts/lib/a_loop_review.py`, `schemas/**`; no new transport enum (reuses schema `remote-queue`); no scheduler/mailbox/provider/process spawning anywhere in the bridge; every state write goes through `ReviewBus.publish/add_finding/set_verdict/resolve_finding/verify_finding/record_retest/record_ci`.
+
+**Gates:** `git diff --check fc9a981d..HEAD` PASS · Python 3.8 `py_compile` on all 3 changed py files PASS · privacy "no personal data detected" PASS · security 6,325 tracked / 51 baseline / **0 new** · stale-spec `[OK] no stale specs` · wiki-health **0 hard / 352 advisory**.
+
+**GitNexus:** fresh `analyze --index-only` for this worktree (85,199 nodes / 124,884 edges / 700 flows; FTS extension unavailable on this Windows runtime = tool limitation, graph/impact/detect-changes usable). Impact `conductor/cli.py:main` (the only edited existing symbol) = **LOW / 2 direct / 0 processes**. `detect-changes --scope compare --base-ref fc9a981d` = 5 files / 82 symbols / 3 processes / **risk MEDIUM** (new-file symbols dominate; below the HIGH/CRITICAL stop threshold).
+
+**Remaining:** broad regression sweep, final verdict, handoff.
+
+Next safe action: run the broader conductor/hooks-adjacent regression, then set READY_FOR_GPT_PRIMARY_REVIEW.
