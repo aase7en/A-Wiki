@@ -119,9 +119,24 @@ def test_import_does_not_reconfigure_host_stdio(relative_path: str):
     imported with importlib by tests/tools, so module import must preserve the
     caller's stdout/stderr encoding.
     """
+    # The hospital verifier intentionally has optional domain dependencies
+    # (pandas / PyYAML / classify_rabies) that core CI does not install.  Stub
+    # only those imports in this subprocess: the contract under test is module
+    # import preserving host stdio, not availability of the hospital stack.
+    optional_stubs = ""
+    if relative_path == "scripts/hospital/verify_regression.py":
+        optional_stubs = (
+            "import types; "
+            "sys.modules['pandas']=types.ModuleType('pandas'); "
+            "sys.modules['yaml']=types.ModuleType('yaml'); "
+            "cr=types.ModuleType('classify_rabies'); "
+            "cr.VAC_IM='IM'; cr.VAC_ID='ID'; cr.VAC_ERIG='ERIG'; cr.VAC_HRIG='HRIG'; "
+            "sys.modules['classify_rabies']=cr; "
+        )
     probe = (
         "import runpy,sys; "
-        "before=sys.stdout.encoding; "
+        + optional_stubs
+        + "before=sys.stdout.encoding; "
         "runpy.run_path(sys.argv[1], run_name='awiki_import_probe'); "
         "after=sys.stdout.encoding; "
         "raise SystemExit(0 if before == after else 9)"

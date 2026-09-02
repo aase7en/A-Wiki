@@ -72,6 +72,25 @@ def _base_path() -> str:
     return "/usr/bin:/bin:/usr/sbin:/sbin"
 
 
+def _sandbox_path_wrapper(is_windows: bool) -> str:
+    """Build the shell prefix used to shadow Unix commands in sandbox tests.
+
+    Git-for-Windows needs cygpath for host Path values; POSIX paths are already
+    shell-native and must not depend on the Windows-only cygpath utility.
+    """
+    if is_windows:
+        return (
+            'prefix="$(cygpath -u "$AWIKI_TEST_PATH_PREFIX")"; '
+            'script="$(cygpath -u "$AWIKI_TEST_SCRIPT")"; '
+            'export PATH="$prefix:/usr/bin:/bin:/usr/sbin:/sbin"; '
+            'exec "$script" "$@"'
+        )
+    return (
+        'export PATH="$AWIKI_TEST_PATH_PREFIX:/usr/bin:/bin:/usr/sbin:/sbin"; '
+        'exec "$AWIKI_TEST_SCRIPT" "$@"'
+    )
+
+
 def run_script(
     *args: str,
     home: Path,
@@ -104,14 +123,8 @@ def run_script(
     if bash_path_prefix is not None:
         env["AWIKI_TEST_PATH_PREFIX"] = str(bash_path_prefix)
         env["AWIKI_TEST_SCRIPT"] = str(SCRIPT)
-        command = [
-            _bash_executable(), "-c",
-            'prefix="$(cygpath -u "$AWIKI_TEST_PATH_PREFIX")"; '
-            'script="$(cygpath -u "$AWIKI_TEST_SCRIPT")"; '
-            'export PATH="$prefix:/usr/bin:/bin:/usr/sbin:/sbin"; '
-            'exec "$script" "$@"',
-            "awiki-test", *full_args,
-        ]
+        wrapper = _sandbox_path_wrapper(IS_WINDOWS)
+        command = [_bash_executable(), "-c", wrapper, "awiki-test", *full_args]
     # The bash script emits UTF-8 (✓/emoji status); text=True alone would
     # decode with the locale codec and crash the reader thread on cp874
     # Windows, silently turning stdout into None.
@@ -363,6 +376,15 @@ def test_repo_env_linked_via_repo_root(tmp_path):
     assert _is_managed_link(link, expected)
 
 
+def test_sandbox_path_wrapper_uses_cygpath_only_on_windows():
+    windows = _sandbox_path_wrapper(True)
+    posix = _sandbox_path_wrapper(False)
+    assert "cygpath" in windows
+    assert "cygpath" not in posix
+    assert "$AWIKI_TEST_PATH_PREFIX" in posix
+    assert "$AWIKI_TEST_SCRIPT" in posix
+
+
 def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
     """Git Bash/MSYS `ln -s` silently deep-copies (or creates a fake dir) and
     exits 0 when symlink support is off. Simulate that with a stub `ln` that
@@ -381,7 +403,9 @@ def test_msys_ln_copy_behavior_never_leaves_silent_copy(tmp_path):
     stub.write_text(
         "#!/bin/bash\n"
         '# mimic MSYS silent fallback: `ln -s <target> <link>` deep-copies, exit 0\n'
-        'printf invoked > "$(cygpath -u "$AWIKI_LN_STUB_MARKER")"\n'
+        'marker="$AWIKI_LN_STUB_MARKER"\n'
+        'if command -v cygpath >/dev/null 2>&1; then marker="$(cygpath -u "$marker")"; fi\n'
+        'printf invoked > "$marker"\n'
         'if [ "$1" = "-s" ]; then cp -r "$2" "$3"; exit 0; fi\n'
         'exec /bin/ln "$@"\n',
         encoding="utf-8",

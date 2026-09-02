@@ -236,3 +236,33 @@ Primary reviewed the GLM candidate and did not merge it verbatim. Independent ad
 **Claim release:** Primary implementation scope is stable and the active portability claim row is removed in this release checkpoint. No Review Bridge files are touched; GLM owns that separate worktree/branch.
 
 **Next safe action:** commit/push this exact Primary candidate, open PR with Loop-Evidence pointing to this WO, verify hosted CI on the exact head, re-audit remote diff, merge only if clean, fetch `origin/main`, then verify post-main CI.
+
+## GPT Primary PR #48 CI repair checkpoint ? 2026-09-02
+
+Exact PR head `f30edc56324f7bb54cc013069465ea80e5b4481c` produced hosted Core CI RED in run `33586935587`: **2 failed / 3527 passed / 32 skipped**. `loop-contract` and `py38-smoke` were SUCCESS; Core verification was FAILURE, so merge remained blocked.
+
+**CI-1 ? optional dependency leaked into import-side-effect probe:** `test_import_does_not_reconfigure_host_stdio[scripts/hospital/verify_regression.py]` failed because core CI intentionally does not install `pandas`; `runpy.run_path()` raised `ModuleNotFoundError` before the stdio assertion could be evaluated. Root cause is test design, not production stdio behavior. Repair: the subprocess probe stubs only the verifier's optional domain imports (`pandas`, `yaml`, `classify_rabies`) so the test isolates the intended invariant: importing the CLI module must not mutate host stdout/stderr.
+
+**CI-2 ? Windows-only `cygpath` leaked into Linux test path:** `test_msys_ln_copy_behavior_never_leaves_silent_copy` failed on hosted Linux because the fake-command PATH wrapper unconditionally called `cygpath`. Repair: use `cygpath` only under Git-for-Windows; POSIX uses the already-POSIX environment paths directly. The fake `ln` marker similarly converts through `cygpath` only when that command exists.
+
+**Focused GREEN after both repairs on native Windows:** the six import-probe parametrizations plus the MSYS fake-ln regression = **7/7 PASS in 26.47s**. A no-site-packages probe (`python -S`) with cp874 stdio also returned `cp874 -> cp874`, exit 0, proving CI-1 no longer depends on installed pandas. A pure cross-platform wrapper contract plus the MSYS behavior test = **2/2 PASS in 70.40s** and asserts POSIX wrappers contain no `cygpath`. Production source is unchanged by this checkpoint.
+
+**Review transport:** independent Ultrareview was attempted on exact `f30edc56` and returned `Ultrareview could not launch: Ultrareview is currently unavailable.` Status remains **UNVERIFIED ? tool failure**, never PASS. Evidence is also recorded on PR #48.
+
+**Next safe action:** complete the in-flight full native regression of the old exact head for classification evidence, run affected regressions/gates on the repaired head, update the exact candidate, release this CI-repair claim, push, and require fresh hosted CI before merge.
+
+## GPT Primary PR #48 CI repair final checkpoint ? 2026-09-02
+
+**Impact / RED authority:** GitNexus impact for `tests/test_link_agent_configs.py::run_script` = **HIGH / 21 direct test callers / 0 production processes** (index reported 2 commits behind only because the claim/docs commits had advanced HEAD). Hosted Core CI run `33586935587` is the RED authority for CI-1/CI-2.
+
+**GREEN / caller-family verification:** native Windows with `PYTHONUTF8` and `PYTHONIOENCODING` unset, plus `PytestUnhandledThreadExceptionWarning` promoted to error: `tests/test_console_pipe_safety.py tests/test_link_agent_configs.py tests/test_link_my_skills.py tests/test_rabies_regression.py` = **38/38 PASS in 552.57s**. This covers the high-impact `run_script` caller family and the cp874/rabies regression seams.
+
+**Full-run failure classification:** the prior full native run left 13 unrelated failing nodeids. GPT Primary created a clean detached checkout at exact untouched `origin/main=fc9a981d08785ee684a2f1f0616dc254f6855c0c` and replayed the exact same 13 nodeids; result = **13/13 failed on base** in 52.95s. They are therefore PRE_EXISTING native-Windows/Git-Bash baseline failures, not regressions introduced by PR #48. The diagnostic worktree was clean and removed after evidence capture.
+
+**Defect memory:** Tier 1 executable prevention. CI-1 is pinned by `test_import_does_not_reconfigure_host_stdio` using optional-domain stubs so core CI can test the stdio invariant without pandas/PyYAML. CI-2 is pinned by `test_sandbox_path_wrapper_uses_cygpath_only_on_windows` plus `test_msys_ln_copy_behavior_never_leaves_silent_copy`; POSIX wrappers are forbidden from depending on Windows-only `cygpath` while Git-for-Windows conversion remains explicit.
+
+**Self-review / gates:** repaired diff changes only this WO plus the two test files; production source is unchanged in this CI-repair checkpoint. `git diff --check` PASS; `py_compile` PASS; privacy PASS; security **6324 tracked / 51 baseline / 0 new**; stale-spec PASS; wiki-health **0 hard / 352 advisory**. GitNexus unstaged `detect-changes` = **3 files / 5 indexed symbols / LOW / 0 affected processes**. FTS remains unavailable due the known OpenSSL runtime dependency; no install was attempted.
+
+**Preflight note:** `python scripts/agent-preflight.py` reports FAIL only because its legacy branch check demands `main`; current repo policy requires a work-order branch for reviewed production work. It also reports the expected 3 changed claimed paths. No preflight-driven scope expansion was made.
+
+**Claim release / next action:** the PR #48 CI-repair claim is released in the same final candidate commit. Stage only this WO, `COLLAB.md`, and the two repaired tests; rerun staged GitNexus detect/diff gates; commit+push exact SHA; require fresh hosted Core CI; re-audit the remote diff and exact latest SHA before merge.
