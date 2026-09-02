@@ -1,6 +1,6 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: CHANGES_REQUIRED / GPT_REPAIR
+Status: READY_FOR_INDEPENDENT_REREVIEW
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
@@ -143,3 +143,12 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - P1: trusted boolean evidence accepts non-bool strings; a false string is truthy in Python and can falsely satisfy retest/CI evidence. Repair must require actual bool values at the API boundary.
 - P2: ReviewBusError from delegated operations can escape the adapter and bypass bounded ReviewBridgeError / JSON handling; reproduced with unknown finding resolve. Repair must translate engine contract failures without masking unexpected exceptions.
 - RED-first repair is authorized only in review_bridge.py + focused tests; current main portability integration remains preserved.
+
+### 2026-09-03 GPT repair checkpoint
+
+- Current main portability baseline was integrated before repair; candidate remained isolated to the original five-file Review Bridge scope.
+- RED: trusted retest/CI accepted non-bool false strings and produced READY; unknown finding resolve escaped as ReviewBusError. Focused run reproduced the three intended defects.
+- GREEN: exact bool type checks now reject non-bool trusted evidence; resolve/verify translate ReviewBusError to ReviewBridgeError without masking unexpected exceptions.
+- Verification after repair: focused 46/46 PASS; related ReviewBus/A-loop/conductor/kernel 112/112 PASS; broad conductor/review/graph/PR-loop matrix 176/176 PASS. A final CLI unknown-finding bounded-JSON regression was then added and focused suite is 47/47 PASS.
+- py_compile on changed Python files PASS; git diff --check PASS; feature-vs-current-main scope remains COLLAB, conductor/cli.py, conductor/review_bridge.py, WO, and focused tests only.
+- GPT repaired the reviewed candidate, so merge is intentionally blocked pending fresh independent rereview of the new exact SHA.
