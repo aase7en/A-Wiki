@@ -437,9 +437,13 @@ def test_cli_resolve_and_verify_finding_roundtrip():
         rf.unlink(missing_ok=True)
 
 
-def test_cli_no_traceback_on_unknown_task():
+def test_cli_unknown_task_status_is_valid_no_review():
+    """Unknown-task status is a bounded NO_REVIEW answer (rc 0), matching the
+    API contract; only validation failures are rc 1."""
     p = _cli("status", "--task", "CLI-nonexistent-0001")
-    assert p.returncode == 1
+    assert p.returncode == 0
     data = json.loads(p.stdout)
-    assert data["ok"] is False
+    assert data["ok"] is True
+    assert data["status"] == "NO_REVIEW"
+    assert data["allow_complete"] is False
     assert "Traceback" not in p.stderr
