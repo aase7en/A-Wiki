@@ -161,4 +161,3 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - GREEN exact repaired code: focused Review Bridge **50/50**, related ReviewBus/A-loop/conductor/kernel **112/112**, broad conductor/review/graph/PR-loop **180/180**.
 - Gates: `git diff --check`, `py_compile`, privacy, stale-spec PASS; security **6327 tracked / 51 baseline / 0 new**; wiki-health **0 hard / 352 advisory**.
 - Draft PR #50 remains intentionally Draft. Because GPT authored all trust-boundary repairs, a fresh independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before ready/merge.
-
