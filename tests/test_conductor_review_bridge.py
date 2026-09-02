@@ -1,4 +1,4 @@
-"""Thin conductor Review Bridge — contract + adversarial tests (RB-1..RB-10).
+"""Thin conductor Review Bridge โ€” contract + adversarial tests (RB-1..RB-10).
 
 The bridge (conductor/review_bridge.py) is a WRAP around the existing ReviewBus
 state engine: it must never add a second state machine, never let reviewer
@@ -8,6 +8,7 @@ ambiguous identity. Reviewer PASS alone can never yield allow_complete=True.
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 import uuid
@@ -29,7 +30,7 @@ from conductor.review_bridge import (  # noqa: E402
 
 
 def _mkrepo(tmp_path: Path) -> Path:
-    """Throwaway real git repo — deterministic HEAD binding + dirty probes,
+    """Throwaway real git repo โ€” deterministic HEAD binding + dirty probes,
     independent of this development worktree's own cleanliness."""
     repo = tmp_path / "repo"
     repo.mkdir()
@@ -42,6 +43,17 @@ def _mkrepo(tmp_path: Path) -> Path:
     g("config", "user.email", "bridge-test@example.com")
     g("config", "user.name", "bridge-test")
     (repo / "README.md").write_text("probe repo\n", encoding="utf-8")
+    (repo / ".gitignore").write_text(".tmp/\n__pycache__/\n*.pyc\n", encoding="utf-8")
+    for rel in (
+        "scripts/lib/review_bus.py",
+        "scripts/lib/a_loop_review.py",
+        "scripts/lib/atomic_json.py",
+        "schemas/awiki-review/v1.schema.json",
+    ):
+        source = REPO_ROOT / rel
+        target = repo / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
     g("add", ".")
     g("commit", "-m", "init")
     return repo
@@ -62,7 +74,7 @@ def _head(repo: Path) -> str:
     return out.stdout.strip()
 
 
-# ── RB-1 — bounded safe task identity ────────────────────────────────
+# โ”€โ”€ RB-1 โ€” bounded safe task identity โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 @pytest.mark.parametrize("bad", [
     "../x",           # path traversal
@@ -96,7 +108,7 @@ def test_open_rejects_unsafe_task_id_before_any_file_write(tmp_path):
     assert before == after  # fail closed BEFORE the filename is ever built
 
 
-# ── RB-2 — open exact-head review ────────────────────────────────────
+# โ”€โ”€ RB-2 โ€” open exact-head review โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_open_binds_exact_head_remote_queue_json(tmp_path):
     br = _bridge(tmp_path)
@@ -128,7 +140,7 @@ def test_open_requires_nonempty_bounded_tests(tmp_path):
         br.open(_tid(), ["x" * 201])
 
 
-# ── RB-3 — external result ingestion ─────────────────────────────────
+# โ”€โ”€ RB-3 โ€” external result ingestion โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def _result(task, head, verdict="CHANGES_REQUIRED", findings=None, **extra):
     r = {"task_id": task, "reviewed_head": head, "verdict": verdict,
@@ -224,7 +236,7 @@ def test_ingest_ignores_extra_fields_including_forged_evidence(tmp_path):
     assert st["allow_complete"] is False  # forged retest/ci must not count
 
 
-# ── RB-4 — severity normalization ────────────────────────────────────
+# โ”€โ”€ RB-4 โ€” severity normalization โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_severity_map_p012_block_p3_note():
     assert map_severity("P0") == "blocker"
@@ -250,7 +262,7 @@ def test_pass_with_blocking_finding_rejected(tmp_path):
     assert st["status"] == "REVIEW_REQUESTED"  # nothing was ingested
 
 
-# ── RB-5 — idempotent replay ─────────────────────────────────────────
+# โ”€โ”€ RB-5 โ€” idempotent replay โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_replay_same_result_is_idempotent(tmp_path):
     br, tid, opened = _open(tmp_path)
@@ -270,7 +282,7 @@ def test_different_result_same_cycle_fails_closed(tmp_path):
         br.ingest(tid, other)
 
 
-# ── RB-6 — finding lifecycle (thin delegation) ───────────────────────
+# โ”€โ”€ RB-6 โ€” finding lifecycle (thin delegation) โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_resolve_requires_sha_then_verifies(tmp_path):
     br, tid, opened = _open(tmp_path)
@@ -293,7 +305,7 @@ def test_status_unknown_task_reports_no_review(tmp_path):
     assert st["status"] == "NO_REVIEW"
 
 
-# ── RB-7 — trusted evidence separation ───────────────────────────────
+# โ”€โ”€ RB-7 โ€” trusted evidence separation โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_reviewer_pass_alone_never_ready(tmp_path):
     br, tid, opened = _open(tmp_path)
@@ -320,7 +332,7 @@ def test_full_trusted_path_reaches_ready(tmp_path):
     assert st["status"] == "READY"
 
 
-# ── RB-8 — new SHA invalidates approval ──────────────────────────────
+# โ”€โ”€ RB-8 โ€” new SHA invalidates approval โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_new_sha_invalidates_stale_approval(tmp_path):
     br, tid, opened = _open(tmp_path)
@@ -331,7 +343,7 @@ def test_new_sha_invalidates_stale_approval(tmp_path):
     br.record_retest(tid, ok=True)
     br.record_ci(tid, ok=True)
     assert br.status(tid)["allow_complete"] is True
-    # a fix landed → new head retested → the old approval is revoked
+    # a fix landed โ’ new head retested โ’ the old approval is revoked
     new_head = _commit_new_head(br._root, "rb8-new-head.txt")
     br.record_retest(tid, ok=True, sha=new_head)
     st = br.status(tid)
@@ -339,7 +351,7 @@ def test_new_sha_invalidates_stale_approval(tmp_path):
     assert st["status"] == "REVIEW_REQUESTED"
 
 
-# ── RB-9 — restart durability ────────────────────────────────────────
+# โ”€โ”€ RB-9 โ€” restart durability โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
 def test_fresh_bridge_instance_resumes_same_cycle(tmp_path):
     br, tid, opened = _open(tmp_path)
@@ -351,18 +363,14 @@ def test_fresh_bridge_instance_resumes_same_cycle(tmp_path):
     assert st["status"] == "CHANGES_REQUIRED"
 
 
-def test_cli_subprocess_sees_api_opened_cycle():
-    """Cross-process durability: API opens (REPO_ROOT state dir), a separate
-    CLI process statuses the same durable cycle. Requires a clean tree — the
-    exact-head open contract itself enforces it."""
-    br = ReviewBridge(REPO_ROOT)  # default state dir, same as the CLI
+def test_cli_subprocess_sees_api_opened_cycle(tmp_path):
+    """Cross-process durability uses a throwaway clean git repo so unrelated
+    suite artifacts cannot weaken or accidentally trip the clean-HEAD gate."""
+    repo = _mkrepo(tmp_path)
+    br = ReviewBridge(repo)
     tid = "XPROC-" + uuid.uuid4().hex[:10]
     opened = br.open(tid, ["t"])
-    proc = subprocess.run(
-        [sys.executable, "-m", "conductor", "review", "status",
-         "--task", tid, "--json"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-        cwd=str(REPO_ROOT), timeout=120)
+    proc = _cli("status", "--task", tid, repo=repo)
     assert proc.returncode == 0, proc.stderr[-300:]
     data = json.loads(proc.stdout)
     assert data["ok"] is True
@@ -370,78 +378,92 @@ def test_cli_subprocess_sees_api_opened_cycle():
     assert data["transport"] == "remote-queue"
 
 
-# ── RB-10 — CLI behavior ─────────────────────────────────────────────
+# โ”€โ”€ RB-10 โ€” CLI behavior โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€โ”€
 
-def _cli(*args):
+def _cli(*args, repo=REPO_ROOT):
+    if Path(repo) == REPO_ROOT:
+        command = [sys.executable, "-m", "conductor", "review", *args, "--json"]
+    else:
+        code = (
+            "import sys; from pathlib import Path; import conductor.cli as c; "
+            "c.REPO_ROOT=Path(sys.argv[1]); "
+            "raise SystemExit(c.main(sys.argv[2:]))"
+        )
+        command = [sys.executable, "-c", code, str(repo),
+                   "review", *args, "--json"]
     return subprocess.run(
-        [sys.executable, "-m", "conductor", "review", *args, "--json"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
+        command, capture_output=True, text=True,
+        encoding="utf-8", errors="replace",
         cwd=str(REPO_ROOT), timeout=120)
 
 
 CLI_STATE = REPO_ROOT / ".tmp" / "review-bridge"  # gitignored durable state
 
 
-def test_cli_open_ingest_retest_ci_ready_lifecycle():
+def test_cli_open_ingest_retest_ci_ready_lifecycle(tmp_path):
+    repo = _mkrepo(tmp_path)
     tid = "CLI-" + uuid.uuid4().hex[:10]
-    p = _cli("open", "--task", tid, "--tests", "python -m pytest tests/ -q")
+    p = _cli("open", "--task", tid, "--tests", "python -m pytest tests/ -q", repo=repo)
     assert p.returncode == 0, p.stdout + p.stderr
     opened = json.loads(p.stdout)
     assert opened["ok"] is True and opened["transport"] == "remote-queue"
 
-    result_file = REPO_ROOT / ".tmp" / f"rb-result-{tid}.json"
+    result_file = repo / ".tmp" / f"rb-result-{tid}.json"
     result_file.parent.mkdir(exist_ok=True)
     result_file.write_text(json.dumps(_result(
         tid, opened["head_sha"], verdict="PASS",
         findings=[{"severity": "P3", "area": "n", "summary": "ok"}])), encoding="utf-8")
     try:
-        p = _cli("ingest", "--task", tid, "--file", str(result_file))
+        p = _cli("ingest", "--task", tid, "--file", str(result_file), repo=repo)
         assert p.returncode == 0, p.stdout + p.stderr
         assert json.loads(p.stdout)["verdict"] == "PASS"
 
-        p = _cli("record-retest", "--task", tid, "--ok", "true")
+        p = _cli("record-retest", "--task", tid, "--ok", "true", repo=repo)
         assert p.returncode == 0, p.stdout + p.stderr
-        p = _cli("record-ci", "--task", tid, "--ok", "true")
+        p = _cli("record-ci", "--task", tid, "--ok", "true", repo=repo)
         assert p.returncode == 0, p.stdout + p.stderr
 
-        p = _cli("status", "--task", tid)
+        p = _cli("status", "--task", tid, repo=repo)
         st = json.loads(p.stdout)
         assert st["allow_complete"] is True and st["status"] == "READY"
     finally:
         result_file.unlink(missing_ok=True)
 
 
-def test_cli_validation_error_is_bounded_json_without_traceback():
-    p = _cli("open", "--task", "../evil", "--tests", "t")
+def test_cli_validation_error_is_bounded_json_without_traceback(tmp_path):
+    repo = _mkrepo(tmp_path)
+    p = _cli("open", "--task", "../evil", "--tests", "t", repo=repo)
     assert p.returncode == 1
     data = json.loads(p.stdout)
     assert data["ok"] is False and "error" in data
     assert "Traceback" not in p.stderr and "Traceback" not in p.stdout
 
 
-def test_cli_resolve_and_verify_finding_roundtrip():
+def test_cli_resolve_and_verify_finding_roundtrip(tmp_path):
+    repo = _mkrepo(tmp_path)
     tid = "CLI-" + uuid.uuid4().hex[:10]
-    p = _cli("open", "--task", tid, "--tests", "t")
+    p = _cli("open", "--task", tid, "--tests", "t", repo=repo)
     opened = json.loads(p.stdout)
-    rf = REPO_ROOT / ".tmp" / f"rb-result-{tid}.json"
+    rf = repo / ".tmp" / f"rb-result-{tid}.json"
     rf.write_text(json.dumps(_result(
         tid, opened["head_sha"],
         findings=[{"severity": "P2", "area": "e", "summary": "s"}])), encoding="utf-8")
     try:
-        p = _cli("ingest", "--task", tid, "--file", str(rf))
+        p = _cli("ingest", "--task", tid, "--file", str(rf), repo=repo)
         fid = json.loads(p.stdout)["findings"][0]
-        p = _cli("resolve", "--task", tid, "--finding", fid, "--fix-sha", "abc1234")
+        p = _cli("resolve", "--task", tid, "--finding", fid, "--fix-sha", "abc1234", repo=repo)
         assert p.returncode == 0 and json.loads(p.stdout)["state"] == "addressed"
-        p = _cli("verify-finding", "--task", tid, "--finding", fid)
+        p = _cli("verify-finding", "--task", tid, "--finding", fid, repo=repo)
         assert p.returncode == 0 and json.loads(p.stdout)["state"] == "verified"
     finally:
         rf.unlink(missing_ok=True)
 
 
-def test_cli_unknown_task_status_is_valid_no_review():
+def test_cli_unknown_task_status_is_valid_no_review(tmp_path):
     """Unknown-task status is a bounded NO_REVIEW answer (rc 0), matching the
     API contract; only validation failures are rc 1."""
-    p = _cli("status", "--task", "CLI-nonexistent-0001")
+    repo = _mkrepo(tmp_path)
+    p = _cli("status", "--task", "CLI-nonexistent-0001", repo=repo)
     assert p.returncode == 0
     data = json.loads(p.stdout)
     assert data["ok"] is True
@@ -477,11 +499,12 @@ def test_engine_contract_error_is_translated_to_bridge_error(tmp_path):
         br.verify_finding(tid, "R-XRB-999")
 
 
-def test_cli_unknown_finding_is_bounded_json_without_traceback():
-    br = ReviewBridge(REPO_ROOT)
+def test_cli_unknown_finding_is_bounded_json_without_traceback(tmp_path):
+    repo = _mkrepo(tmp_path)
+    br = ReviewBridge(repo)
     tid = "CLI-ERR-" + uuid.uuid4().hex[:10]
     br.open(tid, ["t"])
-    p = _cli("resolve", "--task", tid, "--finding", "R-XRB-999", "--fix-sha", "abc1234")
+    p = _cli("resolve", "--task", tid, "--finding", "R-XRB-999", "--fix-sha", "abc1234", repo=repo)
     assert p.returncode == 1
     data = json.loads(p.stdout)
     assert data["ok"] is False
@@ -509,13 +532,14 @@ def test_task_map_cannot_be_substituted_across_task_ids(tmp_path):
         br.status(a)
 
 
-def test_cli_corrupt_task_map_is_bounded_json_without_traceback():
+def test_cli_corrupt_task_map_is_bounded_json_without_traceback(tmp_path):
+    repo = _mkrepo(tmp_path)
     tid = "CLI-MAP-" + uuid.uuid4().hex[:10]
-    path = CLI_STATE / f"task-{tid}.json"
+    path = repo / ".tmp" / "review-bridge" / f"task-{tid}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("{broken", encoding="utf-8")
     try:
-        p = _cli("status", "--task", tid)
+        p = _cli("status", "--task", tid, repo=repo)
         assert p.returncode == 1
         data = json.loads(p.stdout)
         assert data["ok"] is False and "map" in data["error"]
@@ -524,7 +548,7 @@ def test_cli_corrupt_task_map_is_bounded_json_without_traceback():
         path.unlink(missing_ok=True)
 
 
-# --- GPT adversarial rereview REDs: map ↔ ReviewBus binding ---
+# --- GPT adversarial rereview REDs: map โ” ReviewBus binding ---
 
 def test_task_map_cycle_must_belong_to_same_bridge_task(tmp_path):
     br = _bridge(tmp_path)
