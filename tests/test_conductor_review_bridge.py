@@ -486,3 +486,38 @@ def test_cli_unknown_finding_is_bounded_json_without_traceback():
     assert data["ok"] is False
     assert "finding" in data["error"]
     assert "Traceback" not in p.stdout and "Traceback" not in p.stderr
+
+
+# --- GPT adversarial rereview REDs: durable task-map identity boundary ---
+
+def test_corrupt_task_map_fails_as_bounded_bridge_error(tmp_path):
+    br, tid, _opened = _open(tmp_path)
+    br._map_path(tid).write_text("{broken", encoding="utf-8")
+    with pytest.raises(ReviewBridgeError, match="map"):
+        br.status(tid)
+
+
+def test_task_map_cannot_be_substituted_across_task_ids(tmp_path):
+    br = _bridge(tmp_path)
+    a = _tid()
+    b = _tid()
+    br.open(a, ["a"])
+    br.open(b, ["b"])
+    br._map_path(a).write_bytes(br._map_path(b).read_bytes())
+    with pytest.raises(ReviewBridgeError, match="task"):
+        br.status(a)
+
+
+def test_cli_corrupt_task_map_is_bounded_json_without_traceback():
+    tid = "CLI-MAP-" + uuid.uuid4().hex[:10]
+    path = CLI_STATE / f"task-{tid}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("{broken", encoding="utf-8")
+    try:
+        p = _cli("status", "--task", tid)
+        assert p.returncode == 1
+        data = json.loads(p.stdout)
+        assert data["ok"] is False and "map" in data["error"]
+        assert "Traceback" not in p.stdout and "Traceback" not in p.stderr
+    finally:
+        path.unlink(missing_ok=True)
