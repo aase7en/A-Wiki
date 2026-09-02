@@ -152,3 +152,13 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Verification after repair: focused 46/46 PASS; related ReviewBus/A-loop/conductor/kernel 112/112 PASS; broad conductor/review/graph/PR-loop matrix 176/176 PASS. A final CLI unknown-finding bounded-JSON regression was then added and focused suite is 47/47 PASS.
 - py_compile on changed Python files PASS; git diff --check PASS; feature-vs-current-main scope remains COLLAB, conductor/cli.py, conductor/review_bridge.py, WO, and focused tests only.
 - GPT repaired the reviewed candidate, so merge is intentionally blocked pending fresh independent rereview of the new exact SHA.
+
+### 2026-09-03 GPT adversarial rereview — durable map identity repair
+
+- P1 reproduced: replacing `task-a` durable map bytes with `task-b` map caused `status("task-a")` to report task-b cycle/state under task-a identity. P2 reproduced: truncated/invalid map JSON escaped as `JSONDecodeError`, and CLI emitted traceback/no bounded JSON.
+- RED: 3 new task-map regressions failed exactly on corrupt JSON, cross-task map substitution, and CLI bounded-error behavior.
+- Repair stays in the thin adapter: `_load_map()` now validates JSON/object shape, exact `task_id`, bounded cycle, Git SHA `head_sha`, and ingest-record shape; `status()` validates the map before `ALoopReview.task_gate()` and translates ReviewBus contract failures without masking unexpected exceptions. ReviewBus/ALoopReview authority remains untouched.
+- GREEN exact repaired code: focused Review Bridge **50/50**, related ReviewBus/A-loop/conductor/kernel **112/112**, broad conductor/review/graph/PR-loop **180/180**.
+- Gates: `git diff --check`, `py_compile`, privacy, stale-spec PASS; security **6327 tracked / 51 baseline / 0 new**; wiki-health **0 hard / 352 advisory**.
+- Draft PR #50 remains intentionally Draft. Because GPT authored all trust-boundary repairs, a fresh independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before ready/merge.
+
