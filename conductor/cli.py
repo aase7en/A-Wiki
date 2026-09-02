@@ -72,6 +72,42 @@ def main(argv: list[str] | None = None) -> int:
                         help="write WO files under docs/work-orders/")
     p_plan.add_argument("--json", action="store_true")
 
+    p_review = sub.add_parser(
+        "review", help="thin external-review bridge (ReviewBus WRAP)")
+    rsub = p_review.add_subparsers(dest="review_cmd", required=True)
+    r_open = rsub.add_parser("open", help="open an exact-head review cycle")
+    r_open.add_argument("--task", required=True)
+    r_open.add_argument("--tests", nargs="+", required=True,
+                        help="required test commands")
+    r_open.add_argument("--reviewer", default=None)
+    r_open.add_argument("--json", action="store_true")
+    r_ing = rsub.add_parser("ingest", help="ingest a durable reviewer result")
+    r_ing.add_argument("--task", required=True)
+    r_ing.add_argument("--file", required=True, help="path to result JSON")
+    r_ing.add_argument("--json", action="store_true")
+    r_st = rsub.add_parser("status", help="task readiness/status")
+    r_st.add_argument("--task", required=True)
+    r_st.add_argument("--json", action="store_true")
+    r_rs = rsub.add_parser("resolve", help="resolve a finding with a fix sha")
+    r_rs.add_argument("--task", required=True)
+    r_rs.add_argument("--finding", required=True)
+    r_rs.add_argument("--fix-sha", required=True)
+    r_rs.add_argument("--json", action="store_true")
+    r_vf = rsub.add_parser("verify-finding", help="verify an addressed finding")
+    r_vf.add_argument("--task", required=True)
+    r_vf.add_argument("--finding", required=True)
+    r_vf.add_argument("--json", action="store_true")
+    r_rt = rsub.add_parser("record-retest", help="record trusted retest evidence")
+    r_rt.add_argument("--task", required=True)
+    r_rt.add_argument("--ok", required=True, choices=("true", "false"))
+    r_rt.add_argument("--sha", default=None,
+                      help="retested sha (default: current HEAD)")
+    r_rt.add_argument("--json", action="store_true")
+    r_ci = rsub.add_parser("record-ci", help="record trusted CI evidence")
+    r_ci.add_argument("--task", required=True)
+    r_ci.add_argument("--ok", required=True, choices=("true", "false"))
+    r_ci.add_argument("--json", action="store_true")
+
     args = parser.parse_args(argv)
 
     if args.cmd == "status":
@@ -142,6 +178,46 @@ def main(argv: list[str] | None = None) -> int:
         wos = plan_objective(args.objective, REPO_ROOT, write=args.write)
         _emit({"schema": "awiki-conductor/v1",
                "work_orders": wos}, args.json)
+        return 0
+
+    if args.cmd == "review":
+        from .review_bridge import ReviewBridge, ReviewBridgeError
+        bridge = ReviewBridge(REPO_ROOT)
+        ok = args.ok == "true" if hasattr(args, "ok") else None
+        try:
+            if args.review_cmd == "open":
+                out = bridge.open(args.task, args.tests,
+                                  reviewer=args.reviewer)
+            elif args.review_cmd == "ingest":
+                from pathlib import Path as _P
+                path = _P(args.file)
+                if not path.is_file():
+                    raise ReviewBridgeError(f"result file not found: {args.file}")
+                import json as _json
+                try:
+                    payload = _json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, _json.JSONDecodeError) as e:
+                    raise ReviewBridgeError(
+                        f"result file unreadable/invalid JSON: {e}") from None
+                out = bridge.ingest(args.task, payload)
+            elif args.review_cmd == "status":
+                out = bridge.status(args.task)
+            elif args.review_cmd == "resolve":
+                out = bridge.resolve(args.task, args.finding,
+                                     fix_sha=args.fix_sha)
+            elif args.review_cmd == "verify-finding":
+                out = bridge.verify_finding(args.task, args.finding)
+            elif args.review_cmd == "record-retest":
+                out = bridge.record_retest(args.task, ok=ok, sha=args.sha)
+            elif args.review_cmd == "record-ci":
+                out = bridge.record_ci(args.task, ok=ok)
+            else:  # pragma: no cover — argparse required=True guards this
+                return 2
+        except ReviewBridgeError as e:
+            _emit({"ok": False, "error": str(e)}, args.json)
+            return 1
+        out = {"ok": True, **out}
+        _emit(out, args.json)
         return 0
 
     return 2
