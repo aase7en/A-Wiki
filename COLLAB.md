@@ -19,6 +19,7 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
+| WO-REVIEW-BRIDGE-20260902 thin conductor review adapter | GLM5.3-ZCode-MAX | 2026-09-02 | COLLAB.md; docs/work-orders/WO-REVIEW-BRIDGE-20260902.md; conductor/review_bridge.py; conductor/cli.py; tests/test_conductor_review_bridge.py; tests/test_conductor.py; docs/runbooks/review-bus.md | feat/wo-review-bridge-glm-20260902 |
 
 
 RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.
