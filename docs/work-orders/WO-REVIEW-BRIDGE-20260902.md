@@ -161,3 +161,14 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - GREEN exact repaired code: focused Review Bridge **50/50**, related ReviewBus/A-loop/conductor/kernel **112/112**, broad conductor/review/graph/PR-loop **180/180**.
 - Gates: `git diff --check`, `py_compile`, privacy, stale-spec PASS; security **6327 tracked / 51 baseline / 0 new**; wiki-health **0 hard / 352 advisory**.
 - Draft PR #50 remains intentionally Draft. Because GPT authored all trust-boundary repairs, a fresh independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before ready/merge.
+
+### 2026-09-03 GPT adversarial rereview — RB-A1..A7 closed
+
+- RED proved all original blocker classes on the integrated candidate: stale reviewer result after Git HEAD advance; stale READY after HEAD advance; dirty-worktree READY; repeated `open` authority replacement; crash/replay duplicate finding + non-atomic map write; whole-file CLI ingest before size bound; pinned reviewer identity bypass.
+- Additional REDs proved task-map cycle substitution, map↔ReviewBus head drift, and retest head desynchronization.
+- Repair remains WRAP-only: ReviewBus and ALoopReview are untouched. Bridge map writes are atomic; staged ingest is replay-safe against partial ReviewBus mutation; map cycle is bound to `executor=bridge:<task>` and ReviewBus head; trusted retest/CI require current clean Git HEAD.
+- Reviewer pinning is stored separately from verdict reviewer identity; conflicting/missing model identity fails closed when pinned.
+- CLI rejects oversized result files from metadata before whole-file read. CLI tests now use a clean throwaway git repo so full-suite artifacts cannot weaken or spuriously trip the production clean-HEAD gate.
+- Verification: focused `pytest tests/test_conductor_review_bridge.py -q` = **62/62 PASS**; related ReviewBus/A-loop/conductor/kernel = **112/112 PASS**; broad conductor/review/graph/PR-loop = **192/192 PASS**.
+- Gates: `git diff --check` PASS; `py_compile` PASS; privacy PASS; security `6327 tracked / 51 baseline / 0 new`.
+- GPT authored these repairs; independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before Ready/Merge.
