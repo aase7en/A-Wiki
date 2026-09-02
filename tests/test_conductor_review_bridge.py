@@ -447,3 +447,30 @@ def test_cli_unknown_task_status_is_valid_no_review():
     assert data["status"] == "NO_REVIEW"
     assert data["allow_complete"] is False
     assert "Traceback" not in p.stderr
+
+
+# --- GPT Primary repair REDs: trusted evidence + engine error boundary ---
+
+def test_trusted_retest_requires_actual_bool(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+    with pytest.raises(ReviewBridgeError, match="bool"):
+        br.record_retest(tid, ok="false")
+    assert br.status(tid)["allow_complete"] is False
+
+
+def test_trusted_ci_requires_actual_bool(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    br.ingest(tid, _result(tid, opened["head_sha"], verdict="PASS", findings=[]))
+    br.record_retest(tid, ok=True)
+    with pytest.raises(ReviewBridgeError, match="bool"):
+        br.record_ci(tid, ok="false")
+    assert br.status(tid)["allow_complete"] is False
+
+
+def test_engine_contract_error_is_translated_to_bridge_error(tmp_path):
+    br, tid, _opened = _open(tmp_path)
+    with pytest.raises(ReviewBridgeError, match="finding"):
+        br.resolve(tid, "R-XRB-999", fix_sha="abc1234")
+    with pytest.raises(ReviewBridgeError, match="finding"):
+        br.verify_finding(tid, "R-XRB-999")

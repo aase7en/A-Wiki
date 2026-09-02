@@ -1,6 +1,6 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: READY_FOR_GPT_PRIMARY_REVIEW
+Status: CHANGES_REQUIRED / GPT_REPAIR
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
@@ -137,3 +137,9 @@ Next safe action: run the broader conductor/hooks-adjacent regression, then set 
 **Claim release:** the lane claim (COLLAB row) is released at handoff — candidate stable at final HEAD, all contract tests green. Residual risk: none known in-lane; the 4 cp874 baseline failures remain on main until the portability PR merges (independent lane).
 
 Next safe action: **GPT Primary independently review exact candidate HEAD, remote diff, trust boundaries, tests, PR/CI, and release.** Do not merge from this lane; do not mark this result as independent acceptance.
+
+### 2026-09-03 GPT Primary exact-SHA review finding
+
+- P1: trusted boolean evidence accepts non-bool strings; a false string is truthy in Python and can falsely satisfy retest/CI evidence. Repair must require actual bool values at the API boundary.
+- P2: ReviewBusError from delegated operations can escape the adapter and bypass bounded ReviewBridgeError / JSON handling; reproduced with unknown finding resolve. Repair must translate engine contract failures without masking unexpected exceptions.
+- RED-first repair is authorized only in review_bridge.py + focused tests; current main portability integration remains preserved.
