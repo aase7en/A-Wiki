@@ -1,6 +1,6 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: CLAIMED
+Status: READY_FOR_GPT_PRIMARY_REVIEW
 Executor: GLM5.3-ZCode-MAX
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
@@ -107,3 +107,33 @@ Commits on this lane: `2a306a32` (claim+WO, gate GO) → `0e456634` (bridge+CLI+
 **Remaining:** broad regression sweep, final verdict, handoff.
 
 Next safe action: run the broader conductor/hooks-adjacent regression, then set READY_FOR_GPT_PRIMARY_REVIEW.
+
+### 2026-09-02 #2 — final verdict (GLM5.3-ZCode-MAX)
+
+**Broad conductor-cluster regression:** `tests/test_conductor.py tests/test_conductor_review_bridge.py tests/test_awiki_cli.py tests/test_kernel_contracts.py tests/test_review_bus.py tests/test_a_loop_review.py tests/test_graph_yaml.py tests/test_check_pr_loop.py` = **169 passed / 4 failed in 47.04s**. All 4 failures (conductor TestBridgeSearch ×2, graph-yaml CLI, pr-loop CLI) show the exact `'charmap' codec` cp874 signature — **pre-existing baseline debt on main base `fc9a981d`**, each already fixed by the pending `fix/wo-portability-baseline-glm-20260902` PR (awaiting Primary review), outside this lane's claimed scope. Zero failures attributable to the review bridge.
+
+**Acceptance map (goal criteria → evidence):**
+1. Thin bridge on isolated branch — `conductor/review_bridge.py` (+CLI wiring) on `feat/wo-review-bridge-glm-20260902` ✓
+2. ReviewBus only review-state authority — every write delegates to `ReviewBus.*`; engine untouched ✓
+3. remote-queue transport reused — schema enum, no new transport ✓
+4. No schema/core churn — `git diff fc9a981d..HEAD -- scripts/lib/review_bus.py schemas/` empty ✓
+5. No A-Conductor mutation — diff touches only the 5 claimed files ✓
+6. Safe bounded task identity — RB-1 tests (11 adversarial cases) ✓
+7. Exact clean-HEAD binding — RB-2 tests (dirty-tree fail-closed) ✓
+8. External result ingestion safe — RB-3 tests (6 fail-closed cases + extra-field ignore) ✓
+9. P0/P1/P2 block, P3 notes — `SEVERITY_MAP` + PASS+blocking rejection ✓
+10. Replay idempotent — RB-5 same-digest no-op / different-digest fail-closed ✓
+11. Reviewer cannot forge retest/CI/READY — RB-7 forged-field test + trusted-op separation ✓
+12. Resolve/verify lifecycle — RB-6 + CLI roundtrip ✓
+13. New SHA invalidates approval — RB-8 ✓
+14. Restart durability — RB-9 fresh instance + cross-process CLI ✓
+15. Focused (43/43) + related (110/112, 2 pre-existing cp874) + adversarial pass ✓
+16. Privacy/security/stale/wiki-health/diff gates — all PASS (checkpoint #1) ✓
+17. GitNexus evidence recorded — checkpoint #1 (impact LOW, detect-changes MEDIUM, 3 processes) ✓
+18. This WO holds the complete resumable checkpoint ✓
+19. Branch clean and pushed — verified below ✓
+20. Status = READY_FOR_GPT_PRIMARY_REVIEW (this checkpoint) ✓
+
+**Claim release:** the lane claim (COLLAB row) is released at handoff — candidate stable at final HEAD, all contract tests green. Residual risk: none known in-lane; the 4 cp874 baseline failures remain on main until the portability PR merges (independent lane).
+
+Next safe action: **GPT Primary independently review exact candidate HEAD, remote diff, trust boundaries, tests, PR/CI, and release.** Do not merge from this lane; do not mark this result as independent acceptance.
