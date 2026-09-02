@@ -1,21 +1,21 @@
-﻿# COLLAB โ€” Multi-agent coordination (เธกเธฒเธ•เธฃเธเธฒเธ A-Wiki cross-agent-work-orders)
+# COLLAB — Multi-agent coordination (มาตรฐาน A-Wiki cross-agent-work-orders)
 
-> Agent เธ—เธธเธเธ•เธฑเธง (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/Kilo/...) เธญเนเธฒเธเนเธเธฅเนเธเธตเน
-> เธเนเธญเธเน€เธฃเธดเนเธกเธเธฒเธเนเธ repo เธเธตเน ยท Protocol เน€เธ•เนเธก: A-Wiki `docs/protocols/cross-agent-work-orders.md`
+> Agent ทุกตัว (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/Kilo/...) อ่านไฟล์นี้
+> ก่อนเริ่มงานใน repo นี้ · Protocol เต็ม: A-Wiki `docs/protocols/cross-agent-work-orders.md`
 
-## Lanes (เธเธฃเธฑเธเธ•เธฒเธก repo โ€” เธ•เธฑเธงเธญเธขเนเธฒเธ 2 เน€เธฅเธ เน€เธเธดเนเธกเนเธ”เนเธ•เธฒเธกเธเธณเธเธงเธ agent)
+## Lanes (ปรับตาม repo — ตัวอย่าง 2 เลน เพิ่มได้ตามจำนวน agent)
 
-| Lane | เธเธตเธกเธเธฒเธ | เนเธเธฅเนเธ—เธตเนเน€เธเนเธเน€เธเนเธฒเธเธญเธ | เธซเนเธฒเธกเนเธ•เธฐ |
+| Lane | ธีมงาน | ไฟล์ที่เป็นเจ้าของ | ห้ามแตะ |
 |---|---|---|---|
-| migration | A-Wiki vNext migration (phases, work orders, review flow) | `docs/migration/**`, `refactor/*` branches | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
-| hook-engine | hooks/registry/runner/provider adapters | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/cline-hooks/**`, `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json` | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
-| governance | protocols/claims/COLLAB/continuity | `COLLAB.md`, `docs/protocols/**`, `AGENTS.md` (เนเธเนเธ•เนเธญเน€เธกเธทเนเธญเธกเธตเธชเธดเธ—เธเธดเนเธ•เธฒเธก Iron Law #5) | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
+| migration | A-Wiki vNext migration (phases, work orders, review flow) | `docs/migration/**`, `refactor/*` branches | ไฟล์ของเลนอื่น |
+| hook-engine | hooks/registry/runner/provider adapters | `scripts/hooks/**`, `scripts/hooks_runner.py`, `scripts/cline-hooks/**`, `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json` | ไฟล์ของเลนอื่น |
+| governance | protocols/claims/COLLAB/continuity | `COLLAB.md`, `docs/protocols/**`, `AGENTS.md` (แก้ต่อเมื่อมีสิทธิ์ตาม Iron Law #5) | ไฟล์ของเลนอื่น |
 | wiki-knowledge | wiki pages + generated surfaces | `wiki/**`, `.wiki-graph.json`, `brain-map.canvas` | `scripts/**`, `docs/migration/**` |
-| infra-CI | workflows, security/health scanners, baselines | `.github/workflows/**`, `scripts/security/**`, `scripts/health/**` | เนเธเธฅเนเธเธญเธเน€เธฅเธเธญเธทเนเธ |
+| infra-CI | workflows, security/health scanners, baselines | `.github/workflows/**`, `scripts/security/**`, `scripts/health/**` | ไฟล์ของเลนอื่น |
 
-**Hotspot files (เนเธเนเธ—เธตเธฅเธฐ agent เธ•เธฒเธกเธ—เธตเนเธฃเธฐเธเธธ):** `AGENTS.md` ยท `skills-registry.json` ยท `.claude/settings.json` ยท `.github/workflows/ci-core.yml` ยท `scripts/security/baseline.txt` โ€” เนเธเนเนเธ”เนเน€เธเธเธฒเธฐเธเธนเนเธ–เธทเธญ claim เธ—เธตเนเธฃเธฐเธเธธเนเธเธฅเนเน€เธซเธฅเนเธฒเธเธตเนเนเธ scope
+**Hotspot files (แก้ทีละ agent ตามที่ระบุ):** `AGENTS.md` · `skills-registry.json` · `.claude/settings.json` · `.github/workflows/ci-core.yml` · `scripts/security/baseline.txt` — แก้ได้เฉพาะผู้ถือ claim ที่ระบุไฟล์เหล่านี้ใน scope
 
-## In-progress claims (Rule 1 โ€” claim เธเนเธญเธเธ—เธณ, เธเธฅเธ”เนเธ commit เธเธญเธ chunk เน€เธญเธ)
+## In-progress claims (Rule 1 — claim ก่อนทำ, ปลดใน commit ของ chunk เอง)
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
@@ -24,25 +24,24 @@
 
 RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.
 
-**Night-shift log 2026-08-21 (เธ•เนเธญเน€เธเธทเนเธญเธ):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` เนเธเนเนเธ”เนเธเธฃเธดเธ; Serena MIT credited) ยท Phase 6/#17/#18/#19 เธเธดเธ”เธซเธกเธ”
+**Night-shift log 2026-08-21 (ต่อเนื่อง):** PR #20 **A-Wiki Conductor v0.1.0 MERGED** (user-delegated self-review; `python -m conductor status|gate|plan` ใช้ได้จริง; Serena MIT credited) · Phase 6/#17/#18/#19 ปิดหมด
 
-**Night-shift log 2026-08-20:** main เธ–เธนเธเธเนเธญเธก (revert `59ebdede` เธเธญเธ auto-commit เน€เธชเธตเธข `c343542c` โ€” เน€เธเนเธฒเธเธญเธ commit เธกเธฒเธเธฒเธ MacBook เธเธญเธเน€เธเนเธฒเธเธญเธ repo เน€เธญเธ) ยท เธ—เธธเธ PR เธเนเธฒเธ CI ยท stop-auto-commit เธ•เธดเธ” gate 2 เธเธฑเนเธเนเธฅเนเธง (noise เธฅเนเธงเธเนเธกเน push + scan เนเธกเนเธเนเธฒเธเนเธกเน push) โ€” เน€เธซเธ•เธธเธเธฒเธฃเธ“เนเนเธเธเธเธตเนเนเธกเนเธเธงเธฃเน€เธเธดเธ”เธเนเธณ
+**Night-shift log 2026-08-20:** main ถูกซ่อม (revert `59ebdede` ของ auto-commit เสีย `c343542c` — เจ้าของ commit มาจาก MacBook ของเจ้าของ repo เอง) · ทุก PR ผ่าน CI · stop-auto-commit ติด gate 2 ชั้นแล้ว (noise ล้วนไม่ push + scan ไม่ผ่านไม่ push) — เหตุการณ์แบบนี้ไม่ควรเกิดซ้ำ
 
-> เธเนเธญเธเธชเธฃเนเธฒเธ branch/เน€เธฃเธดเนเธกเธเธฒเธเนเธซเธกเน: เธญเนเธฒเธเธ•เธฒเธฃเธฒเธเธเธตเน + `git branch -a` เธเนเธญเธเน€เธชเธกเธญ โ€” เธเธทเนเธญเธเธฒเธเนเธเธฅเนเน€เธเธตเธขเธ = เธซเนเธฒเธกเน€เธฃเธดเนเธก เนเธซเน claim เธ•เนเธญเธเธฒเธเธเธญเธเน€เธ”เธดเธก (Rule 7)
+> ก่อนสร้าง branch/เริ่มงานใหม่: อ่านตารางนี้ + `git branch -a` ก่อนเสมอ — ชื่องานใกล้เคียง = ห้ามเริ่ม ให้ claim ต่อจากของเดิม (Rule 7)
 
-## เธเธ•เธดเธเธฒ 8 เธเนเธญ (เธขเนเธญ โ€” เธเธเธฑเธเน€เธ•เนเธกเนเธเนเธเธฅเน protocol)
+## กติกา 8 ข้อ (ย่อ — ฉบับเต็มในไฟล์ protocol)
 
 1. Claim before mutation via `python -m conductor claim ...` as the primary COLLAB row writer; if it succeeds, do not add a duplicate row manually. Commit+push the claim before touching the claimed scope; never touch another live claim scope.
-2. `git pull --ff-only` + build/test เธเนเธฒเธ เธเนเธญเธ push เธ—เธธเธเธเธฃเธฑเนเธ
-3. Hotspot files เนเธเนเนเธ”เนเธ—เธตเธฅเธฐ agent เธ•เธฒเธกเธ•เธฒเธฃเธฒเธเธเนเธฒเธเธเธ
-4. เนเธเธฅเนเน€เธ”เธตเธขเธงเธเธฑเธเธซเนเธฒเธกเธ—เธณเธเธฃเนเธญเธกเธเธฑเธ โ€” เธ”เธนเธ•เธฒเธฃเธฒเธ claim เธเนเธญเธ
-5. **เธซเนเธฒเธก `git reset --hard` / `git checkout -- .` / `git clean` เนเธ shared tree** โ€” เนเธเน stash/revert; agent เธ—เธตเนเธ•เนเธญเธ reset เธเนเธญเธข โ’ agent เธญเธทเนเธเนเธขเธ git worktree + branch เนเธฅเนเธง merge เธเธฅเธฑเธ; เธซเนเธฒเธกเธฅเธ branch/worktree เธเธญเธเธเธฑเธ
-6. เธ—เธธเธ chunk เธกเธต work order เนเธ `docs/work-orders/` + append Checkpoint เธ—เธธเธเธเธฃเธฑเนเธเธ—เธตเนเธซเธขเธธเธ”/เธชเนเธเธ•เนเธญ
-7. Scope เธเธนเธเธเธฑเธ chunk เนเธกเนเธเธนเธเธเธฑเธ agent โ€” เนเธเธฃเธ–เธทเธญ claim เธเธเธเธฑเนเธเธ—เธณ (เธเธฅเนเธเธชเธฅเธฑเธเธกเธทเธญเธเนเธฒเธก 5-hr limit)
-8. Additive-first: เธเธญเธเนเธซเธกเน = เนเธเธฅเนเนเธซเธกเน; เนเธเธฅเนเธฃเนเธงเธกเนเธเนเนเธ”เธขเธเธนเนเธ–เธทเธญ WO เน€เธ—เนเธฒเธเธฑเนเธ
+2. `git pull --ff-only` + build/test ผ่าน ก่อน push ทุกครั้ง
+3. Hotspot files แก้ได้ทีละ agent ตามตารางข้างบน
+4. ไฟล์เดียวกันห้ามทำพร้อมกัน — ดูตาราง claim ก่อน
+5. **ห้าม `git reset --hard` / `git checkout -- .` / `git clean` ใน shared tree** — ใช้ stash/revert; agent ที่ต้อง reset บ่อย → agent อื่นแยก git worktree + branch แล้ว merge กลับ; ห้ามลบ branch/worktree ของกัน
+6. ทุก chunk มี work order ใน `docs/work-orders/` + append Checkpoint ทุกครั้งที่หยุด/ส่งต่อ
+7. Scope ผูกกับ chunk ไม่ผูกกับ agent — ใครถือ claim คนนั้นทำ (กลไกสลับมือข้าม 5-hr limit)
+8. Additive-first: ของใหม่ = ไฟล์ใหม่; ไฟล์ร่วมแก้โดยผู้ถือ WO เท่านั้น
 
-## Pause โ’ Resume (เธ•เธดเธ” limit / เธชเธฅเธฑเธ agent)
+## Pause → Resume (ติด limit / สลับ agent)
 
-เธซเธขเธธเธ”: commit เธเธฒเธเธเนเธฒเธ (build เธเธฑเธ โ’ branch `wip/<id>`) โ’ checkpoint + `โธ paused` + เธญเธฑเธเน€เธ”เธ• claim โ’ push
+หยุด: commit งานค้าง (build พัง → branch `wip/<id>`) → checkpoint + `⏸ paused` + อัปเดต claim → push
 Receive: fetch origin -> read `BRAIN-ENTRY.md` -> `COLLAB.md` -> the SAME WO/checkpoint -> branch/PR. If direct invocation is unavailable, human relays only the WO-ID pointer; receiver resumes the assigned READY lane and does not ask the human to relay detailed results.
-
