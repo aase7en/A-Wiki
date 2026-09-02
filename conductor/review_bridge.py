@@ -131,7 +131,24 @@ class ReviewBridge:
         if not path.is_file():
             raise ReviewBridgeError(
                 f"no review opened for task {task_id!r} — run review open first")
-        return json.loads(path.read_text(encoding="utf-8"))
+        try:
+            m = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise ReviewBridgeError(
+                f"task map unreadable/invalid JSON for {task_id!r}: {exc}") from None
+        if not isinstance(m, dict):
+            raise ReviewBridgeError(f"task map must be an object for {task_id!r}")
+        if m.get("task_id") != task_id:
+            raise ReviewBridgeError(f"task map identity mismatch for {task_id!r}")
+        cycle = m.get("cycle")
+        if not isinstance(cycle, str) or not cycle or len(cycle) > 100 or _CTRL_RE.search(cycle):
+            raise ReviewBridgeError(f"task map cycle invalid for {task_id!r}")
+        head = m.get("head_sha")
+        if not isinstance(head, str) or not _SHA_RE.fullmatch(head):
+            raise ReviewBridgeError(f"task map head_sha invalid for {task_id!r}")
+        if m.get("ingest") is not None and not isinstance(m.get("ingest"), dict):
+            raise ReviewBridgeError(f"task map ingest record invalid for {task_id!r}")
+        return m
 
     def _save_map(self, task_id: str, m: dict) -> None:
         self._map_path(task_id).write_text(
@@ -265,8 +282,13 @@ class ReviewBridge:
                     "transport": TRANSPORT, "allow_complete": False,
                     "status": "NO_REVIEW", "blockers": [],
                     "reasons": ["no review opened for this task"]}
-        g = self.gate.task_gate(task_id)
         m = self._load_map(task_id)
+        try:
+            g = self.gate.task_gate(task_id)
+        except self._rb.ReviewBusError as exc:
+            raise ReviewBridgeError(f"task review state invalid: {exc}") from None
+        if g.get("cycle") != m["cycle"]:
+            raise ReviewBridgeError(f"task map cycle mismatch for {task_id!r}")
         return {"schema": SCHEMA, "task_id": task_id,
                 "cycle": g.get("cycle"), "transport": TRANSPORT,
                 "allow_complete": g.get("allow_complete"),
