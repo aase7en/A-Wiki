@@ -260,6 +260,11 @@ class ReviewBridge:
     # ── RB-6 — status / resolve / verify (thin delegation) ────────────
     def status(self, task_id: str) -> dict:
         validate_task_id(task_id)
+        if not self._map_path(task_id).is_file():
+            return {"schema": SCHEMA, "task_id": task_id, "cycle": None,
+                    "transport": TRANSPORT, "allow_complete": False,
+                    "status": "NO_REVIEW", "blockers": [],
+                    "reasons": ["no review opened for this task"]}
         g = self.gate.task_gate(task_id)
         m = self._load_map(task_id)
         return {"schema": SCHEMA, "task_id": task_id,
@@ -276,13 +281,13 @@ class ReviewBridge:
             raise ReviewBridgeError("fix_sha must be a git sha")
         finding = self.bus.resolve_finding(finding_id, fix_sha=fix_sha,
                                            cid=m["cycle"])
-        return {"schema": SCHEMA, "task_id": task_id, "finding": finding}
+        return {"schema": SCHEMA, "task_id": task_id, **finding}
 
     def verify_finding(self, task_id: str, finding_id: str) -> dict:
         validate_task_id(task_id)
         m = self._load_map(task_id)
         finding = self.bus.verify_finding(finding_id, cid=m["cycle"])
-        return {"schema": SCHEMA, "task_id": task_id, "finding": finding}
+        return {"schema": SCHEMA, "task_id": task_id, **finding}
 
     # ── RB-7 — trusted evidence (never reachable from reviewer payloads) ──
     def record_retest(self, task_id: str, ok: bool,

@@ -28,16 +28,35 @@ from conductor.review_bridge import (  # noqa: E402
 )
 
 
+def _mkrepo(tmp_path: Path) -> Path:
+    """Throwaway real git repo — deterministic HEAD binding + dirty probes,
+    independent of this development worktree's own cleanliness."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    def g(*args):
+        p = subprocess.run(["git", "-C", str(repo), *args],
+                           capture_output=True, text=True, timeout=30)
+        assert p.returncode == 0, p.stderr
+        return p.stdout
+    g("init")
+    g("config", "user.email", "bridge-test@example.com")
+    g("config", "user.name", "bridge-test")
+    (repo / "README.md").write_text("probe repo\n", encoding="utf-8")
+    g("add", ".")
+    g("commit", "-m", "init")
+    return repo
+
+
 def _bridge(tmp_path: Path) -> ReviewBridge:
-    return ReviewBridge(REPO_ROOT, state_dir=tmp_path / "review-bridge")
+    return ReviewBridge(_mkrepo(tmp_path), state_dir=tmp_path / "review-bridge")
 
 
 def _tid() -> str:
     return "T-" + uuid.uuid4().hex[:12]
 
 
-def _head() -> str:
-    out = subprocess.run(["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"],
+def _head(repo: Path) -> str:
+    out = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
                          capture_output=True, text=True, timeout=30)
     assert out.returncode == 0
     return out.stdout.strip()
@@ -82,7 +101,7 @@ def test_open_rejects_unsafe_task_id_before_any_file_write(tmp_path):
 def test_open_binds_exact_head_remote_queue_json(tmp_path):
     br = _bridge(tmp_path)
     out = br.open(_tid(), ["python -m pytest tests/ -q"])
-    assert out["head_sha"] == _head()
+    assert out["head_sha"] == _head(br._root)
     assert out["transport"] == "remote-queue"
     assert out["status"] == "REVIEW_REQUESTED"
     assert out["cycle"].startswith("XRB-c")
@@ -92,15 +111,11 @@ def test_open_binds_exact_head_remote_queue_json(tmp_path):
 
 
 def test_open_fails_closed_on_dirty_worktree(tmp_path):
-    br = _bridge(tmp_path)
-    dirt = REPO_ROOT / ".tmp" / "rb-bridge-dirty-probe"
-    dirt.parent.mkdir(exist_ok=True)
-    dirt.write_text("dirty", encoding="utf-8")
-    try:
-        with pytest.raises(ReviewBridgeError, match="clean"):
-            br.open(_tid(), ["t"])
-    finally:
-        dirt.unlink()
+    repo = _mkrepo(tmp_path)
+    br = ReviewBridge(repo, state_dir=tmp_path / "review-bridge")
+    (repo / "untracked-probe.txt").write_text("dirty", encoding="utf-8")
+    with pytest.raises(ReviewBridgeError, match="clean"):
+        br.open(_tid(), ["t"])
 
 
 def test_open_requires_nonempty_bounded_tests(tmp_path):
@@ -167,11 +182,18 @@ def test_ingest_unknown_verdict_fails_closed(tmp_path):
 
 def test_ingest_oversized_payload_fails_closed(tmp_path):
     br, tid, opened = _open(tmp_path)
-    huge = _result(tid, opened["head_sha"],
-                   findings=[{"severity": "P3", "area": "a" * 64,
-                              "summary": "s" * 500} for _ in range(60)])
+    huge = _result(tid, opened["head_sha"], notes_pad="x" * 70_000)
     with pytest.raises(ReviewBridgeError, match="size"):
         br.ingest(tid, huge)
+
+
+def test_ingest_too_many_findings_fails_closed(tmp_path):
+    br, tid, opened = _open(tmp_path)
+    many = _result(tid, opened["head_sha"],
+                   findings=[{"severity": "P3", "area": "a",
+                              "summary": "s"} for _ in range(60)])
+    with pytest.raises(ReviewBridgeError, match="findings"):
+        br.ingest(tid, many)
 
 
 def test_ingest_malformed_findings_fails_closed(tmp_path):
@@ -185,7 +207,7 @@ def test_ingest_malformed_findings_fails_closed(tmp_path):
 def test_ingest_unknown_task_fails_closed(tmp_path):
     br = _bridge(tmp_path)
     with pytest.raises(ReviewBridgeError, match="open"):
-        br.ingest(_tid(), _result(_tid(), _head()))
+        br.ingest(_tid(), _result(_tid(), "0" * 40))
 
 
 def test_ingest_ignores_extra_fields_including_forged_evidence(tmp_path):
@@ -321,15 +343,20 @@ def test_new_sha_invalidates_stale_approval(tmp_path):
 def test_fresh_bridge_instance_resumes_same_cycle(tmp_path):
     br, tid, opened = _open(tmp_path)
     br.ingest(tid, _result(tid, opened["head_sha"]))
-    fresh = _bridge(tmp_path)  # new instance, same durable state dir
+    # new instance over the SAME repo + durable state dir = process restart
+    fresh = ReviewBridge(br._root, state_dir=br.bus.dir)
     st = fresh.status(tid)
     assert st["cycle"] == opened["cycle"]
     assert st["status"] == "CHANGES_REQUIRED"
 
 
-def test_cli_subprocess_sees_api_opened_cycle(tmp_path):
-    """Cross-process durability: API opens, a separate CLI process statuses."""
-    br, tid, opened = _open(tmp_path)
+def test_cli_subprocess_sees_api_opened_cycle():
+    """Cross-process durability: API opens (REPO_ROOT state dir), a separate
+    CLI process statuses the same durable cycle. Requires a clean tree — the
+    exact-head open contract itself enforces it."""
+    br = ReviewBridge(REPO_ROOT)  # default state dir, same as the CLI
+    tid = "XPROC-" + uuid.uuid4().hex[:10]
+    opened = br.open(tid, ["t"])
     proc = subprocess.run(
         [sys.executable, "-m", "conductor", "review", "status",
          "--task", tid, "--json"],
