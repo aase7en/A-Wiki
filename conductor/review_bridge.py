@@ -279,31 +279,41 @@ class ReviewBridge:
         m = self._load_map(task_id)
         if not isinstance(fix_sha, str) or not _SHA_RE.fullmatch(fix_sha):
             raise ReviewBridgeError("fix_sha must be a git sha")
-        finding = self.bus.resolve_finding(finding_id, fix_sha=fix_sha,
-                                           cid=m["cycle"])
+        try:
+            finding = self.bus.resolve_finding(
+                finding_id, fix_sha=fix_sha, cid=m["cycle"])
+        except self._rb.ReviewBusError as exc:
+            raise ReviewBridgeError(str(exc)) from None
         return {"schema": SCHEMA, "task_id": task_id, **finding}
 
     def verify_finding(self, task_id: str, finding_id: str) -> dict:
         validate_task_id(task_id)
         m = self._load_map(task_id)
-        finding = self.bus.verify_finding(finding_id, cid=m["cycle"])
+        try:
+            finding = self.bus.verify_finding(finding_id, cid=m["cycle"])
+        except self._rb.ReviewBusError as exc:
+            raise ReviewBridgeError(str(exc)) from None
         return {"schema": SCHEMA, "task_id": task_id, **finding}
 
     # ── RB-7 — trusted evidence (never reachable from reviewer payloads) ──
     def record_retest(self, task_id: str, ok: bool,
                       sha: str | None = None) -> dict:
         validate_task_id(task_id)
+        if not isinstance(ok, bool):
+            raise ReviewBridgeError("retest ok must be a bool")
         m = self._load_map(task_id)
         head = sha if sha is not None else self.gate.head_sha()
         if not isinstance(head, str) or not _SHA_RE.fullmatch(head):
             raise ReviewBridgeError("retest sha must be a git sha")
-        doc = self.bus.record_retest(sha=head, ok=bool(ok), cid=m["cycle"])
+        doc = self.bus.record_retest(sha=head, ok=ok, cid=m["cycle"])
         return {"schema": SCHEMA, "task_id": task_id, "cycle": m["cycle"],
                 "retest": doc["retest"], "status": doc["status"]}
 
     def record_ci(self, task_id: str, ok: bool) -> dict:
         validate_task_id(task_id)
+        if not isinstance(ok, bool):
+            raise ReviewBridgeError("ci ok must be a bool")
         m = self._load_map(task_id)
-        doc = self.bus.record_ci(ok=bool(ok), cid=m["cycle"])
+        doc = self.bus.record_ci(ok=ok, cid=m["cycle"])
         return {"schema": SCHEMA, "task_id": task_id, "cycle": m["cycle"],
                 "ci": doc["ci"], "status": doc["status"]}
