@@ -1,7 +1,7 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: READY_FOR_INDEPENDENT_REREVIEW
-Executor: GLM5.3-ZCode-MAX
+Status: ACTIVE_FOLLOWUP_TARGET_REPO_SEAM
+Executor: GLM5.3-ZCode-MAX (follow-up deterministic implementation)
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
 Base: `fc9a981d08785ee684a2f1f0616dc254f6855c0c` (origin/main at lane start)
@@ -172,3 +172,14 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Verification: focused `pytest tests/test_conductor_review_bridge.py -q` = **62/62 PASS**; related ReviewBus/A-loop/conductor/kernel = **112/112 PASS**; broad conductor/review/graph/PR-loop = **192/192 PASS**.
 - Gates: `git diff --check` PASS; `py_compile` PASS; privacy PASS; security `6327 tracked / 51 baseline / 0 new`.
 - GPT authored these repairs; independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before Ready/Merge.
+
+### 2026-09-03 post-main follow-up — external target-repo seam
+
+- Accepted Review Bridge: PR #50 head `b04761d580ddcdc7eb682e3a6036078b3b346953`; independent rereview PASS P0/P1/P2=0; merge `588a907200e0d4998ec4fbb7fb2178b89d9700b2`; post-main Core CI `33704270521` SUCCESS.
+- Root cause from A-Conductor WO147 realistic-E2E shaping: `conductor.cli.REPO_ROOT` is hard-bound to A-Wiki and `ReviewBridge(REPO_ROOT)` validates A-Wiki Git HEAD only; an A-Conductor mailbox `base_head` therefore cannot be truthfully ingested cross-repo yet.
+- Reuse decision: EXTEND the accepted bridge; no second ReviewBus/mailbox/scheduler/provider registry and no direct A-Conductor access to A-Wiki `.tmp`/`scripts.lib`.
+- Target contract: A-Wiki remains authority/library/state owner; optional absolute clean `target_repo_root` supplies Git HEAD/dirty truth. Omitted target preserves existing behavior. External-target state remains under A-Wiki ignored local state and is namespaced per target worktree.
+- Routing evidence checked 2026-09-03 from official ZCode docs: GLM-5.3/ZCode Agent targets long-horizon multi-file repeated-verification work; `/goal` continues rounds until a checkable goal is met. GLM gets bounded RED→GREEN/regression burn-down; GPT retains architecture/trust-boundary/exact-SHA authority.
+- Branch/worktree: `feat/wo-review-target-repo-20260903` / `<WORKTREE>/A-Wiki-review-target-repo-20260903` from accepted main `588a9072...`; primary checkout remains protected.
+- Scope remains `conductor/review_bridge.py`, `conductor/cli.py`, `tests/test_conductor_review_bridge.py`, this WO, bounded `COLLAB.md` claim transfer. ReviewBus/ALoopReview/schema/core forbidden.
+- Next: commit/push claim; GPT adds RED external-target contract tests; GLM Goal Mode burns RED→GREEN and regressions on this same lane.
