@@ -784,12 +784,31 @@ def test_external_target_rejects_explicit_state_dir_override(tmp_path):
     assert _git_status(target) == ""
 
 
-def test_external_target_namespace_uses_platform_normcase_and_full_sha256(tmp_path):
+def test_external_target_namespace_never_collapses_case_distinct_targets_by_os_family(tmp_path):
+    """Post-merge TR-R3: OS family is not filesystem case semantics.
+
+    Windows supports per-directory case-sensitive trees. Two distinct resolved
+    target spellings that differ by case must therefore never be forced into
+    one durable review-state namespace merely because the host is Windows.
+    Conservative false separation of aliases is safer than cross-target state
+    contamination.
+    """
+    from conductor.review_bridge import _target_state_namespace
+
+    authority = _mkrepo(tmp_path)
+    upper = Path("C:/repos/RepoA")
+    lower = Path("C:/repos/repoa")
+
+    assert _target_state_namespace(authority, upper) != \
+        _target_state_namespace(authority, lower)
+
+
+def test_external_target_namespace_uses_exact_resolved_spelling_and_full_sha256(tmp_path):
     authority = _mkrepo(tmp_path)
     target = _mk_target_repo(tmp_path, "Target-Namespace")
     br = ReviewBridge(authority, target_repo_root=target)
 
-    canonical = os.path.normcase(str(target.resolve())).replace("\\", "/")
+    canonical = str(target.resolve()).replace("\\", "/")
     expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
     assert br.bus.dir.name == expected

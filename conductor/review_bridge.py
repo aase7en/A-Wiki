@@ -114,12 +114,13 @@ def _validate_target_repo(target_repo_root) -> Path:
 
 
 def _target_state_namespace(authority_root: Path, target_root: Path) -> Path:
-    """Deterministic per-target state namespace under the AUTHORITY's ignored
-    .tmp. ``normcase`` follows the host filesystem's case semantics: Windows
-    aliases case-only spellings while POSIX preserves distinct case-sensitive
-    targets. Keep the full SHA-256 so valid targets do not share truncated
-    authority state unnecessarily."""
-    canonical = os.path.normcase(str(target_root)).replace("\\", "/")
+    """Fail-closed namespace for one resolved target path spelling.
+
+    OS family is not filesystem case semantics: Windows supports per-directory
+    case sensitivity. Hash the resolved spelling exactly. False separation of
+    aliases is acceptable; merging distinct targets into one state namespace is not.
+    """
+    canonical = str(target_root).replace("\\", "/")
     digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
     return authority_root / ".tmp" / "review-bridge-targets" / digest
 
