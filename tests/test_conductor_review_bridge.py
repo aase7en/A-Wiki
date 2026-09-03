@@ -7,7 +7,9 @@ ambiguous identity. Reviewer PASS alone can never yield allow_complete=True.
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -182,8 +184,9 @@ def test_ingest_wrong_or_stale_head_fails_closed(tmp_path):
     br, tid, opened = _open(tmp_path)
     with pytest.raises(ReviewBridgeError, match="head"):
         br.ingest(tid, _result(tid, "0" * 40))
+    wrong_tail = "0" if opened["head_sha"][-1] != "0" else "1"
     with pytest.raises(ReviewBridgeError, match="head"):
-        br.ingest(tid, _result(tid, opened["head_sha"][:-1] + "0"))
+        br.ingest(tid, _result(tid, opened["head_sha"][:-1] + wrong_tail))
 
 
 def test_ingest_unknown_verdict_fails_closed(tmp_path):
@@ -726,3 +729,201 @@ def test_cli_oversized_result_rejected_before_whole_file_read(tmp_path, monkeypa
     assert rc == 1
     assert "size" in captured.out.lower() or "large" in captured.out.lower()
     assert "whole-file-read" not in captured.out + captured.err
+
+
+# --- Cross-repo target worktree seam (post-main follow-up) ---
+
+def _mk_target_repo(tmp_path: Path, name: str) -> Path:
+    repo = tmp_path / name
+    repo.mkdir()
+
+    def g(*args: str) -> str:
+        p = subprocess.run(
+            ["git", "-C", str(repo), *args],
+            capture_output=True, text=True, timeout=30,
+        )
+        assert p.returncode == 0, p.stderr
+        return p.stdout
+
+    g("init")
+    g("config", "user.email", "target-test@example.com")
+    g("config", "user.name", "target-test")
+    (repo / "README.md").write_text(f"{name}\n", encoding="utf-8")
+    g("add", ".")
+    g("commit", "-m", "init")
+    return repo
+
+def test_external_target_open_binds_target_head_and_keeps_state_outside_target(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-a")
+    before = _git_status(target)
+
+    br = ReviewBridge(authority, target_repo_root=target)
+    out = br.open(_tid(), ["python -m pytest -q"])
+
+    assert out["head_sha"] == _head(target)
+    assert br._root == target.resolve()
+    assert _is_within(br.bus.dir, authority.resolve())
+    assert not _is_within(br.bus.dir, target.resolve())
+    assert _git_status(target) == before == ""
+
+
+def test_external_target_rejects_explicit_state_dir_override(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-state-escape")
+    escaped_state = target / "review-state"
+
+    with pytest.raises(ReviewBridgeError, match="state|authority|target"):
+        ReviewBridge(
+            authority,
+            state_dir=escaped_state,
+            target_repo_root=target,
+        )
+
+    assert not escaped_state.exists()
+    assert _git_status(target) == ""
+
+
+def test_external_target_namespace_uses_platform_normcase_and_full_sha256(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "Target-Namespace")
+    br = ReviewBridge(authority, target_repo_root=target)
+
+    canonical = os.path.normcase(str(target.resolve())).replace("\\", "/")
+    expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    assert br.bus.dir.name == expected
+    assert len(br.bus.dir.name) == 64
+
+
+def test_external_target_dirty_state_fails_closed_even_when_authority_clean(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-dirty")
+    (target / "dirty.txt").write_text("dirty\n", encoding="utf-8")
+    br = ReviewBridge(authority, target_repo_root=target)
+
+    with pytest.raises(ReviewBridgeError, match="clean|dirty"):
+        br.open(_tid(), ["t"])
+
+def _git_status(repo: Path) -> str:
+    p = subprocess.run(
+        ["git", "-C", str(repo), "status", "--porcelain"],
+        capture_output=True, text=True, timeout=30,
+    )
+    assert p.returncode == 0, p.stderr
+    return p.stdout.strip()
+
+
+def test_external_target_state_is_namespaced_and_cannot_cross_task_repo(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target_a = _mk_target_repo(tmp_path, "target-one")
+    target_b = _mk_target_repo(tmp_path, "target-two")
+    task = "XREPO-SAME-TASK"
+
+    a = ReviewBridge(authority, target_repo_root=target_a)
+    b = ReviewBridge(authority, target_repo_root=target_b)
+    opened = a.open(task, ["a"])
+
+    assert a.bus.dir != b.bus.dir
+    assert a.status(task)["cycle"] == opened["cycle"]
+    assert b.status(task)["status"] == "NO_REVIEW"
+
+def test_external_target_head_advance_revokes_ready(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-head")
+    br = ReviewBridge(authority, target_repo_root=target)
+    task = _tid()
+    opened = br.open(task, ["t"])
+    br.ingest(task, _result(task, opened["head_sha"], verdict="PASS", findings=[]))
+    br.record_retest(task, ok=True)
+    br.record_ci(task, ok=True)
+    assert br.status(task)["allow_complete"] is True
+
+    _commit_new_head(target, "advance-target.txt")
+    assert br.status(task)["allow_complete"] is False
+
+
+@pytest.mark.parametrize("bad_kind", ["relative", "missing", "not-git"])
+def test_external_target_invalid_root_fails_closed(tmp_path, bad_kind):
+    authority = _mkrepo(tmp_path)
+    if bad_kind == "relative":
+        target = Path("relative-target")
+    elif bad_kind == "missing":
+        target = (tmp_path / "missing-target").resolve()
+    else:
+        target = (tmp_path / "plain-dir").resolve()
+        target.mkdir()
+
+    with pytest.raises(ReviewBridgeError, match="target|repo|absolute|git"):
+        br = ReviewBridge(authority, target_repo_root=target)
+        br.status(_tid())
+
+def _cli_authority_target(authority: Path, target: Path, *args: str):
+    code = (
+        "import sys; from pathlib import Path; import conductor.cli as c; "
+        "c.REPO_ROOT=Path(sys.argv[1]); "
+        "raise SystemExit(c.main(sys.argv[2:]))"
+    )
+    command = [
+        sys.executable, "-c", code, str(authority),
+        "review", *args, "--target-repo", str(target), "--json",
+    ]
+    return subprocess.run(
+        command, capture_output=True, text=True,
+        encoding="utf-8", errors="replace",
+        cwd=str(REPO_ROOT), timeout=120,
+    )
+
+
+def test_cli_external_target_full_lifecycle_uses_target_head(tmp_path):
+    parent = tmp_path / "authority-parent"
+    parent.mkdir()
+    authority = _mkrepo(parent)
+    target = _mk_target_repo(tmp_path, "cli-target")
+    task = "CLI-XREPO-" + uuid.uuid4().hex[:8]
+
+    opened_p = _cli_authority_target(
+        authority, target, "open", "--task", task, "--tests", "t")
+    assert opened_p.returncode == 0, opened_p.stdout + opened_p.stderr
+    opened = json.loads(opened_p.stdout)
+    assert opened["head_sha"] == _head(target)
+
+    result_file = tmp_path / "external-review-result.json"
+    result_file.write_text(json.dumps(_result(
+        task, opened["head_sha"], verdict="PASS", findings=[])), encoding="utf-8")
+    ingest = _cli_authority_target(
+        authority, target, "ingest", "--task", task, "--file", str(result_file))
+    assert ingest.returncode == 0, ingest.stdout + ingest.stderr
+    assert json.loads(ingest.stdout)["verdict"] == "PASS"
+
+    retest = _cli_authority_target(
+        authority, target, "record-retest", "--task", task, "--ok", "true")
+    assert retest.returncode == 0, retest.stdout + retest.stderr
+    ci = _cli_authority_target(
+        authority, target, "record-ci", "--task", task, "--ok", "true")
+    assert ci.returncode == 0, ci.stdout + ci.stderr
+    status = _cli_authority_target(authority, target, "status", "--task", task)
+    data = json.loads(status.stdout)
+    assert status.returncode == 0
+    assert data["allow_complete"] is True and data["status"] == "READY"
+    assert _git_status(target) == ""
+
+
+def test_cli_external_target_invalid_path_is_bounded_json(tmp_path):
+    parent = tmp_path / "authority-parent"
+    parent.mkdir()
+    authority = _mkrepo(parent)
+    missing = (tmp_path / "missing-target").resolve()
+    p = _cli_authority_target(authority, missing, "status", "--task", "CLI-XREPO-MISSING")
+    assert p.returncode == 1
+    data = json.loads(p.stdout)
+    assert data["ok"] is False
+    assert "Traceback" not in p.stdout + p.stderr
+
+
+def _is_within(child: Path, parent: Path) -> bool:
+    try:
+        child.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False

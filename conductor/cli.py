@@ -17,6 +17,16 @@ def _emit(data: dict, as_json: bool) -> None:
         print(f"{k:12}: {v}")
 
 
+def _review_common_args(subparser) -> None:
+    """Flags shared by every review subcommand: bounded JSON output plus the
+    trusted external-target seam. Reviewer JSON can never select the target —
+    it is only ever this operator-supplied absolute path."""
+    subparser.add_argument(
+        "--target-repo", default=None,
+        help="absolute path of the external Git target repo/worktree")
+    subparser.add_argument("--json", action="store_true")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="conductor", description="A-Wiki Conductor v0.1.0")
@@ -80,33 +90,33 @@ def main(argv: list[str] | None = None) -> int:
     r_open.add_argument("--tests", nargs="+", required=True,
                         help="required test commands")
     r_open.add_argument("--reviewer", default=None)
-    r_open.add_argument("--json", action="store_true")
+    _review_common_args(r_open)
     r_ing = rsub.add_parser("ingest", help="ingest a durable reviewer result")
     r_ing.add_argument("--task", required=True)
     r_ing.add_argument("--file", required=True, help="path to result JSON")
-    r_ing.add_argument("--json", action="store_true")
+    _review_common_args(r_ing)
     r_st = rsub.add_parser("status", help="task readiness/status")
     r_st.add_argument("--task", required=True)
-    r_st.add_argument("--json", action="store_true")
+    _review_common_args(r_st)
     r_rs = rsub.add_parser("resolve", help="resolve a finding with a fix sha")
     r_rs.add_argument("--task", required=True)
     r_rs.add_argument("--finding", required=True)
     r_rs.add_argument("--fix-sha", required=True)
-    r_rs.add_argument("--json", action="store_true")
+    _review_common_args(r_rs)
     r_vf = rsub.add_parser("verify-finding", help="verify an addressed finding")
     r_vf.add_argument("--task", required=True)
     r_vf.add_argument("--finding", required=True)
-    r_vf.add_argument("--json", action="store_true")
+    _review_common_args(r_vf)
     r_rt = rsub.add_parser("record-retest", help="record trusted retest evidence")
     r_rt.add_argument("--task", required=True)
     r_rt.add_argument("--ok", required=True, choices=("true", "false"))
     r_rt.add_argument("--sha", default=None,
                       help="retested sha (default: current HEAD)")
-    r_rt.add_argument("--json", action="store_true")
+    _review_common_args(r_rt)
     r_ci = rsub.add_parser("record-ci", help="record trusted CI evidence")
     r_ci.add_argument("--task", required=True)
     r_ci.add_argument("--ok", required=True, choices=("true", "false"))
-    r_ci.add_argument("--json", action="store_true")
+    _review_common_args(r_ci)
 
     args = parser.parse_args(argv)
 
@@ -182,9 +192,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "review":
         from .review_bridge import MAX_RESULT_BYTES, ReviewBridge, ReviewBridgeError
-        bridge = ReviewBridge(REPO_ROOT)
         ok = args.ok == "true" if hasattr(args, "ok") else None
         try:
+            bridge = ReviewBridge(
+                REPO_ROOT, target_repo_root=getattr(args, "target_repo", None))
             if args.review_cmd == "open":
                 out = bridge.open(args.task, args.tests,
                                   reviewer=args.reviewer)

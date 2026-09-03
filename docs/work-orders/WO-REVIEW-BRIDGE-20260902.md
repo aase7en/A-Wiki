@@ -1,7 +1,7 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: READY_FOR_INDEPENDENT_REREVIEW
-Executor: GLM5.3-ZCode-MAX
+Status: READY_FOR_GPT_PRIMARY_REVIEW (target-repo seam)
+Executor: GLM5.3-ZCode-MAX (follow-up deterministic implementation)
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
 Base: `fc9a981d08785ee684a2f1f0616dc254f6855c0c` (origin/main at lane start)
@@ -172,3 +172,70 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Verification: focused `pytest tests/test_conductor_review_bridge.py -q` = **62/62 PASS**; related ReviewBus/A-loop/conductor/kernel = **112/112 PASS**; broad conductor/review/graph/PR-loop = **192/192 PASS**.
 - Gates: `git diff --check` PASS; `py_compile` PASS; privacy PASS; security `6327 tracked / 51 baseline / 0 new`.
 - GPT authored these repairs; independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before Ready/Merge.
+
+### 2026-09-03 post-main follow-up — external target-repo seam
+
+- Accepted Review Bridge: PR #50 head `b04761d580ddcdc7eb682e3a6036078b3b346953`; independent rereview PASS P0/P1/P2=0; merge `588a907200e0d4998ec4fbb7fb2178b89d9700b2`; post-main Core CI `33704270521` SUCCESS.
+- Root cause from A-Conductor WO147 realistic-E2E shaping: `conductor.cli.REPO_ROOT` is hard-bound to A-Wiki and `ReviewBridge(REPO_ROOT)` validates A-Wiki Git HEAD only; an A-Conductor mailbox `base_head` therefore cannot be truthfully ingested cross-repo yet.
+- Reuse decision: EXTEND the accepted bridge; no second ReviewBus/mailbox/scheduler/provider registry and no direct A-Conductor access to A-Wiki `.tmp`/`scripts.lib`.
+- Target contract: A-Wiki remains authority/library/state owner; optional absolute clean `target_repo_root` supplies Git HEAD/dirty truth. Omitted target preserves existing behavior. External-target state remains under A-Wiki ignored local state and is namespaced per target worktree.
+- Routing evidence checked 2026-09-03 from official ZCode docs: GLM-5.3/ZCode Agent targets long-horizon multi-file repeated-verification work; `/goal` continues rounds until a checkable goal is met. GLM gets bounded RED→GREEN/regression burn-down; GPT retains architecture/trust-boundary/exact-SHA authority.
+- Branch/worktree: `feat/wo-review-target-repo-20260903` / `<WORKTREE>/A-Wiki-review-target-repo-20260903` from accepted main `588a9072...`; primary checkout remains protected.
+- Scope remains `conductor/review_bridge.py`, `conductor/cli.py`, `tests/test_conductor_review_bridge.py`, this WO, bounded `COLLAB.md` claim transfer. ReviewBus/ALoopReview/schema/core forbidden.
+- Next: commit/push claim; GPT adds RED external-target contract tests; GLM Goal Mode burns RED→GREEN and regressions on this same lane.
+
+
+### 2026-09-03 target-repo RED contract — GPT architecture lane
+
+- GPT added external-target contract tests only; production remains unchanged at this checkpoint.
+- RED focused result: `python -m pytest -q tests/test_conductor_review_bridge.py` = **9 failed / 62 passed**.
+- All 9 failures are the intended seam: missing `target_repo_root` API support (7 parametrized/behavior cases) and missing CLI `--target-repo` support (2 cases).
+- Contract proves: target HEAD is review HEAD; target dirty state fails closed; review bookkeeping never mutates target; A-Wiki-owned state is isolated per target worktree; target HEAD drift revokes READY; invalid relative/missing/non-git targets fail bounded; CLI open→ingest→retest→CI→READY operates against the external target.
+- During RED, an older test oracle was found flaky: it formed a wrong SHA by forcing the last nibble to `0`, which is unchanged when the real SHA already ends in `0`. GPT repaired the oracle to always choose a different nibble; the pre-existing suite then returned to **62 passing** outside the 9 intended REDs.
+- Python 3.8 compatibility is preserved in the RED helpers (no `Path.is_relative_to`).
+- GLM must now implement only the declared bridge/CLI scope and burn this exact RED set to GREEN; no test deletion/weakening and no ReviewBus/ALoopReview/schema changes.
+
+### 2026-09-03 target-repo seam GREEN — GLM implementation checkpoint
+
+- Identity at start: branch `feat/wo-review-target-repo-20260903`, HEAD `de390f7516563e120aca1e3e3a3ca9c782a989b2` (= expected RED contract head; clean tree; origin/main `588a9072` ancestor). RED confirmed before mutation: **9 failed / 62 passed** exactly as the GPT contract recorded.
+- Implementation (minimal, WRAP-only):
+  - `conductor/review_bridge.py`: new `_validate_target_repo()` (absolute + existing dir + real Git checkout/worktree incl. linked `.git` gitfile, verified via bounded `git rev-parse --git-dir`; malformed/missing/relative/non-Git ⇒ bounded `ReviewBridgeError`) and `_target_state_namespace()` (sha256 fingerprint of the resolved target — never the raw machine path — under `<authority>/.tmp/review-bridge-targets/`). `ReviewBridge(..., target_repo_root=None)`: omitted ⇒ behavior byte-identical to before (authority is the target, default state dir unchanged); provided ⇒ `self._root` becomes the validated TARGET (all existing HEAD/dirty/stale/READY/retest truth therefore keys to the target), ReviewBus/ALoopReview still import from the AUTHORITY's `scripts/lib`, durable state stays under the authority's ignored `.tmp`, and `gate.git_dir` binds the TARGET `.git`.
+  - `conductor/cli.py`: every review subcommand gains the trusted `--target-repo <absolute path>` (plus shared bounded `--json`); bridge construction moved inside the bounded-error `try` so invalid targets emit bounded JSON rc=1 with no traceback. Reviewer JSON can never select the target — it is operator-supplied only.
+- GREEN: focused `python -m pytest -q tests/test_conductor_review_bridge.py` = **71 passed** (62 + all 9 RED).
+- Adversarial self-review probes (9/9 PASS): full lifecycle leaves the target file tree byte-identical (no state in target, no `.tmp` in target); authority HEAD advance never substitutes target HEAD (open/ingest stay target-bound); same task id fully isolated across two target repos (separate state namespaces, cross-target result rejected); open-on-A + ingest-on-B fails closed; explicit target==authority works end-to-end (documented subtlety: requires the authority's ignored-state convention, e.g. `.tmp/` gitignored as in A-Wiki); linked git worktree full lifecycle + HEAD-advance READY revoke; dirty target after READY demotes `allow_complete`; relative/missing/plain-dir/file targets all bounded; reviewer payload `target_repo`/`state_dir` fields are ignored extras — state stays authority-owned and target-A-bound.
+- Related suite: first run **1 failed / 111 passed** (`test_search_fts_returns_structured_hits`), passed in isolation and on rerun **112/112** — the same known environment-flake class already documented in the rereview result; not attributable to this diff (no `conductor/__main__.py`/search change). Broad matrix: **201/201** (192 baseline + 9 new).
+- Cross-process CLI E2E: covered by the contract tests via subprocess against an external target (open→ingest→record-retest→record-ci→READY; target stays `git-clean`); invalid target path ⇒ bounded JSON rc=1 without traceback.
+- Gates: `py_compile` (3.11 + managed 3.8) PASS · `git diff --check` PASS · strict UTF-8 no U+FFFD PASS · privacy PASS · security **6,327 tracked / 51 baseline / 0 new** · stale-spec PASS · wiki-health **0 hard / 352 advisory**. GitNexus: fresh `analyze --index-only` index for this worktree + impact/detect-changes recorded in the final checkpoint below.
+- Findings: P0=0 P1=0 P2=0; P3 notes — (a) explicit target==authority namespaces state under `review-bridge-targets/` (beside the implicit default dir), documented as intentional; requires ignored-state convention when authority==target; (b) the known one-off conductor-search environment flake recurred once and did not reproduce (6+ consecutive green runs across rounds).
+- Next: GitNexus evidence → commit/push → READY_FOR_GPT_PRIMARY_REVIEW.
+
+### 2026-09-03 target-repo seam — final checkpoint (READY_FOR_GPT_PRIMARY_REVIEW)
+
+- Final candidate HEAD `bd072204...` (implementation + this WO checkpoint; COLLAB claim release row included). Exact files vs RED base `de390f75`: `conductor/review_bridge.py`, `conductor/cli.py`, `docs/work-orders/WO-REVIEW-BRIDGE-20260902.md`, `tests/test_conductor_review_bridge.py` (RED contract, unchanged by GLM), `COLLAB.md` (claim rows only).
+- RED baseline: **9 failed / 62 passed** (confirmed pre-mutation). Focused GREEN: **71 passed**. Related: **112 passed** (one first-run environment flake of the known conductor-search class, unreproduced in isolation + rerun). Broad: **201 passed**.
+- Realistic cross-process CLI E2E: contract tests drive subprocess CLI against an external throwaway Git target end-to-end (open→ingest PASS→record-retest→record-ci→READY, target stays git-clean, invalid target bounded JSON). API-level probes additionally prove linked-worktree lifecycle + HEAD-advance revoke and full file-tree immutability of the target.
+- GitNexus (fresh `analyze --index-only` for this worktree: 85,283 nodes / 125,148 edges / 700 flows; FTS extension unavailable on this Windows runtime = documented tool limitation): impact `ReviewBridge` LOW (2 impacted / 0 processes), impact `cli.main` LOW (2 / 0); `detect-changes --scope compare --base-ref de390f75` = 3 files / 9 symbols / 3 processes / **risk MEDIUM** (additive seam symbols; below HIGH/CRITICAL stop threshold).
+- Gates: `git diff --check` PASS · py_compile 3.11 + managed 3.8 PASS · strict UTF-8 (no U+FFFD) PASS · privacy PASS · security 6,327 tracked / 51 baseline / **0 new** · stale-spec PASS · wiki-health **0 hard / 352 advisory**.
+- Findings: **P0=0 P1=0 P2=0**. P3: (a) explicit target==authority uses the namespaced state dir beside the implicit default (intentional; authority must ignore its state path — A-Wiki does); (b) known one-off conductor-search environment flake (documented class, unreproduced).
+- Residual risks: external-target trust is operator-supplied absolute path (by design — reviewer JSON cannot select it); namespace fingerprint is deterministic sha256 of the resolved target path (state-dir name only, gitignored, never tracked).
+- Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of `bd072204...` (trust boundaries, remote diff, tests), then PR/CI/merge/post-main under GPT authority.**
+
+### 2026-09-03 GPT Primary repair claim - external-target trust boundary
+
+- Primary exact-SHA review of `0ed89003655b07356c84f1d6311ed31b20ce942f` re-ran focused 71/71, related 112/112, broad 201/201, then found two uncovered trust-boundary defects.
+- P1/P2 proof 1: supported API `ReviewBridge(authority, target_repo_root=target, state_dir=target / "review-state")` can open successfully and later creates `?? review-state/` inside the target. This violates the target-as-Git-truth-only / authority-owned-state contract.
+- P1/P2 proof 2: `_target_state_namespace()` unconditionally `.casefold()`s the resolved target path; `/tmp/Repo` and `/tmp/repo` therefore map to the same namespace even though they can be distinct repositories on case-sensitive filesystems.
+- Repair claim is limited to `conductor/review_bridge.py`, focused tests, this WO, and bounded COLLAB bookkeeping. No ReviewBus/ALoopReview/schema/core/A-Conductor mutation. Original `0ed89003...` stays frozen for independent review; repair occurs on `fix/wo-review-target-repo-primary-20260903`.
+- RED-first target: reject explicit state-dir override in external-target mode; use platform-correct path normalization for durable target namespace and remove unnecessary digest truncation.
+
+### 2026-09-03 GPT Primary repair final checkpoint — READY_FOR_INDEPENDENT_REREVIEW
+
+- Repair branch: `fix/wo-review-target-repo-primary-20260903`; repaired production head before this checkpoint: `e9e569e5addcdf0e806d83a0945477dfacca3af5`.
+- RED commit `d0afb924336ec64f9967a31106f15157c6da4607`: focused suite **2 failed / 71 passed** exactly on external `state_dir` authority escape and truncated/unconditional-casefold namespace semantics.
+- GREEN repair changes only `conductor/review_bridge.py`: external-target mode rejects explicit `state_dir`; namespace canonicalization uses host `os.path.normcase` semantics and a full SHA-256 digest.
+- Focused GREEN: **73/73 PASS**.
+- Related first run: **111/112** with the known one-off `TestBridgeSearch.test_search_fts_returns_structured_hits` environment flake; isolated repeat **8/8 PASS** and related rerun **112/112 PASS**.
+- Broad matrix: **203/203 PASS**.
+- Gates: `py_compile` PASS; `git diff --check` PASS; strict UTF-8/U+FFFD PASS; privacy PASS; stale-spec PASS; added-line secret scan **0 hits**; wiki-health **0 hard / 352 advisory**.
+- Scope remains exactly the accepted target-repo seam files plus bounded WO/COLLAB bookkeeping; ReviewBus/ALoopReview/schema/core remain untouched.
+- GPT authored the trust-boundary repair, so independent exact-SHA rereview remains mandatory before PR/merge.

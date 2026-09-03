@@ -86,13 +86,70 @@ def _bounded_str(value, what: str, limit: int) -> str:
     return value
 
 
+def _validate_target_repo(target_repo_root) -> Path:
+    """Trusted external-target seam: validate the target supplies ONLY git
+    truth (HEAD/clean/worktree identity). Absolute existing Git checkout or
+    linked worktree (gitfile) only; anything else fails closed bounded."""
+    if not isinstance(target_repo_root, (str, Path)):
+        raise ReviewBridgeError("target repo root must be an absolute path")
+    raw = Path(target_repo_root)
+    if not raw.is_absolute():
+        raise ReviewBridgeError(
+            "target repo root must be an absolute path (relative paths rejected)")
+    resolved = raw.resolve(strict=False)
+    if not resolved.is_dir():
+        raise ReviewBridgeError("target repo does not exist or is not a directory")
+    if not (resolved / ".git").exists():
+        raise ReviewBridgeError("target repo is not a Git checkout (.git missing)")
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(resolved), "rev-parse", "--git-dir"],
+            capture_output=True, text=True, encoding="utf-8",
+            errors="replace", timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise ReviewBridgeError(f"target repo git check failed: {e!r}") from e
+    if out.returncode != 0:
+        raise ReviewBridgeError("target repo is not a usable Git worktree")
+    return resolved
+
+
+def _target_state_namespace(authority_root: Path, target_root: Path) -> Path:
+    """Deterministic per-target state namespace under the AUTHORITY's ignored
+    .tmp. ``normcase`` follows the host filesystem's case semantics: Windows
+    aliases case-only spellings while POSIX preserves distinct case-sensitive
+    targets. Keep the full SHA-256 so valid targets do not share truncated
+    authority state unnecessarily."""
+    canonical = os.path.normcase(str(target_root)).replace("\\", "/")
+    digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    return authority_root / ".tmp" / "review-bridge-targets" / digest
+
+
 class ReviewBridge:
     """Thin adapter over ReviewBus + ALoopReview for the external mailbox seam."""
 
     def __init__(self, repo_root: Path | str, state_dir: Path | str | None = None,
-                 phase: str = "XRB"):
-        self._root = Path(repo_root)
-        lib = str(self._root / "scripts" / "lib")
+                 phase: str = "XRB",
+                 target_repo_root: Path | str | None = None):
+        authority = Path(repo_root)
+        self._authority_root = authority
+        if target_repo_root is None:
+            # Backward compatibility: the authority repo is also the review
+            # target — HEAD/dirty/state behavior is exactly as before.
+            self._root = authority
+            default_state = authority / ".tmp" / "review-bridge"
+        else:
+            # External target seam: the target supplies ONLY git truth; the
+            # authority keeps scripts/lib, ReviewBus/ALoopReview, and the
+            # durable namespaced review state. An explicit state_dir would let
+            # a caller redirect authority bookkeeping into the target itself,
+            # so it is not a supported override in external-target mode.
+            if state_dir is not None:
+                raise ReviewBridgeError(
+                    "external target state is authority-owned; state_dir override is not allowed"
+                )
+            self._root = _validate_target_repo(target_repo_root)
+            default_state = _target_state_namespace(authority, self._root)
+        lib = str(authority / "scripts" / "lib")
         if lib not in sys.path:
             sys.path.insert(0, lib)
         import review_bus as rb
@@ -100,7 +157,7 @@ class ReviewBridge:
         self._rb = rb
         self._alr = alr
         self.bus = rb.ReviewBus(
-            Path(state_dir) if state_dir else self._root / ".tmp" / "review-bridge",
+            Path(state_dir) if state_dir else default_state,
             phase=phase)
         self.gate = alr.ALoopReview(self.bus, git_dir=self._root / ".git")
 
