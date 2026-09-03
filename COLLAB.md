@@ -19,8 +19,9 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
-| WO-REVIEW-BRIDGE-20260902 target-repo seam - **GPT_PRIMARY_REPAIR_CLAIMED** (primary review reproduced target-state authority escape + cross-platform namespace alias risk; original `0ed89003` frozen for independent review) | GPT-5.6 Sol MAX | 2026-09-03 | `conductor/review_bridge.py`; `tests/test_conductor_review_bridge.py`; bounded WO/COLLAB repair evidence only | `fix/wo-review-target-repo-primary-20260903` |
 
+
+Target-repo primary repair release 2026-09-03: GPT trust-boundary repair is frozen for independent exact-SHA rereview; focused 73/73, related rerun 112/112, broad 203/203, privacy/stale/secret/wiki-health gates pass. No active GPT repair claim remains.
 
 RFR continuity release 2026-09-01: M1-M8 are merge/post-merge verified and R-FR-001..011 is complete. No active R-FR claim remains. Historical MERGED/DONE/HOLD rows were removed from the active claim table; durable evidence remains in `docs/work-orders/WO-RFR-20260824.md` and Git history.
 

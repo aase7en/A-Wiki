@@ -227,3 +227,15 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - P1/P2 proof 2: `_target_state_namespace()` unconditionally `.casefold()`s the resolved target path; `/tmp/Repo` and `/tmp/repo` therefore map to the same namespace even though they can be distinct repositories on case-sensitive filesystems.
 - Repair claim is limited to `conductor/review_bridge.py`, focused tests, this WO, and bounded COLLAB bookkeeping. No ReviewBus/ALoopReview/schema/core/A-Conductor mutation. Original `0ed89003...` stays frozen for independent review; repair occurs on `fix/wo-review-target-repo-primary-20260903`.
 - RED-first target: reject explicit state-dir override in external-target mode; use platform-correct path normalization for durable target namespace and remove unnecessary digest truncation.
+
+### 2026-09-03 GPT Primary repair final checkpoint — READY_FOR_INDEPENDENT_REREVIEW
+
+- Repair branch: `fix/wo-review-target-repo-primary-20260903`; repaired production head before this checkpoint: `e9e569e5addcdf0e806d83a0945477dfacca3af5`.
+- RED commit `d0afb924336ec64f9967a31106f15157c6da4607`: focused suite **2 failed / 71 passed** exactly on external `state_dir` authority escape and truncated/unconditional-casefold namespace semantics.
+- GREEN repair changes only `conductor/review_bridge.py`: external-target mode rejects explicit `state_dir`; namespace canonicalization uses host `os.path.normcase` semantics and a full SHA-256 digest.
+- Focused GREEN: **73/73 PASS**.
+- Related first run: **111/112** with the known one-off `TestBridgeSearch.test_search_fts_returns_structured_hits` environment flake; isolated repeat **8/8 PASS** and related rerun **112/112 PASS**.
+- Broad matrix: **203/203 PASS**.
+- Gates: `py_compile` PASS; `git diff --check` PASS; strict UTF-8/U+FFFD PASS; privacy PASS; stale-spec PASS; added-line secret scan **0 hits**; wiki-health **0 hard / 352 advisory**.
+- Scope remains exactly the accepted target-repo seam files plus bounded WO/COLLAB bookkeeping; ReviewBus/ALoopReview/schema/core remain untouched.
+- GPT authored the trust-boundary repair, so independent exact-SHA rereview remains mandatory before PR/merge.
