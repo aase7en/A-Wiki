@@ -219,3 +219,11 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Findings: **P0=0 P1=0 P2=0**. P3: (a) explicit target==authority uses the namespaced state dir beside the implicit default (intentional; authority must ignore its state path — A-Wiki does); (b) known one-off conductor-search environment flake (documented class, unreproduced).
 - Residual risks: external-target trust is operator-supplied absolute path (by design — reviewer JSON cannot select it); namespace fingerprint is deterministic sha256 of the resolved target path (state-dir name only, gitignored, never tracked).
 - Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of `bd072204...` (trust boundaries, remote diff, tests), then PR/CI/merge/post-main under GPT authority.**
+
+### 2026-09-03 GPT Primary repair claim - external-target trust boundary
+
+- Primary exact-SHA review of `0ed89003655b07356c84f1d6311ed31b20ce942f` re-ran focused 71/71, related 112/112, broad 201/201, then found two uncovered trust-boundary defects.
+- P1/P2 proof 1: supported API `ReviewBridge(authority, target_repo_root=target, state_dir=target / "review-state")` can open successfully and later creates `?? review-state/` inside the target. This violates the target-as-Git-truth-only / authority-owned-state contract.
+- P1/P2 proof 2: `_target_state_namespace()` unconditionally `.casefold()`s the resolved target path; `/tmp/Repo` and `/tmp/repo` therefore map to the same namespace even though they can be distinct repositories on case-sensitive filesystems.
+- Repair claim is limited to `conductor/review_bridge.py`, focused tests, this WO, and bounded COLLAB bookkeeping. No ReviewBus/ALoopReview/schema/core/A-Conductor mutation. Original `0ed89003...` stays frozen for independent review; repair occurs on `fix/wo-review-target-repo-primary-20260903`.
+- RED-first target: reject explicit state-dir override in external-target mode; use platform-correct path normalization for durable target namespace and remove unnecessary digest truncation.
