@@ -234,3 +234,15 @@ Gates: `git diff --check` PASS · py_compile 3.11 + managed 3.8 PASS · strict U
 Findings: **P0=0 P1=0 P2=0** (both review P1s closed with deterministic regressions). P3: namespace flag is process-global module state (monkeypatch-only in tests; no runtime mutation path).
 
 Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of the repaired head, then PR/CI/merge under GPT authority.**
+
+### 2026-09-03 GPT Primary review ? TR-R3 case-sensitive Windows repair
+
+- Independent review of `c2087640ac7872a7c32a69e3b28ab35bb0ed9921` found one residual P1: target-state identity inferred filesystem case semantics from `os.name == "nt"`. Windows supports per-directory case sensitivity, so distinct case-sensitive targets could still collapse into one namespace.
+- RED commit `1f11eabcaabb2281cbf4be088ea3b6636c816370` proves the collision: the new regression failed 1/1 for the intended reason before production repair.
+- GREEN implementation commit `9f834ee0688f1706eab10f79a4eb86a6834b0142` removes OS-family case folding. The namespace is the full SHA-256 of the resolved path spelling on every OS. Conservative alias separation is accepted; cross-target state contamination is not.
+- Focused Review Bridge = **77/77 PASS**; related ReviewBus/A-Loop/Conductor/kernel = **112/112 PASS**; broad bridge cluster = **207/207 PASS**.
+- `git diff --check`, Python compile, strict UTF-8, privacy, stale-spec PASS. Security = **6,327 tracked / 51 baseline / 0 new**. Wiki health = **0 hard / 352 advisory**.
+- GitNexus `detect-changes` vs `c2087640...` = **3 files / 3 symbols / 0 affected processes / LOW**. FTS is unavailable on this Windows runtime because its optional OpenSSL-linked extension cannot load; no DLL/system installation was attempted.
+- GPT authored this repair, so this is **READY_FOR_INDEPENDENT_REREVIEW**, not merge acceptance. P0=0; known P1/P2=0 after local repair, pending independent falsification.
+- Next safe action: independent exact-SHA rereview of the final branch HEAD, then GPT PR/CI/merge/post-main authority if PASS.
+
