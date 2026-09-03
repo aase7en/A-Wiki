@@ -245,4 +245,3 @@ Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of the repaired
 - GitNexus `detect-changes` vs `c2087640...` = **3 files / 3 symbols / 0 affected processes / LOW**. FTS is unavailable on this Windows runtime because its optional OpenSSL-linked extension cannot load; no DLL/system installation was attempted.
 - GPT authored this repair, so this is **READY_FOR_INDEPENDENT_REREVIEW**, not merge acceptance. P0=0; known P1/P2=0 after local repair, pending independent falsification.
 - Next safe action: independent exact-SHA rereview of the final branch HEAD, then GPT PR/CI/merge/post-main authority if PASS.
-
