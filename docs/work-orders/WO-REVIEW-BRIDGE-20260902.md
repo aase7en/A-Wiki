@@ -1,6 +1,6 @@
 # WO-REVIEW-BRIDGE-20260902 — Thin conductor Review Bridge (WRAP/EXTEND)
 
-Status: ACTIVE_FOLLOWUP_TARGET_REPO_SEAM
+Status: READY_FOR_GPT_PRIMARY_REVIEW (target-repo seam)
 Executor: GLM5.3-ZCode-MAX (follow-up deterministic implementation)
 Integrity / final reviewer: GPT-5.6-Sol (exact-SHA review, PR/CI/merge authority)
 Branch: `feat/wo-review-bridge-glm-20260902`
@@ -208,3 +208,14 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Gates: `py_compile` (3.11 + managed 3.8) PASS · `git diff --check` PASS · strict UTF-8 no U+FFFD PASS · privacy PASS · security **6,327 tracked / 51 baseline / 0 new** · stale-spec PASS · wiki-health **0 hard / 352 advisory**. GitNexus: fresh `analyze --index-only` index for this worktree + impact/detect-changes recorded in the final checkpoint below.
 - Findings: P0=0 P1=0 P2=0; P3 notes — (a) explicit target==authority namespaces state under `review-bridge-targets/` (beside the implicit default dir), documented as intentional; requires ignored-state convention when authority==target; (b) the known one-off conductor-search environment flake recurred once and did not reproduce (6+ consecutive green runs across rounds).
 - Next: GitNexus evidence → commit/push → READY_FOR_GPT_PRIMARY_REVIEW.
+
+### 2026-09-03 target-repo seam — final checkpoint (READY_FOR_GPT_PRIMARY_REVIEW)
+
+- Final candidate HEAD `bd072204...` (implementation + this WO checkpoint; COLLAB claim release row included). Exact files vs RED base `de390f75`: `conductor/review_bridge.py`, `conductor/cli.py`, `docs/work-orders/WO-REVIEW-BRIDGE-20260902.md`, `tests/test_conductor_review_bridge.py` (RED contract, unchanged by GLM), `COLLAB.md` (claim rows only).
+- RED baseline: **9 failed / 62 passed** (confirmed pre-mutation). Focused GREEN: **71 passed**. Related: **112 passed** (one first-run environment flake of the known conductor-search class, unreproduced in isolation + rerun). Broad: **201 passed**.
+- Realistic cross-process CLI E2E: contract tests drive subprocess CLI against an external throwaway Git target end-to-end (open→ingest PASS→record-retest→record-ci→READY, target stays git-clean, invalid target bounded JSON). API-level probes additionally prove linked-worktree lifecycle + HEAD-advance revoke and full file-tree immutability of the target.
+- GitNexus (fresh `analyze --index-only` for this worktree: 85,283 nodes / 125,148 edges / 700 flows; FTS extension unavailable on this Windows runtime = documented tool limitation): impact `ReviewBridge` LOW (2 impacted / 0 processes), impact `cli.main` LOW (2 / 0); `detect-changes --scope compare --base-ref de390f75` = 3 files / 9 symbols / 3 processes / **risk MEDIUM** (additive seam symbols; below HIGH/CRITICAL stop threshold).
+- Gates: `git diff --check` PASS · py_compile 3.11 + managed 3.8 PASS · strict UTF-8 (no U+FFFD) PASS · privacy PASS · security 6,327 tracked / 51 baseline / **0 new** · stale-spec PASS · wiki-health **0 hard / 352 advisory**.
+- Findings: **P0=0 P1=0 P2=0**. P3: (a) explicit target==authority uses the namespaced state dir beside the implicit default (intentional; authority must ignore its state path — A-Wiki does); (b) known one-off conductor-search environment flake (documented class, unreproduced).
+- Residual risks: external-target trust is operator-supplied absolute path (by design — reviewer JSON cannot select it); namespace fingerprint is deterministic sha256 of the resolved target path (state-dir name only, gitignored, never tracked).
+- Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of `bd072204...` (trust boundaries, remote diff, tests), then PR/CI/merge/post-main under GPT authority.**
