@@ -239,3 +239,14 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Gates: `py_compile` PASS; `git diff --check` PASS; strict UTF-8/U+FFFD PASS; privacy PASS; stale-spec PASS; added-line secret scan **0 hits**; wiki-health **0 hard / 352 advisory**.
 - Scope remains exactly the accepted target-repo seam files plus bounded WO/COLLAB bookkeeping; ReviewBus/ALoopReview/schema/core remain untouched.
 - GPT authored the trust-boundary repair, so independent exact-SHA rereview remains mandatory before PR/merge.
+
+### 2026-09-03 post-merge TR-R3 case-safety repair ? READY_FOR_INDEPENDENT_REREVIEW
+
+- Post-main audit of PR #51 merge `2191f2a1ff4bccc5ebb08b1d2bc87fdbe7ca0826` found a residual P1 trust-boundary defect: `os.path.normcase()` treated Windows OS family as filesystem case semantics even though Windows supports per-directory case-sensitive directories.
+- RED commit `e9c4492e1e843cfc8c6d3b3382b3504fae250283`: exact regression `test_external_target_namespace_never_collapses_case_distinct_targets_by_os_family` failed because case-distinct target spellings mapped to one durable review namespace.
+- GREEN production repair `e178d2ce2cc28d6117af25f2294262eed4b3fdaa`: namespace hashes the exact resolved target spelling with full SHA-256; no OS-wide `normcase` / casefold inference remains. False separation of aliases is accepted over cross-target state contamination.
+- Focused `tests/test_conductor_review_bridge.py` = **74/74 PASS**. Related first run hit the known unrelated FTS environment flake; isolated repeat **8/8 PASS**, related rerun **112/112 PASS**. Broad bridge matrix = **204/204 PASS**.
+- Gates: `git diff --check`, `py_compile`, strict UTF-8/U+FFFD, privacy, stale-spec PASS; security **6,327 tracked / 51 baseline / 0 new**; wiki-health **0 hard / 352 advisory**.
+- GitNexus local index completed; FTS remained unavailable due the existing Windows runtime DLL limitation. `detect-changes` could not resolve the newly indexed worktree label despite listing it, so detect-changes is `UNVERIFIED ? tool resolver failure`; no system DLL was installed. Prior seam impact was LOW and the repair changes only `_target_state_namespace` plus focused regression tests.
+- Defect Memory Tier-1 recorded in `.tmp/memory-ledger.jsonl`; `conductor recall` verified the entry. Mechanism: the RED regression above. Evidence binds RED `e9c4492e...` to GREEN `e178d2ce...`.
+- GPT authored this forward-only repair, so a fresh independent exact-SHA rereview with P0/P1/P2=0 remains mandatory before PR/CI/merge.
