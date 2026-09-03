@@ -113,21 +113,14 @@ def _validate_target_repo(target_repo_root) -> Path:
     return resolved
 
 
-# TR-R2: only case-INSENSITIVE filesystems may fold target-path case — POSIX
-# case-sensitive filesystems must keep distinct target repos in distinct
-# namespaces (false separation beats cross-target state contamination).
-_CASE_INSENSITIVE_FS = os.name == "nt"
-
-
 def _target_state_namespace(authority_root: Path, target_root: Path) -> Path:
-    """Deterministic per-target state namespace under the AUTHORITY's ignored
-    .tmp — the FULL sha256 fingerprint of the normalized target path (case
-    folded only on Windows-style filesystems where the aliases are genuinely
-    equivalent), never the raw machine-specific path, so the same task id in
-    two target repos can never share cycle/state."""
+    """Return an authority-owned namespace for one resolved target spelling.
+
+    OS family is not filesystem semantics: Windows supports per-directory case
+    sensitivity. Hash the resolved spelling exactly. Conservative false
+    separation of aliases is safer than cross-target state contamination.
+    """
     normalized = str(target_root).replace("\\", "/")
-    if _CASE_INSENSITIVE_FS:
-        normalized = normalized.casefold()
     digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
     return authority_root / ".tmp" / "review-bridge-targets" / digest
 

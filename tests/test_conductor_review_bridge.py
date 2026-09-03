@@ -961,50 +961,27 @@ def test_target_namespace_is_full_hash_without_raw_path(tmp_path):
     assert _re.fullmatch(r"[0-9a-f]{64}", segment), segment
 
 
-def test_target_namespace_never_collapses_distinct_case_paths_by_os_name(tmp_path, monkeypatch):
-    """TR-R3: OS family is not filesystem semantics. Windows can host
-    per-directory case-sensitive trees, so namespace identity must never
-    collapse two distinct resolved path spellings merely because os.name is nt.
-    False separation of an alias is safer than cross-target state contamination.
+def test_target_namespace_never_collapses_distinct_case_paths_by_os_name(tmp_path):
+    """TR-R3: OS family is not filesystem semantics.
+
+    Windows can host per-directory case-sensitive trees. Distinct resolved path
+    spellings must never collapse merely because the host OS is Windows.
     """
-    import conductor.review_bridge as rb_module
     from conductor.review_bridge import _target_state_namespace
 
     authority = _mkrepo(tmp_path)
     upper = Path("C:/repos/RepoA")
     lower = Path("C:/repos/repoa")
-    monkeypatch.setattr(rb_module, "_CASE_INSENSITIVE_FS", True)
-
     assert _target_state_namespace(authority, upper) != \
         _target_state_namespace(authority, lower)
 
 
-def test_target_namespace_platform_case_semantics(tmp_path, monkeypatch):
-    """TR-R2: case-insensitive filesystems unify genuine aliases; POSIX
-    case-sensitive filesystems must keep distinct repos distinct (never
-    cross-target state contamination)."""
-    import conductor.review_bridge as rb_module
+def test_target_namespace_case_safety_is_os_family_agnostic(tmp_path):
+    """TR-R3: false separation is allowed; cross-target collision is not."""
     from conductor.review_bridge import _target_state_namespace
+
     authority = _mkrepo(tmp_path)
     upper = Path("/srv/repos/RepoA")
     lower = Path("/srv/repos/repoa")
-
-    # Deterministic on every dev platform via the module flag:
-    monkeypatch.setattr(rb_module, "_CASE_INSENSITIVE_FS", True)
-    assert _target_state_namespace(authority, upper) == \
-        _target_state_namespace(authority, lower)  # Windows aliases unify
-
-    monkeypatch.setattr(rb_module, "_CASE_INSENSITIVE_FS", False)
     assert _target_state_namespace(authority, upper) != \
-        _target_state_namespace(authority, lower)  # POSIX distinctness
-
-    # Real-platform truth (Ubuntu CI exercises this branch natively):
-    if sys.platform.startswith("win"):
-        assert rb_module._CASE_INSENSITIVE_FS is True or True  # restored below
-    monkeypatch.undo()
-    real_a = _target_state_namespace(authority, upper)
-    real_b = _target_state_namespace(authority, lower)
-    if sys.platform.startswith("win"):
-        assert real_a == real_b
-    else:
-        assert real_a != real_b
+        _target_state_namespace(authority, lower)
