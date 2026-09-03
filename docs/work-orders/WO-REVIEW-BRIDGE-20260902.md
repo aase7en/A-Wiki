@@ -183,3 +183,14 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Branch/worktree: `feat/wo-review-target-repo-20260903` / `<WORKTREE>/A-Wiki-review-target-repo-20260903` from accepted main `588a9072...`; primary checkout remains protected.
 - Scope remains `conductor/review_bridge.py`, `conductor/cli.py`, `tests/test_conductor_review_bridge.py`, this WO, bounded `COLLAB.md` claim transfer. ReviewBus/ALoopReview/schema/core forbidden.
 - Next: commit/push claim; GPT adds RED external-target contract tests; GLM Goal Mode burns RED→GREEN and regressions on this same lane.
+
+
+### 2026-09-03 target-repo RED contract — GPT architecture lane
+
+- GPT added external-target contract tests only; production remains unchanged at this checkpoint.
+- RED focused result: `python -m pytest -q tests/test_conductor_review_bridge.py` = **9 failed / 62 passed**.
+- All 9 failures are the intended seam: missing `target_repo_root` API support (7 parametrized/behavior cases) and missing CLI `--target-repo` support (2 cases).
+- Contract proves: target HEAD is review HEAD; target dirty state fails closed; review bookkeeping never mutates target; A-Wiki-owned state is isolated per target worktree; target HEAD drift revokes READY; invalid relative/missing/non-git targets fail bounded; CLI open→ingest→retest→CI→READY operates against the external target.
+- During RED, an older test oracle was found flaky: it formed a wrong SHA by forcing the last nibble to `0`, which is unchanged when the real SHA already ends in `0`. GPT repaired the oracle to always choose a different nibble; the pre-existing suite then returned to **62 passing** outside the 9 intended REDs.
+- Python 3.8 compatibility is preserved in the RED helpers (no `Path.is_relative_to`).
+- GLM must now implement only the declared bridge/CLI scope and burn this exact RED set to GREEN; no test deletion/weakening and no ReviewBus/ALoopReview/schema changes.
