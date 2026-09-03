@@ -7,7 +7,9 @@ ambiguous identity. Reviewer PASS alone can never yield allow_complete=True.
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -764,6 +766,34 @@ def test_external_target_open_binds_target_head_and_keeps_state_outside_target(t
     assert _is_within(br.bus.dir, authority.resolve())
     assert not _is_within(br.bus.dir, target.resolve())
     assert _git_status(target) == before == ""
+
+
+def test_external_target_rejects_explicit_state_dir_override(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-state-escape")
+    escaped_state = target / "review-state"
+
+    with pytest.raises(ReviewBridgeError, match="state|authority|target"):
+        ReviewBridge(
+            authority,
+            state_dir=escaped_state,
+            target_repo_root=target,
+        )
+
+    assert not escaped_state.exists()
+    assert _git_status(target) == ""
+
+
+def test_external_target_namespace_uses_platform_normcase_and_full_sha256(tmp_path):
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "Target-Namespace")
+    br = ReviewBridge(authority, target_repo_root=target)
+
+    canonical = os.path.normcase(str(target.resolve())).replace("\\", "/")
+    expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+    assert br.bus.dir.name == expected
+    assert len(br.bus.dir.name) == 64
 
 
 def test_external_target_dirty_state_fails_closed_even_when_authority_clean(tmp_path):
