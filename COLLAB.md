@@ -19,6 +19,7 @@
 
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
+| WO-REVIEW-BRIDGE-20260902 post-merge target namespace case safety | GPT-5.6-Sol-MAX | 2026-09-03 | conductor/review_bridge.py; tests/test_conductor_review_bridge.py; docs/work-orders/WO-REVIEW-BRIDGE-20260902.md; COLLAB.md bookkeeping | fix/wo-review-target-repo-case-safety-20260903 |
 
 
 Target-repo primary repair release 2026-09-03: GPT trust-boundary repair is frozen for independent exact-SHA rereview; focused 73/73, related rerun 112/112, broad 203/203, privacy/stale/secret/wiki-health gates pass. No active GPT repair claim remains.
