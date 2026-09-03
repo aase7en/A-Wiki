@@ -803,12 +803,12 @@ def test_external_target_namespace_never_collapses_case_distinct_targets_by_os_f
         _target_state_namespace(authority, lower)
 
 
-def test_external_target_namespace_uses_platform_normcase_and_full_sha256(tmp_path):
+def test_external_target_namespace_uses_exact_resolved_spelling_and_full_sha256(tmp_path):
     authority = _mkrepo(tmp_path)
     target = _mk_target_repo(tmp_path, "Target-Namespace")
     br = ReviewBridge(authority, target_repo_root=target)
 
-    canonical = os.path.normcase(str(target.resolve())).replace("\\", "/")
+    canonical = str(target.resolve()).replace("\\", "/")
     expected = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
     assert br.bus.dir.name == expected
