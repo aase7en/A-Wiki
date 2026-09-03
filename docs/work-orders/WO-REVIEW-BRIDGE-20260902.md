@@ -219,3 +219,18 @@ Next safe action: **GPT Primary independently review exact candidate HEAD, remot
 - Findings: **P0=0 P1=0 P2=0**. P3: (a) explicit target==authority uses the namespaced state dir beside the implicit default (intentional; authority must ignore its state path — A-Wiki does); (b) known one-off conductor-search environment flake (documented class, unreproduced).
 - Residual risks: external-target trust is operator-supplied absolute path (by design — reviewer JSON cannot select it); namespace fingerprint is deterministic sha256 of the resolved target path (state-dir name only, gitignored, never tracked).
 - Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of `bd072204...` (trust boundaries, remote diff, tests), then PR/CI/merge/post-main under GPT authority.**
+
+### 2026-09-03 target-repo seam — GPT review TR-R1/TR-R2 repair (GLM)
+
+GPT primary review of `0ed89003…` returned CHANGES_REQUIRED with two P1 findings; both repaired RED-first:
+
+- **TR-R1 (P1) — external state_dir escape.** RED: `test_external_target_rejects_state_dir_override_before_any_creation` + `..._outside_authority_also_rejected` failed because the constructor accepted `state_dir` with an external target (GPT reproduced state created inside the target). Repair (smallest fail-closed design, explicitly blessed by the review): external-target mode + any `state_dir` override raises a bounded `ReviewBridgeError` BEFORE any state directory is created. Legacy `state_dir` support with the target omitted is unchanged (guard test `test_omitted_target_state_dir_override_still_supported` passed pre- and post-repair). Explicit target==authority continues to work with the default authority-owned ignored state.
+- **TR-R2 (P1) — namespace case collision.** RED: `test_target_namespace_is_full_hash_without_raw_path` (truncation) + `test_target_namespace_platform_case_semantics` (unconditional casefold) failed. Repair: `_CASE_INSENSITIVE_FS = os.name == "nt"` module flag; the namespace folds case ONLY on Windows-style filesystems (genuine aliases), preserves case on POSIX (distinct repos stay distinct — false separation beats cross-target contamination), and uses the FULL sha256 (no `[:16]`). Tests verify both platform branches deterministically via the module flag and natively per-platform (Ubuntu CI exercises the POSIX branch for real); namespace segment matches `^[0-9a-f]{64}$` with no raw machine path.
+
+Evidence: RED 4 failed for the exact intended reasons / 72 passed (compat guard green pre-repair). GREEN focused **76 passed**. Related **112 passed**. Broad **206 passed**. Falsification batteries: original 9/9 PASS + repair probes 3/3 PASS (state_dir escape in/out blocked with nothing created; full-hash + nt-only casefold; post-repair external lifecycle → READY with target untouched). CLI unchanged (no `--state-dir` exists; reviewer JSON cannot select state/target).
+
+Gates: `git diff --check` PASS · py_compile 3.11 + managed 3.8 PASS · strict UTF-8 no U+FFFD PASS · privacy PASS · security 6,327 tracked / 51 baseline / **0 new** · stale-spec PASS · wiki-health **0 hard / 352 advisory**. GitNexus `detect-changes` vs `0ed89003` = 2 files / 4 symbols / 1 process / risk MEDIUM (constructor + namespace only). FTS extension unavailable on this Windows runtime = documented tool limitation.
+
+Findings: **P0=0 P1=0 P2=0** (both review P1s closed with deterministic regressions). P3: namespace flag is process-global module state (monkeypatch-only in tests; no runtime mutation path).
+
+Next safe action: **GPT-5.6 Sol Max independent exact-SHA review of the repaired head, then PR/CI/merge under GPT authority.**

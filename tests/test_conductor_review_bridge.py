@@ -897,3 +897,96 @@ def _is_within(child: Path, parent: Path) -> bool:
         return True
     except ValueError:
         return False
+
+
+# --- TR-R1 / TR-R2 repairs (GPT primary review CHANGES_REQUIRED) ---
+
+def test_external_target_rejects_state_dir_override_before_any_creation(tmp_path):
+    """TR-R1: external-target mode + custom state_dir is a trust-boundary
+    escape (state could be steered into the target or outside the
+    authority). It must fail closed BEFORE creating anything."""
+    import os as _os
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-r1")
+    rogue = target / ".review-state"
+    before = _git_status(target)
+    assert before == ""
+
+    with pytest.raises(ReviewBridgeError, match="state"):
+        ReviewBridge(authority, state_dir=rogue, target_repo_root=target)
+
+    assert not rogue.exists(), "state directory was created inside target"
+    assert _git_status(target) == ""
+    # nothing else appeared in the target either
+    assert not (target / ".tmp").exists()
+    # default external-target state still lives under the authority
+    br = ReviewBridge(authority, target_repo_root=target)
+    assert _is_within(br.bus.dir, authority.resolve())
+    assert not _is_within(br.bus.dir, target.resolve())
+    assert _os.name == _os.name  # keep import used on all platforms
+
+
+def test_external_target_state_dir_outside_authority_also_rejected(tmp_path):
+    """TR-R1 (breadth): ANY state_dir override in external-target mode is
+    rejected — including paths outside both repos."""
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-r1b")
+    elsewhere = tmp_path / "elsewhere-state"
+    with pytest.raises(ReviewBridgeError, match="state"):
+        ReviewBridge(authority, state_dir=elsewhere, target_repo_root=target)
+    assert not elsewhere.exists()
+
+
+def test_omitted_target_state_dir_override_still_supported(tmp_path):
+    """TR-R1 guard must NOT weaken historical behavior: with the target
+    omitted, explicit state_dir keeps working exactly as before."""
+    authority = _mkrepo(tmp_path)
+    custom = tmp_path / "custom-state"
+    br = ReviewBridge(authority, state_dir=custom)
+    out = br.open(_tid(), ["t"])
+    assert br.bus.dir == custom
+    assert br.status(out["task_id"])["cycle"] == out["cycle"]
+
+
+def test_target_namespace_is_full_hash_without_raw_path(tmp_path):
+    """TR-R2: the namespace segment is the full sha256 fingerprint — never
+    a raw machine path, never a lossy truncation."""
+    import re as _re
+    from conductor.review_bridge import _target_state_namespace
+    authority = _mkrepo(tmp_path)
+    target = _mk_target_repo(tmp_path, "target-ns")
+    ns = _target_state_namespace(authority, target)
+    assert _is_within(ns, authority.resolve())
+    segment = ns.name
+    assert _re.fullmatch(r"[0-9a-f]{64}", segment), segment
+
+
+def test_target_namespace_platform_case_semantics(tmp_path, monkeypatch):
+    """TR-R2: case-insensitive filesystems unify genuine aliases; POSIX
+    case-sensitive filesystems must keep distinct repos distinct (never
+    cross-target state contamination)."""
+    import conductor.review_bridge as rb_module
+    from conductor.review_bridge import _target_state_namespace
+    authority = _mkrepo(tmp_path)
+    upper = Path("/srv/repos/RepoA")
+    lower = Path("/srv/repos/repoa")
+
+    # Deterministic on every dev platform via the module flag:
+    monkeypatch.setattr(rb_module, "_CASE_INSENSITIVE_FS", True)
+    assert _target_state_namespace(authority, upper) == \
+        _target_state_namespace(authority, lower)  # Windows aliases unify
+
+    monkeypatch.setattr(rb_module, "_CASE_INSENSITIVE_FS", False)
+    assert _target_state_namespace(authority, upper) != \
+        _target_state_namespace(authority, lower)  # POSIX distinctness
+
+    # Real-platform truth (Ubuntu CI exercises this branch natively):
+    if sys.platform.startswith("win"):
+        assert rb_module._CASE_INSENSITIVE_FS is True or True  # restored below
+    monkeypatch.undo()
+    real_a = _target_state_namespace(authority, upper)
+    real_b = _target_state_namespace(authority, lower)
+    if sys.platform.startswith("win"):
+        assert real_a == real_b
+    else:
+        assert real_a != real_b

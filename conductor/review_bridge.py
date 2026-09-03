@@ -113,14 +113,22 @@ def _validate_target_repo(target_repo_root) -> Path:
     return resolved
 
 
+# TR-R2: only case-INSENSITIVE filesystems may fold target-path case — POSIX
+# case-sensitive filesystems must keep distinct target repos in distinct
+# namespaces (false separation beats cross-target state contamination).
+_CASE_INSENSITIVE_FS = os.name == "nt"
+
+
 def _target_state_namespace(authority_root: Path, target_root: Path) -> Path:
     """Deterministic per-target state namespace under the AUTHORITY's ignored
-    .tmp — a sha256 fingerprint of the resolved target, never the raw
-    machine-specific path, so the same task id in two target repos can never
-    share cycle/state."""
-    digest = hashlib.sha256(
-        str(target_root).replace("\\", "/").casefold().encode("utf-8")
-    ).hexdigest()[:16]
+    .tmp — the FULL sha256 fingerprint of the normalized target path (case
+    folded only on Windows-style filesystems where the aliases are genuinely
+    equivalent), never the raw machine-specific path, so the same task id in
+    two target repos can never share cycle/state."""
+    normalized = str(target_root).replace("\\", "/")
+    if _CASE_INSENSITIVE_FS:
+        normalized = normalized.casefold()
+    digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
     return authority_root / ".tmp" / "review-bridge-targets" / digest
 
 
@@ -142,6 +150,15 @@ class ReviewBridge:
             # authority keeps scripts/lib, ReviewBus/ALoopReview, and the
             # durable namespaced review state.
             self._root = _validate_target_repo(target_repo_root)
+            if state_dir is not None:
+                # TR-R1: an operator-supplied state_dir in external-target
+                # mode could steer durable review state into the target (or
+                # anywhere outside the authority). Fail closed BEFORE any
+                # state directory is created — the smallest unambiguous
+                # trust boundary for this new API combination.
+                raise ReviewBridgeError(
+                    "state_dir override is not allowed in external-target "
+                    "mode; review state stays under the authority repo")
             default_state = _target_state_namespace(authority, self._root)
         lib = str(authority / "scripts" / "lib")
         if lib not in sys.path:
