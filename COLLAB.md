@@ -20,6 +20,7 @@
 | Chunk/WO | Agent | Claimed | Scope (files) | Branch / PR |
 |---|---|---|---|---|
 | ✅ **DONE 2026-09-04: G6FA592 gh-pages-sync evidence closure** — blob `f25656b3` identical (main = origin/gh-pages = origin/main = worktree = live site); deploy `e2ad9c63` 2026-07-17, workflow `pages-deploy.yml` run `29948330150` last success; duplicate `deploy-awiki-live.yml` already retired `8ff7d8fd` 2026-08-17 (nothing to delete); session-memory TODOs closed. Evidence-only — no tracked-file mutation beyond this row. | GLM/ZCode | 2026-09-04 | done | main |
+| ✅ **DONE 2026-09-04: TD6088B wiki conflict-marker corruption fix** — resolved nested stash-conflict blocks in 6 nested CLAUDE.md (-10 lines each, clean date line kept); new guard `tests/test_no_conflict_markers.py` (RED→GREEN); full-tree `git grep '^<<<<<<< '` clean. Origin traced to c343542c era broken auto-commit. | GLM/ZCode | 2026-09-04 | done | main |
 
 
 Target-repo primary repair release 2026-09-03: GPT trust-boundary repair is frozen for independent exact-SHA rereview; focused 73/73, related rerun 112/112, broad 203/203, privacy/stale/secret/wiki-health gates pass. No active GPT repair claim remains.
