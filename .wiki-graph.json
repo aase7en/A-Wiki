@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-08-24",
+  "generated_at": "2026-09-04",
   "stats": {
     "nodes": 553,
-    "edges": 1829,
+    "edges": 1834,
     "edges_by_type": {
-      "wikilink": 1306,
-      "depends": 388,
+      "wikilink": 1307,
+      "depends": 386,
       "implements": 53,
-      "mdlink": 41,
+      "mdlink": 47,
       "extends": 41
     },
-    "broken_links": 37,
-    "orphans": 33,
+    "broken_links": 40,
+    "orphans": 32,
     "orphan_by_domain": {
       "context": 17,
       "env": 8,
       "ai-tools": 3,
-      "other": 3,
+      "other": 2,
       "meta": 1,
       "sources": 1
     },
@@ -65,7 +65,6 @@
     "orphans_list": [
       "profile.md",
       "wiki/CLAUDE.md",
-      "wiki/SKILL-INDEX.md",
       "wiki/concepts/ai-tools/hexagonal-architecture.md",
       "wiki/concepts/meta/coordination-artifacts.md",
       "wiki/context/device-session.md",
@@ -82,7 +81,8 @@
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
       "wiki/context/session-memory-2026-06-24.md",
-      "wiki/context/session-memory.md"
+      "wiki/context/session-memory.md",
+      "wiki/context/session-summary-2026-06-24.md"
     ]
   },
   "nodes": [
@@ -518,7 +518,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-      "title": "Review Report — 2026-08-24",
+      "title": "Review Report — 2026-08-26",
       "domain": "context"
     },
     {
@@ -5256,13 +5256,6 @@
     },
     {
       "from": "README.md",
-      "to": "AGENTS.md",
-      "type": "mdlink",
-      "broken": false,
-      "external": true
-    },
-    {
-      "from": "README.md",
       "to": "CLAUDE.md",
       "type": "mdlink",
       "broken": false,
@@ -5270,7 +5263,28 @@
     },
     {
       "from": "README.md",
+      "to": "AGENTS.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
       "to": "GEMINI.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": ".github/copilot-instructions.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": true
+    },
+    {
+      "from": "README.md",
+      "to": "scripts/live-dashboard/README.md",
       "type": "mdlink",
       "broken": false,
       "external": true
@@ -5309,6 +5323,13 @@
       "type": "mdlink",
       "broken": false,
       "external": true
+    },
+    {
+      "from": "wiki/A-ROUTER.md",
+      "to": "wiki/SKILL-INDEX.md",
+      "type": "mdlink",
+      "broken": false,
+      "external": false
     },
     {
       "from": "wiki/concepts/ai-tools/a2a-protocol.md",
@@ -7595,7 +7616,7 @@
     {
       "from": "wiki/entities/ai-tools/context7.md",
       "to": "wiki/synthesis/design-web-capability-hub.md",
-      "type": "depends",
+      "type": "wikilink",
       "broken": false,
       "external": false
     },
@@ -11878,6 +11899,27 @@
     },
     {
       "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "to": "researcher/benchmarks/router/results-published/2026-05-15.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "to": "researcher/benchmarks/router/results-published/2026-05-15-v2.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
+      "to": "researcher/benchmarks/router/results-published/2026-05-19.md",
+      "type": "mdlink",
+      "broken": true,
+      "external": false
+    },
+    {
+      "from": "wiki/sources/muratcankoyyan-context-eng-ref.md",
       "to": "researcher/runbooks/continuous-operation.md",
       "type": "mdlink",
       "broken": true,
@@ -14973,13 +15015,6 @@
     {
       "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
       "to": "wiki/synthesis/pixellab-asset-pipeline-for-trading-rpg.md",
-      "type": "depends",
-      "broken": false,
-      "external": false
-    },
-    {
-      "from": "wiki/synthesis/synth-pixellab-api-v2-openapi-2026-06-01.md",
-      "to": "wiki/synthesis/pixellab-api-endpoint-matrix.md",
       "type": "depends",
       "broken": false,
       "external": false

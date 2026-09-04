@@ -8225,6 +8225,14 @@
       "color": "none"
     },
     {
+      "id": "edge-wiki-A-ROUTER-md-wiki-SKILL-INDEX-md",
+      "fromNode": "wiki-A-ROUTER-md",
+      "fromSide": "bottom",
+      "toNode": "wiki-SKILL-INDEX-md",
+      "toSide": "top",
+      "color": "none"
+    },
+    {
       "id": "edge-wiki-concepts-ai-tools-a2a-protocol-md-wiki-sources-ai-engineering-tools-protocols-md",
       "fromNode": "wiki-concepts-ai-tools-a2a-protocol-md",
       "fromSide": "left",
@@ -18990,14 +18998,6 @@
       "fromSide": "right",
       "toNode": "wiki-synthesis-pixellab-asset-pipeline-for-trading-rpg-md",
       "toSide": "left",
-      "color": "6"
-    },
-    {
-      "id": "edge-wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md-wiki-synthesis-pixellab-api-endpoint-matrix-md",
-      "fromNode": "wiki-synthesis-synth-pixellab-api-v2-openapi-2026-06-01-md",
-      "fromSide": "left",
-      "toNode": "wiki-synthesis-pixellab-api-endpoint-matrix-md",
-      "toSide": "right",
       "color": "6"
     },
     {

@@ -8,7 +8,7 @@
 # Scoped Context — Pharmacy Entities
 
 > **โดเมน**: Pharmacy (ร้านขายยา — ภูฟาร์มาซี)
-> **Last updated**: 2026-08-23
+> **Last updated**: 2026-09-04
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/pharmacy/ เท่านั้น**
 
 ---
