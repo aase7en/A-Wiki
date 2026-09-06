@@ -178,11 +178,16 @@ class ReviewBus:
         if not _SHA_RE.fullmatch(sha):
             raise ReviewBusError(f"sha must be a sha: {sha!r}")
         doc = self._load_latest(cid)
-        if sha != doc["head_sha"] and doc["status"] in ("APPROVED", "READY"):
-            # §16-7: a new SHA invalidates approval earned at the old head —
-            # the cycle re-enters review at the new SHA (verdict dropped).
+        if sha != doc["head_sha"]:
+            # §16-7 (Issue #53): any real HEAD change invalidates ALL
+            # head-bound acceptance evidence — verdict (including
+            # CHANGES_REQUIRED/BLOCK/PASS variants) and CI earned at the old
+            # head. The cycle re-enters review at the new SHA; findings,
+            # finding history, retries and halt state survive. Same-HEAD
+            # retests never erase current evidence.
             doc["status"] = "REVIEW_REQUESTED"
             doc.pop("verdict", None)
+            doc.pop("ci", None)
             doc["next_action"] = "FIX_AND_REREVIEW"
         doc["head_sha"] = sha
         doc["retest"] = {"sha": sha, "ok": bool(ok), "ts": _now()}
