@@ -223,3 +223,142 @@ def test_retries_within_budget_do_not_halt(tmp_path):
     bus.record_retest(sha="a1b2c3d", ok=False)
     bus.record_retest(sha="a1b2c3d", ok=False)
     assert bus.load("P8-c1").get("halt_reason") is None
+
+
+# ── Issue #54: addressed blockers remain blocking until verified ──────
+def test_issue54_addressed_blocker_rejects_pass(tmp_path):
+    """Issue #54 RED-1: a merely ADDRESSED blocker must reject PASS."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")  # addressed, NOT verified
+    with pytest.raises(rb.ReviewBusError):
+        bus.set_verdict(reviewer="r", verdict="PASS")
+
+
+def test_issue54_addressed_blocker_keeps_readiness_false(tmp_path):
+    """Issue #54 RED-2: end-to-end — an addressed blocker must reject the
+    PASS verdict AND keep readiness FALSE even with current-head retest +
+    green CI. (On the unfixed bus, set_verdict(PASS) SUCCEEDS here and
+    readiness flips READY — the exact hole Issue #54 names.)"""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    with pytest.raises(rb.ReviewBusError):
+        bus.set_verdict(reviewer="r", verdict="PASS")
+    bus.record_retest(sha="a1b2c3d", ok=True)
+    bus.record_ci(ok=True)
+    r = bus.readiness("P8-c1")
+    assert r["ready"] is False, r
+    assert any("blocker" in x for x in r["reasons"]), r["reasons"]
+
+
+def test_issue54_addressed_blocker_blocks_even_with_fresh_evidence(tmp_path):
+    """Issue #54 RED-3: retest+CI evidence at the CURRENT head does NOT
+    release an addressed-but-unverified blocker."""
+    bus = _bus(tmp_path)
+    _publish(bus, sha="f00dcafe")
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    # head moves to the fix sha and ALL evidence is re-earned there
+    bus.record_retest(sha="f00dcafe", ok=True)
+    bus.record_ci(ok=True)
+    with pytest.raises(rb.ReviewBusError):
+        bus.set_verdict(reviewer="r", verdict="PASS_WITH_NOTES")
+    r = bus.readiness("P8-c1")
+    assert r["ready"] is False and any("blocker" in x for x in r["reasons"])
+
+
+def test_issue54_verified_blocker_permits_pass(tmp_path):
+    """Issue #54 RED-4: verified blocker permits PASS when gates pass."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    bus.verify_finding("R-P8-001")
+    doc = bus.set_verdict(reviewer="r", verdict="PASS")
+    assert doc["status"] == "APPROVED"
+
+
+def test_issue54_verified_blocker_permits_ready(tmp_path):
+    """Issue #54 RED-5: verified blocker permits READY when all gates pass."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    bus.verify_finding("R-P8-001")
+    bus.set_verdict(reviewer="r", verdict="PASS")
+    bus.record_retest(sha="a1b2c3d", ok=True)
+    bus.record_ci(ok=True)
+    r = bus.readiness("P8-c1")
+    assert r["ready"] is True, r["reasons"]
+
+
+def test_issue54_open_blocker_still_blocks(tmp_path):
+    """Issue #54 RED-6: existing open-blocker behavior unchanged."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    with pytest.raises(rb.ReviewBusError):
+        bus.set_verdict(reviewer="r", verdict="PASS")
+    assert bus.readiness("P8-c1")["ready"] is False
+
+
+def test_issue54_addressed_note_does_not_block(tmp_path):
+    """Issue #54 RED-7: notes/non-blocking findings stay non-blocking
+    whether open, addressed or verified."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="note", area="docs", summary="t")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")  # addressed note
+    bus.set_verdict(reviewer="r", verdict="PASS")
+    bus.record_retest(sha="a1b2c3d", ok=True)
+    bus.record_ci(ok=True)
+    assert bus.readiness("P8-c1")["ready"] is True
+
+
+def test_issue54_reload_preserves_addressed_blocking(tmp_path):
+    """Issue #54 RED-8: restart/reload (fresh instance, same disk) keeps
+    the addressed-blocker semantics."""
+    bus = _bus(tmp_path)
+    _publish(bus)
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    bus.record_retest(sha="a1b2c3d", ok=True)
+    bus.record_ci(ok=True)
+    reloaded = rb.ReviewBus(tmp_path / "review-bus", phase="P8")
+    with pytest.raises(rb.ReviewBusError):
+        reloaded.set_verdict(reviewer="r", verdict="PASS")
+    assert reloaded.readiness("P8-c1")["ready"] is False
+    reloaded.verify_finding("R-P8-001")
+    reloaded.set_verdict(reviewer="r", verdict="PASS")
+    assert reloaded.readiness("P8-c1")["ready"] is True
+
+
+def test_issue54_h1_to_h2_rollover_preserves_addressed_state(tmp_path):
+    """Issue #54 RED-9: Issue #53 H1→H2 rollover unchanged — a new head
+    clears verdict/CI but findings + addressed state survive and STILL
+    block until verified."""
+    bus = _bus(tmp_path)
+    _publish(bus, sha="a1b2c3d")
+    bus.add_finding(severity="blocker", area="e", summary="s")
+    bus.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    bus.verify_finding("R-P8-001")
+    bus.set_verdict(reviewer="r", verdict="PASS")
+    assert bus.load("P8-c1")["status"] == "APPROVED"
+    # H2: head moves — ALL acceptance evidence collapses...
+    doc = bus.record_retest(sha="f00dcafe", ok=True)
+    assert doc["status"] == "REVIEW_REQUESTED"
+    assert "verdict" not in doc and "ci" not in doc
+    # ...but finding STATE survives (still verified — not reset)
+    assert bus.load("P8-c1")["findings"][0]["state"] == "verified"
+    # ...and an ADDRESSED (unverified) blocker survives rollover blocking
+    bus2 = _bus(tmp_path)
+    _publish(bus2, sha="1111222")
+    bus2.add_finding(severity="blocker", area="e", summary="s2")
+    bus2.resolve_finding("R-P8-001", fix_sha="f00dcafe")
+    bus2.set_verdict(reviewer="r", verdict="BLOCK")
+    bus2.record_retest(sha="f00dcafe", ok=True)  # H1 -> H2 rollover
+    with pytest.raises(rb.ReviewBusError):
+        bus2.set_verdict(reviewer="r", verdict="PASS")
