@@ -27,7 +27,15 @@ from typing import Any, Optional
 from atomic_json import atomic_write
 
 _SCHEMA_CONST = "awiki-review/v1"
-_OPEN_BLOCKERS = ("open",)  # states that still block READY
+_BLOCKING_STATES = ("open", "addressed")  # states that still block PASS/READY — only "verified" releases (Issue #54)
+
+
+def _blocking_blocker_ids(doc: dict) -> list:
+    """ONE canonical blocking predicate shared by set_verdict() and
+    readiness(): a blocker finding blocks while its state is open OR
+    addressed; only verify_finding() moving it to verified releases it."""
+    return [f["id"] for f in doc["findings"]
+            if f["severity"] == "blocker" and f["state"] in _BLOCKING_STATES]
 _PASSING_VERDICTS = ("PASS", "PASS_WITH_NOTES")
 _SHA_RE = re.compile(r"^[0-9a-f]{7,40}$")
 
@@ -159,11 +167,11 @@ class ReviewBus:
         doc["reviewer"] = reviewer
         doc["verdict"] = verdict
         if verdict in _PASSING_VERDICTS:
-            blockers = [f["id"] for f in doc["findings"]
-                        if f["state"] == "open" and f["severity"] == "blocker"]
+            blockers = _blocking_blocker_ids(doc)
             if blockers:
                 raise ReviewBusError(
-                    f"cannot pass with open blockers: {blockers}")
+                    f"cannot pass with unresolved blockers "
+                    f"(open/addressed): {blockers}")
             doc["status"] = "APPROVED"
             doc["next_action"] = "RUN_CI_GATE"
         else:
@@ -207,18 +215,19 @@ class ReviewBus:
         return doc
 
     def readiness(self, cid=None) -> dict:
-        """READY iff: passing verdict at the CURRENT sha, no open blockers,
-        retest passed at this sha, CI green. Reports every gap otherwise."""
+        """READY iff: passing verdict at the CURRENT sha, no unresolved
+        blockers (open OR addressed — Issue #54), retest passed at this
+        sha, CI green. Reports every gap otherwise."""
         doc = self._load_latest(cid)
         reasons: list[str] = []
         if doc.get("halt_reason"):
             reasons.append(f"halted: {doc['halt_reason']}")
         if doc.get("verdict") not in _PASSING_VERDICTS:
             reasons.append("no passing verdict")
-        blockers = [f["id"] for f in doc["findings"]
-                    if f["state"] == "open" and f["severity"] == "blocker"]
+        blockers = _blocking_blocker_ids(doc)
         if blockers:
-            reasons.append(f"open blockers: {blockers}")
+            reasons.append(
+                f"unresolved blockers (open/addressed): {blockers}")
         retest = doc.get("retest") or {}
         if not retest.get("ok") or retest.get("sha") != doc["head_sha"]:
             reasons.append("retest not passed at current head")
