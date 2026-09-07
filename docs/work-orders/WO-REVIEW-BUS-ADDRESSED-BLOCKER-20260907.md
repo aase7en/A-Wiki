@@ -1,13 +1,13 @@
 # WO-REVIEW-BUS-ADDRESSED-BLOCKER-20260907 — Issue #54
 
-Status: IMPLEMENTED / READY_FOR_GPT1_EXACT_SHA_ACCEPTANCE
+Status: MERGED / ACCEPTED / POST_MAIN_GREEN / RELEASED
 Owner: GLM1 / GLM-A implementation; GPT1 independent exact-SHA review + merge authority
 Issue: #54 — ReviewBus: addressed blockers must block READY until verified
 Repository: A-Wiki
 Base: `main@759384116edcc6785bdc9f5d660f166d4940359d`
 Branch: `fix/issue-54-addressed-blocker-gate`
 Worktree: `<WORKTREE>/A-Wiki-issue54-q25`
-Claim: durable COLLAB row + local claim `33ae016c64a0`
+Claim: RELEASED — historical GLM1 Q25 claim; no active tracked claim remains
 
 ## Goal
 Keep blocker findings blocking while state is `open` OR `addressed`. Only `verified` releases PASS/READY. Preserve Issue #53 HEAD-rollover semantics and use the existing ReviewBus authority only.
@@ -60,3 +60,13 @@ GLM1: freeze one clean pushed exact SHA and stop at `READY_FOR_GPT1_EXACT_SHA_AC
 - **Fix (minimal, ONE authority):** `_BLOCKING_STATES = ("open", "addressed")` + module-level `_blocking_blocker_ids(doc)` — the single canonical predicate consumed by BOTH `set_verdict()` and `readiness()`; only `verify_finding()` (ordering untouched) moves addressed → verified and releases the blocker. Reason/error messages updated to say "unresolved blockers (open/addressed)". No second predicate, no store/lifecycle change, `conductor/review_bridge.py` untouched (its `state != verified` semantics held under its own suite — no RED justified mutation).
 - **Verification:** focused `tests/test_review_bus.py` + `tests/test_review_bus_head_rollover.py` + `tests/test_conductor_review_bridge.py` = **113/113 PASS** (all 9 new REDs GREEN; every pre-existing assertion unchanged). Broader: `test_a_loop_review.py` + `test_agent_claims.py` + `test_agent_preflight.py` = **48/48 PASS**. `python scripts/check-privacy.py` PASS; `git diff --check` PASS. Scope audit: exactly `scripts/lib/review_bus.py` + `tests/test_review_bus.py` changed (within allowed scope).
 - Stop state: **READY_FOR_GPT1_EXACT_SHA_ACCEPTANCE** at the frozen pushed head (exact SHA + CI in the PR). GLM1 does not merge; GPT1 owns acceptance/merge.
+
+## GPT1 acceptance / merge / release checkpoint — 2026-09-07
+
+- Independent GPT1 exact-SHA review accepted frozen implementation head `905ee476d8622eb9e1426f03a5cdad6fda286ba7` with P0=0 / P1=0 / P2=0.
+- Independent verification rerun: `tests/test_review_bus.py` 27/27 PASS; `tests/test_review_bus_head_rollover.py` + `tests/test_conductor_review_bridge.py` 86/86 PASS; broader `test_a_loop_review.py` + `test_agent_claims.py` + `test_agent_preflight.py` 48/48 PASS; privacy PASS; `git diff --check` PASS.
+- Hosted exact-head CI on PR #56 was green: Core verification, loop-contract, and py38-smoke SUCCESS.
+- PR #56 merged expected-head-only as `967e063cb9dc2e5b43b48a00deb575235f125a94` on 2026-09-07; accepted head is an ancestor of the merge commit. Issue #54 closed automatically.
+- Post-main Core CI run `34133420008` on merge `967e063c...` completed SUCCESS, including core unit tests and readiness smoke.
+- Tracked Q25 row was removed from the active `COLLAB.md` claim table during GPT1 single-writer reconciliation. No new tracked closeout claim row is created, avoiding another stale `MERGED_NOT_FOLDED` cycle.
+- GLM1 implementation ownership is RELEASED. Next dependency may proceed only after its own fresh A-Conductor repo/worktree/claim/scope gate.
