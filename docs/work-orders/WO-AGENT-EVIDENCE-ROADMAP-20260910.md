@@ -57,3 +57,59 @@ Current compatible examples verified for roadmap consideration: Ponytail (MIT), 
 
 Allowed: this WO, `docs/research/agent-engineering-evidence-20260910.md`, `docs/migration/awiki-vnext-plan.md`, and the conductor-managed claim row in `COLLAB.md`.
 Forbidden: production code, hooks, skills, registry, memory implementation, raw/private data, A-Conductor repository files, and the user's local-only `main@3a4e0fba...` commit.
+
+## Execution priority overlay — preserve the current frontier
+
+The new Phases 12–17 are future capability work, not a reason to reorder the current project. Execution follows this priority overlay:
+
+1. **Current READY/P0 authority first.** Whatever the live `conductor status`, active WO, exact-SHA review, or release gate says is already higher priority remains ahead of this roadmap.
+2. **Parallel-safe groundwork now.** Read-only archaeology, overlap mapping, evaluator/test inventory, threat-model inventory, and source/license re-verification may proceed without claiming a mutable implementation lane.
+3. **First future implementation candidate: evaluator truth.** Phase 14 evaluator self-test/baseline should normally precede any optimization policy that depends on benchmark claims, subject to a fresh live gate.
+4. **Trust and provenance before scale-up.** Phase 12 evidence intake, Phase 15 adversarial coverage, and Phase 16 provenance/quarantine are assessed before broadening autonomous mutation or memory promotion where the then-current architecture makes them prerequisites.
+5. **Cross-repo evidence bridge only after runtime owner is ready.** Phase 13 waits for the matching accepted A-Conductor execution-evidence/trace contract; A-Wiki does not invent a parallel trace authority.
+6. **Evidence radar last among these nodes.** Phase 17 remains candidate-generation only and should not consume implementation capacity needed by core execution, verification, security, or continuity work.
+
+No future phase is activated by this ordering alone. Every mutation still requires a new WO, live ownership check, risk classification, tests/evidence, and appropriate exact-SHA review.
+
+## GPT × GLM parallel contract
+
+GPT-5.6 Sol remains integrator for architecture, cross-repo owner boundaries, SSoT reconciliation, trust/security decisions, acceptance, and merge/release decisions.
+
+GLM/ZCode is assigned a bounded **read-only evidence-audit lane** that can run in parallel without stealing a mutable lane from higher-priority work. Its job is to discover what already exists, prove overlap, and prepare deterministic candidate test/eval slices. It is not authorized to implement Phases 12–17 yet.
+
+### Task packet `GLM-XREPO-EVIDENCE-RO1`
+
+Status: `READY / READ_ONLY / PARALLEL_SAFE / NO SOURCE MUTATION`
+
+Goal: audit A-Wiki and A-Sunday Conductor against the new evidence/AEET roadmaps and produce an evidence-backed reuse map so future implementation starts from `REUSE/WRAP/EXTEND` instead of duplicate `BUILD`.
+
+Required startup:
+1. fetch both repositories and pin the exact branch/PR heads before analysis;
+2. A-Wiki: read `BRAIN-ENTRY.md -> docs/graph/PROJECT-GRAPH.yaml -> AGENTS.md -> COLLAB.md -> this WO -> docs/research/agent-engineering-evidence-20260910.md -> docs/migration/awiki-vnext-plan.md`;
+3. A-Sunday Conductor: read `00-AGENT-ENTRY.md -> PROJECT-GRAPH.yaml -> AGENTS.md -> CURRENT-WORK.md -> COLLAB.md -> docs/work-orders/WO-P1-171-agent-evidence-roadmap.md -> PROJECT-PLAN.md`;
+4. read A-Conductor Issue #233 because it is the existing cross-repo authority-dedup gate; do not create a competing owner map.
+
+Audit targets:
+- A-Wiki Phases 12–17;
+- A-Conductor AEET-0..8;
+- existing tests, protocols, stores, event/evidence surfaces, review/claim/lease/provider/model-policy/memory/defect authorities that already satisfy part or all of each target;
+- exact duplication/ownership hazards across both repositories;
+- the smallest future candidate slices and deterministic tests needed only for proven gaps.
+
+Required result shape:
+- one row per roadmap node with `existing owner`, `evidence path/symbol/test`, `REUSE/WRAP/EXTEND/BUILD`, `gap`, `risk`, `dependency`, `smallest next slice`;
+- explicit owner class for every cross-repo overlap: `OWNER / CONSUMER / ADAPTER / COMPATIBILITY_FALLBACK`;
+- list of roadmap items that should be closed as `REUSE / NO NEW IMPLEMENTATION` if existing evidence already proves them;
+- candidate evaluator fixtures drawn from existing real defects, but no new test/code files in this task;
+- blockers/unknowns separated from findings; tool/transport failure is `UNVERIFIED`, never inferred PASS/FAIL.
+
+Forbidden:
+- editing either repository;
+- creating branches/worktrees/claims for implementation;
+- changing `AGENTS.md`, skills, hooks, registry, runtime code, tests, memory, private Drive, provider config, worker state, or live databases;
+- copying private prompts/tool payloads/hidden reasoning into results;
+- proposing a second scheduler, task store, review lifecycle, claim/lease authority, model-policy store, trace SSoT, or memory store.
+
+Result destination: add a durable comment to A-Sunday Conductor Issue #233 titled `GLM-XREPO-EVIDENCE-RO1 RESULT`, including exact repository SHAs inspected. Do not merge anything.
+
+Stop after posting the evidence map. GPT/integrator will reconcile it against the current roadmaps and decide whether any implementation node becomes READY.
