@@ -11,113 +11,85 @@ Base: `origin/main@566637ac8d2636d6c63eda2bd6ebe81b55bd3d72`
 
 Extend A-Wiki and A-Sunday Conductor using current, source-verifiable practices from AI developers, open-source projects, research, and public practitioner communities. Prefer reuse/copy-and-adapt over rebuilding when license and architecture allow it.
 
-This work order captures roadmap decisions only. It does not authorize implementation, package installation, new always-on prompt growth, provider traffic, secret access, or changes to A-Conductor runtime authority.
+This WO captures roadmap decisions only. It does not authorize implementation, package installation, new always-on prompt growth, provider traffic, secret access, or changes to A-Conductor runtime authority.
 
 ## Brain Gate
 
 - Gain: evidence-backed external-pattern adoption, agent trace/eval/security/memory provenance, and a safer path to reuse community work.
-- Shape: one research evidence appendix plus additions to the existing canonical roadmap; no parallel roadmap or skill registry.
-- Weight: roadmap-only now; future runtime features must be local/on-demand/adapter-first.
+- Shape: one research appendix plus the existing canonical roadmap; no parallel roadmap or skill registry.
+- Weight: roadmap-only now; future runtime features stay local/on-demand/adapter-first.
 - Safety: public sources only; no private social scraping, secrets, PHI, raw private traces, or hidden reasoning in Git.
-- Verify: source URL/date/license checks, scope/diff/UTF-8/privacy checks, exact-SHA review before merge.
+- Verify: source/date/license, scope/diff/UTF-8/privacy, and exact-SHA review before merge.
+
 ## Authority / non-duplication boundary
 
-A-Wiki remains the policy, knowledge, memory-promotion, skill-registry, and cross-project brain authority. A-Conductor remains the runtime execution, scheduling, worker/provider admission, durable job/evidence, and operator-control authority.
+A-Wiki remains policy, knowledge, memory-promotion, skill-registry, and cross-project brain authority. A-Conductor remains runtime execution, scheduling, worker/provider admission, durable job/evidence, and operator-control authority.
 
-Every future node must run `REUSE -> WRAP -> EXTEND -> BUILD` in that order. A matching capability already present in either repository blocks a second implementation unless an explicit owner/adaptor migration decision says otherwise.
-
-External instruction bundles are never pasted wholesale into `AGENTS.md`. Adopt only evidence-backed deltas after diffing existing Iron Laws, A-Suite skills, hooks, and protocols.
+Every future node uses `REUSE -> WRAP -> EXTEND -> BUILD`. A matching capability blocks a second implementation unless an explicit owner/adaptor migration decision says otherwise. External instruction bundles are delta-diffed; never pasted wholesale into `AGENTS.md`.
 
 ## Research standard
 
-Evidence priority for a roadmap decision:
-1. repository/source code, issue reproducer, official specification or first-party docs;
-2. peer-reviewed/reproducible benchmark or independent executable evaluation;
-3. public developer-community reports (Reddit, Hacker News, public X, Hugging Face community) as corroboration, not sole authority;
-4. inaccessible/private Discord, Facebook, WhatsApp, closed groups, or unverified screenshots are not cited as evidence.
+Evidence priority: repository/source/official docs; reproducible evaluation; public developer-community reports as corroboration; inaccessible/private communities are not reconstructed or cited. Adopted patterns record source/date/license/failure modes/overlap and `REUSE/WRAP/EXTEND/PATTERN_ONLY/REJECT`.
 
-Each adopted pattern records source, date checked, license when code reuse is possible, known failure modes, A-Wiki overlap, and `REUSE/WRAP/EXTEND/PATTERN_ONLY/REJECT` classification.
 ## Roadmap decisions
 
-1. Add an external-pattern evidence gate before adopting new agent frameworks/rulesets.
-2. Add a sanitized execution-evidence bridge from A-Conductor into A-Wiki; traces are evidence, never automatic canonical memory.
-3. Add an agent-evaluation corpus that separates outcome, constraint/safety, robustness, and efficiency metrics; no single blended score may hide a security failure.
-4. Add evaluator self-tests and repeated trials before using benchmark results for routing or policy changes.
-5. Add provenance/trust labels and quarantine for untrusted tool/agent-derived memory candidates.
-6. Add a cross-repo policy/capability-attestation contract: A-Wiki defines required policy identities; A-Conductor proves effective runtime binding.
-7. Add a public/authorized evidence radar that creates review candidates only; it never auto-promotes community claims into global knowledge.
+1. external-pattern evidence gate;
+2. sanitized A-Conductor execution-evidence bridge;
+3. agent-evaluation corpus separating correctness, safety, robustness, efficiency;
+4. evaluator self-tests and repeated trials where needed;
+5. provenance/trust quarantine for agent/tool memory candidates;
+6. cross-repo policy/capability attestation;
+7. public/authorized evidence radar creating candidates only.
 
 ## Copy-and-development rule
 
-Source copying is permitted only when the exact upstream license is compatible and the implementation WO records the upstream commit/tag plus required notice/attribution. Prefer importing a narrow tested primitive or adapting a protocol shape rather than vendoring an entire framework.
+Copy/adapt source only when the exact upstream license is compatible and the implementation WO records upstream ref plus required notice. Prefer a narrow tested primitive/protocol shape over vendoring an entire framework. Current permissive candidates include Ponytail (MIT), Pydantic AI (MIT), AgentDojo (MIT), smolagents (Apache-2.0), and OpenTelemetry semantic conventions (Apache-2.0). License permission does not imply architectural fitness or service authorization.
 
-Current compatible examples verified for roadmap consideration: Ponytail (MIT), Pydantic AI (MIT), AgentDojo (MIT), smolagents (Apache-2.0), and OpenTelemetry semantic conventions (Apache-2.0). License permission does not imply architectural fitness or permission to call an external service.
+## Execution priority overlay
 
-## Mutation scope
+1. Current READY/P0 authority wins; existing higher-priority work stays ahead.
+2. Parallel-safe read-only archaeology/overlap/evaluator/threat/source work may proceed now.
+3. Phase 14 evaluator truth is the normal first future implementation candidate after a fresh gate.
+4. Phases 12/15/16 are assessed as trust prerequisites before scale-up where current architecture requires them.
+5. Phase 13 waits for the matching accepted A-Conductor runtime evidence contract.
+6. Phase 17 evidence radar remains candidate-generation and lower than core execution/verification/security/continuity.
 
-Allowed: this WO, `docs/research/agent-engineering-evidence-20260910.md`, `docs/migration/awiki-vnext-plan.md`, and the conductor-managed claim row in `COLLAB.md`.
-Forbidden: production code, hooks, skills, registry, memory implementation, raw/private data, A-Conductor repository files, and the user's local-only `main@3a4e0fba...` commit.
-
-## Execution priority overlay — preserve the current frontier
-
-The new Phases 12–17 are future capability work, not a reason to reorder the current project. Execution follows this priority overlay:
-
-1. **Current READY/P0 authority first.** Whatever the live `conductor status`, active WO, exact-SHA review, or release gate says is already higher priority remains ahead of this roadmap.
-2. **Parallel-safe groundwork now.** Read-only archaeology, overlap mapping, evaluator/test inventory, threat-model inventory, and source/license re-verification may proceed without claiming a mutable implementation lane.
-3. **First future implementation candidate: evaluator truth.** Phase 14 evaluator self-test/baseline should normally precede any optimization policy that depends on benchmark claims, subject to a fresh live gate.
-4. **Trust and provenance before scale-up.** Phase 12 evidence intake, Phase 15 adversarial coverage, and Phase 16 provenance/quarantine are assessed before broadening autonomous mutation or memory promotion where the then-current architecture makes them prerequisites.
-5. **Cross-repo evidence bridge only after runtime owner is ready.** Phase 13 waits for the matching accepted A-Conductor execution-evidence/trace contract; A-Wiki does not invent a parallel trace authority.
-6. **Evidence radar last among these nodes.** Phase 17 remains candidate-generation only and should not consume implementation capacity needed by core execution, verification, security, or continuity work.
-
-No future phase is activated by this ordering alone. Every mutation still requires a new WO, live ownership check, risk classification, tests/evidence, and appropriate exact-SHA review.
+No phase becomes READY from this ordering alone.
 
 ## GPT × GLM parallel contract
 
-GPT-5.6 Sol remains integrator for architecture, cross-repo owner boundaries, SSoT reconciliation, trust/security decisions, acceptance, and merge/release decisions.
+GPT-5.6 Sol owns architecture, cross-repo boundaries, SSoT reconciliation, trust/security decisions, acceptance, merge, and release.
 
-GLM/ZCode is assigned a bounded **read-only evidence-audit lane** that can run in parallel without stealing a mutable lane from higher-priority work. Its job is to discover what already exists, prove overlap, and prepare deterministic candidate test/eval slices. It is not authorized to implement Phases 12–17 yet.
+GLM/ZCode gets one bounded read-only evidence lane that does not steal mutable capacity.
 
 ### Task packet `GLM-XREPO-EVIDENCE-RO1`
 
 Status: `READY / READ_ONLY / PARALLEL_SAFE / NO SOURCE MUTATION`
 
-Goal: audit A-Wiki and A-Sunday Conductor against the new evidence/AEET roadmaps and produce an evidence-backed reuse map so future implementation starts from `REUSE/WRAP/EXTEND` instead of duplicate `BUILD`.
+Goal: audit A-Wiki Phases 12–17 and A-Conductor AEET-0..8, prove existing coverage/ownership, identify real gaps, and propose only the smallest reuse-first future slices.
 
-Required startup:
-1. fetch both repositories and pin the exact branch/PR heads before analysis;
-2. A-Wiki: read `BRAIN-ENTRY.md -> docs/graph/PROJECT-GRAPH.yaml -> AGENTS.md -> COLLAB.md -> this WO -> docs/research/agent-engineering-evidence-20260910.md -> docs/migration/awiki-vnext-plan.md`;
-3. A-Sunday Conductor: read `00-AGENT-ENTRY.md -> PROJECT-GRAPH.yaml -> AGENTS.md -> CURRENT-WORK.md -> COLLAB.md -> docs/work-orders/WO-P1-171-agent-evidence-roadmap.md -> PROJECT-PLAN.md`;
-4. read A-Conductor Issue #233 because it is the existing cross-repo authority-dedup gate; do not create a competing owner map.
+Startup:
+1. fetch both repos; record exact live SHAs;
+2. A-Wiki: `BRAIN-ENTRY -> PROJECT-GRAPH -> AGENTS -> COLLAB -> this WO -> research evidence -> vNext roadmap`;
+3. A-Conductor: `00-AGENT-ENTRY -> PROJECT-GRAPH -> AGENTS -> actual Git/claims -> CURRENT-WORK -> COLLAB -> WO171 -> PROJECT-PLAN`;
+4. inspect A-Conductor Issue #233; use it as owner-map authority/destination, never create a parallel owner map;
+5. recover live PRs/branches/claims before relying on older docs.
 
-Audit targets:
-- A-Wiki Phases 12–17;
-- A-Conductor AEET-0..8;
-- existing tests, protocols, stores, event/evidence surfaces, review/claim/lease/provider/model-policy/memory/defect authorities that already satisfy part or all of each target;
-- exact duplication/ownership hazards across both repositories;
-- the smallest future candidate slices and deterministic tests needed only for proven gaps.
+Required result table:
+`roadmap node | existing owner | exact path/symbol/test evidence | OWNER/CONSUMER/ADAPTER/FALLBACK | REUSE/WRAP/EXTEND/BUILD | proven gap | risk | dependency | smallest next slice`.
 
-Required result shape:
-- one row per roadmap node with `existing owner`, `evidence path/symbol/test`, `REUSE/WRAP/EXTEND/BUILD`, `gap`, `risk`, `dependency`, `smallest next slice`;
-- explicit owner class for every cross-repo overlap: `OWNER / CONSUMER / ADAPTER / COMPATIBILITY_FALLBACK`;
-- list of roadmap items that should be closed as `REUSE / NO NEW IMPLEMENTATION` if existing evidence already proves them;
-- candidate evaluator fixtures drawn from existing real defects, but no new test/code files in this task;
-- blockers/unknowns separated from findings; tool/transport failure is `UNVERIFIED`, never inferred PASS/FAIL.
+Also identify roadmap nodes that can close `REUSE / NO NEW IMPLEMENTATION`, candidate evaluator fixtures from existing defects, stale/conflicting authority docs, and blockers as `UNVERIFIED`. Finish with exactly one recommended next safe mutation candidate or `NONE`.
 
-Forbidden:
-- editing either repository;
-- creating branches/worktrees/claims for implementation;
-- changing `AGENTS.md`, skills, hooks, registry, runtime code, tests, memory, private Drive, provider config, worker state, or live databases;
-- copying private prompts/tool payloads/hidden reasoning into results;
-- proposing a second scheduler, task store, review lifecycle, claim/lease authority, model-policy store, trace SSoT, or memory store.
+Forbidden: editing either repo; implementation branches/worktrees/claims; changes to source/tests/docs for this audit; WO168/169/Zero-Relay worktrees; credentials/config/workers/processes/DB/private Drive/secrets; new scheduler/task/review/claim/lease/model-policy/trace/memory authority; hidden chain-of-thought/private tool payloads.
 
-Result destination: add a durable comment to A-Sunday Conductor Issue #233 titled `GLM-XREPO-EVIDENCE-RO1 RESULT`, including exact repository SHAs inspected. Do not merge anything.
+Result destination: one Issue #233 comment titled `GLM-XREPO-EVIDENCE-RO1 RESULT`, including exact inspected SHAs. Do not merge.
 
-Stop after posting the evidence map. GPT/integrator will reconcile it against the current roadmaps and decide whether any implementation node becomes READY.
+Known transport note: latest Windows independent-review attempt on Issue #233 reached ZCode but failed before model review with CoinTH/Anthropic `HTTP 401 invalid_key`. If still current, classify `UNVERIFIED / PROVIDER_TRANSPORT_BLOCKED`; never weaken auth or expose secrets to bypass it.
 
-## Transport blocker semantics
+## Mutation scope
 
-The latest Windows independent-review attempt recorded on A-Sunday Conductor Issue #233 reached ZCode but failed before model review with CoinTH/Anthropic `HTTP 401 invalid_key`. If that condition is still current when this task is invoked, record `UNVERIFIED / PROVIDER_TRANSPORT_BLOCKED`, do not treat it as a repository failure, and do not weaken authentication or expose a secret value to bypass it.
+Roadmap-capture files only: this WO, research appendix, vNext roadmap, bounded claim row. No production code/hooks/skills/registry/memory/private data.
 
 ## Dispatch checkpoint
 
-This tracked WO is the stable pointer. At task start, fetch GitHub and pin live PR #59, PR #244, PR #243, current A-Conductor `main`, and current claims. Then execute only `GLM-XREPO-EVIDENCE-RO1`. GPT continues architecture/reconciliation. No source implementation, merge, live-provider mutation, or priority inversion is authorized.
+This WO is the stable pointer. At task start, fetch and pin live PR #59, PR #244, PR #243, A-Conductor main, and claims. Run only `GLM-XREPO-EVIDENCE-RO1`. GPT continues architecture/reconciliation; no roadmap source implementation or priority inversion is authorized.
