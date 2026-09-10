@@ -120,4 +120,4 @@ The latest Windows independent-review attempt recorded on A-Sunday Conductor Iss
 
 ## Dispatch checkpoint
 
-Roadmap capture is frozen for handoff. GPT continues architecture/reconciliation. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. Exact candidate heads must be read from the live PRs at task start; do not trust stale embedded SHAs.
+This tracked WO is the stable pointer. At task start, fetch GitHub and pin live PR #59, PR #244, PR #243, current A-Conductor `main`, and current claims. Then execute only `GLM-XREPO-EVIDENCE-RO1`. GPT continues architecture/reconciliation. No source implementation, merge, live-provider mutation, or priority inversion is authorized.
