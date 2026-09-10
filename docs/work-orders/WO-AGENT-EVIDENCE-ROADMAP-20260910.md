@@ -1,7 +1,7 @@
 # WO-AGENT-EVIDENCE-ROADMAP-20260910 — Evidence-native agent engineering roadmap
 
 Date: 2026-09-10 (Asia/Bangkok)
-Status: ACTIVE / DOCS-ONLY ROADMAP CAPTURE
+Status: ROADMAP_CAPTURED / GLM_READ_ONLY_AUDIT_READY / DRAFT_PR_59
 Owner: GPT-5.6 Sol integrator
 Risk: R2 architecture/governance docs
 Branch: `docs/agent-evidence-roadmap-20260910`
@@ -113,3 +113,7 @@ Forbidden:
 Result destination: add a durable comment to A-Sunday Conductor Issue #233 titled `GLM-XREPO-EVIDENCE-RO1 RESULT`, including exact repository SHAs inspected. Do not merge anything.
 
 Stop after posting the evidence map. GPT/integrator will reconcile it against the current roadmaps and decide whether any implementation node becomes READY.
+
+## Next safe action
+
+Run `GLM-XREPO-EVIDENCE-RO1` only as a read-only audit while current higher-priority execution/review gates continue. If the GLM/ZCode provider transport is unavailable, record `UNVERIFIED / TRANSPORT_BLOCKED` and do not substitute source mutation or a weaker authority claim.
