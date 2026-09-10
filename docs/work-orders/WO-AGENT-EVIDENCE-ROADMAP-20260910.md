@@ -114,6 +114,10 @@ Result destination: add a durable comment to A-Sunday Conductor Issue #233 title
 
 Stop after posting the evidence map. GPT/integrator will reconcile it against the current roadmaps and decide whether any implementation node becomes READY.
 
+## Transport blocker semantics
+
+The latest Windows independent-review attempt recorded on A-Sunday Conductor Issue #233 reached ZCode but failed before model review with CoinTH/Anthropic `HTTP 401 invalid_key`. If that condition is still current when this task is invoked, record `UNVERIFIED / PROVIDER_TRANSPORT_BLOCKED`, do not treat it as a repository failure, and do not weaken authentication or expose a secret value to bypass it.
+
 ## Next safe action
 
-Run `GLM-XREPO-EVIDENCE-RO1` only as a read-only audit while current higher-priority execution/review gates continue. If the GLM/ZCode provider transport is unavailable, record `UNVERIFIED / TRANSPORT_BLOCKED` and do not substitute source mutation or a weaker authority claim.
+Run `GLM-XREPO-EVIDENCE-RO1` only as a read-only audit while current higher-priority execution/review gates continue. If the GLM/ZCode provider transport is unavailable, preserve the packet and blocker evidence for resume; no source mutation is substituted.
