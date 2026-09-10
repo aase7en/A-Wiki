@@ -118,6 +118,6 @@ Stop after posting the evidence map. GPT/integrator will reconcile it against th
 
 The latest Windows independent-review attempt recorded on A-Sunday Conductor Issue #233 reached ZCode but failed before model review with CoinTH/Anthropic `HTTP 401 invalid_key`. If that condition is still current when this task is invoked, record `UNVERIFIED / PROVIDER_TRANSPORT_BLOCKED`, do not treat it as a repository failure, and do not weaken authentication or expose a secret value to bypass it.
 
-## Next safe action
+## Dispatch checkpoint
 
-Run `GLM-XREPO-EVIDENCE-RO1` only as a read-only audit while current higher-priority execution/review gates continue. If the GLM/ZCode provider transport is unavailable, preserve the packet and blocker evidence for resume; no source mutation is substituted.
+The roadmap and cross-repo audit packet are frozen for dispatch. GPT continues architecture/reconciliation in parallel. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. If provider readiness is blocked, preserve the packet and blocker evidence for resume rather than substituting a risky mutation.
