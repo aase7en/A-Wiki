@@ -120,4 +120,4 @@ The latest Windows independent-review attempt recorded on A-Sunday Conductor Iss
 
 ## Dispatch checkpoint
 
-Roadmap capture is frozen for handoff. GPT continues architecture/reconciliation. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. If provider readiness is blocked, preserve the packet and blocker evidence for resume rather than substituting a risky mutation.
+Roadmap capture is frozen for handoff. GPT continues architecture/reconciliation. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. Exact candidate heads must be read from the live PRs at task start; do not trust stale embedded SHAs.
