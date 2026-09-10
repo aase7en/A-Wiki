@@ -120,4 +120,4 @@ The latest Windows independent-review attempt recorded on A-Sunday Conductor Iss
 
 ## Dispatch checkpoint
 
-The roadmap and cross-repo audit packet are frozen for dispatch. GPT continues architecture/reconciliation in parallel. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. If provider readiness is blocked, preserve the packet and blocker evidence for resume rather than substituting a risky mutation.
+Roadmap capture is frozen for handoff. GPT continues architecture/reconciliation. GLM executes only `GLM-XREPO-EVIDENCE-RO1` read-only; no source implementation is authorized. If provider readiness is blocked, preserve the packet and blocker evidence for resume rather than substituting a risky mutation.
