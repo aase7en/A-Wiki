@@ -93,3 +93,39 @@ Roadmap-capture files only: this WO, research appendix, vNext roadmap, bounded c
 ## Dispatch checkpoint
 
 This WO is the stable pointer. At task start, fetch and pin live PR #59, PR #244, PR #243, A-Conductor main, and claims. Run only `GLM-XREPO-EVIDENCE-RO1`. GPT continues architecture/reconciliation; no roadmap source implementation or priority inversion is authorized.
+
+## Dispatch correction — 2026-09-12 anti-loop gate
+
+Material dispatch defect: repeated `continue current mutation lane` prompts re-entered the same closed dependency gate and caused GLM to report `AUTHORIZATION_REQUIRED` repeatedly without changing durable state. Do not retry an unchanged blocker.
+
+### Task packet `GLM-STACKED-ROADMAP-REVIEW-RO2`
+
+Status: `READY / REVIEW-ONLY / PARALLEL-SAFE / NO MERGE`
+
+Goal: unblock the AEET roadmap dependency chain by independently reviewing the stacked A-Conductor roadmap PRs in dependency order, without implementing AEET and without asking the human to relay the same blocker again.
+
+Startup:
+1. fetch/re-pin A-Wiki and A-Conductor live state, exact SHAs, claims, PR #243 and PR #244;
+2. read A-Conductor entry/graph/AGENTS/COLLAB plus WO170 and WO171;
+3. verify PR #243 is the parent/base of PR #244 and recover current CI/review/mergeability evidence;
+4. if either head moved, review only the newly pinned exact head.
+
+Execution:
+- review PR #243 first against its declared docs-only scope, authority boundaries, dependency semantics, privacy/secret safety, diff correctness, and current main;
+- if PR #243 is acceptable, record an independent exact-SHA PASS/PASS_WITH_NOTES review/evidence; otherwise record CHANGES_REQUIRED with the smallest bounded repair packet and STOP;
+- only after PR #243 is review-clean, review PR #244 against the accepted parent head and its declared WO171/AEET roadmap-only scope;
+- record exact-SHA review evidence for PR #244 or the smallest repair packet;
+- never merge either PR and never start AEET-0 implementation in this task.
+
+Stop/result contract:
+- `READY_FOR_GPT_INTEGRATION` only when both stacked PRs have current exact-SHA review evidence and no unresolved binding blocker;
+- `CHANGES_REQUIRED` when a concrete defect exists, with exact file/evidence and one bounded repair packet;
+- `BLOCKED` only for a newly discovered external/ownership/authorization blocker that this review cannot change.
+
+Anti-loop invariant: if a blocker fingerprint `(type, dependency, exact SHA/state)` is unchanged from the previous durable checkpoint, do **not** repeat the same analysis/comment and do **not** ask the human to resend `/goal`. Return one compact `UNCHANGED_BLOCKER` result and stop. A future retry requires changed Git/PR/CI/claim state or a new GPT-authored dispatch packet.
+
+Forbidden: source implementation, AEET evaluator fixtures, provider traffic/credentials, secret/config changes, worker/process changes, claims for implementation, retarget/rebase, self-repair of authored code, merge, release.
+
+Result destination: durable evidence on the relevant A-Conductor PR(s) and one concise Issue #233 checkpoint titled `GLM-STACKED-ROADMAP-REVIEW-RO2 RESULT` containing pinned SHAs, verdicts, blockers, and exactly one next GPT action.
+
+GPT/integrator owns any merge/retarget/rebase decision after this review. Human relay must not be used for unchanged blockers.
