@@ -8,21 +8,7 @@
 # Scoped Context — IoT Entities
 
 > **โดเมน**: Internet of Things (IoT)
-<<<<<<< Updated upstream
-> **Last updated**: 2026-09-04
-=======
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-> **Last updated**: 2026-09-10
-=======
-> **Last updated**: 2026-09-10
-=======
-> **Last updated**: 2026-09-10
-=======
-> **Last updated**: 2026-09-10
->>>>>>> Stashed changes
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+> **Last updated**: 2026-09-16
 > **ไฟล์นี้เป็น nested context สำหรับ Claude/Cline — อ่านเมื่อทำงานใน entities/iot/ เท่านั้น**
 
 ---

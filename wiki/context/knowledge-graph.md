@@ -1,13 +1,13 @@
 # Knowledge Graph (auto-generated)
 
-_Generated: 2026-09-04_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
+_Generated: 2026-09-16_  •  _Source: `.wiki-graph.json` (regen by `scripts/gen-index.py`)_
 
 ## Stats
 
-- **Nodes**: 553
-- **Edges**: 1834
+- **Nodes**: 576
+- **Edges**: 1847
 - **Broken links**: 40 (run `python3 scripts/query-graph.py --broken`)
-- **Orphans**: 32 (run `python3 scripts/query-graph.py --orphans`)
+- **Orphans**: 29 (run `python3 scripts/query-graph.py --orphans`)
 
 ## Top Hubs (most-connected)
 

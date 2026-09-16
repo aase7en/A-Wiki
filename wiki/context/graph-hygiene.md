@@ -7,50 +7,31 @@
 
 | Metric | Count |
 |---|---:|
-<<<<<<< Updated upstream
-| Nodes | 553 |
-| Edges | 1829 |
-| Broken links | 37 |
-| Orphans | 33 |
-=======
-| Nodes | 551 |
-| Edges | 1839 |
+| Nodes | 576 |
+| Edges | 1847 |
 | Broken links | 40 |
-| Orphans | 30 |
->>>>>>> Stashed changes
+| Orphans | 29 |
 
 ## Broken links by source domain
 
 | Domain | Count |
 |---|---:|
 | repo-root | 21 |
-<<<<<<< Updated upstream
+| sources | 9 |
 | ai-tools | 8 |
-=======
-| ai-tools | 11 |
->>>>>>> Stashed changes
-| sources | 6 |
 | env | 2 |
 
 ## Orphans by domain
 
 | Domain | Count |
 |---|---:|
-| context | 17 |
+| context | 14 |
 | env | 8 |
 | ai-tools | 3 |
-<<<<<<< Updated upstream
-| other | 3 |
-=======
 | other | 2 |
->>>>>>> Stashed changes
 | meta | 1 |
 | sources | 1 |
 
 ## Orphan samples
 
-<<<<<<< Updated upstream
-`profile.md`, `wiki/CLAUDE.md`, `wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`
-=======
-`wiki/A-ROUTER.md`, `wiki/SKILL-INDEX.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`
->>>>>>> Stashed changes
+`profile.md`, `wiki/CLAUDE.md`, `wiki/concepts/ai-tools/hexagonal-architecture.md`, `wiki/concepts/meta/coordination-artifacts.md`, `wiki/context/device-session.md`, `wiki/context/graph-hygiene.md`, `wiki/context/local-sources.md`, `wiki/context/now.md`, `wiki/context/ocr-learning-log.md`, `wiki/context/overview-ai.md`
