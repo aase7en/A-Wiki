@@ -8,7 +8,7 @@ lifecycle_phase: meta
 category: pipeline
 agents: [all]
 status: canonical
-invocation: both
+invocation: auto
 invocation_hint: "/A-FastTask"
 a_phase: any
 ---

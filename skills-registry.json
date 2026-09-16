@@ -400,7 +400,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Thin cross-harness router for substantial repository work. Binds to a compatible repo-local A-FastTask authority when present, then continues under that repository workflow; coordinates safe parallel-lane routing, continuation/takeover and evidence-gated lane cleanup without creating a second authority system.",
-      "invocation": "both",
+      "invocation": "auto",
       "triggers": [
         "a-fasttask",
         "fasttask",
