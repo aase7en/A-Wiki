@@ -9,7 +9,7 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 198 · **Aliases/deprecated**: 47
+**Total canonical skills**: 199 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
@@ -19,13 +19,13 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 53 |
+| `engineering` | วิศวกร / Architect / Agent harness | 54 |
 | `trader` | เทรด / DeFi / ตลาด | 8 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
 | `data` | Data Visualization / DB / Query | 11 |
 | `security` | ความปลอดภัย / Hardening | 4 |
-| `ai-ops` | AI ops / LLM / Cost | 23 |
+| `ai-ops` | AI ops / LLM / Cost | 24 |
 | `productivity` | Productivity / Management | 12 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
@@ -173,6 +173,7 @@
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
 | `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
+| `a-fasttask` | meta | pipeline | ตัวจ่ายงานข้าม harness สำหรับงาน repository ที่ไม่ trivial — หา project-local A-FastTask binding ... |
 | `a-flow` | meta | pipeline | Master pipeline 7 ขั้น — ทำให้ทุก task non-trivial เดินตาม dev cycle มืออาชีพ: ถาม→ออกแบบ→วางแผน→... |
 | `a-loop` | meta | pipeline | Autonomous goal loop: decompose → execute → verify → distill → improve. A- suite aggregator that ... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
@@ -288,6 +289,7 @@
 |-------|-----------|----------|-------------|
 | `a-agent` | meta | pipeline | AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-ha... |
 | `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
+| `a-fasttask` | meta | pipeline | ตัวจ่ายงานข้าม harness สำหรับงาน repository ที่ไม่ trivial — หา project-local A-FastTask binding ... |
 | `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
 | `agent-eval` | none | ecosystem | ประเมินคุณภาพของ agent/prompt — วัด accuracy, cost, latency และหาจุดปรับปรุง |
 | `agent-harness-construction` | none | ecosystem | Design and optimize AI agent action spaces, tool definitions, and observation formatting for high... |
@@ -418,7 +420,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
-- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
+- **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-fasttask`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
 ## 🔁 Alias → Canonical Resolution
 
