@@ -1,23 +1,19 @@
 {
-<<<<<<< Updated upstream
-  "generated_at": "2026-09-04",
-=======
-  "generated_at": "2026-09-10",
->>>>>>> Stashed changes
+  "generated_at": "2026-09-16",
   "stats": {
-    "nodes": 553,
-    "edges": 1834,
+    "nodes": 576,
+    "edges": 1847,
     "edges_by_type": {
       "wikilink": 1307,
-      "depends": 386,
+      "depends": 399,
       "implements": 53,
       "mdlink": 47,
       "extends": 41
     },
     "broken_links": 40,
-    "orphans": 32,
+    "orphans": 29,
     "orphan_by_domain": {
-      "context": 17,
+      "context": 14,
       "env": 8,
       "ai-tools": 3,
       "other": 2,
@@ -84,9 +80,9 @@
       "wiki/context/overview-trader.md",
       "wiki/context/project-backlog.md",
       "wiki/context/review-report.md",
-      "wiki/context/session-memory-2026-06-24.md",
-      "wiki/context/session-memory.md",
-      "wiki/context/session-summary-2026-06-24.md"
+      "wiki/context/wiki-capability-map.md",
+      "wiki/entities/ai-tools/news-intelligence-pipeline.md",
+      "wiki/entities/ai-tools/open-design.md"
     ]
   },
   "nodes": [
@@ -522,26 +518,7 @@
     },
     {
       "path": "wiki/context/review-report.md",
-<<<<<<< Updated upstream
-      "title": "Review Report — 2026-08-26",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory-2026-06-24.md",
-      "title": "session-memory-2026-06-24",
-=======
-      "title": "Review Report — 2026-08-20",
->>>>>>> Stashed changes
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-memory.md",
-      "title": "Session Memory",
-      "domain": "context"
-    },
-    {
-      "path": "wiki/context/session-summary-2026-06-24.md",
-      "title": "session-summary-2026-06-24",
+      "title": "Review Report — 2026-09-10",
       "domain": "context"
     },
     {
@@ -1030,8 +1007,68 @@
       "domain": "other"
     },
     {
+      "path": "wiki/sources/00-agent-entry.md",
+      "title": "00 — AGENT ENTRY / GRAPH ROUTER",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/10-ssot-continuity.md",
+      "title": "10 — SSoT / CONTINUITY / HANDOFF",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/20-engineering-main-flow.md",
+      "title": "20 — ENGINEERING MAIN FLOW",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/21-shaping-research.md",
+      "title": "21 — SHAPING / WAYFINDING / RESEARCH / PROTOTYPE",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/3-dashboard-node-red.md",
       "title": "3-dashboard-node-red",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/30-repo-safety.md",
+      "title": "30 — REPOSITORY SAFETY / IDENTITY / OWNERSHIP",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/40-verification-debug.md",
+      "title": "40 — VERIFICATION / REVIEW / DEBUGGING",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/41-e2e-audit.md",
+      "title": "41 — REALISTIC E2E / DEEP-BUG HUNT / AUDIT",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/42-defect-memory.md",
+      "title": "42 — DEFECT MEMORY / REGRESSION PREVENTION",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/50-release.md",
+      "title": "50 — RELEASE / PR / CI-CD / MERGE",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/60-delegation.md",
+      "title": "60 — DELEGATION / SUBAGENTS / WORKERS / GPT WORK",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/80-upstream-references.md",
+      "title": "80 — UPSTREAM REFERENCES / FRESHNESS POLICY",
+      "domain": "sources"
+    },
+    {
+      "path": "wiki/sources/90-master-spec.md",
+      "title": "90 — MASTER NORMATIVE SPEC",
       "domain": "sources"
     },
     {
@@ -1775,6 +1812,11 @@
       "domain": "sources"
     },
     {
+      "path": "wiki/sources/universal-autonomous-project-architect-loop-engineer-prompt.md",
+      "title": "Master Prompt — Autonomous Project Architect + Goal-First Loop Engineer",
+      "domain": "sources"
+    },
+    {
       "path": "wiki/sources/unpingco-pystats-readme.md",
       "title": "unpingco-pystats-readme",
       "domain": "sources"
@@ -2045,8 +2087,68 @@
       "domain": "synthesis"
     },
     {
+      "path": "wiki/synthesis/synth-00-agent-entry.md",
+      "title": "00 — AGENT ENTRY / GRAPH ROUTER — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-10-ssot-continuity.md",
+      "title": "10 — SSoT / CONTINUITY / HANDOFF — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-20-engineering-main-flow.md",
+      "title": "20 — ENGINEERING MAIN FLOW — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-21-shaping-research.md",
+      "title": "21 — SHAPING / WAYFINDING / RESEARCH / PROTOTYPE — Synthesis",
+      "domain": "synthesis"
+    },
+    {
       "path": "wiki/synthesis/synth-3-dashboard-node-red.md",
       "title": "ตอน 3 : สร้าง Dashboard Node-RED มอนิเตอร์และควบคุมทุกอย่าง 📊 — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-30-repo-safety.md",
+      "title": "30 — REPOSITORY SAFETY / IDENTITY / OWNERSHIP — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-40-verification-debug.md",
+      "title": "40 — VERIFICATION / REVIEW / DEBUGGING — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-41-e2e-audit.md",
+      "title": "41 — REALISTIC E2E / DEEP-BUG HUNT / AUDIT — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-42-defect-memory.md",
+      "title": "42 — DEFECT MEMORY / REGRESSION PREVENTION — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-50-release.md",
+      "title": "50 — RELEASE / PR / CI-CD / MERGE — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-60-delegation.md",
+      "title": "60 — DELEGATION / SUBAGENTS / WORKERS / GPT WORK — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-80-upstream-references.md",
+      "title": "80 — UPSTREAM REFERENCES / FRESHNESS POLICY — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-90-master-spec.md",
+      "title": "90 — MASTER NORMATIVE SPEC — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -2732,6 +2834,11 @@
     {
       "path": "wiki/synthesis/synth-umbrel-pi5-setup.md",
       "title": "Umbrel OS บน Raspberry Pi 5 — Setup และ Custom Apps — Synthesis",
+      "domain": "synthesis"
+    },
+    {
+      "path": "wiki/synthesis/synth-universal-autonomous-project-architect-loop-engineer-prompt.md",
+      "title": "Master Prompt — Autonomous Project Architect + Goal-First Loop Engineer — Synthesis",
       "domain": "synthesis"
     },
     {
@@ -14209,8 +14316,92 @@
       "external": false
     },
     {
+      "from": "wiki/synthesis/synth-00-agent-entry.md",
+      "to": "wiki/sources/00-agent-entry.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-10-ssot-continuity.md",
+      "to": "wiki/sources/10-ssot-continuity.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-20-engineering-main-flow.md",
+      "to": "wiki/sources/20-engineering-main-flow.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-21-shaping-research.md",
+      "to": "wiki/sources/21-shaping-research.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
       "from": "wiki/synthesis/synth-3-dashboard-node-red.md",
       "to": "wiki/sources/3-dashboard-node-red.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-30-repo-safety.md",
+      "to": "wiki/sources/30-repo-safety.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-40-verification-debug.md",
+      "to": "wiki/sources/40-verification-debug.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-41-e2e-audit.md",
+      "to": "wiki/sources/41-e2e-audit.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-42-defect-memory.md",
+      "to": "wiki/sources/42-defect-memory.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-50-release.md",
+      "to": "wiki/sources/50-release.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-60-delegation.md",
+      "to": "wiki/sources/60-delegation.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-80-upstream-references.md",
+      "to": "wiki/sources/80-upstream-references.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-90-master-spec.md",
+      "to": "wiki/sources/90-master-spec.md",
       "type": "depends",
       "broken": false,
       "external": false
@@ -15205,6 +15396,13 @@
     {
       "from": "wiki/synthesis/synth-umbrel-pi5-setup.md",
       "to": "wiki/sources/umbrel-pi5-setup.md",
+      "type": "depends",
+      "broken": false,
+      "external": false
+    },
+    {
+      "from": "wiki/synthesis/synth-universal-autonomous-project-architect-loop-engineer-prompt.md",
+      "to": "wiki/sources/universal-autonomous-project-architect-loop-engineer-prompt.md",
       "type": "depends",
       "broken": false,
       "external": false
