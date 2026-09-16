@@ -49,6 +49,11 @@
       "domain": "engineering"
     },
     {
+      "name": "a-fasttask",
+      "target": "skills/awiki/a-fasttask/SKILL.md",
+      "domain": "engineering,ai-ops"
+    },
+    {
       "name": "a-flow",
       "target": "skills/awiki/a-flow/SKILL.md",
       "domain": "engineering,code"

@@ -12,6 +12,7 @@
 | `a-design` | design, ux-ui, engineering | meta | pipeline | `skills/awiki/a-design/SKILL.md` |
 | `a-doc` | document, thai | build | pipeline | `skills/awiki/a-doc/SKILL.md` |
 | `a-escalate` | engineering | meta | pipeline | `skills/awiki/a-escalate/SKILL.md` |
+| `a-fasttask` | engineering, ai-ops | meta | pipeline | `skills/awiki/a-fasttask/SKILL.md` |
 | `a-flow` | engineering, code | meta | pipeline | `skills/awiki/a-flow/SKILL.md` |
 | `a-game` | code, media | meta | pipeline | `skills/awiki/a-game/SKILL.md` |
 | `a-invest` | trader, business | meta | pipeline | `skills/awiki/a-invest/SKILL.md` |
@@ -206,14 +207,14 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 23 |
+| ai-ops | 24 |
 | business | 7 |
 | code | 77 |
 | data | 11 |
 | debug | 7 |
 | design | 13 |
 | document | 9 |
-| engineering | 53 |
+| engineering | 54 |
 | media | 15 |
 | medical | 4 |
 | pharmacy | 2 |

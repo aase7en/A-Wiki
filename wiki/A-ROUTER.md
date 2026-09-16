@@ -51,6 +51,7 @@
 | `a-claim` | `/A-Claim` | any | `claim` · `จอง` · `agent อื่น` · `ชนกัน` · `coordination` |
 | `a-content` | `/A-Content` | any | `คอนเทนต์` · `บทความ` · `การตลาด` · `content` · `marketing` · `seo` |
 | `a-escalate` | `/A-Escalate` | any | `ส่งให้โมเดลอื่น` · `escalate` · `ถามโมเดลที่เก่งกว่า` · `second opinion` |
+| `a-fasttask` | `/A-FastTask` | any | `a-fasttask` · `fasttask` · `parallel lane` · `takeover` · `agent rate limit` · `รับช่วงงาน agent` · `worktree cleanup` · `speed up repo work` |
 | `a-flow` | `/A-Flow` | any | `/a-flow` · `workflow` · `dev pipeline` · `professional dev` |
 | `a-game` | `/A-Game` | any | `game dev` · `phaser game` · `pixijs` · `threejs scene` · `webgl game` |
 | `a-invest` | `/A-Invest` | any | `ลงทุน` · `หุ้น` · `พอร์ต` · `investment` · `portfolio` |
@@ -109,4 +110,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_20 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_21 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_
