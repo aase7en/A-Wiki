@@ -45,6 +45,8 @@ review will be assigned to a separate read-only Worker after the candidate SHA f
 - this work order
 - `skills-registry.json`
 - `skills/awiki/a-security/**`
+- `scripts/refresh-cloudflare-security-audit.sh`
+- `skills/_upstream/cloudflare-security-audit/**`
 - generated skill surfaces produced by `python scripts/regen-skill-surfaces.py`
 
 Forbidden: unrelated skills, AGENTS hand-edits, hooks, runtime code, private data,
