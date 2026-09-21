@@ -99,6 +99,11 @@
       "domain": "engineering"
     },
     {
+      "name": "a-security",
+      "target": "skills/awiki/a-security/SKILL.md",
+      "domain": "security,engineering"
+    },
+    {
       "name": "a-think",
       "target": "skills/awiki/a-think/SKILL.md",
       "domain": "engineering"
