@@ -107,4 +107,11 @@ git diff --check
 - Claim/WO scope is expanded to `tests/test_refresh_cloudflare_security_audit.py` before test mutation. The previous exact-SHA review candidate is invalidated by the required repair.
 - Added deterministic offline tests for upstream-tree filtering, symlink rejection, remote-URL mismatch refusal, and expected remote creation; targeted result: `4 passed`.
 
-**Next safe action:** commit the test repair, rerun the full deterministic acceptance set, then freeze a new exact review candidate.
+- Test repair commit: `087032cd2693149f7fe27b47b4b54339e16c8941`.
+- Focused/related Python verification: `128 passed` across refresh, skill-registry, privacy, and security-scan tests.
+- Registry regeneration: 13 generated surfaces match; cross-agent visibility: 200/200 shared canonical skills across 11 surfaces, no drift/orphan aliases.
+- Privacy scan: PASS. Security baseline scan: 6,405 tracked files, 51 baseline findings, `0 new`.
+- A-Suite audit: `TOTAL PROBLEMS: 0`. `git diff --check`: PASS.
+- Native-Windows coverage-ledger suite: 24 passed / 0 failed / 7 platform skips. Findings CLI remains intentionally fail-closed on missing POSIX no-follow primitives; final validator verification remains bound to POSIX/macOS.
+
+**Next safe action:** commit this acceptance checkpoint, push the new candidate, update PR #65 Loop-Evidence with explicit WO/test evidence, then run POSIX exact-head validator tests plus independent exact-SHA review and hosted CI in parallel.
