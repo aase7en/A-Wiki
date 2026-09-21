@@ -46,6 +46,7 @@ review will be assigned to a separate read-only Worker after the candidate SHA f
 - `skills-registry.json`
 - `skills/awiki/a-security/**`
 - `scripts/refresh-cloudflare-security-audit.py`
+- `tests/test_refresh_cloudflare_security_audit.py`
 - `skills/_upstream/cloudflare-security-audit/**`
 - generated skill surfaces produced by `python scripts/regen-skill-surfaces.py`
 
@@ -97,3 +98,12 @@ git diff --check
 - Primary dirty checkout remained untouched; all implementation work stayed in the claimed isolated worktree.
 
 **Next safe action:** commit this checkpoint to freeze the review candidate, then open a draft PR and run hosted CI plus independent exact-SHA review in parallel.
+
+## Checkpoint — 2026-09-21 hosted CI repair
+
+- Draft PR #65 opened at candidate `de7917c7e08b43432f1bfad8308160c9d3ee29db`.
+- Hosted PR Loop Gate exposed two acceptance gaps: the `## Loop-Evidence` prose did not contain an explicit WO reference/test keyword, and the new production refresh script had no changed `tests/**` coverage.
+- Root cause is integration-contract coverage, not upstream skill behavior.
+- Claim/WO scope is expanded to `tests/test_refresh_cloudflare_security_audit.py` before test mutation. The previous exact-SHA review candidate is invalidated by the required repair.
+
+**Next safe action:** commit and push this scope extension, then add deterministic offline tests for the refresh helper before freezing a new candidate.
