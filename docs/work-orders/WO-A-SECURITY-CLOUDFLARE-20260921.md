@@ -105,5 +105,6 @@ git diff --check
 - Hosted PR Loop Gate exposed two acceptance gaps: the `## Loop-Evidence` prose did not contain an explicit WO reference/test keyword, and the new production refresh script had no changed `tests/**` coverage.
 - Root cause is integration-contract coverage, not upstream skill behavior.
 - Claim/WO scope is expanded to `tests/test_refresh_cloudflare_security_audit.py` before test mutation. The previous exact-SHA review candidate is invalidated by the required repair.
+- Added deterministic offline tests for upstream-tree filtering, symlink rejection, remote-URL mismatch refusal, and expected remote creation; targeted result: `4 passed`.
 
-**Next safe action:** commit and push this scope extension, then add deterministic offline tests for the refresh helper before freezing a new candidate.
+**Next safe action:** commit the test repair, rerun the full deterministic acceptance set, then freeze a new exact review candidate.
