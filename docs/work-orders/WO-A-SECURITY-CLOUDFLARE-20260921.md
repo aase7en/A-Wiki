@@ -1,6 +1,6 @@
 # WO-A-SECURITY-CLOUDFLARE-20260921 — A-Security upstream integration
 
-Status: CLAIMED / IMPLEMENTING
+Status: CANDIDATE / REVIEW
 Owner: GPT-5.6 Sol
 Branch: `feat/a-security-cloudflare-upstream`
 Base: `origin/main@25102e44950ccd28c2d22eafc6e6f1d2119f18ad`
@@ -84,4 +84,16 @@ git diff --check
 - Upstream repository and latest pin verified from Cloudflare's official GitHub repository.
 - Existing A-Wiki security surfaces inspected; this skill fills a distinct audit-orchestration gap.
 
-**Next safe action:** inspect the complete pinned upstream package for instruction/conflict risk, then import only the compatible package into the claimed scope.
+## Checkpoint — 2026-09-21 implementation freeze
+
+- Implementation commit: `a6ae2df83f8b67804aa4768df95b8497e675c7c4`.
+- Official upstream pin: `cloudflare/security-audit-skill@c1c8a8c1471069fb0e188eeaff69b8e8db6564a8`.
+- All 20 files under upstream `skills/security-audit/` match the official GitHub blob SHAs exactly; MIT notice is preserved separately.
+- Local adaptation delta is intentionally limited to `skills/awiki/a-security/SKILL.md`: A-Wiki frontmatter/name plus stricter authority/privacy/sandbox integration rules. All companion docs, schemas, validators, and validator tests remain byte-identical to the upstream snapshot.
+- Upstream refresh path was exercised successfully; it retained the same current pin and refuses to replace an existing remote with a different URL.
+- Native-Windows findings CLI tests fail closed where `O_NOFOLLOW` / `O_NONBLOCK` protection is unavailable; this is the expected platform safety boundary documented by A-Security, not a weakened validator. The coverage-ledger suite passed its Windows-applicable tests.
+- POSIX verification on macOS at the exact implementation commit passed `34/34` findings tests and `31/31` coverage-ledger tests.
+- A-Wiki checks passed: registry regeneration check, cross-agent skill-surface verification, privacy scan, security baseline scan with `0` new findings, A-Suite audit (with UTF-8 console mode), and `git diff --check`.
+- Primary dirty checkout remained untouched; all implementation work stayed in the claimed isolated worktree.
+
+**Next safe action:** commit this checkpoint to freeze the review candidate, then open a draft PR and run hosted CI plus independent exact-SHA review in parallel.
