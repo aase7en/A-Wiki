@@ -847,6 +847,58 @@
       "default_spine": "a-flow (unmatched objective -> full 7-phase spine)"
     },
     {
+      "name": "a-security",
+      "aliases": [
+        "/a-security",
+        "asecurity"
+      ],
+      "domain": [
+        "security",
+        "engineering"
+      ],
+      "lifecycle_phase": "review",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-security/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Evidence-led security audit workflow adapted from Cloudflare/security-audit-skill: trust-boundary mapping, coverage-led hunting, machine-readable findings, independent validation, and bounded source/local-only verification.",
+      "invocation": "manual",
+      "th_description": "A-Security — ตรวจ security แบบหลายเฟสโดยยึดหลักฐานจาก source, coverage ledger, structured findings และผู้ตรวจอิสระ; full audit ทำเมื่อสั่งชัดเจนเท่านั้น",
+      "when_to_use": "security guidance, vulnerability review, threat-boundary investigation, หรือ full/comprehensive codebase audit ที่ผู้ใช้สั่งชัดเจน",
+      "examples": [
+        {
+          "scenario": "ตรวจ security แบบ focused",
+          "how": "/A-Security review auth boundary ของ API นี้"
+        },
+        {
+          "scenario": "ทำ full audit",
+          "how": "/A-Security full audit repo นี้"
+        }
+      ],
+      "process_steps": [
+        "guidance หรือ explicit full-audit gate",
+        "reconnaissance + trust boundaries",
+        "coverage-led hunting",
+        "independent candidate validation",
+        "schema + ledger validation",
+        "fresh-eyes verification + report"
+      ],
+      "invocation_hint": "/A-Security",
+      "a_phase": "review",
+      "triggers": [
+        "security audit",
+        "vulnerability review",
+        "pentest",
+        "security assessment",
+        "ตรวจ security",
+        "ช่องโหว่"
+      ]
+    },
+    {
       "name": "a-think",
       "aliases": [
         "/a-think",

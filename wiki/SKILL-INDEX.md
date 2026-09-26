@@ -9,7 +9,7 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 199 · **Aliases/deprecated**: 47
+**Total canonical skills**: 200 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
@@ -19,12 +19,12 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 54 |
+| `engineering` | วิศวกร / Architect / Agent harness | 55 |
 | `trader` | เทรด / DeFi / ตลาด | 8 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
 | `data` | Data Visualization / DB / Query | 11 |
-| `security` | ความปลอดภัย / Hardening | 4 |
+| `security` | ความปลอดภัย / Hardening | 5 |
 | `ai-ops` | AI ops / LLM / Cost | 24 |
 | `productivity` | Productivity / Management | 12 |
 | `wiki` | Wiki / Knowledge ops | 9 |
@@ -179,6 +179,7 @@
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `a-research` | meta | pipeline | งานค้นคว้าและวิเคราะห์ — รวมวิจัย วิเคราะห์ และตรวจสอบแหล่งข้อมูลไว้ที่เดียว |
 | `a-router` | meta | pipeline | ตัวจ่ายงานของ A-Suite — รับ request แล้วบอกว่าควรใช้ skill ไหน phase ไหน ผ่าน trigger table ที่ g... |
+| `a-security` | review | pipeline | A-Security — ตรวจ security แบบหลายเฟสโดยยึดหลักฐานจาก source, coverage ledger, structured finding... |
 | `a-think` | meta | pipeline | Loop คิดวิเคราะห์ 7 ขั้น — รันก่อนตอบ non-trivial request. รวม fable-method + fable5-standards. F... |
 | `a-web` | meta | pipeline | งานเว็บ/frontend ครบ chain — ออกแบบ, สร้าง, ทดสอบ, a11y, performance |
 | `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
@@ -278,6 +279,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-security` | review | pipeline | A-Security — ตรวจ security แบบหลายเฟสโดยยึดหลักฐานจาก source, coverage ledger, structured finding... |
 | `defi-amm-security` | none | ecosystem | รายการตรวจสอบความปลอดภัยสำหรับสัญญา AMM บน Solidity ครอบคลุมการป้องกัน reentrancy, การเรียงลำดับ ... |
 | `git-guardrails-claude-code` | none | mattpocock | ตั้งค่า hook ใน Claude Code เพื่อบล็อกคำสั่ง git ที่อันตราย เช่น push, reset --hard, clean, branc... |
 | `security-and-hardening` | review | engineering-lifecycle | ตรวจช่องโหว่ความปลอดภัย: injection, auth, secret leak, input validation |
@@ -418,7 +420,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
 - **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
-- **REVIEW**: `a-council`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
+- **REVIEW**: `a-council`, `a-security`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
 - **META**: `a-agent`, `a-backend`, `a-claim`, `a-content`, `a-design`, `a-escalate`, `a-fasttask`, `a-flow`, `a-game`, `a-invest`, `a-loop`, `a-research`, `a-router`, `a-think`, `a-web`, `finance-pipeline`, `handoff`, `hermes-fan-out`, `medical-pipeline`, `platform-ingest`, `research-pipeline`, `writing-great-skills`
 
