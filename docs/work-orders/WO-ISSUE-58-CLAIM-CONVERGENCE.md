@@ -211,3 +211,41 @@ The previous exact-head CI on `6a4ebe7466e66644eee48ff2dbea64725ad9116f`
 covered the boundary repair only and is superseded for acceptance. The final
 migration candidate requires new exact-head hosted CI and a fresh independent
 R3 review before merge.
+
+## Canonical guidance + registry convergence — 2026-09-27
+
+Candidate `d6e29253d3cd6fcdf070c074a86750dde9a99806` is superseded before
+acceptance. Source/runtime behavior had converged on durable-first ownership,
+but two canonical guidance surfaces still described the old same-machine TTL
+model: AGENTS Iron Law #11 said cross-machine coordination was not covered, and
+the canonical `a-claim` skill showed `claim_acquire` without an exact
+`task_id` and treated `.tmp` lease state as the practical claim authority.
+
+The documentation/registry repair keeps one authority model everywhere:
+- `COLLAB.md + Git` is the canonical durable cross-machine ownership authority;
+- MCP `claim_acquire` requires an exact `task_id`, writes/validates durable
+  ownership first, then mirrors a derived same-machine TTL cache;
+- `claim_list`, `claim_advance`, and `claim_release` are explicitly
+  cache-side operations; cache expiry/release never releases durable ownership;
+- only `RECONCILED` foreign cache rows may enforce same-machine collision;
+  legacy/`PARTIAL_UNRECONCILED` rows are informational, never ownership;
+- durable completion/release updates the same COLLAB row through reviewed Git;
+- `a-claim` registry metadata/version advanced to **1.1.0** and generated
+  surfaces were regenerated from the registry rather than hand-edited.
+
+Verification after guidance convergence:
+- claim/hook/MCP focused pytest subset: **277/277 PASS**;
+- skill-registry/discovery pytest suite: **71/71 PASS**;
+- registry validation: PASS;
+- generated-surface check: **13/13 surfaces no drift**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked / 51 baselined / 0 new);
+- wiki health: PASS (0 hard errors);
+- `git diff --check`: PASS;
+- added-line secret-signature scan: **0 hits**.
+
+The earlier source candidate retained its stronger related source evidence
+(**320/320 PASS**) but is not an acceptance SHA after this canonical guidance
+change. A new frozen exact head requires fresh hosted CI and an independent R3
+review.

@@ -1,7 +1,7 @@
 ---
 name: a-claim
-description: "บังคับ: ประกาศงานก่อนแตะ shared surface เพื่อไม่ให้ agent หลายตัว (Claude/ZCode/Codex/Gemini) ทำงานซ้ำกัน. MCP `claim_acquire` / `claim_list` / `claim_advance` / `claim_release`; PreToolUse hook **block** เมื่อจะแก้ไฟล์ที่อยู่ใน claim ของ agent อื่น; lease หมดอายุเอง ไม่ล็อกค้าง. Trigger: 'claim', 'จอง', 'agent อื่น', 'ชนกัน', 'coordination'."
-version: 1.0.0
+description: "บังคับ: COLLAB/Git คือ durable cross-machine claim authority; `claim_acquire` ต้องมี exact `task_id` แล้ว mirror ไป TTL cache; `claim_list`/`claim_advance`/`claim_release` เป็น derived same-machine cache; hook block เฉพาะ RECONCILED foreign claim. Trigger: 'claim', 'จอง', 'agent อื่น', 'ชนกัน', 'coordination'."
+version: 1.1.0
 author: A-Wiki
 domain: [engineering, ai-ops]
 lifecycle_phase: meta
@@ -19,9 +19,10 @@ a_phase: any
 > state machine ตัวเดียวกัน ใน repo เดียวกัน branch เดียวกัน ชั่วโมงเดียวกัน
 > ทั้งคู่ไม่รู้เลยจนกระทั่ง merge ลง main แล้ว
 >
-> A-Wiki **มีเครื่องมือครบอยู่แล้ว** (TaskBoard มี TTL lease, Blackboard มี @mention,
-> `.tmp/` ที่ทุก agent บนเครื่องเดียวกันอ่านร่วมกัน) — สิ่งที่ขาดคือ **gate**
-> ไม่มีอะไรบังคับให้ประกาศก่อนลงมือ
+> ปัจจุบัน **COLLAB.md + Git เป็น durable authority ข้ามเครื่อง** ส่วน `.tmp/agent-claims.json`
+> เป็น derived TTL cache สำหรับ same-machine fast enforcement เท่านั้น. `claim_acquire`
+> ต้องผูก exact `task_id` แล้วเขียน durable claim ก่อนจึงค่อย mirror cache; TTL row ที่
+> reconcile ไม่สำเร็จห้ามกลายเป็น ownership authority.
 
 ## Iron Law
 
@@ -57,31 +58,38 @@ a_phase: any
  └──────────────────────────────┘
 ```
 
-### 1. `claim_list` — ดูก่อนเสมอ
+### 1. `claim_list` — ดู cache บนเครื่องนี้
 ```
 claim_list()
 → zcode    [implement] a-flow stage gate   scope=scripts/lib/**  (42m left)
 ```
-ถ้ามีคนทำเรื่องเดียวกันอยู่ → **หยุด แล้วคุยก่อน** (ข้อ 6)
+`claim_list` เป็น **derived same-machine cache** ไม่ใช่ cross-machine SSoT. ถ้ารู้ task id
+ให้ตรวจ durable truth ด้วย `python -m conductor claims --task-id "<WO-ID>" --json`.
+ถ้ามี owner อื่นใน durable claim หรือ RECONCILED cache → **หยุด แล้วคุยก่อน** (ข้อ 6).
 
-### 2. `claim_acquire` — จอง
+### 2. `claim_acquire` — durable-first
 ```
 claim_acquire({
+  "task_id": "WO-EXACT-ID",
   "scope": ["skills/awiki/**", "scripts/skills_registry/**"],
   "goal":  "A-Suite v2 — auto-pick + 7-phase spine",
   "phase": "design"
 })
 ```
+- `task_id` = exact durable identity; ห้าม fuzzy/ตั้งใหม่ถ้ามี WO/claim เดิมอยู่แล้ว
 - `scope` = glob ที่จะแตะ (`**` ครอบ subdir) — จองแคบที่สุดที่พอ
-- `goal` = done criteria 1 บรรทัด (คนอื่นต้องอ่านแล้วรู้ว่าซ้ำกับตัวเองไหม)
-- lease 1 ชม. ต่ออายุด้วย `claim_advance` หรือหมดอายุเอง
+- `goal` = done criteria 1 บรรทัด
+- ระบบเขียน/ยืนยัน **COLLAB/Git ก่อน** แล้วจึง mirror ไป TTL cache
+- TTL lease เป็น cache acceleration เท่านั้น; หมดอายุแล้ว durable claim ยังอยู่
 
 ### 3–4. ทำงาน + เดิน phase
-`claim_advance({"claim_id": "...", "phase": "implement"})` — ต่อ lease ให้ด้วยในตัว
+`claim_advance({"claim_id": "...", "phase": "implement"})` เปลี่ยน phase/ต่อ lease ของ
+**derived cache เท่านั้น**; durable owner/scope ใน COLLAB/Git ไม่เปลี่ยน.
 
-### 5. `claim_release` — คืน
-Stop hook (`release_agent_claims.py`) คืนให้อัตโนมัติตอนจบ session
-ไม่ต้องกลัวลืม แต่คืนเองเร็วกว่าดีกว่า — คนอื่นจะได้ทำงานต่อได้
+### 5. `claim_release` — ปล่อย cache; durable release แยก
+`claim_release` และ Stop hook (`release_agent_claims.py`) ปล่อยเฉพาะ TTL cache.
+การจบงานต้อง update/release **แถว durable เดิมใน `COLLAB.md` ผ่าน Git** ตาม work-order
+protocol; ห้ามถือว่า cache หมดอายุหรือถูก release แล้ว ownership ข้ามเครื่องหายไปด้วย.
 
 ### 6. ถ้าชน — คุย ไม่ใช่แย่ง
 ```
@@ -108,21 +116,22 @@ bb_read({"to_filter":"claude"})
 | "จองกว้างๆ ไว้ก่อนกันเหนียว" | ผิด — จองกว้าง = block คนอื่นเกินจำเป็น จองแคบที่สุดที่พอ |
 | "อีก agent ไม่ได้ใช้ระบบนี้" | มันอยู่ใน MCP → ทุก agent ที่ต่อ MCP ได้ใช้ได้ ไม่ใช่ของ Claude ตัวเดียว |
 | "block น่ารำคาญ ปิดดีกว่า" | `AWIKI_CLAIM_GATE=0` ปิดได้ แต่มัน print BYPASSED ให้เห็น — เจตนาคือให้เห็น ไม่ใช่ให้เงียบ |
-| "ลืมปล่อย claim" | lease หมดเอง + Stop hook ปล่อยให้ |
+| "ลืมปล่อย claim" | TTL cache หมดเอง/Stop hook ปล่อยได้ แต่ durable COLLAB claim ต้อง release/update ผ่าน Git เมื่อ chunk จบ |
 
 ## Files
 
 | ไฟล์ | บทบาท |
 |---|---|
-| `scripts/lib/agent_claims.py` | store + collision logic (atomic write) |
-| `scripts/hooks/check_agent_claim.py` | PreToolUse gate (block on collision) |
-| `scripts/hooks/release_agent_claims.py` | Stop — คืน claim ของ session |
-| `.tmp/agent-claims.json` | state (gitignored, shared ทุก agent บนเครื่อง) |
-| MCP `claim_*` | ทางเข้าสำหรับทุก agent |
+| `COLLAB.md` + Git | **canonical durable cross-machine ownership authority** |
+| `conductor claims --task-id ... --json` | exact durable claim reader |
+| `scripts/lib/agent_claims.py` | derived TTL cache + collision logic |
+| `scripts/hooks/check_agent_claim.py` | PreToolUse gate; durable fallback + RECONCILED cache enforcement |
+| `scripts/hooks/release_agent_claims.py` | Stop — ปล่อย derived cache ของ session |
+| `.tmp/agent-claims.json` | derived same-machine cache (gitignored; ไม่ใช่ authority) |
+| MCP `claim_*` | durable-first acquire + cache list/advance/release |
 
-> **ข้อจำกัดที่ต้องรู้**: `.tmp/` เป็น local → coordination ทำงานระหว่าง agent
-> **บนเครื่องเดียวกัน** เท่านั้น ข้ามเครื่อง (Mac ↔ Work PC) ยังไม่ครอบคลุม —
-> ใช้ blackboard + git commit message แทนไปก่อน
+> **Cross-machine rule**: ownership ดูจาก COLLAB/Git. `.tmp/` ช่วยให้ hook เร็วบนเครื่องเดียวกัน
+> และอาจเป็น `PARTIAL_UNRECONCILED`; row แบบนั้นเป็นข้อมูลประกอบและ **ห้าม block ในฐานะ owner**.
 
 ## Invocation
 
