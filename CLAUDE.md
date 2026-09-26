@@ -20,6 +20,7 @@
 - `agent-skills/swarm-intelligence/model-scouter.md` — free model routing
 - `docs/protocols/brain-improvement-gate.md` — ก่อนแก้ระบบสมอง, agent rules, skills, hooks, plugins, scripts, sync, หรือ public-safe data policy
 - `docs/protocols/cross-agent-plan-handoff.md` — เมื่อเปิด Plan Mode, งานหลาย step, ใกล้ limit, หรือสลับ Agent/IDE; ใช้ local `handoff.md`
+- `docs/protocols/prompt-placement-protocol.md` — เมื่อส่ง prompt/instruction ให้ user ไปวางใน Goal/Chat/Steer/Queue/CLI/UI ของ agent/session อื่น ต้องระบุ PLACEMENT + MODE + timing ให้ชัดก่อน prompt เสมอ
 
 ---
 

@@ -3,10 +3,11 @@
 > ไฟล์นี้คือ **index เบาตัวเดียว** ที่ system_prompt ของ connector ควรชี้มา
 > (Index+Pull: อ่านเฉพาะนี่ก่อน — ดึงรายละเอียดเมื่อจำเป็นเท่านั้น ประหยัด token)
 
-## กฎ 3 ข้อ (ทำตามก่อนแตะอะไร)
+## กฎ 4 ข้อ (ทำตามก่อนแตะอะไร)
 1. **งานร่วม/ไฟล์ shared → อ่าน `COLLAB.md` ก่อน** (claims/lanes — กันชนกับ agent อื่น)
 2. **ก่อน write/execute → อ้างกฎที่ทำตาม** (Iron Laws ใน `AGENTS.md` §Iron Laws)
 3. **ไม่รู้จะวางไฟล์ไหน → อย่าสร้างใหม่** — ดู map ก่อน (repo: `AGENTS.md` §Storage · drive: `drive/LAYOUT.md` เมื่อเครื่อง mount แล้ว)
+4. **เมื่อส่ง prompt/instruction ให้ user เอาไปวางใน agent/session อื่น → ระบุ PLACEMENT + MODE ให้ชัด** ตาม `docs/protocols/prompt-placement-protocol.md`; ห้ามบอกเพียงว่า “วาง prompt นี้” โดยไม่บอก Goal/Chat/Steer/Queue/CLI/UI และ timing.
 
 ## ลำดับอ่านต่อ (Pull เมื่อเกี่ยวข้องเท่านั้น)
 | ต้องการ | ไฟล์ |
@@ -23,7 +24,7 @@
 
 | สถานการณ์ | เส้นทาง (อ่าน/ทำตามลำดับ) |
 |---|---|
-| **ตื่นมา resume** | กฎ 3 ข้อ → `COLLAB.md` → WO ของงาน → `python -m conductor status --json` |
+| **ตื่นมา resume** | กฎ 4 ข้อ → `COLLAB.md` → WO ของงาน → `python -m conductor status --json` |
 | **งานใหม่ fuzzy/ใหญ่** | + `a-think` (7-step) → `a-plan` → **grill ถาม user ≥3 ข้อก่อนแตะโค้ด** |
 | **implement ปกติ** | + Iron Laws (test ก่อนโค้ด #1) → `/A` spine → PR พร้อม `## Loop-Evidence` |
 | **เจอ bug** | → `debug-mantra` (root cause 4 ขั้นก่อนแก้ — ห้าม patch อาการ) → แก้ → บันทึก defect ตาม `docs/protocols/defect-memory.md` (เลือก tier กันซ้ำ) |

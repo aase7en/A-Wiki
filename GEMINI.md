@@ -22,6 +22,7 @@ Then read:
 2. `wiki/context/wiki-overview.md` — wiki stats + synthesis + pointers
 3. `wiki/context/session-memory.md` — cross-session decisions + TODOs
 4. *(optional)* `wiki/context/model-roster.conf` — current free model availability
+5. When handing a prompt/instruction to the user for another agent/session, follow `docs/protocols/prompt-placement-protocol.md` and state PLACEMENT + MODE + timing explicitly before the prompt.
 
 **Live Dashboard** (auto-starts on Claude/Codex; for Gemini CLI run manually):
 ```bash

@@ -56,6 +56,7 @@ python scripts/wiki/query-graph.py --hubs       # Knowledge graph hubs
 - `docs/protocols/brain-improvement-gate.md` — before changing A-Wiki brain capabilities, agent rules, skills, hooks, plugins, scripts, sync, or public-safe data policy
 - `docs/protocols/cross-agent-plan-handoff.md` — when planning, hitting limits, or switching Agent/IDE; use local `handoff.md`
 - `docs/protocols/cross-agent-work-orders.md` — **binding** for every multi-agent repo (and every new repo): work orders + claim table + lanes + pause/resume so any agent (Claude/Codex/Cursor/Antigravity/ZCode/Hermes/...) can work in parallel and hand off mid-chunk across 5-hr limits; bootstrap with `bash scripts/init-work-orders.sh <repo>`
+- `docs/protocols/prompt-placement-protocol.md` — **binding when handing a prompt/instruction to the user for another agent/session**: always state exact placement + mode (`GOAL — REPLACE ALL`, `GOAL — APPEND`, `CHAT — SUBGOAL / QUEUE`, `CHAT — STEER NOW`, `CHAT — NORMAL`, `CLI / TERMINAL`, or `UI ACTION`), whether it replaces/appends/interrupts/queues, and when to send it.
 
 ---
 
