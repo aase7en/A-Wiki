@@ -53,8 +53,8 @@ def main(argv: list[str] | None = None) -> int:
     p_claim = sub.add_parser("claim", help="append a COLLAB claim row (gate-guarded)")
     p_claim.add_argument("--topic", required=True)
     p_claim.add_argument("--agent", required=True)
-    p_claim.add_argument("--scope", default="<scope>")
-    p_claim.add_argument("--branch", default="<branch>")
+    p_claim.add_argument("--scope", required=True)
+    p_claim.add_argument("--branch", required=True)
     p_claim.add_argument("--json", action="store_true")
 
     p_claims = sub.add_parser("claims", help="read one exact canonical durable claim")

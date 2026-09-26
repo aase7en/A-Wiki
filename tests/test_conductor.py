@@ -319,7 +319,10 @@ class TestClaim:
         monkeypatch.chdir(tmp_path)
         self._collab(tmp_path)
         from conductor.bridge import add_claim
-        add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
+        add_claim(
+            repo_root=tmp_path, topic="t1", agent="zcode",
+            scope="scripts/lib/**", branch="main",
+        )
         out = add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
         assert out["claimed"] is True and out.get("already") is True
         text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
@@ -330,6 +333,26 @@ class TestClaim:
         from conductor.bridge import add_claim, ClaimConflict
         with pytest.raises(ClaimConflict):
             add_claim(repo_root=tmp_path, topic="x", agent="z")
+
+    def test_new_claim_rejects_placeholder_scope_and_branch(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="scope.*branch|scope|branch"):
+            add_claim(repo_root=tmp_path, topic="TASK-EXACT", agent="z")
+
+    def test_retry_requires_exact_task_id_casing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path, "| TASK-X | glm | 2026-09-27 | x/** | main |\n")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="case|exact"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="task-x",
+                agent="glm",
+                scope="x/**",
+                branch="main",
+            )
 
 
 class TestCanonicalClaimReader:
@@ -518,6 +541,11 @@ class TestBridgeCli:
         r = self._run("recall", "--query", "phase", "--json")
         assert r.returncode == 0, r.stderr[:300]
         assert "hits" in json.loads(r.stdout)
+
+    def test_claim_cli_requires_scope_and_branch(self):
+        r = self._run("claim", "--topic", "TASK-CLI-EXACT", "--agent", "tester", "--json")
+        assert r.returncode == 2
+        assert "--scope" in r.stderr and "--branch" in r.stderr
 
     def test_claims_cli_returns_exact_current_claim(self):
         r = self._run("claims", "--task-id", "Issue #58 claim authority convergence", "--json")

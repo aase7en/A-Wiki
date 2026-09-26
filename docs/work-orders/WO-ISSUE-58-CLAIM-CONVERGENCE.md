@@ -296,3 +296,44 @@ GREEN / verification after repair:
 The interrupted review of the superseded SHA is defect evidence, not an
 acceptance verdict. The replacement exact head requires fresh hosted CI and a
 fresh independent R3 review.
+
+## R3 exact-binding repair — placeholder claims + task-ID casing — 2026-09-27
+
+Candidate `a5d853d0b93b906ac45dfa7c31f3cc2d5981fc9e` passed exact-head
+PR Loop Gate and Core CI, but fresh independent R3 review returned two P2
+blocking findings:
+
+1. the primary `conductor claim` path could omit `--scope`/`--branch`, write
+   `<scope>`/`<branch>`, and report a RECONCILED ownership result that the
+   canonical reader could not resolve (`BRANCH_UNBOUND`);
+2. `add_claim()` matched durable task IDs case-insensitively while generation
+   and cache keys remained exact-case, allowing `TASK-X` vs `task-x` to split
+   generation/cache identity and weaken ABA protection.
+
+Repair:
+- CLI `conductor claim` now requires both `--scope` and `--branch`;
+- direct new durable claims reject placeholder/blank scope or branch before
+  mutating COLLAB or minting a cache owner;
+- durable task matching is exact-case; a casing-only alias is rejected with an
+  explicit exact-task-ID conflict;
+- exact same-task/same-agent retries remain backward-safe: callers may omit
+  scope/branch on an existing durable row and the row's durable binding is
+  reused rather than rewritten.
+
+RED evidence: both new review regressions failed before repair.
+GREEN / verification after repair:
+- review regressions + existing idempotent retry: **3/3 PASS**;
+- CLI missing scope/branch exits non-zero and names both required arguments;
+- related conductor/claim/MCP/hook/adopt/runtime pytest surface:
+  **327/327 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked / 51 baselined / 0 new);
+- wiki health: PASS (0 hard errors);
+- generated skill surfaces: **13/13 no drift**; registry validation PASS;
+- py_compile + `git diff --check`: PASS;
+- added-line secret-signature scan: **0 hits**.
+
+The harvested R3 review of `a5d853d0...` is defect evidence, not acceptance
+evidence. The replacement exact head requires fresh hosted CI and a fresh
+independent exact-SHA R3 review.

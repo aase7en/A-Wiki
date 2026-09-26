@@ -146,10 +146,16 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     if not collab.is_file():
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
 
+    topic = topic.strip()
+    if not topic:
+        raise ClaimConflict("exact task id is required")
     claims = parse_claims(collab)
-    slug = topic.strip().lower()
     for c in claims:
-        if c["chunk"].strip().lower() != slug:
+        durable_task = c["chunk"].strip()
+        if durable_task != topic:
+            if durable_task.lower() == topic.lower():
+                raise ClaimConflict(
+                    f"exact task id case mismatch: durable={durable_task!r}, requested={topic!r}")
             continue
         if c["agent"].strip().lower() != agent.strip().lower():
             raise ClaimConflict(f"'{topic}' already claimed by {c['agent']!r}")
@@ -172,6 +178,11 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         return _claim_result(
             topic=topic, generation=generation, scope=c["scope"],
             branch=c["branch"], already=True, mirror=mirror)
+
+    if scope == "<scope>" or not scope.strip():
+        raise ClaimConflict("new durable claim requires an exact scope")
+    if branch == "<branch>" or not branch.strip():
+        raise ClaimConflict("new durable claim requires an exact branch")
 
     verdict = entry_gate(root, topic=topic, agent=agent)
     if verdict["conflicts"]:
