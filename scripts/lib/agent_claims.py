@@ -203,23 +203,52 @@ def acquire_or_refresh(*, agent: str, scope: list[str], goal: str,
         set_store(path)
         data, _ = _prune(_read())
         now = time.time()
-        for c in data["claims"]:
-            if c.get("task_id") != task_id:
-                continue
-            if c.get("agent") != agent:
+        task_claims = [c for c in data["claims"] if c.get("task_id") == task_id]
+        if task_claims:
+            def _cached_generation(c: dict[str, Any]) -> int:
+                value = c.get("generation", 0)
+                return value if isinstance(value, int) and not isinstance(value, bool) else 0
+
+            newest = max(_cached_generation(c) for c in task_claims)
+            if newest > generation:
                 raise ValueError(
-                    f"durable task {task_id!r} cached by foreign agent {c.get('agent')!r}")
-            c.update({
-                "scope": scope,
-                "goal": goal,
-                "phase": phase,
-                "session_id": session_id,
-                "generation": generation,
-                "heartbeat_ts": int(now),
-                "lease_until": now + lease_seconds,
-            })
+                    f"stale durable generation {generation} for {task_id!r}; "
+                    f"cache already reflects generation {newest}")
+
+            same_generation = [
+                c for c in task_claims if _cached_generation(c) == generation
+            ]
+            if same_generation:
+                foreign = [c for c in same_generation if c.get("agent") != agent]
+                if foreign:
+                    raise ValueError(
+                        f"durable task {task_id!r} generation {generation} "
+                        f"cached by foreign agent {foreign[0].get('agent')!r}")
+                # Collapse any older/duplicate derived rows to one current cache row.
+                current = same_generation[0]
+                data["claims"] = [
+                    c for c in data["claims"]
+                    if c.get("task_id") != task_id or c is current
+                ]
+                current.update({
+                    "scope": scope,
+                    "goal": goal,
+                    "phase": phase,
+                    "session_id": session_id,
+                    "generation": generation,
+                    "heartbeat_ts": int(now),
+                    "lease_until": now + lease_seconds,
+                })
+                _write(data)
+                return dict(current)
+
+            # A newer durable generation supersedes every older derived cache row.
+            # Drop old ids before creating the new row so stale holders cannot
+            # release the replacement generation by an old claim id.
+            data["claims"] = [
+                c for c in data["claims"] if c.get("task_id") != task_id
+            ]
             _write(data)
-            return dict(c)
 
         claim = acquire(
             agent=agent, scope=scope, goal=goal, phase=phase,

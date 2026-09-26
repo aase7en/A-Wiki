@@ -131,6 +131,37 @@ def test_hooks_runner_scopes_claims_store_to_workspace(tmp_path):
     assert hr._export_workspace_env({}, {}) == {}
 
 
+def test_hooks_runner_shares_claim_store_for_linked_awiki_worktrees(tmp_path):
+    """Linked worktrees of one Git common dir share one derived TTL cache.
+
+    Foreign/adopted repositories must remain isolated to their own cwd cache.
+    """
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("hr_claim_store", REPO_ROOT / "scripts" / "hooks_runner.py")
+    hr = ilu.module_from_spec(spec); spec.loader.exec_module(hr)
+
+    repo = tmp_path / "brain"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True)
+    subprocess.run(["git", "config", "user.email", "noreply"], cwd=repo, check=True)
+    subprocess.run(["git", "config", "user.name", "Test"], cwd=repo, check=True)
+    (repo / "seed.txt").write_text("seed", encoding="utf-8")
+    subprocess.run(["git", "add", "seed.txt"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-m", "seed"], cwd=repo, check=True, capture_output=True)
+    linked = tmp_path / "linked"
+    subprocess.run(["git", "worktree", "add", "-b", "linked", str(linked)],
+                   cwd=repo, check=True, capture_output=True)
+
+    expected = repo / ".tmp" / "agent-claims.json"
+    assert Path(hr._claims_store_for_workspace(str(repo), brain_root=str(repo))) == expected
+    assert Path(hr._claims_store_for_workspace(str(linked), brain_root=str(repo))) == expected
+
+    foreign = tmp_path / "foreign"
+    foreign.mkdir()
+    assert Path(hr._claims_store_for_workspace(str(foreign), brain_root=str(repo))) == (
+        foreign / ".tmp" / "agent-claims.json")
+
+
 def _seed_foreign_claim(target: Path) -> Path:
     lib = REPO_ROOT / "scripts" / "lib"
     sys.path.insert(0, str(lib))

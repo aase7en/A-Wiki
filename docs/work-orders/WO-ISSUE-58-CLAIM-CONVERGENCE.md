@@ -68,3 +68,37 @@ persisting machine-specific worktree paths.
 - No machine-local path is emitted by the reader; no private/secret file read.
 - Remaining gates: freeze exact candidate SHA, independent R3 review, exact-head
   hosted CI, acceptance/merge, post-main verification, then release claim.
+
+
+## Replacement hardening — 2026-09-27
+
+Candidate `4eaa55d078c2abc9defa56a3a12ceefcd8aa4489` passed exact-head
+hosted CI but is superseded before acceptance. A read-only pre-review audit found
+that `scripts/hooks_runner.py` still exported a per-worktree
+`AWIKI_CLAIMS_STORE`, overriding the new Git-common-dir default and therefore
+preventing same-repository linked worktrees from sharing the derived TTL cache.
+
+The repair preserves foreign/adopted-repo isolation while sharing one TTL cache
+only when the workspace and A-Wiki brain resolve to the same Git common-dir.
+Additional ABA/staleness hardening now requires:
+
+- fetched `origin/<branch>` HEAD is preferred over a stale local branch ref;
+- every durable generation advance rotates the derived cache claim id;
+- a newer durable generation may transfer the cache owner;
+- same-generation foreign takeover and older-generation replay are rejected;
+- an old cache id cannot release a replacement generation.
+
+RED evidence: linked-worktree runtime test failed before hook-runner repair; four
+additional stale/ABA tests failed before generation/remote-head repair.
+
+GREEN evidence after repair:
+- related conductor/claim/hook/adopt/runtime suite: **292/292 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (0 new findings);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+The interrupted read-only review of the superseded SHA produced no acceptance
+verdict and is not acceptance evidence. A fresh exact-SHA R3 review is required
+for the replacement candidate.

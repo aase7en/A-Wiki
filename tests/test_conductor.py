@@ -360,6 +360,33 @@ class TestCanonicalClaimReader:
         assert out["claim_id"].startswith("awiki-claim-")
         assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
 
+    def test_reader_prefers_origin_branch_head_over_stale_local_ref(self, tmp_path):
+        self._init_repo(tmp_path)
+        import subprocess
+        remote = tmp_path.parent / "claim-remote.git"
+        subprocess.run(["git", "clone", "--bare", str(tmp_path), str(remote)],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "remote", "add", "origin", str(remote)],
+                       cwd=tmp_path, check=True)
+        subprocess.run(["git", "fetch", "origin"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        remote_head = subprocess.run(
+            ["git", "rev-parse", "refs/remotes/origin/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+
+        (tmp_path / "local-only.txt").write_text("local", encoding="utf-8")
+        subprocess.run(["git", "add", "local-only.txt"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "local ahead"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        local_head = subprocess.run(
+            ["git", "rev-parse", "refs/heads/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+        assert local_head != remote_head
+
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["branch_head_sha"] == remote_head
+
     def test_reader_is_exact_not_fuzzy(self, tmp_path):
         self._init_repo(tmp_path)
         from conductor.state import read_canonical_claim, ClaimLookupError

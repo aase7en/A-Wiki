@@ -103,7 +103,9 @@ def _branch_head(repo_root: Path, branch: str) -> str:
     branch = branch.strip()
     if not branch or branch.startswith("<"):
         raise ClaimLookupError("BRANCH_UNBOUND")
-    for ref in (f"refs/heads/{branch}", f"refs/remotes/origin/{branch}", branch):
+    # Cross-machine durable truth prefers the fetched origin ref. A local branch
+    # may be ahead/behind and is only a fallback for repositories without origin.
+    for ref in (f"refs/remotes/origin/{branch}", f"refs/heads/{branch}", branch):
         try:
             sha = _git(repo_root, "rev-parse", "--verify", ref)
         except ClaimLookupError:

@@ -144,7 +144,7 @@ class TestDerivedDurableCache:
         expected_root = common.parent if common.name == ".git" else REPO_ROOT
         assert ac._default_store() == expected_root / ".tmp" / "agent-claims.json"
 
-    def test_acquire_or_refresh_is_one_cache_row_per_durable_task(self, tmp_path):
+    def test_acquire_or_refresh_rotates_cache_identity_on_generation_advance(self, tmp_path):
         store = tmp_path / "derived.json"
         first = ac.acquire_or_refresh(
             agent="glm", scope=["scripts/**"], goal="task", task_id="TASK-58",
@@ -156,12 +156,48 @@ class TestDerivedDurableCache:
         try:
             ac.set_store(store)
             live = ac.live()
+            assert ac.release(first["id"]) is False
+            still_live = ac.live()
         finally:
             ac.set_store(old_store)
         assert len(live) == 1
-        assert first["id"] == second["id"]
+        assert first["id"] != second["id"]
         assert live[0]["generation"] == 2
         assert live[0]["phase"] == "test"
+        assert still_live[0]["id"] == second["id"]
+
+    def test_newer_durable_generation_can_transfer_cached_owner(self, tmp_path):
+        store = tmp_path / "derived.json"
+        first = ac.acquire_or_refresh(
+            agent="glm", scope=["scripts/**"], goal="task", task_id="TASK-58",
+            generation=1, phase="implement", store=store)
+        second = ac.acquire_or_refresh(
+            agent="codex", scope=["scripts/**"], goal="takeover", task_id="TASK-58",
+            generation=2, phase="implement", store=store)
+        assert first["id"] != second["id"]
+        old_store = ac.store_path()
+        try:
+            ac.set_store(store)
+            live = ac.live()
+        finally:
+            ac.set_store(old_store)
+        assert len(live) == 1
+        assert live[0]["agent"] == "codex"
+        assert live[0]["generation"] == 2
+
+    def test_same_or_older_generation_cannot_override_foreign_cached_owner(self, tmp_path):
+        store = tmp_path / "derived.json"
+        ac.acquire_or_refresh(
+            agent="glm", scope=["scripts/**"], goal="task", task_id="TASK-58",
+            generation=2, phase="implement", store=store)
+        with pytest.raises(ValueError, match="foreign|stale"):
+            ac.acquire_or_refresh(
+                agent="codex", scope=["scripts/**"], goal="stale", task_id="TASK-58",
+                generation=2, phase="implement", store=store)
+        with pytest.raises(ValueError, match="stale"):
+            ac.acquire_or_refresh(
+                agent="codex", scope=["scripts/**"], goal="older", task_id="TASK-58",
+                generation=1, phase="implement", store=store)
 
 
 class TestDurability:
