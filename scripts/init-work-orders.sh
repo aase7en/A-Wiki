@@ -28,10 +28,17 @@ for f in README.md WO-TEMPLATE.md; do
 done
 
 POINTER='> 🤝 **Multi-agent repo**: read `COLLAB.md` before working — lanes, claims, work orders, pause/resume (A-Wiki cross-agent-work-orders standard).'
-for brainfile in AGENTS.md CLAUDE.md; do
+PROMPT_POINTER='> 🧭 **Prompt placement**: when handing a prompt/instruction to the user for another agent/session, follow A-Wiki `docs/protocols/prompt-placement-protocol.md`; label exact PLACEMENT + MODE + timing before the prompt.'
+for brainfile in AGENTS.md CLAUDE.md GEMINI.md; do
   if [ -f "$TARGET/$brainfile" ] && ! grep -q "COLLAB.md" "$TARGET/$brainfile"; then
     printf '\n%s\n' "$POINTER" >> "$TARGET/$brainfile"
-    echo "+ pointer in $brainfile"
+    copied=$((copied+1))
+    echo "+ work-order pointer in $brainfile"
+  fi
+  if [ -f "$TARGET/$brainfile" ] && ! grep -q "prompt-placement-protocol.md" "$TARGET/$brainfile"; then
+    printf '\n%s\n' "$PROMPT_POINTER" >> "$TARGET/$brainfile"
+    copied=$((copied+1))
+    echo "+ prompt-placement pointer in $brainfile"
   fi
 done
 
