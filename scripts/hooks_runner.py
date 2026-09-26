@@ -160,6 +160,52 @@ def get_hooks():
             if f"{name}.py" not in HOOK_SKIP]
 
 
+def _git_common_dir(path: str) -> Optional[str]:
+    """Return normalized Git common-dir for a workspace, or None if not Git."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"],
+            cwd=path,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0:
+        return None
+    raw = proc.stdout.strip()
+    if not raw:
+        return None
+    common = raw if os.path.isabs(raw) else os.path.join(path, raw)
+    return os.path.normcase(os.path.realpath(common))
+
+
+def _claims_store_for_workspace(cwd: str, *, brain_root: Optional[str] = None) -> str:
+    """Select derived TTL cache without collapsing foreign-repo isolation.
+
+    Linked worktrees of the A-Wiki brain share the canonical checkout cache
+    through their identical Git common-dir. An adopted/foreign repo keeps its
+    own cwd-local cache.
+    """
+    workspace = os.path.abspath(cwd)
+    brain = os.path.abspath(
+        brain_root if brain_root is not None else os.path.join(_REPO_ROOT, "..")
+    )
+    workspace_common = _git_common_dir(workspace)
+    brain_common = _git_common_dir(brain)
+    if workspace_common and brain_common and workspace_common == brain_common:
+        canonical_root = (
+            os.path.dirname(brain_common)
+            if os.path.basename(brain_common).lower() == ".git"
+            else brain
+        )
+        return os.path.join(canonical_root, ".tmp", "agent-claims.json")
+    return os.path.join(workspace, ".tmp", "agent-claims.json")
+
+
 def _export_workspace_env(input_data: dict, env: Optional[dict] = None) -> Optional[dict]:
     """Scope per-workspace state to the repo the agent is editing (Slice A).
 
@@ -175,8 +221,7 @@ def _export_workspace_env(input_data: dict, env: Optional[dict] = None) -> Optio
         return target
     if target.get("AWIKI_CLAIMS_STORE", "").strip():
         return target
-    target["AWIKI_CLAIMS_STORE"] = _os.path.abspath(
-        _os.path.join(cwd, ".tmp", "agent-claims.json"))
+    target["AWIKI_CLAIMS_STORE"] = _claims_store_for_workspace(cwd)
     return target
 
 

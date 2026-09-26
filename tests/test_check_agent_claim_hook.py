@@ -59,14 +59,17 @@ def _edit_payload(file_path: str) -> dict:
 
 def _seed_claim(store: Path, *, agent: str, scope: list[str],
                 goal: str = "doing X", lease_seconds: int = 3600) -> dict:
-    """Seed a live claim via the agent_claims module (no MCP needed)."""
+    """Seed a reconciled derived cache row (durable identity already proven)."""
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
     os.environ["AWIKI_CLAIMS_STORE"] = str(store)
     import agent_claims as ac
     ac.set_store(str(store))
-    return ac.acquire(agent=agent, scope=scope, goal=goal,
-                      phase="implement", session_id=f"{agent}-s",
-                      lease_seconds=lease_seconds)
+    return ac.acquire_or_refresh(
+        agent=agent, scope=scope, goal=goal,
+        task_id=f"TEST-{agent}-{abs(hash(tuple(scope))) % 100000}",
+        generation=1, phase="implement", session_id=f"{agent}-s",
+        lease_seconds=lease_seconds,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -115,6 +118,24 @@ def test_passes_for_non_shared_surface(tmp_path, monkeypatch):
     assert r.returncode == 0
 
 
+def test_legacy_ttl_only_cache_does_not_block_without_durable_owner(tmp_path):
+    store = tmp_path / "claims.json"
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+    import agent_claims as ac
+    ac.set_store(store)
+    try:
+        ac.acquire(agent="other_agent", scope=["scripts/lib/**"], goal="legacy-only")
+    finally:
+        ac.set_store(None)
+    foreign = tmp_path / "foreign"
+    foreign.mkdir()
+    payload = _edit_payload("scripts/lib/foo.py")
+    payload["cwd"] = str(foreign)
+    r = _run_hook(payload, claims_store=store)
+    assert r.returncode == 0, r.stderr
+    assert "CLAIM COLLISION" not in r.stderr
+
+
 # ---------------------------------------------------------------------------
 # 3. BLOCK when editing inside another agent's live claim
 # ---------------------------------------------------------------------------
@@ -138,6 +159,117 @@ def test_blocks_any_file_matching_scope_glob_via_prefix(tmp_path):
     # If the hook blocks, the message must name the holder.
     if r.returncode == 2:
         assert "other_agent" in r.stderr
+
+
+def test_blocks_foreign_durable_claim_when_ttl_cache_is_corrupt(tmp_path):
+    store = tmp_path / "claims.json"
+    store.write_text("{broken", encoding="utf-8")
+    durable = tmp_path / "COLLAB.md"
+    durable.write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| TASK-58 | other_agent | 2026-09-27 | docs/**, scripts/lib/** | feat/task-58 |\n",
+        encoding="utf-8")
+    r = _run_hook(
+        _edit_payload("scripts/lib/foo.py"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+
+
+def test_blocks_foreign_durable_claim_when_ttl_cache_empty(tmp_path):
+    store = tmp_path / "claims.json"
+    durable = tmp_path / "COLLAB.md"
+    durable.write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| TASK-58 | other_agent | 2026-09-27 | scripts/lib/** | feat/task-58 |\n",
+        encoding="utf-8")
+    r = _run_hook(
+        _edit_payload("scripts/lib/foo.py"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+    assert "other_agent" in r.stderr
+
+
+def test_foreign_workspace_uses_its_own_durable_claim_for_absolute_path(tmp_path):
+    store = tmp_path / "claims.json"
+    foreign = tmp_path / "foreign"
+    target = foreign / "scripts" / "lib" / "foo.py"
+    target.parent.mkdir(parents=True)
+    target.write_text("x", encoding="utf-8")
+    (foreign / "COLLAB.md").write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| FOREIGN-1 | foreign_owner | 2026-09-27 | scripts/lib/** | feat/foreign |\n",
+        encoding="utf-8",
+    )
+    payload = _edit_payload(str(target))
+    payload["cwd"] = str(foreign)
+    r = _run_hook(payload, claims_store=store)
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+    assert "foreign_owner" in r.stderr
+
+
+
+def test_workspace_root_respects_nested_foreign_git_boundary(tmp_path):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_git_boundary", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    parent = tmp_path / "brain-parent"
+    parent.mkdir()
+    (parent / "COLLAB.md").write_text("# COLLAB\n", encoding="utf-8")
+    foreign = parent / "nested-foreign"
+    foreign.mkdir()
+    subprocess.run(["git", "init", "-b", "main"], cwd=foreign,
+                   check=True, capture_output=True)
+    nested = foreign / "src" / "deep"
+    nested.mkdir(parents=True)
+
+    assert mod._workspace_root({"cwd": str(nested)}) == foreign.resolve()
+
+
+def test_workspace_root_non_git_does_not_inherit_parent_collab(tmp_path):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_nongit_boundary", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    parent = tmp_path / "brain-parent"
+    parent.mkdir()
+    (parent / "COLLAB.md").write_text("# COLLAB\n", encoding="utf-8")
+    foreign = parent / "nested-nongit"
+    foreign.mkdir()
+
+    assert mod._workspace_root({"cwd": str(foreign)}) == foreign.resolve()
+
+
+
+def test_foreign_workspace_without_collab_does_not_inherit_brain_claims(tmp_path, monkeypatch):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_isolation", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    fake_brain = tmp_path / "brain"
+    fake_brain.mkdir()
+    (fake_brain / "COLLAB.md").write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| BRAIN-1 | brain_owner | 2026-09-27 | conductor/** | feat/brain |\n",
+        encoding="utf-8",
+    )
+    foreign = tmp_path / "foreign-no-collab"
+    foreign.mkdir()
+    monkeypatch.delenv("AWIKI_DURABLE_CLAIMS_FILE", raising=False)
+    monkeypatch.setattr(mod, "REPO_ROOT", fake_brain)
+
+    assert mod._durable_claims(foreign) == []
+
 
 
 # ---------------------------------------------------------------------------

@@ -24,8 +24,11 @@ Escape hatches, all loud:
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
+import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -75,6 +78,95 @@ def is_shared_surface(path: str) -> bool:
     return p.startswith(SHARED_SURFACES)
 
 
+def _git_toplevel(start: Path) -> Path | None:
+    """Return this workspace's own Git root; never cross into a parent repo."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=str(start),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return None
+    try:
+        return Path(proc.stdout.strip()).resolve()
+    except (OSError, RuntimeError):
+        return Path(proc.stdout.strip())
+
+
+def _workspace_root(data: dict) -> Path:
+    """Resolve authority at the payload workspace's own repo boundary."""
+    cwd = data.get("cwd") if isinstance(data, dict) else None
+    if not (isinstance(cwd, str) and cwd.strip()):
+        return REPO_ROOT
+    try:
+        start = Path(cwd).resolve()
+    except (OSError, RuntimeError):
+        start = Path(cwd)
+    git_root = _git_toplevel(start)
+    # A nested Git repository is an authority boundary even when it has no
+    # COLLAB.md. Non-Git workspaces likewise remain isolated to their cwd.
+    return git_root if git_root is not None else start
+
+
+def _durable_claims(workspace_root: Path | str | None = None) -> list[dict]:
+    """Read durable claims from the payload repo, never from an unrelated brain."""
+    override = os.environ.get("AWIKI_DURABLE_CLAIMS_FILE", "").strip()
+    root = Path(workspace_root) if workspace_root is not None else REPO_ROOT
+    path = Path(override) if override else root / "COLLAB.md"
+    if not path.is_file():
+        return []
+    try:
+        sys.path.insert(0, str(REPO_ROOT))
+        from conductor.state import parse_claims
+        return parse_claims(path)
+    except Exception:
+        return []
+
+
+def _relative_path(file_path: str, workspace_root: Path | str | None = None) -> str:
+    raw = (file_path or "").replace("\\", "/")
+    root = Path(workspace_root) if workspace_root is not None else REPO_ROOT
+    try:
+        candidate = Path(file_path)
+        if candidate.is_absolute():
+            resolved = candidate.resolve().relative_to(root.resolve())
+            return resolved.as_posix()
+    except (OSError, RuntimeError, ValueError):
+        pass
+    return raw[2:] if raw.startswith("./") else raw
+
+
+def _durable_collision(file_path: str, agent: str,
+                       workspace_root: Path | str | None = None) -> dict | None:
+    rel = _relative_path(file_path, workspace_root)
+    for claim in _durable_claims(workspace_root):
+        if claim.get("agent", "").strip().lower() == agent.strip().lower():
+            continue
+        scopes = [s.strip() for s in re.split(r"[;,]", claim.get("scope", "")) if s.strip()]
+        if any(fnmatch.fnmatch(rel, scope.replace("\\", "/")) for scope in scopes):
+            return claim
+    return None
+
+
+def _has_own_durable_claim(file_path: str, agent: str,
+                           workspace_root: Path | str | None = None) -> bool:
+    rel = _relative_path(file_path, workspace_root)
+    for claim in _durable_claims(workspace_root):
+        if claim.get("agent", "").strip().lower() != agent.strip().lower():
+            continue
+        scopes = [s.strip() for s in re.split(r"[;,]", claim.get("scope", "")) if s.strip()]
+        if any(fnmatch.fnmatch(rel, scope.replace("\\", "/")) for scope in scopes):
+            return True
+    return False
+
+
 def main() -> int:
     _utf8_streams()
 
@@ -99,14 +191,16 @@ def main() -> int:
     try:
         import agent_claims as ac
     except Exception:
-        return 0  # fail open — a broken store must never wedge the repo
+        ac = None
 
     me = detect_agent()
+    workspace_root = _workspace_root(data)
+    relative_path = _relative_path(file_path, workspace_root)
 
     try:
-        other = ac.collision(file_path, agent=me)
+        other = ac.collision(relative_path, agent=me) if ac is not None else None
     except Exception:
-        return 0
+        other = None
 
     if other:
         mins = max(0, int((other["lease_until"] - __import__("time").time()) / 60))
@@ -126,13 +220,25 @@ def main() -> int:
         )
         return 2
 
+    durable_other = _durable_collision(file_path, me, workspace_root)
+    if durable_other:
+        sys.stderr.write(
+            f"🛑 DURABLE CLAIM COLLISION — {durable_other['agent']} owns this surface\n\n"
+            f"  file        : {file_path}\n"
+            f"  task        : {durable_other['chunk']}\n"
+            f"  branch      : {durable_other['branch']}\n"
+            f"  scope       : {durable_other['scope']}\n"
+            "  authority   : COLLAB.md/Git (canonical durable claim)\n"
+        )
+        return 2
+
     # Unclaimed work on a shared surface — nudge, do not block.
-    if is_shared_surface(file_path):
+    if is_shared_surface(relative_path):
         try:
             mine = [c for c in ac.live() if c.get("agent") == me]
         except Exception:
             mine = []
-        if not mine:
+        if not mine and not _has_own_durable_claim(file_path, me, workspace_root):
             sys.stderr.write(
                 f"🤝 ยังไม่ได้ประกาศ claim — กำลังแก้ shared surface ({file_path})\n"
                 f"   agent อื่นจะไม่รู้ว่าคุณทำอะไรอยู่ และอาจทำซ้ำ\n"

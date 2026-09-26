@@ -43,24 +43,40 @@ EDIT = {"tool_name": "Edit", "tool_input": {"file_path": "skills/awiki/a-router/
 
 class TestCollisionBlocks:
     def test_blocks_when_another_agent_holds_the_scope(self, store):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="a-flow router")
+        ac.acquire_or_refresh(agent="zcode", scope=["skills/awiki/**"],
+                              goal="a-flow router", task_id="HOOK-AFLOW",
+                              generation=1, phase="implement")
         r = run(EDIT, store, agent="claude")
         assert r.returncode == 2, "collision must be a hard block"
         assert "zcode" in r.stderr and "a-flow router" in r.stderr
 
     def test_block_message_names_the_phase_and_the_way_to_coordinate(self, store):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="g", phase="implement")
+        ac.acquire_or_refresh(agent="zcode", scope=["skills/awiki/**"],
+                              goal="g", task_id="HOOK-G",
+                              generation=1, phase="implement")
         r = run(EDIT, store, agent="claude")
         assert "implement" in r.stderr
         assert "bb_post" in r.stderr and "claim_list" in r.stderr
 
     def test_my_own_claim_does_not_block_me(self, store):
-        ac.acquire(agent="claude", scope=["skills/awiki/**"], goal="mine")
+        ac.acquire_or_refresh(agent="claude", scope=["skills/awiki/**"],
+                              goal="mine", task_id="HOOK-MINE",
+                              generation=1, phase="implement")
         assert run(EDIT, store, agent="claude").returncode == 0
 
     def test_unrelated_path_is_not_blocked(self, store):
-        ac.acquire(agent="zcode", scope=["docs/**"], goal="docs work")
+        ac.acquire_or_refresh(agent="zcode", scope=["docs/**"],
+                              goal="docs work", task_id="HOOK-DOCS",
+                              generation=1, phase="implement")
         assert run(EDIT, store, agent="claude").returncode == 0
+
+
+class TestUnreconciledCacheIsNotAuthority:
+    def test_legacy_ttl_only_row_does_not_block(self, store):
+        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="legacy-only")
+        r = run(EDIT, store, agent="claude")
+        assert r.returncode == 0
+        assert "CLAIM COLLISION" not in r.stderr
 
 
 class TestUnclaimedIsOnlyAWarning:
@@ -101,7 +117,9 @@ class TestFailOpen:
         assert r.returncode == 0
 
     def test_thai_block_message_survives_cp874(self, store):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="งานภาษาไทย")
+        ac.acquire_or_refresh(agent="zcode", scope=["skills/awiki/**"],
+                              goal="งานภาษาไทย", task_id="HOOK-THAI",
+                              generation=1, phase="implement")
         r = run(EDIT, store, agent="claude", env_extra={"PYTHONIOENCODING": "cp874"})
         assert r.returncode == 2
         assert "Traceback" not in r.stderr

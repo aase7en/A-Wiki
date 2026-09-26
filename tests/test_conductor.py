@@ -299,8 +299,17 @@ class TestClaim:
         return p
 
     def test_claim_appends_row_after_go(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "branch", "feat/x"], cwd=tmp_path, check=True)
         from conductor.bridge import add_claim
         out = add_claim(repo_root=tmp_path, topic="fresh-thing",
                         agent="zcode", scope="scripts/x.py", branch="feat/x")
@@ -316,10 +325,21 @@ class TestClaim:
             add_claim(repo_root=tmp_path, topic="taken-topic", agent="zcode")
 
     def test_claim_idempotent_same_agent(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
         from conductor.bridge import add_claim
-        add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
+        add_claim(
+            repo_root=tmp_path, topic="t1", agent="zcode",
+            scope="scripts/lib/**", branch="main",
+        )
         out = add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
         assert out["claimed"] is True and out.get("already") is True
         text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
@@ -330,6 +350,227 @@ class TestClaim:
         from conductor.bridge import add_claim, ClaimConflict
         with pytest.raises(ClaimConflict):
             add_claim(repo_root=tmp_path, topic="x", agent="z")
+
+    def test_new_claim_rejects_placeholder_scope_and_branch(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="scope.*branch|scope|branch"):
+            add_claim(repo_root=tmp_path, topic="TASK-EXACT", agent="z")
+
+    def test_retry_requires_exact_task_id_casing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path, "| TASK-X | glm | 2026-09-27 | x/** | main |\n")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="case|exact"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="task-x",
+                agent="glm",
+                scope="x/**",
+                branch="main",
+            )
+
+    def test_new_claim_rejects_unresolvable_branch_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="branch.*unresolved|branch.*ref|branch"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="TASK-BAD-BRANCH",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="definitely-not-a-ref",
+            )
+        assert "TASK-BAD-BRANCH" not in p.read_text(encoding="utf-8")
+
+
+class TestCanonicalClaimReader:
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim task 58"], cwd=tmp_path, check=True, capture_output=True)
+
+    def test_reader_returns_exact_task_bound_claim_and_head(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "TASK-58"
+        assert out["generation"] == 1
+        assert out["agent"] == "glm"
+        assert out["scope"] == ["scripts/lib/**", "conductor/**"]
+        assert out["branch"] == "main"
+        assert len(out["branch_head_sha"]) == 40
+        assert out["claim_id"].startswith("awiki-claim-")
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
+
+    def test_reader_prefers_origin_branch_head_over_stale_local_ref(self, tmp_path):
+        self._init_repo(tmp_path)
+        import subprocess
+        remote = tmp_path.parent / "claim-remote.git"
+        subprocess.run(["git", "clone", "--bare", str(tmp_path), str(remote)],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "remote", "add", "origin", str(remote)],
+                       cwd=tmp_path, check=True)
+        subprocess.run(["git", "fetch", "origin"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        remote_head = subprocess.run(
+            ["git", "rev-parse", "refs/remotes/origin/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+
+        (tmp_path / "local-only.txt").write_text("local", encoding="utf-8")
+        subprocess.run(["git", "add", "local-only.txt"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "local ahead"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        local_head = subprocess.run(
+            ["git", "rev-parse", "refs/heads/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+        assert local_head != remote_head
+
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["branch_head_sha"] == remote_head
+
+    def test_reader_is_exact_not_fuzzy(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="NOT_FOUND"):
+            read_canonical_claim(tmp_path, "TASK")
+
+    def test_reader_rejects_duplicate_exact_task_rows(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8") +
+                     "| TASK-58 | other | 2026-09-27 | x/** | main |\n",
+                     encoding="utf-8")
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="AMBIGUOUS"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+class TestDurableClaimMirror:
+    def _collab(self, tmp_path):
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n", encoding="utf-8")
+
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+    def test_add_claim_mirrors_local_ttl_idempotently(self, tmp_path, monkeypatch):
+        self._init_repo(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        out1 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        out2 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        claims = json.loads(store.read_text(encoding="utf-8"))["claims"]
+        assert out1["cache_state"] == "RECONCILED"
+        assert out2["cache_state"] == "RECONCILED"
+        assert len(claims) == 1
+        assert claims[0]["task_id"] == "TASK-58"
+        assert claims[0]["generation"] == 1
+
+    def test_durable_success_cache_failure_is_typed_partial_unreconciled(self, tmp_path):
+        self._init_repo(tmp_path)
+        bad_store = tmp_path / "claims-dir"
+        bad_store.mkdir()
+        from conductor.bridge import add_claim
+        out = add_claim(
+            repo_root=tmp_path, topic="TASK-PARTIAL", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=bad_store,
+        )
+        assert out["claimed"] is True
+        assert out["cache_state"] == "PARTIAL_UNRECONCILED"
+        assert out["ownership_state"] == "PARTIAL_UNRECONCILED"
+        assert out["cache_claim_id"] is None
+        assert "| TASK-PARTIAL | glm |" in (
+            tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+    def test_ttl_release_never_removes_durable_collab_claim(self, tmp_path):
+        self._init_repo(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                  scope="scripts/lib/**", branch="main", claims_store=store)
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+        import agent_claims as ac
+        cached = json.loads(store.read_text(encoding="utf-8"))["claims"][0]
+        old_store = ac.store_path()
+        try:
+            ac.set_store(store)
+            assert ac.release(cached["id"]) is True
+        finally:
+            ac.set_store(old_store)
+        assert "| TASK-58 | glm |" in (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+    def test_release_then_reclaim_rotates_generation_before_and_after_commit(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "empty claims"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        from conductor.state import read_canonical_claim
+        first = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert first["generation"] == 1
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 1
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "release generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        second = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert second["generation"] == 2
+        assert second["cache_claim_id"] != first["cache_claim_id"]
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 2"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
 
 
 class TestBridgeCli:
@@ -350,6 +591,20 @@ class TestBridgeCli:
         r = self._run("recall", "--query", "phase", "--json")
         assert r.returncode == 0, r.stderr[:300]
         assert "hits" in json.loads(r.stdout)
+
+    def test_claim_cli_requires_scope_and_branch(self):
+        r = self._run("claim", "--topic", "TASK-CLI-EXACT", "--agent", "tester", "--json")
+        assert r.returncode == 2
+        assert "--scope" in r.stderr and "--branch" in r.stderr
+
+    def test_claims_cli_returns_exact_current_claim(self):
+        r = self._run("claims", "--task-id", "Issue #58 claim authority convergence", "--json")
+        assert r.returncode == 0, r.stderr[:300]
+        out = json.loads(r.stdout)
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "Issue #58 claim authority convergence"
+        assert out["branch"] == "fix/issue-58-claim-convergence"
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
 
 
 # ══════════════════════════════════════════════════════════════════════

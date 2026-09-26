@@ -1658,8 +1658,10 @@ def _claims_store(tmp_path):
     import agent_claims as ac
     store = tmp_path / "agent-claims.json"
     ac.set_store(store)
-    ac.acquire(agent="claude", scope=["skills/shared/**"],
-               goal="build the shared router", phase="implement")
+    ac.acquire_or_refresh(
+        agent="claude", scope=["skills/shared/**"],
+        goal="build the shared router", task_id="HOOK-ENGINE-CLAIM",
+        generation=1, phase="implement")
     ac.set_store(None)
     return store
 
