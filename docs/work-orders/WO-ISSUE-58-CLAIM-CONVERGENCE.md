@@ -375,3 +375,29 @@ GREEN / verification after repair:
 The review of `e51510f5...` is defect evidence, not acceptance evidence. The
 replacement exact head requires fresh hosted CI and a fresh independent R3
 review before merge.
+
+
+## R3 shallow-history identity hardening — 2026-09-27
+
+Candidate `67a10db2513be3c0a8157f066cbebf3fad0e44dc` is superseded before acceptance. A fresh independent exact-head R3 review reran the focused claim/hook suite (283/283 PASS) and then found a cross-machine identity defect by adversarial shallow-clone replay: the same durable task had generation 2 in a full repository but generation 1 in a `--depth 1` clone. Because `claim_id` includes generation, the canonical durable identity could differ by machine/history depth.
+
+Root cause: `claim_generation()` counted local `COLLAB.md` Git history without first proving that the local repository had complete history. Shallow clones can omit prior claim/release generations while still presenting a current claim row.
+
+Repair contract:
+- canonical claim generation fails closed when `git rev-parse --is-shallow-repository` is true;
+- the reader never mints a canonical generation/claim id from incomplete Git history;
+- new durable claims preflight complete history before any `COLLAB.md` mutation;
+- the writer converts shallow-history resolution failure to typed `ClaimConflict` and leaves durable state unchanged;
+- no automatic network fetch and no guessed generation; the checkout must first obtain complete history through the normal recovery path.
+
+RED evidence: 2/2 new shallow-history regression tests failed before repair.
+GREEN evidence after repair:
+- targeted shallow reader/writer + ABA generation: 3/3 PASS;
+- related conductor/claim/hook/adopt/runtime/MCP suite: 330/330 PASS;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (0 new findings);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+The cancelled review of superseded `67a10db2...` is blocker evidence only, not acceptance evidence. Fresh exact-head hosted CI and a new independent R3 review are required for the replacement candidate.

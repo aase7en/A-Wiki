@@ -73,6 +73,26 @@ def _git(repo_root: Path, *args: str) -> str:
     return proc.stdout.strip()
 
 
+def require_complete_claim_history(repo_root: Path | str) -> None:
+    """Fail closed when Git history is intentionally incomplete.
+
+    Durable claim generation is derived from COLLAB history. A shallow clone
+    cannot prove prior generations, so it must never mint a canonical
+    generation/claim id or persist a new durable claim from partial history.
+    """
+    root = Path(repo_root)
+    try:
+        shallow = _git(root, "rev-parse", "--is-shallow-repository").strip().lower()
+    except ClaimLookupError:
+        # Preserve legacy behavior for non-Git/test roots; callers that require
+        # Git identity still fail at their existing branch/history checks.
+        return
+    if shallow == "true":
+        raise ClaimLookupError(
+            "GIT_HISTORY_SHALLOW: fetch full history before resolving durable claim generation"
+        )
+
+
 def claim_generation(repo_root: Path, task_id: str) -> int:
     """Return the current durable COLLAB generation for one exact task id.
 
@@ -80,6 +100,7 @@ def claim_generation(repo_root: Path, task_id: str) -> int:
     current uncommitted claim-row addition/replacement also counts so a newly
     reacquired task rotates generation *before* the mandatory claim commit.
     """
+    require_complete_claim_history(repo_root)
     escaped = re.escape(task_id.strip())
     if not escaped:
         raise ClaimLookupError("TASK_ID_REQUIRED")

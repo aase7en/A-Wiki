@@ -188,8 +188,11 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         if branch != "<branch>" and branch.strip() != c["branch"].strip():
             raise ClaimConflict(
                 f"'{topic}' branch mismatch: durable={c['branch']!r}, requested={branch!r}")
-        from .state import claim_generation
-        generation = claim_generation(root, topic)
+        from .state import ClaimLookupError, claim_generation
+        try:
+            generation = claim_generation(root, topic)
+        except ClaimLookupError as exc:
+            raise ClaimConflict(str(exc)) from None
         mirror = _mirror_local_claim(
             topic=topic, agent=agent, scope=c["scope"], generation=generation,
             claims_store=claims_store, goal=cache_goal, phase=phase,
@@ -203,6 +206,11 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     if branch == "<branch>" or not branch.strip():
         raise ClaimConflict("new durable claim requires an exact branch")
     _require_branch_ref(root, branch)
+    from .state import ClaimLookupError, require_complete_claim_history
+    try:
+        require_complete_claim_history(root)
+    except ClaimLookupError as exc:
+        raise ClaimConflict(str(exc)) from None
 
     verdict = entry_gate(root, topic=topic, agent=agent)
     if verdict["conflicts"]:

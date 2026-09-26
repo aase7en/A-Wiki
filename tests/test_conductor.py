@@ -394,6 +394,39 @@ class TestClaim:
         assert "TASK-BAD-BRANCH" not in p.read_text(encoding="utf-8")
 
 
+    def test_new_claim_rejects_shallow_history_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        src = tmp_path / "src"
+        src.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=src,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=src, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=src, check=True)
+        self._collab(src)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=src,
+                       check=True, capture_output=True)
+
+        shallow = tmp_path / "shallow-writer"
+        subprocess.run(
+            ["git", "clone", "--depth", "1", f"file://{src}", str(shallow)],
+            check=True, capture_output=True)
+        before = (shallow / "COLLAB.md").read_text(encoding="utf-8")
+        monkeypatch.chdir(shallow)
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="SHALLOW|history"):
+            add_claim(
+                repo_root=shallow,
+                topic="TASK-SHALLOW-WRITE",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="main",
+            )
+        assert (shallow / "COLLAB.md").read_text(encoding="utf-8") == before
+        assert "TASK-SHALLOW-WRITE" not in before
+
+
 class TestCanonicalClaimReader:
     def _init_repo(self, tmp_path):
         import subprocess
@@ -464,6 +497,53 @@ class TestCanonicalClaimReader:
         from conductor.state import read_canonical_claim, ClaimLookupError
         with pytest.raises(ClaimLookupError, match="AMBIGUOUS"):
             read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_shallow_history_before_deriving_generation(self, tmp_path):
+        import subprocess
+        src = tmp_path / "src"
+        src.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=src,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=src, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=src, check=True)
+        header = (
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+        )
+        collab = src / "COLLAB.md"
+        collab.write_text(header, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(
+            header + "| TASK-SHALLOW | glm | 2026-09-26 | scripts/lib/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 1"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(header, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "release generation 1"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(
+            header + "| TASK-SHALLOW | glm | 2026-09-27 | scripts/lib/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 2"], cwd=src,
+                       check=True, capture_output=True)
+
+        shallow = tmp_path / "shallow"
+        subprocess.run(
+            ["git", "clone", "--depth", "1", f"file://{src}", str(shallow)],
+            check=True, capture_output=True)
+        assert subprocess.run(
+            ["git", "rev-parse", "--is-shallow-repository"], cwd=shallow,
+            check=True, capture_output=True, text=True).stdout.strip() == "true"
+
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="SHALLOW|history"):
+            read_canonical_claim(shallow, "TASK-SHALLOW")
 
 
 class TestDurableClaimMirror:
