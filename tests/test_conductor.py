@@ -332,6 +332,90 @@ class TestClaim:
             add_claim(repo_root=tmp_path, topic="x", agent="z")
 
 
+class TestCanonicalClaimReader:
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim task 58"], cwd=tmp_path, check=True, capture_output=True)
+
+    def test_reader_returns_exact_task_bound_claim_and_head(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "TASK-58"
+        assert out["generation"] == 1
+        assert out["agent"] == "glm"
+        assert out["scope"] == ["scripts/lib/**", "conductor/**"]
+        assert out["branch"] == "main"
+        assert len(out["branch_head_sha"]) == 40
+        assert out["claim_id"].startswith("awiki-claim-")
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
+
+    def test_reader_is_exact_not_fuzzy(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="NOT_FOUND"):
+            read_canonical_claim(tmp_path, "TASK")
+
+    def test_reader_rejects_duplicate_exact_task_rows(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8") +
+                     "| TASK-58 | other | 2026-09-27 | x/** | main |\n",
+                     encoding="utf-8")
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="AMBIGUOUS"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+class TestDurableClaimMirror:
+    def _collab(self, tmp_path):
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n", encoding="utf-8")
+
+    def test_add_claim_mirrors_local_ttl_idempotently(self, tmp_path, monkeypatch):
+        self._collab(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        out1 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        out2 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        claims = json.loads(store.read_text(encoding="utf-8"))["claims"]
+        assert out1["cache_state"] == "RECONCILED"
+        assert out2["cache_state"] == "RECONCILED"
+        assert len(claims) == 1
+        assert claims[0]["task_id"] == "TASK-58"
+        assert claims[0]["generation"] == 1
+
+    def test_ttl_release_never_removes_durable_collab_claim(self, tmp_path):
+        self._collab(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                  scope="scripts/lib/**", branch="main", claims_store=store)
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+        import agent_claims as ac
+        cached = json.loads(store.read_text(encoding="utf-8"))["claims"][0]
+        old_store = ac.store_path()
+        try:
+            ac.set_store(store)
+            assert ac.release(cached["id"]) is True
+        finally:
+            ac.set_store(old_store)
+        assert "| TASK-58 | glm |" in (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+
 class TestBridgeCli:
     def _run(self, *args):
         import subprocess
@@ -350,6 +434,15 @@ class TestBridgeCli:
         r = self._run("recall", "--query", "phase", "--json")
         assert r.returncode == 0, r.stderr[:300]
         assert "hits" in json.loads(r.stdout)
+
+    def test_claims_cli_returns_exact_current_claim(self):
+        r = self._run("claims", "--task-id", "Issue #58 claim authority convergence", "--json")
+        assert r.returncode == 0, r.stderr[:300]
+        out = json.loads(r.stdout)
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "Issue #58 claim authority convergence"
+        assert out["branch"] == "fix/issue-58-claim-convergence"
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
 
 
 # ══════════════════════════════════════════════════════════════════════

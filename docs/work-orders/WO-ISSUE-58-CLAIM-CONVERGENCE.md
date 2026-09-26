@@ -1,6 +1,6 @@
 # WO-ISSUE-58 — Claim authority convergence + canonical reader
 
-Status: IMPLEMENTING / RED-FIRST
+Status: CANDIDATE_READY / REVIEW_REQUIRED
 Issue: aase7en/A-Wiki#58
 Risk: R3 — coordination authority, hooks, claim enforcement
 Topology: CONTROL_PLANE_ONLY (A-Wiki upstream authority)
@@ -12,7 +12,7 @@ Topology: CONTROL_PLANE_ONLY (A-Wiki upstream authority)
 - Branch: `fix/issue-58-claim-convergence`
 - Base: `16897b2d34f3ff0de0938f7651cf19bbce106b43`
 - Durable owner: `chatgpt-sol`
-- Durable claim: COLLAB row 
+- Durable claim: `Issue #58 claim authority convergence` COLLAB row
 - Local TTL claim: `a95e8c226df4` (canonical Mac store)
 - Parent dependency: Conductor #551/#552 -> #549/#550
 
@@ -51,3 +51,20 @@ persisting machine-specific worktree paths.
 - no direct main push
 - no secret/private Drive content
 - no reset/clean/stash/force operations
+
+
+## Candidate evidence — 2026-09-27
+
+- RED proof: 5 targeted contract tests failed before implementation.
+- GREEN focused/related: 99/99 PASS across conductor, claim cache and hooks.
+- Canonical reader CLI: PASS; emits `awiki-claim-reader/v1` with exact task,
+  deterministic claim id, generation, scope, branch/head and consumer-side
+  worktree verification requirement.
+- Registry gate: PASS (30 hooks; 17 hard / 13 soft).
+- Security scan: PASS (6361 tracked files; 51 baselined; 0 new findings).
+- Wiki health: PASS (0 hard errors; advisories unchanged).
+- py_compile: PASS for changed Python surfaces.
+- `git diff --check`: PASS.
+- No machine-local path is emitted by the reader; no private/secret file read.
+- Remaining gates: freeze exact candidate SHA, independent R3 review, exact-head
+  hosted CI, acceptance/merge, post-main verification, then release claim.

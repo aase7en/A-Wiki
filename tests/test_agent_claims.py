@@ -131,6 +131,39 @@ class TestLifecycle:
         assert c1["id"] not in ids and len(ids) == 1
 
 
+class TestDerivedDurableCache:
+    def test_default_store_is_shared_from_git_common_checkout(self, monkeypatch):
+        import subprocess
+        monkeypatch.delenv("AWIKI_CLAIMS_STORE", raising=False)
+        raw = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"], cwd=REPO_ROOT,
+            check=True, capture_output=True, text=True).stdout.strip()
+        common = Path(raw)
+        if not common.is_absolute():
+            common = (REPO_ROOT / common).resolve()
+        expected_root = common.parent if common.name == ".git" else REPO_ROOT
+        assert ac._default_store() == expected_root / ".tmp" / "agent-claims.json"
+
+    def test_acquire_or_refresh_is_one_cache_row_per_durable_task(self, tmp_path):
+        store = tmp_path / "derived.json"
+        first = ac.acquire_or_refresh(
+            agent="glm", scope=["scripts/**"], goal="task", task_id="TASK-58",
+            generation=1, phase="implement", store=store)
+        second = ac.acquire_or_refresh(
+            agent="glm", scope=["scripts/**", "conductor/**"], goal="task",
+            task_id="TASK-58", generation=2, phase="test", store=store)
+        old_store = ac.store_path()
+        try:
+            ac.set_store(store)
+            live = ac.live()
+        finally:
+            ac.set_store(old_store)
+        assert len(live) == 1
+        assert first["id"] == second["id"]
+        assert live[0]["generation"] == 2
+        assert live[0]["phase"] == "test"
+
+
 class TestDurability:
     def test_state_survives_a_reload(self, tmp_path):
         ac.acquire(agent="claude", scope=["a/**"], goal="persist")

@@ -30,6 +30,7 @@ from __future__ import annotations
 import fnmatch
 import json
 import os
+import subprocess
 import tempfile
 import time
 import uuid
@@ -39,11 +40,30 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def _canonical_repo_root() -> Path:
+    """Resolve the shared checkout owning the Git common dir for all worktrees."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"], cwd=str(REPO_ROOT),
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=5,
+        )
+        raw = proc.stdout.strip() if proc.returncode == 0 else ""
+        if raw:
+            common = Path(raw)
+            if not common.is_absolute():
+                common = (REPO_ROOT / common).resolve()
+            if common.name == ".git":
+                return common.parent
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return REPO_ROOT
+
+
 def _default_store() -> Path:
-    """Env override exists so a hook SUBPROCESS can be pointed at a test store.
-    Without it, tests that spawn the hook would mutate the machine's real claims."""
+    """Use one same-machine TTL cache across every worktree of this repository."""
     env = os.environ.get("AWIKI_CLAIMS_STORE", "").strip()
-    return Path(env) if env else REPO_ROOT / ".tmp" / "agent-claims.json"
+    return Path(env) if env else _canonical_repo_root() / ".tmp" / "agent-claims.json"
 
 
 _DEFAULT_STORE = _default_store()
@@ -155,6 +175,66 @@ def acquire(*, agent: str, scope: list[str], goal: str,
     data["claims"].append(claim)
     _write(data)
     return claim
+
+
+def acquire_or_refresh(*, agent: str, scope: list[str], goal: str,
+                       task_id: str, generation: int, phase: str = "ask",
+                       session_id: str = "", lease_seconds: int = DEFAULT_LEASE_SECONDS,
+                       store: Path | str | None = None) -> dict[str, Any]:
+    """Mirror one durable claim into the derived TTL cache idempotently.
+
+    The durable task id + generation are cache metadata only. This function never
+    writes COLLAB/Git and TTL expiry/release therefore cannot release durable truth.
+    """
+    agent = (agent or "").strip()
+    task_id = (task_id or "").strip()
+    goal = (goal or "").strip()
+    scope = [s.strip() for s in (scope or []) if s and s.strip()]
+    if not agent or not task_id or not goal or not scope:
+        raise ValueError("durable claim mirror requires agent/task_id/goal/scope")
+    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
+        raise ValueError("generation must be a positive integer")
+    if phase not in PHASES:
+        raise ValueError(f"unknown phase {phase!r}; valid: {', '.join(PHASES)}")
+
+    path = Path(store) if store is not None else _STORE
+    old_store = _STORE
+    try:
+        set_store(path)
+        data, _ = _prune(_read())
+        now = time.time()
+        for c in data["claims"]:
+            if c.get("task_id") != task_id:
+                continue
+            if c.get("agent") != agent:
+                raise ValueError(
+                    f"durable task {task_id!r} cached by foreign agent {c.get('agent')!r}")
+            c.update({
+                "scope": scope,
+                "goal": goal,
+                "phase": phase,
+                "session_id": session_id,
+                "generation": generation,
+                "heartbeat_ts": int(now),
+                "lease_until": now + lease_seconds,
+            })
+            _write(data)
+            return dict(c)
+
+        claim = acquire(
+            agent=agent, scope=scope, goal=goal, phase=phase,
+            session_id=session_id, lease_seconds=lease_seconds)
+        data = _read()
+        for c in data["claims"]:
+            if c.get("id") == claim["id"]:
+                c["task_id"] = task_id
+                c["generation"] = generation
+                claim = dict(c)
+                break
+        _write(data)
+        return claim
+    finally:
+        set_store(old_store)
 
 
 def release(claim_id: str) -> bool:

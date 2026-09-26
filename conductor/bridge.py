@@ -88,23 +88,50 @@ def recall(query: str, ledger: Path | None = None, limit: int = 10) -> list[dict
     return out
 
 
+def _mirror_local_claim(*, topic: str, agent: str, scope: str,
+                        generation: int, claims_store: Path | str | None) -> str:
+    """Best-effort derived TTL cache mirror; durable COLLAB remains authority."""
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+    try:
+        import agent_claims as ac
+        ac.acquire_or_refresh(
+            agent=agent,
+            scope=[part.strip() for part in scope.split(";") if part.strip()],
+            goal=f"Durable claim mirror: {topic}",
+            task_id=topic,
+            generation=max(1, generation),
+            phase="plan",
+            session_id=f"durable:{topic}",
+            store=claims_store,
+        )
+    except Exception:
+        return "PARTIAL_UNRECONCILED"
+    return "RECONCILED"
+
+
 def add_claim(repo_root: Path | None = None, topic: str = "",
               agent: str = "unknown", scope: str = "<scope>",
-              branch: str = "<branch>") -> dict:
+              branch: str = "<branch>",
+              claims_store: Path | str | None = None) -> dict:
     root = Path(repo_root) if repo_root else Path.cwd()
     collab = root / "COLLAB.md"
     if not collab.is_file():
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
 
-    # exact-slug ownership FIRST — a repeat claim by the SAME agent is
-    # idempotent even though the gate flags the existing row as a conflict
     claims = parse_claims(collab)
     slug = topic.strip().lower()
     for c in claims:
-        if c["chunk"].strip().lower() == slug:
-            if c["agent"].strip().lower() == agent.strip().lower():
-                return {"claimed": True, "already": True, "topic": topic}
+        if c["chunk"].strip().lower() != slug:
+            continue
+        if c["agent"].strip().lower() != agent.strip().lower():
             raise ClaimConflict(f"'{topic}' already claimed by {c['agent']!r}")
+        from .state import claim_generation
+        generation = claim_generation(root, topic)
+        cache_state = _mirror_local_claim(
+            topic=topic, agent=agent, scope=c["scope"], generation=generation,
+            claims_store=claims_store)
+        return {"claimed": True, "already": True, "topic": topic,
+                "generation": generation, "cache_state": cache_state}
 
     verdict = entry_gate(root, topic=topic, agent=agent)
     if verdict["conflicts"]:
@@ -113,7 +140,6 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     row = f"| {topic} | {agent} | {date.today().isoformat()} | {scope} | {branch} |\n"
     text = collab.read_text(encoding="utf-8")
     lines = text.splitlines(keepends=True)
-    # append into the claims table: after the last consecutive table row
     last_table = 0
     in_claims = False
     for i, line in enumerate(lines):
@@ -125,7 +151,12 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         raise ClaimConflict("claims table not found in COLLAB.md")
     lines.insert(last_table + 1, row)
     collab.write_text("".join(lines), encoding="utf-8")
+
+    cache_state = _mirror_local_claim(
+        topic=topic, agent=agent, scope=scope, generation=1,
+        claims_store=claims_store)
     return {"claimed": True, "already": False, "topic": topic,
+            "generation": 1, "cache_state": cache_state,
             "claim_row": row.strip()}
 
 

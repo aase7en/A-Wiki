@@ -24,8 +24,10 @@ Escape hatches, all loud:
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -75,6 +77,49 @@ def is_shared_surface(path: str) -> bool:
     return p.startswith(SHARED_SURFACES)
 
 
+def _durable_claims() -> list[dict]:
+    """Read canonical durable COLLAB claims without creating another store."""
+    path = Path(os.environ.get("AWIKI_DURABLE_CLAIMS_FILE", "").strip()
+                or (REPO_ROOT / "COLLAB.md"))
+    try:
+        sys.path.insert(0, str(REPO_ROOT))
+        from conductor.state import parse_claims
+        return parse_claims(path)
+    except Exception:
+        return []
+
+def _relative_path(file_path: str) -> str:
+    raw = (file_path or "").replace("\\", "/")
+    try:
+        candidate = Path(file_path)
+        if candidate.is_absolute():
+            resolved = candidate.resolve().relative_to(REPO_ROOT.resolve())
+            return resolved.as_posix()
+    except (OSError, RuntimeError, ValueError):
+        pass
+    return raw[2:] if raw.startswith("./") else raw
+
+def _durable_collision(file_path: str, agent: str) -> dict | None:
+    rel = _relative_path(file_path)
+    for claim in _durable_claims():
+        if claim.get("agent", "").strip().lower() == agent.strip().lower():
+            continue
+        scopes = [s.strip() for s in re.split(r"[;,]", claim.get("scope", "")) if s.strip()]
+        if any(fnmatch.fnmatch(rel, scope.replace("\\", "/")) for scope in scopes):
+            return claim
+    return None
+
+def _has_own_durable_claim(file_path: str, agent: str) -> bool:
+    rel = _relative_path(file_path)
+    for claim in _durable_claims():
+        if claim.get("agent", "").strip().lower() != agent.strip().lower():
+            continue
+        scopes = [s.strip() for s in re.split(r"[;,]", claim.get("scope", "")) if s.strip()]
+        if any(fnmatch.fnmatch(rel, scope.replace("\\", "/")) for scope in scopes):
+            return True
+    return False
+
+
 def main() -> int:
     _utf8_streams()
 
@@ -99,14 +144,14 @@ def main() -> int:
     try:
         import agent_claims as ac
     except Exception:
-        return 0  # fail open — a broken store must never wedge the repo
+        ac = None
 
     me = detect_agent()
 
     try:
-        other = ac.collision(file_path, agent=me)
+        other = ac.collision(file_path, agent=me) if ac is not None else None
     except Exception:
-        return 0
+        other = None
 
     if other:
         mins = max(0, int((other["lease_until"] - __import__("time").time()) / 60))
@@ -126,13 +171,25 @@ def main() -> int:
         )
         return 2
 
+    durable_other = _durable_collision(file_path, me)
+    if durable_other:
+        sys.stderr.write(
+            f"🛑 DURABLE CLAIM COLLISION — {durable_other['agent']} owns this surface\n\n"
+            f"  file        : {file_path}\n"
+            f"  task        : {durable_other['chunk']}\n"
+            f"  branch      : {durable_other['branch']}\n"
+            f"  scope       : {durable_other['scope']}\n"
+            "  authority   : COLLAB.md/Git (canonical durable claim)\n"
+        )
+        return 2
+
     # Unclaimed work on a shared surface — nudge, do not block.
     if is_shared_surface(file_path):
         try:
             mine = [c for c in ac.live() if c.get("agent") == me]
         except Exception:
             mine = []
-        if not mine:
+        if not mine and not _has_own_durable_claim(file_path, me):
             sys.stderr.write(
                 f"🤝 ยังไม่ได้ประกาศ claim — กำลังแก้ shared surface ({file_path})\n"
                 f"   agent อื่นจะไม่รู้ว่าคุณทำอะไรอยู่ และอาจทำซ้ำ\n"

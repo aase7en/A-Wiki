@@ -140,6 +140,38 @@ def test_blocks_any_file_matching_scope_glob_via_prefix(tmp_path):
         assert "other_agent" in r.stderr
 
 
+def test_blocks_foreign_durable_claim_when_ttl_cache_is_corrupt(tmp_path):
+    store = tmp_path / "claims.json"
+    store.write_text("{broken", encoding="utf-8")
+    durable = tmp_path / "COLLAB.md"
+    durable.write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| TASK-58 | other_agent | 2026-09-27 | docs/**, scripts/lib/** | feat/task-58 |\n",
+        encoding="utf-8")
+    r = _run_hook(
+        _edit_payload("scripts/lib/foo.py"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+
+
+def test_blocks_foreign_durable_claim_when_ttl_cache_empty(tmp_path):
+    store = tmp_path / "claims.json"
+    durable = tmp_path / "COLLAB.md"
+    durable.write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| TASK-58 | other_agent | 2026-09-27 | scripts/lib/** | feat/task-58 |\n",
+        encoding="utf-8")
+    r = _run_hook(
+        _edit_payload("scripts/lib/foo.py"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+    assert "other_agent" in r.stderr
+
+
 # ---------------------------------------------------------------------------
 # 4. Warn (exit 0) on unclaimed shared-surface edit
 # ---------------------------------------------------------------------------
