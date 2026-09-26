@@ -326,3 +326,93 @@ GLM must execute Phase 1 in this order unless new evidence makes a safety stop n
 Phases 0-11 and post-review R-FR-001..011 are historical/completed state. Do not reopen R-FR from chat memory, stale branches, or old prompts. For new work recover from `BRAIN-ENTRY.md` -> `COLLAB.md` -> the active authoritative WO/checkpoint -> `python -m conductor status --json`, then execute the next READY node under the current roadmap.
 
 <!-- final-verification: synchronize re-fire 2026-08-18 (webhook drops during GitHub incident) -->
+
+## Post-vNext Track — Evidence-Native Agent Engineering (Phases 12–17, planned 2026-09-10)
+
+**Roadmap capture:** `docs/work-orders/WO-AGENT-EVIDENCE-ROADMAP-20260910.md`
+**Evidence map:** `docs/research/agent-engineering-evidence-20260910.md`
+
+Status: `PLANNED / NOT IMPLEMENTATION AUTHORITY`. Phases 0–11 and R-FR remain historical/complete. This track starts from then-current `main` and must not reopen completed migration phases or bypass current A-Conductor/A-Wiki authority reconciliation.
+
+Purpose: make A-Wiki continuously better at adopting useful AI-agent engineering ideas without turning public community hype, model memory, or a copied framework into authority.
+
+Binding adoption order for this track:
+
+`VERIFY SOURCE -> LICENSE/TERMS -> REUSE -> WRAP -> EXTEND -> BUILD -> EVAL -> PROMOTE`
+
+A copied implementation is acceptable only when it is materially cheaper/safer than reimplementation, license-compatible, pinned to an upstream identity, and integrated behind the existing A-Wiki/A-Conductor owners rather than becoming a second control plane.
+
+### Phase 12 — External Pattern Evidence Gate
+
+Goal: extend the existing Brain Improvement Gate with an evidence-bearing external-pattern intake contract rather than a second registry.
+
+Acceptance intent:
+- record source URL/repo/ref/date, source type, license/terms, executable evidence when available, known failure modes, overlap with current capability, and adoption class;
+- primary/reproducible evidence outranks popularity/stars/social claims;
+- community reports can raise a candidate or reveal failure modes but cannot alone promote a brain rule;
+- inaccessible/private social content is never reconstructed from memory;
+- external `AGENTS.md`/rulesets are delta-diffed, never wholesale pasted.
+### Phase 13 — Privacy-Safe Execution Evidence Bridge
+
+Goal: let A-Wiki consume sanitized A-Conductor execution evidence without importing a second runtime/event authority.
+
+Acceptance intent:
+- A-Conductor remains owner of raw runtime/task evidence; A-Wiki receives only a versioned, bounded projection with task/repo/execution identity, hashes, outcome, verification references and redacted metrics;
+- observable operations may be OTel-compatible, but raw prompts/system instructions/tool payloads/hidden reasoning are excluded by default;
+- trace/event schema version is pinned so semantic-convention drift cannot silently reinterpret old evidence;
+- no trace automatically becomes L3 global knowledge.
+
+### Phase 14 — Agent Evaluation Corpus + Evaluator Self-Test
+
+Goal: turn representative project tasks and proven failures into reusable agent-eval cases.
+
+Acceptance intent:
+- keep separate dimensions for outcome correctness, constraint/safety compliance, robustness/recovery and efficiency;
+- never blend a security failure into a passing aggregate score;
+- compare cost/tokens/latency/code-size only among runs that satisfy mandatory outcome and safety gates;
+- use repeated trials for stochastic agents when the result can influence routing/policy;
+- every evaluator has known-good and known-bad fixtures proving the evaluator itself bites before spending model/API budget;
+- material production defects feed the corpus through the existing defect-memory/regression process instead of a parallel lesson store.
+### Phase 15 — Agent Security / Untrusted-Provenance Eval Pack
+
+Goal: add project-specific adversarial coverage inspired by AgentDojo/OWASP without making a large security framework a runtime dependency.
+
+Acceptance intent:
+- fixtures cover indirect prompt injection through repository/tool data, tool abuse, privilege escalation, exfiltration, approval manipulation, denial-of-wallet/loop exhaustion and multi-agent propagation;
+- planner/reviewer/worker output carries no transitive authority; the receiving deterministic boundary validates scope/action/identity again;
+- security defenses are scored for both attack resistance and benign task utility so a system that blocks everything cannot appear secure-and-useful;
+- adaptive/dynamic cases are added when static fixtures become predictable.
+
+### Phase 16 — Memory Provenance + Quarantine
+
+Goal: strengthen existing L0–L5/promotion rules for agent/tool-derived candidates.
+
+Acceptance intent:
+- durable candidates carry provenance/trust class, source identity/digest and verification state;
+- untrusted external tool/agent content is quarantined from L3 promotion until existing privacy/evidence/generalization gates pass;
+- raw execution traces stay evidence, not memory;
+- poisoning/drift fixtures prove a malicious or stale candidate cannot silently overwrite canonical knowledge.
+
+### Phase 17 — Public/Authorized Evidence Radar
+
+Goal: continually surface high-value upstream/community changes without auto-installing or auto-promoting them.
+Acceptance intent:
+- use existing ingestion/search/routing surfaces first; public GitHub/Hugging Face/standards/RSS-style sources are preferred over brittle scraping;
+- Reddit/Hacker News/public X or other practitioner sources can generate `candidate` evidence when publicly accessible and terms-compatible;
+- Facebook/Discord/WhatsApp/private communities require an authorized connector/export or user-supplied source; never bypass access controls;
+- deduplicate by source identity/content digest and record `last_verified`/freshness;
+- candidate discovery never edits `AGENTS.md`, skills, routing policy, global memory or production code automatically.
+
+### Cross-repo ownership and dependency
+
+A-Wiki owns Phases 12, 14, 16 and 17 as brain/policy/evidence-promotion capabilities. Phase 13 defines only the brain-side projection contract. A-Sunday Conductor owns runtime attestation, traces, replay/execution evidence and operator telemetry; its roadmap may extend those capabilities without moving runtime authority into A-Wiki.
+
+Before implementation of any phase:
+1. recover live A-Wiki and A-Conductor authority maps/claims;
+2. audit for an existing implementation and classify `REUSE/WRAP/EXTEND/BUILD`;
+3. re-check upstream source/ref/license/terms and current security guidance;
+4. create one bounded WO with tests/evidence appropriate to risk;
+5. keep raw/private telemetry and model/tool content out of public Git;
+6. require exact-SHA review/CI when the phase changes binding policy, security, memory or cross-repo contracts.
+
+No phase number in this section reserves a worker or mutable lane. Current READY/P0 work and explicit user reprioritization continue to control execution order.
