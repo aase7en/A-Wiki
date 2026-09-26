@@ -174,3 +174,40 @@ GREEN evidence after repair:
 
 A fresh exact-head hosted CI and independent R3 review are required for the
 replacement candidate. Earlier exact-SHA reviews/CI are superseded evidence.
+
+
+## Canonical authority closure — durable-first MCP migration — 2026-09-27
+
+After the workspace-boundary repair, recovery found the remaining ownership
+ambiguity at the public claim entrypoints: legacy TTL-only rows could still look
+like ownership to callers even though COLLAB/Git is now canonical.
+
+The migration closes that seam:
+- `claim_acquire` requires an exact `task_id` and writes durable COLLAB/Git
+  ownership first, then mirrors a same-machine TTL cache row;
+- direct legacy `agent_claims.acquire()` rows are typed
+  `PARTIAL_UNRECONCILED` and are never ownership authority;
+- only `RECONCILED` derived cache rows participate in collision blocking;
+- durable-success/cache-failure is returned as typed
+  `PARTIAL_UNRECONCILED` rather than minting a false cache owner;
+- `claim_list`, `claim_release`, and `claim_advance` explicitly describe
+  their derived-cache role; release/advance never release durable COLLAB/Git;
+- MCP tests now use isolated COLLAB/Git fixtures and prove durable-first ordering;
+- runtime/hook fixtures that require a hard block seed reconciled cache rows,
+  while legacy TTL-only regression tests prove they do not block.
+
+Focused regression after contract-drift fixture repair:
+- hard-hook/runtime seam proof: **16/16 PASS**;
+- full related conductor/claim/MCP/hook/adopt/runtime pytest surface:
+  **320/320 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked / 51 baselined / 0 new);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS;
+- added-line secret-signature scan: **0 hits**.
+
+The previous exact-head CI on `6a4ebe7466e66644eee48ff2dbea64725ad9116f`
+covered the boundary repair only and is superseded for acceptance. The final
+migration candidate requires new exact-head hosted CI and a fresh independent
+R3 review before merge.

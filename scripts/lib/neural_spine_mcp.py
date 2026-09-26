@@ -25,6 +25,7 @@ instead of calling memory_ledger.MemoryLedger(...) inline.
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -476,33 +477,97 @@ def _agent_name(args: dict) -> str:
     return os.environ.get("AWIKI_AGENT", "unknown")
 
 
+def _claim_branch(args: dict) -> str:
+    """Bind a durable claim to this checkout's exact branch."""
+    requested = (args.get("branch") or "").strip()
+    try:
+        proc = subprocess.run(
+            ["git", "branch", "--show-current"],
+            cwd=str(REPO_ROOT), capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ValueError(f"claim branch unavailable: {exc}") from None
+    current = proc.stdout.strip() if proc.returncode == 0 else ""
+    if requested and current and requested != current:
+        raise ValueError(
+            f"claim branch mismatch: checkout={current!r}, requested={requested!r}")
+    branch = requested or current
+    if not branch:
+        raise ValueError("claim requires an exact branch; detached HEAD is not eligible")
+    return branch
+
+
 def tool_claim_acquire(args: dict) -> dict:
+    """Durable-first compatibility wrapper; TTL is only a derived cache."""
+    task_id = (args.get("task_id") or "").strip()
+    if not task_id:
+        raise ValueError("claim_acquire requires exact task_id for durable binding")
+    scope = [str(s).strip() for s in (args.get("scope") or []) if str(s).strip()]
+    goal = (args.get("goal") or "").strip()
+    if not scope:
+        raise ValueError("claim_acquire requires at least one scope glob")
+    if not goal:
+        raise ValueError("claim_acquire requires a one-line goal")
+    phase = args.get("phase", "ask")
+    branch = _claim_branch(args)
+    agent = _agent_name(args)
+    session_id = _session_id()
+
+    # Import the canonical durable writer from the repo root. If durable
+    # creation fails, no TTL row is minted. If the derived cache mirror fails
+    # after durable creation, add_claim returns PARTIAL_UNRECONCILED.
+    root_text = str(REPO_ROOT)
+    if root_text not in sys.path:
+        sys.path.insert(0, root_text)
+    from conductor.bridge import add_claim
+
     ac = _claims()
-    return ac.acquire(
-        agent=_agent_name(args),
-        scope=args.get("scope") or [],
-        goal=args.get("goal", ""),
-        phase=args.get("phase", "ask"),
-        session_id=_session_id(),
+    out = add_claim(
+        repo_root=REPO_ROOT,
+        topic=task_id,
+        agent=agent,
+        scope="; ".join(scope),
+        branch=branch,
+        claims_store=ac.store_path(),
+        cache_goal=goal,
+        phase=phase,
+        session_id=session_id,
     )
+    out["id"] = out.get("cache_claim_id")  # compatibility alias: local cache id
+    return out
 
 
 def tool_claim_list(args: dict) -> dict:
     ac = _claims()
     claims = ac.live()
-    return {"claims": claims, "summary": ac.describe(claims)}
+    return {
+        "claims": claims,
+        "summary": ac.describe(claims),
+        "authority_role": "derived_same_machine_cache",
+        "canonical_authority": "COLLAB.md+Git",
+    }
 
 
 def tool_claim_release(args: dict) -> dict:
+    """Release local cache only; durable COLLAB ownership requires explicit transition."""
     ac = _claims()
     cid = args.get("claim_id")
-    if cid:
-        return {"released": ac.release(cid)}
-    return {"released": ac.release_session(_session_id())}
+    released = ac.release(cid) if cid else ac.release_session(_session_id())
+    return {
+        "released": released,
+        "durable_released": False,
+        "authority_role": "derived_same_machine_cache",
+        "canonical_authority": "COLLAB.md+Git",
+    }
 
 
 def tool_claim_advance(args: dict) -> dict:
-    return _claims().advance(args["claim_id"], args["phase"])
+    out = dict(_claims().advance(args["claim_id"], args["phase"]))
+    out["durable_changed"] = False
+    out["authority_role"] = "derived_same_machine_cache"
+    out["canonical_authority"] = "COLLAB.md+Git"
+    return out
 
 
 def tool_design_quality_gate(args: dict) -> dict:
@@ -714,42 +779,51 @@ TOOLS: dict[str, dict[str, Any]] = {
     "claim_acquire": {
         "fn": tool_claim_acquire,
         "description": (
-            "REQUIRED before editing shared surfaces (skills/, scripts/, commands/, "
-            "skills-registry.json, AGENTS.md). Registers what you are about to build "
-            "so other agents (ZCode, Codex, Gemini, Claude) can see it and not "
-            "duplicate it. A PreToolUse hook BLOCKS edits that land inside another "
-            "agent's live claim. Claims carry a TTL lease and self-reap."
+            "Canonical durable-first claim entry point for shared-surface work. "
+            "Requires an exact task_id, writes/reuses the COLLAB/Git durable claim "
+            "first, then reconciles the same-machine TTL cache. TTL is derived only; "
+            "a cache-only row is PARTIAL_UNRECONCILED and cannot mint ownership."
         ),
         "inputSchema": {
             "type": "object",
             "properties": {
+                "task_id": {"type": "string",
+                            "description": "exact durable Chunk/WO/task identity"},
                 "scope": {"type": "array", "items": {"type": "string"},
                           "description": "glob(s) you will touch, e.g. [\"skills/awiki/**\"]"},
                 "goal": {"type": "string", "description": "one line: what done looks like"},
+                "branch": {"type": "string",
+                           "description": "optional exact branch; defaults to current checkout branch"},
                 "phase": {"type": "string",
                           "enum": ["ask", "design", "plan", "implement", "review", "debug", "test"]},
                 "agent": {"type": "string", "description": "override detected identity"},
             },
-            "required": ["scope", "goal"],
+            "required": ["task_id", "scope", "goal"],
         },
     },
     "claim_list": {
         "fn": tool_claim_list,
         "description": (
-            "Who else is working right now, on what, in which phase. Call this BEFORE "
-            "starting anything non-trivial — it is the cheapest way to avoid building "
-            "something another agent already has in flight. Read-only."
+            "Read the local derived TTL cache for fast same-machine coordination. "
+            "This is NOT canonical ownership; COLLAB/Git is the durable cross-machine "
+            "authority. Cache-only PARTIAL_UNRECONCILED rows are informational."
         ),
         "inputSchema": {"type": "object", "properties": {}},
     },
     "claim_release": {
         "fn": tool_claim_release,
-        "description": "Release a claim by id, or all claims held by this session if omitted.",
+        "description": (
+            "Release only the local derived TTL cache row(s). This never releases "
+            "the durable COLLAB/Git ownership claim; durable release is explicit."
+        ),
         "inputSchema": {"type": "object", "properties": {"claim_id": {"type": "string"}}},
     },
     "claim_advance": {
         "fn": tool_claim_advance,
-        "description": "Move a claim to a new phase and renew its lease.",
+        "description": (
+            "Advance only the local derived cache phase/lease; durable ownership "
+            "identity in COLLAB/Git is unchanged."
+        ),
         "inputSchema": {
             "type": "object",
             "properties": {

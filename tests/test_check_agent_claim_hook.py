@@ -59,14 +59,17 @@ def _edit_payload(file_path: str) -> dict:
 
 def _seed_claim(store: Path, *, agent: str, scope: list[str],
                 goal: str = "doing X", lease_seconds: int = 3600) -> dict:
-    """Seed a live claim via the agent_claims module (no MCP needed)."""
+    """Seed a reconciled derived cache row (durable identity already proven)."""
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
     os.environ["AWIKI_CLAIMS_STORE"] = str(store)
     import agent_claims as ac
     ac.set_store(str(store))
-    return ac.acquire(agent=agent, scope=scope, goal=goal,
-                      phase="implement", session_id=f"{agent}-s",
-                      lease_seconds=lease_seconds)
+    return ac.acquire_or_refresh(
+        agent=agent, scope=scope, goal=goal,
+        task_id=f"TEST-{agent}-{abs(hash(tuple(scope))) % 100000}",
+        generation=1, phase="implement", session_id=f"{agent}-s",
+        lease_seconds=lease_seconds,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -113,6 +116,24 @@ def test_passes_for_non_shared_surface(tmp_path, monkeypatch):
     store = tmp_path / "claims.json"
     r = _run_hook(_edit_payload("README.md"), claims_store=store)
     assert r.returncode == 0
+
+
+def test_legacy_ttl_only_cache_does_not_block_without_durable_owner(tmp_path):
+    store = tmp_path / "claims.json"
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+    import agent_claims as ac
+    ac.set_store(store)
+    try:
+        ac.acquire(agent="other_agent", scope=["scripts/lib/**"], goal="legacy-only")
+    finally:
+        ac.set_store(None)
+    foreign = tmp_path / "foreign"
+    foreign.mkdir()
+    payload = _edit_payload("scripts/lib/foo.py")
+    payload["cwd"] = str(foreign)
+    r = _run_hook(payload, claims_store=store)
+    assert r.returncode == 0, r.stderr
+    assert "CLAIM COLLISION" not in r.stderr
 
 
 # ---------------------------------------------------------------------------

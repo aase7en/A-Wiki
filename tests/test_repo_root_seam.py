@@ -169,10 +169,12 @@ def _seed_foreign_claim(target: Path) -> Path:
     store = target / ".tmp" / "agent-claims.json"
     ac.set_store(store)
     try:
-        ac.acquire(
+        ac.acquire_or_refresh(
             agent="foreign-owner",
             scope=["scripts/lib/**"],
             goal="foreign ownership",
+            task_id="FOREIGN-RUNTIME-CLAIM",
+            generation=1,
             phase="implement",
             session_id="foreign-owner-session",
         )

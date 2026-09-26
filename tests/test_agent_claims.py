@@ -30,6 +30,15 @@ def isolated(tmp_path):
     ac.set_store(None)
 
 
+def _reconciled(*, agent: str, scope: list[str], task_id: str = "TASK-CACHE",
+                goal: str = "derived cache", generation: int = 1,
+                phase: str = "implement"):
+    return ac.acquire_or_refresh(
+        agent=agent, scope=scope, goal=goal, task_id=task_id,
+        generation=generation, phase=phase,
+    )
+
+
 class TestAcquire:
     def test_acquire_returns_a_claim_with_an_id(self):
         c = ac.acquire(agent="claude", scope=["skills/awiki/**"], goal="build a-router")
@@ -42,6 +51,12 @@ class TestAcquire:
     def test_acquire_sets_a_lease_in_the_future(self):
         c = ac.acquire(agent="claude", scope=["a/**"], goal="g")
         assert c["lease_until"] > time.time()
+
+    def test_legacy_direct_acquire_is_typed_partial_unreconciled(self):
+        c = ac.acquire(agent="claude", scope=["a/**"], goal="legacy")
+        assert c["ownership_state"] == "PARTIAL_UNRECONCILED"
+        assert c["authority_role"] == "derived_same_machine_cache"
+        assert c.get("task_id") is None
 
     def test_acquire_requires_agent_scope_and_goal(self):
         for kwargs in ({"agent": "", "scope": ["a"], "goal": "g"},
@@ -57,35 +72,39 @@ class TestAcquire:
 
 
 class TestCollision:
-    def test_detects_another_agents_claim_on_the_same_path(self):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
+    def test_legacy_unreconciled_cache_is_not_ownership_authority(self):
+        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="legacy")
+        assert ac.collision("skills/awiki/a-router/SKILL.md", agent="claude") is None
+
+    def test_detects_reconciled_foreign_cache_on_the_same_path(self):
+        _reconciled(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
         hit = ac.collision("skills/awiki/a-router/SKILL.md", agent="claude")
         assert hit and hit["agent"] == "zcode" and hit["goal"] == "a-flow"
 
     def test_my_own_claim_is_never_a_collision(self):
-        ac.acquire(agent="claude", scope=["skills/awiki/**"], goal="mine")
+        _reconciled(agent="claude", scope=["skills/awiki/**"], goal="mine")
         assert ac.collision("skills/awiki/x/SKILL.md", agent="claude") is None
 
     def test_unrelated_path_is_not_a_collision(self):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
+        _reconciled(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
         assert ac.collision("docs/readme.md", agent="claude") is None
 
     def test_exact_file_scope_matches(self):
-        ac.acquire(agent="zcode", scope=["skills-registry.json"], goal="registry")
+        _reconciled(agent="zcode", scope=["skills-registry.json"], goal="registry")
         assert ac.collision("skills-registry.json", agent="claude")
 
     def test_windows_backslash_paths_are_normalised(self):
-        """Hooks receive Windows paths; a claim must still match."""
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
+        """Hooks receive Windows paths; a reconciled cache must still match."""
+        _reconciled(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
         assert ac.collision(r"skills\awiki\a-router\SKILL.md", agent="claude")
 
     def test_absolute_paths_inside_the_repo_are_matched(self):
-        ac.acquire(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
+        _reconciled(agent="zcode", scope=["skills/awiki/**"], goal="a-flow")
         abs_path = str(REPO_ROOT / "skills" / "awiki" / "a-router" / "SKILL.md")
         assert ac.collision(abs_path, agent="claude")
 
     def test_expired_claims_do_not_collide(self):
-        c = ac.acquire(agent="zcode", scope=["skills/**"], goal="stale")
+        c = _reconciled(agent="zcode", scope=["skills/**"], goal="stale")
         ac._force_lease(c["id"], time.time() - 1)
         assert ac.collision("skills/x.md", agent="claude") is None
 

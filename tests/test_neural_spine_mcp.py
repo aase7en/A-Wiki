@@ -331,35 +331,108 @@ def _unique_session(monkeypatch):
     return sid
 
 
-def test_claim_acquire_returns_dict_with_id(monkeypatch):
+def _init_claim_repo(tmp_path, monkeypatch):
+    """Create an isolated durable COLLAB/Git authority for MCP claim tests."""
+    import subprocess
+    subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                   check=True, capture_output=True)
+    subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+    (tmp_path / "COLLAB.md").write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n",
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-m", "claim fixture"], cwd=tmp_path,
+                   check=True, capture_output=True)
+    monkeypatch.setattr(nsmcp, "REPO_ROOT", tmp_path)
+    return tmp_path
+
+
+def test_claim_acquire_schema_requires_exact_task_id():
+    required = set(nsmcp.TOOLS["claim_acquire"]["inputSchema"]["required"])
+    assert {"task_id", "scope", "goal"} <= required
+
+
+def test_claim_acquire_requires_task_id_before_any_ttl_write(monkeypatch, tmp_path):
     _unique_session(monkeypatch)
+    _init_claim_repo(tmp_path, monkeypatch)
+    import agent_claims
+    with pytest.raises(ValueError, match="task_id"):
+        nsmcp.TOOLS["claim_acquire"]["fn"]({
+            "scope": ["scripts/foo/**"], "goal": "missing durable identity",
+        })
+    assert agent_claims.live() == []
+
+
+def test_claim_acquire_durable_first_returns_reconciled_cache(monkeypatch, tmp_path):
+    _unique_session(monkeypatch)
+    _init_claim_repo(tmp_path, monkeypatch)
     result = nsmcp.TOOLS["claim_acquire"]["fn"]({
-        "scope": ["scripts/foo/**"], "goal": "test goal",
+        "task_id": "TASK-MCP-1",
+        "scope": ["scripts/foo/**"],
+        "goal": "test goal",
     })
-    assert isinstance(result, dict)
-    assert "id" in result
-    assert result["scope"] == ["scripts/foo/**"]
+    assert result["task_id"] == "TASK-MCP-1"
+    assert result["authority_source"] == "COLLAB.md+Git"
+    assert result["ownership_state"] == "RECONCILED"
+    assert result["cache_state"] == "RECONCILED"
+    assert result["id"]
+    assert "| TASK-MCP-1 | zcode |" in (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+    import agent_claims
+    live = agent_claims.live()
+    assert len(live) == 1
+    assert live[0]["task_id"] == "TASK-MCP-1"
+    assert live[0]["ownership_state"] == "RECONCILED"
 
 
-def test_claim_list_returns_claims_and_summary(monkeypatch):
+def test_claim_acquire_durable_failure_never_mints_ttl_owner(monkeypatch, tmp_path):
     _unique_session(monkeypatch)
+    bad = tmp_path / "no-collab"
+    bad.mkdir()
+    monkeypatch.setattr(nsmcp, "REPO_ROOT", bad)
+    import agent_claims
+    with pytest.raises(Exception, match="COLLAB"):
+        nsmcp.TOOLS["claim_acquire"]["fn"]({
+            "task_id": "TASK-NO-DURABLE",
+            "scope": ["scripts/foo/**"],
+            "goal": "must fail before cache write",
+            "branch": "main",
+        })
+    assert agent_claims.live() == []
+
+
+def test_claim_list_labels_local_rows_as_derived_cache(monkeypatch, tmp_path):
+    _unique_session(monkeypatch)
+    _init_claim_repo(tmp_path, monkeypatch)
     nsmcp.TOOLS["claim_acquire"]["fn"]({
-        "scope": ["scripts/bar/**"], "goal": "another",
+        "task_id": "TASK-MCP-LIST",
+        "scope": ["scripts/bar/**"],
+        "goal": "another",
     })
     out = nsmcp.TOOLS["claim_list"]["fn"]({})
     assert "claims" in out and "summary" in out
-    assert isinstance(out["claims"], list)
-    assert len(out["claims"]) >= 1
+    assert isinstance(out["claims"], list) and len(out["claims"]) >= 1
+    assert out["authority_role"] == "derived_same_machine_cache"
+    assert out["canonical_authority"] == "COLLAB.md+Git"
 
 
-def test_claim_release_by_session_releases_all(monkeypatch):
+def test_claim_release_by_session_is_local_cache_only(monkeypatch, tmp_path):
     _unique_session(monkeypatch)
+    _init_claim_repo(tmp_path, monkeypatch)
     nsmcp.TOOLS["claim_acquire"]["fn"]({
-        "scope": ["scripts/baz/**"], "goal": "to release",
+        "task_id": "TASK-MCP-RELEASE",
+        "scope": ["scripts/baz/**"],
+        "goal": "to release",
     })
+    before = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
     out = nsmcp.TOOLS["claim_release"]["fn"]({})  # no claim_id → by session
-    # Finding: release_session returns the COUNT released (int, truthy).
-    assert out["released"], f"expected truthy release count, got {out['released']!r}"
+    assert out["released"], f"expected truthy local release count, got {out['released']!r}"
+    assert out["durable_released"] is False
+    assert out["authority_role"] == "derived_same_machine_cache"
+    assert (tmp_path / "COLLAB.md").read_text(encoding="utf-8") == before
 
 
 def test_design_quality_gate_scores_and_blocks():

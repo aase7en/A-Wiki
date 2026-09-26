@@ -425,6 +425,22 @@ class TestDurableClaimMirror:
         assert claims[0]["task_id"] == "TASK-58"
         assert claims[0]["generation"] == 1
 
+    def test_durable_success_cache_failure_is_typed_partial_unreconciled(self, tmp_path):
+        self._collab(tmp_path)
+        bad_store = tmp_path / "claims-dir"
+        bad_store.mkdir()
+        from conductor.bridge import add_claim
+        out = add_claim(
+            repo_root=tmp_path, topic="TASK-PARTIAL", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=bad_store,
+        )
+        assert out["claimed"] is True
+        assert out["cache_state"] == "PARTIAL_UNRECONCILED"
+        assert out["ownership_state"] == "PARTIAL_UNRECONCILED"
+        assert out["cache_claim_id"] is None
+        assert "| TASK-PARTIAL | glm |" in (
+            tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
     def test_ttl_release_never_removes_durable_collab_claim(self, tmp_path):
         self._collab(tmp_path)
         store = tmp_path / "claims.json"

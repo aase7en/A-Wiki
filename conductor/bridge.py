@@ -89,30 +89,58 @@ def recall(query: str, ledger: Path | None = None, limit: int = 10) -> list[dict
 
 
 def _mirror_local_claim(*, topic: str, agent: str, scope: str,
-                        generation: int, claims_store: Path | str | None) -> str:
+                        generation: int, claims_store: Path | str | None,
+                        goal: str | None = None, phase: str = "plan",
+                        session_id: str | None = None) -> dict:
     """Best-effort derived TTL cache mirror; durable COLLAB remains authority."""
     sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
     try:
         import agent_claims as ac
-        ac.acquire_or_refresh(
+        claim = ac.acquire_or_refresh(
             agent=agent,
             scope=[part.strip() for part in scope.split(";") if part.strip()],
-            goal=f"Durable claim mirror: {topic}",
+            goal=(goal or f"Durable claim mirror: {topic}"),
             task_id=topic,
             generation=max(1, generation),
-            phase="plan",
-            session_id=f"durable:{topic}",
+            phase=phase,
+            session_id=session_id or f"durable:{topic}",
             store=claims_store,
         )
     except Exception:
-        return "PARTIAL_UNRECONCILED"
-    return "RECONCILED"
+        return {"cache_state": "PARTIAL_UNRECONCILED", "cache_claim_id": None}
+    return {"cache_state": "RECONCILED", "cache_claim_id": claim.get("id")}
+
+
+def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
+                  already: bool, mirror: dict, claim_row: str | None = None) -> dict:
+    cache_state = mirror["cache_state"]
+    out = {
+        "claimed": True,
+        "already": already,
+        "topic": topic,
+        "task_id": topic,
+        "generation": generation,
+        "scope": [part.strip() for part in scope.split(";") if part.strip()],
+        "branch": branch,
+        "authority_source": "COLLAB.md+Git",
+        "cache_state": cache_state,
+        "cache_claim_id": mirror.get("cache_claim_id"),
+        "ownership_state": (
+            "RECONCILED" if cache_state == "RECONCILED"
+            else "PARTIAL_UNRECONCILED"
+        ),
+    }
+    if claim_row is not None:
+        out["claim_row"] = claim_row
+    return out
 
 
 def add_claim(repo_root: Path | None = None, topic: str = "",
               agent: str = "unknown", scope: str = "<scope>",
               branch: str = "<branch>",
-              claims_store: Path | str | None = None) -> dict:
+              claims_store: Path | str | None = None,
+              cache_goal: str | None = None, phase: str = "plan",
+              session_id: str | None = None) -> dict:
     root = Path(repo_root) if repo_root else Path.cwd()
     collab = root / "COLLAB.md"
     if not collab.is_file():
@@ -125,13 +153,25 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
             continue
         if c["agent"].strip().lower() != agent.strip().lower():
             raise ClaimConflict(f"'{topic}' already claimed by {c['agent']!r}")
+        if scope != "<scope>":
+            requested_scope = [part.strip() for part in scope.split(";") if part.strip()]
+            durable_scope = [part.strip() for part in c["scope"].split(";") if part.strip()]
+            if requested_scope != durable_scope:
+                raise ClaimConflict(
+                    f"'{topic}' scope mismatch: durable={durable_scope!r}, "
+                    f"requested={requested_scope!r}")
+        if branch != "<branch>" and branch.strip() != c["branch"].strip():
+            raise ClaimConflict(
+                f"'{topic}' branch mismatch: durable={c['branch']!r}, requested={branch!r}")
         from .state import claim_generation
         generation = claim_generation(root, topic)
-        cache_state = _mirror_local_claim(
+        mirror = _mirror_local_claim(
             topic=topic, agent=agent, scope=c["scope"], generation=generation,
-            claims_store=claims_store)
-        return {"claimed": True, "already": True, "topic": topic,
-                "generation": generation, "cache_state": cache_state}
+            claims_store=claims_store, goal=cache_goal, phase=phase,
+            session_id=session_id)
+        return _claim_result(
+            topic=topic, generation=generation, scope=c["scope"],
+            branch=c["branch"], already=True, mirror=mirror)
 
     verdict = entry_gate(root, topic=topic, agent=agent)
     if verdict["conflicts"]:
@@ -152,12 +192,13 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     lines.insert(last_table + 1, row)
     collab.write_text("".join(lines), encoding="utf-8")
 
-    cache_state = _mirror_local_claim(
+    mirror = _mirror_local_claim(
         topic=topic, agent=agent, scope=scope, generation=1,
-        claims_store=claims_store)
-    return {"claimed": True, "already": False, "topic": topic,
-            "generation": 1, "cache_state": cache_state,
-            "claim_row": row.strip()}
+        claims_store=claims_store, goal=cache_goal, phase=phase,
+        session_id=session_id)
+    return _claim_result(
+        topic=topic, generation=1, scope=scope, branch=branch,
+        already=False, mirror=mirror, claim_row=row.strip())
 
 
 # ── Slice 1: wiki search + graph navigation (A-Conductor Phase 4) ──────
