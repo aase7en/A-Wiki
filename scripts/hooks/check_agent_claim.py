@@ -28,6 +28,7 @@ import fnmatch
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -77,8 +78,30 @@ def is_shared_surface(path: str) -> bool:
     return p.startswith(SHARED_SURFACES)
 
 
+def _git_toplevel(start: Path) -> Path | None:
+    """Return this workspace's own Git root; never cross into a parent repo."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=str(start),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return None
+    try:
+        return Path(proc.stdout.strip()).resolve()
+    except (OSError, RuntimeError):
+        return Path(proc.stdout.strip())
+
+
 def _workspace_root(data: dict) -> Path:
-    """Resolve the repo/workspace authority root for one normalized hook payload."""
+    """Resolve authority at the payload workspace's own repo boundary."""
     cwd = data.get("cwd") if isinstance(data, dict) else None
     if not (isinstance(cwd, str) and cwd.strip()):
         return REPO_ROOT
@@ -86,15 +109,10 @@ def _workspace_root(data: dict) -> Path:
         start = Path(cwd).resolve()
     except (OSError, RuntimeError):
         start = Path(cwd)
-    # Provider cwd may be a nested directory. Prefer the nearest repo-level
-    # COLLAB authority when present; otherwise keep the isolated cwd itself.
-    for candidate in (start, *start.parents):
-        try:
-            if (candidate / "COLLAB.md").is_file():
-                return candidate
-        except OSError:
-            continue
-    return start
+    git_root = _git_toplevel(start)
+    # A nested Git repository is an authority boundary even when it has no
+    # COLLAB.md. Non-Git workspaces likewise remain isolated to their cwd.
+    return git_root if git_root is not None else start
 
 
 def _durable_claims(workspace_root: Path | str | None = None) -> list[dict]:

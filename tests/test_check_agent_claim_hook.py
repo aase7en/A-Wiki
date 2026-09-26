@@ -192,6 +192,42 @@ def test_foreign_workspace_uses_its_own_durable_claim_for_absolute_path(tmp_path
     assert "foreign_owner" in r.stderr
 
 
+
+def test_workspace_root_respects_nested_foreign_git_boundary(tmp_path):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_git_boundary", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    parent = tmp_path / "brain-parent"
+    parent.mkdir()
+    (parent / "COLLAB.md").write_text("# COLLAB\n", encoding="utf-8")
+    foreign = parent / "nested-foreign"
+    foreign.mkdir()
+    subprocess.run(["git", "init", "-b", "main"], cwd=foreign,
+                   check=True, capture_output=True)
+    nested = foreign / "src" / "deep"
+    nested.mkdir(parents=True)
+
+    assert mod._workspace_root({"cwd": str(nested)}) == foreign.resolve()
+
+
+def test_workspace_root_non_git_does_not_inherit_parent_collab(tmp_path):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_nongit_boundary", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    parent = tmp_path / "brain-parent"
+    parent.mkdir()
+    (parent / "COLLAB.md").write_text("# COLLAB\n", encoding="utf-8")
+    foreign = parent / "nested-nongit"
+    foreign.mkdir()
+
+    assert mod._workspace_root({"cwd": str(foreign)}) == foreign.resolve()
+
+
+
 def test_foreign_workspace_without_collab_does_not_inherit_brain_claims(tmp_path, monkeypatch):
     import importlib.util as ilu
     spec = ilu.spec_from_file_location("claim_hook_isolation", HOOK)

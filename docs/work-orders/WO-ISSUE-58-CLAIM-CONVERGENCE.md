@@ -140,3 +140,37 @@ GREEN evidence after repair:
 A fresh exact-head R3 review and exact-head hosted CI are required for the
 replacement candidate. Superseded/cancelled reviews are not acceptance
 evidence.
+
+## Nested workspace authority boundary hardening — 2026-09-27
+
+Candidate `c88da14ace9b3963749074c2d7389f05e8caebce` is superseded before
+acceptance. Adversarial read-only verification proved that a nested foreign Git
+repository, or a nested non-Git workspace, could inherit a parent directory's
+`COLLAB.md` because the durable-authority resolver walked upward by filesystem
+parent rather than respecting repository boundaries.
+
+Root cause: `_workspace_root()` treated the nearest ancestor containing
+`COLLAB.md` as authority, even when payload `cwd` belonged to a distinct
+nested Git repository.
+
+Repair contract:
+- resolve Git workspaces with `git rev-parse --show-toplevel`;
+- that Git top-level is the hard authority boundary even if it has no
+  `COLLAB.md`;
+- non-Git workspaces remain isolated to their own `cwd`;
+- never walk upward into an unrelated parent claim authority;
+- linked A-Wiki worktrees continue to resolve to their own worktree Git
+  top-level while the derived TTL cache sharing remains keyed by Git common-dir.
+
+RED evidence: 2/2 nested-boundary regression tests failed before repair.
+GREEN evidence after repair:
+- `tests/test_check_agent_claim_hook.py`: **19/19 PASS**;
+- related conductor/claim/hook/adopt/runtime pytest suite: **296/296 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (0 new findings);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+A fresh exact-head hosted CI and independent R3 review are required for the
+replacement candidate. Earlier exact-SHA reviews/CI are superseded evidence.
