@@ -336,7 +336,7 @@ class TestCanonicalClaimReader:
     def _init_repo(self, tmp_path):
         import subprocess
         subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
-        subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
         subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         (tmp_path / "COLLAB.md").write_text(
             "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"

@@ -8,12 +8,12 @@ Topology: CONTROL_PLANE_ONLY (A-Wiki upstream authority)
 ## Binding
 
 - Repo: aase7en/A-Wiki
-- Worktree: `/Users/aase7en/Desktop/_worktrees/A-Wiki-issue58-claim-convergence`
+- Worktree: isolated consumer-local worktree; machine path intentionally omitted
 - Branch: `fix/issue-58-claim-convergence`
 - Base: `16897b2d34f3ff0de0938f7651cf19bbce106b43`
-- Durable owner: `chatgpt-sol`
+- Durable owner role: GPT integrator
 - Durable claim: `Issue #58 claim authority convergence` COLLAB row
-- Local TTL claim: `a95e8c226df4` (canonical Mac store)
+- Local TTL cache: derived same-machine lease; runtime identifier intentionally omitted
 - Parent dependency: Conductor #551/#552 -> #549/#550
 
 ## Goal
