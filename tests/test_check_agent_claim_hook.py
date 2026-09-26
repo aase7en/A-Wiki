@@ -172,6 +172,49 @@ def test_blocks_foreign_durable_claim_when_ttl_cache_empty(tmp_path):
     assert "other_agent" in r.stderr
 
 
+def test_foreign_workspace_uses_its_own_durable_claim_for_absolute_path(tmp_path):
+    store = tmp_path / "claims.json"
+    foreign = tmp_path / "foreign"
+    target = foreign / "scripts" / "lib" / "foo.py"
+    target.parent.mkdir(parents=True)
+    target.write_text("x", encoding="utf-8")
+    (foreign / "COLLAB.md").write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| FOREIGN-1 | foreign_owner | 2026-09-27 | scripts/lib/** | feat/foreign |\n",
+        encoding="utf-8",
+    )
+    payload = _edit_payload(str(target))
+    payload["cwd"] = str(foreign)
+    r = _run_hook(payload, claims_store=store)
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE CLAIM COLLISION" in r.stderr
+    assert "foreign_owner" in r.stderr
+
+
+def test_foreign_workspace_without_collab_does_not_inherit_brain_claims(tmp_path, monkeypatch):
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_isolation", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    fake_brain = tmp_path / "brain"
+    fake_brain.mkdir()
+    (fake_brain / "COLLAB.md").write_text(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n"
+        "| BRAIN-1 | brain_owner | 2026-09-27 | conductor/** | feat/brain |\n",
+        encoding="utf-8",
+    )
+    foreign = tmp_path / "foreign-no-collab"
+    foreign.mkdir()
+    monkeypatch.delenv("AWIKI_DURABLE_CLAIMS_FILE", raising=False)
+    monkeypatch.setattr(mod, "REPO_ROOT", fake_brain)
+
+    assert mod._durable_claims(foreign) == []
+
+
+
 # ---------------------------------------------------------------------------
 # 4. Warn (exit 0) on unclaimed shared-surface edit
 # ---------------------------------------------------------------------------

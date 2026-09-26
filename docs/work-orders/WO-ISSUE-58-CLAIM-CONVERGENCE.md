@@ -102,3 +102,41 @@ GREEN evidence after repair:
 The interrupted read-only review of the superseded SHA produced no acceptance
 verdict and is not acceptance evidence. A fresh exact-SHA R3 review is required
 for the replacement candidate.
+
+
+## Foreign-repo authority isolation hardening — 2026-09-27
+
+Candidate `993aefd4efb6933bf02f48fbf576a5f84aa77d46` is superseded before
+acceptance. A direct read-only diagnostic proved that a foreign/adopted
+workspace with no local durable authority could inherit the A-Wiki brain's
+`COLLAB.md` claim and be blocked by an unrelated A-Wiki scope.
+
+Root cause: `check_agent_claim.py` resolved durable claims and absolute file
+paths against its own A-Wiki `REPO_ROOT`, ignoring the normalized hook
+payload's `cwd`.
+
+Repair contract:
+- resolve the authority root from payload `cwd`, walking to the nearest
+  repo-level `COLLAB.md` when one exists;
+- a foreign workspace without `COLLAB.md` has no inherited A-Wiki durable
+  claims;
+- a foreign workspace with its own `COLLAB.md` enforces that repo's durable
+  claims, including absolute file paths normalized relative to that workspace;
+- local TTL collision receives the same workspace-relative path;
+- explicit `AWIKI_DURABLE_CLAIMS_FILE` remains a deliberate override for
+  tests/emergency use.
+
+RED evidence: 2/2 new foreign-authority isolation tests failed before repair.
+GREEN evidence after repair:
+- `tests/test_check_agent_claim_hook.py`: **17/17 PASS**;
+- direct foreign-no-COLLAB diagnostic: **PASS / rc 0** (no brain claim leak);
+- related conductor/claim/hook/adopt/runtime suite: **294/294 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (0 new findings);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+A fresh exact-head R3 review and exact-head hosted CI are required for the
+replacement candidate. Superseded/cancelled reviews are not acceptance
+evidence.
