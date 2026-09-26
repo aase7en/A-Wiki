@@ -192,12 +192,14 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     lines.insert(last_table + 1, row)
     collab.write_text("".join(lines), encoding="utf-8")
 
+    from .state import claim_generation
+    generation = claim_generation(root, topic)
     mirror = _mirror_local_claim(
-        topic=topic, agent=agent, scope=scope, generation=1,
+        topic=topic, agent=agent, scope=scope, generation=generation,
         claims_store=claims_store, goal=cache_goal, phase=phase,
         session_id=session_id)
     return _claim_result(
-        topic=topic, generation=1, scope=scope, branch=branch,
+        topic=topic, generation=generation, scope=scope, branch=branch,
         already=False, mirror=mirror, claim_row=row.strip())
 
 

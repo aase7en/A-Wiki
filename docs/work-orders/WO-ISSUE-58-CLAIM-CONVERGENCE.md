@@ -249,3 +249,50 @@ The earlier source candidate retained its stronger related source evidence
 (**320/320 PASS**) but is not an acceptance SHA after this canonical guidance
 change. A new frozen exact head requires fresh hosted CI and an independent R3
 review.
+
+## R3 adversarial replay repair — generation ABA + detached branch — 2026-09-27
+
+Candidate `f03b3ff9ddc2281c6f9d037b2940456011322f37` is superseded before
+acceptance. Fresh exact-head R3 review independently reran the focused suite
+(277/277 PASS) and then found two trust-boundary defects by adversarial replay:
+
+1. After a durable claim was committed, released in Git, and the same task was
+   claimed again, `add_claim()` returned generation 1 while the canonical
+   reader reported generation 2 after commit; the derived cache id therefore
+   failed to rotate and could preserve ABA identity.
+2. `_claim_branch()` rejected an empty branch only after considering a caller-
+   supplied branch, so a detached HEAD could pass `branch="main"` and mint a
+   durable claim bound to a branch the checkout was not actually on.
+
+Repair:
+- `claim_generation()` now counts committed task-row additions/replacements
+  plus the current staged/unstaged task-row addition/replacement versus HEAD;
+  this makes the generation correct before the mandatory claim commit and
+  identical after commit;
+- new durable claims mirror the computed generation instead of hard-coded 1;
+- release -> reclaim rotates both generation and derived cache identity;
+- `_claim_branch()` now requires a real current checkout branch first; an
+  explicit branch may only equal that current branch and cannot bypass
+  detached HEAD;
+- the missing-COLLAB regression fixture now uses a real Git main checkout so
+  it continues to test durable failure rather than failing at branch binding.
+
+RED evidence: both new regressions failed before repair.
+GREEN / verification after repair:
+- ABA + detached-HEAD focused regressions: **2/2 PASS**;
+- durable-failure fixture + both new regressions: **3/3 PASS**;
+- related conductor/claim/MCP/hook/adopt/runtime pytest surface:
+  **324/324 PASS**;
+- adversarial replay: `GEN1_PRE 1/1`, `GEN2_PRE 2/2`, cache id rotated,
+  `GEN2_POST 2`;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked / 51 baselined / 0 new);
+- wiki health: PASS (0 hard errors);
+- generated skill surfaces: **13/13 no drift**; registry validation PASS;
+- py_compile + `git diff --check`: PASS;
+- added-line secret-signature scan: **0 hits**.
+
+The interrupted review of the superseded SHA is defect evidence, not an
+acceptance verdict. The replacement exact head requires fresh hosted CI and a
+fresh independent R3 review.

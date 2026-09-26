@@ -458,6 +458,47 @@ class TestDurableClaimMirror:
             ac.set_store(old_store)
         assert "| TASK-58 | glm |" in (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
 
+    def test_release_then_reclaim_rotates_generation_before_and_after_commit(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "empty claims"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        from conductor.state import read_canonical_claim
+        first = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert first["generation"] == 1
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 1
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "release generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        second = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert second["generation"] == 2
+        assert second["cache_claim_id"] != first["cache_claim_id"]
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 2"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
+
 
 class TestBridgeCli:
     def _run(self, *args):

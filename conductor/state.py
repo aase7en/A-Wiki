@@ -74,20 +74,33 @@ def _git(repo_root: Path, *args: str) -> str:
 
 
 def claim_generation(repo_root: Path, task_id: str) -> int:
-    """Return the durable COLLAB generation count for one exact task id.
+    """Return the current durable COLLAB generation for one exact task id.
 
-    A claim-row addition or replacement in Git history advances generation.
-    An uncommitted/new repository safely starts at generation 1.
+    Every committed claim-row addition/replacement advances generation. The
+    current uncommitted claim-row addition/replacement also counts so a newly
+    reacquired task rotates generation *before* the mandatory claim commit.
     """
     escaped = re.escape(task_id.strip())
     if not escaped:
         raise ClaimLookupError("TASK_ID_REQUIRED")
+    row = re.compile(rf"^\+\|\s*{escaped}\s*\|", re.MULTILINE)
+
+    committed = 0
     try:
         patch = _git(repo_root, "log", "--format=", "--patch", "--", "COLLAB.md")
+        committed = len(row.findall(patch))
     except ClaimLookupError:
-        return 1
-    row = re.compile(rf"^\+\|\s*{escaped}\s*\|", re.MULTILINE)
-    return max(1, len(row.findall(patch)))
+        pass
+
+    pending = 0
+    try:
+        # HEAD comparison includes both staged and unstaged changes.
+        working = _git(repo_root, "diff", "HEAD", "--", "COLLAB.md")
+        pending = len(row.findall(working))
+    except ClaimLookupError:
+        pass
+
+    return max(1, committed + pending)
 
 
 def _repo_identity(repo_root: Path) -> str:

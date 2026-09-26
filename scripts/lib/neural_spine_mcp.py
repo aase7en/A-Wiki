@@ -489,13 +489,12 @@ def _claim_branch(args: dict) -> str:
     except (OSError, subprocess.SubprocessError) as exc:
         raise ValueError(f"claim branch unavailable: {exc}") from None
     current = proc.stdout.strip() if proc.returncode == 0 else ""
-    if requested and current and requested != current:
+    if not current:
+        raise ValueError("claim requires an exact branch; detached HEAD is not eligible")
+    if requested and requested != current:
         raise ValueError(
             f"claim branch mismatch: checkout={current!r}, requested={requested!r}")
-    branch = requested or current
-    if not branch:
-        raise ValueError("claim requires an exact branch; detached HEAD is not eligible")
-    return branch
+    return current
 
 
 def tool_claim_acquire(args: dict) -> dict:

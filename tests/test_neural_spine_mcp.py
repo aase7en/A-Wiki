@@ -355,6 +355,15 @@ def test_claim_acquire_schema_requires_exact_task_id():
     assert {"task_id", "scope", "goal"} <= required
 
 
+def test_claim_branch_rejects_detached_head_even_with_requested_branch(monkeypatch, tmp_path):
+    import subprocess
+    _init_claim_repo(tmp_path, monkeypatch)
+    subprocess.run(["git", "checkout", "--detach"], cwd=tmp_path,
+                   check=True, capture_output=True)
+    with pytest.raises(ValueError, match="detached HEAD"):
+        nsmcp._claim_branch({"branch": "main"})
+
+
 def test_claim_acquire_requires_task_id_before_any_ttl_write(monkeypatch, tmp_path):
     _unique_session(monkeypatch)
     _init_claim_repo(tmp_path, monkeypatch)
@@ -389,9 +398,12 @@ def test_claim_acquire_durable_first_returns_reconciled_cache(monkeypatch, tmp_p
 
 
 def test_claim_acquire_durable_failure_never_mints_ttl_owner(monkeypatch, tmp_path):
+    import subprocess
     _unique_session(monkeypatch)
     bad = tmp_path / "no-collab"
     bad.mkdir()
+    subprocess.run(["git", "init", "-b", "main"], cwd=bad,
+                   check=True, capture_output=True)
     monkeypatch.setattr(nsmcp, "REPO_ROOT", bad)
     import agent_claims
     with pytest.raises(Exception, match="COLLAB"):
