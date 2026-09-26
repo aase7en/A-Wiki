@@ -337,3 +337,41 @@ GREEN / verification after repair:
 The harvested R3 review of `a5d853d0...` is defect evidence, not acceptance
 evidence. The replacement exact head requires fresh hosted CI and a fresh
 independent exact-SHA R3 review.
+
+## R3 branch-ref repair — exact durable branch resolution — 2026-09-27
+
+Candidate `e51510f595c9afcb18effa257df25a43ae7e8cc4` passed exact-head
+Core CI and PR Loop Gate, but fresh independent R3 review found one remaining
+P2 blocker on the direct CLI writer:
+
+- `conductor claim --branch <nonexistent-ref>` could write a COLLAB row and
+  report a RECONCILED cache even though the canonical reader immediately failed
+  with `BRANCH_HEAD_UNRESOLVED`.
+
+Repair:
+- new durable claim creation resolves the requested branch to an exact local
+  `refs/heads/<branch>` or fetched `refs/remotes/origin/<branch>` commit before
+  entry-gate evaluation or COLLAB mutation;
+- an unresolved/typo branch fails closed before any durable row or cache owner
+  is created;
+- legacy unit fixtures that previously used synthetic branch strings now create
+  real Git repositories/commits/branch refs so tests exercise the same durable
+  binding contract as production.
+
+RED evidence: new unresolved-branch regression failed before repair.
+GREEN / verification after repair:
+- unresolved-branch regression: **1/1 PASS**;
+- updated branch-binding fixture set: **6/6 PASS**;
+- related conductor/claim/MCP/hook/adopt/runtime pytest surface:
+  **328/328 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked / 51 baselined / 0 new);
+- wiki health: PASS (0 hard errors);
+- generated skill surfaces: **13/13 no drift**; registry validation PASS;
+- py_compile + `git diff --check`: PASS;
+- added-line secret-signature scan: **0 hits**.
+
+The review of `e51510f5...` is defect evidence, not acceptance evidence. The
+replacement exact head requires fresh hosted CI and a fresh independent R3
+review before merge.

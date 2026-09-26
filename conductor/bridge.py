@@ -111,6 +111,25 @@ def _mirror_local_claim(*, topic: str, agent: str, scope: str,
     return {"cache_state": "RECONCILED", "cache_claim_id": claim.get("id")}
 
 
+def _require_branch_ref(repo_root: Path, branch: str) -> str:
+    """Resolve one exact local/origin branch ref before durable claim creation."""
+    name = branch.strip()
+    if not name or name.startswith("<"):
+        raise ClaimConflict("new durable claim requires an exact branch")
+    for ref in (f"refs/heads/{name}", f"refs/remotes/origin/{name}"):
+        try:
+            proc = subprocess.run(
+                ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+                cwd=str(repo_root), capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=15,
+            )
+        except (OSError, subprocess.SubprocessError):
+            proc = None
+        if proc is not None and proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+    raise ClaimConflict(f"branch ref unresolved: {name!r}")
+
+
 def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
                   already: bool, mirror: dict, claim_row: str | None = None) -> dict:
     cache_state = mirror["cache_state"]
@@ -183,6 +202,7 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         raise ClaimConflict("new durable claim requires an exact scope")
     if branch == "<branch>" or not branch.strip():
         raise ClaimConflict("new durable claim requires an exact branch")
+    _require_branch_ref(root, branch)
 
     verdict = entry_gate(root, topic=topic, agent=agent)
     if verdict["conflicts"]:

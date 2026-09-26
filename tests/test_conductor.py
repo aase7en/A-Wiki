@@ -299,8 +299,17 @@ class TestClaim:
         return p
 
     def test_claim_appends_row_after_go(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "branch", "feat/x"], cwd=tmp_path, check=True)
         from conductor.bridge import add_claim
         out = add_claim(repo_root=tmp_path, topic="fresh-thing",
                         agent="zcode", scope="scripts/x.py", branch="feat/x")
@@ -316,8 +325,16 @@ class TestClaim:
             add_claim(repo_root=tmp_path, topic="taken-topic", agent="zcode")
 
     def test_claim_idempotent_same_agent(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
         from conductor.bridge import add_claim
         add_claim(
             repo_root=tmp_path, topic="t1", agent="zcode",
@@ -353,6 +370,28 @@ class TestClaim:
                 scope="x/**",
                 branch="main",
             )
+
+    def test_new_claim_rejects_unresolvable_branch_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="branch.*unresolved|branch.*ref|branch"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="TASK-BAD-BRANCH",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="definitely-not-a-ref",
+            )
+        assert "TASK-BAD-BRANCH" not in p.read_text(encoding="utf-8")
 
 
 class TestCanonicalClaimReader:
@@ -433,8 +472,19 @@ class TestDurableClaimMirror:
             "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
             "|---|---|---|---|---|\n", encoding="utf-8")
 
-    def test_add_claim_mirrors_local_ttl_idempotently(self, tmp_path, monkeypatch):
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+    def test_add_claim_mirrors_local_ttl_idempotently(self, tmp_path, monkeypatch):
+        self._init_repo(tmp_path)
         store = tmp_path / "claims.json"
         from conductor.bridge import add_claim
         out1 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
@@ -449,7 +499,7 @@ class TestDurableClaimMirror:
         assert claims[0]["generation"] == 1
 
     def test_durable_success_cache_failure_is_typed_partial_unreconciled(self, tmp_path):
-        self._collab(tmp_path)
+        self._init_repo(tmp_path)
         bad_store = tmp_path / "claims-dir"
         bad_store.mkdir()
         from conductor.bridge import add_claim
@@ -465,7 +515,7 @@ class TestDurableClaimMirror:
             tmp_path / "COLLAB.md").read_text(encoding="utf-8")
 
     def test_ttl_release_never_removes_durable_collab_claim(self, tmp_path):
-        self._collab(tmp_path)
+        self._init_repo(tmp_path)
         store = tmp_path / "claims.json"
         from conductor.bridge import add_claim
         add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
