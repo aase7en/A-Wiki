@@ -11,9 +11,12 @@ thin brain-side operations for the A-Conductor control plane (and any agent):
 from __future__ import annotations
 
 import json
+import os
+import re
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
 
@@ -88,32 +91,294 @@ def recall(query: str, ledger: Path | None = None, limit: int = 10) -> list[dict
     return out
 
 
+def _mirror_local_claim(*, topic: str, agent: str, scope: str,
+                        generation: int, claims_store: Path | str | None,
+                        goal: str | None = None, phase: str = "plan",
+                        session_id: str | None = None) -> dict:
+    """Best-effort derived TTL cache mirror; durable COLLAB remains authority."""
+    sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+    try:
+        import agent_claims as ac
+        claim = ac.acquire_or_refresh(
+            agent=agent,
+            scope=[part.strip() for part in scope.split(";") if part.strip()],
+            goal=(goal or f"Durable claim mirror: {topic}"),
+            task_id=topic,
+            generation=max(1, generation),
+            phase=phase,
+            session_id=session_id or f"durable:{topic}",
+            store=claims_store,
+        )
+    except Exception:
+        return {"cache_state": "PARTIAL_UNRECONCILED", "cache_claim_id": None}
+    return {"cache_state": "RECONCILED", "cache_claim_id": claim.get("id")}
+
+
+def _require_branch_ref(repo_root: Path, branch: str) -> str:
+    """Resolve one exact local/origin branch ref before durable claim creation."""
+    name = branch.strip()
+    if not name or name.startswith("<"):
+        raise ClaimConflict("new durable claim requires an exact branch")
+    for ref in (f"refs/heads/{name}", f"refs/remotes/origin/{name}"):
+        try:
+            proc = subprocess.run(
+                ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+                cwd=str(repo_root), capture_output=True, text=True,
+                encoding="utf-8", errors="replace", timeout=15,
+            )
+        except (OSError, subprocess.SubprocessError):
+            proc = None
+        if proc is not None and proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+    raise ClaimConflict(f"branch ref unresolved: {name!r}")
+
+
+def _require_checkout_branch(repo_root: Path, branch: str) -> str:
+    """Require the mutating checkout itself to be attached to the durable branch."""
+    name = branch.strip()
+    try:
+        proc = subprocess.run(
+            ["git", "branch", "--show-current"],
+            cwd=str(repo_root), capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=15,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ClaimConflict(f"checkout branch unavailable: {exc}") from None
+    current = proc.stdout.strip() if proc.returncode == 0 else ""
+    if not current:
+        raise ClaimConflict("claim requires an attached checkout branch; detached HEAD is not eligible")
+    if current != name:
+        raise ClaimConflict(
+            f"checkout branch mismatch: checkout={current!r}, durable={name!r}")
+    return current
+
+
+def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
+                  already: bool, mirror: dict, claim_row: str | None = None) -> dict:
+    cache_state = mirror["cache_state"]
+    out = {
+        "claimed": True,
+        "already": already,
+        "topic": topic,
+        "task_id": topic,
+        "generation": generation,
+        "scope": [part.strip() for part in scope.split(";") if part.strip()],
+        "branch": branch,
+        "authority_source": "COLLAB.md+Git",
+        "cache_state": cache_state,
+        "cache_claim_id": mirror.get("cache_claim_id"),
+        "ownership_state": (
+            "RECONCILED" if cache_state == "RECONCILED"
+            else "PARTIAL_UNRECONCILED"
+        ),
+    }
+    if claim_row is not None:
+        out["claim_row"] = claim_row
+    return out
+
+
+def _validate_claim_scalar(name: str, value: str, *, allow_placeholder: bool = False) -> str:
+    """Reject Markdown-table/control injection in durable claim scalar fields."""
+    text = (value or "").strip()
+    if allow_placeholder and text.startswith("<") and text.endswith(">"):
+        return text
+    if not text:
+        raise ClaimConflict(f"{name} is required")
+    if "|" in text or any(ch in text for ch in "\r\n") or any(ord(ch) < 32 for ch in text):
+        raise ClaimConflict(f"{name} contains table/control characters")
+    return text
+
+
+def _validate_claim_scope(scope: str, *, allow_placeholder: bool = False) -> str:
+    """Require semicolon-separated, repo-relative, public-safe durable scope globs."""
+    raw = (scope or "").strip()
+    if allow_placeholder and raw == "<scope>":
+        return raw
+    if not raw:
+        raise ClaimConflict("scope is required")
+    if "|" in raw or any(ch in raw for ch in "\r\n") or any(ord(ch) < 32 for ch in raw):
+        raise ClaimConflict("scope contains table/control characters")
+    items = [part.strip() for part in raw.split(";") if part.strip()]
+    if not items:
+        raise ClaimConflict("scope is required")
+    for item in items:
+        normalized = item.replace("\\", "/")
+        if (item.startswith(("/", "\\", "~")) or
+                re.match(r"^[A-Za-z]:[\\/]", item) or
+                any(part == ".." for part in normalized.split("/"))):
+            raise ClaimConflict(f"scope must be repo-relative: {item!r}")
+    return "; ".join(items)
+
+
+@contextmanager
+def _claim_write_lock(repo_root: Path):
+    """Serialize same-repository COLLAB durable writers; this is not an authority store."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"], cwd=str(repo_root),
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=15,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ClaimConflict(f"claim writer lock unavailable: {exc}") from None
+    raw = proc.stdout.strip() if proc.returncode == 0 else ""
+    if not raw:
+        raise ClaimConflict("claim writer lock requires a Git common-dir")
+    common = Path(raw)
+    if not common.is_absolute():
+        common = (repo_root / common).resolve()
+    lock_path = common / "awiki-claim-writer.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with lock_path.open("a+b") as fh:
+        if os.name == "nt":
+            import msvcrt
+            fh.seek(0, os.SEEK_END)
+            if fh.tell() == 0:
+                fh.write(b"\\0")
+                fh.flush()
+            fh.seek(0)
+            deadline = time.monotonic() + 30.0
+            while True:
+                try:
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError:
+                    if time.monotonic() >= deadline:
+                        raise ClaimConflict("timed out acquiring durable claim writer lock") from None
+                    time.sleep(0.05)
+            try:
+                yield
+            finally:
+                fh.seek(0)
+                msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+
+
 def add_claim(repo_root: Path | None = None, topic: str = "",
               agent: str = "unknown", scope: str = "<scope>",
-              branch: str = "<branch>") -> dict:
+              branch: str = "<branch>",
+              claims_store: Path | str | None = None,
+              cache_goal: str | None = None, phase: str = "plan",
+              session_id: str | None = None) -> dict:
+    root = Path(repo_root) if repo_root else Path.cwd()
+    collab = root / "COLLAB.md"
+    if not collab.is_file():
+        raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
+    normalized_topic = _validate_claim_scalar("task id", topic)
+    normalized_agent = _validate_claim_scalar("agent", agent)
+    if normalized_agent.lower() == "unknown":
+        raise ClaimConflict("durable claim requires a named agent/owner")
+    normalized_scope = _validate_claim_scope(scope, allow_placeholder=True)
+    normalized_branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
+    claims = parse_claims(collab)
+    exact_exists = False
+    for c in claims:
+        durable_task = c["chunk"].strip()
+        if durable_task == normalized_topic:
+            exact_exists = True
+            break
+        if durable_task.lower() == normalized_topic.lower():
+            raise ClaimConflict(
+                f"exact task id case mismatch: durable={durable_task!r}, requested={normalized_topic!r}")
+    if not exact_exists:
+        if scope == "<scope>" or not scope.strip():
+            raise ClaimConflict("new durable claim requires an exact scope")
+        if branch == "<branch>" or not branch.strip():
+            raise ClaimConflict("new durable claim requires an exact branch")
+
+    with _claim_write_lock(root):
+        return _add_claim_unlocked(
+            repo_root=root, topic=normalized_topic, agent=normalized_agent,
+            scope=normalized_scope, branch=normalized_branch,
+            claims_store=claims_store, cache_goal=cache_goal, phase=phase,
+            session_id=session_id,
+        )
+
+
+def _add_claim_unlocked(repo_root: Path | None = None, topic: str = "",
+              agent: str = "unknown", scope: str = "<scope>",
+              branch: str = "<branch>",
+              claims_store: Path | str | None = None,
+              cache_goal: str | None = None, phase: str = "plan",
+              session_id: str | None = None) -> dict:
     root = Path(repo_root) if repo_root else Path.cwd()
     collab = root / "COLLAB.md"
     if not collab.is_file():
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
 
-    # exact-slug ownership FIRST — a repeat claim by the SAME agent is
-    # idempotent even though the gate flags the existing row as a conflict
+    topic = _validate_claim_scalar("task id", topic)
+    agent = _validate_claim_scalar("agent", agent)
+    if agent.lower() == "unknown":
+        raise ClaimConflict("durable claim requires a named agent/owner")
+    scope = _validate_claim_scope(scope, allow_placeholder=True)
+    branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
     claims = parse_claims(collab)
-    slug = topic.strip().lower()
+    exact_matches = [c for c in claims if c["chunk"].strip() == topic]
+    if len(exact_matches) > 1:
+        raise ClaimConflict(f"duplicate/ambiguous durable claim rows for {topic!r}")
     for c in claims:
-        if c["chunk"].strip().lower() == slug:
-            if c["agent"].strip().lower() == agent.strip().lower():
-                return {"claimed": True, "already": True, "topic": topic}
+        durable_task = c["chunk"].strip()
+        if durable_task != topic:
+            if durable_task.lower() == topic.lower():
+                raise ClaimConflict(
+                    f"exact task id case mismatch: durable={durable_task!r}, requested={topic!r}")
+            continue
+        if c["agent"].strip().lower() != agent.strip().lower():
             raise ClaimConflict(f"'{topic}' already claimed by {c['agent']!r}")
+        if scope != "<scope>":
+            requested_scope = [part.strip() for part in scope.split(";") if part.strip()]
+            durable_scope = [part.strip() for part in c["scope"].split(";") if part.strip()]
+            if requested_scope != durable_scope:
+                raise ClaimConflict(
+                    f"'{topic}' scope mismatch: durable={durable_scope!r}, "
+                    f"requested={requested_scope!r}")
+        durable_branch = c["branch"].strip()
+        if branch != "<branch>" and branch.strip() != durable_branch:
+            raise ClaimConflict(
+                f"'{topic}' branch mismatch: durable={c['branch']!r}, requested={branch!r}")
+        _require_branch_ref(root, durable_branch)
+        _require_checkout_branch(root, durable_branch)
+        from .state import ClaimLookupError, claim_generation
+        try:
+            generation = claim_generation(root, topic)
+        except ClaimLookupError as exc:
+            raise ClaimConflict(str(exc)) from None
+        mirror = _mirror_local_claim(
+            topic=topic, agent=agent, scope=c["scope"], generation=generation,
+            claims_store=claims_store, goal=cache_goal, phase=phase,
+            session_id=session_id)
+        return _claim_result(
+            topic=topic, generation=generation, scope=c["scope"],
+            branch=c["branch"], already=True, mirror=mirror)
+
+    if scope == "<scope>" or not scope.strip():
+        raise ClaimConflict("new durable claim requires an exact scope")
+    if branch == "<branch>" or not branch.strip():
+        raise ClaimConflict("new durable claim requires an exact branch")
+    _require_branch_ref(root, branch)
+    _require_checkout_branch(root, branch)
+    from .state import ClaimLookupError, require_complete_claim_history
+    try:
+        require_complete_claim_history(root)
+    except ClaimLookupError as exc:
+        raise ClaimConflict(str(exc)) from None
 
     verdict = entry_gate(root, topic=topic, agent=agent)
-    if verdict["conflicts"]:
-        raise ClaimConflict("conflict with live claim: " + "; ".join(verdict["conflicts"]))
+    if verdict["verdict"] != "GO":
+        if verdict["conflicts"]:
+            raise ClaimConflict("conflict with live claim: " + "; ".join(verdict["conflicts"]))
+        raise ClaimConflict("entry gate rejected durable claim: named owner/continuity required")
 
     row = f"| {topic} | {agent} | {date.today().isoformat()} | {scope} | {branch} |\n"
     text = collab.read_text(encoding="utf-8")
     lines = text.splitlines(keepends=True)
-    # append into the claims table: after the last consecutive table row
     last_table = 0
     in_claims = False
     for i, line in enumerate(lines):
@@ -125,8 +390,16 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         raise ClaimConflict("claims table not found in COLLAB.md")
     lines.insert(last_table + 1, row)
     collab.write_text("".join(lines), encoding="utf-8")
-    return {"claimed": True, "already": False, "topic": topic,
-            "claim_row": row.strip()}
+
+    from .state import claim_generation
+    generation = claim_generation(root, topic)
+    mirror = _mirror_local_claim(
+        topic=topic, agent=agent, scope=scope, generation=generation,
+        claims_store=claims_store, goal=cache_goal, phase=phase,
+        session_id=session_id)
+    return _claim_result(
+        topic=topic, generation=generation, scope=scope, branch=branch,
+        already=False, mirror=mirror, claim_row=row.strip())
 
 
 # ── Slice 1: wiki search + graph navigation (A-Conductor Phase 4) ──────

@@ -169,7 +169,7 @@
 |-------|-----------|----------|-------------|
 | `a-agent` | meta | pipeline | AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-ha... |
 | `a-backend` | meta | pipeline | backend/API/service — bind api-design, backend-patterns, database-migrations, postgres/redis/pris... |
-| `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
+| `a-claim` | meta | pipeline | ระบบ claim ข้าม agent แบบ durable-first — COLLAB/Git เป็น authority ข้ามเครื่อง, .tmp เป็น cache ... |
 | `a-council` | review | pipeline | Persistent multi-persona council: code-reviewer/test-engineer/security-auditor post findings to a... |
 | `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-escalate` | meta | pipeline | แพ็คปัญหาที่ติดเป็น prompt พร้อมบริบทครบ ส่งให้โมเดลเก่งกว่าคิดต่อ — ผู้ใช้ก๊อปไปวางเอง ไม่มีการส... |
@@ -288,7 +288,7 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `a-agent` | meta | pipeline | AI/Agent engineering — bind agent-harness-construction, mcp-builder, mcp-server-patterns, eval-ha... |
-| `a-claim` | meta | pipeline | ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook bloc... |
+| `a-claim` | meta | pipeline | ระบบ claim ข้าม agent แบบ durable-first — COLLAB/Git เป็น authority ข้ามเครื่อง, .tmp เป็น cache ... |
 | `a-fasttask` | meta | pipeline | ตัวจ่ายงานข้าม harness สำหรับงาน repository ที่ไม่ trivial — หา project-local A-FastTask binding ... |
 | `agent-architecture-audit` | none | ecosystem | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper... |
 | `agent-eval` | none | ecosystem | ประเมินคุณภาพของ agent/prompt — วัด accuracy, cost, latency และหาจุดปรับปรุง |

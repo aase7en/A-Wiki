@@ -30,6 +30,7 @@ from __future__ import annotations
 import fnmatch
 import json
 import os
+import subprocess
 import tempfile
 import time
 import uuid
@@ -39,11 +40,30 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def _canonical_repo_root() -> Path:
+    """Resolve the shared checkout owning the Git common dir for all worktrees."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"], cwd=str(REPO_ROOT),
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=5,
+        )
+        raw = proc.stdout.strip() if proc.returncode == 0 else ""
+        if raw:
+            common = Path(raw)
+            if not common.is_absolute():
+                common = (REPO_ROOT / common).resolve()
+            if common.name == ".git":
+                return common.parent
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return REPO_ROOT
+
+
 def _default_store() -> Path:
-    """Env override exists so a hook SUBPROCESS can be pointed at a test store.
-    Without it, tests that spawn the hook would mutate the machine's real claims."""
+    """Use one same-machine TTL cache across every worktree of this repository."""
     env = os.environ.get("AWIKI_CLAIMS_STORE", "").strip()
-    return Path(env) if env else REPO_ROOT / ".tmp" / "agent-claims.json"
+    return Path(env) if env else _canonical_repo_root() / ".tmp" / "agent-claims.json"
 
 
 _DEFAULT_STORE = _default_store()
@@ -79,8 +99,8 @@ def _read() -> dict[str, Any]:
     return data
 
 
-def _write(data: dict[str, Any]) -> None:
-    """Atomic: write a temp file in the same dir, then os.replace over the target."""
+def _write(data: dict[str, Any]) -> bool:
+    """Atomically persist the cache; callers may choose fail-open or verified mode."""
     try:
         _STORE.parent.mkdir(parents=True, exist_ok=True)
         fd, tmp = tempfile.mkstemp(dir=str(_STORE.parent), prefix=".agent-claims-", suffix=".tmp")
@@ -95,7 +115,8 @@ def _write(data: dict[str, Any]) -> None:
                 pass
             raise
     except OSError:
-        pass  # fail open — never block work because the store is unwritable
+        return False  # legacy cache callers fail open; durable mirror checks this.
+    return True
 
 
 def _prune(data: dict[str, Any]) -> tuple[dict[str, Any], bool]:
@@ -140,6 +161,9 @@ def acquire(*, agent: str, scope: list[str], goal: str,
         raise ValueError(f"unknown phase {phase!r}; valid: {', '.join(PHASES)}")
 
     now = time.time()
+    # Legacy/direct writes are cache-only and MUST NOT become an independent
+    # mutation-ownership authority. Only acquire_or_refresh(), after durable
+    # COLLAB/Git identity exists, upgrades a row to RECONCILED.
     claim = {
         "id": uuid.uuid4().hex[:12],
         "agent": agent,
@@ -147,6 +171,10 @@ def acquire(*, agent: str, scope: list[str], goal: str,
         "scope": scope,
         "goal": goal,
         "phase": phase,
+        "task_id": None,
+        "generation": None,
+        "ownership_state": "PARTIAL_UNRECONCILED",
+        "authority_role": "derived_same_machine_cache",
         "started_ts": int(now),
         "heartbeat_ts": int(now),
         "lease_until": now + lease_seconds,
@@ -155,6 +183,105 @@ def acquire(*, agent: str, scope: list[str], goal: str,
     data["claims"].append(claim)
     _write(data)
     return claim
+
+
+def acquire_or_refresh(*, agent: str, scope: list[str], goal: str,
+                       task_id: str, generation: int, phase: str = "ask",
+                       session_id: str = "", lease_seconds: int = DEFAULT_LEASE_SECONDS,
+                       store: Path | str | None = None) -> dict[str, Any]:
+    """Mirror one durable claim into the derived TTL cache idempotently.
+
+    The durable task id + generation are cache metadata only. This function never
+    writes COLLAB/Git and TTL expiry/release therefore cannot release durable truth.
+    """
+    agent = (agent or "").strip()
+    task_id = (task_id or "").strip()
+    goal = (goal or "").strip()
+    scope = [s.strip() for s in (scope or []) if s and s.strip()]
+    if not agent or not task_id or not goal or not scope:
+        raise ValueError("durable claim mirror requires agent/task_id/goal/scope")
+    if not isinstance(generation, int) or isinstance(generation, bool) or generation < 1:
+        raise ValueError("generation must be a positive integer")
+    if phase not in PHASES:
+        raise ValueError(f"unknown phase {phase!r}; valid: {', '.join(PHASES)}")
+
+    path = Path(store) if store is not None else _STORE
+    old_store = _STORE
+    try:
+        set_store(path)
+        data, _ = _prune(_read())
+        now = time.time()
+        task_claims = [c for c in data["claims"] if c.get("task_id") == task_id]
+        if task_claims:
+            def _cached_generation(c: dict[str, Any]) -> int:
+                value = c.get("generation", 0)
+                return value if isinstance(value, int) and not isinstance(value, bool) else 0
+
+            newest = max(_cached_generation(c) for c in task_claims)
+            if newest > generation:
+                raise ValueError(
+                    f"stale durable generation {generation} for {task_id!r}; "
+                    f"cache already reflects generation {newest}")
+
+            same_generation = [
+                c for c in task_claims if _cached_generation(c) == generation
+            ]
+            if same_generation:
+                foreign = [c for c in same_generation if c.get("agent") != agent]
+                if foreign:
+                    raise ValueError(
+                        f"durable task {task_id!r} generation {generation} "
+                        f"cached by foreign agent {foreign[0].get('agent')!r}")
+                # Collapse any older/duplicate derived rows to one current cache row.
+                current = same_generation[0]
+                data["claims"] = [
+                    c for c in data["claims"]
+                    if c.get("task_id") != task_id or c is current
+                ]
+                current.update({
+                    "scope": scope,
+                    "goal": goal,
+                    "phase": phase,
+                    "session_id": session_id,
+                    "generation": generation,
+                    "ownership_state": "RECONCILED",
+                    "authority_role": "derived_same_machine_cache",
+                    "heartbeat_ts": int(now),
+                    "lease_until": now + lease_seconds,
+                })
+                if not _write(data):
+                    raise OSError("derived claim cache write failed")
+                return dict(current)
+
+            # A newer durable generation supersedes every older derived cache row.
+            # Drop old ids before creating the new row so stale holders cannot
+            # release the replacement generation by an old claim id.
+            data["claims"] = [
+                c for c in data["claims"] if c.get("task_id") != task_id
+            ]
+            if not _write(data):
+                raise OSError("derived claim cache write failed")
+
+        claim = acquire(
+            agent=agent, scope=scope, goal=goal, phase=phase,
+            session_id=session_id, lease_seconds=lease_seconds)
+        data = _read()
+        promoted = None
+        for c in data["claims"]:
+            if c.get("id") == claim["id"]:
+                c["task_id"] = task_id
+                c["generation"] = generation
+                c["ownership_state"] = "RECONCILED"
+                c["authority_role"] = "derived_same_machine_cache"
+                promoted = dict(c)
+                break
+        if promoted is None:
+            raise OSError("derived claim cache acquire was not persisted")
+        if not _write(data):
+            raise OSError("derived claim cache promotion write failed")
+        return promoted
+    finally:
+        set_store(old_store)
 
 
 def release(claim_id: str) -> bool:
@@ -229,12 +356,26 @@ def _matches(path: str, glob: str) -> bool:
     return False
 
 
+def _is_reconciled_cache(c: dict[str, Any]) -> bool:
+    """Only durable-bound cache rows may participate in ownership blocking."""
+    generation = c.get("generation")
+    return (
+        c.get("ownership_state") == "RECONCILED"
+        and bool((c.get("task_id") or "").strip())
+        and isinstance(generation, int)
+        and not isinstance(generation, bool)
+        and generation >= 1
+    )
+
+
 def collision(file_path: str, agent: str) -> dict[str, Any] | None:
-    """Return ANOTHER agent's live claim covering `file_path`, else None."""
+    """Return a reconciled derived cache collision, never TTL-only ownership."""
     path = _rel(file_path)
     if not path:
         return None
     for c in live():
+        if not _is_reconciled_cache(c):
+            continue
         if c.get("agent") == agent:
             continue
         for g in c.get("scope") or []:

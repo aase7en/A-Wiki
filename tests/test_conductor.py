@@ -299,8 +299,18 @@ class TestClaim:
         return p
 
     def test_claim_appends_row_after_go(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "-b", "feat/x"], cwd=tmp_path,
+                       check=True, capture_output=True)
         from conductor.bridge import add_claim
         out = add_claim(repo_root=tmp_path, topic="fresh-thing",
                         agent="zcode", scope="scripts/x.py", branch="feat/x")
@@ -316,10 +326,21 @@ class TestClaim:
             add_claim(repo_root=tmp_path, topic="taken-topic", agent="zcode")
 
     def test_claim_idempotent_same_agent(self, tmp_path, monkeypatch):
+        import subprocess
         monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
         self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
         from conductor.bridge import add_claim
-        add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
+        add_claim(
+            repo_root=tmp_path, topic="t1", agent="zcode",
+            scope="scripts/lib/**", branch="main",
+        )
         out = add_claim(repo_root=tmp_path, topic="t1", agent="zcode")
         assert out["claimed"] is True and out.get("already") is True
         text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
@@ -330,6 +351,525 @@ class TestClaim:
         from conductor.bridge import add_claim, ClaimConflict
         with pytest.raises(ClaimConflict):
             add_claim(repo_root=tmp_path, topic="x", agent="z")
+
+    def test_new_claim_rejects_placeholder_scope_and_branch(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="scope.*branch|scope|branch"):
+            add_claim(repo_root=tmp_path, topic="TASK-EXACT", agent="z")
+
+    def test_retry_requires_exact_task_id_casing(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        self._collab(tmp_path, "| TASK-X | glm | 2026-09-27 | x/** | main |\n")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="case|exact"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="task-x",
+                agent="glm",
+                scope="x/**",
+                branch="main",
+            )
+
+    @pytest.mark.parametrize("bad_scope", [
+        "/opt/example/private/**",
+        r"Z:\\private\\example\\**",
+        "../outside/**",
+        "x/**\n| forged-task | victim | 2026-09-27 | secrets/** | main |",
+        "x/**|forged",
+    ])
+    def test_new_claim_rejects_non_repo_relative_or_table_breaking_scope(
+            self, tmp_path, monkeypatch, bad_scope):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="scope|repo-relative|table"):
+            add_claim(
+                repo_root=tmp_path, topic="TASK-SAFE-SCOPE", agent="tester",
+                scope=bad_scope, branch="main", claims_store=tmp_path / "cache.json")
+        assert collab.read_text(encoding="utf-8") == before
+        assert not (tmp_path / "cache.json").exists()
+
+    @pytest.mark.parametrize(("field", "value"), [
+        ("topic", "TASK-X\n| forged | victim | 2026-09-27 | x/** | main |"),
+        ("topic", "TASK|X"),
+        ("agent", "agent\n| forged | victim | 2026-09-27 | x/** | main |"),
+        ("agent", "agent|victim"),
+    ])
+    def test_new_claim_rejects_table_breaking_scalar_fields(
+            self, tmp_path, monkeypatch, field, value):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+        kwargs = dict(repo_root=tmp_path, topic="TASK-SAFE", agent="tester",
+                      scope="scripts/lib/**", branch="main")
+        kwargs[field] = value
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="task|agent|table|field"):
+            add_claim(**kwargs)
+        assert collab.read_text(encoding="utf-8") == before
+
+
+    def test_direct_claim_rejects_detached_head_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "--detach", "HEAD"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = p.read_text(encoding="utf-8")
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="detached|checkout.*branch|branch"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="TASK-DETACHED-DIRECT",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="main",
+                claims_store=tmp_path / ".tmp" / "claims.json",
+            )
+        assert p.read_text(encoding="utf-8") == before
+        assert not (tmp_path / ".tmp" / "claims.json").exists()
+
+
+    def test_new_claim_rejects_unresolvable_branch_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="branch.*unresolved|branch.*ref|branch"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="TASK-BAD-BRANCH",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="definitely-not-a-ref",
+            )
+        assert "TASK-BAD-BRANCH" not in p.read_text(encoding="utf-8")
+
+
+    def test_new_claim_rejects_shallow_history_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        src = tmp_path / "src"
+        src.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=src,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=src, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=src, check=True)
+        self._collab(src)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=src,
+                       check=True, capture_output=True)
+
+        shallow = tmp_path / "shallow-writer"
+        subprocess.run(
+            ["git", "clone", "--depth", "1", f"file://{src}", str(shallow)],
+            check=True, capture_output=True)
+        before = (shallow / "COLLAB.md").read_text(encoding="utf-8")
+        monkeypatch.chdir(shallow)
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="SHALLOW|history"):
+            add_claim(
+                repo_root=shallow,
+                topic="TASK-SHALLOW-WRITE",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="main",
+            )
+        assert (shallow / "COLLAB.md").read_text(encoding="utf-8") == before
+        assert "TASK-SHALLOW-WRITE" not in before
+
+
+    def test_concurrent_durable_claim_writers_preserve_every_row(self, tmp_path, monkeypatch):
+        import subprocess
+        from concurrent.futures import ThreadPoolExecutor
+
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        from conductor.bridge import add_claim
+        count = 16
+        def one(i: int):
+            return add_claim(
+                repo_root=tmp_path,
+                topic=f"TASK-CONCURRENT-{i:02d}",
+                agent=f"agent-{i:02d}",
+                scope=f"scope-{i:02d}/**",
+                branch="main",
+                claims_store=tmp_path / f"claims-{i:02d}.json",
+            )
+
+        with ThreadPoolExecutor(max_workers=count) as pool:
+            results = list(pool.map(one, range(count)))
+        assert all(result["claimed"] for result in results)
+        text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+        for i in range(count):
+            assert text.count(f"| TASK-CONCURRENT-{i:02d} |") == 1
+
+
+    def test_new_claim_rejects_unknown_owner(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path, check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="owner|agent|unknown"):
+            add_claim(repo_root=tmp_path, topic="TASK-UNKNOWN", agent="unknown",
+                      scope="scripts/lib/**", branch="main")
+        assert collab.read_text(encoding="utf-8") == before
+
+    def test_retry_rejects_duplicate_exact_task_rows_before_cache_mirror(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        text = collab.read_text(encoding="utf-8")
+        row = "| TASK-DUP | tester | 2026-09-27 | scripts/lib/** | main |\n"
+        collab.write_text(text + row + row, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "duplicate rows"], cwd=tmp_path, check=True, capture_output=True)
+        cache = tmp_path / "cache.json"
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="duplicate|ambiguous"):
+            add_claim(repo_root=tmp_path, topic="TASK-DUP", agent="tester",
+                      scope="scripts/lib/**", branch="main", claims_store=cache)
+        assert not cache.exists()
+
+
+class TestCanonicalClaimReader:
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim task 58"], cwd=tmp_path, check=True, capture_output=True)
+
+    def test_reader_returns_exact_task_bound_claim_and_head(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "TASK-58"
+        assert out["generation"] == 1
+        assert out["agent"] == "glm"
+        assert out["scope"] == ["scripts/lib/**", "conductor/**"]
+        assert out["branch"] == "main"
+        assert len(out["branch_head_sha"]) == 40
+        assert out["claim_id"].startswith("awiki-claim-")
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
+
+    def test_reader_prefers_origin_branch_head_over_stale_local_ref(self, tmp_path):
+        self._init_repo(tmp_path)
+        import subprocess
+        remote = tmp_path.parent / "claim-remote.git"
+        subprocess.run(["git", "clone", "--bare", str(tmp_path), str(remote)],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "remote", "add", "origin", str(remote)],
+                       cwd=tmp_path, check=True)
+        subprocess.run(["git", "fetch", "origin"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        remote_head = subprocess.run(
+            ["git", "rev-parse", "refs/remotes/origin/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+
+        (tmp_path / "local-only.txt").write_text("local", encoding="utf-8")
+        subprocess.run(["git", "add", "local-only.txt"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "local ahead"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        local_head = subprocess.run(
+            ["git", "rev-parse", "refs/heads/main"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+        assert local_head != remote_head
+
+        from conductor.state import read_canonical_claim
+        out = read_canonical_claim(tmp_path, "TASK-58")
+        assert out["branch_head_sha"] == remote_head
+
+    def test_reader_is_exact_not_fuzzy(self, tmp_path):
+        self._init_repo(tmp_path)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="NOT_FOUND"):
+            read_canonical_claim(tmp_path, "TASK")
+
+    def test_reader_rejects_duplicate_exact_task_rows(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8") +
+                     "| TASK-58 | other | 2026-09-27 | x/** | main |\n",
+                     encoding="utf-8")
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="AMBIGUOUS"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_tag_when_exact_branch_ref_is_missing(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "work"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| TASK-TAG | glm | 2026-09-27 | scripts/lib/** | orphan |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim tagged task"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "tag", "orphan"], cwd=tmp_path, check=True)
+
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="BRANCH_HEAD_UNRESOLVED"):
+            read_canonical_claim(tmp_path, "TASK-TAG")
+
+
+    def test_reader_rejects_legacy_unknown_owner(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "| TASK-58 | glm |", "| TASK-58 | unknown |"), encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "legacy unknown owner"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="OWNER_UNBOUND"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_reflog_expression_as_branch_name(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main |",
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main@{1} |"),
+            encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "bad branch syntax"], cwd=tmp_path, check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="BRANCH_INVALID|BRANCH_HEAD_UNRESOLVED"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+    def test_reader_rejects_legacy_machine_local_scope(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "scripts/lib/**; conductor/**", "/opt/example/private/**"), encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "legacy absolute scope"], cwd=tmp_path, check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="SCOPE_UNSAFE"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_shallow_history_before_deriving_generation(self, tmp_path):
+        import subprocess
+        src = tmp_path / "src"
+        src.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=src,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=src, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=src, check=True)
+        header = (
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+        )
+        collab = src / "COLLAB.md"
+        collab.write_text(header, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(
+            header + "| TASK-SHALLOW | glm | 2026-09-26 | scripts/lib/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 1"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(header, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "release generation 1"], cwd=src,
+                       check=True, capture_output=True)
+        collab.write_text(
+            header + "| TASK-SHALLOW | glm | 2026-09-27 | scripts/lib/** | main |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=src, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 2"], cwd=src,
+                       check=True, capture_output=True)
+
+        shallow = tmp_path / "shallow"
+        subprocess.run(
+            ["git", "clone", "--depth", "1", f"file://{src}", str(shallow)],
+            check=True, capture_output=True)
+        assert subprocess.run(
+            ["git", "rev-parse", "--is-shallow-repository"], cwd=shallow,
+            check=True, capture_output=True, text=True).stdout.strip() == "true"
+
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="SHALLOW|history"):
+            read_canonical_claim(shallow, "TASK-SHALLOW")
+
+
+class TestDurableClaimMirror:
+    def _collab(self, tmp_path):
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n", encoding="utf-8")
+
+    def _init_repo(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+    def test_add_claim_mirrors_local_ttl_idempotently(self, tmp_path, monkeypatch):
+        self._init_repo(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        out1 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        out2 = add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                         scope="scripts/lib/**", branch="main", claims_store=store)
+        claims = json.loads(store.read_text(encoding="utf-8"))["claims"]
+        assert out1["cache_state"] == "RECONCILED"
+        assert out2["cache_state"] == "RECONCILED"
+        assert len(claims) == 1
+        assert claims[0]["task_id"] == "TASK-58"
+        assert claims[0]["generation"] == 1
+
+    def test_durable_success_cache_failure_is_typed_partial_unreconciled(self, tmp_path):
+        self._init_repo(tmp_path)
+        bad_store = tmp_path / "claims-dir"
+        bad_store.mkdir()
+        from conductor.bridge import add_claim
+        out = add_claim(
+            repo_root=tmp_path, topic="TASK-PARTIAL", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=bad_store,
+        )
+        assert out["claimed"] is True
+        assert out["cache_state"] == "PARTIAL_UNRECONCILED"
+        assert out["ownership_state"] == "PARTIAL_UNRECONCILED"
+        assert out["cache_claim_id"] is None
+        assert "| TASK-PARTIAL | glm |" in (
+            tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+    def test_ttl_release_never_removes_durable_collab_claim(self, tmp_path):
+        self._init_repo(tmp_path)
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        add_claim(repo_root=tmp_path, topic="TASK-58", agent="glm",
+                  scope="scripts/lib/**", branch="main", claims_store=store)
+        sys.path.insert(0, str(REPO_ROOT / "scripts" / "lib"))
+        import agent_claims as ac
+        cached = json.loads(store.read_text(encoding="utf-8"))["claims"][0]
+        old_store = ac.store_path()
+        try:
+            ac.set_store(store)
+            assert ac.release(cached["id"]) is True
+        finally:
+            ac.set_store(old_store)
+        assert "| TASK-58 | glm |" in (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+
+    def test_release_then_reclaim_rotates_generation_before_and_after_commit(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "empty claims"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        store = tmp_path / "claims.json"
+        from conductor.bridge import add_claim
+        from conductor.state import read_canonical_claim
+        first = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert first["generation"] == 1
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 1
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "release generation 1"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        second = add_claim(
+            repo_root=tmp_path, topic="TASK-ABA", agent="glm",
+            scope="scripts/lib/**", branch="main", claims_store=store,
+        )
+        assert second["generation"] == 2
+        assert second["cache_claim_id"] != first["cache_claim_id"]
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim generation 2"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        assert read_canonical_claim(tmp_path, "TASK-ABA")["generation"] == 2
 
 
 class TestBridgeCli:
@@ -350,6 +890,20 @@ class TestBridgeCli:
         r = self._run("recall", "--query", "phase", "--json")
         assert r.returncode == 0, r.stderr[:300]
         assert "hits" in json.loads(r.stdout)
+
+    def test_claim_cli_requires_scope_and_branch(self):
+        r = self._run("claim", "--topic", "TASK-CLI-EXACT", "--agent", "tester", "--json")
+        assert r.returncode == 2
+        assert "--scope" in r.stderr and "--branch" in r.stderr
+
+    def test_claims_cli_returns_exact_current_claim(self):
+        r = self._run("claims", "--task-id", "Issue #58 claim authority convergence", "--json")
+        assert r.returncode == 0, r.stderr[:300]
+        out = json.loads(r.stdout)
+        assert out["schema"] == "awiki-claim-reader/v1"
+        assert out["task_id"] == "Issue #58 claim authority convergence"
+        assert out["branch"] == "fix/issue-58-claim-convergence"
+        assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
 
 
 # ══════════════════════════════════════════════════════════════════════
