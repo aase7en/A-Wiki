@@ -471,3 +471,42 @@ GREEN evidence after repair:
 A fresh exact-head hosted CI and independent R3 review are required for the
 replacement candidate. The cancelled review of `06bce029...` is defect
 evidence only, not acceptance evidence.
+
+## R3 durable-table input validation + command contract hardening — 2026-09-27
+
+Candidate `64bb8faf453b484751e3961706775b6fd5d45f39` is superseded before
+acceptance. Fresh independent exact-head R3 review completed with two P2
+findings:
+
+1. the public `/A-Claim` command still documented the legacy `claim_acquire`
+   flow without the now-required exact `task_id`;
+2. durable writer inputs were not safe for the tracked Markdown authority
+   table: an absolute machine-local scope could leak into `COLLAB.md`, and a
+   newline/pipe payload could inject an additional parsed claim row.
+
+Repair contract:
+- `commands/A-Claim.md` now requires recovery of the exact WO/COLLAB `task_id`
+  before `claim_acquire` and passes it with scope + goal;
+- `conductor/README.md` now shows the current CLI contract with exact topic,
+  `--scope`, and `--branch`;
+- durable scalar fields reject Markdown table delimiters, line breaks, and
+  control characters before mutation;
+- durable scopes must be semicolon-separated repo-relative globs and reject
+  POSIX/Windows absolute paths, home-relative paths, parent traversal, and
+  table/control injection;
+- validation is performed before the lock and repeated inside the serialized
+  durable transaction; no cache write occurs on rejection.
+
+RED evidence: 10/10 new security/command-contract cases failed before repair.
+GREEN evidence after repair:
+- targeted unsafe-scope/scalar + `/A-Claim` contract cases: **10/10 PASS**;
+- related conductor/claim/hook/adopt/runtime/MCP pytest suite: **343/343 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked files; 51 baselined; **0 new findings**);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+The completed R3 review of `64bb8faf...` is defect evidence only. A fresh
+exact-head hosted CI and independent R3 review are required for the replacement
+candidate.

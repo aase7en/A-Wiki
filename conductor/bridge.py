@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -176,6 +177,39 @@ def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
     return out
 
 
+def _validate_claim_scalar(name: str, value: str, *, allow_placeholder: bool = False) -> str:
+    """Reject Markdown-table/control injection in durable claim scalar fields."""
+    text = (value or "").strip()
+    if allow_placeholder and text.startswith("<") and text.endswith(">"):
+        return text
+    if not text:
+        raise ClaimConflict(f"{name} is required")
+    if "|" in text or any(ch in text for ch in "\r\n") or any(ord(ch) < 32 for ch in text):
+        raise ClaimConflict(f"{name} contains table/control characters")
+    return text
+
+
+def _validate_claim_scope(scope: str, *, allow_placeholder: bool = False) -> str:
+    """Require semicolon-separated, repo-relative, public-safe durable scope globs."""
+    raw = (scope or "").strip()
+    if allow_placeholder and raw == "<scope>":
+        return raw
+    if not raw:
+        raise ClaimConflict("scope is required")
+    if "|" in raw or any(ch in raw for ch in "\r\n") or any(ord(ch) < 32 for ch in raw):
+        raise ClaimConflict("scope contains table/control characters")
+    items = [part.strip() for part in raw.split(";") if part.strip()]
+    if not items:
+        raise ClaimConflict("scope is required")
+    for item in items:
+        normalized = item.replace("\\", "/")
+        if (item.startswith(("/", "\\", "~")) or
+                re.match(r"^[A-Za-z]:[\\/]", item) or
+                any(part == ".." for part in normalized.split("/"))):
+            raise ClaimConflict(f"scope must be repo-relative: {item!r}")
+    return "; ".join(items)
+
+
 @contextmanager
 def _claim_write_lock(repo_root: Path):
     """Serialize same-repository COLLAB durable writers; this is not an authority store."""
@@ -237,9 +271,10 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     collab = root / "COLLAB.md"
     if not collab.is_file():
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
-    normalized_topic = topic.strip()
-    if not normalized_topic:
-        raise ClaimConflict("exact task id is required")
+    normalized_topic = _validate_claim_scalar("task id", topic)
+    normalized_agent = _validate_claim_scalar("agent", agent)
+    normalized_scope = _validate_claim_scope(scope, allow_placeholder=True)
+    normalized_branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
     claims = parse_claims(collab)
     exact_exists = False
     for c in claims:
@@ -258,7 +293,8 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
 
     with _claim_write_lock(root):
         return _add_claim_unlocked(
-            repo_root=root, topic=topic, agent=agent, scope=scope, branch=branch,
+            repo_root=root, topic=normalized_topic, agent=normalized_agent,
+            scope=normalized_scope, branch=normalized_branch,
             claims_store=claims_store, cache_goal=cache_goal, phase=phase,
             session_id=session_id,
         )
@@ -275,9 +311,10 @@ def _add_claim_unlocked(repo_root: Path | None = None, topic: str = "",
     if not collab.is_file():
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
 
-    topic = topic.strip()
-    if not topic:
-        raise ClaimConflict("exact task id is required")
+    topic = _validate_claim_scalar("task id", topic)
+    agent = _validate_claim_scalar("agent", agent)
+    scope = _validate_claim_scope(scope, allow_placeholder=True)
+    branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
     claims = parse_claims(collab)
     for c in claims:
         durable_task = c["chunk"].strip()

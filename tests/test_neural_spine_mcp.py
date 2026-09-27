@@ -350,6 +350,14 @@ def _init_claim_repo(tmp_path, monkeypatch):
     return tmp_path
 
 
+
+def test_a_claim_command_flow_requires_exact_task_id():
+    command = (REPO_ROOT / "commands" / "A-Claim.md").read_text(encoding="utf-8")
+    assert "task_id" in command
+    assert "claim_acquire" in command
+    assert "exact" in command.lower() or "ตรง" in command
+
+
 def test_claim_acquire_schema_requires_exact_task_id():
     required = set(nsmcp.TOOLS["claim_acquire"]["inputSchema"]["required"])
     assert {"task_id", "scope", "goal"} <= required

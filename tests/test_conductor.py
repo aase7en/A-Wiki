@@ -372,6 +372,63 @@ class TestClaim:
                 branch="main",
             )
 
+    @pytest.mark.parametrize("bad_scope", [
+        "/opt/example/private/**",
+        r"Z:\\private\\example\\**",
+        "../outside/**",
+        "x/**\n| forged-task | victim | 2026-09-27 | secrets/** | main |",
+        "x/**|forged",
+    ])
+    def test_new_claim_rejects_non_repo_relative_or_table_breaking_scope(
+            self, tmp_path, monkeypatch, bad_scope):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="scope|repo-relative|table"):
+            add_claim(
+                repo_root=tmp_path, topic="TASK-SAFE-SCOPE", agent="tester",
+                scope=bad_scope, branch="main", claims_store=tmp_path / "cache.json")
+        assert collab.read_text(encoding="utf-8") == before
+        assert not (tmp_path / "cache.json").exists()
+
+    @pytest.mark.parametrize(("field", "value"), [
+        ("topic", "TASK-X\n| forged | victim | 2026-09-27 | x/** | main |"),
+        ("topic", "TASK|X"),
+        ("agent", "agent\n| forged | victim | 2026-09-27 | x/** | main |"),
+        ("agent", "agent|victim"),
+    ])
+    def test_new_claim_rejects_table_breaking_scalar_fields(
+            self, tmp_path, monkeypatch, field, value):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+        kwargs = dict(repo_root=tmp_path, topic="TASK-SAFE", agent="tester",
+                      scope="scripts/lib/**", branch="main")
+        kwargs[field] = value
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="task|agent|table|field"):
+            add_claim(**kwargs)
+        assert collab.read_text(encoding="utf-8") == before
+
+
     def test_direct_claim_rejects_detached_head_before_persist(self, tmp_path, monkeypatch):
         import subprocess
         monkeypatch.chdir(tmp_path)
