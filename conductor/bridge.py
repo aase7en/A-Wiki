@@ -130,6 +130,26 @@ def _require_branch_ref(repo_root: Path, branch: str) -> str:
     raise ClaimConflict(f"branch ref unresolved: {name!r}")
 
 
+def _require_checkout_branch(repo_root: Path, branch: str) -> str:
+    """Require the mutating checkout itself to be attached to the durable branch."""
+    name = branch.strip()
+    try:
+        proc = subprocess.run(
+            ["git", "branch", "--show-current"],
+            cwd=str(repo_root), capture_output=True, text=True,
+            encoding="utf-8", errors="replace", timeout=15,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ClaimConflict(f"checkout branch unavailable: {exc}") from None
+    current = proc.stdout.strip() if proc.returncode == 0 else ""
+    if not current:
+        raise ClaimConflict("claim requires an attached checkout branch; detached HEAD is not eligible")
+    if current != name:
+        raise ClaimConflict(
+            f"checkout branch mismatch: checkout={current!r}, durable={name!r}")
+    return current
+
+
 def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
                   already: bool, mirror: dict, claim_row: str | None = None) -> dict:
     cache_state = mirror["cache_state"]
@@ -185,9 +205,12 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
                 raise ClaimConflict(
                     f"'{topic}' scope mismatch: durable={durable_scope!r}, "
                     f"requested={requested_scope!r}")
-        if branch != "<branch>" and branch.strip() != c["branch"].strip():
+        durable_branch = c["branch"].strip()
+        if branch != "<branch>" and branch.strip() != durable_branch:
             raise ClaimConflict(
                 f"'{topic}' branch mismatch: durable={c['branch']!r}, requested={branch!r}")
+        _require_branch_ref(root, durable_branch)
+        _require_checkout_branch(root, durable_branch)
         from .state import ClaimLookupError, claim_generation
         try:
             generation = claim_generation(root, topic)
@@ -206,6 +229,7 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
     if branch == "<branch>" or not branch.strip():
         raise ClaimConflict("new durable claim requires an exact branch")
     _require_branch_ref(root, branch)
+    _require_checkout_branch(root, branch)
     from .state import ClaimLookupError, require_complete_claim_history
     try:
         require_complete_claim_history(root)

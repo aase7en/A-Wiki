@@ -401,3 +401,29 @@ GREEN evidence after repair:
 - py_compile + `git diff --check`: PASS.
 
 The cancelled review of superseded `67a10db2...` is blocker evidence only, not acceptance evidence. Fresh exact-head hosted CI and a new independent R3 review are required for the replacement candidate.
+
+
+## R3 direct-writer checkout binding hardening — 2026-09-27
+
+Candidate `f1a35577f1e10724903ede0608bbb91c9a8fa293` is superseded before acceptance. Fresh independent exact-head R3 review reran the focused claim/hook suite (287/287 PASS) and then reproduced a direct-writer binding defect: `add_claim(..., branch="main")` accepted and persisted a durable claim while the repository was in detached HEAD state (`accepted=True`, recorded branch `main`, checkout branch `<detached>`).
+
+Root cause: the MCP wrapper already required an attached current branch, but the canonical direct/CLI writer only verified that the requested branch ref existed. Existence of `refs/heads/main` did not prove that the mutating checkout was actually attached to `main`.
+
+Repair contract:
+- direct durable writer requires the repository checkout to be attached to the same exact branch recorded by the durable claim;
+- detached HEAD is ineligible even when the requested branch ref exists;
+- current-branch mismatch is rejected before COLLAB/cache mutation;
+- existing same-task retries also verify their durable branch against the current checkout before refreshing the derived cache;
+- branch-ref existence and checkout attachment remain separate fail-closed checks.
+
+RED evidence: direct detached-writer regression failed before repair.
+GREEN evidence after repair:
+- detached/new-claim + append/idempotent/branch-ref/shallow focused set: **5/5 PASS**;
+- related conductor/claim/hook/adopt/runtime/MCP suite: **331/331 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (0 new findings);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+The cancelled review of superseded `f1a35577...` is blocker evidence only, not acceptance evidence. Fresh exact-head hosted CI and a new independent R3 review are required for the replacement candidate.

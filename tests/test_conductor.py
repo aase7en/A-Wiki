@@ -309,7 +309,8 @@ class TestClaim:
         subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
         subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
                        check=True, capture_output=True)
-        subprocess.run(["git", "branch", "feat/x"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "checkout", "-b", "feat/x"], cwd=tmp_path,
+                       check=True, capture_output=True)
         from conductor.bridge import add_claim
         out = add_claim(repo_root=tmp_path, topic="fresh-thing",
                         agent="zcode", scope="scripts/x.py", branch="feat/x")
@@ -370,6 +371,35 @@ class TestClaim:
                 scope="x/**",
                 branch="main",
             )
+
+    def test_direct_claim_rejects_detached_head_before_persist(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        p = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "--detach", "HEAD"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        before = p.read_text(encoding="utf-8")
+
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="detached|checkout.*branch|branch"):
+            add_claim(
+                repo_root=tmp_path,
+                topic="TASK-DETACHED-DIRECT",
+                agent="tester",
+                scope="scripts/lib/**",
+                branch="main",
+                claims_store=tmp_path / ".tmp" / "claims.json",
+            )
+        assert p.read_text(encoding="utf-8") == before
+        assert not (tmp_path / ".tmp" / "claims.json").exists()
+
 
     def test_new_claim_rejects_unresolvable_branch_before_persist(self, tmp_path, monkeypatch):
         import subprocess
