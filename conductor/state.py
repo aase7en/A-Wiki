@@ -139,9 +139,9 @@ def _branch_head(repo_root: Path, branch: str) -> str:
         raise ClaimLookupError("BRANCH_UNBOUND")
     # Cross-machine durable truth prefers the fetched origin ref. A local branch
     # may be ahead/behind and is only a fallback for repositories without origin.
-    for ref in (f"refs/remotes/origin/{branch}", f"refs/heads/{branch}", branch):
+    for ref in (f"refs/remotes/origin/{branch}", f"refs/heads/{branch}"):
         try:
-            sha = _git(repo_root, "rev-parse", "--verify", ref)
+            sha = _git(repo_root, "rev-parse", "--verify", f"{ref}^{{commit}}")
         except ClaimLookupError:
             continue
         if re.fullmatch(r"[0-9a-f]{40}", sha):

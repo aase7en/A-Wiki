@@ -427,3 +427,47 @@ GREEN evidence after repair:
 - py_compile + `git diff --check`: PASS.
 
 The cancelled review of superseded `f1a35577...` is blocker evidence only, not acceptance evidence. Fresh exact-head hosted CI and a new independent R3 review are required for the replacement candidate.
+
+## R3 exact-branch + concurrent durable-writer hardening — 2026-09-27
+
+Candidate `06bce029bb932016870f8156106e5678e1f52b43` is superseded before
+acceptance. Fresh independent exact-head R3 review reproduced two authority
+correctness defects:
+
+1. `read_canonical_claim()` accepted a Git tag whose name matched the durable
+   `branch` field because `_branch_head()` had a generic ref fallback after the
+   exact local/origin branch refs.
+2. Concurrent `add_claim()` writers could both report success while a
+   read-modify-write race on `COLLAB.md` discarded one durable claim row.
+
+Repair contract:
+- canonical branch HEAD resolution now accepts only exact
+  `refs/remotes/origin/<branch>` or `refs/heads/<branch>` commit refs; tags or
+  other generic refs cannot satisfy durable branch identity;
+- same-repository durable writers serialize the complete COLLAB transaction
+  through a transient OS file lock in the Git common-dir, so linked worktrees
+  share the mutex without creating another claim/lease/authority store;
+- POSIX uses `flock`; Windows uses the stdlib `msvcrt` byte-range lock with a
+  bounded acquisition timeout;
+- legacy no-mutation validation remains before lock acquisition so existing
+  error contracts for missing/exact task/scope/branch inputs are preserved;
+- all authoritative parse/validate/write/generation/cache-mirror work is
+  repeated inside the serialized transaction.
+
+RED evidence:
+- tag-only `orphan` ref was incorrectly returned as `branch_head_sha`;
+- concurrent durable writers lost/corrupted claim rows while reporting success.
+
+GREEN evidence after repair:
+- exact tag-vs-branch + concurrent writer targeted tests: **2/2 PASS**;
+- compatibility + repair focused tests: **4/4 PASS**;
+- related conductor/claim/hook/adopt/runtime/MCP pytest suite: **333/333 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked files; 51 baselined; **0 new findings**);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+A fresh exact-head hosted CI and independent R3 review are required for the
+replacement candidate. The cancelled review of `06bce029...` is defect
+evidence only, not acceptance evidence.

@@ -11,9 +11,11 @@ thin brain-side operations for the A-Conductor control plane (and any agent):
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from datetime import date
 from pathlib import Path
 
@@ -174,7 +176,95 @@ def _claim_result(*, topic: str, generation: int, scope: str, branch: str,
     return out
 
 
+@contextmanager
+def _claim_write_lock(repo_root: Path):
+    """Serialize same-repository COLLAB durable writers; this is not an authority store."""
+    try:
+        proc = subprocess.run(
+            ["git", "rev-parse", "--git-common-dir"], cwd=str(repo_root),
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            timeout=15,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise ClaimConflict(f"claim writer lock unavailable: {exc}") from None
+    raw = proc.stdout.strip() if proc.returncode == 0 else ""
+    if not raw:
+        raise ClaimConflict("claim writer lock requires a Git common-dir")
+    common = Path(raw)
+    if not common.is_absolute():
+        common = (repo_root / common).resolve()
+    lock_path = common / "awiki-claim-writer.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with lock_path.open("a+b") as fh:
+        if os.name == "nt":
+            import msvcrt
+            fh.seek(0, os.SEEK_END)
+            if fh.tell() == 0:
+                fh.write(b"\\0")
+                fh.flush()
+            fh.seek(0)
+            deadline = time.monotonic() + 30.0
+            while True:
+                try:
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError:
+                    if time.monotonic() >= deadline:
+                        raise ClaimConflict("timed out acquiring durable claim writer lock") from None
+                    time.sleep(0.05)
+            try:
+                yield
+            finally:
+                fh.seek(0)
+                msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(fh.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+
+
 def add_claim(repo_root: Path | None = None, topic: str = "",
+              agent: str = "unknown", scope: str = "<scope>",
+              branch: str = "<branch>",
+              claims_store: Path | str | None = None,
+              cache_goal: str | None = None, phase: str = "plan",
+              session_id: str | None = None) -> dict:
+    root = Path(repo_root) if repo_root else Path.cwd()
+    collab = root / "COLLAB.md"
+    if not collab.is_file():
+        raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
+    normalized_topic = topic.strip()
+    if not normalized_topic:
+        raise ClaimConflict("exact task id is required")
+    claims = parse_claims(collab)
+    exact_exists = False
+    for c in claims:
+        durable_task = c["chunk"].strip()
+        if durable_task == normalized_topic:
+            exact_exists = True
+            break
+        if durable_task.lower() == normalized_topic.lower():
+            raise ClaimConflict(
+                f"exact task id case mismatch: durable={durable_task!r}, requested={normalized_topic!r}")
+    if not exact_exists:
+        if scope == "<scope>" or not scope.strip():
+            raise ClaimConflict("new durable claim requires an exact scope")
+        if branch == "<branch>" or not branch.strip():
+            raise ClaimConflict("new durable claim requires an exact branch")
+
+    with _claim_write_lock(root):
+        return _add_claim_unlocked(
+            repo_root=root, topic=topic, agent=agent, scope=scope, branch=branch,
+            claims_store=claims_store, cache_goal=cache_goal, phase=phase,
+            session_id=session_id,
+        )
+
+
+def _add_claim_unlocked(repo_root: Path | None = None, topic: str = "",
               agent: str = "unknown", scope: str = "<scope>",
               branch: str = "<branch>",
               claims_store: Path | str | None = None,

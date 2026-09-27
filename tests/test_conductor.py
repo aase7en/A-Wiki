@@ -457,6 +457,40 @@ class TestClaim:
         assert "TASK-SHALLOW-WRITE" not in before
 
 
+    def test_concurrent_durable_claim_writers_preserve_every_row(self, tmp_path, monkeypatch):
+        import subprocess
+        from concurrent.futures import ThreadPoolExecutor
+
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path,
+                       check=True, capture_output=True)
+
+        from conductor.bridge import add_claim
+        count = 16
+        def one(i: int):
+            return add_claim(
+                repo_root=tmp_path,
+                topic=f"TASK-CONCURRENT-{i:02d}",
+                agent=f"agent-{i:02d}",
+                scope=f"scope-{i:02d}/**",
+                branch="main",
+                claims_store=tmp_path / f"claims-{i:02d}.json",
+            )
+
+        with ThreadPoolExecutor(max_workers=count) as pool:
+            results = list(pool.map(one, range(count)))
+        assert all(result["claimed"] for result in results)
+        text = (tmp_path / "COLLAB.md").read_text(encoding="utf-8")
+        for i in range(count):
+            assert text.count(f"| TASK-CONCURRENT-{i:02d} |") == 1
+
+
 class TestCanonicalClaimReader:
     def _init_repo(self, tmp_path):
         import subprocess
@@ -527,6 +561,27 @@ class TestCanonicalClaimReader:
         from conductor.state import read_canonical_claim, ClaimLookupError
         with pytest.raises(ClaimLookupError, match="AMBIGUOUS"):
             read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_tag_when_exact_branch_ref_is_missing(self, tmp_path):
+        import subprocess
+        subprocess.run(["git", "init", "-b", "work"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            "| TASK-TAG | glm | 2026-09-27 | scripts/lib/** | orphan |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "claim tagged task"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "tag", "orphan"], cwd=tmp_path, check=True)
+
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="BRANCH_HEAD_UNRESOLVED"):
+            read_canonical_claim(tmp_path, "TASK-TAG")
 
 
     def test_reader_rejects_shallow_history_before_deriving_generation(self, tmp_path):
