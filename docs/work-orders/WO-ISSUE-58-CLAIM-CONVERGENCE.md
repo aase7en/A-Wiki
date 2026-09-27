@@ -510,3 +510,51 @@ GREEN evidence after repair:
 The completed R3 review of `64bb8faf...` is defect evidence only. A fresh
 exact-head hosted CI and independent R3 review are required for the replacement
 candidate.
+
+## R3 canonical-reader + durable-owner hardening — 2026-09-27
+
+Candidate `44ad8ca77408d71b9769fd15570c3f8d87e57baf` is superseded before
+acceptance. Fresh independent exact-head R3 review completed with four P2
+findings:
+
+1. a new durable claim could still be written with owner `unknown` because the
+   entry gate's `agent_named` check was not enforced as part of the write path;
+2. canonical branch resolution could interpret reflog/revision syntax such as
+   `main@{1}` instead of proving a literal branch ref;
+3. an existing duplicate exact-task row set could mirror/cache the first row and
+   report success even though the canonical reader correctly classified the task
+   as ambiguous;
+4. canonical reader output could expose an absolute machine-local scope from a
+   legacy/manual COLLAB row despite the public-safe reader contract.
+
+Additional drift found during the same review: the unclaimed shared-surface hook
+warning still showed legacy `claim_acquire` guidance without exact `task_id`.
+
+Repair contract:
+- durable writer rejects empty/`unknown` owners before mutation and again inside
+  the serialized transaction; the full entry-gate verdict must be GO for a new
+  durable row;
+- retries reject duplicate exact-task rows before any cache reconciliation;
+- reader validates branch names with `git check-ref-format --branch`, proves
+  literal refs with `git show-ref --verify --hash`, then dereferences the returned
+  SHA to a commit; reflog/revision expressions cannot satisfy branch identity;
+- reader validates persisted scope as public-safe repo-relative data and rejects
+  absolute, home-relative, traversal, control, or table-unsafe scope instead of emitting it;
+- reader also rejects legacy/manual `unknown` durable owners fail-closed;
+- hook warning now instructs agents to recover exact `task_id` from WO/COLLAB
+  before calling `claim_acquire`.
+
+RED evidence: 5/5 new owner/duplicate/reflog/legacy-scope/guidance regression
+cases failed before repair.
+GREEN evidence after repair:
+- targeted R3 regressions: **5/5 PASS**;
+- legacy/manual unknown-owner reader guard: **2/2 focused PASS**;
+- related conductor/claim/hook/adopt/runtime/MCP pytest suite: **348/348 PASS**;
+- privacy scan: PASS;
+- hook registry: PASS (30 hooks; 17 hard / 13 soft);
+- security scan: PASS (6361 tracked files; 51 baselined; **0 new findings**);
+- wiki health: PASS (0 hard errors);
+- py_compile + `git diff --check`: PASS.
+
+The completed review of `44ad8ca...` is defect evidence only. A fresh exact-head
+hosted CI and independent R3 review are required for the replacement candidate.

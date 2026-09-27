@@ -242,7 +242,8 @@ def main() -> int:
             sys.stderr.write(
                 f"🤝 ยังไม่ได้ประกาศ claim — กำลังแก้ shared surface ({file_path})\n"
                 f"   agent อื่นจะไม่รู้ว่าคุณทำอะไรอยู่ และอาจทำซ้ำ\n"
-                f"   ประกาศ: MCP `claim_acquire` agent=\"{me}\" "
+                f"   หา exact task_id จาก WO/COLLAB ก่อน แล้วประกาศ: "
+                f"MCP `claim_acquire` task_id=\"<WO-ID>\" agent=\"{me}\" "
                 f"scope=[...] goal=\"<done criteria>\"\n"
             )
     return 0

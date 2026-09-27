@@ -133,20 +133,51 @@ def _repo_identity(repo_root: Path) -> str:
     return match.group(1) if match else repo_root.name
 
 
-def _branch_head(repo_root: Path, branch: str) -> str:
-    branch = branch.strip()
+def _validate_branch_name(repo_root: Path, branch: str) -> str:
+    branch = (branch or "").strip()
     if not branch or branch.startswith("<"):
         raise ClaimLookupError("BRANCH_UNBOUND")
-    # Cross-machine durable truth prefers the fetched origin ref. A local branch
-    # may be ahead/behind and is only a fallback for repositories without origin.
+    try:
+        _git(repo_root, "check-ref-format", "--branch", branch)
+    except ClaimLookupError:
+        raise ClaimLookupError(f"BRANCH_INVALID: {branch}") from None
+    return branch
+
+
+def _branch_head(repo_root: Path, branch: str) -> str:
+    branch = _validate_branch_name(repo_root, branch)
+    # Resolve only literal branch refs. `show-ref --verify` does not interpret
+    # reflog/revision expressions, so values like main@{1} cannot masquerade
+    # as durable branch identity.
     for ref in (f"refs/remotes/origin/{branch}", f"refs/heads/{branch}"):
         try:
-            sha = _git(repo_root, "rev-parse", "--verify", f"{ref}^{{commit}}")
+            sha = _git(repo_root, "show-ref", "--verify", "--hash", ref)
         except ClaimLookupError:
             continue
-        if re.fullmatch(r"[0-9a-f]{40}", sha):
-            return sha
+        if not re.fullmatch(r"[0-9a-f]{40}", sha):
+            continue
+        try:
+            commit = _git(repo_root, "rev-parse", "--verify", f"{sha}^{{commit}}")
+        except ClaimLookupError:
+            continue
+        if re.fullmatch(r"[0-9a-f]{40}", commit):
+            return commit
     raise ClaimLookupError(f"BRANCH_HEAD_UNRESOLVED: {branch}")
+
+
+def _public_scope_items(raw: str) -> list[str]:
+    items = _scope_items(raw)
+    if not items:
+        raise ClaimLookupError("SCOPE_UNSAFE: empty scope")
+    for item in items:
+        normalized = item.replace("\\", "/")
+        if ("|" in item or any(ch in item for ch in "\r\n") or
+                any(ord(ch) < 32 for ch in item) or
+                item.startswith(("/", "\\", "~")) or
+                re.match(r"^[A-Za-z]:[\\/]", item) or
+                any(part == ".." for part in normalized.split("/"))):
+            raise ClaimLookupError(f"SCOPE_UNSAFE: {item!r}")
+    return items
 
 
 def read_canonical_claim(repo_root: Path | str, task_id: str) -> dict:
@@ -166,11 +197,14 @@ def read_canonical_claim(repo_root: Path | str, task_id: str) -> dict:
     if len(matches) != 1:
         raise ClaimLookupError(f"CLAIM_AMBIGUOUS: {task}")
     claim = matches[0]
+    owner = claim["agent"].strip()
+    if not owner or owner.lower() == "unknown":
+        raise ClaimLookupError(f"OWNER_UNBOUND: {task}")
     generation = claim_generation(root, task)
     head = _branch_head(root, claim["branch"])
-    scope = _scope_items(claim["scope"])
+    scope = _public_scope_items(claim["scope"])
     digest_input = "\0".join((
-        _repo_identity(root), task, str(generation), claim["agent"],
+        _repo_identity(root), task, str(generation), owner,
         claim["claimed"], claim["branch"], ";".join(scope),
     ))
     claim_id = "awiki-claim-" + hashlib.sha256(
@@ -182,7 +216,7 @@ def read_canonical_claim(repo_root: Path | str, task_id: str) -> dict:
         "task_id": task,
         "claim_id": claim_id,
         "generation": generation,
-        "agent": claim["agent"],
+        "agent": owner,
         "claimed_at": claim["claimed"],
         "scope": scope,
         "branch": claim["branch"],

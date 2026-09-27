@@ -273,6 +273,8 @@ def add_claim(repo_root: Path | None = None, topic: str = "",
         raise ClaimConflict("COLLAB.md missing — claim requires the continuity table")
     normalized_topic = _validate_claim_scalar("task id", topic)
     normalized_agent = _validate_claim_scalar("agent", agent)
+    if normalized_agent.lower() == "unknown":
+        raise ClaimConflict("durable claim requires a named agent/owner")
     normalized_scope = _validate_claim_scope(scope, allow_placeholder=True)
     normalized_branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
     claims = parse_claims(collab)
@@ -313,9 +315,14 @@ def _add_claim_unlocked(repo_root: Path | None = None, topic: str = "",
 
     topic = _validate_claim_scalar("task id", topic)
     agent = _validate_claim_scalar("agent", agent)
+    if agent.lower() == "unknown":
+        raise ClaimConflict("durable claim requires a named agent/owner")
     scope = _validate_claim_scope(scope, allow_placeholder=True)
     branch = _validate_claim_scalar("branch", branch, allow_placeholder=True)
     claims = parse_claims(collab)
+    exact_matches = [c for c in claims if c["chunk"].strip() == topic]
+    if len(exact_matches) > 1:
+        raise ClaimConflict(f"duplicate/ambiguous durable claim rows for {topic!r}")
     for c in claims:
         durable_task = c["chunk"].strip()
         if durable_task != topic:
@@ -364,8 +371,10 @@ def _add_claim_unlocked(repo_root: Path | None = None, topic: str = "",
         raise ClaimConflict(str(exc)) from None
 
     verdict = entry_gate(root, topic=topic, agent=agent)
-    if verdict["conflicts"]:
-        raise ClaimConflict("conflict with live claim: " + "; ".join(verdict["conflicts"]))
+    if verdict["verdict"] != "GO":
+        if verdict["conflicts"]:
+            raise ClaimConflict("conflict with live claim: " + "; ".join(verdict["conflicts"]))
+        raise ClaimConflict("entry gate rejected durable claim: named owner/continuity required")
 
     row = f"| {topic} | {agent} | {date.today().isoformat()} | {scope} | {branch} |\n"
     text = collab.read_text(encoding="utf-8")

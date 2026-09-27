@@ -282,6 +282,7 @@ def test_warns_when_editing_shared_surface_with_no_claim(tmp_path):
     assert r.returncode == 0  # warning, not block
     # The hook nudges the user to claim_acquire
     assert "claim" in r.stderr.lower() or "ประกาศ" in r.stderr
+    assert "task_id" in r.stderr
 
 
 def test_no_warning_when_own_claim_covers_path(tmp_path):

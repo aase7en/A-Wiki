@@ -548,6 +548,42 @@ class TestClaim:
             assert text.count(f"| TASK-CONCURRENT-{i:02d} |") == 1
 
 
+    def test_new_claim_rejects_unknown_owner(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed"], cwd=tmp_path, check=True, capture_output=True)
+        before = collab.read_text(encoding="utf-8")
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="owner|agent|unknown"):
+            add_claim(repo_root=tmp_path, topic="TASK-UNKNOWN", agent="unknown",
+                      scope="scripts/lib/**", branch="main")
+        assert collab.read_text(encoding="utf-8") == before
+
+    def test_retry_rejects_duplicate_exact_task_rows_before_cache_mirror(self, tmp_path, monkeypatch):
+        import subprocess
+        monkeypatch.chdir(tmp_path)
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        collab = self._collab(tmp_path)
+        text = collab.read_text(encoding="utf-8")
+        row = "| TASK-DUP | tester | 2026-09-27 | scripts/lib/** | main |\n"
+        collab.write_text(text + row + row, encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "duplicate rows"], cwd=tmp_path, check=True, capture_output=True)
+        cache = tmp_path / "cache.json"
+        from conductor.bridge import add_claim, ClaimConflict
+        with pytest.raises(ClaimConflict, match="duplicate|ambiguous"):
+            add_claim(repo_root=tmp_path, topic="TASK-DUP", agent="tester",
+                      scope="scripts/lib/**", branch="main", claims_store=cache)
+        assert not cache.exists()
+
+
 class TestCanonicalClaimReader:
     def _init_repo(self, tmp_path):
         import subprocess
@@ -639,6 +675,47 @@ class TestCanonicalClaimReader:
         from conductor.state import read_canonical_claim, ClaimLookupError
         with pytest.raises(ClaimLookupError, match="BRANCH_HEAD_UNRESOLVED"):
             read_canonical_claim(tmp_path, "TASK-TAG")
+
+
+    def test_reader_rejects_legacy_unknown_owner(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "| TASK-58 | glm |", "| TASK-58 | unknown |"), encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "legacy unknown owner"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="OWNER_UNBOUND"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+
+    def test_reader_rejects_reflog_expression_as_branch_name(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main |",
+            "| TASK-58 | glm | 2026-09-27 | scripts/lib/**; conductor/** | main@{1} |"),
+            encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "bad branch syntax"], cwd=tmp_path, check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="BRANCH_INVALID|BRANCH_HEAD_UNRESOLVED"):
+            read_canonical_claim(tmp_path, "TASK-58")
+
+    def test_reader_rejects_legacy_machine_local_scope(self, tmp_path):
+        self._init_repo(tmp_path)
+        p = tmp_path / "COLLAB.md"
+        p.write_text(p.read_text(encoding="utf-8").replace(
+            "scripts/lib/**; conductor/**", "/opt/example/private/**"), encoding="utf-8")
+        import subprocess
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "legacy absolute scope"], cwd=tmp_path, check=True, capture_output=True)
+        from conductor.state import read_canonical_claim, ClaimLookupError
+        with pytest.raises(ClaimLookupError, match="SCOPE_UNSAFE"):
+            read_canonical_claim(tmp_path, "TASK-58")
 
 
     def test_reader_rejects_shallow_history_before_deriving_generation(self, tmp_path):
