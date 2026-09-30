@@ -94,7 +94,7 @@ def test_aggregate_rows_splits_weight_to_one_secondary_department(tmp_path):
     assert out == '{"opdKg":5,"erKg":5,"rowCount":2}'
 
 
-def test_apply_raw_row_edit_recomputes_summary_after_department_and_weight_change(tmp_path):
+def test_apply_raw_row_edit_then_aggregate_recomputes_summary_after_department_and_weight_change(tmp_path):
     out = run_userscript_unit(
         tmp_path,
         textwrap.dedent(
@@ -105,7 +105,8 @@ def test_apply_raw_row_edit_recomputes_summary_after_department_and_weight_chang
             ];
             globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'location', 'เวช');
             globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'secondary_location', 'ฝังเข็ม');
-            const plan = globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'weight_kg', '20');
+            globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'weight_kg', '20');
+            const plan = globalThis.__wasteOcrTest.aggregateRows(rows, '2026-05-11');
             const byLoc = Object.fromEntries(plan.rows.map(r => [r.location, r.kg]));
             console.log(JSON.stringify({
               opd: byLoc.OPD || 0,
@@ -136,7 +137,8 @@ def test_weight_expression_plus_is_calculated_and_preserved_for_teaching(tmp_pat
               recorder: 'A',
               _originalRecorder: 'A',
             }];
-            const plan = globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'weight_kg', '5+5');
+            globalThis.__wasteOcrTest.applyRawRowEdit(rows, 0, 'weight_kg', '5+5');
+            const plan = globalThis.__wasteOcrTest.aggregateRows(rows, '2026-05-13');
             const saved = globalThis.__wasteOcrTest.recordOcrTeachingHistory(rows, {
               dateISO: '2026-05-13',
               fileName: 'sample.jpg',
