@@ -185,3 +185,17 @@ def test_check_branch_still_fails_ci_feature_branch_ref(monkeypatch):
     result = agent_preflight.check_branch()
 
     assert result.level == "FAIL"
+
+
+def test_expected_drive_folders_use_hospital_scoped_feedback(monkeypatch):
+    monkeypatch.setattr(
+        agent_preflight,
+        "get_hospital_dir_name",
+        lambda: "private-hospital",
+    )
+
+    folders = agent_preflight._expected_drive_folders()
+
+    assert "private-hospital/waste-reports" in folders
+    assert "private-hospital/ocr-feedback" in folders
+    assert "ocr-feedback" not in folders

@@ -210,15 +210,29 @@ create_link() {
 # ── Init folder structure inside drive ───────────────────────────────────────
 init_drive_structure() {
     local drive="$1"
-    mkdir -p "$drive/waste-reports"
+    local hospital="${AWIKI_HOSPITAL_DIR:-}"
+
+    # Existing machines keep the private folder name in drive/.env.
+    # Read only this key and never print the resolved private value.
+    if [ -z "$hospital" ] && [ -f "$drive/.env" ]; then
+        hospital="$(sed -n 's/^AWIKI_HOSPITAL_DIR=//p' "$drive/.env" | head -n 1 | tr -d '\r')"
+    fi
+    hospital="${hospital#\"}"; hospital="${hospital%\"}"
+    hospital="${hospital#\'}"; hospital="${hospital%\'}"
+    case "$hospital" in
+        ""|"."|".."|*/*|*\\*) hospital="hospital-main" ;;
+    esac
+
+    mkdir -p "$drive/$hospital/waste-reports"
+    mkdir -p "$drive/$hospital/ocr-feedback"
+    mkdir -p "$drive/$hospital/waste-ocr"
     mkdir -p "$drive/personal-tools/userscripts"
-    mkdir -p "$drive/ocr-feedback"
     mkdir -p "$drive/individual-tasks"
     mkdir -p "$drive/raw"
     if [ -d "$drive/.secrets" ]; then
         warn "  $drive/.secrets is a directory; replace it with a KEY=VALUE file when adding secrets"
     fi
-    info "  folders ready: waste-reports/, personal-tools/, ocr-feedback/, individual-tasks/, raw/"
+    info "  folders ready: <HOSPITAL>/{waste-reports,ocr-feedback,waste-ocr}, personal-tools/, individual-tasks/, raw/"
 }
 
 # ── Resolve current drive path (for raw/ setup that depends on drive/) ───────

@@ -66,39 +66,85 @@ def get_drive_root() -> Path:
     return fallback
 
 
-def get_waste_reports_dir(year_month: str | None = None) -> Path:
-    """Return drive/waste-reports/ or drive/waste-reports/YYYY-MM/ path.
+def _normalize_private_dir_name(value: str | None) -> str | None:
+    """Return one safe private directory component, or None if invalid."""
+    if value is None:
+        return None
+    name = value.strip().strip('"').strip("'")
+    if not name or name in {".", ".."} or "/" in name or "\\" in name:
+        return None
+    return name
 
-    Backward-compat: หลัง restructure 2026-08-06, path จริงอยู่ที่
-    drive/hospital-uthai/waste-reports/ แต่ยังรองรับ path เดิม
-    drive/waste-reports/ (อาจเป็น symlink) ด้วย
+
+def get_hospital_dir_name() -> str:
+    """Resolve the machine-private hospital folder without publishing its name.
+
+    Resolution order:
+    1. AWIKI_HOSPITAL_DIR environment variable.
+    2. AWIKI_HOSPITAL_DIR from private drive/.env (only this key is read).
+    3. Neutral "hospital-main" default for fresh setups.
+    """
+    explicit = _normalize_private_dir_name(os.environ.get("AWIKI_HOSPITAL_DIR"))
+    if explicit:
+        return explicit
+
+    try:
+        env_file = get_drive_root() / ".env"
+        if path_exists(env_file):
+            for raw_line in env_file.read_text(encoding="utf-8").splitlines():
+                if raw_line.startswith("AWIKI_HOSPITAL_DIR="):
+                    configured = _normalize_private_dir_name(raw_line.split("=", 1)[1])
+                    if configured:
+                        return configured
+                    break
+    except OSError:
+        pass
+
+    return "hospital-main"
+
+
+def _hospital_dir_name() -> str:
+    """Backward-compatible internal alias for the public resolver."""
+    return get_hospital_dir_name()
+
+
+def _hospital_scoped_dir(subdir: str) -> Path:
+    """Return canonical hospital-scoped data, preserving legacy-only installs.
+
+    New/current layouts use drive/<HOSPITAL>/<subdir>. A legacy root-level
+    directory is used only when it already contains the installation surface
+    and no hospital directory exists yet.
     """
     root = get_drive_root()
-    # Prefer new canonical path
-    new_base = root / "hospital-uthai" / "waste-reports"
-    legacy_base = root / "waste-reports"
-    base = new_base if new_base.exists() or new_base.parent.exists() else legacy_base
-    if year_month:
-        base = base / year_month
+    hospital_root = root / get_hospital_dir_name()
+    canonical = hospital_root / subdir
+    legacy = root / subdir
+
+    if canonical.exists() or hospital_root.exists() or not legacy.exists():
+        base = canonical
+    else:
+        base = legacy
+
     base.mkdir(parents=True, exist_ok=True)
     return base
 
 
-def _hospital_dir_name() -> str:
-    """Machine-private hospital folder name (Iron Law #6: the real name
-    never lives in the public repo). Set AWIKI_HOSPITAL_DIR on machines
-    that use a custom folder; the neutral default matches fresh setups."""
-    import os
-    return os.environ.get("AWIKI_HOSPITAL_DIR", "hospital-main")
+def get_waste_reports_dir(year_month: str | None = None) -> Path:
+    """Return canonical <HOSPITAL>/waste-reports[/YYYY-MM] with legacy fallback."""
+    base = _hospital_scoped_dir("waste-reports")
+    if year_month:
+        base = base / year_month
+        base.mkdir(parents=True, exist_ok=True)
+    return base
 
 
 def get_hospital_dir(subdir: str | None = None) -> Path:
-    """Return drive/hospital-uthai/[subdir]/ — canonical path สำหรับไฟล์ <HOSPITAL>.
+    """Return drive/<HOSPITAL>/[subdir]/ for private hospital operational data.
 
-    Subdirs: waste-ocr, waste-reports, waste-form-learning-images,
-             env-evaluations, hosxp, pharmacy, ocr-feedback
+    Subdirs include waste-ocr, waste-reports, waste-form-learning-images,
+    env-evaluations, hosxp, pharmacy, and ocr-feedback.
     """
-    base = get_drive_root() / _hospital_dir_name()
+    base = get_drive_root() / get_hospital_dir_name()
     if subdir:
         base = base / subdir
     base.mkdir(parents=True, exist_ok=True)
@@ -143,10 +189,8 @@ def list_agent_dirs() -> list[Path]:
 
 
 def get_ocr_feedback_dir() -> Path:
-    """Return drive/ocr-feedback/ path."""
-    p = get_drive_root() / "ocr-feedback"
-    p.mkdir(parents=True, exist_ok=True)
-    return p
+    """Return canonical <HOSPITAL>/ocr-feedback with legacy-root fallback."""
+    return _hospital_scoped_dir("ocr-feedback")
 
 
 class DriveNotLinkedError(RuntimeError):
