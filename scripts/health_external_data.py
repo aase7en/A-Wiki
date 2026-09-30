@@ -14,15 +14,17 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-from drive_path import get_drive_root
+from drive_path import get_drive_root, get_hospital_dir_name
 
-EXPECTED_FOLDERS = [
-    "raw",
-    "waste-reports",
-    "personal-tools",
-    "ocr-feedback",
-    "individual-tasks",
-]
+def expected_folders() -> list[str]:
+    hospital = get_hospital_dir_name()
+    return [
+        "raw",
+        f"{hospital}/waste-reports",
+        f"{hospital}/ocr-feedback",
+        "personal-tools",
+        "individual-tasks",
+    ]
 
 
 def count_files(path: Path) -> int | None:
@@ -48,7 +50,7 @@ def main() -> int:
 
     overall_ok = True
 
-    for folder in EXPECTED_FOLDERS:
+    for folder in expected_folders():
         path = drive_root / folder
         ok = path.is_dir()
         overall_ok = overall_ok and ok

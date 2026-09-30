@@ -24,13 +24,28 @@ PLAN_FILES = [
     ("goals.md", "drive/personal/journal/goals.md"),
     ("wiki/context/session-memory.md", "drive/personal/journal/wiki-context-session-memory.md"),
 ]
-EXPECTED_DRIVE_FOLDERS = [
-    "raw",
-    "waste-reports",
-    "personal-tools",
-    "ocr-feedback",
-    "individual-tasks",
-]
+def expected_drive_folders(root: Path) -> list[str]:
+    """Return expected private-data folders without exposing the hospital name."""
+    hospital = os.environ.get("AWIKI_HOSPITAL_DIR", "").strip().strip('"').strip("'")
+    if not hospital:
+        env_file = root / ".env"
+        try:
+            for line in env_file.read_text(encoding="utf-8").splitlines():
+                if line.startswith("AWIKI_HOSPITAL_DIR="):
+                    hospital = line.split("=", 1)[1].strip().strip('"').strip("'")
+                    break
+        except OSError:
+            pass
+    if not hospital or hospital in {".", ".."} or "/" in hospital or "\\" in hospital:
+        hospital = "hospital-main"
+
+    return [
+        "raw",
+        f"{hospital}/waste-reports",
+        f"{hospital}/ocr-feedback",
+        "personal-tools",
+        "individual-tasks",
+    ]
 
 
 def emit(msg: str) -> None:
@@ -93,7 +108,7 @@ def check_drive() -> tuple[bool, str]:
     if is_linked_dir(DRIVE_LINK):
         target = resolve_link_target(DRIVE_LINK)
         if path_is_dir(target):
-            missing = [name for name in EXPECTED_DRIVE_FOLDERS if not path_exists(target / name)]
+            missing = [name for name in expected_drive_folders(target) if not path_exists(target / name)]
             suffix = f" (missing optional folders: {', '.join(missing)})" if missing else ""
             return True, f"drive/ -> {target} ({link_label(DRIVE_LINK)}, active){suffix}"
         return False, f"drive/ {link_label(DRIVE_LINK)} target missing: {target} (cloud drive not mounted?)"

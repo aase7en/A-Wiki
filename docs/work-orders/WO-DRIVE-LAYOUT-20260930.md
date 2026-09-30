@@ -53,3 +53,13 @@ Make the private `drive/` data layer easier to understand and search without bre
 - No duplicate canonical role for OCR feedback/runtime state.
 - Relevant A-Wiki tests and privacy checks pass.
 - Main checkout remains untouched.
+
+## Verification — 2026-09-30
+- Drive stable entrypoint `personal-tools/userscripts/waste-form-ocr-fill.user.js` reports v1.11.1 and is byte-identical to the v1.11.1 release snapshot (SHA-256 `b1697d4074b0aca76787e11d9d08880b0a42f54f40314b2863660ce13e0814da`).
+- `node --check` passes for the stable userscript.
+- Historical releases are isolated under `personal-tools/userscripts/releases/waste-ocr/`; backup/export material is isolated under `backups/waste-ocr/`.
+- Focused tests: `30 passed` across `tests/test_drive_link_health.py`, `tests/test_agent_preflight.py`, and `tests/test_waste_ocr_userscript.py`.
+- Python compile checks pass for the modified resolver/preflight/health/hook modules.
+- `scripts/setup-cloud-link.sh` syntax passes after CRLF is stripped in-memory for the Windows verification shell; no line-ending rewrite was performed.
+- `python scripts/check-privacy.py`: no personal data detected in tracked files.
+- Dirty primary checkout was not modified; implementation remained in this isolated worktree.

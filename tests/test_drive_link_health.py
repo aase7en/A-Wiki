@@ -78,3 +78,58 @@ def test_drive_path_resolves_reparse_target(monkeypatch, tmp_path):
     monkeypatch.setattr(drive_path, "resolve_link_target", lambda p: drive_target)
 
     assert drive_path.get_drive_root() == drive_target
+
+
+def test_hospital_dir_name_reads_private_drive_env(monkeypatch, tmp_path):
+    repo = tmp_path / "repo"
+    drive = repo / "drive"
+    drive.mkdir(parents=True)
+    (drive / ".env").write_text(
+        "OTHER_SETTING=ignored\nAWIKI_HOSPITAL_DIR=private-hospital\n",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(drive_path, "REPO_ROOT", repo)
+    monkeypatch.delenv("AWIKI_HOSPITAL_DIR", raising=False)
+
+    assert drive_path.get_hospital_dir_name() == "private-hospital"
+
+
+def test_hospital_scoped_paths_prefer_canonical_when_hospital_root_exists(monkeypatch, tmp_path):
+    repo = tmp_path / "repo"
+    drive = repo / "drive"
+    hospital = drive / "private-hospital"
+    hospital.mkdir(parents=True)
+    (drive / "ocr-feedback").mkdir()
+    (drive / "waste-reports").mkdir()
+
+    monkeypatch.setattr(drive_path, "REPO_ROOT", repo)
+    monkeypatch.setenv("AWIKI_HOSPITAL_DIR", "private-hospital")
+
+    assert drive_path.get_ocr_feedback_dir() == hospital / "ocr-feedback"
+    assert drive_path.get_waste_reports_dir() == hospital / "waste-reports"
+
+
+def test_hospital_scoped_paths_keep_legacy_only_install(monkeypatch, tmp_path):
+    repo = tmp_path / "repo"
+    drive = repo / "drive"
+    legacy_feedback = drive / "ocr-feedback"
+    legacy_reports = drive / "waste-reports"
+    legacy_feedback.mkdir(parents=True)
+    legacy_reports.mkdir()
+
+    monkeypatch.setattr(drive_path, "REPO_ROOT", repo)
+    monkeypatch.delenv("AWIKI_HOSPITAL_DIR", raising=False)
+
+    assert drive_path.get_ocr_feedback_dir() == legacy_feedback
+    assert drive_path.get_waste_reports_dir() == legacy_reports
+
+
+def test_hospital_dir_name_rejects_path_traversal(monkeypatch, tmp_path):
+    repo = tmp_path / "repo"
+    (repo / "drive").mkdir(parents=True)
+
+    monkeypatch.setattr(drive_path, "REPO_ROOT", repo)
+    monkeypatch.setenv("AWIKI_HOSPITAL_DIR", "../outside")
+
+    assert drive_path.get_hospital_dir_name() == "hospital-main"

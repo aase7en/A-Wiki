@@ -143,7 +143,7 @@ DOM strategy: **label-based** ไม่ใช่ name-attribute → robust ต�
 [Python backend บน Raspberry Pi 5 (internal network โรงพยาบาล)]
         ↓ OCR via Gemini Flash
               └─ system prompt จาก wiki/synthesis/garbage-report-ocr.md
-              └─ hints ใน drive/ocr-feedback/hints.json (learning loop)
+              └─ hints ใน drive/<HOSPITAL>/ocr-feedback/hints.json (learning loop)
         ↓ Aggregate + Playwright กรอก trash_add
         ↓ screenshot ยืนยัน
 [ตอบกลับ Telegram: ✅ กรอกแล้ว + screenshot]
@@ -170,10 +170,10 @@ bash scripts/setup-drive-link.sh
 # Backup userscript
 cp scripts/userscripts/waste-form-ocr-fill.user.js drive/personal-tools/userscripts/
 
-# OCR results (restructure 2026-08-06: ย้ายไป drive/hospital-uthai/)
-drive/hospital-uthai/waste-reports/YYYY-MM/    ← photos + JSON results
-drive/hospital-uthai/ocr-feedback/             ← correction data (learning loop)
-drive/hospital-uthai/waste-ocr/                ← state files (settings, correlation, teaching_history)
+# OCR results (restructure 2026-08-06: ย้ายไป drive/<HOSPITAL>/)
+drive/<HOSPITAL>/waste-reports/YYYY-MM/    ← photos + JSON results
+drive/<HOSPITAL>/ocr-feedback/             ← correction data (learning loop)
+drive/<HOSPITAL>/waste-ocr/                ← state files (settings, correlation, teaching_history)
 # (legacy paths drive/waste-reports, drive/ocr-feedback ยังใช้ได้ via backward-compat)
 ```
 
