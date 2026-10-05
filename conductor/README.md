@@ -20,7 +20,7 @@ python -m conductor plan "spike: a, b, c" --write   # เขียน WO ไฟ�
 # v0.2 — brain bridge สำหรับ control plane
 python -m conductor verify --gates registry,scan,health --json  # รัน gates แบบ bounded
 python -m conductor recall --query "phase 6" --json             # ค้น L1 memory (redacted)
-python -m conductor claim --topic x --agent zcode --branch feat/x  # จอง claim (gate-guarded, idempotent)
+python -m conductor claim --topic WO-EXACT-ID --agent zcode --scope "scripts/lib/**" --branch feat/x  # durable claim (exact task/scope/branch)
 ```
 
 ## กลไก

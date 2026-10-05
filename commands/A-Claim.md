@@ -1,4 +1,4 @@
-# /A-Claim — ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็น
+# /A-Claim — ระบบจองงานข้าม agent — ผูก exact task_id + scope + goal + phase ก่อนเริ่ม, เห็น
 
 Maps to: `skills/awiki/a-claim/SKILL.md`
 
@@ -10,7 +10,7 @@ Auto-picks on: `claim`, `จอง`, `agent อื่น`, `ชนกัน`, `c
 
 ## Flow
 1. claim_list ดูก่อน
-2. claim_acquire ประกาศ scope+goal
+2. หา exact `task_id` จาก WO/COLLAB แล้ว `claim_acquire` ด้วย `task_id` + scope + goal
 3. ทำงาน
 4. claim_advance ตาม phase
 5. claim_release
