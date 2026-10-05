@@ -378,6 +378,12 @@ class TestClaim:
         "../outside/**",
         "x/**\n| forged-task | victim | 2026-09-27 | secrets/** | main |",
         "x/**|forged",
+        # PR #67 review P2: the canonical reader/hook splits scope on BOTH
+        # comma and semicolon, so a comma-bearing item would be read as two
+        # scopes and its declared path would match nothing. Reject at the writer.
+        "docs/foo,bar.md",
+        "a.md; b,c.md",
+        "skills/**,commands/**",
     ])
     def test_new_claim_rejects_non_repo_relative_or_table_breaking_scope(
             self, tmp_path, monkeypatch, bad_scope):
@@ -704,6 +710,23 @@ class TestCanonicalClaimReader:
         from conductor.state import read_canonical_claim, ClaimLookupError
         with pytest.raises(ClaimLookupError, match="BRANCH_INVALID|BRANCH_HEAD_UNRESOLVED"):
             read_canonical_claim(tmp_path, "TASK-58")
+
+    def test_writer_reader_hook_scope_parity(self):
+        """PR #67 review P2 parity: every scope the writer accepts must be
+        interpreted as the exact same item set by the canonical reader and
+        the hook's inline split. Comma-bearing items are rejected upstream."""
+        import re as _re
+        from conductor.bridge import _validate_claim_scope, ClaimConflict
+        from conductor.state import _scope_items
+        for accepted in ("src/a.py", "src/a.py; docs/b.md", "skills/**; commands/*.md"):
+            normalized = _validate_claim_scope(accepted)
+            items = [part.strip() for part in normalized.split(";") if part.strip()]
+            assert _scope_items(normalized) == items
+            hook_items = [p.strip() for p in _re.split(r"[;,]", normalized) if p.strip()]
+            assert hook_items == items
+        for rejected in ("docs/foo,bar.md", "a.md; b,c.md"):
+            with pytest.raises(ClaimConflict, match="comma"):
+                _validate_claim_scope(rejected)
 
     def test_reader_rejects_legacy_machine_local_scope(self, tmp_path):
         self._init_repo(tmp_path)

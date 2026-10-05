@@ -177,6 +177,51 @@ def test_blocks_foreign_durable_claim_when_ttl_cache_is_corrupt(tmp_path):
     assert "DURABLE CLAIM COLLISION" in r.stderr
 
 
+def test_existing_collab_unreadable_fails_closed(tmp_path):
+    """PR #67 review P1: durable COLLAB.md EXISTS but bytes are unreadable
+    (invalid UTF-8) => typed FAIL-CLOSED denial. Collapsing the parse failure
+    to an empty claim set would make foreign durable ownership invisible."""
+    store = tmp_path / "claims.json"
+    durable = tmp_path / "COLLAB.md"
+    durable.write_bytes(
+        "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+        "|---|---|---|---|---|\n| TASK-58 | other_agent | 2026-09-27 |"
+        " scripts/lib/** | feat/task-58 |\n".encode("ascii")
+        + b"\xff\xfe broken-bytes\n")
+    r = _run_hook(
+        _edit_payload("scripts/lib/foo.py"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE_CLAIMS_UNREADABLE" in r.stderr
+
+
+def test_existing_collab_unreadable_fails_closed_even_for_shared_warning_path(tmp_path):
+    """Fail-closed must precede the unclaimed-shared-surface nudge: an
+    unevaluable durable authority never allows even a warning-level pass."""
+    store = tmp_path / "claims.json"
+    durable = tmp_path / "COLLAB.md"
+    durable.write_bytes(
+        "| Chunk/WO | Agent |\n|---|---|\n| X | y |\n".encode("ascii")
+        + b"\xff\xfe\n")
+    r = _run_hook(
+        _edit_payload("skills/awiki/x/SKILL.md"), claims_store=store,
+        env_extra={"AWIKI_DURABLE_CLAIMS_FILE": str(durable)})
+    assert r.returncode == 2, r.stderr
+    assert "DURABLE_CLAIMS_UNREADABLE" in r.stderr
+
+
+def test_absent_collab_still_isolated_when_unreadable_elsewhere(tmp_path):
+    """Isolation invariant preserved: a foreign workspace with NO COLLAB.md
+    stays claim-free even though reading failures elsewhere fail closed."""
+    import importlib.util as ilu
+    spec = ilu.spec_from_file_location("claim_hook_absent_iso", HOOK)
+    mod = ilu.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    foreign = tmp_path / "foreign-no-collab"
+    foreign.mkdir()
+    assert mod._durable_claims(foreign) == []
+
+
 def test_blocks_foreign_durable_claim_when_ttl_cache_empty(tmp_path):
     store = tmp_path / "claims.json"
     durable = tmp_path / "COLLAB.md"

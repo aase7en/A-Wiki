@@ -202,6 +202,14 @@ def _validate_claim_scope(scope: str, *, allow_placeholder: bool = False) -> str
     if not items:
         raise ClaimConflict("scope is required")
     for item in items:
+        # The canonical reader (conductor.state._scope_items) and the claim
+        # hook split stored scope on BOTH comma and semicolon. A comma-bearing
+        # item would therefore be read as two scopes and its declared path
+        # would match nothing — collision authority would be silently lost.
+        # Reject commas here rather than inventing an escaping format.
+        if "," in item:
+            raise ClaimConflict(
+                f"scope item contains comma (reader splits on comma): {item!r}")
         normalized = item.replace("\\", "/")
         if (item.startswith(("/", "\\", "~")) or
                 re.match(r"^[A-Za-z]:[\\/]", item) or

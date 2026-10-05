@@ -47,6 +47,12 @@ SHARED_SURFACES = (
 )
 
 
+class DurableClaimsUnavailable(RuntimeError):
+    """Durable COLLAB.md exists but cannot be read/parsed. Collapsing this to
+    an empty claim set would hide foreign durable ownership (fail open);
+    unknown durable authority is never permission to edit."""
+
+
 def _utf8_streams() -> None:
     for s in (sys.stdin, sys.stdout, sys.stderr):
         try:
@@ -116,7 +122,12 @@ def _workspace_root(data: dict) -> Path:
 
 
 def _durable_claims(workspace_root: Path | str | None = None) -> list[dict]:
-    """Read durable claims from the payload repo, never from an unrelated brain."""
+    """Read durable claims from the payload repo, never from an unrelated brain.
+
+    A missing COLLAB.md is intentional isolation (foreign workspace) and stays
+    claim-free. An EXISTING COLLAB.md that cannot be read or parsed is a
+    fail-closed condition: the durable authority is unevaluable, so ownership
+    cannot be proven either way and edits must be denied, not allowed."""
     override = os.environ.get("AWIKI_DURABLE_CLAIMS_FILE", "").strip()
     root = Path(workspace_root) if workspace_root is not None else REPO_ROOT
     path = Path(override) if override else root / "COLLAB.md"
@@ -126,8 +137,9 @@ def _durable_claims(workspace_root: Path | str | None = None) -> list[dict]:
         sys.path.insert(0, str(REPO_ROOT))
         from conductor.state import parse_claims
         return parse_claims(path)
-    except Exception:
-        return []
+    except Exception as exc:
+        raise DurableClaimsUnavailable(
+            f"existing durable claims file is unreadable/unparseable: {path}") from exc
 
 
 def _relative_path(file_path: str, workspace_root: Path | str | None = None) -> str:
@@ -220,32 +232,45 @@ def main() -> int:
         )
         return 2
 
-    durable_other = _durable_collision(file_path, me, workspace_root)
-    if durable_other:
+    try:
+        durable_other = _durable_collision(file_path, me, workspace_root)
+        if durable_other:
+            sys.stderr.write(
+                f"🛑 DURABLE CLAIM COLLISION — {durable_other['agent']} owns this surface\n\n"
+                f"  file        : {file_path}\n"
+                f"  task        : {durable_other['chunk']}\n"
+                f"  branch      : {durable_other['branch']}\n"
+                f"  scope       : {durable_other['scope']}\n"
+                "  authority   : COLLAB.md/Git (canonical durable claim)\n"
+            )
+            return 2
+
+        # Unclaimed work on a shared surface — nudge, do not block.
+        if is_shared_surface(relative_path):
+            try:
+                mine = [c for c in ac.live() if c.get("agent") == me]
+            except Exception:
+                mine = []
+            if not mine and not _has_own_durable_claim(file_path, me, workspace_root):
+                sys.stderr.write(
+                    f"🤝 ยังไม่ได้ประกาศ claim — กำลังแก้ shared surface ({file_path})\n"
+                    f"   agent อื่นจะไม่รู้ว่าคุณทำอะไรอยู่ และอาจทำซ้ำ\n"
+                    f"   หา exact task_id จาก WO/COLLAB ก่อน แล้วประกาศ: "
+                    f"MCP `claim_acquire` task_id=\"<WO-ID>\" agent=\"{me}\" "
+                    f"scope=[...] goal=\"<done criteria>\"\n"
+                )
+    except DurableClaimsUnavailable:
+        # Existing-but-unevaluable durable authority: deny typed, fail closed.
+        # (A workspace with NO COLLAB.md stays isolated; this path fires only
+        # when a durable claims file exists and cannot be read/parsed.)
         sys.stderr.write(
-            f"🛑 DURABLE CLAIM COLLISION — {durable_other['agent']} owns this surface\n\n"
-            f"  file        : {file_path}\n"
-            f"  task        : {durable_other['chunk']}\n"
-            f"  branch      : {durable_other['branch']}\n"
-            f"  scope       : {durable_other['scope']}\n"
-            "  authority   : COLLAB.md/Git (canonical durable claim)\n"
+            "🛑 DURABLE_CLAIMS_UNREADABLE — existing durable claims file cannot be\n"
+            "  read/parsed, so claim ownership cannot be evaluated; failing closed.\n\n"
+            f"  file : {file_path}\n"
+            "  fix  : repair the durable claims file (encoding/format), or point\n"
+            "         AWIKI_DURABLE_CLAIMS_FILE at the correct workspace file.\n"
         )
         return 2
-
-    # Unclaimed work on a shared surface — nudge, do not block.
-    if is_shared_surface(relative_path):
-        try:
-            mine = [c for c in ac.live() if c.get("agent") == me]
-        except Exception:
-            mine = []
-        if not mine and not _has_own_durable_claim(file_path, me, workspace_root):
-            sys.stderr.write(
-                f"🤝 ยังไม่ได้ประกาศ claim — กำลังแก้ shared surface ({file_path})\n"
-                f"   agent อื่นจะไม่รู้ว่าคุณทำอะไรอยู่ และอาจทำซ้ำ\n"
-                f"   หา exact task_id จาก WO/COLLAB ก่อน แล้วประกาศ: "
-                f"MCP `claim_acquire` task_id=\"<WO-ID>\" agent=\"{me}\" "
-                f"scope=[...] goal=\"<done criteria>\"\n"
-            )
     return 0
 
 
