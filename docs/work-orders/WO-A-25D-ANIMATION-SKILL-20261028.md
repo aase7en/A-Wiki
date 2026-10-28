@@ -11,7 +11,7 @@ Scope: new skills/awiki/a-2-5d-animation/SKILL.md, skills-registry.json, generat
 Forbidden: AGENTS.md / CLAUDE.md, source/runtime code, raw/private/secrets, unrelated skills, live agent operations, unrelated worktrees, main branch, releases.
 
 ## Requirements
-- Reuse packaged A-2.5DAnimation v0.1.0 skill, preserving on-demand GrillMe intake, master art, locked structures, deterministic motion and honest QA.
+- Reuse packaged A-2.5DAnimation v0.3.0 skill, preserving on-demand GrillMe intake, master art, locked structures, deterministic motion and honest QA.
 - A-Wiki frontmatter includes domain/lifecycle/status and registry owns discovery/aliases.
 - Generate surfaces using current registry tooling; do not hand-edit generated maps.
 - Avoid existing modified/stale local A-Wiki root and untracked user work.
