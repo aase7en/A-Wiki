@@ -3,6 +3,7 @@
 
 | Skill | Domain | Lifecycle | Category | Path |
 |-------|--------|-----------|----------|------|
+| `a-2-5d-animation` | design, media, env | build | pipeline | `skills/awiki/a-2-5d-animation/SKILL.md` |
 | `a-agent` | ai-ops, engineering | meta | pipeline | `skills/awiki/a-agent/SKILL.md` |
 | `a-backend` | engineering, code | meta | pipeline | `skills/awiki/a-backend/SKILL.md` |
 | `a-claim` | engineering, ai-ops | meta | pipeline | `skills/awiki/a-claim/SKILL.md` |
@@ -212,10 +213,11 @@
 | code | 77 |
 | data | 11 |
 | debug | 7 |
-| design | 13 |
+| design | 14 |
 | document | 9 |
 | engineering | 54 |
-| media | 15 |
+| env | 1 |
+| media | 16 |
 | medical | 4 |
 | pharmacy | 2 |
 | productivity | 12 |
