@@ -3,6 +3,36 @@
   "generated_at": "2026-08-09",
   "skills": [
     {
+      "name": "a-2-5d-animation",
+      "aliases": [
+        "/a-2.5danimation"
+      ],
+      "domain": [
+        "design",
+        "media",
+        "env"
+      ],
+      "lifecycle_phase": "build",
+      "category": "pipeline",
+      "source": "repo",
+      "path": "skills/awiki/a-2-5d-animation/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "0.1.0",
+      "status": "canonical",
+      "description": "Vivid luxury 2.5D animation with locked architecture, cloud sunlight water and foliage motion; GrillMe intake when artistic requirements are unresolved.",
+      "invocation": "manual",
+      "invocation_hint": "/A-2.5DAnimation",
+      "a_phase": "any",
+      "triggers": [
+        "2.5d animation",
+        "luxury led",
+        "layered scenic video",
+        "moving clouds water foliage"
+      ]
+    },
+    {
       "name": "a-agent",
       "aliases": [
         "/a-agent",
