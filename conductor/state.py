@@ -55,6 +55,53 @@ class ClaimLookupError(ValueError):
     """Canonical durable claim cannot be resolved exactly and safely."""
 
 
+def parse_claims_strict(collab: Path) -> list[dict]:
+    """Read the claims region, rejecting every row/header width mismatch.
+
+    UTF-8 BOM and CRLF checkouts are supported explicitly. Unlike parse_claims,
+    unreadable files and malformed rows raise ClaimLookupError, even when the
+    offending row is unrelated to the requested task or is a placeholder.
+    """
+    try:
+        text = collab.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError) as exc:
+        raise ClaimLookupError(f"CLAIM_TABLE_UNAVAILABLE: {exc}") from None
+    claims: list[dict] = []
+    width = 0
+    for number, line in enumerate(text.splitlines(), 1):
+        line = line.strip()
+        if not line:
+            continue
+        if not line.startswith("|"):
+            width = 0
+            continue
+        # Remove only the outer delimiters; preserve empty edge cells.
+        body = line[1:-1] if line.endswith("|") else line[1:]
+        cells = [cell.strip() for cell in body.split("|")]
+        if cells[0].lower() == "chunk/wo":
+            if len(cells) < 4 or (width and len(cells) != width):
+                raise ClaimLookupError(f"CLAIM_TABLE_MALFORMED: header at line {number}")
+            width = len(cells)
+            continue
+        if cells[0].lower() == "lane":
+            width = 0
+            continue
+        if not width:
+            continue
+        if len(cells) != width:
+            raise ClaimLookupError(
+                f"CLAIM_TABLE_MALFORMED: line {number}, expected {width} cells, got {len(cells)}")
+        if all(re.fullmatch(r":?-+:?", cell) for cell in cells):
+            continue
+        if cells[0].startswith("_"):
+            continue
+        claims.append({
+            "chunk": cells[0], "agent": cells[1], "claimed": cells[2],
+            "scope": cells[3], "branch": cells[4] if width > 4 else "",
+        })
+    return claims
+
+
 def _scope_items(raw: str) -> list[str]:
     return [part.strip() for part in re.split(r"[;,]", raw) if part.strip()]
 
@@ -124,6 +171,27 @@ def claim_generation(repo_root: Path, task_id: str) -> int:
     return max(1, committed + pending)
 
 
+def claim_generation_strict(repo_root: Path, task_id: str) -> int:
+    """Derive generation only after successful full-history, log and diff reads.
+
+    Every Git failure propagates as ClaimLookupError (GIT_UNAVAILABLE); shallow
+    history raises GIT_HISTORY_SHALLOW. No legacy best-effort fallback is used.
+    """
+    escaped = re.escape(task_id.strip())
+    if not escaped:
+        raise ClaimLookupError("TASK_ID_REQUIRED")
+    shallow = _git(repo_root, "rev-parse", "--is-shallow-repository").lower()
+    if shallow == "true":
+        raise ClaimLookupError(
+            "GIT_HISTORY_SHALLOW: fetch full history before resolving durable claim generation")
+    if shallow != "false":
+        raise ClaimLookupError("GIT_UNAVAILABLE: invalid shallow-history response")
+    row = re.compile(rf"^\+\|\s*{escaped}\s*\|", re.MULTILINE)
+    patch = _git(repo_root, "log", "--format=", "--patch", "--", "COLLAB.md")
+    working = _git(repo_root, "diff", "HEAD", "--", "COLLAB.md")
+    return max(1, len(row.findall(patch)) + len(row.findall(working)))
+
+
 def _repo_identity(repo_root: Path) -> str:
     try:
         remote = _git(repo_root, "remote", "get-url", "origin")
@@ -186,11 +254,26 @@ def read_canonical_claim(repo_root: Path | str, task_id: str) -> dict:
     No fuzzy task matching and no machine-local worktree path is emitted.
     The consuming runtime must independently verify its local worktree binding.
     """
+    return _read_canonical_claim(repo_root, task_id, strict=False)
+
+
+def read_canonical_claim_strict(repo_root: Path | str, task_id: str) -> dict:
+    """Opt-in fail-closed canonical reader; legacy consumers are unchanged.
+
+    Raises ClaimLookupError on malformed tables, ambiguity or unavailable Git
+    history, in addition to the existing owner/branch/scope validation errors.
+    COLLAB.md is decoded as UTF-8 with optional BOM and CRLF tolerance.
+    """
+    return _read_canonical_claim(repo_root, task_id, strict=True)
+
+
+def _read_canonical_claim(repo_root: Path | str, task_id: str, *, strict: bool) -> dict:
     root = Path(repo_root)
     task = (task_id or "").strip()
     if not task:
         raise ClaimLookupError("TASK_ID_REQUIRED")
-    matches = [c for c in parse_claims(root / "COLLAB.md")
+    parser = parse_claims_strict if strict else parse_claims
+    matches = [c for c in parser(root / "COLLAB.md")
                if c["chunk"].strip() == task]
     if not matches:
         raise ClaimLookupError(f"CLAIM_NOT_FOUND: {task}")
@@ -200,7 +283,8 @@ def read_canonical_claim(repo_root: Path | str, task_id: str) -> dict:
     owner = claim["agent"].strip()
     if not owner or owner.lower() == "unknown":
         raise ClaimLookupError(f"OWNER_UNBOUND: {task}")
-    generation = claim_generation(root, task)
+    generation = (claim_generation_strict(root, task) if strict
+                  else claim_generation(root, task))
     head = _branch_head(root, claim["branch"])
     scope = _public_scope_items(claim["scope"])
     digest_input = "\0".join((

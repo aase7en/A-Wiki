@@ -1,6 +1,6 @@
 # WO-ISSUE-74-CLAIM-STRICT
 
-Status: CLAIMED / TEST_FIRST
+Status: IMPLEMENTED / AWAITING_INTEGRATOR_REVIEW
 Issue: aase7en/A-Wiki#74
 Dependency: aase7en/A-Wiki-Conductor#734
 Risk: R2, additive parser contract with tests
@@ -46,4 +46,40 @@ Rollback is removal of additive APIs/tests; no persisted schema migration.
   to isolated-branch policy; other checks OK, optional Drive absent. No dashboard
   started because the mission forbids process operations.
 - Durable claim registered through `python -m conductor claim`, RECONCILED.
-- Next: commit/push claim, then RED tests before production mutation.
+- Claim bootstrap committed/pushed as `5b30158d` before production mutation.
+
+## Verification Checkpoint
+
+- RED: `python -m pytest tests/test_claim_strict.py -q`: 23 failed (strict
+  APIs absent), 2 passed (legacy malformed-conflict and Git-fallback repros).
+- GREEN, final: `python -m pytest tests/test_claim_strict.py -q`: 33 passed.
+- Compatibility: `python -m pytest tests/test_conductor.py tests/test_agent_claims.py tests/test_check_agent_claim_hook.py -q`:
+  first run 124 passed / 1 failed (unrelated FTS search JSON decode); direct
+  search rerun succeeded, then identical full suite rerun: 125 passed.
+- `python scripts/check-privacy.py`: PASS after replacing the scanner-flagged
+  synthetic test email with `noreply`; no real personal data was involved.
+- `python scripts/security/scan_repo.py --ci --baseline scripts/security/baseline.txt`:
+  PASS, 51 baselined findings / 0 new (tracked-file scan rerun before delivery).
+- `git diff --check`: PASS.
+- Live-worktree strict reader smoke on this lane's exact task: PASS, generation
+  1, owner and branch match. No machine-local path emitted.
+- Review: canonical validation/output is shared, lenient parsing/generation and
+  fallback ordering remain unchanged. Strict width validation precedes skips;
+  all three Git-history calls must succeed. No downstream callers migrated.
+- Prevention tier 1: executable regressions in `tests/test_claim_strict.py`.
+- No native subagent/review dispatch tool is exposed in this executor; independent
+  exact-head review and final merge remain the integrator's responsibility.
+
+## API Handoff
+
+Use `read_canonical_claim_strict(repo_root, task_id)` for AWC PR #734.
+`parse_claims_strict(collab)` and `claim_generation_strict(repo_root, task_id)`
+are also available. All failures use existing `ClaimLookupError` (ValueError):
+`CLAIM_TABLE_MALFORMED`, `CLAIM_TABLE_UNAVAILABLE`, `GIT_UNAVAILABLE`,
+`GIT_HISTORY_SHALLOW`, plus existing task/ambiguity/owner/branch/scope errors.
+BOM/CRLF are explicitly accepted. Record schema stays `awiki-claim-reader/v1`.
+
+Next safe action: integrator independently reviews the final PR head and CI,
+then adopts the opt-in reader downstream. Do not merge from this lane. This
+lane's durable claim is released in the implementation commit; historical
+claims and protected-root dirty files are untouched.
