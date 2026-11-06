@@ -82,28 +82,32 @@
         "all",
         "hermes"
       ],
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "canonical",
-      "description": "บังคับ: ประกาศงานก่อนแตะ shared surface เพื่อไม่ให้ agent หลายตัวทำซ้ำกัน. claim_acquire/list/release/advance ผ่าน MCP; PreToolUse hook block เมื่อชน claim ของ agent อื่น; lease หมดอายุเอง",
+      "description": "บังคับ: COLLAB/Git คือ durable cross-machine claim authority; claim_acquire ต้องมี task_id และ mirror ไป TTL cache; claim_list/release/advance เป็น derived same-machine cache; hook block เฉพาะ RECONCILED foreign claim",
       "invocation": "auto",
-      "th_description": "ระบบจองงานข้าม agent — ประกาศ scope+goal+phase ก่อนเริ่ม, เห็นว่า agent อื่นทำอะไรอยู่, hook block เมื่อชนกัน",
-      "when_to_use": "ก่อนแก้ skills/, scripts/, commands/, registry — หรืออยากรู้ว่า agent อื่นทำอะไรอยู่",
+      "th_description": "ระบบ claim ข้าม agent แบบ durable-first — COLLAB/Git เป็น authority ข้ามเครื่อง, .tmp เป็น cache เร็วบนเครื่องเดียว, hook block เฉพาะ claim ที่ reconcile แล้ว",
+      "when_to_use": "ก่อนแก้ shared surfaces หรือก่อนเริ่มงานไม่ trivial: recover durable task id, claim_acquire ด้วย task_id+scope+goal, แล้วทำงานใน scope",
       "examples": [
         {
           "scenario": "เริ่มงานบน shared surface",
-          "how": "claim_acquire scope=[\"skills/awiki/**\"] goal=\"...\""
+          "how": "claim_acquire task_id=\"<WO-ID>\" scope=[\"skills/awiki/**\"] goal=\"...\""
         },
         {
-          "scenario": "อยากรู้ว่าใครทำอะไร",
+          "scenario": "อ่าน cache coordination บนเครื่องนี้",
           "how": "claim_list"
+        },
+        {
+          "scenario": "ตรวจ durable claim exact task",
+          "how": "python -m conductor claims --task-id \"<WO-ID>\" --json"
         }
       ],
       "process_steps": [
-        "claim_list ดูก่อน",
-        "claim_acquire ประกาศ scope+goal",
-        "ทำงาน",
-        "claim_advance ตาม phase",
-        "claim_release"
+        "recover exact task id + durable COLLAB/Git claim",
+        "claim_acquire ด้วย task_id+scope+goal เพื่อ durable-first + cache mirror",
+        "ทำงานใน scope",
+        "claim_advance ต่ออายุ/เปลี่ยน phase ของ derived cache",
+        "claim_release ปล่อย derived cache; durable release/update ผ่าน COLLAB/Git"
       ],
       "invocation_hint": "/A-Claim",
       "a_phase": "any",
