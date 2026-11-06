@@ -81,6 +81,8 @@ PROPOSE the fix as a diff and wait for the user's yes before applying (snapshot 
 see CHECK MODE Phase 2); bound to 2–3 proposed-fix rounds before stopping to explain in
 plain language. If the only meaningful live run is itself irreversible/external, do not
 run it — describe what would happen and ask whether they want it.
+Run live tests in dry-run / read-only / no-op mode or against throwaway data ONLY;
+any mutation of real state/data requires separate explicit approval before the test runs.
 
 ---
 
@@ -142,8 +144,9 @@ command. Apply the test *"if this failed, would it mean the work failed or cause
 damage?"* — include only checks that pass it.
 
 - **Axis 1 — Plan (as amended) fulfilled.** Every item of the cumulative intent gets its
-  own check (ls, grep -c, wc, cat, bash -n, py_compile, JSON-validate, cmp), explicitly
-  including later additions.
+  own check (ls, grep -c, wc, cat, bash -n, JSON-validate, cmp), explicitly including later
+  additions. For Python, parse source in memory with `ast.parse`; never use checks that
+  write cache files.
 - **Axis 2 — Integration & environment health.** Affirmatively confirm the surrounding
   environment still works: config loads, settings/hooks/permissions still valid, the
   artifact AND siblings discoverable/usable (skill registered, MCP answers a read-only
@@ -156,6 +159,10 @@ restatement, conspicuous verdict `OVERALL: PASS` or `OVERALL: FAIL — <reason>`
 passed. PASS → Phase 3. FAIL → Phase 2.
 
 ### Phase 2 — Propose surgical repairs (only on FAIL)
+
+On ANY doubt (ambiguous root cause, missing intent, uncertain which fix is right), STOP
+and ask the user before selecting or applying any fix; repair-proposal approval does not
+waive this rule.
 
 1. For each defect: read the flagged file in full, then PRESENT a concrete proposal —
    the exact diff (or action), why it is the smallest safe fix, and what it touches.
