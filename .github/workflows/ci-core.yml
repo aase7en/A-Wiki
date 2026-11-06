@@ -171,7 +171,8 @@ jobs:
     # job's interpreter for every later step, which made the security scan
     # run under a dependency-less 3.8 and silently fall back to builtin
     # patterns (baseline mismatch — incident 2026-08-20, PR #17 CI).
-    runs-on: ubuntu-latest
+    # Python 3.8 builds are available for 24.04, not 26.04 (Issue #71).
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
