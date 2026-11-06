@@ -45,6 +45,21 @@ def test_malformed_row_anywhere_in_claim_region_refuses(repo, bad):
         state.read_canonical_claim_strict(repo, "WO-P1-551")
 
 
+@pytest.mark.parametrize("conflict", [False, True])
+@pytest.mark.parametrize("reader", ["parser", "canonical"])
+def test_short_lane_row_cannot_hide_claims(repo, conflict, reader):
+    row = ROW.replace("WO-P1-551", "TASK-X")
+    text = HEADER + row + "| Lane | someone |\n"
+    if conflict:
+        text += row.replace("| owner |", "| conflicting-owner |")
+    (repo / "COLLAB.md").write_text(text, encoding="utf-8")
+    with pytest.raises(state.ClaimLookupError, match="CLAIM_TABLE_MALFORMED"):
+        if reader == "parser":
+            state.parse_claims_strict(repo / "COLLAB.md")
+        else:
+            state.read_canonical_claim_strict(repo, "TASK-X")
+
+
 def test_legacy_malformed_conflict_still_skips(repo):
     (repo / "COLLAB.md").write_text(
         HEADER + ROW + "| WO-P1-551 | foreign-owner |\n", encoding="utf-8")
@@ -105,10 +120,12 @@ def test_strict_generation_counts_pending_replacement(repo):
 def test_parser_region_excludes_other_tables_and_prose(tmp_path):
     collab = tmp_path / "COLLAB.md"
     collab.write_text(
-        "| Lane | Description |\n| malformed |\n\n" + HEADER + ROW
-        + "\n| Lane | Description |\n| malformed |\n"
+        "| Lane | Description |\n|---|---|\n| malformed |\n\n" + HEADER + ROW
+        + "\n| Lane | Description |\n|---|---|\n| malformed |\n"
         + "prose ends table\n| malformed |\n", encoding="utf-8")
-    assert state.parse_claims_strict(collab) == state.parse_claims(collab)
+    claims = state.parse_claims_strict(collab)
+    assert claims == state.parse_claims(collab)
+    assert [claim["chunk"] for claim in claims] == ["WO-P1-551"]
 
 
 def test_empty_branch_cell_is_not_stripped_away(tmp_path):

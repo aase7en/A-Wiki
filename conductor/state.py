@@ -68,7 +68,8 @@ def parse_claims_strict(collab: Path) -> list[dict]:
         raise ClaimLookupError(f"CLAIM_TABLE_UNAVAILABLE: {exc}") from None
     claims: list[dict] = []
     width = 0
-    for number, line in enumerate(text.splitlines(), 1):
+    lines = text.splitlines()
+    for number, line in enumerate(lines, 1):
         line = line.strip()
         if not line:
             continue
@@ -84,8 +85,14 @@ def parse_claims_strict(collab: Path) -> list[dict]:
             width = len(cells)
             continue
         if cells[0].lower() == "lane":
-            width = 0
-            continue
+            # A different table needs a matching separator, not just a Lane cell.
+            separator = lines[number].strip() if number < len(lines) else ""
+            if separator.startswith("|") and separator.endswith("|"):
+                separator_cells = [cell.strip() for cell in separator[1:-1].split("|")]
+                if len(separator_cells) == len(cells) and all(
+                        re.fullmatch(r":?-+:?", cell) for cell in separator_cells):
+                    width = 0
+                    continue
         if not width:
             continue
         if len(cells) != width:
