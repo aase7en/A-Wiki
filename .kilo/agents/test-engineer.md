@@ -1,5 +1,5 @@
 ---
-model: fireworks-ai/accounts/fireworks/models/kimi-k2p7-code
+model: agent-model-scan/auto/kimi
 mode: primary
 description: QA engineer and testing specialist
 permission:
