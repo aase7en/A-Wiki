@@ -1,5 +1,5 @@
 ---
-model: fireworks-ai/accounts/fireworks/models/kimi-k2p7-code
+model: agent-model-scan/auto/kimi
 mode: primary
 description: For when you need your code criticized like nobody's business
 permission:
