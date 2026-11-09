@@ -40,3 +40,19 @@ hooks, router, other owners' worktrees or active execution, installing externals
 Do not reinitialize existing `AGENTS.md` or `/init`. Claim and work order are committed
 and pushed before source mutation. After verification, freeze exact candidate SHA and
 request review/CI. Update Issue #76 with truthful evidence. No merge without gates.
+
+
+## Implementation checkpoint — 2026-11-09
+
+- RED: new test module failed on missing `skills_registry.skill_cards` (expected).
+- GREEN: 34 focused tests PASS, including 20 English and 6 Thai prompt fixtures.
+- Related routing/registry/hook suite: 73 PASS.
+- Windows encoding regression: ASCII-safe JSON; UTF-8 human-readable terminal mode.
+- Privacy check PASS; Python compile PASS; staged security scan required before freeze.
+- CLI: `py -3.13 scripts/skill-cards.py --query "fix error" --json` selects
+  `a-debug` as an AUTO_LOAD_CANDIDATE (not permission to execute).
+- Core mode: `py -3.13 scripts/skill-cards.py --json` displays 8 cards.
+- Measured model-facing payload: query ~1070 UTF-8 bytes; core 8 ~5957 bytes;
+  complete `wiki/SKILL-INDEX.md` was 72353 bytes. Token/billing savings UNKNOWN.
+- No registry, generated surfaces, routing.py, hooks, startup, tools or processes changed.
+- Next: frozen source commit -> independent review + CI -> accepted merge gate.
