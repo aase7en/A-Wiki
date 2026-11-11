@@ -75,3 +75,11 @@ candidate SHA, open PR, hosted CI, leave open for independent exact-SHA review
   raw/ evidence filesystem-based and labeled. Gates: compileall OK, check-privacy
   PASS, regen-skill-surfaces --check "No drift — 13 surface(s)". Next: push, PR,
   hosted CI (ubuntu authoritative), leave open for independent review.
+
+- 2026-11-11 hosted CI checkpoint — PR #79 all checks PASS at candidate
+  `836d4f02afea455eedf499cde9f66ffe25fe5b8e`: Core verification SUCCESS
+  (run 42969318497, full ubuntu pytest suite — confirms the 41 macOS-local failures
+  were environmental), loop-contract PASS, py38-smoke PASS. PR left OPEN for
+  independent exact-SHA review; author does not self-merge. Next READY slice after
+  merge: AWC #739 display wiring (separate repo/authority) or negative-condition
+  metadata after #60 ownership reconciliation.
