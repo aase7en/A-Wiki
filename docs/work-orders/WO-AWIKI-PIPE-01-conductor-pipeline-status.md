@@ -100,3 +100,11 @@ candidate SHA, open PR, hosted CI, leave open for independent exact-SHA review
   bounded/directory-heavy/truncated raw trees, drift exit-code truth table) +
   strengthened per-status counts, non-empty sample-card, CLI non-empty. Focused
   26/26 PASS; related suites unchanged vs baseline (env failures only).
+
+- 2026-11-11 re-review #1 (focused, at d3e2059a): R79-1/3/4 FIXED; R79-2 partial —
+  consumer-level break does not bound enumeration because pathlib rglob
+  materializes list(scandir) eagerly (probe: 1000 dirs, bound=5, 1000 entries
+  scanned). Repair #2: _raw_tree_evidence rewritten as explicit lazy os.scandir
+  BFS with visited-entry budget + one lookahead; docstring documents bound+1.
+  New regression test instruments os.scandir and asserts total pulled ≤ bound+1
+  on a 1000-directory tree. Focused 27/27 PASS.

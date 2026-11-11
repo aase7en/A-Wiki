@@ -217,3 +217,53 @@ class TestReviewRepairs:
         state, reason = _classify_drift(2, "Traceback: dependency missing")
         assert state == "UNKNOWN" and "dependency missing" in reason
         assert _classify_drift(3, "")[0] == "UNKNOWN"
+
+    def test_raw_enumeration_itself_is_bounded(self, tmp_path, monkeypatch):
+        """OS-level enumeration must be bounded, not just the consumer loop.
+
+        Regression for the re-review finding: pathlib rglob materializes
+        whole directories via list(scandir), so a directory-heavy tree
+        enumerated 1000 entries under bound=5. The scandir-based walk must
+        pull at most bound+1 entries from the filesystem in total.
+        """
+        import os as _os
+        import conductor.pipeline as pl
+
+        raw = tmp_path / "raw"
+        raw.mkdir()
+        for i in range(1000):
+            (raw / ("d%03d" % i)).mkdir()
+
+        pulled = {"total": 0}
+        real_scandir = _os.scandir
+
+        def counting_scandir(path):
+            it = real_scandir(path)
+            pulled["total"] += 0  # count pulled entries at iteration time
+            return _CountingDirIterator(it, pulled)
+
+        class _CountingDirIterator:
+            def __init__(self, inner, counter):
+                self._inner = inner
+                self._counter = counter
+
+            def __iter__(self):
+                return self
+
+            def __next__(self):
+                item = next(self._inner)
+                self._counter["total"] += 1
+                return item
+
+            def __enter__(self):
+                self._inner.__enter__()
+                return self
+
+            def __exit__(self, *exc):
+                return self._inner.__exit__(*exc)
+
+        monkeypatch.setattr(pl.os, "scandir", counting_scandir)
+        count, ts, truncated = pl._raw_tree_evidence(raw, bound=5)
+        assert truncated is True
+        assert count == 0 and ts is None
+        assert pulled["total"] <= 6, "enumeration leaked: %d entries pulled" % pulled["total"]

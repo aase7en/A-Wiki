@@ -15,6 +15,7 @@ failures are never presented as confirmed drift (R79-3).
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -114,10 +115,14 @@ def _registry_counts(repo_root):
 def _raw_tree_evidence(raw_root, bound=_RAW_ENTRY_BOUND):
     """(file_count, latest mtime ISO, truncated) under a gitignored raw/ tree.
 
-    Traversal itself is bounded: at most `bound` filesystem entries (files
-    AND directories) are visited. When truncated, count/ts describe only the
-    visited prefix and `truncated` is True — a sampled maximum is never
-    presented as the whole-tree maximum.
+    Traversal is bounded at the OS level: an explicit iterative walk over
+    lazy os.scandir iterators counts AT MOST `bound` directory entries (files
+    and directories combined) plus exactly one lookahead entry used only to
+    detect truncation. No directory is ever enumerated eagerly (review
+    finding R79-2 re-review: pathlib rglob materializes whole directories,
+    so this function must not use it). When truncated, count/ts describe
+    only the visited prefix — a sampled maximum is never presented as the
+    whole-tree maximum.
     """
     if not raw_root.is_dir():
         return 0, None, False
@@ -125,20 +130,31 @@ def _raw_tree_evidence(raw_root, bound=_RAW_ENTRY_BOUND):
     count = 0
     latest = None
     truncated = False
-    for path in raw_root.rglob("*"):
-        visited += 1
-        if visited > bound:
-            truncated = True
-            break
+    pending = [raw_root]
+    while pending and not truncated:
+        current = pending.pop()
         try:
-            if not path.is_file():
-                continue
-            count += 1
-            mtime = path.stat().st_mtime
+            with os.scandir(current) as iterator:
+                for entry in iterator:  # lazy: pulling is bounded by the budget
+                    visited += 1
+                    if visited > bound:
+                        truncated = True  # lookahead entry — detected, not used
+                        break
+                    try:
+                        if entry.is_dir(follow_symlinks=False):
+                            pending.append(entry.path)
+                            continue
+                        if entry.is_file(follow_symlinks=False):
+                            count += 1
+                            mtime = entry.stat(follow_symlinks=False).st_mtime
+                        else:
+                            continue
+                    except OSError:
+                        continue
+                    if latest is None or mtime > latest:
+                        latest = mtime
         except OSError:
             continue
-        if latest is None or mtime > latest:
-            latest = mtime
     if latest is None:
         return count, None, truncated
     stamp = datetime.fromtimestamp(latest, tz=timezone.utc).isoformat()
