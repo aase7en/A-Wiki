@@ -64,3 +64,14 @@ candidate SHA, open PR, hosted CI, leave open for independent exact-SHA review
 
 - 2026-11-11 claim acquired via `python -m conductor claim` (row in COLLAB.md);
   base `f17ec316`; docs commit first, source second.
+
+- 2026-11-11 implementation checkpoint — RED confirmed (ModuleNotFoundError on
+  conductor.pipeline) → GREEN: focused 14/14 PASS (0.37s). Related conductor suites:
+  branch 41F/121P vs clean origin/main baseline 42F/106P in the SAME macOS minimal
+  venv — the 41 failures are pre-existing environmental (identical signature on
+  baseline), zero new failures from this change. Smoke: Thai query
+  `แก้บั๊กระบบ` → a-debug EXPLICIT_TRIGGER / AUTO_LOAD_CANDIDATE, 0 bodies loaded;
+  ingestion honestly STALE (last wiki/sources commit 2026-09-16, evidence-labeled);
+  raw/ evidence filesystem-based and labeled. Gates: compileall OK, check-privacy
+  PASS, regen-skill-surfaces --check "No drift — 13 surface(s)". Next: push, PR,
+  hosted CI (ubuntu authoritative), leave open for independent review.
