@@ -7,7 +7,10 @@ A-Conductor are added brain-side, and this module only *projects* evidence.
 Everything here is evidence-derived: values come from skills-registry.json,
 git history, the filesystem and real module importability. The projection
 never mutates files, never creates a parallel status store, and reports
-UNKNOWN (with the evidence source) instead of inventing a value.
+UNKNOWN (with the evidence source) instead of inventing a value. Malformed
+inputs degrade to UNKNOWN rather than raising (review finding R79-1/R79-4),
+traversal is bounded with an explicit truncation marker (R79-2), and checker
+failures are never presented as confirmed drift (R79-3).
 """
 from __future__ import annotations
 
@@ -24,13 +27,13 @@ SCHEMA = "awiki-conductor/pipeline-status/1"
 # can disagree with the classification instead of guessing it.
 STALE_AFTER_DAYS = 30.0
 
-_RAW_FILE_BOUND = 5000  # never walk an unbounded raw/ tree
+_RAW_ENTRY_BOUND = 5000  # bound on visited entries (files AND directories)
 _GIT_TIMEOUT_S = 10
 _DRIFT_TIMEOUT_S = 180
 
 _ROUTING_RULE = ("READY=registry parses + routing.py importable + skill_cards "
                  "importable; DEGRADED=registry parses but a discovery component "
-                 "is missing; UNKNOWN=registry unreadable")
+                 "is missing; UNKNOWN=registry unreadable or malformed")
 _INGESTION_RULE = ("STALE when last wiki/sources commit is older than "
                    "stale_after_days; UNKNOWN when no evidence")
 
@@ -45,11 +48,20 @@ def _parse_iso(value):
 
 
 def _classify_freshness(value, stale_after_days=STALE_AFTER_DAYS):
-    """Classify READY | STALE | UNKNOWN from a single timestamp."""
+    """Classify READY | STALE | UNKNOWN from a single timestamp.
+
+    Timezone-naive input is UNKNOWN: guessing a zone would fabricate the
+    age. Clock skew (future timestamps) also refuses classification.
+    """
     stamp = _parse_iso(value)
     if stamp is None:
         return "UNKNOWN"
-    age_days = (datetime.now(timezone.utc) - stamp).total_seconds() / 86400.0
+    if stamp.tzinfo is None or stamp.utcoffset() is None:
+        return "UNKNOWN"  # naive timestamp — refuse to guess a timezone
+    try:
+        age_days = (datetime.now(timezone.utc) - stamp).total_seconds() / 86400.0
+    except TypeError:  # pragma: no cover — defensive: mixed naive/aware
+        return "UNKNOWN"
     if age_days < 0:
         return "UNKNOWN"  # clock skew — refuse to classify from bad evidence
     return "STALE" if age_days > stale_after_days else "READY"
@@ -69,11 +81,21 @@ def _git_last_commit_iso(repo_root, pathspec):
 
 
 def _registry_counts(repo_root):
-    """Count statuses straight from the canonical registry file (read-only)."""
+    """Count statuses straight from the canonical registry file (read-only).
+
+    Malformed container shapes (non-dict root, non-list `skills`) make the
+    evidence unavailable (None -> UNKNOWN) instead of crashing or counting
+    string characters. Odd entries (non-dict, non-string status) count as
+    "other" so a damaged registry is visible, never silent.
+    """
     try:
         data = json.loads((repo_root / "skills-registry.json").read_text(encoding="utf-8"))
-        skills = data.get("skills") or []
     except (OSError, ValueError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    skills = data.get("skills")
+    if not isinstance(skills, list):
         return None
     counts = {"canonical": 0, "deprecated": 0, "alias": 0, "other": 0}
     for entry in skills:
@@ -81,7 +103,7 @@ def _registry_counts(repo_root):
             counts["other"] += 1
             continue
         status = entry.get("status")
-        if status in counts:
+        if isinstance(status, str) and status in counts:
             counts[status] += 1
         else:
             counts["other"] += 1
@@ -89,28 +111,38 @@ def _registry_counts(repo_root):
     return counts
 
 
-def _raw_tree_evidence(raw_root, bound=_RAW_FILE_BOUND):
-    """(file_count, latest mtime ISO) under a gitignored raw/ tree."""
+def _raw_tree_evidence(raw_root, bound=_RAW_ENTRY_BOUND):
+    """(file_count, latest mtime ISO, truncated) under a gitignored raw/ tree.
+
+    Traversal itself is bounded: at most `bound` filesystem entries (files
+    AND directories) are visited. When truncated, count/ts describe only the
+    visited prefix and `truncated` is True — a sampled maximum is never
+    presented as the whole-tree maximum.
+    """
     if not raw_root.is_dir():
-        return 0, None
+        return 0, None, False
+    visited = 0
     count = 0
     latest = None
+    truncated = False
     for path in raw_root.rglob("*"):
-        if not path.is_file():
-            continue
-        count += 1
-        if count > bound:
+        visited += 1
+        if visited > bound:
+            truncated = True
             break
         try:
+            if not path.is_file():
+                continue
+            count += 1
             mtime = path.stat().st_mtime
         except OSError:
             continue
         if latest is None or mtime > latest:
             latest = mtime
     if latest is None:
-        return count, None
+        return count, None, truncated
     stamp = datetime.fromtimestamp(latest, tz=timezone.utc).isoformat()
-    return count, stamp
+    return count, stamp, truncated
 
 
 def _routing_capability(repo_root, query):
@@ -155,6 +187,22 @@ def _routing_capability(repo_root, query):
     return out
 
 
+def _classify_drift(returncode, tail_line):
+    """Map a regen --check exit status to honest states (pure function).
+
+    Upstream contract (scripts/regen-skill-surfaces.py docstring):
+    0 = success / no drift · 1 = validation OR drift failure · 2 = unexpected
+    error. Exit 1 cannot distinguish confirmed drift from a validation error,
+    so it is reported as DRIFT_OR_VALIDATION — never as confirmed DRIFT.
+    """
+    if returncode == 0:
+        return "CLEAN", "regen --check exit 0"
+    if returncode == 1:
+        return "DRIFT_OR_VALIDATION", (tail_line or "regen --check exit 1")
+    return "UNKNOWN", "checker failed (exit %s): %s" % (
+        returncode, tail_line or "no output")
+
+
 def _surfaces_drift(repo_root, check):
     if not check:
         return {"state": "UNKNOWN", "reason": "not_checked (pass --check-drift)"}
@@ -167,11 +215,10 @@ def _surfaces_drift(repo_root, check):
             capture_output=True, text=True, timeout=_DRIFT_TIMEOUT_S)
     except (OSError, subprocess.SubprocessError) as exc:
         return {"state": "UNKNOWN", "reason": "run failed: %s" % exc}
-    if proc.returncode == 0:
-        return {"state": "CLEAN", "reason": "regen --check exit 0"}
     lines = (proc.stdout or proc.stderr or "").strip().splitlines()
-    return {"state": "DRIFT",
-            "reason": lines[-1] if lines else "regen --check exited nonzero"}
+    tail = lines[-1] if lines else ""
+    state, reason = _classify_drift(proc.returncode, tail)
+    return {"state": state, "reason": reason}
 
 
 def pipeline_status(repo_root, *, query=None, check_drift=False):
@@ -191,7 +238,7 @@ def pipeline_status(repo_root, *, query=None, check_drift=False):
     source_ts = _git_last_commit_iso(repo_root, "wiki/sources")
     sources_dir = repo_root / "wiki" / "sources"
     source_count = len(list(sources_dir.glob("*.md"))) if sources_dir.is_dir() else 0
-    raw_count, raw_ts = _raw_tree_evidence(repo_root / "raw")
+    raw_count, raw_ts, raw_truncated = _raw_tree_evidence(repo_root / "raw")
 
     return {
         "schema": SCHEMA,
@@ -219,9 +266,11 @@ def pipeline_status(repo_root, *, query=None, check_drift=False):
                 "evidence": "git log -1 --format=%cI -- wiki/sources",
             },
             "raw_files": raw_count,
+            "raw_truncated": raw_truncated,
             "last_raw_addition": {
                 "ts": raw_ts,
-                "evidence": "max file mtime under raw/ (gitignored tree)",
+                "evidence": ("max file mtime under raw/ (gitignored tree; "
+                             "visit bounded — see raw_truncated)"),
             },
             "ingest_tools": {
                 "ingest_source_py": (repo_root / "scripts" / "wiki"

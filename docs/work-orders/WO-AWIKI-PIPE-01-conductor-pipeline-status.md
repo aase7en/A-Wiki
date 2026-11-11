@@ -83,3 +83,20 @@ candidate SHA, open PR, hosted CI, leave open for independent exact-SHA review
   independent exact-SHA review; author does not self-merge. Next READY slice after
   merge: AWC #739 display wiring (separate repo/authority) or negative-condition
   metadata after #60 ownership reconciliation.
+
+## Review + repair cycle — 2026-11-11 (second session)
+
+- Independent review (fresh-context subagent, isolated worktree at dd5d10e,
+  report posted on PR #79): verdict **BLOCK** with 3×P2 + 1×P3:
+  R79-1 malformed registry shapes crash or fake READY; R79-2 raw-tree bound
+  does not bound traversal and hides sampled-max semantics; R79-3 checker
+  execution failure mislabeled as confirmed DRIFT; R79-4 naive timestamps raise.
+- Repairs: shape-validating `_registry_counts` (None→UNKNOWN, odd entries→other);
+  `_raw_tree_evidence` bounds *visited entries* (files+dirs) and returns explicit
+  `truncated` flag surfaced as `raw_truncated`; `_classify_drift` pure mapper —
+  exit 1 is honestly DRIFT_OR_VALIDATION (upstream exit codes conflate the two),
+  exit≥2/timeout → UNKNOWN; naive/zoneless timestamps → UNKNOWN.
+- Tests: 12 new negative fixtures (malformed registry variants, naive timestamps,
+  bounded/directory-heavy/truncated raw trees, drift exit-code truth table) +
+  strengthened per-status counts, non-empty sample-card, CLI non-empty. Focused
+  26/26 PASS; related suites unchanged vs baseline (env failures only).

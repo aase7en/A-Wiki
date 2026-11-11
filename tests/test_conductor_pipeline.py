@@ -54,6 +54,12 @@ class TestPipelineStatusProjection:
         reg = pipeline_status(REPO_ROOT)["routing"]["registry"]
         assert reg["total"] == len(data["skills"])
         assert reg["canonical"] + reg["deprecated"] + reg["alias"] + reg["other"] == reg["total"]
+        expected = {}
+        for entry in data["skills"]:
+            status = entry.get("status") if isinstance(entry, dict) else None
+            expected[status] = expected.get(status, 0) + 1
+        for status in ("canonical", "deprecated", "alias"):
+            assert reg[status] == expected.get(status, 0)
 
     def test_routing_state_rule_is_self_consistent(self):
         routing = pipeline_status(REPO_ROOT)["routing"]
@@ -67,6 +73,7 @@ class TestPipelineStatusProjection:
         out = pipeline_status(REPO_ROOT, query="fix error")
         assert out["routing"]["sample_query"] == "fix error"
         assert out["routing"]["sample_cards"] is not None
+        assert len(out["routing"]["sample_cards"]) >= 1  # known-routing query
         assert len(out["routing"]["sample_cards"]) <= 3
         assert out["routing"]["full_skill_bodies_loaded"] == 0
         assert out["routing"]["sample_decision"] in (
@@ -116,4 +123,97 @@ class TestPipelineCli:
         assert proc.returncode == 0, proc.stderr
         routing = json.loads(proc.stdout)["routing"]
         assert routing["sample_cards"] is not None
+        assert len(routing["sample_cards"]) >= 1
         assert len(routing["sample_cards"]) <= 3
+
+
+class TestReviewRepairs:
+    """Negative fixtures for the independent-review findings on PR #79."""
+
+    def _write_registry(self, tmp_path, payload, raw=None):
+        target = tmp_path / "skills-registry.json"
+        target.write_text(raw if raw is not None else json.dumps(payload),
+                          encoding="utf-8")
+
+    def test_registry_list_root_is_unknown(self, tmp_path):
+        self._write_registry(tmp_path, [])
+        assert pipeline_status(tmp_path)["routing"]["state"] == "UNKNOWN"
+
+    def test_registry_null_root_is_unknown(self, tmp_path):
+        self._write_registry(tmp_path, None, raw="null")
+        assert pipeline_status(tmp_path)["routing"]["state"] == "UNKNOWN"
+
+    def test_registry_scalar_skills_is_unknown(self, tmp_path):
+        self._write_registry(tmp_path, {"skills": 1})
+        assert pipeline_status(tmp_path)["routing"]["state"] == "UNKNOWN"
+
+    def test_registry_string_skills_never_counts_characters(self, tmp_path):
+        self._write_registry(tmp_path, {"skills": "abc"})
+        out = pipeline_status(tmp_path)["routing"]
+        assert out["registry"] is None
+        assert out["state"] == "UNKNOWN"
+
+    def test_registry_unhashable_status_counts_other_without_crash(self, tmp_path):
+        self._write_registry(
+            tmp_path, {"skills": [{"name": "x", "status": ["canonical"]}]})
+        reg = pipeline_status(tmp_path)["routing"]["registry"]
+        assert reg is not None
+        assert reg["other"] == 1 and reg["total"] == 1
+
+    def test_registry_non_dict_entry_counts_other(self, tmp_path):
+        self._write_registry(tmp_path, {"skills": ["junk"]})
+        reg = pipeline_status(tmp_path)["routing"]["registry"]
+        assert reg["other"] == 1 and reg["total"] == 1
+
+    def test_naive_timestamps_are_unknown_not_crash(self):
+        assert _classify_freshness("2026-11-01T00:00:00") == "UNKNOWN"
+        assert _classify_freshness("2026-11-01") == "UNKNOWN"
+
+    def test_raw_traversal_bounded_and_marks_truncation(self, tmp_path):
+        from conductor.pipeline import _raw_tree_evidence
+        raw = tmp_path / "raw"
+        raw.mkdir()
+        for i in range(8):
+            (raw / ("f%d.md" % i)).write_text("x", encoding="utf-8")
+        count, ts, truncated = _raw_tree_evidence(raw, bound=5)
+        assert truncated is True
+        assert count <= 5
+        assert ts is not None  # sampled from the visited prefix only
+
+    def test_raw_directory_heavy_tree_is_bounded(self, tmp_path):
+        from conductor.pipeline import _raw_tree_evidence
+        raw = tmp_path / "raw"
+        raw.mkdir()
+        for i in range(20):
+            (raw / ("d%02d" % i)).mkdir()
+        (raw / "only.md").write_text("x", encoding="utf-8")
+        count, ts, truncated = _raw_tree_evidence(raw, bound=5)
+        assert truncated is True  # bound applies to visited entries, not files
+        assert count <= 1
+
+    def test_raw_small_tree_not_truncated(self, tmp_path):
+        from conductor.pipeline import _raw_tree_evidence
+        raw = tmp_path / "raw"
+        raw.mkdir()
+        (raw / "a.md").write_text("x", encoding="utf-8")
+        count, ts, truncated = _raw_tree_evidence(raw, bound=100)
+        assert truncated is False and count == 1 and ts is not None
+
+    def test_pipeline_reports_raw_truncation_flag(self, tmp_path):
+        raw = tmp_path / "raw"
+        raw.mkdir()
+        for i in range(3):
+            (raw / ("f%d.md" % i)).write_text("x", encoding="utf-8")
+        ing = pipeline_status(tmp_path)["ingestion"]
+        assert ing["raw_truncated"] is False
+        assert ing["raw_files"] == 3
+
+    def test_classify_drift_exit_code_honesty(self):
+        from conductor.pipeline import _classify_drift
+        assert _classify_drift(0, "anything")[0] == "CLEAN"
+        state, reason = _classify_drift(1, "generated/kilo differs")
+        assert state == "DRIFT_OR_VALIDATION"
+        assert "generated/kilo differs" in reason
+        state, reason = _classify_drift(2, "Traceback: dependency missing")
+        assert state == "UNKNOWN" and "dependency missing" in reason
+        assert _classify_drift(3, "")[0] == "UNKNOWN"
