@@ -35,3 +35,27 @@ noise retention is therefore 100% by construction; numbers come from the audit, 
 ## Results
 
 (appended after run)
+
+## Results — 2026-11-11 (macOS clone, node v22.23.0, npx cached install, defuddle@0.19.6 pinned)
+
+| Fixture | Exit | Title | Content | Noise rejected | Parse |
+|---|---|---|---|---|---|
+| article-noisy-en.html | ok | ✅ exact | ✅ 3/3 body paragraphs verbatim, wordCount 84 | ✅ nav/cookie/sidebar/footer: 0 occurrences in output | 21 ms |
+| article-noisy-thai.html | ok | ✅ Thai exact | ✅ 2/2 Thai paragraphs verbatim, encoding intact | ✅ cookie banner "ยอมรับทั้งหมด"/sidebar/footer: 0 occurrences | 20 ms |
+| js-shell.html | graceful error | — | — | — | — message: `Error: No content could be extracted` (explicit, no crash, no fabricated content) |
+
+Baseline (existing default URL path, from audit — not re-run): fetched HTML saved as `raw/<slug>.md` with **no article extraction** → noise retention 100% by construction.
+
+### Notes / limitations (honest)
+- `-m -j` returns markdown as a JSON string field — pipeline-friendly; title is a separate field and is NOT duplicated into content (integration must compose frontmatter title + content itself).
+- Thai `wordCount: 7` is unreliable (Thai lacks spaces) — never use as a Thai length metric; content-completeness verified by verbatim comparison instead.
+- Local-file mode validated only; URL mode + real-world blocked/paywalled/JS-heavy sites NOT covered by this evaluation — the existing 5-tier scraper router (`scripts/wiki/scrape-advanced.py`) remains necessary; Defuddle would be an *additional readable-HTML extraction adapter*, not a replacement for Moli/Browser/Playwright.
+- Exit-code capture for the js-shell case was piped through `head` (message is the evidence; code not reliably captured).
+
+## Verdict — JUSTIFIED as optional extraction adapter (DO_INTEGRATE_IN_FUTURE_WO)
+
+Defuddle v0.19.6 (MIT, zero-repo-install via npx, ms-fast, Thai+EN clean, fail-explicit)
+clearly beats the current no-extraction baseline for readable public HTML. Recommended
+next slice (separate claim, RED-first): add defuddle as an opt-in extraction tier/adapter
+in the existing scraper router + compose `raw/` provenance (raw HTML preserved; cleaned
+markdown marked as extraction, not archival copy). This WO adds NO production dependency.
