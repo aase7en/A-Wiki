@@ -80,6 +80,12 @@ def main(argv: list[str] | None = None) -> int:
     p_models = sub.add_parser("models", help="model policy + runtime slots (read-only)")
     p_models.add_argument("--json", action="store_true")
 
+    p_pipeline = sub.add_parser("pipeline", help="knowledge-pipeline status (read-only)")
+    p_pipeline.add_argument("--query", default=None, help="bounded routing sample query")
+    p_pipeline.add_argument("--check-drift", action="store_true",
+                            help="run regen-skill-surfaces --check (slower)")
+    p_pipeline.add_argument("--json", action="store_true")
+
     p_plan = sub.add_parser("plan", help="objective → work orders")
     p_plan.add_argument("objective")
     p_plan.add_argument("--write", action="store_true",
@@ -195,6 +201,12 @@ def main(argv: list[str] | None = None) -> int:
             _emit({"schema": "awiki-conductor/v1", "models_unavailable": True,
                    "reason": str(e)}, args.json)
             return 1
+        return 0
+
+    if args.cmd == "pipeline":
+        from .pipeline import pipeline_status
+        _emit(pipeline_status(REPO_ROOT, query=args.query,
+                              check_drift=args.check_drift), args.json)
         return 0
 
     if args.cmd == "plan":
