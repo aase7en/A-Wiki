@@ -156,3 +156,67 @@ class TestReviewRepairs:
         with patch("shutil.which", return_value="/usr/bin/npx"), \
              patch.object(scrape_mod.subprocess, "run", return_value=proc):
             assert scrape_mod._scrape_defuddle("https://example.com/a") is None
+
+
+class TestOriginalSidecar:
+    """WO-AWIKI-INGEST-04: keep the ORIGINAL fetch bytes when defuddle wins.
+
+    Jev (jev-1.14.0): original_is_true_source 0.90; sidecar_html layout.
+    Best-effort plain curl sidecar — failures never fail the scrape.
+    """
+
+    def test_defuddle_win_records_original_fetch(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout="<html>orig</html>"))):
+            result = scrape_mod.scrape("https://example.com/article",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"
+        assert result["original_fetch"]["status"] == "saved"
+        assert result["raw_file"].endswith(".md")
+
+    def test_sidecar_helper_writes_html_and_returns_path(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout="<html>orig</html>")):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is not None and side.name == "post-x.html"
+        assert side.read_text(encoding="utf-8") == "<html>orig</html>"
+
+    def test_sidecar_curl_failure_records_not_raises(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout="", returncode=7)):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is None
+
+    def test_sidecar_skipped_when_curl_missing(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value=None):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is None
+
+    def test_dispatch_wires_sidecar_only_for_defuddle(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None) as sidecar:
+            scrape_mod.scrape("https://example.com/a", method="auto",
+                              save_raw=True, json_out=True)
+        assert sidecar.call_count == 1
+        assert sidecar.call_args[0][0] == "https://example.com/a"

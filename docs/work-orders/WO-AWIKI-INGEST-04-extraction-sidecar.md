@@ -42,3 +42,11 @@ In `scrape()` — after a winning method and BEFORE/Around save_raw_output:
 ## Continuity
 Dual-engine review on the exact final SHA (GLM subagent + Terra codex exec read-only)
 before any merge; hosted CI + post-main verification per established cycle.
+
+## Implementation checkpoint — 2026-11-12 (Goal mode)
+
+- RED: 4 failures → GREEN: test_scrape_defuddle.py + test_scrape_advanced.py = **44/44**.
+- `_save_original_sidecar(url, slug)`: best-effort plain curl (list argv, 20s curl cap,
+  30s subprocess timeout), never raises; wired in scrape() raw-save block only when
+  `method_used == "defuddle"`; result gains `original_fetch: {status, path}` evidence.
+- Sidecar slug = raw_path.stem — .md (extraction) and .html (original) share the slug.

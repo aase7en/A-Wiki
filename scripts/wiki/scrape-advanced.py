@@ -314,6 +314,34 @@ ADAPTERS: dict[str, callable] = {
 }
 
 
+def _save_original_sidecar(url: str, slug: str) -> Path | None:
+    """Best-effort sidecar: keep the ORIGINAL fetch bytes as raw/<slug>.html.
+
+    WO-AWIKI-INGEST-04 — Jev decision (jev-1.14.0): original_is_true_source
+    0.90, sidecar_html layout. When an extraction method (defuddle) wins,
+    raw/<slug>.md holds extracted Markdown, so the original page bytes are
+    preserved alongside as raw/<slug>.html. Never raises: a sidecar failure
+    is recorded in result["original_fetch"], never fatal to the scrape.
+    """
+    import shutil
+    curl = shutil.which("curl")
+    if not curl:
+        return None
+    try:
+        proc = subprocess.run(
+            [curl, "-sL", "--max-time", "20", url],
+            capture_output=True, text=True, timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return None
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    side = RAW_DIR / f"{slug}.html"
+    side.write_text(proc.stdout, encoding="utf-8")
+    return side
+
+
 # ── Main dispatch ──────────────────────────────────────────────────────────
 
 def scrape(
@@ -387,6 +415,13 @@ def scrape(
     if save_raw:
         raw_path = save_raw_output(url, text)
         result["raw_file"] = str(raw_path)
+        if result["method_used"] == "defuddle":
+            # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
+            # a sidecar so provenance never degrades to extracted-only.
+            side = _save_original_sidecar(url, raw_path.stem)
+            result["original_fetch"] = (
+                {"status": "saved", "path": str(side)} if side
+                else {"status": "unavailable"})
 
     if json_out:
         return result
