@@ -110,7 +110,7 @@ def extract_text_from_url(url: str) -> str | None:
     return None
 
 
-def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
+def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> str | None:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
@@ -139,7 +139,9 @@ def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
             result = md.convert(str(p))
             if result and result.text_content:
                 text = result.text_content
-                if slug:
+                if slug and write_raw:
+                    # R82-1: dry-run must never write raw provenance — main()
+                    # passes write_raw=False under --dry-run.
                     raw_path = REPO_ROOT / "raw" / f"{slug}.md"
                     raw_path.parent.mkdir(parents=True, exist_ok=True)
                     raw_path.write_text(text, encoding="utf-8")
@@ -240,21 +242,43 @@ def _content_hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _find_hash_duplicate(digest: str, sources_dir) -> Path | None:
-    """Return an existing note whose frontmatter carries the same hash.
+def _note_declares_hash(path: Path, digest: str) -> bool:
+    """True when path's YAML frontmatter declares exactly this content_sha256.
 
-    Scans only the frontmatter head (first 2000 chars) of each note; notes
-    written before this feature carry no hash and never match (grandfather).
+    R82-3: match only a real frontmatter line between the --- delimiters, with
+    the exact value — never body text, prefixes, or suffixed values.
+    R82-4: read to the closing delimiter, not a fixed 2000-char cutoff, so
+    hashes emitted after long metadata are still seen. Whole-file read is
+    accepted (sources are small Markdown notes); file symlinks are followed,
+    directory symlinks are not enumerated by rglob.
+    """
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return False
+    needle = f"content_sha256: {digest}"
+    for line in lines[1:]:
+        stripped = line.strip()
+        if stripped == "---":
+            break  # closing delimiter — hash absent
+        if stripped == needle:
+            return True
+    return False
+
+
+def _find_hash_duplicate(digest: str, sources_dir) -> Path | None:
+    """Return an existing note whose frontmatter declares the same hash.
+
+    Notes written before this feature carry no content_sha256 line and
+    therefore never match (grandfather).
     """
     if not sources_dir.is_dir():
         return None
-    needle = f"content_sha256: {digest}"
     for path in sorted(sources_dir.rglob("*.md")):
-        try:
-            head = path.read_text(encoding="utf-8", errors="replace")[:2000]
-        except OSError:
-            continue
-        if needle in head:
+        if _note_declares_hash(path, digest):
             return path
     return None
 
@@ -390,12 +414,14 @@ def ingest_source(
         original_file=original_file,
         content_sha256=digest,
         source_url=ref if ref.startswith("http") else None,
-        duplicate_of=str(duplicate) if (duplicate is not None and allow_duplicate) else None,
+        duplicate_of=(
+            duplicate.relative_to(SOURCES_DIR).as_posix()
+            if (duplicate is not None and allow_duplicate)
+            else None
+        ),  # R82-2: portable repo-relative pointer, never machine-absolute
     )
 
-    # Ensure directory exists
     out_dir = SOURCES_DIR / domain
-    out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{slug}.md"
 
     # Avoid overwriting existing sources unless forced
@@ -404,9 +430,11 @@ def ingest_source(
         return None
 
     if dry_run:
+        # R82-1: dry-run creates nothing — no mkdir, no write.
         print(f"[dry-run] would create source: {out_path}")
         return out_path
 
+    out_dir.mkdir(parents=True, exist_ok=True)
     out_path.write_text(content, encoding="utf-8")
     print(f"✅ Created source: {out_path}")
     return out_path
@@ -528,7 +556,8 @@ def main() -> None:
         file_path = Path(args.file)
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
-        raw_text = extract_text_from_file(args.file, slug=file_slug)
+        raw_text = extract_text_from_file(args.file, slug=file_slug,
+                                           write_raw=not args.dry_run)
         ref = str(file_path.resolve())
         source_type = args.source_type or "other"
         # Determine original_file: MarkItDown may have created raw/<slug>.md
