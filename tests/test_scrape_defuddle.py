@@ -156,3 +156,208 @@ class TestReviewRepairs:
         with patch("shutil.which", return_value="/usr/bin/npx"), \
              patch.object(scrape_mod.subprocess, "run", return_value=proc):
             assert scrape_mod._scrape_defuddle("https://example.com/a") is None
+
+
+class TestOriginalSidecar:
+    """WO-AWIKI-INGEST-04: keep the ORIGINAL fetch bytes when defuddle wins.
+
+    Jev (jev-1.14.0): original_is_true_source 0.90; sidecar_html layout.
+    Best-effort plain curl sidecar — failures never fail the scrape.
+    """
+
+    def test_defuddle_win_records_original_fetch(self, tmp_path):
+        def which_side(name):
+            return "/usr/bin/npx" if name == "npx" else "/usr/bin/curl"
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=which_side), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout=b"<html>orig</html>"))):
+            result = scrape_mod.scrape("https://example.com/article",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"
+        assert result["original_fetch"]["status"] == "saved"
+        assert result["raw_file"].endswith(".md")
+
+    def test_sidecar_helper_writes_html_and_returns_path(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"<html>orig</html>")):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is not None and side.name == "post-x.html"
+        assert side.read_bytes() == b"<html>orig</html>"
+
+    def test_sidecar_curl_failure_records_not_raises(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout="", returncode=7)):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is None
+
+    def test_sidecar_skipped_when_curl_missing(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value=None):
+            side = scrape_mod._save_original_sidecar(
+                "https://example.com/post-x", "post-x")
+        assert side is None
+
+    def test_dispatch_wires_sidecar_only_for_defuddle(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None) as sidecar:
+            scrape_mod.scrape("https://example.com/a", method="auto",
+                              save_raw=True, json_out=True)
+        assert sidecar.call_count == 1
+        assert sidecar.call_args[0][0] == "https://example.com/a"
+
+
+class TestSidecarRepairR83:
+    """Terra findings R83-1..4: honest sidecar evidence + failure coverage."""
+
+    def test_save_raw_false_never_calls_sidecar(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None) as sidecar:
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=False,
+                                       json_out=True)
+        assert sidecar.call_count == 0
+        assert "original_fetch" not in result
+
+    def test_sidecar_write_error_scrape_still_succeeds(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          side_effect=OSError("disk full")):
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"  # scrape survives
+        assert result["original_fetch"]["status"] == "unavailable"
+
+    def test_curl_timeout_returns_none(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=subprocess.TimeoutExpired("curl", 30)):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_http_error_page_not_recorded_as_saved(self, tmp_path):
+        """curl -f makes HTTP >= 400 a curl failure — must be unavailable,
+        never saved (R83-2)."""
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"", returncode=22)):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/404", "x") is None
+
+    def test_stale_sidecar_flagged_when_fetch_fails(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        raw_dir.mkdir(parents=True)
+        (raw_dir / "old-page.html").write_bytes(b"<html>old</html>")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout=b"", returncode=22))):
+            result = scrape_mod.scrape("https://example.com/old-page",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        fetch = result["original_fetch"]
+        assert fetch["status"] == "unavailable"
+        assert fetch["stale_sidecar_possible"] is True
+
+    def test_saved_carries_honest_note(self, tmp_path):
+        def which_side(name):
+            return "/usr/bin/npx" if name == "npx" else "/usr/bin/curl"
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=which_side), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout=b"<html>ok</html>"))):
+            result = scrape_mod.scrape("https://example.com/ok",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        note = result["original_fetch"]["note"]
+        assert "best-effort" in note
+
+    def test_sidecar_argv_pins_fail_flag(self, tmp_path):
+        """R83-4: -f must stay in argv (HTTP error pages never recorded)."""
+        captured = {}
+        def capture(argv, **kw):
+            captured["argv"] = argv
+            return _ok_subprocess(stdout=b"<html>ok</html>")
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run", side_effect=capture):
+            scrape_mod._save_original_sidecar("https://example.com/a", "a")
+        assert "-fsL" in captured["argv"]  # combined: fail-flag + follow + silent
+        assert "--max-time" in captured["argv"]
+
+    def test_sidecar_mkdir_failure_returns_none(self, tmp_path):
+        """R83-4: mkdir OSError is contained — helper returns None."""
+        fake_raw = MagicMock()
+        fake_raw.mkdir.side_effect = OSError("permission denied")
+        with patch.object(scrape_mod, "RAW_DIR", fake_raw), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"<html>x</html>")):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_sidecar_write_bytes_failure_returns_none(self, tmp_path):
+        """R83-4: write_bytes OSError is contained — helper returns None."""
+        side = MagicMock()
+        side.write_bytes.side_effect = OSError("disk full")
+        fake_raw = MagicMock()
+        fake_raw.__truediv__ = lambda self, name: side
+        with patch.object(scrape_mod, "RAW_DIR", fake_raw), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"<html>x</html>")):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_stale_probe_oserror_scrape_still_succeeds(self, tmp_path):
+        """R83-1 round 2 (Terra-suggested shape): the stale exists() probe
+        itself raising OSError must be contained by the wiring try — the
+        scrape still succeeds and reports unavailable. _save_original_sidecar
+        is mocked to None so the probe is the exercised path."""
+        raw_dir = tmp_path / "raw"
+        raw_dir.mkdir(parents=True)
+        (raw_dir / "a.html").write_bytes(b"<html>old</html>")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None), \
+             patch.object(Path, "exists",
+                          side_effect=OSError("probe denied")):
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"
+        assert result["original_fetch"]["status"] == "unavailable"

@@ -314,6 +314,40 @@ ADAPTERS: dict[str, callable] = {
 }
 
 
+def _save_original_sidecar(url: str, slug: str) -> Path | None:
+    """Best-effort sidecar: keep the ORIGINAL fetch bytes as raw/<slug>.html.
+
+    WO-AWIKI-INGEST-04 — Jev decision (jev-1.14.0): original_is_true_source
+    0.90, sidecar_html layout. When an extraction method (defuddle) wins,
+    raw/<slug>.md holds extracted Markdown, so the original page bytes are
+    preserved alongside as raw/<slug>.html. Never raises: a sidecar failure
+    is recorded in result["original_fetch"], never fatal to the scrape.
+    """
+    import shutil
+    curl = shutil.which("curl")
+    if not curl:
+        return None
+    try:
+        # -f: HTTP >= 400 becomes a curl failure — an error page must never
+        # be recorded as saved original bytes (Terra review R83-2).
+        # Bytes mode: what we store is byte-for-byte THIS fetch (R83-2).
+        proc = subprocess.run(
+            [curl, "-fsL", "--max-time", "20", url],
+            capture_output=True, timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0 or not proc.stdout.strip():
+        return None
+    try:
+        RAW_DIR.mkdir(parents=True, exist_ok=True)
+        side = RAW_DIR / f"{slug}.html"
+        side.write_bytes(proc.stdout)
+        return side
+    except OSError:
+        return None  # R83-1: disk/permission failures are recorded, not fatal
+
+
 # ── Main dispatch ──────────────────────────────────────────────────────────
 
 def scrape(
@@ -387,6 +421,31 @@ def scrape(
     if save_raw:
         raw_path = save_raw_output(url, text)
         result["raw_file"] = str(raw_path)
+        if result["method_used"] == "defuddle":
+            # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
+            # a sidecar so provenance never degrades to extracted-only.
+            stale_possible = False
+            try:
+                side = _save_original_sidecar(url, raw_path.stem)
+                # R83-1 round 2: even this exists() probe must never abort a
+                # successful scrape.
+                stale_possible = (
+                    side is None
+                    and (RAW_DIR / f"{raw_path.stem}.html").exists())
+            except Exception:  # defensive: sidecar must never kill a scrape
+                side = None
+            info = {"note": "best-effort second fetch; bytes are this "
+                            "fetch's, not guaranteed identical to what the "
+                            "extractor consumed"}
+            if side:
+                info.update({"status": "saved", "path": str(side)})
+            else:
+                info.update({"status": "unavailable"})
+                if stale_possible:
+                    # R83-3: an older same-slug sidecar may no longer match
+                    # the new extraction — flag it instead of implying match.
+                    info["stale_sidecar_possible"] = True
+            result["original_fetch"] = info
 
     if json_out:
         return result
