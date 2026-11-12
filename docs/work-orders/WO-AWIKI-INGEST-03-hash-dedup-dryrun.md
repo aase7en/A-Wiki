@@ -62,3 +62,12 @@ no cutoff). Tests: marker assertion rewritten portable; +mkdir guard, +write_raw
 GREEN: **87/87** across tests/test_ingest_source.py + tests/test_scrape_defuddle.py +
 tests/test_scrape_advanced.py. GPT-6.1-terra (codex exec, read-only) re-review requested
 per operator instruction (dual-engine verification).
+
+## Terra (GPT-6.1-terra) re-review #1 — codex exec read-only receipt 2026-11-13
+
+R82-1/2/4 FIXED (confirmed with its own reasoning incl. mutation-style test analysis).
+Terra found 2 narrow NEW defects on the R82-3 fix: (N1) unclosed frontmatter accepted as
+duplicate; (N2) indented needle inside a YAML block scalar matched via line.strip().
+Repairs: closing-delimiter required before accepting (matched AND closed); top-level
+(unindented) exact-line matching only. +3 regression fixtures (unclosed, block scalar,
+suffixed value). GREEN: 51/51 file-local, 90/90 across the three touched suites.

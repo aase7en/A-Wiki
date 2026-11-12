@@ -481,3 +481,41 @@ class TestReviewRepairsIngest03:
             title="Short Title Retry", domain="general", source_type="article",
             ref="https://example.com/long", tags=[], raw_text=self.RAW)
         assert again is None  # R82-4: no fixed cutoff — hash must be seen
+
+
+    def test_unclosed_frontmatter_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing the unclosed-frontmatter edge case."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/unclosed.md",
+                         "---\ncontent_sha256: " + digest)  # no closing delimiter
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Unclosed Probe", domain="general", source_type="article",
+            ref="https://example.com/unclosed", tags=[], raw_text=other_raw)
+        assert out is not None
+
+    def test_indented_block_scalar_needle_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing indented YAML block scalar needles."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/blocks.md",
+                         "---\ntitle: B\ndescription: |\n  content_sha256: "
+                         + digest + "\n---\nbody")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Block Scalar Probe", domain="general", source_type="article",
+            ref="https://example.com/block", tags=[], raw_text=other_raw)
+        assert out is not None
+
+    def test_suffixed_value_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing a suffixed hash value."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/suffix.md",
+                         "---\ntitle: S\ncontent_sha256: " + digest + "-extra\n---\nbody")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Suffix Probe", domain="general", source_type="article",
+            ref="https://example.com/suffix", tags=[], raw_text=other_raw)
+        assert out is not None

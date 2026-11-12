@@ -257,16 +257,20 @@ def _note_declares_hash(path: Path, digest: str) -> bool:
     except OSError:
         return False
     lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
+    if not lines or lines[0].rstrip() != "---":
         return False
     needle = f"content_sha256: {digest}"
+    matched = False
+    closed = False
     for line in lines[1:]:
-        stripped = line.strip()
-        if stripped == "---":
-            break  # closing delimiter — hash absent
-        if stripped == needle:
-            return True
-    return False
+        if not line[:1].isspace() and line.rstrip() == "---":
+            closed = True  # closing delimiter — accept only if matched before it
+            break
+        # top-level keys only: an indented needle inside a YAML block scalar
+        # (e.g. under description: |) must never match (Terra re-review N1/N2).
+        if not line[:1].isspace() and line.rstrip() == needle:
+            matched = True
+    return matched and closed
 
 
 def _find_hash_duplicate(digest: str, sources_dir) -> Path | None:
