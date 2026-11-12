@@ -40,9 +40,9 @@ noise retention is therefore 100% by construction; numbers come from the audit, 
 
 | Fixture | Exit | Title | Content | Noise rejected | Parse |
 |---|---|---|---|---|---|
-| article-noisy-en.html | ok | ✅ exact | ✅ 3/3 body paragraphs verbatim, wordCount 84 | ✅ nav/cookie/sidebar/footer: 0 occurrences in output | 21 ms |
-| article-noisy-thai.html | ok | ✅ Thai exact | ✅ 2/2 Thai paragraphs verbatim, encoding intact | ✅ cookie banner "ยอมรับทั้งหมด"/sidebar/footer: 0 occurrences | 20 ms |
-| js-shell.html | graceful error | — | — | — | — message: `Error: No content could be extracted` (explicit, no crash, no fabricated content) |
+| article-noisy-en.html | exit 0 | ✅ exact | ✅ 3/3 body paragraphs verbatim, wordCount 84 | ✅ nav/cookie/sidebar/footer: 0 occurrences in **extracted content+title** (see review correction below) | 21 ms |
+| article-noisy-thai.html | exit 0 | ✅ Thai exact | ✅ 2/2 Thai paragraphs verbatim, encoding intact | ✅ all Thai noise strings: 0 occurrences in extracted content+title | 20 ms |
+| js-shell.html | **exit 1** (reviewer-captured, unpiped) | — | — | — | stderr: `Error: No content could be extracted` (explicit, no crash, no fabricated content) |
 
 Baseline (existing default URL path, from audit — not re-run): fetched HTML saved as `raw/<slug>.md` with **no article extraction** → noise retention 100% by construction.
 
@@ -59,3 +59,17 @@ clearly beats the current no-extraction baseline for readable public HTML. Recom
 next slice (separate claim, RED-first): add defuddle as an opt-in extraction tier/adapter
 in the existing scraper router + compose `raw/` provenance (raw HTML preserved; cleaned
 markdown marked as extraction, not archival copy). This WO adds NO production dependency.
+
+
+## Review correction — 2026-11-12 (metric precision, from independent re-run)
+
+Independent reviewer re-ran the pinned benchmark against the committed fixtures.
+All extraction claims reproduced exactly (verbatim paragraphs, exact titles EN/TH,
+all noise strings absent from content, js-shell explicit failure). One documentation
+defect: a naive substring scan of the ENTIRE JSON stdout finds `Tags` once — inside
+the metadata KEY `"metaTags": []` — a key-name collision, not navigation leakage.
+The noise-rejection metric is therefore defined precisely as: **noise strings measured
+over extracted values (content, title, description) only, not over JSON key names**;
+under that definition all noise counts are 0, as tabled above. Also recorded:
+js-shell exit code is reliably 1 (reviewer captured it without pipes), and parse
+times vary 21-24 ms between runs (timing noise, not extraction differences).
