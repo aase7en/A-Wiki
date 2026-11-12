@@ -302,3 +302,57 @@ class TestSidecarRepairR83:
                                        json_out=True)
         note = result["original_fetch"]["note"]
         assert "best-effort" in note
+
+    def test_sidecar_argv_pins_fail_flag(self, tmp_path):
+        """R83-4: -f must stay in argv (HTTP error pages never recorded)."""
+        captured = {}
+        def capture(argv, **kw):
+            captured["argv"] = argv
+            return _ok_subprocess(stdout=b"<html>ok</html>")
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run", side_effect=capture):
+            scrape_mod._save_original_sidecar("https://example.com/a", "a")
+        assert "-fsL" in captured["argv"]  # combined: fail-flag + follow + silent
+        assert "--max-time" in captured["argv"]
+
+    def test_sidecar_mkdir_failure_returns_none(self, tmp_path):
+        """R83-4: mkdir OSError is contained — helper returns None."""
+        fake_raw = MagicMock()
+        fake_raw.mkdir.side_effect = OSError("permission denied")
+        with patch.object(scrape_mod, "RAW_DIR", fake_raw), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"<html>x</html>")):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_sidecar_write_bytes_failure_returns_none(self, tmp_path):
+        """R83-4: write_bytes OSError is contained — helper returns None."""
+        side = MagicMock()
+        side.write_bytes.side_effect = OSError("disk full")
+        fake_raw = MagicMock()
+        fake_raw.__truediv__ = lambda self, name: side
+        with patch.object(scrape_mod, "RAW_DIR", fake_raw), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"<html>x</html>")):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_stale_probe_oserror_scrape_still_succeeds(self, tmp_path):
+        """R83-1 round 2: even the stale exists() probe raising must not
+        abort a successful scrape."""
+        class BoomPath(str):
+            pass
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(Path, "exists",
+                          side_effect=OSError("probe denied")):
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"
+        assert result["original_fetch"]["status"] == "unavailable"

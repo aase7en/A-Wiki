@@ -74,3 +74,11 @@ carry the execution evidence.)
 - R83-4: +6 tests — save_raw=False no sidecar, wiring survives OSError,
   curl timeout, HTTP error page not saved, stale flag, honest note.
 GREEN: **50/50** (test_scrape_defuddle.py + test_scrape_advanced.py).
+
+## Terra re-review #2 — 2026-11-13 (receipt /tmp/awiki-rev83-terra-receipt2.txt)
+
+R83-2/3 FIXED confirmed; two residuals BLOCKed: stale exists() probe outside try
+(R83-1 residual) and tests not pinning -f / not exercising helper-internal write
+failures (R83-4 residual). Repairs #2 (2c67da12→...): stale probe moved INSIDE the
+defensive try; tests +argv -fsL pin, +mkdir OSError contained, +write_bytes OSError
+contained, +stale-probe OSError scrape-survives. GREEN: **54/54**.

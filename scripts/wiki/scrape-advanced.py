@@ -424,8 +424,14 @@ def scrape(
         if result["method_used"] == "defuddle":
             # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
             # a sidecar so provenance never degrades to extracted-only.
+            stale_possible = False
             try:
                 side = _save_original_sidecar(url, raw_path.stem)
+                # R83-1 round 2: even this exists() probe must never abort a
+                # successful scrape.
+                stale_possible = (
+                    side is None
+                    and (RAW_DIR / f"{raw_path.stem}.html").exists())
             except Exception:  # defensive: sidecar must never kill a scrape
                 side = None
             info = {"note": "best-effort second fetch; bytes are this "
@@ -435,7 +441,7 @@ def scrape(
                 info.update({"status": "saved", "path": str(side)})
             else:
                 info.update({"status": "unavailable"})
-                if (RAW_DIR / f"{raw_path.stem}.html").exists():
+                if stale_possible:
                     # R83-3: an older same-slug sidecar may no longer match
                     # the new extraction — flag it instead of implying match.
                     info["stale_sidecar_possible"] = True
