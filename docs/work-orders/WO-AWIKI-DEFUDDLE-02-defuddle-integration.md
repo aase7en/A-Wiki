@@ -1,6 +1,6 @@
 # WO-AWIKI-DEFUDDLE-02 — Defuddle adapter in the scraper router (production integration)
 
-Status: CLAIMED / IN_PROGRESS
+Status: CLAIMED / REVIEW_CYCLE (repair #1 pushed after independent BLOCK)
 Builds on: WO-AWIKI-DEFUDDLE-01 (merged PR #80 — verdict JUSTIFIED as optional extraction adapter).
 Claim: WO-AWIKI-DEFUDDLE-02 | Agent: GLM (Kilo) | Branch: `feat/defuddle-integration` | Base: `origin/main@7d5304dd`
 Decision support: Jev (TypeSafe System One) per operator instruction 2026-11-12 (key from drive secrets, used via env, never committed).
@@ -45,7 +45,9 @@ run after it). Payload: `/tmp/jev-defuddle02-request.json` (reproduced in PR com
 Answers:
 - `best_position` (choice): **position_first** — probabilities first 0.84 / second 0.13 / late 0.01 / last 0.02, confidence 0.79
 - `has_clear_best` (noul): 0.58 (trade-off hesitance present, but direction consistent with the choice)
-- `blocked_pages_common` (noul): 0.28 → anti-bot pages are the exception, not the rule
+- `blocked_pages_common` (noul): 0.28 — model JUDGMENT (not a measured frequency): anti-bot pages read as the exception, not the rule
+
+Provenance note (review maintainer concern): this ROUTER's `save_raw_output` saves the WINNING method's text — with defuddle first that is extracted Markdown, not original HTML. The unconditional raw-HTML provenance guarantee belongs to the ingest-source.py path, not this router. Extraction-provenance markers (e.g. save original fetch alongside extraction) are a follow-up design item, not claimed here.
 
 Code decision (truth table): blocked_pages < 0.3 (no curl-first override) AND choice top = first
 with a 0.84/0.13 gap → **defuddle inserted at TIERS index 0**, ahead of curl-impersonate. On
@@ -59,3 +61,19 @@ machines without npx the adapter raises an explicit `npx not found` error in mil
 - REAL end-to-end smoke (actual npx + defuddle@0.19.6 through the actual adapter, Thai fixture
   from WO-AWIKI-DEFUDDLE-01): extracted 267 chars containing `เซ็นเซอร์วัดพีเอช` — True.
 - Tests are network-free (subprocess + shutil.which patched); CI-safe without node.
+
+
+## Review + repair cycle #1 — 2026-11-12
+
+Independent review (fresh subagent, report on PR): **BLOCK**, 3×P2 — all confirmed real:
+- R81-1 option-like source (`--help`) parsed by defuddle CLI as a flag (reviewer proved via real
+  execution: help printed, exit 0). Repair: adapter rejects sources starting with `-`
+  (ValueError, dispatcher records reason); regression test added.
+- R81-2 `--method defuddle` rejected by argparse (choices were a stale hardcoded list). Repair:
+  choices now DERIVED from TIERS (`["auto"] + [t["method"] for t in TIERS]`) so future methods
+  cannot be omitted; CLI accept/reject tests added (real argparse subprocess).
+- R81-3 dispatcher fallback test was vacuous (reviewer removed all fallback adapters and it
+  still passed). Repair: now requires ordered [defuddle error w/ 'npx not found' detail,
+  curl-impersonate success], method_used == curl-impersonate, error None, subprocess invoked.
+Also added: whitespace-only and non-dict JSON → None tests.
+GREEN: **39/39** (tests/test_scrape_defuddle.py + tests/test_scrape_advanced.py).

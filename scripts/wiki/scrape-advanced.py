@@ -144,6 +144,10 @@ def _scrape_defuddle(url: str) -> str | None:
     import shutil
     if not shutil.which("npx"):
         raise RuntimeError("defuddle: npx not found (install Node.js or put npx on PATH)")
+    if isinstance(url, str) and url.lstrip().startswith("-"):
+        # Review finding R81-1: an option-like source would be parsed by the
+        # defuddle CLI as a flag (verified: '--help' prints help, exit 0).
+        raise ValueError("defuddle: refusing option-like source (starts with '-')")
     result = subprocess.run(
         ["npx", "-y", "defuddle@0.19.6", "parse", url, "-m", "-j"],
         capture_output=True, text=True, timeout=45,
@@ -399,7 +403,7 @@ def main() -> None:
     parser.add_argument("--url", help="URL to scrape")
     parser.add_argument(
         "--method", default="auto",
-        choices=["auto", "curl-impersonate", "scrapling", "autoscraper", "crawl4ai", "firecrawl", "browser-use"],
+        choices=["auto"] + [t["method"] for t in TIERS],  # R81-2: derive from TIERS so new methods cannot be omitted
         help="Scraping method (default: auto-pick from installed+allowed)",
     )
     parser.add_argument("--domain", choices=VALID_DOMAINS, help="Knowledge domain (for raw/ organization)")

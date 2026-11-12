@@ -118,6 +118,41 @@ class TestDispatchIntegration:
                                                  stderr="")) as run:
             result = scrape_mod.scrape("https://example.com/a", method="auto",
                                        force_method=False, save_raw=False)
-        statuses = {(m["method"], m["status"]) for m in result["methods_tried"]}
-        assert any(m == "defuddle" and s == "error" for m, s in statuses), statuses
-        assert result["method_used"] in ("curl-impersonate", None)
+        tried = result["methods_tried"]
+        assert [m["method"] for m in tried][:2] == ["defuddle", "curl-impersonate"], tried
+        assert tried[0]["status"] == "error" and "npx not found" in tried[0].get("detail", ""), tried[0]
+        assert tried[1]["status"] == "success", tried[1]
+        assert result["method_used"] == "curl-impersonate"
+        assert result["error"] is None
+        assert run.call_count >= 1  # curl-impersonate actually invoked
+
+
+class TestReviewRepairs:
+    """R81-1/2/3: option-like sources, CLI choices, malformed payloads."""
+
+    def test_option_like_source_raises_value_error(self):
+        with patch("shutil.which", return_value="/usr/bin/npx"):
+            with pytest.raises(ValueError, match="option-like source"):
+                scrape_mod._scrape_defuddle("--help")
+
+    def test_cli_accepts_defuddle_method_choice(self):
+        cmd = [sys.executable, str(SCRAPE_MODULE_PATH), "--list", "--method", "defuddle"]
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        assert proc.returncode == 0, proc.stderr
+
+    def test_cli_rejects_unknown_method(self):
+        cmd = [sys.executable, str(SCRAPE_MODULE_PATH), "--list", "--method", "bogus"]
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        assert proc.returncode == 2
+
+    def test_whitespace_content_returns_none(self):
+        proc = _ok_subprocess(stdout='{"content": "   \n\t  ", "title": "t"}')
+        with patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run", return_value=proc):
+            assert scrape_mod._scrape_defuddle("https://example.com/a") is None
+
+    def test_non_dict_json_returns_none(self):
+        proc = _ok_subprocess(stdout='[1, 2, 3]')
+        with patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run", return_value=proc):
+            assert scrape_mod._scrape_defuddle("https://example.com/a") is None
