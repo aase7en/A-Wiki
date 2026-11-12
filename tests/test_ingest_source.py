@@ -306,3 +306,85 @@ class TestDomainDedup:
         lib_mod = importlib.import_module("lib.wiki_domains")
         assert lib_mod.VALID_DOMAINS == ingest_source_mod.VALID_DOMAINS
         assert lib_mod.DOMAIN_TITLES == ingest_source_mod.DOMAIN_TITLES
+
+
+# ── WO-AWIKI-INGEST-03: hash, dedup, dry-run ──────────────────────────
+
+class TestHashDedupDryRun:
+    """content_sha256 frontmatter, cross-note duplicate detection, --dry-run.
+
+    Jev record (jev-1.14.0, 2026-11-12): cross_domain_policy split 0.41/0.37
+    (confidence 0.11), same_content_different_purpose 0.48 — state did not
+    settle the question, so code chooses the fail-safe branch: block with
+    pointer + explicit --allow-duplicate escape hatch (writes duplicate_of).
+    """
+
+    RAW = "Unique ingestion content for hash dedup testing. " * 3
+
+    def _ingest(self, tmp_sources, title, raw=None, **kw):
+        import hashlib
+        ingest_source_mod.SOURCES_DIR = tmp_sources
+        return ingest_source_mod.ingest_source(
+            title=title, domain="general", source_type="article",
+            ref="https://example.com/hash-dedup", tags=["test"],
+            raw_text=raw or self.RAW, **kw)
+
+    def test_hash_and_source_url_in_frontmatter(self, tmp_path):
+        import hashlib
+        out = self._ingest(tmp_path, "Hash Note One")
+        assert out is not None and out.is_file()
+        text = out.read_text(encoding="utf-8")
+        expect = hashlib.sha256(self.RAW.encode("utf-8")).hexdigest()
+        assert f"content_sha256: {expect}" in text
+        assert "source_url: https://example.com/hash-dedup" in text
+
+    def test_file_ref_has_no_source_url(self, tmp_path):
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="File Ref Note", domain="general", source_type="other",
+            ref="/abs/path/file.pdf", tags=[], raw_text=self.RAW)
+        assert out is not None
+        assert "source_url:" not in out.read_text(encoding="utf-8")
+
+    def test_duplicate_content_refused_with_pointer(self, tmp_path, capsys):
+        first = self._ingest(tmp_path, "First Title")
+        assert first is not None
+        second = self._ingest(tmp_path, "Second Different Title")
+        assert second is None
+        err = capsys.readouterr().err
+        assert "duplicate" in err.lower() and str(first) in err
+
+    def test_allow_duplicate_writes_with_marker(self, tmp_path):
+        first = self._ingest(tmp_path, "First Title")
+        second = self._ingest(tmp_path, "Second Different Title",
+                               allow_duplicate=True)
+        assert second is not None and second.is_file()
+        assert f"duplicate_of: {first}" in second.read_text(encoding="utf-8")
+
+    def test_grandfather_notes_without_hash_ignored(self, tmp_path):
+        legacy = tmp_path / "general" / "legacy-note.md"
+        legacy.parent.mkdir(parents=True, exist_ok=True)
+        legacy.write_text("---\ntype: source\ntitle: Legacy\n---\n"
+                          + self.RAW, encoding="utf-8")
+        out = self._ingest(tmp_path, "Fresh Title")  # same content, no hash in legacy
+        assert out is not None
+
+    def test_dry_run_writes_nothing(self, tmp_path, capsys):
+        out = self._ingest(tmp_path, "Dry Run Note", dry_run=True)
+        assert out is not None and not out.exists()
+        assert "dry-run" in capsys.readouterr().out.lower()
+
+    def test_dry_run_still_reports_duplicate(self, tmp_path, capsys):
+        first = self._ingest(tmp_path, "First Title")
+        assert first is not None
+        again = self._ingest(tmp_path, "Other Title", dry_run=True)
+        assert again is None
+        assert "duplicate" in capsys.readouterr().err.lower()
+
+    def test_cli_exposes_new_flags(self):
+        import subprocess, sys
+        proc = subprocess.run(
+            [sys.executable, str(_path), "--help"],
+            capture_output=True, text=True, timeout=60)
+        assert proc.returncode == 0
+        assert "--dry-run" in proc.stdout and "--allow-duplicate" in proc.stdout
