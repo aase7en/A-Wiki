@@ -341,14 +341,19 @@ class TestSidecarRepairR83:
                 "https://example.com/a", "a") is None
 
     def test_stale_probe_oserror_scrape_still_succeeds(self, tmp_path):
-        """R83-1 round 2: even the stale exists() probe raising must not
-        abort a successful scrape."""
-        class BoomPath(str):
-            pass
-        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+        """R83-1 round 2 (Terra-suggested shape): the stale exists() probe
+        itself raising OSError must be contained by the wiring try — the
+        scrape still succeeds and reports unavailable. _save_original_sidecar
+        is mocked to None so the probe is the exercised path."""
+        raw_dir = tmp_path / "raw"
+        raw_dir.mkdir(parents=True)
+        (raw_dir / "a.html").write_bytes(b"<html>old</html>")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
              patch("shutil.which", return_value="/usr/bin/npx"), \
              patch.object(scrape_mod.subprocess, "run",
                           return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None), \
              patch.object(Path, "exists",
                           side_effect=OSError("probe denied")):
             result = scrape_mod.scrape("https://example.com/a",
