@@ -95,9 +95,9 @@ class TestSaveRawOutput:
 class TestListMethods:
     def test_returns_all_methods(self):
         methods = scrape_mod.list_methods("home-mac")
-        assert len(methods) == 6
+        assert len(methods) == 7  # WO-AWIKI-DEFUDDLE-02 added defuddle
         assert {m["method"] for m in methods} == {
-            "curl-impersonate", "scrapling", "autoscraper",
+            "defuddle", "curl-impersonate", "scrapling", "autoscraper",
             "crawl4ai", "firecrawl", "browser-use",
         }
 

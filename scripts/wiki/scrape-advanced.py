@@ -5,6 +5,7 @@ scrape-advanced.py — Multi-tier web scraper router for A-Wiki.
 Routes URL scraping to the best available method based on device tier and
 installed dependencies. Gracefully degrades when methods are unavailable.
 
+Tier  0: defuddle (reader-mode article to Markdown, pinned npx; runs first)
 Tier  0: curl-impersonate (TLS fingerprint, no browser)
 Tier  1: Scrapling / AutoScraper (lightweight, no browser)
 Tier  2: Crawl4AI (RAG-optimized, needs Playwright)
@@ -62,6 +63,7 @@ def frontmatter(**kwargs) -> str:
 
 # Tier metadata for --list
 TIERS: list[dict] = [
+    {"method": "defuddle",        "tier": 0, "pkg": None, "binary": "npx",              "devices": "all", "desc": "Reader-mode article to Markdown (pinned defuddle@0.19.6 via npx)"},
     {"method": "curl-impersonate", "tier": 0, "pkg": None, "binary": "curl-impersonate-chrome", "devices": "all", "desc": "TLS-fingerprint curl (bypass Cloudflare)"},
     {"method": "scrapling",        "tier": 1, "pkg": "scrapling",         "binary": None,        "devices": "all",        "desc": "Adaptive lightweight scraper"},
     {"method": "autoscraper",      "tier": 1, "pkg": "autoscraper",       "binary": None,        "devices": "all",        "desc": "Exemplar-based pattern extraction"},
@@ -128,6 +130,37 @@ def save_raw_output(url: str, text: str) -> Path:
 
 
 # ── Adapters ───────────────────────────────────────────────────────────────
+
+def _scrape_defuddle(url: str) -> str | None:
+    """Tier 0 — defuddle reader-mode extraction (pinned via npx, local only).
+
+    Returns clean article Markdown from `npx -y defuddle@0.19.6 parse -m -j`.
+    WO-AWIKI-DEFUDDLE-02. Jev decision 2026-11-12 (jev-1.14.0): FIRST in auto
+    order — readable articles dominate this pipeline (blocked_pages 0.28) and
+    curl-impersonate's unextracted HTML would stop auto mode before defuddle
+    could run. Raises RuntimeError when npx is missing so the dispatcher
+    records an explicit reason instead of a misleading no_content.
+    """
+    import shutil
+    if not shutil.which("npx"):
+        raise RuntimeError("defuddle: npx not found (install Node.js or put npx on PATH)")
+    if isinstance(url, str) and url.lstrip().startswith("-"):
+        # Review finding R81-1: an option-like source would be parsed by the
+        # defuddle CLI as a flag (verified: '--help' prints help, exit 0).
+        raise ValueError("defuddle: refusing option-like source (starts with '-')")
+    result = subprocess.run(
+        ["npx", "-y", "defuddle@0.19.6", "parse", url, "-m", "-j"],
+        capture_output=True, text=True, timeout=45,
+    )
+    if result.returncode != 0:
+        return None
+    try:
+        payload = json.loads(result.stdout)
+    except ValueError:
+        return None
+    content = payload.get("content") if isinstance(payload, dict) else None
+    return content if isinstance(content, str) and content.strip() else None
+
 
 def _scrape_curl_impersonate(url: str) -> str | None:
     """Tier 0 — curl-impersonate binary (TLS fingerprint: chrome)."""
@@ -271,6 +304,7 @@ def _pkg_installed(pkg: str) -> bool:
 
 
 ADAPTERS: dict[str, callable] = {
+    "defuddle": _scrape_defuddle,
     "curl-impersonate": _scrape_curl_impersonate,
     "scrapling": _scrape_scrapling,
     "autoscraper": _scrape_autoscraper,
@@ -369,7 +403,7 @@ def main() -> None:
     parser.add_argument("--url", help="URL to scrape")
     parser.add_argument(
         "--method", default="auto",
-        choices=["auto", "curl-impersonate", "scrapling", "autoscraper", "crawl4ai", "firecrawl", "browser-use"],
+        choices=["auto"] + [t["method"] for t in TIERS],  # R81-2: derive from TIERS so new methods cannot be omitted
         help="Scraping method (default: auto-pick from installed+allowed)",
     )
     parser.add_argument("--domain", choices=VALID_DOMAINS, help="Knowledge domain (for raw/ organization)")
