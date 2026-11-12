@@ -328,18 +328,24 @@ def _save_original_sidecar(url: str, slug: str) -> Path | None:
     if not curl:
         return None
     try:
+        # -f: HTTP >= 400 becomes a curl failure — an error page must never
+        # be recorded as saved original bytes (Terra review R83-2).
+        # Bytes mode: what we store is byte-for-byte THIS fetch (R83-2).
         proc = subprocess.run(
-            [curl, "-sL", "--max-time", "20", url],
-            capture_output=True, text=True, timeout=30,
+            [curl, "-fsL", "--max-time", "20", url],
+            capture_output=True, timeout=30,
         )
     except (OSError, subprocess.SubprocessError):
         return None
     if proc.returncode != 0 or not proc.stdout.strip():
         return None
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-    side = RAW_DIR / f"{slug}.html"
-    side.write_text(proc.stdout, encoding="utf-8")
-    return side
+    try:
+        RAW_DIR.mkdir(parents=True, exist_ok=True)
+        side = RAW_DIR / f"{slug}.html"
+        side.write_bytes(proc.stdout)
+        return side
+    except OSError:
+        return None  # R83-1: disk/permission failures are recorded, not fatal
 
 
 # ── Main dispatch ──────────────────────────────────────────────────────────
@@ -418,10 +424,22 @@ def scrape(
         if result["method_used"] == "defuddle":
             # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
             # a sidecar so provenance never degrades to extracted-only.
-            side = _save_original_sidecar(url, raw_path.stem)
-            result["original_fetch"] = (
-                {"status": "saved", "path": str(side)} if side
-                else {"status": "unavailable"})
+            try:
+                side = _save_original_sidecar(url, raw_path.stem)
+            except Exception:  # defensive: sidecar must never kill a scrape
+                side = None
+            info = {"note": "best-effort second fetch; bytes are this "
+                            "fetch's, not guaranteed identical to what the "
+                            "extractor consumed"}
+            if side:
+                info.update({"status": "saved", "path": str(side)})
+            else:
+                info.update({"status": "unavailable"})
+                if (RAW_DIR / f"{raw_path.stem}.html").exists():
+                    # R83-3: an older same-slug sidecar may no longer match
+                    # the new extraction — flag it instead of implying match.
+                    info["stale_sidecar_possible"] = True
+            result["original_fetch"] = info
 
     if json_out:
         return result

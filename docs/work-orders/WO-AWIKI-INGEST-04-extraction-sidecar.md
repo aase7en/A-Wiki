@@ -50,3 +50,27 @@ before any merge; hosted CI + post-main verification per established cycle.
   30s subprocess timeout), never raises; wired in scrape() raw-save block only when
   `method_used == "defuddle"`; result gains `original_fetch: {status, path}` evidence.
 - Sidecar slug = raw_path.stem — .md (extraction) and .html (original) share the slug.
+
+## Terra (GPT-6.1-terra) review #1 — codex exec read-only receipt /tmp/awiki-rev83-terra-receipt.txt
+
+VERDICT BLOCK — R83-1 (P1) sidecar mkdir/write outside try could abort a successful
+scrape (OSError/decode); R83-2 (P1) `saved` claimed without HTTP-status check or
+byte-for-byte guarantee; R83-3 (P2) stale same-slug sidecar may mislead after a
+failed re-fetch; R83-4 (P2) negative/edge tests missing. (Terra's sandbox could not
+run pytest — read-only no-temp-dir — recorded honestly; my own runs + hosted CI
+carry the execution evidence.)
+
+## Repairs #1 — R83-1..4
+
+- R83-1: bytes-mode fetch, mkdir/write_bytes inside try-OSError → helper never
+  raises; wiring additionally wrapped defensively.
+- R83-2: curl `-f` (HTTP ≥ 400 → curl failure → unavailable, error pages never
+  recorded as saved); bytes written byte-for-byte of THIS fetch; result note
+  states explicitly "best-effort second fetch; not guaranteed identical to what
+  the extractor consumed".
+- R83-3: failed re-fetch flags `stale_sidecar_possible: true` when an old
+  same-slug sidecar exists. Pre-existing same-slug collision across DIFFERENT
+  urls (save_raw_output slugify) documented as a separate follow-up lane.
+- R83-4: +6 tests — save_raw=False no sidecar, wiring survives OSError,
+  curl timeout, HTTP error page not saved, stale flag, honest note.
+GREEN: **50/50** (test_scrape_defuddle.py + test_scrape_advanced.py).

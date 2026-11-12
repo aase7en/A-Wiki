@@ -166,12 +166,14 @@ class TestOriginalSidecar:
     """
 
     def test_defuddle_win_records_original_fetch(self, tmp_path):
+        def which_side(name):
+            return "/usr/bin/npx" if name == "npx" else "/usr/bin/curl"
         with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
-             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch("shutil.which", side_effect=which_side), \
              patch.object(scrape_mod.subprocess, "run",
                           side_effect=lambda argv, **kw: (
                               _ok_subprocess() if "defuddle@" in argv[2]
-                              else _ok_subprocess(stdout="<html>orig</html>"))):
+                              else _ok_subprocess(stdout=b"<html>orig</html>"))):
             result = scrape_mod.scrape("https://example.com/article",
                                        method="auto", save_raw=True,
                                        json_out=True)
@@ -184,11 +186,11 @@ class TestOriginalSidecar:
         with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
              patch("shutil.which", return_value="/usr/bin/curl"), \
              patch.object(scrape_mod.subprocess, "run",
-                          return_value=_ok_subprocess(stdout="<html>orig</html>")):
+                          return_value=_ok_subprocess(stdout=b"<html>orig</html>")):
             side = scrape_mod._save_original_sidecar(
                 "https://example.com/post-x", "post-x")
         assert side is not None and side.name == "post-x.html"
-        assert side.read_text(encoding="utf-8") == "<html>orig</html>"
+        assert side.read_bytes() == b"<html>orig</html>"
 
     def test_sidecar_curl_failure_records_not_raises(self, tmp_path):
         raw_dir = tmp_path / "raw"
@@ -220,3 +222,83 @@ class TestOriginalSidecar:
                               save_raw=True, json_out=True)
         assert sidecar.call_count == 1
         assert sidecar.call_args[0][0] == "https://example.com/a"
+
+
+class TestSidecarRepairR83:
+    """Terra findings R83-1..4: honest sidecar evidence + failure coverage."""
+
+    def test_save_raw_false_never_calls_sidecar(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          return_value=None) as sidecar:
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=False,
+                                       json_out=True)
+        assert sidecar.call_count == 0
+        assert "original_fetch" not in result
+
+    def test_sidecar_write_error_scrape_still_succeeds(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess()), \
+             patch.object(scrape_mod, "_save_original_sidecar",
+                          side_effect=OSError("disk full")):
+            result = scrape_mod.scrape("https://example.com/a",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        assert result["method_used"] == "defuddle"  # scrape survives
+        assert result["original_fetch"]["status"] == "unavailable"
+
+    def test_curl_timeout_returns_none(self, tmp_path):
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=subprocess.TimeoutExpired("curl", 30)):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/a", "a") is None
+
+    def test_http_error_page_not_recorded_as_saved(self, tmp_path):
+        """curl -f makes HTTP >= 400 a curl failure — must be unavailable,
+        never saved (R83-2)."""
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", return_value="/usr/bin/curl"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=_ok_subprocess(stdout=b"", returncode=22)):
+            assert scrape_mod._save_original_sidecar(
+                "https://example.com/404", "x") is None
+
+    def test_stale_sidecar_flagged_when_fetch_fails(self, tmp_path):
+        raw_dir = tmp_path / "raw"
+        raw_dir.mkdir(parents=True)
+        (raw_dir / "old-page.html").write_bytes(b"<html>old</html>")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", return_value="/usr/bin/npx"), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout=b"", returncode=22))):
+            result = scrape_mod.scrape("https://example.com/old-page",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        fetch = result["original_fetch"]
+        assert fetch["status"] == "unavailable"
+        assert fetch["stale_sidecar_possible"] is True
+
+    def test_saved_carries_honest_note(self, tmp_path):
+        def which_side(name):
+            return "/usr/bin/npx" if name == "npx" else "/usr/bin/curl"
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=which_side), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=lambda argv, **kw: (
+                              _ok_subprocess() if "defuddle@" in argv[2]
+                              else _ok_subprocess(stdout=b"<html>ok</html>"))):
+            result = scrape_mod.scrape("https://example.com/ok",
+                                       method="auto", save_raw=True,
+                                       json_out=True)
+        note = result["original_fetch"]["note"]
+        assert "best-effort" in note
