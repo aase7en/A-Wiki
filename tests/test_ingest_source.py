@@ -306,3 +306,216 @@ class TestDomainDedup:
         lib_mod = importlib.import_module("lib.wiki_domains")
         assert lib_mod.VALID_DOMAINS == ingest_source_mod.VALID_DOMAINS
         assert lib_mod.DOMAIN_TITLES == ingest_source_mod.DOMAIN_TITLES
+
+
+# ── WO-AWIKI-INGEST-03: hash, dedup, dry-run ──────────────────────────
+
+class TestHashDedupDryRun:
+    """content_sha256 frontmatter, cross-note duplicate detection, --dry-run.
+
+    Jev record (jev-1.14.0, 2026-11-12): cross_domain_policy split 0.41/0.37
+    (confidence 0.11), same_content_different_purpose 0.48 — state did not
+    settle the question, so code chooses the fail-safe branch: block with
+    pointer + explicit --allow-duplicate escape hatch (writes duplicate_of).
+    """
+
+    RAW = "Unique ingestion content for hash dedup testing. " * 3
+
+    def _ingest(self, tmp_sources, title, raw=None, **kw):
+        import hashlib
+        ingest_source_mod.SOURCES_DIR = tmp_sources
+        return ingest_source_mod.ingest_source(
+            title=title, domain="general", source_type="article",
+            ref="https://example.com/hash-dedup", tags=["test"],
+            raw_text=raw or self.RAW, **kw)
+
+    def test_hash_and_source_url_in_frontmatter(self, tmp_path):
+        import hashlib
+        out = self._ingest(tmp_path, "Hash Note One")
+        assert out is not None and out.is_file()
+        text = out.read_text(encoding="utf-8")
+        expect = hashlib.sha256(self.RAW.encode("utf-8")).hexdigest()
+        assert f"content_sha256: {expect}" in text
+        assert "source_url: https://example.com/hash-dedup" in text
+
+    def test_file_ref_has_no_source_url(self, tmp_path):
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="File Ref Note", domain="general", source_type="other",
+            ref="/abs/path/file.pdf", tags=[], raw_text=self.RAW)
+        assert out is not None
+        assert "source_url:" not in out.read_text(encoding="utf-8")
+
+    def test_duplicate_content_refused_with_pointer(self, tmp_path, capsys):
+        first = self._ingest(tmp_path, "First Title")
+        assert first is not None
+        second = self._ingest(tmp_path, "Second Different Title")
+        assert second is None
+        err = capsys.readouterr().err
+        assert "duplicate" in err.lower() and str(first) in err
+
+    def test_allow_duplicate_writes_portable_relative_marker(self, tmp_path):
+        first = self._ingest(tmp_path, "First Title")
+        second = self._ingest(tmp_path, "Second Different Title",
+                               allow_duplicate=True)
+        assert second is not None and second.is_file()
+        marker_line = next(
+            line for line in second.read_text(encoding="utf-8").splitlines()
+            if line.startswith("duplicate_of:"))
+        marker = marker_line.split(":", 1)[1].strip()
+        assert not marker.startswith("/")  # R82-2: never machine-absolute
+        assert marker == "general/first-title.md"  # sources-relative, portable
+
+    def test_dry_run_creates_no_directories(self, tmp_path, capsys):
+        out = self._ingest(tmp_path, "Mkdir Guard Note", dry_run=True)
+        assert out is not None and not out.exists()
+        assert not (tmp_path / "general").exists()  # R82-1b: no mkdir either
+
+    def test_grandfather_notes_without_hash_ignored(self, tmp_path):
+        legacy = tmp_path / "general" / "legacy-note.md"
+        legacy.parent.mkdir(parents=True, exist_ok=True)
+        legacy.write_text("---\ntype: source\ntitle: Legacy\n---\n"
+                          + self.RAW, encoding="utf-8")
+        out = self._ingest(tmp_path, "Fresh Title")  # same content, no hash in legacy
+        assert out is not None
+
+    def test_dry_run_writes_nothing(self, tmp_path, capsys):
+        out = self._ingest(tmp_path, "Dry Run Note", dry_run=True)
+        assert out is not None and not out.exists()
+        assert "dry-run" in capsys.readouterr().out.lower()
+
+    def test_dry_run_still_reports_duplicate(self, tmp_path, capsys):
+        first = self._ingest(tmp_path, "First Title")
+        assert first is not None
+        again = self._ingest(tmp_path, "Other Title", dry_run=True)
+        assert again is None
+        assert "duplicate" in capsys.readouterr().err.lower()
+
+    def test_cli_exposes_new_flags(self):
+        import subprocess, sys
+        proc = subprocess.run(
+            [sys.executable, str(_path), "--help"],
+            capture_output=True, text=True, timeout=60)
+        assert proc.returncode == 0
+        assert "--dry-run" in proc.stdout and "--allow-duplicate" in proc.stdout
+
+
+class TestReviewRepairsIngest03:
+    """R82-1..4 negative fixtures from the PR #82 independent review."""
+
+    RAW = "Review probe content for ingestion hardening. " * 2
+
+    def _write_note(self, tmp_path, rel, body):
+        note = tmp_path / rel
+        note.parent.mkdir(parents=True, exist_ok=True)
+        note.write_text(body, encoding="utf-8")
+        return note
+
+    def _mk_sources_with_one(self, tmp_path):
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Seed Note", domain="general", source_type="article",
+            ref="https://example.com/seed", tags=[], raw_text=self.RAW)
+        assert out is not None
+        return out
+
+    def test_markitdown_success_respects_write_raw_false(self, tmp_path, monkeypatch):
+        """R82-1: the helper itself must not write raw when write_raw=False."""
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        calls = {}
+
+        class FakeResult:
+            text_content = "converted body"
+
+        class FakeConverter:
+            def convert(self, path):
+                calls["converted"] = True
+                return FakeResult()
+
+        import types as _types
+        fake_mod = _types.ModuleType("markitdown")
+        fake_mod.MarkItDown = lambda: FakeConverter()
+        monkeypatch.setitem(__import__("sys").modules, "markitdown", fake_mod)
+        src = tmp_path / "input.pdf"
+        src.write_bytes(b"%PDF-1.4 fake")
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        text = ingest_source_mod.extract_text_from_file(
+            str(src), slug="probe", write_raw=False)
+        assert text == "converted body"
+        assert not (tmp_path / "raw").exists()
+
+    def test_legacy_body_needle_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Completely different retry content for the legacy-body probe."
+        needle = f"content_sha256: {hashlib.sha256(other_raw.encode()).hexdigest()}"
+        self._write_note(tmp_path, "general/doc-about-hashing.md",
+                         "---\ntitle: Doc\n---\nbody mentions " + needle + " in prose")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Legacy Probe", domain="general", source_type="article",
+            ref="https://example.com/legacy", tags=[], raw_text=other_raw)
+        assert out is not None  # body prose must not trigger dedup
+
+    def test_prefixed_key_and_suffixed_value_never_match(self, tmp_path):
+        import hashlib
+        other_raw = "Distinct content for prefixed-key and suffixed-value probes."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/a.md",
+                         "---\nnot_content_sha256: " + digest + "suffix\ntitle: A\n---\nbody")
+        self._write_note(tmp_path, "general/b.md",
+                         "---\ntitle: B\ncontent_sha256x: " + digest + "\n---\nbody")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Prefix Probe", domain="general", source_type="article",
+            ref="https://example.com/prefix", tags=[], raw_text=other_raw)
+        assert out is not None
+
+    def test_late_frontmatter_hash_after_long_metadata_still_matches(self, tmp_path):
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        long_tag = "x" * 2100
+        first = ingest_source_mod.ingest_source(
+            title="Long Meta Note", domain="general", source_type="article",
+            ref="https://example.com/long", tags=[long_tag], raw_text=self.RAW)
+        assert first is not None
+        again = ingest_source_mod.ingest_source(
+            title="Short Title Retry", domain="general", source_type="article",
+            ref="https://example.com/long", tags=[], raw_text=self.RAW)
+        assert again is None  # R82-4: no fixed cutoff — hash must be seen
+
+
+    def test_unclosed_frontmatter_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing the unclosed-frontmatter edge case."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/unclosed.md",
+                         "---\ncontent_sha256: " + digest)  # no closing delimiter
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Unclosed Probe", domain="general", source_type="article",
+            ref="https://example.com/unclosed", tags=[], raw_text=other_raw)
+        assert out is not None
+
+    def test_indented_block_scalar_needle_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing indented YAML block scalar needles."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/blocks.md",
+                         "---\ntitle: B\ndescription: |\n  content_sha256: "
+                         + digest + "\n---\nbody")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Block Scalar Probe", domain="general", source_type="article",
+            ref="https://example.com/block", tags=[], raw_text=other_raw)
+        assert out is not None
+
+    def test_suffixed_value_never_matches(self, tmp_path):
+        import hashlib
+        other_raw = "Content probing a suffixed hash value."
+        digest = hashlib.sha256(other_raw.encode()).hexdigest()
+        self._write_note(tmp_path, "general/suffix.md",
+                         "---\ntitle: S\ncontent_sha256: " + digest + "-extra\n---\nbody")
+        ingest_source_mod.SOURCES_DIR = tmp_path
+        out = ingest_source_mod.ingest_source(
+            title="Suffix Probe", domain="general", source_type="article",
+            ref="https://example.com/suffix", tags=[], raw_text=other_raw)
+        assert out is not None

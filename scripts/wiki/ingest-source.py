@@ -13,6 +13,7 @@ Output: wiki/sources/<domain>/<slug>.md
 from __future__ import annotations
 import argparse
 import datetime as dt
+import hashlib
 import json
 import os
 import re
@@ -109,7 +110,7 @@ def extract_text_from_url(url: str) -> str | None:
     return None
 
 
-def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
+def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> str | None:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
@@ -138,7 +139,9 @@ def extract_text_from_file(path: str, slug: str | None = None) -> str | None:
             result = md.convert(str(p))
             if result and result.text_content:
                 text = result.text_content
-                if slug:
+                if slug and write_raw:
+                    # R82-1: dry-run must never write raw provenance — main()
+                    # passes write_raw=False under --dry-run.
                     raw_path = REPO_ROOT / "raw" / f"{slug}.md"
                     raw_path.parent.mkdir(parents=True, exist_ok=True)
                     raw_path.write_text(text, encoding="utf-8")
@@ -234,6 +237,56 @@ def extract_links(text: str, source_url: str | None = None) -> list[str]:
     return links
 
 
+def _content_hash(text: str) -> str:
+    """SHA-256 of raw source content (WO-AWIKI-INGEST-03 dedup key)."""
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _note_declares_hash(path: Path, digest: str) -> bool:
+    """True when path's YAML frontmatter declares exactly this content_sha256.
+
+    R82-3: match only a real frontmatter line between the --- delimiters, with
+    the exact value — never body text, prefixes, or suffixed values.
+    R82-4: read to the closing delimiter, not a fixed 2000-char cutoff, so
+    hashes emitted after long metadata are still seen. Whole-file read is
+    accepted (sources are small Markdown notes); file symlinks are followed,
+    directory symlinks are not enumerated by rglob.
+    """
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    lines = text.splitlines()
+    if not lines or lines[0].rstrip() != "---":
+        return False
+    needle = f"content_sha256: {digest}"
+    matched = False
+    closed = False
+    for line in lines[1:]:
+        if not line[:1].isspace() and line.rstrip() == "---":
+            closed = True  # closing delimiter — accept only if matched before it
+            break
+        # top-level keys only: an indented needle inside a YAML block scalar
+        # (e.g. under description: |) must never match (Terra re-review N1/N2).
+        if not line[:1].isspace() and line.rstrip() == needle:
+            matched = True
+    return matched and closed
+
+
+def _find_hash_duplicate(digest: str, sources_dir) -> Path | None:
+    """Return an existing note whose frontmatter declares the same hash.
+
+    Notes written before this feature carry no content_sha256 line and
+    therefore never match (grandfather).
+    """
+    if not sources_dir.is_dir():
+        return None
+    for path in sorted(sources_dir.rglob("*.md")):
+        if _note_declares_hash(path, digest):
+            return path
+    return None
+
+
 def create_source_entry(
     title: str,
     domain: str,
@@ -245,6 +298,9 @@ def create_source_entry(
     related_links: list[str] | None = None,
     quality: str = "seed",
     original_file: str | None = None,
+    content_sha256: str | None = None,
+    source_url: str | None = None,
+    duplicate_of: str | None = None,
 ) -> str:
     """Generate the full source markdown file content with YAML frontmatter."""
     today = dt.date.today().isoformat()
@@ -252,6 +308,13 @@ def create_source_entry(
     links = related_links or []
     slug = slugify(title)
 
+    extra = {}
+    if content_sha256:
+        extra["content_sha256"] = content_sha256
+    if source_url:
+        extra["source_url"] = source_url
+    if duplicate_of:
+        extra["duplicate_of"] = duplicate_of
     front = frontmatter(
         type="source",
         title=title,
@@ -260,6 +323,7 @@ def create_source_entry(
         original_file=original_file or "",
         tags=tags,
         quality=quality,
+        **extra,
     )
 
     body = f"""# {title}
@@ -306,14 +370,33 @@ def ingest_source(
     raw_text: str | None,
     quality: str = "seed",
     original_file: str | None = None,
+    dry_run: bool = False,
+    allow_duplicate: bool = False,
 ) -> Path | None:
-    """Ingest a source: generate file and write to disk."""
+    """Ingest a source: generate file and write to disk.
+
+    Duplicate content (same content_sha256 in any existing note) is refused
+    with a pointer to the existing note unless allow_duplicate is set
+    (Jev 2026-11-12: state did not settle cross-domain policy 0.41/0.37,
+    noul 0.48 — code takes the fail-safe branch). dry_run performs every
+    check but writes nothing.
+    """
     if domain not in VALID_DOMAINS:
         print(f"error: invalid domain '{domain}'. Valid: {', '.join(VALID_DOMAINS)}", file=sys.stderr)
         return None
 
     if not raw_text:
         print("error: no content to ingest", file=sys.stderr)
+        return None
+
+    digest = _content_hash(raw_text)
+    duplicate = _find_hash_duplicate(digest, SOURCES_DIR)
+    if duplicate is not None and not allow_duplicate:
+        print(
+            f"warn: duplicate content (sha256 {digest[:12]}...) already ingested at "
+            f"{duplicate} — pass --allow-duplicate to file it anyway",
+            file=sys.stderr,
+        )
         return None
 
     actual_title = title or infer_title_from_content(raw_text)
@@ -333,11 +416,16 @@ def ingest_source(
         related_links=links,
         quality=quality,
         original_file=original_file,
+        content_sha256=digest,
+        source_url=ref if ref.startswith("http") else None,
+        duplicate_of=(
+            duplicate.relative_to(SOURCES_DIR).as_posix()
+            if (duplicate is not None and allow_duplicate)
+            else None
+        ),  # R82-2: portable repo-relative pointer, never machine-absolute
     )
 
-    # Ensure directory exists
     out_dir = SOURCES_DIR / domain
-    out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{slug}.md"
 
     # Avoid overwriting existing sources unless forced
@@ -345,6 +433,12 @@ def ingest_source(
         print(f"warn: {out_path} already exists — add a 'title' arg or move it manually", file=sys.stderr)
         return None
 
+    if dry_run:
+        # R82-1: dry-run creates nothing — no mkdir, no write.
+        print(f"[dry-run] would create source: {out_path}")
+        return out_path
+
+    out_dir.mkdir(parents=True, exist_ok=True)
     out_path.write_text(content, encoding="utf-8")
     print(f"✅ Created source: {out_path}")
     return out_path
@@ -426,6 +520,11 @@ def main() -> None:
         "--quality", choices=["seed", "draft", "reviewed", "curated"], default="seed",
         help="Quality level (default: seed)",
     )
+    parser.add_argument("--dry-run", dest="dry_run", action="store_true",
+                        help="Run all checks (fetch, dedup, naming) but write nothing")
+    parser.add_argument("--allow-duplicate", dest="allow_duplicate", action="store_true",
+                        help="File the note even when content_sha256 matches an existing note "
+                             "(the new note records duplicate_of)")
     parser.add_argument("--list", action="store_true", help="List all ingested sources")
     parser.add_argument("--list-domain", dest="list_domain", help="List sources by domain")
 
@@ -450,15 +549,19 @@ def main() -> None:
             # Save fetched content to raw/ for provenance
             url_slug = slugify(args.title) if args.title else slugify(ref.split("/")[-1].split("?")[0] or "web-page")
             raw_path = REPO_ROOT / "raw" / f"{url_slug}.md"
-            raw_path.parent.mkdir(parents=True, exist_ok=True)
-            raw_path.write_text(raw_text, encoding="utf-8")
-            print(f"💾 Raw content saved: {raw_path}", file=sys.stderr)
+            if args.dry_run:
+                print(f"[dry-run] would save raw content: {raw_path}", file=sys.stderr)
+            else:
+                raw_path.parent.mkdir(parents=True, exist_ok=True)
+                raw_path.write_text(raw_text, encoding="utf-8")
+                print(f"💾 Raw content saved: {raw_path}", file=sys.stderr)
             original_file = f"raw/{url_slug}.md"
     elif args.file:
         file_path = Path(args.file)
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
-        raw_text = extract_text_from_file(args.file, slug=file_slug)
+        raw_text = extract_text_from_file(args.file, slug=file_slug,
+                                           write_raw=not args.dry_run)
         ref = str(file_path.resolve())
         source_type = args.source_type or "other"
         # Determine original_file: MarkItDown may have created raw/<slug>.md
@@ -469,9 +572,12 @@ def main() -> None:
             else:
                 # Binary copy to raw/ for non-MarkItDown files
                 raw_dest = REPO_ROOT / "raw" / f"{file_slug}{file_path.suffix}"
-                raw_dest.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(file_path, raw_dest)
-                print(f"💾 Raw copy saved: {raw_dest}", file=sys.stderr)
+                if args.dry_run:
+                    print(f"[dry-run] would save raw copy: {raw_dest}", file=sys.stderr)
+                else:
+                    raw_dest.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(file_path, raw_dest)
+                    print(f"💾 Raw copy saved: {raw_dest}", file=sys.stderr)
                 original_file = f"raw/{file_slug}{file_path.suffix}"
 
     if not raw_text:
@@ -487,6 +593,8 @@ def main() -> None:
         raw_text=raw_text,
         quality=args.quality,
         original_file=original_file,
+        dry_run=args.dry_run,
+        allow_duplicate=args.allow_duplicate,
     )
 
 
