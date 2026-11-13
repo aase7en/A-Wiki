@@ -250,3 +250,21 @@ def test_sync_marker_self_heals_after_partial_failure(tmp_path, monkeypatch):
     assert rkc.sync_template_repo_to_drive(tmp_path) is False
     assert marker.is_file()
     assert "__SKILLS_PATHS__" in marker.read_text(encoding="utf-8")
+
+
+def test_sync_dry_run_writes_nothing(tmp_path):
+    """terra r4 F1: report-only mode must not write template OR marker —
+    even on a read-only Drive the call stays a pure check."""
+    kilo_dir = tmp_path / ".config" / "kilo"
+    kilo_dir.mkdir(parents=True)
+    marker = kilo_dir / "template-needs-renderer-token-v1"
+    tpl_on_drive = kilo_dir / "kilo.jsonc.template"
+    # nothing synced yet; dry-run must leave the Drive dir untouched
+    assert rkc.sync_template_repo_to_drive(tmp_path, dry_run=True) is False
+    assert not marker.exists()
+    assert not tpl_on_drive.exists()
+    # a real sync first, then marker removed, then dry-run: no self-heal
+    assert rkc.sync_template_repo_to_drive(tmp_path) is True
+    marker.unlink()
+    assert rkc.sync_template_repo_to_drive(tmp_path, dry_run=True) is False
+    assert not marker.exists()  # dry-run wrote nothing

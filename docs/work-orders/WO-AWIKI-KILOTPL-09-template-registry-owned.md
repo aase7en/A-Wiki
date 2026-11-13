@@ -101,3 +101,16 @@ self-healed by the next. Regression: simulate template-written-marker-
 lost → next no-op sync recreates it.
 
 Evidence: render suite 19/19; related suite 99/99
+
+## Review round 4 — Terra BLOCK → dry-run purity (2026-11-13)
+
+Receipt: /tmp/awiki-rev88-terra-receipt4.txt — ONE P2: --check
+("report only; do not write") wrote the marker on every run and could
+fail on read-only Drives even when already in sync.
+
+Fix: sync_template_repo_to_drive(dry_run=False) — dry_run returns before
+ANY write (template or marker); main passes dry_run=args.check. The
+self-heal (marker-before-early-return) still holds for real syncs.
+
+Evidence: render suite 20/20 (incl. dry-run-writes-nothing, covering
+both never-synced and marker-removed states); related suite 100/100

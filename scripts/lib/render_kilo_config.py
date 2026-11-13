@@ -350,7 +350,7 @@ def find_template(drive_data: Path | None) -> Path:
     )
 
 
-def sync_template_repo_to_drive(drive_data: Path) -> bool:
+def sync_template_repo_to_drive(drive_data: Path, dry_run: bool = False) -> bool:
     """Sync repo template → Drive template (one-directional).
 
     Why this exists: ``find_template`` prefers Drive over repo, so editing the
@@ -370,6 +370,10 @@ def sync_template_repo_to_drive(drive_data: Path) -> bool:
     because repo template had 22 paths but Drive had 8 (stale).
     """
     if os.environ.get("AWIKI_DISABLE_KILO_TEMPLATE_SYNC") == "1":
+        return False
+    if dry_run:
+        # terra r4: report-only callers (--check) must not write ANYTHING —
+        # not the template, not the marker — even on read-only Drives.
         return False
     if not BUNDLED_TEMPLATE.is_file():
         return False  # nothing to sync from
@@ -475,7 +479,7 @@ def main(argv: list[str] | None = None) -> int:
     # Sync repo template → Drive BEFORE find_template (closes drift gap).
     # find_template prefers Drive, so without this sync, edits to the repo
     # template are invisible until someone manually copies them to Drive.
-    sync_template_repo_to_drive(drive_data)
+    sync_template_repo_to_drive(drive_data, dry_run=args.check)
 
     template_path = find_template(drive_data)
     secrets = load_secrets(drive_data)
