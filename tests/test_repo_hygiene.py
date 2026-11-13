@@ -77,8 +77,15 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
         listing = subprocess.run(
             ["git", "worktree", "list", "--porcelain"], cwd=REPO_ROOT,
             capture_output=True, text=True, timeout=120)
-        cleanup_ok = (not wt.exists()) and (
-            str(wt) not in listing.stdout)
+        # terra r5 F1: a failed listing with empty stdout would false-pass;
+        # compare structured entry lines, not substrings
+        if listing.returncode != 0:
+            cleanup_ok = False
+        else:
+            registered = {line[len("worktree "):].strip()
+                          for line in listing.stdout.splitlines()
+                          if line.startswith("worktree ")}
+            cleanup_ok = (not wt.exists()) and (str(wt) not in registered)
     assert cleanup_ok, (
         "worktree cleanup failed — registration may linger: "
         f"{rm.stderr[:200] if rm.returncode != 0 else 'rmtree incomplete'}")

@@ -135,3 +135,13 @@ Receipt: /tmp/awiki-rev86-terra-receipt4.txt
 
 Evidence: hygiene guard 2 passed; trio (user_journey + guard + skills_service)
 115 passed / 1 skipped at round-3 commit; main clone clean after every run
+
+## Review round 5 — Terra BLOCK → one residual (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt5.txt
+
+- P2 listing could fail with empty stdout → false pass; substring match
+  fragile → returncode checked; registration compared against structured
+  `worktree <path>` entry lines
+
+Evidence: guard 2 passed
