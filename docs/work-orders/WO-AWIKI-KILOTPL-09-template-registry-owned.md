@@ -87,3 +87,17 @@ measures shipped with this slice:
     3. Verify: render once on Mac; confirm no token in output
     Pi5/Hermes does not render desktop kilo configs (no
     render_kilo_config consumer) — not part of the blast radius.
+
+## Review round 3 — Terra BLOCK → marker self-heals (2026-11-13)
+
+Receipt: /tmp/awiki-rev88-terra-receipt3.txt — round-2 guards confirmed
+(fail-loud verified in-memory, sync self-check verified); ONE P1: the
+marker was written AFTER the template with no transaction — a partial
+failure left the Drive with the token template and no marker, forever.
+
+Fix: the marker is now written on EVERY sync run, BEFORE the
+already-in-sync early return — any partial failure from a previous run is
+self-healed by the next. Regression: simulate template-written-marker-
+lost → next no-op sync recreates it.
+
+Evidence: render suite 19/19; related suite 99/99

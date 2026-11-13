@@ -231,3 +231,22 @@ def test_sync_refuses_token_template_without_expander(tmp_path, monkeypatch):
     import builtins
     with pytest.raises(RuntimeError, match="refusing to sync"):
         rkc.sync_template_repo_to_drive(tmp_path)
+
+
+def test_sync_marker_self_heals_after_partial_failure(tmp_path, monkeypatch):
+    """terra r3 F1: if a previous sync died between writing the template
+    and the marker, the NEXT sync (even an already-in-sync no-op) must
+    recreate the marker."""
+    kilo_dir = tmp_path / ".config" / "kilo"
+    kilo_dir.mkdir(parents=True)
+    marker = kilo_dir / "template-needs-renderer-token-v1"
+    # first sync writes template + marker
+    assert rkc.sync_template_repo_to_drive(tmp_path) is True
+    assert marker.is_file()
+    # simulate the partial failure: marker lost, template survives
+    marker.unlink()
+    # second sync: template already matches → early return, but the
+    # marker MUST be recreated
+    assert rkc.sync_template_repo_to_drive(tmp_path) is False
+    assert marker.is_file()
+    assert "__SKILLS_PATHS__" in marker.read_text(encoding="utf-8")
