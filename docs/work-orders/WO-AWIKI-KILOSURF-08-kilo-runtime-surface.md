@@ -112,3 +112,21 @@ Receipt: /tmp/awiki-rev87-terra-receipt3.txt (P1 + 2×P2)
 
 Evidence: kilo-surface 13/13; registry-related suite 258/258; --check no
 drift; regen rerun is a no-op on the synced file
+
+## Review round 4 — Terra BLOCK → duplicate-key closure (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt4.txt (P1 + 2×P2)
+
+- P1 F1 duplicate top-level `skills` (first operator-owned, last
+  registry-matching) made the scanner replace the FIRST array while
+  json.loads sanity blessed the LAST → scanner now scans to END of
+  document after locating the span and rejects any second top-level
+  skills key; duplicate `paths` keys inside the skills object likewise
+  rejected after the span; +two regression tests using the exact
+  proven shape
+- P2 F2 decoy regression test now uses the EXACT two-space-indent shape
+  Terra proved (hand-built string, not json.dumps which indents deeper)
+- P2 F3 CRLF test now byte-compares prefix AND suffix of the
+  scanner-located span on the CRLF fixture itself
+
+Evidence: kilo-surface 15/15; registry-related suite 260/260; --check no drift

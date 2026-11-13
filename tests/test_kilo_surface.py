@@ -90,21 +90,65 @@ class TestKiloRuntimeContract:
         assert rendered[new_end:] == current[end:]
 
     def test_render_preserves_crlf_outside_paths(self, tmp_path, monkeypatch):
+        """terra r4 F3: FULL byte comparison on the CRLF fixture — prefix
+        and suffix of the scanner-located span must be byte-identical."""
         gen = _gen()
         reg = Registry.load(REGISTRY_PATH)
         monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
         kilo = tmp_path / ".kilo" / "kilo.jsonc"
         kilo.parent.mkdir()
-        # CRLF everywhere — must survive outside the replaced array
-        text = RUNTIME_PATH.read_text(encoding="utf-8")
-        crlf = text.replace("\n", "\r\n")
-        kilo.write_bytes(crlf.encode("utf-8"))
-        out = gen.render(reg).decode("utf-8")
-        # every line ending outside the paths array is still CRLF
-        body = re.sub(
-            r'("skills"\s*:\s*\{\s*"paths"\s*:\s*\[)[^\]]*(\])',
-            r"\1...\2", out, count=1)
-        assert "\r\n" in body
+        crlf = RUNTIME_PATH.read_bytes().replace(b"\n", b"\r\n")
+        kilo.write_bytes(crlf)
+        out = gen.render(reg)
+        assert b"\r\n" in out  # sanity: fixture really is CRLF
+        sb, eb = gen._locate_top_level_paths_span(crlf)
+        so, eo = gen._locate_top_level_paths_span(out)
+        assert sb == so
+        assert out[:so] == crlf[:sb]
+        assert out[eo:] == crlf[eb:]
+
+    def test_render_rejects_duplicate_top_level_skills(
+            self, tmp_path, monkeypatch):
+        """terra r4 F1 regression: FIRST skills is operator-owned, LAST
+        matches the registry — json.loads would bless the result while the
+        scanner replaces the FIRST array. Must raise."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        derived_json = json.dumps(derived)
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            '  "skills": {"paths": ["./operator-owned"]},\n'
+            f'  "skills": {{"paths": {derived_json}}},\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
+        with pytest.raises(RuntimeError, match="duplicate top-level skills"):
+            gen.render(reg)
+
+    def test_render_rejects_duplicate_paths_in_skills(
+            self, tmp_path, monkeypatch):
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        derived_json = json.dumps(derived)
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            f'  "skills": {{"paths": {derived_json}, '
+            '"paths": ["./second"]}},\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
+        with pytest.raises(RuntimeError, match="duplicate paths"):
+            gen.render(reg)
 
     def test_render_rejects_nested_skills_only(self, tmp_path, monkeypatch):
         """terra r2 F4: a nested skills.paths (wrong indentation) must NOT
@@ -132,13 +176,20 @@ class TestKiloRuntimeContract:
         kilo = tmp_path / ".kilo" / "kilo.jsonc"
         kilo.parent.mkdir()
         derived = gen._category_dirs(reg)
-        doc = {
-            "$schema": "x",
-            "decoy": {"skills": {"paths": ["./decoy-should-survive"]}},
-            "skills": {"paths": derived},
-            "indexing": {"enabled": True},
-        }
-        kilo.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+        # terra r4 F2: EXACT proven shape — the nested decoy sits at TWO-SPACE
+        # indentation (what fooled the old regex), before the top-level key
+        derived_one = derived[0] if derived else "./skills/x"
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            '  "decoy": {\n'
+            '  "skills": {"paths": ["./decoy-should-survive"]},\n'
+            '  "indexing": true\n'
+            '  },\n'
+            f'  "skills": {{"paths": ["{derived_one}"]}}\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
         before = kilo.read_bytes()
         out = gen.render(reg)
         assert b"./decoy-should-survive" in out

@@ -76,13 +76,24 @@ def _locate_top_level_paths_span(raw: bytes) -> tuple[int, int]:
     n = len(raw)
     i = 0
     depth = 0
+    seen_skills = False
     while i < n:
         c = raw[i:i + 1]
         if c == b'"':
             value, end = _read_string_at(raw, i)
             k = _skip_ws(raw, end)
             if depth == 1 and value == b"skills" and raw[k:k + 1] == b":":
-                return _locate_paths_inside_object(raw, k)
+                if seen_skills:
+                    raise RuntimeError(
+                        f"{filename}: duplicate top-level skills key — "
+                        "json.loads would keep the LAST one while this "
+                        "scanner anchors the FIRST; refusing to guess")
+                seen_skills = True
+                span = _locate_paths_inside_object(raw, k)
+                # keep scanning to the END of the document: a SECOND
+                # top-level skills key appearing later is the same hazard
+                i = k
+                continue
             i = end
             continue
         if c in (b"{", b"["):
@@ -90,8 +101,11 @@ def _locate_top_level_paths_span(raw: bytes) -> tuple[int, int]:
         elif c in (b"}", b"]"):
             depth -= 1
         i += 1
-    raise RuntimeError(
-        f"{filename}: top-level skills key not found — refusing blind rewrite")
+    if not seen_skills:
+        raise RuntimeError(
+            f"{filename}: top-level skills key not found — refusing blind "
+            "rewrite")
+    return span
 
 
 def _locate_paths_inside_object(raw: bytes, colon: int) -> tuple[int, int]:
@@ -134,7 +148,32 @@ def _locate_paths_inside_object(raw: bytes, colon: int) -> tuple[int, int]:
                     elif ch == b"]":
                         d -= 1
                         if d == 0:
-                            return a, b + 1
+                            span = (a, b + 1)
+                            # continue scanning the REST of the skills
+                            # object for a duplicate paths key
+                            b += 1
+                            d2 = 0
+                            while b < n:
+                                ch2 = raw[b:b + 1]
+                                if ch2 == b'"':
+                                    v2, e2 = _read_string_at(raw, b)
+                                    j2 = _skip_ws(raw, e2)
+                                    if (d2 == 0 and v2 == b"paths"
+                                            and raw[j2:j2 + 1] == b":"):
+                                        raise RuntimeError(
+                                            f"{filename}: duplicate paths "
+                                            "key in skills object — "
+                                            "refusing to guess")
+                                    b = e2
+                                    continue
+                                if ch2 in (b"{", b"["):
+                                    d2 += 1
+                                elif ch2 in (b"}", b"]"):
+                                    if ch2 == b"}" and d2 == 0:
+                                        return span
+                                    d2 -= 1
+                                b += 1
+                            return span
                     b += 1
                 raise RuntimeError(f"{filename}: unterminated paths array")
             i = end
