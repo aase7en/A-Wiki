@@ -37,14 +37,25 @@ MCP = str(REPO_ROOT / "scripts" / "mcp-wiki-server.py")
 SECRET_TOKEN = "ghp_" + "JourneyE2E" + "0123456789abcdefghijklmnop"  # 36 chars
 
 
-def _git_status_z() -> dict:
-    """path → bytes snapshot (WO-AWIKI-HYGIENE-07 terra r1 F1/F3).
+def _snapshot_entry(p: Path):
+    """WO-AWIKI-HYGIENE-07 terra r2 F2: capture WHAT a path is, not just
+    bytes — regular file bytes, symlink target, or ABSENT — so restore
+    returns the developer's exact state (a deliberately-deleted file must
+    STAY deleted; a symlink must stay a link)."""
+    if p.is_symlink():
+        return ("symlink", os.readlink(p))
+    if p.exists():
+        return ("file", p.read_bytes())
+    return ("absent", None)
 
-    Uses `git status --porcelain -z -uall` (NUL-separated, per-file untracked,
-    no C-quoting) and returns {relative_path: bytes_of_the_file_or_None} for
-    every non-clean path. Renames/copies emit their ORIGINAL path as an extra
-    NUL field — recorded with a None snapshot so restore can resurrect it
-    from git. Raises on git failure (never silent)."""
+
+def _git_status_z() -> dict:
+    """path → _snapshot_entry for every non-clean path (terra r1/r2).
+
+    `git status --porcelain -z -uall`: NUL-separated, per-file untracked, no
+    C-quoting. Rename/copy records carry their ORIGINAL path as an extra NUL
+    field (checked in BOTH status columns — terra r2 F3); malformed records
+    fail loud instead of being silently mis-parsed."""
     r = subprocess.run(
         ["git", "status", "--porcelain", "-z", "-uall"], cwd=REPO_ROOT,
         capture_output=True, timeout=60)
@@ -59,39 +70,67 @@ def _git_status_z() -> dict:
         i += 1
         if not f:
             continue
+        if len(f) < 4 or f[2] != " ":
+            raise RuntimeError(f"malformed porcelain record: {f[:80]!r}")
         xy, path = f[:2], f[3:]
-        if xy[0] in "RC":  # -z: original path follows as its own field
+        if "R" in xy or "C" in xy:  # original path follows as its own field
             orig = fields[i]
             i += 1
-            if orig and orig not in entries:
-                p = REPO_ROOT / orig
-                entries[orig] = p.read_bytes() if p.exists() else None
-        p = REPO_ROOT / path
-        entries[path] = p.read_bytes() if p.exists() else None
+            if orig:
+                entries.setdefault(orig, _snapshot_entry(REPO_ROOT / orig))
+        entries[path] = _snapshot_entry(REPO_ROOT / path)
     return entries
+
+
+# untracked files are only ever deleted inside these generator surfaces
+# (terra r2 F1: concurrent processes creating files elsewhere are left alone)
+_GENERATOR_DIRS = ("wiki", "raw", "exports", ".tmp")
+
+
+def _generator_surface(rel_path: str) -> bool:
+    top = rel_path.split("/", 1)[0]
+    return top in _GENERATOR_DIRS or rel_path in (
+        ".wiki-graph.json", "brain-map.canvas", "skills-registry.json")
 
 
 @pytest.fixture(autouse=True)
 def _no_generated_pollution():
     """WO-AWIKI-HYGIENE-07 — destructive buttons here (wiki_regen_index et
-    al.) can run real generators against REPO_ROOT. Every path that is
-    non-clean before the test is BYTE-snapshotted; afterwards:
-    - a path whose bytes changed (or vanished) is restored byte-exact —
-      this also recovers developer edits that a generator overwrote
-    - a NEW non-clean path (created/modified by the test only) is reverted:
-      tracked → git checkout --; untracked → deleted
-    Pre-existing developer dirty state is restored to ITS OWN bytes, never
-    discarded. Fails loud if git or the filesystem refuses."""
+    al.) can run real generators against REPO_ROOT. Every non-clean path is
+    snapshotted (bytes / symlink target / absent) before the test; after it:
+    - snapshotted paths are restored EXACTLY — overwritten dev edits are
+      recovered, deliberately-deleted files stay deleted, symlinks stay
+      symlinks
+    - NEW non-clean paths are reverted: tracked → git checkout --;
+      untracked → deleted, but ONLY inside known generator surfaces
+    Known limitation (concurrency): changes made by OTHER processes during
+    the test are indistinguishable from the test's own and will be rolled
+    back within the surfaces above — do not run parallel writers on this
+    checkout while this suite runs."""
     before = _git_status_z()
     yield
     after = _git_status_z()
     for path, snap in before.items():
         p = REPO_ROOT / path
-        if snap is None:
-            continue
+        kind, val = snap
         try:
-            if not p.exists() or p.read_bytes() != snap:
-                p.write_bytes(snap)
+            if kind == "file":
+                if p.is_symlink() or not p.exists() or p.read_bytes() != val:
+                    if p.is_symlink() or p.exists():
+                        p.unlink()
+                    p.write_bytes(val)
+            elif kind == "symlink":
+                if not (p.is_symlink() and os.readlink(p) == val):
+                    if p.is_symlink() or p.exists():
+                        p.unlink()
+                    os.symlink(val, p)
+            else:  # absent — restore the developer's deletion
+                if p.is_symlink() or p.exists():
+                    if p.is_dir() and not p.is_symlink():
+                        raise RuntimeError(
+                            f"pollution guard: {path} became a directory; "
+                            "refusing blind delete")
+                    p.unlink()
         except OSError as e:
             raise RuntimeError(f"pollution guard could not restore {path}: {e}")
     for path in after:
@@ -101,16 +140,17 @@ def _no_generated_pollution():
         if path in _tracked_files():
             subprocess.run(["git", "checkout", "--", path], cwd=REPO_ROOT,
                            capture_output=True, timeout=60, check=True)
-        else:
+        elif _generator_surface(path):
             p.unlink(missing_ok=True)
 
 
 def _tracked_files() -> set:
-    r = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT,
+    # terra r2 F1: -z keeps names with Unicode/tab/newline unquoted
+    r = subprocess.run(["git", "ls-files", "-z"], cwd=REPO_ROOT,
                        capture_output=True, timeout=60)
     if r.returncode != 0:
         raise RuntimeError("git ls-files failed")
-    return set(r.stdout.decode("utf-8", "surrogateescape").splitlines())
+    return set(r.stdout.decode("utf-8", "surrogateescape").split("\0")) - {""}
 
 MACHINE_PATH_FILE = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "secret.txt"
 

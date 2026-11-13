@@ -75,3 +75,22 @@ Receipt: /tmp/awiki-rev86-terra-receipt1.txt (2×P1 + 1×P2, all confirmed)
 
 Evidence: test_user_journey_e2e 38 passed 1 skipped with the new fixture;
 main clone porcelain-clean after the run (0 lines)
+
+## Review round 2 — Terra BLOCK → snapshot semantics completed (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt2.txt (2×P1 + 2×P2)
+
+- P1 F1 ls-files could C-quote special names → membership wrong → tracked
+  file deleted instead of checkout → `git ls-files -z`; untracked deletion
+  now confined to known generator surfaces (wiki/, raw/, exports/, .tmp/,
+  .wiki-graph.json, brain-map.canvas, skills-registry.json) — concurrent
+  processes outside those surfaces are never touched; concurrency
+  limitation documented in the fixture docstring
+- P1 F2 snapshot lost "file deliberately deleted" state and symlink-ness →
+  _snapshot_entry returns (file|symlink|absent); restore re-creates exact
+  state incl. keeping deletions deleted and symlinks as links
+- P2 F3 parser now checks BOTH status columns for R/C, validates record
+  shape, fails loud on malformed input
+- P2 F4 guard's worktree cleanup checks rc, prunes, rmtree fallback
+
+Evidence: test_user_journey_e2e 39 passed + guard GREEN at new HEAD below

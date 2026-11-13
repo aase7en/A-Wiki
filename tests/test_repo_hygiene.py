@@ -14,6 +14,7 @@ Root causes fixed alongside (see docs/work-orders/WO-AWIKI-HYGIENE-07):
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -56,9 +57,14 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
             "known offenders left the worktree dirty — repo pollution "
             f"regression:\n{status.stdout}")
     finally:
-        subprocess.run(
+        # terra r2 F4: cleanup failure must be visible, not silent
+        rm = subprocess.run(
             ["git", "worktree", "remove", "--force", str(wt)],
-            cwd=REPO_ROOT, capture_output=True, timeout=120)
+            cwd=REPO_ROOT, capture_output=True, text=True, timeout=120)
+        if rm.returncode != 0:
+            subprocess.run(["git", "worktree", "prune"], cwd=REPO_ROOT,
+                           capture_output=True, timeout=120)
+            shutil.rmtree(wt, ignore_errors=True)
 
 
 def test_guard_file_list_is_sorted_unique():
