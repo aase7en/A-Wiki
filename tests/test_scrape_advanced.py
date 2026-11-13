@@ -181,3 +181,56 @@ class TestCLI:
     def test_list_succeeds(self):
         with patch.object(sys, "argv", ["scrape-advanced.py", "--list"]):
             scrape_mod.main()  # should not raise
+
+
+class TestSaveRawOverride:
+    """WO-AWIKI-SCRAPE-05: --save-raw <path> must override the raw output path.
+
+    Jev (jev-1.14.0): path_override 0.59; raw_preservation_is_default 0.79 —
+    default stays always-save; no CLI opt-out (API save_raw=False remains)."""
+
+    def test_save_raw_output_override_writes_exact_path(self, tmp_path):
+        target = tmp_path / "custom" / "note.md"
+        out = scrape_mod.save_raw_output(
+            "https://example.com/deep/page-x", "hello",
+            override=target)
+        assert out == target and target.read_text(encoding="utf-8") == "hello"
+
+    def test_save_raw_output_default_unchanged(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(scrape_mod, "RAW_DIR", tmp_path / "raw")
+        out = scrape_mod.save_raw_output(
+            "https://example.com/page-y", "body")
+        assert out.parent == tmp_path / "raw"
+        assert out.name == "page-y.md"
+
+    def test_scrape_raw_path_override_flows_through(self, tmp_path):
+        target = tmp_path / "ovr" / "result.md"
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else None), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=MagicMock(returncode=0,
+                                                 stdout='{"content": "text body", "title": "t"}',
+                                                 stderr="")):
+            result = scrape_mod.scrape("https://example.com/page-z",
+                                       method="auto", save_raw=True,
+                                       json_out=True,
+                                       raw_path_override=target)
+        assert result["raw_file"] == str(target)
+        assert target.read_text(encoding="utf-8") == "text body"
+
+    def test_cli_save_raw_flag_real_e2e(self, tmp_path):
+        import shutil as _shutil
+        import subprocess as _sp
+        import sys as _sys
+        if _shutil.which("npx") is None:
+            import pytest as _pytest
+            _pytest.skip("npx not installed")
+        target = tmp_path / "e2e.md"
+        proc = _sp.run(
+            [_sys.executable, str(SCRAPE_MODULE_PATH),
+             "--url", "tests/fixtures/defuddle/article-noisy-en.html",
+             "--method", "defuddle", "--save-raw", str(target), "--json"],
+            capture_output=True, text=True, timeout=120)
+        assert proc.returncode == 0, proc.stderr
+        assert target.is_file() and "Ladprao" in target.read_text(encoding="utf-8")

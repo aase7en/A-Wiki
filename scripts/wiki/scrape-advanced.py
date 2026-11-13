@@ -117,8 +117,18 @@ def device_allows(method: str, device: str) -> bool:
 
 # ── Save raw output ────────────────────────────────────────────────────────
 
-def save_raw_output(url: str, text: str) -> Path:
-    """Save scraped content to ``raw/<slug>.md`` (Iron Law #7 provenance)."""
+def save_raw_output(url: str, text: str, override: Path | None = None) -> Path:
+    """Save scraped content to ``raw/<slug>.md`` (Iron Law #7 provenance).
+
+    WO-AWIKI-SCRAPE-05: ``override`` (from ``--save-raw <path>``) writes the
+    raw output to that exact path instead; the default always-save behavior
+    is unchanged (Jev: path_override 0.59, raw_preservation_is_default 0.79).
+    """
+    if override is not None:
+        override.parent.mkdir(parents=True, exist_ok=True)
+        override.write_text(text, encoding="utf-8")
+        print(f"💾 Raw saved (override): {override}", file=sys.stderr)
+        return override
     slug = slugify(url.split("/")[-1].split("?")[0] or "scraped-page")
     if not slug:
         slug = "scraped-page"
@@ -357,6 +367,7 @@ def scrape(
     wizard: bool = False,
     domain: str | None = None,
     save_raw: bool = True,
+    raw_path_override: Path | None = None,
     json_out: bool = False,
 ) -> dict:
     """Scrape a URL and return result metadata."""
@@ -419,7 +430,7 @@ def scrape(
 
     # Save raw output (Iron Law #7)
     if save_raw:
-        raw_path = save_raw_output(url, text)
+        raw_path = save_raw_output(url, text, override=raw_path_override)
         result["raw_file"] = str(raw_path)
         if result["method_used"] == "defuddle":
             # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
@@ -496,7 +507,9 @@ def main() -> None:
         force_method=not args.fallback,
         wizard=args.wizard,
         domain=args.domain,
-        save_raw=not args.save_raw or True,
+        raw_path_override=Path(args.save_raw) if args.save_raw else None,
+        # WO-AWIKI-SCRAPE-05: replaced dead `save_raw=not args.save_raw or True`
+        # (always True, path ignored). Default save_raw=True is unchanged.
         json_out=args.json,
     )
 

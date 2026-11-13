@@ -20,3 +20,12 @@ override stem.
 - tests/test_scrape_advanced.py: additive class (override honored, default unchanged,
   scrape-level override, real-CLI e2e skipif-npx).
 - THIS WO; COLLAB claim row + INGEST-04 done marker.
+
+## Implementation checkpoint — 2026-11-13
+
+- RED: 3 failures (override param missing) → GREEN: **58/58** across
+  tests/test_scrape_advanced.py (27 incl. 4 new) + tests/test_scrape_defuddle.py (31).
+- Real CLI e2e (actual npx + defuddle on committed fixture, --save-raw to custom path):
+  file written at the override path containing the article marker.
+- Dead expression `save_raw=not args.save_raw or True` removed; default always-save
+  unchanged; sidecar follows override stem (documented).
