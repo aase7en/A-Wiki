@@ -50,3 +50,21 @@ title from the prettified filename stem, never from content inference.
   exits 1 with install hint; effective_title from prettify_stem when unsafe
 - Machine anomaly logged: sys.environ absent host-wide (os.environ intact;
   sys.executable fine) — CLI test merges env via os.environ
+
+## Review round 1 — Terra BLOCK → repairs (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt1.txt (4×P2, all confirmed real)
+
+- F1 missing-file return broke tuple contract → `return None, True`
+- F2 degenerate stem ('---.dat' → '') re-enabled garbage inference →
+  `prettify_stem(...) or "Untitled Source"`
+- F3 raw-write failure surfaced as conversion refusal after possible partial
+  write → write block isolated with warn-only OSError handling (binary itself
+  still lands in raw/ via main's copy)
+- F4 test strength → +7 tests: missing-file tuple, empty-conversion refusal,
+  write-failure-is-not-refusal (monkeypatched write_text), writes-enabled
+  refusal leaves no raw/, CLI slug for filename-stem title, explicit-title
+  precedence, degenerate-stem → untitled-source; refusal asserts pinned to
+  BinaryUnavailableError (no bare Exception)
+
+Evidence: file 63/63; trio 124/124 (with real npx e2e)

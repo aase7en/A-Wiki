@@ -582,8 +582,8 @@ class TestBinaryRefusal:
         import sys as _sys
         src = tmp_path / "doc.pdf"
         src.write_bytes(b"%PDF-1.7 junk")
-        # machine anomaly (2026-11-13): sys.environ is absent on this host
-        # while os.environ is intact — merge via os.environ.
+        # os.environ is the portable accessor (and this host's
+        # agent-spawned processes lack sys.environ).
         env = dict(_os.environ)
         env["PYTHONPATH"] = ""
         proc = _sp.run(
@@ -593,3 +593,106 @@ class TestBinaryRefusal:
             cwd=str(tmp_path), env=env)
         assert proc.returncode == 1
         assert "markitdown" in (proc.stderr + proc.stdout).lower()
+
+    # ── terra r1 repairs: contract edges ──────────────────────────────
+
+    def test_r85_missing_file_returns_none_tuple(self, tmp_path):
+        text, title_safe = ingest_source_mod.extract_text_from_file(
+            str(tmp_path / "nope.pdf"), slug="x", write_raw=True)
+        assert text is None
+        assert title_safe is True
+
+    def test_r85_empty_conversion_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class EmptyResult:
+            text_content = ""
+
+        class EmptyConverter:
+            def convert(self, path):
+                return EmptyResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: EmptyConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        src = tmp_path / "empty.xlsx"
+        src.write_bytes(b"PK junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError):
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="x", write_raw=False)
+
+    def test_r85_write_failure_is_not_a_refusal(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "good converted body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text",
+                            lambda self, data, encoding=None: (_ for _ in ()).throw(
+                                OSError("disk full")))
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "ok.pdf"
+        src.write_bytes(b"%PDF junk")
+        text, title_safe = ingest_source_mod.extract_text_from_file(
+            str(src), slug="ok", write_raw=True)
+        assert text == "good converted body"
+        assert title_safe is True
+
+    def test_r85_refusal_leaves_no_raw_even_when_writes_enabled(
+            self, tmp_path, monkeypatch):
+        import sys as _sys
+        monkeypatch.setitem(_sys.modules, "markitdown", None)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError):
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="doc", write_raw=True)
+        assert not (tmp_path / "raw").exists()
+
+    def _dry_run_cli(self, tmp_path, name, content, extra=()):
+        import os as _os
+        import subprocess as _sp
+        import sys as _sys
+        src = tmp_path / name
+        if isinstance(content, bytes):
+            src.write_bytes(content)
+        else:
+            src.write_text(content, encoding="utf-8")
+        env = dict(_os.environ)
+        env["PYTHONPATH"] = ""
+        return _sp.run(
+            [_sys.executable, str(_path),
+             "--file", str(src), "--domain", "general", "--dry-run", *extra],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(tmp_path), env=env)
+
+    def test_r85_cli_filename_stem_title_slug(self, tmp_path):
+        proc = self._dry_run_cli(tmp_path, "my-weird_report.dat",
+                                 "\ufffdgarbage line\nmore")
+        assert proc.returncode == 0, proc.stderr
+        assert "my-weird-report" in proc.stdout
+
+    def test_r85_cli_explicit_title_wins_over_stem(self, tmp_path):
+        proc = self._dry_run_cli(
+            tmp_path, "my-weird_report.dat", "\ufffdgarbage\nmore",
+            extra=("--title", "Explicit Wins"))
+        assert proc.returncode == 0, proc.stderr
+        assert "explicit-wins" in proc.stdout
+        assert "my-weird-report" not in proc.stdout
+
+    def test_r85_cli_degenerate_stem_falls_back_to_untitled(
+            self, tmp_path):
+        proc = self._dry_run_cli(tmp_path, "---.dat",
+                                 "\ufffd%PDF junk line")
+        assert proc.returncode == 0, proc.stderr
+        assert "untitled-source" in proc.stdout

@@ -137,7 +137,8 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
     """
     p = Path(path)
     if not p.exists():
-        return None
+        # terra r1 F1: tuple contract holds on every return path
+        return None, True
 
     ext = p.suffix.lower()
 
@@ -166,10 +167,17 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
                 if slug and write_raw:
                     # R82-1: dry-run must never write raw provenance — main()
                     # passes write_raw=False under --dry-run.
+                    # terra r1 F3: a raw-write failure is best-effort (the
+                    # binary itself is still copied to raw/ by main()) and
+                    # must NEVER surface as a conversion refusal.
                     raw_path = REPO_ROOT / "raw" / f"{slug}.md"
-                    raw_path.parent.mkdir(parents=True, exist_ok=True)
-                    raw_path.write_text(text, encoding="utf-8")
-                    print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
+                    try:
+                        raw_path.parent.mkdir(parents=True, exist_ok=True)
+                        raw_path.write_text(text, encoding="utf-8")
+                        print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
+                    except OSError as we:
+                        print(f"warn: could not save MarkItDown raw copy "
+                              f"{raw_path}: {we}", file=sys.stderr)
                 return text, True
             # converter produced nothing — same garbage risk as failure
             raise BinaryUnavailableError(
@@ -623,10 +631,13 @@ def main() -> None:
         print("error: could not fetch/read content", file=sys.stderr)
         sys.exit(1)
 
-    # WO-AWIKI-TITLE-06: non-title-safe text titles from the filename stem
+    # WO-AWIKI-TITLE-06: non-title-safe text titles from the filename stem.
+    # terra r1 F2: a degenerate stem (e.g. file '---.dat' prettifies to '')
+    # must fall back to 'Untitled Source', never to content inference on
+    # unsafe (possibly mojibake) text.
     effective_title = args.title
     if args.file and not title_safe and not effective_title:
-        effective_title = prettify_stem(Path(args.file).stem)
+        effective_title = prettify_stem(Path(args.file).stem) or "Untitled Source"
 
     ingest_source(
         title=effective_title,
