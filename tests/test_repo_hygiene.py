@@ -23,11 +23,15 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# The two historically-polluting files; run together to also catch ordering
-# interactions between them.
+# The historically-polluting TEST TARGETS (terra r3 precision): the whole
+# skills_service file (registry drift vector) and the MCP-button class that
+# presses wiki_regen_index for real (18-file generator vector). The full
+# user_journey file is NOT run here because its FTS assertions need
+# .wiki-index.db — a gitignored artifact that exists in CI (built by the
+# workflow) and in dev clones, but never in a fresh worktree.
 OFFENDERS = [
     "tests/test_skills_service.py",
-    "tests/test_user_journey_e2e.py",
+    "tests/test_user_journey_e2e.py::TestJourney2bMcpButtons",
 ]
 
 

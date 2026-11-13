@@ -94,3 +94,14 @@ Receipt: /tmp/awiki-rev86-terra-receipt2.txt (2×P1 + 2×P2)
 - P2 F4 guard's worktree cleanup checks rc, prunes, rmtree fallback
 
 Evidence: test_user_journey_e2e 39 passed + guard GREEN at new HEAD below
+
+## Round 2 residual — guard scope precision (2026-11-13)
+
+Whole-file rc==0 made the guard depend on FTS assertions that need
+.wiki-index.db (gitignored; present in CI via workflow build, absent in a
+fresh worktree) — failure at test_user_journey_e2e.py:265, unrelated to
+pollution. Guard now targets exactly the pollution vectors: full
+test_skills_service.py + TestJourney2bMcpButtons (the class pressing
+wiki_regen_index for real). rc==0 remains required for those targets.
+
+Evidence: tests/test_repo_hygiene.py 2 passed (9.8s)
