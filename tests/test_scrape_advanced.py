@@ -22,6 +22,13 @@ scrape_mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(scrape_mod)
 
 
+def _looks_like_network_failure(stderr: str) -> bool:
+    markers = ("ENOTFOUND", "ETIMEDOUT", "ECONNREFUSED", "EAI_AGAIN",
+               "getaddrinfo", "network", "fetch failed", "npm err")
+    low = (stderr or "").lower()
+    return any(m.lower() in low for m in markers)
+
+
 class TestSlugify:
     """slugify is vendored from ingest-source.py — basic smoke tests."""
 
@@ -220,6 +227,10 @@ class TestSaveRawOverride:
         assert target.read_text(encoding="utf-8") == "text body"
 
     def test_cli_save_raw_flag_real_e2e(self, tmp_path):
+        # R84-T3 (terra P2): cwd-independent (absolute fixture path, cwd=
+        # tmp_path) and offline-tolerant (npx fetch/network failure skips;
+        # real code defects still fail). Pollution guard: nothing may land
+        # in the checkout's real raw/ dir.
         import shutil as _shutil
         import subprocess as _sp
         import sys as _sys
@@ -227,10 +238,62 @@ class TestSaveRawOverride:
             import pytest as _pytest
             _pytest.skip("npx not installed")
         target = tmp_path / "e2e.md"
+        fixture = (Path(__file__).resolve().parent / "fixtures" /
+                   "defuddle" / "article-noisy-en.html")
         proc = _sp.run(
             [_sys.executable, str(SCRAPE_MODULE_PATH),
-             "--url", "tests/fixtures/defuddle/article-noisy-en.html",
+             "--url", str(fixture),
              "--method", "defuddle", "--save-raw", str(target), "--json"],
-            capture_output=True, text=True, timeout=120)
+            capture_output=True, text=True, timeout=120,
+            cwd=str(tmp_path))
+        if proc.returncode != 0 and _looks_like_network_failure(proc.stderr):
+            import pytest as _pytest
+            _pytest.skip(f"npx/network unavailable: {proc.stderr[-200:]}")
         assert proc.returncode == 0, proc.stderr
         assert target.is_file() and "Ladprao" in target.read_text(encoding="utf-8")
+        assert not (REPO_ROOT / "raw" / "e2e.html").exists(), \
+            "e2e must not write a sidecar into the checkout's raw/ dir"
+
+    def test_r84_sidecar_diverts_when_override_is_sidecar_path(self, tmp_path):
+        # R84-T1 (terra P1): a --save-raw override landing on the sidecar's own
+        # path (raw/<stem>.html) must not be clobbered by the original fetch;
+        # the sidecar diverts to <stem>.original.html so both contracts hold.
+        raw_dir = tmp_path / "raw"
+        target = raw_dir / "x.html"
+        defuddle_run = MagicMock(returncode=0,
+                                 stdout='{"content": "extracted body", "title": "t"}',
+                                 stderr="")
+        curl_run = MagicMock(returncode=0, stdout=b"<html>original</html>", stderr=b"")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else
+                   "/usr/bin/curl" if n == "curl" else None), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=[defuddle_run, curl_run]):
+            result = scrape_mod.scrape("https://example.com/x",
+                                       method="defuddle", save_raw=True,
+                                       json_out=True,
+                                       raw_path_override=target)
+        assert result["raw_file"] == str(target)
+        assert target.read_text(encoding="utf-8") == "extracted body"
+        diverted = raw_dir / "x.original.html"
+        assert diverted.read_bytes() == b"<html>original</html>"
+
+    def test_r84_scrape_positional_compat_json_out_seventh(self, tmp_path):
+        # R84-T2 (terra P2): raw_path_override must sit AFTER json_out so the
+        # historical positional order (url..save_raw, json_out) keeps working.
+        import inspect
+        params = list(inspect.signature(scrape_mod.scrape).parameters)
+        assert params[:7] == ["url", "method", "force_method", "wizard",
+                              "domain", "save_raw", "json_out"]
+        run = MagicMock(returncode=0,
+                        stdout='{"content": "positional body", "title": "t"}',
+                        stderr="")
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else None), \
+             patch.object(scrape_mod.subprocess, "run", return_value=run):
+            result = scrape_mod.scrape("https://example.com/p", "auto",
+                                       False, False, None, True, True)
+        assert result["url"] == "https://example.com/p"
+        assert result["raw_file"] is not None

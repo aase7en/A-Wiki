@@ -38,3 +38,20 @@ per receipt /tmp/awiki-rev84-terra-receipt.txt) AND session subagent quota.
 Per process (no merge on author self-report): PR stays OPEN with evidence attached;
 first action when either engine recovers = independent review → merge gates.
 Not asking the operator: this is a rate-limit wait, not a decision.
+
+## Review round 1 — Terra BLOCK → repairs (2026-11-13)
+
+Receipt: /tmp/awiki-rev84-terra-receipt2.txt (VERDICT BLOCK; candidate cf71ec77)
+
+- P1 sidecar/override clobber → new `_sidecar_path_for(slug, avoid)` diverts
+  to `<slug>.original.html` when the sidecar path IS the override target;
+  stale probe uses the same derived name. RED test test_r84_sidecar_diverts_when_override_is_sidecar_path
+- P2 positional API regression → `raw_path_override` moved after `json_out`
+  (keyword tail); historical 7-positional order restored. RED test
+  test_r84_scrape_positional_compat_json_out_seventh
+- P2 e2e cwd/network fragility → absolute fixture path, cwd=tmp_path,
+  _looks_like_network_failure skip, checkout raw/ pollution guard (R84-T3)
+
+Evidence: ~/awiki-venv/bin/python -m pytest tests/test_scrape_advanced.py
+tests/test_scrape_defuddle.py tests/test_ingest_source.py -q → 111 passed
+(e2e real run PASSED 0.78s, no skip)

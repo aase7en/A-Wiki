@@ -324,7 +324,22 @@ ADAPTERS: dict[str, callable] = {
 }
 
 
-def _save_original_sidecar(url: str, slug: str) -> Path | None:
+def _sidecar_path_for(slug: str, avoid: Path | None = None) -> Path:
+    """Sidecar target raw/<slug>.html; diverts to <slug>.original.html when
+    that path IS the raw output path (R84-T1: a --save-raw override ending
+    in .html inside RAW_DIR would otherwise be clobbered by original bytes).
+    Never raises."""
+    side = RAW_DIR / f"{slug}.html"
+    if avoid is not None:
+        try:
+            if side.resolve() == Path(avoid).resolve():
+                return RAW_DIR / f"{slug}.original.html"
+        except OSError:
+            pass
+    return side
+
+
+def _save_original_sidecar(url: str, slug: str, avoid: Path | None = None) -> Path | None:
     """Best-effort sidecar: keep the ORIGINAL fetch bytes as raw/<slug>.html.
 
     WO-AWIKI-INGEST-04 — Jev decision (jev-1.14.0): original_is_true_source
@@ -351,7 +366,7 @@ def _save_original_sidecar(url: str, slug: str) -> Path | None:
         return None
     try:
         RAW_DIR.mkdir(parents=True, exist_ok=True)
-        side = RAW_DIR / f"{slug}.html"
+        side = _sidecar_path_for(slug, avoid)
         side.write_bytes(proc.stdout)
         return side
     except OSError:
@@ -367,8 +382,8 @@ def scrape(
     wizard: bool = False,
     domain: str | None = None,
     save_raw: bool = True,
-    raw_path_override: Path | None = None,
     json_out: bool = False,
+    raw_path_override: Path | None = None,
 ) -> dict:
     """Scrape a URL and return result metadata."""
     device = detect_device()
@@ -437,12 +452,13 @@ def scrape(
             # a sidecar so provenance never degrades to extracted-only.
             stale_possible = False
             try:
-                side = _save_original_sidecar(url, raw_path.stem)
+                side = _save_original_sidecar(url, raw_path.stem, avoid=raw_path)
                 # R83-1 round 2: even this exists() probe must never abort a
-                # successful scrape.
+                # successful scrape. R84-T1: probe the name the sidecar would
+                # actually use (diverted when it collides with the override).
                 stale_possible = (
                     side is None
-                    and (RAW_DIR / f"{raw_path.stem}.html").exists())
+                    and _sidecar_path_for(raw_path.stem, raw_path).exists())
             except Exception:  # defensive: sidecar must never kill a scrape
                 side = None
             info = {"note": "best-effort second fetch; bytes are this "
