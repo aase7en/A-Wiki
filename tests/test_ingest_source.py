@@ -439,7 +439,7 @@ class TestReviewRepairsIngest03:
         src = tmp_path / "input.pdf"
         src.write_bytes(b"%PDF-1.4 fake")
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
-        text, title_safe = ingest_source_mod.extract_text_from_file(
+        text, title_safe, _md_saved = ingest_source_mod.extract_text_from_file(
             str(src), slug="probe", write_raw=False)
         assert text == "converted body"
         assert title_safe is True
@@ -562,7 +562,7 @@ class TestBinaryRefusal:
         src = tmp_path / "my-weird_report.dat"
         src.write_text("\ufffd\ufffdgarbage\ufffd line one\nmore", encoding="utf-8")
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
-        text, title_safe = ingest_source_mod.extract_text_from_file(
+        text, title_safe, _md = ingest_source_mod.extract_text_from_file(
             str(src), slug="weird", write_raw=False)
         assert text is not None
         assert title_safe is False
@@ -570,7 +570,7 @@ class TestBinaryRefusal:
     def test_r85_plain_text_is_title_safe(self, tmp_path):
         src = tmp_path / "note.md"
         src.write_text("# Real Heading\n\nbody", encoding="utf-8")
-        text, title_safe = ingest_source_mod.extract_text_from_file(
+        text, title_safe, _md = ingest_source_mod.extract_text_from_file(
             str(src), slug="note", write_raw=False)
         assert title_safe is True
         assert text.startswith("# Real Heading")
@@ -597,10 +597,11 @@ class TestBinaryRefusal:
     # ── terra r1 repairs: contract edges ──────────────────────────────
 
     def test_r85_missing_file_returns_none_tuple(self, tmp_path):
-        text, title_safe = ingest_source_mod.extract_text_from_file(
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
             str(tmp_path / "nope.pdf"), slug="x", write_raw=True)
         assert text is None
         assert title_safe is True
+        assert md_saved is False
 
     def test_r85_empty_conversion_refuses(self, tmp_path, monkeypatch):
         import sys as _sys
@@ -642,10 +643,11 @@ class TestBinaryRefusal:
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
         src = tmp_path / "ok.pdf"
         src.write_bytes(b"%PDF junk")
-        text, title_safe = ingest_source_mod.extract_text_from_file(
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
             str(src), slug="ok", write_raw=True)
         assert text == "good converted body"
         assert title_safe is True
+        assert md_saved is False  # write failed → not saved, binary copy wins
 
     def test_r85_refusal_leaves_no_raw_even_when_writes_enabled(
             self, tmp_path, monkeypatch):
@@ -725,7 +727,72 @@ class TestBinaryRefusal:
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
         src = tmp_path / "doc.pdf"
         src.write_bytes(b"%PDF-1.7 junk")
-        text, _ = ingest_source_mod.extract_text_from_file(
+        text, _, md_saved = ingest_source_mod.extract_text_from_file(
             str(src), slug="doc", write_raw=True)
         assert text == "partial-write body"
+        assert md_saved is False
         assert not (tmp_path / "raw" / "doc.md").exists()
+
+    def test_r85_unlink_failure_still_reports_md_not_saved(
+            self, tmp_path, monkeypatch):
+        # terra r3 F1: even when the cleanup unlink itself fails, the
+        # caller must learn md_saved=False so main() copies the binary
+        # instead of adopting a partial file via exists().
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+
+        real_write = Path.write_text
+
+        def dying_write(self, data, encoding=None):
+            real_write(self, data[:5], encoding=encoding)
+            raise OSError("disk full mid-write")
+
+        real_unlink = Path.unlink
+
+        def dying_unlink(self, missing_ok=False):
+            raise OSError("cannot unlink")
+
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text", dying_write)
+        monkeypatch.setattr(ingest_source_mod.Path, "unlink", dying_unlink)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, _title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="doc", write_raw=True)
+        assert text == "body"
+        assert md_saved is False
+
+    def test_r85_successful_write_reports_md_saved(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "clean body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "good.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="good", write_raw=True)
+        assert text == "clean body"
+        assert title_safe is True
+        assert md_saved is True
+        assert (tmp_path / "raw" / "good.md").read_text(encoding="utf-8") == "clean body"

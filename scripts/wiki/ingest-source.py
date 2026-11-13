@@ -122,32 +122,36 @@ def prettify_stem(stem: str) -> str:
     return re.sub(r"[-_]+", " ", stem).strip().title()
 
 
-def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> tuple[str | None, bool]:
+def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> tuple[str | None, bool, bool]:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
     converts to Markdown via MarkItDown and saves to ``raw/<slug>.md``
     so the provenance hook passes.
 
-    Returns ``(text, title_safe)``. ``title_safe`` is False only when the
-    text came from the unknown-extension fallback read — callers must use
-    the filename stem as title, never infer from that content. Binary
-    conversion failures raise :class:`BinaryUnavailableError` (Jev
-    refuse_hard 0.68 — garbage bodies must not enter the wiki).
+    Returns ``(text, title_safe, md_saved)``. ``title_safe`` is False only
+    when the text came from the unknown-extension fallback read — callers
+    must use the filename stem as title, never infer from that content.
+    ``md_saved`` is True only when THIS call wrote raw/<slug>.md completely
+    (terra r3 F1: main() adopts the converted file on this flag, never on
+    bare exists() — a partial file from a failed write can never become
+    provenance). Binary conversion failures raise
+    :class:`BinaryUnavailableError` (Jev refuse_hard 0.68 — garbage bodies
+    must not enter the wiki).
     """
     p = Path(path)
     if not p.exists():
         # terra r1 F1: tuple contract holds on every return path
-        return None, True
+        return None, True, False
 
     ext = p.suffix.lower()
 
     # Plain text formats — direct read
     if ext in PLAIN_TEXT_EXTS:
         try:
-            return p.read_text(encoding="utf-8"), True
+            return p.read_text(encoding="utf-8"), True, False
         except Exception:
-            return None, True
+            return None, True, False
 
     # Binary/office formats — use MarkItDown
     if ext in BINARY_EXTS:
@@ -164,6 +168,7 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
             result = md.convert(str(p))
             if result and result.text_content:
                 text = result.text_content
+                md_saved = False
                 if slug and write_raw:
                     # R82-1: dry-run must never write raw provenance — main()
                     # passes write_raw=False under --dry-run.
@@ -174,6 +179,7 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
                     try:
                         raw_path.parent.mkdir(parents=True, exist_ok=True)
                         raw_path.write_text(text, encoding="utf-8")
+                        md_saved = True
                         print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
                     except OSError as we:
                         print(f"warn: could not save MarkItDown raw copy "
@@ -185,7 +191,7 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
                             raw_path.unlink(missing_ok=True)
                         except OSError:
                             pass
-                return text, True
+                return text, True, md_saved
             # converter produced nothing — same garbage risk as failure
             raise BinaryUnavailableError(
                 f"MarkItDown produced no content for {path} "
@@ -200,9 +206,9 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
     # Fallback: unknown extension — readable text, but NOT title-safe
     # (WO-AWIKI-TITLE-06, Jev filename_stem 1.00: caller titles from stem).
     try:
-        return p.read_text(encoding="utf-8", errors="replace"), False
+        return p.read_text(encoding="utf-8", errors="replace"), False, False
     except Exception:
-        return None, False
+        return None, False, False
 
 
 def infer_title_from_content(text: str) -> str:
@@ -590,6 +596,7 @@ def main() -> None:
         print(f"🌐 Fetching: {args.url}...", file=sys.stderr)
         raw_text = extract_text_from_url(args.url)
         title_safe = True
+        md_saved = False
         ref = args.url
         source_type = args.source_type or "article"
         if raw_text:
@@ -608,7 +615,7 @@ def main() -> None:
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
         try:
-            raw_text, title_safe = extract_text_from_file(
+            raw_text, title_safe, md_saved = extract_text_from_file(
                 args.file, slug=file_slug, write_raw=not args.dry_run)
         except BinaryUnavailableError as e:
             # WO-AWIKI-TITLE-06: refuse before any raw write or note
@@ -621,7 +628,13 @@ def main() -> None:
         # Determine original_file: MarkItDown may have created raw/<slug>.md
         if raw_text:
             raw_md = REPO_ROOT / "raw" / f"{file_slug}.md"
-            if raw_md.exists():
+            # terra r3 F1: adopt the converted .md ONLY when this run wrote
+            # it completely, or under dry-run when an earlier real run's
+            # converted file exists (a dry run never touches the disk, so
+            # nothing partial can come from THIS run). A partial file from
+            # a failed write can never be adopted — the binary copy path
+            # takes over instead.
+            if md_saved or (args.dry_run and raw_md.exists()):
                 original_file = f"raw/{file_slug}.md"
             else:
                 # Binary copy to raw/ for non-MarkItDown files

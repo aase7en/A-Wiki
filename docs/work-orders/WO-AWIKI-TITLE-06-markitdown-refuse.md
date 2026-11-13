@@ -82,3 +82,21 @@ Receipt: /tmp/awiki-rev85-terra-receipt2.txt (2×P2 residual)
   BinaryUnavailableError
 
 Evidence: file 64/64; trio 125/125
+
+## Review round 3 — Terra BLOCK → provenance-adoption fix (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt3.txt (1×P2 residual)
+
+- F1 unlink failure could still leave main() adopting a partial file via
+  bare exists() → contract widened to (text, title_safe, md_saved):
+  md_saved=True ONLY on a complete write THIS call; main() adopts the
+  converted .md on `md_saved or (dry_run and exists())` — a dry run never
+  touches disk so nothing partial can come from it; any write failure
+  (with or without successful cleanup) forces the binary-copy provenance
+  path
+
+Tests: +test_r85_unlink_failure_still_reports_md_not_saved (RED first),
++test_r85_successful_write_reports_md_saved; all unpacks on the triple;
+partial/write-failure tests assert md_saved=False
+
+Evidence: file 66/66; trio 127/127
