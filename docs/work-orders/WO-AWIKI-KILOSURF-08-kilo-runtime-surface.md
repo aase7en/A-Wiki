@@ -144,3 +144,13 @@ Receipt: /tmp/awiki-rev87-terra-receipt5.txt (P1)
   first-entry-only), matching its docstring's "already registry-correct"
 
 Evidence: kilo-surface 15/15; registry-related suite 260/260; --check no drift
+
+## Review round 6 — receipt reviewed a stale candidate (2026-11-13)
+
+Receipt 6 answered against HEAD 674a3ed0 (round-4 commit) while the
+worktree was 9ad86b6f — its two escaped-duplicate findings were HALF
+right: the round-5 commit carried the escape-decoding fix but the two
+regression tests were silently lost when an append script aborted on a
+stale anchor (author error, disclosed). This commit restores both tests;
+they pass against the escape-decoding scanner (17/17) and would fail
+against the round-4 generator.

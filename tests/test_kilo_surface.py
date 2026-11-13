@@ -283,3 +283,45 @@ class TestKiloRuntimeContract:
         with pytest.raises(OSError):
             gen.write_atomic(reg, kilo)
         assert kilo.read_text(encoding="utf-8") == original  # untouched
+
+
+    def test_render_rejects_unicode_escaped_duplicate_skills(
+            self, tmp_path, monkeypatch):
+        """terra r5 F1 regression: the unicode-escaped form of the skills
+        key IS the same key to json.loads — the scanner must decode
+        escapes identically and reject the duplicate."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            '  "skills": {"paths": ["./operator-owned"]},\n'
+            f'  "sk\\u0069lls": {{"paths": {json.dumps(derived)}}}\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
+        with pytest.raises(RuntimeError, match="duplicate top-level skills"):
+            gen.render(reg)
+
+    def test_render_rejects_unicode_escaped_duplicate_paths(
+            self, tmp_path, monkeypatch):
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            f'  "skills": {{"paths": {json.dumps(derived)}, '
+            '"pa\\u0074hs": ["./second"]}},\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
+        with pytest.raises(RuntimeError, match="duplicate paths"):
+            gen.render(reg)
