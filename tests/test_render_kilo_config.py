@@ -201,3 +201,33 @@ def test_render_fails_loud_without_generated(tmp_path):
     tpl = json.dumps({"skills": {"paths": ["__SKILLS_PATHS__"]}})
     with pytest.raises(RuntimeError, match="regen-skill-surfaces"):
         rkc.render_config(tpl, tmp_path, tmp_path, {})
+
+
+def test_render_rejects_skills_token_anywhere_else(tmp_path):
+    gen = (tmp_path / "scripts" / "skills_registry" / "generated")
+    gen.mkdir(parents=True)
+    (gen / "kilo.skills-paths.json").write_text(json.dumps(
+        {"skills": {"paths": ["./skills/x"]}}), encoding="utf-8")
+    # token in an unrelated field (terra r1 F2): must fail loud, not pass
+    tpl = json.dumps({"note": "__SKILLS_PATHS__",
+                      "skills": {"paths": ["./skills/x"]}})
+    with pytest.raises(ValueError, match="Unresolved __SKILLS_PATHS__"):
+        rkc.render_config(tpl, tmp_path, tmp_path, {})
+    # token embedded inside a longer string: must also fail
+    tpl2 = json.dumps({"note": "prefix __SKILLS_PATHS__ suffix",
+                       "skills": {"paths": ["./skills/x"]}})
+    with pytest.raises(ValueError, match="Unresolved __SKILLS_PATHS__"):
+        rkc.render_config(tpl2, tmp_path, tmp_path, {})
+
+
+def test_sync_refuses_token_template_without_expander(tmp_path, monkeypatch):
+    """terra r1 F1 (repo-level half): a renderer lacking _expand_skills_paths
+    must refuse to push a token template onto the shared Drive copy."""
+    (tmp_path / ".config" / "kilo").mkdir(parents=True)
+    monkeypatch.setattr(rkc, "BUNDLED_TEMPLATE", BUNDLED_TEMPLATE)
+    assert hasattr(rkc, "_expand_skills_paths")  # precondition of the env
+    monkeypatch.delattr(rkc, "_expand_skills_paths")
+    # also remove it from globals() view used by the guard
+    import builtins
+    with pytest.raises(RuntimeError, match="refusing to sync"):
+        rkc.sync_template_repo_to_drive(tmp_path)

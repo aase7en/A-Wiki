@@ -49,3 +49,21 @@ the repo template says — now one token).
 Evidence: render suite 16/16; related suite 96/96; end-to-end render on
 the real template+registry → 23 paths incl. skills/awiki and the Drive
 entry last; regen --check no drift
+
+## Review round 1 — Terra BLOCK → token guard + sync self-check (2026-11-13)
+
+Receipt: /tmp/awiki-rev88-terra-receipt1.txt (P1 + P2, both confirmed)
+
+- P2 F2 __SKILLS_PATHS__ in any other position/string passed silently →
+  _assert_no_placeholders now fails loud on the token ANYWHERE (element or
+  embedded); two regressions (foreign field, embedded substring)
+- P1 F1 cross-version hazard (new Drive template + old renderer on another
+  machine renders an unresolved token silently): repo-level half closed —
+  sync_template_repo_to_drive refuses to push a token template when THIS
+  renderer lacks the expander (half-updated checkouts cannot poison the
+  shared Drive); cross-machine transition risk documented here and in the
+  sync docstring: any machine rendering after this merge must pull main
+  first; on updated machines a stuck token now fails loud instead of
+  silently hiding skills
+
+Evidence: render suite 18/18; related suite 98/98

@@ -281,6 +281,12 @@ def _assert_no_placeholders(rendered: str, path_map: dict[str, str], secrets: di
     for tok in path_map:
         if tok in rendered:
             raise ValueError(f"Unresolved path placeholder {tok} in rendered config")
+    # KILOTPL-09 terra r1 F2: the skills token must never survive ANYWHERE —
+    # not as a stray list element, not embedded inside another string.
+    if SKILLS_PATHS_TOKEN in rendered:
+        raise ValueError(
+            f"Unresolved {SKILLS_PATHS_TOKEN} placeholder in rendered "
+            "config — expansion failed or the template moved the token")
     if secrets is not None:
         for env_name in PROVIDER_SECRET_MAP.values():
             if f"__SECRET_{env_name}__" in rendered:
@@ -367,6 +373,20 @@ def sync_template_repo_to_drive(drive_data: Path) -> bool:
         return False
     if not BUNDLED_TEMPLATE.is_file():
         return False  # nothing to sync from
+    # KILOTPL-09 terra r1 F1 (repo-level half): a half-updated checkout
+    # (new template, old renderer) must not push a token the renderer
+    # cannot expand onto the SHARED Drive copy — other machines would
+    # then silently render an unresolved token. Cross-machine transition
+    # risk remains until every machine pulls this commit; documented in
+    # the WO: a stuck "__SKILLS_PATHS__" in a rendered config means that
+    # machine needs `git pull` — the assert added in this same commit
+    # makes such renders fail loud on updated machines.
+    repo_text_early = BUNDLED_TEMPLATE.read_text(encoding="utf-8")
+    if (SKILLS_PATHS_TOKEN in repo_text_early
+            and "_expand_skills_paths" not in globals()):
+        raise RuntimeError(
+            "refusing to sync a __SKILLS_PATHS__ template: this "
+            "render_kilo_config cannot expand it — update the repo first")
     drive_tpl = drive_data / DRIVE_CONFIG_SUBDIR / "kilo.jsonc.template"
     if not drive_tpl.parent.is_dir():
         return False  # Drive .config/kilo not initialized yet
