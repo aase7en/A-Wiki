@@ -110,53 +110,123 @@ def extract_text_from_url(url: str) -> str | None:
     return None
 
 
-def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> str | None:
+class BinaryUnavailableError(RuntimeError):
+    """WO-AWIKI-TITLE-06 (Jev refuse_hard 0.68): a binary/office file could
+    not be converted (MarkItDown absent or conversion failed). Raised BEFORE
+    any filesystem write so mojibake never enters the wiki or raw/."""
+
+
+def _adopt_converted_md(md_saved: bool, dry_run: bool,
+                         raw_md: Path, text: str | None) -> bool:
+    """Provenance adoption decision (terra r4): adopt raw/<slug>.md only
+    when THIS call wrote it completely, or — dry run only — when an earlier
+    file's full content matches this conversion's text. A lingering partial
+    file can never match, so it can never be adopted."""
+    if md_saved:
+        return True
+    if not dry_run or text is None:
+        return False
+    try:
+        return raw_md.read_text(encoding="utf-8") == text
+    except (OSError, UnicodeDecodeError):
+        # terra r5 F1: a partial write can cut a multibyte character in
+        # half — undecodable content is never adoptable provenance.
+        return False
+
+
+def prettify_stem(stem: str) -> str:
+    """WO-AWIKI-TITLE-06 (Jev filename_stem 1.00): title fallback for
+    non-converted fallback text — separators to spaces, title case."""
+    return re.sub(r"[-_]+", " ", stem).strip().title()
+
+
+def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> tuple[str | None, bool, bool]:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
     converts to Markdown via MarkItDown and saves to ``raw/<slug>.md``
     so the provenance hook passes.
+
+    Returns ``(text, title_safe, md_saved)``. ``title_safe`` is False only
+    when the text came from the unknown-extension fallback read — callers
+    must use the filename stem as title, never infer from that content.
+    ``md_saved`` is True only when THIS call wrote raw/<slug>.md completely
+    (terra r3 F1: main() adopts the converted file on this flag, never on
+    bare exists() — a partial file from a failed write can never become
+    provenance). Binary conversion failures raise
+    :class:`BinaryUnavailableError` (Jev refuse_hard 0.68 — garbage bodies
+    must not enter the wiki).
     """
     p = Path(path)
     if not p.exists():
-        return None
+        # terra r1 F1: tuple contract holds on every return path
+        return None, True, False
 
     ext = p.suffix.lower()
 
     # Plain text formats — direct read
     if ext in PLAIN_TEXT_EXTS:
         try:
-            return p.read_text(encoding="utf-8")
+            return p.read_text(encoding="utf-8"), True, False
         except Exception:
-            return None
+            return None, True, False
 
     # Binary/office formats — use MarkItDown
     if ext in BINARY_EXTS:
         try:
             from markitdown import MarkItDown  # type: ignore[import-untyped]
-
+        except ImportError as e:
+            # WO-AWIKI-TITLE-06 (Jev refuse_hard 0.68): refuse BEFORE any
+            # write — the fallback read would be mojibake garbage.
+            raise BinaryUnavailableError(
+                f"MarkItDown not installed — install: pip install markitdown "
+                f"(refusing binary ingest of {path})") from e
+        try:
             md = MarkItDown()
             result = md.convert(str(p))
             if result and result.text_content:
                 text = result.text_content
+                md_saved = False
                 if slug and write_raw:
                     # R82-1: dry-run must never write raw provenance — main()
                     # passes write_raw=False under --dry-run.
+                    # terra r1 F3: a raw-write failure is best-effort (the
+                    # binary itself is still copied to raw/ by main()) and
+                    # must NEVER surface as a conversion refusal.
                     raw_path = REPO_ROOT / "raw" / f"{slug}.md"
-                    raw_path.parent.mkdir(parents=True, exist_ok=True)
-                    raw_path.write_text(text, encoding="utf-8")
-                    print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
-                return text
-        except ImportError:
-            print("warn: MarkItDown not installed — install: pip install markitdown", file=sys.stderr)
+                    try:
+                        raw_path.parent.mkdir(parents=True, exist_ok=True)
+                        raw_path.write_text(text, encoding="utf-8")
+                        md_saved = True
+                        print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
+                    except OSError as we:
+                        print(f"warn: could not save MarkItDown raw copy "
+                              f"{raw_path}: {we}", file=sys.stderr)
+                        # terra r2 F1: never leave a partial raw/<slug>.md
+                        # behind — main() adopts its existence as provenance
+                        # and would skip copying the real binary.
+                        try:
+                            raw_path.unlink(missing_ok=True)
+                        except OSError:
+                            pass
+                return text, True, md_saved
+            # converter produced nothing — same garbage risk as failure
+            raise BinaryUnavailableError(
+                f"MarkItDown produced no content for {path} "
+                f"(refusing binary ingest)")
+        except BinaryUnavailableError:
+            raise
         except Exception as e:
-            print(f"warn: MarkItDown conversion failed for {path}: {e}", file=sys.stderr)
+            raise BinaryUnavailableError(
+                f"MarkItDown conversion failed for {path}: {e} "
+                f"(refusing binary ingest)") from e
 
-    # Fallback: try plain text with error replacement
+    # Fallback: unknown extension — readable text, but NOT title-safe
+    # (WO-AWIKI-TITLE-06, Jev filename_stem 1.00: caller titles from stem).
     try:
-        return p.read_text(encoding="utf-8", errors="replace")
+        return p.read_text(encoding="utf-8", errors="replace"), False, False
     except Exception:
-        return None
+        return None, False, False
 
 
 def infer_title_from_content(text: str) -> str:
@@ -543,6 +613,8 @@ def main() -> None:
     if args.url:
         print(f"🌐 Fetching: {args.url}...", file=sys.stderr)
         raw_text = extract_text_from_url(args.url)
+        title_safe = True
+        md_saved = False
         ref = args.url
         source_type = args.source_type or "article"
         if raw_text:
@@ -560,14 +632,25 @@ def main() -> None:
         file_path = Path(args.file)
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
-        raw_text = extract_text_from_file(args.file, slug=file_slug,
-                                           write_raw=not args.dry_run)
+        try:
+            raw_text, title_safe, md_saved = extract_text_from_file(
+                args.file, slug=file_slug, write_raw=not args.dry_run)
+        except BinaryUnavailableError as e:
+            # WO-AWIKI-TITLE-06: refuse before any raw write or note
+            # creation, dry-run included (the condition is real, not a
+            # write-preview).
+            print(f"error: {e}", file=sys.stderr)
+            sys.exit(1)
         ref = str(file_path.resolve())
         source_type = args.source_type or "other"
         # Determine original_file: MarkItDown may have created raw/<slug>.md
         if raw_text:
             raw_md = REPO_ROOT / "raw" / f"{file_slug}.md"
-            if raw_md.exists():
+            # terra r3/r4 F1: adoption is decided by _adopt_converted_md —
+            # complete write this call, or (dry run) an earlier file whose
+            # full content equals this conversion. A partial file can never
+            # be adopted; the binary copy path takes over instead.
+            if _adopt_converted_md(md_saved, args.dry_run, raw_md, raw_text):
                 original_file = f"raw/{file_slug}.md"
             else:
                 # Binary copy to raw/ for non-MarkItDown files
@@ -584,8 +667,16 @@ def main() -> None:
         print("error: could not fetch/read content", file=sys.stderr)
         sys.exit(1)
 
+    # WO-AWIKI-TITLE-06: non-title-safe text titles from the filename stem.
+    # terra r1 F2: a degenerate stem (e.g. file '---.dat' prettifies to '')
+    # must fall back to 'Untitled Source', never to content inference on
+    # unsafe (possibly mojibake) text.
+    effective_title = args.title
+    if args.file and not title_safe and not effective_title:
+        effective_title = prettify_stem(Path(args.file).stem) or "Untitled Source"
+
     ingest_source(
-        title=args.title,
+        title=effective_title,
         domain=args.domain,
         source_type=source_type,
         ref=ref,

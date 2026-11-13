@@ -439,9 +439,10 @@ class TestReviewRepairsIngest03:
         src = tmp_path / "input.pdf"
         src.write_bytes(b"%PDF-1.4 fake")
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
-        text = ingest_source_mod.extract_text_from_file(
+        text, title_safe, _md_saved = ingest_source_mod.extract_text_from_file(
             str(src), slug="probe", write_raw=False)
         assert text == "converted body"
+        assert title_safe is True
         assert not (tmp_path / "raw").exists()
 
     def test_legacy_body_needle_never_matches(self, tmp_path):
@@ -519,3 +520,319 @@ class TestReviewRepairsIngest03:
             title="Suffix Probe", domain="general", source_type="article",
             ref="https://example.com/suffix", tags=[], raw_text=other_raw)
         assert out is not None
+
+
+# ── WO-AWIKI-TITLE-06: refuse-hard + filename-stem title ────────────────
+
+class TestBinaryRefusal:
+    """Jev refuse_hard 0.68 + filename_stem 1.00 (jev-1.14.0, 2026-11-13)."""
+
+    def test_r85_absent_markitdown_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        monkeypatch.setitem(_sys.modules, "markitdown", None)  # import → ImportError
+        src = tmp_path / "report.pdf"
+        src.write_bytes(b"%PDF-1.7 binary junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError) as ei:
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="probe", write_raw=False)
+        assert "markitdown" in str(ei.value).lower()
+        assert not (tmp_path / "raw").exists()  # refusal before any write
+
+    def test_r85_conversion_failure_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class Boom:
+            def convert(self, path):
+                raise RuntimeError("corrupt pdf")
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: Boom()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        src = tmp_path / "broken.docx"
+        src.write_bytes(b"PK\x03\x04 junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError) as ei:
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="probe", write_raw=False)
+        assert "markitdown" in str(ei.value).lower()
+
+    def test_r85_unknown_ext_fallback_title_from_filename(
+            self, tmp_path, monkeypatch):
+        import sys as _sys
+        src = tmp_path / "my-weird_report.dat"
+        src.write_text("\ufffd\ufffdgarbage\ufffd line one\nmore", encoding="utf-8")
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        text, title_safe, _md = ingest_source_mod.extract_text_from_file(
+            str(src), slug="weird", write_raw=False)
+        assert text is not None
+        assert title_safe is False
+
+    def test_r85_plain_text_is_title_safe(self, tmp_path):
+        src = tmp_path / "note.md"
+        src.write_text("# Real Heading\n\nbody", encoding="utf-8")
+        text, title_safe, _md = ingest_source_mod.extract_text_from_file(
+            str(src), slug="note", write_raw=False)
+        assert title_safe is True
+        assert text.startswith("# Real Heading")
+
+    def test_r85_cli_dry_run_refuses_binary_without_markitdown(
+            self, tmp_path, monkeypatch):
+        import os as _os
+        import subprocess as _sp
+        import sys as _sys
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        # os.environ is the portable accessor (and this host's
+        # agent-spawned processes lack sys.environ).
+        env = dict(_os.environ)
+        env["PYTHONPATH"] = ""
+        proc = _sp.run(
+            [_sys.executable, str(_path),
+             "--file", str(src), "--domain", "general", "--dry-run"],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(tmp_path), env=env)
+        assert proc.returncode == 1
+        assert "markitdown" in (proc.stderr + proc.stdout).lower()
+
+    # ── terra r1 repairs: contract edges ──────────────────────────────
+
+    def test_r85_missing_file_returns_none_tuple(self, tmp_path):
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(tmp_path / "nope.pdf"), slug="x", write_raw=True)
+        assert text is None
+        assert title_safe is True
+        assert md_saved is False
+
+    def test_r85_empty_conversion_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class EmptyResult:
+            text_content = ""
+
+        class EmptyConverter:
+            def convert(self, path):
+                return EmptyResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: EmptyConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        src = tmp_path / "empty.xlsx"
+        src.write_bytes(b"PK junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError):
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="x", write_raw=False)
+
+    def test_r85_write_failure_is_not_a_refusal(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "good converted body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text",
+                            lambda self, data, encoding=None: (_ for _ in ()).throw(
+                                OSError("disk full")))
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "ok.pdf"
+        src.write_bytes(b"%PDF junk")
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="ok", write_raw=True)
+        assert text == "good converted body"
+        assert title_safe is True
+        assert md_saved is False  # write failed → not saved, binary copy wins
+
+    def test_r85_refusal_leaves_no_raw_even_when_writes_enabled(
+            self, tmp_path, monkeypatch):
+        import sys as _sys
+        monkeypatch.setitem(_sys.modules, "markitdown", None)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError):
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="doc", write_raw=True)
+        assert not (tmp_path / "raw").exists()
+
+    def _dry_run_cli(self, tmp_path, name, content, extra=()):
+        import os as _os
+        import subprocess as _sp
+        import sys as _sys
+        src = tmp_path / name
+        if isinstance(content, bytes):
+            src.write_bytes(content)
+        else:
+            src.write_text(content, encoding="utf-8")
+        env = dict(_os.environ)
+        env["PYTHONPATH"] = ""
+        return _sp.run(
+            [_sys.executable, str(_path),
+             "--file", str(src), "--domain", "general", "--dry-run", *extra],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(tmp_path), env=env)
+
+    def test_r85_cli_filename_stem_title_slug(self, tmp_path):
+        proc = self._dry_run_cli(tmp_path, "my-weird_report.dat",
+                                 "\ufffdgarbage line\nmore")
+        assert proc.returncode == 0, proc.stderr
+        assert "my-weird-report" in proc.stdout
+
+    def test_r85_cli_explicit_title_wins_over_stem(self, tmp_path):
+        proc = self._dry_run_cli(
+            tmp_path, "my-weird_report.dat", "\ufffdgarbage\nmore",
+            extra=("--title", "Explicit Wins"))
+        assert proc.returncode == 0, proc.stderr
+        assert "explicit-wins" in proc.stdout
+        assert "my-weird-report" not in proc.stdout
+
+    def test_r85_cli_degenerate_stem_falls_back_to_untitled(
+            self, tmp_path):
+        proc = self._dry_run_cli(tmp_path, "---.dat",
+                                 "\ufffd%PDF junk line")
+        assert proc.returncode == 0, proc.stderr
+        assert "untitled-source" in proc.stdout
+
+    def test_r85_partial_write_is_cleaned_up(self, tmp_path, monkeypatch):
+        # terra r2 F1: a write that dies mid-way must not leave a partial
+        # raw/<slug>.md behind — main() would adopt it as provenance and
+        # skip copying the real binary.
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "partial-write body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+
+        real_write = Path.write_text
+
+        def dying_write(self, data, encoding=None):
+            real_write(self, data[:5], encoding=encoding)  # partial bytes
+            raise OSError("disk full mid-write")
+
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text", dying_write)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, _, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="doc", write_raw=True)
+        assert text == "partial-write body"
+        assert md_saved is False
+        assert not (tmp_path / "raw" / "doc.md").exists()
+
+    def test_r85_unlink_failure_still_reports_md_not_saved(
+            self, tmp_path, monkeypatch):
+        # terra r3 F1: even when the cleanup unlink itself fails, the
+        # caller must learn md_saved=False so main() copies the binary
+        # instead of adopting a partial file via exists().
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "body long enough that five bytes are partial"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+
+        real_write = Path.write_text
+
+        def dying_write(self, data, encoding=None):
+            real_write(self, data[:5], encoding=encoding)  # genuinely partial
+            raise OSError("disk full mid-write")
+
+        real_unlink = Path.unlink
+
+        def dying_unlink(self, missing_ok=False):
+            raise OSError("cannot unlink")
+
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text", dying_write)
+        monkeypatch.setattr(ingest_source_mod.Path, "unlink", dying_unlink)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, _title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="doc", write_raw=True)
+        assert text == "body long enough that five bytes are partial"
+        assert md_saved is False
+        # the partial file IS still on disk (unlink failed) — the adoption
+        # decision must still refuse it under both real and dry runs
+        partial = tmp_path / "raw" / "doc.md"
+        assert partial.exists()
+        assert ingest_source_mod._adopt_converted_md(
+            False, False, partial, text) is False
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, partial, text) is False
+
+    def test_r85_successful_write_reports_md_saved(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "clean body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "good.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, title_safe, md_saved = ingest_source_mod.extract_text_from_file(
+            str(src), slug="good", write_raw=True)
+        assert text == "clean body"
+        assert title_safe is True
+        assert md_saved is True
+        assert (tmp_path / "raw" / "good.md").read_text(encoding="utf-8") == "clean body"
+
+    def test_r85_adopt_converted_md_decision_table(self, tmp_path):
+        # terra r4 F1/F2: the adoption decision itself, tested directly.
+        from pathlib import Path as _P
+        md = tmp_path / "raw" / "doc.md"
+        md.parent.mkdir()
+        md.write_text("full text", encoding="utf-8")
+        part = tmp_path / "raw" / "partial.md"
+        part.write_text("full", encoding="utf-8")  # truncated prefix
+        # real run, write succeeded this call → adopt
+        assert ingest_source_mod._adopt_converted_md(
+            True, False, md, "whatever") is True
+        # real run, write failed → never adopt (binary copy path)
+        assert ingest_source_mod._adopt_converted_md(
+            False, False, part, "full text") is False
+        # dry run, earlier complete file matches this conversion → adopt
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, md, "full text") is True
+        # dry run, lingering partial file differs from full text → refuse
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, part, "full text") is False
+        # dry run, unreadable file → refuse
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, tmp_path / "raw" / "missing.md", "full text") is False
+        # md_saved=True wins even in dry run (complete write this call)
+        assert ingest_source_mod._adopt_converted_md(
+            True, True, part, "full text") is True
+        # dry run, undecodable partial (multibyte cut mid-character) → refuse
+        undec = tmp_path / "raw" / "undecodable.md"
+        undec.write_bytes("เนื้อความ".encode("utf-8")[:5])
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, undec, "เนื้อความ") is False
