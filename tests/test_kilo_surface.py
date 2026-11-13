@@ -325,3 +325,25 @@ class TestKiloRuntimeContract:
         kilo.write_text(text, encoding="utf-8")
         with pytest.raises(RuntimeError, match="duplicate paths"):
             gen.render(reg)
+
+
+    def test_render_survives_unpaired_surrogate_elsewhere(
+            self, tmp_path, monkeypatch):
+        """terra r7 F1: an operator-owned string containing \ud800 (valid
+        to json.loads) outside skills must not crash the scanner."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        text = (
+            '{\n'
+            '  "$schema": "x",\n'
+            '  "note": "\\ud800",\n'
+            f'  "skills": {{"paths": {json.dumps(derived)}}}\n'
+            '}\n'
+        )
+        kilo.write_text(text, encoding="utf-8")
+        out = gen.render(reg)  # must not raise
+        assert json.loads(out.decode("utf-8"))["skills"]["paths"] == derived

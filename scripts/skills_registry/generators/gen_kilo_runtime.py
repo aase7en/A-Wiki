@@ -77,7 +77,11 @@ def _read_string_at(raw: bytes, i: int) -> tuple[bytes, int]:
                     if 0xDC00 <= lo <= 0xDFFF:
                         cp = 0x10000 + ((cp - 0xD800) << 10) + (lo - 0xDC00)
                         step = 12
-                buf += chr(cp).encode("utf-8")
+                # terra r7 F1: json.loads accepts unpaired surrogates;
+                # encode with surrogatepass so a stray \uD800 elsewhere in
+                # the file cannot crash the scanner (it never matches a
+                # compared key anyway)
+                buf += chr(cp).encode("utf-8", "surrogatepass")
                 j += step
                 continue
             buf += _SIMPLE_ESCAPES.get(nxt, nxt)

@@ -154,3 +154,15 @@ regression tests were silently lost when an append script aborted on a
 stale anchor (author error, disclosed). This commit restores both tests;
 they pass against the escape-decoding scanner (17/17) and would fail
 against the round-4 generator.
+
+## Review round 7 — Terra BLOCK → one residual (2026-11-13)
+
+Receipt 7 verified the correct SHA (41419225) and confirmed both
+escaped-duplicate spoofs now raise at both levels. One P2 left: an
+unpaired surrogate (\ud800) inside an operator-owned string elsewhere in
+the file crashed chr().encode("utf-8") before the scanner reached skills
+— json.loads accepts it. Fixed: encode("utf-8", "surrogatepass") (canonical
+per codepoint, never matches compared keys) + regression test (render must
+succeed with \ud800 present).
+
+Evidence: kilo-surface 18/18; registry-related suite 263/263
