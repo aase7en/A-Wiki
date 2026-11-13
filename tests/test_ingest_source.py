@@ -439,9 +439,10 @@ class TestReviewRepairsIngest03:
         src = tmp_path / "input.pdf"
         src.write_bytes(b"%PDF-1.4 fake")
         monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
-        text = ingest_source_mod.extract_text_from_file(
+        text, title_safe = ingest_source_mod.extract_text_from_file(
             str(src), slug="probe", write_raw=False)
         assert text == "converted body"
+        assert title_safe is True
         assert not (tmp_path / "raw").exists()
 
     def test_legacy_body_needle_never_matches(self, tmp_path):
@@ -519,3 +520,76 @@ class TestReviewRepairsIngest03:
             title="Suffix Probe", domain="general", source_type="article",
             ref="https://example.com/suffix", tags=[], raw_text=other_raw)
         assert out is not None
+
+
+# ── WO-AWIKI-TITLE-06: refuse-hard + filename-stem title ────────────────
+
+class TestBinaryRefusal:
+    """Jev refuse_hard 0.68 + filename_stem 1.00 (jev-1.14.0, 2026-11-13)."""
+
+    def test_r85_absent_markitdown_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        monkeypatch.setitem(_sys.modules, "markitdown", None)  # import → ImportError
+        src = tmp_path / "report.pdf"
+        src.write_bytes(b"%PDF-1.7 binary junk")
+        with pytest.raises(Exception) as ei:
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="probe", write_raw=False)
+        assert "markitdown" in str(ei.value).lower()
+        assert not (tmp_path / "raw").exists()  # refusal before any write
+
+    def test_r85_conversion_failure_refuses(self, tmp_path, monkeypatch):
+        import sys as _sys
+        import types as _types
+
+        class Boom:
+            def convert(self, path):
+                raise RuntimeError("corrupt pdf")
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: Boom()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+        src = tmp_path / "broken.docx"
+        src.write_bytes(b"PK\x03\x04 junk")
+        with pytest.raises(Exception) as ei:
+            ingest_source_mod.extract_text_from_file(
+                str(src), slug="probe", write_raw=False)
+        assert "markitdown" in str(ei.value).lower()
+
+    def test_r85_unknown_ext_fallback_title_from_filename(
+            self, tmp_path, monkeypatch):
+        import sys as _sys
+        src = tmp_path / "my-weird_report.dat"
+        src.write_text("\ufffd\ufffdgarbage\ufffd line one\nmore", encoding="utf-8")
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        text, title_safe = ingest_source_mod.extract_text_from_file(
+            str(src), slug="weird", write_raw=False)
+        assert text is not None
+        assert title_safe is False
+
+    def test_r85_plain_text_is_title_safe(self, tmp_path):
+        src = tmp_path / "note.md"
+        src.write_text("# Real Heading\n\nbody", encoding="utf-8")
+        text, title_safe = ingest_source_mod.extract_text_from_file(
+            str(src), slug="note", write_raw=False)
+        assert title_safe is True
+        assert text.startswith("# Real Heading")
+
+    def test_r85_cli_dry_run_refuses_binary_without_markitdown(
+            self, tmp_path, monkeypatch):
+        import os as _os
+        import subprocess as _sp
+        import sys as _sys
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        # machine anomaly (2026-11-13): sys.environ is absent on this host
+        # while os.environ is intact — merge via os.environ.
+        env = dict(_os.environ)
+        env["PYTHONPATH"] = ""
+        proc = _sp.run(
+            [_sys.executable, str(_path),
+             "--file", str(src), "--domain", "general", "--dry-run"],
+            capture_output=True, text=True, timeout=60,
+            cwd=str(tmp_path), env=env)
+        assert proc.returncode == 1
+        assert "markitdown" in (proc.stderr + proc.stdout).lower()

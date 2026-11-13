@@ -40,3 +40,13 @@ title from the prettified filename stem, never from content inference.
 
 - [x] Claim row WO-AWIKI-TITLE-06 (cache_claim_id a941592246a8, RECONCILED)
 - [x] SCRAPE-05 DONE marker (this docs commit)
+
+## Implementation record (2026-11-13)
+
+- RED 5 (TestBinaryRefusal) → GREEN 56/56 in test_ingest_source.py; trio green
+- ingest-source.py: BinaryUnavailableError + prettify_stem; extract returns
+  (text, title_safe); binary ImportError/convert-fail/empty-result all raise
+  BEFORE any write; unknown-ext fallback flagged title_safe=False; main()
+  exits 1 with install hint; effective_title from prettify_stem when unsafe
+- Machine anomaly logged: sys.environ absent host-wide (os.environ intact;
+  sys.executable fine) — CLI test merges env via os.environ

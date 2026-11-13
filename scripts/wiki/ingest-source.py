@@ -110,12 +110,30 @@ def extract_text_from_url(url: str) -> str | None:
     return None
 
 
-def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> str | None:
+class BinaryUnavailableError(RuntimeError):
+    """WO-AWIKI-TITLE-06 (Jev refuse_hard 0.68): a binary/office file could
+    not be converted (MarkItDown absent or conversion failed). Raised BEFORE
+    any filesystem write so mojibake never enters the wiki or raw/."""
+
+
+def prettify_stem(stem: str) -> str:
+    """WO-AWIKI-TITLE-06 (Jev filename_stem 1.00): title fallback for
+    non-converted fallback text — separators to spaces, title case."""
+    return re.sub(r"[-_]+", " ", stem).strip().title()
+
+
+def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool = True) -> tuple[str | None, bool]:
     """Read a local file. Handles .md, .txt, .json + binary/office via MarkItDown.
 
     For binary/office formats (.pdf, .docx, .xlsx, .pptx, .epub, .html):
     converts to Markdown via MarkItDown and saves to ``raw/<slug>.md``
     so the provenance hook passes.
+
+    Returns ``(text, title_safe)``. ``title_safe`` is False only when the
+    text came from the unknown-extension fallback read — callers must use
+    the filename stem as title, never infer from that content. Binary
+    conversion failures raise :class:`BinaryUnavailableError` (Jev
+    refuse_hard 0.68 — garbage bodies must not enter the wiki).
     """
     p = Path(path)
     if not p.exists():
@@ -126,15 +144,21 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
     # Plain text formats — direct read
     if ext in PLAIN_TEXT_EXTS:
         try:
-            return p.read_text(encoding="utf-8")
+            return p.read_text(encoding="utf-8"), True
         except Exception:
-            return None
+            return None, True
 
     # Binary/office formats — use MarkItDown
     if ext in BINARY_EXTS:
         try:
             from markitdown import MarkItDown  # type: ignore[import-untyped]
-
+        except ImportError as e:
+            # WO-AWIKI-TITLE-06 (Jev refuse_hard 0.68): refuse BEFORE any
+            # write — the fallback read would be mojibake garbage.
+            raise BinaryUnavailableError(
+                f"MarkItDown not installed — install: pip install markitdown "
+                f"(refusing binary ingest of {path})") from e
+        try:
             md = MarkItDown()
             result = md.convert(str(p))
             if result and result.text_content:
@@ -146,17 +170,24 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
                     raw_path.parent.mkdir(parents=True, exist_ok=True)
                     raw_path.write_text(text, encoding="utf-8")
                     print(f"📝 MarkItDown → {raw_path}", file=sys.stderr)
-                return text
-        except ImportError:
-            print("warn: MarkItDown not installed — install: pip install markitdown", file=sys.stderr)
+                return text, True
+            # converter produced nothing — same garbage risk as failure
+            raise BinaryUnavailableError(
+                f"MarkItDown produced no content for {path} "
+                f"(refusing binary ingest)")
+        except BinaryUnavailableError:
+            raise
         except Exception as e:
-            print(f"warn: MarkItDown conversion failed for {path}: {e}", file=sys.stderr)
+            raise BinaryUnavailableError(
+                f"MarkItDown conversion failed for {path}: {e} "
+                f"(refusing binary ingest)") from e
 
-    # Fallback: try plain text with error replacement
+    # Fallback: unknown extension — readable text, but NOT title-safe
+    # (WO-AWIKI-TITLE-06, Jev filename_stem 1.00: caller titles from stem).
     try:
-        return p.read_text(encoding="utf-8", errors="replace")
+        return p.read_text(encoding="utf-8", errors="replace"), False
     except Exception:
-        return None
+        return None, False
 
 
 def infer_title_from_content(text: str) -> str:
@@ -543,6 +574,7 @@ def main() -> None:
     if args.url:
         print(f"🌐 Fetching: {args.url}...", file=sys.stderr)
         raw_text = extract_text_from_url(args.url)
+        title_safe = True
         ref = args.url
         source_type = args.source_type or "article"
         if raw_text:
@@ -560,8 +592,15 @@ def main() -> None:
         file_path = Path(args.file)
         file_slug = slugify(file_path.stem)
         print(f"📄 Reading: {args.file}...", file=sys.stderr)
-        raw_text = extract_text_from_file(args.file, slug=file_slug,
-                                           write_raw=not args.dry_run)
+        try:
+            raw_text, title_safe = extract_text_from_file(
+                args.file, slug=file_slug, write_raw=not args.dry_run)
+        except BinaryUnavailableError as e:
+            # WO-AWIKI-TITLE-06: refuse before any raw write or note
+            # creation, dry-run included (the condition is real, not a
+            # write-preview).
+            print(f"error: {e}", file=sys.stderr)
+            sys.exit(1)
         ref = str(file_path.resolve())
         source_type = args.source_type or "other"
         # Determine original_file: MarkItDown may have created raw/<slug>.md
@@ -584,8 +623,13 @@ def main() -> None:
         print("error: could not fetch/read content", file=sys.stderr)
         sys.exit(1)
 
+    # WO-AWIKI-TITLE-06: non-title-safe text titles from the filename stem
+    effective_title = args.title
+    if args.file and not title_safe and not effective_title:
+        effective_title = prettify_stem(Path(args.file).stem)
+
     ingest_source(
-        title=args.title,
+        title=effective_title,
         domain=args.domain,
         source_type=source_type,
         ref=ref,
