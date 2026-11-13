@@ -166,3 +166,105 @@ def test_detect_drive_via_env_override(tmp_path, monkeypatch):
     monkeypatch.setenv("A_WIKI_DRIVE_PATH", str(fake))
     found = rkc.detect_drive_data_root()
     assert found == fake
+
+
+# ── WO-AWIKI-KILOTPL-09: registry-owned template paths ───────────────────
+
+def test_template_has_no_hardcoded_skill_paths():
+    """The template must carry ONE __SKILLS_PATHS__ token, not its own copy
+    of the category list (drifted once already: 2026-07-17 repo-22 vs
+    Drive-8)."""
+    cfg = json.loads(BUNDLED_TEMPLATE.read_text(encoding="utf-8"))
+    paths = cfg["skills"]["paths"]
+    assert "__SKILLS_PATHS__" in paths
+    assert not [p for p in paths
+                if isinstance(p, str) and p.startswith("__REPO_ROOT__/")]
+
+
+def test_render_expands_skills_paths_from_generated(tmp_path):
+    gen = (tmp_path / "scripts" / "skills_registry" / "generated")
+    gen.mkdir(parents=True)
+    (gen / "kilo.skills-paths.json").write_text(json.dumps({
+        "skills": {"paths": ["./skills/sentinel-cat", "./agent-skills/zoo"]},
+    }), encoding="utf-8")
+    tpl = json.dumps({"skills": {"paths": [
+        "__SKILLS_PATHS__", "__DRIVE_SKILLS__"]}})
+    out = json.loads(rkc.render_config(tpl, tmp_path, tmp_path, {}))
+    joined = [p for p in out["skills"]["paths"]]
+    assert str(tmp_path / "skills" / "sentinel-cat") in joined
+    assert str(tmp_path / "agent-skills" / "zoo") in joined
+    # the Drive entry stays after the expansion
+    assert joined[-1].endswith("skills")
+
+
+def test_render_fails_loud_without_generated(tmp_path):
+    tpl = json.dumps({"skills": {"paths": ["__SKILLS_PATHS__"]}})
+    with pytest.raises(RuntimeError, match="regen-skill-surfaces"):
+        rkc.render_config(tpl, tmp_path, tmp_path, {})
+
+
+def test_render_rejects_skills_token_anywhere_else(tmp_path):
+    gen = (tmp_path / "scripts" / "skills_registry" / "generated")
+    gen.mkdir(parents=True)
+    (gen / "kilo.skills-paths.json").write_text(json.dumps(
+        {"skills": {"paths": ["./skills/x"]}}), encoding="utf-8")
+    # token in an unrelated field (terra r1 F2): must fail loud, not pass
+    tpl = json.dumps({"note": "__SKILLS_PATHS__",
+                      "skills": {"paths": ["./skills/x"]}})
+    with pytest.raises(ValueError, match="Unresolved __SKILLS_PATHS__"):
+        rkc.render_config(tpl, tmp_path, tmp_path, {})
+    # token embedded inside a longer string: must also fail
+    tpl2 = json.dumps({"note": "prefix __SKILLS_PATHS__ suffix",
+                       "skills": {"paths": ["./skills/x"]}})
+    with pytest.raises(ValueError, match="Unresolved __SKILLS_PATHS__"):
+        rkc.render_config(tpl2, tmp_path, tmp_path, {})
+
+
+def test_sync_refuses_token_template_without_expander(tmp_path, monkeypatch):
+    """terra r1 F1 (repo-level half): a renderer lacking _expand_skills_paths
+    must refuse to push a token template onto the shared Drive copy."""
+    (tmp_path / ".config" / "kilo").mkdir(parents=True)
+    monkeypatch.setattr(rkc, "BUNDLED_TEMPLATE", BUNDLED_TEMPLATE)
+    assert hasattr(rkc, "_expand_skills_paths")  # precondition of the env
+    monkeypatch.delattr(rkc, "_expand_skills_paths")
+    # also remove it from globals() view used by the guard
+    import builtins
+    with pytest.raises(RuntimeError, match="refusing to sync"):
+        rkc.sync_template_repo_to_drive(tmp_path)
+
+
+def test_sync_marker_self_heals_after_partial_failure(tmp_path, monkeypatch):
+    """terra r3 F1: if a previous sync died between writing the template
+    and the marker, the NEXT sync (even an already-in-sync no-op) must
+    recreate the marker."""
+    kilo_dir = tmp_path / ".config" / "kilo"
+    kilo_dir.mkdir(parents=True)
+    marker = kilo_dir / "template-needs-renderer-token-v1"
+    # first sync writes template + marker
+    assert rkc.sync_template_repo_to_drive(tmp_path) is True
+    assert marker.is_file()
+    # simulate the partial failure: marker lost, template survives
+    marker.unlink()
+    # second sync: template already matches → early return, but the
+    # marker MUST be recreated
+    assert rkc.sync_template_repo_to_drive(tmp_path) is False
+    assert marker.is_file()
+    assert "__SKILLS_PATHS__" in marker.read_text(encoding="utf-8")
+
+
+def test_sync_dry_run_writes_nothing(tmp_path):
+    """terra r4 F1: report-only mode must not write template OR marker —
+    even on a read-only Drive the call stays a pure check."""
+    kilo_dir = tmp_path / ".config" / "kilo"
+    kilo_dir.mkdir(parents=True)
+    marker = kilo_dir / "template-needs-renderer-token-v1"
+    tpl_on_drive = kilo_dir / "kilo.jsonc.template"
+    # nothing synced yet; dry-run must leave the Drive dir untouched
+    assert rkc.sync_template_repo_to_drive(tmp_path, dry_run=True) is False
+    assert not marker.exists()
+    assert not tpl_on_drive.exists()
+    # a real sync first, then marker removed, then dry-run: no self-heal
+    assert rkc.sync_template_repo_to_drive(tmp_path) is True
+    marker.unlink()
+    assert rkc.sync_template_repo_to_drive(tmp_path, dry_run=True) is False
+    assert not marker.exists()  # dry-run wrote nothing

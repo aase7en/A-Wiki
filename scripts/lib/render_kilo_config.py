@@ -172,6 +172,40 @@ def merge_agents(template_agents: dict, agents_from_md: dict) -> dict:
 
 # ── Rendering (pure, unit-tested) ──────────────────────────────────────────
 
+SKILLS_PATHS_TOKEN = "__SKILLS_PATHS__"
+GENERATED_SKILLS_PATHS = Path(
+    "scripts") / "skills_registry" / "generated" / "kilo.skills-paths.json"
+
+
+def _expand_skills_paths(config: dict, repo_root: Path) -> None:
+    """KILOTPL-09: replace the __SKILLS_PATHS__ element with the
+    registry-derived list from generated/kilo.skills-paths.json (Iron Law
+    #10 — the template must not carry its own copy of the list). Fails
+    loud when the generated file is absent: render cannot guess."""
+    skills = config.get("skills")
+    if not isinstance(skills, dict):
+        return
+    paths = skills.get("paths")
+    if not isinstance(paths, list) or SKILLS_PATHS_TOKEN not in paths:
+        return
+    gen_file = repo_root / GENERATED_SKILLS_PATHS
+    if not gen_file.is_file():
+        raise RuntimeError(
+            f"{gen_file} missing — run "
+            "`python scripts/regen-skill-surfaces.py` first; the template "
+            "no longer hardcodes skill paths")
+    gen_paths = json.loads(
+        gen_file.read_text(encoding="utf-8"))["skills"]["paths"]
+    expanded = []
+    for p in paths:
+        if p == SKILLS_PATHS_TOKEN:
+            expanded.extend(
+                f"__REPO_ROOT__/{p_.lstrip('./')}" for p_ in gen_paths)
+        else:
+            expanded.append(p)
+    skills["paths"] = expanded
+
+
 def build_path_map(drive_data: Path, repo_root: Path) -> dict[str, str]:
     return {
         "__DRIVE_DATA__": str(drive_data),
@@ -247,6 +281,12 @@ def _assert_no_placeholders(rendered: str, path_map: dict[str, str], secrets: di
     for tok in path_map:
         if tok in rendered:
             raise ValueError(f"Unresolved path placeholder {tok} in rendered config")
+    # KILOTPL-09 terra r1 F2: the skills token must never survive ANYWHERE —
+    # not as a stray list element, not embedded inside another string.
+    if SKILLS_PATHS_TOKEN in rendered:
+        raise ValueError(
+            f"Unresolved {SKILLS_PATHS_TOKEN} placeholder in rendered "
+            "config — expansion failed or the template moved the token")
     if secrets is not None:
         for env_name in PROVIDER_SECRET_MAP.values():
             if f"__SECRET_{env_name}__" in rendered:
@@ -270,6 +310,7 @@ def render_config(template_text: str, drive_data: Path, repo_root: Path,
         config["agent"] = merge_agents(template_agents, agents_from_md)
 
     resolve_provider_secrets(config, secrets)
+    _expand_skills_paths(config, repo_root)
     path_map = build_path_map(drive_data, repo_root)
     config = resolve_path_tokens(config, path_map, secrets)
     rendered = json.dumps(config, indent=2, ensure_ascii=False) + "\n"
@@ -309,7 +350,7 @@ def find_template(drive_data: Path | None) -> Path:
     )
 
 
-def sync_template_repo_to_drive(drive_data: Path) -> bool:
+def sync_template_repo_to_drive(drive_data: Path, dry_run: bool = False) -> bool:
     """Sync repo template → Drive template (one-directional).
 
     Why this exists: ``find_template`` prefers Drive over repo, so editing the
@@ -330,8 +371,26 @@ def sync_template_repo_to_drive(drive_data: Path) -> bool:
     """
     if os.environ.get("AWIKI_DISABLE_KILO_TEMPLATE_SYNC") == "1":
         return False
+    if dry_run:
+        # terra r4: report-only callers (--check) must not write ANYTHING —
+        # not the template, not the marker — even on read-only Drives.
+        return False
     if not BUNDLED_TEMPLATE.is_file():
         return False  # nothing to sync from
+    # KILOTPL-09 terra r1 F1 (repo-level half): a half-updated checkout
+    # (new template, old renderer) must not push a token the renderer
+    # cannot expand onto the SHARED Drive copy — other machines would
+    # then silently render an unresolved token. Cross-machine transition
+    # risk remains until every machine pulls this commit; documented in
+    # the WO: a stuck "__SKILLS_PATHS__" in a rendered config means that
+    # machine needs `git pull` — the assert added in this same commit
+    # makes such renders fail loud on updated machines.
+    repo_text_early = BUNDLED_TEMPLATE.read_text(encoding="utf-8")
+    if (SKILLS_PATHS_TOKEN in repo_text_early
+            and "_expand_skills_paths" not in globals()):
+        raise RuntimeError(
+            "refusing to sync a __SKILLS_PATHS__ template: this "
+            "render_kilo_config cannot expand it — update the repo first")
     drive_tpl = drive_data / DRIVE_CONFIG_SUBDIR / "kilo.jsonc.template"
     if not drive_tpl.parent.is_dir():
         return False  # Drive .config/kilo not initialized yet
@@ -339,8 +398,21 @@ def sync_template_repo_to_drive(drive_data: Path) -> bool:
     drive_text = ""
     if drive_tpl.is_file():
         drive_text = drive_tpl.read_text(encoding="utf-8")
+
+    # KILOTPL-09 terra r3: the marker is written on EVERY sync run —
+    # BEFORE the already-in-sync early return — so a partial failure in a
+    # previous run (template written, marker lost) is always self-healed
+    # by the next one. Evidence trail on the SHARED Drive: any machine,
+    # any renderer version, any human can read it.
+    _atomic_write(
+        drive_tpl.parent / "template-needs-renderer-token-v1",
+        "This Drive template uses __SKILLS_PATHS__.\n"
+        "Renderers without _expand_skills_paths (pre-KILOTPL-09)\n"
+        "will leave the token unresolved. Run `git pull` on the A-Wiki\n"
+        "checkout that renders this config.\n")
+
     if repo_text == drive_text:
-        return False  # already in sync
+        return False  # already in sync (marker refreshed above)
     # Atomic write — never leave Drive template half-written.
     _atomic_write(drive_tpl, repo_text)
     print(f"ℹ️  synced repo template → Drive ({len(repo_text)} bytes)")
@@ -407,7 +479,7 @@ def main(argv: list[str] | None = None) -> int:
     # Sync repo template → Drive BEFORE find_template (closes drift gap).
     # find_template prefers Drive, so without this sync, edits to the repo
     # template are invisible until someone manually copies them to Drive.
-    sync_template_repo_to_drive(drive_data)
+    sync_template_repo_to_drive(drive_data, dry_run=args.check)
 
     template_path = find_template(drive_data)
     secrets = load_secrets(drive_data)
