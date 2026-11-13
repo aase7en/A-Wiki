@@ -1,10 +1,10 @@
-# Review Report — 2026-11-13
+# Review Report — 2026-09-10
 
 **Profile**: `content` — user-authored wiki content, with generated context and protocol files downgraded or excluded
 
 ## Summary
 
-- ✓ Passed: 906
+- ✓ Passed: 902
 - ⚠ Warnings: 308
 - ❌ Failures: 69
 
@@ -426,10 +426,10 @@
 
 ---
 
-## ✓ Passed Checks (906 total)
+## ✓ Passed Checks (902 total)
 
-- **L2**: 373 passed
-- **L3**: 530 passed
+- **L2**: 371 passed
+- **L3**: 528 passed
 - **L6**: 3 passed
 
 ---

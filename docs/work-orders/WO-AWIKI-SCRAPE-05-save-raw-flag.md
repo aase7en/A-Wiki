@@ -74,3 +74,19 @@ Evidence: pytest scrape trio → 112 passed (e2e PASSED, canary cached);
 full local suite: 0 failures in scrape/ingest files (155 pre-existing
 local-env failures in conductor/memory/review-bus suites, unchanged from
 before this slice; hosted Core CI is the authority and was green at cf71ec77)
+
+## Review round 3 — Terra BLOCK → pollution purge + hardening (2026-11-13)
+
+Receipt: /tmp/awiki-rev84-terra-receipt4.txt
+
+- P1 r3-1 test-run artifacts leaked into the candidate (round-2's blind
+  `git add -A` after FULL local suite runs swept in wiki/sources/article*.md
+  quoting fixture text as real knowledge + 20 generated files) → purged:
+  article pages git-rm'd, all generated files restored to base; candidate
+  diff is again exactly the 4 scope files. Root cause noted as backlog:
+  pre-existing tests write into repo wiki/raw during full-suite runs
+- P2 r3-2 env clobber → T4 now monkeypatch.setenv (restores runner value)
+- P2 r3-3 canary hang → TimeoutExpired skips (availability, not defect)
+
+Evidence: trio → 112 passed; `git diff --cached --stat 29dc5852` = 4 files
+(COLLAB.md, WO doc, scrape-advanced.py, test_scrape_advanced.py)

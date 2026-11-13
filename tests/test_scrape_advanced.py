@@ -237,9 +237,15 @@ class TestSaveRawOverride:
         # adapter swallows it), so offline detection uses a canary running
         # the EXACT pinned parse command — canary success means any later
         # CLI failure is a real defect and must fail, not skip.
-        canary = _sp.run(
-            ["npx", "-y", "defuddle@0.19.6", "parse", str(fixture), "-m", "-j"],
-            capture_output=True, text=True, timeout=120)
+        # r3-3: a hung registry/npx raises TimeoutExpired before the
+        # returncode check — that is an availability failure, so skip too.
+        try:
+            canary = _sp.run(
+                ["npx", "-y", "defuddle@0.19.6", "parse", str(fixture), "-m", "-j"],
+                capture_output=True, text=True, timeout=120)
+        except _sp.TimeoutExpired:
+            import pytest as _pytest
+            _pytest.skip("defuddle/npx canary timed out (registry hang)")
         if canary.returncode != 0 or not canary.stdout.strip():
             import pytest as _pytest
             _pytest.skip("defuddle/npx unavailable (offline or registry blocked)")
@@ -300,19 +306,17 @@ class TestSaveRawOverride:
         assert result["url"] == "https://example.com/p"
         assert result["raw_file"] is not None
 
-    def test_r84_raw_dir_env_override(self, tmp_path):
+    def test_r84_raw_dir_env_override(self, tmp_path, monkeypatch):
         # R84-T4 (terra r2 P2): AWIKI_RAW_DIR structurally isolates every raw
         # write (tests, sandboxes) from the checkout's raw/ dir. Fresh module
         # from spec (scrape_mod is not in sys.modules, reload() unusable).
+        # monkeypatch (r3-2): restores a pre-existing runner value instead
+        # of clobbering it.
         import importlib.util as _ilu
-        import os as _os
         island = tmp_path / "island"
-        _os.environ["AWIKI_RAW_DIR"] = str(island)
-        try:
-            spec = _ilu.spec_from_file_location("scrape_advanced_env", SCRAPE_MODULE_PATH)
-            fresh = _ilu.module_from_spec(spec)
-            spec.loader.exec_module(fresh)
-            out = fresh.save_raw_output("https://example.com/env-page", "text")
-            assert out.parent == island
-        finally:
-            _os.environ.pop("AWIKI_RAW_DIR", None)
+        monkeypatch.setenv("AWIKI_RAW_DIR", str(island))
+        spec = _ilu.spec_from_file_location("scrape_advanced_env", SCRAPE_MODULE_PATH)
+        fresh = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(fresh)
+        out = fresh.save_raw_output("https://example.com/env-page", "text")
+        assert out.parent == island
