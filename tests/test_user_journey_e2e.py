@@ -35,6 +35,137 @@ CLI_MODULE = ["-m", "conductor"]  # documented entry: python -m conductor
 MCP = str(REPO_ROOT / "scripts" / "mcp-wiki-server.py")
 
 SECRET_TOKEN = "ghp_" + "JourneyE2E" + "0123456789abcdefghijklmnop"  # 36 chars
+
+
+def _snapshot_entry(p: Path):
+    """WO-AWIKI-HYGIENE-07 terra r2 F2: capture WHAT a path is, not just
+    bytes — regular file bytes, symlink target, or ABSENT — so restore
+    returns the developer's exact state (a deliberately-deleted file must
+    STAY deleted; a symlink must stay a link)."""
+    if p.is_symlink():
+        return ("symlink", os.readlink(p))
+    if p.exists():
+        # terra r3 F1: preserve the mode too — unlink+rewrite must not
+        # silently change executable bits or permissions
+        return ("file", p.read_bytes(), p.stat().st_mode & 0o7777)
+    return ("absent", None)
+
+
+def _git_status_z() -> dict:
+    """path → _snapshot_entry for every non-clean path (terra r1/r2).
+
+    `git status --porcelain -z -uall`: NUL-separated, per-file untracked, no
+    C-quoting. Rename/copy records carry their ORIGINAL path as an extra NUL
+    field (checked in BOTH status columns — terra r2 F3); malformed records
+    fail loud instead of being silently mis-parsed."""
+    r = subprocess.run(
+        ["git", "status", "--porcelain", "-z", "-uall"], cwd=REPO_ROOT,
+        capture_output=True, timeout=60)
+    if r.returncode != 0:
+        raise RuntimeError(f"git status failed rc={r.returncode}: "
+                           f"{r.stderr.decode(errors='replace')[:200]}")
+    fields = r.stdout.decode("utf-8", "surrogateescape").split("\0")
+    entries: dict = {}
+    i = 0
+    while i < len(fields):
+        f = fields[i]
+        i += 1
+        if not f:
+            continue
+        if len(f) < 4 or f[2] != " ":
+            raise RuntimeError(f"malformed porcelain record: {f[:80]!r}")
+        xy, path = f[:2], f[3:]
+        if "R" in xy or "C" in xy:  # original path follows as its own field
+            if i >= len(fields) or not fields[i]:
+                raise RuntimeError(
+                    f"rename/copy record missing its original path: {f[:80]!r}")
+            orig = fields[i]
+            i += 1
+            entries.setdefault(orig, _snapshot_entry(REPO_ROOT / orig))
+        entries[path] = _snapshot_entry(REPO_ROOT / path)
+    return entries
+
+
+# untracked files are only ever deleted inside these generator surfaces
+# (terra r2 F1: concurrent processes creating files elsewhere are left alone)
+_GENERATOR_DIRS = ("wiki", "raw", "exports", ".tmp")
+
+
+def _generator_surface(rel_path: str) -> bool:
+    top = rel_path.split("/", 1)[0]
+    return top in _GENERATOR_DIRS or rel_path in (
+        ".wiki-graph.json", "brain-map.canvas", "skills-registry.json")
+
+
+@pytest.fixture(autouse=True)
+def _no_generated_pollution():
+    """WO-AWIKI-HYGIENE-07 — destructive buttons here (wiki_regen_index et
+    al.) can run real generators against REPO_ROOT. Every non-clean path is
+    snapshotted (bytes / symlink target / absent) before the test; after it:
+    - snapshotted paths are restored EXACTLY — overwritten dev edits are
+      recovered, deliberately-deleted files stay deleted, symlinks stay
+      symlinks
+    - NEW non-clean paths are reverted: tracked → git checkout -- (anywhere
+      in the tree — by definition the developer had that file clean before
+      the test); untracked → deleted, but ONLY inside known generator
+      surfaces
+    Known limitation (concurrency): changes made by OTHER processes during
+    the test are indistinguishable from the test's own — tracked files are
+    rolled back tree-wide and untracked files inside generator surfaces are
+    deleted. Do not run parallel writers on this checkout while this suite
+    runs."""
+    before = _git_status_z()
+    yield
+    after = _git_status_z()
+    for path, snap in before.items():
+        p = REPO_ROOT / path
+        kind = snap[0]
+        val = snap[1] if kind == "symlink" else (snap[1], snap[2]) if kind == "file" else None
+        try:
+            if kind == "file":
+                data, mode = val
+                # terra r4 F1: mode-only changes must restore too
+                cur_mode = (not p.is_symlink() and p.exists()
+                            and p.stat().st_mode & 0o7777)
+                if (p.is_symlink() or not p.exists()
+                        or p.read_bytes() != data or cur_mode != mode):
+                    if p.is_symlink() or p.exists():
+                        p.unlink()
+                    p.write_bytes(data)
+                    os.chmod(p, mode)
+            elif kind == "symlink":
+                if not (p.is_symlink() and os.readlink(p) == val):
+                    if p.is_symlink() or p.exists():
+                        p.unlink()
+                    os.symlink(val, p)
+            else:  # absent — restore the developer's deletion
+                if p.is_symlink() or p.exists():
+                    if p.is_dir() and not p.is_symlink():
+                        raise RuntimeError(
+                            f"pollution guard: {path} became a directory; "
+                            "refusing blind delete")
+                    p.unlink()
+        except OSError as e:
+            raise RuntimeError(f"pollution guard could not restore {path}: {e}")
+    for path in after:
+        if path in before:
+            continue
+        p = REPO_ROOT / path
+        if path in _tracked_files():
+            subprocess.run(["git", "checkout", "--", path], cwd=REPO_ROOT,
+                           capture_output=True, timeout=60, check=True)
+        elif _generator_surface(path):
+            p.unlink(missing_ok=True)
+
+
+def _tracked_files() -> set:
+    # terra r2 F1: -z keeps names with Unicode/tab/newline unquoted
+    r = subprocess.run(["git", "ls-files", "-z"], cwd=REPO_ROOT,
+                       capture_output=True, timeout=60)
+    if r.returncode != 0:
+        raise RuntimeError("git ls-files failed")
+    return set(r.stdout.decode("utf-8", "surrogateescape").split("\0")) - {""}
+
 MACHINE_PATH_FILE = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "secret.txt"
 
 

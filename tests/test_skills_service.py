@@ -414,6 +414,9 @@ def test_update_skill_field_writes_and_restores():
     Saves + restores the original value to avoid polluting the registry."""
     import json
     reg_path = REPO_ROOT / "skills-registry.json"
+    # WO-AWIKI-HYGIENE-07: restore must be byte-exact — re-dumping JSON
+    # drifts from the tracked serialization and leaves the repo dirty.
+    saved_bytes = reg_path.read_bytes()
     # Save original value.
     with open(reg_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -429,15 +432,8 @@ def test_update_skill_field_writes_and_restores():
         by_name2 = {s["name"]: s for s in data2["skills"] if "name" in s}
         assert by_name2["debug-mantra"]["th_description"] == test_value
     finally:
-        # Restore original.
-        with open(reg_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        for s in data["skills"]:
-            if s.get("name") == "debug-mantra":
-                s["th_description"] = original
-                break
-        with open(reg_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        # WO-AWIKI-HYGIENE-07: byte-exact restore of the tracked file.
+        reg_path.write_bytes(saved_bytes)
 
 
 def test_update_skill_field_rejects_non_editable_field():
