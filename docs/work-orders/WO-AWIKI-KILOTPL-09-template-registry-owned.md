@@ -114,3 +114,11 @@ self-heal (marker-before-early-return) still holds for real syncs.
 
 Evidence: render suite 20/20 (incl. dry-run-writes-nothing, covering
 both never-synced and marker-removed states); related suite 100/100
+
+## Review round 5 — Terra APPROVE (2026-11-13)
+
+Receipt: /tmp/awiki-rev88-terra-receipt5.txt — VERDICT APPROVE, FINDINGS
+none, verified SHA ce4b2f0f. 5-round cycle: token expansion → fail-loud
+assert + sync self-check → marker trail + runbook → self-healing marker
+→ dry-run purity. Merge authorized at ce4b2f0f pending hosted CI.
+Post-merge runbook (this WO) executes immediately.
