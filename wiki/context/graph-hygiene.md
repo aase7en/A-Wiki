@@ -9,7 +9,7 @@
 |---|---:|
 | Nodes | 576 |
 | Edges | 1847 |
-| Broken links | 40 |
+| Broken links | 41 |
 | Orphans | 29 |
 
 ## Broken links by source domain
@@ -17,8 +17,8 @@
 | Domain | Count |
 |---|---:|
 | repo-root | 21 |
+| ai-tools | 9 |
 | sources | 9 |
-| ai-tools | 8 |
 | env | 2 |
 
 ## Orphans by domain

@@ -22,13 +22,6 @@ scrape_mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(scrape_mod)
 
 
-def _looks_like_network_failure(stderr: str) -> bool:
-    markers = ("ENOTFOUND", "ETIMEDOUT", "ECONNREFUSED", "EAI_AGAIN",
-               "getaddrinfo", "network", "fetch failed", "npm err")
-    low = (stderr or "").lower()
-    return any(m.lower() in low for m in markers)
-
-
 class TestSlugify:
     """slugify is vendored from ingest-source.py — basic smoke tests."""
 
@@ -240,19 +233,28 @@ class TestSaveRawOverride:
         target = tmp_path / "e2e.md"
         fixture = (Path(__file__).resolve().parent / "fixtures" /
                    "defuddle" / "article-noisy-en.html")
+        # R84 r2-1: the CLI's stderr cannot carry npx failure detail (the
+        # adapter swallows it), so offline detection uses a canary running
+        # the EXACT pinned parse command — canary success means any later
+        # CLI failure is a real defect and must fail, not skip.
+        canary = _sp.run(
+            ["npx", "-y", "defuddle@0.19.6", "parse", str(fixture), "-m", "-j"],
+            capture_output=True, text=True, timeout=120)
+        if canary.returncode != 0 or not canary.stdout.strip():
+            import pytest as _pytest
+            _pytest.skip("defuddle/npx unavailable (offline or registry blocked)")
+        # R84 r2-2: AWIKI_RAW_DIR isolates sidecar/raw writes into tmp —
+        # checkout pollution is structurally impossible, no post-hoc guard.
+        import os as _os
         proc = _sp.run(
             [_sys.executable, str(SCRAPE_MODULE_PATH),
              "--url", str(fixture),
              "--method", "defuddle", "--save-raw", str(target), "--json"],
             capture_output=True, text=True, timeout=120,
-            cwd=str(tmp_path))
-        if proc.returncode != 0 and _looks_like_network_failure(proc.stderr):
-            import pytest as _pytest
-            _pytest.skip(f"npx/network unavailable: {proc.stderr[-200:]}")
+            cwd=str(tmp_path),
+            env={**_os.environ, "AWIKI_RAW_DIR": str(tmp_path / "raw")})
         assert proc.returncode == 0, proc.stderr
         assert target.is_file() and "Ladprao" in target.read_text(encoding="utf-8")
-        assert not (REPO_ROOT / "raw" / "e2e.html").exists(), \
-            "e2e must not write a sidecar into the checkout's raw/ dir"
 
     def test_r84_sidecar_diverts_when_override_is_sidecar_path(self, tmp_path):
         # R84-T1 (terra P1): a --save-raw override landing on the sidecar's own
@@ -297,3 +299,20 @@ class TestSaveRawOverride:
                                        False, False, None, True, True)
         assert result["url"] == "https://example.com/p"
         assert result["raw_file"] is not None
+
+    def test_r84_raw_dir_env_override(self, tmp_path):
+        # R84-T4 (terra r2 P2): AWIKI_RAW_DIR structurally isolates every raw
+        # write (tests, sandboxes) from the checkout's raw/ dir. Fresh module
+        # from spec (scrape_mod is not in sys.modules, reload() unusable).
+        import importlib.util as _ilu
+        import os as _os
+        island = tmp_path / "island"
+        _os.environ["AWIKI_RAW_DIR"] = str(island)
+        try:
+            spec = _ilu.spec_from_file_location("scrape_advanced_env", SCRAPE_MODULE_PATH)
+            fresh = _ilu.module_from_spec(spec)
+            spec.loader.exec_module(fresh)
+            out = fresh.save_raw_output("https://example.com/env-page", "text")
+            assert out.parent == island
+        finally:
+            _os.environ.pop("AWIKI_RAW_DIR", None)

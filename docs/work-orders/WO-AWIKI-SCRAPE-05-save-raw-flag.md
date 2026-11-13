@@ -55,3 +55,22 @@ Receipt: /tmp/awiki-rev84-terra-receipt2.txt (VERDICT BLOCK; candidate cf71ec77)
 Evidence: ~/awiki-venv/bin/python -m pytest tests/test_scrape_advanced.py
 tests/test_scrape_defuddle.py tests/test_ingest_source.py -q → 111 passed
 (e2e real run PASSED 0.78s, no skip)
+
+## Review round 2 — Terra BLOCK → residual repairs (2026-11-13)
+
+Receipt: /tmp/awiki-rev84-terra-receipt3.txt (repairs 1-2 confirmed fixed;
+2 residual P2s on the e2e test)
+
+- P2 r2-1 offline skip could never fire (adapter swallows npx stderr; broad
+  markers) → replaced with an npx canary running the EXACT pinned parse
+  command: canary ok ⇒ any CLI failure is a real defect and fails, not skips;
+  _looks_like_network_failure removed
+- P2 r2-2 sidecar anchored to checkout RAW_DIR; post-hoc guard unsound →
+  module-level env seam AWIKI_RAW_DIR (R84-T4 RED→GREEN, fresh-spec module);
+  e2e runs CLI with AWIKI_RAW_DIR=tmp — checkout pollution structurally
+  impossible; stray duplicate CLI run removed
+
+Evidence: pytest scrape trio → 112 passed (e2e PASSED, canary cached);
+full local suite: 0 failures in scrape/ingest files (155 pre-existing
+local-env failures in conductor/memory/review-bus suites, unchanged from
+before this slice; hosted Core CI is the authority and was green at cf71ec77)

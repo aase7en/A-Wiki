@@ -28,7 +28,9 @@ import unicodedata
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-RAW_DIR = REPO_ROOT / "raw"
+# R84-T4 (terra r2): env seam so tests/sandboxes can isolate raw writes from
+# the checkout's raw/ dir — module-level, read once at import.
+RAW_DIR = Path(os.environ["AWIKI_RAW_DIR"]) if os.environ.get("AWIKI_RAW_DIR") else REPO_ROOT / "raw"
 
 # Import shared domain constants from lib (F8 dedup — was inline tuple)
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
