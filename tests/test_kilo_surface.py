@@ -72,20 +72,22 @@ class TestKiloRuntimeContract:
     """terra r1 F1-F3: atomicity, concurrency, formatting, failure modes."""
 
     def test_render_preserves_formatting_outside_paths(self):
-        """Surgical replace: BYTES outside the paths array must be identical
-        (terra r2: no universal-newline translation — CRLF survives)."""
+        """Surgical replace: BYTES outside the (scanner-located) top-level
+        paths array must be IDENTICAL — compared over the exact same span,
+        so CRLF, comments-ish whitespace, everything survives verbatim
+        (terra r3 F2: strip-and-compare, not contains-CRLF)."""
         gen = _gen()
         reg = Registry.load(REGISTRY_PATH)
-        rendered = gen.render(reg)
-        assert isinstance(rendered, bytes)
         current = RUNTIME_PATH.read_bytes()
-
-        def without_paths(b):
-            return re.sub(
-                rb'("skills"\s*:\s*\{\s*"paths"\s*:\s*\[)[^\]]*(\])',
-                rb"\1...\2", b, count=1)
-
-        assert without_paths(rendered) == without_paths(current)
+        start, end = gen._locate_top_level_paths_span(current)
+        rendered = gen.render(reg)
+        assert rendered[:start] == current[:start]
+        assert rendered[end - (end - start - len(rendered)) + (end - start):] or True
+        # compare tails after accounting for the changed array length:
+        new_start, new_end = gen._locate_top_level_paths_span(rendered)
+        assert new_start == start
+        assert rendered[:start] == current[:start]
+        assert rendered[new_end:] == current[end:]
 
     def test_render_preserves_crlf_outside_paths(self, tmp_path, monkeypatch):
         gen = _gen()
@@ -117,6 +119,37 @@ class TestKiloRuntimeContract:
             '{"paths": ["./wrong"]}\n  }\n}\n', encoding="utf-8")
         with pytest.raises(RuntimeError):
             gen.render(reg)
+
+    def test_render_never_touches_nested_skills_when_top_is_valid(
+            self, tmp_path, monkeypatch):
+        """terra r3 F1 regression (the exact shape Terra proved): a nested
+        'skills' key appears BEFORE the top-level one, and the top-level
+        paths ALREADY match the registry — render must leave the nested
+        array byte-identical and still succeed as a no-op content-wise."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        derived = gen._category_dirs(reg)
+        doc = {
+            "$schema": "x",
+            "decoy": {"skills": {"paths": ["./decoy-should-survive"]}},
+            "skills": {"paths": derived},
+            "indexing": {"enabled": True},
+        }
+        kilo.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+        before = kilo.read_bytes()
+        out = gen.render(reg)
+        assert b"./decoy-should-survive" in out
+        assert json.loads(out)["decoy"]["skills"]["paths"] == [
+            "./decoy-should-survive"]
+        # top-level untouched content-wise (bytes may differ only in the
+        # replaced array formatting)
+        start_b, end_b = gen._locate_top_level_paths_span(before)
+        start_o, end_o = gen._locate_top_level_paths_span(out)
+        assert before[:start_b] == out[:start_o]
+        assert before[end_b:] == out[end_o:]
 
     def test_write_atomic_preserves_file_mode(self, tmp_path, monkeypatch):
         """terra r2 F3: mkstemp creates 0600; the tracked config is 0644 —

@@ -4,22 +4,24 @@ WO-AWIKI-KILOSURF-08. The generated/kilo.skills-paths.json snippet was
 correct but nothing merged it into the runtime file Kilo actually reads,
 so .kilo/kilo.jsonc carried a stale hand-frozen list (Iron Law #10 drift).
 
-Design (terra r1+r2):
+Design (terra r1-r3):
 - ``render`` is PURE (safe for --check) and byte-preserving: it reads BYTES
   (no universal-newline translation — CRLF outside the array survives) and
-  surgically replaces only the top-level ``skills.paths`` array, anchored
-  to the file's standard two-space top-level key indentation. Any other
-  shape (nested "skills" objects, missing block, exotic formatting) fails
-  loud instead of guessing. ``--check`` can therefore never report drift
-  for reasons unrelated to paths.
+  replaces ONLY the array that is the value of the TOP-LEVEL ``skills``
+  object's ``paths`` key, located by a real JSON depth-scanner — never by
+  indentation heuristics. A nested ``"skills"`` object anywhere in the file
+  cannot be mistaken for the top-level one, and every unexpected shape
+  fails loud instead of guessing.
 - ``write_atomic`` is the regen-side writer: stats the file BEFORE render
-  reads it, re-reads and re-stats afterwards (refusing to overwrite a file
-  that changed mid-render), writes to a temp file, restores the original
-  file mode, fsyncs and os.replace()s into place. Concurrency note: this
-  is best-effort single-writer protection — the residual stat→replace
-  window is microseconds and there is no cross-process lock; the double
-  guard plus content short-circuit covers the realistic regen-vs-editor
-  race. A crash can never truncate the runtime config.
+  reads it, re-stats after (refusing to overwrite a file that changed
+  mid-render), writes to a temp file, restores the original file mode,
+  fsyncs and os.replace()s into place, with a second re-stat immediately
+  before the swap. Concurrency: this is BEST-EFFORT single-writer
+  protection, not a lock — the guards compare mtime+size only, so an edit
+  that preserves both, or one landing between the last stat and the
+  replace, can still be lost. Real cross-process serialization would need
+  a lock file; that is deliberately out of scope for a regen command.
+  A crash can never truncate the runtime config.
 
 Fails loud when the runtime file is missing or its shape is unexpected:
 it is a tracked repo file, so absence means a broken checkout.
@@ -38,22 +40,129 @@ from .gen_kilo import _category_dirs
 REPO_ROOT = Path(__file__).resolve().parents[3]
 filename = ".kilo/kilo.jsonc"  # repo-root-relative (ROOT_SURFACES)
 
-# Top-level "skills": {"paths": [...]} — anchored to exactly two spaces of
-# indentation (the file's standard top-level key depth). A nested "skills"
-# object deeper inside another value will NOT match this pattern, and a
-# top-level block reformatted to another depth fails loud by not matching.
-_PATHS_RE = re.compile(
-    rb'(?P<block>\n  "skills"\s*:\s*\{\s*"paths"\s*:\s*\[)(?P<items>[^\]]*)'
-    rb'(?P<end>\])',
-)
+_WS = b" \t\r\n"
 
 
-def _render_paths_json(paths: list[str]) -> bytes:
+def _skip_ws(raw: bytes, i: int) -> int:
+    while i < len(raw) and raw[i:i + 1] in _WS:
+        i += 1
+    return i
+
+
+def _read_string_at(raw: bytes, i: int) -> tuple[bytes, int]:
+    """raw[i] is the opening quote; returns (unescaped_value, end_index)
+    where end_index points just past the closing quote."""
+    assert raw[i:i + 1] == b'"'
+    j = i + 1
+    buf = bytearray()
+    while j < len(raw):
+        c = raw[j:j + 1]
+        if c == b"\\":
+            buf += raw[j + 1:j + 2]
+            j += 2
+            continue
+        if c == b'"':
+            return bytes(buf), j + 1
+        buf += c
+        j += 1
+    raise RuntimeError(f"{filename}: unterminated JSON string")
+
+
+def _locate_top_level_paths_span(raw: bytes) -> tuple[int, int]:
+    """Byte span (start, end) of the ``[ ... ]`` array that is the value of
+    the TOP-LEVEL ``skills`` object's ``paths`` key. Depth is tracked across
+    {} and [] with full string/escape awareness, so a nested ``"skills"``
+    key inside any deeper object or array can never match."""
+    n = len(raw)
+    i = 0
+    depth = 0
+    while i < n:
+        c = raw[i:i + 1]
+        if c == b'"':
+            value, end = _read_string_at(raw, i)
+            k = _skip_ws(raw, end)
+            if depth == 1 and value == b"skills" and raw[k:k + 1] == b":":
+                return _locate_paths_inside_object(raw, k)
+            i = end
+            continue
+        if c in (b"{", b"["):
+            depth += 1
+        elif c in (b"}", b"]"):
+            depth -= 1
+        i += 1
+    raise RuntimeError(
+        f"{filename}: top-level skills key not found — refusing blind rewrite")
+
+
+def _locate_paths_inside_object(raw: bytes, colon: int) -> tuple[int, int]:
+    k = _skip_ws(raw, colon + 1)
+    if raw[k:k + 1] != b"{":
+        raise RuntimeError(
+            f"{filename}: top-level skills value is not an object")
+    # scan inside the object (depth relative to its opening brace)
+    n = len(raw)
+    i = k
+    depth = 0
+    started = False
+    while i < n:
+        c = raw[i:i + 1]
+        if c == b'"':
+            value, end = _read_string_at(raw, i)
+            j = _skip_ws(raw, end)
+            if (started and depth == 0 and value == b"paths"
+                    and raw[j:j + 1] == b":"):
+                a = _skip_ws(raw, j + 1)
+                if raw[a:a + 1] != b"[":
+                    raise RuntimeError(
+                        f"{filename}: skills.paths value is not an array")
+                b = a + 1
+                d = 1  # the opening '[' at raw[a] is already consumed
+                in_str = esc = False
+                while b < n:
+                    ch = raw[b:b + 1]
+                    if in_str:
+                        if esc:
+                            esc = False
+                        elif ch == b"\\":
+                            esc = True
+                        elif ch == b'"':
+                            in_str = False
+                    elif ch == b'"':
+                        in_str = True
+                    elif ch == b"[":
+                        d += 1
+                    elif ch == b"]":
+                        d -= 1
+                        if d == 0:
+                            return a, b + 1
+                    b += 1
+                raise RuntimeError(f"{filename}: unterminated paths array")
+            i = end
+            continue
+        if c == b"{":
+            if not started:
+                started = True  # entering the object itself — do not count
+            else:
+                depth += 1
+        elif c == b"}" and started:
+            if depth == 0:
+                break  # end of the skills object — paths never found
+            depth -= 1
+        elif c == b"[":
+            depth += 1
+        elif c == b"]":
+            depth -= 1
+        i += 1
+    raise RuntimeError(
+        f"{filename}: skills object has no paths key — refusing blind rewrite")
+
+
+def _render_paths_array(paths: list[str]) -> bytes:
     inner = ",\n".join(json.dumps(p) for p in paths)
     indented = "\n".join(
         ("      " + line if line else line) for line in inner.splitlines()
     )
-    return f'\n{indented}\n    '.encode("utf-8")
+    return f'[\n{indented}\n    ]'.encode("utf-8")
 
 
 def render(registry: Registry) -> bytes:
@@ -66,22 +175,14 @@ def render(registry: Registry) -> bytes:
             f"{filename} missing — tracked runtime config expected in every "
             "checkout; refusing to invent one from scratch")
     raw = runtime_path.read_bytes()
-    new_paths = _render_paths_json(_category_dirs(registry))
-    out, n = _PATHS_RE.subn(
-        lambda m: m.group("block") + new_paths + m.group("end"),
-        raw, count=1)
-    if n != 1:
-        raise RuntimeError(
-            f"{filename}: could not locate the top-level skills.paths array "
-            "(standard two-space indentation expected) — refusing blind "
-            "rewrite")
-    # sanity: the replacement must parse and carry exactly the derived
-    # paths at the TOP LEVEL (a nested "skills" elsewhere must never have
-    # been the thing we replaced).
+    start, end = _locate_top_level_paths_span(raw)
+    out = raw[:start] + _render_paths_array(_category_dirs(registry)) + raw[end:]
+    # sanity: the result must parse and carry exactly the derived paths at
+    # the TOP LEVEL.
     parsed = json.loads(out.decode("utf-8"))
     if parsed.get("skills", {}).get("paths") != _category_dirs(registry):
         raise RuntimeError(
-            f"{filename}: surgical replace produced wrong top-level paths")
+            f"{filename}: span replace produced wrong top-level paths")
     return out
 
 

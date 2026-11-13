@@ -91,3 +91,24 @@ Receipt: /tmp/awiki-rev87-terra-receipt2.txt (P1 + 3×P2, all confirmed)
   loud; +nested-rejection test
 
 Evidence: kilo-surface 12/12; registry-related suite 257/257; --check no drift
+
+## Review round 3 — Terra BLOCK → structural scanner (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt3.txt (P1 + 2×P2)
+
+- P1 F1 indentation anchor provably spoofable (Terra demonstrated a nested
+  skills.paths at two-space indent replacing the WRONG array while the
+  top-level sanity still passed) → replaced regex entirely with a JSON
+  depth-scanner (_locate_top_level_paths_span): full string/escape-aware
+  brace/bracket depth tracking; only the array that is structurally the
+  top-level skills.paths is located and replaced; +regression test using
+  the exact shape Terra proved (nested decoy BEFORE the top-level key,
+  top-level already registry-correct — decoy must survive byte-identical)
+- P2 F2 formatting test only contained-CRLF → now byte-compares the exact
+  same scanner-located span on both sides (prefix and suffix equal)
+- P2 F3 docstring overstated the concurrency guarantee → rewritten as
+  best-effort: mtime+size can miss same-size content edits and anything
+  after the last stat; real serialization needs a lock, out of scope
+
+Evidence: kilo-surface 13/13; registry-related suite 258/258; --check no
+drift; regen rerun is a no-op on the synced file
