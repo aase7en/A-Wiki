@@ -166,3 +166,11 @@ per codepoint, never matches compared keys) + regression test (render must
 succeed with \ud800 present).
 
 Evidence: kilo-surface 18/18; registry-related suite 263/263
+
+## Review round 8 — Terra APPROVE (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt8.txt — VERDICT APPROVE, FINDINGS
+none, verified SHA a144cffc. 8-round cycle: whole-file reserialize →
+surgical regex → JSON depth-scanner → duplicate-key + unicode-escape +
+surrogate closure; byte pipeline; guarded atomic write; 18 contract
+tests. Merge authorized at a144cffc pending hosted CI.
