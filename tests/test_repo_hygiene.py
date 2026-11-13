@@ -68,10 +68,17 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
             ["git", "worktree", "remove", "--force", str(wt)],
             cwd=REPO_ROOT, capture_output=True, text=True, timeout=120)
         if rm.returncode != 0:
+            # terra r4 F2: remove the directory FIRST, then prune so the
+            # registration of a vanished directory is cleared, then verify
+            # the registration is really gone from git's own list
+            shutil.rmtree(wt, ignore_errors=True)
             subprocess.run(["git", "worktree", "prune"], cwd=REPO_ROOT,
                            capture_output=True, timeout=120)
-            shutil.rmtree(wt, ignore_errors=True)
-        cleanup_ok = not wt.exists()
+        listing = subprocess.run(
+            ["git", "worktree", "list", "--porcelain"], cwd=REPO_ROOT,
+            capture_output=True, text=True, timeout=120)
+        cleanup_ok = (not wt.exists()) and (
+            str(wt) not in listing.stdout)
     assert cleanup_ok, (
         "worktree cleanup failed — registration may linger: "
         f"{rm.stderr[:200] if rm.returncode != 0 else 'rmtree incomplete'}")

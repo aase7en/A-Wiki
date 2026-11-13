@@ -124,7 +124,11 @@ def _no_generated_pollution():
         try:
             if kind == "file":
                 data, mode = val
-                if p.is_symlink() or not p.exists() or p.read_bytes() != data:
+                # terra r4 F1: mode-only changes must restore too
+                cur_mode = (not p.is_symlink() and p.exists()
+                            and p.stat().st_mode & 0o7777)
+                if (p.is_symlink() or not p.exists()
+                        or p.read_bytes() != data or cur_mode != mode):
                     if p.is_symlink() or p.exists():
                         p.unlink()
                     p.write_bytes(data)

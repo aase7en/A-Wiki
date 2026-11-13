@@ -83,9 +83,10 @@ Receipt: /tmp/awiki-rev86-terra-receipt2.txt (2×P1 + 2×P2)
 - P1 F1 ls-files could C-quote special names → membership wrong → tracked
   file deleted instead of checkout → `git ls-files -z`; untracked deletion
   now confined to known generator surfaces (wiki/, raw/, exports/, .tmp/,
-  .wiki-graph.json, brain-map.canvas, skills-registry.json) — concurrent
-  processes outside those surfaces are never touched; concurrency
-  limitation documented in the fixture docstring
+  .wiki-graph.json, brain-map.canvas, skills-registry.json); tracked files
+  changed mid-test are reverted tree-wide (r4 doc correction, matches the
+  fixture docstring); concurrency limitation documented in the fixture
+  docstring
 - P1 F2 snapshot lost "file deliberately deleted" state and symlink-ness →
   _snapshot_entry returns (file|symlink|absent); restore re-creates exact
   state incl. keeping deletions deleted and symlinks as links
@@ -120,3 +121,17 @@ Receipt: /tmp/awiki-rev86-terra-receipt3.txt
 
 Evidence: user_journey + hygiene guard + skills_service → 115 passed,
 1 skipped; main clone porcelain-clean after run
+
+## Review round 4 — Terra BLOCK → final residuals (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt4.txt
+
+- P1 F1 mode-only change (bytes equal) was not restored → restore condition
+  now compares current st_mode too, chmods whenever either differs
+- P2 F2 registration could outlive cleanup → rmtree BEFORE prune, then the
+  guard verifies the path is absent from `git worktree list --porcelain`
+- P2 F3 WO round-2 sentence now matches fixture behavior (tracked reverted
+  tree-wide; untracked deletion surface-scoped)
+
+Evidence: hygiene guard 2 passed; trio (user_journey + guard + skills_service)
+115 passed / 1 skipped at round-3 commit; main clone clean after every run
