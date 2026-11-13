@@ -90,3 +90,12 @@ Receipt: /tmp/awiki-rev84-terra-receipt4.txt
 
 Evidence: trio → 112 passed; `git diff --cached --stat 29dc5852` = 4 files
 (COLLAB.md, WO doc, scrape-advanced.py, test_scrape_advanced.py)
+
+## Review round 4 — Terra APPROVE (2026-11-13)
+
+Receipt: /tmp/awiki-rev84-terra-receipt5.txt — VERDICT APPROVE, FINDINGS none.
+All four checks confirmed: diff = exactly the 4 scope files (274+/11-),
+monkeypatch env restore, canary TimeoutExpired skip, no new defects.
+Execution evidence remains author-side (sandbox read-only): trio 112 passed.
+
+Merge authorized at candidate d5f9d28e pending hosted CI.
