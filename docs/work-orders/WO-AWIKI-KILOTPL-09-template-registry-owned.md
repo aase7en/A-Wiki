@@ -67,3 +67,23 @@ Receipt: /tmp/awiki-rev88-terra-receipt1.txt (P1 + P2, both confirmed)
   silently hiding skills
 
 Evidence: render suite 18/18; related suite 98/98
+
+
+## Round 2 residual — transition runbook (2026-11-13)
+
+The remaining cross-machine risk CANNOT be closed by repo-side code
+alone (old renderers by definition lack any new guard). Transition
+measures shipped with this slice:
+(a) updated machines fail LOUD on any unresolved token (assert)
+(b) sync self-check: a half-updated checkout cannot push the token
+    template to the shared Drive
+(c) evidence trail: sync writes template-needs-renderer-token-v1 next
+    to the Drive template, explaining the requirement to any machine
+(d) POST-MERGE RUNBOOK (executed by GLM immediately after merge):
+    1. Mac (primary renderer): git pull — fast-forward
+    2. Windows (online, checkout behind): git pull --ff-only —
+       does NOT touch the user's untracked files or the one modified
+       tracked file (different path)
+    3. Verify: render once on Mac; confirm no token in output
+    Pi5/Hermes does not render desktop kilo configs (no
+    render_kilo_config consumer) — not part of the blast radius.

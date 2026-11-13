@@ -398,6 +398,17 @@ def sync_template_repo_to_drive(drive_data: Path) -> bool:
         return False  # already in sync
     # Atomic write — never leave Drive template half-written.
     _atomic_write(drive_tpl, repo_text)
+    # KILOTPL-09 terra r2: evidence trail on the SHARED Drive — any machine
+    # (any renderer version) can cat this marker to learn the new template
+    # requires a renderer that expands __SKILLS_PATHS__ (repo commit
+    # 'feat(kilotpl-09)'). Old renderers ignore it (they never read it),
+    # but humans and the post-merge runbook can.
+    _atomic_write(
+        drive_tpl.parent / "template-needs-renderer-token-v1",
+        "This Drive template uses __SKILLS_PATHS__.\n"
+        "Renderers without _expand_skills_paths (pre-KILOTPL-09)\n"
+        "will leave the token unresolved. Run `git pull` on the A-Wiki\n"
+        "checkout that renders this config.\n")
     print(f"ℹ️  synced repo template → Drive ({len(repo_text)} bytes)")
     return True
 
