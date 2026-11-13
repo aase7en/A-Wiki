@@ -42,13 +42,16 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
         proc = subprocess.run(
             [sys.executable, "-m", "pytest", *OFFENDERS, "-q", "--no-header"],
             cwd=wt, capture_output=True, text=True, timeout=900, env=env)
-        # pytest must finish normally (0 = all pass, 1 = some test failed);
-        # >=2 means an internal error and proves nothing about cleanliness.
-        assert proc.returncode in (0, 1), (
-            f"pytest crashed (rc={proc.returncode}):\n{proc.stderr[-800:]}")
+        # terra r1 F2: offenders must PASS outright in a fresh worktree —
+        # accepting rc=1 would green-light failures that never reach the
+        # pollution vector (false-green guard).
+        assert proc.returncode == 0, (
+            f"offenders failed in fresh worktree (rc={proc.returncode}):\n"
+            f"{proc.stdout[-600:]}\n{proc.stderr[-400:]}")
         status = subprocess.run(
             ["git", "status", "--porcelain"],
             cwd=wt, capture_output=True, text=True, timeout=120)
+        assert status.returncode == 0, "git status failed in worktree"
         assert status.stdout.strip() == "", (
             "known offenders left the worktree dirty — repo pollution "
             f"regression:\n{status.stdout}")

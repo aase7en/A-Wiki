@@ -37,35 +37,80 @@ MCP = str(REPO_ROOT / "scripts" / "mcp-wiki-server.py")
 SECRET_TOKEN = "ghp_" + "JourneyE2E" + "0123456789abcdefghijklmnop"  # 36 chars
 
 
-def _porcelain() -> str:
-    r = subprocess.run(["git", "status", "--porcelain"], cwd=REPO_ROOT,
-                       capture_output=True, text=True, timeout=60)
-    return r.stdout
+def _git_status_z() -> dict:
+    """path → bytes snapshot (WO-AWIKI-HYGIENE-07 terra r1 F1/F3).
+
+    Uses `git status --porcelain -z -uall` (NUL-separated, per-file untracked,
+    no C-quoting) and returns {relative_path: bytes_of_the_file_or_None} for
+    every non-clean path. Renames/copies emit their ORIGINAL path as an extra
+    NUL field — recorded with a None snapshot so restore can resurrect it
+    from git. Raises on git failure (never silent)."""
+    r = subprocess.run(
+        ["git", "status", "--porcelain", "-z", "-uall"], cwd=REPO_ROOT,
+        capture_output=True, timeout=60)
+    if r.returncode != 0:
+        raise RuntimeError(f"git status failed rc={r.returncode}: "
+                           f"{r.stderr.decode(errors='replace')[:200]}")
+    fields = r.stdout.decode("utf-8", "surrogateescape").split("\0")
+    entries: dict = {}
+    i = 0
+    while i < len(fields):
+        f = fields[i]
+        i += 1
+        if not f:
+            continue
+        xy, path = f[:2], f[3:]
+        if xy[0] in "RC":  # -z: original path follows as its own field
+            orig = fields[i]
+            i += 1
+            if orig and orig not in entries:
+                p = REPO_ROOT / orig
+                entries[orig] = p.read_bytes() if p.exists() else None
+        p = REPO_ROOT / path
+        entries[path] = p.read_bytes() if p.exists() else None
+    return entries
 
 
 @pytest.fixture(autouse=True)
 def _no_generated_pollution():
-    """WO-AWIKI-HYGIENE-07 — destructive buttons here (wiki_regen_index et al.)
-    can run real generators against REPO_ROOT. Snapshot git status before the
-    test and, afterwards, restore ONLY the paths that changed during it:
-    tracked files that were clean at start are checkouted back; untracked
-    entries that appeared are removed. Pre-existing developer dirty state is
-    never touched."""
-    before = set(_porcelain().splitlines())
+    """WO-AWIKI-HYGIENE-07 — destructive buttons here (wiki_regen_index et
+    al.) can run real generators against REPO_ROOT. Every path that is
+    non-clean before the test is BYTE-snapshotted; afterwards:
+    - a path whose bytes changed (or vanished) is restored byte-exact —
+      this also recovers developer edits that a generator overwrote
+    - a NEW non-clean path (created/modified by the test only) is reverted:
+      tracked → git checkout --; untracked → deleted
+    Pre-existing developer dirty state is restored to ITS OWN bytes, never
+    discarded. Fails loud if git or the filesystem refuses."""
+    before = _git_status_z()
     yield
-    for line in _porcelain().splitlines():
-        if line in before:
+    after = _git_status_z()
+    for path, snap in before.items():
+        p = REPO_ROOT / path
+        if snap is None:
             continue
-        path = line[3:].strip('"')
-        if line.startswith("??"):
-            target = REPO_ROOT / path
-            if target.is_dir():
-                shutil.rmtree(target, ignore_errors=True)
-            else:
-                target.unlink(missing_ok=True)
-        else:
+        try:
+            if not p.exists() or p.read_bytes() != snap:
+                p.write_bytes(snap)
+        except OSError as e:
+            raise RuntimeError(f"pollution guard could not restore {path}: {e}")
+    for path in after:
+        if path in before:
+            continue
+        p = REPO_ROOT / path
+        if path in _tracked_files():
             subprocess.run(["git", "checkout", "--", path], cwd=REPO_ROOT,
-                           capture_output=True, timeout=60)
+                           capture_output=True, timeout=60, check=True)
+        else:
+            p.unlink(missing_ok=True)
+
+
+def _tracked_files() -> set:
+    r = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT,
+                       capture_output=True, timeout=60)
+    if r.returncode != 0:
+        raise RuntimeError("git ls-files failed")
+    return set(r.stdout.decode("utf-8", "surrogateescape").splitlines())
 
 MACHINE_PATH_FILE = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "secret.txt"
 

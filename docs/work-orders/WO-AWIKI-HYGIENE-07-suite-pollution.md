@@ -54,3 +54,24 @@ that vector was already closed by the PR #84/#85 hermetic e2e work.
   porcelain-diff restore: only paths changed during the test are reverted
   (checkout for tracked-that-were-clean, delete for new untracked);
   pre-existing dev dirty state never touched
+
+## Review round 1 — Terra BLOCK → redesign (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt1.txt (2×P1 + 1×P2, all confirmed)
+
+- P1 F1 fixture compared whole porcelain LINES → could discard dev unstaged
+  edits (M→MM seen as new) and could NOT recover dev bytes a generator had
+  overwritten (line unchanged M→M) → redesigned: _git_status_z() parses
+  `status --porcelain -z -uall` (no C-quoting, per-file untracked, rename
+  originals captured) and snapshots BYTES of every non-clean path; restore
+  writes back byte-exact (recovers overwritten dev edits), new paths only
+  are reverted (tracked → git checkout, untracked → unlink); _tracked_files
+  distinguishes them; every git call checked, never silent
+- P1 F2 guard accepted rc=1 (false-green: failures before reaching the
+  pollution vector) → offenders must PASS (rc==0) in the fresh worktree;
+  git status returncode now checked
+- P2 F3 silent parser/cleanup failures → covered by the -z parser + checked
+  returncodes + check=True on checkout
+
+Evidence: test_user_journey_e2e 38 passed 1 skipped with the new fixture;
+main clone porcelain-clean after the run (0 lines)
