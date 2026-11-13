@@ -49,16 +49,38 @@ def _skip_ws(raw: bytes, i: int) -> int:
     return i
 
 
+_SIMPLE_ESCAPES = {
+    b'"': b'"', b"\\": b"\\", b"/": b"/", b"b": b"\b",
+    b"f": b"\f", b"n": b"\n", b"r": b"\r", b"t": b"\t",
+}
+
+
 def _read_string_at(raw: bytes, i: int) -> tuple[bytes, int]:
-    """raw[i] is the opening quote; returns (unescaped_value, end_index)
-    where end_index points just past the closing quote."""
+    r"""raw[i] is the opening quote; returns (decoded_value, end_index)
+    where end_index points just past the closing quote. Escapes are
+    decoded EXACTLY like a JSON parser (terra r5 F1: without \uXXXX
+    decoding, "sk\\u0069lls" would hide from key comparison while
+    json.loads treats it as "skills")."""
     assert raw[i:i + 1] == b'"'
     j = i + 1
     buf = bytearray()
-    while j < len(raw):
+    n = len(raw)
+    while j < n:
         c = raw[j:j + 1]
         if c == b"\\":
-            buf += raw[j + 1:j + 2]
+            nxt = raw[j + 1:j + 2]
+            if nxt == b"u":
+                cp = int(raw[j + 2:j + 6].decode("ascii"), 16)
+                step = 6
+                if 0xD800 <= cp <= 0xDBFF and raw[j + 6:j + 8] == b"\\u":
+                    lo = int(raw[j + 8:j + 12].decode("ascii"), 16)
+                    if 0xDC00 <= lo <= 0xDFFF:
+                        cp = 0x10000 + ((cp - 0xD800) << 10) + (lo - 0xDC00)
+                        step = 12
+                buf += chr(cp).encode("utf-8")
+                j += step
+                continue
+            buf += _SIMPLE_ESCAPES.get(nxt, nxt)
             j += 2
             continue
         if c == b'"':

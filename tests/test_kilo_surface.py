@@ -178,7 +178,7 @@ class TestKiloRuntimeContract:
         derived = gen._category_dirs(reg)
         # terra r4 F2: EXACT proven shape — the nested decoy sits at TWO-SPACE
         # indentation (what fooled the old regex), before the top-level key
-        derived_one = derived[0] if derived else "./skills/x"
+        derived_full = json.dumps(derived)
         text = (
             '{\n'
             '  "$schema": "x",\n'
@@ -186,7 +186,7 @@ class TestKiloRuntimeContract:
             '  "skills": {"paths": ["./decoy-should-survive"]},\n'
             '  "indexing": true\n'
             '  },\n'
-            f'  "skills": {{"paths": ["{derived_one}"]}}\n'
+            f'  "skills": {{"paths": {derived_full}}}\n'
             '}\n'
         )
         kilo.write_text(text, encoding="utf-8")

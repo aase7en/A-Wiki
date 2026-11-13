@@ -130,3 +130,17 @@ Receipt: /tmp/awiki-rev87-terra-receipt4.txt (P1 + 2×P2)
   scanner-located span on the CRLF fixture itself
 
 Evidence: kilo-surface 15/15; registry-related suite 260/260; --check no drift
+
+## Review round 5 — Terra BLOCK → JSON-exact escape decoding (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt5.txt (P1)
+
+- P1 F1 unicode-escaped duplicate keys ("sk\u0069lls" / "pa\u0074hs") hid
+  from the scanner while json.loads merged them → _read_string_at now
+  decodes escapes EXACTLY like a JSON parser (\uXXXX incl. surrogate
+  pairs, all simple escapes) before key comparison; +two escaped-duplicate
+  regression tests (both levels)
+- r5 note: decoy fixture now carries the FULL registry-derived list (was
+  first-entry-only), matching its docstring's "already registry-correct"
+
+Evidence: kilo-surface 15/15; registry-related suite 260/260; --check no drift
