@@ -41,6 +41,7 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
         ["git", "worktree", "add", "--detach", str(wt), "HEAD"],
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=120)
     assert add.returncode == 0, f"worktree add failed: {add.stderr}"
+    cleanup_ok = True
     try:
         env = dict(os.environ)
         env["PYTHONPATH"] = ""
@@ -61,7 +62,8 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
             "known offenders left the worktree dirty — repo pollution "
             f"regression:\n{status.stdout}")
     finally:
-        # terra r2 F4: cleanup failure must be visible, not silent
+        # terra r2 F4 + r3 F2: cleanup failure must be VISIBLE — if the
+        # worktree or its registration survives every fallback, fail
         rm = subprocess.run(
             ["git", "worktree", "remove", "--force", str(wt)],
             cwd=REPO_ROOT, capture_output=True, text=True, timeout=120)
@@ -69,6 +71,10 @@ def test_known_offenders_leave_fresh_worktree_clean(tmp_path):
             subprocess.run(["git", "worktree", "prune"], cwd=REPO_ROOT,
                            capture_output=True, timeout=120)
             shutil.rmtree(wt, ignore_errors=True)
+        cleanup_ok = not wt.exists()
+    assert cleanup_ok, (
+        "worktree cleanup failed — registration may linger: "
+        f"{rm.stderr[:200] if rm.returncode != 0 else 'rmtree incomplete'}")
 
 
 def test_guard_file_list_is_sorted_unique():

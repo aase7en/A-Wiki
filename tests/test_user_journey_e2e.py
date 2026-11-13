@@ -45,7 +45,9 @@ def _snapshot_entry(p: Path):
     if p.is_symlink():
         return ("symlink", os.readlink(p))
     if p.exists():
-        return ("file", p.read_bytes())
+        # terra r3 F1: preserve the mode too — unlink+rewrite must not
+        # silently change executable bits or permissions
+        return ("file", p.read_bytes(), p.stat().st_mode & 0o7777)
     return ("absent", None)
 
 
@@ -74,10 +76,12 @@ def _git_status_z() -> dict:
             raise RuntimeError(f"malformed porcelain record: {f[:80]!r}")
         xy, path = f[:2], f[3:]
         if "R" in xy or "C" in xy:  # original path follows as its own field
+            if i >= len(fields) or not fields[i]:
+                raise RuntimeError(
+                    f"rename/copy record missing its original path: {f[:80]!r}")
             orig = fields[i]
             i += 1
-            if orig:
-                entries.setdefault(orig, _snapshot_entry(REPO_ROOT / orig))
+            entries.setdefault(orig, _snapshot_entry(REPO_ROOT / orig))
         entries[path] = _snapshot_entry(REPO_ROOT / path)
     return entries
 
@@ -101,24 +105,30 @@ def _no_generated_pollution():
     - snapshotted paths are restored EXACTLY — overwritten dev edits are
       recovered, deliberately-deleted files stay deleted, symlinks stay
       symlinks
-    - NEW non-clean paths are reverted: tracked → git checkout --;
-      untracked → deleted, but ONLY inside known generator surfaces
+    - NEW non-clean paths are reverted: tracked → git checkout -- (anywhere
+      in the tree — by definition the developer had that file clean before
+      the test); untracked → deleted, but ONLY inside known generator
+      surfaces
     Known limitation (concurrency): changes made by OTHER processes during
-    the test are indistinguishable from the test's own and will be rolled
-    back within the surfaces above — do not run parallel writers on this
-    checkout while this suite runs."""
+    the test are indistinguishable from the test's own — tracked files are
+    rolled back tree-wide and untracked files inside generator surfaces are
+    deleted. Do not run parallel writers on this checkout while this suite
+    runs."""
     before = _git_status_z()
     yield
     after = _git_status_z()
     for path, snap in before.items():
         p = REPO_ROOT / path
-        kind, val = snap
+        kind = snap[0]
+        val = snap[1] if kind == "symlink" else (snap[1], snap[2]) if kind == "file" else None
         try:
             if kind == "file":
-                if p.is_symlink() or not p.exists() or p.read_bytes() != val:
+                data, mode = val
+                if p.is_symlink() or not p.exists() or p.read_bytes() != data:
                     if p.is_symlink() or p.exists():
                         p.unlink()
-                    p.write_bytes(val)
+                    p.write_bytes(data)
+                    os.chmod(p, mode)
             elif kind == "symlink":
                 if not (p.is_symlink() and os.readlink(p) == val):
                     if p.is_symlink() or p.exists():

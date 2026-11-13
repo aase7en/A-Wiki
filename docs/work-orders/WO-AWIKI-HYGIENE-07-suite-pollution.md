@@ -105,3 +105,18 @@ test_skills_service.py + TestJourney2bMcpButtons (the class pressing
 wiki_regen_index for real). rc==0 remains required for those targets.
 
 Evidence: tests/test_repo_hygiene.py 2 passed (9.8s)
+
+## Review round 3 — Terra BLOCK → mode/visibility/malformed completes (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt3.txt
+
+- P1 F1 restore lost file mode → snapshot keeps st_mode & 0o7777, restore
+  chmods after rewrite
+- P2 F2 guard cleanup could pass silently → cleanup_ok asserted post-finally
+  (worktree dir must be gone)
+- P2 F3 R/C record missing original path now raises (malformed = loud)
+- P2 F4 concurrency docstring now matches behavior (tracked rolled back
+  tree-wide; untracked deleted only in generator surfaces)
+
+Evidence: user_journey + hygiene guard + skills_service → 115 passed,
+1 skipped; main clone porcelain-clean after run
