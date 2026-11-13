@@ -156,3 +156,13 @@ Receipt: /tmp/awiki-rev86-terra-receipt6.txt
   --porcelain -z, Path.resolve() comparison on both sides
 
 Evidence: guard 2 passed
+
+## Review round 7 — Terra APPROVE (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt7.txt — VERDICT APPROVE, FINDINGS none.
+7-round cycle total: 6 BLOCKs (2×P1 initial design flaws + escalating edge
+hardening) → final design: byte+mode+symlink+absent snapshots, -z parsers
+everywhere, surface-scoped deletion, visible cleanup with structured
+registration check, targeted rc==0 guard.
+
+Merge authorized at candidate e3598dc0 pending hosted CI.
