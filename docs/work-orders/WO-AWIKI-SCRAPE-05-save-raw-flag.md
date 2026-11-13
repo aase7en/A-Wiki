@@ -29,3 +29,12 @@ override stem.
   file written at the override path containing the article marker.
 - Dead expression `save_raw=not args.save_raw or True` removed; default always-save
   unchanged; sidecar follows override stem (documented).
+
+## Review status checkpoint — 2026-11-13 ~01:30
+
+PR #84 open at candidate `de746fff`, CI pending. Independent review BLOCKED by
+simultaneous rate limits: GPT-6.1-terra (OpenAI usage limit, resets 09:53 local
+per receipt /tmp/awiki-rev84-terra-receipt.txt) AND session subagent quota.
+Per process (no merge on author self-report): PR stays OPEN with evidence attached;
+first action when either engine recovers = independent review → merge gates.
+Not asking the operator: this is a rate-limit wait, not a decision.
