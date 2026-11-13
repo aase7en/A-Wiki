@@ -35,3 +35,20 @@ low risk once runtime is regen-owned.
 
 - [x] Claim row WO-AWIKI-KILOSURF-08
 - [x] HYGIENE-07 DONE marker (this docs commit)
+
+## Implementation (2026-11-13)
+
+- RED: tests/test_kilo_surface.py 4 tests (equality with registry render,
+  known-gap categories present, no non-dir entries, unrelated config
+  preserved) — 3 failed against unfixed tree
+- NEW gen_kilo_runtime.py: renders .kilo/kilo.jsonc from its current content,
+  replaces ONLY skills.paths (fails loud if the tracked file is missing)
+- regen-skill-surfaces.py: ROOT_SURFACES output class + generator wired
+  (14 surfaces; --check guards both directions)
+- Found-and-fixed adjacent bug: gen_kilo._category_dirs leaked single-file
+  personas (agents/*.md) into skills-paths — now filtered to real skill
+  category roots (skills/, agent-skills/); cross_agent_visibility test
+  updated to enforce both directions
+
+Evidence: kilo-surface 4/4; registry-related suite 249/249;
+regen --check "No drift — 14 surface(s)"

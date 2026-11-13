@@ -130,16 +130,23 @@ class TestCrossAgentVisibility:
         assert not orphans, f"agent-scoped skill(s) visible to no agent: {orphans[:10]}"
 
     def test_kilo_paths_cover_canonical_dirs(self, registry: Registry) -> None:
-        """Kilo paths must include the top-level dir of every canonical repo skill."""
+        """Kilo paths must include the top-level dir of every canonical repo
+        skill. KILOSURF-08: skill-category roots only (skills/,
+        agent-skills/) — single-file personas under agents/ are not scannable
+        skill dirs and must NOT appear as paths."""
         out = gen_kilo.render(registry)
         for skill in registry.canonical_for_agent("kilo"):
             if skill.get("source") != "repo":
                 continue
             path = skill.get("path", "")
             parts = Path(path).parts
-            if len(parts) >= 2:
+            if len(parts) >= 2 and parts[0] in ("skills", "agent-skills"):
                 top = f"./{parts[0]}/{parts[1]}"
                 assert top in out, f"Kilo paths missing {top} for {skill['name']}"
+            elif parts and parts[0] == "agents":
+                top = f"./{parts[0]}/{parts[1]}"
+                assert top not in out, (
+                    f"persona {skill['name']} leaked into kilo skills.paths")
 
     def test_no_drift(self) -> None:
         """Generated surfaces on disk must match what the registry would produce."""

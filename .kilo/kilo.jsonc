@@ -2,14 +2,28 @@
   "$schema": "https://app.kilo.ai/config.json",
   "skills": {
     "paths": [
-      "./agent-skills",
+      "./agent-skills/extensibility",
+      "./agent-skills/swarm-intelligence",
+      "./skills/anthropic-skills",
+      "./skills/assessment-generator",
+      "./skills/awiki",
       "./skills/claude-code",
-      "./skills/engineering",
-      "./skills/productivity",
+      "./skills/claude-thai",
       "./skills/delegation",
+      "./skills/domain",
+      "./skills/ecosystem",
+      "./skills/engineering",
+      "./skills/engineering-lifecycle",
+      "./skills/gamedev-skills",
+      "./skills/mattpocock",
+      "./skills/openmed",
+      "./skills/productivity",
+      "./skills/render-html",
+      "./skills/taste-skill",
+      "./skills/transitions-dev",
+      "./skills/ui-ux-pro-max",
       "./skills/wiki",
-      "./skills/research",
-      "./skills/mattpocock"
+      "./skills/word-generator"
     ]
   },
   "indexing": {

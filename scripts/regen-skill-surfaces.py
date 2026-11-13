@@ -67,6 +67,7 @@ from skills_registry.generators import (  # noqa: E402
     gen_gemini,
     gen_hermes,
     gen_kilo,
+    gen_kilo_runtime,
     gen_openclaw,
     gen_skill_index,
     gen_windsurf,
@@ -100,11 +101,20 @@ GENERATORS = {
     # A-Suite v2 C3 — intent→skill routing table. Also wiki/: it is the auto-pick
     # substrate for agents with no hook system, so it must be readable, not a blob.
     gen_a_router.filename: gen_a_router,
+    # WO-AWIKI-KILOSURF-08 — runtime surface: keeps the skills.paths block of
+    # .kilo/kilo.jsonc registry-owned (repo-root-relative, see ROOT_SURFACES).
+    gen_kilo_runtime.filename: gen_kilo_runtime,
 }
 
 # Surfaces that belong in wiki/ rather than SURFACES_DIR: agent-readable brains,
 # not machine blobs. Everything else lands in the gitignored generated/ dir.
 WIKI_SURFACES = {gen_skill_index.filename, gen_a_router.filename}
+
+# Repo-root-relative runtime surfaces (paths with slashes). Unlike generated/
+# blobs or wiki/ brains, these are live agent configs that a tool re-reads at
+# startup; regen owns exactly one key of them (kilo skills.paths) and never
+# the operator-owned blocks around it.
+ROOT_SURFACES = {gen_kilo_runtime.filename}
 
 
 def _now_iso() -> str:
@@ -131,6 +141,8 @@ def _output_path(filename: str) -> Path:
     """
     if filename in WIKI_SURFACES:
         return REPO_ROOT / "wiki" / filename
+    if filename in ROOT_SURFACES:
+        return REPO_ROOT / filename
     return SURFACES_DIR / filename
 
 
