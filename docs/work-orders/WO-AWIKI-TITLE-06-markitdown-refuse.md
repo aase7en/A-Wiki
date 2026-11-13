@@ -116,3 +116,15 @@ Receipt: /tmp/awiki-rev85-terra-receipt4.txt (2×P2 residual)
   runs; +decision-table test covers all 5 rows of _adopt_converted_md
 
 Evidence: file 67/67; trio 128/128
+
+## Review round 5 — Terra BLOCK → decode-proof adoption (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt5.txt (2×P2 residual)
+
+- F1 UnicodeDecodeError (partial write cutting a multibyte char) escaped
+  the OSError-only except → widened to (OSError, UnicodeDecodeError);
+  undecodable content is never adoptable provenance
+- F2 decision-table gained the 2 missing rows: md_saved=True wins under
+  dry-run; undecodable Thai partial refused
+
+Evidence: trio 129/129

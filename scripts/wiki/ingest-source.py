@@ -128,7 +128,9 @@ def _adopt_converted_md(md_saved: bool, dry_run: bool,
         return False
     try:
         return raw_md.read_text(encoding="utf-8") == text
-    except OSError:
+    except (OSError, UnicodeDecodeError):
+        # terra r5 F1: a partial write can cut a multibyte character in
+        # half — undecodable content is never adoptable provenance.
         return False
 
 

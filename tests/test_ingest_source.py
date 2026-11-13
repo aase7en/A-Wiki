@@ -828,3 +828,11 @@ class TestBinaryRefusal:
         # dry run, unreadable file → refuse
         assert ingest_source_mod._adopt_converted_md(
             False, True, tmp_path / "raw" / "missing.md", "full text") is False
+        # md_saved=True wins even in dry run (complete write this call)
+        assert ingest_source_mod._adopt_converted_md(
+            True, True, part, "full text") is True
+        # dry run, undecodable partial (multibyte cut mid-character) → refuse
+        undec = tmp_path / "raw" / "undecodable.md"
+        undec.write_bytes("เนื้อความ".encode("utf-8")[:5])
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, undec, "เนื้อความ") is False
