@@ -67,6 +67,7 @@ from skills_registry.generators import (  # noqa: E402
     gen_gemini,
     gen_hermes,
     gen_kilo,
+    gen_kilo_runtime,
     gen_openclaw,
     gen_skill_index,
     gen_windsurf,
@@ -100,11 +101,20 @@ GENERATORS = {
     # A-Suite v2 C3 — intent→skill routing table. Also wiki/: it is the auto-pick
     # substrate for agents with no hook system, so it must be readable, not a blob.
     gen_a_router.filename: gen_a_router,
+    # WO-AWIKI-KILOSURF-08 — runtime surface: keeps the skills.paths block of
+    # .kilo/kilo.jsonc registry-owned (repo-root-relative, see ROOT_SURFACES).
+    gen_kilo_runtime.filename: gen_kilo_runtime,
 }
 
 # Surfaces that belong in wiki/ rather than SURFACES_DIR: agent-readable brains,
 # not machine blobs. Everything else lands in the gitignored generated/ dir.
 WIKI_SURFACES = {gen_skill_index.filename, gen_a_router.filename}
+
+# Repo-root-relative runtime surfaces (paths with slashes). Unlike generated/
+# blobs or wiki/ brains, these are live agent configs that a tool re-reads at
+# startup; regen owns exactly one key of them (kilo skills.paths) and never
+# the operator-owned blocks around it.
+ROOT_SURFACES = {gen_kilo_runtime.filename}
 
 
 def _now_iso() -> str:
@@ -131,6 +141,8 @@ def _output_path(filename: str) -> Path:
     """
     if filename in WIKI_SURFACES:
         return REPO_ROOT / "wiki" / filename
+    if filename in ROOT_SURFACES:
+        return REPO_ROOT / filename
     return SURFACES_DIR / filename
 
 
@@ -149,7 +161,12 @@ def cmd_regenerate(args: argparse.Namespace) -> int:
         content = gen.render(reg)
         out = _output_path(filename)
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(content, encoding="utf-8")
+        if hasattr(gen, "write_atomic"):
+            # KILOSURF-08 terra r1: runtime configs need concurrent-modification
+            # guards + atomic replace; a generator opts in by defining it.
+            gen.write_atomic(reg, out)
+        else:
+            out.write_text(content, encoding="utf-8")
         rel = out.relative_to(REPO_ROOT)
         print(f"   ✓ {rel} ({len(content)} bytes)")
     print(f"✅ Surfaces regenerated.")
@@ -187,9 +204,19 @@ def cmd_check(args: argparse.Namespace) -> int:
             print(f"🚨 Drift detected: {filename} missing at {out}", file=sys.stderr)
             print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
             return 1
-        actual = out.read_text(encoding="utf-8")
-        # Use the same timestamp normaliser as the drift module.
-        if drift_mod._normalize(actual) != drift_mod._normalize(expected):
+        # KILOSURF-08 terra r2: byte surfaces (gen_kilo_runtime) must be
+        # compared as bytes — read_text would newline-translate CRLF away
+        actual = (out.read_bytes() if isinstance(expected, bytes)
+                  else out.read_text(encoding="utf-8"))
+        # Use the same timestamp normaliser as the drift module (str-based;
+        # byte surfaces are decoded for comparison only).
+        actual_n = (drift_mod._normalize(actual.decode("utf-8"))
+                    if isinstance(actual, bytes)
+                    else drift_mod._normalize(actual))
+        expected_n = (drift_mod._normalize(expected.decode("utf-8"))
+                      if isinstance(expected, bytes)
+                      else drift_mod._normalize(expected))
+        if actual_n != expected_n:
             print(f"🚨 Drift detected: {filename} content does not match registry output", file=sys.stderr)
             print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
             return 1

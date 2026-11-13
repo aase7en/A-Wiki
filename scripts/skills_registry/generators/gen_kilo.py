@@ -26,8 +26,11 @@ def _category_dirs(registry: Registry) -> list[str]:
             continue
         # Use the first segment after the repo root (e.g. "skills", "agent-skills")
         # plus the category dir, so Kilo scans a manageable subtree.
+        # KILOSURF-08: only skill-category ROOTS qualify — single .md files
+        # such as personas under agents/ are not scannable skill dirs and
+        # previously leaked into the paths list.
         parts = Path(path).parts
-        if len(parts) >= 2:
+        if len(parts) >= 2 and parts[0] in ("skills", "agent-skills"):
             top = "/".join(parts[:2])
             if top not in seen:
                 seen.add(top)
