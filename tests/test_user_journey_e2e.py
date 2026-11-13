@@ -35,6 +35,38 @@ CLI_MODULE = ["-m", "conductor"]  # documented entry: python -m conductor
 MCP = str(REPO_ROOT / "scripts" / "mcp-wiki-server.py")
 
 SECRET_TOKEN = "ghp_" + "JourneyE2E" + "0123456789abcdefghijklmnop"  # 36 chars
+
+
+def _porcelain() -> str:
+    r = subprocess.run(["git", "status", "--porcelain"], cwd=REPO_ROOT,
+                       capture_output=True, text=True, timeout=60)
+    return r.stdout
+
+
+@pytest.fixture(autouse=True)
+def _no_generated_pollution():
+    """WO-AWIKI-HYGIENE-07 — destructive buttons here (wiki_regen_index et al.)
+    can run real generators against REPO_ROOT. Snapshot git status before the
+    test and, afterwards, restore ONLY the paths that changed during it:
+    tracked files that were clean at start are checkouted back; untracked
+    entries that appeared are removed. Pre-existing developer dirty state is
+    never touched."""
+    before = set(_porcelain().splitlines())
+    yield
+    for line in _porcelain().splitlines():
+        if line in before:
+            continue
+        path = line[3:].strip('"')
+        if line.startswith("??"):
+            target = REPO_ROOT / path
+            if target.is_dir():
+                shutil.rmtree(target, ignore_errors=True)
+            else:
+                target.unlink(missing_ok=True)
+        else:
+            subprocess.run(["git", "checkout", "--", path], cwd=REPO_ROOT,
+                           capture_output=True, timeout=60)
+
 MACHINE_PATH_FILE = "C" + chr(58) + chr(92) + "Users" + chr(92) + "me" + chr(92) + "secret.txt"
 
 

@@ -42,3 +42,15 @@ that vector was already closed by the PR #84/#85 hermetic e2e work.
 
 - [x] Claim row WO-AWIKI-HYGIENE-07 (RECONCILED)
 - [x] TITLE-06 DONE marker (this docs commit)
+
+## Implementation (2026-11-13)
+
+- RED: tests/test_repo_hygiene.py guard — fresh worktree at HEAD runs the two
+  offenders, asserts porcelain-clean (by design it evaluates HEAD, so it
+  stays RED until the fixes are committed)
+- fix 1: skills_service test restores skills-registry.json byte-exact
+  (read_bytes/write_bytes) instead of re-dumping JSON
+- fix 2: user_journey_e2e autouse _no_generated_pollution fixture —
+  porcelain-diff restore: only paths changed during the test are reverted
+  (checkout for tracked-that-were-clean, delete for new untracked);
+  pre-existing dev dirty state never touched
