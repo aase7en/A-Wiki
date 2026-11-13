@@ -127,4 +127,14 @@ Receipt: /tmp/awiki-rev85-terra-receipt5.txt (2×P2 residual)
 - F2 decision-table gained the 2 missing rows: md_saved=True wins under
   dry-run; undecodable Thai partial refused
 
-Evidence: trio 129/129
+Evidence: trio 128/128 (an earlier draft of this line said 129 — typo, corrected)
+
+
+## Review round 6 — Terra APPROVE (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt6.txt — VERDICT APPROVE, FINDINGS none.
+All three checks confirmed: (OSError, UnicodeDecodeError) both refused;
+decision table complete incl. md_saved-wins-dry-run and undecodable Thai
+partial; no new defects; scope exactly the 4 files.
+
+Merge authorized at candidate eabedf80 pending hosted CI.
