@@ -72,19 +72,69 @@ class TestKiloRuntimeContract:
     """terra r1 F1-F3: atomicity, concurrency, formatting, failure modes."""
 
     def test_render_preserves_formatting_outside_paths(self):
-        """Surgical replace: bytes outside the paths array must be identical,
-        including any unusual whitespace an operator keeps there."""
+        """Surgical replace: BYTES outside the paths array must be identical
+        (terra r2: no universal-newline translation — CRLF survives)."""
         gen = _gen()
         reg = Registry.load(REGISTRY_PATH)
         rendered = gen.render(reg)
-        current = RUNTIME_PATH.read_text(encoding="utf-8")
+        assert isinstance(rendered, bytes)
+        current = RUNTIME_PATH.read_bytes()
 
-        def without_paths(t):
+        def without_paths(b):
             return re.sub(
-                r'("skills"\s*:\s*\{\s*"paths"\s*:\s*\[)[^\]]*(\])',
-                r"\1...\2", t, count=1)
+                rb'("skills"\s*:\s*\{\s*"paths"\s*:\s*\[)[^\]]*(\])',
+                rb"\1...\2", b, count=1)
 
         assert without_paths(rendered) == without_paths(current)
+
+    def test_render_preserves_crlf_outside_paths(self, tmp_path, monkeypatch):
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        # CRLF everywhere — must survive outside the replaced array
+        text = RUNTIME_PATH.read_text(encoding="utf-8")
+        crlf = text.replace("\n", "\r\n")
+        kilo.write_bytes(crlf.encode("utf-8"))
+        out = gen.render(reg).decode("utf-8")
+        # every line ending outside the paths array is still CRLF
+        body = re.sub(
+            r'("skills"\s*:\s*\{\s*"paths"\s*:\s*\[)[^\]]*(\])',
+            r"\1...\2", out, count=1)
+        assert "\r\n" in body
+
+    def test_render_rejects_nested_skills_only(self, tmp_path, monkeypatch):
+        """terra r2 F4: a nested skills.paths (wrong indentation) must NOT
+        satisfy the top-level anchor — fail loud, never blind rewrite."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        kilo.write_text(
+            '{\n  "$schema": "x",\n  "deep": {\n    "skills": '
+            '{"paths": ["./wrong"]}\n  }\n}\n', encoding="utf-8")
+        with pytest.raises(RuntimeError):
+            gen.render(reg)
+
+    def test_write_atomic_preserves_file_mode(self, tmp_path, monkeypatch):
+        """terra r2 F3: mkstemp creates 0600; the tracked config is 0644 —
+        the replace must keep the original mode."""
+        gen = _gen()
+        reg = Registry.load(REGISTRY_PATH)
+        monkeypatch.setattr(gen, "REPO_ROOT", tmp_path)
+        kilo = tmp_path / ".kilo" / "kilo.jsonc"
+        kilo.parent.mkdir()
+        stale = json.loads(RUNTIME_PATH.read_text(encoding="utf-8"))
+        stale["skills"]["paths"] = ["./skills/old-only"]
+        kilo.write_text(json.dumps(stale, indent=2), encoding="utf-8")
+        target_mode = 0o644
+        kilo.chmod(target_mode)
+        gen.write_atomic(reg, kilo)
+        assert (kilo.stat().st_mode & 0o7777) == target_mode
+        assert len(json.loads(kilo.read_text(encoding="utf-8"))
+                   ["skills"]["paths"]) > 1
 
     def test_render_fails_loud_on_missing_block(self, tmp_path, monkeypatch):
         gen = _gen()

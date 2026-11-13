@@ -204,9 +204,19 @@ def cmd_check(args: argparse.Namespace) -> int:
             print(f"🚨 Drift detected: {filename} missing at {out}", file=sys.stderr)
             print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
             return 1
-        actual = out.read_text(encoding="utf-8")
-        # Use the same timestamp normaliser as the drift module.
-        if drift_mod._normalize(actual) != drift_mod._normalize(expected):
+        # KILOSURF-08 terra r2: byte surfaces (gen_kilo_runtime) must be
+        # compared as bytes — read_text would newline-translate CRLF away
+        actual = (out.read_bytes() if isinstance(expected, bytes)
+                  else out.read_text(encoding="utf-8"))
+        # Use the same timestamp normaliser as the drift module (str-based;
+        # byte surfaces are decoded for comparison only).
+        actual_n = (drift_mod._normalize(actual.decode("utf-8"))
+                    if isinstance(actual, bytes)
+                    else drift_mod._normalize(actual))
+        expected_n = (drift_mod._normalize(expected.decode("utf-8"))
+                      if isinstance(expected, bytes)
+                      else drift_mod._normalize(expected))
+        if actual_n != expected_n:
             print(f"🚨 Drift detected: {filename} content does not match registry output", file=sys.stderr)
             print("   Run `python scripts/regen-skill-surfaces.py` to fix.", file=sys.stderr)
             return 1

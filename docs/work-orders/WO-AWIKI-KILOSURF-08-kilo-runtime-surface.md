@@ -72,3 +72,22 @@ Receipt: /tmp/awiki-rev87-terra-receipt1.txt (P1 + 2×P2, all confirmed)
   forces the write path)
 
 Evidence: kilo-surface 9/9; registry-related suite 253/253; --check no drift
+
+## Review round 2 — Terra BLOCK → byte-level closure (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt2.txt (P1 + 3×P2, all confirmed)
+
+- P1 F1 post-guard race → second TOCTOU guard immediately before
+  os.replace; concurrency limitation documented (best-effort single-writer,
+  microsecond stat→replace window, no cross-process lock)
+- P2 F2 read_text newline-translation could rewrite CRLF outside the
+  array → whole pipeline is BYTES now (read_bytes, bytes regex, byte
+  writes); --check decodes only for the str-based timestamp normaliser;
+  +CRLF-preservation test
+- P2 F3 mkstemp 0600 replaced the 0644 config → chmod(original mode)
+  before replace; +mode-preservation test
+- P2 F4 regex could match a nested skills.paths → pattern anchored to the
+  standard two-space top-level key indentation; nested-only shapes fail
+  loud; +nested-rejection test
+
+Evidence: kilo-surface 12/12; registry-related suite 257/257; --check no drift
