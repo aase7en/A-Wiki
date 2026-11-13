@@ -28,7 +28,9 @@ import unicodedata
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-RAW_DIR = REPO_ROOT / "raw"
+# R84-T4 (terra r2): env seam so tests/sandboxes can isolate raw writes from
+# the checkout's raw/ dir — module-level, read once at import.
+RAW_DIR = Path(os.environ["AWIKI_RAW_DIR"]) if os.environ.get("AWIKI_RAW_DIR") else REPO_ROOT / "raw"
 
 # Import shared domain constants from lib (F8 dedup — was inline tuple)
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -117,8 +119,18 @@ def device_allows(method: str, device: str) -> bool:
 
 # ── Save raw output ────────────────────────────────────────────────────────
 
-def save_raw_output(url: str, text: str) -> Path:
-    """Save scraped content to ``raw/<slug>.md`` (Iron Law #7 provenance)."""
+def save_raw_output(url: str, text: str, override: Path | None = None) -> Path:
+    """Save scraped content to ``raw/<slug>.md`` (Iron Law #7 provenance).
+
+    WO-AWIKI-SCRAPE-05: ``override`` (from ``--save-raw <path>``) writes the
+    raw output to that exact path instead; the default always-save behavior
+    is unchanged (Jev: path_override 0.59, raw_preservation_is_default 0.79).
+    """
+    if override is not None:
+        override.parent.mkdir(parents=True, exist_ok=True)
+        override.write_text(text, encoding="utf-8")
+        print(f"💾 Raw saved (override): {override}", file=sys.stderr)
+        return override
     slug = slugify(url.split("/")[-1].split("?")[0] or "scraped-page")
     if not slug:
         slug = "scraped-page"
@@ -314,7 +326,22 @@ ADAPTERS: dict[str, callable] = {
 }
 
 
-def _save_original_sidecar(url: str, slug: str) -> Path | None:
+def _sidecar_path_for(slug: str, avoid: Path | None = None) -> Path:
+    """Sidecar target raw/<slug>.html; diverts to <slug>.original.html when
+    that path IS the raw output path (R84-T1: a --save-raw override ending
+    in .html inside RAW_DIR would otherwise be clobbered by original bytes).
+    Never raises."""
+    side = RAW_DIR / f"{slug}.html"
+    if avoid is not None:
+        try:
+            if side.resolve() == Path(avoid).resolve():
+                return RAW_DIR / f"{slug}.original.html"
+        except OSError:
+            pass
+    return side
+
+
+def _save_original_sidecar(url: str, slug: str, avoid: Path | None = None) -> Path | None:
     """Best-effort sidecar: keep the ORIGINAL fetch bytes as raw/<slug>.html.
 
     WO-AWIKI-INGEST-04 — Jev decision (jev-1.14.0): original_is_true_source
@@ -341,7 +368,7 @@ def _save_original_sidecar(url: str, slug: str) -> Path | None:
         return None
     try:
         RAW_DIR.mkdir(parents=True, exist_ok=True)
-        side = RAW_DIR / f"{slug}.html"
+        side = _sidecar_path_for(slug, avoid)
         side.write_bytes(proc.stdout)
         return side
     except OSError:
@@ -358,6 +385,7 @@ def scrape(
     domain: str | None = None,
     save_raw: bool = True,
     json_out: bool = False,
+    raw_path_override: Path | None = None,
 ) -> dict:
     """Scrape a URL and return result metadata."""
     device = detect_device()
@@ -419,19 +447,20 @@ def scrape(
 
     # Save raw output (Iron Law #7)
     if save_raw:
-        raw_path = save_raw_output(url, text)
+        raw_path = save_raw_output(url, text, override=raw_path_override)
         result["raw_file"] = str(raw_path)
         if result["method_used"] == "defuddle":
             # WO-AWIKI-INGEST-04: extraction won — keep the original fetch as
             # a sidecar so provenance never degrades to extracted-only.
             stale_possible = False
             try:
-                side = _save_original_sidecar(url, raw_path.stem)
+                side = _save_original_sidecar(url, raw_path.stem, avoid=raw_path)
                 # R83-1 round 2: even this exists() probe must never abort a
-                # successful scrape.
+                # successful scrape. R84-T1: probe the name the sidecar would
+                # actually use (diverted when it collides with the override).
                 stale_possible = (
                     side is None
-                    and (RAW_DIR / f"{raw_path.stem}.html").exists())
+                    and _sidecar_path_for(raw_path.stem, raw_path).exists())
             except Exception:  # defensive: sidecar must never kill a scrape
                 side = None
             info = {"note": "best-effort second fetch; bytes are this "
@@ -496,7 +525,9 @@ def main() -> None:
         force_method=not args.fallback,
         wizard=args.wizard,
         domain=args.domain,
-        save_raw=not args.save_raw or True,
+        raw_path_override=Path(args.save_raw) if args.save_raw else None,
+        # WO-AWIKI-SCRAPE-05: replaced dead `save_raw=not args.save_raw or True`
+        # (always True, path ignored). Default save_raw=True is unchanged.
         json_out=args.json,
     )
 

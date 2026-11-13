@@ -181,3 +181,142 @@ class TestCLI:
     def test_list_succeeds(self):
         with patch.object(sys, "argv", ["scrape-advanced.py", "--list"]):
             scrape_mod.main()  # should not raise
+
+
+class TestSaveRawOverride:
+    """WO-AWIKI-SCRAPE-05: --save-raw <path> must override the raw output path.
+
+    Jev (jev-1.14.0): path_override 0.59; raw_preservation_is_default 0.79 —
+    default stays always-save; no CLI opt-out (API save_raw=False remains)."""
+
+    def test_save_raw_output_override_writes_exact_path(self, tmp_path):
+        target = tmp_path / "custom" / "note.md"
+        out = scrape_mod.save_raw_output(
+            "https://example.com/deep/page-x", "hello",
+            override=target)
+        assert out == target and target.read_text(encoding="utf-8") == "hello"
+
+    def test_save_raw_output_default_unchanged(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(scrape_mod, "RAW_DIR", tmp_path / "raw")
+        out = scrape_mod.save_raw_output(
+            "https://example.com/page-y", "body")
+        assert out.parent == tmp_path / "raw"
+        assert out.name == "page-y.md"
+
+    def test_scrape_raw_path_override_flows_through(self, tmp_path):
+        target = tmp_path / "ovr" / "result.md"
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else None), \
+             patch.object(scrape_mod.subprocess, "run",
+                          return_value=MagicMock(returncode=0,
+                                                 stdout='{"content": "text body", "title": "t"}',
+                                                 stderr="")):
+            result = scrape_mod.scrape("https://example.com/page-z",
+                                       method="auto", save_raw=True,
+                                       json_out=True,
+                                       raw_path_override=target)
+        assert result["raw_file"] == str(target)
+        assert target.read_text(encoding="utf-8") == "text body"
+
+    def test_cli_save_raw_flag_real_e2e(self, tmp_path):
+        # R84-T3 (terra P2): cwd-independent (absolute fixture path, cwd=
+        # tmp_path) and offline-tolerant (npx fetch/network failure skips;
+        # real code defects still fail). Pollution guard: nothing may land
+        # in the checkout's real raw/ dir.
+        import shutil as _shutil
+        import subprocess as _sp
+        import sys as _sys
+        if _shutil.which("npx") is None:
+            import pytest as _pytest
+            _pytest.skip("npx not installed")
+        target = tmp_path / "e2e.md"
+        fixture = (Path(__file__).resolve().parent / "fixtures" /
+                   "defuddle" / "article-noisy-en.html")
+        # R84 r2-1: the CLI's stderr cannot carry npx failure detail (the
+        # adapter swallows it), so offline detection uses a canary running
+        # the EXACT pinned parse command — canary success means any later
+        # CLI failure is a real defect and must fail, not skip.
+        # r3-3: a hung registry/npx raises TimeoutExpired before the
+        # returncode check — that is an availability failure, so skip too.
+        try:
+            canary = _sp.run(
+                ["npx", "-y", "defuddle@0.19.6", "parse", str(fixture), "-m", "-j"],
+                capture_output=True, text=True, timeout=120)
+        except _sp.TimeoutExpired:
+            import pytest as _pytest
+            _pytest.skip("defuddle/npx canary timed out (registry hang)")
+        if canary.returncode != 0 or not canary.stdout.strip():
+            import pytest as _pytest
+            _pytest.skip("defuddle/npx unavailable (offline or registry blocked)")
+        # R84 r2-2: AWIKI_RAW_DIR isolates sidecar/raw writes into tmp —
+        # checkout pollution is structurally impossible, no post-hoc guard.
+        import os as _os
+        proc = _sp.run(
+            [_sys.executable, str(SCRAPE_MODULE_PATH),
+             "--url", str(fixture),
+             "--method", "defuddle", "--save-raw", str(target), "--json"],
+            capture_output=True, text=True, timeout=120,
+            cwd=str(tmp_path),
+            env={**_os.environ, "AWIKI_RAW_DIR": str(tmp_path / "raw")})
+        assert proc.returncode == 0, proc.stderr
+        assert target.is_file() and "Ladprao" in target.read_text(encoding="utf-8")
+
+    def test_r84_sidecar_diverts_when_override_is_sidecar_path(self, tmp_path):
+        # R84-T1 (terra P1): a --save-raw override landing on the sidecar's own
+        # path (raw/<stem>.html) must not be clobbered by the original fetch;
+        # the sidecar diverts to <stem>.original.html so both contracts hold.
+        raw_dir = tmp_path / "raw"
+        target = raw_dir / "x.html"
+        defuddle_run = MagicMock(returncode=0,
+                                 stdout='{"content": "extracted body", "title": "t"}',
+                                 stderr="")
+        curl_run = MagicMock(returncode=0, stdout=b"<html>original</html>", stderr=b"")
+        with patch.object(scrape_mod, "RAW_DIR", raw_dir), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else
+                   "/usr/bin/curl" if n == "curl" else None), \
+             patch.object(scrape_mod.subprocess, "run",
+                          side_effect=[defuddle_run, curl_run]):
+            result = scrape_mod.scrape("https://example.com/x",
+                                       method="defuddle", save_raw=True,
+                                       json_out=True,
+                                       raw_path_override=target)
+        assert result["raw_file"] == str(target)
+        assert target.read_text(encoding="utf-8") == "extracted body"
+        diverted = raw_dir / "x.original.html"
+        assert diverted.read_bytes() == b"<html>original</html>"
+
+    def test_r84_scrape_positional_compat_json_out_seventh(self, tmp_path):
+        # R84-T2 (terra P2): raw_path_override must sit AFTER json_out so the
+        # historical positional order (url..save_raw, json_out) keeps working.
+        import inspect
+        params = list(inspect.signature(scrape_mod.scrape).parameters)
+        assert params[:7] == ["url", "method", "force_method", "wizard",
+                              "domain", "save_raw", "json_out"]
+        run = MagicMock(returncode=0,
+                        stdout='{"content": "positional body", "title": "t"}',
+                        stderr="")
+        with patch.object(scrape_mod, "RAW_DIR", tmp_path / "raw"), \
+             patch("shutil.which", side_effect=lambda n:
+                   "/usr/bin/npx" if n == "npx" else None), \
+             patch.object(scrape_mod.subprocess, "run", return_value=run):
+            result = scrape_mod.scrape("https://example.com/p", "auto",
+                                       False, False, None, True, True)
+        assert result["url"] == "https://example.com/p"
+        assert result["raw_file"] is not None
+
+    def test_r84_raw_dir_env_override(self, tmp_path, monkeypatch):
+        # R84-T4 (terra r2 P2): AWIKI_RAW_DIR structurally isolates every raw
+        # write (tests, sandboxes) from the checkout's raw/ dir. Fresh module
+        # from spec (scrape_mod is not in sys.modules, reload() unusable).
+        # monkeypatch (r3-2): restores a pre-existing runner value instead
+        # of clobbering it.
+        import importlib.util as _ilu
+        island = tmp_path / "island"
+        monkeypatch.setenv("AWIKI_RAW_DIR", str(island))
+        spec = _ilu.spec_from_file_location("scrape_advanced_env", SCRAPE_MODULE_PATH)
+        fresh = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(fresh)
+        out = fresh.save_raw_output("https://example.com/env-page", "text")
+        assert out.parent == island
