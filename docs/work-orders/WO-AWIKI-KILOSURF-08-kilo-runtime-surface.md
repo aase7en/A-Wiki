@@ -52,3 +52,23 @@ low risk once runtime is regen-owned.
 
 Evidence: kilo-surface 4/4; registry-related suite 249/249;
 regen --check "No drift — 14 surface(s)"
+
+## Review round 1 — Terra BLOCK → hardening (2026-11-13)
+
+Receipt: /tmp/awiki-rev87-terra-receipt1.txt (P1 + 2×P2, all confirmed)
+
+- P1 F1 concurrent overwrite + truncating write → write_atomic: stat_before
+  taken BEFORE render reads; mtime+size guard refuses to overwrite a file
+  that changed mid-render; temp+fsync+os.replace atomic replace; failure
+  never truncates (test proves original bytes survive a failed replace)
+- P2 F2 whole-file parse/reserialize could drift operator formatting →
+  render is now a SURGICAL string replace of the paths array only; bytes
+  outside it are preserved verbatim (test strips paths from both sides and
+  asserts byte equality); --check can never report path-unrelated drift
+- P2 F3 tests now pin the full contract: formatting preservation, missing
+  skills block → RuntimeError, missing file → RuntimeError, concurrent
+  modification → RuntimeError (deterministic render-spy, not Path.stat
+  patching), failed replace leaves original untouched (stale-file setup
+  forces the write path)
+
+Evidence: kilo-surface 9/9; registry-related suite 253/253; --check no drift

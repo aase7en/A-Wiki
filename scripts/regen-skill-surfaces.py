@@ -161,7 +161,12 @@ def cmd_regenerate(args: argparse.Namespace) -> int:
         content = gen.render(reg)
         out = _output_path(filename)
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(content, encoding="utf-8")
+        if hasattr(gen, "write_atomic"):
+            # KILOSURF-08 terra r1: runtime configs need concurrent-modification
+            # guards + atomic replace; a generator opts in by defining it.
+            gen.write_atomic(reg, out)
+        else:
+            out.write_text(content, encoding="utf-8")
         rel = out.relative_to(REPO_ROOT)
         print(f"   ✓ {rel} ({len(content)} bytes)")
     print(f"✅ Surfaces regenerated.")
