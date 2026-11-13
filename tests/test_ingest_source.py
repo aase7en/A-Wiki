@@ -532,7 +532,7 @@ class TestBinaryRefusal:
         monkeypatch.setitem(_sys.modules, "markitdown", None)  # import → ImportError
         src = tmp_path / "report.pdf"
         src.write_bytes(b"%PDF-1.7 binary junk")
-        with pytest.raises(Exception) as ei:
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError) as ei:
             ingest_source_mod.extract_text_from_file(
                 str(src), slug="probe", write_raw=False)
         assert "markitdown" in str(ei.value).lower()
@@ -551,7 +551,7 @@ class TestBinaryRefusal:
         monkeypatch.setitem(_sys.modules, "markitdown", fake)
         src = tmp_path / "broken.docx"
         src.write_bytes(b"PK\x03\x04 junk")
-        with pytest.raises(Exception) as ei:
+        with pytest.raises(ingest_source_mod.BinaryUnavailableError) as ei:
             ingest_source_mod.extract_text_from_file(
                 str(src), slug="probe", write_raw=False)
         assert "markitdown" in str(ei.value).lower()
@@ -696,3 +696,36 @@ class TestBinaryRefusal:
                                  "\ufffd%PDF junk line")
         assert proc.returncode == 0, proc.stderr
         assert "untitled-source" in proc.stdout
+
+    def test_r85_partial_write_is_cleaned_up(self, tmp_path, monkeypatch):
+        # terra r2 F1: a write that dies mid-way must not leave a partial
+        # raw/<slug>.md behind — main() would adopt it as provenance and
+        # skip copying the real binary.
+        import sys as _sys
+        import types as _types
+
+        class OkResult:
+            text_content = "partial-write body"
+
+        class OkConverter:
+            def convert(self, path):
+                return OkResult()
+
+        fake = _types.ModuleType("markitdown")
+        fake.MarkItDown = lambda: OkConverter()
+        monkeypatch.setitem(_sys.modules, "markitdown", fake)
+
+        real_write = Path.write_text
+
+        def dying_write(self, data, encoding=None):
+            real_write(self, data[:5], encoding=encoding)  # partial bytes
+            raise OSError("disk full mid-write")
+
+        monkeypatch.setattr(ingest_source_mod.Path, "write_text", dying_write)
+        monkeypatch.setattr(ingest_source_mod, "REPO_ROOT", tmp_path)
+        src = tmp_path / "doc.pdf"
+        src.write_bytes(b"%PDF-1.7 junk")
+        text, _ = ingest_source_mod.extract_text_from_file(
+            str(src), slug="doc", write_raw=True)
+        assert text == "partial-write body"
+        assert not (tmp_path / "raw" / "doc.md").exists()

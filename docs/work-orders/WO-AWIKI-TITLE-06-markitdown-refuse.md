@@ -68,3 +68,17 @@ Receipt: /tmp/awiki-rev85-terra-receipt1.txt (4×P2, all confirmed real)
   BinaryUnavailableError (no bare Exception)
 
 Evidence: file 63/63; trio 124/124 (with real npx e2e)
+
+## Review round 2 — Terra BLOCK → residual repairs (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt2.txt (2×P2 residual)
+
+- F1 partial write could be adopted by main() as provenance (exists() check)
+  and suppress the real-binary copy → best-effort unlink(missing_ok=True)
+  of the partial file on write failure; RED test
+  test_r85_partial_write_is_cleaned_up (dying write_text writes 5 bytes
+  then raises → no raw/doc.md remains)
+- F2 the two original refusal tests accepted any Exception → pinned to
+  BinaryUnavailableError
+
+Evidence: file 64/64; trio 125/125

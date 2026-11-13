@@ -178,6 +178,13 @@ def extract_text_from_file(path: str, slug: str | None = None, write_raw: bool =
                     except OSError as we:
                         print(f"warn: could not save MarkItDown raw copy "
                               f"{raw_path}: {we}", file=sys.stderr)
+                        # terra r2 F1: never leave a partial raw/<slug>.md
+                        # behind — main() adopts its existence as provenance
+                        # and would skip copying the real binary.
+                        try:
+                            raw_path.unlink(missing_ok=True)
+                        except OSError:
+                            pass
                 return text, True
             # converter produced nothing — same garbage risk as failure
             raise BinaryUnavailableError(
