@@ -145,3 +145,14 @@ Receipt: /tmp/awiki-rev86-terra-receipt5.txt
   `worktree <path>` entry lines
 
 Evidence: guard 2 passed
+
+## Review round 6 — Terra BLOCK → last residual (2026-11-13)
+
+Receipt: /tmp/awiki-rev86-terra-receipt6.txt
+
+- P2 quoted-path fragility in worktree list → verified empirically that
+  paths are NOT C-quoted (space/paren worktree printed raw) but `-z` IS
+  supported (NUL-terminated, xxd-verified) → listing now uses
+  --porcelain -z, Path.resolve() comparison on both sides
+
+Evidence: guard 2 passed
