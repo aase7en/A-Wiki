@@ -166,3 +166,38 @@ def test_detect_drive_via_env_override(tmp_path, monkeypatch):
     monkeypatch.setenv("A_WIKI_DRIVE_PATH", str(fake))
     found = rkc.detect_drive_data_root()
     assert found == fake
+
+
+# ── WO-AWIKI-KILOTPL-09: registry-owned template paths ───────────────────
+
+def test_template_has_no_hardcoded_skill_paths():
+    """The template must carry ONE __SKILLS_PATHS__ token, not its own copy
+    of the category list (drifted once already: 2026-07-17 repo-22 vs
+    Drive-8)."""
+    cfg = json.loads(BUNDLED_TEMPLATE.read_text(encoding="utf-8"))
+    paths = cfg["skills"]["paths"]
+    assert "__SKILLS_PATHS__" in paths
+    assert not [p for p in paths
+                if isinstance(p, str) and p.startswith("__REPO_ROOT__/")]
+
+
+def test_render_expands_skills_paths_from_generated(tmp_path):
+    gen = (tmp_path / "scripts" / "skills_registry" / "generated")
+    gen.mkdir(parents=True)
+    (gen / "kilo.skills-paths.json").write_text(json.dumps({
+        "skills": {"paths": ["./skills/sentinel-cat", "./agent-skills/zoo"]},
+    }), encoding="utf-8")
+    tpl = json.dumps({"skills": {"paths": [
+        "__SKILLS_PATHS__", "__DRIVE_SKILLS__"]}})
+    out = json.loads(rkc.render_config(tpl, tmp_path, tmp_path, {}))
+    joined = [p for p in out["skills"]["paths"]]
+    assert str(tmp_path / "skills" / "sentinel-cat") in joined
+    assert str(tmp_path / "agent-skills" / "zoo") in joined
+    # the Drive entry stays after the expansion
+    assert joined[-1].endswith("skills")
+
+
+def test_render_fails_loud_without_generated(tmp_path):
+    tpl = json.dumps({"skills": {"paths": ["__SKILLS_PATHS__"]}})
+    with pytest.raises(RuntimeError, match="regen-skill-surfaces"):
+        rkc.render_config(tpl, tmp_path, tmp_path, {})

@@ -172,6 +172,40 @@ def merge_agents(template_agents: dict, agents_from_md: dict) -> dict:
 
 # ── Rendering (pure, unit-tested) ──────────────────────────────────────────
 
+SKILLS_PATHS_TOKEN = "__SKILLS_PATHS__"
+GENERATED_SKILLS_PATHS = Path(
+    "scripts") / "skills_registry" / "generated" / "kilo.skills-paths.json"
+
+
+def _expand_skills_paths(config: dict, repo_root: Path) -> None:
+    """KILOTPL-09: replace the __SKILLS_PATHS__ element with the
+    registry-derived list from generated/kilo.skills-paths.json (Iron Law
+    #10 — the template must not carry its own copy of the list). Fails
+    loud when the generated file is absent: render cannot guess."""
+    skills = config.get("skills")
+    if not isinstance(skills, dict):
+        return
+    paths = skills.get("paths")
+    if not isinstance(paths, list) or SKILLS_PATHS_TOKEN not in paths:
+        return
+    gen_file = repo_root / GENERATED_SKILLS_PATHS
+    if not gen_file.is_file():
+        raise RuntimeError(
+            f"{gen_file} missing — run "
+            "`python scripts/regen-skill-surfaces.py` first; the template "
+            "no longer hardcodes skill paths")
+    gen_paths = json.loads(
+        gen_file.read_text(encoding="utf-8"))["skills"]["paths"]
+    expanded = []
+    for p in paths:
+        if p == SKILLS_PATHS_TOKEN:
+            expanded.extend(
+                f"__REPO_ROOT__/{p_.lstrip('./')}" for p_ in gen_paths)
+        else:
+            expanded.append(p)
+    skills["paths"] = expanded
+
+
 def build_path_map(drive_data: Path, repo_root: Path) -> dict[str, str]:
     return {
         "__DRIVE_DATA__": str(drive_data),
@@ -270,6 +304,7 @@ def render_config(template_text: str, drive_data: Path, repo_root: Path,
         config["agent"] = merge_agents(template_agents, agents_from_md)
 
     resolve_provider_secrets(config, secrets)
+    _expand_skills_paths(config, repo_root)
     path_map = build_path_map(drive_data, repo_root)
     config = resolve_path_tokens(config, path_map, secrets)
     rendered = json.dumps(config, indent=2, ensure_ascii=False) + "\n"

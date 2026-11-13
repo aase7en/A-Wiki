@@ -33,3 +33,19 @@ the repo template says — now one token).
 
 - [x] Claim row WO-AWIKI-KILOTPL-09
 - [x] KILOSURF-08 DONE marker (this docs commit)
+
+## Implementation (2026-11-13)
+
+- RED: 3 tests (template carries the token not a list; render expands from
+  generated with sentinel paths; missing generated → RuntimeError with the
+  regen hint) — all failed against the unfixed tree
+- template: 22 hardcoded lines → single "__SKILLS_PATHS__" element
+  (__DRIVE_SKILLS__ stays last); still strict JSON
+- render_kilo_config: _expand_skills_paths() runs before path-token
+  resolution — reads generated/kilo.skills-paths.json, maps ./x →
+  __REPO_ROOT__/x so the existing token machinery resolves absolutes;
+  fails loud when the generated file is absent
+
+Evidence: render suite 16/16; related suite 96/96; end-to-end render on
+the real template+registry → 23 paths incl. skills/awiki and the Drive
+entry last; regen --check no drift
