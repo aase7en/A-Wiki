@@ -116,6 +116,22 @@ class BinaryUnavailableError(RuntimeError):
     any filesystem write so mojibake never enters the wiki or raw/."""
 
 
+def _adopt_converted_md(md_saved: bool, dry_run: bool,
+                         raw_md: Path, text: str | None) -> bool:
+    """Provenance adoption decision (terra r4): adopt raw/<slug>.md only
+    when THIS call wrote it completely, or — dry run only — when an earlier
+    file's full content matches this conversion's text. A lingering partial
+    file can never match, so it can never be adopted."""
+    if md_saved:
+        return True
+    if not dry_run or text is None:
+        return False
+    try:
+        return raw_md.read_text(encoding="utf-8") == text
+    except OSError:
+        return False
+
+
 def prettify_stem(stem: str) -> str:
     """WO-AWIKI-TITLE-06 (Jev filename_stem 1.00): title fallback for
     non-converted fallback text — separators to spaces, title case."""
@@ -628,13 +644,11 @@ def main() -> None:
         # Determine original_file: MarkItDown may have created raw/<slug>.md
         if raw_text:
             raw_md = REPO_ROOT / "raw" / f"{file_slug}.md"
-            # terra r3 F1: adopt the converted .md ONLY when this run wrote
-            # it completely, or under dry-run when an earlier real run's
-            # converted file exists (a dry run never touches the disk, so
-            # nothing partial can come from THIS run). A partial file from
-            # a failed write can never be adopted — the binary copy path
-            # takes over instead.
-            if md_saved or (args.dry_run and raw_md.exists()):
+            # terra r3/r4 F1: adoption is decided by _adopt_converted_md —
+            # complete write this call, or (dry run) an earlier file whose
+            # full content equals this conversion. A partial file can never
+            # be adopted; the binary copy path takes over instead.
+            if _adopt_converted_md(md_saved, args.dry_run, raw_md, raw_text):
                 original_file = f"raw/{file_slug}.md"
             else:
                 # Binary copy to raw/ for non-MarkItDown files

@@ -742,7 +742,7 @@ class TestBinaryRefusal:
         import types as _types
 
         class OkResult:
-            text_content = "body"
+            text_content = "body long enough that five bytes are partial"
 
         class OkConverter:
             def convert(self, path):
@@ -755,7 +755,7 @@ class TestBinaryRefusal:
         real_write = Path.write_text
 
         def dying_write(self, data, encoding=None):
-            real_write(self, data[:5], encoding=encoding)
+            real_write(self, data[:5], encoding=encoding)  # genuinely partial
             raise OSError("disk full mid-write")
 
         real_unlink = Path.unlink
@@ -770,8 +770,16 @@ class TestBinaryRefusal:
         src.write_bytes(b"%PDF-1.7 junk")
         text, _title_safe, md_saved = ingest_source_mod.extract_text_from_file(
             str(src), slug="doc", write_raw=True)
-        assert text == "body"
+        assert text == "body long enough that five bytes are partial"
         assert md_saved is False
+        # the partial file IS still on disk (unlink failed) — the adoption
+        # decision must still refuse it under both real and dry runs
+        partial = tmp_path / "raw" / "doc.md"
+        assert partial.exists()
+        assert ingest_source_mod._adopt_converted_md(
+            False, False, partial, text) is False
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, partial, text) is False
 
     def test_r85_successful_write_reports_md_saved(self, tmp_path, monkeypatch):
         import sys as _sys
@@ -796,3 +804,27 @@ class TestBinaryRefusal:
         assert title_safe is True
         assert md_saved is True
         assert (tmp_path / "raw" / "good.md").read_text(encoding="utf-8") == "clean body"
+
+    def test_r85_adopt_converted_md_decision_table(self, tmp_path):
+        # terra r4 F1/F2: the adoption decision itself, tested directly.
+        from pathlib import Path as _P
+        md = tmp_path / "raw" / "doc.md"
+        md.parent.mkdir()
+        md.write_text("full text", encoding="utf-8")
+        part = tmp_path / "raw" / "partial.md"
+        part.write_text("full", encoding="utf-8")  # truncated prefix
+        # real run, write succeeded this call → adopt
+        assert ingest_source_mod._adopt_converted_md(
+            True, False, md, "whatever") is True
+        # real run, write failed → never adopt (binary copy path)
+        assert ingest_source_mod._adopt_converted_md(
+            False, False, part, "full text") is False
+        # dry run, earlier complete file matches this conversion → adopt
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, md, "full text") is True
+        # dry run, lingering partial file differs from full text → refuse
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, part, "full text") is False
+        # dry run, unreadable file → refuse
+        assert ingest_source_mod._adopt_converted_md(
+            False, True, tmp_path / "raw" / "missing.md", "full text") is False

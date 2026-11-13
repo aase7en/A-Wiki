@@ -100,3 +100,19 @@ Tests: +test_r85_unlink_failure_still_reports_md_not_saved (RED first),
 partial/write-failure tests assert md_saved=False
 
 Evidence: file 66/66; trio 127/127
+
+## Review round 4 — Terra BLOCK → adoption-decision closure (2026-11-13)
+
+Receipt: /tmp/awiki-rev85-terra-receipt4.txt (2×P2 residual)
+
+- F1 dry-run could adopt a lingering partial from a prior failed run →
+  adoption extracted into pure _adopt_converted_md(md_saved, dry_run,
+  raw_md, text): dry-run adoption additionally requires the earlier
+  file's full content to EQUAL this conversion's text — a truncated
+  prefix can never match
+- F2 unlink-failure test wrote "body"[:5] = complete + didn't exercise
+  adoption → text now long enough that data[:5] is genuinely partial;
+  test asserts the lingering partial is refused under BOTH real and dry
+  runs; +decision-table test covers all 5 rows of _adopt_converted_md
+
+Evidence: file 67/67; trio 128/128
