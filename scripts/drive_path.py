@@ -97,7 +97,8 @@ def get_hospital_dir_name() -> str:
                     if configured:
                         return configured
                     break
-    except OSError:
+    except (OSError, UnicodeDecodeError):
+        # review r1 F4: a non-UTF-8 drive/.env must not crash callers
         pass
 
     return "hospital-main"
