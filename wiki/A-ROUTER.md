@@ -112,4 +112,4 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_22 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_
+_23 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_

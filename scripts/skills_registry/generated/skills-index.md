@@ -216,14 +216,9 @@
 | debug | 7 |
 | design | 14 |
 | document | 9 |
-<<<<<<< HEAD
-| engineering | 54 |
+| engineering | 55 |
 | env | 1 |
 | media | 16 |
-=======
-| engineering | 55 |
-| media | 15 |
->>>>>>> 9a388ea2 (feat(skills): add A-Security Cloudflare upstream)
 | medical | 4 |
 | pharmacy | 2 |
 | productivity | 12 |

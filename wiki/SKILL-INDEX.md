@@ -9,7 +9,7 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 200 · **Aliases/deprecated**: 47
+**Total canonical skills**: 201 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
