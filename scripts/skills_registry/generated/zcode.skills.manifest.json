@@ -4,6 +4,11 @@
   "link_root": ".zcode/skills",
   "skills": [
     {
+      "name": "a-2-5d-animation",
+      "target": "skills/awiki/a-2-5d-animation/SKILL.md",
+      "domain": "design,media,env"
+    },
+    {
       "name": "a-agent",
       "target": "skills/awiki/a-agent/SKILL.md",
       "domain": "ai-ops,engineering"
