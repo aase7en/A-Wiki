@@ -9,7 +9,7 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 199 · **Aliases/deprecated**: 47
+**Total canonical skills**: 200 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
@@ -17,7 +17,7 @@
 |--------|------|--------|
 | `code` | เขียนโค้ด / ภาษาโปรแกรม | 77 |
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
-| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 13 |
+| `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
 | `engineering` | วิศวกร / Architect / Agent harness | 54 |
 | `trader` | เทรด / DeFi / ตลาด | 8 |
@@ -28,9 +28,10 @@
 | `ai-ops` | AI ops / LLM / Cost | 24 |
 | `productivity` | Productivity / Management | 12 |
 | `wiki` | Wiki / Knowledge ops | 9 |
+| `env` | Environment / น้ำเสีย | 1 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
 | `thai` | ภาษาไทย / เอกสารไทย | 14 |
-| `media` | สื่อ / วิดีโอ / รูปภาพ | 15 |
+| `media` | สื่อ / วิดีโอ / รูปภาพ | 16 |
 | `document` | เอกสาร / docx/pdf/pptx/xlsx | 9 |
 | `sre` | SRE / Observability / Deploy | 2 |
 
@@ -136,6 +137,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-2-5d-animation` | build | pipeline | Vivid luxury 2.5D animation with locked architecture, cloud sunlight water and foliage motion; Gr... |
 | `a-design` | meta | pipeline | ออกแบบ UX/UI มืออาชีพ — ผูก ui-ux-pro-max + taste-skill + transitions-dev + motion trio + accessi... |
 | `a-plan` | define | pipeline | ออกแบบ UX/UI, database, architecture — บังคับถาม grill-with-docs ≥3 questions ก่อนเริ่ม implement |
 | `brand-guidelines` | none | uncategorized | ใช้สีและฟอนต์ของแบรนด์ Anthropic กับ artifact ใดๆ เพื่อให้มีลุคและฟีลแบบทางการของ Anthropic |
@@ -343,6 +345,12 @@
 | `wiki` | none | awiki | ค้นหาข้อมูลจาก Wikipedia ผ่านคำสั่ง /wiki โดยส่งคำค้นหาไปยัง Telegram-command-router แล้วเรียกใช้... |
 | `wiki-search-local` | none | wiki | ค้น wiki แบบ offline ผ่าน FTS5 — เร็ว, ฟรี, ไม่ต้องเรียก LLM |
 
+### `env` — Environment / น้ำเสีย
+
+| Skill | Lifecycle | Category | Description |
+|-------|-----------|----------|-------------|
+| `a-2-5d-animation` | build | pipeline | Vivid luxury 2.5D animation with locked architecture, cloud sunlight water and foliage motion; Gr... |
+
 ### `pharmacy` — ร้านยา / สต็อกยา
 
 | Skill | Lifecycle | Category | Description |
@@ -373,6 +381,7 @@
 
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
+| `a-2-5d-animation` | build | pipeline | Vivid luxury 2.5D animation with locked architecture, cloud sunlight water and foliage motion; Gr... |
 | `a-content` | meta | pipeline | งานเขียนคอนเทนต์และการตลาด — บทความ, brand voice, SEO, campaign, โพสต์โซเชียล |
 | `a-game` | meta | pipeline | game dev (Phaser/PixiJS/Three.js) — bind game-phaser-pipeline, phaser-core, phaser-arcade-physics... |
 | `algorithmic-art` | none | uncategorized | สร้างงานศิลปะเชิงอัลกอริทึมด้วย p5.js โดยใช้ seeded randomness เพื่อให้ผลลัพธ์ reproducible และให... |
@@ -416,7 +425,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
+- **BUILD**: `a-2-5d-animation`, `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`
