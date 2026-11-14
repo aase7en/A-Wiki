@@ -16,7 +16,7 @@ invocation: manual
 ## Entry / intent gate — coordinate with GrillMe
 
 1. Read the user's approved scene/style and prior references first; do not re-ask known decisions. Check the relevant source files, `AGENTS.md`, ownership and work order before changing a repository. Do not treat a local `SKILL.md` as authorization to modify a repo.
-2. If the *art direction or output target is unresolved*, invite or invoke the installed **@GrillMe** plugin (its `entry-grill-me` → `grill-with-docs` in a repo or `grill-me` otherwise). This is an interview/design decision workflow, **not** a renderer. If the plugin is unavailable, conduct the same bounded questions conversationally and state that the plugin itself was not run.
+2. If the *art direction or output target is unresolved*, invite or invoke the installed **@GrillMe** plugin (its **entry-grill-me** → `grill-with-docs` in a repo or the plugin's **grill-me** command otherwise). This is an interview/design decision workflow, **not** a renderer. If the plugin is unavailable, conduct the same bounded questions conversationally and state that the plugin itself was not run.
 3. Ask only for unresolved decisions, in dependency order: (a) scene subject / faithful-real vs stylized illustration; (b) final display and visual composition / UI safe area; (c) mood/palette and intensity; (d) allowed movements vs locked objects; (e) deliverables (image, alpha layers, GIF, MP4, HTML, loop length). Present a recommended default for each round; do not ask tool-retrievable facts. Record explicit owner decisions and stop after agreement; if user already approved the style, proceed without another interview.
 4. Default when not specified: **vivid, elegant, luxury Japanese-game-like illustration**, fixed camera, landscape master, static architecture, 24 FPS / travel-aware duration (never force 6–8-second loop), iPhone-compatible MP4 + GIF, full-width and target-display proofs; no production deployment.
 
@@ -42,14 +42,14 @@ Style selection does not constitute production release approval. **12 generated 
 
 ## Layer contract (depth order)
 
-1. `sky-base`: a stable color gradient / original sky texture.
-2. `clouds-far`, `clouds-near`: independently masked cloud textures at different speeds; **wrap tiles/offsets continuously** without snapping from right edge to left.
+1. **sky-base**: a stable color gradient / original sky texture.
+2. **clouds-far**, **clouds-near**: independently masked cloud textures at different speeds; **wrap tiles/offsets continuously** without snapping from right edge to left.
 3. `sunlight`: ray/occlusion maps derived from the changing cloud gap, with subtle exposure and no flashing.
 4. `midground`: locked temple, statue, pavilion, house, bridges, mountains with a protected matte. Keep every protected source pixel identical frame-to-frame before compression.
 5. `water`: river/pond masks only; advect reflections with gentle periodic displacement and physically plausible highlight drift. Do **not** warp flowers, roofs, benches, trees or the whole frame as though they were water.
 6. `vegetation`: separate leaf groups, stems, petals, rice stalks and grasses with low-amplitude sway around plausible pivot points; trunks remain stable. Repair any uncovered holes behind moving cutouts.
 7. `foreground`: optional drifting haze/pollen when subtle and source-matched; do not add cartoon dots or unauthorized birds.
-8. `readability-overlay` + `api-ui`: darkening gradient/glass/labels remain separate. Respect contrast, semantics and reduced-motion.
+8. **readability-overlay** + **api-ui**: darkening gradient/glass/labels remain separate. Respect contrast, semantics and reduced-motion.
 
 Store **transparent alpha layers**, alpha/structure masks and source metadata when creating a reusable/editable master. Prefer one reproducible deterministic compositor (`Pillow+NumPy`, Canvas2D, or WebGL with fallback) over asking AI to generate 12 fully independent pictures. 12 images may be reference *key moments*, not guaranteed pixel-consistent render frames.
 
