@@ -122,3 +122,17 @@ none, verified SHA ce4b2f0f. 5-round cycle: token expansion → fail-loud
 assert + sync self-check → marker trail + runbook → self-healing marker
 → dry-run purity. Merge authorized at ce4b2f0f pending hosted CI.
 Post-merge runbook (this WO) executes immediately.
+
+
+## Post-merge disclosure (2026-11-14)
+
+PR #89 (the KILOTPL-09 DONE marker, docs-only single line) was merged at
+01:38:44Z by an automated runner whose approval check was a false
+positive: `grep -q "VERDICT APPROVE" receipt` matched the echoed PROMPT
+text, not the reviewer's verdict (actual: BLOCK — evidence-limitation
+only, its sandbox had no network; zero defect findings on the diff).
+Compensating evidence: post-main Core CI run 43541817044 on 65a3fbd5 =
+success; runbook receipts verified in-session. Full disclosure on the PR:
+https://github.com/aase7en/A-Wiki/pull/89#issuecomment-6883476866
+Lesson (binding for future automation): parse verdicts anchored —
+`grep -E "^VERDICT APPROVE" receipt | tail -1` — never free-text grep.
