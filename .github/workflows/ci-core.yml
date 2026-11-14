@@ -54,11 +54,18 @@ jobs:
           import sys
           from pathlib import Path
           sys.path.insert(0, "scripts")
-          from drive_path import get_drive_root
+          from drive_path import get_drive_root, get_hospital_dir_name
 
           root = get_drive_root()
+          hospital = get_hospital_dir_name()
           # full agent-preflight EXPECTED_DRIVE_FOLDERS contract
-          for name in ("raw", "waste-reports", "personal-tools", "ocr-feedback", "individual-tasks"):
+          for name in (
+              "raw",
+              f"{hospital}/waste-reports",
+              f"{hospital}/ocr-feedback",
+              "personal-tools",
+              "individual-tasks",
+          ):
               (root / name).mkdir(parents=True, exist_ok=True)
           (root / "raw" / "ci-smoke.md").write_text("# CI smoke source\n", encoding="utf-8")
           (root / ".secrets").write_text(
