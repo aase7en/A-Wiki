@@ -34,8 +34,8 @@ def expected_drive_folders(root: Path) -> list[str]:
                 if line.startswith("AWIKI_HOSPITAL_DIR="):
                     hospital = line.split("=", 1)[1].strip().strip('"').strip("'")
                     break
-        except OSError:
-            pass
+        except (OSError, UnicodeDecodeError):
+            pass  # r1 F4: non-UTF-8 .env must not crash a warn-only hook
     if not hospital or hospital in {".", ".."} or "/" in hospital or "\\" in hospital:
         hospital = "hospital-main"
 

@@ -12,7 +12,6 @@ Make the private `drive/` data layer easier to understand and search without bre
 - legacy `drive/ocr-feedback/**` compatibility surface
 - `scripts/drive_path.py`
 - `scripts/setup-cloud-link.sh`
-- `scripts/setup-local.sh`
 - `scripts/agent-preflight.py`
 - `scripts/health_external_data.py`
 - `scripts/hooks/check_drive_link.py`
