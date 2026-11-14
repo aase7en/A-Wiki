@@ -45,6 +45,7 @@
 | `a-doc` | `/A-Doc` | implement | `หนังสือ` · `ราชการ` · `คำสั่ง` · `บันทึก` · `ประกาศ` · `โครงการ` · `docx` |
 | `a-rabies-report` | `/A-Rabies-Report` | implement | `rabies` · `rabiesvacc` · `rabies_db` · `rabies_screening` · `พิษสุนัขบ้า` · `hn ฉีดไม่ครบ` · `โปรแกรมรายงานพิษสุนัขบ้า` · `จัดระเบียบไฟล์รายงานพิษสุนัขบ้า` |
 | `a-council` | `/A-Council "<topic>"` | review | `ตรวจสอบ` · `review` · `audit` · `security review` |
+| `a-security` | `/A-Security` | review | `security audit` · `vulnerability review` · `pentest` · `security assessment` · `ตรวจ security` · `ช่องโหว่` |
 | `a-debug` | `/A-Debug` | debug | `แก้บั๊ก` · `ไม่ทำงาน` · `หาสาเหตุ` · `error` · `crash` · `fail` · `broken` |
 | `a-2-5d-animation` | `/A-2.5DAnimation` | any | `2.5d animation` · `luxury led` · `layered scenic video` · `moving clouds water foliage` |
 | `a-agent` | `/A-Agent` | any | `agent harness` · `mcp server` · `eval agent` · `prompt eng` · `agent loop` |

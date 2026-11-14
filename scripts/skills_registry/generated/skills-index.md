@@ -23,6 +23,7 @@
 | `a-rabies-report` | document, thai, medical | build | pipeline | `skills/awiki/a-rabies-report/SKILL.md` |
 | `a-research` | engineering, data | meta | pipeline | `skills/awiki/a-research/SKILL.md` |
 | `a-router` | engineering | meta | pipeline | `skills/awiki/a-router/SKILL.md` |
+| `a-security` | security, engineering | review | pipeline | `skills/awiki/a-security/SKILL.md` |
 | `a-think` | engineering | meta | pipeline | `skills/awiki/a-think/SKILL.md` |
 | `a-web` | engineering, ux-ui, code | meta | pipeline | `skills/awiki/a-web/SKILL.md` |
 | `a-wiki-commands` | code | none | uncategorized | `skills/awiki/a-wiki-commands/SKILL.md` |
@@ -215,13 +216,18 @@
 | debug | 7 |
 | design | 14 |
 | document | 9 |
+<<<<<<< HEAD
 | engineering | 54 |
 | env | 1 |
 | media | 16 |
+=======
+| engineering | 55 |
+| media | 15 |
+>>>>>>> 9a388ea2 (feat(skills): add A-Security Cloudflare upstream)
 | medical | 4 |
 | pharmacy | 2 |
 | productivity | 12 |
-| security | 4 |
+| security | 5 |
 | sre | 2 |
 | thai | 14 |
 | trader | 8 |
