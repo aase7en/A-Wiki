@@ -6,7 +6,7 @@ lifecycle_phase: build
 status: canonical
 category: pipeline
 version: 0.5.0
-invocation: manual
+invocation: auto
 ---
 
 # A-2.5DAnimation

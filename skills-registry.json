@@ -22,7 +22,7 @@
       "version": "0.5.0",
       "status": "canonical",
       "description": "Vivid luxury 2.5D animation with locked architecture, cloud sunlight water and foliage motion; GrillMe intake when artistic requirements are unresolved.",
-      "invocation": "manual",
+      "invocation": "auto",
       "invocation_hint": "/A-2.5DAnimation",
       "a_phase": "any",
       "triggers": [
