@@ -870,7 +870,7 @@
       "version": "1.0.0",
       "status": "canonical",
       "description": "Evidence-led security audit workflow adapted from Cloudflare/security-audit-skill: trust-boundary mapping, coverage-led hunting, machine-readable findings, independent validation, and bounded source/local-only verification.",
-      "invocation": "manual",
+      "invocation": "auto",
       "th_description": "A-Security — ตรวจ security แบบหลายเฟสโดยยึดหลักฐานจาก source, coverage ledger, structured findings และผู้ตรวจอิสระ; full audit ทำเมื่อสั่งชัดเจนเท่านั้น",
       "when_to_use": "security guidance, vulnerability review, threat-boundary investigation, หรือ full/comprehensive codebase audit ที่ผู้ใช้สั่งชัดเจน",
       "examples": [

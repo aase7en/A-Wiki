@@ -7,7 +7,7 @@ category: pipeline
 version: 1.0.0
 license: MIT
 origin: cloudflare/security-audit-skill@c1c8a8c1471069fb0e188eeaff69b8e8db6564a8
-invocation: manual
+invocation: auto
 status: canonical
 ---
 
@@ -17,7 +17,7 @@ Find vulnerabilities that violate a real trust boundary, then give owners the so
 
 ## A-Wiki integration contract
 
-This skill is an A-Wiki adaptation of Cloudflare's `security-audit-skill`. Upstream is tracked by `scripts/refresh-cloudflare-security-audit.py` and snapshotted under `skills/_upstream/cloudflare-security-audit/`. The adopted baseline is pinned in `origin` above; the Cloudflare MIT notice is preserved in `LICENSE.cloudflare`.
+This skill is an A-Wiki adaptation of Cloudflare's security-audit-skill (upstream project). Upstream is tracked by `scripts/refresh-cloudflare-security-audit.py` and snapshotted under `skills/_upstream/cloudflare-security-audit/`. The adopted baseline is pinned in `origin` above; the Cloudflare MIT notice is preserved in `LICENSE.cloudflare`.
 
 A-Wiki authority remains higher than this imported workflow:
 
