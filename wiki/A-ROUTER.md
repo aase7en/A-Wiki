@@ -112,4 +112,19 @@ Claude Code เพิ่ม hook เตือนอัตโนมัติเ�
 
 ---
 
-_23 A-Suite entry points (+2 subskills) · spine = ask → design → plan → implement → review → debug → test_
+
+---
+
+## 3. AUTO_ON_DEMAND picks (#76 SKILL-ECO)
+
+triggered canonical skills นอก A-Suite — auto-pick ได้เหมือนกัน (style/discipline/economy, ไม่ใช่ pipeline dispatcher):
+
+| Skill | เรียกด้วย | Triggers |
+|-------|-----------|----------|
+| [`caveman`](#caveman) | /Caveman | `caveman` · `be brief` · `less tokens` · `shorter answers` · `สั้นๆ` · `ตอบกระชับ` · `พูดมากไป` |
+| [`ponytail`](#ponytail) | /Ponytail | `ponytail` · `lazy mode` · `simplest solution` · `minimal solution` · `yagni` · `shortest path` · `over-engineering` · `ง่ายที่สุด` |
+| [`token-optimization`](#token-optimization) | /token-optimization | `compact logs` · `compress diff` · `shrink search output` · `lossless reference` · `reduce context` |
+
+---
+
+_23 A-Suite entry points (+2 subskills) · 3 AUTO_ON_DEMAND picks · spine = ask → design → plan → implement → review → debug → test_

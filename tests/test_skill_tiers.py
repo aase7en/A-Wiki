@@ -103,5 +103,11 @@ class TestSkillEco10:
     def test_token_optimization_has_compact_triggers(self):
         by = {s["name"]: s for s in SKILLS}
         trigs = by["token-optimization"].get("triggers") or []
-        for t in ("compact logs", "compress diff", "lossless reference"):
+        for t in ("compact logs", "compress diff", "shrink search output",
+                  "lossless reference", "reduce context"):
             assert t in trigs, f"missing trigger {t!r}"
+
+    def test_skilleco_trigger_cap_respected(self):
+        by = {s["name"]: s for s in SKILLS}
+        for n in ("caveman", "ponytail", "token-optimization"):
+            assert len(by[n].get("triggers") or []) <= 8, f"{n} exceeds cap"

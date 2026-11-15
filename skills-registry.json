@@ -8625,7 +8625,7 @@
       ],
       "version": "1.0.0",
       "status": "canonical",
-      "description": "Scoped minimal-solution discipline (YAGTI ladder) + prior-context checkpointing when continuity materially helps.",
+      "description": "Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity materially helps.",
       "invocation": "auto",
       "invocation_hint": "/Ponytail",
       "a_phase": "any",

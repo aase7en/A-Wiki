@@ -208,7 +208,7 @@
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
-| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGTI ladder) + prior-context checkpointing when continuity m... |
+| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity m... |
 | `prototype` | build | mattpocock | สร้าง prototype แบบเร็วเพื่อตอบคำถามด้านการออกแบบหรือทดสอบแนวคิด โดยไม่ต้องกังวลเรื่องคุณภาพโค้ดห... |
 | `research` | define | mattpocock | สืบค้นคำถามกับแหล่งขั้นต้นที่เชื่อถือได้ แล้วบันทึกผลเป็น markdown — cite, synthesize ไม่เอาจาก m... |
 | `resolving-merge-conflicts` | none | mattpocock | ช่วยแก้ไข conflict ที่เกิดขึ้นระหว่างการ merge หรือ rebase โดยวิเคราะห์ความตั้งใจของแต่ละ hunk แท... |
@@ -329,7 +329,7 @@
 | `management-talk` | none | uncategorized | สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ |
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
-| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGTI ladder) + prior-context checkpointing when continuity m... |
+| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity m... |
 | `post-mortem` | none | uncategorized | เขียนบทเรียนหลัง incident: เกิดอะไรขึ้น, root cause, impact, แก้อย่างไร, ป้องกันยังไงคราวหน้า |
 | `research-pipeline` | meta | pipeline | ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ... |
 | `teach` | none | mattpocock | สอนทักษะหรือแนวคิดใหม่ให้กับผู้ใช้ภายใน workspace นี้ โดยสามารถดำเนินการต่อเนื่องข้ามหลาย session... |

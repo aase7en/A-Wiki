@@ -28,3 +28,15 @@ evidence; ponytail never weakens safety gates.
 ## Checkpoints
 - [x] Claim row WO-AWIKI-SKILLECO-10 (RECONCILED)
 - [x] Local gates: 285 passed; regen --check no drift; privacy clean
+
+## Review round 1 — GLM BLOCK → repairs (2026-11-15)
+
+P1 verify-skill-surfaces 3c failed (first non-a-suite triggered canonical
+skills — A-ROUTER generator couldn't render them → "unreachable" dead data)
+→ gen_a_router gained _auto_on_demand + §3 section (deterministic, regen-
+owned); verify now passes, triggers live for hookless agents. P3 YAGTI→
+YAGNI registry typo fixed; test pinning completed (all 5 compact triggers
++ ≤8 cap assertion). P3/INFO acknowledged (claim wording caveat recorded
+here: A-ROUTER/kilo-paths were no-ops by generator design pre-fix).
+
+Evidence: 287 passed; verify no drift/orphans; A-ROUTER carries §3.
