@@ -86,3 +86,22 @@ def test_deprecated_entries_carry_migration_contract():
         if s.get("status") == "deprecated":
             assert s.get("migrated_to"), f"{s['name']} deprecated without migrated_to"
             assert str(s.get("note", "")).strip(), f"{s['name']} deprecated without note"
+
+
+class TestSkillEco10:
+    """WO-AWIKI-SKILLECO-10: caveman + ponytail registration contract."""
+
+    def test_caveman_ponytail_registered_auto(self):
+        by = {s["name"]: s for s in SKILLS}
+        for n in ("caveman", "ponytail"):
+            e = by.get(n)
+            assert e, f"{n} missing from registry"
+            assert e["status"] == "canonical"
+            assert e["invocation"] == "auto"  # not user-specific -> not manual
+            assert e.get("triggers"), f"{n} must be routable"
+
+    def test_token_optimization_has_compact_triggers(self):
+        by = {s["name"]: s for s in SKILLS}
+        trigs = by["token-optimization"].get("triggers") or []
+        for t in ("compact logs", "compress diff", "lossless reference"):
+            assert t in trigs, f"missing trigger {t!r}"
