@@ -229,7 +229,7 @@ def render(registry: Registry) -> str:
             "",
             "---",
             "",
-            "## 3. AUTO_ON_DEMAND picks (#76 SKILL-ECO)",
+            "## 6. AUTO_ON_DEMAND picks (#76 SKILL-ECO)",
             "",
             "triggered canonical skills นอก A-Suite — auto-pick ได้เหมือนกัน"
             " (style/discipline/economy, ไม่ใช่ pipeline dispatcher):",
