@@ -90,6 +90,19 @@ def _a_suite(registry: Registry) -> list[dict]:
     )
 
 
+def _auto_on_demand(registry: Registry) -> list[dict]:
+    """Non-A-suite canonical skills carrying triggers — the AUTO_ON_DEMAND
+    picks (#76 SKILL-ECO). Rendered in their own section so hookless agents
+    can reach them; verify-skill-surfaces check 3c requires every triggered
+    canonical skill to appear in A-ROUTER.md by name."""
+    return sorted(
+        (s for s in registry.skills
+         if s.get("status") == "canonical"
+         and s.get("triggers")
+         and not _is_entry_point(s)),
+        key=lambda s: s["name"])
+
+
 def _subskill_count(registry: Registry) -> int:
     """A-* skills dispatched by a parent rather than invoked directly."""
     return sum(
@@ -208,8 +221,35 @@ def render(registry: Registry) -> str:
         "",
         "---",
         "",
+    ]
+
+    aod = _auto_on_demand(registry)
+    if aod:
+        lines += [
+            "",
+            "---",
+            "",
+            "## 6. AUTO_ON_DEMAND picks (#76 SKILL-ECO)",
+            "",
+            "triggered canonical skills นอก A-Suite — auto-pick ได้เหมือนกัน"
+            " (style/discipline/economy, ไม่ใช่ pipeline dispatcher):",
+            "",
+            "| Skill | เรียกด้วย | Triggers |",
+            "|-------|-----------|----------|",
+        ]
+        for s in aod:
+            hint = s.get("invocation_hint") or f"/{s['name']}"
+            lines.append(
+                f"| [`{s['name']}`](#{s['name']}) | {hint} |"
+                f" {_fmt_triggers(s.get('triggers'))} |")
+
+    lines += [
+        "",
+        "---",
+        "",
         f"_{len(_a_suite(registry))} A-Suite entry points"
         f"{f' (+{_subskill_count(registry)} subskills)' if _subskill_count(registry) else ''}"
+        f"{f' · {len(aod)} AUTO_ON_DEMAND picks' if aod else ''}"
         f" · spine = {' → '.join(routing.A_PHASE_CHAIN)}_",
     ]
     return "\n".join(lines) + "\n"

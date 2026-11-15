@@ -9,7 +9,7 @@
 > This index is a REFERENCE for choosing manually — read only the domain
 > section you need, not the whole table at session start.
 
-**Total canonical skills**: 201 · **Aliases/deprecated**: 47
+**Total canonical skills**: 203 · **Aliases/deprecated**: 47
 
 ## 📊 Domain Summary
 
@@ -19,14 +19,14 @@
 | `debug` | ดีบัก / หาสาเหตุปัญหา | 7 |
 | `design` | ดีไซน์ระบบ / สถาปัตยกรรม | 14 |
 | `ux-ui` | UX/UI / Frontend / a11y | 8 |
-| `engineering` | วิศวกร / Architect / Agent harness | 55 |
+| `engineering` | วิศวกร / Architect / Agent harness | 56 |
 | `trader` | เทรด / DeFi / ตลาด | 8 |
 | `medical` | การแพทย์ / ร้านยา / HIPAA | 4 |
 | `business` | ธุรกิจ / การเงิน / CRM | 7 |
 | `data` | Data Visualization / DB / Query | 11 |
 | `security` | ความปลอดภัย / Hardening | 5 |
-| `ai-ops` | AI ops / LLM / Cost | 24 |
-| `productivity` | Productivity / Management | 12 |
+| `ai-ops` | AI ops / LLM / Cost | 25 |
+| `productivity` | Productivity / Management | 14 |
 | `wiki` | Wiki / Knowledge ops | 9 |
 | `env` | Environment / น้ำเสีย | 1 |
 | `pharmacy` | ร้านยา / สต็อกยา | 2 |
@@ -208,6 +208,7 @@
 | `performance-optimization` | review | engineering-lifecycle | หาและแก้ bottleneck — profile ก่อน, แก้ที่จุดที่ช้าจริง ไม่ใช่เดา |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
 | `platform-ingest` | meta | pipeline | Platform ingestion layer — อ่านโพสต์จาก Reddit/YouTube/Bilibili/URL ทั่วไป โดยใช้ endpoint ที่ ve... |
+| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity m... |
 | `prototype` | build | mattpocock | สร้าง prototype แบบเร็วเพื่อตอบคำถามด้านการออกแบบหรือทดสอบแนวคิด โดยไม่ต้องกังวลเรื่องคุณภาพโค้ดห... |
 | `research` | define | mattpocock | สืบค้นคำถามกับแหล่งขั้นต้นที่เชื่อถือได้ แล้วบันทึกผลเป็น markdown — cite, synthesize ไม่เอาจาก m... |
 | `resolving-merge-conflicts` | none | mattpocock | ช่วยแก้ไข conflict ที่เกิดขึ้นระหว่างการ merge หรือ rebase โดยวิเคราะห์ความตั้งใจของแต่ละ hunk แท... |
@@ -301,6 +302,7 @@
 | `agent-sort` | none | ecosystem | เรียง skills/commands/rules/hooks สำหรับ repo หนึ่งๆ เป็น install plan โดยอ้างหลักฐาน — ไม่เดา |
 | `ai-regression-testing` | none | ecosystem | Regression testing strategies for AI-assisted development. Sandbox-mode API testing without datab... |
 | `build` | build | awiki | สกิลนี้ใช้คำสั่ง /build เพื่อแยกงานออกจากข้อความ ส่งต่อไปยัง telegram-command-router และ persona-... |
+| `caveman` | build | style | Compress agent OUTPUT for normal low-risk explanations (answer-first, no filler). Style-only; nev... |
 | `continuous-agent-loop` | none | ecosystem | รูปแบบและสถาปัตยกรรม canonical สำหรับ autonomous agent loop — รองรับหลาย agent (Claude Code / Gem... |
 | `delegate-subagent` | none | wiki | มอบหมายงานย่อยให้ subagent/worker model — เพื่อประหยัด context ของ primary agent |
 | `eval-harness` | none | ecosystem | กรอบงานประเมินผลแบบเป็นทางการสำหรับ Claude Code sessions ที่ใช้หลักการ eval-driven development (E... |
@@ -321,11 +323,13 @@
 | Skill | Lifecycle | Category | Description |
 |-------|-----------|----------|-------------|
 | `article-writing` | none | ecosystem | เขียนบทความ/บล็อก — มีโครง, hook, สาระ, ปิดท้าย |
+| `caveman` | build | style | Compress agent OUTPUT for normal low-risk explanations (answer-first, no filler). Style-only; nev... |
 | `doc-coauthoring` | none | uncategorized | แนะนำขั้นตอนการทำงานร่วมกันในการเขียนเอกสาร เช่น คู่มือ ข้อเสนอ สเปกเทคนิค หรือเอกสารตัดสินใจ โดย... |
 | `handoff` | meta | mattpocock | สร้าง handoff doc สั้นสำหรับส่งต่องานระหว่าง agent — สถานะปัจจุบัน, ทำอะไรต่อ, ไฟล์สำคัญ |
 | `management-talk` | none | uncategorized | สื่อสารแบบผู้นำ — สรุปงาน, วาง OKR, ให้ feedback, ประชุมมีประสิทธิภาพ |
 | `plan-orchestrate` | none | ecosystem | อ่าน plan document แตกเป็น step แล้วออกแบบ agent chain ต่อ step จาก catalog — สั่ง execution แบบม... |
 | `planning-and-task-breakdown` | plan | engineering-lifecycle | แยกงานใหญ่ให้เป็น task เล็กๆ ที่ทำได้ทีละชิ้น พร้อม dependency และลำดับ |
+| `ponytail` | build | discipline | Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity m... |
 | `post-mortem` | none | uncategorized | เขียนบทเรียนหลัง incident: เกิดอะไรขึ้น, root cause, impact, แก้อย่างไร, ป้องกันยังไงคราวหน้า |
 | `research-pipeline` | meta | pipeline | ไปป์ไลน์วิจัยแบบ 3 stage สำหรับทุก domain — รวบรวม -> สังเคราะห์ -> วิพากษ์วิจารณ์. ใช้ subagent ... |
 | `teach` | none | mattpocock | สอนทักษะหรือแนวคิดใหม่ให้กับผู้ใช้ภายใน workspace นี้ โดยสามารถดำเนินการต่อเนื่องข้ามหลาย session... |
@@ -427,7 +431,7 @@ Skills that participate in the engineering lifecycle (DEFINE→PLAN→BUILD→VE
 
 - **DEFINE**: `a-plan`, `design-first-ui-prompting`, `domain-modeling`, `grill-with-docs`, `research`, `spec-driven-development`, `to-prd`
 - **PLAN**: `cross-agent-work-orders`, `plan`, `planning-and-task-breakdown`, `to-issues`
-- **BUILD**: `a-2-5d-animation`, `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
+- **BUILD**: `a-2-5d-animation`, `a-doc`, `a-med-order`, `a-rabies-report`, `build`, `caveman`, `codebase-design`, `game-phaser-pipeline`, `implement`, `phaser-arcade-physics`, `phaser-core`, `pixijs-rendering`, `ponytail`, `prototype`, `scaffold-exercises`, `taste-skill`, `tdd`, `threejs-gltf-loading`, `threejs-materials-lighting`, `threejs-scene-setup`, `transitions-dev`, `ui-ux-pro-max`
 - **VERIFY**: `a-debug`, `browser-testing-with-devtools`, `test-engineer`, `triage`
 - **REVIEW**: `a-council`, `a-security`, `code-reviewer`, `code-simplification`, `improve-codebase-architecture`, `performance-optimization`, `review`, `security-and-hardening`, `security-auditor`, `two-axis-code-review`, `web-performance-auditor`
 - **SHIP**: `ci-cd-and-automation`, `deprecation-and-migration`, `documentation-and-adrs`, `git-workflow-and-versioning`, `observability-and-instrumentation`, `ship`, `shipping-and-launch`, `symlink-connector`

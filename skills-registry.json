@@ -7901,6 +7901,13 @@
         "บีบอัดหรือล้างข้อมูลที่ไม่จำเป็น",
         "ตัดสินใจโหลดข้อมูลใหม่แบบ focused",
         "ยืนยัน token ที่ใช้ลดลง"
+      ],
+      "triggers": [
+        "compact logs",
+        "compress diff",
+        "shrink search output",
+        "lossless reference",
+        "reduce context"
       ]
     },
     {
@@ -8573,6 +8580,65 @@
       "invocation": "auto",
       "migrated_to": "a-think",
       "note": "merged into a-think 2026-08-09 (fable-method + fable5 -> a-think)"
+    },
+    {
+      "name": "caveman",
+      "domain": [
+        "ai-ops",
+        "productivity"
+      ],
+      "lifecycle_phase": "build",
+      "category": "style",
+      "source": "repo",
+      "path": "skills/awiki/caveman/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Compress agent OUTPUT for normal low-risk explanations (answer-first, no filler). Style-only; never code/security/test evidence.",
+      "invocation": "auto",
+      "invocation_hint": "/Caveman",
+      "a_phase": "any",
+      "triggers": [
+        "caveman",
+        "be brief",
+        "less tokens",
+        "shorter answers",
+        "สั้นๆ",
+        "ตอบกระชับ",
+        "พูดมากไป"
+      ]
+    },
+    {
+      "name": "ponytail",
+      "domain": [
+        "engineering",
+        "productivity"
+      ],
+      "lifecycle_phase": "build",
+      "category": "discipline",
+      "source": "repo",
+      "path": "skills/awiki/ponytail/SKILL.md",
+      "agents": [
+        "all"
+      ],
+      "version": "1.0.0",
+      "status": "canonical",
+      "description": "Scoped minimal-solution discipline (YAGNI ladder) + prior-context checkpointing when continuity materially helps.",
+      "invocation": "auto",
+      "invocation_hint": "/Ponytail",
+      "a_phase": "any",
+      "triggers": [
+        "ponytail",
+        "lazy mode",
+        "simplest solution",
+        "minimal solution",
+        "yagni",
+        "shortest path",
+        "over-engineering",
+        "ง่ายที่สุด"
+      ]
     }
   ]
 }

@@ -54,6 +54,7 @@
 | `browser-testing-with-devtools` | code, engineering | verify | engineering-lifecycle | `skills/engineering-lifecycle/verify/browser-testing-with-devtools/SKILL.md` |
 | `build` | ai-ops | build | awiki | `skills/awiki/build/SKILL.md` |
 | `canvas-design` | design | none | uncategorized | `skills/anthropic-skills/canvas-design/SKILL.md` |
+| `caveman` | ai-ops, productivity | build | style | `skills/awiki/caveman/SKILL.md` |
 | `ci-cd-and-automation` | code, engineering, sre | ship | engineering-lifecycle | `skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md` |
 | `claude-api` | code | none | uncategorized | `skills/anthropic-skills/claude-api/SKILL.md` |
 | `clickhouse-io` | data, code | none | ecosystem | `skills/ecosystem/clickhouse-io/SKILL.md` |
@@ -129,6 +130,7 @@
 | `plan-orchestrate` | productivity | none | ecosystem | `skills/ecosystem/plan-orchestrate/SKILL.md` |
 | `planning-and-task-breakdown` | code, engineering, productivity | plan | engineering-lifecycle | `skills/engineering-lifecycle/plan/planning-and-task-breakdown/SKILL.md` |
 | `platform-ingest` | engineering, code | meta | pipeline | `skills/awiki/platform-ingest/SKILL.md` |
+| `ponytail` | engineering, productivity | build | discipline | `skills/awiki/ponytail/SKILL.md` |
 | `post-mortem` | productivity | none | uncategorized | `skills/engineering/post-mortem/SKILL.md` |
 | `postgres-patterns` | data, code | none | ecosystem | `skills/ecosystem/postgres-patterns/SKILL.md` |
 | `pptx` | document | none | uncategorized | `skills/anthropic-skills/pptx/SKILL.md` |
@@ -209,19 +211,19 @@
 
 | Domain | Skill count |
 |--------|------------|
-| ai-ops | 24 |
+| ai-ops | 25 |
 | business | 7 |
 | code | 77 |
 | data | 11 |
 | debug | 7 |
 | design | 14 |
 | document | 9 |
-| engineering | 55 |
+| engineering | 56 |
 | env | 1 |
 | media | 16 |
 | medical | 4 |
 | pharmacy | 2 |
-| productivity | 12 |
+| productivity | 14 |
 | security | 5 |
 | sre | 2 |
 | thai | 14 |

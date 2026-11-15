@@ -259,6 +259,11 @@
       "domain": "design"
     },
     {
+      "name": "caveman",
+      "target": "skills/awiki/caveman/SKILL.md",
+      "domain": "ai-ops,productivity"
+    },
+    {
       "name": "ci-cd-and-automation",
       "target": "skills/engineering-lifecycle/ship/ci-cd-and-automation/SKILL.md",
       "domain": "code,engineering,sre"
@@ -602,6 +607,11 @@
       "name": "platform-ingest",
       "target": "skills/awiki/platform-ingest/SKILL.md",
       "domain": "engineering,code"
+    },
+    {
+      "name": "ponytail",
+      "target": "skills/awiki/ponytail/SKILL.md",
+      "domain": "engineering,productivity"
     },
     {
       "name": "post-mortem",
