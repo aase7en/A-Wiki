@@ -39,6 +39,7 @@
 | ✅ DONE 2026-11-14: A-SECURITY-CLOUDFLARE-UPSTREAM-20260921 — merged PR #65 as `790ad612`; rebased; GLM review APPROVE (2×P2 repaired: dup rows collapsed, surfaces regenerated); CI 3/3; post-main CI success 43651589634; claim released | GPT-5.6-Sol → GLM (Kilo) triage | 2026-11-14 | a-security skill (Cloudflare upstream, pinned c1c8a8c1) + refresh script + commands doc; tier auto | feat/a-security-cloudflare-upstream |
 | WO-AWIKI-SKILLECO-10 | GLM (Kilo) | 2026-11-15 | register adapted caveman+ponytail skills; extend token-optimization triggers; commands docs; WO doc; tests | feat/skill-eco-auto-on-demand |
 | Issue #91 public-apis Phase-1 knowledge intake | ChatGPT SundayMCP Windows | 2026-11-16 | COLLAB.md; docs/work-orders/WO-AWIKI-91-PUBLIC-APIS.md; wiki/sources/public-apis-catalog.md; wiki/index-cross-domain.md | feat/91-public-apis-knowledge |
+| Issue #91 Phase-1 generated-context CI repair | ChatGPT SundayMCP Windows | 2026-11-16 | COLLAB.md; wiki/context/wiki-overview.md; wiki/context/overview-sources.md | feat/91-public-apis-knowledge |
 
 
 Issue #54 ReviewBus release 2026-09-07: accepted head `905ee476d8622eb9e1426f03a5cdad6fda286ba7` merged via PR #56 as `967e063cb9dc2e5b43b48a00deb575235f125a94`; post-main Core CI `34133420008` SUCCESS. Q25/GLM1 implementation claim is released; durable evidence remains in `docs/work-orders/WO-REVIEW-BUS-ADDRESSED-BLOCKER-20260907.md`, Issue #54, PR #56 and Git history.
