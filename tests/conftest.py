@@ -22,6 +22,22 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "wiki"))
 
 # ── Helpers ────────────────────────────────────────────────────────────
 
+@pytest.fixture(scope="session", autouse=True)
+def _ensure_wiki_index() -> None:
+    """Self-build the gitignored FTS index when absent (WO-AWIKI-CIHERM-12).
+
+    Mirrors ci-core.yml "Prepare local generated config" so a fresh clone's
+    first test run does not fail on missing .wiki-index.db. No-op when the
+    index already exists.
+    """
+    if (REPO_ROOT / ".wiki-index.db").exists():
+        return
+    subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "build-wiki-index.py")],
+        check=True, capture_output=True, timeout=300,
+    )
+
+
 def _git(*args: str, cwd: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         ["git", *args],
