@@ -59,6 +59,8 @@ def main(argv: list[str] | None = None) -> int:
 
     p_claims = sub.add_parser("claims", help="read one exact canonical durable claim")
     p_claims.add_argument("--task-id", required=True)
+    p_claims.add_argument("--repo-root", default=None,
+                          help="repo root to read the claim from (default: this repo)")
     p_claims.add_argument("--json", action="store_true")
 
     p_search = sub.add_parser("search", help="wiki knowledge search (fts|hybrid)")
@@ -166,8 +168,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "claims":
         from .state import ClaimLookupError, read_canonical_claim
+        claims_root = (Path(args.repo_root).resolve()
+                       if args.repo_root else REPO_ROOT)
         try:
-            out = read_canonical_claim(REPO_ROOT, args.task_id)
+            out = read_canonical_claim(claims_root, args.task_id)
         except ClaimLookupError as e:
             _emit({"ok": False, "error": str(e), "task_id": args.task_id}, args.json)
             return 1

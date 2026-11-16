@@ -919,13 +919,46 @@ class TestBridgeCli:
         assert r.returncode == 2
         assert "--scope" in r.stderr and "--branch" in r.stderr
 
-    def test_claims_cli_returns_exact_current_claim(self):
-        r = self._run("claims", "--task-id", "Issue #58 claim authority convergence", "--json")
+    def test_claims_cli_returns_exact_current_claim(self, tmp_path):
+        # Hermetic (WO-AWIKI-CIHERM-11): push-event CI checkouts fetch only the
+        # pushed branch even with fetch-depth 0, so a live-repo assertion is
+        # coupled to runner ref topology. Exercise the CLI against a fixture
+        # repo mirroring the historical-row shape instead.
+        import subprocess
+        row_task = "Issue #58 claim authority convergence"
+        row_branch = "fix/issue-58-claim-convergence"
+        subprocess.run(["git", "init", "-b", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "config", "user.email", "noreply"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=tmp_path, check=True)
+        (tmp_path / "COLLAB.md").write_text(
+            "# COLLAB\n\n| Chunk/WO | Agent | Claimed | Scope | Branch / PR |\n"
+            "|---|---|---|---|---|\n"
+            f"| {row_task} | chatgpt-sol | 2026-09-27 | conductor/** | {row_branch} |\n",
+            encoding="utf-8")
+        subprocess.run(["git", "add", "COLLAB.md"], cwd=tmp_path, check=True)
+        subprocess.run(["git", "commit", "-m", "seed historical claim"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "-b", row_branch], cwd=tmp_path,
+                       check=True, capture_output=True)
+        subprocess.run(["git", "commit", "--allow-empty", "-m", "branch head"],
+                       cwd=tmp_path, check=True, capture_output=True)
+        subprocess.run(["git", "checkout", "-q", "main"], cwd=tmp_path,
+                       check=True, capture_output=True)
+        expected_head = subprocess.run(
+            ["git", "rev-parse", f"refs/heads/{row_branch}"], cwd=tmp_path,
+            check=True, capture_output=True, text=True).stdout.strip()
+        r = subprocess.run(
+            [sys.executable, "-m", "conductor", "claims", "--task-id", row_task,
+             "--repo-root", str(tmp_path), "--json"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+            cwd=str(REPO_ROOT), timeout=180)
         assert r.returncode == 0, r.stderr[:300]
         out = json.loads(r.stdout)
         assert out["schema"] == "awiki-claim-reader/v1"
-        assert out["task_id"] == "Issue #58 claim authority convergence"
-        assert out["branch"] == "fix/issue-58-claim-convergence"
+        assert out["task_id"] == row_task
+        assert out["branch"] == row_branch
+        assert out["branch_head_sha"] == expected_head
         assert out["worktree_binding"] == "CONSUMER_VERIFY_REQUIRED"
 
 
