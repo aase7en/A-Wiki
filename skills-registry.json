@@ -7908,6 +7908,9 @@
         "shrink search output",
         "lossless reference",
         "reduce context"
+      ],
+      "negative_triggers": [
+        "secret"
       ]
     },
     {
@@ -8608,6 +8611,12 @@
         "สั้นๆ",
         "ตอบกระชับ",
         "พูดมากไป"
+      ],
+      "negative_triggers": [
+        "security evidence",
+        "secret",
+        "ci log",
+        "diff"
       ]
     },
     {
