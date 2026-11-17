@@ -23,7 +23,6 @@ import argparse
 import csv
 import io
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -46,7 +45,9 @@ def _build_counter(requested: str):
     Resolver lives in scripts/lib/tokenizer_cost.py (WO-AWIKI-SKILLECO-14)
     and is shared with token-ab-measure.py.
     """
-    sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+    lib_dir = str(Path(__file__).resolve().parent / "lib")
+    if lib_dir not in sys.path:
+        sys.path.insert(0, lib_dir)
     from tokenizer_cost import build_counter
     return build_counter(requested)
 
