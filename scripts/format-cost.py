@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 from typing import Any
 
 # Degrade unencodable characters instead of crashing on non-UTF-8 consoles
@@ -40,44 +41,14 @@ for _stream in (sys.stdout, sys.stderr):
 # ── tokenizer ────────────────────────────────────────────────────────────
 
 def _build_counter(requested: str):
-    """Return (count_fn, backend_name). Never raises — always falls back to proxy."""
-    proxy = (lambda text: max(1, round(len(text) / 4)), "char/4 proxy")
+    """Return (count_fn, backend_name). Never raises — always falls back to proxy.
 
-    if requested == "proxy":
-        return proxy
-
-    if requested in ("auto", "tiktoken"):
-        try:
-            import tiktoken  # type: ignore
-            enc = tiktoken.get_encoding("cl100k_base")
-            return (lambda text: len(enc.encode(text)), "tiktoken cl100k_base")
-        except Exception:
-            pass
-        if requested == "tiktoken":
-            return proxy
-
-    if requested in ("auto", "anthropic"):
-        try:
-            # The SDK constructs fine without a key and only raises when the
-            # API is called — by then output is mid-flight. Never select this
-            # backend without a usable key (CI has the package but no key).
-            if not os.environ.get("ANTHROPIC_API_KEY"):
-                raise RuntimeError("anthropic installed but ANTHROPIC_API_KEY unset")
-            import anthropic  # type: ignore
-            client = anthropic.Anthropic()
-
-            def _count(text: str) -> int:
-                r = client.beta.messages.count_tokens(
-                    model="claude-opus-4-8",
-                    messages=[{"role": "user", "content": text}],
-                    betas=["token-counting-2024-11-01"],
-                )
-                return r.input_tokens
-            return (_count, "anthropic token-counting API")
-        except Exception:
-            pass
-
-    return proxy
+    Resolver lives in scripts/lib/tokenizer_cost.py (WO-AWIKI-SKILLECO-14)
+    and is shared with token-ab-measure.py.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+    from tokenizer_cost import build_counter
+    return build_counter(requested)
 
 
 # ── format encoders ──────────────────────────────────────────────────────
