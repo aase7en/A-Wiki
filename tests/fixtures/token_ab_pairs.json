@@ -1,0 +1,154 @@
+{
+  "schema": "awiki-token-ab-fixtures/v1",
+  "created": "2026-11-17",
+  "wo": "WO-AWIKI-SKILLECO-14",
+  "issue": 76,
+  "billing_disclosure": "Offline tokenizer estimates only; actual provider input/output/cache billing is UNKNOWN and not measured here.",
+  "notes": "Each pair holds the SAME semantic content as thai/english; each language carries verbose (auto-off) and compact (auto-on, caveman-style) variants. Deterministic regression fixtures — no network.",
+  "pairs": [
+    {
+      "id": "status-answer-01",
+      "category": "status-answer",
+      "thai": {
+        "verbose": "ผมตรวจสอบสถานะของ pull request หมายเลข 94 ให้แล้วนะครับ ตอนนี้การตรวจสอบทั้งสามรายการผ่านทั้งหมดเรียบร้อย และผู้ตรวจสอบอิสระได้ให้ความเห็นว่าอนุมัติแล้ว ดังนั้นเราสามารถดำเนินการรวมโค้ดเข้าสายหลักได้ทันที",
+        "compact": "PR #94: CI 3/3 ผ่าน + reviewer อนุมัติ — merge ได้เลย"
+      },
+      "english": {
+        "verbose": "I have checked the status of pull request number 94 for you. All three verification checks have passed completely, and the independent reviewer has given approval, so we can proceed to merge the code into the main branch immediately.",
+        "compact": "PR #94: CI 3/3 green + reviewer APPROVE — ready to merge."
+      }
+    },
+    {
+      "id": "error-explain-02",
+      "category": "error-explain",
+      "thai": {
+        "verbose": "การทดสอบล้มเหลวเพราะว่าตัวแปรสภาพแวดล้อมสำหรับกุญแจ API ไม่ได้ถูกตั้งค่าไว้ในระบบ ทำให้โปรแกรมพยายามเรียกใช้บริการภายนอกโดยไม่มีการยืนยันตัวตน และถูกปฏิเสธการเข้าถึงในที่สุด",
+        "compact": "Test fail: env API key ไม่ได้ตั้ง → เรียก API ไม่มี auth → 401"
+      },
+      "english": {
+        "verbose": "The test failed because the environment variable holding the API key was never configured on this system, so the program attempted to call the external service without any authentication and was ultimately denied access.",
+        "compact": "Test fail: API key env unset → unauthenticated call → 401."
+      }
+    },
+    {
+      "id": "plan-summary-03",
+      "category": "plan-summary",
+      "thai": {
+        "verbose": "แผนการดำเนินงานสำหรับงานนี้แบ่งออกเป็นสามขั้นตอนหลัก ขั้นตอนแรกคือการเตรียมเอกสารและขออนุมัติ ขั้นตอนที่สองคือการเขียนโค้ดพร้อมการทดสอบ และขั้นตอนสุดท้ายคือการส่งงานเพื่อรับการตรวจสอบก่อนนำไปใช้งานจริง",
+        "compact": "แผน 3 ขั้น: (1) เอกสาร+อนุมัติ (2) โค้ด+เทสต์ (3) review → deploy"
+      },
+      "english": {
+        "verbose": "The work plan for this task is divided into three main phases. The first phase is preparing the documents and obtaining approval, the second phase is writing the code together with its tests, and the final phase is submitting the work for review before deploying it to production.",
+        "compact": "Plan, 3 steps: (1) docs+approval (2) code+tests (3) review → deploy."
+      }
+    },
+    {
+      "id": "table-gt5-04",
+      "category": "table-gt5",
+      "thai": {
+        "verbose": "สรุปผลการทดสอบทั้งหมดมีดังนี้ ชุดทดสอบหลักผ่าน 74 รายการ ชุดตรวจความสะอาดผ่าน 2 รายการ ชุดทะเบียน skill ผ่าน 18 รายการ ชุดพื้นผิวข้ามเครื่องผ่าน 9 รายการ ชุด kilo ผ่าน 18 รายการ และชุดตรวจความเป็นส่วนตัวผ่านการสแกนโดยไม่พบข้อมูลส่วนบุคคล",
+        "compact": "ผลทดสอบ: core 74P hygiene 2P registry 18P surfaces 9P kilo 18P privacy 0P0F"
+      },
+      "english": {
+        "verbose": "The full test results are summarized as follows: the core suite passed with 74 items, the hygiene suite passed with 2 items, the skill registry suite passed with 18 items, the cross-agent surface suite passed with 9 items, the kilo surface suite passed with 18 items, and the privacy scan completed with no personal data detected.",
+        "compact": "Results: core 74P, hygiene 2P, registry 18P, surfaces 9P, kilo 18P, privacy clean."
+      }
+    },
+    {
+      "id": "code-review-note-05",
+      "category": "code-review-note",
+      "thai": {
+        "verbose": "ในไฟล์ conductor/cli.py บรรทัดที่มีการตรวจสอบค่า arguments ผมพบว่ามีการเรียกใช้ฟังก์ชันที่อาจคืนค่า None กลับมาได้ แต่โค้ดไม่ได้ตรวจสอบกรณีนั้นก่อนนำไปใช้ต่อ ซึ่งอาจทำให้เกิดข้อผิดพลาดชนิด NoneType ในรันไทม์ ควรเพิ่มการตรวจสอบก่อน",
+        "compact": "cli.py args handler: fn คืน None ได้แต่ไม่ guard → เพิ่ม None-check ก่อนใช้"
+      },
+      "english": {
+        "verbose": "In conductor/cli.py, at the line that inspects the parsed arguments, I found a function call that may return None, but the code does not check for that case before using the result, which could raise a NoneType error at runtime; a guard should be added.",
+        "compact": "cli.py args handler: callee can return None, unguarded → add None-check before use."
+      }
+    },
+    {
+      "id": "risk-flag-06",
+      "category": "risk-flag",
+      "thai": {
+        "verbose": "มีความเสี่ยงที่ต้องแจ้งให้ทราบก่อนดำเนินการต่อ การเปลี่ยนแปลงนี้กระทบกับไฟล์ทะเบียนกลางที่มีผู้ใช้งานหลายระบบอ้างอิงถึง หากมีความผิดพลาดจะกระทบวงกว้าง จึงควรทำการทดสอบย้อนกลับอย่างละเอียดก่อนรวมโค้ด",
+        "compact": "ความเสี่ยง: แก้ registry กลางที่หลายระบบอ้างอิง → blast radius สูง ต้อง regression ก่อน merge"
+      },
+      "english": {
+        "verbose": "There is a risk that must be flagged before proceeding: this change touches the central registry file that several systems depend on, and any defect in it would have a wide blast radius, so thorough regression testing should happen before merging.",
+        "compact": "Risk: edits central registry referenced by many consumers → high blast radius; regression-test before merge."
+      }
+    },
+    {
+      "id": "handoff-note-07",
+      "category": "handoff-note",
+      "thai": {
+        "verbose": "หากมีเอเจนต์ตัวถัดไปมารับงานต่อ สิ่งที่ต้องทำคืออ่านคำสั่งงานในโฟลเดอร์ docs/work-orders ก่อน จากนั้นตรวจสอบตาราง claims ในไฟล์ COLLAB.md เพื่อดูว่ามีใครกำลังทำงานส่วนไหนอยู่ แล้วจึงเริ่มดำเนินการตามขั้นตอนที่กำหนดไว้",
+        "compact": "Next agent: อ่าน WO ใน docs/work-orders → เช็ค claims ใน COLLAB.md → เริ่มตามขั้นตอน"
+      },
+      "english": {
+        "verbose": "If the next agent picks up this work, the required steps are to first read the work order under docs/work-orders, then check the claims table in COLLAB.md to see who is working on which part, and only then start executing the defined procedure.",
+        "compact": "Next agent: read WO in docs/work-orders → check COLLAB.md claims → follow steps."
+      }
+    },
+    {
+      "id": "decision-log-08",
+      "category": "decision-log",
+      "thai": {
+        "verbose": "คณะทำงานตัดสินใจเลือกวิธีที่สองเพราะเหตุผลสองข้อ ข้อแรกคือต้นทุนการบำรุงรักษาต่ำกว่าในระยะยาว และข้อสองคือมีตัวอย่างการใช้งานจริงในโค้ดเบสที่ทีมอื่นทำไว้แล้ว จึงลดความเสี่ยงของสิ่งใหม่ที่ไม่มีใครเคยใช้",
+        "compact": "ตัดสินใจ: วิธีที่ 2 — maintenance ถูกกว่า + มี precedent ในโค้ดเบส (ลดความเสี่ยง)"
+      },
+      "english": {
+        "verbose": "The working group decided on the second approach for two reasons: first, its long-term maintenance cost is lower, and second, there is an existing usage precedent in the codebase from another team, which reduces the risk of adopting something novel that nobody has run before.",
+        "compact": "Decision: option 2 — lower maintenance + in-codebase precedent (risk reduction)."
+      }
+    },
+    {
+      "id": "test-result-09",
+      "category": "test-result",
+      "thai": {
+        "verbose": "ผลการรันชุดทดสอบล่าสุดบนเครื่องหลัก มีรายการที่ผ่านทั้งหมด 76 รายการ ไม่มีรายการใดล้มเหลว ใช้เวลาทั้งสิ้นประมาณ 18 วินาที และไม่พบคำเตือนใด ๆ เพิ่มเติมจากการตรวจสอบคุณภาพโค้ด",
+        "compact": "ทดสอบล่าสุด: 76 passed 0 failed ~18s lint สะอาด"
+      },
+      "english": {
+        "verbose": "The latest test suite run on the primary machine reports 76 passing items, zero failures, a total duration of about 18 seconds, and no additional warnings from the code quality checks.",
+        "compact": "Latest run: 76 passed, 0 failed, ~18s, lint clean."
+      }
+    },
+    {
+      "id": "deploy-step-10",
+      "category": "deploy-step",
+      "thai": {
+        "verbose": "ขั้นตอนการปรับใช้งานมีดังนี้ ขั้นแรกให้รันสคริปต์สร้างดัชนี จากนั้นรันการทดสอบชุดย่อยเพื่อยืนยันว่าทุกอย่างปกติ แล้วจึงรวมโค้ดเข้าสายหลัก สุดท้ายตรวจสอบว่าระบบอัตโนมัติทำงานถูกต้องหลังการรวม",
+        "compact": "Deploy: build-index → subset tests → merge → ตรวจ post-merge CI"
+      },
+      "english": {
+        "verbose": "The deployment procedure is as follows: first run the index-building script, then run the subset of tests to confirm everything is normal, after that merge the code into the main branch, and finally verify that the automation ran correctly after the merge.",
+        "compact": "Deploy: build-index → subset tests → merge → check post-merge CI."
+      }
+    },
+    {
+      "id": "meeting-takeaway-11",
+      "category": "meeting-takeaway",
+      "thai": {
+        "verbose": "สรุปสิ่งที่ได้จากการประชุมครั้งนี้ มีข้อตกลงสำคัญสองเรื่อง เรื่องแรกคือทีมจะหยุดพัฒนาฟีเจอร์ใหม่ชั่วคราวเพื่อเร่งแก้บั๊กที่สะสม และเรื่องที่สองคือจะกำหนดสถานะการประชุมครั้งถัดไปในสัปดาห์หน้า",
+        "compact": "สรุปประชุม: (1) หยุดฟีเจอร์ใหม่ เร่งแก้บั๊กสะสม (2) นัดครั้งถัดไปสัปดาห์หน้า"
+      },
+      "english": {
+        "verbose": "Key takeaways from this meeting: there were two important agreements. First, the team will pause new feature development temporarily to focus on clearing the accumulated bug backlog, and second, the next meeting will be scheduled sometime next week.",
+        "compact": "Meeting takeaways: (1) freeze new features, clear bug backlog (2) next meeting next week."
+      }
+    },
+    {
+      "id": "doc-outline-12",
+      "category": "doc-outline",
+      "thai": {
+        "verbose": "เอกสารฉบับนี้ควรมีโครงสร้างเป็นสี่ส่วน ส่วนแรกคือบทนำเพื่ออธิบายที่มาและความสำคัญ ส่วนที่สองคือรายละเอียดทางเทคนิคของระบบ ส่วนที่สามคือผลการทดสอบและตัวเลขประกอบ และส่วนสุดท้ายคือบทสรุปพร้อมข้อเสนอแนะสำหรับงานต่อไป",
+        "compact": "โครงเอกสาร: 1. บทนำ 2. รายละเอียดเทคนิค 3. ผลทดสอบ 4. สรุป+ข้อเสนอแนะ"
+      },
+      "english": {
+        "verbose": "This document should be structured in four sections: the first is an introduction explaining the background and importance, the second covers the technical details of the system, the third presents the test results and supporting figures, and the final section is a conclusion with recommendations for future work.",
+        "compact": "Doc outline: 1. intro 2. technical detail 3. test results 4. conclusion+next steps."
+      }
+    }
+  ]
+}
