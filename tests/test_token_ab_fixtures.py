@@ -94,3 +94,19 @@ def test_measure_script_emits_jsonl_with_unknown_billing():
                     "thai_compact_tokens", "english_compact_tokens",
                     "thai_ratio", "english_compact_ratio"):
             assert key in rec, f"pair record missing {key}"
+
+
+def test_format_cost_counter_does_not_duplicate_sys_path():
+    # WO-AWIKI-TOKNIT-15 (PR #98 review P3): repeated _build_counter calls
+    # must not append duplicate sys.path entries.
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "format_cost_p3", REPO_ROOT / "scripts" / "format-cost.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    lib_dir = str(REPO_ROOT / "scripts" / "lib")
+    before = sys.path.count(lib_dir)
+    mod._build_counter("proxy")
+    mod._build_counter("proxy")
+    assert sys.path.count(lib_dir) == before, (
+        f"_build_counter duplicated sys.path entry: {before} -> {sys.path.count(lib_dir)}")
