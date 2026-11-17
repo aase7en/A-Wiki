@@ -25,6 +25,51 @@ def _reg(*skills):
     return SimpleNamespace(skills=[dict(s, status="canonical") for s in skills])
 
 
+class TestNegativeTriggerVeto:
+    """WO-AWIKI-SKILLECO-16 — negative_triggers veto routing.
+
+    Issue #76: the router must be able to express "NOT for this input"
+    (e.g. caveman never auto-compresses security evidence) in routing data.
+    """
+
+    def test_negative_trigger_vetoes_positive_hit(self):
+        reg = _reg(
+            {"name": "compact-style",
+             "description": "compact output style for low-risk prose",
+             "domain": "style", "triggers": ["summarize"],
+             "negative_triggers": ["security evidence"], "invocation_hint": "/x"},
+        )
+        hits = routing.route(reg, "summarize the security evidence log")
+        assert "compact-style" not in [h[0] for h in hits], (
+            "negative trigger must veto the skill even with a positive hit")
+
+    def test_negative_trigger_vetoes_description_fallback(self):
+        reg = _reg(
+            {"name": "compact-style",
+             "description": "excel invoice generator security evidence tool",
+             "domain": "style", "triggers": [],
+             "negative_triggers": ["security evidence"], "invocation_hint": "/x"},
+        )
+        hits = routing.route(reg, "generate security evidence excel invoice")
+        assert "compact-style" not in [h[0] for h in hits], (
+            "veto must also block the description-fallback tier")
+
+    def test_absent_negative_triggers_routes_normally(self):
+        reg = _reg({"name": "plain", "description": "compact prose",
+                    "domain": "style", "triggers": ["summarize"],
+                    "invocation_hint": "/x"})
+        assert routing.route(reg, "summarize this")[0][0] == "plain"
+
+    def test_negative_without_positive_is_noop(self):
+        reg = _reg({"name": "never-matches",
+                    "description": "unrelated thing",
+                    "domain": "d", "triggers": [],
+                    "negative_triggers": ["security"], "invocation_hint": "/x"})
+        hits = routing.route(reg, "totally unrelated words here")
+        assert "never-matches" not in [h[0] for h in hits], (
+            "vetoed skill must never surface, even via the a-flow spine default")
+
+
 class TestDescriptionFallback:
     def test_trigger_miss_falls_back_to_description(self):
         """A skill with NO triggers whose description matches the intent

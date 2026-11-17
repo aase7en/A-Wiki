@@ -292,6 +292,13 @@ def validate_registry(path: Path | str) -> list[str]:
         if triggers is not None:
             errors.extend(routing.validate_triggers(triggers, f"{ctx} ({name})"))
 
+        # v3 — negative_triggers (WO-AWIKI-SKILLECO-16): routing veto phrases.
+        # Optional; validated with the same per-item rules but a tighter cap.
+        negatives = skill.get("negative_triggers")
+        if negatives is not None:
+            errors.extend(
+                routing.validate_negative_triggers(negatives, f"{ctx} ({name})"))
+
         # v3 — a_phase: optional tag placing a skill on the A-Suite 7-phase spine.
         # Absent is legal; the router falls back to the lifecycle_phase map.
         a_phase = skill.get("a_phase")

@@ -94,6 +94,7 @@ def next_phase(phase: str) -> str | None:
 #: Cap per skill. Also bounds the blast radius in gen_hermes, which dumps whole
 #: registry records into an 8k-context device.
 MAX_TRIGGERS = 8
+MAX_NEGATIVE_TRIGGERS = 4
 
 MIN_ASCII_TRIGGER_LEN = 3
 MIN_UNICODE_TRIGGER_LEN = 2
@@ -182,6 +183,14 @@ def route(
     has_trigger_hit = False
     for skill in getattr(registry, "skills", []) or []:
         if skill.get("status") != "canonical":
+            continue
+        # WO-AWIKI-SKILLECO-16 negative_triggers veto: ANY match on the
+        # objective text excludes the skill from every tier — routing data
+        # can now express "NOT for this input" (e.g. caveman never
+        # auto-compresses security evidence), mirroring the guardrails the
+        # skill bodies already promise.
+        negatives = skill.get("negative_triggers")
+        if negatives and match_score(negatives, text) > 0:
             continue
         candidates.append(skill)
         triggers = skill.get("triggers")
@@ -274,6 +283,28 @@ def validate_triggers(triggers: Any, ctx: str) -> list[str]:
                 f"{ctx}: trigger {t!r} is too short (min {min_len} chars for "
                 f"{'ascii' if _is_ascii_trigger(t) else 'non-ascii'})"
             )
+    return errors
+
+
+def validate_negative_triggers(negatives: Any, ctx: str) -> list[str]:
+    """Validate a ``negative_triggers`` value (WO-AWIKI-SKILLECO-16).
+
+    Same per-item rules as ``validate_triggers`` (lowercase, unique, not
+    stop-listed, length floors) with a tighter cap: a veto phrase is a
+    guardrail, not a taxonomy — four per skill is plenty.
+    """
+    errors: list[str] = []
+    if not isinstance(negatives, list):
+        return [
+            f"{ctx}: negative_triggers must be a list, got {type(negatives).__name__}"
+        ]
+    if len(negatives) > MAX_NEGATIVE_TRIGGERS:
+        errors.append(
+            f"{ctx}: at most {MAX_NEGATIVE_TRIGGERS} negative_triggers "
+            f"allowed, got {len(negatives)}"
+        )
+    errors.extend(
+        validate_triggers(negatives[:MAX_NEGATIVE_TRIGGERS], f"{ctx} negative"))
     return errors
 
 
