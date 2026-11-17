@@ -18,6 +18,12 @@
 *token*
 # แต่ skill token-optimization จำเป็นต้อง track
 !skills/claude-code/token-optimization/
+# WO-AWIKI-SKILLECO-14: legitimate token-cost measurement files (not secrets)
+!scripts/token-ab-measure.py
+!scripts/lib/tokenizer_cost.py
+!tests/test_token_ab_fixtures.py
+!tests/fixtures/token_ab_pairs.json
+!docs/work-orders/WO-AWIKI-SKILLECO-14-token-ab-fixtures.md
 *oauth*
 !skills/anthropic-skills/doc-coauthoring/
 !skills/anthropic-skills/doc-coauthoring/**  # "coauthoring" contains the substring oauth
